@@ -65,6 +65,6 @@ export default {
     border-radius: 20px;
     height: 100%;
     width: 25%;
-    transition: width 1s
+    transition: width .7s
 }
 </style>

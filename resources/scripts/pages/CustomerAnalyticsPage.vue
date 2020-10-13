@@ -1,6 +1,12 @@
 <template>
     <v-container>
         <v-row>
+            <v-col sm="8">
+                <h2>Customer Insight</h2>
+            </v-col>
+            <v-col sm="4">
+                <date-range-picker />
+            </v-col>
             <v-col md="8">
                 <v-row>
                     <v-col lg="4" md="6" sm="12" class="box">
@@ -13,10 +19,16 @@
                         <InfoCard icon="mdi-email-receive-outline" title="Message Received" value="1894"></InfoCard>
                     </v-col>
                 </v-row>
-                <CustomersTable/>
             </v-col>
             <v-col md="4">
                 <GenderChart/>
+            </v-col>
+        </v-row>
+        <v-row style="margin-top: 40px">
+            <v-col md="8">
+                <CustomersTable />
+            </v-col>
+            <v-col md="4">
                 <EmotionMeter/>
                 <ActiveCustomer/>
             </v-col>
@@ -30,6 +42,7 @@ import GenderChart from "@scripts/components/customer/GenderChart";
 import CustomersTable from "@scripts/components/customer/CustomersTable";
 import EmotionMeter from "@scripts/components/customer/EmotionMeter";
 import ActiveCustomer from "@scripts/components/customer/ActiveCustomer";
+import DateRangePicker from "@scripts/components/common/DateRangePicker";
 
 export default {
     name: "CustomerAnalyticsPage",
@@ -38,7 +51,8 @@ export default {
         GenderChart,
         CustomersTable,
         EmotionMeter,
-        ActiveCustomer
+        ActiveCustomer,
+        DateRangePicker
     },
 
 }
