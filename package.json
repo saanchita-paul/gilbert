@@ -23,6 +23,7 @@
         "webpack-bundle-analyzer": "^3.9.0"
     },
     "dependencies": {
+        "chart.js": "^2.9.3",
         "lodash-es": "^4.17.15",
         "moment": "^2.27.0",
         "vue": "^2.6.12",
