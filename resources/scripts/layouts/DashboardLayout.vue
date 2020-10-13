@@ -38,8 +38,44 @@
 
         <v-app-bar app color="primary" dark>
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-
             <v-toolbar-title>Hood</v-toolbar-title>
+            <v-spacer/>
+            <v-badge
+                color="red"
+                content="6"
+                offset-y="20"
+                offset-x="20"
+                overlap
+            >
+                <v-btn icon>
+                    <v-icon>mdi-bell</v-icon>
+                </v-btn>
+            </v-badge>
+
+            <v-menu
+                left
+                bottom
+            >
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                        <v-icon>mdi-account</v-icon>
+                    </v-btn>
+                </template>
+
+                <v-list>
+                    <v-list-item>
+                        <v-list-item-title>Account</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item>
+                        <v-list-item-title>Log Out</v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
+
         </v-app-bar>
 
         <v-main>
