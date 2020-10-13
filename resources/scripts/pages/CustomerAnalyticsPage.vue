@@ -21,7 +21,8 @@
                 <CustomersTable />
             </v-col>
             <v-col md="4">
-                <EmotionMeter />
+                    <EmotionMeter />
+                    <ActiveCustomer />
             </v-col>
         </v-row>
     </v-container>
@@ -32,6 +33,7 @@ import InfoCard from "@scripts/components/customer/InfoCard";
 import GenderChart from "@scripts/components/customer/GenderChart";
 import CustomersTable from "@scripts/components/customer/CustomersTable";
 import EmotionMeter from "@scripts/components/customer/EmotionMeter";
+import ActiveCustomer from "@scripts/components/customer/ActiveCustomer";
 
 export default {
     name: "CustomerAnalyticsPage",
@@ -39,7 +41,8 @@ export default {
         InfoCard,
         GenderChart,
         CustomersTable,
-        EmotionMeter
+        EmotionMeter,
+        ActiveCustomer
     },
 
 }
