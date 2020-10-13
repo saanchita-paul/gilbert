@@ -1,28 +1,24 @@
 <template>
     <v-container>
         <v-row>
-            <v-col sm="12"></v-col>
-            <v-col lg="3" md="6" sm="12" class="box">
-                <InfoCard icon="mdi-account-outline" title="New Users" value="37"></InfoCard>
-            </v-col>
-            <v-col lg="3" md="6" sm="12" class="box">
-                <InfoCard icon="mdi-email-send" title="Message Sent" value="1281"></InfoCard>
-            </v-col>
-            <v-col lg="3" md="6" sm="12" class="box">
-                <InfoCard icon="mdi-email-receive-outline" title="Message Received" value="1894"></InfoCard>
-            </v-col>
-            <v-col lg="3" md="6" sm="12" class="box">
-                <GenderChart />
-            </v-col>
-        </v-row>
-
-        <v-row>
             <v-col md="8">
-                <CustomersTable />
+                <v-row>
+                    <v-col lg="4" md="6" sm="12" class="box">
+                        <InfoCard icon="mdi-account-outline" title="New Users" value="37"></InfoCard>
+                    </v-col>
+                    <v-col lg="4" md="6" sm="12" class="box">
+                        <InfoCard icon="mdi-email-send" title="Message Sent" value="1281"></InfoCard>
+                    </v-col>
+                    <v-col lg="4" md="6" sm="12" class="box">
+                        <InfoCard icon="mdi-email-receive-outline" title="Message Received" value="1894"></InfoCard>
+                    </v-col>
+                </v-row>
+                <CustomersTable/>
             </v-col>
             <v-col md="4">
-                    <EmotionMeter />
-                    <ActiveCustomer />
+                <GenderChart/>
+                <EmotionMeter/>
+                <ActiveCustomer/>
             </v-col>
         </v-row>
     </v-container>

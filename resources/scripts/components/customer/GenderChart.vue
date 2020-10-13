@@ -1,5 +1,13 @@
 <template>
-    <canvas style="max-width: 180px!important; max-height: 180px!important;" id="myChart" width="100" height="100"></canvas>
+    <v-card class="my-3 py-2">
+        <div style="display: flex; justify-content: center">
+            <canvas style="max-width: 180px!important; max-height: 180px!important;"
+                    id="myChart"
+                    width="100"
+                    height="100"
+            ></canvas>
+        </div>
+    </v-card>
 </template>
 
 <script>
