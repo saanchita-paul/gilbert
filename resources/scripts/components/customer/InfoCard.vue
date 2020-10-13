@@ -2,11 +2,11 @@
     <v-card
         :color="color || '#952175'"
         dark
-        class="box"
     >
-        <div class="d-flex justify-space-between align-content-center">
-            <div>
+        <div class="box d-flex justify-space-between align-content-center">
+            <div class="d-flex flex-column justify-space-around" style="height: 100%">
                 <v-card-title
+                    style="font-size: 32pt !important;"
                     class="headline"
                     v-text="value"
                 ></v-card-title>
@@ -19,7 +19,7 @@
                 class="ma-3"
                 tile
             >
-                <v-icon x-large>{{icon}}</v-icon>
+                <v-icon size="60px">{{icon}}</v-icon>
             </v-avatar>
         </div>
     </v-card>
@@ -34,6 +34,6 @@ export default {
 
 <style scoped>
 .box {
-    height: 120px;
+    height: 150px;
 }
 </style>

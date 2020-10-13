@@ -24,7 +24,7 @@
                 <GenderChart/>
             </v-col>
         </v-row>
-        <v-row style="margin-top: 40px">
+        <v-row style="margin-top: 20px">
             <v-col md="8">
                 <CustomersTable />
             </v-col>
