@@ -9,8 +9,9 @@
             <span class="ml-2">EMOTION METER</span>
         </v-card-title>
         <v-divider></v-divider>
-            <v-list>
+            <v-list dense>
                     <v-list-item>
+                        <v-list-item-avatar><v-icon color="red">mdi-emoticon-angry</v-icon></v-list-item-avatar>
                         <v-list-item-content>
                             <v-row>
                                 <v-col md="">
@@ -28,6 +29,7 @@
                     </v-list-item>
                 <v-divider></v-divider>
                     <v-list-item>
+                        <v-list-item-avatar color="gray"><v-icon>mdi-emoticon-neutral</v-icon></v-list-item-avatar>
                         <v-list-item-content>
                             <v-row>
                                 <v-col md="3">
@@ -45,7 +47,8 @@
                     </v-list-item>
                 <v-divider></v-divider>
                 <v-list-item>
-                        <v-list-item-content>
+                    <v-list-item-avatar><v-icon color="green">mdi-emoticon-excited</v-icon></v-list-item-avatar>
+                    <v-list-item-content>
                             <v-row>
                                 <v-col md="3">
                                     <v-list-item-title>Positive</v-list-item-title>
@@ -82,7 +85,7 @@ export default {
             return this.load ?  {backgroundColor: 'red', width: this.emotions.negative + '%'} : {width: '0%'}
         },
         neutralStyles() {
-            return this.load ?  {backgroundColor: 'blue', width: this.emotions.neutral + '%'} : {width: '0%'}
+            return this.load ?  {backgroundColor: 'gray', width: this.emotions.neutral + '%'} : {width: '0%'}
         },
         positiveStyles() {
             return this.load ?  {backgroundColor: 'green', width: this.emotions.positive + '%'} : {width: '0%'}

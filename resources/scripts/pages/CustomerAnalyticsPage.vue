@@ -1,5 +1,5 @@
 <template>
-    <v-container style="background-color: #e9e6e6">
+    <v-container>
         <AnalyticContainer/>
         <v-row style="margin-top: 20px">
             <v-col md="6" sm="12">
