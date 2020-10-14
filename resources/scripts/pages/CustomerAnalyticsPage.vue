@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container style="background-color: #e9e6e6">
         <v-row>
             <v-col sm="8">
                 <h2>Customer Insight</h2>
@@ -25,12 +25,14 @@
             </v-col>
         </v-row>
         <v-row style="margin-top: 20px">
-            <v-col md="8">
-                <CustomersTable />
-            </v-col>
-            <v-col md="4">
+            <v-col md="6" sm="12">
                 <EmotionMeter/>
+            </v-col>
+            <v-col md="6" sm="12">
                 <ActiveCustomer/>
+            </v-col>
+            <v-col sm="12">
+                <CustomersTable />
             </v-col>
         </v-row>
     </v-container>

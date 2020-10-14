@@ -1,31 +1,66 @@
 <template>
     <v-card>
         <v-card-title>
-            EMOTION METER
+            <v-avatar
+                color="primary"
+                class="white--text"
+                size="40"
+            ><v-icon color="white">mdi-emoticon</v-icon></v-avatar>
+            <span class="ml-2">EMOTION METER</span>
         </v-card-title>
-        <v-card-text>
-            <v-row>
-                <v-col md="4">
-                    <h4>Negative</h4>
-                </v-col>
-                <v-col md="8">
-                    <div class="meter text-center" :style="negativeStyles">
-                    </div>
-                </v-col>
-                <v-col md="4">
-                    <h4>Neutral</h4>
-                </v-col>
-                <v-col md="8">
-                    <div class="meter text-center" :style="neutralStyles"></div>
-                </v-col>
-                <v-col md="4">
-                    <h4>Positive</h4>
-                </v-col>
-                <v-col md="8">
-                    <div class="meter text-center" :style="positiveStyles"></div>
-                </v-col>
-            </v-row>
-        </v-card-text>
+        <v-divider></v-divider>
+            <v-list>
+                    <v-list-item>
+                        <v-list-item-content>
+                            <v-row>
+                                <v-col md="">
+                                    <v-list-item-title>Negative</v-list-item-title>
+                                </v-col>
+                                <v-col md="2">
+                                    <v-list-item-title>{{this.emotions.negative}}%</v-list-item-title>
+                                </v-col>
+                                <v-col md="7">
+                                    <div class="meter text-center" :style="negativeStyles">
+                                    </div>
+                                </v-col>
+                            </v-row>
+                        </v-list-item-content>
+                    </v-list-item>
+                <v-divider></v-divider>
+                    <v-list-item>
+                        <v-list-item-content>
+                            <v-row>
+                                <v-col md="3">
+                                    <v-list-item-title>Neutral</v-list-item-title>
+                                </v-col>
+                                <v-col md="2">
+                                    <v-list-item-title>{{this.emotions.neutral}}%</v-list-item-title>
+                                </v-col>
+                                <v-col md="7">
+                                    <div class="meter text-center" :style="neutralStyles">
+                                    </div>
+                                </v-col>
+                            </v-row>
+                        </v-list-item-content>
+                    </v-list-item>
+                <v-divider></v-divider>
+                <v-list-item>
+                        <v-list-item-content>
+                            <v-row>
+                                <v-col md="3">
+                                    <v-list-item-title>Positive</v-list-item-title>
+                                </v-col>
+                                <v-col md="2">
+                                    <v-list-item-title>{{this.emotions.positive}}%</v-list-item-title>
+                                </v-col>
+                                <v-col md="7">
+                                    <div class="meter text-center" :style="positiveStyles">
+                                    </div>
+                                </v-col>
+                            </v-row>
+                        </v-list-item-content>
+                    </v-list-item>
+            </v-list>
     </v-card>
 </template>
 
@@ -36,9 +71,9 @@ export default {
         return {
             load: false,
             emotions: {
-                negative: 16,
-                neutral: 57,
-                positive: 27,
+                negative: 5,
+                neutral: 10,
+                positive: 85,
             }
         }
     },
@@ -61,10 +96,8 @@ export default {
 
 <style scoped>
 .meter {
-    color: white;
+    height: 5px;
     border-radius: 20px;
-    height: 100%;
-    width: 25%;
     transition: width .7s
 }
 </style>

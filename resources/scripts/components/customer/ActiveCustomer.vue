@@ -1,5 +1,5 @@
 <template>
-    <v-card class="my-3">
+    <v-card>
         <v-card-title>RECENT ACTIVE CUSTOMERS</v-card-title>
         <v-card-text>
             <div style="display: flex; justify-content: center; flex-wrap: wrap">

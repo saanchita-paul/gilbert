@@ -10,9 +10,7 @@
                     class="headline"
                     v-text="value"
                 ></v-card-title>
-
                 <v-card-subtitle v-text="title"></v-card-subtitle>
-
             </div>
 
             <v-avatar
