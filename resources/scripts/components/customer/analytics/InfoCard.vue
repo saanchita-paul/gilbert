@@ -1,8 +1,5 @@
 <template>
-    <v-card
-        :color="color || '#fff'"
-        dark
-    >
+    <v-card class="indigo white--text elevation-0">
         <div class="box d-flex justify-space-between align-content-center">
             <div class="d-flex flex-column justify-space-around" style="height: 100%">
                 <v-card-title
