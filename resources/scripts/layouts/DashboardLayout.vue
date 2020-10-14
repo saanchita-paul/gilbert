@@ -43,6 +43,7 @@
                                  :to="{name: r.route_name}"
                                  link
                                  exact
+                                 :key="r.title"
                     >
                         <v-list-item-icon><v-icon>{{r.icon}}</v-icon></v-list-item-icon>
                         <v-list-item-content>
