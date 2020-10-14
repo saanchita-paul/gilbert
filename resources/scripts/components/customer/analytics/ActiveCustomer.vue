@@ -1,13 +1,7 @@
 <template>
-    <v-card>
-        <v-card-title>
-            <v-avatar
-                color="primary"
-                class="white--text"
-                size="40"
-            >
-                <v-icon color="white">mdi-clock</v-icon>
-            </v-avatar>
+    <v-card >
+        <v-card-title class="teal darken-2 white--text">
+            <v-icon size="28" color="white">mdi-clock</v-icon>
             <span class="ml-2">RECENT ACTIVE CUSTOMERS</span>
         </v-card-title>
         <v-divider/>
