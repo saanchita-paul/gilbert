@@ -1,22 +1,36 @@
 <template>
     <v-card>
-        <v-card-title>RECENT ACTIVE CUSTOMERS</v-card-title>
-        <v-card-text>
-            <div style="display: flex; justify-content: center; flex-wrap: wrap">
-                <div v-for="i in 15"
-                     :key="i" style="display: flex; flex-direction: column; align-items: center"
-                     class="ma-2"
-                >
-                    <v-avatar
-                        color="primary"
-                        class="white--text"
-                        size="56"
-                    >SS</v-avatar>
-                    <p class="mt-1 mb-0">Stefan</p>
-                    <h6 class="my-0">10 minutes ago</h6>
-                </div>
-            </div>
-        </v-card-text>
+        <v-card-title>
+            <v-avatar
+                color="primary"
+                class="white--text"
+                size="40"
+            >
+                <v-icon color="white">mdi-clock</v-icon>
+            </v-avatar>
+            <span class="ml-2">RECENT ACTIVE CUSTOMERS</span>
+        </v-card-title>
+        <v-divider/>
+        <v-list>
+            <span v-for="i in 3" :key="3">
+                    <v-list-item>
+                        <v-list-item-avatar>
+                            <v-img :src="'https://cdn.vuetifyjs.com/images/lists/1.jpg'"></v-img>
+                        </v-list-item-avatar>
+                    <v-list-item-content>
+                        <v-row>
+                            <v-col md="8">
+                                <v-list-item-title>MR Green Lemon</v-list-item-title>
+                            </v-col>
+                            <v-col md="4">
+                                <v-list-item-subtitle>10 hours ago</v-list-item-subtitle>
+                            </v-col>
+                        </v-row>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-divider v-if="i < 3"></v-divider>
+            </span>
+        </v-list>
     </v-card>
 </template>
 
