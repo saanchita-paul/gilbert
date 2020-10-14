@@ -1,7 +1,15 @@
 <template>
     <v-container>
-        <ChatUsers/>
-        <ChatBox/>
+        <v-row
+        no-gutters
+        >
+            <v-col cols="4">
+                <ChatUsers/>
+            </v-col>
+            <v-col cols="8">
+                <ChatBox/>
+            </v-col>
+        </v-row>
     </v-container>
 </template>
 
