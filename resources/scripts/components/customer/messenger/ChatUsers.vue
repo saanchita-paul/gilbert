@@ -1,11 +1,10 @@
 <template>
     <v-card
+    elevation="0"
     max-width="450"
-    class="mx-auto"
+    class="elevation-0 mx-auto"
     >
         <v-toolbar
-            color="cyan"
-            dark
         >
             <v-list-item-avatar>
                 <v-img src="https://cdn.vuetifyjs.com/images/lists/5.jpg"></v-img>

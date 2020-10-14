@@ -1,7 +1,6 @@
 <template>
     <v-container>
         <v-row
-        no-gutters
         >
             <v-col cols="4">
                 <ChatUsers/>
