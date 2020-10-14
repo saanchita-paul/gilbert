@@ -19,30 +19,48 @@
             <v-divider></v-divider>
 
             <v-list dense>
-                <v-list-item
-                    v-for="item in routes"
-                    :key="item.route_name"
-                    :to="{name: item.route_name}"
-                    exact
-                    link
-                >
-                    <v-list-item-icon>
-                        <v-icon>{{ item.icon }}</v-icon>
-                    </v-list-item-icon>
+                <span v-for="item in routes" :key="item.title">
+                    <v-list-item v-if="item.type === 'route'"
+                                 link
+                                 exact
+                                 :to="{name: item.route_name}"
+                    >
+                        <v-list-item-icon><v-icon>{{item.icon}}</v-icon></v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>{{item.title}}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-group
+                        v-if="item.type === 'group'"
+                        v-model="item.model"
+                        :prepend-icon="item.icon"
+                        no-action
+                    >
+                    <template v-slot:activator>
+                        <v-list-item-title>{{item.title}}</v-list-item-title>
+                    </template>
+                    <v-list-item v-for="r in item.children"
+                                 :to="{name: r.route_name}"
+                                 link
+                                 exact
+                    >
+                        <v-list-item-icon><v-icon>{{r.icon}}</v-icon></v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>{{r.title}}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list-group>
 
-                    <v-list-item-content>
-                        <v-list-item-title>{{ item.title }}</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+                </span>
             </v-list>
         </v-navigation-drawer>
 
         <v-app-bar app color="primary" dark>
             <v-btn icon @click="miniDrawer = !miniDrawer">
-                <v-icon>{{miniDrawer ? 'mdi-chevron-right' : 'mdi-chevron-left'}}</v-icon>
+                <v-icon>{{ miniDrawer ? 'mdi-chevron-right' : 'mdi-chevron-left' }}</v-icon>
             </v-btn>
-<!--            <v-app-bar-nav-icon @click="miniDrawer = !miniDrawer"></v-app-bar-nav-icon>-->
-<!--            <v-toolbar-title>Hood</v-toolbar-title>-->
+            <!--            <v-app-bar-nav-icon @click="miniDrawer = !miniDrawer"></v-app-bar-nav-icon>-->
+            <!--            <v-toolbar-title>Hood</v-toolbar-title>-->
             <v-spacer/>
             <v-badge
                 color="red"
