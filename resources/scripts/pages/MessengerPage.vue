@@ -3,6 +3,9 @@
         <v-row
         no-gutters
         >
+            <v-col cols="12">
+                <p class="text-h4">Messenger</p>
+            </v-col>
             <v-col cols="4">
                 <ChatUsers/>
             </v-col>
