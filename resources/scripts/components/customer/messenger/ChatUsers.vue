@@ -4,12 +4,16 @@
     max-width="450"
     class="elevation-0 mx-auto"
     >
-        <v-toolbar>
+        <v-toolbar elevation="0">
             <v-list-item-avatar>
                 <v-img src="https://cdn.vuetifyjs.com/images/lists/5.jpg"></v-img>
             </v-list-item-avatar>
 
-            <v-toolbar-title>Inbox</v-toolbar-title>
+            <v-toolbar-subtitle>Support 1<br>
+                <small>Demo@email.com</small>
+
+            </v-toolbar-title>
+
         </v-toolbar>
 
         <v-divider></v-divider>

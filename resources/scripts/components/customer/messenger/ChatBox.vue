@@ -1,20 +1,29 @@
 <template>
 <v-card max-width="750"
     class="mx-auto">
-        <v-toolbar>
+        <v-toolbar elevation="0">
             <v-list-item-avatar>
                 <v-img src="https://cdn.vuetifyjs.com/images/lists/1.jpg"></v-img>
             </v-list-item-avatar>
 
-            <v-toolbar-title>Inbox</v-toolbar-title>
+            <v-toolbar-title>User Name 1</v-toolbar-title>
+
         </v-toolbar>
+        <v-divider></v-divider>
     <v-container class="fill-height">
         <v-row class="fill-height pb-14" align="end">
             <v-col>
-                <div v-for="(item, index) in chats" :key="index" 
+                <div v-for="(item, index) in chats" :key="index"
                     :class="['d-flex flex-row align-center my-2', item.from == 'user' ? 'justify-end': null]">
-                    <span v-if="item.from === 'user'" class="blue--text mr-3">{{ item.message }}</span>
-                    <span v-if="item.from === 'support'" class="blue--text ml-3">{{ item.message }}</span>
+                    <v-card class="py-1 px-5 light-blue darken-4" v-if="item.from === 'user'">
+                        <span  class="white--text  ml-3">{{ item.message }}</span>
+
+                    </v-card>
+
+                    <v-card class="py-1 px-5 " v-if="item.from === 'support'">
+                        <span  class="black--text  mr-3">{{ item.message }}</span>
+                    </v-card>
+
                 </div>
             </v-col>
         </v-row>
