@@ -4,10 +4,18 @@ $primary: #5C229A;
 .card-title {
     background: $primary
 }
+
+
 .customer-insight {
     .v-card {
         min-height: 140px;
         max-height: 140px;
+    }
+}
+
+.navigation-drawer-menu {
+    .v-list-group__items {
+        background-color: #E0E0E0 !important;
     }
 }
 .menu-color {

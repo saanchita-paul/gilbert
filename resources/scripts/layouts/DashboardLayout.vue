@@ -5,6 +5,7 @@
             :mini-variant="miniDrawer"
             mini-variant-width="60"
             app
+            class="navigation-drawer-menu"
         >
             <v-list-item style="background-color: #5C229A; padding-bottom: 8px !important;">
                 <v-list-item-avatar class="ml-0">
@@ -34,7 +35,6 @@
                         v-if="item.type === 'group'"
                         v-model="item.model"
                         :prepend-icon="item.icon"
-                        no-action
                     >
                     <template v-slot:activator>
                         <v-list-item-title>{{item.title}}</v-list-item-title>
