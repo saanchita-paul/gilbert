@@ -4,7 +4,12 @@ $primary: #5C229A;
 .card-title {
     background: $primary
 }
-
+.customer-insight {
+    .v-card {
+        min-height: 140px;
+        max-height: 140px;
+    }
+}
 .menu-color {
     input {
         color: #fff !important;
