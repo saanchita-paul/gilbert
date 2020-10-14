@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import DashboardLayout from "@scripts/layouts/DashboardLayout";
 import CustomerAnalyticsPage from "@scripts/pages/CustomerAnalyticsPage";
 import AccountPage from "@scripts/pages/AccountPage";
+import MessengerPage from "@scripts/pages/MessengerPage";
 
 Vue.use(VueRouter);
 
@@ -17,12 +18,17 @@ const router = new VueRouter({
                 {
                     path: '',
                     component: CustomerAnalyticsPage,
-                    name: 'customers'
+                    name: 'customer-analytics'
                 },
                 {
-                    path: '/account',
+                    path: 'account',
                     component: AccountPage,
                     name: 'account'
+                },
+                {
+                    path: 'messenger',
+                    component: MessengerPage,
+                    name: 'messenger'
                 }
             ]
         }
