@@ -6,7 +6,9 @@
                 <v-img src="https://cdn.vuetifyjs.com/images/lists/1.jpg"></v-img>
             </v-list-item-avatar>
 
-            <v-toolbar-title>User Name 1</v-toolbar-title>
+            <p class="mt-3">User Name 1 <br>
+                <small class="text-caption">Demo@email.com</small>
+            </p>
 
         </v-toolbar>
         <v-divider></v-divider>

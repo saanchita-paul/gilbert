@@ -8,7 +8,7 @@
                 <img src="/assets/images/info.png" width="100%">
             </v-col>
             <v-col md="12">
-                <p class="text-caption white-text">Gender Chart</p>
+                <p class="text-h6 white-text">Gender Chart</p>
             </v-col>
 
             <!-- <v-col cols="12">

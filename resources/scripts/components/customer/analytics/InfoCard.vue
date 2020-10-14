@@ -8,7 +8,7 @@
                 <v-icon class="white--text" size="40px">{{icon}}</v-icon>
             </v-col>
             <v-col cols="12" class="py-0">
-                <p class="text-caption" v-text="title"></p>
+                <p class="text-h6" v-text="title"></p>
             </v-col>
         </v-row>
         <!-- <div class="box d-flex justify-space-between align-content-center">

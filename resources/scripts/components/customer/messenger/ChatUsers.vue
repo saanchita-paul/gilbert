@@ -2,17 +2,17 @@
     <v-card
     elevation="0"
     max-width="450"
-    class="elevation-0 mx-auto"
+    class="elevation-0 mx-auto messenger-support"
     >
         <v-toolbar elevation="0">
             <v-list-item-avatar>
                 <v-img src="https://cdn.vuetifyjs.com/images/lists/5.jpg"></v-img>
             </v-list-item-avatar>
 
-            <v-toolbar-title>Support 1<br>
-                <small>Demo@email.com</small>
+            <p class="mt-3">Support 1<br>
+                <small class="text-caption">Demo@email.com</small>
 
-            </v-toolbar-title>
+            </p>
 
         </v-toolbar>
 
