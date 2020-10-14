@@ -9,7 +9,7 @@
             <span class="ml-2">EMOTION METER</span>
         </v-card-title>
         <v-divider></v-divider>
-            <v-list>
+            <v-list dense>
                     <v-list-item>
                         <v-list-item-content>
                             <v-row>
