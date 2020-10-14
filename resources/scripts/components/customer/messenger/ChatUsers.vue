@@ -3,22 +3,15 @@
     max-width="450"
     class="mx-auto"
     >
-        <v-toolbar
-            color="cyan"
-            dark
-        >
+        <v-toolbar>
             <v-list-item-avatar>
                 <v-img src="https://cdn.vuetifyjs.com/images/lists/5.jpg"></v-img>
             </v-list-item-avatar>
 
             <v-toolbar-title>Inbox</v-toolbar-title>
-
-            <v-spacer></v-spacer>
-
-            <v-btn icon>
-            <v-icon>mdi-magnify</v-icon>
-            </v-btn>
         </v-toolbar>
+
+        <v-divider></v-divider>
 
         <v-list three-line>
             <template v-for="(item, index) in items">
