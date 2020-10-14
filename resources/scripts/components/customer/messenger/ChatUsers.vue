@@ -9,7 +9,7 @@
                 <v-img src="https://cdn.vuetifyjs.com/images/lists/5.jpg"></v-img>
             </v-list-item-avatar>
 
-            <v-toolbar-subtitle>Support 1<br>
+            <v-toolbar-title>Support 1<br>
                 <small>Demo@email.com</small>
 
             </v-toolbar-title>
