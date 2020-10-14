@@ -41,6 +41,7 @@ import Chart from "chart.js";
 export default {
     name: "GenderChart",
     mounted() {
+        return;
         let ctx = document.getElementById('myChart')
         const myPieChart = new Chart(ctx, {
             type: 'pie',

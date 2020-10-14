@@ -6,7 +6,7 @@
         </v-card-title>
         <v-divider/>
         <v-list dense>
-            <span v-for="i in 3" :key="3">
+            <span v-for="i in 3" :key="i">
                     <v-list-item>
                         <v-list-item-avatar>
                             <v-img :src="'https://cdn.vuetifyjs.com/images/lists/1.jpg'"></v-img>
