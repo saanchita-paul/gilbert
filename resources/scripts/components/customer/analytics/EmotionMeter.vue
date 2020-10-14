@@ -1,11 +1,7 @@
 <template>
     <v-card>
-        <v-card-title>
-            <v-avatar
-                color="primary"
-                class="white--text"
-                size="40"
-            ><v-icon color="white">mdi-emoticon</v-icon></v-avatar>
+        <v-card-title class="teal darken-2 white--text">
+         <v-icon size="28" color="white">mdi-emoticon</v-icon>
             <span class="ml-2">EMOTION METER</span>
         </v-card-title>
         <v-divider></v-divider>

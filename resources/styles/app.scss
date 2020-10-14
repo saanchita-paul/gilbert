@@ -7,19 +7,16 @@ $primary: #5C229A;
 
 
 .customer-insight {
-    .box {
-        .v-card {
-            color: #000;
-            i {
-                color: #000 !important;
-            }
-            .v-card__subtitle {
-                color: #000 !important;
-            }
-        }
+    .v-card {
+        min-height: 140px;
+        max-height: 140px;
     }
+}
 
-
+.navigation-drawer-menu {
+    .v-list-group__items {
+        background-color: #E0E0E0 !important;
+    }
 }
 .menu-color {
     input {

@@ -1,6 +1,21 @@
 <template>
-    <v-card class="py-2">
-        <v-row class="gender-chart-card px-5">
+    <v-card class="teal lighten-1  white--text">
+        <v-row class="pa-3">
+            <v-col cols="3" class="pb-0">
+                <img src="/assets/images/GenderChart.png" width="100%">
+            </v-col>
+            <v-col md="7">
+                <img src="/assets/images/info.png" width="100%">
+            </v-col>
+            <v-col md="12">
+                <p class="text-caption white-text">Gender Chart</p>
+            </v-col>
+
+            <!-- <v-col cols="12">
+                <p class="text-caption white-text">Gender Chart</p>
+            </v-col> -->
+        </v-row>
+        <!-- <v-row class="gender-chart-card px-5">
             <v-col md="6">
                 <img src="/assets/images/GenderChart.jpg" width="100%">
             </v-col>
@@ -10,7 +25,7 @@
             <v-col md="12" class="py-0 px-5">
                 <p class="mb-0">Gender Chart</p>
             </v-col>
-        </v-row>
+        </v-row> -->
         <!-- <div style="display: flex; justify-content: center">
             <canvas id="myChart"
                     width="132px"
