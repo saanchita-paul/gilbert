@@ -2,16 +2,17 @@
     <v-app id="inspire">
         <v-navigation-drawer
             v-model="drawer"
+            :mini-variant="miniDrawer"
+            mini-variant-width="60"
             app
         >
-            <v-list-item two-line>
-                <v-list-item-avatar>
-                    <img src="https://randomuser.me/api/portraits/women/81.jpg">
+            <v-list-item style="background-color: #5C229A; padding-bottom: 8px !important;">
+                <v-list-item-avatar class="ml-0">
+                    <v-avatar color="white" size="48">h</v-avatar>
                 </v-list-item-avatar>
 
                 <v-list-item-content>
-                    <v-list-item-title>Jane Smith</v-list-item-title>
-                    <v-list-item-subtitle>Jane@hummingbird.com</v-list-item-subtitle>
+                    <v-list-item-title class="white--text">Hood</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
 
@@ -37,8 +38,11 @@
         </v-navigation-drawer>
 
         <v-app-bar app color="primary" dark>
-            <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-            <v-toolbar-title>Hood</v-toolbar-title>
+            <v-btn icon @click="miniDrawer = !miniDrawer">
+                <v-icon>{{miniDrawer ? 'mdi-chevron-right' : 'mdi-chevron-left'}}</v-icon>
+            </v-btn>
+<!--            <v-app-bar-nav-icon @click="miniDrawer = !miniDrawer"></v-app-bar-nav-icon>-->
+<!--            <v-toolbar-title>Hood</v-toolbar-title>-->
             <v-spacer/>
             <v-badge
                 color="red"
@@ -78,7 +82,7 @@
 
         </v-app-bar>
 
-        <v-main>
+        <v-main style="background-color: #e9e6e6">
             <router-view></router-view>
         </v-main>
     </v-app>
@@ -91,7 +95,8 @@ export default {
     name: "DashboardLayout",
     data() {
         return {
-            drawer: null,
+            drawer: true,
+            miniDrawer: false,
             routes: ApplicationService.getMainNavigationRoutes()
         }
     }
