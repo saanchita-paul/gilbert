@@ -1,6 +1,6 @@
 <template>
     <v-card
-        :color="color || '#952175'"
+        :color="color || '#fff'"
         dark
     >
         <div class="box d-flex justify-space-between align-content-center">

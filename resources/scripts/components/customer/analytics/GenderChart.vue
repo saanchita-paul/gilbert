@@ -1,12 +1,22 @@
 <template>
-    <v-card class="my-3 py-2">
-        <div style="display: flex; justify-content: center">
-            <canvas style="max-width: 180px!important; max-height: 180px!important;"
-                    id="myChart"
-                    width="100"
-                    height="100"
+    <v-card class="py-2">
+        <v-row class="gender-chart-card px-5">
+            <v-col md="6">
+                <img src="/assets/images/GenderChart.jpg" width="100%">
+            </v-col>
+            <v-col md="6">
+                <img src="/assets/images/info.png" width="100%">
+            </v-col>
+            <v-col md="12" class="py-0 px-5">
+                <p class="mb-0">Gender Chart</p>
+            </v-col>
+        </v-row>
+        <!-- <div style="display: flex; justify-content: center">
+            <canvas id="myChart"
+                    width="132px"
+                    height="132px"
             ></canvas>
-        </div>
+        </div> -->
     </v-card>
 </template>
 
