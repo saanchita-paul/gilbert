@@ -1,10 +1,10 @@
 <template>
-    <v-card class="pa-4 teal white--text">
+    <v-card class="pa-4 teal lighten-1  white--text">
         <v-row>
             <v-col sm="8">
                 <h2>Customer Insight</h2>
             </v-col>
-            <v-col sm="4" class="menu-color">
+            <v-col sm="4" class="menu-color py-0">
                 <date-range-picker/>
             </v-col>
             <v-col md="12">

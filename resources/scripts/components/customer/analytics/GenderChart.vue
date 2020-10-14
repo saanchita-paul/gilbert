@@ -1,5 +1,5 @@
 <template>
-    <v-card class="teal white--text">
+    <v-card class="teal lighten-1  white--text">
         <v-row class="pa-3">
             <v-col cols="3" class="pb-0">
                 <img src="/assets/images/GenderChart.png" width="100%">

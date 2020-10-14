@@ -1,5 +1,5 @@
 <template>
-    <v-card class="teal white--text">
+    <v-card class="teal lighten-1  white--text">
         <v-row class="pa-3">
             <v-col cols="8" class="pb-0">
                 <p class="text-h4" v-text="value"></p>
