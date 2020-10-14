@@ -2,43 +2,65 @@
     <v-app id="inspire">
         <v-navigation-drawer
             v-model="drawer"
+            :mini-variant="miniDrawer"
+            mini-variant-width="60"
             app
         >
-            <v-list-item two-line>
-                <v-list-item-avatar>
-                    <img src="https://randomuser.me/api/portraits/women/81.jpg">
+            <v-list-item style="background-color: #5C229A; padding-bottom: 8px !important;">
+                <v-list-item-avatar class="ml-0">
+                    <v-avatar color="white" size="48">h</v-avatar>
                 </v-list-item-avatar>
 
                 <v-list-item-content>
-                    <v-list-item-title>Jane Smith</v-list-item-title>
-                    <v-list-item-subtitle>Jane@hummingbird.com</v-list-item-subtitle>
+                    <v-list-item-title class="white--text">Hood</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
 
             <v-divider></v-divider>
 
             <v-list dense>
-                <v-list-item
-                    v-for="item in routes"
-                    :key="item.route_name"
-                    :to="{name: item.route_name}"
-                    exact
-                    link
-                >
-                    <v-list-item-icon>
-                        <v-icon>{{ item.icon }}</v-icon>
-                    </v-list-item-icon>
+                <span v-for="item in routes" :key="item.title">
+                    <v-list-item v-if="item.type === 'route'"
+                                 link
+                                 exact
+                                 :to="{name: item.route_name}"
+                    >
+                        <v-list-item-icon><v-icon>{{item.icon}}</v-icon></v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>{{item.title}}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-group
+                        v-if="item.type === 'group'"
+                        v-model="item.model"
+                        :prepend-icon="item.icon"
+                        no-action
+                    >
+                    <template v-slot:activator>
+                        <v-list-item-title>{{item.title}}</v-list-item-title>
+                    </template>
+                    <v-list-item v-for="r in item.children"
+                                 :to="{name: r.route_name}"
+                                 link
+                                 exact
+                    >
+                        <v-list-item-icon><v-icon>{{r.icon}}</v-icon></v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>{{r.title}}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list-group>
 
-                    <v-list-item-content>
-                        <v-list-item-title>{{ item.title }}</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+                </span>
             </v-list>
         </v-navigation-drawer>
 
         <v-app-bar app color="primary" dark>
-            <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-            <v-toolbar-title>Hood</v-toolbar-title>
+            <v-btn icon @click="miniDrawer = !miniDrawer">
+                <v-icon>{{ miniDrawer ? 'mdi-chevron-right' : 'mdi-chevron-left' }}</v-icon>
+            </v-btn>
+            <!--            <v-app-bar-nav-icon @click="miniDrawer = !miniDrawer"></v-app-bar-nav-icon>-->
+            <!--            <v-toolbar-title>Hood</v-toolbar-title>-->
             <v-spacer/>
             <v-badge
                 color="red"
@@ -78,7 +100,7 @@
 
         </v-app-bar>
 
-        <v-main>
+        <v-main style="background-color: #e9e6e6">
             <router-view></router-view>
         </v-main>
     </v-app>
@@ -91,7 +113,8 @@ export default {
     name: "DashboardLayout",
     data() {
         return {
-            drawer: null,
+            drawer: true,
+            miniDrawer: false,
             routes: ApplicationService.getMainNavigationRoutes()
         }
     }

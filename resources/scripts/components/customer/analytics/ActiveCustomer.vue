@@ -11,7 +11,7 @@
             <span class="ml-2">RECENT ACTIVE CUSTOMERS</span>
         </v-card-title>
         <v-divider/>
-        <v-list>
+        <v-list dense>
             <span v-for="i in 3" :key="3">
                     <v-list-item>
                         <v-list-item-avatar>
