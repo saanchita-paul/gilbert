@@ -1,5 +1,5 @@
 <template>
-    <v-card class="pa-4 indigo white--text">
+    <v-card class="pa-4 teal white--text">
         <v-row>
             <v-col sm="8">
                 <h2>Customer Insight</h2>

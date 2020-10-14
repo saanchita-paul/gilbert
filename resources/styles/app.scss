@@ -4,22 +4,11 @@ $primary: #5C229A;
 .card-title {
     background: $primary
 }
-
-
 .customer-insight {
-    .box {
-        .v-card {
-            color: #000;
-            i {
-                color: #000 !important;
-            }
-            .v-card__subtitle {
-                color: #000 !important;
-            }
-        }
+    .v-card {
+        min-height: 140px;
+        max-height: 140px;
     }
-
-
 }
 .menu-color {
     input {
