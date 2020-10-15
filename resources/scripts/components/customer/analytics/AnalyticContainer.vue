@@ -10,13 +10,25 @@
             <v-col md="12">
                 <v-row class="customer-insight">
                     <v-col lg="3" md="6" sm="12" class="box">
-                       <InfoCard icon="mdi-account-outline" title="New Users" value="37"></InfoCard>
+                        <InfoCard
+                            icon="mdi-account-outline"
+                            title="New Users"
+                            :value="analytic.new_user_count"
+                        ></InfoCard>
                     </v-col>
                     <v-col lg="3" md="6" sm="12" class="box">
-                        <InfoCard icon="mdi-email-send" title="Message Sent" value="1281"></InfoCard>
+                        <InfoCard
+                            icon="mdi-email-send"
+                            title="Message Sent"
+                            :value="analytic.messages_sent"
+                        ></InfoCard>
                     </v-col>
                     <v-col lg="3" md="6" sm="12" class="box">
-                        <InfoCard icon="mdi-email-receive-outline" title="Message Received" value="1894"></InfoCard>
+                        <InfoCard
+                            icon="mdi-email-receive-outline"
+                            title="Message Received"
+                            :value="analytic.messages_received"
+                        ></InfoCard>
                     </v-col>
                     <v-col md="3" class="box">
                         <!-- <div class="row">
@@ -41,6 +53,10 @@
 import InfoCard from "@scripts/components/customer/analytics/InfoCard";
 import GenderChart from "@scripts/components/customer/analytics/GenderChart";
 import DateRangePicker from "@scripts/components/customer/analytics/DateRangePicker"
+import CustomerAnalytics from "@scripts/models/CustomerAnalytics";
+import CustomerService from "@scripts/services/CustomerService";
+import DateRange from "@scripts/models/DateRange";
+import merge from "lodash-es/merge";
 
 export default {
     name: "AnalyticContainer",
@@ -49,6 +65,15 @@ export default {
         GenderChart,
         DateRangePicker
     },
+    data() {
+        return {
+            analytic: new CustomerAnalytics()
+        }
+    },
+    async mounted() {
+        const analytics = await CustomerService.getCustomerAnalytics(new DateRange())
+        merge(this.analytic, analytics)
+    }
 }
 </script>
 
