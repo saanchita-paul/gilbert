@@ -9,7 +9,9 @@
         >
             <v-list-item class="toolbar-bg" style="padding-bottom: 8px !important;">
                 <v-list-item-avatar class="ml-0">
-                    <v-avatar color="white" size="48">h</v-avatar>
+                    <v-avatar color="white" size="48">
+                        <img src="/assets/images/logo/hood.png">
+                    </v-avatar>
                 </v-list-item-avatar>
 
                 <v-list-item-content>
