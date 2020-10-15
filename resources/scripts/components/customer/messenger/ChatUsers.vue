@@ -5,13 +5,12 @@
         class="elevation-0 mx-auto messenger-support"
     >
         <v-toolbar elevation="0">
-            <v-list-item-avatar>
+            <v-list-item-avatar class="ml-0">
                 <v-img src="https://cdn.vuetifyjs.com/images/lists/5.jpg"></v-img>
             </v-list-item-avatar>
 
             <p class="mt-3">Support 1<br>
                 <small class="text-caption">Demo@email.com</small>
-
             </p>
 
         </v-toolbar>

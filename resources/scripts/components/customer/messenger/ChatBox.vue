@@ -17,12 +17,11 @@
             <v-col>
                 <div v-for="(item, index) in chats" :key="index"
                     :class="['d-flex flex-row align-center my-2', item.from == 'user' ? 'justify-end': null]">
-                    <v-card class="py-1 px-5 light-blue darken-4" v-if="item.from === 'user'">
+                    <v-card elevation="0" class="py-1 px-5 light-blue darken-4" v-if="item.from === 'user'">
                         <span  class="white--text  ml-3">{{ item.message }}</span>
-
                     </v-card>
 
-                    <v-card class="py-1 px-5 " v-if="item.from === 'support'">
+                    <v-card elevation="0" class="py-1 px-5 grey lighten-3" v-if="item.from === 'support'">
                         <span  class="black--text  mr-3">{{ item.message }}</span>
                     </v-card>
 
@@ -59,7 +58,7 @@
             },
             {
                 from: 'user',
-                message: 'Uer Message 2'
+                message: 'User Message 2'
             },
             {
                 from: 'support',
@@ -67,7 +66,7 @@
             },
             {
                 from: 'user',
-                message: 'Uer Message 3'
+                message: 'User Message 3'
             },
             {
                 from: 'support',
