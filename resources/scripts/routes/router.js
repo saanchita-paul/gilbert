@@ -5,6 +5,7 @@ import DashboardLayout from "@scripts/layouts/DashboardLayout";
 import CustomerAnalyticsPage from "@scripts/pages/CustomerAnalyticsPage";
 import AccountPage from "@scripts/pages/AccountPage";
 import MessengerPage from "@scripts/pages/MessengerPage";
+import LoginPage from "@scripts/pages/auth/LoginPage";
 
 Vue.use(VueRouter);
 
@@ -32,6 +33,11 @@ const router = new VueRouter({
                     name: 'messenger'
                 }
             ]
+        },
+        {
+            path: '/auth/login',
+            component: LoginPage,
+            name: 'login'
         }
     ]
 })
