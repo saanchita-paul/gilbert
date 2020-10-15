@@ -7,7 +7,7 @@
             app
             class="navigation-drawer-menu"
         >
-            <v-list-item style="background-color: #5C229A; padding-bottom: 8px !important;">
+            <v-list-item class="toolbar-bg" style="padding-bottom: 8px !important;">
                 <v-list-item-avatar class="ml-0">
                     <v-avatar color="white" size="48">h</v-avatar>
                 </v-list-item-avatar>
@@ -56,7 +56,7 @@
             </v-list>
         </v-navigation-drawer>
 
-        <v-app-bar app color="primary" dark>
+        <v-app-bar app class="toolbar" dark>
             <v-btn icon @click="miniDrawer = !miniDrawer">
                 <v-icon>{{ miniDrawer ? 'mdi-chevron-right' : 'mdi-chevron-left' }}</v-icon>
             </v-btn>

@@ -1,5 +1,5 @@
 <template>
-    <v-card style="background-color: #00ACC1" class="pa-4 white--text">
+    <v-card class="analytic-bg pa-4 white--text">
         <v-row>
             <v-col sm="8">
                 <h2>Customer Insight</h2>

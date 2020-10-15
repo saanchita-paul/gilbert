@@ -1,6 +1,6 @@
 <template>
     <v-card >
-        <v-card-title class="teal darken-2 white--text">
+        <v-card-title class="card-bg-color white--text">
             <v-icon size="28" color="white">mdi-clock</v-icon>
             <span class="ml-2">RECENT ACTIVE CUSTOMERS</span>
         </v-card-title>

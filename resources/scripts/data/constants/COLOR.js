@@ -6,6 +6,7 @@ export default {
             accent: '#82B1FF',
             error: '#FF5252',
             info: '#2196F3',
+            toolbar: '#8B33E8',
             success: '#4CAF50',
             warning: '#FFC107',
         }

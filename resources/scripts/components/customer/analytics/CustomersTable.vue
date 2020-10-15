@@ -1,6 +1,6 @@
 <template>
     <v-card>
-        <v-card-title class="white--text teal darken-2">
+        <v-card-title class="white--text card-bg-color">
             <v-icon size="28" color="white">mdi-account-group</v-icon>
             <span  class="ml-2">CUSTOMER LIST</span>
         </v-card-title>
