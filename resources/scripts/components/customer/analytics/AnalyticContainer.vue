@@ -1,11 +1,11 @@
 <template>
-    <v-card class="pa-4 teal lighten-1  white--text">
+    <v-card style="background-color: #00ACC1" class="pa-4 white--text">
         <v-row>
             <v-col sm="8">
                 <h2>Customer Insight</h2>
             </v-col>
             <v-col sm="4" class="menu-color py-0">
-                <date-range-picker/>
+                <date-range-picker v-model="dateRange"/>
             </v-col>
             <v-col md="12">
                 <v-row class="customer-insight">
@@ -67,11 +67,12 @@ export default {
     },
     data() {
         return {
-            analytic: new CustomerAnalytics()
+            analytic: new CustomerAnalytics(),
+            dateRange: new  DateRange()
         }
     },
     async mounted() {
-        const analytics = await CustomerService.getCustomerAnalytics(new DateRange())
+        const analytics = await CustomerService.getCustomerAnalytics(this.dateRange)
         merge(this.analytic, analytics)
     }
 }
