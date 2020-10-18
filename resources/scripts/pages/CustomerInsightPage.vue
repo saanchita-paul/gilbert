@@ -1,20 +1,17 @@
 <template>
     <v-container>
-        <v-card>
-            <v-card-title class="app-title">
-                Customers Insight
-            </v-card-title>
-            <CustomersTable/>
-        </v-card>
+        <PageHeader title="Customers Insight"/>
+        <CustomersTable class="mt-5"/>
     </v-container>
 </template>
 
 <script>
 import CustomersTable from "@scripts/components/customer/analytics/CustomersTable";
+import PageHeader from "@scripts/components/common/PageHeader";
 
 export default {
     name: "CustomerInsightPage",
-    components: {CustomersTable}
+    components: {CustomersTable, PageHeader}
 }
 </script>
 

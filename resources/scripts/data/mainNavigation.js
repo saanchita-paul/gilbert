@@ -27,8 +27,8 @@ export default [
     },
     {
         type: 'route',
-        title: 'Account',
-        icon: 'mdi-account-settings',
+        title: 'Suppliers',
+        icon: 'mdi-truck-fast',
         route_name: 'account'
     },
 ]

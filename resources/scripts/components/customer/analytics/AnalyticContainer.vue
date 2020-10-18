@@ -1,51 +1,39 @@
 <template>
-    <v-card elevation="0" class="body-bg pa-4 white--text">
-        <v-row>
-            <v-col sm="8">
-                <h2 class="black--text app-title-big">Customer Dashboard</h2>
-            </v-col>
-            <v-col sm="4" class="menu-color py-0">
-                <date-range-picker v-model="dateRange"/>
-            </v-col>
-            <v-col md="12">
-                <v-row class="customer-insight">
-                    <v-col lg="4" md="6" sm="12" class="box">
-                        <InfoCard
-                            icon="mdi-account"
-                            title="New Users"
-                            :value="analytic.new_user_count"
-                        ></InfoCard>
-                    </v-col>
-                    <v-col lg="4" md="6" sm="12" class="box">
-                        <InfoCard
-                            icon="mdi-email-send"
-                            title="Message Sent"
-                            :value="analytic.messages_sent"
-                        ></InfoCard>
-                    </v-col>
-                    <v-col lg="4" md="6" sm="12" class="box">
-                        <InfoCard
-                            icon="mdi-email-receive"
-                            title="Message Received"
-                            :value="analytic.messages_received"
-                        ></InfoCard>
-                    </v-col>
-<!--                    <v-col md="3" class="box">-->
-<!--                        &lt;!&ndash; <div class="row">-->
-<!--                            <v-col sm="8">-->
-<!--                                <img src="/assets/images/GenderChart.jpg">-->
-<!--                            </v-col>-->
-<!--                            <v-col sm="4">-->
+    <div>
+        <PageHeader title="Customer Dashboard">
+            <date-range-picker v-model="dateRange"/>
+        </PageHeader>
+        <div class="body-bg pa-4">
+            <v-row>
+                <v-col md="12">
+                    <v-row class="customer-insight">
+                        <v-col lg="4" md="6" sm="12" class="box">
+                            <InfoCard
+                                icon="mdi-account"
+                                title="New Users"
+                                :value="analytic.new_user_count"
+                            ></InfoCard>
+                        </v-col>
+                        <v-col lg="4" md="6" sm="12" class="box">
+                            <InfoCard
+                                icon="mdi-email-send"
+                                title="Message Sent"
+                                :value="analytic.messages_sent"
+                            ></InfoCard>
+                        </v-col>
+                        <v-col lg="4" md="6" sm="12" class="box">
+                            <InfoCard
+                                icon="mdi-email-receive"
+                                title="Message Received"
+                                :value="analytic.messages_received"
+                            ></InfoCard>
+                        </v-col>
+                    </v-row>
+                </v-col>
 
-<!--                            </v-col>-->
-<!--                        </div> &ndash;&gt;-->
-<!--                        <GenderChart/>-->
-<!--                    </v-col>-->
-                </v-row>
-            </v-col>
-
-        </v-row>
-    </v-card>
+            </v-row>
+        </div>
+    </div>
 
 </template>
 
@@ -53,6 +41,7 @@
 import InfoCard from "@scripts/components/customer/analytics/InfoCard";
 import GenderChart from "@scripts/components/customer/analytics/GenderChart";
 import DateRangePicker from "@scripts/components/customer/analytics/DateRangePicker"
+import PageHeader from "@scripts/components/common/PageHeader"
 import CustomerAnalytics from "@scripts/models/CustomerAnalytics";
 import CustomerService from "@scripts/services/CustomerService";
 import DateRange from "@scripts/models/DateRange";
@@ -63,7 +52,8 @@ export default {
     components: {
         InfoCard,
         GenderChart,
-        DateRangePicker
+        DateRangePicker,
+        PageHeader
     },
     data() {
         return {

@@ -14,10 +14,13 @@
                         </v-list-item-avatar>
                     <v-list-item-content>
                         <v-row>
-                            <v-col md="8">
+                            <v-col md="6">
                                 <v-list-item-title>MR Green Lemon</v-list-item-title>
                             </v-col>
-                            <v-col md="4">
+                            <v-col md="3">
+                                <v-list-item-subtitle>GTM +7</v-list-item-subtitle>
+                            </v-col>
+                            <v-col md="3">
                                 <v-list-item-subtitle>10 hours ago</v-list-item-subtitle>
                             </v-col>
                         </v-row>
