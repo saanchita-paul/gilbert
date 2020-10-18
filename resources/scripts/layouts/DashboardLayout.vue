@@ -28,7 +28,7 @@
                                  exact
                                  :to="{name: item.route_name}"
                     >
-                        <v-list-item-icon><v-icon>{{item.icon}}</v-icon></v-list-item-icon>
+                        <v-list-item-icon><v-icon class="mdi-spin">{{item.icon}}</v-icon></v-list-item-icon>
                         <v-list-item-content>
                             <v-list-item-title>{{item.title}}</v-list-item-title>
                         </v-list-item-content>
@@ -47,7 +47,7 @@
                                  exact
                                  :key="r.title"
                     >
-                        <v-list-item-icon><v-icon>{{r.icon}}</v-icon></v-list-item-icon>
+                        <v-list-item-icon class="ml-2"><v-icon size="12">mdi-record</v-icon></v-list-item-icon>
                         <v-list-item-content>
                             <v-list-item-title>{{r.title}}</v-list-item-title>
                         </v-list-item-content>
@@ -59,8 +59,8 @@
         </v-navigation-drawer>
 
         <v-app-bar app class="toolbar" dark>
-            <v-btn icon @click="miniDrawer = !miniDrawer">
-                <v-icon>{{ miniDrawer ? 'mdi-chevron-right' : 'mdi-chevron-left' }}</v-icon>
+            <v-btn icon color="primary" @click="miniDrawer = !miniDrawer">
+                <v-icon>{{ miniDrawer ? 'mdi-menu' : 'mdi-menu-open' }}</v-icon>
             </v-btn>
             <!--            <v-app-bar-nav-icon @click="miniDrawer = !miniDrawer"></v-app-bar-nav-icon>-->
             <!--            <v-toolbar-title>Hood</v-toolbar-title>-->
@@ -72,7 +72,7 @@
                 offset-x="20"
                 overlap
             >
-                <v-btn icon>
+                <v-btn color="primary" icon>
                     <v-icon>mdi-bell</v-icon>
                 </v-btn>
             </v-badge>
@@ -83,6 +83,7 @@
             >
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn
+                        color="primary"
                         icon
                         v-bind="attrs"
                         v-on="on"
@@ -103,7 +104,7 @@
 
         </v-app-bar>
 
-        <v-main style="background-color: #e9e6e6">
+        <v-main class="body-bg">
             <router-view></router-view>
         </v-main>
     </v-app>

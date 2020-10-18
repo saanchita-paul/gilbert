@@ -7,7 +7,13 @@ export default [
         children: [
             {
                 type: 'route',
-                title: 'Analytics',
+                title: 'Dashboard',
+                icon: 'mdi-chart-areaspline',
+                route_name: 'customerAnalytics'
+            },
+            {
+                type: 'route',
+                title: 'Insight',
                 icon: 'mdi-chart-areaspline',
                 route_name: 'customerAnalytics'
             },
