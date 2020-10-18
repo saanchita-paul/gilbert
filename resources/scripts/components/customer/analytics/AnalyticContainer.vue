@@ -11,7 +11,7 @@
                 <v-row class="customer-insight">
                     <v-col lg="4" md="6" sm="12" class="box">
                         <InfoCard
-                            icon="mdi-account-outline"
+                            icon="mdi-account"
                             title="New Users"
                             :value="analytic.new_user_count"
                         ></InfoCard>
@@ -25,7 +25,7 @@
                     </v-col>
                     <v-col lg="4" md="6" sm="12" class="box">
                         <InfoCard
-                            icon="mdi-email-receive-outline"
+                            icon="mdi-email-receive"
                             title="Message Received"
                             :value="analytic.messages_received"
                         ></InfoCard>

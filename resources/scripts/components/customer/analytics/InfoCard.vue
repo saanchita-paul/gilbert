@@ -1,14 +1,14 @@
 <template>
-    <v-card class="white--text primary">
+    <v-card class="white black--text">
         <v-row class="pa-3">
             <v-col cols="8" class="pb-0">
-                <p class="text-h4" v-text="value"></p>
+                <p style="color: #757575" class="text-h4" v-text="value"></p>
             </v-col>
             <v-col cols="4" class="pb-0">
-                <v-icon class="white--text" size="40px">{{icon}}</v-icon>
+                <v-icon class="" size="48px">{{icon}}</v-icon>
             </v-col>
             <v-col cols="12" class="py-0">
-                <p class="app-title" v-text="title"></p>
+                <p style="color: #757575" class="app-title" v-text="title"></p>
             </v-col>
         </v-row>
         <!-- <div class="box d-flex justify-space-between align-content-center">

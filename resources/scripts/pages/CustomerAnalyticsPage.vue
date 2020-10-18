@@ -6,7 +6,7 @@
                 <EmotionMeter/>
             </v-col>
             <v-col md="6" sm="12">
-                <ActiveCustomer/>
+                <GenderChart/>
             </v-col>
             <v-col sm="12">
                 <ActiveCustomer/>
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import CustomersTable from "@scripts/components/customer/analytics/CustomersTable";
+import GenderChart from "@scripts/components/customer/analytics/GenderChart";
 import EmotionMeter from "@scripts/components/customer/analytics/EmotionMeter";
 import ActiveCustomer from "@scripts/components/customer/analytics/ActiveCustomer";
 import AnalyticContainer from "@scripts/components/customer/analytics/AnalyticContainer";
@@ -24,7 +24,7 @@ import AnalyticContainer from "@scripts/components/customer/analytics/AnalyticCo
 export default {
     name: "CustomerAnalyticsPage",
     components: {
-        CustomersTable,
+        GenderChart,
         EmotionMeter,
         ActiveCustomer,
         AnalyticContainer
