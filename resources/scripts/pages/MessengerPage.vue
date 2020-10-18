@@ -2,8 +2,7 @@
     <v-container>
         <PageHeader :breadcrumbs="getBreadcrumbs" title="Messenger" />
             <v-row
-                class="mt-5"
-                no-gutters
+                class="mt-2"
             >
                 <v-col cols="4">
                     <ChatUsers/>

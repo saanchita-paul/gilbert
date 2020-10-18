@@ -66,14 +66,20 @@ body {
         color: #000 !important;
     }
 }
-.messenger-support {
-    .v-toolbar__content {
-        background-color: rgb(233, 230, 230) !important;
-    }
-    .v-list  {
-        background-color: rgb(233, 230, 230) !important;
+.main-breadcrumbs {
+    .v-breadcrumbs {
+       padding: 0px !important;
+        font-size: .8rem !important;
     }
 }
+//.messenger-support {
+//    .v-toolbar__content {
+//        background-color: rgb(233, 230, 230) !important;
+//    }
+//    .v-list  {
+//        background-color: rgb(233, 230, 230) !important;
+//    }
+//}
 
 .app-title {
     font-size: 20px!important;

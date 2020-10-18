@@ -3,8 +3,8 @@
         <PageHeader :breadcrumbs="getBreadcrumbs" title="Customer Dashboard">
             <date-range-picker v-model="dateRange"/>
         </PageHeader>
-        <div class="body-bg pa-4">
-            <v-row>
+        <div class="body-bg">
+            <v-row class="pt-0">
                 <v-col md="12">
                     <v-row class="customer-insight">
                         <v-col lg="4" md="6" sm="12" class="box">

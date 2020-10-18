@@ -1,5 +1,5 @@
 <template>
-    <v-row>
+    <v-row class="main-breadcrumbs">
         <v-col class="my-0 py-0" sm="12">
             <v-breadcrumbs :items="breadcrumbs">
                 <template v-slot:item="{ item }">
@@ -8,7 +8,7 @@
                         :disabled="item.disabled"
                         exact
                     >
-                        {{ item.text.toUpperCase() }}
+                        {{ item.text }}
                     </v-breadcrumbs-item>
                 </template>
             </v-breadcrumbs>

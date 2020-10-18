@@ -1,8 +1,7 @@
 <template>
     <v-card
-        elevation="0"
         max-width="450"
-        class="elevation-0 mx-auto messenger-support"
+        class="mx-auto messenger-support"
     >
         <v-toolbar elevation="0">
             <v-list-item-avatar class="ml-0">

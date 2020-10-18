@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <PageHeader :breadcrumbs="getBreadcrumbs" title="Customers Insight"/>
-        <CustomersTable class="mt-5"/>
+        <CustomersTable class="mt-2"/>
     </v-container>
 </template>
 
