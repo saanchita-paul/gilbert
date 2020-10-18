@@ -7,7 +7,7 @@
             <v-col cols="8" class="pb-0">
                 <p style="color: #757575" class="app-title" v-text="title"></p>
             </v-col>
-            <v-icon style="position: absolute; bottom: 0px; right: 0px" class="" size="100">{{icon}}</v-icon>
+            <v-icon style=" opacity: .4; position: absolute; bottom: 0px; right: 0px" class="" size="100">{{icon}}</v-icon>
         </v-row>
         <!-- <div class="box d-flex justify-space-between align-content-center">
             <div class="d-flex flex-column justify-space-around" style="height: 100%">
