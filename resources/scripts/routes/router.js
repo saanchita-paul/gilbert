@@ -6,6 +6,7 @@ import CustomerAnalyticsPage from "@scripts/pages/CustomerAnalyticsPage";
 import AccountPage from "@scripts/pages/AccountPage";
 import MessengerPage from "@scripts/pages/MessengerPage";
 import LoginPage from "@scripts/pages/auth/LoginPage";
+import CustomerInsightPage from "@scripts/pages/CustomerInsightPage";
 
 Vue.use(VueRouter);
 
@@ -26,6 +27,11 @@ const router = new VueRouter({
                     path: 'account',
                     component: AccountPage,
                     name: 'account'
+                },
+                {
+                    path: 'customers',
+                    component: CustomerInsightPage,
+                    name: 'customerInsight'
                 },
                 {
                     path: 'messenger',

@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import ApplicationService from "../../services/ApplicationService";
+import ApplicationService from "../services/ApplicationService";
 
 export default {
     name: "DashboardLayout",

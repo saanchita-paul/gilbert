@@ -1,8 +1,13 @@
 <template>
     <v-card>
-        <v-card-title class="white--text card-bg-color">
-            <v-icon size="28" color="white">mdi-account-group</v-icon>
-            <span  class="ml-2">CUSTOMER LIST</span>
+        <v-card-title>
+            <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+            ></v-text-field>
         </v-card-title>
         <v-data-table
             :headers="headers"

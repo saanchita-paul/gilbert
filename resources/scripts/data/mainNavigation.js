@@ -15,7 +15,7 @@ export default [
                 type: 'route',
                 title: 'Insight',
                 icon: 'mdi-chart-areaspline',
-                route_name: 'customerAnalytics'
+                route_name: 'customerInsight'
             },
             {
                 type: 'route',
