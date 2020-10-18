@@ -1,8 +1,9 @@
 <template>
     <v-card>
-        <v-card-title class="card-bg-color white--text">
-         <v-icon size="28" color="white">mdi-emoticon</v-icon>
-            <span class="ml-2">EMOTION METER</span>
+        <v-card-title class="card-bg-color app-title">
+<!--         <v-icon size="28" color="white">mdi-emoticon</v-icon>-->
+            Emotion Meter
+<!--            <span class="ml-2 title">Emotion Meter</span>-->
         </v-card-title>
         <v-divider></v-divider>
             <v-list dense>

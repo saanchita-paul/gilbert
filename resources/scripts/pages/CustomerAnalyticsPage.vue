@@ -9,7 +9,7 @@
                 <ActiveCustomer/>
             </v-col>
             <v-col sm="12">
-                <CustomersTable />
+                <ActiveCustomer/>
             </v-col>
         </v-row>
     </v-container>

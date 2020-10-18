@@ -2,7 +2,7 @@
 $primary_color: #5C229A;
 $toolbar_color: white;
 $shade_one_color: #00355E;
-$shade_two_color: #00436E;
+$shade_two_color: white;
 
 body {
     font-family: 'Quicksand', sans-serif !important;
@@ -28,6 +28,9 @@ body {
 }
 .analytic-bg {
     background-color: $shade_one_color !important; ;
+}
+.info-card {
+    background-color: $shade_one_color !important;
 }
 .card-bg-color {
     background-color: $shade_two_color !important;
@@ -72,15 +75,15 @@ body {
     }
 }
 
-.title {
-    font-size: 16px!important;
-    font-weight: 500 !important;
+.app-title {
+    font-size: 20px!important;
+    font-weight: 700 !important;
 }
-.title-big {
+.app-title-big {
     font-size: 30px !important;
-    font-weight: 400 !important;
-}
-.title-small {
-    font-size: 13px !important;
     font-weight: 500 !important;
+}
+.app-title-small {
+    font-size: 13px !important;
+    font-weight: 700 !important;
 }

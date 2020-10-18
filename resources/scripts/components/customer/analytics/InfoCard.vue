@@ -1,5 +1,5 @@
 <template>
-    <v-card class="white--text card-bg-color">
+    <v-card class="white--text primary">
         <v-row class="pa-3">
             <v-col cols="8" class="pb-0">
                 <p class="text-h4" v-text="value"></p>
@@ -8,7 +8,7 @@
                 <v-icon class="white--text" size="40px">{{icon}}</v-icon>
             </v-col>
             <v-col cols="12" class="py-0">
-                <p class="text-h6 title" v-text="title"></p>
+                <p class="app-title" v-text="title"></p>
             </v-col>
         </v-row>
         <!-- <div class="box d-flex justify-space-between align-content-center">

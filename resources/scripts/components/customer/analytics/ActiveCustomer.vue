@@ -1,8 +1,9 @@
 <template>
-    <v-card >
-        <v-card-title class="card-bg-color white--text">
-            <v-icon size="28" color="white">mdi-clock</v-icon>
-            <span class="ml-2">RECENT ACTIVE CUSTOMERS</span>
+    <v-card>
+        <v-card-title  class="card-bg-color app-title">
+<!--            <v-icon size="28" color="white">mdi-clock</v-icon>-->
+            Recent Customers
+<!--            <span class="ml-2 title">Recent Customers</span>-->
         </v-card-title>
         <v-divider/>
         <v-list dense>

@@ -2,7 +2,7 @@
     <v-card elevation="0" class="body-bg pa-4 white--text">
         <v-row>
             <v-col sm="8">
-                <h2 class="black--text title-big">Customer Dashboard</h2>
+                <h2 class="black--text app-title-big">Customer Dashboard</h2>
             </v-col>
             <v-col sm="4" class="menu-color py-0">
                 <date-range-picker v-model="dateRange"/>
