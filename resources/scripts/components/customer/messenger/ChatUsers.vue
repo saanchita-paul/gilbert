@@ -8,7 +8,7 @@
                 <v-img src="https://cdn.vuetifyjs.com/images/lists/5.jpg"></v-img>
             </v-list-item-avatar>
 
-            <p class="mt-3">Support 1<br>
+            <p class="mt-3  app-title-small">Support 1<br>
                 <small class="text-caption">Demo@email.com</small>
             </p>
 
@@ -16,11 +16,11 @@
 
         <v-divider></v-divider>
 
-        <v-list dense>
+        <v-list dense class="px-4">
             <span  v-for="i in 7"
                    :key="i"
             >
-                <v-list-item>
+                <v-list-item link>
                     <v-list-item-avatar>
                         <v-img :src="getImage()"></v-img>
                     </v-list-item-avatar>

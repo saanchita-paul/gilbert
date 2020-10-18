@@ -6,7 +6,7 @@
 <!--            <span class="ml-2 title">Recent Customers</span>-->
         </v-card-title>
         <v-divider/>
-        <v-list dense>
+        <v-list dense class="px-4">
             <span v-for="i in 3" :key="i">
                     <v-list-item>
                         <v-list-item-avatar>

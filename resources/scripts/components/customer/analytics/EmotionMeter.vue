@@ -6,7 +6,7 @@
 <!--            <span class="ml-2 title">Emotion Meter</span>-->
         </v-card-title>
         <v-divider></v-divider>
-            <v-list dense>
+            <v-list dense class="px-4">
                     <v-list-item>
                         <v-list-item-avatar><v-icon color="red">mdi-emoticon-angry</v-icon></v-list-item-avatar>
                         <v-list-item-content>
