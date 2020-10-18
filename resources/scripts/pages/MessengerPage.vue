@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <PageHeader title="Messenger" />
+        <PageHeader :breadcrumbs="getBreadcrumbs" title="Messenger" />
             <v-row
                 class="mt-5"
                 no-gutters
@@ -22,7 +22,23 @@ import ChatBox from "@scripts/components/customer/messenger/ChatBox";
 
 export default {
     name: "MessengerPage",
-    components: {ChatBox, ChatUsers, PageHeader}
+    components: {ChatBox, ChatUsers, PageHeader},
+    computed: {
+        getBreadcrumbs() {
+            return [
+                {
+                    text: 'Dashboard',
+                    disabled: false,
+                    route_name: 'customerAnalytics',
+                },
+                {
+                    text: 'Messenger',
+                    disabled: false,
+                    route_name: 'messenger',
+                },
+            ]
+        },
+    }
 }
 </script>
 

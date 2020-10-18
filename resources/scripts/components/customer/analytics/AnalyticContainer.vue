@@ -1,6 +1,6 @@
 <template>
     <div>
-        <PageHeader title="Customer Dashboard">
+        <PageHeader :breadcrumbs="getBreadcrumbs" title="Customer Dashboard">
             <date-range-picker v-model="dateRange"/>
         </PageHeader>
         <div class="body-bg pa-4">
@@ -59,6 +59,22 @@ export default {
         return {
             analytic: new CustomerAnalytics(),
             dateRange: new  DateRange()
+        }
+    },
+    computed: {
+        getBreadcrumbs() {
+            return [
+                {
+                    text: 'Dashboard',
+                    disabled: false,
+                    route_name: 'customerAnalytics',
+                },
+                // {
+                //     text: 'Customer Dashboard',
+                //     disabled: false,
+                //     route_name: 'breadcrumbs_link_1',
+                // },
+            ]
         }
     },
     async mounted() {
