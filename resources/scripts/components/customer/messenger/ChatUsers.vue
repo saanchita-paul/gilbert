@@ -8,17 +8,15 @@
                 <v-img src="https://cdn.vuetifyjs.com/images/lists/5.jpg"></v-img>
             </v-list-item-avatar>
 
-            <p class="mt-3  app-title-small">Support 1<br>
-                <small class="text-caption">Demo@email.com</small>
-            </p>
+            <p class="mt-3  app-title">Hood Admin</p>
 
         </v-toolbar>
 
         <v-divider></v-divider>
 
         <v-list dense class="px-4">
-            <span  v-for="i in 7"
-                   :key="i"
+            <span  v-for="(user, index) in users"
+                   :key="user.id"
             >
                 <v-list-item link>
                     <v-list-item-avatar>
@@ -26,10 +24,10 @@
                     </v-list-item-avatar>
 
                     <v-list-item-content>
-                        <v-list-item-title>John Doe</v-list-item-title>
+                        <v-list-item-title>{{user.name}}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-divider v-if="i < 7"></v-divider>
+                <v-divider v-if="index +1 < users.length"></v-divider>
             </span>
 
         </v-list>
@@ -38,8 +36,17 @@
 
 <script>
 import { random} from 'lodash-es'
+import axios from 'axios';
 
 export default {
+    data() {
+        return {
+            users: [],
+        }
+    },
+    async mounted() {
+        this.users = (await axios.get('https://jsonplaceholder.typicode.com/users?_limit=8')).data
+    },
     methods: {
         getImage() {
             return `https://cdn.vuetifyjs.com/images/lists/${random(1,5)}.jpg`
