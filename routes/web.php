@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/{vue_capture?}', fn() => view('app'))
     ->where('vue_capture', '[\/\w\.-]*');

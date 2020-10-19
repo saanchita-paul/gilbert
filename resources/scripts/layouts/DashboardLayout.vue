@@ -3,13 +3,15 @@
         <v-navigation-drawer
             v-model="drawer"
             :mini-variant="miniDrawer"
-            mini-variant-width="60"
+            mini-variant-width="55"
             app
             class="navigation-drawer-menu"
         >
-            <v-list-item style="background-color: #5C229A; padding-bottom: 8px !important;">
+            <v-list-item class="primary" style="padding-bottom: 8px !important;">
                 <v-list-item-avatar class="ml-0">
-                    <v-avatar color="white" size="48">h</v-avatar>
+                    <v-avatar color="white" size="48">
+                        <img src="/assets/images/logo/hood.png">
+                    </v-avatar>
                 </v-list-item-avatar>
 
                 <v-list-item-content>
@@ -19,46 +21,46 @@
 
             <v-divider></v-divider>
 
-            <v-list dense>
+            <v-list dense class="main-nav-items">
                 <span v-for="item in routes" :key="item.title">
                     <v-list-item v-if="item.type === 'route'"
                                  link
+                                 exact-active-class="primary white--text"
                                  exact
                                  :to="{name: item.route_name}"
                     >
-                        <v-list-item-icon><v-icon>{{item.icon}}</v-icon></v-list-item-icon>
+                        <v-list-item-icon><v-icon>{{ item.icon }}</v-icon></v-list-item-icon>
                         <v-list-item-content>
-                            <v-list-item-title>{{item.title}}</v-list-item-title>
+                            <v-list-item-title>{{ item.title }}</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <v-list-group
-                        v-if="item.type === 'group'"
-                        v-model="item.model"
-                        :prepend-icon="item.icon"
-                    >
-                    <template v-slot:activator>
-                        <v-list-item-title>{{item.title}}</v-list-item-title>
-                    </template>
-                    <v-list-item v-for="r in item.children"
-                                 :to="{name: r.route_name}"
-                                 link
-                                 exact
-                                 :key="r.title"
-                    >
+                    <span v-if="item.type === 'group'" class="mb-6">
+                        <v-list-item v-if="!miniDrawer" >
+                            <v-list-item-content class="mb-0 pb-0">
+                                <v-list-item-title class="app-title-small mb-1">{{ item.title }}</v-list-item-title>
+                                                                <v-divider></v-divider>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item v-for="r in item.children"
+                                     :to="{name: r.route_name}"
+                                     link
+                                     exact-active-class="primary white--text"
+                                     exact
+                                     :key="r.title"
+                        >
                         <v-list-item-icon><v-icon>{{r.icon}}</v-icon></v-list-item-icon>
                         <v-list-item-content>
-                            <v-list-item-title>{{r.title}}</v-list-item-title>
+                            <v-list-item-title>{{ r.title }}</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                </v-list-group>
-
+                    </span>
                 </span>
             </v-list>
         </v-navigation-drawer>
 
-        <v-app-bar app color="primary" dark>
-            <v-btn icon @click="miniDrawer = !miniDrawer">
-                <v-icon>{{ miniDrawer ? 'mdi-chevron-right' : 'mdi-chevron-left' }}</v-icon>
+        <v-app-bar app class="primary" dark>
+            <v-btn icon color="white" @click="miniDrawer = !miniDrawer">
+                <v-icon>{{ miniDrawer ? 'mdi-menu' : 'mdi-menu-open' }}</v-icon>
             </v-btn>
             <!--            <v-app-bar-nav-icon @click="miniDrawer = !miniDrawer"></v-app-bar-nav-icon>-->
             <!--            <v-toolbar-title>Hood</v-toolbar-title>-->
@@ -101,14 +103,14 @@
 
         </v-app-bar>
 
-        <v-main style="background-color: #e9e6e6">
+        <v-main class="body-bg">
             <router-view></router-view>
         </v-main>
     </v-app>
 </template>
 
 <script>
-import ApplicationService from "../../services/ApplicationService";
+import ApplicationService from "../services/ApplicationService";
 
 export default {
     name: "DashboardLayout",

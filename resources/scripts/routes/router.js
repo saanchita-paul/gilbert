@@ -5,6 +5,11 @@ import DashboardLayout from "@scripts/layouts/DashboardLayout";
 import CustomerAnalyticsPage from "@scripts/pages/CustomerAnalyticsPage";
 import AccountPage from "@scripts/pages/AccountPage";
 import MessengerPage from "@scripts/pages/MessengerPage";
+import LoginPage from "@scripts/pages/auth/LoginPage";
+import CustomerInsightPage from "@scripts/pages/users/CustomersPage";
+import SupplierInsight from "@scripts/pages/SupplierInsight";
+import CustomersPage from "@scripts/pages/users/CustomersPage";
+import SuppliersPage from "@scripts/pages/users/SuppliersPage";
 
 Vue.use(VueRouter);
 
@@ -19,19 +24,43 @@ const router = new VueRouter({
                 {
                     path: '',
                     component: CustomerAnalyticsPage,
-                    name: 'customerAnalytics'
+                    name: 'dashboard'
                 },
                 {
-                    path: 'account',
-                    component: AccountPage,
-                    name: 'account'
+                    path: 'insight/customers',
+                    component: CustomerInsightPage,
+                    name: 'insight.customers'
+                },                {
+                    path: 'insight/suppliers',
+                    component: SupplierInsight,
+                    name: 'insight.suppliers'
                 },
                 {
-                    path: 'messenger',
+                    path: 'messenger/customers',
                     component: MessengerPage,
-                    name: 'messenger'
+                    name: 'messenger.customers'
+                },
+                {
+                    path: 'messenger/suppliers',
+                    component: MessengerPage,
+                    name: 'messenger.suppliers'
+                },
+                {
+                    path: 'users/customers',
+                    component: CustomersPage,
+                    name: 'users.customers'
+                },
+                {
+                    path: 'users/suppliers',
+                    component: SuppliersPage,
+                    name: 'users.suppliers'
                 }
             ]
+        },
+        {
+            path: '/auth/login',
+            component: LoginPage,
+            name: 'login'
         }
     ]
 })

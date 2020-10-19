@@ -31,4 +31,5 @@ mix
     .webpackConfig(Object.assign(webpack))
     .options({
         extractVueStyles: true,
-    });
+    })
+    .version();

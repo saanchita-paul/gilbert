@@ -33,7 +33,7 @@
             <v-btn
                 text
                 color="primary"
-                @click="$refs.menu.save(dates)"
+                @click="onDateUpdate"
             >
                 OK
             </v-btn>
@@ -41,18 +41,39 @@
     </v-menu>
 </template>
 <script>
+import DateRange from "@scripts/models/DateRange";
+
 export default {
     name: "DateRangePicker",
-    data: () => ({
-        dates: ['2019-09-10', '2019-09-20'],
-        menu2: false
-
-    }),
+    props: ['value'],
+    data() {
+        return {
+            dates: [this.value.start, this.value.end],
+            menu2: false
+        }
+    },
     computed: {
-        dateRangeText () {
+        dateRangeText() {
             return this.dates.join(' ~ ')
         },
     },
+    watch: {
+        value: {
+            handler(value) {
+                this.dates = [value.start, value.end]
+            },
+            deep: true
+        }
+    },
+    methods: {
+        onDateUpdate() {
+            this.$refs.menu.save(this.dates);
+            this.$emit('input', new DateRange({
+                start: this.dates[0],
+                end: this.dates[1],
+            }))
+        }
+    }
 }
 </script>
 

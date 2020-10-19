@@ -1,28 +1,75 @@
 export default [
+    // {
+    //     type: 'route',
+    //     title: 'Dashboard',
+    //     icon: 'mdi-view-dashboard',
+    //     route_name: 'dashboard'
+    // },
+
     {
         type: 'group',
-        title: 'Customer',
-        icon: 'mdi-account-cog',
+        title: 'Insight',
+        icon: 'mdi-view-list-outline',
         model: false,
         children: [
             {
                 type: 'route',
-                title: 'Analytics',
-                icon: 'mdi-chart-areaspline',
-                route_name: 'customerAnalytics'
+                title: 'Customer',
+                icon: 'mdi-chart-pie',
+                route_name: 'dashboard'
             },
             {
                 type: 'route',
-                title: 'Messenger',
-                icon: 'mdi-facebook-messenger',
-                route_name: 'messenger'
+                title: 'Supplier',
+                icon: 'mdi-chart-areaspline',
+                route_name: 'insight.suppliers'
             }
         ]
     },
     {
-        type: 'route',
-        title: 'Account',
-        icon: 'mdi-account-settings',
-        route_name: 'account'
+        type: 'group',
+        title: 'Conversation',
+        icon: 'mdi-facebook-messenger',
+        model: false,
+        children: [
+            {
+                type: 'route',
+                title: 'Customer',
+                icon: 'mdi-facebook-messenger',
+                route_name: 'messenger.customers'
+            },
+            {
+                type: 'route',
+                title: 'Supplier',
+                icon: 'mdi-email',
+                route_name: 'messenger.suppliers'
+            }
+        ]
     },
+    {
+        type: 'group',
+        title: 'Users',
+        icon: 'mdi-account',
+        model: false,
+        children: [
+            {
+                type: 'route',
+                title: 'Customer',
+                icon: 'mdi-account-details',
+                route_name: 'users.customers'
+            },
+            {
+                type: 'route',
+                title: 'Supplier',
+                icon: 'mdi-table-account',
+                route_name: 'users.suppliers'
+            }
+        ]
+    },
+    // {
+    //     type: 'route',
+    //     title: 'Suppliers',
+    //     icon: 'mdi-truck-fast',
+    //     route_name: 'account'
+    // },
 ]

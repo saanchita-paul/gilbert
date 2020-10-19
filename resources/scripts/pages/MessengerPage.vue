@@ -1,28 +1,43 @@
 <template>
     <v-container>
-        <v-row
-        no-gutters
-        >
-            <v-col cols="12">
-                <p class="text-h4">Messenger</p>
-            </v-col>
-            <v-col cols="4">
-                <ChatUsers/>
-            </v-col>
-            <v-col cols="8">
-                <ChatBox/>
-            </v-col>
-        </v-row>
+        <PageHeader :breadcrumbs="getBreadcrumbs" title="Messenger" />
+            <v-row
+                class="mt-2"
+            >
+                <v-col cols="4">
+                    <ChatUsers/>
+                </v-col>
+                <v-col cols="8">
+                    <ChatBox/>
+                </v-col>
+            </v-row>
     </v-container>
 </template>
 
 <script>
-import ChatUsers from "@scripts/components/customer/messenger/ChatUsers";
-import ChatBox from "@scripts/components/customer/messenger/ChatBox";
+import ChatUsers from "@scripts/components/messenger/ChatUsers";
+import PageHeader from "@scripts/components/common/PageHeader";
+import ChatBox from "@scripts/components/messenger/ChatBox";
 
 export default {
     name: "MessengerPage",
-    components: { ChatBox, ChatUsers }
+    components: {ChatBox, ChatUsers, PageHeader},
+    computed: {
+        getBreadcrumbs() {
+            return [
+                {
+                    text: 'Customer',
+                    disabled: false,
+                    route_name: 'dashboard',
+                },
+                {
+                    text: 'Messenger',
+                    disabled: false,
+                    route_name: 'messenger.customers',
+                },
+            ]
+        },
+    }
 }
 </script>
 

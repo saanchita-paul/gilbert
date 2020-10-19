@@ -1,39 +1,31 @@
 <template>
-    <v-card class="pa-4 teal lighten-1  white--text">
-        <v-row>
-            <v-col sm="8">
-                <h2>Customer Insight</h2>
-            </v-col>
-            <v-col sm="4" class="menu-color py-0">
-                <date-range-picker/>
-            </v-col>
-            <v-col md="12">
-                <v-row class="customer-insight">
-                    <v-col lg="3" md="6" sm="12" class="box">
-                       <InfoCard icon="mdi-account-outline" title="New Users" value="37"></InfoCard>
-                    </v-col>
-                    <v-col lg="3" md="6" sm="12" class="box">
-                        <InfoCard icon="mdi-email-send" title="Message Sent" value="1281"></InfoCard>
-                    </v-col>
-                    <v-col lg="3" md="6" sm="12" class="box">
-                        <InfoCard icon="mdi-email-receive-outline" title="Message Received" value="1894"></InfoCard>
-                    </v-col>
-                    <v-col md="3" class="box">
-                        <!-- <div class="row">
-                            <v-col sm="8">
-                                <img src="/assets/images/GenderChart.jpg">
-                            </v-col>
-                            <v-col sm="4">
+    <div>
+        <PageHeader :breadcrumbs="getBreadcrumbs" title="Customer Dashboard">
+            <date-range-picker v-model="dateRange"/>
+        </PageHeader>
+        <div>
+            <v-row class="pt-0">
+                <v-col md="12">
+                    <v-row class="customer-insight">
+                        <v-col  md="6" sm="12" class="box">
+                            <CustomerInfos></CustomerInfos>
+                        </v-col>
+                        <v-col md="6" sm="12" class="box">
+                            <ConversationInfos/>
+                        </v-col>
+<!--                        <v-col lg="4" md="6" sm="12" class="box">-->
+<!--                            <InfoCard-->
+<!--                                icon="mdi-email-receive"-->
+<!--                                title="Message Received"-->
+<!--                                :value="analytic.messages_received"-->
+<!--                            ></InfoCard>-->
+<!--                        </v-col>-->
+                    </v-row>
+                </v-col>
 
-                            </v-col>
-                        </div> -->
-                        <GenderChart/>
-                    </v-col>
-                </v-row>
-            </v-col>
-
-        </v-row>
-    </v-card>
+            </v-row>
+        </div>
+    </div>
 
 </template>
 
@@ -41,14 +33,50 @@
 import InfoCard from "@scripts/components/customer/analytics/InfoCard";
 import GenderChart from "@scripts/components/customer/analytics/GenderChart";
 import DateRangePicker from "@scripts/components/customer/analytics/DateRangePicker"
+import PageHeader from "@scripts/components/common/PageHeader"
+import CustomerAnalytics from "@scripts/models/CustomerAnalytics";
+import CustomerService from "@scripts/services/CustomerService";
+import DateRange from "@scripts/models/DateRange";
+import merge from "lodash-es/merge";
+import CustomerInfos from "@scripts/components/customer/analytics/CustomerInfos";
+import ConversationInfos from "@scripts/components/customer/analytics/ConversationInfos";
 
 export default {
     name: "AnalyticContainer",
     components: {
         InfoCard,
         GenderChart,
-        DateRangePicker
+        DateRangePicker,
+        PageHeader,
+        CustomerInfos,
+        ConversationInfos,
     },
+    data() {
+        return {
+            analytic: new CustomerAnalytics(),
+            dateRange: new  DateRange()
+        }
+    },
+    computed: {
+        getBreadcrumbs() {
+            return [
+                {
+                    text: 'Customer',
+                    disabled: false,
+                    route_name: 'dashboard',
+                },
+                // {
+                //     text: 'Customer Dashboard',
+                //     disabled: false,
+                //     route_name: 'breadcrumbs_link_1',
+                // },
+            ]
+        }
+    },
+    async mounted() {
+        const analytics = await CustomerService.getCustomerAnalytics(this.dateRange)
+        merge(this.analytic, analytics)
+    }
 }
 </script>
 

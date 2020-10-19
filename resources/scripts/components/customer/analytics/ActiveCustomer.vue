@@ -1,11 +1,12 @@
 <template>
-    <v-card >
-        <v-card-title class="teal darken-2 white--text">
-            <v-icon size="28" color="white">mdi-clock</v-icon>
-            <span class="ml-2">RECENT ACTIVE CUSTOMERS</span>
+    <v-card>
+        <v-card-title  class="card-bg-color app-title">
+<!--            <v-icon size="28" color="white">mdi-clock</v-icon>-->
+            Recent Customers
+<!--            <span class="ml-2 title">Recent Customers</span>-->
         </v-card-title>
         <v-divider/>
-        <v-list dense>
+        <v-list dense class="px-4">
             <span v-for="i in 3" :key="i">
                     <v-list-item>
                         <v-list-item-avatar>
@@ -13,10 +14,13 @@
                         </v-list-item-avatar>
                     <v-list-item-content>
                         <v-row>
-                            <v-col md="8">
+                            <v-col md="6">
                                 <v-list-item-title>MR Green Lemon</v-list-item-title>
                             </v-col>
-                            <v-col md="4">
+                            <v-col md="3">
+                                <v-list-item-subtitle>GTM +7</v-list-item-subtitle>
+                            </v-col>
+                            <v-col md="3">
                                 <v-list-item-subtitle>10 hours ago</v-list-item-subtitle>
                             </v-col>
                         </v-row>

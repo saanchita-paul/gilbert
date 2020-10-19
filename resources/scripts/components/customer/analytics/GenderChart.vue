@@ -1,37 +1,14 @@
 <template>
-    <v-card class="teal lighten-1  white--text">
-        <v-row class="pa-3">
-            <v-col cols="3" class="pb-0">
-                <img src="/assets/images/GenderChart.png" width="100%">
-            </v-col>
-            <v-col md="7">
-                <img src="/assets/images/info.png" width="100%">
-            </v-col>
-            <v-col md="12">
-                <p class="text-h6 white-text">Gender Chart</p>
-            </v-col>
-
-            <!-- <v-col cols="12">
-                <p class="text-caption white-text">Gender Chart</p>
-            </v-col> -->
-        </v-row>
-        <!-- <v-row class="gender-chart-card px-5">
-            <v-col md="6">
-                <img src="/assets/images/GenderChart.jpg" width="100%">
-            </v-col>
-            <v-col md="6">
-                <img src="/assets/images/info.png" width="100%">
-            </v-col>
-            <v-col md="12" class="py-0 px-5">
-                <p class="mb-0">Gender Chart</p>
-            </v-col>
-        </v-row> -->
-        <!-- <div style="display: flex; justify-content: center">
-            <canvas id="myChart"
-                    width="132px"
-                    height="132px"
-            ></canvas>
-        </div> -->
+    <v-card>
+        <v-card-title  class="card-bg-color app-title">
+            Engagement by Gender
+        </v-card-title>
+        <v-divider/>
+        <div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 186px">
+            <div>
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
     </v-card>
 </template>
 
@@ -41,7 +18,6 @@ import Chart from "chart.js";
 export default {
     name: "GenderChart",
     mounted() {
-        return;
         let ctx = document.getElementById('myChart')
         const myPieChart = new Chart(ctx, {
             type: 'pie',
@@ -57,7 +33,11 @@ export default {
                     'Female'
                 ]
             },
-            options: {responsive: true}
+            options: {
+                legend: {
+                    position: 'right',
+                }
+            }
         });
     }
 }

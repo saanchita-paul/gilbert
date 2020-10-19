@@ -1,15 +1,13 @@
 <template>
-    <v-card class="teal lighten-1  white--text">
-        <v-row class="pa-3">
+    <v-card class="white black--text" style="position: relative">
+        <v-row class="px-4 py-3">
             <v-col cols="8" class="pb-0">
-                <p class="text-h4" v-text="value"></p>
+                <p  class="text-h4 value primary--text" v-text="value"></p>
             </v-col>
-            <v-col cols="4" class="pb-0">
-                <v-icon class="white--text" size="40px">{{icon}}</v-icon>
+            <v-col cols="8" class="pb-0">
+                <p class="app-title primary--text" v-text="title"></p>
             </v-col>
-            <v-col cols="12" class="py-0">
-                <p class="text-h6" v-text="title"></p>
-            </v-col>
+            <v-icon  class="card-icon" color="primary" size="110">{{icon}}</v-icon>
         </v-row>
         <!-- <div class="box d-flex justify-space-between align-content-center">
             <div class="d-flex flex-column justify-space-around" style="height: 100%">
@@ -40,5 +38,16 @@ export default {
 <style scoped>
 .box {
     height: 150px;
+}
+.value {
+    color: #757575;
+    font-size: 40px !important;
+    font-weight: 900;
+}
+.card-icon {
+    opacity: .2;
+    position: absolute;
+    bottom: 0px;
+    right: 0px
 }
 </style>
