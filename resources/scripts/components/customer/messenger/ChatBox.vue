@@ -63,11 +63,11 @@
             },
             {
                 from: 'support',
-                message: 'What do you want remind?'
+                message: 'What do you want to remind?'
             },
             {
                 from: 'user',
-                message: 'Nothing'
+                message: 'Nothing!'
             },
             {
                 from: 'user',
