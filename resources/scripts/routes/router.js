@@ -6,7 +6,7 @@ import CustomerAnalyticsPage from "@scripts/pages/CustomerAnalyticsPage";
 import AccountPage from "@scripts/pages/AccountPage";
 import MessengerPage from "@scripts/pages/MessengerPage";
 import LoginPage from "@scripts/pages/auth/LoginPage";
-import CustomerInsightPage from "@scripts/pages/CustomerInsightPage";
+import CustomerInsightPage from "@scripts/pages/CustomersPage";
 import SupplierInsight from "@scripts/pages/SupplierInsight";
 
 Vue.use(VueRouter);

@@ -1,10 +1,10 @@
 export default [
-    {
-        type: 'route',
-        title: 'Dashboard',
-        icon: 'mdi-view-dashboard',
-        route_name: 'dashboard'
-    },
+    // {
+    //     type: 'route',
+    //     title: 'Dashboard',
+    //     icon: 'mdi-view-dashboard',
+    //     route_name: 'dashboard'
+    // },
 
     {
         type: 'group',
@@ -15,33 +15,33 @@ export default [
             {
                 type: 'route',
                 title: 'Customer',
-                icon: 'mdi-chart-areaspline',
-                route_name: 'insight.customers'
+                icon: 'mdi-chart-pie',
+                route_name: 'dashboard'
             },
             {
                 type: 'route',
                 title: 'Supplier',
-                icon: 'mdi-facebook-messenger',
+                icon: 'mdi-chart-areaspline',
                 route_name: 'insight.suppliers'
             }
         ]
     },
     {
         type: 'group',
-        title: 'Messenger',
+        title: 'Conversation',
         icon: 'mdi-facebook-messenger',
         model: false,
         children: [
             {
                 type: 'route',
                 title: 'Customer',
-                icon: 'mdi-chart-areaspline',
+                icon: 'mdi-facebook-messenger',
                 route_name: 'messenger.customers'
             },
             {
                 type: 'route',
                 title: 'Supplier',
-                icon: 'mdi-facebook-messenger',
+                icon: 'mdi-email',
                 route_name: 'messenger.suppliers'
             }
         ]

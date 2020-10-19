@@ -3,7 +3,7 @@
         <PageHeader :breadcrumbs="getBreadcrumbs" title="Customer Dashboard">
             <date-range-picker v-model="dateRange"/>
         </PageHeader>
-        <div class="body-bg">
+        <div>
             <v-row class="pt-0">
                 <v-col md="12">
                     <v-row class="customer-insight">
@@ -65,7 +65,7 @@ export default {
         getBreadcrumbs() {
             return [
                 {
-                    text: 'Dashboard',
+                    text: 'Customer',
                     disabled: false,
                     route_name: 'dashboard',
                 },

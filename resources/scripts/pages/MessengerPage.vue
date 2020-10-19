@@ -26,7 +26,7 @@ export default {
         getBreadcrumbs() {
             return [
                 {
-                    text: 'Dashboard',
+                    text: 'Customer',
                     disabled: false,
                     route_name: 'dashboard',
                 },

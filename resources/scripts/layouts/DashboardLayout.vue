@@ -34,8 +34,8 @@
                             <v-list-item-title>{{ item.title }}</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <span v-if="item.type === 'group'" class="mt-4">
-                        <v-list-item >
+                    <span v-if="item.type === 'group'" class="mb-6">
+                        <v-list-item v-if="!miniDrawer" >
                             <v-list-item-content class="mb-0 pb-0">
                                 <v-list-item-title class="app-title-small mb-1">{{ item.title }}</v-list-item-title>
                                                                 <v-divider></v-divider>
@@ -48,7 +48,7 @@
                                      exact
                                      :key="r.title"
                         >
-                        <v-list-item-icon class="ml-2"><v-icon size="12">mdi-record</v-icon></v-list-item-icon>
+                        <v-list-item-icon><v-icon>{{r.icon}}</v-icon></v-list-item-icon>
                         <v-list-item-content>
                             <v-list-item-title>{{ r.title }}</v-list-item-title>
                         </v-list-item-content>

@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <v-card-title  class="card-bg-color app-title">
-            Gender
+            Engagement by Gender
         </v-card-title>
         <v-divider/>
         <div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 186px">
