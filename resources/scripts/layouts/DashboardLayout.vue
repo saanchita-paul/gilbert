@@ -3,11 +3,11 @@
         <v-navigation-drawer
             v-model="drawer"
             :mini-variant="miniDrawer"
-            mini-variant-width="60"
+            mini-variant-width="55"
             app
             class="navigation-drawer-menu"
         >
-            <v-list-item class="toolbar-bg" style="padding-bottom: 8px !important;">
+            <v-list-item class="primary" style="padding-bottom: 8px !important;">
                 <v-list-item-avatar class="ml-0">
                     <v-avatar color="white" size="48">
                         <img src="/assets/images/logo/hood.png">
@@ -21,10 +21,11 @@
 
             <v-divider></v-divider>
 
-            <v-list dense>
+            <v-list dense class="main-nav-items">
                 <span v-for="item in routes" :key="item.title">
                     <v-list-item v-if="item.type === 'route'"
                                  link
+                                 exact-active-class="primary white--text"
                                  exact
                                  :to="{name: item.route_name}"
                     >
@@ -44,6 +45,7 @@
                     <v-list-item v-for="r in item.children"
                                  :to="{name: r.route_name}"
                                  link
+                                 exact-active-class="primary white--text"
                                  exact
                                  :key="r.title"
                     >
@@ -58,8 +60,8 @@
             </v-list>
         </v-navigation-drawer>
 
-        <v-app-bar app class="toolbar" dark>
-            <v-btn icon color="primary" @click="miniDrawer = !miniDrawer">
+        <v-app-bar app class="primary" dark>
+            <v-btn icon color="white" @click="miniDrawer = !miniDrawer">
                 <v-icon>{{ miniDrawer ? 'mdi-menu' : 'mdi-menu-open' }}</v-icon>
             </v-btn>
             <!--            <v-app-bar-nav-icon @click="miniDrawer = !miniDrawer"></v-app-bar-nav-icon>-->
@@ -72,7 +74,7 @@
                 offset-x="20"
                 overlap
             >
-                <v-btn color="primary" icon>
+                <v-btn  icon>
                     <v-icon>mdi-bell</v-icon>
                 </v-btn>
             </v-badge>
@@ -83,7 +85,6 @@
             >
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn
-                        color="primary"
                         icon
                         v-bind="attrs"
                         v-on="on"

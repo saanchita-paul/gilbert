@@ -25,10 +25,10 @@ export default [
             }
         ]
     },
-    {
-        type: 'route',
-        title: 'Suppliers',
-        icon: 'mdi-truck-fast',
-        route_name: 'account'
-    },
+    // {
+    //     type: 'route',
+    //     title: 'Suppliers',
+    //     icon: 'mdi-truck-fast',
+    //     route_name: 'account'
+    // },
 ]

@@ -41,13 +41,18 @@ body {
         max-height: 140px;
     }
 }
-
+.main-nav-items {
+    .v-list-item {
+        margin-left: 7px !important;
+        margin-right: 8px !important;
+        border-radius: 5px !important;
+    }
+}
 .navigation-drawer-menu {
     .v-list-item__icon {
         margin-right: 8px !important;
     }
     .v-list-item__title {
-        color: rgba(0,0,0, .87);
         font-family: 'Quicksand', sans-serif !important;
         font-weight: 700 !important;
     }
