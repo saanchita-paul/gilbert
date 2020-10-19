@@ -46,6 +46,26 @@ export default [
             }
         ]
     },
+    {
+        type: 'group',
+        title: 'Users',
+        icon: 'mdi-account',
+        model: false,
+        children: [
+            {
+                type: 'route',
+                title: 'Customer',
+                icon: 'mdi-account-details',
+                route_name: 'users.customers'
+            },
+            {
+                type: 'route',
+                title: 'Supplier',
+                icon: 'mdi-table-account',
+                route_name: 'users.suppliers'
+            }
+        ]
+    },
     // {
     //     type: 'route',
     //     title: 'Suppliers',

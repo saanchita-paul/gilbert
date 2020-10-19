@@ -15,9 +15,9 @@
 </template>
 
 <script>
-import ChatUsers from "@scripts/components/customer/messenger/ChatUsers";
+import ChatUsers from "@scripts/components/messenger/ChatUsers";
 import PageHeader from "@scripts/components/common/PageHeader";
-import ChatBox from "@scripts/components/customer/messenger/ChatBox";
+import ChatBox from "@scripts/components/messenger/ChatBox";
 
 export default {
     name: "MessengerPage",

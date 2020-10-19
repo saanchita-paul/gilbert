@@ -1,29 +1,30 @@
 <template>
     <v-container>
-        <PageHeader :breadcrumbs="getBreadcrumbs" title="Customers Insight"/>
+        <PageHeader :breadcrumbs="getBreadcrumbs" title="Customers"/>
         <CustomersTable class="mt-2"/>
     </v-container>
 </template>
 
 <script>
-import CustomersTable from "@scripts/components/customer/analytics/CustomersTable";
+import CustomersTable from "@scripts/components/customer/list/CustomersTable";
+import CustomerInfos from "@scripts/components/customer/analytics/CustomerInfos";
 import PageHeader from "@scripts/components/common/PageHeader";
 
 export default {
     name: "CustomerInsightPage",
-    components: {CustomersTable, PageHeader},
+    components: {CustomersTable, PageHeader, CustomerInfos},
     computed: {
         getBreadcrumbs() {
             return [
                 {
-                    text: 'Dashboard',
+                    text: 'Users',
                     disabled: false,
                     route_name: 'dashboard',
                 },
                 {
-                    text: 'Customer Insight',
+                    text: 'Customers',
                     disabled: false,
-                    route_name: 'insight.customers',
+                    route_name: 'users.customers',
                 },
             ]
         },

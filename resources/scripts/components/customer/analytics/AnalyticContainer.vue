@@ -7,27 +7,19 @@
             <v-row class="pt-0">
                 <v-col md="12">
                     <v-row class="customer-insight">
-                        <v-col lg="4" md="6" sm="12" class="box">
-                            <InfoCard
-                                icon="mdi-account"
-                                title="New Users"
-                                :value="analytic.new_user_count"
-                            ></InfoCard>
+                        <v-col  md="6" sm="12" class="box">
+                            <CustomerInfos></CustomerInfos>
                         </v-col>
-                        <v-col lg="4" md="6" sm="12" class="box">
-                            <InfoCard
-                                icon="mdi-email-send"
-                                title="Message Sent"
-                                :value="analytic.messages_sent"
-                            ></InfoCard>
+                        <v-col md="6" sm="12" class="box">
+                            <ConversationInfos/>
                         </v-col>
-                        <v-col lg="4" md="6" sm="12" class="box">
-                            <InfoCard
-                                icon="mdi-email-receive"
-                                title="Message Received"
-                                :value="analytic.messages_received"
-                            ></InfoCard>
-                        </v-col>
+<!--                        <v-col lg="4" md="6" sm="12" class="box">-->
+<!--                            <InfoCard-->
+<!--                                icon="mdi-email-receive"-->
+<!--                                title="Message Received"-->
+<!--                                :value="analytic.messages_received"-->
+<!--                            ></InfoCard>-->
+<!--                        </v-col>-->
                     </v-row>
                 </v-col>
 
@@ -46,6 +38,8 @@ import CustomerAnalytics from "@scripts/models/CustomerAnalytics";
 import CustomerService from "@scripts/services/CustomerService";
 import DateRange from "@scripts/models/DateRange";
 import merge from "lodash-es/merge";
+import CustomerInfos from "@scripts/components/customer/analytics/CustomerInfos";
+import ConversationInfos from "@scripts/components/customer/analytics/ConversationInfos";
 
 export default {
     name: "AnalyticContainer",
@@ -53,7 +47,9 @@ export default {
         InfoCard,
         GenderChart,
         DateRangePicker,
-        PageHeader
+        PageHeader,
+        CustomerInfos,
+        ConversationInfos,
     },
     data() {
         return {

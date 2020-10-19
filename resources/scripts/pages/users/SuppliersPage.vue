@@ -1,5 +1,5 @@
 <template>
-
+    <h2>suppliers list</h2>
 </template>
 
 <script>
