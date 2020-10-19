@@ -12,8 +12,8 @@ export default {
     getCustomerAnalytics: (dateRange) => {
         return new CustomerAnalytics({
             new_user_count: 20,
-            messages_sent: 1237,
-            messages_received: 2472,
+            messages_sent: '1,237',
+            messages_received: '2,472',
             male_percent: 72,
             female_percent: 28
         })
