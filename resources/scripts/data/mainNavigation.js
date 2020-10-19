@@ -14,13 +14,13 @@ export default [
         children: [
             {
                 type: 'route',
-                title: 'Customers',
+                title: 'Customer',
                 icon: 'mdi-chart-areaspline',
                 route_name: 'insight.customers'
             },
             {
                 type: 'route',
-                title: 'Suppliers',
+                title: 'Supplier',
                 icon: 'mdi-facebook-messenger',
                 route_name: 'insight.suppliers'
             }
@@ -40,7 +40,7 @@ export default [
             },
             {
                 type: 'route',
-                title: 'Suppliers',
+                title: 'Supplier',
                 icon: 'mdi-facebook-messenger',
                 route_name: 'messenger.suppliers'
             }

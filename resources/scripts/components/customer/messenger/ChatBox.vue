@@ -55,7 +55,7 @@
             },
             {
                 from: 'user',
-                message: 'I need to Reminder'
+                message: 'I need Reminder'
             },
             {
                 from: 'support',
