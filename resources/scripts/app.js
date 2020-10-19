@@ -3,6 +3,7 @@ import App from '@scripts/App.vue'
 import Vuetify from "@scripts/plugins/Vuetify";
 import Router from '@scripts/routes/router';
 import '@scripts/plugins/VeeValidate';
+import '@scripts/plugins/Axios';
 
 new Vue( {
     vuetify: Vuetify,

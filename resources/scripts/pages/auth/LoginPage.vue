@@ -11,26 +11,25 @@
                         >
                             <validation-provider
                                 v-slot="{ errors }"
-                                name="Name"
-                                rules="required|max:10"
+                                name="email"
+                                rules="required|email"
                             >
                                 <v-text-field
-                                    v-model="name"
-                                    :counter="10"
+                                    v-model="form.email"
                                     :error-messages="errors"
-                                    label="Name"
+                                    label="Email"
                                     required
                                 ></v-text-field>
                             </validation-provider>
                             <validation-provider
                                 v-slot="{ errors }"
-                                name="email"
-                                rules="required|email"
+                                name="password"
+                                rules="required"
                             >
                                 <v-text-field
-                                    v-model="email"
+                                    v-model="form.password"
                                     :error-messages="errors"
-                                    label="E-mail"
+                                    label="Password"
                                     required
                                 ></v-text-field>
                             </validation-provider>
@@ -44,7 +43,7 @@
                                 name="checkbox"
                             >
                                 <v-checkbox
-                                    v-model="checkbox"
+                                    v-model="form.remember_me"
                                     :error-messages="errors"
                                     value="1"
                                     label="Remember me?"
@@ -65,18 +64,24 @@
 
 <script>
 
+import AuthService from "@scripts/services/AuthService";
+
 export default {
-    data: () => ({
-        name: '',
-        email: '',
-        select: null,
-        errors: null,
-        checkbox: null,
-    }),
+    data() {
+        return {
+            form: {
+                email: '',
+                password: '',
+                remember_me: false,
+            },
+            errors: null,
+        }
+    },
 
     methods: {
         onLogin() {
-            this.$router.push({name: 'customerAnalytics'})
+            AuthService.login(this.form)
+            // this.$router.push({name: 'customerAnalytics'})
         },
     },
 }
