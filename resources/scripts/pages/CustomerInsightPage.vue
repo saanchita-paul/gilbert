@@ -18,12 +18,12 @@ export default {
                 {
                     text: 'Dashboard',
                     disabled: false,
-                    route_name: 'customerAnalytics',
+                    route_name: 'dashboard',
                 },
                 {
                     text: 'Customer Insight',
                     disabled: false,
-                    route_name: 'customerInsight',
+                    route_name: 'insight.customers',
                 },
             ]
         },

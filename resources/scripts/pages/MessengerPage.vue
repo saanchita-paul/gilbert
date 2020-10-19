@@ -28,12 +28,12 @@ export default {
                 {
                     text: 'Dashboard',
                     disabled: false,
-                    route_name: 'customerAnalytics',
+                    route_name: 'dashboard',
                 },
                 {
                     text: 'Messenger',
                     disabled: false,
-                    route_name: 'messenger',
+                    route_name: 'messenger.customers',
                 },
             ]
         },

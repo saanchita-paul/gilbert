@@ -67,7 +67,7 @@ export default {
                 {
                     text: 'Dashboard',
                     disabled: false,
-                    route_name: 'customerAnalytics',
+                    route_name: 'dashboard',
                 },
                 // {
                 //     text: 'Customer Dashboard',
