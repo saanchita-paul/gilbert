@@ -16,7 +16,7 @@ export default {
                 {
                     text: 'Suppliers',
                     disabled: false,
-                    route_name: 'insight.suppliers',
+                    route_name: 'suppliers.insight',
                 },
                 {
                     text: 'List',
