@@ -17,14 +17,14 @@ export default {
         getBreadcrumbs() {
             return [
                 {
-                    text: 'Users',
+                    text: 'Customers',
                     disabled: false,
                     route_name: 'dashboard',
                 },
                 {
-                    text: 'Customers',
+                    text: 'List',
                     disabled: false,
-                    route_name: 'users.customers',
+                    route_name: 'customers.list',
                 },
             ]
         },
