@@ -1,6 +1,6 @@
 <template>
     <div>
-        <PageHeader :breadcrumbs="getBreadcrumbs" title="Customer Insight">
+        <PageHeader :breadcrumbs="getBreadcrumbs" title="Customer insight">
             <date-range-picker v-model="dateRange"/>
         </PageHeader>
         <div>

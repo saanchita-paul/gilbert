@@ -2,7 +2,7 @@
     <v-card>
         <v-card-title  class="card-bg-color app-title">
 <!--            <v-icon size="28" color="white">mdi-clock</v-icon>-->
-            Latest 5 Customers
+            Latest 5 customers
 <!--            <span class="ml-2 title">Recent Customers</span>-->
         </v-card-title>
         <v-divider/>

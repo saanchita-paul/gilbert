@@ -2,7 +2,7 @@
     <v-card>
         <v-card-title class="card-bg-color app-title">
 <!--         <v-icon size="28" color="white">mdi-emoticon</v-icon>-->
-            Engagement Satisfaction
+            Engagement satisfaction
 <!--            <span class="ml-2 title">Emotion Meter</span>-->
         </v-card-title>
         <v-divider></v-divider>

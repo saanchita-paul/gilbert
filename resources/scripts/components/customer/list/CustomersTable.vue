@@ -41,7 +41,7 @@ export default {
             search: '',
             headers: [
                 {
-                    text: 'Avatar',
+                    text: '',
                     align: 'start',
                     sortable: false,
                     value: 'avatar',
@@ -49,10 +49,10 @@ export default {
                 {text: 'First name', value: 'first_name'},
                 {text: 'Last name', value: 'last_name'},
                 {text: 'Gender', value: 'gender'},
-                {text: 'Time Zone', value: 'time_zone'},
-                {text: 'Emotions', value: 'emotion'},
+                {text: 'Timezone', value: 'time_zone'},
+                {text: 'Emotion', value: 'emotion'},
                 {text: 'NPS', value: 'nps'},
-                {text: 'Interacted On', value: 'last_active'},
+                {text: 'Interacted on', value: 'last_active'},
                 {text: '', sortable: false, value: 'last_active', align: 'center'},
             ],
             desserts: [
