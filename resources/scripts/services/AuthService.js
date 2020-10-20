@@ -1,5 +1,5 @@
 import AuthAPI from "@scripts/api/AuthAPI";
-
+import Store from '@scripts/store/index'
 
 export default {
     async login(form) {
@@ -15,6 +15,7 @@ export default {
     },
     async getAuthUser() {
         const user = await AuthAPI.getAuthUser();
+        Store.commit('setUser', user)
         console.log('getAuthUser', user)
     }
 }

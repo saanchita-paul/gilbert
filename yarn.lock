@@ -6914,6 +6914,11 @@ vuetifyjs-mix-extension@^0.0.14:
   resolved "https://registry.yarnpkg.com/vuetifyjs-mix-extension/-/vuetifyjs-mix-extension-0.0.14.tgz#634916f9c03d0b56fcf4256bc17e4d8a646ed930"
   integrity sha512-ZkpMgk9oaOKzvzljpRSVnANJGDSJD3GzA20kh/DRN5C3POcX482Mpxi62ms58AvgubuAHC2kTu5AkLpYGQwI5g==
 
+vuex@^3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/vuex/-/vuex-3.5.1.tgz#f1b8dcea649bc25254cf4f4358081dbf5da18b3d"
+  integrity sha512-w7oJzmHQs0FM9LXodfskhw9wgKBiaB+totOdb8sNzbTB2KDCEEwEs29NzBZFh/lmEK1t5tDmM1vtsO7ubG1DFw==
+
 watchpack-chokidar2@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/watchpack-chokidar2/-/watchpack-chokidar2-2.0.0.tgz#9948a1866cbbd6cb824dea13a7ed691f6c8ddff0"
