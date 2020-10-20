@@ -22,7 +22,7 @@ export default [
                 type: 'route',
                 title: 'Supplier',
                 icon: 'mdi-chart-areaspline',
-                route_name: 'insight.suppliers'
+                route_name: 'suppliers.insight'
             }
         ]
     },
@@ -36,13 +36,13 @@ export default [
                 type: 'route',
                 title: 'Customer',
                 icon: 'mdi-facebook-messenger',
-                route_name: 'messenger.customers'
+                route_name: 'customers.conversation'
             },
             {
                 type: 'route',
                 title: 'Supplier',
                 icon: 'mdi-email',
-                route_name: 'messenger.suppliers'
+                route_name: 'suppliers.mails'
             }
         ]
     },
@@ -56,13 +56,13 @@ export default [
                 type: 'route',
                 title: 'Customer',
                 icon: 'mdi-account-details',
-                route_name: 'users.customers'
+                route_name: 'customers.list'
             },
             {
                 type: 'route',
                 title: 'Supplier',
                 icon: 'mdi-table-account',
-                route_name: 'users.suppliers'
+                route_name: 'suppliers.list'
             }
         ]
     },

@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <PageHeader :breadcrumbs="getBreadcrumbs" title="Messenger" />
+        <PageHeader :breadcrumbs="getBreadcrumbs" title="Conversations" />
             <v-row
                 class="mt-2"
             >
@@ -31,9 +31,9 @@ export default {
                     route_name: 'dashboard',
                 },
                 {
-                    text: 'Messenger',
+                    text: 'Conversations',
                     disabled: false,
-                    route_name: 'messenger.customers',
+                    route_name: 'customers.conversation',
                 },
             ]
         },
