@@ -43,6 +43,7 @@
                         <v-list-item v-for="r in item.children"
                                      :to="{name: r.route_name}"
                                      link
+                                     v-if="!(miniDrawer && r.disabled)"
                                      :disabled="r.disabled"
                                      exact-active-class="primary white--text"
                                      exact
