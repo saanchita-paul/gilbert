@@ -52,7 +52,7 @@ export default [
     },
     {
         type: 'group',
-        title: 'Users',
+        title: 'User',
         icon: 'mdi-account',
         model: false,
         children: [
