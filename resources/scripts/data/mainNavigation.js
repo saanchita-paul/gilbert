@@ -16,14 +16,16 @@ export default [
                 type: 'route',
                 title: 'Customer',
                 icon: 'mdi-chart-pie',
-                route_name: 'dashboard'
+                route_name: 'dashboard',
+                disabled: false,
             },
-            // {
-            //     type: 'route',
-            //     title: 'Supplier',
-            //     icon: 'mdi-chart-areaspline',
-            //     route_name: 'suppliers.insight'
-            // }
+            {
+                type: 'route',
+                title: 'Supplier',
+                icon: 'mdi-chart-areaspline',
+                route_name: 'suppliers.insight',
+                disabled: true,
+            }
         ]
     },
     {
@@ -36,14 +38,16 @@ export default [
                 type: 'route',
                 title: 'Customer',
                 icon: 'mdi-facebook-messenger',
-                route_name: 'customers.conversation'
+                route_name: 'customers.conversation',
+                disabled: false,
             },
-            // {
-            //     type: 'route',
-            //     title: 'Supplier',
-            //     icon: 'mdi-email',
-            //     route_name: 'suppliers.mails'
-            // }
+            {
+                type: 'route',
+                title: 'Supplier',
+                icon: 'mdi-email',
+                route_name: 'suppliers.mails',
+                disabled: true,
+            }
         ]
     },
     {
@@ -56,14 +60,16 @@ export default [
                 type: 'route',
                 title: 'Customer',
                 icon: 'mdi-account-details',
-                route_name: 'customers.list'
+                route_name: 'customers.list',
+                disabled: false,
             },
-            // {
-            //     type: 'route',
-            //     title: 'Supplier',
-            //     icon: 'mdi-table-account',
-            //     route_name: 'suppliers.list'
-            // }
+            {
+                type: 'route',
+                title: 'Supplier',
+                icon: 'mdi-table-account',
+                route_name: 'suppliers.list',
+                disabled: true,
+            }
         ]
     },
     // {

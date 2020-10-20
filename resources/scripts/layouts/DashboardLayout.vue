@@ -21,8 +21,9 @@
 
             <v-list dense class="main-nav-items">
                 <span v-for="item in routes" :key="item.title">
-                    <v-list-item v-if="item.type === 'route'"
+                    <v-list-item  v-if="item.type === 'route'"
                                  link
+                                  :disabled="item.disabled"
                                  exact-active-class="primary white--text"
                                  exact
                                  :to="{name: item.route_name}"
@@ -42,6 +43,7 @@
                         <v-list-item v-for="r in item.children"
                                      :to="{name: r.route_name}"
                                      link
+                                     :disabled="r.disabled"
                                      exact-active-class="primary white--text"
                                      exact
                                      :key="r.title"
