@@ -18,12 +18,12 @@ export default [
                 icon: 'mdi-chart-pie',
                 route_name: 'dashboard'
             },
-            {
-                type: 'route',
-                title: 'Supplier',
-                icon: 'mdi-chart-areaspline',
-                route_name: 'suppliers.insight'
-            }
+            // {
+            //     type: 'route',
+            //     title: 'Supplier',
+            //     icon: 'mdi-chart-areaspline',
+            //     route_name: 'suppliers.insight'
+            // }
         ]
     },
     {
@@ -38,12 +38,12 @@ export default [
                 icon: 'mdi-facebook-messenger',
                 route_name: 'customers.conversation'
             },
-            {
-                type: 'route',
-                title: 'Supplier',
-                icon: 'mdi-email',
-                route_name: 'suppliers.mails'
-            }
+            // {
+            //     type: 'route',
+            //     title: 'Supplier',
+            //     icon: 'mdi-email',
+            //     route_name: 'suppliers.mails'
+            // }
         ]
     },
     {
@@ -58,12 +58,12 @@ export default [
                 icon: 'mdi-account-details',
                 route_name: 'customers.list'
             },
-            {
-                type: 'route',
-                title: 'Supplier',
-                icon: 'mdi-table-account',
-                route_name: 'suppliers.list'
-            }
+            // {
+            //     type: 'route',
+            //     title: 'Supplier',
+            //     icon: 'mdi-table-account',
+            //     route_name: 'suppliers.list'
+            // }
         ]
     },
     // {
