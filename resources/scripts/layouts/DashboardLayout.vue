@@ -9,8 +9,8 @@
         >
             <v-list-item class="primary" style="padding-bottom: 8px !important;">
                 <v-list-item-avatar class="ml-0">
-                    <v-avatar size="48">
-                        <img src="/assets/images/logo/hood.svg">
+                    <v-avatar>
+                        <img src="/assets/images/logo/hood-small.png" />
                     </v-avatar>
                 </v-list-item-avatar>
 

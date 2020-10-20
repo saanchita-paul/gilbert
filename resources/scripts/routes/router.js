@@ -28,13 +28,9 @@ const router = new VueRouter({
                     name: 'dashboard'
                 },
                 {
-                    path: 'insight/customers',
-                    component: CustomerInsightPage,
-                    name: 'insight.customers'
-                },                {
-                    path: 'suppliers/insight',
-                    component: SupplierInsight,
-                    name: 'suppliers.insight'
+                    path: 'customers',
+                    component: CustomersPage,
+                    name: 'customers.list'
                 },
                 {
                     path: 'customers/conversation',
@@ -42,14 +38,14 @@ const router = new VueRouter({
                     name: 'customers.conversation'
                 },
                 {
+                    path: 'suppliers/insight',
+                    component: SupplierInsight,
+                    name: 'suppliers.insight'
+                },
+                {
                     path: 'suppliers/mails',
                     component: SupplierMailPage,
                     name: 'suppliers.mails'
-                },
-                {
-                    path: 'customers',
-                    component: CustomersPage,
-                    name: 'customers.list'
                 },
                 {
                     path: 'suppliers',
