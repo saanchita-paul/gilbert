@@ -4,6 +4,14 @@
             <div style="height: 100%; display: flex; justify-content: center; align-items: center">
                 <v-card width="400px">
                     <v-card-title class="primary white--text">LOGIN</v-card-title>
+                    <v-fade-transition>
+                        <div
+                            v-if="isLoginFailed"
+                            style="border-radius: 10px"
+                            class="red white--text pa-2 ma-3 text-center app-title-small"
+                        >Login failed! Invalid credentials
+                        </div>
+                    </v-fade-transition>
                     <v-card-text>
                         <validation-observer
                             ref="observer"
@@ -51,8 +59,12 @@
                                     required
                                 ></v-checkbox>
                             </validation-provider>
-                            <v-btn  rounded class="primary white--text mt-2"  @click="onLogin">
-                                LOGIN
+                            <v-btn
+                                :loading="loginLoading"
+                                rounded
+                                class="primary white--text mt-2"
+                                @click="onLogin"
+                            >LOGIN
                             </v-btn>
                         </div>
                     </v-card-actions>
@@ -74,13 +86,20 @@ export default {
                 password: '',
                 remember_me: false,
             },
+            loginLoading: false,
+            isLoginFailed: false,
             errors: null,
         }
     },
 
     methods: {
-        onLogin() {
-            AuthService.login(this.form)
+        async onLogin() {
+            this.isLoginFailed = false;
+            this.loginLoading = true;
+            if (!(await AuthService.login(this.form))) {
+                this.isLoginFailed = true;
+            }
+            this.loginLoading = false;
             // this.$router.push({name: 'customerAnalytics'})
         },
     },

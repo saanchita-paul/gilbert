@@ -1,10 +1,9 @@
 import axios from 'axios'
 
 export default {
-    login: form => {
-        axios.get('/sanctum/csrf-cookie').then(async response => {
-            const res = await axios.post('/login', form);
-            console.log(res)
-        });
-    }
+    login: async form => {
+        await  axios.get('/sanctum/csrf-cookie');
+        return axios.post('/login', form);
+    },
+    getAuthUser: async () => (await axios.get('/api/user')).data
 }

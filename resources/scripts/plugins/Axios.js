@@ -8,7 +8,7 @@ axios.interceptors.response.use(
     function(error) {
         // Do something with response error
         if (error.response.status === 401) {
-            alert(404)
+            console.log(error)
         }
         return Promise.reject(error);
     }

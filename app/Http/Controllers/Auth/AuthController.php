@@ -15,6 +15,6 @@ class AuthController extends Controller
             // Authentication passed...
             return response()->json(['mgs' => 'success']);
         }
-        return response()->json(['mgs' => 'failed']);
+        return response()->json(['mgs' => 'failed'], 403);
     }
 }
