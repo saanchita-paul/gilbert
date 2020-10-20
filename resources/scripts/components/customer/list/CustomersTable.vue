@@ -103,7 +103,7 @@ export default {
     },
     methods: {
         openConversation(id) {
-            this.$router.push({name: `messenger.customers`, query: {customer: id}})
+            this.$router.push({name: `customers.conversation`, query: {customer: id}})
         }
     }
 }
