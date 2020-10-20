@@ -1,14 +1,5 @@
 <template>
     <v-card>
-        <v-card-title>
-            <v-text-field
-                v-model="search"
-                append-icon="mdi-magnify"
-                label="Search"
-                single-line
-                hide-details
-            ></v-text-field>
-        </v-card-title>
         <v-data-table
             :headers="headers"
             :items="desserts"
@@ -21,15 +12,20 @@
                 <tr
                     v-for="(item, index) in items"
                     :key="index"
+                    class="py-1"
                 >
-                    <td>{{ item.id }}</td>
-                    <td>{{item.full_name}}</td>
-                    <td>{{item.time_zone}}</td>
-                    <td>{{item.emotion}}</td>
-                    <td>{{item.nps}}</td>
-                    <td>{{item.last_active}}</td>
+                    <td>
+                        <v-avatar size="40"><img src="https://cdn.vuetifyjs.com/images/lists/1.jpg"></v-avatar>
+                    </td>
+                    <td>{{ item.first_name }}</td>
+                    <td>{{ item.last_name }}</td>
+                    <td>{{ item.gender }}</td>
+                    <td>{{ item.time_zone }}</td>
+                    <td>TBD</td>
+                    <td>TBD</td>
+                    <td>{{ item.last_active }}</td>
                     <td class="d-flex justify-center">
-                        <v-icon @click="openConversation(item.id)">mdi-message-arrow-right</v-icon>
+                        <v-icon @click="openConversation(item.id)">mdi-facebook-messenger</v-icon>
                     </td>
                 </tr>
                 </tbody>
@@ -40,27 +36,31 @@
 
 <script>
 export default {
-    data () {
+    data() {
         return {
             search: '',
             headers: [
                 {
-                    text: '#ID',
+                    text: 'Avatar',
                     align: 'start',
-                    filterable: false,
-                    value: 'id',
+                    sortable: false,
+                    value: 'avatar',
                 },
-                { text: 'Name', value: 'full_name' },
-                { text: 'Time Zone', value: 'time_zone' },
-                { text: 'Emotions', value: 'emotion' },
-                { text: 'NPS', value: 'nps' },
-                { text: 'Last Active', value: 'last_active' },
-                { text: 'Go to Conversation', value: 'last_active', align: 'center' },
+                {text: 'Firstname', value: 'first_name'},
+                {text: 'Lastname', value: 'last_name'},
+                {text: 'Gender', value: 'gender'},
+                {text: 'Time Zone', value: 'time_zone'},
+                {text: 'Emotions', value: 'emotion'},
+                {text: 'NPS', value: 'nps'},
+                {text: 'Interacted On', value: 'last_active'},
+                {text: '', sortable: false, value: 'last_active', align: 'center'},
             ],
             desserts: [
                 {
                     id: 1245784,
-                    full_name: 'MR Sku',
+                    first_name: 'MR',
+                    last_name: 'SKU',
+                    gender: 'male',
                     time_zone: 'GTM +6',
                     emotion: 24,
                     nps: 4.0,
@@ -68,7 +68,9 @@ export default {
                 },
                 {
                     id: 1245784,
-                    full_name: 'MR Sku',
+                    first_name: 'MR',
+                    last_name: 'SKU',
+                    gender: 'male',
                     time_zone: 'GTM +6',
                     emotion: 24,
                     nps: 4.0,
@@ -76,7 +78,9 @@ export default {
                 },
                 {
                     id: 1245784,
-                    full_name: 'MR Sku',
+                    first_name: 'MR',
+                    last_name: 'SKU',
+                    gender: 'male',
                     time_zone: 'GTM +6',
                     emotion: 24,
                     nps: 4.0,
@@ -84,7 +88,9 @@ export default {
                 },
                 {
                     id: 1245784,
-                    full_name: 'MR Sku',
+                    first_name: 'MR',
+                    last_name: 'SKU',
+                    gender: 'male',
                     time_zone: 'GTM +6',
                     emotion: 24,
                     nps: 4.0,
@@ -92,7 +98,9 @@ export default {
                 },
                 {
                     id: 1245784,
-                    full_name: 'MR Sku',
+                    first_name: 'MR',
+                    last_name: 'SKU',
+                    gender: 'male',
                     time_zone: 'GTM +6',
                     emotion: 24,
                     nps: 4.0,
