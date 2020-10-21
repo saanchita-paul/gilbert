@@ -5,9 +5,9 @@
                 <p  class="text-h4 value primary--text" v-text="value"></p>
             </v-col>
             <v-col cols="8" class="pb-0">
-                <p class="app-title primary--text" v-text="title"></p>
+                <p class="app-title-small primary--text" v-text="title"></p>
             </v-col>
-            <v-icon  class="card-icon" color="primary" size="110">{{icon}}</v-icon>
+            <v-icon  class="card-icon" color="primary" size="80">{{icon}}</v-icon>
         </v-row>
         <!-- <div class="box d-flex justify-space-between align-content-center">
             <div class="d-flex flex-column justify-space-around" style="height: 100%">
