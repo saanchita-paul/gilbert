@@ -91,6 +91,9 @@ export default {
             errors: null,
         }
     },
+    mounted() {
+        console.log("AUTH", AuthService.isAuthenticated())
+    },
 
     methods: {
         async onLogin() {
@@ -98,9 +101,10 @@ export default {
             this.loginLoading = true;
             if (!(await AuthService.login(this.form))) {
                 this.isLoginFailed = true;
+            } else {
+                await this.$router.push({name: 'dashboard'})
             }
             this.loginLoading = false;
-            // this.$router.push({name: 'customerAnalytics'})
         },
     },
 }

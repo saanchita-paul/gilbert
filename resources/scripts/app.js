@@ -5,11 +5,14 @@ import Router from '@scripts/routes/router';
 import '@scripts/plugins/VeeValidate';
 import '@scripts/plugins/Axios';
 import store from '@scripts/store';
+import { authUser } from "@scripts/services/AuthService";
 
+authUser().finally(() => {
+    new Vue( {
+        vuetify: Vuetify,
+        router: Router,
+        store,
+        render: h => h(App)
+    }).$mount('#app')
+})
 
-new Vue( {
-    vuetify: Vuetify,
-    router: Router,
-    store,
-    render: h => h(App)
-}).$mount('#app')
