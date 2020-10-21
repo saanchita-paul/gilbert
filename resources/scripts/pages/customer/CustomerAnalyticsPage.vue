@@ -7,28 +7,28 @@
             <v-row class="customer-insight">
                 <v-col md="3" sm="12" class="box">
                     <InfoCard
-                        icon="mdi-email-receive"
+                        icon="mdi-account-group"
                         title="Total customer"
                         :value="'21,45'"
                     ></InfoCard>
                 </v-col>
                 <v-col md="3" sm="12" class="box">
                     <InfoCard
-                        icon="mdi-email-receive"
+                        icon="mdi-account-plus"
                         title="New customer"
                         :value="'97'"
                     ></InfoCard>
                 </v-col>
                 <v-col md="3" sm="12" class="box">
                     <InfoCard
-                        icon="mdi-email-receive"
+                        icon="mdi-account-check"
                         title="Active customer"
                         :value="'1,253'"
                     ></InfoCard>
                 </v-col>
                 <v-col md="3" sm="12" class="box">
                     <InfoCard
-                        icon="mdi-email-receive"
+                        icon="mdi-account-star"
                         title="Engaged customer"
                         :value="'120'"
                     ></InfoCard>
