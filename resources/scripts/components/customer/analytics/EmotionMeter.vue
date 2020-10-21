@@ -2,14 +2,14 @@
     <v-card class="px-3">
         <v-card-text>
             <v-row>
-                <v-col md="5">
+                <v-col md="4">
                     <p  class="info-value  primary--text" >
                         {{emotions.positive}}%
                         <span class="app-title primary--text-small">positive</span>
                     </p>
                     <p class="app-title-small primary--text" v-text="'Sentiment status'"></p>
                 </v-col>
-                <v-col md="7">
+                <v-col md="8">
                     <div class="emotions-container mt-1">
                         <div class="emo app-title-small  white--text" :style="negativeStyles">NEGATIVE</div>
                         <div class="emo app-title-small white--text" :style="neutralStyles">NEUTRAL</div>
@@ -134,6 +134,7 @@ export default {
     border-radius: 5px;
     display: flex;
     flex-direction: row;
+    height: 100%;
     width: 100%;
     align-items: center
 }

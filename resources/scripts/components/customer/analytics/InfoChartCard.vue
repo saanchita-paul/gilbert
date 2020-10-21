@@ -2,12 +2,12 @@
     <v-card class="pa-1">
         <div class=" body-bg pa-3">
             <div class="infos">
-                <h5>Total messages</h5>
-                <p class="mb-0 app-title-big text--primary">15,940 <span class="app-title-small"></span> </p>
+                <p class="ma-0 app-title-small primary--text">{{title}}</p>
+                <p class="ma-0 info-value primary--text">{{value}} <span class="app-title green--text">+25%</span> </p>
             </div>
             <v-divider class="mb-2"></v-divider>
-            <div class="chart" style="height: 70px">
-                <canvas  height="70px" :id="chartId"></canvas>
+            <div class="chart" style="height: 66px">
+                <canvas  height="66px" :id="chartId"></canvas>
             </div>
         </div>
     </v-card>
@@ -17,7 +17,7 @@
 import Chart from 'chart.js'
 export default {
     name: "InfoChartCard",
-    props: ['chartId'],
+    props: ['chartId', 'title', 'value', 'colors'],
     data() {
         return {
             chart: {
@@ -28,11 +28,11 @@ export default {
     },
     mounted() {
         const ctx = document.getElementById(this.chartId);
-        const allColor = ['rgba(92, 34, 154, .9)', 'rgba(92, 34, 154, .5)'];
+        // const allColor = ['rgba(92, 34, 154, .9)', 'rgba(92, 34, 154, .5)'];
         let barColors = [];
         let next = 0;
         this.chart.data.map(() => {
-            barColors.push(allColor[next]);
+            barColors.push(this.colors[next]);
             next = next ? 0 : 1;
         })
         const myBarChart = new Chart(ctx, {

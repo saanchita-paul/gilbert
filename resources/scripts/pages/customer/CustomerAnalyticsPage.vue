@@ -3,7 +3,6 @@
         <PageHeader :breadcrumbs="getBreadcrumbs" title="Customer insight">
             <date-range-picker v-model="dateRange"/>
         </PageHeader>
-        <div>
             <v-row class="customer-insight">
                 <v-col md="3" sm="12" class="box">
                     <InfoCard
@@ -33,26 +32,40 @@
                         :value="'120'"
                     ></InfoCard>
                 </v-col>
+                <v-col sm="12">
+                    <EmotionMeter/>
+                </v-col>
             </v-row>
             <v-row>
                 <v-col md="4">
-                    <info-chart-card chartId="c-01"/>
+                    <info-chart-card
+                        :colors="['rgba(92, 34, 154, .9)', 'rgba(92, 34, 154, .5)']"
+                        chartId="c-01"
+                        title="Conversations"
+                        value="12,503"
+                    />
                 </v-col>
                 <v-col md="4">
-                    <info-chart-card chartId="c-02"/>
+                    <info-chart-card
+                        :colors="['rgba(53, 99, 19, .9)', 'rgba(53, 99, 19, .5)']"
+                        title="Sent"
+                        value="8,735"
+                        chartId="c-02"
+                    />
                 </v-col>
                 <v-col md="4">
-                    <info-chart-card chartId="c-03"/>
+                    <info-chart-card
+                        :colors="['rgba(159,106,38,0.9)', 'rgba(159,106,38, .5)']"
+                        title="Received"
+                        value="3,768"
+                        chartId="c-03"
+                    />
                 </v-col>
             </v-row>
-        </div>
-        <v-row style="margin-top: 20px">
-            <v-col sm="12">
-                <EmotionMeter/>
-            </v-col>
 <!--            <v-col md="6" sm="12">-->
 <!--                <GenderChart/>-->
 <!--            </v-col>-->
+        <v-row>
             <v-col sm="12">
                 <ActiveCustomer/>
             </v-col>
