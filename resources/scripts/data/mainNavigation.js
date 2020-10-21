@@ -1,4 +1,32 @@
+
 export default [
+    {
+        type: 'route',
+        title: 'Customer Dashboard',
+        icon: 'mdi-chart-pie',
+        route_name: 'dashboard',
+        disabled: false,
+    },
+    {
+        type: 'route',
+        title: 'Customer Conversation',
+        icon: 'mdi-facebook-messenger',
+        route_name: 'customers.conversation',
+        disabled: false,
+    },
+    {
+        type: 'route',
+        title: 'Customers',
+        icon: 'mdi-account-details',
+        route_name: 'customers.list',
+        disabled: false,
+    },
+]
+
+
+
+/////not using this
+const a = [
     // {
     //     type: 'route',
     //     title: 'Dashboard',
