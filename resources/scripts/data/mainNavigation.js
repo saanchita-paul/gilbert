@@ -1,4 +1,32 @@
+
 export default [
+    {
+        type: 'route',
+        title: 'Customer Dashboard',
+        icon: 'mdi-chart-pie',
+        route_name: 'dashboard',
+        disabled: false,
+    },
+    {
+        type: 'route',
+        title: 'Customer Conversation',
+        icon: 'mdi-facebook-messenger',
+        route_name: 'customers.conversation',
+        disabled: false,
+    },
+    {
+        type: 'route',
+        title: 'Customers',
+        icon: 'mdi-account-details',
+        route_name: 'customers.list',
+        disabled: false,
+    },
+]
+
+
+
+/////not using this
+const a = [
     // {
     //     type: 'route',
     //     title: 'Dashboard',
@@ -16,13 +44,15 @@ export default [
                 type: 'route',
                 title: 'Customer',
                 icon: 'mdi-chart-pie',
-                route_name: 'dashboard'
+                route_name: 'dashboard',
+                disabled: false,
             },
             {
                 type: 'route',
                 title: 'Supplier',
                 icon: 'mdi-chart-areaspline',
-                route_name: 'suppliers.insight'
+                route_name: 'suppliers.insight',
+                disabled: true,
             }
         ]
     },
@@ -36,19 +66,21 @@ export default [
                 type: 'route',
                 title: 'Customer',
                 icon: 'mdi-facebook-messenger',
-                route_name: 'customers.conversation'
+                route_name: 'customers.conversation',
+                disabled: false,
             },
             {
                 type: 'route',
                 title: 'Supplier',
                 icon: 'mdi-email',
-                route_name: 'suppliers.mails'
+                route_name: 'suppliers.mails',
+                disabled: true,
             }
         ]
     },
     {
         type: 'group',
-        title: 'Users',
+        title: 'User',
         icon: 'mdi-account',
         model: false,
         children: [
@@ -56,13 +88,15 @@ export default [
                 type: 'route',
                 title: 'Customer',
                 icon: 'mdi-account-details',
-                route_name: 'customers.list'
+                route_name: 'customers.list',
+                disabled: false,
             },
             {
                 type: 'route',
                 title: 'Supplier',
                 icon: 'mdi-table-account',
-                route_name: 'suppliers.list'
+                route_name: 'suppliers.list',
+                disabled: true,
             }
         ]
     },

@@ -11,6 +11,7 @@ import SupplierInsight from "@scripts/pages/supplier/SupplierInsight";
 import CustomersPage from "@scripts/pages/customer/CustomersPage";
 import SuppliersPage from "@scripts/pages/supplier/SuppliersPage";
 import SupplierMailPage from "@scripts/pages/supplier/SupplierMailPage";
+import AuthService, {checkRouteAuthorization} from "@scripts/services/AuthService";
 
 Vue.use(VueRouter);
 
@@ -25,41 +26,64 @@ const router = new VueRouter({
                 {
                     path: '',
                     component: CustomerAnalyticsPage,
-                    name: 'dashboard'
+                    name: 'dashboard',
+                    meta: {
+                        isProtected: true
+                    }
                 },
                 {
                     path: 'customers',
                     component: CustomersPage,
-                    name: 'customers.list'
+                    name: 'customers.list',
+                    meta: {
+                        isProtected: true
+                    }
                 },
                 {
                     path: 'customers/conversation',
                     component: MessengerPage,
-                    name: 'customers.conversation'
+                    name: 'customers.conversation',
+                    meta: {
+                        isProtected: true
+                    }
                 },
                 {
                     path: 'suppliers/insight',
                     component: SupplierInsight,
-                    name: 'suppliers.insight'
+                    name: 'suppliers.insight',
+                    meta: {
+                        isProtected: true
+                    }
                 },
                 {
                     path: 'suppliers/mails',
                     component: SupplierMailPage,
-                    name: 'suppliers.mails'
+                    name: 'suppliers.mails',
+                    meta: {
+                        isProtected: true
+                    }
                 },
                 {
                     path: 'suppliers',
                     component: SuppliersPage,
-                    name: 'suppliers.list'
+                    name: 'suppliers.list',
+                    meta: {
+                        isProtected: true
+                    }
                 }
             ]
         },
         {
             path: '/auth/login',
             component: LoginPage,
-            name: 'login'
+            name: 'login',
+            meta: {
+                isProtected: false
+            }
         }
     ]
 })
+
+router.beforeEach(AuthService.checkRouteAuthorization);
 
 export default router;

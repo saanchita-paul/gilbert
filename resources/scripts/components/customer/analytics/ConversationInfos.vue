@@ -2,7 +2,7 @@
     <v-card style="height: 100%">
         <div class="header">
             <div class="item">
-                <p class="app-title-small">Total Conversation</p>
+                <p class="app-title-small">Total conversation</p>
                 <p class="app-title primary--text">34,856</p>
             </div>
             <span class="divider">|</span>

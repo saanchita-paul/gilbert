@@ -2,22 +2,22 @@
     <v-card style="height: 100%">
         <div class="header">
             <div class="item">
-                <p class="app-title-small">Total User</p>
+                <p class="app-title-small">Total user</p>
                 <p class="app-title primary--text">2,145</p>
             </div>
             <span class="divider">|</span>
             <div class="item">
-                <p class="app-title-small">New User</p>
+                <p class="app-title-small">New user</p>
                 <p class="app-title primary--text">97</p>
             </div>
             <span class="divider">|</span>
             <div class="item">
-                <p class="app-title-small">Active User</p>
+                <p class="app-title-small">Active user</p>
                 <p class="app-title primary--text">1,157</p>
             </div>
             <span class="divider">|</span>
             <div class="item">
-                <p class="app-title-small">Engaged User</p>
+                <p class="app-title-small">Engaged user</p>
                 <p class="app-title primary--text">853</p>
             </div>
         </div>

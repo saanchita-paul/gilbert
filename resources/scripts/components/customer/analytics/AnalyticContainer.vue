@@ -1,30 +1,6 @@
 <template>
     <div>
-        <PageHeader :breadcrumbs="getBreadcrumbs" title="Customer Insight">
-            <date-range-picker v-model="dateRange"/>
-        </PageHeader>
-        <div>
-            <v-row class="pt-0">
-                <v-col md="12">
-                    <v-row class="customer-insight">
-                        <v-col  md="6" sm="12" class="box">
-                            <CustomerInfos></CustomerInfos>
-                        </v-col>
-                        <v-col md="6" sm="12" class="box">
-                            <ConversationInfos/>
-                        </v-col>
-<!--                        <v-col lg="4" md="6" sm="12" class="box">-->
-<!--                            <InfoCard-->
-<!--                                icon="mdi-email-receive"-->
-<!--                                title="Message Received"-->
-<!--                                :value="analytic.messages_received"-->
-<!--                            ></InfoCard>-->
-<!--                        </v-col>-->
-                    </v-row>
-                </v-col>
 
-            </v-row>
-        </div>
     </div>
 
 </template>

@@ -11,7 +11,7 @@
         <template v-slot:activator="{ on, attrs }">
             <v-text-field
                 v-model="dateRangeText"
-                label="Select Date Range"
+                label="Select date range"
                 prepend-icon="mdi-calendar"
                 readonly
                 v-bind="attrs"
