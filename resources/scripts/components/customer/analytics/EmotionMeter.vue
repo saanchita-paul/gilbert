@@ -3,7 +3,7 @@
         <v-card-text>
             <v-row>
                 <v-col md="5">
-                    <p  class="text-h4 app-title-big info-value  primary--text" >
+                    <p  class="info-value  primary--text" >
                         {{emotions.positive}}%
                         <span class="app-title primary--text-small">positive</span>
                     </p>

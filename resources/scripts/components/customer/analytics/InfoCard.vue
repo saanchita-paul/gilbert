@@ -2,7 +2,7 @@
     <v-card class="white black--text" style="position: relative">
         <v-row class="px-4 py-3">
             <v-col cols="8" class="pb-0">
-                <p  class="text-h4 info-value  primary--text" v-text="value"></p>
+                <p  class="info-value  primary--text" v-text="value"></p>
             </v-col>
             <v-col cols="8" class="pb-0">
                 <p class="app-title-small primary--text" v-text="title"></p>
