@@ -47,12 +47,12 @@
             </v-row>
         </div>
         <v-row style="margin-top: 20px">
-            <v-col md="6" sm="12">
+            <v-col sm="12">
                 <EmotionMeter/>
             </v-col>
-            <v-col md="6" sm="12">
-                <GenderChart/>
-            </v-col>
+<!--            <v-col md="6" sm="12">-->
+<!--                <GenderChart/>-->
+<!--            </v-col>-->
             <v-col sm="12">
                 <ActiveCustomer/>
             </v-col>
