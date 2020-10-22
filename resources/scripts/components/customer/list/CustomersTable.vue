@@ -17,15 +17,23 @@
                     <td>
                         <v-avatar size="40"><img src="https://cdn.vuetifyjs.com/images/lists/1.jpg"></v-avatar>
                     </td>
-                    <td>{{ item.first_name }}</td>
-                    <td>{{ item.last_name }}</td>
-                    <td>{{ item.user_message }}</td>
+                    <td>{{ item.full_name }}</td>
+                    <td>
+                        <div style="height: 25px; width: 25px; background-color: orange; border-radius: 3px"></div>
+                    </td>
+                    <td>
+                        <div
+                            class="mgs-sentiment"
+                            :style="`backgroundColor: ${getColor(item.user_message.emotion)}`"
+                        >
+                            {{ item.user_message.value }}
+                        </div>
+                    </td>
+                    <td>{{ item.location }}</td>
                     <td>{{ item.time_zone }}</td>
-                    <td><div style="height: 25px; width: 25px; background-color: orange; border-radius: 3px"></div></td>
-                    <td>TBD</td>
                     <td>{{ item.last_active }}</td>
                     <td class="d-flex justify-center">
-                        <v-icon @click="openConversation(item.id)">mdi-facebook-messenger</v-icon>
+                        <v-icon color="#006AFF" @click="openConversation(item.id)">mdi-facebook-messenger</v-icon>
                     </td>
                 </tr>
                 </tbody>
@@ -46,21 +54,20 @@ export default {
                     sortable: false,
                     value: 'avatar',
                 },
-                {text: 'First name', value: 'first_name'},
-                {text: 'Last name', value: 'last_name'},
-                {text: 'User message', value: 'user_message'},
-                {text: 'Timezone', value: 'time_zone'},
+                {text: 'Name', value: 'full_name'},
                 {text: 'Sentiment', value: 'emotion'},
-                {text: 'NPS', value: 'nps'},
+                {text: 'User message', value: 'user_message', align: 'center'},
+                {text: 'Location', value: 'location'},
+                {text: 'Timezone', value: 'time_zone'},
                 {text: 'Interacted on', value: 'last_active'},
                 {text: '', sortable: false, value: 'last_active', align: 'center'},
             ],
             desserts: [
                 {
                     id: 1245784,
-                    first_name: 'MR',
-                    last_name: 'SKU',
-                    user_message: 'booking mover',
+                    full_name: 'MR SKU',
+                    user_message: {emotion: 'positive', value: 'booking mover'},
+                    location: 'Camberwell',
                     time_zone: 'GTM +6',
                     emotion: 24,
                     nps: 4.0,
@@ -68,9 +75,9 @@ export default {
                 },
                 {
                     id: 1245784,
-                    first_name: 'MR',
-                    last_name: 'SKU',
-                    user_message: 'booking mover',
+                    full_name: 'MR SKU',
+                    user_message: {emotion: 'neutral', value: 'okay'},
+                    location: 'Camberwell',
                     time_zone: 'GTM +6',
                     emotion: 24,
                     nps: 4.0,
@@ -78,9 +85,9 @@ export default {
                 },
                 {
                     id: 1245784,
-                    first_name: 'MR',
-                    last_name: 'SKU',
-                    user_message: 'booking mover',
+                    full_name: 'MR SKU',
+                    user_message: {emotion: 'positive', value: 'booking mover'},
+                    location: 'Camberwell',
                     time_zone: 'GTM +6',
                     emotion: 24,
                     nps: 4.0,
@@ -88,9 +95,9 @@ export default {
                 },
                 {
                     id: 1245784,
-                    first_name: 'MR',
-                    last_name: 'SKU',
-                    user_message: 'booking mover',
+                    full_name: 'MR SKU',
+                    user_message: {emotion: 'negative', value: 'I am angry'},
+                    location: 'Camberwell',
                     time_zone: 'GTM +6',
                     emotion: 24,
                     nps: 4.0,
@@ -98,9 +105,9 @@ export default {
                 },
                 {
                     id: 1245784,
-                    first_name: 'MR',
-                    last_name: 'SKU',
-                    user_message: 'booking mover',
+                    full_name: 'MR SKU',
+                    user_message: {emotion: 'positive', value: 'thanks'},
+                    location: 'Camberwell',
                     time_zone: 'GTM +6',
                     emotion: 24,
                     nps: 4.0,
@@ -110,6 +117,16 @@ export default {
         }
     },
     methods: {
+        getColor(sentiment) {
+            switch (sentiment) {
+                case 'positive':
+                    return 'green';
+                case 'negative':
+                    return 'red'
+                default:
+                    return 'orange'
+            }
+        },
         openConversation(id) {
             this.$router.push({name: `customers.conversation`, query: {customer: id}})
         }
@@ -117,5 +134,11 @@ export default {
 }
 </script>
 <style scoped>
-
+.mgs-sentiment {
+    text-align: center !important;
+    padding: 5px 10px;
+    color: white;
+    margin: 5px !important;
+    border-radius: 27px 20px 20px 0px;
+}
 </style>
