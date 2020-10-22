@@ -1,9 +1,10 @@
 import axios from 'axios';
 import router from '@scripts/routes/router';
 
+axios.defaults.withCredentials = true;
+
 axios.interceptors.response.use(
     function(response) {
-        console.log(response, "AXIOS MIDDLEWARE")
         return response;
     },
     function(error) {

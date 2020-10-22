@@ -94,6 +94,9 @@
 
 <script>
 import ApplicationService from "../services/ApplicationService";
+import {initializeBroadcasting} from "@scripts/plugins/LaravelEcho";
+import {getAuthUser} from "@scripts/services/AuthService";
+
 
 export default {
     name: "DashboardLayout",
@@ -103,6 +106,9 @@ export default {
             miniDrawer: true,
             routes: ApplicationService.getMainNavigationRoutes()
         }
+    },
+    mounted() {
+        initializeBroadcasting(getAuthUser().id);
     }
 }
 </script>
