@@ -134,11 +134,5 @@ export default {
 }
 </script>
 <style scoped>
-.mgs-sentiment {
-    text-align: center !important;
-    padding: 5px 10px;
-    color: white;
-    margin: 5px !important;
-    border-radius: 27px 20px 20px 0px;
-}
+
 </style>
