@@ -1,4 +1,4 @@
-import CustomerAnalytics from "@scripts/models/CustomerAnalytics";
+import CustomerSummary from "@scripts/models/CustomerSummary";
 import DateRange from "@scripts/models/DateRange";
 
 export default {
@@ -7,15 +7,14 @@ export default {
      *
      * @param { DateRange } dateRange
      *
-     * @returns {CustomerAnalytics}
+     * @returns {CustomerSummary}
      */
-    getCustomerAnalytics: (dateRange) => {
-        return new CustomerAnalytics({
-            new_user_count: 20,
-            messages_sent: '1,237',
-            messages_received: '2,472',
-            male_percent: 72,
-            female_percent: 28
+    getCustomerSummary: (dateRange) => {
+        return new CustomerSummary({
+            total_customer_count: '4,433',
+            new_customer_count: 70,
+            active_customer_count: '1,237',
+            engaged_customer_count: 472,
         })
     }
 }

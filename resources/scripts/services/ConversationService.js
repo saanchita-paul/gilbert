@@ -1,4 +1,4 @@
-import CustomerAPI from "@scripts/api/CustomerAPI";
+import ConversationAPI from "@scripts/api/ConversationAPI";
 import DateRange from "@scripts/models/DateRange";
 
 
@@ -7,5 +7,5 @@ export default {
      * @param {DateRange} dateRange
      * @returns {CustomerAnalytics}
      */
-    getCustomerSummary: dateRange => CustomerAPI.getCustomerSummary(dateRange)
+    getConversationSummary: dateRange => ConversationAPI.getConversationSummary(dateRange)
 }
