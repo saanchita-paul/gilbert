@@ -1,26 +1,44 @@
 <template>
-    <v-card>
-        <v-card-title class="card-bg-color app-title">
-<!--         <v-icon size="28" color="white">mdi-emoticon</v-icon>-->
-            Engagement satisfaction
-<!--            <span class="ml-2 title">Emotion Meter</span>-->
-        </v-card-title>
-        <v-divider></v-divider>
-        <div class="emotions-container">
-            <div class="emotion">
-                <v-icon color="green" size="140">mdi-emoticon-happy-outline</v-icon>
-                <p class="app-title primary--text">{{emotions.positive}}%</p>
-            </div>
-            <div class="emotion">
-                <v-icon color="yellow" size="140">mdi-emoticon-neutral-outline</v-icon>
-                <p class="app-title primary--text">{{emotions.neutral}}%</p>
-            </div>
-            <div class="emotion">
-                <v-icon color="red" size="140">mdi-emoticon-sad-outline</v-icon>
-                <p class="app-title primary--text">{{emotions.negative}}%</p>
-            </div>
-        </div>
+    <v-card class="px-3">
+        <v-card-text>
+            <v-row>
+                <v-col md="4">
+                    <p  class="info-value  primary--text" >
+                        {{emotions.positive}}%
+                        <span class="app-title primary--text-small">positive</span>
+                    </p>
+                    <p class="app-title-small primary--text" v-text="'Sentiment status'"></p>
+                </v-col>
+                <v-col md="8">
+                    <div class="emotions-container mt-1">
+                        <div class="emo app-title-small  white--text" :style="negativeStyles">NEGATIVE</div>
+                        <div class="emo app-title-small white--text" :style="neutralStyles">NEUTRAL</div>
+                        <div class="emo app-title-small white--text" :style="positiveStyles">POSITIVE</div>
+                    </div>
+                </v-col>
+            </v-row>
+        </v-card-text>
         <span>
+<!--                    <v-card-title class="card-bg-color app-title">-->
+<!--&lt;!&ndash;         <v-icon size="28" color="white">mdi-emoticon</v-icon>&ndash;&gt;-->
+<!--            Engagement satisfaction-->
+<!--                        &lt;!&ndash;            <span class="ml-2 title">Emotion Meter</span>&ndash;&gt;-->
+<!--        </v-card-title>-->
+<!--        <v-divider></v-divider>-->
+<!--        <div class="emotions-container">-->
+<!--            <div class="emotion">-->
+<!--                <v-icon color="green" size="140">mdi-emoticon-happy-outline</v-icon>-->
+<!--                <p class="app-title primary&#45;&#45;text">{{emotions.positive}}%</p>-->
+<!--            </div>-->
+<!--            <div class="emotion">-->
+<!--                <v-icon color="yellow" size="140">mdi-emoticon-neutral-outline</v-icon>-->
+<!--                <p class="app-title primary&#45;&#45;text">{{emotions.neutral}}%</p>-->
+<!--            </div>-->
+<!--            <div class="emotion">-->
+<!--                <v-icon color="red" size="140">mdi-emoticon-sad-outline</v-icon>-->
+<!--                <p class="app-title primary&#45;&#45;text">{{emotions.negative}}%</p>-->
+<!--            </div>-->
+<!--        </div>-->
 <!--            <v-list dense class="px-4">-->
 <!--                    <v-list-item>-->
 <!--                        <v-list-item-avatar><v-icon color="red">mdi-emoticon-angry</v-icon></v-list-item-avatar>-->
@@ -87,21 +105,21 @@ export default {
         return {
             load: false,
             emotions: {
-                negative: 5,
-                neutral: 10,
-                positive: 85,
+                negative: 22,
+                neutral: 30,
+                positive: 48,
             }
         }
     },
     computed: {
         negativeStyles() {
-            return this.load ?  {backgroundColor: 'red', width: this.emotions.negative + '%'} : {width: '0%'}
+            return  {backgroundColor: 'red', width: this.emotions.negative + '%', borderTopLeftRadius: '5px', borderBottomLeftRadius: '5px'}
         },
         neutralStyles() {
-            return this.load ?  {backgroundColor: 'gray', width: this.emotions.neutral + '%'} : {width: '0%'}
+            return  {backgroundColor: 'orange', width: this.emotions.neutral + '%'}
         },
         positiveStyles() {
-            return this.load ?  {backgroundColor: 'green', width: this.emotions.positive + '%'} : {width: '0%'}
+            return {backgroundColor: 'green', width: this.emotions.positive + '%', borderTopRightRadius: '5px', borderBottomRightRadius: '5px'}
         },
     },
     mounted() {
@@ -111,17 +129,21 @@ export default {
 </script>
 
 <style scoped>
+
 .emotions-container {
-    height: 186px;
+    border-radius: 5px;
     display: flex;
+    flex-direction: row;
+    height: 100%;
     width: 100%;
-    justify-content: space-around;
     align-items: center
 }
-.emotion {
+.emo {
+    height: 35px;
     display: flex;
     flex-direction: column;
-    align-items: center
+    align-items: center;
+    justify-content: center;
 }
 .meter {
     height: 5px;

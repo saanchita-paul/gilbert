@@ -38,6 +38,7 @@
                                     v-model="form.password"
                                     :error-messages="errors"
                                     label="Password"
+                                    type="password"
                                     required
                                 ></v-text-field>
                             </validation-provider>

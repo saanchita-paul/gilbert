@@ -2,12 +2,12 @@
     <v-card class="white black--text" style="position: relative">
         <v-row class="px-4 py-3">
             <v-col cols="8" class="pb-0">
-                <p  class="text-h4 value primary--text" v-text="value"></p>
+                <p  class="info-value pa-0 ma-0 primary--text" v-text="value"></p>
             </v-col>
             <v-col cols="8" class="pb-0">
-                <p class="app-title primary--text" v-text="title"></p>
+                <p class="app-title-small primary--text" v-text="title"></p>
             </v-col>
-            <v-icon  class="card-icon" color="primary" size="110">{{icon}}</v-icon>
+            <v-icon  class="card-icon" color="primary" size="100">{{icon}}</v-icon>
         </v-row>
         <!-- <div class="box d-flex justify-space-between align-content-center">
             <div class="d-flex flex-column justify-space-around" style="height: 100%">
@@ -39,7 +39,7 @@ export default {
 .box {
     height: 150px;
 }
-.value {
+.info-value {
     color: #757575;
     font-size: 40px !important;
     font-weight: 900;
@@ -48,6 +48,6 @@ export default {
     opacity: .2;
     position: absolute;
     bottom: 0px;
-    right: 0px
+    right: 5px
 }
 </style>
