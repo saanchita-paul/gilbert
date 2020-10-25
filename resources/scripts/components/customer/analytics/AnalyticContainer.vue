@@ -15,7 +15,6 @@ import merge from "lodash-es/merge";
 import CustomerInfos from "@scripts/components/customer/analytics/CustomerInfos";
 import ConversationInfos from "@scripts/components/customer/analytics/ConversationInfos";
 import CustomerSummary from "@scripts/models/CustomerSummary";
-import CustomerService from "@scripts/services/CustomerService";
 
 export default {
     name: "AnalyticContainer",
@@ -49,10 +48,6 @@ export default {
             ]
         }
     },
-    async mounted() {
-        const customerSummary = await CustomerService.getCustomerAnalytics(this.dateRange)
-        merge(this.customerSummary, customerSummary)
-    }
 }
 </script>
 

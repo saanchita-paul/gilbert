@@ -1,8 +1,8 @@
 export default class CustomerSummary {
-    constructor({total_customer_count, new_customer_count, active_customer_count, engaged_customer_count} = {}) {
-        this.total_customer_count = total_customer_count || 0;
-        this.new_customer_count = new_customer_count || 0;
-        this.active_customer_count = active_customer_count || 0;
-        this.engaged_customer_count = engaged_customer_count || 0;
+    constructor({total_customer, new_customer, active_customer, engaged_customer} = {}) {
+        this.total_customer = total_customer || 0;
+        this.new_customer = new_customer || 0;
+        this.active_customer = active_customer || 0;
+        this.engaged_customer = engaged_customer || 0;
     }
 }

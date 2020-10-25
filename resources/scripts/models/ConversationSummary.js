@@ -1,7 +1,7 @@
 export default class ConversationSummary {
-    constructor({total_message_count, total_sent, total_received} = {}) {
-        this.total_message_count = total_message_count || 0;
-        this.total_sent = total_sent || 0;
-        this.total_received = total_received || 0;
+    constructor({total_message, message_sent, message_received } = {}) {
+        this.total_message = total_message || 0;
+        this.message_sent = message_sent || 0;
+        this.message_received = message_received || 0;
     }
 }
