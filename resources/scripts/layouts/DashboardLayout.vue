@@ -95,7 +95,7 @@
 <script>
 import ApplicationService from "../services/ApplicationService";
 import {initializeBroadcasting} from "@scripts/plugins/LaravelEcho";
-import {getAuthUser} from "@scripts/services/AuthService";
+import AuthService, {getAuthUser} from "@scripts/services/AuthService";
 
 
 export default {
@@ -108,6 +108,7 @@ export default {
         }
     },
     mounted() {
+        setInterval(AuthService.authUser, 300000)
         initializeBroadcasting(getAuthUser().id);
     }
 }
