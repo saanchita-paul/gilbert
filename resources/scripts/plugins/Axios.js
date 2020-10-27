@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {kickOut} from "@scripts/services/AuthService";
 import router from '@scripts/routes/router';
 
 axios.defaults.withCredentials = true;
@@ -11,7 +12,7 @@ axios.interceptors.response.use(
         // Do something with response error
         if (error.response.status === 401 && !(router.currentRoute.name === 'login')) {
             console.log(error);
-            router.push({name: 'login'})
+            kickOut();
         }
         return Promise.reject(error);
     }

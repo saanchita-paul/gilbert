@@ -1,6 +1,7 @@
 import AuthAPI from "@scripts/api/AuthAPI";
 import Store from '@scripts/store/index'
 import User from "@scripts/models/User";
+import router from '@scripts/routes/router';
 
 /**
  * get user auth state
@@ -33,7 +34,7 @@ export const login = async form => {
  */
 export const authUser = async () => {
     const user = await AuthAPI.getAuthUser();
-    AuthAPI.checkBotAuth();
+    AuthAPI.checkBotAuth(); //for testing purpose
     Store.commit('setUser', user)
 }
 
@@ -60,11 +61,17 @@ export const checkRouteAuthorization = (to, from, next) => {
  */
 export const getAuthUser = () => Store.getters.user;
 
+export const kickOut = () => {
+    Store.commit('setUser', null);
+    router.push({name: 'login'})
+}
+
 export default {
     getAuthUser,
     login,
     authUser,
     isAuthenticated,
+    kickOut,
     checkRouteAuthorization
 }
 
