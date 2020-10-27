@@ -43,6 +43,7 @@
                         chartId="c-01"
                         title="Conversations"
                         :value="dashboardSummary.conversationSummary.total_message"
+                        :chart="dashboardSummary.infoChart.total_message"
                     />
                 </v-col>
                 <v-col md="4">
@@ -51,6 +52,7 @@
                         title="Sent"
                         :value="dashboardSummary.conversationSummary.message_sent"
                         chartId="c-02"
+                        :chart="dashboardSummary.infoChart.message_sent"
                     />
                 </v-col>
                 <v-col md="4">
@@ -59,6 +61,7 @@
                         title="Received"
                         :value="dashboardSummary.conversationSummary.message_received"
                         chartId="c-03"
+                        :chart="dashboardSummary.infoChart.message_received"
                     />
                 </v-col>
             </v-row>
