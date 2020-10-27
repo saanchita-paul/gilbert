@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container v-if="dashboardSummary">
         <PageHeader :breadcrumbs="getBreadcrumbs" title="Customer insight">
             <date-range-picker v-model="dateRange"/>
         </PageHeader>
@@ -8,28 +8,28 @@
                     <InfoCard
                         icon="mdi-account-group"
                         title="Total customer"
-                        :value="'21,45'"
+                        :value="dashboardSummary.customerSummary.total_customer"
                     ></InfoCard>
                 </v-col>
                 <v-col md="3" sm="12" class="box">
                     <InfoCard
                         icon="mdi-account-plus"
                         title="New customer"
-                        :value="'97'"
+                        :value="dashboardSummary.customerSummary.new_customer"
                     ></InfoCard>
                 </v-col>
                 <v-col md="3" sm="12" class="box">
                     <InfoCard
                         icon="mdi-account-check"
                         title="Active customer"
-                        :value="'1,253'"
+                        :value="dashboardSummary.customerSummary.active_customer"
                     ></InfoCard>
                 </v-col>
                 <v-col md="3" sm="12" class="box">
                     <InfoCard
                         icon="mdi-account-star"
                         title="Engaged customer"
-                        :value="'120'"
+                        :value="dashboardSummary.customerSummary.engaged_customer"
                     ></InfoCard>
                 </v-col>
                 <v-col sm="12">
@@ -42,23 +42,26 @@
                         :colors="['rgba(92, 34, 154, .9)', 'rgba(92, 34, 154, .5)']"
                         chartId="c-01"
                         title="Conversations"
-                        value="12,503"
+                        :value="dashboardSummary.conversationSummary.total_message"
+                        :chart="dashboardSummary.infoChart.total_message"
                     />
                 </v-col>
                 <v-col md="4">
                     <info-chart-card
                         :colors="['rgba(53, 99, 19, .9)', 'rgba(53, 99, 19, .5)']"
                         title="Sent"
-                        value="8,735"
+                        :value="dashboardSummary.conversationSummary.message_sent"
                         chartId="c-02"
+                        :chart="dashboardSummary.infoChart.message_sent"
                     />
                 </v-col>
                 <v-col md="4">
                     <info-chart-card
                         :colors="['rgba(159,106,38,0.9)', 'rgba(159,106,38, .5)']"
                         title="Received"
-                        value="3,768"
+                        :value="dashboardSummary.conversationSummary.message_received"
                         chartId="c-03"
+                        :chart="dashboardSummary.infoChart.message_received"
                     />
                 </v-col>
             </v-row>
@@ -81,13 +84,15 @@ import AnalyticContainer from "@scripts/components/customer/analytics/AnalyticCo
 import InfoCard from "@scripts/components/customer/analytics/InfoCard";
 import DateRangePicker from "@scripts/components/customer/analytics/DateRangePicker"
 import PageHeader from "@scripts/components/common/PageHeader"
-import CustomerAnalytics from "@scripts/models/CustomerAnalytics";
-import CustomerService from "@scripts/services/CustomerService";
 import DateRange from "@scripts/models/DateRange";
 import merge from "lodash-es/merge";
 import InfoChartCard from "@scripts/components/customer/analytics/InfoChartCard";
 import CustomerInfos from "@scripts/components/customer/analytics/CustomerInfos";
 import ConversationInfos from "@scripts/components/customer/analytics/ConversationInfos";
+import SentimentSummary from "@scripts/models/SentimentSummary";
+import SentimentService from "@scripts/services/SentimentService";
+import DashboardService from "@scripts/services/DashboardService";
+
 
 export default {
     name: "CustomerAnalyticsPage",
@@ -105,7 +110,8 @@ export default {
     },
     data() {
         return {
-            analytic: new CustomerAnalytics(),
+            sentimentSummary: new SentimentSummary(),
+            dashboardSummary: null,
             dateRange: new DateRange()
         }
     },
@@ -126,8 +132,10 @@ export default {
         }
     },
     async mounted() {
-        const analytics = await CustomerService.getCustomerAnalytics(this.dateRange)
-        merge(this.analytic, analytics)
+        const sentimentSummary = await SentimentService.getSentimentSummary(this.dateRange);
+        merge(this.sentimentSummary, sentimentSummary);
+        this.dashboardSummary = await DashboardService.getDashboardSummary(this.dateRange);
+        console.log('Data', this.dashboardSummary);
     }
 
 }

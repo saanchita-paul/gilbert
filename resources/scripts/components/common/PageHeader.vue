@@ -13,10 +13,10 @@
                 </template>
             </v-breadcrumbs>
         </v-col>
-        <v-col sm="8" class="mt-0 pt-0">
-            <h2 class="black--text app-title-big">{{title}}</h2>
+        <v-col sm="6" class="mt-0 pt-0">
+                <h2 style="margin-top: 5px" class="black--text app-title-big">{{title}}</h2>
         </v-col>
-        <v-col sm="4" class="menu-color py-0">
+        <v-col sm="6" class="menu-color py-0">
             <slot></slot>
         </v-col>
     </v-row>

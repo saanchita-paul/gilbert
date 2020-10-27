@@ -10,12 +10,11 @@ import InfoCard from "@scripts/components/customer/analytics/InfoCard";
 import GenderChart from "@scripts/components/customer/analytics/GenderChart";
 import DateRangePicker from "@scripts/components/customer/analytics/DateRangePicker"
 import PageHeader from "@scripts/components/common/PageHeader"
-import CustomerAnalytics from "@scripts/models/CustomerAnalytics";
-import CustomerService from "@scripts/services/CustomerService";
 import DateRange from "@scripts/models/DateRange";
 import merge from "lodash-es/merge";
 import CustomerInfos from "@scripts/components/customer/analytics/CustomerInfos";
 import ConversationInfos from "@scripts/components/customer/analytics/ConversationInfos";
+import CustomerSummary from "@scripts/models/CustomerSummary";
 
 export default {
     name: "AnalyticContainer",
@@ -29,7 +28,7 @@ export default {
     },
     data() {
         return {
-            analytic: new CustomerAnalytics(),
+            customerSummary: new CustomerSummary(),
             dateRange: new  DateRange()
         }
     },
@@ -49,10 +48,6 @@ export default {
             ]
         }
     },
-    async mounted() {
-        const analytics = await CustomerService.getCustomerAnalytics(this.dateRange)
-        merge(this.analytic, analytics)
-    }
 }
 </script>
 
