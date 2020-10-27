@@ -8,10 +8,13 @@ export default {
     },
     getAuthUser: async () =>  {
         const res = (await axios.get('/api/user')).data;
+
+        axios.defaults.headers.common['BOT_ACCESS_TOKEN'] = res.bot_access_token;
+
         return new User({
-            id: res.id,
-            name: res.name,
-            email: res.email
+            id: res?.user.id,
+            name: res?.user.name,
+            email: res?.user.email,
         });
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
+use Illuminate\Encryption\Encrypter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
@@ -17,4 +19,12 @@ use Illuminate\Support\Facades\Route;
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
 Route::middleware('auth:sanctum')
-    ->get('/user', fn(Request $request) => $request->user());
+    ->get('/user', [AuthController::class, 'authUser']);
+
+
+/**
+ * test routes
+ */
+Route::get('lnn/bot_token', function () {
+    return (new Encrypter(config('bot.encryption_key')))->decrypt(\request()->get('bot_token'), true);
+});
