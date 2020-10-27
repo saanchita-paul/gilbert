@@ -33,6 +33,7 @@ export const login = async form => {
  */
 export const authUser = async () => {
     const user = await AuthAPI.getAuthUser();
+    AuthAPI.checkBotAuth();
     Store.commit('setUser', user)
 }
 
