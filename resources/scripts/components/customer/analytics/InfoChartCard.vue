@@ -2,8 +2,8 @@
     <v-card class="pa-1">
         <div class=" body-bg pa-3">
             <div class="infos">
-                <p class="ma-0 app-title-small primary--text">{{title}}</p>
-                <p class="ma-0 info-value primary--text">{{value}} <span class="app-title green--text">+25%</span> </p>
+                <p class="ma-0 app-title-small">{{title}}</p>
+                <p class="ma-0 info-value">{{value}} <span class="app-title teal--text">+25%</span> </p>
             </div>
             <v-divider class="mb-2"></v-divider>
             <div class="chart" style="height: 66px">

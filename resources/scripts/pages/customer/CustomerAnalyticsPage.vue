@@ -1,39 +1,59 @@
 <template>
     <v-container v-if="dashboardSummary">
-        <PageHeader :breadcrumbs="getBreadcrumbs" title="Customer insight">
+        <PageHeader :breadcrumbs="getBreadcrumbs" title="Dashboard">
             <date-range-picker v-model="dateRange"/>
         </PageHeader>
             <v-row class="customer-insight">
-                <v-col md="3" sm="12" class="box">
+                 <v-col md="12" sm="12" class="box title primary--text font-weight-bold">
+                     User Insights
+                </v-col>
+            </v-row>
+
+            <v-row class="customer-insight d-flex">
+                <v-col class="box">
                     <InfoCard
-                        icon="mdi-account-group"
-                        title="Total customer"
-                        :value="dashboardSummary.customerSummary.total_customer"
+                        icon="mdi-clipboard-text-outline"
+                        actionIcon="mdi-dots-vertical"
+                        user_title="Total Users"
+                        user_value="2150"
+                        customer_title="Total Customers"
+                        customer_value="1150"
                     ></InfoCard>
                 </v-col>
-                <v-col md="3" sm="12" class="box">
-                    <InfoCard
-                        icon="mdi-account-plus"
-                        title="New customer"
-                        :value="dashboardSummary.customerSummary.new_customer"
+                <v-col class="box">
+                     <InfoCard
+                        icon="mdi-clipboard-list-outline"
+                        actionIcon="mdi-dots-vertical"
+                        user_title="Total Users"
+                        user_value="2150"
+                        customer_title="Total Customers"
+                        customer_value="1150"
                     ></InfoCard>
                 </v-col>
-                <v-col md="3" sm="12" class="box">
-                    <InfoCard
-                        icon="mdi-account-check"
-                        title="Active customer"
-                        :value="dashboardSummary.customerSummary.active_customer"
+                <v-col class="box">
+                     <InfoCard
+                        icon="mdi-clipboard-list-outline"
+                        actionIcon="mdi-dots-vertical"
+                        user_title="Total Users"
+                        user_value="2150"
+                        customer_title="Total Customers"
+                        customer_value="1150"
                     ></InfoCard>
                 </v-col>
-                <v-col md="3" sm="12" class="box">
+                <!-- <v-col class="box">
                     <InfoCard
                         icon="mdi-account-star"
                         title="Engaged customer"
                         :value="dashboardSummary.customerSummary.engaged_customer"
                     ></InfoCard>
-                </v-col>
-                <v-col sm="12">
+                </v-col> -->
+                <v-col cols="4" class="box">
                     <EmotionMeter/>
+                </v-col>
+            </v-row>
+            <v-row class="customer-insight">
+                 <v-col md="12" sm="12" class="box title primary--text font-weight-bold">
+                     USER MESSAGES AND ENGAGEMENT
                 </v-col>
             </v-row>
             <v-row>
