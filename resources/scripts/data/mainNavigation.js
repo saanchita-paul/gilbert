@@ -1,5 +1,5 @@
-
-export default [
+/////not using this
+export const a =  [
     {
         type: 'route',
         title: 'Customer Dashboard',
@@ -25,37 +25,14 @@ export default [
 
 
 
-/////not using this
-const a = [
-    // {
-    //     type: 'route',
-    //     title: 'Dashboard',
-    //     icon: 'mdi-view-dashboard',
-    //     route_name: 'dashboard'
-    // },
-
+export default [
     {
-        type: 'group',
-        title: 'Insight',
-        icon: 'mdi-view-list-outline',
-        model: false,
-        children: [
-            {
-                type: 'route',
-                title: 'Customer',
-                icon: 'mdi-chart-pie',
-                route_name: 'dashboard',
-                disabled: false,
-            },
-            {
-                type: 'route',
-                title: 'Supplier',
-                icon: 'mdi-chart-areaspline',
-                route_name: 'suppliers.insight',
-                disabled: true,
-            }
-        ]
+        type: 'route',
+        title: 'Dashboard',
+        icon: 'mdi-view-dashboard',
+        route_name: 'dashboard'
     },
+
     {
         type: 'group',
         title: 'Conversation',
@@ -64,18 +41,25 @@ const a = [
         children: [
             {
                 type: 'route',
-                title: 'Customer',
+                title: 'Inbox',
                 icon: 'mdi-facebook-messenger',
                 route_name: 'customers.conversation',
                 disabled: false,
             },
             {
                 type: 'route',
-                title: 'Supplier',
+                title: 'Open Deals',
                 icon: 'mdi-email',
                 route_name: 'suppliers.mails',
                 disabled: true,
-            }
+            },
+            {
+                type: 'route',
+                title: 'Close Deals',
+                icon: 'mdi-email',
+                route_name: 'suppliers.mails',
+                disabled: true,
+            },
         ]
     },
     {
