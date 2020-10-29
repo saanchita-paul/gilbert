@@ -160,6 +160,7 @@ export default {
     data() {
         return {
             subMenuDrawer: false,
+            //todo: update default route based on current route
             selectedMenus: ApplicationService.getDefaultRoute(),
             drawer: true,
             miniDrawer: true,
