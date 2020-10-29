@@ -34,7 +34,7 @@ export const login = async form => {
  */
 export const authUser = async () => {
     const user = await AuthAPI.getAuthUser();
-    AuthAPI.checkBotAuth(); //for testing purpose
+    // AuthAPI.checkBotAuth(); //for testing purpose
     Store.commit('setUser', user)
 }
 

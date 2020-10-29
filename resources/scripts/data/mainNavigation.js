@@ -24,20 +24,43 @@ export const a =  [
 ]
 
 
-
-export default [
-    {
+export const defaultRoute =     {
         type: 'route',
         title: 'Dashboard',
-        icon: 'mdi-view-dashboard',
+        icon: 'mdi-chart-areaspline',
         route_name: 'dashboard'
-    },
-
+    }
+export default [
+    { ...defaultRoute },
     {
         type: 'group',
-        title: 'Conversation',
-        icon: 'mdi-facebook-messenger',
+        title: 'Users',
+        icon: 'mdi-account-multiple-outline',
         model: false,
+        route_name: 'customers.list',
+        children: [
+            {
+                type: 'route',
+                title: 'All users',
+                icon: 'mdi-account-details',
+                route_name: 'customers.list',
+                disabled: false,
+            },
+            {
+                type: 'route',
+                title: 'Active users',
+                icon: 'mdi-table-account',
+                route_name: 'customers.list',
+                disabled: true,
+            }
+        ]
+    },
+    {
+        type: 'group',
+        title: 'Messages',
+        icon: 'mdi-chat-processing-outline',
+        model: false,
+        route_name: 'customers.conversation',
         children: [
             {
                 type: 'route',
@@ -60,28 +83,6 @@ export default [
                 route_name: 'suppliers.mails',
                 disabled: true,
             },
-        ]
-    },
-    {
-        type: 'group',
-        title: 'User',
-        icon: 'mdi-account',
-        model: false,
-        children: [
-            {
-                type: 'route',
-                title: 'Customer',
-                icon: 'mdi-account-details',
-                route_name: 'customers.list',
-                disabled: false,
-            },
-            {
-                type: 'route',
-                title: 'Supplier',
-                icon: 'mdi-table-account',
-                route_name: 'suppliers.list',
-                disabled: true,
-            }
         ]
     },
     // {
