@@ -107,8 +107,8 @@
 
         </v-app-bar>
 
-        <v-main  class="body-bg" style="position: relative">
-            <v-slide-x-transition>
+        <v-main  class="body-bg" :style="{position: 'relative', 'padding-left': subMenuDrawer ? '234px !important' : '64px !important' }">
+            <v-expand-x-transition>
                 <v-navigation-drawer
                     v-if="selectedMenus && subMenuDrawer"
                     width="170px"
@@ -141,15 +141,9 @@
                         </v-list-item>
                     </v-list>
                 </v-navigation-drawer>
-            </v-slide-x-transition>
+            </v-expand-x-transition>
 
-            <v-row>
-                <v-col v-if="subMenuDrawer" md="2" >
-                </v-col>
-                    <v-col :md="subMenuDrawer ? '10' : '12'">
-                        <router-view></router-view>
-                    </v-col>
-            </v-row>
+            <router-view></router-view>
 
         </v-main>
     </v-app>
