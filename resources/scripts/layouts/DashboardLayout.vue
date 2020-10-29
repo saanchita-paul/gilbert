@@ -3,7 +3,7 @@
         <v-navigation-drawer
             v-model="drawer"
             :mini-variant="miniDrawer"
-            mini-variant-width="80"
+            mini-variant-width="60"
             app
             class="navigation-drawer-menu app-nav-bg"
         >
@@ -19,21 +19,23 @@
 
             <v-divider></v-divider>
 
-            <v-list dense class="main-nav-items">
-                    <span class="mb-6" v-for="r in routes">
+            <v-list dense class=" pt-0 main-nav-items">
+                    <span class="mb-2" v-for="r in routes">
                         <v-list-item
                             v-if="r.type ==='group'"
                             link
                             @click="onGroupMenuClicked(r)"
                             exact-active-class=""
                             :class="{
-                                'pa-2': true,
+                                'py-1': true,
                                 'app-nav': true,
                                 'app-active-nav white--text': selectedRouteTitle === r.title
                             }"
                             :key="r.title"
                         >
-                            <v-list-item-icon><v-icon size="35" color="white">{{ r.icon }}</v-icon></v-list-item-icon>
+                            <v-list-item-icon>
+                                <v-icon size="30" :color="selectedRouteTitle === r.title ? 'white' : 'grey'">{{ r.icon }}</v-icon>
+                            </v-list-item-icon>
                             <v-list-item-content>
                                 <v-list-item-title>{{ r.title }}</v-list-item-title>
                             </v-list-item-content>
@@ -49,7 +51,7 @@
                             }"
                             :key="r.title"
                         >
-                        <v-list-item-icon><v-icon size="35" color="white">{{ r.icon }}</v-icon></v-list-item-icon>
+                        <v-list-item-icon><v-icon size="30" :color="selectedRouteTitle === r.title ? 'white' : 'grey'">{{ r.icon }}</v-icon></v-list-item-icon>
                         <v-list-item-content>
                             <v-list-item-title>{{ r.title }}</v-list-item-title>
                         </v-list-item-content>
@@ -110,7 +112,7 @@
                 <v-navigation-drawer
                     v-if="selectedMenus && subMenuDrawer"
                     width="170px"
-                    style="background-color: white; border-radius: 8px; position: fixed; left: 82px; top:66px"
+                    style="background-color: white; border-radius: 8px; position: fixed; left: 61px; top:66px"
                 >
                     <v-list
                         dense

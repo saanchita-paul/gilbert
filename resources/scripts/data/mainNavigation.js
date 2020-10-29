@@ -27,15 +27,38 @@ export const a =  [
 export const defaultRoute =     {
         type: 'route',
         title: 'Dashboard',
-        icon: 'mdi-view-dashboard',
+        icon: 'mdi-chart-areaspline',
         route_name: 'dashboard'
     }
 export default [
     { ...defaultRoute },
     {
         type: 'group',
+        title: 'Users',
+        icon: 'mdi-account-multiple-outline',
+        model: false,
+        route_name: 'customers.list',
+        children: [
+            {
+                type: 'route',
+                title: 'All users',
+                icon: 'mdi-account-details',
+                route_name: 'customers.list',
+                disabled: false,
+            },
+            {
+                type: 'route',
+                title: 'Active users',
+                icon: 'mdi-table-account',
+                route_name: 'customers.list',
+                disabled: true,
+            }
+        ]
+    },
+    {
+        type: 'group',
         title: 'Messages',
-        icon: 'mdi-facebook-messenger',
+        icon: 'mdi-chat-processing-outline',
         model: false,
         route_name: 'customers.conversation',
         children: [
@@ -60,29 +83,6 @@ export default [
                 route_name: 'suppliers.mails',
                 disabled: true,
             },
-        ]
-    },
-    {
-        type: 'group',
-        title: 'Users',
-        icon: 'mdi-account',
-        model: false,
-        route_name: 'customers.list',
-        children: [
-            {
-                type: 'route',
-                title: 'All users',
-                icon: 'mdi-account-details',
-                route_name: 'customers.list',
-                disabled: false,
-            },
-            {
-                type: 'route',
-                title: 'Active users',
-                icon: 'mdi-table-account',
-                route_name: 'customers.list',
-                disabled: true,
-            }
         ]
     },
     // {
