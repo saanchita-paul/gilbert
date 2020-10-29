@@ -2,18 +2,27 @@
     <v-card class="px-3">
         <v-card-text>
             <v-row>
-                <v-col md="4">
-                    <p  class="info-value  primary--text" >
+                <v-col md="12" class="pb-0">
+                    <p class="app-title-small primary--text mb-0" v-text="'Sentiment status'"></p>
+                    <p  class="info-value  primary--text mb-0" >
                         {{emotions.positive}}%
                         <span class="app-title primary--text-small">positive</span>
                     </p>
-                    <p class="app-title-small primary--text" v-text="'Sentiment status'"></p>
                 </v-col>
-                <v-col md="8">
+                <v-col md="12"  class="pt-0">
                     <div class="emotions-container mt-1">
-                        <div class="emo app-title-small  white--text" :style="negativeStyles">NEGATIVE</div>
-                        <div class="emo app-title-small white--text" :style="neutralStyles">NEUTRAL</div>
-                        <div class="emo app-title-small white--text" :style="positiveStyles">POSITIVE</div>
+                        <div class="emo app-title-small white--text" :style="negativeStyles">
+                            <p class="mb-0">NEGATIVE</p> 
+                            <small class="mt-n2">22%</small>
+                        </div>
+                        <div class="emo app-title-small white--text" :style="neutralStyles">
+                            <p class="mb-0">NEUTRAL</p> 
+                            <small class="mt-n2">27%</small>
+                        </div>
+                        <div class="emo app-title-small white--text" :style="positiveStyles">
+                            <p class="mb-0">POSITIVE</p> 
+                            <small class="mt-n2">51%</small>
+                        </div>
                     </div>
                 </v-col>
             </v-row>
@@ -142,7 +151,7 @@ export default {
     height: 35px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    padding-left: 5px;
     justify-content: center;
 }
 .meter {
