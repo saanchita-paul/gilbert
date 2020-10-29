@@ -109,7 +109,7 @@ body {
 .card-action-icon {
     opacity: .5;
     position: absolute !important;
-    top: 3px;
+    top: 5px;
     right: 5px
 }
 
@@ -131,4 +131,18 @@ body {
     padding: 5px 5px !important;
     color: white;
     border-radius: 27px 20px 20px 0px;
+}
+
+
+/************ Custom Row ************/ 
+.custom-row {
+    display: flex;
+}
+.custom-col-2 {
+    padding: 10px;
+    width: 20%;
+}
+.custom-col-4 {
+    padding: 10px;
+    width: 40%;
 }
