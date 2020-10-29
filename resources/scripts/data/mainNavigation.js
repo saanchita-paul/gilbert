@@ -24,20 +24,20 @@ export const a =  [
 ]
 
 
-
-export default [
-    {
+export const defaultRoute =     {
         type: 'route',
         title: 'Dashboard',
         icon: 'mdi-view-dashboard',
         route_name: 'dashboard'
-    },
-
+    }
+export default [
+    { ...defaultRoute },
     {
         type: 'group',
-        title: 'Conversation',
+        title: 'Messages',
         icon: 'mdi-facebook-messenger',
         model: false,
+        route_name: 'customers.conversation',
         children: [
             {
                 type: 'route',
@@ -64,22 +64,23 @@ export default [
     },
     {
         type: 'group',
-        title: 'User',
+        title: 'Users',
         icon: 'mdi-account',
         model: false,
+        route_name: 'customers.list',
         children: [
             {
                 type: 'route',
-                title: 'Customer',
+                title: 'All users',
                 icon: 'mdi-account-details',
                 route_name: 'customers.list',
                 disabled: false,
             },
             {
                 type: 'route',
-                title: 'Supplier',
+                title: 'Active users',
                 icon: 'mdi-table-account',
-                route_name: 'suppliers.list',
+                route_name: 'customers.list',
                 disabled: true,
             }
         ]

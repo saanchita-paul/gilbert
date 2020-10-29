@@ -5,10 +5,9 @@
             :mini-variant="miniDrawer"
             mini-variant-width="80"
             app
-            style="background-color: #444348"
-            class="navigation-drawer-menu"
+            class="navigation-drawer-menu app-nav-bg"
         >
-            <v-list-item style="padding-bottom: 8px !important; background-color: white">
+            <v-list-item class="app-logo-area">
                 <v-list-item-avatar class="ml-0">
                     <v-img src="/assets/images/logo/hood-small.png"/>
                 </v-list-item-avatar>
@@ -24,11 +23,14 @@
                     <span class="mb-6" v-for="r in routes">
                         <v-list-item
                             v-if="r.type ==='group'"
-                            exact
                             link
-                            @click="onMenuClick(r)"
-                            exact-active-class="app-active-nav white--text"
-                            class="pa-2 app-nav"
+                            @click="onGroupMenuClicked(r)"
+                            exact-active-class=""
+                            :class="{
+                                'pa-2': true,
+                                'app-nav': true,
+                                'app-active-nav white--text': selectedRouteTitle === r.title
+                            }"
                             :key="r.title"
                         >
                             <v-list-item-icon><v-icon size="35" color="white">{{ r.icon }}</v-icon></v-list-item-icon>
@@ -38,12 +40,13 @@
                         </v-list-item>
                         <v-list-item
                             v-else
-                            :to="{name: r.route_name}"
-                            exact
                             link
-                            @click="onMenuClick(r)"
-                            exact-active-class="app-active-nav white--text"
-                            class="pa-2 app-nav"
+                            @click="onMenuClicked(r)"
+                            :class="{
+                                'pa-2': true,
+                                'app-nav': true,
+                                'app-active-nav white--text': selectedRouteTitle === r.title
+                            }"
                             :key="r.title"
                         >
                         <v-list-item-icon><v-icon size="35" color="white">{{ r.icon }}</v-icon></v-list-item-icon>
@@ -107,14 +110,24 @@
                 <v-navigation-drawer
                     v-if="selectedMenus && subMenuDrawer"
                     width="170px"
-                    style="background-color: white; border-radius: 8px; position: fixed; left: 82px; top:70px"
+                    style="background-color: white; border-radius: 8px; position: fixed; left: 82px; top:66px"
                 >
                     <v-list
                         dense
                         nav
                     >
+                        <div class="d-flex justify-end">
+                            <div><v-icon @click="subMenuDrawer = false" small>mdi-arrow-left</v-icon></div>
+                        </div>
+                        <div>
+                            <v-list-item class="mt-0 pt-0">
+                                <v-list-item-title class="sub-menu-title mt-0 pt-0">
+                                    {{selectedMenus ? selectedMenus.title.toUpperCase() : ''}}
+                                </v-list-item-title>
+                            </v-list-item>
+                        </div>
                         <v-list-item
-                            v-for="r in selectedMenus"
+                            v-for="r in selectedMenus.children"
                             :key="r.title"
                             :to="{name: r.route_name}"
                             exact
@@ -129,9 +142,9 @@
             </v-slide-x-transition>
 
             <v-row>
-                <v-col v-if="selectedMenus" md="2" >
+                <v-col v-if="subMenuDrawer" md="2" >
                 </v-col>
-                    <v-col :md="selectedMenus ? '10' : '12'">
+                    <v-col :md="subMenuDrawer ? '10' : '12'">
                         <router-view></router-view>
                     </v-col>
             </v-row>
@@ -151,10 +164,15 @@ export default {
     data() {
         return {
             subMenuDrawer: false,
-            selectedMenus: null,
+            selectedMenus: ApplicationService.getDefaultRoute(),
             drawer: true,
             miniDrawer: true,
             routes: ApplicationService.getMainNavigationRoutes()
+        }
+    },
+    computed: {
+        selectedRouteTitle() {
+            return this.selectedMenus?.title
         }
     },
     mounted() {
@@ -162,14 +180,20 @@ export default {
         initializeBroadcasting(getAuthUser().id);
     },
     methods: {
-        onMenuClick(menu) {
-            if (menu.type === 'route') {
-                this.$router.push({name: menu.route_name})
-                this.selectedMenus = null;
-                this.subMenuDrawer = true;
+        onGroupMenuClicked(menu) {
+            if(menu.route_name === this.selectedMenus?.route_name) {
+                this.subMenuDrawer = !this.subMenuDrawer;
             } else {
-                this.selectedMenus = menu.children;
+                this.$router.push({name: menu.route_name})
                 this.subMenuDrawer = true;
+                this.selectedMenus = menu;
+            }
+        },
+        onMenuClicked(menu) {
+            this.subMenuDrawer = false;
+            if (menu.route_name !== this.selectedMenus?.route_name) {
+                this.$router.push({name: menu.route_name})
+                this.selectedMenus = menu;
             }
         },
         onSubmenuClick(menu) {
@@ -180,5 +204,13 @@ export default {
 </script>
 
 <style scoped>
-
+.app-nav-bg {
+    background-color: #444348
+}
+.app-logo-area {
+    padding-bottom: 8px !important; background-color: white
+}
+.sub-menu-title {
+    color: darkgrey;font-size: 10px !important;
+}
 </style>
