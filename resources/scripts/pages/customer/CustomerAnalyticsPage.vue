@@ -1,10 +1,10 @@
 <template>
     <v-container v-if="dashboardSummary">
         <PageHeader :breadcrumbs="getBreadcrumbs" title="Dashboard">
-            <date-range-picker v-model="dateRange"/>
+            <date-range-picker v-model="dateRange" />
         </PageHeader>
             <div class="customer-insight">
-                <p class="box title primary--text font-weight-bold mb-0 mt-3 px-3">User Insights</p> 
+                <p class="box title primary--text font-weight-bold mb-0 mt-3 px-3">User Insights</p>
             </div>
 
             <div class="customer-insight custom-row">
@@ -35,7 +35,7 @@
                     />
                 </div>
                 <div class="box custom-col-4">
-                    <EmotionMeter/>
+                    <EmotionMeter :sentiment="sentimentSummary" />
                 </div>
             </div>
             <div class="customer-insight">
@@ -154,8 +154,15 @@ export default {
         merge(this.sentimentSummary, sentimentSummary);
         this.dashboardSummary = await DashboardService.getDashboardSummary(this.dateRange);
         console.log('Data', this.dashboardSummary);
+    },
+    watch: {
+        dateRange: {
+            handler: async function (newVal) {
+                merge(this.sentimentSummary, await SentimentService.getSentimentSummary(newVal));
+            },
+            deep: true
+        },
     }
-
 }
 </script>
 

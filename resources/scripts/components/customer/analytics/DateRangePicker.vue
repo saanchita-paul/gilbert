@@ -74,18 +74,24 @@ export default {
     watch: {
         value: {
             handler(value) {
-                this.date_start = value.start
-                this.date_end = value.end
+                this.date_start = value.start;
+                this.date_end = value.end;
             },
             deep: true
+        },
+        date_start: function() {
+          this.onDateUpdate();
+        },
+        date_end: function() {
+          this.onDateUpdate();
         }
     },
     methods: {
         onDateUpdate() {
-            this.$refs.menu.save(this.dates);
+            // this.$refs.menu.save(this.dates);
             this.$emit('input', new DateRange({
-                start: this.dates[0],
-                end: this.dates[1],
+                start: this.date_start,
+                end: this.date_end,
             }))
         }
     }

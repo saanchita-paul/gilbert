@@ -5,23 +5,23 @@
                 <v-col md="12" class="pb-0">
                     <p class="app-title-small primary--text mb-0" v-text="'Sentiment status'"></p>
                     <p  class="info-value  primary--text mb-0" >
-                        {{emotions.positive}}%
+                        {{emotions.positive}}
                         <span class="app-title primary--text-small">positive</span>
                     </p>
                 </v-col>
                 <v-col md="12"  class="pt-0">
                     <div class="emotions-container mt-1">
                         <div class="emo app-title-small white--text" :style="negativeStyles">
-                            <p class="mb-0">NEGATIVE</p> 
-                            <small class="mt-n2">22%</small>
+                            <p class="mb-0">NEGATIVE</p>
+                            <small class="mt-n2">{{emotions.negative}}</small>
                         </div>
                         <div class="emo app-title-small white--text" :style="neutralStyles">
-                            <p class="mb-0">NEUTRAL</p> 
-                            <small class="mt-n2">27%</small>
+                            <p class="mb-0">NEUTRAL</p>
+                            <small class="mt-n2">{{emotions.neutral}}</small>
                         </div>
                         <div class="emo app-title-small white--text" :style="positiveStyles">
-                            <p class="mb-0">POSITIVE</p> 
-                            <small class="mt-n2">51%</small>
+                            <p class="mb-0">POSITIVE</p>
+                            <small class="mt-n2">{{emotions.positive}}</small>
                         </div>
                     </div>
                 </v-col>
@@ -110,29 +110,55 @@
 <script>
 export default {
     name: "EmotionMeter",
+    props: ['sentiment'],
     data() {
         return {
             load: false,
             emotions: {
-                negative: 22,
-                neutral: 30,
-                positive: 48,
+                negative: '0%',
+                neutral: '0%',
+                positive: '0%',
+            },
+            style: {
+                negative: '33%',
+                neutral: '33%',
+                positive: '33%',
             }
         }
     },
-    computed: {
-        negativeStyles() {
-            return  {backgroundColor: 'red', width: this.emotions.negative + '%', borderTopLeftRadius: '5px', borderBottomLeftRadius: '5px'}
-        },
-        neutralStyles() {
-            return  {backgroundColor: 'orange', width: this.emotions.neutral + '%'}
-        },
-        positiveStyles() {
-            return {backgroundColor: 'green', width: this.emotions.positive + '%', borderTopRightRadius: '5px', borderBottomRightRadius: '5px'}
+    watch: {
+        sentiment: {
+            handler: function(value) {
+                this.setPercentages(value);
+            },
+            deep: true
         },
     },
+    computed: {
+        negativeStyles() {
+            return {backgroundColor: 'red', width: this.style.negative, borderTopLeftRadius: '5px', borderBottomLeftRadius: '5px'}
+        },
+        neutralStyles() {
+            return {backgroundColor: 'orange', width: this.style.neutral}
+        },
+        positiveStyles() {
+            return {backgroundColor: 'green', width: this.style.positive, borderTopRightRadius: '5px', borderBottomRightRadius: '5px'}
+        },
+    },
+    methods: {
+        setPercentages(sentiment) {
+            const { negative = '0%', neutral = '0%', positive = '0%' } = sentiment || {};
+            this.emotions = { negative, neutral, positive };
+            if (sentiment.negative === '0%' && sentiment.neutral === '0%' && sentiment.positive === '0%') {
+                this.style = { negative: '33%', neutral: '33%', positive: '33%' }
+            } else {
+                this.style = { negative, neutral, positive }
+            }
+        }
+    },
     mounted() {
-        setTimeout(() => this.load = true,1)
+        setTimeout(() => this.load = true,1);
+        this.setPercentages(this.sentiment);
     }
 }
 </script>
