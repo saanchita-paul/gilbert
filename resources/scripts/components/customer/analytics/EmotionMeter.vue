@@ -11,17 +11,17 @@
                 </v-col>
                 <v-col md="12"  class="pt-0">
                     <div class="emotions-container mt-1">
-                        <div class="emo app-title-small white--text" :style="negativeStyles">
-                            <p class="mb-0">NEGATIVE</p>
-                            <small class="mt-n2">{{emotions.negative}}</small>
+                        <div class="emo  white--text" :style="negativeStyles">
+                            <p class="mb-0 ">NEGATIVE</p>
+                            <small class="mt-n2 sentiment">{{emotions.negative}}</small>
                         </div>
-                        <div class="emo app-title-small white--text" :style="neutralStyles">
-                            <p class="mb-0">NEUTRAL</p>
-                            <small class="mt-n2">{{emotions.neutral}}</small>
+                        <div class="emo  white--text" :style="neutralStyles">
+                            <p class="mb-0 ">NEUTRAL</p>
+                            <small class="mt-n2 sentiment">{{emotions.neutral}}</small>
                         </div>
-                        <div class="emo app-title-small white--text" :style="positiveStyles">
-                            <p class="mb-0">POSITIVE</p>
-                            <small class="mt-n2">{{emotions.positive}}</small>
+                        <div class="emo  white--text" :style="positiveStyles">
+                            <p class="mb-0 ">POSITIVE</p>
+                            <small class="mt-n2 sentiment">{{emotions.positive}}</small>
                         </div>
                     </div>
                 </v-col>
@@ -147,9 +147,13 @@ export default {
     },
     methods: {
         setPercentages(sentiment) {
-            const { negative = '0%', neutral = '0%', positive = '0%' } = sentiment || {};
+          const negative = sentiment?.negative_count || '0%';
+          const neutral = sentiment?.neutral_count || '0%';
+          const positive = sentiment?.positive_count || '0%';
+
+          // const { negative = '0%', neutral = '0%', positive = '0%' } = sentiment || {};
             this.emotions = { negative, neutral, positive };
-            if (sentiment.negative === '0%' && sentiment.neutral === '0%' && sentiment.positive === '0%') {
+          if (sentiment.negative === '0%' && sentiment.neutral === '0%' && sentiment.positive === '0%') {
                 this.style = { negative: '33%', neutral: '33%', positive: '33%' }
             } else {
                 this.style = { negative, neutral, positive }
@@ -174,11 +178,18 @@ export default {
     align-items: center
 }
 .emo {
+  font-size: 10px;
+  font-weight: 600;
     height: 35px;
     display: flex;
+  align-items: center;
     flex-direction: column;
     padding-left: 5px;
     justify-content: center;
+}
+.sentiment {
+  font-size: 13px;
+  font-weight: 600;
 }
 .meter {
     height: 5px;

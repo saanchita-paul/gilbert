@@ -1,5 +1,5 @@
 <template>
-    <v-container v-if="dashboardSummary">
+    <v-container v-if="loaded">
         <PageHeader :breadcrumbs="getBreadcrumbs" title="Dashboard">
             <date-range-picker v-model="dateRange" />
         </PageHeader>
@@ -130,7 +130,8 @@ export default {
         return {
             sentimentSummary: new SentimentSummary(),
             dashboardSummary: null,
-            dateRange: new DateRange()
+            dateRange: new DateRange(),
+            loaded: false,
         }
     },
     computed: {
@@ -150,15 +151,16 @@ export default {
         }
     },
     async mounted() {
-        const sentimentSummary = await SentimentService.getSentimentSummary(this.dateRange);
-        merge(this.sentimentSummary, sentimentSummary);
+        // const sentimentSummary = await SentimentService.getSentimentSummary(this.dateRange);
         this.dashboardSummary = await DashboardService.getDashboardSummary(this.dateRange);
-        console.log('Data', this.dashboardSummary);
+        merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
+        this.loaded = true;
     },
     watch: {
         dateRange: {
             handler: async function (newVal) {
-                merge(this.sentimentSummary, await SentimentService.getSentimentSummary(newVal));
+                this.dashboardSummary = await DashboardService.getDashboardSummary(newVal);
+                this.sentimentSummary = this.dashboardSummary.sentimentSummary;
             },
             deep: true
         },
