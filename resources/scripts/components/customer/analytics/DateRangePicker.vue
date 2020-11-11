@@ -21,6 +21,7 @@
                 </v-btn>
             </template>
             <v-date-picker
+                :max="maxDate"
                 v-model="date_start"
                 @input="menu1 = false"
             ></v-date-picker>
@@ -46,6 +47,7 @@
                 </v-btn>
             </template>
             <v-date-picker
+                :max="maxDate"
                 v-model="date_end"
                 @input="menu2 = false"
             ></v-date-picker>
@@ -54,6 +56,8 @@
 </template>
 <script>
 import DateRange from "@scripts/models/DateRange";
+import DayJs from 'dayjs';
+import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 
 export default {
     name: "DateRangePicker",
@@ -67,8 +71,8 @@ export default {
         }
     },
     computed: {
-        dateRangeText() {
-            return this.dates.join(' ~ ')
+        maxDate() {
+            return new DayJs().format(DATE_FORMAT.DB_DATE)
         },
     },
     watch: {
