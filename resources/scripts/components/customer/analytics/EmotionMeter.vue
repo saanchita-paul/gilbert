@@ -153,7 +153,7 @@ export default {
 
           // const { negative = '0%', neutral = '0%', positive = '0%' } = sentiment || {};
             this.emotions = { negative, neutral, positive };
-          if (sentiment.negative === '0%' && sentiment.neutral === '0%' && sentiment.positive === '0%') {
+          if (sentiment.negative_count === '0%' && sentiment.neutral_count === '0%' && sentiment.positive_count === '0%') {
                 this.style = { negative: '33%', neutral: '33%', positive: '33%' }
             } else {
                 this.style = { negative, neutral, positive }
