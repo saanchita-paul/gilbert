@@ -10,6 +10,8 @@ export default {
         const infoChart = new InfoChart();
         const sentimentSummary = new SentimentSummary()
 
+        customerSummary.total_customer = data.total_customer;
+        customerSummary.total_user = data.total_user;
         let totalSentiment = 0;
         let sentiment = {
             neg: 0,

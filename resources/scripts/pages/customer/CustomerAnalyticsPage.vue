@@ -13,9 +13,9 @@
                         icon="mdi-clipboard-text-outline"
                         actionIcon="mdi-dots-vertical"
                         user_title="Total Users"
-                        user_value="2150"
+                        :user_value="dashboardSummary.customerSummary.total_user"
                         customer_title="Total Customers"
-                        customer_value="1150"
+                        :customer_value="dashboardSummary.customerSummary.total_customer"
                     ></InfoCard>
                 </div>
                 <div  class="box custom-col-2">
@@ -160,7 +160,7 @@ export default {
         dateRange: {
             handler: async function (newVal) {
                 this.dashboardSummary = await DashboardService.getDashboardSummary(newVal);
-                this.sentimentSummary = this.dashboardSummary.sentimentSummary;
+                merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
             },
             deep: true
         },
