@@ -27,16 +27,17 @@ export default {
         });
 
         if (totalSentiment > 0) {
-            sentimentSummary.negative_count = ((sentiment.neg / totalSentiment) * 100) + '%'
-            sentimentSummary.positive_count = ((sentiment.pos / totalSentiment) * 100) + '%'
-            sentimentSummary.neutral_count = (sentiment.neu / totalSentiment) * 100 + '%'
+            const negative_percentage = Math.round((sentiment.neg / totalSentiment) * 100);
+            sentimentSummary.negative_count = `${negative_percentage}%`;
+            const positive_percentage = Math.round((sentiment.pos / totalSentiment) * 100);
+            sentimentSummary.positive_count = `${positive_percentage}%`;
+            sentimentSummary.neutral_count =  (100 - negative_percentage - positive_percentage) + '%';
         }
-
 
         return {
             customerSummary,
             sentimentSummary
-        }
+        };
         /**
          * not using
          */
