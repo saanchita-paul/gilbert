@@ -1,70 +1,88 @@
 <template>
-    <v-container v-if="dashboardSummary">
-        <PageHeader :breadcrumbs="getBreadcrumbs" title="Customer insight">
-            <date-range-picker v-model="dateRange"/>
+    <v-container v-if="loaded">
+        <PageHeader :breadcrumbs="getBreadcrumbs" title="Dashboard">
+            <date-range-picker v-model="dateRange" />
         </PageHeader>
-            <v-row class="customer-insight">
-                <v-col md="3" sm="12" class="box">
+            <div class="customer-insight">
+                <p class="box title primary--text font-weight-bold mb-0 mt-3 px-3">User Insights</p>
+            </div>
+
+            <div class="customer-insight custom-row">
+                <div class="box custom-col-2">
                     <InfoCard
-                        icon="mdi-account-group"
-                        title="Total customer"
-                        :value="dashboardSummary.customerSummary.total_customer"
+                        icon="mdi-clipboard-text-outline"
+                        actionIcon="mdi-dots-vertical"
+                        user_title="Total Users"
+                        :user_value="dashboardSummary.customerSummary.total_user"
+                        customer_title="Total Customers"
+                        :customer_value="dashboardSummary.customerSummary.total_customer"
                     ></InfoCard>
-                </v-col>
-                <v-col md="3" sm="12" class="box">
-                    <InfoCard
-                        icon="mdi-account-plus"
-                        title="New customer"
-                        :value="dashboardSummary.customerSummary.new_customer"
-                    ></InfoCard>
-                </v-col>
-                <v-col md="3" sm="12" class="box">
-                    <InfoCard
-                        icon="mdi-account-check"
-                        title="Active customer"
-                        :value="dashboardSummary.customerSummary.active_customer"
-                    ></InfoCard>
-                </v-col>
-                <v-col md="3" sm="12" class="box">
-                    <InfoCard
-                        icon="mdi-account-star"
-                        title="Engaged customer"
-                        :value="dashboardSummary.customerSummary.engaged_customer"
-                    ></InfoCard>
-                </v-col>
-                <v-col sm="12">
-                    <EmotionMeter/>
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col md="4">
+                </div>
+                <div  class="box custom-col-2">
                     <info-chart-card
                         :colors="['rgba(92, 34, 154, .9)', 'rgba(92, 34, 154, .5)']"
                         chartId="c-01"
-                        title="Conversations"
-                        :value="dashboardSummary.conversationSummary.total_message"
-                        :chart="dashboardSummary.infoChart.total_message"
+                        title="New User"
+                        value="14"
                     />
-                </v-col>
-                <v-col md="4">
+                </div>
+                <div class="box custom-col-2">
+                    <info-chart-card
+                        :colors="['rgba(92, 34, 154, .9)', 'rgba(92, 34, 154, .5)']"
+                        chartId="c-02"
+                        title="New Customer"
+                        value="4"
+                    />
+                </div>
+                <div class="box custom-col-4">
+                    <EmotionMeter :sentiment="sentimentSummary" />
+                </div>
+            </div>
+            <div class="customer-insight">
+                 <p class="box title primary--text font-weight-bold mb-0 mt-5 px-3">USER MESSAGES AND ENGAGEMENT</p>
+            </div>
+            <div class="custom-row">
+                <div class="custom-col-2">
+                    <info-chart-card
+                        :colors="['rgba(92, 34, 154, .9)', 'rgba(92, 34, 154, .5)']"
+                        chartId="c-03"
+                        title="Total Messages"
+                        value="7935"
+                    />
+                </div>
+                <div class="custom-col-2">
                     <info-chart-card
                         :colors="['rgba(53, 99, 19, .9)', 'rgba(53, 99, 19, .5)']"
-                        title="Sent"
-                        :value="dashboardSummary.conversationSummary.message_sent"
-                        chartId="c-02"
-                        :chart="dashboardSummary.infoChart.message_sent"
+                        chartId="c-04"
+                        title="Total Conversation"
+                        value="4928"
                     />
-                </v-col>
-                <v-col md="4">
+                </div>
+                <div class="custom-col-2">
                     <info-chart-card
                         :colors="['rgba(159,106,38,0.9)', 'rgba(159,106,38, .5)']"
-                        title="Received"
-                        :value="dashboardSummary.conversationSummary.message_received"
-                        chartId="c-03"
-                        :chart="dashboardSummary.infoChart.message_received"
+                        chartId="c-05"
+                        title="Avg. Conv. Steps/User"
+                        value="14"
                     />
-                </v-col>
-            </v-row>
+                </div>
+                <div class="custom-col-2">
+                    <info-chart-card
+                        :colors="['rgba(159,106,38,0.9)', 'rgba(159,106,38, .5)']"
+                        chartId="c-06"
+                        title="Live Conversation Count"
+                        value="13987"
+                    />
+                </div>
+                <div class="custom-col-2">
+                    <info-chart-card
+                        :colors="['rgba(159,106,38,0.9)', 'rgba(159,106,38, .5)']"
+                        title="Average Time"
+                        value="02.35 min"
+                        chartId="c-07"
+                    />
+                </div>
+            </div>
 <!--            <v-col md="6" sm="12">-->
 <!--                <GenderChart/>-->
 <!--            </v-col>-->
@@ -112,7 +130,8 @@ export default {
         return {
             sentimentSummary: new SentimentSummary(),
             dashboardSummary: null,
-            dateRange: new DateRange()
+            dateRange: new DateRange(),
+            loaded: false,
         }
     },
     computed: {
@@ -132,12 +151,20 @@ export default {
         }
     },
     async mounted() {
-        const sentimentSummary = await SentimentService.getSentimentSummary(this.dateRange);
-        merge(this.sentimentSummary, sentimentSummary);
+        // const sentimentSummary = await SentimentService.getSentimentSummary(this.dateRange);
         this.dashboardSummary = await DashboardService.getDashboardSummary(this.dateRange);
-        console.log('Data', this.dashboardSummary);
+        merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
+        this.loaded = true;
+    },
+    watch: {
+        dateRange: {
+            handler: async function (newVal) {
+                this.dashboardSummary = await DashboardService.getDashboardSummary(newVal);
+                merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
+            },
+            deep: true
+        },
     }
-
 }
 </script>
 
