@@ -1,5 +1,6 @@
 import DashboardMapper from "@scripts/api/mappers/DashboardMapper";
 import DateRange from "@scripts/models/DateRange";
+import axios from 'axios';
 
 export default {
     /**
@@ -9,8 +10,11 @@ export default {
      *
      * @returns {CustomerSummary}
      */
-    getDashboardSummary: (dateRange) => {
-        const data = [
+    getDashboardSummary: async (dateRange) => {
+
+        const data = (await axios.get(`${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api/customers/summary?start=${dateRange.start}&end=${dateRange.end}`)).data;
+        return DashboardMapper.toClientList(data);
+        const datas = [
             {
                 date: '12/06/2020',
                 total_customer: 100,

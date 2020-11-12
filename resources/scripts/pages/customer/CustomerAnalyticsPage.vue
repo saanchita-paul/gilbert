@@ -1,10 +1,10 @@
 <template>
-    <v-container v-if="dashboardSummary">
+    <v-container v-if="loaded">
         <PageHeader :breadcrumbs="getBreadcrumbs" title="Dashboard">
-            <date-range-picker v-model="dateRange"/>
+            <date-range-picker v-model="dateRange" />
         </PageHeader>
             <div class="customer-insight">
-                <p class="box title primary--text font-weight-bold mb-0 mt-3 px-3">User Insights</p> 
+                <p class="box title primary--text font-weight-bold mb-0 mt-3 px-3">User Insights</p>
             </div>
 
             <div class="customer-insight custom-row">
@@ -13,9 +13,9 @@
                         icon="mdi-clipboard-text-outline"
                         actionIcon="mdi-dots-vertical"
                         user_title="Total Users"
-                        user_value="2150"
+                        :user_value="dashboardSummary.customerSummary.total_user"
                         customer_title="Total Customers"
-                        customer_value="1150"
+                        :customer_value="dashboardSummary.customerSummary.total_customer"
                     ></InfoCard>
                 </div>
                 <div  class="box custom-col-2">
@@ -35,7 +35,7 @@
                     />
                 </div>
                 <div class="box custom-col-4">
-                    <EmotionMeter/>
+                    <EmotionMeter :sentiment="sentimentSummary" />
                 </div>
             </div>
             <div class="customer-insight">
@@ -130,7 +130,8 @@ export default {
         return {
             sentimentSummary: new SentimentSummary(),
             dashboardSummary: null,
-            dateRange: new DateRange()
+            dateRange: new DateRange(),
+            loaded: false,
         }
     },
     computed: {
@@ -150,12 +151,20 @@ export default {
         }
     },
     async mounted() {
-        const sentimentSummary = await SentimentService.getSentimentSummary(this.dateRange);
-        merge(this.sentimentSummary, sentimentSummary);
+        // const sentimentSummary = await SentimentService.getSentimentSummary(this.dateRange);
         this.dashboardSummary = await DashboardService.getDashboardSummary(this.dateRange);
-        console.log('Data', this.dashboardSummary);
+        merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
+        this.loaded = true;
+    },
+    watch: {
+        dateRange: {
+            handler: async function (newVal) {
+                this.dashboardSummary = await DashboardService.getDashboardSummary(newVal);
+                merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
+            },
+            deep: true
+        },
     }
-
 }
 </script>
 
