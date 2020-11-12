@@ -13,9 +13,9 @@
                         icon="mdi-clipboard-text-outline"
                         actionIcon="mdi-dots-vertical"
                         user_title="Total Users"
-                        :user_value="dashboardSummary.customerSummary.total_user"
+                        :user_value="!!dashboardSummary && dashboardSummary.customerSummary ? dashboardSummary.customerSummary.total_user : 0"
                         customer_title="Total Customers"
-                        :customer_value="dashboardSummary.customerSummary.total_customer"
+                        :customer_value="!!dashboardSummary && dashboardSummary.customerSummary ? dashboardSummary.customerSummary.total_customer : 0"
                     ></InfoCard>
                 </div>
                 <div  class="box custom-col-2">
@@ -110,7 +110,8 @@ import ConversationInfos from "@scripts/components/customer/analytics/Conversati
 import SentimentSummary from "@scripts/models/SentimentSummary";
 import SentimentService from "@scripts/services/SentimentService";
 import DashboardService from "@scripts/services/DashboardService";
-
+import DayJS from 'dayjs';
+import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 
 export default {
     name: "CustomerAnalyticsPage",
@@ -150,17 +151,31 @@ export default {
             ]
         }
     },
-    async mounted() {
+    methods: {
+        async getDashboardSummary(dateRange) {
+            this.dashboardSummary = await DashboardService.getDashboardSummary(dateRange);
+            merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
+        },
+        checkIfDateEndIsToday() {
+            return this.dateRange.end === new DayJS().format(DATE_FORMAT.DB_DATE);
+        }
+    },
+    mounted() {
         // const sentimentSummary = await SentimentService.getSentimentSummary(this.dateRange);
-        this.dashboardSummary = await DashboardService.getDashboardSummary(this.dateRange);
-        merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
+        // this.dashboardSummary = await DashboardService.getDashboardSummary(this.dateRange);
+        // merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
+
+        //Set timeout to call Dashboard API every 5 minute if date_end is today
+        setInterval(() => this.checkIfDateEndIsToday() && this.getDashboardSummary(this.dateRange), 300000);
+        this.getDashboardSummary(this.dateRange);
         this.loaded = true;
     },
     watch: {
         dateRange: {
-            handler: async function (newVal) {
-                this.dashboardSummary = await DashboardService.getDashboardSummary(newVal);
-                merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
+            handler: function (newVal) {
+                // this.dashboardSummary = await DashboardService.getDashboardSummary(newVal);
+                // merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
+                this.getDashboardSummary(newVal);
             },
             deep: true
         },

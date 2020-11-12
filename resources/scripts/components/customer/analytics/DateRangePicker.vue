@@ -47,6 +47,7 @@
                 </v-btn>
             </template>
             <v-date-picker
+                :min="date_start"
                 :max="maxDate"
                 v-model="date_end"
                 @input="menu2 = false"
