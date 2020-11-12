@@ -12,6 +12,7 @@ import CustomersPage from "@scripts/pages/customer/CustomersPage";
 import SuppliersPage from "@scripts/pages/supplier/SuppliersPage";
 import SupplierMailPage from "@scripts/pages/supplier/SupplierMailPage";
 import AuthService, {checkRouteAuthorization} from "@scripts/services/AuthService";
+import CustomerProfilePage from "@scripts/pages/customer/customer-profile/CustomerProfilePage";
 
 Vue.use(VueRouter);
 
@@ -35,6 +36,15 @@ const router = new VueRouter({
                     path: 'customers',
                     component: CustomersPage,
                     name: 'customers.list',
+                    meta: {
+                        isProtected: true
+                    }
+                },
+                {
+                    path: 'customers/profile/:customerId',
+                    component: CustomerProfilePage,
+                    name: 'customers.profile',
+                    props: true,
                     meta: {
                         isProtected: true
                     }
