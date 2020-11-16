@@ -133,6 +133,7 @@ export default {
             dashboardSummary: null,
             dateRange: new DateRange(),
             loaded: false,
+            intervalID: null
         }
     },
     computed: {
@@ -166,9 +167,12 @@ export default {
         // merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
 
         //Set timeout to call Dashboard API every 5 minute if date_end is today
-        setInterval(() => this.checkIfDateEndIsToday() && this.getDashboardSummary(this.dateRange), 300000);
+        this.intervalID = setInterval(() => this.checkIfDateEndIsToday() && this.getDashboardSummary(this.dateRange), 300000);
         this.getDashboardSummary(this.dateRange);
         this.loaded = true;
+    },
+    beforeDestroy() {
+        this.intervalID && clearInterval(this.intervalID);
     },
     watch: {
         dateRange: {
