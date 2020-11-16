@@ -202,7 +202,7 @@ export default {
 
 <style scoped>
 .app-nav-bg {
-    background-color: #444348
+    background-color: #444348 !important;
 }
 .app-logo-area {
     padding-bottom: 8px !important; background-color: white
