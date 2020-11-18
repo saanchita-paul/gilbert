@@ -1,4 +1,6 @@
 import axios from 'axios';
+import CustomerMapper from "@scripts/api/mappers/CustomerMapper";
+import Customer from "@scripts/models/Customer";
 
 export default {
     /**
@@ -17,14 +19,14 @@ export default {
     },
     /**
      * getting specified customer data from CB
-     * @param {number} customerId
-     * @returns {Object}
+     * @param customerId
+     * @returns {Customer} || {Object}
      */
     getCustomerProfileData: async (customerId) => {
         try {
             const data = await axios.get(`${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api/customers/${customerId}`);
             console.log(`RECEIVED CUSTOMER ${customerId} DATA `, data);
-            return data.data;
+            return CustomerMapper.toClientDetail(data.data.data);
         } catch (error) {
             return error.data;
         }

@@ -4,7 +4,7 @@ export default {
     getAllCustomerData: () => CustomerAPI.getAllCustomerData(),
 
     /**
-     * @param {number} customerId
+     * @param customerId
      * */
     getCustomerDetail: (customerId) => CustomerAPI.getCustomerProfileData(customerId)
 }
