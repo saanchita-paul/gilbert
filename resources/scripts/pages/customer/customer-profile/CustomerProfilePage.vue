@@ -5,7 +5,15 @@
         </page-header>
         <v-card>
             <div class="user-card">
-                <div class="user-info">DETAILS</div>
+                <div class="user-info pt-10 pb-5 px-10">
+<!--                    DETAILS-->
+                    <v-avatar v-if="!!customer.avatar">
+                        <img
+                            :src="customer.avatar"
+                            alt="Customer Avatar"
+                        >
+                    </v-avatar>
+                </div>
                 <div class="user-menu">
                     <v-tabs v-model="selectedMenuIndex">
                         <v-tab
