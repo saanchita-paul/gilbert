@@ -39,6 +39,7 @@ import CustomerOrderInfo from "@scripts/components/customer/customer-profile/Cus
 import CustomerOtherService from "@scripts/components/customer/customer-profile/CustomerOtherService";
 import CustomerMovingInfo from "@scripts/components/customer/customer-profile/CustomerMovingInfo";
 import CustomerConnectionInfo from "@scripts/components/customer/customer-profile/CustomerConnectionInfo";
+import CustomerService from "@scripts/services/CustomerService";
 
 export default {
     name: "CustomerProfilePage",
@@ -83,7 +84,8 @@ export default {
             dateRange: new DateRange(),
             menus: ApplicationService.getUserProfileMenus(),
             selectedMenuIndex: null,
-            components: ApplicationService.getUserProfileComponents()
+            components: ApplicationService.getUserProfileComponents(),
+            customer: null
         }
     },
     methods: {
@@ -94,7 +96,18 @@ export default {
                 query: {menu: '4'}
             })
             console.log("TAB CHANGES")
+        },
+        async getCustomerData(customerId) {
+            this.customer = await CustomerService.getCustomerDetail(customerId);
         }
+    },
+    watch: {
+        customerId: function (newCustomerId) {
+            this.getCustomerData(newCustomerId);
+        }
+    },
+    mounted() {
+        this.getCustomerData(this.customerId);
     }
 }
 </script>
