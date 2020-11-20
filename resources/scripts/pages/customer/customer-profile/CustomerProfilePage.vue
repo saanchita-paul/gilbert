@@ -32,7 +32,7 @@
                             <div class="d-flex flex-row mb-5">
                                 <div class="text-subtitle-1 mr-5">HOOD UID: {{customer.uin}}</div>
                                 <div class="text-subtitle-1">Messenger ID: #{{customer.facebook_id}}</div>
-                                <div class="text-subtitle-1 ml-auto mr-16 pr-1">Purchase Cycle {{'TBA'}}</div>
+                                <div class="text-subtitle-1 ml-auto mr-16 pr-1">Purchase Cycle TBC</div>
                             </div>
                             <div class="d-flex flex-row">
                                 <div class="text-subtitle-1 mr-5">Email: {{customer.email}}</div>
@@ -61,7 +61,7 @@
             </div>
         </v-card>
         <v-card class="mt-3">
-            <component :is="getComponent"></component>
+            <component :is="getComponent" :customer="customer"></component>
         </v-card>
     </v-container>
 </template>

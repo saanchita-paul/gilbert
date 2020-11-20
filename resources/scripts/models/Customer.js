@@ -23,6 +23,8 @@ export default class Customer {
             people,
             energy_usage,
             solar_panel,
+            updated_at,
+            updated_at_human,
             from,
             to,
         } = {}
@@ -47,6 +49,8 @@ export default class Customer {
         this.people = people || null;
         this.energy_usage = energy_usage || null;
         this.solar_panel = solar_panel || null;
+        this.updated_at = updated_at || null;
+        this.updated_at_human = updated_at_human || null;
         this.from = new Location(from);
         this.to = new Location(to);
     }
