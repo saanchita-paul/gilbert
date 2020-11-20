@@ -61,6 +61,7 @@
             </div>
         </v-card>
         <v-card class="mt-3">
+            <div v-if="!!customer" class="text-body-1 ml-5 mb-5 pt-5 font-weight-thin" style="color: #A1A3A8">Last updated {{customer.updated_at_human}}</div>
             <component :is="getComponent" :customer="customer"></component>
         </v-card>
     </v-container>
