@@ -4,7 +4,8 @@
 
 <script>
 export default {
-    name: "CustomerOrderInfo"
+    name: "CustomerOrderInfo",
+    props: ['customer']
 }
 </script>
 
