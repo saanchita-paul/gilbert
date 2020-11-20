@@ -1,4 +1,5 @@
 import Location from "@scripts/models/Location";
+import Order from "@scripts/models/Order";
 
 export default class Customer {
     constructor(
@@ -28,6 +29,7 @@ export default class Customer {
             moving_service_type,
             from,
             to,
+            orders
         } = {}
     ) {
         this.id = id || null;
@@ -55,5 +57,6 @@ export default class Customer {
         this.moving_service_type = moving_service_type || null;
         this.from = new Location(from);
         this.to = new Location(to);
+        this.orders = orders.map(order => new Order(order)) || [];
     }
 }
