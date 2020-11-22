@@ -44,5 +44,25 @@ export default {
             },
         ]
         return DashboardMapper.toClientList(data);
+    },
+
+    getUtilitySummary: dateRange => {
+        return {
+            energy: {
+                colors: ['red', 'orange', 'green', 'black'],
+                data: [25, 40, 35, 0],
+                labels: ['High', 'Medium', 'Low', 'Not sure']
+            },
+            property: {
+                colors: ['red', 'orange'],
+                data: [77, 23],
+                labels: ['Own', 'Rent']
+            },
+            household: {
+                colors: ['red', 'orange', 'green', 'black'],
+                data: [25, 25, 35, 15],
+                labels: ['1-2', '2-3', '3-4', '4+']
+            },
+        }
     }
 }

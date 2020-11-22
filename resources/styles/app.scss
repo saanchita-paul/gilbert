@@ -134,7 +134,7 @@ body {
 }
 
 
-/************ Custom Row ************/ 
+/************ Custom Row ************/
 .custom-row {
     display: flex;
 }
@@ -145,4 +145,8 @@ body {
 .custom-col-4 {
     padding: 10px;
     width: 40%;
+}
+
+.utility-chart-container {
+    display: flex; justify-content: center; align-items: center; width: 100%; height: 186px
 }

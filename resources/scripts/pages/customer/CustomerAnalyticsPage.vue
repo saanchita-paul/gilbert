@@ -86,6 +86,20 @@
 <!--            <v-col md="6" sm="12">-->
 <!--                <GenderChart/>-->
 <!--            </v-col>-->
+        <div class="customer-insight">
+            <p class="box title primary--text font-weight-bold mb-0 mt-5 px-3">CONNECT ENERGY</p>
+        </div>
+        <v-row>
+            <v-col sm="12" md="3">
+                <EnergyUsageChart :chartData="utilitySummary.energy" _id="energy" />
+            </v-col>
+            <v-col sm="12" md="3">
+                <EnergyUsageChart :chartData="utilitySummary.property" _id="property"/>
+            </v-col>
+            <v-col sm="12" md="3">
+                <EnergyUsageChart :chartData="utilitySummary.household" _id="household" />
+            </v-col>
+        </v-row>
         <v-row>
             <v-col sm="12">
                 <ActiveCustomer/>
@@ -95,7 +109,7 @@
 </template>
 
 <script>
-import GenderChart from "@scripts/components/customer/analytics/GenderChart";
+import EnergyUsageChart from "@scripts/components/customer/analytics/EnergyUsageChart";
 import EmotionMeter from "@scripts/components/customer/analytics/EmotionMeter";
 import ActiveCustomer from "@scripts/components/customer/analytics/ActiveCustomer";
 import AnalyticContainer from "@scripts/components/customer/analytics/AnalyticContainer";
@@ -120,7 +134,7 @@ export default {
         ActiveCustomer,
         AnalyticContainer,
         InfoCard,
-        GenderChart,
+        EnergyUsageChart,
         DateRangePicker,
         PageHeader,
         CustomerInfos,
@@ -131,6 +145,7 @@ export default {
         return {
             sentimentSummary: new SentimentSummary(),
             dashboardSummary: null,
+            utilitySummary: null,
             dateRange: new DateRange(),
             loaded: false,
             intervalID: null
@@ -153,22 +168,20 @@ export default {
         }
     },
     methods: {
-        async getDashboardSummary(dateRange) {
+        async load(dateRange) {
             this.dashboardSummary = await DashboardService.getDashboardSummary(dateRange);
             merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
+            this.utilitySummary = await DashboardService.getUtilitySummary(this.dateRange)
         },
         checkIfDateEndIsToday() {
             return this.dateRange.end === new DayJS().format(DATE_FORMAT.DB_DATE);
         }
     },
-    mounted() {
-        // const sentimentSummary = await SentimentService.getSentimentSummary(this.dateRange);
-        // this.dashboardSummary = await DashboardService.getDashboardSummary(this.dateRange);
-        // merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
+    async mounted() {
 
         //Set timeout to call Dashboard API every 5 minute if date_end is today
         this.intervalID = setInterval(() => this.checkIfDateEndIsToday() && this.getDashboardSummary(this.dateRange), 300000);
-        this.getDashboardSummary(this.dateRange);
+        await this.load(this.dateRange);
         this.loaded = true;
     },
     beforeDestroy() {
@@ -177,9 +190,7 @@ export default {
     watch: {
         dateRange: {
             handler: function (newVal) {
-                // this.dashboardSummary = await DashboardService.getDashboardSummary(newVal);
-                // merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
-                this.getDashboardSummary(newVal);
+                this.load(newVal);
             },
             deep: true
         },
