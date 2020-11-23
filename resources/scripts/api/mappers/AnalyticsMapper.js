@@ -14,16 +14,24 @@ export default {
         } = data || {};
 
         const total = high + medium + low + unsure;
-        const highPercentage = Math.round((high / total) * 100);
-        const mediumPercentage = Math.round((medium / total) * 100);
-        const lowPercentage = Math.round((low / total) * 100);
-        const unsurePercentage = 100 - highPercentage - mediumPercentage - lowPercentage;
+        const highPercentage =  total === 0 ? 0 : Math.round((high / total) * 100);
+        const mediumPercentage = total === 0 ? 0 : Math.round((medium / total) * 100);
+        const lowPercentage = total === 0 ? 0 : Math.round((low / total) * 100);
+        const unsurePercentage = total === 0 ? 0 : 100 - highPercentage - mediumPercentage - lowPercentage;
+        const noAnswerPercentage = highPercentage === 0 && mediumPercentage === 0 && lowPercentage === 0 && unsurePercentage === 0
+            ? 100
+            : 0;
 
-        return {
-            colors: ['red', 'orange', 'green', 'black'],
-            data: [highPercentage, mediumPercentage, lowPercentage, unsurePercentage],
-            labels: ['High', 'Medium', 'Low', 'Not sure']
-        };
+        return noAnswerPercentage === 0
+            ? {
+                colors: ['red', 'orange', 'green', 'black'],
+                data: [highPercentage, mediumPercentage, lowPercentage, unsurePercentage],
+                labels: ['High', 'Medium', 'Low', 'Not sure']
+            } : {
+                colors: ['red', 'orange', 'green', 'black', 'grey'],
+                data: [highPercentage, mediumPercentage, lowPercentage, unsurePercentage, noAnswerPercentage],
+                labels: ['High', 'Medium', 'Low', 'Not sure', 'No Answer']
+            };
     },
 
     /**
@@ -38,14 +46,22 @@ export default {
         } = data || {};
 
         const total = rent + own;
-        const rentPercentage = Math.round((rent / total) * 100);
-        const ownPercentage = 100 - rentPercentage;
+        const rentPercentage = total === 0 ? 0 : Math.round((rent / total) * 100);
+        const ownPercentage = total === 0 ? 0 : 100 - rentPercentage;
+        const noAnswerPercentage = rentPercentage === 0 && ownPercentage === 0
+            ? 100
+            : 0;
 
-        return {
-            colors: ['red', 'orange'],
-            data: [ownPercentage, rentPercentage],
-            labels: ['Own', 'Rent']
-        }
+        return noAnswerPercentage === 0
+            ? {
+                colors: ['red', 'orange'],
+                data: [ownPercentage, rentPercentage],
+                labels: ['Own', 'Rent']
+            } : {
+                colors: ['red', 'orange', 'grey'],
+                data: [ownPercentage, rentPercentage, noAnswerPercentage],
+                labels: ['Own', 'Rent', 'No Answer']
+            };
     },
 
     /**
@@ -62,15 +78,23 @@ export default {
         } = data || {};
 
         const total = one + two + three + four;
-        const onePercentage = Math.round((one / total) * 100);
-        const twoPercentage = Math.round((two / total) * 100);
-        const threePercentage = Math.round((three / total) * 100);
-        const fourPercentage = 100 - onePercentage - twoPercentage - threePercentage;
+        const onePercentage = total === 0 ? 0 : Math.round((one / total) * 100);
+        const twoPercentage = total === 0 ? 0 : Math.round((two / total) * 100);
+        const threePercentage = total === 0 ? 0 : Math.round((three / total) * 100);
+        const fourPercentage = total === 0 ? 0 : 100 - onePercentage - twoPercentage - threePercentage;
+        const noAnswerPercentage = onePercentage === 0 && twoPercentage === 0 && threePercentage === 0 && fourPercentage === 0
+            ? 100
+            : 0;
 
-        return {
-            colors: ['red', 'orange', 'green', 'black'],
-            data: [onePercentage, twoPercentage, threePercentage, fourPercentage],
-            labels: ['1-2', '2-3', '3-4', '4+']
-        }
+        return noAnswerPercentage === 0
+            ? {
+                colors: ['red', 'orange', 'green', 'black'],
+                data: [onePercentage, twoPercentage, threePercentage, fourPercentage],
+                labels: ['1-2', '2-3', '3-4', '4+']
+            } : {
+                colors: ['red', 'orange', 'green', 'black', 'grey'],
+                data: [onePercentage, twoPercentage, threePercentage, fourPercentage, noAnswerPercentage],
+                labels: ['1-2', '2-3', '3-4', '4+', 'No Answer']
+            };
     }
 };

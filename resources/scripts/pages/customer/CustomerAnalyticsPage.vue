@@ -91,13 +91,13 @@
         </div>
         <v-row>
             <v-col sm="12" md="3">
-                <EnergyUsageChart title="Energy Usage" :chartData="utilitySummary.energy" _id="energy" />
+                <EnergyUsageChart title="Energy Usage" :chartData="energyUsage" _id="energy" />
             </v-col>
             <v-col sm="12" md="3">
-                <EnergyUsageChart title="Property Profile" :chartData="utilitySummary.property" _id="property"/>
+                <EnergyUsageChart title="Property Profile" :chartData="propertyProfile" _id="property"/>
             </v-col>
             <v-col sm="12" md="3">
-                <EnergyUsageChart title="People live in household" :chartData="utilitySummary.household" _id="household" />
+                <EnergyUsageChart title="People live in household" :chartData="householdProfile" _id="household" />
             </v-col>
             <v-col sm="12" md="3">
                 <UtilityUsageByCityGraph :cities="citiesByUtilityUsages" />
@@ -130,6 +130,7 @@ import SentimentService from "@scripts/services/SentimentService";
 import DashboardService from "@scripts/services/DashboardService";
 import DayJS from 'dayjs';
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
+import AnalyticsService from "@scripts/services/AnalyticsService";
 
 export default {
     name: "CustomerAnalyticsPage",
@@ -151,6 +152,9 @@ export default {
             sentimentSummary: new SentimentSummary(),
             dashboardSummary: null,
             utilitySummary: null,
+            energyUsage: null,
+            propertyProfile: null,
+            householdProfile: null,
             citiesByUtilityUsages: [],
             dateRange: new DateRange(),
             loaded: false,
@@ -178,6 +182,9 @@ export default {
             this.dashboardSummary = await DashboardService.getDashboardSummary(dateRange);
             merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
             this.utilitySummary = await DashboardService.getUtilitySummary(this.dateRange)
+            this.energyUsage = await AnalyticsService.getEnergyUsageAnalytics({ ...this.dateRange });
+            this.propertyProfile = await AnalyticsService.getPropertyProfileAnalytics({ ...this.dateRange });
+            this.householdProfile = await AnalyticsService.getHouseholdProfileAnalytics({ ...this.dateRange });
             this.citiesByUtilityUsages = await DashboardService.getTopCitiesByUtilityUsages(this.dateRange)
         },
         checkIfDateEndIsToday() {
