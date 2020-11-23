@@ -91,13 +91,16 @@
         </div>
         <v-row>
             <v-col sm="12" md="3">
-                <EnergyUsageChart :chartData="utilitySummary.energy" _id="energy" />
+                <EnergyUsageChart title="Energy Usage" :chartData="utilitySummary.energy" _id="energy" />
             </v-col>
             <v-col sm="12" md="3">
-                <EnergyUsageChart :chartData="utilitySummary.property" _id="property"/>
+                <EnergyUsageChart title="Property Profile" :chartData="utilitySummary.property" _id="property"/>
             </v-col>
             <v-col sm="12" md="3">
-                <EnergyUsageChart :chartData="utilitySummary.household" _id="household" />
+                <EnergyUsageChart title="People live in household" :chartData="utilitySummary.household" _id="household" />
+            </v-col>
+            <v-col sm="12" md="3">
+                <UtilityUsageByCityGraph :cities="citiesByUtilityUsages" />
             </v-col>
         </v-row>
         <v-row>
@@ -118,6 +121,7 @@ import DateRangePicker from "@scripts/components/customer/analytics/DateRangePic
 import PageHeader from "@scripts/components/common/PageHeader"
 import DateRange from "@scripts/models/DateRange";
 import merge from "lodash-es/merge";
+import UtilityUsageByCityGraph from "@scripts/components/customer/analytics/UtilityUsageByCityGraph";
 import InfoChartCard from "@scripts/components/customer/analytics/InfoChartCard";
 import CustomerInfos from "@scripts/components/customer/analytics/CustomerInfos";
 import ConversationInfos from "@scripts/components/customer/analytics/ConversationInfos";
@@ -139,13 +143,15 @@ export default {
         PageHeader,
         CustomerInfos,
         ConversationInfos,
-        InfoChartCard
+        InfoChartCard,
+        UtilityUsageByCityGraph
     },
     data() {
         return {
             sentimentSummary: new SentimentSummary(),
             dashboardSummary: null,
             utilitySummary: null,
+            citiesByUtilityUsages: [],
             dateRange: new DateRange(),
             loaded: false,
             intervalID: null
@@ -172,6 +178,7 @@ export default {
             this.dashboardSummary = await DashboardService.getDashboardSummary(dateRange);
             merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
             this.utilitySummary = await DashboardService.getUtilitySummary(this.dateRange)
+            this.citiesByUtilityUsages = await DashboardService.getTopCitiesByUtilityUsages(this.dateRange)
         },
         checkIfDateEndIsToday() {
             return this.dateRange.end === new DayJS().format(DATE_FORMAT.DB_DATE);

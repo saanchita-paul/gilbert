@@ -14,5 +14,9 @@ export default {
 
     getUtilitySummary(dateRange) {
         return DashboardAPI.getUtilitySummary(dateRange)
+    },
+
+    getTopCitiesByUtilityUsages(dateRange) {
+        return DashboardAPI.getTopCitiesByUtilityUsages(dateRange)
     }
 }

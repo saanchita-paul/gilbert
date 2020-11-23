@@ -64,5 +64,16 @@ export default {
                 labels: ['1-2', '2-3', '3-4', '4+']
             },
         }
+    },
+    getTopCitiesByUtilityUsages(dateRange) {
+        let cities = []
+        for (let i = 0; i < 10; i+= 1 ) {
+            cities.push({
+                city_name: 'Camberwell',
+                country: 'Australia',
+                customer_percentage: 10
+            })
+        }
+        return cities;
     }
 }

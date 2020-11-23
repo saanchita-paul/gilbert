@@ -1,12 +1,12 @@
 <template>
-    <v-card class="px-2" v-if="_id && chartData">
+    <v-card style="height: 300px" class="px-2" v-if="_id && chartData">
         <v-card-text>
             <div style="height: 90px">
                 <div class="">
-                    <h3 style="font-weight: 600">Energy Usage</h3>
+                    <h3 class="ttitle">{{title}}</h3>
                     <small>Camberwell, 3152</small>
                 </div>
-                <v-row>
+                <v-row class="mt-1">
                     <v-col class="my-0 py-0" v-for="(color, index ) in chartData.colors" :key="index" sm="6">
                         <div class="chart-title">
                             <div class="labelColor" :style="{backgroundColor: color}"></div>
@@ -29,7 +29,7 @@ import Chart from "chart.js";
 
 export default {
     name: "EnergyUsageChart",
-    props: ['_id', 'chartData'],
+    props: ['_id', 'chartData', 'title'],
     data() {
         return {
             // chartData: {
@@ -97,5 +97,10 @@ export default {
 }
 .chart-title {
     display: flex; flex-direction: row; align-items: center
+}
+
+.ttitle {
+    font-weight: 600;
+    font-size: 18px;
 }
 </style>
