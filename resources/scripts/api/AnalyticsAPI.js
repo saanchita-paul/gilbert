@@ -50,4 +50,20 @@ export default {
             return error.data;
         }
     },
+    /**
+     *  get household profile analytics data
+     *  @param {Object} filter
+     * @returns {Object}
+     */
+    getTopDestinationAnalyticsData: async (filter = {}) => {
+        try {
+            const data = await axios.get(`${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api/analytics/top-destination`, {
+                params: { ...filter }
+            });
+            console.log("RECEIVED TOP DESTINATION ANALYTICS DATA ", data);
+            return AnalyticsMapper.topDestinationDetail(data.data.data);
+        } catch (error) {
+            return error.data;
+        }
+    },
 }

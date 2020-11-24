@@ -96,5 +96,35 @@ export default {
                 data: [onePercentage, twoPercentage, threePercentage, fourPercentage, noAnswerPercentage],
                 labels: ['1-2', '2-3', '3-4', '4+', 'No Answer']
             };
+    },
+
+    /**
+     *  top destination analytics mapper
+     *  @param {Object} data
+     * @returns {Array}
+     */
+    topDestinationDetail: (data) => {
+        let total = 0;
+        if (Array.isArray(data) && data.length > 0) {
+            data.forEach(({ count = 0 }) => {
+                total += count;
+            });
+        }
+
+        if (total === 0) {
+            return [];
+        }
+
+        let output = [];
+        let totalPercentageCount = 0;
+        for (let i = 0; i < data.length; i++) {
+            const { count = 0 } = data[i];
+            const customer_percentage = i === data.length - 1
+                ? 100 - totalPercentageCount
+                : Math.round((count / total) * 100);
+            output = [...output, { ...data[i], customer_percentage } ];
+            totalPercentageCount += customer_percentage;
+        }
+        return output;
     }
 };

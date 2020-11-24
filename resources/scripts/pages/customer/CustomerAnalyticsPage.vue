@@ -100,7 +100,7 @@
                 <EnergyUsageChart title="People live in household" :chartData="householdProfile" _id="household" />
             </v-col>
             <v-col sm="12" md="3">
-                <UtilityUsageByCityGraph :cities="citiesByUtilityUsages" />
+                <UtilityUsageByCityGraph :cities="topDestinations" />
             </v-col>
         </v-row>
         <v-row>
@@ -155,6 +155,7 @@ export default {
             energyUsage: null,
             propertyProfile: null,
             householdProfile: null,
+            topDestinations: null,
             citiesByUtilityUsages: [],
             dateRange: new DateRange(),
             loaded: false,
@@ -181,11 +182,12 @@ export default {
         async load(dateRange) {
             this.dashboardSummary = await DashboardService.getDashboardSummary(dateRange);
             merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
-            this.utilitySummary = await DashboardService.getUtilitySummary(this.dateRange)
+            this.utilitySummary = await DashboardService.getUtilitySummary(this.dateRange); //REDUNDANT CODE
             this.energyUsage = await AnalyticsService.getEnergyUsageAnalytics({ ...this.dateRange });
             this.propertyProfile = await AnalyticsService.getPropertyProfileAnalytics({ ...this.dateRange });
             this.householdProfile = await AnalyticsService.getHouseholdProfileAnalytics({ ...this.dateRange });
-            this.citiesByUtilityUsages = await DashboardService.getTopCitiesByUtilityUsages(this.dateRange)
+            this.citiesByUtilityUsages = await DashboardService.getTopCitiesByUtilityUsages(this.dateRange); //REDUNDANT CODE
+            this.topDestinations = await AnalyticsService.getTopDestinationAnalytics({ ...this.dateRange });
         },
         checkIfDateEndIsToday() {
             return this.dateRange.end === new DayJS().format(DATE_FORMAT.DB_DATE);

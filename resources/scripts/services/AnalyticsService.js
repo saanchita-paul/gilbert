@@ -20,5 +20,12 @@ export default {
      * @param {Object} filter
      * @return {Object}
      * */
-    getHouseholdProfileAnalytics: (filter) => AnalyticsAPI.getHouseholdProfileAnalyticsData(filter)
+    getHouseholdProfileAnalytics: (filter) => AnalyticsAPI.getHouseholdProfileAnalyticsData(filter),
+
+    /**
+     * get top destination analytics
+     * @param {Object} filter
+     * @return {Object}
+     * */
+    getTopDestinationAnalytics: (filter) => AnalyticsAPI.getTopDestinationAnalyticsData(filter)
 }
