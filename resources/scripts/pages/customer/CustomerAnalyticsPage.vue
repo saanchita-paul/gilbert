@@ -196,7 +196,7 @@ export default {
     async mounted() {
 
         //Set timeout to call Dashboard API every 5 minute if date_end is today
-        this.intervalID = setInterval(() => this.checkIfDateEndIsToday() && this.getDashboardSummary(this.dateRange), 300000);
+        this.intervalID = setInterval(() => this.checkIfDateEndIsToday() && this.load(this.dateRange), 300000);
         await this.load(this.dateRange);
         this.loaded = true;
     },
