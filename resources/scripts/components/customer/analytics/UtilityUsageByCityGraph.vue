@@ -2,7 +2,7 @@
     <v-card style="height: 300px; overflow: auto !important;">
         <v-card-text style="">
             <h4 class="title">Top Towns/cities</h4>
-            <div v-if="!Array.isArray(cities) || cities.length === 0" class="text-h5">Not enough user data to display top cities and towns.</div>
+            <div v-if="!Array.isArray(cities) || cities.length === 0" class="text-h5">N/A</div>
             <div v-else v-for="city in cities" class="my-2">
                 <div class="d-flex flex-row pa-0 ma-0">
                   <div class="pa-0 ma-0">{{getCityLabel(city)}}</div>
