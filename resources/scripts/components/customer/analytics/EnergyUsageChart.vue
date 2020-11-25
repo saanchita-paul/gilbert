@@ -2,8 +2,51 @@
     <v-card style="height: 300px" class="px-2" v-if="_id && chartData">
         <v-card-text>
             <div style="height: 90px">
+
                 <div class="">
-                    <h3 class="title">{{title}}</h3>
+                    <div class="d-flex flex-row">
+                        <h3 class="title">{{title}}</h3>
+                        <v-dialog
+                            v-model="dialog"
+                            persistent
+                            max-width="290"
+                        >
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn icon class="ml-auto" v-bind="attrs" v-on="on">
+                                    <v-icon>mdi-tune</v-icon>
+                                </v-btn>
+                            </template>
+
+                            <v-card>
+                                <v-card-title>
+                                    <div class="d-flex flex-row" style="width: 100%">
+                                        <div class="font-italic">Filter By</div>
+                                        <div class="flex-grow-1 flex-shrink-0 d-flex flex-row-reverse">
+                                            <v-btn icon @click="dialog = false">
+                                                <v-icon>mdi-close-circle</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </div>
+                                </v-card-title>
+
+                                <v-card-text>
+                                    Lorem ipsum
+                                </v-card-text>
+
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn
+                                        color="primary"
+                                        text
+                                        @click="dialog = false"
+                                    >
+                                        Save
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-card>
+
+                        </v-dialog>
+                    </div>
                     <small>Camberwell, 3152</small>
                 </div>
                 <v-row class="mt-1">
@@ -29,7 +72,7 @@ import Chart from "chart.js";
 
 export default {
     name: "EnergyUsageChart",
-    props: ['_id', 'chartData', 'title'],
+    props: ['_id', 'chartData', 'title', 'filter'],
     data() {
         return {
             // chartData: {
@@ -37,6 +80,7 @@ export default {
             //     data: [40, 25, 35, 0],
             //     labels: ['High', 'Medium', 'Low', 'Not sure']
             // }
+            dialog: false,
         }
     },
     mounted() {
