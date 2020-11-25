@@ -2,8 +2,12 @@
     <v-card style="height: 300px; overflow: auto !important;">
         <v-card-text style="">
             <h4 class="title">Top Towns/cities</h4>
-            <div v-for="city in cities" class="my-2">
-                <p class="pa-0 ma-0">{{getCityLabel(city)}}</p>
+            <div v-if="!Array.isArray(cities) || cities.length === 0" class="text-h5">Not enough user data to display top cities and towns.</div>
+            <div v-else v-for="city in cities" class="my-2">
+                <div class="d-flex flex-row pa-0 ma-0">
+                  <div class="pa-0 ma-0">{{getCityLabel(city)}}</div>
+                  <div class="pa-0 ml-auto">{{getCityPercentage(city)}}</div>
+                </div>
                 <div class="city-amount mt-1">
 <!--                    <div class="fill"></div>-->
 <!--                    <div class="empty"></div>-->
@@ -25,6 +29,10 @@ export default {
         const state = city.state || '';
         const country = city.country || '';
         return `${cityName}, ${state}, ${country}`;
+      },
+      getCityPercentage(city) {
+        const { customer_percentage = 0 } = city;
+        return `${customer_percentage}%`;
       },
       getFillStyle(city) {
         const { customer_percentage = 0 } = city;
