@@ -130,7 +130,6 @@ import DateRangePicker from "@scripts/components/customer/analytics/DateRangePic
 import PageHeader from "@scripts/components/common/PageHeader"
 import DateRange from "@scripts/models/DateRange";
 import merge from "lodash-es/merge";
-import isEmpty from "lodash-es/isEmpty";
 import UtilityUsageByCityGraph from "@scripts/components/customer/analytics/UtilityUsageByCityGraph";
 import InfoChartCard from "@scripts/components/customer/analytics/InfoChartCard";
 import CustomerInfos from "@scripts/components/customer/analytics/CustomerInfos";
@@ -206,9 +205,6 @@ export default {
         },
         checkIfDateEndIsToday() {
             return this.dateRange.end === new DayJS().format(DATE_FORMAT.DB_DATE);
-        },
-        empty(item) {
-            return isEmpty(item);
         }
     },
     async mounted() {
