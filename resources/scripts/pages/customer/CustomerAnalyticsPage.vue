@@ -86,6 +86,23 @@
 <!--            <v-col md="6" sm="12">-->
 <!--                <GenderChart/>-->
 <!--            </v-col>-->
+        <div class="customer-insight">
+            <p class="box title primary--text font-weight-bold mb-0 mt-5 px-3">CONNECT ENERGY</p>
+        </div>
+        <v-row>
+            <v-col sm="12" md="3">
+                <EnergyUsageChart title="Energy Usage" :chartData="energyUsage" _id="energy" />
+            </v-col>
+            <v-col sm="12" md="3">
+                <EnergyUsageChart title="Property Profile" :chartData="propertyProfile" _id="property"/>
+            </v-col>
+            <v-col sm="12" md="3">
+                <EnergyUsageChart title="People live in household" :chartData="householdProfile" _id="household" />
+            </v-col>
+            <v-col sm="12" md="3">
+                <UtilityUsageByCityGraph :cities="topDestinations" />
+            </v-col>
+        </v-row>
         <v-row>
             <v-col sm="12">
                 <ActiveCustomer/>
@@ -95,7 +112,7 @@
 </template>
 
 <script>
-import GenderChart from "@scripts/components/customer/analytics/GenderChart";
+import EnergyUsageChart from "@scripts/components/customer/analytics/EnergyUsageChart";
 import EmotionMeter from "@scripts/components/customer/analytics/EmotionMeter";
 import ActiveCustomer from "@scripts/components/customer/analytics/ActiveCustomer";
 import AnalyticContainer from "@scripts/components/customer/analytics/AnalyticContainer";
@@ -104,6 +121,7 @@ import DateRangePicker from "@scripts/components/customer/analytics/DateRangePic
 import PageHeader from "@scripts/components/common/PageHeader"
 import DateRange from "@scripts/models/DateRange";
 import merge from "lodash-es/merge";
+import UtilityUsageByCityGraph from "@scripts/components/customer/analytics/UtilityUsageByCityGraph";
 import InfoChartCard from "@scripts/components/customer/analytics/InfoChartCard";
 import CustomerInfos from "@scripts/components/customer/analytics/CustomerInfos";
 import ConversationInfos from "@scripts/components/customer/analytics/ConversationInfos";
@@ -112,6 +130,7 @@ import SentimentService from "@scripts/services/SentimentService";
 import DashboardService from "@scripts/services/DashboardService";
 import DayJS from 'dayjs';
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
+import AnalyticsService from "@scripts/services/AnalyticsService";
 
 export default {
     name: "CustomerAnalyticsPage",
@@ -120,19 +139,27 @@ export default {
         ActiveCustomer,
         AnalyticContainer,
         InfoCard,
-        GenderChart,
+        EnergyUsageChart,
         DateRangePicker,
         PageHeader,
         CustomerInfos,
         ConversationInfos,
-        InfoChartCard
+        InfoChartCard,
+        UtilityUsageByCityGraph
     },
     data() {
         return {
             sentimentSummary: new SentimentSummary(),
             dashboardSummary: null,
+            utilitySummary: null,
+            energyUsage: null,
+            propertyProfile: null,
+            householdProfile: null,
+            topDestinations: null,
+            citiesByUtilityUsages: [],
             dateRange: new DateRange(),
             loaded: false,
+            intervalID: null
         }
     },
     computed: {
@@ -152,30 +179,34 @@ export default {
         }
     },
     methods: {
-        async getDashboardSummary(dateRange) {
+        async load(dateRange) {
             this.dashboardSummary = await DashboardService.getDashboardSummary(dateRange);
             merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
+            this.utilitySummary = await DashboardService.getUtilitySummary(this.dateRange); //REDUNDANT CODE
+            this.energyUsage = await AnalyticsService.getEnergyUsageAnalytics({ ...this.dateRange });
+            this.propertyProfile = await AnalyticsService.getPropertyProfileAnalytics({ ...this.dateRange });
+            this.householdProfile = await AnalyticsService.getHouseholdProfileAnalytics({ ...this.dateRange });
+            this.citiesByUtilityUsages = await DashboardService.getTopCitiesByUtilityUsages(this.dateRange); //REDUNDANT CODE
+            this.topDestinations = await AnalyticsService.getTopDestinationAnalytics({ ...this.dateRange });
         },
         checkIfDateEndIsToday() {
             return this.dateRange.end === new DayJS().format(DATE_FORMAT.DB_DATE);
         }
     },
-    mounted() {
-        // const sentimentSummary = await SentimentService.getSentimentSummary(this.dateRange);
-        // this.dashboardSummary = await DashboardService.getDashboardSummary(this.dateRange);
-        // merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
+    async mounted() {
 
         //Set timeout to call Dashboard API every 5 minute if date_end is today
-        setInterval(() => this.checkIfDateEndIsToday() && this.getDashboardSummary(this.dateRange), 300000);
-        this.getDashboardSummary(this.dateRange);
+        this.intervalID = setInterval(() => this.checkIfDateEndIsToday() && this.load(this.dateRange), 300000);
+        await this.load(this.dateRange);
         this.loaded = true;
+    },
+    beforeDestroy() {
+        this.intervalID && clearInterval(this.intervalID);
     },
     watch: {
         dateRange: {
             handler: function (newVal) {
-                // this.dashboardSummary = await DashboardService.getDashboardSummary(newVal);
-                // merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
-                this.getDashboardSummary(newVal);
+                this.load(newVal);
             },
             deep: true
         },

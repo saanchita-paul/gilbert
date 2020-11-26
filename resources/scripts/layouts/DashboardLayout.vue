@@ -3,7 +3,7 @@
         <v-navigation-drawer
             v-model="drawer"
             :mini-variant="miniDrawer"
-            mini-variant-width="60"
+            mini-variant-width="70"
             app
             class="navigation-drawer-menu app-nav-bg"
         >
@@ -13,7 +13,7 @@
                 </v-list-item-avatar>
 
                 <v-list-item-content>
-                    <v-list-item-title class="white--text">Hood</v-list-item-title>
+<!--                    <v-list-item-title class="white&#45;&#45;text">Hood</v-list-item-title>-->
                 </v-list-item-content>
             </v-list-item>
 
@@ -21,7 +21,7 @@
 
             <v-list dense class=" pt-0 main-nav-items">
                     <span class="mb-2" v-for="r in routes">
-                        <v-list-item
+                         <v-list-item
                             v-if="r.type ==='group'"
                             link
                             @click="onGroupMenuClicked(r)"
@@ -34,7 +34,7 @@
                             :key="r.title"
                         >
                             <v-list-item-icon>
-                                <v-icon size="30" :color="selectedRouteTitle === r.title ? 'white' : 'grey'">{{ r.icon }}</v-icon>
+                                <v-icon size="26" :color="selectedRouteTitle === r.title ? 'white' : 'grey'">{{ r.icon }}</v-icon>
                             </v-list-item-icon>
                             <v-list-item-content>
                                 <v-list-item-title>{{ r.title }}</v-list-item-title>
@@ -45,13 +45,13 @@
                             link
                             @click="onMenuClicked(r)"
                             :class="{
-                                'pa-2': true,
+                                'pa-1': true,
                                 'app-nav': true,
                                 'app-active-nav white--text': selectedRouteTitle === r.title
                             }"
                             :key="r.title"
                         >
-                        <v-list-item-icon><v-icon size="30" :color="selectedRouteTitle === r.title ? 'white' : 'grey'">{{ r.icon }}</v-icon></v-list-item-icon>
+                        <v-list-item-icon><v-icon size="26" :color="selectedRouteTitle === r.title ? 'white' : 'grey'">{{ r.icon }}</v-icon></v-list-item-icon>
                         <v-list-item-content>
                             <v-list-item-title>{{ r.title }}</v-list-item-title>
                         </v-list-item-content>
@@ -60,8 +60,8 @@
             </v-list>
         </v-navigation-drawer>
 
-        <v-app-bar app class="white">
-            <v-toolbar-title class="primary--text">Hood</v-toolbar-title>
+        <v-app-bar flat app class="white">
+<!--            <v-toolbar-title class="primary&#45;&#45;text">Hood</v-toolbar-title>-->
             <!--            <v-btn icon color="primary" @click="miniDrawer = !miniDrawer">-->
             <!--                <v-icon>{{ miniDrawer ? 'mdi-menu' : 'mdi-menu-open' }}</v-icon>-->
             <!--            </v-btn>-->
@@ -202,7 +202,7 @@ export default {
 
 <style scoped>
 .app-nav-bg {
-    background-color: #444348
+    background-color: #444348 !important;
 }
 .app-logo-area {
     padding-bottom: 8px !important; background-color: white

@@ -11,15 +11,15 @@
                 </v-col>
                 <v-col md="12"  class="pt-0">
                     <div class="emotions-container mt-1">
-                        <div class="emo  white--text" :style="negativeStyles">
+                        <div v-if="style.negative > '0%'" class="emo  white--text" :style="negativeStyles">
                             <p class="mb-0 ">NEGATIVE</p>
                             <small class="mt-n2 sentiment">{{emotions.negative}}</small>
                         </div>
-                        <div class="emo  white--text" :style="neutralStyles">
+                        <div v-if="style.neutral > '0%'" class="emo  white--text" :style="neutralStyles">
                             <p class="mb-0 ">NEUTRAL</p>
                             <small class="mt-n2 sentiment">{{emotions.neutral}}</small>
                         </div>
-                        <div class="emo  white--text" :style="positiveStyles">
+                        <div v-if="style.positive > '0%'" class="emo  white--text" :style="positiveStyles">
                             <p class="mb-0 ">POSITIVE</p>
                             <small class="mt-n2 sentiment">{{emotions.positive}}</small>
                         </div>
