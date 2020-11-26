@@ -23,7 +23,8 @@
                         :colors="['rgba(92, 34, 154, .9)', 'rgba(92, 34, 154, .5)']"
                         chartId="c-01"
                         title="New User"
-                        value="14"
+                        :value="dashboardSummary.graphData.total_user"
+                        :chartData="dashboardSummary.graphData.user_chart"
                     />
                 </div>
                 <div class="box custom-col-2">
@@ -31,7 +32,8 @@
                         :colors="['rgba(92, 34, 154, .9)', 'rgba(92, 34, 154, .5)']"
                         chartId="c-02"
                         title="New Customer"
-                        value="4"
+                        :value="dashboardSummary.graphData.total_customer"
+                        :chartData="dashboardSummary.graphData.customer_chart"
                     />
                 </div>
                 <div class="box custom-col-4">
@@ -48,6 +50,7 @@
                         chartId="c-03"
                         title="Total Messages"
                         value="7935"
+                        :chartData="fakeData"
                     />
                 </div>
                 <div class="custom-col-2">
@@ -56,6 +59,7 @@
                         chartId="c-04"
                         title="Total Conversation"
                         value="4928"
+                        :chartData="fakeData"
                     />
                 </div>
                 <div class="custom-col-2">
@@ -64,6 +68,7 @@
                         chartId="c-05"
                         title="Avg. Conv. Steps/User"
                         value="14"
+                        :chartData="fakeData"
                     />
                 </div>
                 <div class="custom-col-2">
@@ -72,6 +77,7 @@
                         chartId="c-06"
                         title="Live Conversation Count"
                         value="13987"
+                        :chartData="fakeData"
                     />
                 </div>
                 <div class="custom-col-2">
@@ -80,6 +86,7 @@
                         title="Average Time"
                         value="02.35 min"
                         chartId="c-07"
+                        :chartData="fakeData"
                     />
                 </div>
             </div>
@@ -159,7 +166,11 @@ export default {
             citiesByUtilityUsages: [],
             dateRange: new DateRange(),
             loaded: false,
-            intervalID: null
+            intervalID: null,
+            fakeData: {
+                data: [90, 70, 62, 80, 50, 88, 80, 30, 40, 50],
+                labels: ["0", "1", "2", '3', '4', '5', '6', '7', '8', '9']
+            }
         }
     },
     computed: {

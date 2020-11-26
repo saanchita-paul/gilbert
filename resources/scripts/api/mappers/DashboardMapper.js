@@ -3,35 +3,9 @@ import ConversationSummary from "@scripts/models/ConversationSummary";
 import InfoChart from "@scripts/models/InfoChart";
 import SentimentSummary from "@scripts/models/SentimentSummary";
 
-const customer_summaries = [
-    {
-        date: "2020-11-26",
-        new_user: 10,
-        new_customer: 10
-    },
-    {
-        date: "2020-11-27",
-        new_user: 10,
-        new_customer: 10
-    },
-    {
-        date: "2020-11-28",
-        new_user: 10,
-        new_customer: 10
-    },
-
-];
-
-for(let i = 0; i< 4; i++){
-    customer_summaries.push({
-        date: "2020-11-26",
-        new_user: 10,
-        new_customer: 10
-    });
-}
-
 export default {
     toClientList(data) {
+        console.log('gf', data);
         const customerSummary = new CustomerSummary();
         const conversationSummary = new ConversationSummary();
         const infoChart = new InfoChart();
@@ -61,7 +35,7 @@ export default {
             sentimentSummary.neutral_count =  (100 - negative_percentage - positive_percentage) + '%';
         }
 
-        const graphData = this.mapChart(customer_summaries);
+        const graphData = this.mapChart(data.summaries);
 
         return {
             customerSummary,
@@ -71,8 +45,8 @@ export default {
     },
 
     mapChart(data) {
-        let new_customer = 0;
-        let new_user = 0;
+        let total_customer = 0;
+        let total_user = 0;
         let days_count = 0;
         let customer_count = 0;
         let user_count = 0;
@@ -92,15 +66,15 @@ export default {
                 for(let i = 0; i< Math.ceil(total_days/365); i++){
                     for(let j = 0; j<365; j++){
                         if(data[days_count]) {
-                            customer_count += data[days_count].new_customer;
-                            user_count += data[days_count].new_user;
+                            customer_count += data[days_count].total_customer;
+                            user_count += data[days_count].total_user;
                             days_count++;
                         }
                     }
                     customer_chart.data.push(customer_count);
-                    customer_chart.labels.push(customer_count);
+                    customer_chart.labels.push('Year '+i);
                     user_chart.data.push(user_count);
-                    user_chart.labels.push(user_count);
+                    user_chart.labels.push('Year '+i);
                     customer_count = 0;
                     user_count = 0;
                 }
@@ -109,15 +83,15 @@ export default {
                 for(let i = 0; i< Math.ceil(total_days/30); i++){
                     for(let j = 0; j<30; j++){
                         if(data[days_count]) {
-                            customer_count += data[days_count].new_customer;
-                            user_count += data[days_count].new_user;
+                            customer_count += data[days_count].total_customer;
+                            user_count += data[days_count].total_user;
                             days_count++;
                         }
                     }
                     customer_chart.data.push(customer_count);
-                    customer_chart.labels.push(customer_count);
+                    customer_chart.labels.push('Month '+i);
                     user_chart.data.push(user_count);
-                    user_chart.labels.push(user_count);
+                    user_chart.labels.push('Month '+i);
                     customer_count = 0;
                     user_count = 0;
                 }
@@ -126,36 +100,38 @@ export default {
                 for(let i = 0; i< Math.ceil(total_days/7); i++){
                     for(let j = 0; j<7; j++){
                         if(data[days_count]) {
-                            customer_count += data[days_count].new_customer;
-                            user_count += data[days_count].new_user;
+                            customer_count += data[days_count].total_customer;
+                            user_count += data[days_count].total_user;
                             days_count++;
                         }
                     }
                     customer_chart.data.push(customer_count);
-                    customer_chart.labels.push(customer_count);
+                    customer_chart.labels.push('Week '+i);
                     user_chart.data.push(user_count);
-                    user_chart.labels.push(user_count);
+                    user_chart.labels.push('Week '+i);
                     customer_count = 0;
                     user_count = 0;
                 }
                 break;
             default:
                 for(let i = 0; i< 7; i++){
-                    customer_chart.data.push(data[i].new_customer);
-                    customer_chart.labels.push(data[i].new_customer);
-                    user_chart.data.push(data[i].new_user);
-                    user_chart.labels.push(data[i].new_user);
+                    if(data[i]) {
+                        customer_chart.data.push(data[i].total_customer);
+                        customer_chart.labels.push('Day '+i);
+                        user_chart.data.push(data[i].total_user);
+                        user_chart.labels.push('Day '+i);
+                    }
                 }
                 break;
           }
 
         data.map(item => {
-            new_customer += item.new_customer;
-            new_user += item.new_user;
+            total_customer += item.total_customer;
+            total_user += item.total_user;
         });
         return {
-            new_customer: new_customer,
-            new_user: new_user,
+            total_customer: total_customer,
+            total_user: total_user,
             customer_chart : customer_chart,
             user_chart : user_chart
         }

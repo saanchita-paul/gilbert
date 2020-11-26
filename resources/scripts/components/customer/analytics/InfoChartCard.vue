@@ -17,12 +17,12 @@
 import Chart from 'chart.js'
 export default {
     name: "InfoChartCard",
-    props: ['chartId', 'title', 'value', 'colors'],
+    props: ['chartId', 'title', 'value', 'colors', 'chartData'],
     data() {
         return {
             chart: {
-                data: [90, 70, 62, 80, 50, 88, 80, 30, 40, 50],
-                labels: ["0", "1", "2", '3', '4', '5', '6', '7', '8', '9']
+                data: this.chartData.data,
+                labels: this.chartData.labels
             }
         }
     },
