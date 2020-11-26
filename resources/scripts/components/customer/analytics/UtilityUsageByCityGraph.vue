@@ -1,5 +1,5 @@
 <template>
-    <v-card style="height: 300px; overflow: auto !important;">
+    <v-card style="height: 350px; overflow: auto !important;">
         <v-card-text style="">
             <h4 class="title">Top Towns/cities</h4>
             <div v-if="!Array.isArray(cities) || cities.length === 0" class="text-h5">N/A</div>

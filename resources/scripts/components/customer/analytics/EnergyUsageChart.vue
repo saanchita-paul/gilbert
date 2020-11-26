@@ -1,7 +1,7 @@
 <template>
-    <v-card style="height: 300px" class="px-2" v-if="_id && chartData">
+    <v-card style="height: 350px" class="px-2" v-if="_id && chartData">
         <v-card-text>
-            <div style="height: 90px">
+            <div style="height: 150px">
 
                 <div class="">
                     <div class="d-flex flex-row">
