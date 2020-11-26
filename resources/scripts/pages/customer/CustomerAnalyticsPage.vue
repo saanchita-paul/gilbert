@@ -182,6 +182,7 @@ export default {
         async load(dateRange) {
             this.dashboardSummary = await DashboardService.getDashboardSummary(dateRange);
             merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
+            console.log('dashboardSummary',this.dashboardSummary)
             this.utilitySummary = await DashboardService.getUtilitySummary(this.dateRange); //REDUNDANT CODE
             this.energyUsage = await AnalyticsService.getEnergyUsageAnalytics({ ...this.dateRange });
             this.propertyProfile = await AnalyticsService.getPropertyProfileAnalytics({ ...this.dateRange });

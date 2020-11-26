@@ -3,6 +3,33 @@ import ConversationSummary from "@scripts/models/ConversationSummary";
 import InfoChart from "@scripts/models/InfoChart";
 import SentimentSummary from "@scripts/models/SentimentSummary";
 
+const customer_summaries = [
+    {
+        date: "2020-11-26",
+        new_user: 10,
+        new_customer: 10
+    },
+    {
+        date: "2020-11-27",
+        new_user: 10,
+        new_customer: 10
+    },
+    {
+        date: "2020-11-28",
+        new_user: 10,
+        new_customer: 10
+    },
+
+];
+
+for(let i = 0; i< 4; i++){
+    customer_summaries.push({
+        date: "2020-11-26",
+        new_user: 10,
+        new_customer: 10
+    });
+}
+
 export default {
     toClientList(data) {
         const customerSummary = new CustomerSummary();
@@ -34,35 +61,103 @@ export default {
             sentimentSummary.neutral_count =  (100 - negative_percentage - positive_percentage) + '%';
         }
 
-        return {
-            customerSummary,
-            sentimentSummary
-        };
-        /**
-         * not using
-         */
-        data.forEach((item) => {
-            customerSummary.total_customer = customerSummary.total_customer + item.total_customer;
-            customerSummary.new_customer = customerSummary.new_customer + item.new_customer;
-            customerSummary.active_customer =  customerSummary.active_customer + item.active_customer;
-            customerSummary.engaged_customer = customerSummary.engaged_customer + item.engaged_customer;
-
-            conversationSummary.total_message = conversationSummary.total_message + item.message_sent + item.message_received;
-            conversationSummary.message_sent =  conversationSummary.message_sent + item.message_sent;
-            conversationSummary.message_received = conversationSummary.message_received + item.message_received;
-
-            infoChart.total_message.data.push(item.message_sent + item.message_received);
-            infoChart.total_message.labels.push(item.date);
-            infoChart.message_sent.data.push(item.message_sent);
-            infoChart.message_sent.labels.push(item.date);
-            infoChart.message_received.data.push(item.message_received);
-            infoChart.message_received.labels.push(item.date);
-        });
+        const graphData = this.mapChart(customer_summaries);
 
         return {
             customerSummary,
-            conversationSummary,
-            infoChart
+            sentimentSummary,
+            graphData
         };
     },
+
+    mapChart(data) {
+        let new_customer = 0;
+        let new_user = 0;
+        let days_count = 0;
+        let customer_count = 0;
+        let user_count = 0;
+        let customer_chart = {
+            data: [],
+            labels: []
+        };
+        let user_chart = {
+            data: [],
+            labels: []
+        };
+
+        const total_days = data.length;
+
+        switch (true) {
+            case (total_days > 365):
+                for(let i = 0; i< Math.ceil(total_days/365); i++){
+                    for(let j = 0; j<365; j++){
+                        if(data[days_count]) {
+                            customer_count += data[days_count].new_customer;
+                            user_count += data[days_count].new_user;
+                            days_count++;
+                        }
+                    }
+                    customer_chart.data.push(customer_count);
+                    customer_chart.labels.push(customer_count);
+                    user_chart.data.push(user_count);
+                    user_chart.labels.push(user_count);
+                    customer_count = 0;
+                    user_count = 0;
+                }
+                break;
+            case (total_days > 30):
+                for(let i = 0; i< Math.ceil(total_days/30); i++){
+                    for(let j = 0; j<30; j++){
+                        if(data[days_count]) {
+                            customer_count += data[days_count].new_customer;
+                            user_count += data[days_count].new_user;
+                            days_count++;
+                        }
+                    }
+                    customer_chart.data.push(customer_count);
+                    customer_chart.labels.push(customer_count);
+                    user_chart.data.push(user_count);
+                    user_chart.labels.push(user_count);
+                    customer_count = 0;
+                    user_count = 0;
+                }
+                break;
+            case (total_days > 7):
+                for(let i = 0; i< Math.ceil(total_days/7); i++){
+                    for(let j = 0; j<7; j++){
+                        if(data[days_count]) {
+                            customer_count += data[days_count].new_customer;
+                            user_count += data[days_count].new_user;
+                            days_count++;
+                        }
+                    }
+                    customer_chart.data.push(customer_count);
+                    customer_chart.labels.push(customer_count);
+                    user_chart.data.push(user_count);
+                    user_chart.labels.push(user_count);
+                    customer_count = 0;
+                    user_count = 0;
+                }
+                break;
+            default:
+                for(let i = 0; i< 7; i++){
+                    customer_chart.data.push(data[i].new_customer);
+                    customer_chart.labels.push(data[i].new_customer);
+                    user_chart.data.push(data[i].new_user);
+                    user_chart.labels.push(data[i].new_user);
+                }
+                break;
+          }
+
+        data.map(item => {
+            new_customer += item.new_customer;
+            new_user += item.new_user;
+        });
+        return {
+            new_customer: new_customer,
+            new_user: new_user,
+            customer_chart : customer_chart,
+            user_chart : user_chart
+        }
+    }
 };
