@@ -135,7 +135,7 @@ import InfoChartCard from "@scripts/components/customer/analytics/InfoChartCard"
 import CustomerInfos from "@scripts/components/customer/analytics/CustomerInfos";
 import ConversationInfos from "@scripts/components/customer/analytics/ConversationInfos";
 import SentimentSummary from "@scripts/models/SentimentSummary";
-import SentimentService from "@scripts/services/SentimentService";
+// import SentimentService from "@scripts/services/SentimentService";
 import DashboardService from "@scripts/services/DashboardService";
 import DayJS from 'dayjs';
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
