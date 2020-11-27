@@ -41,6 +41,7 @@
                                         </v-btn-toggle>
                                     </div>
 
+                                    <search-address @saveAddress="handleOnSaveAddress"></search-address>
                                 </v-card-text>
 
                                 <v-card-actions>
@@ -57,7 +58,7 @@
 
                         </v-dialog>
                     </div>
-                    <small>Camberwell, 3152</small>
+                    <small v-if="formattedCityLabel.length > 0">{{formattedCityLabel}}</small>
                 </div>
                 <v-row class="mt-1">
                     <v-col class="my-0 py-0" v-for="(color, index ) in chartData.colors" :key="index" sm="6">
@@ -79,9 +80,14 @@
 
 <script>
 import Chart from "chart.js";
+import SearchAddress from "@scripts/components/common/SearchAddress";
+import isEmpty from "lodash-es/isEmpty";
 
 export default {
     name: "EnergyUsageChart",
+    components: {
+        SearchAddress
+    },
     props: ['_id', 'chartData', 'title', 'value'],
     data() {
         return {
@@ -93,6 +99,16 @@ export default {
             dialog: false,
             customer_only: this.value.customer_only ? 1 : 0,
             postcode: this.value.postcode,
+            address: null
+        }
+    },
+    computed: {
+        formattedCityLabel() {
+            if (isEmpty(this.address) || !this.address.city || !this.address.postcode) {
+                return '';
+            } else {
+                return `${this.address.city}, ${this.address.postcode}`;
+            }
         }
     },
     mounted() {
@@ -166,6 +182,11 @@ export default {
                 postcode: this.postcode
             });
         },
+        handleOnSaveAddress(address) {
+            this.address = address;
+            const { postcode = null } = this.address || {};
+            this.postcode = postcode;
+        },
         onClickSave() {
             this.dialog = false;
             this.updateFilter();
@@ -192,5 +213,6 @@ export default {
     width: 80%;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 50px;
 }
 </style>
