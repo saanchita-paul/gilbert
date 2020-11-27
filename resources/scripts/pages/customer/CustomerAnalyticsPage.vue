@@ -100,13 +100,13 @@
         </div>
         <v-row>
             <v-col sm="12" md="3">
-                <EnergyUsageChart title="Energy Usage" :chartData="energyUsage" _id="energy" />
+                <EnergyUsageChart title="Energy Usage" :chartData="energyUsage" _id="energy" v-model="filterEnergyUsage" />
             </v-col>
             <v-col sm="12" md="3">
-                <EnergyUsageChart title="Property Profile" :chartData="propertyProfile" _id="property"/>
+                <EnergyUsageChart title="Property Profile" :chartData="propertyProfile" _id="property" v-model="filterPropertyProfile" />
             </v-col>
             <v-col sm="12" md="3">
-                <EnergyUsageChart title="People live in household" :chartData="householdProfile" _id="household" />
+                <EnergyUsageChart title="People live in household" :chartData="householdProfile" _id="household" v-model="filterHouseholdProfile" />
             </v-col>
             <v-col sm="12" md="3">
                 <UtilityUsageByCityGraph :cities="topDestinations" />
@@ -172,7 +172,11 @@ export default {
             fakeData: {
                 data: [90, 70, 62, 80, 50, 88, 80, 30, 40, 50],
                 labels: ["0", "1", "2", '3', '4', '5', '6', '7', '8', '9']
-            }
+            },
+
+            filterEnergyUsage: this.getInitialFilterValue(),
+            filterPropertyProfile: this.getInitialFilterValue(),
+            filterHouseholdProfile: this.getInitialFilterValue(),
         }
     },
     computed: {
@@ -197,14 +201,26 @@ export default {
             merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
             console.log('dashboardSummary',this.dashboardSummary)
             this.utilitySummary = await DashboardService.getUtilitySummary(this.dateRange); //REDUNDANT CODE
-            this.energyUsage = await AnalyticsService.getEnergyUsageAnalytics({ ...this.dateRange });
-            this.propertyProfile = await AnalyticsService.getPropertyProfileAnalytics({ ...this.dateRange });
-            this.householdProfile = await AnalyticsService.getHouseholdProfileAnalytics({ ...this.dateRange });
+            this.energyUsage = await AnalyticsService.getEnergyUsageAnalytics({ ...this.dateRange, ...this.filterEnergyUsage });
+            this.propertyProfile = await AnalyticsService.getPropertyProfileAnalytics({ ...this.dateRange, ...this.filterPropertyProfile });
+            this.householdProfile = await AnalyticsService.getHouseholdProfileAnalytics({ ...this.dateRange, ...this.filterHouseholdProfile });
             this.citiesByUtilityUsages = await DashboardService.getTopCitiesByUtilityUsages(this.dateRange); //REDUNDANT CODE
             this.topDestinations = await AnalyticsService.getTopDestinationAnalytics({ ...this.dateRange });
         },
         checkIfDateEndIsToday() {
             return this.dateRange.end === new DayJS().format(DATE_FORMAT.DB_DATE);
+        },
+        getInitialFilterValue() {
+            return { customer_only: false, postcode: null };
+        },
+        async loadEnergyUsageAnalytics(filter) {
+            this.energyUsage = await AnalyticsService.getEnergyUsageAnalytics({ ...this.dateRange, ...filter });
+        },
+        async loadPropertyProfileAnalytics(filter) {
+            this.propertyProfile = await AnalyticsService.getPropertyProfileAnalytics({ ...this.dateRange, ...filter });
+        },
+        async loadHouseholdProfileAnalytics(filter) {
+            this.householdProfile = await AnalyticsService.getHouseholdProfileAnalytics({ ...this.dateRange, ...filter });
         }
     },
     async mounted() {
@@ -221,6 +237,27 @@ export default {
         dateRange: {
             handler: function (newVal) {
                 this.load(newVal);
+            },
+            deep: true
+        },
+        filterEnergyUsage: {
+            handler: function (newVal) {
+                // console.log('Receive new value for energy usage filter ', newVal);
+                this.loadEnergyUsageAnalytics(newVal);
+            },
+            deep: true
+        },
+        filterPropertyProfile: {
+            handler: function(newVal) {
+                // console.log('Receive new value for property profile filter ', newVal);
+                this.loadPropertyProfileAnalytics(newVal);
+            },
+            deep: true
+        },
+        filterHouseholdProfile: {
+            handler: function (newVal) {
+                // console.log('Receive new value for household profile filter ', newVal);
+                this.loadHouseholdProfileAnalytics(newVal);
             },
             deep: true
         },

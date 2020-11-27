@@ -9,7 +9,7 @@
                         <v-dialog
                             v-model="dialog"
                             persistent
-                            max-width="290"
+                            max-width="500px"
                         >
                             <template v-slot:activator="{ on, attrs }">
                                 <v-btn icon class="ml-auto" v-bind="attrs" v-on="on">
@@ -30,7 +30,17 @@
                                 </v-card-title>
 
                                 <v-card-text>
-                                    Lorem ipsum
+                                    <div class="lead-customer-toggle-container">
+                                        <v-btn-toggle v-model="customer_only" color="primary">
+                                            <v-btn text block>
+                                                Lead
+                                            </v-btn>
+                                            <v-btn text block>
+                                                Customer
+                                            </v-btn>
+                                        </v-btn-toggle>
+                                    </div>
+
                                 </v-card-text>
 
                                 <v-card-actions>
@@ -38,7 +48,7 @@
                                     <v-btn
                                         color="primary"
                                         text
-                                        @click="dialog = false"
+                                        @click="onClickSave"
                                     >
                                         Save
                                     </v-btn>
@@ -72,7 +82,7 @@ import Chart from "chart.js";
 
 export default {
     name: "EnergyUsageChart",
-    props: ['_id', 'chartData', 'title', 'filter'],
+    props: ['_id', 'chartData', 'title', 'value'],
     data() {
         return {
             // chartData: {
@@ -81,6 +91,8 @@ export default {
             //     labels: ['High', 'Medium', 'Low', 'Not sure']
             // }
             dialog: false,
+            customer_only: this.value.customer_only ? 1 : 0,
+            postcode: this.value.postcode,
         }
     },
     mounted() {
@@ -93,6 +105,14 @@ export default {
             },
             deep: true
         },
+        /* TODO Determine if we need this functionality
+        value: {
+            handler(value) {
+                this.customer_only = value.customer_only ? 1 : 0;
+                this.postcode = value.postcode;
+            },
+            deep: true
+        },*/
     },
     methods: {
         drawChart() {
@@ -139,6 +159,16 @@ export default {
                     }
                 }
             });
+        },
+        updateFilter() {
+            this.$emit('input', {
+                customer_only: !!this.customer_only,
+                postcode: this.postcode
+            });
+        },
+        onClickSave() {
+            this.dialog = false;
+            this.updateFilter();
         }
     }
 }
@@ -154,9 +184,13 @@ export default {
 .chart-title {
     display: flex; flex-direction: row; align-items: center
 }
-
 .title {
     font-weight: 600;
     font-size: 18px;
+}
+.lead-customer-toggle-container {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
 }
 </style>
