@@ -29,7 +29,7 @@ export default {
     },
     computed: {
         percentage() {
-            if (!isFinite(this.prevValue) || this.prevValue === 0 || this.value === 0) {
+            if (isFinite(this.prevValue) || this.prevValue === 0 || this.value === 0) {
                 return 0;
             } else {
                 return Math.round(((this.value - this.prevValue) / this.prevValue) * 100);
