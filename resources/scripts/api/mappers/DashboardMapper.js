@@ -35,7 +35,7 @@ export default {
             sentimentSummary.neutral_count =  (100 - negative_percentage - positive_percentage) + '%';
         }
 
-        const graphData = this.mapChart(data.summaries);
+        const graphData = this.mapChart(data);
 
         return {
             customerSummary,
@@ -44,7 +44,10 @@ export default {
         };
     },
 
-    mapChart(data) {
+    mapChart(allData) {
+
+        const { summaries : data, previous_summaries = [] } = allData || {};
+
         let total_customer = 0;
         let total_user = 0;
         let days_count = 0;
@@ -58,6 +61,9 @@ export default {
             data: [],
             labels: []
         };
+
+        let total_previous_customer = 0;
+        let total_previous_user = 0;
 
         const total_days = data.length;
 
@@ -125,15 +131,28 @@ export default {
                 break;
           }
 
-        data.map(item => {
+        data.forEach(item => {
             total_customer += item.total_customer;
             total_user += item.total_user;
         });
+
+        //Calculating previous summaries
+        previous_summaries.forEach(item => {
+            total_previous_customer += item.total_customer;
+            total_previous_user += item.total_user;
+        });
+
+        //If zero for previous user and customer, we need to set to one to prevent division by zero issue for the percentage
+        total_previous_user = total_previous_user === 0 ? 1 : total_previous_user;
+        total_previous_customer = total_previous_customer === 0 ? 1 : total_previous_customer;
+
         return {
             total_customer: total_customer,
             total_user: total_user,
             customer_chart : customer_chart,
-            user_chart : user_chart
+            user_chart : user_chart,
+            total_previous_customer,
+            total_previous_user
         }
     }
 };

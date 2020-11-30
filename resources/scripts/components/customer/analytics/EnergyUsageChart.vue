@@ -1,7 +1,7 @@
 <template>
-    <v-card style="height: 300px" class="px-2" v-if="_id && chartData">
+    <v-card style="height: 350px" class="px-2" v-if="_id && chartData">
         <v-card-text>
-            <div style="height: 90px">
+            <div style="height: 150px">
 
                 <div class="">
                     <div class="d-flex flex-row">
@@ -9,7 +9,7 @@
                         <v-dialog
                             v-model="dialog"
                             persistent
-                            max-width="290"
+                            max-width="500px"
                         >
                             <template v-slot:activator="{ on, attrs }">
                                 <v-btn icon class="ml-auto" v-bind="attrs" v-on="on">
@@ -30,7 +30,18 @@
                                 </v-card-title>
 
                                 <v-card-text>
-                                    Lorem ipsum
+                                    <div class="lead-customer-toggle-container">
+                                        <v-btn-toggle v-model="customer_only" color="primary">
+                                            <v-btn text block>
+                                                Lead
+                                            </v-btn>
+                                            <v-btn text block>
+                                                Customer
+                                            </v-btn>
+                                        </v-btn-toggle>
+                                    </div>
+
+                                    <search-address @saveAddress="handleOnSaveAddress"></search-address>
                                 </v-card-text>
 
                                 <v-card-actions>
@@ -38,7 +49,7 @@
                                     <v-btn
                                         color="primary"
                                         text
-                                        @click="dialog = false"
+                                        @click="onClickSave"
                                     >
                                         Save
                                     </v-btn>
@@ -47,7 +58,7 @@
 
                         </v-dialog>
                     </div>
-                    <small>Camberwell, 3152</small>
+                    <small v-if="formattedCityLabel.length > 0">{{formattedCityLabel}}</small>
                 </div>
                 <v-row class="mt-1">
                     <v-col class="my-0 py-0" v-for="(color, index ) in chartData.colors" :key="index" sm="6">
@@ -69,10 +80,15 @@
 
 <script>
 import Chart from "chart.js";
+import SearchAddress from "@scripts/components/common/SearchAddress";
+import isEmpty from "lodash-es/isEmpty";
 
 export default {
     name: "EnergyUsageChart",
-    props: ['_id', 'chartData', 'title', 'filter'],
+    components: {
+        SearchAddress
+    },
+    props: ['_id', 'chartData', 'title', 'value'],
     data() {
         return {
             // chartData: {
@@ -81,6 +97,18 @@ export default {
             //     labels: ['High', 'Medium', 'Low', 'Not sure']
             // }
             dialog: false,
+            customer_only: this.value.customer_only ? 1 : 0,
+            postcode: this.value.postcode,
+            address: null
+        }
+    },
+    computed: {
+        formattedCityLabel() {
+            if (isEmpty(this.address) || !this.address.city || !this.address.postcode) {
+                return '';
+            } else {
+                return `${this.address.city}, ${this.address.postcode}`;
+            }
         }
     },
     mounted() {
@@ -93,6 +121,14 @@ export default {
             },
             deep: true
         },
+        /* TODO Determine if we need this functionality
+        value: {
+            handler(value) {
+                this.customer_only = value.customer_only ? 1 : 0;
+                this.postcode = value.postcode;
+            },
+            deep: true
+        },*/
     },
     methods: {
         drawChart() {
@@ -139,6 +175,21 @@ export default {
                     }
                 }
             });
+        },
+        updateFilter() {
+            this.$emit('input', {
+                customer_only: !!this.customer_only,
+                postcode: this.postcode
+            });
+        },
+        handleOnSaveAddress(address) {
+            this.address = address;
+            const { postcode = null } = this.address || {};
+            this.postcode = postcode;
+        },
+        onClickSave() {
+            this.dialog = false;
+            this.updateFilter();
         }
     }
 }
@@ -154,9 +205,14 @@ export default {
 .chart-title {
     display: flex; flex-direction: row; align-items: center
 }
-
 .title {
     font-weight: 600;
     font-size: 18px;
+}
+.lead-customer-toggle-container {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 50px;
 }
 </style>
