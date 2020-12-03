@@ -3,10 +3,10 @@
         <v-card-text>
             <v-row>
                 <v-col md="12" class="pb-0">
-                    <p class="app-title-small primary--text mb-0" v-text="'Sentiment status'"></p>
-                    <p  class="info-value  primary--text mb-0" >
+                    <p class="app-title-small mb-0 title-text-color" v-text="'Sentiment status'"></p>
+                    <p  class="info-value  teal--text mb-0" >
                         {{emotions.positive}}
-                        <span class="app-title primary--text-small">positive</span>
+                        <span class="app-title teal--text">POSITIVE</span>
                     </p>
                 </v-col>
                 <v-col md="12"  class="pt-0">
@@ -136,13 +136,13 @@ export default {
     },
     computed: {
         negativeStyles() {
-            return {backgroundColor: 'red', width: this.style.negative, borderTopLeftRadius: '5px', borderBottomLeftRadius: '5px'}
+            return {backgroundColor: '#FE3C38', width: this.style.negative, borderTopLeftRadius: '5px', borderBottomLeftRadius: '5px'}
         },
         neutralStyles() {
-            return {backgroundColor: 'orange', width: this.style.neutral}
+            return {backgroundColor: '#FFC200', width: this.style.neutral}
         },
         positiveStyles() {
-            return {backgroundColor: 'green', width: this.style.positive, borderTopRightRadius: '5px', borderBottomRightRadius: '5px'}
+            return {backgroundColor: '#0AAA9D', width: this.style.positive, borderTopRightRadius: '5px', borderBottomRightRadius: '5px'}
         },
     },
     methods: {

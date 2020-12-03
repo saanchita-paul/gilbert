@@ -57,6 +57,8 @@ body {
 }
 .navigation-drawer-menu {
     .v-list-item__icon {
+        margin-top: 15px !important;
+        margin-bottom: 15px !important;
         margin-right: 8px !important;
     }
     .v-list-item__title {
@@ -94,8 +96,8 @@ body {
 //}
 
 .app-title {
-    font-size: 20px!important;
-    font-weight: 700 !important;
+    font-size: 24px!important;
+    font-weight: 400 !important;
 }
 .app-title-big {
     font-size: 30px !important;
@@ -103,7 +105,11 @@ body {
 }
 .app-title-small {
     font-size: 14px !important;
-    font-weight: 500 !important;
+    font-weight: 400 !important;
+}
+
+.title-text-color {
+    color: #282D32;
 }
 
 .card-action-icon {

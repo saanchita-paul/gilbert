@@ -22,12 +22,18 @@ export default {
             ? 100
             : 0;
 
-        return noAnswerPercentage === 0
-            ? {
-                colors: ['red', 'orange', 'green', 'black'],
-                data: [highPercentage, mediumPercentage, lowPercentage, unsurePercentage],
-                labels: ['High', 'Medium', 'Low', 'Not sure']
-            } : {
+        // return noAnswerPercentage === 0
+        //     ? {
+        //         colors: ['red', 'orange', 'green', 'black'],
+        //         data: [highPercentage, mediumPercentage, lowPercentage, unsurePercentage],
+        //         labels: ['High', 'Medium', 'Low', 'Not sure']
+        //     } : {
+        //         colors: ['red', 'orange', 'green', 'black', 'grey'],
+        //         data: [highPercentage, mediumPercentage, lowPercentage, unsurePercentage, noAnswerPercentage],
+        //         labels: ['High', 'Medium', 'Low', 'Not sure', 'No Answer']
+        //     };
+
+        return {
                 colors: ['red', 'orange', 'green', 'black', 'grey'],
                 data: [highPercentage, mediumPercentage, lowPercentage, unsurePercentage, noAnswerPercentage],
                 labels: ['High', 'Medium', 'Low', 'Not sure', 'No Answer']
@@ -52,12 +58,7 @@ export default {
             ? 100
             : 0;
 
-        return noAnswerPercentage === 0
-            ? {
-                colors: ['red', 'orange'],
-                data: [ownPercentage, rentPercentage],
-                labels: ['Own', 'Rent']
-            } : {
+        return {
                 colors: ['red', 'orange', 'grey'],
                 data: [ownPercentage, rentPercentage, noAnswerPercentage],
                 labels: ['Own', 'Rent', 'No Answer']
@@ -86,12 +87,7 @@ export default {
             ? 100
             : 0;
 
-        return noAnswerPercentage === 0
-            ? {
-                colors: ['red', 'orange', 'green', 'black'],
-                data: [onePercentage, twoPercentage, threePercentage, fourPercentage],
-                labels: ['1-2', '2-3', '3-4', '4+']
-            } : {
+        return {
                 colors: ['red', 'orange', 'green', 'black', 'grey'],
                 data: [onePercentage, twoPercentage, threePercentage, fourPercentage, noAnswerPercentage],
                 labels: ['1-2', '2-3', '3-4', '4+', 'No Answer']
