@@ -9,7 +9,7 @@
                         <v-dialog
                             v-model="dialog"
                             persistent
-                            max-width="500px"
+                            max-width="400px"
                         >
                             <template v-slot:activator="{ on, attrs }">
                                 <v-btn icon class="ml-auto" v-bind="attrs" v-on="on">
@@ -20,7 +20,7 @@
                             <v-card>
                                 <v-card-title>
                                     <div class="d-flex flex-row" style="width: 100%">
-                                        <div class="font-italic">Filter By</div>
+                                        <div class="font-italic">Filter by</div>
                                         <div class="flex-grow-1 flex-shrink-0 d-flex flex-row-reverse">
                                             <v-btn icon @click="dialog = false">
                                                 <v-icon>mdi-close-circle</v-icon>
@@ -31,11 +31,11 @@
 
                                 <v-card-text>
                                     <div class="lead-customer-toggle-container">
-                                        <v-btn-toggle v-model="customer_only" color="primary">
-                                            <v-btn text block>
+                                        <v-btn-toggle class="filter-toggle-btn" v-model="customer_only" color="primary">
+                                            <v-btn text block class="font-weight-bold text-capitalize">
                                                 Lead
                                             </v-btn>
-                                            <v-btn text block>
+                                            <v-btn text block class="font-weight-bold text-capitalize">
                                                 Customer
                                             </v-btn>
                                         </v-btn-toggle>
@@ -47,6 +47,7 @@
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
                                     <v-btn
+                                        class="font-italic font-weight-bold"
                                         color="primary"
                                         text
                                         @click="onClickSave"
@@ -210,9 +211,14 @@ export default {
     font-size: 18px;
 }
 .lead-customer-toggle-container {
-    width: 80%;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 50px;
+    margin-bottom: 60px;
+    margin-top: 15px;
+}
+.filter-toggle-btn >  .v-btn.v-btn--active {
+ color: white;
+ background-color: #5C229A;
 }
 </style>

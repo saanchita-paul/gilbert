@@ -6,6 +6,7 @@
                 class="custom-field sm-text"
                 :error-messages="error"
                 hide-details
+                placeholder="Location" rounded
                 v-model="textFieldValue"
                 @keyup.native="onLocationTextFieldChange"
             >
@@ -93,5 +94,7 @@
 </script>
 
 <style scoped>
-
+.custom-field {
+    border: 1px solid #5C229A;
+}
 </style>
