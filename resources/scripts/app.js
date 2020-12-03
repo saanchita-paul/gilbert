@@ -4,8 +4,15 @@ import Vuetify from "@scripts/plugins/Vuetify";
 import Router from '@scripts/routes/router';
 import '@scripts/plugins/VeeValidate';
 import '@scripts/plugins/Axios';
+import '@scripts/plugins/GoogleMap';
 import store from '@scripts/store';
 import { authUser } from "@scripts/services/AuthService";
+import GoogleMapService from "@scripts/services/GoogleMapService";
+
+/**
+ * initializing GoogleMapService
+ */
+GoogleMapService.initialize();
 
 authUser().finally(() => {
     new Vue( {

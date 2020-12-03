@@ -5,6 +5,7 @@ import SentimentSummary from "@scripts/models/SentimentSummary";
 
 export default {
     toClientList(data) {
+        console.log('gf', data);
         const customerSummary = new CustomerSummary();
         const conversationSummary = new ConversationSummary();
         const infoChart = new InfoChart();
@@ -34,35 +35,124 @@ export default {
             sentimentSummary.neutral_count =  (100 - negative_percentage - positive_percentage) + '%';
         }
 
-        return {
-            customerSummary,
-            sentimentSummary
-        };
-        /**
-         * not using
-         */
-        data.forEach((item) => {
-            customerSummary.total_customer = customerSummary.total_customer + item.total_customer;
-            customerSummary.new_customer = customerSummary.new_customer + item.new_customer;
-            customerSummary.active_customer =  customerSummary.active_customer + item.active_customer;
-            customerSummary.engaged_customer = customerSummary.engaged_customer + item.engaged_customer;
-
-            conversationSummary.total_message = conversationSummary.total_message + item.message_sent + item.message_received;
-            conversationSummary.message_sent =  conversationSummary.message_sent + item.message_sent;
-            conversationSummary.message_received = conversationSummary.message_received + item.message_received;
-
-            infoChart.total_message.data.push(item.message_sent + item.message_received);
-            infoChart.total_message.labels.push(item.date);
-            infoChart.message_sent.data.push(item.message_sent);
-            infoChart.message_sent.labels.push(item.date);
-            infoChart.message_received.data.push(item.message_received);
-            infoChart.message_received.labels.push(item.date);
-        });
+        const graphData = this.mapChart(data);
 
         return {
             customerSummary,
-            conversationSummary,
-            infoChart
+            sentimentSummary,
+            graphData
         };
     },
+
+    mapChart(allData) {
+
+        const { summaries : data, previous_summaries = [] } = allData || {};
+
+        let total_customer = 0;
+        let total_user = 0;
+        let days_count = 0;
+        let customer_count = 0;
+        let user_count = 0;
+        let customer_chart = {
+            data: [],
+            labels: []
+        };
+        let user_chart = {
+            data: [],
+            labels: []
+        };
+
+        let total_previous_customer = 0;
+        let total_previous_user = 0;
+
+        const total_days = data.length;
+
+        switch (true) {
+            case (total_days > 365):
+                for(let i = 0; i< Math.ceil(total_days/365); i++){
+                    for(let j = 0; j<365; j++){
+                        if(data[days_count]) {
+                            customer_count += data[days_count].total_customer;
+                            user_count += data[days_count].total_user;
+                            days_count++;
+                        }
+                    }
+                    customer_chart.data.push(customer_count);
+                    customer_chart.labels.push('Year '+i);
+                    user_chart.data.push(user_count);
+                    user_chart.labels.push('Year '+i);
+                    customer_count = 0;
+                    user_count = 0;
+                }
+                break;
+            case (total_days > 30):
+                for(let i = 0; i< Math.ceil(total_days/30); i++){
+                    for(let j = 0; j<30; j++){
+                        if(data[days_count]) {
+                            customer_count += data[days_count].total_customer;
+                            user_count += data[days_count].total_user;
+                            days_count++;
+                        }
+                    }
+                    customer_chart.data.push(customer_count);
+                    customer_chart.labels.push('Month '+i);
+                    user_chart.data.push(user_count);
+                    user_chart.labels.push('Month '+i);
+                    customer_count = 0;
+                    user_count = 0;
+                }
+                break;
+            case (total_days > 7):
+                for(let i = 0; i< Math.ceil(total_days/7); i++){
+                    for(let j = 0; j<7; j++){
+                        if(data[days_count]) {
+                            customer_count += data[days_count].total_customer;
+                            user_count += data[days_count].total_user;
+                            days_count++;
+                        }
+                    }
+                    customer_chart.data.push(customer_count);
+                    customer_chart.labels.push('Week '+i);
+                    user_chart.data.push(user_count);
+                    user_chart.labels.push('Week '+i);
+                    customer_count = 0;
+                    user_count = 0;
+                }
+                break;
+            default:
+                for(let i = 0; i< 7; i++){
+                    if(data[i]) {
+                        customer_chart.data.push(data[i].total_customer);
+                        customer_chart.labels.push('Day '+i);
+                        user_chart.data.push(data[i].total_user);
+                        user_chart.labels.push('Day '+i);
+                    }
+                }
+                break;
+          }
+
+        data.forEach(item => {
+            total_customer += item.total_customer;
+            total_user += item.total_user;
+        });
+
+        //Calculating previous summaries
+        previous_summaries.forEach(item => {
+            total_previous_customer += item.total_customer;
+            total_previous_user += item.total_user;
+        });
+
+        //If zero for previous user and customer, we need to set to one to prevent division by zero issue for the percentage
+        total_previous_user = total_previous_user === 0 ? 1 : total_previous_user;
+        total_previous_customer = total_previous_customer === 0 ? 1 : total_previous_customer;
+
+        return {
+            total_customer: total_customer,
+            total_user: total_user,
+            customer_chart : customer_chart,
+            user_chart : user_chart,
+            total_previous_customer,
+            total_previous_user
+        }
+    }
 };

@@ -23,7 +23,9 @@
                         :colors="['rgba(92, 34, 154, .9)', 'rgba(92, 34, 154, .5)']"
                         chartId="c-01"
                         title="New User"
-                        value="14"
+                        :value="dashboardSummary.graphData.total_user"
+                        :prevValue="dashboardSummary.graphData.total_previous_user"
+                        :chartData="dashboardSummary.graphData.user_chart"
                     />
                 </div>
                 <div class="box custom-col-2">
@@ -31,7 +33,9 @@
                         :colors="['rgba(92, 34, 154, .9)', 'rgba(92, 34, 154, .5)']"
                         chartId="c-02"
                         title="New Customer"
-                        value="4"
+                        :value="dashboardSummary.graphData.total_customer"
+                        :prevValue="dashboardSummary.graphData.total_previous_user"
+                        :chartData="dashboardSummary.graphData.customer_chart"
                     />
                 </div>
                 <div class="box custom-col-4">
@@ -48,6 +52,7 @@
                         chartId="c-03"
                         title="Total Messages"
                         value="7935"
+                        :chartData="fakeData"
                     />
                 </div>
                 <div class="custom-col-2">
@@ -56,6 +61,7 @@
                         chartId="c-04"
                         title="Total Conversation"
                         value="4928"
+                        :chartData="fakeData"
                     />
                 </div>
                 <div class="custom-col-2">
@@ -64,6 +70,7 @@
                         chartId="c-05"
                         title="Avg. Conv. Steps/User"
                         value="14"
+                        :chartData="fakeData"
                     />
                 </div>
                 <div class="custom-col-2">
@@ -72,6 +79,7 @@
                         chartId="c-06"
                         title="Live Conversation Count"
                         value="13987"
+                        :chartData="fakeData"
                     />
                 </div>
                 <div class="custom-col-2">
@@ -80,12 +88,30 @@
                         title="Average Time"
                         value="02.35 min"
                         chartId="c-07"
+                        :chartData="fakeData"
                     />
                 </div>
             </div>
 <!--            <v-col md="6" sm="12">-->
 <!--                <GenderChart/>-->
 <!--            </v-col>-->
+        <div class="customer-insight">
+            <p class="box title primary--text font-weight-bold mb-0 mt-5 px-3">CONNECT ENERGY</p>
+        </div>
+        <v-row>
+            <v-col sm="12" md="3">
+                <EnergyUsageChart title="Energy Usage" :chartData="energyUsage" _id="energy" v-model="filterEnergyUsage" />
+            </v-col>
+            <v-col sm="12" md="3">
+                <EnergyUsageChart title="Property Profile" :chartData="propertyProfile" _id="property" v-model="filterPropertyProfile" />
+            </v-col>
+            <v-col sm="12" md="3">
+                <EnergyUsageChart title="People live in household" :chartData="householdProfile" _id="household" v-model="filterHouseholdProfile" />
+            </v-col>
+            <v-col sm="12" md="3">
+                <UtilityUsageByCityGraph :cities="topDestinations" />
+            </v-col>
+        </v-row>
         <v-row>
             <v-col sm="12">
                 <ActiveCustomer/>
@@ -95,7 +121,7 @@
 </template>
 
 <script>
-import GenderChart from "@scripts/components/customer/analytics/GenderChart";
+import EnergyUsageChart from "@scripts/components/customer/analytics/EnergyUsageChart";
 import EmotionMeter from "@scripts/components/customer/analytics/EmotionMeter";
 import ActiveCustomer from "@scripts/components/customer/analytics/ActiveCustomer";
 import AnalyticContainer from "@scripts/components/customer/analytics/AnalyticContainer";
@@ -104,14 +130,16 @@ import DateRangePicker from "@scripts/components/customer/analytics/DateRangePic
 import PageHeader from "@scripts/components/common/PageHeader"
 import DateRange from "@scripts/models/DateRange";
 import merge from "lodash-es/merge";
+import UtilityUsageByCityGraph from "@scripts/components/customer/analytics/UtilityUsageByCityGraph";
 import InfoChartCard from "@scripts/components/customer/analytics/InfoChartCard";
 import CustomerInfos from "@scripts/components/customer/analytics/CustomerInfos";
 import ConversationInfos from "@scripts/components/customer/analytics/ConversationInfos";
 import SentimentSummary from "@scripts/models/SentimentSummary";
-import SentimentService from "@scripts/services/SentimentService";
+// import SentimentService from "@scripts/services/SentimentService";
 import DashboardService from "@scripts/services/DashboardService";
 import DayJS from 'dayjs';
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
+import AnalyticsService from "@scripts/services/AnalyticsService";
 
 export default {
     name: "CustomerAnalyticsPage",
@@ -120,20 +148,35 @@ export default {
         ActiveCustomer,
         AnalyticContainer,
         InfoCard,
-        GenderChart,
+        EnergyUsageChart,
         DateRangePicker,
         PageHeader,
         CustomerInfos,
         ConversationInfos,
-        InfoChartCard
+        InfoChartCard,
+        UtilityUsageByCityGraph
     },
     data() {
         return {
             sentimentSummary: new SentimentSummary(),
             dashboardSummary: null,
+            utilitySummary: null,
+            energyUsage: null,
+            propertyProfile: null,
+            householdProfile: null,
+            topDestinations: null,
+            citiesByUtilityUsages: [],
             dateRange: new DateRange(),
             loaded: false,
-            intervalID: null
+            intervalID: null,
+            fakeData: {
+                data: [90, 70, 62, 80, 50, 88, 80, 30, 40, 50],
+                labels: ["0", "1", "2", '3', '4', '5', '6', '7', '8', '9']
+            },
+
+            filterEnergyUsage: this.getInitialFilterValue(),
+            filterPropertyProfile: this.getInitialFilterValue(),
+            filterHouseholdProfile: this.getInitialFilterValue(),
         }
     },
     computed: {
@@ -153,22 +196,38 @@ export default {
         }
     },
     methods: {
-        async getDashboardSummary(dateRange) {
+        async load(dateRange) {
             this.dashboardSummary = await DashboardService.getDashboardSummary(dateRange);
             merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
+            console.log('dashboardSummary',this.dashboardSummary)
+            this.utilitySummary = await DashboardService.getUtilitySummary(this.dateRange); //REDUNDANT CODE
+            this.energyUsage = await AnalyticsService.getEnergyUsageAnalytics({ ...this.dateRange, ...this.filterEnergyUsage });
+            this.propertyProfile = await AnalyticsService.getPropertyProfileAnalytics({ ...this.dateRange, ...this.filterPropertyProfile });
+            this.householdProfile = await AnalyticsService.getHouseholdProfileAnalytics({ ...this.dateRange, ...this.filterHouseholdProfile });
+            this.citiesByUtilityUsages = await DashboardService.getTopCitiesByUtilityUsages(this.dateRange); //REDUNDANT CODE
+            this.topDestinations = await AnalyticsService.getTopDestinationAnalytics({ ...this.dateRange });
         },
         checkIfDateEndIsToday() {
             return this.dateRange.end === new DayJS().format(DATE_FORMAT.DB_DATE);
+        },
+        getInitialFilterValue() {
+            return { customer_only: false, postcode: null };
+        },
+        async loadEnergyUsageAnalytics(filter) {
+            this.energyUsage = await AnalyticsService.getEnergyUsageAnalytics({ ...this.dateRange, ...filter });
+        },
+        async loadPropertyProfileAnalytics(filter) {
+            this.propertyProfile = await AnalyticsService.getPropertyProfileAnalytics({ ...this.dateRange, ...filter });
+        },
+        async loadHouseholdProfileAnalytics(filter) {
+            this.householdProfile = await AnalyticsService.getHouseholdProfileAnalytics({ ...this.dateRange, ...filter });
         }
     },
-    mounted() {
-        // const sentimentSummary = await SentimentService.getSentimentSummary(this.dateRange);
-        // this.dashboardSummary = await DashboardService.getDashboardSummary(this.dateRange);
-        // merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
+    async mounted() {
 
         //Set timeout to call Dashboard API every 5 minute if date_end is today
-        this.intervalID = setInterval(() => this.checkIfDateEndIsToday() && this.getDashboardSummary(this.dateRange), 300000);
-        this.getDashboardSummary(this.dateRange);
+        this.intervalID = setInterval(() => this.checkIfDateEndIsToday() && this.load(this.dateRange), 300000);
+        await this.load(this.dateRange);
         this.loaded = true;
     },
     beforeDestroy() {
@@ -177,9 +236,28 @@ export default {
     watch: {
         dateRange: {
             handler: function (newVal) {
-                // this.dashboardSummary = await DashboardService.getDashboardSummary(newVal);
-                // merge(this.sentimentSummary, this.dashboardSummary.sentimentSummary);
-                this.getDashboardSummary(newVal);
+                this.load(newVal);
+            },
+            deep: true
+        },
+        filterEnergyUsage: {
+            handler: function (newVal) {
+                // console.log('Receive new value for energy usage filter ', newVal);
+                this.loadEnergyUsageAnalytics(newVal);
+            },
+            deep: true
+        },
+        filterPropertyProfile: {
+            handler: function(newVal) {
+                // console.log('Receive new value for property profile filter ', newVal);
+                this.loadPropertyProfileAnalytics(newVal);
+            },
+            deep: true
+        },
+        filterHouseholdProfile: {
+            handler: function (newVal) {
+                // console.log('Receive new value for household profile filter ', newVal);
+                this.loadHouseholdProfileAnalytics(newVal);
             },
             deep: true
         },
