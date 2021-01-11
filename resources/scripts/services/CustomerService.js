@@ -6,5 +6,33 @@ export default {
     /**
      * @param customerId
      * */
-    getCustomerDetail: (customerId) => CustomerAPI.getCustomerProfileData(customerId)
+    getCustomerDetail: (customerId) => CustomerAPI.getCustomerProfileData(customerId),
+
+    /**
+     *
+     * @param customerId
+     * @returns {Promise<CustomerProperty>}
+     */
+    getPropertyInfo: customerId => CustomerAPI.getPropertyInfo(customElements),
+
+    /**
+     *
+     * @param customerId
+     * @returns {Promise<CustomerConnection>}
+     */
+    getConnectionInfo: customerId => CustomerAPI.getConnectionInfo(customElements),
+
+    /**
+     *
+     * @param customerId
+     * @returns {Promise<CustomerMovingInfo>}
+     */
+    getMovingInfo: customerId => CustomerAPI.getMovingInfo(customElements),
+
+    /**
+     *
+     * @param customerId
+     * @returns {Promise<CustomerOrder>}
+     */
+    getOrderDetails: customerId => CustomerAPI.getOrderDetails(customElements)
 }
