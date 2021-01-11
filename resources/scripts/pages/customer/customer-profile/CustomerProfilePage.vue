@@ -19,8 +19,10 @@
                                 >
                             </v-avatar>
                             <v-btn
+                                style="text-transform: capitalize"
                                 class="mt-2"
                                 elevation="2"
+                                x-small
                                 rounded
                                 color="primary"
                             >
