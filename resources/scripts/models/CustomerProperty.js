@@ -14,7 +14,7 @@ export default class CustomerProperty {
         this.property_address_text = property_address_text || '';
         this.occupation_type = occupation_type || '';
         this.house_type = house_type || '';
-        this.house_size = house_size || 0;
+        this.house_size = house_size || null;
         this.activities = activities || [];
     }
 }

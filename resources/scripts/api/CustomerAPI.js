@@ -5,8 +5,9 @@ import CustomerProperty from "@scripts/models/CustomerProperty";
 import CustomerConnection from "@scripts/models/CustomerConnection";
 import CustomerMovingInfo from "@scripts/models/CustomerMovingInfo";
 import CustomerOrder from "@scripts/models/CustomerOrder";
+import root from "lodash-es/_root";
 
-const ROOT = process.env.MIX_BOT_ROOT_URL;
+const ROOT = `${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api`;
 
 export default {
     /**
@@ -44,7 +45,8 @@ export default {
      * @returns {Promise<CustomerProperty>}
      */
     getPropertyInfo: async customerId => {
-        return new CustomerProperty()
+        const data =(await axios.get(`${ROOT}/customers/${customerId}/property-info`)).data;
+        return CustomerMapper.mapPropertyInfo(data.data);
     },
     /**
      *

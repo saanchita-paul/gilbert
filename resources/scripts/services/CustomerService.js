@@ -13,7 +13,7 @@ export default {
      * @param customerId
      * @returns {Promise<CustomerProperty>}
      */
-    getPropertyInfo: customerId => CustomerAPI.getPropertyInfo(customElements),
+    getPropertyInfo: customerId => CustomerAPI.getPropertyInfo(customerId),
 
     /**
      *
