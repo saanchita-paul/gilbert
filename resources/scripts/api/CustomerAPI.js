@@ -54,7 +54,8 @@ export default {
      * @returns {Promise<CustomerConnection>}
      */
     getConnectionInfo: async customerId => {
-        return new CustomerConnection()
+        const data =(await axios.get(`${ROOT}/customers/${customerId}/connection-info`)).data;
+        return CustomerMapper.mapConnectionInfo(data.data);
     },
     /**
      *

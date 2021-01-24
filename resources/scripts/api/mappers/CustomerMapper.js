@@ -1,5 +1,6 @@
 import Customer from "@scripts/models/Customer";
 import CustomerProperty from "@scripts/models/CustomerProperty";
+import CustomerConnection from "@scripts/models/CustomerConnection";
 
 export default {
     toClientDetail: (data) => {
@@ -25,5 +26,20 @@ export default {
         activities : ['Moving Calculator', 'Energy Connection', 'Reminder'],
         house_type: propertyData.house_type,
         house_size: propertyData.house_size,
+    }),
+    /**
+     * mapping CustomerProperty from API data
+     *
+     *
+     * @returns {CustomerConnection}
+     * @param connectionData
+     */
+    mapConnectionInfo: connectionData =>  new CustomerConnection({
+        id: connectionData.id,
+        connection_address_text: connectionData.connection_address,
+        provider: connectionData.provider,
+        energy_type: connectionData.which_utility,
+        selected_plan: connectionData.plan,
+        solar: connectionData.solar,
     })
 };

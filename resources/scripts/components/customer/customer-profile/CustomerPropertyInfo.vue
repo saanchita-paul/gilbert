@@ -54,36 +54,6 @@ export default {
                 'Activities'
             ];
         },
-        columnValues() {
-            return !this.customer
-                ? ['', '', '', '', '']
-                : [
-                    'TBC',
-                    this.customer.from ? this.customer.from.formatted_address : '',
-                    this.customer.rent ? 'Rent' : 'Owned',
-                    capitalize(this.customer.house_type),
-                    this.customer.bedrooms
-                ];
-        },
-        activities() {
-            let output = [];
-            if (!this.customer) {
-                return output;
-            }
-            if (this.customer.has_finished_utility_flow) {
-                output = [...output, 'Connect Energy,'];
-            }
-            if (this.customer.has_finished_onboarding) {
-                output = [...output, 'Moving Calculator,'];
-            }
-            if (this.customer.has_booked_movers) {
-                output = [...output, 'Booked Movers,'];
-            }
-            if (this.customer.has_setup_reminders) {
-                output = [...output, 'Setup Reminders'];
-            }
-            return output;
-        }
     },
     async mounted() {
         merge(this.propertyInfo, await CustomerService.getPropertyInfo(this.customer.id));

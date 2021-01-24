@@ -20,7 +20,7 @@ export default {
      * @param customerId
      * @returns {Promise<CustomerConnection>}
      */
-    getConnectionInfo: customerId => CustomerAPI.getConnectionInfo(customElements),
+    getConnectionInfo: customerId => CustomerAPI.getConnectionInfo(customerId),
 
     /**
      *

@@ -3,14 +3,22 @@
         <template v-slot:default>
             <thead>
             <tr>
-                <th class="text-left" v-for="(column, columnIndex) in columnNames" :v-key="`COLUMN-${columnIndex}`">
+                <th class="text-left customer-data-title"
+                    v-for="(column, columnIndex) in columnNames"
+                    :key="`COLUMN-${columnIndex}`"
+                >
                     {{column}}
                 </th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td v-for="(columnValue, columnValueIndex) in columnValues" :v-key="`VALUE-${columnValueIndex}`">{{ columnValue }}</td>
+                <td>ID #{{ connectionInfo.id }}</td>
+                <td>{{ connectionInfo.connection_address_text }}</td>
+                <td>{{ connectionInfo.provider }}</td>
+                <td>{{ connectionInfo.energy_type }}</td>
+                <td>{{ connectionInfo.selected_plan }}</td>
+                <td>{{ connectionInfo.solar }}</td>
             </tr>
             </tbody>
         </template>
@@ -18,38 +26,34 @@
 </template>
 
 <script>
-import {capitalize} from "lodash-es";
+import { capitalize } from 'lodash-es';
+import CustomerService from "@scripts/services/CustomerService";
+import CustomerProperty from "@scripts/models/CustomerProperty";
+import { merge } from 'lodash-es';
+import CustomerConnection from "@scripts/models/CustomerConnection";
 
 export default {
     name: "CustomerConnectionInfo",
     props: ['customer'],
+    data() {
+        return {
+            connectionInfo: new CustomerConnection()
+        }
+    },
     computed: {
         columnNames() {
             return [
                 'Connection ID',
                 'Connection Address',
                 'Provider',
-                'Usage',
-                'Plan',
+                'Energy Type',
+                'Selected Plan',
                 'Solar'
             ];
         },
-        columnValues() {
-            return !this.customer
-                ? ['', '', '', '', '', '']
-                : [
-                    'TBC',
-                    this.customer.to ? this.customer.to.formatted_address : '',
-                    'TBC',
-                    capitalize(this.customer.energy_usage),
-                    'TBC',
-                    this.customer.solar_panel === 'solar'
-                        ? 'Yes'
-                        : this.customer.solar_panel === 'no_solar'
-                        ? 'No'
-                        : 'Considering'
-                ];
-        },
+    },
+    async mounted() {
+        merge(this.connectionInfo, await CustomerService.getConnectionInfo(this.customer.id));
     }
 }
 </script>
