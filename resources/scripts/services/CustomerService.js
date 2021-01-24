@@ -34,5 +34,5 @@ export default {
      * @param customerId
      * @returns {Promise<CustomerOrder>}
      */
-    getOrderDetails: customerId => CustomerAPI.getOrderDetails(customElements)
+    getOrderDetails: customerId => CustomerAPI.getOrderDetails(customerId)
 }

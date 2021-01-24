@@ -2,14 +2,15 @@ import Customer from "@scripts/models/Customer";
 import CustomerProperty from "@scripts/models/CustomerProperty";
 import CustomerConnection from "@scripts/models/CustomerConnection";
 import CustomerMovingInfo from "@scripts/models/CustomerMovingInfo";
+import CustomerOrder from "@scripts/models/CustomerOrder";
 
 export default {
     toClientDetail: (data) => {
-        const { from : fromOriginal = {}, to : toOriginal = {}, ...others } = data || {};
-        const { bedrooms, house_type, ...from } = fromOriginal;
-        const { rent, people, energy_usage, solar_panel, ...to } = toOriginal;
+        const {from: fromOriginal = {}, to: toOriginal = {}, ...others} = data || {};
+        const {bedrooms, house_type, ...from} = fromOriginal;
+        const {rent, people, energy_usage, solar_panel, ...to} = toOriginal;
 
-        return new Customer({ ...others, bedrooms, house_type, rent, people, energy_usage, solar_panel, from, to });
+        return new Customer({...others, bedrooms, house_type, rent, people, energy_usage, solar_panel, from, to});
     },
 
     /**
@@ -19,12 +20,12 @@ export default {
      *
      * @returns {CustomerProperty}
      */
-    mapPropertyInfo: propertyData =>  new CustomerProperty({
+    mapPropertyInfo: propertyData => new CustomerProperty({
         id: propertyData.id,
         property_address_text: propertyData.property_address,
         occupation_type: propertyData.occupation_type,
         // activities : propertyData.activities,
-        activities : ['Moving Calculator', 'Energy Connection', 'Reminder'],
+        activities: ['Moving Calculator', 'Energy Connection', 'Reminder'],
         house_type: propertyData.house_type,
         house_size: propertyData.house_size,
     }),
@@ -35,7 +36,7 @@ export default {
      * @returns {CustomerConnection}
      * @param connectionData
      */
-    mapConnectionInfo: connectionData =>  new CustomerConnection({
+    mapConnectionInfo: connectionData => new CustomerConnection({
         id: connectionData.id,
         connection_address_text: connectionData.connection_address,
         provider: connectionData.provider,
@@ -51,7 +52,7 @@ export default {
      * @returns {CustomerMovingInfo}
      * @param movingData
      */
-    mapMovingInfo: movingData =>  new CustomerMovingInfo({
+    mapMovingInfo: movingData => new CustomerMovingInfo({
         id: movingData.id,
         origin_address_text: movingData.connection_address,
         distance_type: movingData.distance_type,
@@ -59,5 +60,29 @@ export default {
         house_type: movingData.house_type,
         house_size: movingData.house_size,
         has_order: movingData.order,
-    })
+    }),
+
+    /**
+     * mapping CustomerOrder from API data
+     *
+     *
+     * @returns {CustomerOrder[]}
+     * @param orderDetailsArray
+     */
+    mapOrderDetails: orderDetailsArray => {
+        const data = [];
+        if (Array.isArray(orderDetailsArray)) {
+            orderDetailsArray.map(orderDetails => data.push(new CustomerOrder({
+                id: orderDetails.id,
+                total_cost: orderDetails.value,
+                service_type: orderDetails.service_type,
+                equipments: orderDetails.service_details,
+                moving_time: orderDetails.moving_time,
+                extra_services: orderDetails.extras,
+                payment_type: orderDetails.payment_type,
+                status: orderDetails.status
+            })))
+        }
+        return data;
+    }
 };

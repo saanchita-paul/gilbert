@@ -72,6 +72,7 @@ export default {
      * @returns {Promise<CustomerOrder>}
      */
     getOrderDetails: async customerId => {
-        return new CustomerOrder()
+        const data =(await axios.get(`${ROOT}/customers/${customerId}/order-details`)).data;
+        return CustomerMapper.mapOrderDetails(data.data);
     }
 }
