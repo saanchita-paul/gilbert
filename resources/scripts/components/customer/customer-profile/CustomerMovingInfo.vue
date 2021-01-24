@@ -3,14 +3,23 @@
         <template v-slot:default>
             <thead>
             <tr>
-                <th class="text-left" v-for="(column, columnIndex) in columnNames" :v-key="`COLUMN-${columnIndex}`">
+                <th class="text-left customer-data-title"
+                    v-for="(column, columnIndex) in columnNames"
+                    :key="`COLUMN-${columnIndex}`"
+                >
                     {{column}}
                 </th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td v-for="(columnValue, columnValueIndex) in columnValues" :v-key="`VALUE-${columnValueIndex}`">{{ columnValue }}</td>
+                <td>ID #{{ movingInfo.id }}</td>
+                <td>{{ movingInfo.origin_address_text }}</td>
+                <td>{{ movingInfo.distance_type }}</td>
+                <td>{{ movingInfo.service_type }}</td>
+                <td>{{ movingInfo.house_type }}</td>
+                <td>{{ movingInfo.house_size }}</td>
+                <td>{{ movingInfo.has_order }}</td>
             </tr>
             </tbody>
         </template>
@@ -18,11 +27,18 @@
 </template>
 
 <script>
-import {capitalize} from "lodash-es";
+import CustomerService from "@scripts/services/CustomerService";
+import { merge } from 'lodash-es';
+import CustomerMovingInfo from "@scripts/models/CustomerMovingInfo";
 
 export default {
     name: "CustomerMovingInfo",
     props: ['customer'],
+    data() {
+        return {
+            movingInfo: new CustomerMovingInfo()
+        }
+    },
     computed: {
         columnNames() {
             return [
@@ -35,19 +51,9 @@ export default {
                 'Order'
             ];
         },
-        columnValues() {
-            return !this.customer
-                ? ['', '', '', '', '', '', '']
-                : [
-                    'TBC',
-                    this.customer.from ? this.customer.from.formatted_address : '',
-                    'TBC',
-                    this.customer.moving_service_type,
-                    capitalize(this.customer.house_type),
-                    this.customer.bedrooms,
-                    this.customer.has_booked_movers ? 'Yes' : 'No'
-                ];
-        },
+    },
+    async mounted() {
+        merge(this.movingInfo, await CustomerService.getMovingInfo(this.customer.id));
     }
 }
 </script>

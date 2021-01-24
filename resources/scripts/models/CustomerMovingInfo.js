@@ -8,7 +8,7 @@ export default class CustomerMovingInfo {
      * @param {string} service_type
      * @param {string} house_type
      * @param {number} house_size
-     * @param {boolean} has_order
+     * @param {string} has_order
      */
     constructor({id, origin_address_text, distance_type, service_type, house_type, house_size, has_order} = {}) {
         this.id = id || null;
@@ -17,6 +17,6 @@ export default class CustomerMovingInfo {
         this.service_type = service_type || '';
         this.house_type = house_type || '';
         this.house_size = house_size || 0;
-        this.has_order = has_order ||false;
+        this.has_order = has_order || '';
     }
 }

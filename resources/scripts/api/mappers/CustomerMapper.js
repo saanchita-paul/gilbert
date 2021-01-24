@@ -1,6 +1,7 @@
 import Customer from "@scripts/models/Customer";
 import CustomerProperty from "@scripts/models/CustomerProperty";
 import CustomerConnection from "@scripts/models/CustomerConnection";
+import CustomerMovingInfo from "@scripts/models/CustomerMovingInfo";
 
 export default {
     toClientDetail: (data) => {
@@ -28,7 +29,7 @@ export default {
         house_size: propertyData.house_size,
     }),
     /**
-     * mapping CustomerProperty from API data
+     * mapping CustomerConnection from API data
      *
      *
      * @returns {CustomerConnection}
@@ -41,5 +42,22 @@ export default {
         energy_type: connectionData.which_utility,
         selected_plan: connectionData.plan,
         solar: connectionData.solar,
+    }),
+
+    /**
+     * mapping CustomerMovingInfo from API data
+     *
+     *
+     * @returns {CustomerMovingInfo}
+     * @param movingData
+     */
+    mapMovingInfo: movingData =>  new CustomerMovingInfo({
+        id: movingData.id,
+        origin_address_text: movingData.connection_address,
+        distance_type: movingData.distance_type,
+        service_type: movingData.moving_type,
+        house_type: movingData.house_type,
+        house_size: movingData.house_size,
+        has_order: movingData.order,
     })
 };

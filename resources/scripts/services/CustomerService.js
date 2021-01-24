@@ -27,7 +27,7 @@ export default {
      * @param customerId
      * @returns {Promise<CustomerMovingInfo>}
      */
-    getMovingInfo: customerId => CustomerAPI.getMovingInfo(customElements),
+    getMovingInfo: customerId => CustomerAPI.getMovingInfo(customerId),
 
     /**
      *

@@ -63,7 +63,8 @@ export default {
      * @returns {Promise<CustomerMovingInfo>}
      */
     getMovingInfo: async customerId => {
-        return new CustomerMovingInfo()
+        const data =(await axios.get(`${ROOT}/customers/${customerId}/moving-info`)).data;
+        return CustomerMapper.mapMovingInfo(data.data);
     },
     /**
      *
