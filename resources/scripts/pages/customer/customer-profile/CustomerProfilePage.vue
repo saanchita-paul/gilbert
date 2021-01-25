@@ -22,7 +22,7 @@
                                 <v-btn
                                     style="text-transform: capitalize"
                                     class="mt-2"
-                                    elevation="2"
+                                    elevation="0"
                                     small
                                     rounded
                                     color="primary"
@@ -162,6 +162,19 @@ export default {
 </script>
 
 <style scoped>
+.user-detail-container .text-h4 {
+    font-size: 24px !important;
+}
+.user-detail-container .text-subtitle-1 {
+    font-size: 14px !important;
+    color: #4A4A4A !important;
+    font-weight: 300;
+    opacity: 0.80 !important;
+}
+.v-btn {
+    font-size: 14px !important;
+}
+
 .user-card {
     display: flex;
     flex-direction: column;
