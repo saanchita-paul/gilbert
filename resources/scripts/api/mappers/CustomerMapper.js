@@ -1,8 +1,9 @@
-import Customer from "@scripts/models/Customer";
-import CustomerProperty from "@scripts/models/CustomerProperty";
-import CustomerConnection from "@scripts/models/CustomerConnection";
-import CustomerMovingInfo from "@scripts/models/CustomerMovingInfo";
-import CustomerOrder from "@scripts/models/CustomerOrder";
+import Customer from "@scripts/models/customer-profile/Customer";
+import CustomerProperty from "@scripts/models/customer-profile/CustomerProperty";
+import CustomerConnection from "@scripts/models/customer-profile/CustomerConnection";
+import CustomerMovingInfo from "@scripts/models/customer-profile/CustomerMovingInfo";
+import CustomerOrder from "@scripts/models/customer-profile/CustomerOrder";
+import CustomerOtherService from "@scripts/models/customer-profile/CustomerOtherService";
 
 export default {
     toClientDetail: (data) => {
@@ -24,8 +25,8 @@ export default {
         id: propertyData.id,
         property_address_text: propertyData.property_address,
         occupation_type: propertyData.occupation_type,
-        // activities : propertyData.activities,
-        activities: ['Moving Calculator', 'Energy Connection', 'Reminder'],
+        activities : propertyData.activities,
+        // activities: ['Moving Calculator', 'Energy Connection', 'Reminder'],
         house_type: propertyData.house_type,
         house_size: propertyData.house_size,
     }),
@@ -84,5 +85,23 @@ export default {
             })))
         }
         return data;
+    },
+
+    /**
+     *
+     * @param servicesData
+     * @returns {CustomerOtherService[]}
+     */
+    mapOtherServices: servicesData => {
+        const data = [];
+        if (Array.isArray(servicesData)) {
+            servicesData.map(services => data.push(new CustomerOtherService({
+                id: services.id,
+                category_name: services.category,
+                postcode: services.location,
+                business_name: services.business_name,
+            })))
+        }
+        return data
     }
 };

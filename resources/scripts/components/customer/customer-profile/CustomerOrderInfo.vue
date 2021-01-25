@@ -38,8 +38,8 @@
 <script>
 import CustomerService from "@scripts/services/CustomerService";
 import { merge } from 'lodash-es';
-import CustomerConnection from "@scripts/models/CustomerOrder";
-import CustomerOrder from "@scripts/models/CustomerOrder";
+import CustomerConnection from "@scripts/models/customer-profile/CustomerOrder";
+import CustomerOrder from "@scripts/models/customer-profile/CustomerOrder";
 
 export default {
     name: "CustomerOrderInfo",

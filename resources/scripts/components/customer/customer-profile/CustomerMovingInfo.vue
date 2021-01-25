@@ -29,7 +29,7 @@
 <script>
 import CustomerService from "@scripts/services/CustomerService";
 import { merge } from 'lodash-es';
-import CustomerMovingInfo from "@scripts/models/CustomerMovingInfo";
+import CustomerMovingInfo from "@scripts/models/customer-profile/CustomerMovingInfo";
 
 export default {
     name: "CustomerMovingInfo",

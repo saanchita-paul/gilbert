@@ -32,7 +32,7 @@
 <script>
 import { capitalize } from 'lodash-es';
 import CustomerService from "@scripts/services/CustomerService";
-import CustomerProperty from "@scripts/models/CustomerProperty";
+import CustomerProperty from "@scripts/models/customer-profile/CustomerProperty";
 import { merge } from 'lodash-es';
 
 export default {

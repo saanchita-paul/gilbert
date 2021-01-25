@@ -1,10 +1,10 @@
 import axios from 'axios';
 import CustomerMapper from "@scripts/api/mappers/CustomerMapper";
-import Customer from "@scripts/models/Customer";
-import CustomerProperty from "@scripts/models/CustomerProperty";
-import CustomerConnection from "@scripts/models/CustomerConnection";
-import CustomerMovingInfo from "@scripts/models/CustomerMovingInfo";
-import CustomerOrder from "@scripts/models/CustomerOrder";
+import Customer from "@scripts/models/customer-profile/Customer";
+import CustomerProperty from "@scripts/models/customer-profile/CustomerProperty";
+import CustomerConnection from "@scripts/models/customer-profile/CustomerConnection";
+import CustomerMovingInfo from "@scripts/models/customer-profile/CustomerMovingInfo";
+import CustomerOrder from "@scripts/models/customer-profile/CustomerOrder";
 import root from "lodash-es/_root";
 
 const ROOT = `${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api`;
@@ -69,10 +69,20 @@ export default {
     /**
      *
      * @param customerId
-     * @returns {Promise<CustomerOrder>}
+     * @returns {Promise<CustomerOrder[]>}
      */
     getOrderDetails: async customerId => {
         const data =(await axios.get(`${ROOT}/customers/${customerId}/order-details`)).data;
         return CustomerMapper.mapOrderDetails(data.data);
+    },
+
+    /**
+     *
+     * @param customerId
+     * @returns {Promise<CustomerOtherService[]>}
+     */
+    getLocalSearch: async customerId => {
+        const data =(await axios.get(`${ROOT}/customers/${customerId}/local-business-search`)).data;
+        return CustomerMapper.mapOtherServices(data.data);
     }
 }
