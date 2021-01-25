@@ -161,7 +161,7 @@ export default {
         return {
             subMenuDrawer: false,
             //todo: update default route based on current route
-            selectedMenus: ApplicationService.getDefaultRoute(),
+            selectedMenus: ApplicationService.getDefaultRoute(this.$route),
             drawer: true,
             miniDrawer: true,
             routes: ApplicationService.getMainNavigationRoutes()

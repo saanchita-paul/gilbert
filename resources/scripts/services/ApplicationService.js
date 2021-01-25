@@ -5,5 +5,8 @@ export default {
     getMainNavigationRoutes: () => mainNavigation,
     getUserProfileMenus: () => userProfile.menus,
     getUserProfileComponents: () => userProfile.components,
-    getDefaultRoute: () => defaultRoute,
+    getDefaultRoute: (routeObj) =>  {
+        const matchRoute = mainNavigation.find(route => route.route_name === routeObj?.name)
+        return matchRoute || defaultRoute;
+    },
 }
