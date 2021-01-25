@@ -1,8 +1,17 @@
 <template>
-    <v-container v-if="loaded">
-        <PageHeader :breadcrumbs="getBreadcrumbs" title="Dashboard">
-            <date-range-picker v-model="dateRange" />
-        </PageHeader>
+    <div style="height: 100%;">
+        <div v-if="!loaded" class="app-loading">
+            <v-progress-circular
+                :size="70"
+                :width="7"
+                color="primary"
+                indeterminate
+            ></v-progress-circular>
+        </div>
+        <v-container v-if="loaded">
+            <PageHeader :breadcrumbs="getBreadcrumbs" title="Dashboard">
+                <date-range-picker v-model="dateRange" />
+            </PageHeader>
             <div class="customer-insight">
                 <p class="box title primary--text font-weight-bold mb-0 mt-3 px-3">User Insights</p>
             </div>
@@ -43,7 +52,7 @@
                 </div>
             </div>
             <div class="customer-insight">
-                 <p class="box title primary--text font-weight-bold mb-0 mt-5 px-3">USER MESSAGES AND ENGAGEMENT</p>
+                <p class="box title primary--text font-weight-bold mb-0 mt-5 px-3">USER MESSAGES AND ENGAGEMENT</p>
             </div>
             <div class="custom-row">
                 <div class="custom-col-2">
@@ -92,32 +101,33 @@
                     />
                 </div>
             </div>
-<!--            <v-col md="6" sm="12">-->
-<!--                <GenderChart/>-->
-<!--            </v-col>-->
-        <div class="customer-insight">
-            <p class="box title primary--text font-weight-bold mb-0 mt-5 px-3">CONNECT ENERGY</p>
-        </div>
-        <v-row>
-            <v-col sm="12" md="3">
-                <EnergyUsageChart title="Energy Usage" :chartData="energyUsage" _id="energy" v-model="filterEnergyUsage" />
-            </v-col>
-            <v-col sm="12" md="3">
-                <EnergyUsageChart title="Property Profile" :chartData="propertyProfile" _id="property" v-model="filterPropertyProfile" />
-            </v-col>
-            <v-col sm="12" md="3">
-                <EnergyUsageChart title="People live in household" :chartData="householdProfile" _id="household" v-model="filterHouseholdProfile" />
-            </v-col>
-            <v-col sm="12" md="3">
-                <UtilityUsageByCityGraph :cities="topDestinations" />
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-col sm="12">
-                <ActiveCustomer/>
-            </v-col>
-        </v-row>
-    </v-container>
+            <!--            <v-col md="6" sm="12">-->
+            <!--                <GenderChart/>-->
+            <!--            </v-col>-->
+            <div class="customer-insight">
+                <p class="box title primary--text font-weight-bold mb-0 mt-5 px-3">CONNECT ENERGY</p>
+            </div>
+            <v-row>
+                <v-col sm="12" md="3">
+                    <EnergyUsageChart title="Energy Usage" :chartData="energyUsage" _id="energy" v-model="filterEnergyUsage" />
+                </v-col>
+                <v-col sm="12" md="3">
+                    <EnergyUsageChart title="Property Profile" :chartData="propertyProfile" _id="property" v-model="filterPropertyProfile" />
+                </v-col>
+                <v-col sm="12" md="3">
+                    <EnergyUsageChart title="People live in household" :chartData="householdProfile" _id="household" v-model="filterHouseholdProfile" />
+                </v-col>
+                <v-col sm="12" md="3">
+                    <UtilityUsageByCityGraph :cities="topDestinations" />
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col sm="12">
+                    <ActiveCustomer/>
+                </v-col>
+            </v-row>
+        </v-container>
+    </div>
 </template>
 
 <script>
@@ -266,6 +276,9 @@ export default {
 </script>
 
 <style scoped>
+.app-loading {
+    display: flex; justify-content: center; align-items: center;  width: 100%; height: 100%;
+}
 .box {
 }
 </style>
