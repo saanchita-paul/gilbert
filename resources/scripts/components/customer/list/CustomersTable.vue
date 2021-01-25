@@ -2,7 +2,7 @@
     <v-card>
         <v-data-table
             :headers="headers"
-            :items="desserts"
+            :items="customers"
             :search="search"
         >
             <template
@@ -15,25 +15,28 @@
                     class="py-1"
                 >
                     <td>
-                        <v-avatar size="40"><img src="https://cdn.vuetifyjs.com/images/lists/1.jpg"></v-avatar>
+                        <v-avatar size="40"><img :src="item.avatar"></v-avatar>
                     </td>
-                    <td>{{ item.full_name }}</td>
+                    <td>{{ item.first_name }}</td>
                     <td>
                         <div style="height: 25px; width: 25px; background-color: orange; border-radius: 3px"></div>
                     </td>
                     <td>
                         <div
                             class="mgs-sentiment"
-                            :style="`backgroundColor: ${getColor(item.user_message.emotion)}`"
+                            :style="`backgroundColor: ${getColor(50)}`"
                         >
-                            {{ item.user_message.value }}
+                            {{ 'I am good'}}
                         </div>
                     </td>
-                    <td>{{ item.location }}</td>
-                    <td>{{ item.time_zone }}</td>
-                    <td>{{ item.last_active }}</td>
+                    <td>{{ 'Victoria' }}</td>
+                    <td>{{ '+ 10:00' }}</td>
+                    <td>{{ '10 minutes ago' }}</td>
                     <td class="d-flex justify-center">
                         <v-icon color="#006AFF" @click="openConversation(item.id)">mdi-facebook-messenger</v-icon>
+                    </td>
+                    <td>
+                        <v-icon @click="openProfile(item.id)">mdi-account-arrow-right</v-icon>
                     </td>
                 </tr>
                 </tbody>
@@ -43,6 +46,8 @@
 </template>
 
 <script>
+import CustomerService from "@scripts/services/CustomerService";
+
 export default {
     data() {
         return {
@@ -61,59 +66,9 @@ export default {
                 {text: 'Timezone', value: 'time_zone'},
                 {text: 'Interacted on', value: 'last_active'},
                 {text: '', sortable: false, value: 'last_active', align: 'center'},
+                {text: '', sortable: false, value: 'view', align: 'center'},
             ],
-            desserts: [
-                {
-                    id: 1245784,
-                    full_name: 'MR SKU',
-                    user_message: {emotion: 'positive', value: 'booking mover'},
-                    location: 'Camberwell',
-                    time_zone: 'GTM +6',
-                    emotion: 24,
-                    nps: 4.0,
-                    last_active: '10 minutes ago',
-                },
-                {
-                    id: 1245784,
-                    full_name: 'MR SKU',
-                    user_message: {emotion: 'neutral', value: 'okay'},
-                    location: 'Camberwell',
-                    time_zone: 'GTM +6',
-                    emotion: 24,
-                    nps: 4.0,
-                    last_active: '10 minutes ago',
-                },
-                {
-                    id: 1245784,
-                    full_name: 'MR SKU',
-                    user_message: {emotion: 'positive', value: 'booking mover'},
-                    location: 'Camberwell',
-                    time_zone: 'GTM +6',
-                    emotion: 24,
-                    nps: 4.0,
-                    last_active: '10 minutes ago',
-                },
-                {
-                    id: 1245784,
-                    full_name: 'MR SKU',
-                    user_message: {emotion: 'negative', value: 'I am angry'},
-                    location: 'Camberwell',
-                    time_zone: 'GTM +6',
-                    emotion: 24,
-                    nps: 4.0,
-                    last_active: '10 minutes ago',
-                },
-                {
-                    id: 1245784,
-                    full_name: 'MR SKU',
-                    user_message: {emotion: 'positive', value: 'thanks'},
-                    location: 'Camberwell',
-                    time_zone: 'GTM +6',
-                    emotion: 24,
-                    nps: 4.0,
-                    last_active: '10 minutes ago',
-                },
-            ],
+            customers: []
         }
     },
     methods: {
@@ -129,7 +84,13 @@ export default {
         },
         openConversation(id) {
             this.$router.push({name: `customers.conversation`, query: {customer: id}})
-        }
+        },
+        openProfile(id) {
+            this.$router.push({name: `customers.profile`, params: {customerId: id}})
+        },
+    },
+    async mounted() {
+        this.customers = await CustomerService.getAllCustomerData()
     }
 }
 </script>

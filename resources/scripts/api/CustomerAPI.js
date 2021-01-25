@@ -19,7 +19,7 @@ export default {
         try {
             const data = await axios.get(`${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api/customers/all`);
             console.log("RECEIVED ALL CUSTOMER DATA ", data);
-            return data.data;
+            return data.data.data;
         } catch (error) {
             return error.data;
         }
