@@ -107,7 +107,7 @@
 
         </v-app-bar>
 
-        <v-main  class="body-bg" :style="{position: 'relative', 'padding-left': subMenuDrawer ? '234px !important' : '64px !important' }">
+        <v-main  class="body-bg" :style="{position: 'relative', 'padding-left': subMenuDrawer ? '242px !important' : '64px !important' }">
             <v-expand-x-transition>
                 <v-navigation-drawer
                     v-if="selectedMenus && subMenuDrawer"

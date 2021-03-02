@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <page-header :breadcrumbs="getBreadcrumbs" title="Customer Details">
+        <page-header :breadcrumbs="getBreadcrumbs" title="User Profile Card">
             <date-range-picker v-model="dateRange"/>
         </page-header>
         <template v-if="customer">
