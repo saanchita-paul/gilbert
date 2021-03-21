@@ -9,6 +9,7 @@ import LoginPage from "@scripts/pages/auth/LoginPage";
 import AuthService, {checkRouteAuthorization} from "@scripts/services/AuthService";
 
 import CustomerDetails from "@scripts/pages/customer/CustomerDetails";
+import UtilityAnalyticPage from "@scripts/pages/dashboard/UtilityAnalyticPage";
 
 Vue.use(VueRouter);
 
@@ -22,8 +23,8 @@ const router = new VueRouter({
             children: [
                 {
                     path: '',
-                    component: CustomerAnalyticsPage,
-                    name: 'dashboard',
+                    component: UtilityAnalyticPage,
+                    name: 'dashboard.utility',
                     meta: {
                         isProtected: true
                     }
@@ -49,6 +50,6 @@ const router = new VueRouter({
     ]
 })
 
- router.beforeEach(AuthService.checkRouteAuthorization);
+ // router.beforeEach(AuthService.checkRouteAuthorization);
 
 export default router;

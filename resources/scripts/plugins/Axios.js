@@ -10,7 +10,7 @@ axios.interceptors.response.use(
     },
     function(error) {
         // Do something with response error
-        if (error.response.status === 401 && !(router.currentRoute.name === 'login')) {
+        if (error.response.status === 401 && router.currentRoute?.meta?.isProtected) {
             console.log(error);
             kickOut();
         }
