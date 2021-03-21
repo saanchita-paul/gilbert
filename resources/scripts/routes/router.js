@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router'
 import DashboardLayout from "@scripts/layouts/DashboardLayout";
+import NewDashboardLayout from "@scripts/layouts/NewDashboardLayout";
 
 import CustomerAnalyticsPage from "@scripts/pages/customer/CustomerAnalyticsPage";
 import AccountPage from "@scripts/pages/AccountPage";
@@ -13,6 +14,7 @@ import SuppliersPage from "@scripts/pages/supplier/SuppliersPage";
 import SupplierMailPage from "@scripts/pages/supplier/SupplierMailPage";
 import AuthService, {checkRouteAuthorization} from "@scripts/services/AuthService";
 import CustomerProfilePage from "@scripts/pages/customer/customer-profile/CustomerProfilePage";
+import CustomerDetails from "@scripts/pages/customer/CustomerDetails";
 
 Vue.use(VueRouter);
 
@@ -22,7 +24,7 @@ const router = new VueRouter({
     routes: [
         {
             path: '/',
-            component: DashboardLayout,
+            component: NewDashboardLayout,
             children: [
                 {
                     path: '',
@@ -84,6 +86,14 @@ const router = new VueRouter({
             ]
         },
         {
+            path: '/hello',
+            component: CustomerDetails,
+            name: 'custmerdetail',
+            meta: {
+                isProtected: false
+            }
+        },
+        {
             path: '/auth/login',
             component: LoginPage,
             name: 'login',
@@ -94,6 +104,6 @@ const router = new VueRouter({
     ]
 })
 
-router.beforeEach(AuthService.checkRouteAuthorization);
+ router.beforeEach(AuthService.checkRouteAuthorization);
 
 export default router;
