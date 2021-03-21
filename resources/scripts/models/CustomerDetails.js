@@ -6,20 +6,32 @@ export default class CustomerDetails {
                     messagerId,
                     email,
                     ph,
-                    propertyPhofileId,
+                    propertyProfileId,
+                    propertyAccountType,
+                    propertyLifeSupport,
+                    propertyTenancyType,
+                    propertyIdType,
+                    propertyEAResponseTime,
                     propertyEstimatedMovingPeriod,
                     propertyCurrentAddress,
                     propertyPriviousAddress,
-                    propertyTenancyType,
                     propertyHouseType,
                     propertyHouseSize,
                     propertySolarPowered,
-                    propertyLifeSupport,
+                    estimetedMovingPeriod,
+                    isManualAddress,
                     connectionId,
                     connectionProvider,
                     connectionSelectedPlan,
                     connectionEneryType,
-                    connectionAddress
+                    connectionAddress,
+                    connectionEnergyType,
+                    connectionGasProvider,
+                    connectionElectricyFee,
+                    connectionMernNo,
+                    connectionNmiNo,
+                    connectionStatus,
+                    connectionReason,
 
                 } = {}) {
         this.name = name || 'Sazzad';
@@ -30,7 +42,8 @@ export default class CustomerDetails {
         this.email = email || 'sazzadahmed41@gmail.com';
         this.ph = ph || '1671408219574925';
 
-        this.property_profile_id = propertyPhofileId || '#1901';
+        this.property_profile_id = propertyProfileId || '#1901';
+        this.property_property_account_type = propertyAccountType || '#1901';
         this.property_estimated_moving_period = propertyEstimatedMovingPeriod || '20/03/2020';
         this.property_currnt_address = propertyCurrentAddress || '26 Highpoint, Sunbury VIC 3429 Australia';
         this.property_previous_address = propertyPriviousAddress || '26 Highpoint, Sunbury VIC 3429 Australia';
@@ -39,12 +52,23 @@ export default class CustomerDetails {
         this.property_house_size = propertyHouseSize || '--';
         this.property_solar_powered = propertySolarPowered || 'yes';
         this.property_life_support = propertyLifeSupport || 'Y/N';
+        this.is_manual_address = isManualAddress || 'Y/N';
+        this.estimeted_moving_period = estimetedMovingPeriod || '';
+        this.property_ea_response_ime = propertyEAResponseTime || '';
+        this.property_id_type = propertyIdType || '';
 
         this.connection_id = connectionId || '#1901';
         this.connection_provider = connectionProvider || 'Energy Australia';
         this.connection_selected_plan = connectionSelectedPlan || 'Total Plan';
         this.connection_energy_type = connectionEneryType || '--';
         this.connection_address = connectionAddress || '26 Highpoint, Sunbury VIC 3429 Australia';
+        this.connection_energy_type = connectionEnergyType || '';
+        this.connection_gas_provider = connectionGasProvider || '';
+        this.connection_electricy_fee = connectionElectricyFee || '';
+        this.connection_mern_no = connectionMernNo || '';
+        this.connection_nmi_no = connectionNmiNo || '';
+        this.connection_status = connectionStatus || '';
+        this.connection_reason = connectionReason || '';
     }
 
 }

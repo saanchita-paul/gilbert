@@ -4,6 +4,7 @@ import CustomerConnection from "@scripts/models/customer-profile/CustomerConnect
 import CustomerMovingInfo from "@scripts/models/customer-profile/CustomerMovingInfo";
 import CustomerOrder from "@scripts/models/customer-profile/CustomerOrder";
 import CustomerOtherService from "@scripts/models/customer-profile/CustomerOtherService";
+import CustomerDetails from "@scripts/models/CustomerDetails";
 
 export default {
     toClientDetail: (data) => {
@@ -25,7 +26,7 @@ export default {
         id: propertyData.id,
         property_address_text: propertyData.property_address,
         occupation_type: propertyData.occupation_type,
-        activities : propertyData.activities,
+        activities: propertyData.activities,
         // activities: ['Moving Calculator', 'Energy Connection', 'Reminder'],
         house_type: propertyData.house_type,
         house_size: propertyData.house_size,
@@ -103,5 +104,14 @@ export default {
             })))
         }
         return data
+    },
+
+    /**
+     *
+     * @param customerData
+     * @returns {CustomerDetails}
+     */
+    mapCustomerDetailsServices: customerData => {
+       return new CustomerDetails({...customerData})
     }
-};
+}

@@ -41,5 +41,12 @@ export default {
      * @param customerId
      * @returns {Promise<CustomerOtherService>}
      */
-    getLocalSearch: customerId => CustomerAPI.getLocalSearch(customerId)
+    getLocalSearch: customerId => CustomerAPI.getLocalSearch(customerId),
+
+    /**
+     *
+     * @param customerId
+     * @returns {Promise<CustomerOtherService>}
+     */
+    getCustomerDetails: customerId => CustomerAPI.getCustomerDetails(customerId)
 }
