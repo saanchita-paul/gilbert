@@ -7,7 +7,7 @@
                 class="app-nav-bar"
                 dark
             >
-                <v-list class="nav-user-card">
+                <v-list class="nav-user-card hood-gradiant">
                     <v-list-item-avatar class="center-element nav-logo" size="59">
                         <v-img src="/assets/images/logo/hood_logo_while.png"/>
                     </v-list-item-avatar>
@@ -20,55 +20,37 @@
                         </v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list>
-                
+
                 <v-list class="navigation-menu" dense>
                     <v-img
                         class="center-element rounded-circle nav-avatar"
                         src="/assets/images/user_logo.png"
                         max-width="96px"
                     ></v-img>
-                    <v-list-group
-                        :value="false"
-                        prepend-icon="mdi-chart-pie"
-                    >
-                        <template v-slot:activator>
-                            <v-list-item-title class="nav-main-item">Dashboard</v-list-item-title>
-                        </template>
-
-                        <v-list-item link>
+                    <span v-for="route in routes" :key="route.title">
+                        <v-list-group v-if="route.type === 'group'" :value="false" prepend-icon="mdi-chart-pie">
+                            <template v-slot:activator>
+                                <v-list-item-title class="nav-main-item"> {{ route.title }} </v-list-item-title>
+                            </template>
+                            <span class="mb-2" v-for="subRoute in route.children" :key="subRoute.title">
+                                <v-list-item link>
+                                    <v-list-item-action>
+                                    </v-list-item-action>
+                                    <v-list-item-content>
+                                        <v-list-item-title class="nav-sub-item"> {{ subRoute.title }} </v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </span>
+                        </v-list-group>
+                        <v-list-item link v-if="route.type === 'route'">
                             <v-list-item-action>
+                                <v-icon> {{ route.icon }} </v-icon>
                             </v-list-item-action>
                             <v-list-item-content>
-                                <v-list-item-title class="nav-sub-item">Utility</v-list-item-title>
+                                <v-list-item-title class="nav-main-item"> {{ route.title }} </v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
-                        
-                        <v-list-item link>
-                            <v-list-item-action>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title class="nav-sub-item">Chatbot</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                    </v-list-group>
-                    <v-divider></v-divider>
-                    <v-list-item link>
-                        <v-list-item-action>
-                            <v-icon>mdi-account-group</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title class="nav-main-item">Customers</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-divider></v-divider>
-                    <v-list-item link>
-                        <v-list-item-action>
-                            <v-icon>mdi-account-tie</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title class="nav-main-item">Helpdesk</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
+                    </span>
                 </v-list>
             </v-navigation-drawer>
     
@@ -93,12 +75,14 @@
 </template>
 
 <script>
+import ApplicationService from "../services/ApplicationService";
 
 export default {
     name: "NewDashboardLayout",
     data() {
         return {
-            drawer: null
+            drawer: null,
+            routes: ApplicationService.getMainNavigationRoutes()
         }
     }
 }
@@ -113,7 +97,6 @@ export default {
         max-height: 76px !important;
 }
 .nav-user-card {
-    background-color: rgb(84,46,137,1) !important;
     min-height: 235px !important;
 }
 .center-element {
