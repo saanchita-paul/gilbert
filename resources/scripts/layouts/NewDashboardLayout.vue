@@ -1,83 +1,93 @@
 <template>
     <div id="app">
         <v-app id="inspire">
-            <v-app id="inspire">
-                <v-navigation-drawer
-                    v-model="drawer"
-                    app
-                    class="app-nav-bg"
-                    dark
-                >
-                    <v-list-item class="app-logo-area">
-                        <v-list-item-avatar class="ml-0">
-                            <v-img src="/assets/images/logo/hood-small.png"/>
-                        </v-list-item-avatar>
+            <v-navigation-drawer
+                v-model="drawer"
+                app
+                class="app-nav-bar"
+                dark
+            >
+                <v-list class="nav-user-card">
+                    <v-list-item-avatar class="center-element nav-logo" size="59">
+                        <v-img src="/assets/images/logo/hood_logo_while.png"/>
+                    </v-list-item-avatar>
+                    <v-list-item-content class="text-center">
+                        <v-list-item-title class="nav-user-name">
+                            Jones Ferdinand
+                        </v-list-item-title>
+                        <v-list-item-subtitle class="nav-user-email">
+                            jones.ferdinand@hood.ai
+                        </v-list-item-subtitle>
+                    </v-list-item-content>
+                </v-list>
+                
+                <v-list class="navigation-menu" dense>
+                    <v-img
+                        class="center-element rounded-circle nav-avatar"
+                        src="/assets/images/user_logo.png"
+                        max-width="96px"
+                    ></v-img>
+                    <v-list-group
+                        :value="false"
+                        prepend-icon="mdi-chart-pie"
+                    >
+                        <template v-slot:activator>
+                            <v-list-item-title class="nav-main-item">Dashboard</v-list-item-title>
+                        </template>
 
+                        <v-list-item link>
+                            <v-list-item-action>
+                            </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title class="nav-sub-item">Utility</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        
+                        <v-list-item link>
+                            <v-list-item-action>
+                            </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title class="nav-sub-item">Chatbot</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list-group>
+                    <v-divider></v-divider>
+                    <v-list-item link>
+                        <v-list-item-action>
+                            <v-icon>mdi-account-group</v-icon>
+                        </v-list-item-action>
                         <v-list-item-content>
-        <!--                    <v-list-item-title class="white&#45;&#45;text">Hood</v-list-item-title>-->
+                            <v-list-item-title class="nav-main-item">Customers</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <v-list dense>
-                        <v-list-group
-                            :value="false"
-                            prepend-icon="mdi-chart-pie"
-                        >
-                            <template v-slot:activator>
-                            <v-list-item-title>Dashboard</v-list-item-title>
-                            </template>
-
-                            <v-list-item link>
-                                <v-list-item-action>
-                                </v-list-item-action>
-                                <v-list-item-content>
-                                    <v-list-item-title>Utility</v-list-item-title>
-                                </v-list-item-content>
-                            </v-list-item>
-                            
-                            <v-list-item link>
-                                <v-list-item-action>
-                                </v-list-item-action>
-                                <v-list-item-content>
-                                    <v-list-item-title>Chatbot</v-list-item-title>
-                                </v-list-item-content>
-                            </v-list-item>
-                        </v-list-group>
-                        <v-list-item link>
-                            <v-list-item-action>
-                                <v-icon>mdi-account-group</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Customers</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item link>
-                            <v-list-item-action>
-                                <v-icon>mdi-account-tie</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>Helpdesk</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                    </v-list>
-                </v-navigation-drawer>
-        
-                <v-app-bar app class="app-nav-bg" dark>
-                     <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-                    <v-toolbar-title>
-                        <h4>Dashboard</h4>
-                        <h6>Customer / List</h6>
-                    </v-toolbar-title>
-                    <v-spacer/>
-                    <v-icon>mdi-magnify</v-icon>
-                    <v-divider vertical></v-divider>
-                    <h6>Jones Ferdinand</h6>
-                    <v-icon>mdi-login</v-icon>
-                </v-app-bar>
-                
-                <v-main>
-                    <router-view></router-view>
-                </v-main>
-            </v-app>
+                    <v-divider></v-divider>
+                    <v-list-item link>
+                        <v-list-item-action>
+                            <v-icon>mdi-account-tie</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title class="nav-main-item">Helpdesk</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list>
+            </v-navigation-drawer>
+    
+            <v-app-bar app class="app-app-bar" dark>
+                    <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+                <v-toolbar-title v-if="false">
+                    <h4>Dashboard</h4>
+                    <h6>Customer / List</h6>
+                </v-toolbar-title>
+                <v-spacer/>
+                <v-icon medium class="app-bar-icon"> mdi-magnify </v-icon>
+                <div class="vertical-divider"></div>
+                <p class="app-bar-user-name">Jones Ferdinand</p>
+                <v-icon medium class="app-bar-icon app-bar-login-button"> mdi-login </v-icon>
+            </v-app-bar>
+            
+            <v-main>
+                <router-view></router-view>
+            </v-main>
         </v-app>
     </div>
 </template>
@@ -95,8 +105,80 @@ export default {
 </script>
 
 <style scoped>
-.app-nav-bg {
-    background-color: rgb(38,50,56,1) !important;
+.app-nav-bar {
+    background-color: rgb(37,40,48,1) !important;
 }
-
+.app-app-bar {
+    background-color: rgb(38,50,56,1) !important;
+        max-height: 76px !important;
+}
+.nav-user-card {
+    background-color: rgb(84,46,137,1) !important;
+    min-height: 235px !important;
+}
+.center-element {
+    display: block !important;
+    margin: 0px auto !important;
+}
+.nav-logo {
+    margin-top: 25px !important;
+    margin-bottom: 15px !important;
+}
+.nav-avatar {
+    border: 10px solid rgb(37,40,48,1);
+    margin-top: -50px !important;
+}
+.nav-user-name {
+    font-size: 20px !important;
+    font-Weight: 700 !important;
+    line-height: 28px;
+    letter-spacing: 0.15px;
+}
+.nav-user-email {
+    font-size: 12px !important;
+    font-Weight: 400 !important;
+    line-height: 14.76px;
+    letter-spacing: 0.15px;
+}
+.nav-main-item {
+    font-size: 16px !important;
+    font-Weight: 700 !important;
+    line-height: 28px !important;
+    letter-spacing: 1.5px;
+}
+.nav-sub-item {
+    font-size: 16px !important;
+    font-Weight: 400 !important;
+    line-height: 24px !important;
+    letter-spacing: 1px;
+}
+.navigation-menu .v-list-group--active {
+   background-color:rgb(38,50,56,1) !important;
+   color: white !important;
+}
+.navigation-menu .v-list-item--active {
+    background-color:rgb(84,46,137,1) !important;
+    color: white !important;
+}
+.vertical-divider {
+    border-left: 2px solid rgb(223,224,235,1);
+    height: 30px;
+    margin-right: 25px;
+    margin-left: 25px;
+}
+.app-bar-icon {
+    opacity: .7;
+}
+.app-bar-user-name {
+    font-size: 14px !important;
+    font-Weight: 600 !important;
+    line-height: 20px !important;
+    letter-spacing: .2px;
+    margin-top: 15px;
+    color: rgb(223,224,235,1);
+}
+.app-bar-login-button {
+    margin-right: 30px !important;
+    margin-left: 60px !important;
+}
 </style>
