@@ -20,80 +20,104 @@
                     <p class="mb-0">Ph: {{customerinfo.ph}}</p>
                 </v-col>
             </v-row>
-            <v-row class="mt-7">
-                <v-col cols="12"><h3>Profile Info:</h3></v-col>
-                <v-col cols="5" class="py-1"><p class="mb-5"><span class="font-weight-bold">Id:</span>{{customerinfo.property_profile_id}}</p></v-col>
-                <v-col cols="5" class="py-1">
-                    <p class="mb-0"><span class="font-weight-bold">Estimated moving period:</span></p>
-                    <p class="mb-5">{{customerinfo.property_estimated_moving_period}}</p>
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col cols="5" class="py-1">
-                    <p class="mb-0"><span class="font-weight-bold">Current Address:</span></p>
-                    <p class="mb-5">{{customerinfo.property_currnt_address}}</p>
-                </v-col>
-                <v-col cols="5" class="py-1">
-                    <p class="mb-0"><span class="font-weight-bold">Current Address:</span></p>
-                    <p class="mb-5">{{customerinfo.property_previous_address}}</p>
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col cols="5" class="py-1"><p><span class="font-weight-bold">Tenancy Type:</span> {{customerinfo.property_tenancy_type}}</p></v-col>
-                <v-col cols="5" class="py-1"><p><span class="font-weight-bold">House Type:</span>{{customerinfo.property_house_type}}</p></v-col>
-                <v-col cols="5" class="py-1"><p><span class="font-weight-bold">House Size:</span>{{customerinfo.property_house_size}}</p></v-col>
-                <v-col cols="5" class="py-1"><p><span class="font-weight-bold">Solar Powered:</span>{{customerinfo.property_solar_powered}}</p></v-col>
-                <v-col cols="5" class="py-1"><p><span class="font-weight-bold">Life Support:</span>{{customerinfo.property_life_support}}</p></v-col>
-            </v-row>
-            <v-divider></v-divider>
-            <v-row>
-                <v-col cols="12" class="mt-7"><h3>Connection Info:</h3></v-col>
-                <v-col cols="5" class="py-3">
-                    <v-row>
-                        <v-col cols="10" class="py-1"><p class="mb-5"><span class="font-weight-bold">Id:</span>{{customerinfo.connection_id}}</p></v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col cols="10" class="py-1"><p class="mb-5"><span class="font-weight-bold">Provider:</span> {{customerinfo.connection_provider}}</p></v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col cols="10" class="py-1"><p class="mb-5"><span class="font-weight-bold">Selected Plan: </span>{{customerinfo.connection_selected_plan}}</p></v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col cols="10" class="py-1"><p class="mb-5"><span class="font-weight-bold">Energy type:</span> {{customerinfo.connection_energy_type}}</p></v-col>
-                    </v-row>
-                </v-col>
-                <v-col cols="5">
-                    <v-row>
-                        <v-col cols="10" class="py-1"><p class="mb-0"><span class="font-weight-bold">Connection Address:</span></p><p>{{customerinfo.connection_address}}</p></v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col>
 
-                                <v-text-field
-                                    filled
-                                    label="MIRN No:"
-                                    append-outer-icon="mdi-pencil"
-                                ></v-text-field>
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col>
-                            <label>
-                                <v-text-field
-                                    label="NMI No:"
-                                    append-outer-icon="mdi-pencil"
-                                ></v-text-field>
-                            </label>
-                        </v-col>
-                    </v-row>
-                </v-col>
-                <v-col col="1">
-                    <div class="form-submit">
-                        <v-btn color="primary" >Submit</v-btn>
-                    </div>
-                </v-col>
+            <v-row class="body_row">
+                <v-col cols="6">
+                    <v-card>
+                        <v-card-title>
+                        <v-row>
+                            <v-col color="black--text">Property Information</v-col>
+                        </v-row>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-row>
+                                <v-col cols="12" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Id#1901</span></p></v-col>
+                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Account Type:</span> Residensial</p></v-col>
+                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Life Support:</span> Y/N</p></v-col>
+                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Tenancy Type:</span> Rent</p></v-col>
+                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Solar Powered:</span> Yes</p></v-col>
+                            </v-row>
+                            <v-row class="py-2">
+                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">ID Type:</span> Residensial</p></v-col>
+                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">EA Response Time:</span> Y/N</p></v-col>
+                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Estimated moving period:</span> Rent</p></v-col>
+                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">User Agree Time:</span> Yes</p></v-col>
+                            </v-row>
 
+                            <v-row class="py-2">
+                                <v-col cols="6"><p class="mb-0"><span class="font-weight-bold black--text">Is Manual Address:</span> Email</p></v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+                <v-col cols="6">
+                    <v-card>
+                        <v-card-title>
+                            <v-row class="align-baseline">
+                                <v-col cols="10">
+                                    Connection Information
+                                </v-col>
+                                <v-spacer></v-spacer>
+                                <v-btn small depressed>
+                                    <v-icon small>mdi-pencil</v-icon>
+                                </v-btn>
+                            </v-row>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-row>
+                                <v-col cols="12" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Id#1901</span></p></v-col>
+                                <v-col cols="6" class="py-1">
+                                    <v-row>
+                                        <v-col cols="12" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Provider:</span> Residensial</p></v-col>
+<!--                                        <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold">Connection Address:</span></p><p>26 Highpoint, Sunbury VIC3429 Australia</p></v-col>-->
+                                        <v-col cols="12" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Selected Plan:</span> Total Plan</p></v-col>
+                                    </v-row>
+                                </v-col>
+<!--                                <v-col cols="6" class="py-1" style="border: 1px solid red;"><p class="mb-0"><span class="font-weight-bold">Provider:</span> Residensial</p></v-col>-->
+                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Connection Address:</span></p><p>26 Highpoint, Sunbury VIC3429 Australia</p></v-col>
+<!--                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold">Selected Plan:</span> Total Plan</p></v-col>-->
+                            </v-row>
+                            <v-row class="py-2">
+                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Energy Type:</span> Residensial</p></v-col>
+                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Gas Provider:</span> Y/N</p></v-col>
+                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">E-Destributor:</span> Rent</p></v-col>
+                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Gas meter Reading Charge:</span> Yes</p></v-col>
+                            </v-row>
+                            <v-row class="ml-0" >
+                                <v-col cols="6" class="py-1">
+                                    <v-row class="align-baseline">
+                                        <label  class="font-weight-bold black--text">MERN no:</label>
+                                        <v-col class="px-0 my-0" cols="7"><v-text-field style="border-radius:5px" readonly filled rounded dense></v-text-field></v-col>
+                                    </v-row>
+                                </v-col>
+                                <v-col cols="6" class="py-1">
+                                    <v-row class="align-baseline">
+                                        <label class="font-weight-bold black--text">NMI no:</label>
+                                        <v-col class="px-0" cols="7"><v-text-field style="border-radius:5px" readonly filled rounded dense></v-text-field></v-col>
+                                    </v-row>
+                                </v-col>
+
+                            </v-row>
+                            <v-row class="py-0">
+                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Connection Status:</span> Residensial</p></v-col>
+                                <v-col cols="12" class="py-1">
+                                    <p class="mb-0">Reason:</p>
+                                    <div cols="12"  class="reason pa-5">
+                                        <p>The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through.</p>
+                                    </div>
+                                </v-col>
+                                <v-col col="12" class="form-submit">
+                                    <div>
+                                        <v-btn color="primary" >Submit</v-btn>
+                                    </div>
+                                </v-col>
+
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
             </v-row>
+
         </v-container>
     </v-app>
 </template>
@@ -101,19 +125,38 @@
 <script>
 
 import CustomerDetails from "@scripts/models/CustomerDetails";
+import CustomerService from "@scripts/services/CustomerService";
 
 export default {
     name: "CustomerDetials",
     data() {
         return {
-                customerinfo: this.getCustomerDetails()
+                customerinfo: this.getCustomerDetails(),
+                customerinfo1:null,
+        }
+    },
+
+    props: {
+        customerId:{
+            required: false,
+            type: Number
         }
     },
 
     methods: {
         getCustomerDetails() {
             return new CustomerDetails();
+        },
+
+        async getCustomerDetailsData (customerId) {
+            this.customerinfo1 = await CustomerService.getCustomerDetails(customerId);
+            console.log('hello world');
+            console.log(this.customerinfo1);
+            return this.customerinfo1;
         }
+    },
+    mounted() {
+        this.getCustomerDetailsData(this.customerId);
     }
 }
 </script>
@@ -125,7 +168,7 @@ body {
 .header {
     display: flex;
     align-items: center;
-    background: linear-gradient(133.34deg, #56CCF2 -75.93%, #542E89 42.76%, #9C27B0 118.83%);
+    background: linear-gradient(to right bottom, #56CCF2 -75.93%, #542E89 42.76%, #9C27B0 118.83%);
     color: white;
     line-height: 28px;
     font-size: 16px;
@@ -137,17 +180,21 @@ body {
 }
 
 .form-submit{
-    height: 100%;
-    width: 100%;
     display: flex;
-    flex-direction: column-reverse;
-    max-width: 100px;
+    flex-direction: row-reverse;
 }
 .avatar-containner {
     flex-grow: 0;
 }
 .last-interactive {
     font-size: 14px;
+}
+.body_row {
+    background: rgba(227, 224, 231, 1);
+
+}
+.reason {
+    background: rgba(242, 242, 242, 1);
 }
 
 

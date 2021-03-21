@@ -84,5 +84,45 @@ export default {
     getLocalSearch: async customerId => {
         const data =(await axios.get(`${ROOT}/customers/${customerId}/local-business-search`)).data;
         return CustomerMapper.mapOtherServices(data.data);
+    },
+
+    getCustomerDetails: async customerId => {
+        // Todo API End point will be replaced later
+        // const data =(await axios.get(`${ROOT}/customers/${customerId}/local-business-search`)).data;
+        const data = {
+            data: {
+                name: 'Sazzad Ahmed',
+                profilePic: 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/106438752/original/3c4d95e3604313ecca407541a45b6a58dcc67c5c/update-your-online-dating-profile-bio-to-get-you-more-matches.jpg',
+                lastInteractiveTime: '10m',
+                hoodUid: '#1671408219574925',
+                messagerId: '#1671408219574925',
+                email: 'sazzadahmed412@gmail.com',
+                ph: '1671408219574925',
+
+                propertyProfileId: '1901',
+                propertyAccountType: 'Residensial',
+                propertyLifeSupport: 'Y/N',
+                propertyTenancyType: 'Rent',
+                propertyIdType: 'Residensial',
+                propertyEAResponseTime: '20/03/2020',
+                propertySolarPowered: '20/03/2020',
+                estimetedMovingPeriod: '20/03/2020',
+                isManualAddress: 'Email/Address',
+
+                connectionId: '1901',
+                connectionProvider: 'Residensial',
+                connectionAddress: '26 Highpoint, sunbury VIC 3429',
+                connectionSelectedPlan: 'Total Plan',
+                connectionEnergyType: '--',
+                connectionGasProvider: 'Envesta Country',
+                connectionElectricyFee: '$56',
+                connectionMernNo: 52456465454165,
+                connectionNmiNo: 52456465454165,
+                connectionStatus: 'Rejected',
+                connectionReason: 'The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the ....'
+
+            }
+        }
+        return CustomerMapper.mapCustomerDetailsServices(data.data);
     }
 }

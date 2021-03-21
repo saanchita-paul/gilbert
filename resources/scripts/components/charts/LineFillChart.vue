@@ -6,7 +6,7 @@
 import COLOR from "@scripts/data/constants/COLOR";
 
 export default {
-    name: "BarChart",
+    name: "LineChart",
     props: {
         data: {
             type: Object,
@@ -27,10 +27,15 @@ export default {
     methods: {
         renderChart() {
             const ctx = document.getElementById(this.chartId);
-            const myBarChart = new Chart(ctx, {
-                type: 'bar',
+            const chart = new Chart(ctx, {
+                type: 'line',
                 data: this.data,
                 options: {
+                    elements: {
+                        point:{
+                            radius: 0
+                        }
+                    },
                     label: {
                         display: false
                     },
@@ -43,7 +48,7 @@ export default {
                         // },
                         xAxes: [{
                             display: false,
-                            maxBarThickness: 13,
+                            maxBarThickness: 8,
                             ticks: {
                                 min: 0
                             }
