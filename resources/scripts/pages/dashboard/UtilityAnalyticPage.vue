@@ -27,7 +27,7 @@
 
 <!--                Conversation rate-->
                 <LeadWidget>
-                    <BarChart :data="leadsData.lead.chartData"  chartId="totalLead4"/>
+                    <LineChart :data="leadsData.conversion.chartData"  chartId="totalLead4"/>
                 </LeadWidget>
 
 <!--                Automation rate-->
@@ -70,6 +70,25 @@ export default {
                             fill: false,
                             backgroundColor: COLOR.themes.light.secondary
                         }]
+                    },
+                },
+                conversion: {
+                    chartData: {
+                        labels: ['green', 'blue', 'red', 'orange', 'yellow', 'gray', 'black'],
+                        datasets: [
+                            {
+                                borderWidth: 0,
+                                data: [12, 24, 45, 18, 24, 36, 24],
+                                fill: true,
+                                backgroundColor: COLOR.themes.light.primary + '80'
+                            },
+                            {
+                                borderWidth: 0,
+                                data: [32, 17, 15, 18, 22, 10, 12],
+                                fill: true,
+                                backgroundColor: COLOR.themes.light.secondary + '80'
+                            },
+                        ]
                     },
                 },
                 automation: {
