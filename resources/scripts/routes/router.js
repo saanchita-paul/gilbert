@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router'
 import DashboardLayout from "@scripts/layouts/DashboardLayout";
+import NewDashboardLayout from "@scripts/layouts/NewDashboardLayout";
 
 import CustomerAnalyticsPage from "@scripts/pages/customer/CustomerAnalyticsPage";
 import AccountPage from "@scripts/pages/AccountPage";
@@ -22,7 +23,7 @@ const router = new VueRouter({
     routes: [
         {
             path: '/',
-            component: DashboardLayout,
+            component: NewDashboardLayout,
             children: [
                 {
                     path: '',
