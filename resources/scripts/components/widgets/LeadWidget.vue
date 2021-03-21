@@ -4,7 +4,7 @@
             <h2 class="title">12.6K</h2>
             <p class="mb-5">Total Leads</p>
             <div class="small-chart">
-                <BarChart :chartId="chartId" height="100px"/>
+                <slot/>
             </div>
         </div>
     </v-card>
@@ -12,11 +12,11 @@
 
 <script>
 import BarChart from "@scripts/components/charts/BarChart";
+import LineChart from "@scripts/components/charts/LineChart";
 
 export default {
     name: "LeadWidget",
-    props: ['chartId'],
-    components: { BarChart }
+    components: { BarChart, LineChart }
 }
 </script>
 

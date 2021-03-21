@@ -2,7 +2,7 @@
     <div class="analytic-bg hood-gradiant">
         <v-container>
             <div class="my-lead-head mb-2">
-                <h3 class="section-title">My leads overview</h3>
+                <h3 class="section-title white--text">My leads overview</h3>
                 <div>
                     <v-btn>filter
                         <v-icon>mdi-filter-outline</v-icon>
@@ -10,11 +10,30 @@
                 </div>
             </div>
             <div class="widgets">
-                <LeadWidget chart-id="totalLead"/>
-                <LeadWidget chart-id="totalLead2"/>
-                <LeadWidget chart-id="totalLead3"/>
-                <LeadWidget chart-id="totalLead4"/>
-                <LeadWidget chart-id="totalLead5"/>
+<!--                Total-->
+                <LeadWidget>
+                    <BarChart :data="leadsData.lead.chartData" chartId="totalLead"/>
+                </LeadWidget>
+
+<!--                Qualified-->
+                <LeadWidget>
+                    <LineChart  :data="leadsData.qualified.chartData" chartId="qualifiedLead"/>
+                </LeadWidget>
+
+<!--                Energy connection-->
+                <LeadWidget>
+                    <BarChart :data="leadsData.lead.chartData"  chartId="totalLead3"/>
+                </LeadWidget>
+
+<!--                Conversation rate-->
+                <LeadWidget>
+                    <BarChart :data="leadsData.lead.chartData"  chartId="totalLead4"/>
+                </LeadWidget>
+
+<!--                Automation rate-->
+                <LeadWidget>
+                    <LineChart :data="leadsData.automation.chartData"  chartId="totalLead5"/>
+                </LeadWidget>
             </div>
         </v-container>
     </div>
@@ -22,10 +41,61 @@
 
 <script>
 import LeadWidget from "@scripts/components/widgets/LeadWidget";
+import BarChart from "@scripts/components/charts/BarChart";
+import LineChart from "@scripts/components/charts/LineChart";
+import COLOR from "@scripts/data/constants/COLOR";
 
 export default {
     name: "UtilityAnalyticPage",
-    components: { LeadWidget }
+    components: { LeadWidget, BarChart, LineChart },
+    data() {
+        return {
+            leadsData: {
+                lead: {
+                    chartData: {
+                        labels: ['green', 'blue', 'red', 'orange', 'yellow', 'gray', 'black'],
+                        datasets: [{
+                            borderWidth: 1,
+                            data: [12, 24, 30, 18, 24, 36, 24],
+                            fill: false,
+                            backgroundColor: COLOR.themes.light.secondary,
+                        }]
+                    }},
+                qualified: {
+                    chartData: {
+                        labels: ['green', 'blue', 'red', 'orange', 'yellow', 'gray', 'black'],
+                        datasets: [{
+                            borderWidth: 1,
+                            data: [12, 24, 30, 18, 24, 36, 24],
+                            fill: false,
+                            backgroundColor: COLOR.themes.light.secondary
+                        }]
+                    },
+                },
+                automation: {
+                    chartData: {
+                        labels: ['green', 'blue', 'red', 'orange', 'yellow', 'gray', 'black'],
+                        datasets: [
+                            {
+                                borderWidth: 1,
+                                data: [24, 20, 15, 25, 30, 20, 40],
+                                fill: false,
+                                backgroundColor: COLOR.themes.light.primary
+                            },
+                            {
+                                borderWidth: 1,
+                                data: [12, 24, 30, 18, 24, 36, 24],
+                                fill: false,
+                                backgroundColor: COLOR.themes.light.secondary
+                            }
+                        ]
+                    },
+                },
+            }
+        }
+    },
+    methods:{
+    }
 }
 </script>
 
