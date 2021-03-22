@@ -4,8 +4,8 @@
                 <v-card v-if="tooltip" class="widget mx-2" v-bind="attrs"
                         v-on="on">
                     <div class="widget-container">
-                        <h2 class="title">{{value}}</h2>
-                        <p class="mb-5">{{title}}</p>
+                        <h2 class="widget-value">{{value}}</h2>
+                        <p class="mb-5 widget-title">{{title}}</p>
                         <div class="small-chart">
                             <slot/>
                         </div>
@@ -13,8 +13,8 @@
                 </v-card>
                 <v-card class="widget mx-2" v-else>
                     <div class="widget-container">
-                        <h2 class="title">{{value}}</h2>
-                        <p class="mb-5">{{title}}</p>
+                        <h2 class="widget-value">{{value}}</h2>
+                        <p class="mb-5 widget-title">{{title}}</p>
                         <div class="small-chart">
                             <slot/>
                         </div>
@@ -22,7 +22,7 @@
                 </v-card>
             </template>
             <v-row class="small-text">
-                <v-col md="6" v-for="(item, index) in tooltip">
+                <v-col md="6" v-for="(item, index) in tooltip" :key="index">
                     <p>{{item.value}}</p>
                     <p>{{item.title}}</p>
                 </v-col>
@@ -68,15 +68,20 @@ export default {
     margin: auto;
 }
 
-.title {
+.widget-value {
     font-weight: 500;
     font-size: 58px !important;
     color: #263238 !important;
-    margin-bottom: 15px;
+    margin-bottom: -4px;
 }
 
 .small-chart {
     width: 100%;
+}
+
+.widget-title {
+    color: #828282 !important;
+    font-size: .9rem;
 }
 
 .small-text {
