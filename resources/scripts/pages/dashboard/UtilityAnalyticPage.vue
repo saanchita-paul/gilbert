@@ -1,7 +1,7 @@
 <template>
     <div class="analytic-bg hood-gradiant">
         <v-container>
-            <div class="my-lead-head my-2">
+            <div class="my-lead-head my-3">
                 <h3 class="section-title white--text">My leads overview</h3>
                 <div>
                     <v-btn>filter
@@ -58,6 +58,7 @@ export default {
                             borderWidth: 1,
                             data: [12, 24, 30, 18, 24, 36, 24],
                             fill: false,
+                            maxBarThickness: 13,
                             backgroundColor: COLOR.themes.light.secondary,
                         }]
                     }},

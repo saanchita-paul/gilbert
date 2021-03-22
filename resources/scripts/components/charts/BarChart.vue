@@ -43,7 +43,6 @@ export default {
                         // },
                         xAxes: [{
                             display: false,
-                            maxBarThickness: 13,
                             ticks: {
                                 min: 0
                             }
