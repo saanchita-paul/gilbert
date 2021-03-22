@@ -43,7 +43,7 @@ export default class CustomerDetails {
         this.ph = ph || '1671408219574925';
 
         this.property_profile_id = propertyProfileId || '#1901';
-        this.property_property_account_type = propertyAccountType || '#1901';
+        this.property_account_type = propertyAccountType || '#1901';
         this.property_estimated_moving_period = propertyEstimatedMovingPeriod || '20/03/2020';
         this.property_currnt_address = propertyCurrentAddress || '26 Highpoint, Sunbury VIC 3429 Australia';
         this.property_previous_address = propertyPriviousAddress || '26 Highpoint, Sunbury VIC 3429 Australia';
@@ -54,7 +54,7 @@ export default class CustomerDetails {
         this.property_life_support = propertyLifeSupport || 'Y/N';
         this.is_manual_address = isManualAddress || 'Y/N';
         this.estimeted_moving_period = estimetedMovingPeriod || '';
-        this.property_ea_response_ime = propertyEAResponseTime || '';
+        this.property_ea_response_time = propertyEAResponseTime || '';
         this.property_id_type = propertyIdType || '';
 
         this.connection_id = connectionId || '#1901';
