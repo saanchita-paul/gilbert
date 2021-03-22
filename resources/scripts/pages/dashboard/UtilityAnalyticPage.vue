@@ -1,7 +1,7 @@
 <template>
     <div class="analytic-bg hood-gradiant">
         <v-container>
-            <div class="my-lead-head mb-2">
+            <div class="my-lead-head my-2">
                 <h3 class="section-title white--text">My leads overview</h3>
                 <div>
                     <v-btn>filter
@@ -31,7 +31,7 @@
                 </LeadWidget>
 
 <!--                Automation rate-->
-                <LeadWidget>
+                <LeadWidget :tooltip="true">
                     <LineChart :data="leadsData.automation.chartData"  chartId="totalLead5"/>
                 </LeadWidget>
             </div>

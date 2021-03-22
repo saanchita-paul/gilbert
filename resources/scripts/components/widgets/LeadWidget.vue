@@ -1,26 +1,53 @@
 <template>
-    <v-card class="widget mx-2">
-        <div class="widget-container">
-            <h2 class="title">12.6K</h2>
-            <p class="mb-5">Total Leads</p>
-            <div class="small-chart">
-                <slot/>
-            </div>
-        </div>
-    </v-card>
+        <v-tooltip bottom >
+            <template v-slot:activator="{ on, attrs }">
+                <v-card v-if="tooltip" class="widget mx-2" v-bind="attrs"
+                        v-on="on">
+                    <div class="widget-container">
+                        <h2 class="title">12.6K</h2>
+                        <p class="mb-5">Total Leads</p>
+                        <div class="small-chart">
+                            <slot/>
+                        </div>
+                    </div>
+                </v-card>
+                <v-card class="widget mx-2" v-else>
+                    <div class="widget-container">
+                        <h2 class="title">12.6K</h2>
+                        <p class="mb-5">Total Leads</p>
+                        <div class="small-chart">
+                            <slot/>
+                        </div>
+                    </div>
+                </v-card>
+            </template>
+            <v-row class="small-text">
+                <v-col md="6">
+                    <p>10%</p>
+                    <p>Qualified Lead</p>
+                </v-col>
+                <v-col md="6">
+                    <p>90%</p>
+                    <p>Total Conversion</p>
+                </v-col>
+            </v-row>
+        </v-tooltip>
 </template>
 
 <script>
-import BarChart from "@scripts/components/charts/BarChart";
-import LineChart from "@scripts/components/charts/LineChart";
 
 export default {
     name: "LeadWidget",
-    components: { BarChart, LineChart }
+    props: {
+        tooltip: {
+            type: Boolean,
+            default: false
+        }
+    }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .widget {
     width: 100%;
     height: 227px;
@@ -28,6 +55,7 @@ export default {
     overflow: hidden;
     padding: 0px 20px 20px 20px;
 }
+
 .widget-container {
     height: 100%;
     display: flex;
@@ -43,7 +71,15 @@ export default {
     color: #263238 !important;
     margin-bottom: 15px;
 }
+
 .small-chart {
     width: 100%;
+}
+
+.small-text {
+    p {
+        margin: 0px;
+        text-align: center;
+    }
 }
 </style>
