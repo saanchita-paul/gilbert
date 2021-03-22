@@ -2,14 +2,14 @@
     <v-app>
         <v-container>
             <v-row align-center class="header color--text">
-                <v-col class="avatar-containner">
+                <v-col class="avatar-containner pr-0">
                     <v-avatar>
-                        <v-img src="https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/106438752/original/3c4d95e3604313ecca407541a45b6a58dcc67c5c/update-your-online-dating-profile-bio-to-get-you-more-matches.jpg"/>
+                        <v-img v-bind:src="customerinfo.profile_pic" class="rejected"/>
                     </v-avatar>
                 </v-col>
                 <v-col cols="10" class="pt-0 pt-5">
-                    <h3 class="mb-0">{{customerinfo.name}}</h3>
-                    <p class="mb-0 last-interactive">interact {{customerinfo.last_interactive_time}} ago</p>
+                    <h3 class="mb-0 font-weight-bold profile-title">{{customerinfo.name}}</h3>
+                    <p class="mb-0 last-interactive profile-subtitle">interact {{customerinfo.last_interactive_time}} ago</p>
                 </v-col>
                 <v-col cols="5" >
                     <p class="mb-0">HOOD UID: {{customerinfo.hood_uid}}</p>
@@ -26,26 +26,26 @@
                     <v-card>
                         <v-card-title>
                         <v-row>
-                            <v-col color="black--text">Property Information</v-col>
+                            <v-col color="black--text" class="profile_body_header">Property Information</v-col>
                         </v-row>
                         </v-card-title>
                         <v-card-text>
-                            <v-row>
-                                <v-col cols="12" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Id#1901</span></p></v-col>
-                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Account Type:</span> Residensial</p></v-col>
-                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Life Support:</span> Y/N</p></v-col>
-                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Tenancy Type:</span> Rent</p></v-col>
-                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Solar Powered:</span> Yes</p></v-col>
+                            <v-row class="pb-2">
+                                <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title"><span class=" font-weight-bold">Id#{{customerinfo.property_profile_id}}</span></p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Account Type:</span>{{customerinfo.property_account_type}}</p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Life Support:</span> {{customerinfo.property_life_support}}</p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold  ">Tenancy Type:</span> {{customerinfo.property_tenancy_type}}</p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold  ">Solar Powered:</span> {{customerinfo.property_solar_powered}}</p></v-col>
                             </v-row>
                             <v-row class="py-2">
-                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">ID Type:</span> Residensial</p></v-col>
-                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">EA Response Time:</span> Y/N</p></v-col>
-                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Estimated moving period:</span> Rent</p></v-col>
-                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">User Agree Time:</span> Yes</p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">ID Type:</span> {{customerinfo.property_id_type}}</p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">EA Response Time:</span> {{customerinfo.property_ea_response_ime}}</p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Estimated moving period:</span> {{customerinfo.estimeted_moving_period}}</p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">User Agree Time:</span> 1091</p></v-col>
                             </v-row>
 
                             <v-row class="py-2">
-                                <v-col cols="6"><p class="mb-0"><span class="font-weight-bold black--text">Is Manual Address:</span> Email</p></v-col>
+                                <v-col cols="6"><p class="mb-0 profile-info-title"><span class="font-weight-bold profile-info-title">Is Manual Address:</span> {{customerinfo.is_manual_address}}</p></v-col>
                             </v-row>
                         </v-card-text>
                     </v-card>
@@ -54,7 +54,7 @@
                     <v-card>
                         <v-card-title>
                             <v-row class="align-baseline">
-                                <v-col cols="10">
+                                <v-col cols="10" class="profile_body_header" >
                                     Connection Information
                                 </v-col>
                                 <v-spacer></v-spacer>
@@ -65,50 +65,47 @@
                         </v-card-title>
                         <v-card-text>
                             <v-row>
-                                <v-col cols="12" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Id#1901</span></p></v-col>
+                                <v-col cols="12" class="py-0"><p class="mb-0"><span class="font-weight-bold  profile-info-title">Id#{{customerinfo.connection_id}}</span></p></v-col>
                                 <v-col cols="6" class="py-1">
                                     <v-row>
-                                        <v-col cols="12" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Provider:</span> Residensial</p></v-col>
-<!--                                        <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold">Connection Address:</span></p><p>26 Highpoint, Sunbury VIC3429 Australia</p></v-col>-->
-                                        <v-col cols="12" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Selected Plan:</span> Total Plan</p></v-col>
+                                        <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Provider:</span> {{customerinfo.connection_provider}}</p></v-col>
+                                        <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title "><span class="font-weight-bold">Selected Plan:</span> {{customerinfo.connection_selected_plan}}</p></v-col>
                                     </v-row>
                                 </v-col>
-<!--                                <v-col cols="6" class="py-1" style="border: 1px solid red;"><p class="mb-0"><span class="font-weight-bold">Provider:</span> Residensial</p></v-col>-->
-                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Connection Address:</span></p><p>26 Highpoint, Sunbury VIC3429 Australia</p></v-col>
-<!--                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold">Selected Plan:</span> Total Plan</p></v-col>-->
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title "><span class="font-weight-bold">Connection Address:</span></p><p class="profile-info-title">{{customerinfo.connection_address}}</p></v-col>
                             </v-row>
                             <v-row class="py-2">
-                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Energy Type:</span> Residensial</p></v-col>
-                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Gas Provider:</span> Y/N</p></v-col>
-                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">E-Destributor:</span> Rent</p></v-col>
-                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Gas meter Reading Charge:</span> Yes</p></v-col>
+                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Energy Type:</span> {{customerinfo.connection_energy_type}}</p></v-col>
+                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Gas Provider:</span> {{customerinfo.connection_gas_provider}}</p></v-col>
+                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">E-Destributor:</span> {{customerinfo.connection_electricy_fee}}</p></v-col>
+                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0"><span class="font-weight-bold">Gas meter Reading Charge:</span> {{customerinfo.connection_electricy_fee}}</p></v-col>
                             </v-row>
                             <v-row class="ml-0" >
-                                <v-col cols="6" class="py-1">
+                                <v-col cols="6" class="py-0">
                                     <v-row class="align-baseline">
-                                        <label  class="font-weight-bold black--text">MERN no:</label>
-                                        <v-col class="px-0 my-0" cols="7"><v-text-field style="border-radius:5px" readonly filled rounded dense></v-text-field></v-col>
+                                        <label  class="font-weight-bold profile-info-title">MIRN no:</label>
+                                        <v-col class="px-0 pb-0" cols="7"><v-text-field style="border-radius:5px" readonly filled rounded dense v-model:value="customerinfo.connection_mern_no"></v-text-field></v-col>
                                     </v-row>
                                 </v-col>
-                                <v-col cols="6" class="py-1">
+                                <v-col cols="6" class="py-0">
                                     <v-row class="align-baseline">
-                                        <label class="font-weight-bold black--text">NMI no:</label>
-                                        <v-col class="px-0" cols="7"><v-text-field style="border-radius:5px" readonly filled rounded dense></v-text-field></v-col>
+                                        <label class="font-weight-bold profile-info-title">NMI no:</label>
+                                        <v-col class="px-0 pb-0" cols="7"><v-text-field style="border-radius:5px" readonly filled rounded dense v-model:value="customerinfo.connection_nmi_no"></v-text-field></v-col>
                                     </v-row>
                                 </v-col>
 
                             </v-row>
                             <v-row class="py-0">
-                                <v-col cols="6" class="py-1"><p class="mb-0"><span class="font-weight-bold black--text">Connection Status:</span> Residensial</p></v-col>
-                                <v-col cols="12" class="py-1">
-                                    <p class="mb-0">Reason:</p>
-                                    <div cols="12"  class="reason pa-5">
-                                        <p>The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through.</p>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Connection Status:</span><span class="rejected-text">{{customerinfo.connection_status}}</span></p></v-col>
+                                <v-col cols="12" class="py-0">
+                                    <p class="mb-0 profile-info-title">Reason:</p>
+                                    <div cols="12"  class="reason pa-5 profile-info-title">
+                                        <p>{{customerinfo.connection_reason}}</p>
                                     </div>
                                 </v-col>
                                 <v-col col="12" class="form-submit">
                                     <div>
-                                        <v-btn color="primary" >Submit</v-btn>
+                                        <v-btn color="primary" >Save</v-btn>
                                     </div>
                                 </v-col>
 
@@ -149,10 +146,8 @@ export default {
         },
 
         async getCustomerDetailsData (customerId) {
-            this.customerinfo1 = await CustomerService.getCustomerDetails(customerId);
-            console.log('hello world');
-            console.log(this.customerinfo1);
-            return this.customerinfo1;
+            this.customerinfo = await CustomerService.getCustomerDetails(customerId);
+            console.log(this.customerinfo);
         }
     },
     mounted() {
@@ -174,6 +169,28 @@ body {
     font-size: 16px;
 }
 
+.profile-title {
+    font-size: 24px !important;
+}
+
+.profile-subtitle {
+    font-size: 16px;
+    font-weight: 400 !important;
+}
+
+.profile_body_header {
+    font-size: 14px;
+    font-weight: 500 !important;
+    color: rgba(37, 39, 51, 1);
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.profile-info-title {
+    font-size: 12px;
+    color: rgba(37, 39, 51, 1);
+}
+
 .header-avater {
     display: flex;
     align-items: center;
@@ -186,9 +203,6 @@ body {
 .avatar-containner {
     flex-grow: 0;
 }
-.last-interactive {
-    font-size: 14px;
-}
 .body_row {
     background: rgba(227, 224, 231, 1);
 
@@ -197,6 +211,13 @@ body {
     background: rgba(242, 242, 242, 1);
 }
 
+.rejected {
+    border: 1px solid red;
+    color:red !important;
+}
+.rejected-text {
+    color:red !important;
+}
 
 
 </style>
