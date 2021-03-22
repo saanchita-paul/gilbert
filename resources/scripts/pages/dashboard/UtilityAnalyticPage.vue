@@ -65,7 +65,6 @@
                     <v-col md="5" sm="12"></v-col>
                 </v-row>
             </div>
-
         </v-container>
     </div>
 </template>
