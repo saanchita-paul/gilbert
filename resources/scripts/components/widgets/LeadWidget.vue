@@ -4,8 +4,8 @@
                 <v-card v-if="tooltip" class="widget mx-2" v-bind="attrs"
                         v-on="on">
                     <div class="widget-container">
-                        <h2 class="title">12.6K</h2>
-                        <p class="mb-5">Total Leads</p>
+                        <h2 class="title">{{value}}</h2>
+                        <p class="mb-5">{{title}}</p>
                         <div class="small-chart">
                             <slot/>
                         </div>
@@ -13,8 +13,8 @@
                 </v-card>
                 <v-card class="widget mx-2" v-else>
                     <div class="widget-container">
-                        <h2 class="title">12.6K</h2>
-                        <p class="mb-5">Total Leads</p>
+                        <h2 class="title">{{value}}</h2>
+                        <p class="mb-5">{{title}}</p>
                         <div class="small-chart">
                             <slot/>
                         </div>
@@ -22,13 +22,9 @@
                 </v-card>
             </template>
             <v-row class="small-text">
-                <v-col md="6">
-                    <p>10%</p>
-                    <p>Qualified Lead</p>
-                </v-col>
-                <v-col md="6">
-                    <p>90%</p>
-                    <p>Total Conversion</p>
+                <v-col md="6" v-for="(item, index) in tooltip">
+                    <p>{{item.value}}</p>
+                    <p>{{item.title}}</p>
                 </v-col>
             </v-row>
         </v-tooltip>
@@ -40,8 +36,15 @@ export default {
     name: "LeadWidget",
     props: {
         tooltip: {
-            type: Boolean,
-            default: false
+            default: null
+        },
+        title: {
+            required: true,
+            type: String
+        },
+        value: {
+            required: true,
+            type: String
         }
     }
 }
