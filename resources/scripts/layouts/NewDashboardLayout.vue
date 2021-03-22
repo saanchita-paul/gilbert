@@ -1,5 +1,4 @@
 <template>
-    <div id="app">
         <v-app id="inspire">
             <v-navigation-drawer
                 v-model="drawer"
@@ -53,7 +52,7 @@
                     </span>
                 </v-list>
             </v-navigation-drawer>
-    
+
             <v-app-bar app class="app-app-bar" dark>
                     <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
                 <v-toolbar-title v-if="false">
@@ -66,12 +65,11 @@
                 <p class="app-bar-user-name">Jones Ferdinand</p>
                 <v-icon medium class="app-bar-icon app-bar-login-button"> mdi-login </v-icon>
             </v-app-bar>
-            
+
             <v-main>
                 <router-view></router-view>
             </v-main>
         </v-app>
-    </div>
 </template>
 
 <script>

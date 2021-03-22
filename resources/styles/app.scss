@@ -12,10 +12,11 @@ body {
         font-family: 'Roboto', sans-serif !important;
         font-weight: 400;
         font-size: 16px !important;
+        background-color: #D6D6D6 !important;
     }
 }
 .body-bg {
-    background-color: #EBEEF1 !important;
+    background-color: #D6D6D6 !important;
 }
 
 .hood-gradiant {
@@ -31,4 +32,13 @@ body {
 }
 .small-text{
     font-size: .75rem;
+}
+
+.max-width {
+    width: 100%
+}
+
+.widget-title {
+    font-weight: 400;
+    font-size: 1.1rem;
 }

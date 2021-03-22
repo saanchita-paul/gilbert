@@ -1,5 +1,5 @@
 <template>
-    <div class="analytic-bg hood-gradiant" v-if="leadsData">
+    <div class="px-2 analytic-bg hood-gradiant" v-if="leadsData">
         <v-container>
             <div class="my-lead-head my-3">
                 <h3 class="section-title white--text">My leads overview</h3>
@@ -55,12 +55,24 @@
                     <LineChart :data="leadsData.automation.chartData"  chartId="totalLead5"/>
                 </LeadWidget>
             </div>
+
+            <div style="margin-top: 50px;">
+                <h3 class="section-title">My leads overview</h3>
+                <v-row>
+                    <v-col md="7" sm="12" style="height: 466px;">
+                        <ConnectionLeadWidget/>
+                    </v-col>
+                    <v-col md="5" sm="12"></v-col>
+                </v-row>
+            </div>
+
         </v-container>
     </div>
 </template>
 
 <script>
 import LeadWidget from "@scripts/components/widgets/LeadWidget";
+import ConnectionLeadWidget from "@scripts/components/widgets/ConnectionLeadWidget";
 import BarChart from "@scripts/components/charts/BarChart";
 import LineChart from "@scripts/components/charts/LineChart";
 import COLOR from "@scripts/data/constants/COLOR";
@@ -68,7 +80,7 @@ import UtilityDashboardService from "@scripts/services/UtilityDashboardService";
 
 export default {
     name: "UtilityAnalyticPage",
-    components: { LeadWidget, BarChart, LineChart },
+    components: {ConnectionLeadWidget, LeadWidget, BarChart, LineChart },
     data() {
         return {
             leadsData: null
