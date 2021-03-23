@@ -6,6 +6,7 @@ export default class CustomerDetails {
                     messagerId,
                     email,
                     ph,
+
                     propertyProfileId,
                     propertyAccountType,
                     propertyLifeSupport,
@@ -19,6 +20,7 @@ export default class CustomerDetails {
                     propertyHouseSize,
                     propertySolarPowered,
                     estimetedMovingPeriod,
+                    userAgreeTime,
                     isManualAddress,
                     connectionId,
                     connectionProvider,
@@ -28,6 +30,8 @@ export default class CustomerDetails {
                     connectionEnergyType,
                     connectionGasProvider,
                     connectionElectricyFee,
+                    connectionEDestributor,
+                    gasMeterCharge,
                     connectionMernNo,
                     connectionNmiNo,
                     connectionStatus,
@@ -55,6 +59,7 @@ export default class CustomerDetails {
         this.is_manual_address = isManualAddress || 'Y/N';
         this.estimeted_moving_period = estimetedMovingPeriod || '';
         this.property_ea_response_time = propertyEAResponseTime || '';
+        this.user_agree_time = userAgreeTime || '';
         this.property_id_type = propertyIdType || '';
 
         this.connection_id = connectionId || '#1901';
@@ -62,6 +67,8 @@ export default class CustomerDetails {
         this.connection_selected_plan = connectionSelectedPlan || 'Total Plan';
         this.connection_energy_type = connectionEneryType || '--';
         this.connection_address = connectionAddress || '26 Highpoint, Sunbury VIC 3429 Australia';
+        this.e_destributor = connectionEDestributor || 'Energy Australia';
+
         this.connection_energy_type = connectionEnergyType || '';
         this.connection_gas_provider = connectionGasProvider || '';
         this.connection_electricy_fee = connectionElectricyFee || '';
@@ -69,6 +76,7 @@ export default class CustomerDetails {
         this.connection_nmi_no = connectionNmiNo || '';
         this.connection_status = connectionStatus || '';
         this.connection_reason = connectionReason || '';
+        this.gas_meter_charge = gasMeterCharge || '';
     }
 
 }

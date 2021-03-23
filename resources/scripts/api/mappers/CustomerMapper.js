@@ -5,6 +5,7 @@ import CustomerMovingInfo from "@scripts/models/customer-profile/CustomerMovingI
 import CustomerOrder from "@scripts/models/customer-profile/CustomerOrder";
 import CustomerOtherService from "@scripts/models/customer-profile/CustomerOtherService";
 import CustomerDetails from "@scripts/models/CustomerDetails";
+import Customer1 from "@scripts/models/Customer1";
 
 export default {
     toClientDetail: (data) => {
@@ -113,5 +114,11 @@ export default {
      */
     mapCustomerDetailsServices: customerData => {
        return new CustomerDetails({...customerData})
+    },
+
+    mapCustomerList: customerDataList => {
+        return customerDataList.map(customerDetails => {
+            return new Customer1(customerDetails);
+        });
     }
 }
