@@ -12,12 +12,12 @@
                         <v-col cols="12" style="max-height: 100vh;overflow: auto">
                             <v-expansion-panels v-model="activeModel">
                                 <v-expansion-panel
-                                    v-for="(item,i) in 5"
+                                    v-for="(item,i) in customerList"
                                     :key="i"
                                 >
                                     <v-expansion-panel-header  v-bind:class="{ 'expansion-header-background-active ': activeModel == i }">
                                         <template v-slot:actions>
-                                            <v-icon color="white">
+                                            <v-icon v-bind:class="{ 'white': activeModel == i }">
                                                 mdi-menu-down
                                             </v-icon>
                                         </template>
@@ -25,25 +25,25 @@
                                             <v-row align-center class="header color--text" v-if="activeModel == i">
                                                 <v-col class="avatar-containner pr-0">
                                                     <v-avatar>
-                                                        <v-img v-bind:src="customerinfo.profile_pic" class="rejected"/>
+                                                        <v-img v-bind:src="item.profile_pic" class="rejected"/>
                                                     </v-avatar>
                                                 </v-col>
-                                                <v-col cols="10" class="pt-0 pt-5">
-                                                    <h3 class="mb-0 font-weight-bold profile-title">{{customerinfo.name}}</h3>
-                                                    <p class="mb-0 last-interactive profile-subtitle">interact {{customerinfo.last_interactive_time}} ago</p>
+                                                <v-col cols="8" class="pt-1 pr-2">
+                                                    <h3 class="mb-0 font-weight-bold profile-title">{{item.name}}</h3>
+                                                    <p class="mb-0 last-interactive profile-subtitle">interact {{item.last_interactive_time}} ago</p>
                                                 </v-col>
                                                 <v-col cols="6">
-                                                    <p class="mb-0">HOOD UID: {{customerinfo.hood_uid}}</p>
-                                                    <p class="mb-0">Messenger ID: {{customerinfo.messager_id}}</p>
+                                                    <p class="mb-0 expand-header-info">HOOD UID: {{item.hood_uid}}</p>
+                                                    <p class="mb-0 expand-header-info">Messenger ID: {{item.messager_id}}</p>
                                                 </v-col>
                                                 <v-col cols="6" >
-                                                    <p class="mb-0">Email: {{customerinfo.email}}</p>
-                                                    <p class="mb-0">Ph: {{customerinfo.ph}}</p>
+                                                    <p class="mb-0 expand-header-info">Email: {{item.email}}</p>
+                                                    <p class="mb-0 expand-header-info">Ph: {{item.ph}}</p>
                                                 </v-col>
                                                 <v-col cols="8">
-                                                    <p class="mb-0">Billing Preference: {{'Email/Address'}}</p>
+                                                    <p class="mb-0 expand-header-info">Billing Preference: {{'Email/Address'}}</p>
                                                 </v-col>
-                                                <v-col cols="">
+                                                <v-col >
                                                     <v-btn  rounded small color="white primary--text">View Profile</v-btn>
                                                 </v-col>
 
@@ -51,12 +51,12 @@
                                             <v-row align-center class="header color--text" v-else>
                                                 <v-col class="avatar-containner pr-0">
                                                     <v-avatar>
-                                                        <v-img v-bind:src="customerinfo.profile_pic" class="rejected"/>
+                                                        <v-img v-bind:src="item.profile_pic" class="rejected"/>
                                                     </v-avatar>
                                                 </v-col>
                                                 <v-col cols="10" class="pt-0 pt-5">
-                                                    <h3 class="mb-0 font-weight-bold profile-title">{{customerinfo.name}}</h3>
-                                                    <p class="mb-0 last-interactive profile-subtitle">interact {{customerinfo.last_interactive_time}} ago</p>
+                                                    <h3 class="mb-0 font-weight-bold profile-title">{{item.name}}</h3>
+                                                    <p class="mb-0 last-interactive profile-subtitle">interact {{item.last_interactive_time}} ago</p>
                                                 </v-col>
                                             </v-row>
 
@@ -64,91 +64,7 @@
 
                                     </v-expansion-panel-header>
                                     <v-expansion-panel-content>
-                                        <v-row class="body_row">
-                                            <v-col cols="12">
-                                                <v-card>
-                                                    <v-card-title>
-                                                        <v-row>
-                                                            <v-col color="black--text" class="profile_body_header">Property Information</v-col>
-                                                        </v-row>
-                                                    </v-card-title>
-                                                    <v-card-text>
-                                                        <v-row class="pb-2">
-                                                            <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title"><span class=" font-weight-bold">Id#{{customerinfo.property_profile_id}}</span></p></v-col>
-                                                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Account Type:</span>{{customerinfo.property_account_type}}</p></v-col>
-                                                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Life Support:</span> {{customerinfo.property_life_support}}</p></v-col>
-                                                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold  ">Tenancy Type:</span> {{customerinfo.property_tenancy_type}}</p></v-col>
-                                                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold  ">Solar Powered:</span> {{customerinfo.property_solar_powered}}</p></v-col>
-                                                        </v-row>
-                                                        <v-row class="py-2">
-                                                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">ID Type:</span> {{customerinfo.property_id_type}}</p></v-col>
-                                                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">EA Response Time:</span> {{customerinfo.property_ea_response_ime}}</p></v-col>
-                                                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Estimated moving period:</span> {{customerinfo.estimeted_moving_period}}</p></v-col>
-                                                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">User Agree Time:</span> 1091</p></v-col>
-                                                        </v-row>
-
-                                                        <v-row class="py-2">
-                                                            <v-col cols="6"><p class="mb-0 profile-info-title"><span class="font-weight-bold profile-info-title">Is Manual Address:</span> {{customerinfo.is_manual_address}}</p></v-col>
-                                                        </v-row>
-                                                    </v-card-text>
-                                                </v-card>
-                                            </v-col>
-                                            <v-col cols="12">
-                                                <v-card>
-                                                    <v-card-title>
-                                                        <v-row class="align-baseline">
-                                                            <v-col cols="10" class="profile_body_header" >
-                                                                Connection Information
-                                                            </v-col>
-                                                            <v-spacer></v-spacer>
-                                                        </v-row>
-                                                    </v-card-title>
-                                                    <v-card-text>
-                                                        <v-row>
-                                                            <v-col cols="12" class="py-0"><p class="mb-0"><span class="font-weight-bold  profile-info-title">Id#{{customerinfo.connection_id}}</span></p></v-col>
-                                                            <v-col cols="6" class="py-1">
-                                                                <v-row>
-                                                                    <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Provider:</span> {{customerinfo.connection_provider}}</p></v-col>
-                                                                    <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title "><span class="font-weight-bold">Selected Plan:</span> {{customerinfo.connection_selected_plan}}</p></v-col>
-                                                                </v-row>
-                                                            </v-col>
-                                                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title "><span class="font-weight-bold">Connection Address:</span></p><p class="profile-info-title">{{customerinfo.connection_address}}</p></v-col>
-                                                        </v-row>
-                                                        <v-row class="py-2">
-                                                            <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Energy Type:</span> {{customerinfo.connection_energy_type}}</p></v-col>
-                                                            <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Gas Provider:</span> {{customerinfo.connection_gas_provider}}</p></v-col>
-                                                            <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">E-Destributor:</span> {{customerinfo.connection_electricy_fee}}</p></v-col>
-                                                            <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0"><span class="font-weight-bold">Gas meter Reading Charge:</span> {{customerinfo.connection_electricy_fee}}</p></v-col>
-                                                        </v-row>
-                                                        <v-row class="ml-0" >
-                                                            <v-col cols="6" class="py-0">
-                                                                <v-row class="align-baseline">
-                                                                    <label  class="font-weight-bold profile-info-title">MIRN no:</label>
-                                                                    <v-col class="px-0 pb-0" cols="7"><p class="profile-info-title">{{customerinfo.connection_mern_no}}</p></v-col>
-                                                                </v-row>
-                                                            </v-col>
-                                                            <v-col cols="6" class="py-0">
-                                                                <v-row class="align-baseline">
-                                                                    <label class="font-weight-bold profile-info-title">NMI no:</label>
-                                                                    <v-col class="px-0 pb-0" cols="7"><p class="profile-info-title">{{customerinfo.connection_nmi_no}}</p></v-col>
-                                                                </v-row>
-                                                            </v-col>
-
-                                                        </v-row>
-                                                        <v-row class="py-0">
-                                                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Connection Status:</span><span class="rejected-text">{{customerinfo.connection_status}}</span></p></v-col>
-                                                            <v-col cols="12" class="py-0">
-                                                                <p class="mb-0 profile-info-title">Reason:</p>
-                                                                <div cols="12"  class="reason pa-5 profile-info-title">
-                                                                    <p>{{customerinfo.connection_reason}}</p>
-                                                                </div>
-                                                            </v-col>
-
-                                                        </v-row>
-                                                    </v-card-text>
-                                                </v-card>
-                                            </v-col>
-                                        </v-row>
+                                        <customer-help-dest v-bind:customer="1"></customer-help-dest>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                             </v-expansion-panels>
@@ -186,15 +102,20 @@
 
 import CustomerDetails from "@scripts/models/CustomerDetails";
 import CustomerService from "@scripts/services/CustomerService";
+import CustomerHelpDesk from "@scripts/pages/customer/customer-profile/CustomerHelpDesk";
 
 export default {
     name: "CustomerList",
     data() {
         return {
             customerinfo: this.getCustomerDetails(),
-            customerinfo1:null,
             activeModel: 0,
+            pageIndex: 0,
+            customerList: []
         }
+    },
+    components:{
+        'customer-help-dest':CustomerHelpDesk
     },
 
     props: {
@@ -204,6 +125,8 @@ export default {
         }
     },
 
+    updated() {
+    },
     methods: {
         getCustomerDetails() {
             return new CustomerDetails();
@@ -211,11 +134,18 @@ export default {
 
         async getCustomerDetailsData (customerId) {
             this.customerinfo = await CustomerService.getCustomerDetails(customerId);
-            console.log(this.customerinfo);
+            this.customerList = await CustomerService.getCustomerList();
+
+        },
+
+        async getCustomerList (pageIndex) {
+            this.customerList = await CustomerService.getCustomerList(pageIndex);
         }
     },
     mounted() {
         this.getCustomerDetailsData(this.customerId);
+        this.getCustomerList(this.pageIndex);
+
     }
 }
 </script>
@@ -240,18 +170,26 @@ body {
 }
 
 .profile-title {
-    font-size: 24px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    line-height: 28px;
 }
 
 .profile-subtitle {
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 400 !important;
+    line-height: 14px;
+}
+.expand-header-info {
+    font-weight: 700;
+    font-size: 12px;
 }
 
 .profile_body_header {
-    font-size: 14px;
     font-weight: 500 !important;
-    color: rgba(37, 39, 51, 1);
+    font-size: 14px;
+    line-height: 24px;
+    color: #252733;
     padding-top: 0px;
     padding-bottom: 0px;
 }
@@ -261,15 +199,6 @@ body {
     color: rgba(37, 39, 51, 1);
 }
 
-.header-avater {
-    display: flex;
-    align-items: center;
-}
-
-.form-submit{
-    display: flex;
-    flex-direction: row-reverse;
-}
 .avatar-containner {
     flex-grow: 0;
 }
@@ -293,6 +222,7 @@ body {
     flex-direction: row-reverse;
     align-items: center;
 }
+
 
 
 </style>

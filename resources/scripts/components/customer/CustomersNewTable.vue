@@ -57,7 +57,7 @@ export default {
                 {text: 'Customer Details', align: 'start', value: 'customer_details'},
                 {text: 'Issue Status', value: 'issue_status'},
                 {text: 'Connection Status', value: 'connection_status'},
-                {text: 'User Sentiment', value: 'user_sentiment', align: 'center'},
+                {text: 'Sentiment', value: 'user_sentiment', align: 'center'},
                 {text: 'Location', value: 'location'},
                 {text: 'Connection Date', value: 'connection_date'},
                 {text: '', sortable: false, value: 'profile', align: 'center'},

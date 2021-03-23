@@ -1,10 +1,11 @@
-import Customer from "@scripts/models/customer-profile/Customer";
+import CustomerOld from "@scripts/models/customer-profile/Customer";
 import CustomerProperty from "@scripts/models/customer-profile/CustomerProperty";
 import CustomerConnection from "@scripts/models/customer-profile/CustomerConnection";
 import CustomerMovingInfo from "@scripts/models/customer-profile/CustomerMovingInfo";
 import CustomerOrder from "@scripts/models/customer-profile/CustomerOrder";
 import CustomerOtherService from "@scripts/models/customer-profile/CustomerOtherService";
 import CustomerDetails from "@scripts/models/CustomerDetails";
+import Customer from "@scripts/models/Customer";
 
 export default {
     toClientDetail: (data) => {
@@ -12,7 +13,7 @@ export default {
         const {bedrooms, house_type, ...from} = fromOriginal;
         const {rent, people, energy_usage, solar_panel, ...to} = toOriginal;
 
-        return new Customer({...others, bedrooms, house_type, rent, people, energy_usage, solar_panel, from, to});
+        return new CustomerOld({...others, bedrooms, house_type, rent, people, energy_usage, solar_panel, from, to});
     },
 
     /**
@@ -113,5 +114,12 @@ export default {
      */
     mapCustomerDetailsServices: customerData => {
        return new CustomerDetails({...customerData})
+    },
+
+
+    mapCustomerList: customerDataList => {
+        return customerDataList.map(customerDetails => {
+            return new Customer(customerDetails);
+        });
     }
 }

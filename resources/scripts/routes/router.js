@@ -11,6 +11,7 @@ import AuthService, {checkRouteAuthorization} from "@scripts/services/AuthServic
 import CustomerDetails from "@scripts/pages/customer/CustomerDetails";
 import CustomerListPage from "@scripts/pages/customer/CustomerListPage";
 import UtilityAnalyticPage from "@scripts/pages/dashboard/UtilityAnalyticPage";
+import CustomerList from "@scripts/pages/customer/customer-profile/CustomerList";
 
 Vue.use(VueRouter);
 
@@ -49,6 +50,14 @@ const router = new VueRouter({
             }
         },
         {
+            path: '/customer/list',
+            component: CustomerList,
+            name: 'custmerlist',
+            meta: {
+                isProtected: false
+            }
+        },
+        {
             path: '/auth/login',
             component: LoginPage,
             name: 'login',
@@ -59,6 +68,6 @@ const router = new VueRouter({
     ]
 })
 
- // router.beforeEach(AuthService.checkRouteAuthorization);
+// router.beforeEach(AuthService.checkRouteAuthorization);
 
 export default router;

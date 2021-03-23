@@ -48,5 +48,12 @@ export default {
      * @param customerId
      * @returns {Promise<CustomerOtherService>}
      */
-    getCustomerDetails: customerId => CustomerAPI.getCustomerDetails(customerId)
+    getCustomerDetails: customerId => CustomerAPI.getCustomerDetails(customerId),
+
+    /**
+     *
+     * @param pageIndex
+     * @returns {Promise<CustomerListInfo>}
+     */
+    getCustomerList: pageIndex => CustomerAPI.getCustomerList(pageIndex),
 }

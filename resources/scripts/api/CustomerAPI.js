@@ -89,15 +89,9 @@ export default {
     getCustomerDetails: async customerId => {
         // Todo API End point will be replaced later
         // const data =(await axios.get(`${ROOT}/customers/${customerId}/local-business-search`)).data;
+        // working with some dummy data
         const data = {
             data: {
-                name: 'Sazzad Ahmed',
-                profilePic: 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/106438752/original/3c4d95e3604313ecca407541a45b6a58dcc67c5c/update-your-online-dating-profile-bio-to-get-you-more-matches.jpg',
-                lastInteractiveTime: '10m',
-                hoodUid: '#1671408574925',
-                messagerId: '#1671419574925',
-                email: 'sazzadahmed@gmail.com',
-                ph: '1671408219574925',
 
                 propertyProfileId: '1901',
                 propertyAccountType: 'Residensial',
@@ -108,6 +102,7 @@ export default {
                 propertySolarPowered: '20/03/2020',
                 estimetedMovingPeriod: '20/03/2020',
                 isManualAddress: 'Email/Address',
+                userAgreeTime:'20/03/2020',
 
                 connectionId: '1901',
                 connectionProvider: 'Residensial',
@@ -115,14 +110,72 @@ export default {
                 connectionSelectedPlan: 'Total Plan',
                 connectionEnergyType: '--',
                 connectionGasProvider: 'Envesta Country',
+                connectionEDestributor: 'Envesta Country',
                 connectionElectricyFee: '$56',
+                gasMeterCharge: '$56',
                 connectionMernNo: 52456465454165,
                 connectionNmiNo: 52456465454165,
                 connectionStatus: 'Rejected',
                 connectionReason: 'The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the ....'
-
             }
         }
         return CustomerMapper.mapCustomerDetailsServices(data.data);
+    },
+
+    /**
+     *
+     * @param pageIndex
+     * @returns {Promise<CustomerListInfo[]>}
+     */
+    getCustomerList: async pageIndex=> {
+        // Todo API End point will be replaced later
+        // const data =(await axios.get(`${ROOT}/customers/${customerId}/local-business-search`)).data;
+        const data = {
+            data: [
+                {
+                    id: 1,
+                    name: 'Sazzad Ahmed',
+                    profilePic: 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/106438752/original/3c4d95e3604313ecca407541a45b6a58dcc67c5c/update-your-online-dating-profile-bio-to-get-you-more-matches.jpg',
+                    lastInteractiveTime: '10m',
+                    hoodUid: '#1671408574925',
+                    messagerId: '#1671419574925',
+                    email: 'sazzadahmed@gmail.com',
+                    ph: '1671408219574925',
+                },
+                {
+                    id: 2,
+                    name: 'Sazzad Ahmed',
+                    profilePic: 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/106438752/original/3c4d95e3604313ecca407541a45b6a58dcc67c5c/update-your-online-dating-profile-bio-to-get-you-more-matches.jpg',
+                    lastInteractiveTime: '10m',
+                    hoodUid: '#1671408574925',
+                    messagerId: '#1671419574925',
+                    email: 'sazzadahmed@gmail.com',
+                    ph: '1671408219574925',
+                },
+                {
+                    id: 3,
+                    name: 'Sazzad Ahmed',
+                    profilePic: 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/106438752/original/3c4d95e3604313ecca407541a45b6a58dcc67c5c/update-your-online-dating-profile-bio-to-get-you-more-matches.jpg',
+                    lastInteractiveTime: '10m',
+                    hoodUid: '#1671408574925',
+                    messagerId: '#1671419574925',
+                    email: 'sazzadahmed@gmail.com',
+                    ph: '1671408219574925',
+                },
+                {
+                    id: 4,
+                    name: 'Sazzad Ahmed',
+                    profilePic: 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/106438752/original/3c4d95e3604313ecca407541a45b6a58dcc67c5c/update-your-online-dating-profile-bio-to-get-you-more-matches.jpg',
+                    lastInteractiveTime: '10m',
+                    hoodUid: '#1671408574925',
+                    messagerId: '#1671419574925',
+                    email: 'sazzadahmed@gmail.com',
+                    ph: '1671408219574925',
+                },
+
+            ],
+        };
+        return CustomerMapper.mapCustomerList(data.data);
     }
+
 }

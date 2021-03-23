@@ -23,12 +23,12 @@ export default [
         type: 'route',
         title: 'Customers',
         icon: 'mdi-account-group',
-        route_name: 'account',
+        route_name: 'customerlist',
     },
     {
         type: 'route',
         title: 'Helpdesk',
         icon: 'mdi-account-tie',
-        route_name: 'account'
+        route_name: 'helpdesk'
     },
 ]
