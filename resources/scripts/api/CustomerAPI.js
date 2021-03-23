@@ -124,5 +124,22 @@ export default {
             }
         }
         return CustomerMapper.mapCustomerDetailsServices(data.data);
+    },
+
+    getCustomerList: async () => {
+        // Todo API End point will be replaced later
+        // const data =(await axios.get(`${ROOT}/customers/${customerId}/local-business-search`)).data;
+        const data = {
+            data: {
+                name: 'Sazzad Ahmed',
+                profilePic: 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/106438752/original/3c4d95e3604313ecca407541a45b6a58dcc67c5c/update-your-online-dating-profile-bio-to-get-you-more-matches.jpg',
+                lastInteractiveTime: '10m',
+                hoodUid: '#1671408574925',
+                messagerId: '#1671419574925',
+                email: 'sazzadahmed@gmail.com',
+                ph: '1671408219574925',
+            }
+        }
+        return CustomerMapper.mapCustomerList(data.data);
     }
 }

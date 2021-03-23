@@ -5,6 +5,7 @@
                 app
                 class="app-nav-bar"
                 dark
+                :width="252"
             >
                 <v-list class="nav-user-card hood-gradiant">
                     <v-list-item-avatar class="center-element nav-logo" size="59">
@@ -108,10 +109,11 @@ export default {
 .nav-avatar {
     border: 10px solid rgb(37,40,48,1);
     margin-top: -50px !important;
+    margin-bottom: 20px !important;
 }
 .nav-user-name {
     font-size: 20px !important;
-    font-Weight: 700 !important;
+    font-Weight: 500 !important;
     line-height: 28px;
     letter-spacing: 0.15px;
 }
@@ -123,7 +125,7 @@ export default {
 }
 .nav-main-item {
     font-size: 16px !important;
-    font-Weight: 700 !important;
+    font-Weight: 500 !important;
     line-height: 28px !important;
     letter-spacing: 1.5px;
 }
