@@ -66,7 +66,7 @@
                 </v-row>
             </div>
 
-            <v-row>
+            <v-row class="mt-4">
                 <v-col md="8">
                     <h3 class="section-title">Connection Summary</h3>
                     <v-row>
@@ -91,7 +91,8 @@
                     </v-row>
                 </v-col>
                 <v-col md="4">
-
+                    <h3  class="section-title mb-3">Age Summary</h3>
+                    <AgeWidget/>
                 </v-col>
             </v-row>
         </v-container>
@@ -101,6 +102,7 @@
 <script>
 import LeadWidget from "@scripts/components/widgets/LeadWidget";
 import SummaryWidget from "@scripts/components/widgets/SummaryWidget";
+import AgeWidget from "@scripts/components/widgets/AgeWidget";
 import ConnectionLeadWidget from "@scripts/components/widgets/ConnectionLeadWidget";
 import BarChart from "@scripts/components/charts/BarChart";
 import LineChart from "@scripts/components/charts/LineChart";
@@ -114,7 +116,8 @@ export default {
         LeadWidget,
         BarChart,
         LineChart,
-        SummaryWidget
+        SummaryWidget,
+        AgeWidget
     },
     data() {
         return {
@@ -124,6 +127,7 @@ export default {
         }
     },
     mounted() {
+        Math.round()
         this.load()
     },
     methods:{
