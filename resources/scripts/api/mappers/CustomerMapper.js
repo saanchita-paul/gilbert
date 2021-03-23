@@ -116,6 +116,7 @@ export default {
        return new CustomerDetails({...customerData})
     },
 
+
     mapCustomerList: customerDataList => {
         return customerDataList.map(customerDetails => {
             return new Customer1(customerDetails);

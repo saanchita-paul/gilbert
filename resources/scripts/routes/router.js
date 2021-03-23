@@ -9,6 +9,7 @@ import LoginPage from "@scripts/pages/auth/LoginPage";
 import AuthService, {checkRouteAuthorization} from "@scripts/services/AuthService";
 
 import CustomerDetails from "@scripts/pages/customer/CustomerDetails";
+import CustomerListPage from "@scripts/pages/customer/CustomerListPage";
 import UtilityAnalyticPage from "@scripts/pages/dashboard/UtilityAnalyticPage";
 import CustomerList from "@scripts/pages/customer/customer-profile/CustomerList";
 
@@ -26,6 +27,14 @@ const router = new VueRouter({
                     path: '',
                     component: UtilityAnalyticPage,
                     name: 'dashboard.utility',
+                    meta: {
+                        isProtected: true
+                    }
+                },
+                {
+                    path: '/customers',
+                    component: CustomerListPage,
+                    name: 'customerlist',
                     meta: {
                         isProtected: true
                     }

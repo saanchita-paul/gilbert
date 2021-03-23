@@ -1,11 +1,11 @@
 <template>
-    <div id="app">
         <v-app id="inspire">
             <v-navigation-drawer
                 v-model="drawer"
                 app
                 class="app-nav-bar"
                 dark
+                :width="252"
             >
                 <v-list class="nav-user-card hood-gradiant">
                     <v-list-item-avatar class="center-element nav-logo" size="59">
@@ -53,7 +53,7 @@
                     </span>
                 </v-list>
             </v-navigation-drawer>
-    
+
             <v-app-bar app class="app-app-bar" dark>
                     <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
                 <v-toolbar-title v-if="false">
@@ -66,12 +66,11 @@
                 <p class="app-bar-user-name">Jones Ferdinand</p>
                 <v-icon medium class="app-bar-icon app-bar-login-button"> mdi-login </v-icon>
             </v-app-bar>
-            
+
             <v-main>
                 <router-view></router-view>
             </v-main>
         </v-app>
-    </div>
 </template>
 
 <script>
@@ -110,10 +109,11 @@ export default {
 .nav-avatar {
     border: 10px solid rgb(37,40,48,1);
     margin-top: -50px !important;
+    margin-bottom: 20px !important;
 }
 .nav-user-name {
     font-size: 20px !important;
-    font-Weight: 700 !important;
+    font-Weight: 500 !important;
     line-height: 28px;
     letter-spacing: 0.15px;
 }
@@ -125,7 +125,7 @@ export default {
 }
 .nav-main-item {
     font-size: 16px !important;
-    font-Weight: 700 !important;
+    font-Weight: 500 !important;
     line-height: 28px !important;
     letter-spacing: 1.5px;
 }

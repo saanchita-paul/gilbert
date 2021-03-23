@@ -1,17 +1,16 @@
 <template>
-    <canvas :height="height"  :id="chartId"> </canvas>
+    <canvas :height="null"  :id="chartId"> </canvas>
 </template>
 
 <script>
 import COLOR from "@scripts/data/constants/COLOR";
-import ChartDataLabels from 'chartjs-plugin-datalabels';
-
+// import ChartDataLabels from 'chartjs-plugin-datalabels';
 export default {
-    name: "LineChart",
+    name: "BarChart",
     props: {
         data: {
             type: Object,
-            required: true
+            required: false
         },
         chartId: {
             required: true,
@@ -19,7 +18,7 @@ export default {
         },
         height: {
             type: String,
-            default: '100px'
+            default: '400px'
         },
     },
     mounted() {
@@ -28,15 +27,20 @@ export default {
     methods: {
         renderChart() {
             const ctx = document.getElementById(this.chartId);
-            const chart = new Chart(ctx, {
-                type: 'line',
-                data: this.data,
+            const myBarChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['green', 'blue', 'red', 'orange', 'yellow', 'gray', 'black'],
+                    datasets: [{
+                        maxBarThickness: 55,
+                        borderWidth: 0,
+                        data: [12, 24, 30, 18, 24, 36, 24],
+                        fill: false,
+                        backgroundColor: '#5C229A'
+
+                    }]
+                },
                 options: {
-                    elements: {
-                        point:{
-                            radius: 2
-                        }
-                    },
                     label: {
                         display: false
                     },
@@ -48,25 +52,36 @@ export default {
                         //     display: false
                         // },
                         xAxes: [{
-                            display: false,
+
                             ticks: {
                                 min: 0
+                            },
+                            gridLines: {
+                                drawOnChartArea: false
                             }
                         }],
                         yAxes: [{
-                            display: false,
                             ticks: {
                                 min: 0
+                            },
+                            gridLines: {
+                                drawOnChartArea: false
                             }
                         }],
                     },
                     plugins: {
                         datalabels: {
-                            display: false,
+                            anchor: 'end',
+                            align: 'right',
+                            formatter: Math.round,
+                            font: {
+                                weight: 'bold'
+                            }
                         }
                     }
                 }
             });
+
         }
     }
 }

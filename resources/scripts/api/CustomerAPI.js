@@ -131,7 +131,7 @@ export default {
         // Todo API End point will be replaced later
         // const data =(await axios.get(`${ROOT}/customers/${customerId}/local-business-search`)).data;
         const data = {
-            data:[
+            data: [
                 {
                     id: 1,
                     name: 'Sazzad Ahmed',
@@ -175,7 +175,6 @@ export default {
 
             ],
         };
-
-        return CustomerMapper.mapCustomerList(data.data);
     }
+
 }
