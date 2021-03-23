@@ -57,7 +57,7 @@
             </div>
 
             <div style="margin-top: 50px;">
-                <h3 class="section-title">My leads overview</h3>
+                <h3 class="section-title">How are my lead is going?</h3>
                 <v-row>
                     <v-col md="7" sm="12" style="height: 466px;">
                         <ConnectionLeadWidget/>

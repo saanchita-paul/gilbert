@@ -81,7 +81,7 @@ export default {
 
 .widget-title {
     color: #828282 !important;
-    font-size: .9rem;
+    font-size: .8rem;
 }
 
 .small-text {
