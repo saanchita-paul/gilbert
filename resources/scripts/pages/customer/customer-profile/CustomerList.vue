@@ -126,7 +126,6 @@ export default {
     },
 
     updated() {
-        console.log(this.activeModel);
     },
     methods: {
         getCustomerDetails() {
@@ -136,7 +135,7 @@ export default {
         async getCustomerDetailsData (customerId) {
             this.customerinfo = await CustomerService.getCustomerDetails(customerId);
             this.customerList = await CustomerService.getCustomerList();
-            console.log(this.customerinfo);
+
         },
 
         async getCustomerList (pageIndex) {

@@ -175,6 +175,7 @@ export default {
 
             ],
         };
+        return CustomerMapper.mapCustomerList(data.data);
     }
 
 }
