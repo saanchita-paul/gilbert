@@ -68,6 +68,7 @@
 
             <v-row>
                 <v-col md="8">
+                    <h3 class="section-title">Connection Summary</h3>
                     <v-row>
                         <v-col md="4">
                             <SummaryWidget

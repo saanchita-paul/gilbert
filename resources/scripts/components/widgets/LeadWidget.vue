@@ -5,7 +5,7 @@
                         v-on="on">
                     <div class="widget-container">
                         <h2 class="widget-value">{{value}}</h2>
-                        <p class="mb-5 widget-title">{{title}}</p>
+                        <p class="mb-5 lead-title">{{title}}</p>
                         <div class="small-chart">
                             <slot/>
                         </div>
@@ -14,7 +14,7 @@
                 <v-card class="widget mx-2" v-else>
                     <div class="widget-container">
                         <h2 class="widget-value">{{value}}</h2>
-                        <p class="mb-5 widget-title">{{title}}</p>
+                        <p class="mb-5 lead-title">{{title}}</p>
                         <div class="small-chart">
                             <slot/>
                         </div>
@@ -79,7 +79,7 @@ export default {
     width: 100%;
 }
 
-.widget-title {
+.lead-title {
     color: #828282 !important;
     font-size: .8rem;
 }
