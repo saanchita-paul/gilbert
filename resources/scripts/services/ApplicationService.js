@@ -10,4 +10,7 @@ export default {
         const matchRoute = mainNavigationOld.find(route => route.route_name === routeObj?.name)
         return matchRoute || defaultRoute;
     },
+    getRandomString: () => {
+        return  '_' + Math.random().toString(36).substr(2, 9);
+    }
 }

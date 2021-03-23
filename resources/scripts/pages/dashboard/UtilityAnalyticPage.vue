@@ -1,5 +1,5 @@
 <template>
-    <div class="px-2 analytic-bg hood-gradiant" v-if="leadsData">
+    <div class="px-2 analytic-bg hood-gradiant" v-if="isLoaded">
         <v-container>
             <div class="my-lead-head my-3">
                 <h3 class="section-title white--text">My leads overview</h3>
@@ -56,7 +56,7 @@
                 </LeadWidget>
             </div>
 
-            <div style="margin-top: 50px;">
+            <div class="lead-connection-section">
                 <h3 class="section-title">How are my lead is going?</h3>
                 <v-row>
                     <v-col md="7" sm="12" style="height: 466px;">
@@ -65,12 +65,41 @@
                     <v-col md="5" sm="12"></v-col>
                 </v-row>
             </div>
+
+            <v-row>
+                <v-col md="8">
+                    <v-row>
+                        <v-col md="4">
+                            <SummaryWidget
+                                title="Utility Type"
+                                :data="connectionSummary.connection_plan.chart_data"
+                            />
+                        </v-col>
+                        <v-col md="4">
+                            <SummaryWidget
+                                title="Connection Type"
+                                :data="connectionSummary.connection_type.chart_data"
+                            />
+                        </v-col>
+                        <v-col md="4">
+                            <SummaryWidget
+                                title="Tenancy Type"
+                                :data="connectionSummary.tenancy_type.chart_data"
+                            />
+                        </v-col>
+                    </v-row>
+                </v-col>
+                <v-col md="4">
+
+                </v-col>
+            </v-row>
         </v-container>
     </div>
 </template>
 
 <script>
 import LeadWidget from "@scripts/components/widgets/LeadWidget";
+import SummaryWidget from "@scripts/components/widgets/SummaryWidget";
 import ConnectionLeadWidget from "@scripts/components/widgets/ConnectionLeadWidget";
 import BarChart from "@scripts/components/charts/BarChart";
 import LineChart from "@scripts/components/charts/LineChart";
@@ -79,10 +108,18 @@ import UtilityDashboardService from "@scripts/services/UtilityDashboardService";
 
 export default {
     name: "UtilityAnalyticPage",
-    components: {ConnectionLeadWidget, LeadWidget, BarChart, LineChart },
+    components: {
+        ConnectionLeadWidget,
+        LeadWidget,
+        BarChart,
+        LineChart,
+        SummaryWidget
+    },
     data() {
         return {
-            leadsData: null
+            isLoaded: null,
+            leadsData: null,
+            connectionSummary: null,
         }
     },
     mounted() {
@@ -90,7 +127,9 @@ export default {
     },
     methods:{
         async load() {
-            this.leadsData = await UtilityDashboardService.getLeadAnalytics()
+            this.leadsData = await UtilityDashboardService.getLeadAnalytics();
+            this.connectionSummary = await UtilityDashboardService.getConnectionSummary();
+            this.isLoaded = true;
         }
     }
 }
@@ -102,7 +141,9 @@ export default {
     flex-direction: row;
     justify-content: space-between;
 }
-
+.lead-connection-section {
+    margin-top: 50px;
+}
 .widgets {
     display: flex;
     flex-direction: row;
