@@ -56,4 +56,11 @@ export default {
      * @returns {Promise<CustomerListInfo>}
      */
     getCustomerList: pageIndex => CustomerAPI.getCustomerList(pageIndex),
+
+    /**
+     *
+     * @param pageIndex
+     * @returns {Promise<CustomerListInfo>}
+     */
+    getCustomerTableData: pageIndex => CustomerAPI.getCustomerList(pageIndex),
 }
