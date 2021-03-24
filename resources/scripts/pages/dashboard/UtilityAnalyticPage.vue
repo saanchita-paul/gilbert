@@ -62,7 +62,10 @@
                     <v-col md="7" sm="12" style="height: 466px;">
                         <ConnectionLeadWidget/>
                     </v-col>
-                    <v-col md="5" sm="12"></v-col>
+                    <v-col md="5" sm="12">
+                        <div style="height: 282px; width: 100%; background: lightgreen"></div>
+                        <LocationInsight style="width: 100%; margin-top: 12px; height: 150px;"/>
+                    </v-col>
                 </v-row>
             </div>
 
@@ -103,6 +106,7 @@
 import LeadWidget from "@scripts/components/widgets/LeadWidget";
 import SummaryWidget from "@scripts/components/widgets/SummaryWidget";
 import AgeWidget from "@scripts/components/widgets/AgeWidget";
+import LocationInsight from "@scripts/components/widgets/LocationInsight";
 import ConnectionLeadWidget from "@scripts/components/widgets/ConnectionLeadWidget";
 import BarChart from "@scripts/components/charts/BarChart";
 import LineChart from "@scripts/components/charts/LineChart";
@@ -117,7 +121,8 @@ export default {
         BarChart,
         LineChart,
         SummaryWidget,
-        AgeWidget
+        AgeWidget,
+        LocationInsight
     },
     data() {
         return {
@@ -127,7 +132,6 @@ export default {
         }
     },
     mounted() {
-        Math.round()
         this.load()
     },
     methods:{
