@@ -23,7 +23,7 @@ export default [
         type: 'route',
         title: 'Customers',
         icon: 'mdi-account-group',
-        route_name: 'customerlist',
+        route_name: 'customer.list',
     },
     {
         type: 'route',

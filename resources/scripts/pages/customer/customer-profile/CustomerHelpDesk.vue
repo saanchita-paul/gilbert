@@ -1,7 +1,7 @@
 <template>
-    <v-container v-if="isLoaded">
+    <div v-if="isLoaded">
         <v-row class="body_row">
-            <v-col cols="12">
+            <v-col cols="12" class="px-0">
                 <v-card>
                     <v-card-title>
                         <v-row>
@@ -29,7 +29,7 @@
                     </v-card-text>
                 </v-card>
             </v-col>
-            <v-col cols="12">
+            <v-col cols="12" class="px-0">
                 <v-card>
                     <v-card-title>
                         <v-row class="align-baseline">
@@ -87,7 +87,7 @@
             </v-col>
         </v-row>
 
-    </v-container>
+    </div>
 </template>
 
 <script>

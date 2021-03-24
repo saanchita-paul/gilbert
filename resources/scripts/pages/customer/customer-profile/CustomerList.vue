@@ -2,14 +2,14 @@
     <v-app>
         <div>
             <v-row>
-                <v-col  cols="6">
+                <v-col  cols="6" class="pt-0">
                     <v-row>
                         <v-app-bar>
                             <v-icon>keyboard_backspace</v-icon>
                         </v-app-bar>
                     </v-row>
                     <v-row>
-                        <v-col cols="12" style="max-height: 100vh;overflow: auto">
+                        <v-col cols="12" style="max-height: 100vh;overflow: auto" class="pt-0 pr-0">
                             <v-expansion-panels v-model="activeModel">
                                 <v-expansion-panel
                                     v-for="(item,i) in customerList"
@@ -63,7 +63,7 @@
                                         </template>
 
                                     </v-expansion-panel-header>
-                                    <v-expansion-panel-content>
+                                    <v-expansion-panel-content class="pa-0" style="background: #E0E0E0">
                                         <customer-help-dest v-bind:customer="1"></customer-help-dest>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
@@ -71,7 +71,7 @@
                         </v-col>
                     </v-row>
                 </v-col>
-                <v-col cols="6" >
+                <v-col cols="6" class="pt-0">
                     <v-row>
                         <v-app-bar>
                             <v-row align-center class="header color--text">

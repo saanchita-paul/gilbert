@@ -9,7 +9,7 @@ import LoginPage from "@scripts/pages/auth/LoginPage";
 import AuthService, {checkRouteAuthorization} from "@scripts/services/AuthService";
 
 import CustomerDetails from "@scripts/pages/customer/CustomerDetails";
-import CustomerListPage from "@scripts/pages/customer/CustomerListPage";
+import CustomerListPage from "@scripts/pages/customer/CustomerListTablePage";
 import UtilityAnalyticPage from "@scripts/pages/dashboard/UtilityAnalyticPage";
 import CustomerList from "@scripts/pages/customer/customer-profile/CustomerList";
 
@@ -32,7 +32,7 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: '/1',
+                    path: '/customers',
                     component: CustomerListPage,
                     name: 'customer.list',
                     meta: {
@@ -42,13 +42,13 @@ const router = new VueRouter({
                 {
                     path: 'customers/:id',
                     component: CustomerDetails,
-                    name: 'customer.detail',
+                    name: 'customer.details',
                     meta: {
                         isProtected: false
                     }
                 },
                 {
-                    path: '/help-desk/:id',
+                    path: '/helpdesk',
                     component: CustomerList,
                     name: 'helpdesk',
                     meta: {
