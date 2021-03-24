@@ -92,8 +92,8 @@ export default {
         // working with some dummy data
         const data = {
             data: {
-
-                propertyProfileId: '1901',
+                id: 2135,
+                propertyProfileId: '100004406028484',
                 propertyAccountType: 'Residensial',
                 propertyLifeSupport: 'Y/N',
                 propertyTenancyType: 'Rent',
@@ -116,7 +116,10 @@ export default {
                 connectionMernNo: 52456465454165,
                 connectionNmiNo: 52456465454165,
                 connectionStatus: 'Rejected',
-                connectionReason: 'The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the ....'
+                connectionReason: 'The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the ....',
+                manualInterventionStatus: 'in_progress',
+                manualInterventionIsActive: false,
+                manualInterventionAt: '2020-12-17 08:30:17'
             }
         }
         return CustomerMapper.mapCustomerDetailsServices(data.data);
@@ -176,6 +179,18 @@ export default {
             ],
         };
         return CustomerMapper.mapCustomerList(data.data);
-    }
+    },
+
+    /**
+     *
+     * @param customerId
+     * @param manualInterventionStatus
+     */
+     toggleManualIntervention: async (customerId, manualInterventionStatus) => {
+        const response = (await axios.post(`${ROOT}/utility/${customerId}/manual-intervention`, {
+            manualInterventionStatus: manualInterventionStatus
+        }));
+        return response;
+    },
 
 }

@@ -56,4 +56,11 @@ export default {
      * @returns {Promise<CustomerListInfo>}
      */
     getCustomerList: pageIndex => CustomerAPI.getCustomerList(pageIndex),
+
+    /**
+     *
+     * @param customerId
+     * @param manualInterventionStatus
+     */
+    toggleManualIntervention: (customerId, manualInterventionStatus) => CustomerAPI.toggleManualIntervention(customerId, manualInterventionStatus),
 }

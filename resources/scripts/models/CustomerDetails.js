@@ -1,5 +1,7 @@
 export default class CustomerDetails {
-    constructor({ name,
+    constructor({ 
+                    id,
+                    name,
                     profilePic,
                     lastInteractiveTime,
                     hoodUid,
@@ -36,8 +38,12 @@ export default class CustomerDetails {
                     connectionNmiNo,
                     connectionStatus,
                     connectionReason,
+                    manualInterventionStatus,
+                    manualInterventionIsActive,
+                    manualInterventionAt
 
                 } = {}) {
+        this.id = id || null;
         this.name = name || 'Sazzad';
         this.profile_pic = profilePic || 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/106438752/original/3c4d95e3604313ecca407541a45b6a58dcc67c5c/update-your-online-dating-profile-bio-to-get-you-more-matches.jpg';
         this.last_interactive_time = lastInteractiveTime || '10m';
@@ -77,6 +83,9 @@ export default class CustomerDetails {
         this.connection_status = connectionStatus || '';
         this.connection_reason = connectionReason || '';
         this.gas_meter_charge = gasMeterCharge || '';
+        this.manualInterventionStatus = manualInterventionStatus || null;
+        this.manualInterventionIsActive = manualInterventionIsActive || false;
+        this.manualInterventionAt = manualInterventionAt || null;
     }
 
 }
