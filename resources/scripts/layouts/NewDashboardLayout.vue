@@ -33,7 +33,7 @@
                                 <v-list-item-title class="nav-main-item"> {{ route.title }} </v-list-item-title>
                             </template>
                             <span class="mb-2" v-for="subRoute in route.children" :key="subRoute.title">
-                                <v-list-item link>
+                                <v-list-item link :to="{name:subRoute.route_name}" exact>
                                     <v-list-item-action>
                                     </v-list-item-action>
                                     <v-list-item-content>
@@ -42,7 +42,7 @@
                                 </v-list-item>
                             </span>
                         </v-list-group>
-                        <v-list-item link v-if="route.type === 'route'">
+                        <v-list-item link v-if="route.type === 'route'" :to="{name:route.route_name}" exact>
                             <v-list-item-action>
                                 <v-icon> {{ route.icon }} </v-icon>
                             </v-list-item-action>

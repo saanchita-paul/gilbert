@@ -24,7 +24,7 @@ mix
     .options({
         processCssUrls: false,
     })
-    .copyDirectory('./resources/assets/images', './public/assets/images')
+    .copyDirectory('./resources/assets', './public/assets')
     // .copyDirectory('./node_modules/@mdi/font/fonts', './public/assets/fonts')
     // .copyDirectory('./node_modules/font-awesome/fonts', './public/assets/fonts/')
     .sourceMaps()

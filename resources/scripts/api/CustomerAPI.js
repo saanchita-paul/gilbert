@@ -144,6 +144,12 @@ export default {
                     messagerId: '#1671419574925',
                     email: 'sazzadahmed@gmail.com',
                     ph: '1671408219574925',
+
+                    issueStatus: 'In Progress',
+                    connectionStatus: 'Accepted',
+                    sentiment: 'good',
+                    location: 'SA',
+                    connectionDate: 'May 26 2019 6.0pm'
                 },
                 {
                     id: 2,
@@ -154,6 +160,12 @@ export default {
                     messagerId: '#1671419574925',
                     email: 'sazzadahmed@gmail.com',
                     ph: '1671408219574925',
+
+                    issueStatus: 'In Progress',
+                    connection_status: 'Accepted',
+                    sentiment: 'good',
+                    location: 'SA',
+                    connectionDate: 'May 26 2019 6.0pm'
                 },
                 {
                     id: 3,
@@ -164,6 +176,12 @@ export default {
                     messagerId: '#1671419574925',
                     email: 'sazzadahmed@gmail.com',
                     ph: '1671408219574925',
+
+                    issueStatus: 'In Progress',
+                    connectionStatus: 'Accepted',
+                    sentiment: 'negative',
+                    location: 'SA',
+                    connectionDate: 'May 26 2019 6.0pm'
                 },
                 {
                     id: 4,
@@ -174,6 +192,12 @@ export default {
                     messagerId: '#1671419574925',
                     email: 'sazzadahmed@gmail.com',
                     ph: '1671408219574925',
+
+                    issueStatus: 'In Progress',
+                    connectionStatus: 'Accepted',
+                    sentiment: 'positive',
+                    location: 'SA',
+                    connectionDate: 'May 26 2019 6.00pm'
                 },
 
             ],

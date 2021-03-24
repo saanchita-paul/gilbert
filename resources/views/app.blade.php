@@ -12,6 +12,8 @@
 </head>
 <body>
 <div id="app"></div>
+<script src="{{url('assets/js/mapdata.js')}}"></script>
+<script src="{{url('assets/js/australiamap.js')}}"></script>
 <script src="{{mix('js/app.js')}}"></script>
 </body>
 </html>

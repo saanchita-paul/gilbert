@@ -8,6 +8,12 @@ export default class Customer {
                     messagerId,
                     email,
                     ph,
+
+                    issueStatus,
+                    connectionStatus,
+                    sentiment,
+                    location,
+                    connectionDate
                 } = {}) {
         this.id = id || null;
         this.name = name || 'Sazzad';
@@ -17,6 +23,12 @@ export default class Customer {
         this.messager_id = messagerId || '#1671408219574925';
         this.email = email || 'sazzadahmed41@gmail.com';
         this.ph = ph || '1671408219574925';
+
+        this.issue_status = issueStatus || null;
+        this.connection_status = connectionStatus || null;
+        this.sentiment = sentiment || null;
+        this.location = location || null;
+        this.connection_date = connectionDate || null;
 
     }
 
