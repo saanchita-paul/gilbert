@@ -1,6 +1,11 @@
 <template>
     <v-app>
-        <v-container>
+        <v-row>
+            <v-app-bar>
+                <v-icon>keyboard_backspace</v-icon>
+            </v-app-bar>
+        </v-row>
+        <v-container class="pt-7 container-background">
             <v-row align-center class="header color--text">
                 <v-col class="avatar-containner pr-0">
                     <v-avatar>
@@ -21,7 +26,7 @@
                 </v-col>
             </v-row>
 
-            <v-row class="body_row">
+            <v-row class="">
                 <v-col cols="6">
                     <v-card>
                         <v-card-title>
@@ -77,8 +82,9 @@
                             <v-row class="py-2">
                                 <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Energy Type:</span> {{customerinfo.connection_energy_type}}</p></v-col>
                                 <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Gas Provider:</span> {{customerinfo.connection_gas_provider}}</p></v-col>
-                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">E-Destributor:</span> {{customerinfo.connection_electricy_fee}}</p></v-col>
-                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0"><span class="font-weight-bold">Gas meter Reading Charge:</span> {{customerinfo.connection_electricy_fee}}</p></v-col>
+                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">E-Destributor:</span> {{customerinfo.e_destributor}}</p></v-col>
+                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0"><span class="font-weight-bold">Gas meter Reading Charge:</span> {{customerinfo.connection_gas_provider}}</p></v-col>
+                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0"><span class="font-weight-bold">Electricity Connection Fee:</span> {{customerinfo.connection_electricy_fee}}</p></v-col>
                             </v-row>
                             <v-row class="ml-0" >
                                 <v-col cols="6" class="py-0">
@@ -115,7 +121,7 @@
                 </v-col>
             </v-row>
 
-        </v-container>
+        </v-container >
     </v-app>
 </template>
 
@@ -159,6 +165,9 @@ export default {
 <style scoped>
 body {
     font-family: "Roboto" !important;
+}
+.container-background {
+    background: rgba(242, 242, 242, 1);
 }
 .header {
     display: flex;
@@ -204,6 +213,7 @@ body {
     flex-grow: 0;
 }
 .body_row {
+    padding: 12px 12px 0px 0px;
     background: rgba(227, 224, 231, 1);
 
 }
