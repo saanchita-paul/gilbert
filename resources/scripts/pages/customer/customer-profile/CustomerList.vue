@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <v-container>
+        <div>
             <v-row>
                 <v-col  cols="6">
                     <v-row>
@@ -15,7 +15,7 @@
                                     v-for="(item,i) in customerList"
                                     :key="i"
                                 >
-                                    <v-expansion-panel-header  v-bind:class="{ 'expansion-header-background-active ': activeModel == i }">
+                                    <v-expansion-panel-header  class="py-0" v-bind:class="{ 'expansion-header-background-active ': activeModel == i }">
                                         <template v-slot:actions>
                                             <v-icon v-bind:class="{ 'white': activeModel == i }">
                                                 mdi-menu-down
@@ -86,15 +86,19 @@
                                 </v-col>
                                 <v-col cols="3" class="messenger-header">
                                     <v-switch></v-switch>
-                                    <p>Switch to Conversation</p>
+                                    <p class="messenger-header-p">Switch to Conversation</p>
                                 </v-col>
                             </v-row>
                         </v-app-bar>
+                        <v-col cols="12" style="height: 60vh;border: 1px solid red;display: flex;flex-direction: column-reverse;">
+                            <v-btn  class="move-facebook-messagenger" style="align-self:flex-end" >
+                                <span class="pr-3">take me to messenger</span><v-icon class="pr-3">mdi-facebook-messenger</v-icon><v-icon class="pr-0">east</v-icon>
+                            </v-btn>
+                        </v-col>
                     </v-row>
-
                 </v-col>
             </v-row>
-        </v-container>
+        </div>
     </v-app>
 </template>
 
@@ -222,7 +226,20 @@ body {
     flex-direction: row-reverse;
     align-items: center;
 }
+.move-facebook-messagenger {
+    border:2px solid white;
+    background: #2F80ED !important;
+    border-radius: 100px;
+    color:white;
+    font-size: 12px;
+    font-weight: 500;
+    padding:5px;
+}
 
+.messenger-header-p {
+    font-size: 12px;
+    line-height: normal;
+}
 
 
 </style>

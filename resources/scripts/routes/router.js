@@ -32,31 +32,33 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: '/customers',
+                    path: '/1',
                     component: CustomerListPage,
-                    name: 'customerlist',
+                    name: 'customer.list',
                     meta: {
                         isProtected: true
                     }
                 },
+                {
+                    path: 'customers/:id',
+                    component: CustomerDetails,
+                    name: 'customer.detail',
+                    meta: {
+                        isProtected: false
+                    }
+                },
+                {
+                    path: '/help-desk/:id',
+                    component: CustomerList,
+                    name: 'helpdesk',
+                    meta: {
+                        isProtected: false
+                    }
+                },
+
             ]
         },
-        {
-            path: '/hello',
-            component: CustomerDetails,
-            name: 'custmerdetail',
-            meta: {
-                isProtected: false
-            }
-        },
-        {
-            path: '/customer/list',
-            component: CustomerList,
-            name: 'custmerlist',
-            meta: {
-                isProtected: false
-            }
-        },
+
         {
             path: '/auth/login',
             component: LoginPage,
