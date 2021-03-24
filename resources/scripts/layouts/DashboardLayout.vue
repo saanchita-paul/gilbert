@@ -3,7 +3,7 @@
         <v-navigation-drawer
             v-model="drawer"
             :mini-variant="miniDrawer"
-            mini-variant-width="70"
+            mini-variant-width="75"
             app
             class="navigation-drawer-menu app-nav-bg"
         >
@@ -20,7 +20,7 @@
             <v-divider></v-divider>
 
             <v-list dense class=" pt-0 main-nav-items">
-                    <span class="mb-2" v-for="r in routes">
+                    <span class="mb-2" v-for="r in routes" :key="r.title">
                          <v-list-item
                             v-if="r.type ==='group'"
                             link
@@ -107,12 +107,12 @@
 
         </v-app-bar>
 
-        <v-main  class="body-bg" :style="{position: 'relative', 'padding-left': subMenuDrawer ? '234px !important' : '64px !important' }">
+        <v-main  class="body-bg" :style="{position: 'relative', 'padding-left': subMenuDrawer ? '242px !important' : '64px !important' }">
             <v-expand-x-transition>
                 <v-navigation-drawer
                     v-if="selectedMenus && subMenuDrawer"
                     width="170px"
-                    style="background-color: white; border-radius: 8px; position: fixed; left: 61px; top:66px"
+                    style="background-color: white; border-radius: 8px; position: fixed; left: 76px; top:66px"
                 >
                     <v-list
                         dense
@@ -161,7 +161,7 @@ export default {
         return {
             subMenuDrawer: false,
             //todo: update default route based on current route
-            selectedMenus: ApplicationService.getDefaultRoute(),
+            selectedMenus: ApplicationService.getDefaultRoute(this.$route),
             drawer: true,
             miniDrawer: true,
             routes: ApplicationService.getMainNavigationRoutes()

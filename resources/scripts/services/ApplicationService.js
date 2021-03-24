@@ -1,9 +1,16 @@
-import mainNavigation, {defaultRoute} from "@scripts/data/mainNavigation";
+import mainNavigationOld, {defaultRoute} from "@scripts/data/mainNavigation_old";
+import mainNavigation from "@scripts/data/mainNavigation";
 import userProfile from "@scripts/data/userProfilePages";
 
 export default {
     getMainNavigationRoutes: () => mainNavigation,
     getUserProfileMenus: () => userProfile.menus,
     getUserProfileComponents: () => userProfile.components,
-    getDefaultRoute: () => defaultRoute,
+    getDefaultRoute: (routeObj) =>  {
+        const matchRoute = mainNavigationOld.find(route => route.route_name === routeObj?.name)
+        return matchRoute || defaultRoute;
+    },
+    getRandomString: () => {
+        return  '_' + Math.random().toString(36).substr(2, 9);
+    }
 }

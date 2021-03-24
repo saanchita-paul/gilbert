@@ -169,6 +169,14 @@ export default {
                     labels: this.chartData.labels
                 },
                 options: {
+                    tooltips: {
+                        mode: 'label',
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                return data['datasets'][0]['data'][tooltipItem['index']] + '%';
+                            }
+                        }
+                    },
                     _custom: { _id: this._id},
                     responsive: true,
                     legend: {

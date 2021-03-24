@@ -1,69 +1,73 @@
 <template>
     <v-container>
-        <page-header :breadcrumbs="getBreadcrumbs" title="Customer Details">
+        <page-header :breadcrumbs="getBreadcrumbs" title="User Profile Card">
             <date-range-picker v-model="dateRange"/>
         </page-header>
-        <v-card>
-            <div class="user-card">
-                <div class="user-info pt-10 pb-5 px-10">
-<!--                    DETAILS-->
-                    <div class="d-flex flex-row">
-                        <div
-                            class="user-avatar-container d-flex flex-column justify-center mr-5"
-                             v-if="!!customer && !!customer.avatar"
-                        >
-                            <v-avatar size="100" class="ml-3">
-                                <img
-                                    :src="customer.avatar"
-                                    alt="Customer Avatar"
-                                >
-                            </v-avatar>
-                            <v-btn
-                                class="mt-2"
-                                elevation="2"
-                                rounded
-                                color="primary"
+        <template v-if="customer">
+            <v-card>
+                <div class="user-card">
+                    <div class="user-info pt-10 pb-5 px-10">
+                        <!--                    DETAILS-->
+                        <div class="d-flex flex-row">
+                            <div
+                                class="user-avatar-container d-flex flex-column justify-center mr-5"
+                                v-if="!!customer && !!customer.avatar"
                             >
-                                Open Chat
-                            </v-btn>
-                        </div>
-                        <div class="user-detail-container mr-10" v-if="!!customer">
-                            <div class="text-h4" v-text="customer.full_name" />
-                            <div class="d-flex flex-row mb-5">
-                                <div class="text-subtitle-1 mr-5">HOOD UID: {{customer.uin}}</div>
-                                <div class="text-subtitle-1">Messenger ID: #{{customer.facebook_id}}</div>
-                                <div class="text-subtitle-1 ml-auto mr-16 pr-1">Purchase Cycle TBC</div>
+                                <v-avatar size="100" class="ml-3">
+                                    <img
+                                        :src="customer.avatar"
+                                        alt="Customer Avatar"
+                                    >
+                                </v-avatar>
+                                <v-btn
+                                    style="text-transform: capitalize"
+                                    class="mt-2"
+                                    elevation="0"
+                                    small
+                                    rounded
+                                    color="primary"
+                                >
+                                    Open Chat
+                                </v-btn>
                             </div>
-                            <div class="d-flex flex-row">
-                                <div class="text-subtitle-1 mr-5">Email: {{customer.email}}</div>
-                                <div class="text-subtitle-1">Ph: {{customer.phone}}</div>
-                                <div class="text-subtitle-1 ml-auto">Est. Moving period {{movingDate}}</div>
+                            <div class="user-detail-container mr-10" v-if="!!customer">
+                                <div class="text-h4" v-text="customer.full_name" />
+                                <div class="d-flex flex-row mb-5">
+                                    <div class="text-subtitle-1 mr-5">HOOD UID: {{customer.uin}}</div>
+                                    <div class="text-subtitle-1">Messenger ID: #{{customer.facebook_id}}</div>
+                                    <div class="text-subtitle-1 ml-auto mr-16 pr-1">Purchase Cycle TBC</div>
+                                </div>
+                                <div class="d-flex flex-row">
+                                    <div class="text-subtitle-1 mr-5">Email: {{customer.email}}</div>
+                                    <div class="text-subtitle-1">Ph: {{customer.phone}}</div>
+                                    <div class="text-subtitle-1 ml-auto">Est. Moving period {{movingDate}}</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                </div>
-                <div class="user-menu">
-                    <v-tabs v-model="selectedMenuIndex">
-                        <v-tab
-                            exact
-                            :to="{
+                    </div>
+                    <div class="user-menu">
+                        <v-tabs v-model="selectedMenuIndex">
+                            <v-tab
+                                exact
+                                :to="{
                                 name: 'customers.profile',
                                 params: {customerId: customerId},
                                 query: {menu: menu.route}
                             }"
-                            v-for="menu in menus"
-                            :key="menu.title"
-                        >{{ menu.title }}
-                        </v-tab>
-                    </v-tabs>
+                                v-for="menu in menus"
+                                :key="menu.title"
+                            >{{ menu.title }}
+                            </v-tab>
+                        </v-tabs>
+                    </div>
                 </div>
-            </div>
-        </v-card>
-        <v-card class="mt-3">
-            <div v-if="!!customer" class="text-body-1 ml-5 mb-5 pt-5 font-weight-thin" style="color: #A1A3A8">Last updated {{customer.updated_at_human}}</div>
-            <component :is="getComponent" :customer="customer"></component>
-        </v-card>
+            </v-card>
+            <v-card class="mt-3">
+                <div v-if="!!customer" class="customer-data-title ml-5 mb-5 pt-5 " style="color: #A1A3A8">Last updated {{customer.updated_at_human}}</div>
+                <component :is="getComponent" :customer="customer"></component>
+            </v-card>
+        </template>
     </v-container>
 </template>
 
@@ -93,6 +97,15 @@ export default {
         CustomerOtherService
     },
     props: ['customerId'],
+    data() {
+        return {
+            dateRange: new DateRange(),
+            menus: ApplicationService.getUserProfileMenus(),
+            selectedMenuIndex: null,
+            components: ApplicationService.getUserProfileComponents(),
+            customer: null
+        }
+    },
     computed: {
         getBreadcrumbs() {
             return [
@@ -124,15 +137,6 @@ export default {
                 : '';
         }
     },
-    data() {
-        return {
-            dateRange: new DateRange(),
-            menus: ApplicationService.getUserProfileMenus(),
-            selectedMenuIndex: null,
-            components: ApplicationService.getUserProfileComponents(),
-            customer: null
-        }
-    },
     methods: {
         onTabChange() {
             this.$router.push({
@@ -158,6 +162,19 @@ export default {
 </script>
 
 <style scoped>
+.user-detail-container .text-h4 {
+    font-size: 24px !important;
+}
+.user-detail-container .text-subtitle-1 {
+    font-size: 14px !important;
+    color: #4A4A4A !important;
+    font-weight: 300;
+    opacity: 0.80 !important;
+}
+.v-btn {
+    font-size: 14px !important;
+}
+
 .user-card {
     display: flex;
     flex-direction: column;

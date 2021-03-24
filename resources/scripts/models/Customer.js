@@ -1,62 +1,35 @@
-import Location from "@scripts/models/Location";
-import Order from "@scripts/models/Order";
-
 export default class Customer {
-    constructor(
-        {
-            id,
-            avatar,
-            email,
-            facebook_id,
-            first_name,
-            last_name,
-            full_name,
-            has_booked_movers,
-            has_finished_onboarding,
-            has_finished_utility_flow,
-            has_setup_reminders,
-            moving_date,
-            phone,
-            uin,
-            bedrooms,
-            house_type,
-            rent,
-            people,
-            energy_usage,
-            solar_panel,
-            updated_at,
-            updated_at_human,
-            moving_service_type,
-            from,
-            to,
-            orders
-        } = {}
-    ) {
+    constructor({
+                    id,
+                    name,
+                    profilePic,
+                    lastInteractiveTime,
+                    hoodUid,
+                    messagerId,
+                    email,
+                    ph,
+
+                    issueStatus,
+                    connectionStatus,
+                    sentiment,
+                    location,
+                    connectionDate
+                } = {}) {
         this.id = id || null;
-        this.avatar = avatar || null;
-        this.email = email || null;
-        this.facebook_id = facebook_id || null;
-        this.first_name = first_name || null;
-        this.last_name = last_name || null;
-        this.full_name = full_name || null;
-        this.has_booked_movers = has_booked_movers || false ;
-        this.has_finished_onboarding = has_finished_onboarding || false;
-        this.has_finished_utility_flow = has_finished_utility_flow || false;
-        this.has_setup_reminders = has_setup_reminders || false;
-        this.moving_date = moving_date || null;
-        this.phone = phone || null;
-        this.uin = uin || null;
-        this.bedrooms = bedrooms || null;
-        this.house_type = house_type || null;
-        this.rent = rent || null;
-        this.people = people || null;
-        this.energy_usage = energy_usage || null;
-        this.solar_panel = solar_panel || null;
-        this.updated_at = updated_at || null;
-        this.updated_at_human = updated_at_human || null;
-        this.moving_service_type = moving_service_type || null;
-        this.from = new Location(from);
-        this.to = new Location(to);
-        this.orders = orders.map(order => new Order(order)) || [];
+        this.name = name || 'Sazzad';
+        this.profile_pic = profilePic || 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/106438752/original/3c4d95e3604313ecca407541a45b6a58dcc67c5c/update-your-online-dating-profile-bio-to-get-you-more-matches.jpg';
+        this.last_interactive_time = lastInteractiveTime || '10m';
+        this.hood_uid = hoodUid || '#1671408219574925';
+        this.messager_id = messagerId || '#1671408219574925';
+        this.email = email || 'sazzadahmed41@gmail.com';
+        this.ph = ph || '1671408219574925';
+
+        this.issue_status = issueStatus || null;
+        this.connection_status = connectionStatus || null;
+        this.sentiment = sentiment || null;
+        this.location = location || null;
+        this.connection_date = connectionDate || null;
+
     }
+
 }
