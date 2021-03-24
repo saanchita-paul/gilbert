@@ -63,8 +63,12 @@
                         <ConnectionLeadWidget/>
                     </v-col>
                     <v-col md="5" sm="12">
-                        <div style="height: 282px; width: 100%; background: lightgreen"></div>
-                        <LocationInsight style="width: 100%; margin-top: 12px; height: 150px;"/>
+                        <div style="height: 270px; width: 100%; background: lightgreen">
+                            <SentimentWidget/>
+                        </div>
+                        <div style="width: 100%; margin-top: 12px; height: 150px;">
+                            <LocationInsight />
+                        </div>
                     </v-col>
                 </v-row>
             </div>
@@ -106,6 +110,7 @@
 import LeadWidget from "@scripts/components/widgets/LeadWidget";
 import SummaryWidget from "@scripts/components/widgets/SummaryWidget";
 import AgeWidget from "@scripts/components/widgets/AgeWidget";
+import SentimentWidget from "@scripts/components/widgets/SentimentWidget";
 import LocationInsight from "@scripts/components/widgets/LocationInsight";
 import ConnectionLeadWidget from "@scripts/components/widgets/ConnectionLeadWidget";
 import BarChart from "@scripts/components/charts/BarChart";
@@ -122,7 +127,8 @@ export default {
         LineChart,
         SummaryWidget,
         AgeWidget,
-        LocationInsight
+        LocationInsight,
+        SentimentWidget
     },
     data() {
         return {
