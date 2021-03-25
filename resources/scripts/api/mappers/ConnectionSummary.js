@@ -12,14 +12,14 @@ export default {
             let labels = ['Total Plan', 'Basic Home', 'No Frills'];
             let values = [0, 0, 0];
             data.forEach((dt) => {
-                switch (dt.utility_plan) {
-                    case 'Total Plan':
+                switch (dt.utility_plan.toLowerCase()) {
+                    case 'total_plan':
                         values[0] = dt.percentage;
                         break
-                    case 'Basic Home':
+                    case 'basic_plan':
                         values[1] = dt.percentage;
                         break
-                    case 'No Frills':
+                    case 'no_frills':
                         values[2] = dt.percentage;
                         break
                     default:

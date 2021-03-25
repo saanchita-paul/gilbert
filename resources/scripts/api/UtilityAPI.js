@@ -3,6 +3,8 @@ import COLOR from "@scripts/data/constants/COLOR";
 import LeadOverviewMapper from "@scripts/api/mappers/LeadOverviewMapper";
 import ConnectionSummary from "@scripts/api/mappers/ConnectionSummary";
 import AgeGroupSummaryMapper from "@scripts/api/mappers/AgeGroupSummaryMapper";
+import LeadSentimentMapper from "@scripts/api/mappers/LeadSentimentMapper";
+import LocationInsightMapper from "@scripts/api/mappers/LocationInsightMapper";
 
 export default {
     getUtilityDashboardData: async () => {
@@ -67,15 +69,18 @@ export default {
             "leadSentiment":[
                {
                   "total":10,
-                  "sentiment_text":"NEGATIVE"
+                  "sentiment_text":"NEGATIVE",
+                  "percentage": 9
                },
                {
                   "total":43,
-                  "sentiment_text":"NEUTRAL"
+                  "sentiment_text":"NEUTRAL",
+                  "percentage": 41
                },
                {
                   "total":47,
-                  "sentiment_text":"POSITIVE"
+                  "sentiment_text":"POSITIVE",
+                  "percentage": 48
                }
             ],
             "leadToConnection":{
@@ -107,15 +112,15 @@ export default {
                "plan":[
                   {
                      "percentage":10,
-                     "utility_plan":"Total Plan"
+                     "utility_plan":"total_plan"
                   },
                   {
                      "percentage":1,
-                     "utility_plan":"Basic Home"
+                     "utility_plan":"basic_plan"
                   },
                    {
                        "percentage":1,
-                       "utility_plan":"No Frills"
+                       "utility_plan":"no_frills"
                    }
                ],
                "connectionType":[
@@ -152,7 +157,7 @@ export default {
             lead_overview : LeadOverviewMapper.mapLeadOverview(data.leadOverview),
              connection_summary: ConnectionSummary.getSummaryData(data),
              age_group_summary: AgeGroupSummaryMapper.getAgeGroupSummaryData(data),
-
+            lead_sentiment : LeadSentimentMapper.mapLeadSentiment(data.leadSentiment)
          }
     },
     getConnectionSummary: async () => {
@@ -193,7 +198,7 @@ export default {
             tenancy_type: {
                 title: "Tenancy Type",
                 chart_data: {
-                    labels: ['Own', 'Basic Home', 'Rent'],
+                    labels: ['Own', 'Rent'],
                     datasets: [{
                         borderWidth: 1,
                         data: [40, 60],
@@ -207,5 +212,9 @@ export default {
             },
             age_group: {},
         }
+    },
+    utilityAnalytic: async () => {
+        const data = (await axios.get(`${BOT_API}/utility/home`)).data;
+        console.log(LocationInsightMapper.map(data.locationInsight))
     }
 }

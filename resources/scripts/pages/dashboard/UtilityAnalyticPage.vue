@@ -30,11 +30,11 @@
 
 <!--                Energy connection-->
                 <LeadWidget
-                    :tooltip="utilityDashboardData.lead_overview.lead.tooltip"
+                    :tooltip="utilityDashboardData.lead_overview.energy.tooltip"
                     title="Total Energy Connection"
-                    :value="utilityDashboardData.lead_overview.lead.value"
+                    :value="utilityDashboardData.lead_overview.energy.value"
                 >
-                    <BarChart :data="utilityDashboardData.lead_overview.lead.chartData"  chartId="totalLead3"/>
+                    <BarChart :data="utilityDashboardData.lead_overview.energy.chartData"  chartId="totalLead3"/>
                 </LeadWidget>
 
 <!--                Conversation rate-->
@@ -64,7 +64,11 @@
                     </v-col>
                     <v-col md="5" sm="12">
                         <div style="height: 270px; width: 100%; background: lightgreen">
-                            <SentimentWidget/>
+                            <SentimentWidget
+                                :sentiment="utilityDashboardData.lead_sentiment.sentiment"
+                                :chart_data="utilityDashboardData.lead_sentiment.chart_data"
+                            >
+                            </SentimentWidget>
                         </div>
                         <div style="width: 100%; margin-top: 12px; height: 150px;">
                             <LocationInsight />
@@ -120,6 +124,7 @@ import UtilityDashboardService from "@scripts/services/UtilityDashboardService";
 import {ConnectionManager} from "pusher-js";
 import ConnectionSummary from "@scripts/api/mappers/ConnectionSummary";
 import LeadToConnectionMapper from "@scripts/api/mappers/LeadToConnectionMapper";
+import UtilityAPI from "@scripts/api/UtilityAPI";
 
 export default {
     name: "UtilityAnalyticPage",
@@ -141,6 +146,7 @@ export default {
         }
     },
     mounted() {
+        UtilityAPI.utilityAnalytic()
         this.load()
     },
     methods:{
