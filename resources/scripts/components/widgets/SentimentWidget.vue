@@ -28,7 +28,7 @@
 
 <script>
 import DonutChart from "@scripts/components/charts/DonutChart";
-import {capitalize} from "lodash-es";
+import {capitalize, cloneDeep} from "lodash-es";
 import {mapSentimentColor} from "@scripts/data/SentimentColor";
 
 export default {
@@ -64,6 +64,7 @@ export default {
     computed: {
         sentimentData() {
             let sort = this.sentiment.sort((a, b) => b.value - a.value)
+            sort = cloneDeep(sort)
             sort.shift();
             return sort.map(item => ({...item, ...{color: mapSentimentColor(item.sentiment_text)}}) )
         }
