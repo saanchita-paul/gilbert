@@ -85,13 +85,13 @@
                                     <p class="mb-0 last-interactive profile-subtitle">interact {{customerinfo.last_interactive_time}} ago</p>
                                 </v-col>
                                 <v-col cols="3" class="messenger-header">
-                                    <v-switch></v-switch>
+                                    <v-switch v-model="customerinfo.manualInterventionIsActive" @click="manualInterventionToggle"></v-switch>
                                     <p class="messenger-header-p">Switch to Conversation</p>
                                 </v-col>
                             </v-row>
                         </v-app-bar>
                         <v-col cols="12" style="height: 60vh;border: 1px solid red;display: flex;flex-direction: column-reverse;">
-                            <v-btn  class="move-facebook-messagenger" style="align-self:flex-end" >
+                            <v-btn @click="sendToMessenger" class="move-facebook-messagenger" style="align-self:flex-end" >
                                 <span class="pr-3">take me to messenger</span><v-icon class="pr-3">mdi-facebook-messenger</v-icon><v-icon class="pr-0">east</v-icon>
                             </v-btn>
                         </v-col>
@@ -132,6 +132,14 @@ export default {
     updated() {
     },
     methods: {
+        sendToMessenger() {
+            window.open(`https://www.facebook.com/messages/t/${this.customerinfo.property_profile_id}`, "_blank");   
+        },
+
+        async manualInterventionToggle() {
+            await CustomerService.toggleManualIntervention(this.customerinfo.id, this.customerinfo.manualInterventionIsActive);
+        },
+
         getCustomerDetails() {
             return new CustomerDetails();
         },
