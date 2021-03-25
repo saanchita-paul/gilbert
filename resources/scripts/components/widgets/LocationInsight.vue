@@ -51,8 +51,6 @@ export default {
             this.map.load();
             this.updateMapColor()
         }, 400)
-
-
     },
     methods: {
         calculateOpacity() {

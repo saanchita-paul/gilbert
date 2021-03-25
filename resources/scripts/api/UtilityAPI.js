@@ -1,6 +1,7 @@
 import axios from 'axios';
 import COLOR from "@scripts/data/constants/COLOR";
 import LeadOverviewMapper from "@scripts/api/mappers/LeadOverviewMapper";
+import LocationInsightMapper from "@scripts/api/mappers/LocationInsightMapper";
 
 export default {
     getUtilityDashboardData: async () => {
@@ -194,5 +195,9 @@ export default {
             },
             age_group: {},
         }
+    },
+    utilityAnalytic: async () => {
+        const data = (await axios.get(`${BOT_API}/utility/home`)).data;
+        console.log(LocationInsightMapper.map(data.locationInsight))
     }
 }
