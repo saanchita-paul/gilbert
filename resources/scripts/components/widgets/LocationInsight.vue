@@ -42,10 +42,13 @@ export default {
     computed: {
         map() {
             return window.simplemaps_australiamap;
-        }
+        },
+        mapData() {
+            const max = Math.max(...this.data.map(item => item.value))
+            return this.data.map(item => ({...item, ...{opacity: item.value / max}}))
+        },
     },
     mounted() {
-        this.calculateOpacity();
         this.isLoaded = true;
         setTimeout(() => {
             this.map.load();
@@ -53,14 +56,8 @@ export default {
         }, 400)
     },
     methods: {
-        calculateOpacity() {
-            const data = [];
-            const max = Math.max(...this.data.map(item => item.value))
-            this.data.map(item => data.push({...item, ...{opacity: item.value / max}}))
-            this.data = data;
-        },
         updateMapColor() {
-            this.data.map(item => {
+            this.mapData.map(item => {
                 const key = mapStateKey(item.text);
                 if (this.map.mapdata.state_specific[key]) {
                     this.map.mapdata.state_specific[key].opacity = item.opacity;
