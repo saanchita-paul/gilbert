@@ -1,6 +1,7 @@
 import axios from 'axios';
 import COLOR from "@scripts/data/constants/COLOR";
 import LeadOverviewMapper from "@scripts/api/mappers/LeadOverviewMapper";
+import LeadSentimentMapper from "@scripts/api/mappers/LeadSentimentMapper";
 
 export default {
     getUtilityDashboardData: async () => {
@@ -65,15 +66,18 @@ export default {
             "leadSentiment":[
                {
                   "total":10,
-                  "sentiment_text":"NEGATIVE"
+                  "sentiment_text":"NEGATIVE",
+                  "percentage": 9
                },
                {
                   "total":43,
-                  "sentiment_text":"NEUTRAL"
+                  "sentiment_text":"NEUTRAL",
+                  "percentage": 41
                },
                {
                   "total":47,
-                  "sentiment_text":"POSITIVE"
+                  "sentiment_text":"POSITIVE",
+                  "percentage": 48
                }
             ],
             "leadToConnection":{
@@ -139,7 +143,8 @@ export default {
             }
          }
          return {
-            lead_overview : LeadOverviewMapper.mapLeadOverview(data.leadOverview)
+            lead_overview : LeadOverviewMapper.mapLeadOverview(data.leadOverview),
+            lead_sentiment : LeadSentimentMapper.mapLeadSentiment(data.leadSentiment)
          }
     },
     getConnectionSummary: async () => {
