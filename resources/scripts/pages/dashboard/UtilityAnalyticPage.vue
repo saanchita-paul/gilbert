@@ -71,7 +71,10 @@
                             </SentimentWidget>
                         </div>
                         <div style="width: 100%; margin-top: 12px; height: 150px;">
-                            <LocationInsight />
+                            <LocationInsight
+                                :data="utilityDashboardData.location_insight"    
+                            >
+                            </LocationInsight>
                         </div>
                     </v-col>
                 </v-row>
@@ -154,7 +157,7 @@ export default {
             this.utilityDashboardData = await UtilityDashboardService.getUtilityDashboardData();
             this.connectionSummary = await UtilityDashboardService.getConnectionSummary();
             this.isLoaded = true;
-            console.log(this.utilityDashboardData);
+            console.log('utilityDashboardData', this.utilityDashboardData);
         }
     }
 }

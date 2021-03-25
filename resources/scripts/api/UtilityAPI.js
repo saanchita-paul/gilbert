@@ -14,7 +14,8 @@ export default {
             lead_overview : LeadOverviewMapper.mapLeadOverview(data.leadOverview),
             connection_summary: ConnectionSummary.getSummaryData(data),
             age_group_summary: AgeGroupSummaryMapper.getAgeGroupSummaryData(data),
-            lead_sentiment : LeadSentimentMapper.mapLeadSentiment(data.leadSentiment)
+            lead_sentiment : LeadSentimentMapper.mapLeadSentiment(data.leadSentiment),
+            location_insight : LocationInsightMapper.map(data.locationInsight)
         }
     },
     getConnectionSummary: async () => {

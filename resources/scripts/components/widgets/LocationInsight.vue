@@ -28,15 +28,11 @@ import {mapStateKey} from "@scripts/data/AustraliaStates";
 
 export default {
     name: "LocationInsight",
+    props: ['data'],
     data() {
         return {
             isLoaded: false,
-            data: [
-                {text: 'NSW', value: 30},
-                {text: 'VIC', value: 10},
-                {text: 'QLD', value: 45},
-                {text: 'WA', value: 15},
-            ]
+           
         }
     },
     computed: {
