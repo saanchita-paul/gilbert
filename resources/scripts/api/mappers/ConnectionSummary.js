@@ -50,14 +50,14 @@ export default {
             let labels = ['Gas', 'Electricity', 'Dual Fuel'];
             let values = [0, 0, 0];
             data.forEach((dt) => {
-                switch (dt.which_utility) {
-                    case 'Gas':
+                switch (dt.which_utility.toLowerCase()) {
+                    case 'gas':
                         values[0] = dt.percentage;
                         break
-                    case 'Electricity':
+                    case 'electricity':
                         values[1] = dt.percentage;
                         break
-                    case 'Dual Fuel':
+                    case 'electricity_and_gas':
                         values[2] = dt.percentage;
                         break
                     default:
@@ -87,6 +87,14 @@ export default {
             let labels = ['Own', 'Rent'];
             let values = [0, 0];
             data.forEach((dt) => {
+                if(dt.rent.toString() === "1")
+                {
+                    dt.rent = "Rent";
+                }
+                else
+                {
+                    dt.rent = "Own"
+                }
                 switch (dt.rent) {
                     case 'Own':
                         values[0] = dt.percentage;
@@ -118,27 +126,11 @@ export default {
             }
         }
 
-        function getAgeGroup(data) {
-            let labels = Object.keys(data);
-            let values = Object.values(data);
-            let totalValue = values.reduce((a, b) => a + b, 0);
-           return {
-                    labels: labels,
-                    datasets: [{
-                    maxBarThickness: 28,
-                    borderWidth: 1,
-                    data: values.map(d=> Math.floor (d/totalValue * 100)),
-                }]
-            }
-        }
-
         return {
 
             connection_plan: getConnectionPlan(response.connectionSummary.plan),
             connection_type: getConnectionType(response.connectionSummary.connectionType),
             tenancy_type: getTenancyType(response.connectionSummary.tenancyType),
-            age_group: getAgeGroup(response.ageGroupSummary)
-
         };
     },
 
