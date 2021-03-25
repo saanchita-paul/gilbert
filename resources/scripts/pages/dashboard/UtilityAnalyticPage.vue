@@ -121,6 +121,10 @@ import BarChart from "@scripts/components/charts/BarChart";
 import LineChart from "@scripts/components/charts/LineChart";
 import COLOR from "@scripts/data/constants/COLOR";
 import UtilityDashboardService from "@scripts/services/UtilityDashboardService";
+import {ConnectionManager} from "pusher-js";
+import ConnectionSummary from "@scripts/api/mappers/ConnectionSummary";
+import LeadToConnectionMapper from "@scripts/api/mappers/LeadToConnectionMapper";
+import UtilityAPI from "@scripts/api/UtilityAPI";
 
 export default {
     name: "UtilityAnalyticPage",
@@ -142,6 +146,7 @@ export default {
         }
     },
     mounted() {
+        UtilityAPI.utilityAnalytic()
         this.load()
     },
     methods:{
