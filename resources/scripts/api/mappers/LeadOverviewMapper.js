@@ -9,7 +9,7 @@ export default {
                 chartLabels.push(element.date);
                 chartData.push(element.total);
             });
-    
+
             return {
                 value: data.total,
                 tooltip: null,
@@ -33,7 +33,7 @@ export default {
                 chartLabels.push(element.date);
                 chartData.push(element.total);
             });
-    
+
             return {
                 value: data.total,
                 tooltip: null,
@@ -56,13 +56,14 @@ export default {
                 chartLabels.push(element.date);
                 chartData.push(element.total);
             });
-    
+
             return {
                 value: data.total,
                 tooltip: null,
                 chartData: {
                     labels: chartLabels,
                     datasets: [{
+                        maxBarThickness: 13,
                         borderWidth: 1,
                         data: chartData,
                         fill: false,
@@ -81,7 +82,7 @@ export default {
                 chartData1.push(element.total_lead);
                 chartData2.push(element.total_conversion);
             });
-    
+
             return {
                 value: data.total,
                 tooltip: [
@@ -117,7 +118,7 @@ export default {
                 chartData1.push(element.full_automation);
                 chartData2.push(element.manual_intervention);
             });
-    
+
             return {
                 value: data.total,
                 tooltip: [
@@ -142,7 +143,7 @@ export default {
                     ]
                 },
             };
-    
+
         }
 
         return {
