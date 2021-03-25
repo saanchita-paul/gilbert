@@ -73,6 +73,5 @@ export default {
     },
     utilityAnalytic: async () => {
         const data = (await axios.get(`${BOT_API}/utility/home`)).data;
-        console.log(LocationInsightMapper.map(data.locationInsight))
     }
 }

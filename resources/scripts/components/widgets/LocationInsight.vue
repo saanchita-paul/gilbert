@@ -60,7 +60,6 @@ export default {
                     this.map.mapdata.state_specific[key].color = '#5C229A';
                 }
             })
-            console.log(this.map.mapdata.state_specific)
             this.map.refresh();
         }
     }

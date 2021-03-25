@@ -157,7 +157,6 @@ export default {
             this.utilityDashboardData = await UtilityDashboardService.getUtilityDashboardData();
             this.connectionSummary = await UtilityDashboardService.getConnectionSummary();
             this.isLoaded = true;
-            console.log('utilityDashboardData', this.utilityDashboardData);
         }
     }
 }
