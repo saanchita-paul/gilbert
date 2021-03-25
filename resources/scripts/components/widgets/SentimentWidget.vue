@@ -28,42 +28,39 @@
 
 <script>
 import DonutChart from "@scripts/components/charts/DonutChart";
-import {capitalize} from "lodash-es";
+import {capitalize, cloneDeep} from "lodash-es";
 import {mapSentimentColor} from "@scripts/data/SentimentColor";
 
 export default {
     name: "SentimentWidget",
-    props: {
-        data: {
-            type: Object
-        }
-    },
+    props: ['sentiment', 'chart_data'],
     components: {DonutChart},
     data() {
         return {
-            sentiment: [
-                {sentiment_text: "NEGATIVE", value: 10},
-                {sentiment_text: "POSITIVE", value: 30},
-                {sentiment_text: "NEUTRAL", value: 60},
-            ],
-            chart_data: {
-                labels: ['Positive', 'Neutral', 'Negative'],
-                datasets: [{
-                    borderWidth: 1,
-                    data: [30, 60, 10],
-                    fill: false,
-                    backgroundColor: [
-                        '#4CAF50',
-                        '#BDBDBD',
-                        '#E91E63',
-                    ]
-                }]
-            }
+            // sentiment: [
+            //     {sentiment_text: "NEGATIVE", value: 10},
+            //     {sentiment_text: "POSITIVE", value: 30},
+            //     {sentiment_text: "NEUTRAL", value: 60},
+            // ],
+            // chart_data: {
+            //     labels: ['Positive', 'Neutral', 'Negative'],
+            //     datasets: [{
+            //         borderWidth: 1,
+            //         data: [30, 60, 10],
+            //         fill: false,
+            //         backgroundColor: [
+            //             '#4CAF50',
+            //             '#BDBDBD',
+            //             '#E91E63',
+            //         ]
+            //     }]
+            // }
         }
     },
     computed: {
         sentimentData() {
             let sort = this.sentiment.sort((a, b) => b.value - a.value)
+            sort = cloneDeep(sort)
             sort.shift();
             return sort.map(item => ({...item, ...{color: mapSentimentColor(item.sentiment_text)}}) )
         }

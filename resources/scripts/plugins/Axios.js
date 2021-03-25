@@ -4,6 +4,8 @@ import router from '@scripts/routes/router';
 
 axios.defaults.withCredentials = true;
 
+window.BOT_API = `${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api`;
+
 axios.interceptors.response.use(
     function(response) {
         return response;

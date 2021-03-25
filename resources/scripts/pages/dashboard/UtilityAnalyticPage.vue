@@ -12,47 +12,47 @@
             <div class="widgets">
 <!--                Total-->
                 <LeadWidget
-                    :tooltip="leadsData.lead.tooltip"
+                    :tooltip="utilityDashboardData.lead_overview.lead.tooltip"
                     title="Total Lead"
-                    :value="leadsData.lead.value"
+                    :value="utilityDashboardData.lead_overview.lead.value"
                 >
-                    <BarChart :data="leadsData.lead.chartData" chartId="totalLead"/>
+                    <BarChart :data="utilityDashboardData.lead_overview.lead.chartData" chartId="totalLead"/>
                 </LeadWidget>
 
 <!--                Qualified-->
                 <LeadWidget
-                    :tooltip="leadsData.qualified.tooltip"
+                    :tooltip="utilityDashboardData.lead_overview.qualified.tooltip"
                     title="Qualified Lead"
-                    :value="leadsData.qualified.value"
+                    :value="utilityDashboardData.lead_overview.qualified.value"
                 >
-                    <LineChart  :data="leadsData.qualified.chartData" chartId="qualifiedLead"/>
+                    <LineChart  :data="utilityDashboardData.lead_overview.qualified.chartData" chartId="qualifiedLead"/>
                 </LeadWidget>
 
 <!--                Energy connection-->
                 <LeadWidget
-                    :tooltip="leadsData.lead.tooltip"
+                    :tooltip="utilityDashboardData.lead_overview.energy.tooltip"
                     title="Total Energy Connection"
-                    :value="leadsData.lead.value"
+                    :value="utilityDashboardData.lead_overview.energy.value"
                 >
-                    <BarChart :data="leadsData.lead.chartData"  chartId="totalLead3"/>
+                    <BarChart :data="utilityDashboardData.lead_overview.energy.chartData"  chartId="totalLead3"/>
                 </LeadWidget>
 
 <!--                Conversation rate-->
                 <LeadWidget
-                    :tooltip="leadsData.conversion.tooltip"
+                    :tooltip="utilityDashboardData.lead_overview.conversion.tooltip"
                     title="Conversion Rate"
-                    :value="leadsData.conversion.value"
+                    :value="utilityDashboardData.lead_overview.conversion.value"
                 >
-                    <LineChart :data="leadsData.conversion.chartData"  chartId="totalLead4"/>
+                    <LineChart :data="utilityDashboardData.lead_overview.conversion.chartData"  chartId="totalLead4"/>
                 </LeadWidget>
 
 <!--                Automation rate-->
                 <LeadWidget
-                    :tooltip="leadsData.automation.tooltip"
+                    :tooltip="utilityDashboardData.lead_overview.automation.tooltip"
                     title="Full Automation Rate"
-                    :value="leadsData.automation.value"
+                    :value="utilityDashboardData.lead_overview.automation.value"
                 >
-                    <LineChart :data="leadsData.automation.chartData"  chartId="totalLead5"/>
+                    <LineChart :data="utilityDashboardData.lead_overview.automation.chartData"  chartId="totalLead5"/>
                 </LeadWidget>
             </div>
 
@@ -64,10 +64,17 @@
                     </v-col>
                     <v-col md="5" sm="12">
                         <div style="height: 270px; width: 100%; background: lightgreen">
-                            <SentimentWidget/>
+                            <SentimentWidget
+                                :sentiment="utilityDashboardData.lead_sentiment.sentiment"
+                                :chart_data="utilityDashboardData.lead_sentiment.chart_data"
+                            >
+                            </SentimentWidget>
                         </div>
                         <div style="width: 100%; margin-top: 12px; height: 150px;">
-                            <LocationInsight />
+                            <LocationInsight
+                                :data="utilityDashboardData.location_insight"    
+                            >
+                            </LocationInsight>
                         </div>
                     </v-col>
                 </v-row>
@@ -80,26 +87,26 @@
                         <v-col md="4">
                             <SummaryWidget
                                 title="Utility Type"
-                                :data="connectionSummary.connection_plan.chart_data"
+                                :data="utilityDashboardData.connection_summary.connection_plan.chart_data"
                             />
                         </v-col>
                         <v-col md="4">
                             <SummaryWidget
                                 title="Connection Type"
-                                :data="connectionSummary.connection_type.chart_data"
+                                :data="utilityDashboardData.connection_summary.connection_type.chart_data"
                             />
                         </v-col>
                         <v-col md="4">
                             <SummaryWidget
                                 title="Tenancy Type"
-                                :data="connectionSummary.tenancy_type.chart_data"
+                                :data="utilityDashboardData.connection_summary.tenancy_type.chart_data"
                             />
                         </v-col>
                     </v-row>
                 </v-col>
                 <v-col md="4">
                     <h3  class="section-title mb-3">Age Summary</h3>
-                    <AgeWidget/>
+                    <AgeWidget :data="utilityDashboardData.age_group_summary.age_group"/>
                 </v-col>
             </v-row>
         </v-container>
@@ -117,6 +124,10 @@ import BarChart from "@scripts/components/charts/BarChart";
 import LineChart from "@scripts/components/charts/LineChart";
 import COLOR from "@scripts/data/constants/COLOR";
 import UtilityDashboardService from "@scripts/services/UtilityDashboardService";
+import {ConnectionManager} from "pusher-js";
+import ConnectionSummary from "@scripts/api/mappers/ConnectionSummary";
+import LeadToConnectionMapper from "@scripts/api/mappers/LeadToConnectionMapper";
+import UtilityAPI from "@scripts/api/UtilityAPI";
 
 export default {
     name: "UtilityAnalyticPage",
@@ -133,16 +144,17 @@ export default {
     data() {
         return {
             isLoaded: null,
-            leadsData: null,
+            utilityDashboardData: null,
             connectionSummary: null,
         }
     },
     mounted() {
+        UtilityAPI.utilityAnalytic()
         this.load()
     },
     methods:{
         async load() {
-            this.leadsData = await UtilityDashboardService.getLeadAnalytics();
+            this.utilityDashboardData = await UtilityDashboardService.getUtilityDashboardData();
             this.connectionSummary = await UtilityDashboardService.getConnectionSummary();
             this.isLoaded = true;
         }

@@ -18,7 +18,7 @@
                         class="py-1"
                         :class="{'error-sentiment': error}"
                     >
-                        <td :class="{'error-sentiment': error}">
+                        <td :class="{'error-sentiment': false}">
                             <v-row align-center class="header color--text">
                                 <v-col class="avatar-containner pr-0">
                                     <v-avatar >
