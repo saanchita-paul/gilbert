@@ -84,26 +84,26 @@
                         <v-col md="4">
                             <SummaryWidget
                                 title="Utility Type"
-                                :data="connectionSummary.connection_plan.chart_data"
+                                :data="utilityDashboardData.connection_summary.connection_plan.chart_data"
                             />
                         </v-col>
                         <v-col md="4">
                             <SummaryWidget
                                 title="Connection Type"
-                                :data="connectionSummary.connection_type.chart_data"
+                                :data="utilityDashboardData.connection_summary.connection_type.chart_data"
                             />
                         </v-col>
                         <v-col md="4">
                             <SummaryWidget
                                 title="Tenancy Type"
-                                :data="connectionSummary.tenancy_type.chart_data"
+                                :data="utilityDashboardData.connection_summary.tenancy_type.chart_data"
                             />
                         </v-col>
                     </v-row>
                 </v-col>
                 <v-col md="4">
                     <h3  class="section-title mb-3">Age Summary</h3>
-                    <AgeWidget/>
+                    <AgeWidget :data="utilityDashboardData.age_group_summary.age_group"/>
                 </v-col>
             </v-row>
         </v-container>

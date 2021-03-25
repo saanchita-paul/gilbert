@@ -4,7 +4,7 @@
             <p class="widget-title mb-4">Age Group</p>
 
         <div class="age-chart">
-            <BarHorizontalChart :data="chartData"/>
+            <BarHorizontalChart :data="data"/>
         </div>
         </v-card-text>
     </v-card>
