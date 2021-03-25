@@ -119,7 +119,7 @@ export default {
             tenancy_type: {
                 title: "Tenancy Type",
                 chart_data: {
-                    labels: ['Own', 'Basic Home', 'Rent'],
+                    labels: ['Own', 'Rent'],
                     datasets: [{
                         borderWidth: 1,
                         data: [40, 60],
