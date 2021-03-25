@@ -8,13 +8,24 @@ export default {
      * @returns {Object}
      */
     getSummaryData: (response) => {
-
         function getConnectionPlan(data) {
-            let labels = [];
-            let values = [];
+            let labels = ['Total Plan', 'Basic Home', 'No Frills'];
+            let values = [0, 0, 0];
             data.forEach((dt) => {
-                values.push(dt.percentage);
-                labels.push(dt.utility_plan);
+                switch (dt.utility_plan) {
+                    case 'Total Plan':
+                        values[0] = dt.percentage;
+                        break
+                    case 'Basic Home':
+                        values[1] = dt.percentage;
+                        break
+                    case 'No Frills':
+                        values[2] = dt.percentage;
+                        break
+                    default:
+                        break
+                }
+
             });
 
             return {
@@ -36,11 +47,22 @@ export default {
         }
 
         function getConnectionType(data) {
-            let labels = [];
-            let values = [];
+            let labels = ['Gas', 'Electricity', 'Dual Fuel'];
+            let values = [0, 0, 0];
             data.forEach((dt) => {
-                values.push(dt.percentage);
-                labels.push(dt.which_utility);
+                switch (dt.which_utility) {
+                    case 'Gas':
+                        values[0] = dt.percentage;
+                        break
+                    case 'Electricity':
+                        values[1] = dt.percentage;
+                        break
+                    case 'Dual Fuel':
+                        values[2] = dt.percentage;
+                        break
+                    default:
+                        break
+                }
             })
 
             return {
@@ -62,13 +84,20 @@ export default {
         }
 
         function getTenancyType(data) {
-            let labels = [];
-            let values = [];
+            let labels = ['Own', 'Rent'];
+            let values = [0, 0];
+            data.forEach((dt) => {
+                switch (dt.rent) {
+                    case 'Own':
+                        values[0] = dt.percentage;
+                        break
+                    case 'Rent':
+                        values[1] = dt.percentage;
+                        break
+                    default:
+                        break
+                }
 
-            data.find(dt=> dt.utility_plan === 'Total Plan (Home)')
-            data.forEach((dt,k) => {
-                values.push(dt.percentage);
-                labels.push(dt.rent);
             })
             return {
                 title: "Tenancy Type",
@@ -90,26 +119,25 @@ export default {
         }
 
         function getAgeGroup(data) {
-            console.log(data);
             let labels = Object.keys(data);
             let values = Object.values(data);
-            // value..reduce((a, b) => a + b, 0)
-
+            let totalValue = values.reduce((a, b) => a + b, 0);
            return {
                     labels: labels,
                     datasets: [{
                     maxBarThickness: 28,
                     borderWidth: 1,
-                    data: values,
+                    data: values.map(d=> Math.floor (d/totalValue * 100)),
                 }]
             }
         }
 
         return {
+
             connection_plan: getConnectionPlan(response.connectionSummary.plan),
             connection_type: getConnectionType(response.connectionSummary.connectionType),
             tenancy_type: getTenancyType(response.connectionSummary.tenancyType),
-            age_group: getAgeGroup(response.connectionSummary.ageGroupSummary)
+            age_group: getAgeGroup(response.ageGroupSummary)
 
         };
     },

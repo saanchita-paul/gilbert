@@ -1,6 +1,8 @@
 import axios from 'axios';
 import COLOR from "@scripts/data/constants/COLOR";
 import LeadOverviewMapper from "@scripts/api/mappers/LeadOverviewMapper";
+import ConnectionSummary from "@scripts/api/mappers/ConnectionSummary";
+import AgeGroupSummaryMapper from "@scripts/api/mappers/AgeGroupSummaryMapper";
 
 export default {
     getUtilityDashboardData: async () => {
@@ -104,28 +106,36 @@ export default {
             "connectionSummary":{
                "plan":[
                   {
-                     "total":10,
-                     "utility_plan":null
+                     "percentage":10,
+                     "utility_plan":"Total Plan"
                   },
                   {
-                     "total":1,
-                     "utility_plan":"Total Plan (Home)"
-                  }
+                     "percentage":1,
+                     "utility_plan":"Basic Home"
+                  },
+                   {
+                       "percentage":1,
+                       "utility_plan":"No Frills"
+                   }
                ],
                "connectionType":[
                   {
-                     "total":9,
-                     "which_utility":"electricity_and_gas"
+                     "percentage":9,
+                     "which_utility":"Gas"
                   },
                   {
-                     "total":2,
-                     "which_utility":"gas"
+                     "percentage":2,
+                     "which_utility":"Electricity"
+                  },
+                   {
+                     "percentage":0,
+                     "which_utility":"Dual Fuel"
                   }
                ],
                "tenancyType":[
                   {
-                     "total":11,
-                     "rent":"1"
+                     "percentage":11,
+                     "rent":"Own"
                   }
                ]
             },
@@ -139,7 +149,10 @@ export default {
             }
          }
          return {
-            lead_overview : LeadOverviewMapper.mapLeadOverview(data.leadOverview)
+            lead_overview : LeadOverviewMapper.mapLeadOverview(data.leadOverview),
+             connection_summary: ConnectionSummary.getSummaryData(data),
+             age_group_summary: AgeGroupSummaryMapper.getAgeGroupSummaryData(data),
+
          }
     },
     getConnectionSummary: async () => {
