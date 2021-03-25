@@ -1,85 +1,146 @@
 import axios from 'axios';
 import COLOR from "@scripts/data/constants/COLOR";
+import LeadOverviewMapper from "@scripts/api/mappers/LeadOverviewMapper";
 
 export default {
-    getLeadAnalytics: async () => {
-        return {
-            lead: {
-                value: '12.6K',
-                tooltip: null,
-                chartData: {
-                    labels: ['green', 'blue', 'red', 'orange', 'yellow', 'gray', 'black'],
-                    datasets: [{
-                        borderWidth: 1,
-                        data: [12, 24, 30, 18, 24, 36, 24],
-                        fill: false,
-                        maxBarThickness: 13,
-                        backgroundColor: COLOR.themes.light.secondary,
-                    }]
-                }
+    getUtilityDashboardData: async () => {
+        let data =  {
+            "leadOverview":{
+               "total_lead":{
+                  "total":8,
+                  "charts":[
+                     {
+                        "total":2,
+                        "date":"2021-03-21"
+                     }
+                  ]
+               },
+               "qualified_lead":{
+                  "total":10,
+                  "charts":[
+                     {
+                        "total":2,
+                        "date":"2021-03-21"
+                     }
+                  ]
+               },
+               "total_energy_connection":{
+                  "total":2,
+                  "charts":[
+                     {
+                        "total":1,
+                        "date":"2021-03-20"
+                     },
+                     {
+                        "total":1,
+                        "date":"2021-03-21"
+                     }
+                  ]
+               },
+               "conversion_rate":{
+                  "total":25,
+                  "charts":[
+                     {
+                        "date":"2021-03-21",
+                        "total_lead":2,
+                        "total_conversion":1
+                     }
+                  ],
+                  "qualified_lead":125,
+                  "total_conversion":20
+               },
+               "automation_rate":{
+                  "total":745,
+                  "charts":[
+                     {
+                        "date":"",
+                        "full_automation":90,
+                        "manual_intervention":10
+                     }
+                  ],
+                  "full_automation":10,
+                  "manual_intervention":90
+               }
             },
-            qualified: {
-                value: '15K',
-                tooltip: null,
-                chartData: {
-                    labels: ['green', 'blue', 'red', 'orange', 'yellow', 'gray', 'black'],
-                    datasets: [{
-                        borderWidth: 1,
-                        data: [12, 24, 30, 18, 24, 36, 24],
-                        fill: false,
-                        backgroundColor: COLOR.themes.light.secondary
-                    }]
-                },
+            "leadSentiment":[
+               {
+                  "total":10,
+                  "sentiment_text":"NEGATIVE"
+               },
+               {
+                  "total":43,
+                  "sentiment_text":"NEUTRAL"
+               },
+               {
+                  "total":47,
+                  "sentiment_text":"POSITIVE"
+               }
+            ],
+            "leadToConnection":{
+               "lead_by_channel":8,
+               "service_connection":0,
+               "connection_type":0,
+               "connection_submitted":11,
+               "connection_accepted":2
             },
-            conversion: {
-                value: '35.8%',
-                tooltip: [
-                    {title: 'Qualified Lead', value: '10%'},
-                    {title: 'Total Conversion', value: '90%'},
-                ],
-                chartData: {
-                    labels: ['green', 'blue', 'red', 'orange', 'yellow', 'gray', 'black'],
-                    datasets: [
-                        {
-                            borderWidth: 0,
-                            data: [12, 24, 45, 18, 24, 36, 24],
-                            fill: true,
-                            backgroundColor: COLOR.themes.light.primary + '80'
-                        },
-                        {
-                            borderWidth: 0,
-                            data: [32, 17, 15, 18, 22, 10, 12],
-                            fill: true,
-                            backgroundColor: COLOR.themes.light.secondary + '80'
-                        },
-                    ]
-                },
+            "locationInsight":[
+               {
+                  "total":3,
+                  "state":"ACT"
+               },
+               {
+                  "total":2,
+                  "state":"NSW"
+               },
+               {
+                  "total":2,
+                  "state":"SA"
+               },
+               {
+                  "total":3,
+                  "state":"VIC"
+               }
+            ],
+            "connectionSummary":{
+               "plan":[
+                  {
+                     "total":10,
+                     "utility_plan":null
+                  },
+                  {
+                     "total":1,
+                     "utility_plan":"Total Plan (Home)"
+                  }
+               ],
+               "connectionType":[
+                  {
+                     "total":9,
+                     "which_utility":"electricity_and_gas"
+                  },
+                  {
+                     "total":2,
+                     "which_utility":"gas"
+                  }
+               ],
+               "tenancyType":[
+                  {
+                     "total":11,
+                     "rent":"1"
+                  }
+               ]
             },
-            automation: {
-                value: '40.9%',
-                tooltip: [
-                    {title: 'Full Automation', value: '10,2457'},
-                    {title: 'Manual Intervention', value: '781'},
-                ],
-                chartData: {
-                    labels: ['green', 'blue', 'red', 'orange', 'yellow', 'gray', 'black'],
-                    datasets: [
-                        {
-                            borderWidth: 1,
-                            data: [24, 20, 15, 25, 30, 20, 40],
-                            fill: false,
-                            backgroundColor: COLOR.themes.light.primary
-                        },
-                        {
-                            borderWidth: 1,
-                            data: [12, 24, 30, 18, 24, 36, 24],
-                            fill: false,
-                            backgroundColor: COLOR.themes.light.secondary
-                        }
-                    ]
-                },
-            },
-        }
+            "ageGroupSummary":{
+               "18-24":3,
+               "25-34":4,
+               "35-44":4,
+               "45-54":0,
+               "55-64":0,
+               "65+":0
+            }
+         }
+         return {
+            lead_overview : LeadOverviewMapper.mapLeadOverview(data.leadOverview)
+         }
     },
     getConnectionSummary: async () => {
         return {
