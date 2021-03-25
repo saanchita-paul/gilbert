@@ -12,47 +12,47 @@
             <div class="widgets">
 <!--                Total-->
                 <LeadWidget
-                    :tooltip="leadsData.lead.tooltip"
+                    :tooltip="utilityDashboardData.lead_overview.lead.tooltip"
                     title="Total Lead"
-                    :value="leadsData.lead.value"
+                    :value="utilityDashboardData.lead_overview.lead.value"
                 >
-                    <BarChart :data="leadsData.lead.chartData" chartId="totalLead"/>
+                    <BarChart :data="utilityDashboardData.lead_overview.lead.chartData" chartId="totalLead"/>
                 </LeadWidget>
 
 <!--                Qualified-->
                 <LeadWidget
-                    :tooltip="leadsData.qualified.tooltip"
+                    :tooltip="utilityDashboardData.lead_overview.qualified.tooltip"
                     title="Qualified Lead"
-                    :value="leadsData.qualified.value"
+                    :value="utilityDashboardData.lead_overview.qualified.value"
                 >
-                    <LineChart  :data="leadsData.qualified.chartData" chartId="qualifiedLead"/>
+                    <LineChart  :data="utilityDashboardData.lead_overview.qualified.chartData" chartId="qualifiedLead"/>
                 </LeadWidget>
 
 <!--                Energy connection-->
                 <LeadWidget
-                    :tooltip="leadsData.lead.tooltip"
+                    :tooltip="utilityDashboardData.lead_overview.lead.tooltip"
                     title="Total Energy Connection"
-                    :value="leadsData.lead.value"
+                    :value="utilityDashboardData.lead_overview.lead.value"
                 >
-                    <BarChart :data="leadsData.lead.chartData"  chartId="totalLead3"/>
+                    <BarChart :data="utilityDashboardData.lead_overview.lead.chartData"  chartId="totalLead3"/>
                 </LeadWidget>
 
 <!--                Conversation rate-->
                 <LeadWidget
-                    :tooltip="leadsData.conversion.tooltip"
+                    :tooltip="utilityDashboardData.lead_overview.conversion.tooltip"
                     title="Conversion Rate"
-                    :value="leadsData.conversion.value"
+                    :value="utilityDashboardData.lead_overview.conversion.value"
                 >
-                    <LineChart :data="leadsData.conversion.chartData"  chartId="totalLead4"/>
+                    <LineChart :data="utilityDashboardData.lead_overview.conversion.chartData"  chartId="totalLead4"/>
                 </LeadWidget>
 
 <!--                Automation rate-->
                 <LeadWidget
-                    :tooltip="leadsData.automation.tooltip"
+                    :tooltip="utilityDashboardData.lead_overview.automation.tooltip"
                     title="Full Automation Rate"
-                    :value="leadsData.automation.value"
+                    :value="utilityDashboardData.lead_overview.automation.value"
                 >
-                    <LineChart :data="leadsData.automation.chartData"  chartId="totalLead5"/>
+                    <LineChart :data="utilityDashboardData.lead_overview.automation.chartData"  chartId="totalLead5"/>
                 </LeadWidget>
             </div>
 
@@ -133,7 +133,7 @@ export default {
     data() {
         return {
             isLoaded: null,
-            leadsData: null,
+            utilityDashboardData: null,
             connectionSummary: null,
         }
     },
@@ -142,7 +142,7 @@ export default {
     },
     methods:{
         async load() {
-            this.leadsData = await UtilityDashboardService.getLeadAnalytics();
+            this.utilityDashboardData = await UtilityDashboardService.getUtilityDashboardData();
             this.connectionSummary = await UtilityDashboardService.getConnectionSummary();
             this.isLoaded = true;
         }
