@@ -148,8 +148,8 @@ export default {
             connectionEDestributor: customerData.connection_info.electricity_distributor || '',
             gasMeterCharge: customerData.connection_info.gas_meter_reading_charge || '',
             connectionNmiNo: customerData.connection_info.nmi || '',
-            connectionStatus: customerData.connection_info.id || '',
-            connectionReason: customerData.connection_info.id || '',
+            connectionStatus: customerData.connection_info.connection_status || '',
+            connectionReason: customerData.connection_info.reason || '-',
             connectionMernNo: customerData.connection_info.mirn || '',
 
 
