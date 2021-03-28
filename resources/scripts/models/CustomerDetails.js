@@ -1,13 +1,13 @@
 export default class CustomerDetails {
-    constructor({ 
+    constructor({
                     id,
-                    name,
-                    profilePic,
-                    lastInteractiveTime,
-                    hoodUid,
-                    messagerId,
+                    full_name,
+                    avatar,
+                    last_interaction,
+                    hood_ui,
+                    facebook_id,
                     email,
-                    ph,
+                    phone,
 
                     propertyProfileId,
                     propertyAccountType,
@@ -43,14 +43,14 @@ export default class CustomerDetails {
                     manualInterventionAt
 
                 } = {}) {
-        this.id = id || null;
-        this.name = name || 'Sazzad';
-        this.profile_pic = profilePic || 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/106438752/original/3c4d95e3604313ecca407541a45b6a58dcc67c5c/update-your-online-dating-profile-bio-to-get-you-more-matches.jpg';
-        this.last_interactive_time = lastInteractiveTime || '10m';
-        this.hood_uid = hoodUid || '#1671408219574925';
-        this.messager_id = messagerId || '#1671408219574925';
+        this.id = id;
+        this.name = full_name;
+        this.profile_pic = avatar
+        this.last_interaction = last_interaction;
+        this.hood_uid = hood_ui;
+        this.messager_id = facebook_id;
         this.email = email || 'sazzadahmed41@gmail.com';
-        this.ph = ph || '1671408219574925';
+        this.ph = phone;
 
         this.property_profile_id = propertyProfileId || '#1901';
         this.property_account_type = propertyAccountType || '#1901';
