@@ -132,7 +132,7 @@ export default {
      */
     getCustomerList: async pageIndex=> {
         // Todo API End point will be replaced later
-        const data =(await axios.get(`${'https://devbot.hood.ai/hood-dashboard/api'}/customers?page=${pageIndex}`)).data;
+        const data =(await axios.get(`${BOT_API}/customers?page=${pageIndex}`)).data;
         // const data = {
         //     "data":[
         //         {
