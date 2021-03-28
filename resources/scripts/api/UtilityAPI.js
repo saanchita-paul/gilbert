@@ -5,6 +5,7 @@ import ConnectionSummary from "@scripts/api/mappers/ConnectionSummary";
 import AgeGroupSummaryMapper from "@scripts/api/mappers/AgeGroupSummaryMapper";
 import LeadSentimentMapper from "@scripts/api/mappers/LeadSentimentMapper";
 import LocationInsightMapper from "@scripts/api/mappers/LocationInsightMapper";
+import LeadToConnectionMapper from "@scripts/api/mappers/LeadToConnectionMapper";
 
 export default {
     getUtilityDashboardData: async () => {
@@ -15,9 +16,11 @@ export default {
             connection_summary: ConnectionSummary.getSummaryData(data),
             age_group_summary: AgeGroupSummaryMapper.getAgeGroupSummaryData(data),
             lead_sentiment : LeadSentimentMapper.mapLeadSentiment(data.leadSentiment),
-            location_insight : LocationInsightMapper.map(data.locationInsight)
+            location_insight : LocationInsightMapper.map(data.locationInsight),
+            lead_to_connection : LeadToConnectionMapper.mapLeadToConnection(data.leadToConnection),
         }
     },
+
     getConnectionSummary: async () => {
         return {
             connection_plan: {

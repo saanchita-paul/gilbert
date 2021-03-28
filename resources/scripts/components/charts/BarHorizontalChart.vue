@@ -76,9 +76,6 @@ export default {
                             anchor: 'end',
                             align: 'right',
                             formatter: (value, context) => Math.round(value) + '%',
-                            font: {
-                                weight: 'bold'
-                            }
                         }
                     }
                 }

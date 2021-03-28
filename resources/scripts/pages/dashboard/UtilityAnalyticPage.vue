@@ -60,7 +60,7 @@
                 <h3 class="section-title">How are my lead is going?</h3>
                 <v-row>
                     <v-col md="7" sm="12" style="height: 466px;">
-                        <ConnectionLeadWidget/>
+                        <ConnectionLeadWidget :chart-data="utilityDashboardData.lead_to_connection"/>
                     </v-col>
                     <v-col md="5" sm="12">
                         <div style="height: 270px; width: 100%; background: lightgreen">
@@ -72,7 +72,7 @@
                         </div>
                         <div style="width: 100%; margin-top: 12px; height: 150px;">
                             <LocationInsight
-                                :data="utilityDashboardData.location_insight"    
+                                :data="utilityDashboardData.location_insight"
                             >
                             </LocationInsight>
                         </div>

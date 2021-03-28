@@ -22,9 +22,12 @@ import COLOR from "@scripts/data/constants/COLOR";
 export default {
     name: "ConnectionLeadWidget",
     components: { BarChart },
+    props: {
+        chartData: {required: true}
+    },
     data() {
         return {
-            chartData: {
+            chartDataa: {
                 labels: [
                     ['Lead by', 'Channels'],
                     ['Service', 'Connection'],
