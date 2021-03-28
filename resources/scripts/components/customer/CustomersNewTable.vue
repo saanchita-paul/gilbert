@@ -42,7 +42,7 @@
                         {{ item.connection_status }}
                     </td>
                     <td class="fontweight400 font-size14 font-colorblack">
-                        <p small class="sentiment py-1 mb-0" v-bind:style="{backgroundColor: item.sentiment.color}">
+                        <p small class="sentiment pt-1 pb-2 mb-0" v-bind:style="{backgroundColor: item.sentiment.color}">
                             <span class="font-size10 fontweight400 mb-0"
                                   :color="item.sentiment.color">{{ item.sentiment.text }}</span></p>
                     </td>
@@ -126,6 +126,7 @@ export default {
         },
 
         openProfile(id) {
+            console.log('id', id);
             this.$router.push({name: `customer.details`, params: {id: id}})
         },
     }

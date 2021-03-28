@@ -116,14 +116,51 @@ export default {
      * @returns {CustomerDetails}
      */
     mapCustomerDetailsServices: customerData => {
-       return new CustomerDetails({...customerData})
+        return new CustomerDetails({
+            id: customerData.id,
+            full_name: customerData.full_name || customerData.first_name +" "+ customerData.last_name || '',
+            avatar: customerData.avatar || '',
+            last_interaction: customerData.last_interaction || '',
+            hood_ui: customerData.hood_ui || '',
+            facebook_id: customerData.facebook_id || '',
+            email: customerData.email || '',
+            phone: customerData.phone || '',
+
+            propertyProfileId: customerData.property_info.id || '',
+            propertyAccountType: customerData.property_info.account_type || '',
+            propertyTenancyType: customerData.property_info.tenancy_type || '',
+            propertyLifeSupport: customerData.property_info.life_support || '',
+            propertySolarPowered: customerData.property_info.solar_power || '',
+            propertyIdType: customerData.property_info.id_type || '',
+            propertyEAResponseTime: customerData.property_info.ea_response_time || '',
+            propertyEstimatedMovingPeriod: customerData.property_info.moving_date || '',
+            userAgreeTime: customerData.property_info.user_agree_time || '',
+            isManualAddress: customerData.property_info.is_manual_address || '',
+
+            connectionId: customerData.connection_info.id || '',
+            connectionProvider: customerData.connection_info.provider || '',
+            connectionSelectedPlan: customerData.connection_info.selected_plan || '',
+            connectionEneryType: customerData.connection_info.energy_type || '',
+            connectionAddress: customerData.connection_info.connection_address || '',
+            connectionEnergyType: customerData.connection_info.id || '',
+            connectionGasProvider: customerData.connection_info.id || '',
+            connectionElectricyFee: customerData.connection_info.electricity_connection_fee || '',
+            connectionEDestributor: customerData.connection_info.electricity_distributor || '',
+            gasMeterCharge: customerData.connection_info.gas_meter_reading_charge || '',
+            connectionNmiNo: customerData.connection_info.nmi || '',
+            connectionStatus: customerData.connection_info.id || '',
+            connectionReason: customerData.connection_info.id || '',
+            connectionMernNo: customerData.connection_info.mirn || '',
+
+
+        })
     },
 
 
     mapCustomerList: customerDataList => {
         return customerDataList.map(customerDetails => {
             return new Customer({
-                id: CustomerDetails.id,
+                id: customerDetails.id,
                 full_name: customerDetails.full_name || customerDetails.first_name +" "+ customerDetails.last_name || '',
                 avatar: customerDetails.avatar || '',
                 last_interaction: customerDetails.last_interaction || '',

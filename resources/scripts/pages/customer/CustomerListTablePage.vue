@@ -2,10 +2,10 @@
     <div>
         <v-row  class="customer-list-header" color="white">
             <v-col cols="6" class="pb-0">
-                <div class="search-bar px-5 pt-2">
+                <div class="search-bar px-5 pt-1 pb-0">
                         <v-icon medium class="customer-list-back-button pr-5 header-icon"> mdi-arrow-left </v-icon>
-                        <v-text-field label="Search leads" filled dense  prepend-inner-icon="mdi-magnify" ></v-text-field>
-                        <v-icon medium class="customer-list-filter-button pl-5 header-icon trasform270"> settings_input_composite</v-icon>
+                        <v-text-field label="Search leads" filled dense  prepend-inner-icon="mdi-magnify" class="max-height-70 pr-5"></v-text-field>
+                        <v-icon medium class="customer-list-filter-button pa-3 header-icon trasform270"> settings_input_composite</v-icon>
                 </div>
             </v-col>
         </v-row>
@@ -63,6 +63,13 @@ export default {
 
 .trasform270 {
     transform: rotate(270deg);
+    background: #F2F2F2;
+    border-radius: 4px !important;
+    position: relative;
+    top: 5px;
+}
+.max-height-70{
+    max-height: 70px !important;
 }
 
 </style>

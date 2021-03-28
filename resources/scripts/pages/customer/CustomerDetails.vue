@@ -143,7 +143,7 @@ export default {
         customerId:{
             required: false,
             type: Number
-        }
+        },
     },
 
     methods: {
@@ -152,8 +152,8 @@ export default {
         },
 
         async getCustomerDetailsData (customerId) {
-            this.customerinfo = await CustomerService.getCustomerDetails(customerId);
-            console.log(this.customerinfo);
+            this.customerinfo = await CustomerService.getCustomerDetails(63392);
+            console.log( this.customerinfo);
         }
     },
     mounted() {
