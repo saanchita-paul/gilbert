@@ -40,6 +40,19 @@ export default {
     },
 
     /**
+     * getting all messages of a Customer
+     * @param customerId
+     */
+     getCustomerMessages: async (customerId) => {
+        try {
+            const data = await axios.get(`${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api/customers/${'2856'}/chat-histories/`);
+            return CustomerMapper.mapCustomerMessages(data.data);
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    /**
      *
      * @param customerId
      * @returns {Promise<CustomerProperty>}

@@ -6,6 +6,8 @@ import CustomerOrder from "@scripts/models/customer-profile/CustomerOrder";
 import CustomerOtherService from "@scripts/models/customer-profile/CustomerOtherService";
 import CustomerDetails from "@scripts/models/CustomerDetails";
 import Customer from "@scripts/models/Customer";
+import CustomerMessage from "@scripts/models/CustomerMessage";
+import Pagination from "@scripts/models/Pagination";
 
 export default {
     toClientDetail: (data) => {
@@ -121,5 +123,30 @@ export default {
         return customerDataList.map(customerDetails => {
             return new Customer(customerDetails);
         });
+    },
+
+    mapCustomerMessages: customerMessages => {
+        const messages = [];
+        customerMessages.data.forEach(function(message, index, customerMessages) {
+            if(index !== customerMessages.length - 1) {
+                if(customerMessages[index].type === customerMessages[index+1].type) {
+                    messages.push(new CustomerMessage(message, false));
+                } else {
+                    messages.push(new CustomerMessage(message, true));
+                }
+
+            } else {
+                messages.push(new CustomerMessage(message, true));
+            }
+        })
+        
+        // const messages = customerMessages.data.map(message => {
+        //     return new CustomerMessage(message, true);
+        // });
+        const pagination = new Pagination(customerMessages.pagination)
+        return {
+            data : messages,
+            pagination: pagination
+        };
     }
 }

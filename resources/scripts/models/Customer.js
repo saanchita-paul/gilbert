@@ -8,7 +8,7 @@ export default class Customer {
                     messagerId,
                     email,
                     ph,
-
+                    avatar,
                     issueStatus,
                     connectionStatus,
                     sentiment,
@@ -23,7 +23,7 @@ export default class Customer {
         this.messager_id = messagerId || '#1671408219574925';
         this.email = email || 'sazzadahmed41@gmail.com';
         this.ph = ph || '1671408219574925';
-
+        this.avatar = avatar || null;
         this.issue_status = issueStatus || null;
         this.connection_status = connectionStatus || null;
         this.sentiment = sentiment || null;

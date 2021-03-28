@@ -90,10 +90,42 @@
                                 </v-col>
                             </v-row>
                         </v-app-bar>
-                        <v-col cols="12" style="height: 60vh;border: 1px solid red;display: flex;flex-direction: column-reverse;">
-                            <v-btn @click="sendToMessenger" class="move-facebook-messagenger" style="align-self:flex-end" >
-                                <span class="pr-3">take me to messenger</span><v-icon class="pr-3">mdi-facebook-messenger</v-icon><v-icon class="pr-0">east</v-icon>
-                            </v-btn>
+                        <v-col cols="12" style="height: 78vh;display: flex;">
+                            
+                            <v-container class="fill-height" v-if="customerMessages">
+                                <v-row class="fill-height pb-2">
+                                    <v-col>
+                                        <div v-for="(item, index) in customerMessages.data" :key="index"
+                                            :class="['d-flex flex-row align-center my-2', item.type === 'RESPONSE' ? 'justify-end': null]">
+                                            <template v-if="item.type === 'RESPONSE'">
+                                                <v-card elevation="1" class="pa-2 mr-2 expansion-header-background-active">
+                                                    <span  class=" mgs-text">{{ item.text_content }}</span>
+                                                </v-card>
+                                                <v-avatar v-if="item.isAvatarNeed" color="white" size="50">
+                                                    <img
+                                                        :src="item.customer.avatar"
+                                                    >
+                                                </v-avatar>
+                                            </template>
+
+                                            <template v-if="item.type === 'RECEIVE'">
+                                                <v-avatar v-if="item.isAvatarNeed" color="white" size="50">
+                                                    <img
+                                                        :src="item.customer.avatar"
+                                                    >
+                                                </v-avatar>
+                                                <v-card elevation="1" class="pa-2 ml-2  white">
+                                                    <span  class=" mgs-text">{{ item.text_content }}</span>
+                                                </v-card>
+                                            </template>
+                                        </div>
+                                    </v-col>
+                                </v-row>
+                                <v-btn @click="sendToMessenger" class="move-facebook-messagenger text-lowercase">
+                                    <span class="pr-3">take me to messenger</span><v-icon class="pr-3">mdi-facebook-messenger</v-icon><v-icon class="pr-0">east</v-icon>
+                                </v-btn>
+                            </v-container>
+                        
                         </v-col>
                     </v-row>
                 </v-col>
@@ -115,7 +147,8 @@ export default {
             customerinfo: this.getCustomerDetails(),
             activeModel: 0,
             pageIndex: 0,
-            customerList: []
+            customerList: [],
+            customerMessages: null,
         }
     },
     components:{
@@ -152,10 +185,16 @@ export default {
 
         async getCustomerList (pageIndex) {
             this.customerList = await CustomerService.getCustomerList(pageIndex);
+        },
+
+        async getCustomerMessages (customerId) {
+            this.customerMessages = await CustomerService.getCustomerMessages(customerId);
+            console.log('Data',this.customerMessages);
         }
     },
     mounted() {
         this.getCustomerDetailsData(this.customerId);
+        this.getCustomerMessages(this.customerId);
         this.getCustomerList(this.pageIndex);
 
     }
@@ -241,12 +280,20 @@ body {
     color:white;
     font-size: 12px;
     font-weight: 500;
-    padding:5px;
+    padding:8px;
+    position:fixed;
+    right:15px;
+    bottom:15px
 }
 
 .messenger-header-p {
     font-size: 12px;
     line-height: normal;
+}
+.mgs-text {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
 }
 
 
