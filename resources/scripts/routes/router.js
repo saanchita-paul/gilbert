@@ -45,7 +45,8 @@ const router = new VueRouter({
                     name: 'customer.details',
                     meta: {
                         isProtected: false
-                    }
+                    },
+                    props: true
                 },
                 {
                     path: '/helpdesk',

@@ -49,7 +49,7 @@ export default class CustomerDetails {
         this.last_interaction = last_interaction;
         this.hood_uid = hood_ui;
         this.messager_id = facebook_id;
-        this.email = email || 'sazzadahmed41@gmail.com';
+        this.email = email;
         this.ph = phone;
 
         this.property_profile_id = propertyProfileId || '#1901';

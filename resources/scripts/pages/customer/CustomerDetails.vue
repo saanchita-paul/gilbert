@@ -140,7 +140,7 @@ export default {
     },
 
     props: {
-        customerId:{
+        id:{
             required: false,
             type: Number
         },
@@ -151,13 +151,12 @@ export default {
             return new CustomerDetails();
         },
 
-        async getCustomerDetailsData (customerId) {
-            this.customerinfo = await CustomerService.getCustomerDetails(63392);
-            console.log( this.customerinfo);
+        async getCustomerDetailsData (id) {
+            this.customerinfo = await CustomerService.getCustomerDetails(id);
         }
     },
     mounted() {
-        this.getCustomerDetailsData(this.customerId);
+        this.getCustomerDetailsData(this.id);
     }
 }
 </script>
