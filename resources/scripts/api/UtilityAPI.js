@@ -75,6 +75,6 @@ export default {
         }
     },
     utilityAnalytic: async () => {
-        const data = (await axios.get(`${BOT_API}/utility/home`)).data;
+        // const data = (await axios.get(`${BOT_API}/utility/home`)).data;
     }
 }
