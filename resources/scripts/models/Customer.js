@@ -1,34 +1,39 @@
+import DayJs from "dayjs";
+import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
+
 export default class Customer {
     constructor({
                     id,
-                    name,
-                    profilePic,
-                    lastInteractiveTime,
-                    hoodUid,
-                    messagerId,
+                    full_name,
+                    avatar,
+                    last_interaction,
+                    hood_ui,
+                    facebook_id,
                     email,
-                    ph,
+                    phone,
 
-                    issueStatus,
-                    connectionStatus,
+                    manual_intervention_status,
+                    connection_status,
                     sentiment,
-                    location,
-                    connectionDate
+                    state,
+                    connection_date,
+                    connection_time,
                 } = {}) {
-        this.id = id || null;
-        this.name = name || 'Sazzad';
-        this.profile_pic = profilePic || 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/106438752/original/3c4d95e3604313ecca407541a45b6a58dcc67c5c/update-your-online-dating-profile-bio-to-get-you-more-matches.jpg';
-        this.last_interactive_time = lastInteractiveTime || '10m';
-        this.hood_uid = hoodUid || '#1671408219574925';
-        this.messager_id = messagerId || '#1671408219574925';
-        this.email = email || 'sazzadahmed41@gmail.com';
-        this.ph = ph || '1671408219574925';
+        this.id = id;
+        this.name = full_name;
+        this.profile_pic = avatar;
+        this.last_interactive_time = last_interaction;
+        this.hood_uid = hood_ui;
+        this.messager_id = facebook_id;
+        this.email = email;
+        this.ph = phone;
 
-        this.issue_status = issueStatus || null;
-        this.connection_status = connectionStatus || null;
-        this.sentiment = sentiment || null;
-        this.location = location || null;
-        this.connection_date = connectionDate || null;
+        this.issue_status = manual_intervention_status;
+        this.connection_status = connection_status;
+        this.sentiment = sentiment;
+        this.location = state;
+        this.connection_date = connection_date;
+        this.connection_time =   connection_time;
 
     }
 
