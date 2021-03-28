@@ -32,6 +32,9 @@ export default {
                 type: 'line',
                 data: this.data,
                 options: {
+                    layout: {
+                        padding: 10
+                    },
                     elements: {
                         point:{
                             radius: 2
