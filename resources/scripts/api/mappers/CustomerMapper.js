@@ -6,6 +6,9 @@ import CustomerOrder from "@scripts/models/customer-profile/CustomerOrder";
 import CustomerOtherService from "@scripts/models/customer-profile/CustomerOtherService";
 import CustomerDetails from "@scripts/models/CustomerDetails";
 import Customer from "@scripts/models/Customer";
+import DayJs from "dayjs";
+import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
+import {mapSentiment} from "@scripts/data/SentimentColor";
 
 export default {
     toClientDetail: (data) => {
@@ -119,7 +122,27 @@ export default {
 
     mapCustomerList: customerDataList => {
         return customerDataList.map(customerDetails => {
-            return new Customer(customerDetails);
+            return new Customer({
+                id: CustomerDetails.id,
+                full_name: customerDetails.full_name || customerDetails.first_name +" "+ customerDetails.last_name || '',
+                avatar: customerDetails.avatar || '',
+                last_interaction: customerDetails.last_interaction || '',
+                hood_ui: customerDetails.hood_ui || '',
+                facebook_id: customerDetails.facebook_id || '',
+                email: customerDetails.email || '',
+                phone: customerDetails.phone || '',
+                manual_intervention_status: customerDetails.manual_intervention_status || '',
+                connection_status: customerDetails.connection_status || '',
+                sentiment: customerDetails.sentiment? mapSentiment(customerDetails.sentiment): '',
+                state: customerDetails.state || '',
+                connection_date: customerDetails.connection_date
+                    ? new DayJs(customerDetails.connection_date).format(DATE_FORMAT.DATE_STRING)
+                    : null,
+                connection_time: customerDetails.connection_date
+                    ? new DayJs(customerDetails.connection_date).format(DATE_FORMAT.TIME_STRING_12)
+                    : null,
+
+            });
         });
     }
 }

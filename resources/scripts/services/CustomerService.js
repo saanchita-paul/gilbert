@@ -63,10 +63,10 @@ export default {
      * @param manualInterventionStatus
      */
     toggleManualIntervention: (customerId, manualInterventionStatus) => CustomerAPI.toggleManualIntervention(customerId, manualInterventionStatus),
-    
+
     /**
     * @param pageIndex
      * @returns {Promise<CustomerListInfo>}
      */
-    getCustomerTableData: pageIndex => CustomerAPI.getCustomerList(pageIndex),
+    getCustomerTableData: page => CustomerAPI.getCustomerList(page),
 }
