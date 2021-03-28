@@ -5,10 +5,12 @@ export default {
         function mapTotalLead(data) {
             let chartLabels = [];
             let chartData = [];
-            data.charts.forEach(element => {
-                chartLabels.push(element.date);
-                chartData.push(element.total);
-            });
+            if(data.charts) {
+                data.charts.forEach(element => {
+                    chartLabels.push(element.date);
+                    chartData.push(element.total);
+                });
+            }
 
             return {
                 value: data.total,
@@ -29,10 +31,12 @@ export default {
         function mapQualifiedLead(data) {
             let chartLabels = [];
             let chartData = [];
-            data.charts.forEach(element => {
-                chartLabels.push(element.date);
-                chartData.push(element.total);
-            });
+            if(data.charts) {
+                data.charts.forEach(element => {
+                    chartLabels.push(element.date);
+                    chartData.push(element.total);
+                });
+            }
 
             return {
                 value: data.total,
@@ -52,10 +56,12 @@ export default {
         function mapTotalEnergyConnection(data) {
             let chartLabels = [];
             let chartData = [];
-            data.charts.forEach(element => {
-                chartLabels.push(element.date);
-                chartData.push(element.total);
-            });
+            if(data.charts) {
+                data.charts.forEach(element => {
+                    chartLabels.push(element.date);
+                    chartData.push(element.total);
+                });
+            }
 
             return {
                 value: data.total,
@@ -77,11 +83,13 @@ export default {
             let chartLabels = [];
             let chartData1 = [];
             let chartData2 = [];
-            data.charts.forEach(element => {
-                chartLabels.push(element.date);
-                chartData1.push(element.total_lead);
-                chartData2.push(element.total_conversion);
-            });
+            if(data.charts) {
+                data.charts.forEach(element => {
+                    chartLabels.push(element.date);
+                    chartData1.push(element.total_lead);
+                    chartData2.push(element.total_conversion);
+                });
+            }
 
             return {
                 value: data.total,
@@ -113,11 +121,13 @@ export default {
             let chartLabels = [];
             let chartData1 = [];
             let chartData2 = [];
-            data.charts.forEach(element => {
-                chartLabels.push(element.date);
-                chartData1.push(element.full_automation);
-                chartData2.push(element.manual_intervention);
-            });
+            if(data.charts) {
+                data.charts.forEach(element => {
+                    chartLabels.push(element.date);
+                    chartData1.push(element.full_automation);
+                    chartData2.push(element.manual_intervention);
+                });
+            }
 
             return {
                 value: data.total,

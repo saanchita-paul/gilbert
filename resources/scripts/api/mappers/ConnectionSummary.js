@@ -87,7 +87,7 @@ export default {
             let labels = ['Own', 'Rent'];
             let values = [0, 0];
             data.forEach((dt) => {
-                if(dt.rent.toString() === "1")
+                if(dt.rent && dt.rent.toString() === "1")
                 {
                     dt.rent = "Rent";
                 }

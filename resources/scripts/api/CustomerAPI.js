@@ -446,8 +446,11 @@ export default {
      * @param manualInterventionStatus
      */
      toggleManualIntervention: async (customerId, manualInterventionStatus) => {
-        const response = (await axios.post(`${ROOT}/utility/${customerId}/manual-intervention`, {
-            manualInterventionStatus: manualInterventionStatus
+        const response = (await axios.get(`${ROOT}/utility/${'2179'}/manual-intervention`, {
+            params: {
+                manualInterventionStatus: manualInterventionStatus
+            }
+            // manualInterventionStatus: manualInterventionStatus
         }));
         return response;
     },
