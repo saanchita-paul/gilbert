@@ -104,7 +104,7 @@
                                                 </v-card>
                                                 <v-avatar v-if="item.isAvatarNeed" color="white" size="50">
                                                     <img
-                                                        :src="item.customer.avatar"
+                                                        :src="item.customer.profile_pic"
                                                     >
                                                 </v-avatar>
                                             </template>
@@ -112,7 +112,7 @@
                                             <template v-if="item.type === 'RECEIVE'">
                                                 <v-avatar v-if="item.isAvatarNeed" color="white" size="50">
                                                     <img
-                                                        :src="item.customer.avatar"
+                                                        :src="item.customer.profile_pic"
                                                     >
                                                 </v-avatar>
                                                 <v-card elevation="1" class="pa-2 ml-2  white">

@@ -10,10 +10,6 @@ export default class Customer {
                     hood_ui,
                     facebook_id,
                     email,
-                    ph,
-                    avatar,
-                    issueStatus,
-                    connectionStatus,
                     phone,
 
                     manual_intervention_status,
@@ -38,7 +34,6 @@ export default class Customer {
         this.location = state;
         this.connection_date = connection_date;
         this.connection_time =   connection_time;
-        this.avatar = avatar || null;
 
     }
 
