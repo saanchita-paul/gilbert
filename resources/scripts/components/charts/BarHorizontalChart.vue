@@ -21,7 +21,6 @@ export default {
     data() {
         return {
             chartId: ApplicationService.getRandomString(),
-
         }
     },
     mounted() {
@@ -42,11 +41,13 @@ export default {
                 data: this.data,
                 options: {
                     responsive: false,
-                    label: {
-                        display: false
-                    },
                     legend: {
                         display: false
+                    },
+                    layout: {
+                        padding: {
+                            right: 20,
+                        }
                     },
                     scales: {
                         // ticks: {
@@ -74,7 +75,8 @@ export default {
                     plugins: {
                         datalabels: {
                             anchor: 'end',
-                            align: 'right',
+                            clamp: false,
+                            align: 'end',
                             formatter: (value, context) => Math.round(value) + '%',
                         }
                     }

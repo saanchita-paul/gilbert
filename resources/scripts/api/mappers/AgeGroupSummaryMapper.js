@@ -17,7 +17,7 @@ export default {
             return {
                 labels: labels,
                 datasets: [{
-                    maxBarThickness: 28,
+
                     borderWidth: 1,
                     data: values.map(d=> Math.floor (d/totalValue * 100)),
                 }]
