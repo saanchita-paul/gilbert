@@ -1,14 +1,14 @@
 <template>
     <v-card>
         <v-card-title class="font-size16 fontweight400 pb-0">
-            Customers needing urgernt assistance
+            Customers needing urgent assistance
         </v-card-title>
         <v-data-table
             :headers="headers"
             :items="customers"
             :page.sync="page"
             :items-per-page="itemsPerPage"
-            @page-count="total = $event"
+            :server-items-length="total"
             class="elevation-1"
         >
             <template
@@ -95,7 +95,7 @@ export default {
     },
     watch: {
         page(pageNew, pageOld) {
-            if (value !== pageOld) {
+            if (pageNew !== pageOld) {
                 this.load(pageNew)
             }
         }
