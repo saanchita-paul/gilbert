@@ -21,7 +21,6 @@ export default {
     data() {
         return {
             chartId: ApplicationService.getRandomString(),
-
         }
     },
     mounted() {
@@ -41,12 +40,14 @@ export default {
                 type: 'horizontalBar',
                 data: this.data,
                 options: {
-                    responsive: false,
-                    label: {
-                        display: false
-                    },
+                    responsive: true,
                     legend: {
                         display: false
+                    },
+                    layout: {
+                        padding: {
+                            right: 50,
+                        }
                     },
                     scales: {
                         // ticks: {
@@ -74,11 +75,9 @@ export default {
                     plugins: {
                         datalabels: {
                             anchor: 'end',
-                            align: 'right',
+                            clamp: false,
+                            align: 'end',
                             formatter: (value, context) => Math.round(value) + '%',
-                            font: {
-                                weight: 'bold'
-                            }
                         }
                     }
                 }

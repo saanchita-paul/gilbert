@@ -5,7 +5,8 @@
                 <v-col  cols="6" class="pt-0">
                     <v-row>
                         <v-app-bar>
-                            <v-icon>keyboard_backspace</v-icon>
+                            <v-icon medium class="customer-list-back-button pr-5 header-icon"> mdi-arrow-left </v-icon>
+                            <v-text-field label="Search leads" filled dense hide-details prepend-inner-icon="mdi-magnify" class="max-height-70 pr-5"></v-text-field>
                         </v-app-bar>
                     </v-row>
                     <v-row>
@@ -166,7 +167,7 @@ export default {
     },
     methods: {
         sendToMessenger() {
-            window.open(`https://www.facebook.com/messages/t/${this.customerinfo.property_profile_id}`, "_blank");   
+            window.open(`https://www.facebook.com/messages/t/${this.customerinfo.property_profile_id}`, "_blank");
         },
 
         async manualInterventionToggle() {
