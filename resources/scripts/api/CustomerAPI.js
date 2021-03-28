@@ -40,6 +40,19 @@ export default {
     },
 
     /**
+     * getting all messages of a Customer
+     * @param customerId
+     */
+     getCustomerMessages: async (customerId) => {
+        try {
+            const data = await axios.get(`${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api/customers/${'2856'}/chat-histories/`);
+            return CustomerMapper.mapCustomerMessages(data.data);
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    /**
      *
      * @param customerId
      * @returns {Promise<CustomerProperty>}
@@ -100,8 +113,7 @@ export default {
      * @returns {Promise<CustomerListInfo[]>}
      */
     getCustomerList: async pageIndex=> {
-        // Todo API End point will be replaced later
-        const data =(await axios.get(`${'https://devbot.hood.ai/hood-dashboard/api'}/customers?page=${pageIndex}`)).data;
+        const data =(await axios.get(`${BOT_API}/customers?page=${pageIndex}`)).data;
 
         return {
             data: CustomerMapper.mapCustomerList(data.data),

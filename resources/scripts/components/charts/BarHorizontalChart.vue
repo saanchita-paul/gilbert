@@ -40,13 +40,13 @@ export default {
                 type: 'horizontalBar',
                 data: this.data,
                 options: {
-                    responsive: false,
+                    responsive: true,
                     legend: {
                         display: false
                     },
                     layout: {
                         padding: {
-                            right: 20,
+                            right: 50,
                         }
                     },
                     scales: {

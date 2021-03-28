@@ -2,10 +2,10 @@
     <v-app>
         <v-row>
             <v-app-bar>
-                <v-icon>keyboard_backspace</v-icon>
+                <v-icon @click="goBack">keyboard_backspace</v-icon>
             </v-app-bar>
         </v-row>
-        <v-container class="pt-7 container-background">
+        <v-container class="pt-0 container-background">
             <v-row align-center class="header color--text">
                 <v-col class="avatar-containner pr-0">
                     <v-avatar>
@@ -26,7 +26,7 @@
                 </v-col>
             </v-row>
 
-            <v-row class="">
+            <v-row class="gray-bg">
                 <v-col cols="6">
                     <v-card>
                         <v-card-title>
@@ -147,6 +147,9 @@ export default {
     },
 
     methods: {
+        goBack() {
+            this.$router.go(-1);
+        },
         getCustomerDetails() {
             return new CustomerDetails();
         },
@@ -165,8 +168,8 @@ export default {
 body {
     font-family: "Roboto" !important;
 }
-.container-background {
-    background: rgba(242, 242, 242, 1);
+.gray-bg {
+    background: rgb(242, 242, 242);
 }
 .header {
     display: flex;
@@ -175,6 +178,7 @@ body {
     color: white;
     line-height: 28px;
     font-size: 16px;
+    margin-top: 30px !important;
 }
 
 .profile-title {

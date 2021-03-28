@@ -60,6 +60,12 @@ export default {
     /**
      *
      * @param customerId
+     */
+    getCustomerMessages: customerId => CustomerAPI.getCustomerMessages(customerId),
+
+    /**
+     *
+     * @param customerId
      * @param manualInterventionStatus
      */
     toggleManualIntervention: (customerId, manualInterventionStatus) => CustomerAPI.toggleManualIntervention(customerId, manualInterventionStatus),
