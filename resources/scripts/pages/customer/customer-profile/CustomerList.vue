@@ -72,7 +72,7 @@
                         </v-col>
                     </v-row>
                 </v-col>
-                <v-col cols="6" class="pt-0">
+                <v-col cols="6" class="pt-0" style="max-height: 100vh;overflow: auto">
                     <CustomerMessenger></CustomerMessenger>
                 </v-col>
             </v-row>

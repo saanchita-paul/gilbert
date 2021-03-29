@@ -44,8 +44,9 @@ export default {
      * @param customerId
      */
      getCustomerMessages: async (customerId) => {
+        // Todo API End point will be replaced later
         try {
-            const data = await axios.get(`${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api/customers/${'2856'}/chat-histories/`);
+            const data = await axios.get(`${'https://devbot.hood.ai/hood-dashboard/api/customers/'}${customerId}/chat-histories/`);
             return CustomerMapper.mapCustomerMessages(data.data);
         } catch (error) {
             return error.data;

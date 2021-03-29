@@ -9,7 +9,7 @@
                 </v-col>
                 <v-col cols="7" class="pt-0 pt-5">
                     <h3 class="mb-0 font-weight-bold profile-title">{{customerinfo.name}}</h3>
-                    <p class="mb-0 last-interactive profile-subtitle">interact {{customerinfo.last_interactive_time}} ago</p>
+                    <p class="mb-0 last-interactive profile-subtitle">Interact {{customerinfo.last_interaction}}</p>
                 </v-col>
                 <v-col cols="3" class="messenger-header">
                     <v-switch v-model="customerinfo.manualInterventionIsActive" @click="manualInterventionToggle"></v-switch>
@@ -25,23 +25,19 @@
                         <div v-for="(item, index) in customerMessages.data" :key="index"
                             :class="['d-flex flex-row align-center my-2', item.type === 'RESPONSE' ? 'justify-end': null]">
                             <template v-if="item.type === 'RESPONSE'">
-                                <v-card elevation="1" class="pa-2 mr-2 expansion-header-background-active">
+                                <v-card elevation="1" class="pa-2 mr-2 expansion-header-background-active message-card">
                                     <span  class=" mgs-text">{{ item.text_content }}</span>
                                 </v-card>
-                                <v-avatar v-if="item.isAvatarNeed" color="white" size="50">
-                                    <img
-                                        :src="item.customer.profile_pic"
-                                    >
+                                <v-avatar v-if="item.isAvatarNeed" color="white" size="45">
+                                    
                                 </v-avatar>
                             </template>
 
                             <template v-if="item.type === 'RECEIVE'">
-                                <v-avatar v-if="item.isAvatarNeed" color="white" size="50">
-                                    <img
-                                        :src="item.customer.profile_pic"
-                                    >
+                                <v-avatar v-if="item.isAvatarNeed" color="white" size="45">
+                                    <img :src="item.customer.profile_pic">
                                 </v-avatar>
-                                <v-card elevation="1" class="pa-2 ml-2  white">
+                                <v-card elevation="1" class="pa-2 ml-2 white message-card">
                                     <span  class=" mgs-text">{{ item.text_content }}</span>
                                 </v-card>
                             </template>
@@ -59,44 +55,21 @@
 </template>
 
 <script>
-
-import CustomerDetails from "@scripts/models/CustomerDetails";
 import CustomerService from "@scripts/services/CustomerService";
-import CustomerHelpDesk from "@scripts/pages/customer/customer-profile/CustomerHelpDesk";
 
 export default {
     props: ['customer'],
     name: "CustomerMessanger",
     data() {
         return {
-            customerinfo: this.getCustomerDetails(),
-            activeModel: 0,
-            pageIndex: 0,
-            customerList: [],
+            customerinfo: null,
             customerMessages: null,
             customerId: this.$route.query.customerId || null
         }
     },
-    components:{
-        'customer-help-dest':CustomerHelpDesk
-    },
-
-    props: {
-        // customerId:{
-        //     required: false,
-        //     type: Number
-        // }
-    },
-    watch: {
-        customerId(newId) {
-
-        }
-    },
     async mounted() {
-        // await this.getCustomerDetailsData(this.customerId);
+        await this.getCustomerDetailsData(this.customerId);
         await this.getCustomerMessages(this.customerId);
-        await this.getCustomerList(this.pageIndex);
-        this.loadCustomerId();
     },
     methods: {
         sendToMessenger() {
@@ -107,35 +80,16 @@ export default {
             await CustomerService.toggleManualIntervention(this.customerinfo.id, this.customerinfo.manualInterventionIsActive);
         },
 
-        getCustomerDetails() {
-            return new CustomerDetails();
-        },
-
         async getCustomerDetailsData (customerId) {
             this.customerinfo = await CustomerService.getCustomerDetails(customerId);
+            console.log('Customer Info', this.customerinfo);
 
-        },
-
-        async getCustomerList (pageIndex = 1) {
-            this.customerList = await CustomerService.getCustomerList(pageIndex);
-            let response = await CustomerService.getCustomerList();
-            this.customerList = response.data;
-            console.log('customerdata', this.customerList[0].id);
         },
 
         async getCustomerMessages (customerId) {
-            this.customerMessages = await CustomerService.getCustomerMessages('2856');
-            console.log('Data',this.customerMessages);
+            this.customerMessages = await CustomerService.getCustomerMessages(customerId);
+            console.log('Customer Messages',this.customerMessages);
         },
-        loadCustomerId() {
-            if (!this.customerId) {
-                const id = this.customerList[0]?.id;
-                console.log(this.customerList, "CUSTOMER")
-                if (id) {
-                    this.$router.push({name: 'helpdesk', query: {customerId: id}})
-                }
-            }
-        }
     },
 }
 </script>
@@ -155,9 +109,6 @@ body {
     background: linear-gradient(to right bottom, #56CCF2 -75.93%, #542E89 42.76%, #9C27B0 118.83%);
     color:white;
 }
-.expansion-header-background {
-    background: transparent;
-}
 
 .profile-title {
     font-size: 14px !important;
@@ -170,34 +121,9 @@ body {
     font-weight: 400 !important;
     line-height: 14px;
 }
-.expand-header-info {
-    font-weight: 700;
-    font-size: 12px;
-}
-
-.profile_body_header {
-    font-weight: 500 !important;
-    font-size: 14px;
-    line-height: 24px;
-    color: #252733;
-    padding-top: 0px;
-    padding-bottom: 0px;
-}
-
-.profile-info-title {
-    font-size: 12px;
-    color: rgba(37, 39, 51, 1);
-}
 
 .avatar-containner {
     flex-grow: 0;
-}
-.body_row {
-    background: rgba(227, 224, 231, 1);
-
-}
-.reason {
-    background: rgba(242, 242, 242, 1);
 }
 
 .rejected {
@@ -234,6 +160,8 @@ body {
     font-weight: 400;
     line-height: 24px;
 }
-
+.message-card {
+    max-width: 260px;
+}
 
 </style>
