@@ -2,15 +2,15 @@
     <div>
         <v-row  class="customer-list-header" color="white">
             <v-col cols="6" class="pb-0">
-                <div class="search-bar px-5 pt-1 pb-0">
-                        <v-icon medium class="customer-list-back-button pr-5 header-icon"> mdi-arrow-left </v-icon>
-                        <v-text-field label="Search leads" filled dense  prepend-inner-icon="mdi-magnify" class="max-height-70 pr-5"></v-text-field>
-                        <v-icon medium class="customer-list-filter-button pa-3 header-icon trasform270"> settings_input_composite</v-icon>
+                <div class="search-bar px-5 pt-0 pb-0">
+                        <v-icon medium class="customer-list-back-button pr-5 pb-3 header-icon"> mdi-arrow-left </v-icon>
+                        <v-text-field label="Search leads" filled dense  prepend-inner-icon="mdi-magnify" class="max-height-70 pr-5" v-if="false"></v-text-field>
+                        <v-icon medium class="customer-list-filter-button pa-3 header-icon trasform270" v-if="false"> settings_input_composite</v-icon>
                 </div>
             </v-col>
         </v-row>
-        <v-container>
-            <CustomersNewTable v-if="isLoaded" class="mt-2"/>
+        <v-container class="pt-9">
+            <CustomersNewTable v-if="isLoaded"/>
         </v-container>
     </div>
 </template>
@@ -55,10 +55,6 @@ export default {
 
 .header-icon{
     color:#323232;
-}
-.v-text-field__details{
-    height: 0px !important;
-    min-height: 0px !important;
 }
 
 .trasform270 {

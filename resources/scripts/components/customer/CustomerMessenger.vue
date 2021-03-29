@@ -9,7 +9,7 @@
                 </v-col>
                 <v-col cols="7" class="pt-0 pt-5">
                     <h3 class="mb-0 font-weight-bold profile-title">{{customerinfo.name}}</h3>
-                    <p class="mb-0 last-interactive profile-subtitle">interact {{customerinfo.last_interactive_time}} ago</p>
+                    <p class="mb-0 last-interactive profile-subtitle">Interact {{customerinfo.last_interactive_time}} ago</p>
                 </v-col>
                 <v-col cols="3" class="messenger-header">
                     <v-switch v-model="customerinfo.manualInterventionIsActive" @click="manualInterventionToggle"></v-switch>
