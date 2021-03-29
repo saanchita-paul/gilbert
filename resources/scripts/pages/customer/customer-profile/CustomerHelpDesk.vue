@@ -1,5 +1,5 @@
 <template>
-    <div v-if="isLoaded">
+    <div v-if="customer && customer.id">
         <v-row class="body_row">
             <v-col cols="12" class="px-0">
                 <v-card>
@@ -10,21 +10,21 @@
                     </v-card-title>
                     <v-card-text>
                         <v-row class="pb-2">
-                            <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title"><span class=" font-weight-bold">Id#{{customerinfo.property_profile_id}}</span></p></v-col>
-                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Account Type:</span>{{customerinfo.property_account_type}}</p></v-col>
-                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Life Support:</span> {{customerinfo.property_life_support}}</p></v-col>
-                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold  ">Tenancy Type:</span> {{customerinfo.property_tenancy_type}}</p></v-col>
-                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold  ">Solar Powered:</span> {{customerinfo.property_solar_powered}}</p></v-col>
+                            <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title"><span class=" font-weight-bold">Id#{{customer.property_profile_id}}</span></p></v-col>
+                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Account Type:</span>{{customer.property_account_type}}</p></v-col>
+                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Life Support:</span> {{customer.property_life_support}}</p></v-col>
+                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold  ">Tenancy Type:</span> {{customer.property_tenancy_type}}</p></v-col>
+                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold  ">Solar Powered:</span> {{customer.property_solar_powered}}</p></v-col>
                         </v-row>
                         <v-row class="py-2">
-                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">ID Type:</span> {{customerinfo.property_id_type}}</p></v-col>
-                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">EA Response Time:</span> {{customerinfo.property_ea_response_time}}</p></v-col>
-                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Estimated moving period:</span> {{customerinfo.estimeted_moving_period}}</p></v-col>
-                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">User Agree Time:</span>{{customerinfo.user_agree_time}}</p></v-col>
+                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">ID Type:</span> {{customer.property_id_type}}</p></v-col>
+                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">EA Response Time:</span> {{customer.property_ea_response_time}}</p></v-col>
+                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Estimated moving period:</span> {{customer.estimeted_moving_period}}</p></v-col>
+                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">User Agree Time:</span>{{customer.user_agree_time}}</p></v-col>
                         </v-row>
 
                         <v-row class="py-2">
-                            <v-col cols="6"><p class="mb-0 profile-info-title"><span class="font-weight-bold profile-info-title">Is Manual Address:</span> {{customerinfo.is_manual_address}}</p></v-col>
+                            <v-col cols="6"><p class="mb-0 profile-info-title"><span class="font-weight-bold profile-info-title">Is Manual Address:</span> {{customer.is_manual_address}}</p></v-col>
                         </v-row>
                     </v-card-text>
                 </v-card>
@@ -41,43 +41,43 @@
                     </v-card-title>
                     <v-card-text>
                         <v-row>
-                            <v-col cols="12" class="py-0"><p class="mb-0"><span class="font-weight-bold  profile-info-title">Id#{{customerinfo.connection_id}}</span></p></v-col>
+                            <v-col cols="12" class="py-0"><p class="mb-0"><span class="font-weight-bold  profile-info-title">Id#{{customer.connection_id}}</span></p></v-col>
                             <v-col cols="6" class="py-1">
                                 <v-row>
-                                    <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Provider:</span> {{customerinfo.connection_provider}}</p></v-col>
-                                    <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title "><span class="font-weight-bold">Selected Plan:</span> {{customerinfo.connection_selected_plan}}</p></v-col>
+                                    <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Provider:</span> {{customer.connection_provider}}</p></v-col>
+                                    <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title "><span class="font-weight-bold">Selected Plan:</span> {{customer.connection_selected_plan}}</p></v-col>
                                 </v-row>
                             </v-col>
-                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title "><span class="font-weight-bold">Connection Address:</span></p><p class="profile-info-title">{{customerinfo.connection_address}}</p></v-col>
+                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title "><span class="font-weight-bold">Connection Address:</span></p><p class="profile-info-title">{{customer.connection_address}}</p></v-col>
                         </v-row>
                         <v-row class="py-2">
-                            <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Energy Type:</span> {{customerinfo.connection_energy_type}}</p></v-col>
-                            <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Gas Provider:</span> {{customerinfo.connection_gas_provider}}</p></v-col>
-                            <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">E-Destributor:</span> {{customerinfo.e_destributor}}</p></v-col>
-                            <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0"><span class="font-weight-bold">Gas meter Reading Charge:</span> {{customerinfo.gas_meter_charge}}</p></v-col>
-                            <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0"><span class="font-weight-bold">Electricity Connection Fee:</span> {{customerinfo.connection_electricy_fee}}</p></v-col>
+                            <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Energy Type:</span> {{customer.connection_energy_type}}</p></v-col>
+                            <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Gas Provider:</span> {{customer.connection_gas_provider}}</p></v-col>
+                            <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">E-Destributor:</span> {{customer.e_destributor}}</p></v-col>
+                            <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0"><span class="font-weight-bold">Gas meter Reading Charge:</span> {{customer.gas_meter_charge}}</p></v-col>
+                            <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0"><span class="font-weight-bold">Electricity Connection Fee:</span> {{customer.connection_electricy_fee}}</p></v-col>
                         </v-row>
                         <v-row class="ml-0" >
                             <v-col cols="6" class="py-0">
                                 <v-row class="align-baseline">
                                     <label  class="font-weight-bold profile-info-title">MIRN no:</label>
-                                    <v-col class="px-0 pb-0" cols="7"><p class="profile-info-title">{{customerinfo.connection_mern_no}}</p></v-col>
+                                    <v-col class="px-0 pb-0" cols="7"><p class="profile-info-title">{{customer.connection_mern_no}}</p></v-col>
                                 </v-row>
                             </v-col>
                             <v-col cols="6" class="py-0">
                                 <v-row class="align-baseline">
                                     <label class="font-weight-bold profile-info-title">NMI no:</label>
-                                    <v-col class="px-0 pb-0" cols="7"><p class="profile-info-title">{{customerinfo.connection_nmi_no}}</p></v-col>
+                                    <v-col class="px-0 pb-0" cols="7"><p class="profile-info-title">{{customer.connection_nmi_no}}</p></v-col>
                                 </v-row>
                             </v-col>
 
                         </v-row>
                         <v-row class="py-0">
-                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Connection Status:</span><span class="rejected-text">{{customerinfo.connection_status}}</span></p></v-col>
+                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Connection Status:</span><span class="rejected-text">{{customer.connection_status}}</span></p></v-col>
                             <v-col cols="12" class="py-0">
                                 <p class="mb-0 profile-info-title">Reason:</p>
                                 <div cols="12"  class="reason pa-5 profile-info-title">
-                                    <p>{{customerinfo.connection_reason}}</p>
+                                    <p>{{customer.connection_reason}}</p>
                                 </div>
                             </v-col>
 
@@ -99,33 +99,22 @@ export default {
 name: "CustomerHelpDesk",
     data() {
         return {
-            customerinfo: null,
-            isLoaded: false
-
         }
     },
     props: {
         customer: {
-
+            required: true
         }
     },
     methods: {
-        async getCustomerDetailsData () {
-            this.customerinfo = await CustomerService.getCustomerDetails(this.customer);
-            this.isLoaded = true;
-        }
     },
 
     mounted() {
-        this.getCustomerDetailsData();
     }
 }
 </script>
 
 <style scoped>
-body {
-    font-family: "Roboto" !important;
-}
 .header {
     display: flex;
     align-items: center;
