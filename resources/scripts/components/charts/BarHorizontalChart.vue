@@ -40,7 +40,7 @@ export default {
                 type: 'horizontalBar',
                 data: this.data,
                 options: {
-                    responsive: true,
+                    responsive: false,
                     legend: {
                         display: false
                     },
