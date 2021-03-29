@@ -31,16 +31,6 @@ export default {
         function mapQualifiedLead(data) {
             let chartLabels = [];
             let chartData = [];
-            data.charts = [
-                {
-                    total: 1,
-                    date: "2021-03-20"
-                },
-                {
-                    total: 4,
-                    date: "2021-03-21"
-                }
-            ]
             if(data.charts) {
                 data.charts.forEach(element => {
                     chartLabels.push(element.date);
