@@ -18,6 +18,7 @@ export default class Customer {
                     state,
                     connection_date,
                     connection_time,
+                    billing_preference
                 } = {}) {
         this.id = id;
         this.name = full_name;
@@ -33,7 +34,8 @@ export default class Customer {
         this.sentiment = sentiment;
         this.location = state;
         this.connection_date = connection_date;
-        this.connection_time =   connection_time;
+        this.connection_time = connection_time;
+        this.billing_preference = billing_preference;
 
     }
 

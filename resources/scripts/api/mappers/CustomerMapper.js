@@ -180,6 +180,7 @@ export default {
                 connection_time: customerDetails.connection_date
                     ? new DayJs(customerDetails.connection_date).format(DATE_FORMAT.TIME_STRING_12)
                     : null,
+                billing_preference: customerDetails.billing_preference || ''
 
             });
         });
@@ -199,7 +200,7 @@ export default {
                 messages.push(new CustomerMessage(message, true));
             }
         })
-        
+
         // const messages = customerMessages.data.map(message => {
         //     return new CustomerMessage(message, true);
         // });
