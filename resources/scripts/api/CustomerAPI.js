@@ -113,7 +113,7 @@ export default {
      * @returns {Promise<CustomerListInfo[]>}
      */
     getCustomerList: async pageIndex=> {
-        const data =(await axios.get(`${BOT_API}/customers?page=${pageIndex}`)).data;
+        const data =(await axios.get(`${'https://devbot.hood.ai/hood-dashboard/api/customers?page='}${pageIndex}`)).data;
 
         return {
             data: CustomerMapper.mapCustomerList(data.data),

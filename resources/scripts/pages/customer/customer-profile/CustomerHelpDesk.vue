@@ -111,7 +111,8 @@ name: "CustomerHelpDesk",
     },
     methods: {
         async getCustomerDetailsData () {
-            this.customerinfo = await CustomerService.getCustomerDetails(1);
+            console.log(this.customer);
+            this.customerinfo = await CustomerService.getCustomerDetails(this.customer);
             this.isLoaded = true;
         }
     },

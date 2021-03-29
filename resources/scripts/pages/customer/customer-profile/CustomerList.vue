@@ -16,14 +16,14 @@
                                     v-for="(item,i) in customerList"
                                     :key="i"
                                 >
-                                    <v-expansion-panel-header  class="py-0" v-bind:class="{ 'expansion-header-background-active ': activeModel == i }">
+                                    <v-expansion-panel-header  class="py-0" v-bind:class="{ 'expansion-header-background-active ': activeModel === i }">
                                         <template v-slot:actions>
-                                            <v-icon v-bind:class="{ 'white': activeModel == i }">
+                                            <v-icon v-bind:class="{ 'white': activeModel === i }">
                                                 mdi-menu-down
                                             </v-icon>
                                         </template>
                                         <template>
-                                            <v-row align-center class="header color--text" v-if="activeModel == i">
+                                            <v-row align-center class="header color--text" v-if="activeModel === i">
                                                 <v-col class="avatar-containner pr-0">
                                                     <v-avatar>
                                                         <v-img v-bind:src="item.profile_pic" class="rejected"/>
@@ -31,7 +31,7 @@
                                                 </v-col>
                                                 <v-col cols="8" class="pt-1 pr-2">
                                                     <h3 class="mb-0 font-weight-bold profile-title">{{item.name}}</h3>
-                                                    <p class="mb-0 last-interactive profile-subtitle">interact {{item.last_interactive_time}} ago</p>
+                                                    <p class="mb-0 last-interactive profile-subtitle">interact {{item.last_interactive_time}}</p>
                                                 </v-col>
                                                 <v-col cols="6">
                                                     <p class="mb-0 expand-header-info">HOOD UID: {{item.hood_uid}}</p>
@@ -42,7 +42,7 @@
                                                     <p class="mb-0 expand-header-info">Ph: {{item.ph}}</p>
                                                 </v-col>
                                                 <v-col cols="8">
-                                                    <p class="mb-0 expand-header-info">Billing Preference: {{'Email/Address'}}</p>
+                                                    <p class="mb-0 expand-header-info">Billing Preference: {{item.billing_preference}}</p>
                                                 </v-col>
                                                 <v-col >
                                                     <v-btn  rounded small color="white primary--text">View Profile</v-btn>
@@ -65,7 +65,7 @@
 
                                     </v-expansion-panel-header>
                                     <v-expansion-panel-content class="pa-0" style="background: #E0E0E0">
-                                        <customer-help-dest v-bind:customer="1"></customer-help-dest>
+                                        <customer-help-dest v-bind:customer="3029"></customer-help-dest>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                             </v-expansion-panels>
@@ -92,7 +92,7 @@
                             </v-row>
                         </v-app-bar>
                         <v-col cols="12" style="height: 78vh;display: flex;">
-                            
+
                             <v-container class="fill-height" v-if="customerMessages">
                                 <v-row class="fill-height pb-2">
                                     <v-col>
@@ -126,7 +126,7 @@
                                     <span class="pr-3">take me to messenger</span><v-icon class="pr-3">mdi-facebook-messenger</v-icon><v-icon class="pr-0">east</v-icon>
                                 </v-btn>
                             </v-container>
-                        
+
                         </v-col>
                     </v-row>
                 </v-col>
@@ -180,12 +180,14 @@ export default {
 
         async getCustomerDetailsData (customerId) {
             this.customerinfo = await CustomerService.getCustomerDetails(customerId);
-            this.customerList = await CustomerService.getCustomerList();
 
         },
 
-        async getCustomerList (pageIndex) {
+        async getCustomerList (pageIndex = 1) {
             this.customerList = await CustomerService.getCustomerList(pageIndex);
+            let response = await CustomerService.getCustomerList();
+            this.customerList = response.data;
+            console.log('customerdata', this.customerList[0].id);
         },
 
         async getCustomerMessages (customerId) {
