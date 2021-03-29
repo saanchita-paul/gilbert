@@ -68,6 +68,11 @@
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                             </v-expansion-panels>
+                            <infinite-loading @infinite="infiniteHandler"
+                                              spinner="bubbles">
+                                <div slot="no-more">No more result</div>
+                                <div slot="no-results">No customer found</div>
+                            </infinite-loading>
                         </v-col>
                     </v-row>
                 </v-col>
@@ -86,6 +91,9 @@ import CustomerService from "@scripts/services/CustomerService";
 import CustomerHelpDesk from "@scripts/pages/customer/customer-profile/CustomerHelpDesk";
 import CustomerMessenger from "@scripts/components/customer/CustomerMessenger";
 import ApplicationService from "@scripts/services/ApplicationService";
+import InfiniteLoading from "vue-infinite-loading";
+import Pagination from "@scripts/models/Pagination";
+import {merge} from "lodash-es";
 
 export default {
     name: "CustomerList",
@@ -97,12 +105,14 @@ export default {
             pageIndex: 0,
             customerList: [],
             customerMessages: null,
-            customerId: this.$route.query.customerId || null
+            customerId: this.$route.query.customerId || null,
+            pagination: new Pagination()
         }
     },
     components:{
         CustomerHelpDesk,
-        CustomerMessenger
+        CustomerMessenger,
+        InfiniteLoading
     },
 
     props: {
@@ -117,7 +127,7 @@ export default {
         },
     },
     async mounted() {
-        await this.getCustomerList(this.pageIndex);
+        await this.getCustomerList(this.pagination.page);
         await this.load();
         this.isLoaded = true;
     },
@@ -140,10 +150,10 @@ export default {
             this.customerinfo = await CustomerService.getCustomerDetails(customerId);
         },
 
-        async getCustomerList (pageIndex = 1) {
-            this.customerList = await CustomerService.getCustomerList(pageIndex);
-            let response = await CustomerService.getCustomerList();
+        async getCustomerList (page = 1) {
+            let response = await CustomerService.getCustomerTableData(page);
             this.customerList = response.data;
+            merge(this.pagination, response.data)
         },
 
         async getCustomerMessages (customerId) {
@@ -167,6 +177,14 @@ export default {
         closePanel() {
             this.activeModel = null;
             console.log('CLOSE PANEL', this.activeModel)
+        },
+        async infiniteHandler() {
+            if (this.pagination.page < this.pagination.total) {
+                await this.getCustomerList(++this.pagination.page);
+                $state.loaded();
+            } else {
+                $state.complete();
+            }
         }
     },
 }

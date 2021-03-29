@@ -6,8 +6,8 @@
         <v-data-table
             :headers="headers"
             :items="customers"
-            :page.sync="pagination.currentPage"
-            :items-per-page="pagination.perPage"
+            :page.sync="pagination.page"
+            :items-per-page="pagination.per_page"
             :server-items-length="pagination.total"
             class="elevation-1"
         >
@@ -105,7 +105,7 @@ export default {
     },
 
     async mounted() {
-        await this.load(this.pagination.currentPage);
+        await this.load(this.pagination.page);
     },
     methods: {
         async load(page) {
