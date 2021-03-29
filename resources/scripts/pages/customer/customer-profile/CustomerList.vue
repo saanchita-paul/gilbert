@@ -1,16 +1,15 @@
 <template>
-    <v-app>
         <div v-if="isLoaded">
             <v-row>
                 <v-col  cols="6" class="pt-0">
                     <v-row>
                         <v-app-bar>
-                            <v-icon medium class="customer-list-back-button pr-5 header-icon"> mdi-arrow-left </v-icon>
+                            <v-icon medium class="customer-list-back-button pr-5 header-icon" > mdi-arrow-left </v-icon>
                             <v-text-field label="Search leads" filled dense hide-details prepend-inner-icon="mdi-magnify" class="max-height-70 pr-5"></v-text-field>
                         </v-app-bar>
                     </v-row>
                     <v-row>
-                        <v-col cols="12"  class="pt-0 pr-0 customer-list">
+                        <v-col cols="12"  class="pt-0 pr-0 customer-list" ref="list">
                             <v-expansion-panels v-model="activeModel">
                                 <v-expansion-panel
                                     v-for="(item,i) in customerList"
@@ -81,7 +80,6 @@
                 </v-col>
             </v-row>
         </div>
-    </v-app>
 </template>
 
 <script>
@@ -152,8 +150,8 @@ export default {
 
         async getCustomerList (page = 1) {
             let response = await CustomerService.getCustomerTableData(page);
-            this.customerList = response.data;
-            merge(this.pagination, response.data)
+            this.customerList =[...this.customerList, ...response.data];
+            merge(this.pagination, response.pagination)
         },
 
         async getCustomerMessages (customerId) {
@@ -178,10 +176,14 @@ export default {
             this.activeModel = null;
             console.log('CLOSE PANEL', this.activeModel)
         },
-        async infiniteHandler() {
-            if (this.pagination.page < this.pagination.total) {
+        async infiniteHandler($state) {
+            if (this.pagination.page < this.pagination.page_count) {
                 await this.getCustomerList(++this.pagination.page);
                 $state.loaded();
+                this.$refs.list.scroll({
+                    top: this.$refs.list.scrollTop - 200,
+                    behavior: 'smooth'
+                })
             } else {
                 $state.complete();
             }
@@ -190,7 +192,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 body {
     font-family: "Roboto" !important;
 }
@@ -285,7 +287,7 @@ body {
     line-height: 24px;
 }
 .customer-list {
-    max-height: 100vh;
+    max-height: calc(100vh - 130px);
     overflow: auto
 }
 
