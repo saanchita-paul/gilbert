@@ -101,10 +101,7 @@ export default {
     },
 
     getCustomerDetails: async customerId => {
-        // Todo API End point will be replaced later
-        console.log(customerId);
         const data =(await axios.get(`${'https://devbot.hood.ai/hood-dashboard/api/customers/'}${customerId}`)).data;
-        console.log('te', data);
         return CustomerMapper.mapCustomerDetailsServices(data.data);
     },
 

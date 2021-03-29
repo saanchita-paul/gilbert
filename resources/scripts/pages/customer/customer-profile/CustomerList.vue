@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <div>
+        <div v-if="isLoaded">
             <v-row>
                 <v-col  cols="6" class="pt-0">
                     <v-row>
@@ -10,13 +10,13 @@
                         </v-app-bar>
                     </v-row>
                     <v-row>
-                        <v-col cols="12" style="max-height: 100vh;overflow: auto" class="pt-0 pr-0">
+                        <v-col cols="12"  class="pt-0 pr-0 customer-list">
                             <v-expansion-panels v-model="activeModel">
                                 <v-expansion-panel
                                     v-for="(item,i) in customerList"
                                     :key="i"
                                 >
-                                    <v-expansion-panel-header  class="py-0" v-bind:class="{ 'expansion-header-background-active ': activeModel === i }">
+                                    <v-expansion-panel-header @click="onPanelClicked(i, item.id)"  class="py-0" v-bind:class="{ 'expansion-header-background-active ': activeModel === i }">
                                         <template v-slot:actions>
                                             <v-icon v-bind:class="{ 'white': activeModel === i }">
                                                 mdi-menu-down
@@ -31,7 +31,7 @@
                                                 </v-col>
                                                 <v-col cols="8" class="pt-1 pr-2">
                                                     <h3 class="mb-0 font-weight-bold profile-title">{{item.name}}</h3>
-                                                    <p class="mb-0 last-interactive profile-subtitle">interact {{item.last_interactive_time}}</p>
+                                                    <p class="mb-0 last-interactive profile-subtitle">Interact {{item.last_interactive_time}}</p>
                                                 </v-col>
                                                 <v-col cols="6">
                                                     <p class="mb-0 expand-header-info">HOOD UID: {{item.hood_uid}}</p>
@@ -49,7 +49,7 @@
                                                 </v-col>
 
                                             </v-row>
-                                            <v-row align-center class="header color--text" v-else>
+                                            <v-row align-center class="header color--text" v-else @click="closePanel">
                                                 <v-col class="avatar-containner pr-0">
                                                     <v-avatar>
                                                         <v-img v-bind:src="item.profile_pic" class="rejected"/>
@@ -57,15 +57,14 @@
                                                 </v-col>
                                                 <v-col cols="10" class="pt-0 pt-5">
                                                     <h3 class="mb-0 font-weight-bold profile-title">{{item.name}}</h3>
-                                                    <p class="mb-0 last-interactive profile-subtitle">interact {{item.last_interactive_time}} ago</p>
+                                                    <p class="mb-0 last-interactive profile-subtitle">Interact {{item.last_interactive_time}}</p>
                                                 </v-col>
                                             </v-row>
-
                                         </template>
 
                                     </v-expansion-panel-header>
-                                    <v-expansion-panel-content class="pa-0" style="background: #E0E0E0">
-                                        <customer-help-dest v-bind:customer="3029"></customer-help-dest>
+                                    <v-expansion-panel-content class="pa-0 body-bg">
+                                        <CustomerHelpDesk :customer="customerinfo" />
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                             </v-expansion-panels>
@@ -86,13 +85,15 @@ import CustomerDetails from "@scripts/models/CustomerDetails";
 import CustomerService from "@scripts/services/CustomerService";
 import CustomerHelpDesk from "@scripts/pages/customer/customer-profile/CustomerHelpDesk";
 import CustomerMessenger from "@scripts/components/customer/CustomerMessenger";
+import ApplicationService from "@scripts/services/ApplicationService";
 
 export default {
     name: "CustomerList",
     data() {
         return {
             customerinfo: this.getCustomerDetails(),
-            activeModel: 0,
+            isLoaded: false,
+            activeModel: null,
             pageIndex: 0,
             customerList: [],
             customerMessages: null,
@@ -100,64 +101,72 @@ export default {
         }
     },
     components:{
-        'customer-help-dest':CustomerHelpDesk,
+        CustomerHelpDesk,
         CustomerMessenger
     },
 
     props: {
-        // customerId:{
-        //     required: false,
-        //     type: Number
-        // }
     },
     watch: {
-        customerId(newId) {
-
-        }
+        '$route': {
+            handler() {
+                this.customerId = this.$route.query.customerId
+                this.load();
+            },
+            deep: true
+        },
     },
     async mounted() {
-        // await this.getCustomerDetailsData(this.customerId);
-        // await this.getCustomerMessages(this.customerId);
         await this.getCustomerList(this.pageIndex);
-        this.loadCustomerId();
+        await this.load();
+        this.isLoaded = true;
     },
     methods: {
-        sendToMessenger() {
-            window.open(`https://www.facebook.com/messages/t/${this.customerinfo.property_profile_id}`, "_blank");
+        async load() {
+            await this.loadCustomer();
+            await this.setActiveModel();
         },
-
-        async manualInterventionToggle() {
-            await CustomerService.toggleManualIntervention(this.customerinfo.id, this.customerinfo.manualInterventionIsActive);
+        setActiveModel() {
+            if (this.customerId) {
+                const index = this.customerList.findIndex(customer => customer?.id.toString() === this.customerId?.toString())
+                this.activeModel = index === -1 ? null : index
+            }
         },
-
         getCustomerDetails() {
             return new CustomerDetails();
         },
 
         async getCustomerDetailsData (customerId) {
             this.customerinfo = await CustomerService.getCustomerDetails(customerId);
-
         },
 
         async getCustomerList (pageIndex = 1) {
             this.customerList = await CustomerService.getCustomerList(pageIndex);
             let response = await CustomerService.getCustomerList();
             this.customerList = response.data;
-            console.log('customerdata', this.customerList[0].id);
         },
 
         async getCustomerMessages (customerId) {
             this.customerMessages = await CustomerService.getCustomerMessages(customerId);
-            console.log('Data',this.customerMessages);
         },
-        loadCustomerId() {
+        async loadCustomer() {
             if (!this.customerId) {
                 const id = this.customerList[0]?.id;
-                console.log(this.customerList, "CUSTOMER")
                 if (id) {
-                    this.$router.push({name: 'helpdesk', query: {customerId: id}})
+                    await this.$router.push({name: 'helpdesk', query: {customerId: id}})
                 }
+            } else {
+                await this.getCustomerDetailsData(this.customerId);
             }
+        },
+        onPanelClicked(index, customerId) {
+            if (this.activeModel !== index) {
+                this.$router.push({name: 'helpdesk', query: { customerId, test: ApplicationService.getRandomString() }})
+            }
+        },
+        closePanel() {
+            this.activeModel = null;
+            console.log('CLOSE PANEL', this.activeModel)
         }
     },
 }
@@ -257,6 +266,13 @@ body {
     font-weight: 400;
     line-height: 24px;
 }
+.customer-list {
+    max-height: 100vh;
+    overflow: auto
+}
 
+.customer-list .v-expansion-panel::before {
+    box-shadow: none;
+}
 
 </style>
