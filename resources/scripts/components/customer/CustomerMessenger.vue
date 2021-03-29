@@ -19,10 +19,10 @@
         </v-app-bar>
         <v-col cols="12" style="height: 78vh;display: flex;">
 
-            <v-container class="fill-height" v-if="customerMessages">
+            <v-container class="fill-height">
                 <v-row class="fill-height pb-2">
                     <v-col cols='12'>
-                        <div v-for="(item, index) in customerMessages.data" :key="index"
+                        <div v-for="(item, index) in customerMessages" :key="index"
                             :class="['d-flex flex-row align-center my-2', item.type === 'RESPONSE' ? 'justify-end': null]">
                             <template v-if="item.type === 'RESPONSE'">
                                 <v-card elevation="1" class="pa-2 mr-2 expansion-header-background-active message-card">
@@ -43,11 +43,14 @@
                             </template>
                         </div>
                     </v-col>
-                    <infinite-loading @infinite="infiniteHandler"
+                    <v-col sm="12" v-if="hasMessages">
+                    <infinite-loading  @infinite="infiniteHandler"
                                         spinner="bubbles">
                         <div slot="no-more">No more result</div>
-                        <div slot="no-results">No customer found</div>
+                        <div slot="no-results">No Messages found</div>
                     </infinite-loading>
+                    </v-col>
+
                 </v-row>
                 <v-btn @click="sendToMessenger" class="move-facebook-messagenger text-lowercase">
                     <span class="pr-3">take me to messenger</span><v-icon class="pr-3">mdi-facebook-messenger</v-icon><v-icon class="pr-0">east</v-icon>
@@ -70,13 +73,18 @@ export default {
     name: "CustomerMessanger",
     data() {
         return {
-            customerMessages: null,
+            customerMessages: [],
             pageIndex: 0,
             pagination: new Pagination()
         }
     },
     components:{
         InfiniteLoading
+    },
+    computed: {
+        hasMessages() {
+            return this.customerMessages.length > 0;
+        }
     },
     async mounted() {
         await this.getCustomerMessages(this.customer.id, this.pagination.page);
@@ -91,21 +99,24 @@ export default {
         },
 
         async getCustomerMessages (customerId, page = 1) {
-            this.customerMessages = await CustomerService.getCustomerMessages(customerId, page);
-            merge(this.pagination, this.customerMessages.pagination)
-            console.log('Customer Messages',this.customerMessages);
+            const response = await CustomerService.getCustomerMessages(customerId, page);
+            merge(this.pagination, response.pagination)
+            this.customerMessages = [...this.customerMessages, ...response.data];
         },
         async infiniteHandler($state) {
             if (this.pagination.page < this.pagination.page_count) {
+                console.log('IF');
                 await this.getCustomerMessages(this.customer.id, ++this.pagination.page);
                 $state.loaded();
             } else {
+                console.log('Else');
                 $state.complete();
             }
         }
     },
     watch: {
         customer () {
+            this.customerMessages = [];
            this.getCustomerMessages(this.customer.id, this.pagination.page);
         }
     }

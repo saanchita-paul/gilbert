@@ -204,7 +204,13 @@ export default {
         // const messages = customerMessages.data.map(message => {
         //     return new CustomerMessage(message, true);
         // });
-        const pagination = new Pagination(customerMessages.pagination)
+        const pagination = new Pagination({
+            page: customerMessages.pagination ? customerMessages.pagination.currentPage: 1,
+            hasMorePages: customerMessages.pagination ? customerMessages.pagination.hasMorePages : 0,
+            pageCount: customerMessages.pagination ? Math.ceil(customerMessages.pagination.total / customerMessages.pagination.perPage): 1,
+            perPage: customerMessages.pagination ? customerMessages.pagination.perPage : 0,
+            total: customerMessages.pagination ? customerMessages.pagination.total : 0
+        })
         return {
             data : messages,
             pagination: pagination

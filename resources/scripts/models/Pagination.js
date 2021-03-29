@@ -11,7 +11,7 @@ export default class Pagination {
         } = {}
     ) {
         this.page = page;
-        this.page_count = pageCount;
+        this.page_count = 10;
         this.hasMore_pages = hasMorePages || false;
         this.next_page = nextPage || null;
         this.per_page = perPage || 15;
