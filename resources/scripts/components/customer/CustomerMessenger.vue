@@ -21,7 +21,7 @@
 
             <v-container class="fill-height" v-if="customerMessages">
                 <v-row class="fill-height pb-2">
-                    <v-col>
+                    <v-col cols='12'>
                         <div v-for="(item, index) in customerMessages.data" :key="index"
                             :class="['d-flex flex-row align-center my-2', item.type === 'RESPONSE' ? 'justify-end': null]">
                             <template v-if="item.type === 'RESPONSE'">
@@ -43,7 +43,8 @@
                             </template>
                         </div>
                     </v-col>
-                    <infinite-loading @infinite="infiniteHandler" spinner="bubbles">
+                    <infinite-loading @infinite="infiniteHandler"
+                                        spinner="bubbles">
                         <div slot="no-more">No more result</div>
                         <div slot="no-results">No customer found</div>
                     </infinite-loading>
@@ -95,7 +96,7 @@ export default {
             console.log('Customer Messages',this.customerMessages);
         },
         async infiniteHandler($state) {
-            if (this.pagination.page < this.pagination.total) {
+            if (this.pagination.page < this.pagination.page_count) {
                 await this.getCustomerMessages(this.customer.id, ++this.pagination.page);
                 $state.loaded();
             } else {
