@@ -6,6 +6,7 @@ import CustomerConnection from "@scripts/models/customer-profile/CustomerConnect
 import CustomerMovingInfo from "@scripts/models/customer-profile/CustomerMovingInfo";
 import CustomerOrder from "@scripts/models/customer-profile/CustomerOrder";
 import root from "lodash-es/_root";
+import Pagination from "@scripts/models/Pagination";
 
 const ROOT = `${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api`;
 
@@ -100,25 +101,27 @@ export default {
     },
 
     getCustomerDetails: async customerId => {
-        const data =(await axios.get(`${'https://devbot.hood.ai/hood-dashboard/api/customers/'}${customerId}`)).data;
+        const data =(await axios.get(`${BOT_API}/customers/${customerId}`)).data;
         return CustomerMapper.mapCustomerDetailsServices(data.data);
     },
 
     /**
      *
      * @param pageIndex
-     * @returns {Promise<CustomerListInfo[]>}
+     * @returns {Promise<{pagination: Pagination, data}>}
      */
     getCustomerList: async pageIndex=> {
-        const data =(await axios.get(`${'https://devbot.hood.ai/hood-dashboard/api/customers?page='}${pageIndex}`)).data;
+        const data =(await axios.get(`${BOT_API}customers?page=${pageIndex}`)).data;
 
         return {
             data: CustomerMapper.mapCustomerList(data.data),
-            totalCount :data.pagination ? data.pagination.total: 0,
-            page: data.pagination ? data.pagination.currentPage: 1,
-            pageCount: data.pagination ? Math.ceil(data.pagination.total / data.pagination.perPage): 1,
-            itemsPerPage: data.pagination ? data.pagination.perPage : 0,
-            total: data.pagination ? data.pagination.total : 0
+            pagination: new Pagination({
+                currentPage: data.pagination ? data.pagination.currentPage: 1,
+                hasMorePages: data.pagination ? data.pagination.hasMorePages : 0,
+                pageCount: data.pagination ? Math.ceil(data.pagination.total / data.pagination.perPage): 1,
+                perPage: data.pagination ? data.pagination.perPage : 0,
+                total: data.pagination ? data.pagination.total : 0
+            })
         };
     },
 

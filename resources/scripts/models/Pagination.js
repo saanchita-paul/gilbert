@@ -6,15 +6,16 @@ export default class Pagination {
             nextPage,
             perPage,
             previousPage,
-            total
+            total,
+            pageCount
         } = {}
     ) {
-        this.currentPage = currentPage || null;
-        this.hasMorePages = hasMorePages || null;
+        this.pageCount = pageCount;
+        this.currentPage = currentPage || 1;
+        this.hasMorePages = hasMorePages || false;
         this.nextPage = nextPage || null;
-        this.perPage = perPage || null;
+        this.perPage = perPage || 15;
         this.previousPage = previousPage || null;
-        this.total = total || null;
-
+        this.total = total || 0;
     }
 }

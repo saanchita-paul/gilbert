@@ -71,8 +71,9 @@ export default {
     toggleManualIntervention: (customerId, manualInterventionStatus) => CustomerAPI.toggleManualIntervention(customerId, manualInterventionStatus),
 
     /**
-    * @param pageIndex
-     * @returns {Promise<CustomerListInfo>}
+     *
+     * @param page
+     * @returns {Promise<{pagination: Pagination, data}>}
      */
     getCustomerTableData: page => CustomerAPI.getCustomerList(page),
 }

@@ -6,9 +6,9 @@
         <v-data-table
             :headers="headers"
             :items="customers"
-            :page.sync="page"
-            :items-per-page="itemsPerPage"
-            :server-items-length="total"
+            :page.sync="pagination.currentPage"
+            :items-per-page="pagination.perPage"
+            :server-items-length="pagination.total"
             class="elevation-1"
         >
             <template
@@ -71,6 +71,8 @@
 <script>
 import CustomerService from "@scripts/services/CustomerService";
 import {mapSentiment, mapSentimentColor} from "@scripts/data/SentimentColor";
+import Pagination from "@scripts/models/Pagination";
+import {merge} from "lodash-es";
 
 export default {
     data() {
@@ -87,6 +89,7 @@ export default {
                 {text: '', sortable: false, value: 'chat', align: 'center'},
             ],
             customers: [],
+            pagination: new Pagination(),
             page: 1,
             pageCount: 0,
             itemsPerPage: 0,
@@ -102,16 +105,13 @@ export default {
     },
 
     async mounted() {
-        await this.load(1);
+        await this.load(this.pagination.currentPage);
     },
     methods: {
         async load(page) {
-            let response = await CustomerService.getCustomerTableData(this.page);
+            let response = await CustomerService.getCustomerTableData(page);
+            merge(this.pagination, response.pagination)
             this.customers = response.data;
-            this.page = response.page;
-            this.pageCount = response.pageCount;
-            this.itemsPerPage = response.itemsPerPage;
-            this.total = response.total;
         },
         getColor(sentiment) {
             return mapSentiment(sentiment).color;
