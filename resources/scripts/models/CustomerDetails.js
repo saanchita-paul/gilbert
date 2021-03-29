@@ -63,7 +63,6 @@ export default class CustomerDetails {
         this.property_solar_powered = propertySolarPowered || '';
         this.property_life_support = propertyLifeSupport || '';
         this.is_manual_address = isManualAddress || '';
-        this.estimeted_moving_period = estimetedMovingPeriod || '';
         this.property_ea_response_time = propertyEAResponseTime || '';
         this.user_agree_time = userAgreeTime || '';
         this.property_id_type = propertyIdType || '';
@@ -71,11 +70,10 @@ export default class CustomerDetails {
         this.connection_id = connectionId || '';
         this.connection_provider = connectionProvider || '';
         this.connection_selected_plan = connectionSelectedPlan || '';
-        this.connection_energy_type = connectionEneryType || '--';
+        this.connection_energy_type = connectionEneryType;
         this.connection_address = connectionAddress || '';
         this.e_destributor = connectionEDestributor || '';
 
-        this.connection_energy_type = connectionEnergyType || '';
         this.connection_gas_provider = connectionGasProvider || '';
         this.connection_electricy_fee = connectionElectricyFee || '';
         this.connection_mern_no = connectionMernNo || '';
