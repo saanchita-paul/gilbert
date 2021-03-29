@@ -47,7 +47,7 @@ export default {
      getCustomerMessages: async (customerId, pageIndex) => {
         // Todo API End point will be replaced later
         try {
-            const data = await axios.get(`${'https://devbot.hood.ai/hood-dashboard/api/customers/'}${customerId}/chat-histories?page=${pageIndex}`);
+            const data = await axios.get(`${BOT_API}/customers/${customerId}/chat-histories?page=${pageIndex}`);
             return CustomerMapper.mapCustomerMessages(data.data);
         } catch (error) {
             return error.data;

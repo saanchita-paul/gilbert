@@ -19,18 +19,18 @@
                     v-for="(item, index) in items"
                     :key="index"
                     class="py-1"
-                    :class="{'error-sentiment-background': item.sentiment.text === 'BAD',}"
+                    :class="{'error-sentiment-background': item.issue_status === 'need_assistance' || item.issue_status === 'in_progress',}"
                 >
-                    <td :class="{'error-sentiment-border': item.sentiment.text === 'BAD', 'error-sentiment-transparen':  item.sentiment.text !== 'BAD'}">
+                    <td :class="{'error-sentiment-border': item.issue_status === 'need_assistance' || item.issue_status === 'in_progress', 'error-sentiment-transparen':  !(item.issue_status === 'need_assistance' || item.issue_status === 'in_progress')}">
                         <v-row align-center class="header color--text">
-                            <v-col class="avatar-containner pr-0">
+                            <v-col class="avatar-containner pr-2 avater-remove-growing">
                                 <v-avatar>
-                                    <v-img v-bind:src="item.profile_pic" :color="item.sentiment.color"/>
+                                    <v-img v-bind:src="item.profile_pic" :color="item.sentiment.color"  v-bind:class="{'bad': item.sentiment.text === 'BAD', 'good': item.sentiment.text === 'Good', 'neural':item.sentiment.text === 'Nuetral'}"/>
                                 </v-avatar>
                             </v-col>
                             <v-col cols="7" class="pt-0 pt-5">
                                 <p class="mb-0 fontweight600 font-size14 font-colorblack mb-0">{{ item.name }}</p>
-                                <p class="mb-0 last-interactive font-size12 font-color-gray">interact
+                                <p class="mb-0 last-interactive font-size12 font-color-gray">Interact
                                     {{ item.last_interactive_time }}</p>
                             </v-col>
                         </v-row>
@@ -56,8 +56,8 @@
                         <p class="font-size12 font-color-gray mb-0 ">{{ item.connection_time }}</p>
                     </td>
                     <td>
-                        <v-btn @click="openProfile(item.id)" class="action-btn-ass px-2">PEOPLE</v-btn>
-                        <v-btn @click="openConversation(item.id)" class="action-btn px-2">CHAT
+                        <v-btn @click="openProfile(item.id)" class="action-btn-ass px-2 font-size12">PEOPLE</v-btn>
+                        <v-btn @click="openConversation(item.id)" class="action-btn px-2 font-size12">CHAT
                             <v-icon>mdi-arrow-right</v-icon>
                         </v-btn>
                     </td>
@@ -79,14 +79,14 @@ export default {
         return {
             search: '',
             headers: [
-                {text: 'Customer Details', align: 'center', value: 'customer_details', sortable: false},
-                {text: 'Issue Status', value: 'issue_status', align: 'center', sortable: false},
-                {text: 'Connection Status', value: 'connection_status', align: 'center', sortable: false},
-                {text: 'Sentiment', value: 'user_sentiment', align: 'center', sortable: false},
-                {text: 'Location', value: 'location', align: 'center', sortable: false},
-                {text: 'Connection Date', value: 'connection_date', align: 'center', sortable: false},
-                {text: '', sortable: false, value: 'profile', align: 'center',},
-                {text: '', sortable: false, value: 'chat', align: 'center'},
+                {text: 'Customer Details', align: 'start', value: 'customer_details', sortable: false},
+                {text: 'Issue Status', value: 'issue_status', align: 'start', sortable: false},
+                {text: 'Connection Status', value: 'connection_status', align: 'start', sortable: false},
+                {text: 'Sentiment', value: 'user_sentiment', align: 'start', sortable: false},
+                {text: 'Location', value: 'location', align: 'start', sortable: false},
+                {text: 'Connection Date', value: 'connection_date', align: 'start', sortable: false},
+                {text: '', sortable: false, value: 'profile', align: 'start',},
+                {text: '', sortable: false, value: 'chat', align: 'start'},
             ],
             customers: [],
             pagination: new Pagination(),
@@ -187,7 +187,6 @@ export default {
 }
 
 .error-sentiment-background {
-
     background: #F7EAE3;
 }
 
@@ -198,5 +197,20 @@ export default {
     color: white;
 }
 
+.avater-remove-growing {
+    flex-grow: 0 !important;
+}
+
+.bad {
+    border: 2px solid rgb(233, 30, 99);
+}
+.good {
+    border: 2px solid rgb(76, 175, 80);
+
+}
+.neural {
+    border: 2px solid rgb(189, 189, 189);
+
+}
 
 </style>

@@ -115,36 +115,6 @@ name: "CustomerHelpDesk",
 </script>
 
 <style scoped>
-.header {
-    display: flex;
-    align-items: center;
-    line-height: 28px;
-    font-size: 16px;
-}
-
-.expansion-header-background-active {
-    background: linear-gradient(to right bottom, #56CCF2 -75.93%, #542E89 42.76%, #9C27B0 118.83%);
-    color:white;
-}
-.expansion-header-background {
-    background: transparent;
-}
-
-.profile-title {
-    font-size: 14px !important;
-    font-weight: 500 !important;
-    line-height: 28px;
-}
-
-.profile-subtitle {
-    font-size: 12px;
-    font-weight: 400 !important;
-    line-height: 14px;
-}
-.expand-header-info {
-    font-weight: 700;
-    font-size: 12px;
-}
 
 .profile_body_header {
     font-weight: 500 !important;
@@ -160,27 +130,14 @@ name: "CustomerHelpDesk",
     color: rgba(37, 39, 51, 1);
 }
 
-.avatar-containner {
-    flex-grow: 0;
-}
 .body_row {
 
 }
 .reason {
     background: rgba(242, 242, 242, 1);
 }
-
-.rejected {
-    border: 1px solid red;
-    color:red !important;
-}
 .rejected-text {
     color:red !important;
-}
-.messenger-header {
-    display: flex;
-    flex-direction: row-reverse;
-    align-items: center;
 }
 
 </style>

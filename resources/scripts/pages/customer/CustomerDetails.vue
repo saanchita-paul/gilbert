@@ -14,7 +14,7 @@
                 </v-col>
                 <v-col cols="10" class="pt-0 pt-5">
                     <h3 class="mb-0 font-weight-bold profile-title">{{customerinfo.name}}</h3>
-                    <p class="mb-0 last-interactive profile-subtitle">interact {{customerinfo.last_interactive_time}} ago</p>
+                    <p class="mb-0 last-interactive profile-subtitle">Interact {{customerinfo.last_interactive_time}}</p>
                 </v-col>
                 <v-col cols="5" >
                     <p class="mb-0">HOOD UID: {{customerinfo.hood_uid}}</p>
@@ -90,13 +90,13 @@
                                 <v-col cols="6" class="py-0">
                                     <v-row class="align-baseline">
                                         <label  class="font-weight-bold profile-info-title">MIRN no:</label>
-                                        <v-col class="px-0 pb-0" cols="7"><v-text-field style="border-radius:5px" readonly filled rounded dense v-model:value="customerinfo.connection_mern_no"></v-text-field></v-col>
+                                        <v-col class="px-0 pb-0" cols="7"><v-text-field  class="border-radious-5" readonly filled rounded dense v-model:value="customerinfo.connection_mern_no"></v-text-field></v-col>
                                     </v-row>
                                 </v-col>
                                 <v-col cols="6" class="py-0">
                                     <v-row class="align-baseline">
                                         <label class="font-weight-bold profile-info-title">NMI no:</label>
-                                        <v-col class="px-0 pb-0" cols="7"><v-text-field style="border-radius:5px" readonly filled rounded dense v-model:value="customerinfo.connection_nmi_no"></v-text-field></v-col>
+                                        <v-col class="px-0 pb-0" cols="7"><v-text-field  class="border-radious-5" readonly filled rounded dense v-model:value="customerinfo.connection_nmi_no"></v-text-field></v-col>
                                     </v-row>
                                 </v-col>
 
@@ -203,11 +203,6 @@ body {
     color: rgba(37, 39, 51, 1);
 }
 
-.header-avater {
-    display: flex;
-    align-items: center;
-}
-
 .form-submit{
     display: flex;
     flex-direction: row-reverse;
@@ -215,11 +210,7 @@ body {
 .avatar-containner {
     flex-grow: 0;
 }
-.body_row {
-    padding: 12px 12px 0px 0px;
-    background: rgba(227, 224, 231, 1);
 
-}
 .reason {
     background: rgba(242, 242, 242, 1);
 }
@@ -230,6 +221,9 @@ body {
 }
 .rejected-text {
     color:red !important;
+}
+.border-radious-5 {
+    border-radius: 5px;
 }
 
 

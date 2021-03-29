@@ -4,8 +4,8 @@
                 <v-col  cols="6" class="pt-0">
                     <v-row>
                         <v-app-bar>
-                            <v-icon medium class="customer-list-back-button pr-5 header-icon" > mdi-arrow-left </v-icon>
-                            <v-text-field label="Search leads" filled dense hide-details prepend-inner-icon="mdi-magnify" class="max-height-70 pr-5"></v-text-field>
+                            <v-icon medium class="customer-list-back-button pr-5 header-icon"> mdi-arrow-left </v-icon>
+                            <v-text-field v-if="false" label="Search leads" filled dense hide-details prepend-inner-icon="mdi-magnify" class="max-height-70 pr-5"></v-text-field>
                         </v-app-bar>
                     </v-row>
                     <v-row>
@@ -25,7 +25,7 @@
                                             <v-row align-center class="header color--text" v-if="activeModel === i">
                                                 <v-col class="avatar-containner pr-0">
                                                     <v-avatar>
-                                                        <v-img v-bind:src="item.profile_pic" class="rejected"/>
+                                                        <v-img v-bind:src="item.profile_pic" v-bind:class="{'bad': item.sentiment.text === 'BAD', 'good': item.sentiment.text === 'Good', 'neural':item.sentiment.text === 'Nuetral'}"/>
                                                     </v-avatar>
                                                 </v-col>
                                                 <v-col cols="8" class="pt-1 pr-2">
@@ -51,7 +51,7 @@
                                             <v-row align-center class="header color--text" v-else @click="closePanel">
                                                 <v-col class="avatar-containner pr-0">
                                                     <v-avatar>
-                                                        <v-img v-bind:src="item.profile_pic" class="rejected"/>
+                                                        <v-img v-bind:src="item.profile_pic" v-bind:class="{'bad': item.sentiment.text === 'BAD', 'good': item.sentiment.text === 'Good', 'neural':item.sentiment.text === 'Nuetral'}"/>
                                                     </v-avatar>
                                                 </v-col>
                                                 <v-col cols="10" class="pt-0 pt-5">
@@ -227,65 +227,11 @@ body {
     font-size: 12px;
 }
 
-.profile_body_header {
-    font-weight: 500 !important;
-    font-size: 14px;
-    line-height: 24px;
-    color: #252733;
-    padding-top: 0px;
-    padding-bottom: 0px;
-}
-
-.profile-info-title {
-    font-size: 12px;
-    color: rgba(37, 39, 51, 1);
-}
 
 .avatar-containner {
     flex-grow: 0;
 }
-.body_row {
-    background: rgba(227, 224, 231, 1);
 
-}
-.reason {
-    background: rgba(242, 242, 242, 1);
-}
-
-.rejected {
-    border: 1px solid red;
-    color:red !important;
-}
-.rejected-text {
-    color:red !important;
-}
-.messenger-header {
-    display: flex;
-    flex-direction: row-reverse;
-    align-items: center;
-}
-.move-facebook-messagenger {
-    border:2px solid white;
-    background: #2F80ED !important;
-    border-radius: 100px;
-    color:white;
-    font-size: 12px;
-    font-weight: 500;
-    padding:8px;
-    position:fixed;
-    right:15px;
-    bottom:15px
-}
-
-.messenger-header-p {
-    font-size: 12px;
-    line-height: normal;
-}
-.mgs-text {
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 24px;
-}
 .customer-list {
     max-height: calc(100vh - 130px);
     overflow: auto
@@ -293,6 +239,18 @@ body {
 
 .customer-list .v-expansion-panel::before {
     box-shadow: none;
+}
+
+.bad {
+    border: 2px solid rgb(233, 30, 99);
+}
+.good {
+    border: 2px solid rgb(76, 175, 80);
+
+}
+.neural {
+    border: 2px solid rgb(189, 189, 189);
+
 }
 
 </style>

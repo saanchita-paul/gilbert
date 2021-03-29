@@ -27,18 +27,20 @@
                             <template v-if="item.type === 'RESPONSE'">
                                 <v-card elevation="1" class="pa-2 mr-2 expansion-header-background-active message-card">
                                     <span  class=" mgs-text">{{ item.text_content }}</span>
+                                     <p v-if="item.isAvatarNeed" class="message-time-right">{{item.created_at}}</p>
                                 </v-card>
-                                <v-avatar v-if="item.isAvatarNeed" color="white" size="45">
-                                    
+                                <v-avatar v-if="item.isAvatarNeed" color="white" size="45" class="avater-alignment-right">
+
                                 </v-avatar>
                             </template>
 
                             <template v-if="item.type === 'RECEIVE'">
-                                <v-avatar v-if="item.isAvatarNeed" color="white" size="45">
+                                <v-avatar v-if="item.isAvatarNeed" color="white" size="45" class="avater-alignment-left">
                                     <img :src="item.customer.profile_pic">
                                 </v-avatar>
-                                <v-card elevation="1" class="pa-2 ml-2 white message-card">
+                                <v-card elevation="1" class="pa-2 ml-2 white message-card" v-bind:class="{'ml-13':!item.isAvatarNeed}">
                                     <span  class=" mgs-text">{{ item.text_content }}</span>
+                                    <p v-if="item.isAvatarNeed" class="message-time-left">{{item.created_at}}</p>
                                 </v-card>
                             </template>
                         </div>
@@ -191,6 +193,33 @@ body {
 }
 .message-card {
     max-width: 260px;
+}
+.avater-alignment-right {
+    align-self: flex-end;
+    position: relative;
+    top: 27px;
+}
+.avater-alignment-left {
+    align-self: flex-end;
+    position: relative;
+    top: 22px;
+}
+.message-time-right {
+    position: absolute;
+    text-align: end;
+    bottom: -38px;
+    right: 0px;
+    font-size: 10px;
+    color: rgba(130, 130, 130, 1);
+    min-width: 200px;
+}
+.message-time-left {
+    position: absolute;
+    left:0px;
+    bottom: -38px;
+    font-size: 10px;
+    color: rgba(130, 130, 130, 1);
+    min-width: 200px;
 }
 
 </style>
