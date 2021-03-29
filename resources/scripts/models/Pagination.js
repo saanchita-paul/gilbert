@@ -1,20 +1,21 @@
 export default class Pagination {
     constructor(
         {
-            currentPage,
+            page,
             hasMorePages,
             nextPage,
             perPage,
             previousPage,
-            total
+            total,
+            pageCount
         } = {}
     ) {
-        this.currentPage = currentPage || null;
-        this.hasMorePages = hasMorePages || null;
-        this.nextPage = nextPage || null;
-        this.perPage = perPage || null;
-        this.previousPage = previousPage || null;
-        this.total = total || null;
-
+        this.page = page;
+        this.page_count = pageCount;
+        this.hasMore_pages = hasMorePages || false;
+        this.next_page = nextPage || null;
+        this.per_page = perPage || 15;
+        this.previous_page = previousPage || null;
+        this.total = total || 0;
     }
 }

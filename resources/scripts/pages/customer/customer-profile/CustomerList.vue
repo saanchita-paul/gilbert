@@ -1,5 +1,4 @@
 <template>
-    <v-app>
         <div v-if="isLoaded">
             <v-row>
                 <v-col  cols="6" class="pt-0">
@@ -10,7 +9,7 @@
                         </v-app-bar>
                     </v-row>
                     <v-row>
-                        <v-col cols="12"  class="pt-0 pr-0 customer-list">
+                        <v-col cols="12"  class="pt-0 pr-0 customer-list" ref="list">
                             <v-expansion-panels v-model="activeModel">
                                 <v-expansion-panel
                                     v-for="(item,i) in customerList"
@@ -68,6 +67,11 @@
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                             </v-expansion-panels>
+                            <infinite-loading @infinite="infiniteHandler"
+                                              spinner="bubbles">
+                                <div slot="no-more">No more result</div>
+                                <div slot="no-results">No customer found</div>
+                            </infinite-loading>
                         </v-col>
                     </v-row>
                 </v-col>
@@ -76,7 +80,6 @@
                 </v-col>
             </v-row>
         </div>
-    </v-app>
 </template>
 
 <script>
@@ -86,6 +89,9 @@ import CustomerService from "@scripts/services/CustomerService";
 import CustomerHelpDesk from "@scripts/pages/customer/customer-profile/CustomerHelpDesk";
 import CustomerMessenger from "@scripts/components/customer/CustomerMessenger";
 import ApplicationService from "@scripts/services/ApplicationService";
+import InfiniteLoading from "vue-infinite-loading";
+import Pagination from "@scripts/models/Pagination";
+import {merge} from "lodash-es";
 
 export default {
     name: "CustomerList",
@@ -97,12 +103,14 @@ export default {
             pageIndex: 0,
             customerList: [],
             customerMessages: null,
-            customerId: this.$route.query.customerId || null
+            customerId: this.$route.query.customerId || null,
+            pagination: new Pagination()
         }
     },
     components:{
         CustomerHelpDesk,
-        CustomerMessenger
+        CustomerMessenger,
+        InfiniteLoading
     },
 
     props: {
@@ -117,7 +125,7 @@ export default {
         },
     },
     async mounted() {
-        await this.getCustomerList(this.pageIndex);
+        await this.getCustomerList(this.pagination.page);
         await this.load();
         this.isLoaded = true;
     },
@@ -140,10 +148,10 @@ export default {
             this.customerinfo = await CustomerService.getCustomerDetails(customerId);
         },
 
-        async getCustomerList (pageIndex = 1) {
-            this.customerList = await CustomerService.getCustomerList(pageIndex);
-            let response = await CustomerService.getCustomerList();
-            this.customerList = response.data;
+        async getCustomerList (page = 1) {
+            let response = await CustomerService.getCustomerTableData(page);
+            this.customerList =[...this.customerList, ...response.data];
+            merge(this.pagination, response.pagination)
         },
 
         async getCustomerMessages (customerId) {
@@ -167,12 +175,24 @@ export default {
         closePanel() {
             this.activeModel = null;
             console.log('CLOSE PANEL', this.activeModel)
+        },
+        async infiniteHandler($state) {
+            if (this.pagination.page < this.pagination.page_count) {
+                await this.getCustomerList(++this.pagination.page);
+                $state.loaded();
+                this.$refs.list.scroll({
+                    top: this.$refs.list.scrollTop - 200,
+                    behavior: 'smooth'
+                })
+            } else {
+                $state.complete();
+            }
         }
     },
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 body {
     font-family: "Roboto" !important;
 }
@@ -213,7 +233,7 @@ body {
 }
 
 .customer-list {
-    max-height: 100vh;
+    max-height: calc(100vh - 130px);
     overflow: auto
 }
 
