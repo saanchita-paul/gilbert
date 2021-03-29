@@ -92,7 +92,7 @@
                             </v-row>
                         </v-app-bar>
                         <v-col cols="12" style="height: 78vh;display: flex;">
-                            
+
                             <v-container class="fill-height" v-if="customerMessages">
                                 <v-row class="fill-height pb-2">
                                     <v-col>
@@ -126,7 +126,7 @@
                                     <span class="pr-3">take me to messenger</span><v-icon class="pr-3">mdi-facebook-messenger</v-icon><v-icon class="pr-0">east</v-icon>
                                 </v-btn>
                             </v-container>
-                        
+
                         </v-col>
                     </v-row>
                 </v-col>
@@ -150,6 +150,7 @@ export default {
             pageIndex: 0,
             customerList: [],
             customerMessages: null,
+            customerId: this.$route.query.customerId || null
         }
     },
     components:{
@@ -157,13 +158,21 @@ export default {
     },
 
     props: {
-        customerId:{
-            required: false,
-            type: Number
+        // customerId:{
+        //     required: false,
+        //     type: Number
+        // }
+    },
+    watch: {
+        customerId(newId) {
+
         }
     },
-
-    updated() {
+    async mounted() {
+        // await this.getCustomerDetailsData(this.customerId);
+        // await this.getCustomerMessages(this.customerId);
+        await this.getCustomerList(this.pageIndex);
+        this.loadCustomerId();
     },
     methods: {
         sendToMessenger() {
@@ -191,14 +200,17 @@ export default {
         async getCustomerMessages (customerId) {
             this.customerMessages = await CustomerService.getCustomerMessages(customerId);
             console.log('Data',this.customerMessages);
+        },
+        loadCustomerId() {
+            if (!this.customerId) {
+                const id = this.customerList.data[0]?.id;
+                console.log(this.customerList, "CUSTOMER")
+                if (id) {
+                    this.$router.push({name: 'helpdesk', query: {customerId: id}})
+                }
+            }
         }
     },
-    mounted() {
-        this.getCustomerDetailsData(this.customerId);
-        this.getCustomerMessages(this.customerId);
-        this.getCustomerList(this.pageIndex);
-
-    }
 }
 </script>
 
