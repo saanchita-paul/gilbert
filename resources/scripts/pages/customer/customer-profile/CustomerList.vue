@@ -10,7 +10,7 @@
                         </v-app-bar>
                     </v-row>
                     <v-row>
-                        <v-col cols="12" style="max-height: 100vh;overflow: auto" class="pt-0 pr-0">
+                        <v-col cols="12"  class="pt-0 pr-0 customer-list">
                             <v-expansion-panels v-model="activeModel">
                                 <v-expansion-panel
                                     v-for="(item,i) in customerList"
@@ -31,7 +31,7 @@
                                                 </v-col>
                                                 <v-col cols="8" class="pt-1 pr-2">
                                                     <h3 class="mb-0 font-weight-bold profile-title">{{item.name}}</h3>
-                                                    <p class="mb-0 last-interactive profile-subtitle">interact {{item.last_interactive_time}}</p>
+                                                    <p class="mb-0 last-interactive profile-subtitle">Interact {{item.last_interactive_time}}</p>
                                                 </v-col>
                                                 <v-col cols="6">
                                                     <p class="mb-0 expand-header-info">HOOD UID: {{item.hood_uid}}</p>
@@ -57,13 +57,13 @@
                                                 </v-col>
                                                 <v-col cols="10" class="pt-0 pt-5">
                                                     <h3 class="mb-0 font-weight-bold profile-title">{{item.name}}</h3>
-                                                    <p class="mb-0 last-interactive profile-subtitle">interact {{item.last_interactive_time}} ago</p>
+                                                    <p class="mb-0 last-interactive profile-subtitle">Interact {{item.last_interactive_time}}</p>
                                                 </v-col>
                                             </v-row>
                                         </template>
 
                                     </v-expansion-panel-header>
-                                    <v-expansion-panel-content class="pa-0" style="background: #E0E0E0">
+                                    <v-expansion-panel-content class="pa-0 body-bg">
                                         <CustomerHelpDesk :customer="customerinfo" />
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
@@ -266,6 +266,13 @@ body {
     font-weight: 400;
     line-height: 24px;
 }
+.customer-list {
+    max-height: 100vh;
+    overflow: auto
+}
 
+.customer-list .v-expansion-panel::before {
+    box-shadow: none;
+}
 
 </style>

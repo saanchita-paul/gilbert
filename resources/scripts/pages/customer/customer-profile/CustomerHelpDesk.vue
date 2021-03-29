@@ -164,7 +164,6 @@ name: "CustomerHelpDesk",
     flex-grow: 0;
 }
 .body_row {
-    background: rgba(227, 224, 231, 1);
 
 }
 .reason {
