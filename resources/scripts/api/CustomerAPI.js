@@ -44,10 +44,10 @@ export default {
      * getting all messages of a Customer
      * @param customerId
      */
-     getCustomerMessages: async (customerId) => {
+     getCustomerMessages: async (customerId, pageIndex) => {
         // Todo API End point will be replaced later
         try {
-            const data = await axios.get(`${'https://devbot.hood.ai/hood-dashboard/api/customers/'}${customerId}/chat-histories/`);
+            const data = await axios.get(`${'https://devbot.hood.ai/hood-dashboard/api/customers/'}${customerId}/chat-histories?page=${pageIndex}`);
             return CustomerMapper.mapCustomerMessages(data.data);
         } catch (error) {
             return error.data;
@@ -132,7 +132,7 @@ export default {
      * @param manualInterventionStatus
      */
      toggleManualIntervention: async (customerId, manualInterventionStatus) => {
-        const response = (await axios.get(`${ROOT}/utility/${'2179'}/manual-intervention`, {
+        const response = (await axios.get(`${ROOT}/utility/${customerId}/manual-intervention`, {
             params: {
                 manualInterventionStatus: manualInterventionStatus
             }

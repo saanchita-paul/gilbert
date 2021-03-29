@@ -61,7 +61,7 @@ export default {
      *
      * @param customerId
      */
-    getCustomerMessages: customerId => CustomerAPI.getCustomerMessages(customerId),
+    getCustomerMessages: (customerId, page) => CustomerAPI.getCustomerMessages(customerId, page),
 
     /**
      *

@@ -43,6 +43,10 @@
                             </template>
                         </div>
                     </v-col>
+                    <infinite-loading @infinite="infiniteHandler" spinner="bubbles">
+                        <div slot="no-more">No more result</div>
+                        <div slot="no-results">No customer found</div>
+                    </infinite-loading>
                 </v-row>
                 <v-btn @click="sendToMessenger" class="move-facebook-messagenger text-lowercase">
                     <span class="pr-3">take me to messenger</span><v-icon class="pr-3">mdi-facebook-messenger</v-icon><v-icon class="pr-0">east</v-icon>
@@ -56,6 +60,9 @@
 
 <script>
 import CustomerService from "@scripts/services/CustomerService";
+import InfiniteLoading from "vue-infinite-loading";
+import Pagination from "@scripts/models/Pagination";
+import {merge} from "lodash-es";
 
 export default {
     props: ['customer'],
@@ -63,10 +70,15 @@ export default {
     data() {
         return {
             customerMessages: null,
+            pageIndex: 0,
+            pagination: new Pagination()
         }
     },
+    components:{
+        InfiniteLoading
+    },
     async mounted() {
-        await this.getCustomerMessages(this.customer.id);
+        await this.getCustomerMessages(this.customer.id, this.pagination.page);
     },
     methods: {
         sendToMessenger() {
@@ -77,14 +89,23 @@ export default {
             await CustomerService.toggleManualIntervention(this.customer.id, this.customer.manualInterventionIsActive);
         },
 
-        async getCustomerMessages (customerId) {
-            this.customerMessages = await CustomerService.getCustomerMessages(customerId);
+        async getCustomerMessages (customerId, page = 1) {
+            this.customerMessages = await CustomerService.getCustomerMessages(customerId, page);
+            merge(this.pagination, this.customerMessages.pagination)
             console.log('Customer Messages',this.customerMessages);
         },
+        async infiniteHandler($state) {
+            if (this.pagination.page < this.pagination.total) {
+                await this.getCustomerMessages(this.customer.id, ++this.pagination.page);
+                $state.loaded();
+            } else {
+                $state.complete();
+            }
+        }
     },
     watch: {
         customer () {
-           this.getCustomerMessages(this.customer.id);
+           this.getCustomerMessages(this.customer.id, this.pagination.page);
         }
     }
 }
