@@ -4,15 +4,15 @@
             <v-row align-center class="header color--text">
                 <v-col class="avatar-containner pr-0">
                     <v-avatar>
-                        <v-img v-bind:src="customerinfo.profile_pic" class="rejected"/>
+                        <v-img v-bind:src="customer.profile_pic" class="rejected"/>
                     </v-avatar>
                 </v-col>
                 <v-col cols="7" class="pt-0 pt-5">
-                    <h3 class="mb-0 font-weight-bold profile-title">{{customerinfo.name}}</h3>
-                    <p class="mb-0 last-interactive profile-subtitle">Interact {{customerinfo.last_interaction}}</p>
+                    <h3 class="mb-0 font-weight-bold profile-title">{{customer.name}}</h3>
+                    <p class="mb-0 last-interactive profile-subtitle">Interact {{customer.last_interaction}}</p>
                 </v-col>
                 <v-col cols="3" class="messenger-header">
-                    <v-switch v-model="customerinfo.manualInterventionIsActive" @click="manualInterventionToggle"></v-switch>
+                    <v-switch v-model="customer.manualInterventionIsActive" @click="manualInterventionToggle"></v-switch>
                     <p class="messenger-header-p">Switch to Conversation</p>
                 </v-col>
             </v-row>
@@ -62,28 +62,19 @@ export default {
     name: "CustomerMessanger",
     data() {
         return {
-            customerinfo: null,
             customerMessages: null,
-            customerId: this.$route.query.customerId || null
         }
     },
     async mounted() {
-        await this.getCustomerDetailsData(this.customerId);
-        await this.getCustomerMessages(this.customerId);
+        await this.getCustomerMessages(this.customer.id);
     },
     methods: {
         sendToMessenger() {
-            window.open(`https://www.facebook.com/messages/t/${this.customerinfo.property_profile_id}`, "_blank");
+            window.open(`https://www.facebook.com/messages/t/${this.customer.property_profile_id}`, "_blank");
         },
 
         async manualInterventionToggle() {
-            await CustomerService.toggleManualIntervention(this.customerinfo.id, this.customerinfo.manualInterventionIsActive);
-        },
-
-        async getCustomerDetailsData (customerId) {
-            this.customerinfo = await CustomerService.getCustomerDetails(customerId);
-            console.log('Customer Info', this.customerinfo);
-
+            await CustomerService.toggleManualIntervention(this.customer.id, this.customer.manualInterventionIsActive);
         },
 
         async getCustomerMessages (customerId) {
@@ -91,6 +82,11 @@ export default {
             console.log('Customer Messages',this.customerMessages);
         },
     },
+    watch: {
+        customer () {
+           this.getCustomerMessages(this.customer.id);
+        }
+    }
 }
 </script>
 
