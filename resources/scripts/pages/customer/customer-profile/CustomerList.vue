@@ -76,8 +76,8 @@
                         </v-col>
                     </v-row>
                 </v-col>
-                <v-col cols="6" class="pt-0">
-                    <CustomerMessenger></CustomerMessenger>
+                <v-col cols="6" class="pt-0" style="max-height: 100vh;overflow: auto">
+                    <CustomerMessenger :customer="customerinfo"></CustomerMessenger>
                 </v-col>
             </v-row>
         </div>
