@@ -6,7 +6,7 @@
                     <v-row>
                         <v-app-bar>
                             <v-icon medium class="customer-list-back-button pr-5 header-icon"> mdi-arrow-left </v-icon>
-                            <v-text-field label="Search leads" filled dense hide-details prepend-inner-icon="mdi-magnify" class="max-height-70 pr-5"></v-text-field>
+                            <v-text-field v-if="false" label="Search leads" filled dense hide-details prepend-inner-icon="mdi-magnify" class="max-height-70 pr-5"></v-text-field>
                         </v-app-bar>
                     </v-row>
                     <v-row>
