@@ -65,7 +65,7 @@
 
                                     </v-expansion-panel-header>
                                     <v-expansion-panel-content class="pa-0" style="background: #E0E0E0">
-                                        <customer-help-dest v-bind:customer="3029"></customer-help-dest>
+                                        <customer-help-dest v-bind:customer="3304"></customer-help-dest>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                             </v-expansion-panels>

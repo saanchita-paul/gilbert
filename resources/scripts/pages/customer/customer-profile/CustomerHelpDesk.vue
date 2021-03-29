@@ -111,7 +111,6 @@ name: "CustomerHelpDesk",
     },
     methods: {
         async getCustomerDetailsData () {
-            console.log(this.customer);
             this.customerinfo = await CustomerService.getCustomerDetails(this.customer);
             this.isLoaded = true;
         }
