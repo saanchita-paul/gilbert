@@ -12,3 +12,12 @@ export const accountType = {
 }
 
 export const mapAccountType = key => accountType[key.toUpperCase()]
+
+export const interventionStatus = {
+    NO_ISSUE: 'No issue',
+    NEED_ASSISTANCE: 'Need assistance',
+    IN_PROGRESS: 'In progress',
+    RESOLVED: 'Resolved',
+}
+
+export const mapInterventionStatus = key => interventionStatus[key.toUpperCase()]

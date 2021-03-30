@@ -36,7 +36,7 @@
                         </v-row>
                     </td>
                     <td class="fontweight400 font-size12 font-colorblack pl-4">
-                        {{ item.issue_status }}
+                        {{ item.issue_status | mapInterventionStatus }}
                     </td>
                     <td class="fontweight400 font-size14 font-colorblack pl-4">
                         {{ item.connection_status }}
@@ -56,7 +56,7 @@
                         <p class="font-size12 font-color-gray mb-0 pl-0">{{ item.connection_time }}</p>
                     </td>
                     <td>
-                        <v-btn small  @click="openProfile(item.id)" class="action-btn-ass px-2 font-size12">PEOPLE</v-btn>
+                        <v-btn small  @click="openProfile(item.id)" class="action-btn-ass px-2 font-size12">PROFILE</v-btn>
                         <v-btn small  @click="openConversation(item.id)" class="action-btn px-2 font-size12">CHAT
                             <v-icon>mdi-arrow-right</v-icon>
                         </v-btn>
@@ -73,6 +73,7 @@ import CustomerService from "@scripts/services/CustomerService";
 import {mapSentiment, mapSentimentColor} from "@scripts/data/SentimentColor";
 import Pagination from "@scripts/models/Pagination";
 import {merge} from "lodash-es";
+import {mapInterventionStatus} from "@scripts/data/CustomerDataMapper";
 
 export default {
     data() {
@@ -129,6 +130,14 @@ export default {
             console.log('id', id);
             this.$router.push({name: `customer.details`, params: {id: id}})
         },
+    },
+    filters: {
+        mapInterventionStatus (value) {
+            if(value) {
+                return mapInterventionStatus(value);
+            }
+           return '';
+        }
     }
 
 }
