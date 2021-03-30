@@ -1,11 +1,11 @@
 export const sentimentColors = {
     NEGATIVE : {
         color: '#E91E63',
-        text: 'BAD'
+        text: 'Bad'
     },
     NEUTRAL : {
         color: '#BDBDBD',
-        text: 'Nuetral',
+        text: 'Neutral',
     },
     POSITIVE : {
         color: '#4CAF50',
