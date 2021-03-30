@@ -34,7 +34,7 @@
                                 </v-avatar>
                             </template>
 
-                            <template v-if="item.type === 'RECEIVE'">
+                            <template v-if="item.type === 'RECEIVE' || item.type === 'STANDBY'">
                                 <v-avatar v-if="item.isAvatarNeed" color="white" size="45" class="avater-alignment-left">
                                     <img :src="item.customer.profile_pic">
                                 </v-avatar>
@@ -93,11 +93,12 @@ export default {
     },
     methods: {
         sendToMessenger() {
-            window.open(`https://www.facebook.com/messages/t/${this.customer.property_profile_id}`, "_blank");
+            window.open(`https://www.facebook.com/Dev-Hood-1924197607612551/inbox`, "_blank");
         },
 
         async manualInterventionToggle() {
-            await CustomerService.toggleManualIntervention(this.customer.id, this.customer.manualInterventionIsActive);
+            let manualInterventionRequire = this.customer.manualInterventionIsActive ? 1 : 0;
+            await CustomerService.toggleManualIntervention(this.customer.id, manualInterventionRequire);
         },
 
         async getCustomerMessages (customerId, page = 1) {
@@ -107,11 +108,9 @@ export default {
         },
         async infiniteHandler($state) {
             if (this.pagination.page < this.pagination.page_count) {
-                console.log('IF');
                 await this.getCustomerMessages(this.customer.id, ++this.pagination.page);
                 $state.loaded();
             } else {
-                console.log('Else');
                 $state.complete();
             }
         }
@@ -119,7 +118,8 @@ export default {
     watch: {
         customer () {
             this.customerMessages = [];
-           this.getCustomerMessages(this.customer.id, this.pagination.page);
+            this.pagination = new Pagination();
+            this.getCustomerMessages(this.customer.id, this.pagination.page);
         }
     }
 }

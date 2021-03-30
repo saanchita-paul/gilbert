@@ -45,7 +45,6 @@ export default {
      * @param customerId
      */
      getCustomerMessages: async (customerId, pageIndex) => {
-        // Todo API End point will be replaced later
         try {
             const data = await axios.get(`${BOT_API}/customers/${customerId}/chat-histories?page=${pageIndex}`);
             return CustomerMapper.mapCustomerMessages(data.data);
@@ -132,7 +131,7 @@ export default {
      * @param manualInterventionStatus
      */
      toggleManualIntervention: async (customerId, manualInterventionStatus) => {
-        const response = (await axios.get(`${ROOT}/utility/${customerId}/manual-intervention`, {
+        const response = (await axios.get(`${BOT_API}/utility/${customerId}/manual-intervention`, {
             params: {
                 manualInterventionStatus: manualInterventionStatus
             }

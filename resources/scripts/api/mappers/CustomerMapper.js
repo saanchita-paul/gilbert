@@ -153,6 +153,9 @@ export default {
             connectionStatus: customerData.connection_info.connection_status || '',
             connectionReason: customerData.connection_info.reason || '-',
             connectionMernNo: customerData.connection_info.mirn || '',
+            manualInterventionIsActive: customerData.manual_intervention_is_active || null,
+            manualInterventionStatus: customerData.manual_intervention_status || null,
+
 
 
         })
