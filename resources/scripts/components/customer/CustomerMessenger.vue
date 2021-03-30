@@ -93,7 +93,8 @@ export default {
     },
     methods: {
         sendToMessenger() {
-            window.open(`https://www.facebook.com/Dev-Hood-1924197607612551/inbox`, "_blank");
+            let facebookPageUrl = process.env.MIX_FACEBOOK_PAGE_URL || 'https://www.facebook.com/Dev-Hood-1924197607612551/inbox';
+            window.open(`${facebookPageUrl}`, "_blank");
         },
 
         async manualInterventionToggle() {
