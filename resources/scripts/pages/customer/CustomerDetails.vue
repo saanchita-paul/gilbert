@@ -37,7 +37,7 @@
                         <v-card-text>
                             <v-row class="pb-2">
                                 <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title"><span class=" font-weight-bold">Id#{{customerinfo.property_profile_id}}</span></p></v-col>
-                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Account Type:</span>{{customerinfo.property_account_type}}</p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Account Type:</span> {{customerinfo.property_account_type | mapAccountType}}</p></v-col>
                                 <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Life Support:</span> {{customerinfo.property_life_support}}</p></v-col>
                                 <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold  ">Tenancy Type:</span> {{customerinfo.property_tenancy_type}}</p></v-col>
                                 <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold  ">Solar Powered:</span> {{customerinfo.property_solar_powered}}</p></v-col>
@@ -80,7 +80,7 @@
                                 <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title "><span class="font-weight-bold">Connection Address:</span></p><p class="profile-info-title">{{customerinfo.connection_address}}</p></v-col>
                             </v-row>
                             <v-row class="py-2">
-                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Energy Type:</span> {{customerinfo.connection_energy_type}}</p></v-col>
+                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Energy Type:</span> {{customerinfo.connection_energy_type | mapEnergyType}}</p></v-col>
                                 <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Gas Provider:</span> {{customerinfo.connection_gas_provider}}</p></v-col>
                                 <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">E-Destributor:</span> {{customerinfo.e_destributor}}</p></v-col>
                                 <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0"><span class="font-weight-bold">Gas meter Reading Charge:</span> {{customerinfo.gas_meter_charge}}</p></v-col>
@@ -90,13 +90,13 @@
                                 <v-col cols="6" class="py-0">
                                     <v-row class="align-baseline">
                                         <label  class="font-weight-bold profile-info-title">MIRN no:</label>
-                                        <v-col class="px-0 pb-0" cols="7"><v-text-field  class="border-radious-5" readonly filled rounded dense v-model:value="customerinfo.connection_mern_no"></v-text-field></v-col>
+                                        <v-col class="px-0 pb-0" cols="7"><v-text-field  class="border-radious-5" readonly filled rounded dense v-model="customerinfo.connection_mern_no"></v-text-field></v-col>
                                     </v-row>
                                 </v-col>
                                 <v-col cols="6" class="py-0">
                                     <v-row class="align-baseline">
                                         <label class="font-weight-bold profile-info-title">NMI no:</label>
-                                        <v-col class="px-0 pb-0" cols="7"><v-text-field  class="border-radious-5" readonly filled rounded dense v-model:value="customerinfo.connection_nmi_no"></v-text-field></v-col>
+                                        <v-col class="px-0 pb-0" cols="7"><v-text-field  class="border-radious-5" readonly filled rounded dense v-model="customerinfo.connection_nmi_no"></v-text-field></v-col>
                                     </v-row>
                                 </v-col>
 
@@ -129,6 +129,7 @@
 
 import CustomerDetails from "@scripts/models/CustomerDetails";
 import CustomerService from "@scripts/services/CustomerService";
+import {mapEnergyType, mapAccountType} from "@scripts/data/CustomerDataMapper";
 
 export default {
     name: "CustomerDetials",
@@ -142,7 +143,6 @@ export default {
     props: {
         id:{
             required: false,
-            type: Number
         },
     },
 
@@ -160,6 +160,20 @@ export default {
     },
     mounted() {
         this.getCustomerDetailsData(this.id);
+    },
+    filters: {
+        mapEnergyType (value) {
+            if(value) {
+                return mapEnergyType(value);
+            }
+           return '';
+        },
+        mapAccountType (value) {
+            if(value) {
+                return mapAccountType(value);
+            }
+           return '';
+        }
     }
 }
 </script>

@@ -11,7 +11,7 @@
                     <v-card-text>
                         <v-row class="pb-2">
                             <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title"><span class=" font-weight-bold">Id#{{customer.property_profile_id}}</span></p></v-col>
-                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Account Type:</span>{{customer.property_account_type}}</p></v-col>
+                            <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Account Type:</span> {{customer.property_account_type | mapAccountType}}</p></v-col>
                             <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold ">Life Support:</span> {{customer.property_life_support}}</p></v-col>
                             <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold  ">Tenancy Type:</span> {{customer.property_tenancy_type}}</p></v-col>
                             <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold  ">Solar Powered:</span> {{customer.property_solar_powered}}</p></v-col>
@@ -51,7 +51,7 @@
                             <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title "><span class="font-weight-bold">Connection Address:</span></p><p class="profile-info-title">{{customer.connection_address}}</p></v-col>
                         </v-row>
                         <v-row class="py-2">
-                            <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Energy Type:</span> {{customer.connection_energy_type}}</p></v-col>
+                            <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Energy Type:</span> {{customer.connection_energy_type | mapEnergyType}}</p></v-col>
                             <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Gas Provider:</span> {{customer.connection_gas_provider}}</p></v-col>
                             <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">E-Destributor:</span> {{customer.e_destributor}}</p></v-col>
                             <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0"><span class="font-weight-bold">Gas meter Reading Charge:</span> {{customer.gas_meter_charge}}</p></v-col>
@@ -91,9 +91,7 @@
 </template>
 
 <script>
-
-import CustomerDetails from "@scripts/models/CustomerDetails";
-import CustomerService from "@scripts/services/CustomerService";
+import {mapEnergyType, mapAccountType} from "@scripts/data/CustomerDataMapper";
 
 export default {
 name: "CustomerHelpDesk",
@@ -106,10 +104,19 @@ name: "CustomerHelpDesk",
             required: true
         }
     },
-    methods: {
-    },
-
-    mounted() {
+    filters: {
+        mapEnergyType (value) {
+            if(value) {
+                return mapEnergyType(value);
+            }
+           return '';
+        },
+        mapAccountType (value) {
+            if(value) {
+                return mapAccountType(value);
+            }
+           return '';
+        }
     }
 }
 </script>
