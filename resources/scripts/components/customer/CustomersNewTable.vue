@@ -97,7 +97,7 @@ export default {
         }
     },
     watch: {
-        page(pageNew, pageOld) {
+        'pagination.page'(pageNew, pageOld) {
             if (pageNew !== pageOld) {
                 this.load(pageNew)
             }
