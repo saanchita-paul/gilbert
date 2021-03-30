@@ -1,7 +1,7 @@
 <template>
     <div class="px-2 analytic-bg hood-gradiant" v-if="isLoaded">
         <v-container>
-            <div class="my-lead-head my-3">
+            <div class="my-lead-head my-3 mx-2">
                 <h3 class="section-title white--text">My leads overview</h3>
                 <div>
                     <v-btn>filter
@@ -56,7 +56,7 @@
                 </LeadWidget>
             </div>
 
-            <div class="lead-connection-section">
+            <div class="lead-connection-section mx-2">
                 <h3 class="section-title">How are my lead is going?</h3>
                 <v-row>
                     <v-col md="7" sm="12" style="height: 466px;">
@@ -80,8 +80,8 @@
                 </v-row>
             </div>
 
-            <v-row class="mt-4">
-                <v-col md="8">
+            <v-row class="mt-4 mx-2">
+                <v-col md="8 mx-0 pl-0">
                     <h3 class="section-title">Connection Summary</h3>
                     <v-row>
                         <v-col md="4">
@@ -104,7 +104,7 @@
                         </v-col>
                     </v-row>
                 </v-col>
-                <v-col md="4">
+                <v-col md="4" class="mx-0 pr-0">
                     <h3  class="section-title mb-3">Age Summary</h3>
                     <AgeWidget :data="utilityDashboardData.age_group_summary.age_group"/>
                 </v-col>
@@ -172,6 +172,7 @@ export default {
     margin-top: 50px;
 }
 .widgets {
+
     display: flex;
     flex-direction: row;
 }
