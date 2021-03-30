@@ -37,7 +37,7 @@ export default {
                     },
                     elements: {
                         point:{
-                            radius: 2
+                            radius: 3
                         }
                     },
                     label: {

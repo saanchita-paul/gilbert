@@ -1,5 +1,5 @@
 <template>
-        <v-tooltip bottom >
+        <v-tooltip bottom  color="#263238" class="white--text">
             <template v-slot:activator="{ on, attrs }">
                 <v-card v-if="tooltip" class="widget mx-2" v-bind="attrs"
                         v-on="on">
@@ -17,7 +17,7 @@
                         <p class="mb-5 lead-title">{{title}}</p>
                         <div class="small-chart">
                             <slot/>
-                        </div>
+                        </div>120
                     </div>
                 </v-card>
             </template>
@@ -89,5 +89,8 @@ export default {
         margin: 0px;
         text-align: center;
     }
+}
+.v-tooltip__content.menuable__content__active {
+    opacity: 1!important;
 }
 </style>

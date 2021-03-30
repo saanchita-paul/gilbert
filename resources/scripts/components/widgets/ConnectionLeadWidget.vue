@@ -45,10 +45,16 @@ export default {
             },
             options: {
                 maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        top: 40,
+                    }
+                },
                 legend: {
                     display: false
                 },
                 scales: {
+
                     // ticks: {
                     //     display: false
                     // },
