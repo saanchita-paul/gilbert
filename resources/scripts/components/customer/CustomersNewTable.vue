@@ -1,6 +1,6 @@
 <template>
     <v-card>
-        <v-card-title class="font-size16 fontweight400 pb-0">
+        <v-card-title class="widget-title pb-0">
             Customers needing urgent assistance
         </v-card-title>
         <v-data-table
@@ -23,7 +23,7 @@
                 >
                     <td :class="{'error-sentiment-border': item.issue_status === 'need_assistance' || item.issue_status === 'in_progress', 'error-sentiment-transparen':  !(item.issue_status === 'need_assistance' || item.issue_status === 'in_progress')}">
                         <v-row align-center class="header color--text">
-                            <v-col class="avatar-containner pr-2 avater-remove-growing">
+                            <v-col class="avatar-containner pr-2 avater-remove-growing pl-1">
                                 <v-avatar>
                                     <v-img v-bind:src="item.profile_pic" :color="item.sentiment.color"  v-bind:class="{'bad': item.sentiment.text === 'BAD', 'good': item.sentiment.text === 'Good', 'neural':item.sentiment.text === 'Nuetral'}"/>
                                 </v-avatar>
@@ -35,29 +35,29 @@
                             </v-col>
                         </v-row>
                     </td>
-                    <td class="fontweight400 font-size12 font-colorblack">
+                    <td class="fontweight400 font-size12 font-colorblack pl-4">
                         {{ item.issue_status }}
                     </td>
-                    <td class="fontweight400 font-size14 font-colorblack">
+                    <td class="fontweight400 font-size14 font-colorblack pl-4">
                         {{ item.connection_status }}
                     </td>
                     <td class="fontweight400 font-size14 font-colorblack">
-                        <p small class="sentiment pt-1 pb-2 mb-0" v-bind:style="{backgroundColor: item.sentiment.color}">
+                        <p small class="sentiment py-1 mb-0" v-bind:style="{backgroundColor: item.sentiment.color}">
                             <span class="font-size10 fontweight400 mb-0"
                                   :color="item.sentiment.color">{{ item.sentiment.text }}</span></p>
                     </td>
-                    <td>
+                    <td class="pl-4">
                         <p class="fontweight400 font-size14 font-colorblack mb-0">{{ item.location }}</p>
                         <!--                            <p class="font-size12 font-color-gray mb-0 ">GMT+11</p>-->
 
                     </td>
-                    <td class="fontweight400 font-size14 font-colorblack">
-                        <p class="fontweight400 font-size14 font-colorblack mb-0"> {{ item.connection_date }}</p>
-                        <p class="font-size12 font-color-gray mb-0 ">{{ item.connection_time }}</p>
+                    <td class="fontweight400 font-size14 font-colorblack pl-4">
+                        <p class="fontweight400 font-size14 font-colorblack mb-0 pl-0"> {{ item.connection_date }}</p>
+                        <p class="font-size12 font-color-gray mb-0 pl-0">{{ item.connection_time }}</p>
                     </td>
                     <td>
-                        <v-btn @click="openProfile(item.id)" class="action-btn-ass px-2 font-size12">PEOPLE</v-btn>
-                        <v-btn @click="openConversation(item.id)" class="action-btn px-2 font-size12">CHAT
+                        <v-btn small  @click="openProfile(item.id)" class="action-btn-ass px-2 font-size12">PEOPLE</v-btn>
+                        <v-btn small  @click="openConversation(item.id)" class="action-btn px-2 font-size12">CHAT
                             <v-icon>mdi-arrow-right</v-icon>
                         </v-btn>
                     </td>
@@ -81,8 +81,8 @@ export default {
             headers: [
                 {text: 'Customer Details', align: 'start', value: 'customer_details', sortable: false},
                 {text: 'Issue Status', value: 'issue_status', align: 'start', sortable: false},
-                {text: 'Connection Status', value: 'connection_status', align: 'start', sortable: false},
-                {text: 'Sentiment', value: 'user_sentiment', align: 'start', sortable: false},
+                {text: 'Connection Status', value: 'connection_status', align: 'center', sortable: false},
+                {text: 'Sentiment', value: 'user_sentiment', align: 'center', sortable: false},
                 {text: 'Location', value: 'location', align: 'start', sortable: false},
                 {text: 'Connection Date', value: 'connection_date', align: 'start', sortable: false},
                 {text: '', sortable: false, value: 'profile', align: 'start',},
@@ -165,13 +165,15 @@ export default {
 .action-btn {
     background: linear-gradient(133.34deg, #56CCF2 -75.93%, #542E89 42.76%, #9C27B0 118.83%);
     color: white;
-    border-radius: 10px;
+    border-radius: 4px;
+    font-size: 12px !important;
 }
 
 .action-btn-ass {
+    font-size: 12px !important;
     background: #828282 !important;
     color: white;
-    border-radius: 10px;
+    border-radius: 4px;
 }
 
 .font-size10 {

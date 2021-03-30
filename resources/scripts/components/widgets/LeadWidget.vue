@@ -17,7 +17,7 @@
                         <p class="mb-5 lead-title">{{title}}</p>
                         <div class="small-chart">
                             <slot/>
-                        </div>
+                        </div>120
                     </div>
                 </v-card>
             </template>
