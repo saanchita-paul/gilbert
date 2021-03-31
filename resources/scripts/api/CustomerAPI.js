@@ -116,9 +116,9 @@ export default {
         return {
             data: CustomerMapper.mapCustomerList(data.data),
             pagination: new Pagination({
-                page: data.pagination ? data.pagination.currentPage: 1,
+                page: data.pagination ? data.pagination.currentPage : 1,
                 hasMorePages: data.pagination ? data.pagination.hasMorePages : 0,
-                pageCount: data.pagination ? Math.ceil(data.pagination.total / data.pagination.perPage): 1,
+                pageCount: data.pagination ? Math.ceil(data.pagination.total / data.pagination.perPage) : 1,
                 perPage: data.pagination ? data.pagination.perPage : 0,
                 total: data.pagination ? data.pagination.total : 0
             })

@@ -46,7 +46,7 @@
                         </div>
                     </v-col>
                     <v-col sm="12" v-if="hasMessages">
-                    <infinite-loading  @infinite="infiniteHandler"
+                    <infinite-loading v-if="autoScroll"  @infinite="infiniteHandler"
                                         spinner="bubbles">
                         <div slot="no-more">No more result</div>
                         <div slot="no-results">No Messages found</div>
@@ -75,6 +75,7 @@ export default {
     name: "CustomerMessanger",
     data() {
         return {
+            autoScroll: false,
             customerMessages: [],
             pageIndex: 0,
             pagination: new Pagination()
@@ -89,7 +90,19 @@ export default {
         }
     },
     async mounted() {
-        await this.getCustomerMessages(this.customer.id, this.pagination.page);
+        if (this.customer?.id) {
+            await this.getCustomerMessages(this.customer.id, this.pagination.page);
+        }
+    },
+    watch: {
+        customer (newCustomer, oldCustomer) {
+            if (newCustomer?.id) {
+                this.autoScroll = false;
+                this.customerMessages = [];
+                this.pagination = new Pagination();
+                this.getCustomerMessages(newCustomer.id, this.pagination.page);
+            }
+        }
     },
     methods: {
         sendToMessenger() {
@@ -104,8 +117,9 @@ export default {
 
         async getCustomerMessages (customerId, page = 1) {
             const response = await CustomerService.getCustomerMessages(customerId, page);
-            merge(this.pagination, response.pagination)
+            this.pagination = response.pagination
             this.customerMessages = [...this.customerMessages, ...response.data];
+            this.autoScroll = true;
         },
         async infiniteHandler($state) {
             if (this.pagination.page < this.pagination.page_count) {
@@ -116,13 +130,6 @@ export default {
             }
         }
     },
-    watch: {
-        customer () {
-            this.customerMessages = [];
-            this.pagination = new Pagination();
-            this.getCustomerMessages(this.customer.id, this.pagination.page);
-        }
-    }
 }
 </script>
 
