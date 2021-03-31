@@ -16,14 +16,16 @@
                                     v-for="(item,i) in customerList"
                                     :key="i"
                                 >
-                                    <v-expansion-panel-header @click="onPanelClicked(i, item.id)"  class="py-0" v-bind:class="{ 'expansion-header-background-active ': activeModel === i }">
+                                    <v-expansion-panel-header @click="onPanelClicked(i, item.id)"  class="py-0" v-bind:class="{ 'expansion-header-background-active ': activeModel === i }" expand-icon="mdi-menu-down">
                                         <template v-slot:actions>
 <!--                                            <v-icon v-bind:class="{ 'white': activeModel === i }">-->
-<!--                                                mdi-menu-down-->
+<!--                                                -->
 <!--                                            </v-icon>-->
-                                            <v-img src="/assets/images/icons/arrow_drop_down.svg" max-width="30px"/>
+                                            <v-img v-if="activeModel === i" src="/assets/images/icons/arrow_drop_up.svg" max-width="30px"/>
+                                            <v-img v-else src="/assets/images/icons/arrow_drop_down.svg" max-width="30px"/>
                                         </template>
                                         <template>
+
                                             <v-row align-center class="header color--text" v-if="activeModel === i">
                                                 <v-col class="avatar-containner pr-0">
                                                     <v-avatar>

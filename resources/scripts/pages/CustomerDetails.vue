@@ -10,7 +10,7 @@
             <v-row align-center class="header color--text">
                 <v-col class="avatar-containner pr-0">
                     <v-avatar>
-                        <v-img v-bind:src="customerinfo.profile_pic" class="rejected"/>
+                        <v-img v-bind:src="customerinfo.profile_pic"  v-bind:class="{'bad':  sentiment === 'BAD', 'good': sentiment === 'Good', 'neural':sentiment === 'Nuetral'}"/>
                     </v-avatar>
                 </v-col>
                 <v-col cols="10" class="pt-0 pt-5">
@@ -132,13 +132,14 @@
 import CustomerDetails from "@scripts/models/CustomerDetails";
 import CustomerService from "@scripts/services/CustomerService";
 import {mapEnergyType, mapAccountType} from "@scripts/data/CustomerDataMapper";
+import {mapSentiment} from "@scripts/data/SentimentColor";
 
 export default {
     name: "CustomerDetials",
     data() {
         return {
                 customerinfo: this.getCustomerDetails(),
-                customerinfo1:null,
+                sentiment : ''
         }
     },
 
@@ -158,7 +159,13 @@ export default {
 
         async getCustomerDetailsData (id) {
             this.customerinfo = await CustomerService.getCustomerDetails(id);
-        }
+            this.sentiment = this.getSentimentText( this.customerinfo.sentiment);
+            console.log( this.sentiment);
+        },
+
+        getSentimentText(sentiment) {
+            return mapSentiment(sentiment).text;
+        },
     },
     mounted() {
         this.getCustomerDetailsData(this.id);
@@ -241,6 +248,17 @@ body {
 .border-radious-5 {
     border-radius: 5px;
 }
+.bad {
+    border: 2px solid rgb(233, 30, 99);
+}
+.good {
+    border: 2px solid rgb(76, 175, 80);
+
+}
+.neural {
+    border: 2px solid rgb(189, 189, 189);
+}
+
 
 
 </style>

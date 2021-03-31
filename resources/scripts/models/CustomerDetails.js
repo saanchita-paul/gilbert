@@ -8,6 +8,7 @@ export default class CustomerDetails {
                     facebook_id,
                     email,
                     phone,
+                    sentiment,
 
                     propertyProfileId,
                     propertyAccountType,
@@ -51,6 +52,7 @@ export default class CustomerDetails {
         this.messager_id = facebook_id;
         this.email = email;
         this.ph = phone;
+        this.sentiment = sentiment;
 
         this.property_profile_id = propertyProfileId || '';
         this.property_account_type = propertyAccountType || '';

@@ -127,6 +127,7 @@ export default {
             facebook_id: customerData.facebook_id || '',
             email: customerData.email || '',
             phone: customerData.phone || '',
+            sentiment: customerData.sentiment || '',
 
             propertyProfileId: customerData.property_info.id || '',
             propertyAccountType: customerData.property_info.account_type || '',

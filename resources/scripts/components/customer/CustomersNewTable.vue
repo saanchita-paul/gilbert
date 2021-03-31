@@ -222,7 +222,6 @@ export default {
 }
 .neural {
     border: 2px solid rgb(189, 189, 189);
-
 }
 
 </style>
