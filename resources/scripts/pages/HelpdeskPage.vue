@@ -63,7 +63,7 @@
 
                                     </v-expansion-panel-header>
                                     <v-expansion-panel-content class="pa-0 body-bg">
-                                        <CustomerHelpDesk :customer="customerinfo" />
+                                        <CustomerShortDetails :customer="customerinfo" />
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                             </v-expansion-panels>
@@ -86,7 +86,7 @@
 
 import CustomerDetails from "@scripts/models/CustomerDetails";
 import CustomerService from "@scripts/services/CustomerService";
-import CustomerHelpDesk from "@scripts/pages/customer/customer-profile/CustomerHelpDesk";
+import CustomerShortDetails from "@scripts/components/customer/CustomerShortDetails";
 import CustomerMessenger from "@scripts/components/customer/CustomerMessenger";
 import ApplicationService from "@scripts/services/ApplicationService";
 import InfiniteLoading from "vue-infinite-loading";
@@ -108,7 +108,7 @@ export default {
         }
     },
     components:{
-        CustomerHelpDesk,
+        CustomerShortDetails,
         CustomerMessenger,
         InfiniteLoading
     },
