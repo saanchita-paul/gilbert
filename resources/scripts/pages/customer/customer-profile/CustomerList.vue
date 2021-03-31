@@ -4,7 +4,8 @@
                 <v-col  cols="6" class="pt-0">
                     <v-row>
                         <v-app-bar>
-                            <v-icon medium class="customer-list-back-button pr-5 header-icon"> mdi-arrow-left </v-icon>
+<!--                            <v-icon medium class="customer-list-back-button pr-5 header-icon"> mdi-arrow-left </v-icon>-->
+                            <v-img src="/assets/images/icons/Back.svg" max-width="24px"/>
                             <v-text-field v-if="false" label="Search leads" filled dense hide-details prepend-inner-icon="mdi-magnify" class="max-height-70 pr-5"></v-text-field>
                         </v-app-bar>
                     </v-row>
@@ -17,9 +18,10 @@
                                 >
                                     <v-expansion-panel-header @click="onPanelClicked(i, item.id)"  class="py-0" v-bind:class="{ 'expansion-header-background-active ': activeModel === i }">
                                         <template v-slot:actions>
-                                            <v-icon v-bind:class="{ 'white': activeModel === i }">
-                                                mdi-menu-down
-                                            </v-icon>
+<!--                                            <v-icon v-bind:class="{ 'white': activeModel === i }">-->
+<!--                                                mdi-menu-down-->
+<!--                                            </v-icon>-->
+                                            <v-img src="/assets/images/icons/arrow_drop_down.svg" max-width="30px"/>
                                         </template>
                                         <template>
                                             <v-row align-center class="header color--text" v-if="activeModel === i">

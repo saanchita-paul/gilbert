@@ -43,6 +43,9 @@
                             </span>
                         </v-list-group>
                         <v-list-item link v-if="route.type === 'route'" :to="{name:route.route_name}" exact>
+<!--                            <v-list-item-icon>-->
+<!--                                 <v-img src="/assets/images/icons/Customers.svg" max-width="30px"/>-->
+<!--                            </v-list-item-icon>-->
                             <v-list-item-action>
                                 <v-icon> {{ route.icon }} </v-icon>
                             </v-list-item-action>

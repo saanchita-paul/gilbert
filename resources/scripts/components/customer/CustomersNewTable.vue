@@ -58,7 +58,8 @@
                     <td>
                         <v-btn small  @click="openProfile(item.id)" class="action-btn-ass px-2 font-size12">PROFILE</v-btn>
                         <v-btn small  @click="openConversation(item.id)" class="action-btn px-2 font-size12">CHAT
-                            <v-icon>mdi-arrow-right</v-icon>
+<!--                            <v-icon>mdi-arrow-right</v-icon>-->
+                            <v-img src="/assets/images/icons/Forward.svg" max-width="24px" />
                         </v-btn>
                     </td>
                 </tr>

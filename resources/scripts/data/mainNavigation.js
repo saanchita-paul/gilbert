@@ -2,7 +2,7 @@ export default [
     {
         type: 'group',
         title: 'Dashboard',
-        icon: 'mdi-chart-pie',
+        icon: '',
         model: false,
         children: [
             {
