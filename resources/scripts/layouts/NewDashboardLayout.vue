@@ -76,12 +76,10 @@
                 <h6>Customer / List</h6>
             </v-toolbar-title>
             <v-spacer/>
-<!--            <v-icon medium class="app-bar-icon"> mdi-magnify</v-icon>-->
-            <v-img  src="/assets/images/icons/Search.svg" style="border:1px solid red" max-width="24px"/>
+            <v-img  src="/assets/images/icons/Search.svg" max-width="24px"/>
             <div class="vertical-divider"></div>
             <p class="app-bar-user-name">Jones Ferdinand</p>
-<!--            <v-icon medium class="app-bar-icon app-bar-login-button"> mdi-login</v-icon>-->
-            <v-img  src="/assets/images/icons/Logout.svg" max-width="24px"/>
+            <img  src="/assets/images/icons/Logout.svg" max-width="24px"/>
         </v-app-bar>
 
         <v-main>
