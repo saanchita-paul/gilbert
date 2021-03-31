@@ -103,7 +103,7 @@ export default {
             if (!(await AuthService.login(this.form))) {
                 this.isLoginFailed = true;
             } else {
-                await this.$router.push({name: 'dashboard'})
+                await this.$router.push({name: 'dashboard.utility'})
             }
             this.loginLoading = false;
         },

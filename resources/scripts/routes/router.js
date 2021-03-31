@@ -51,7 +51,7 @@ const router = new VueRouter({
                     component: CustomerDetails,
                     name: 'customer.details',
                     meta: {
-                        isProtected: false
+                        isProtected: true
                     },
                     props: true
                 },
@@ -60,7 +60,7 @@ const router = new VueRouter({
                     component: CustomerList,
                     name: 'helpdesk',
                     meta: {
-                        isProtected: false
+                        isProtected: true
                     }
                 },
 
@@ -78,6 +78,6 @@ const router = new VueRouter({
     ]
 })
 
-// router.beforeEach(AuthService.checkRouteAuthorization);
+router.beforeEach(AuthService.checkRouteAuthorization);
 
 export default router;

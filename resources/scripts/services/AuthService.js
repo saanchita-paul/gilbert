@@ -50,7 +50,7 @@ export const checkRouteAuthorization = (to, from, next) => {
     if (to.meta.isProtected) {
         isLoggedIn ? next() : next({name: 'login'})
     } else {
-        isLoggedIn ? next({name: 'dashboard'}) : next()
+        isLoggedIn ? next({name: 'dashboard.utility'}) : next()
     }
 }
 
