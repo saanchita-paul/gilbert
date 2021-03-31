@@ -20,7 +20,7 @@ export default {
         },
         height: {
             type: String,
-            default: '100px'
+            default: '80px'
         },
         options: {
             type: Object,

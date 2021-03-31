@@ -2,16 +2,15 @@ import Vue from 'vue';
 import VueRouter from 'vue-router'
 import NewDashboardLayout from "@scripts/layouts/NewDashboardLayout";
 
-import CustomerAnalyticsPage from "@scripts/pages/customer/CustomerAnalyticsPage";
 
-import LoginPage from "@scripts/pages/auth/LoginPage";
+import  LoginPage from "@scripts/pages/auth/LoginPage";
 
 import AuthService, {checkRouteAuthorization} from "@scripts/services/AuthService";
 
-import CustomerDetails from "@scripts/pages/customer/CustomerDetails";
-import CustomerListPage from "@scripts/pages/customer/CustomerListTablePage";
+import CustomerDetails from "@scripts/pages/CustomerDetails";
+import CustomerListPage from "@scripts/pages/CustomerListTablePage";
 import UtilityAnalyticPage from "@scripts/pages/dashboard/UtilityAnalyticPage";
-import CustomerList from "@scripts/pages/customer/customer-profile/CustomerList";
+import CustomerList from "@scripts/pages/HelpdeskPage";
 
 Vue.use(VueRouter);
 
@@ -27,6 +26,14 @@ const router = new VueRouter({
                     path: '',
                     component: UtilityAnalyticPage,
                     name: 'dashboard.utility',
+                    meta: {
+                        isProtected: true
+                    }
+                },
+                {
+                    path: '/chatbot',
+                    component: UtilityAnalyticPage,
+                    name: 'chatbot',
                     meta: {
                         isProtected: true
                     }
