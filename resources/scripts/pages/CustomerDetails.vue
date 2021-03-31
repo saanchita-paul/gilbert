@@ -64,7 +64,8 @@
                                 </v-col>
                                 <v-spacer></v-spacer>
                                 <v-btn small depressed>
-                                    <v-icon small>mdi-pencil</v-icon>
+                                    <v-img  src="/assets/images/icons/Edit.svg" max-width="24px"/>
+<!--                                    <v-icon small>mdi-pencil</v-icon>-->
                                 </v-btn>
                             </v-row>
                         </v-card-title>
