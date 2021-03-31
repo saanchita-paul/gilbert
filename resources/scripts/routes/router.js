@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router'
-import NewDashboardLayout from "@scripts/layouts/NewDashboardLayout";
+import NewDashboardLayout from "@scripts/layouts/DashboardLayout";
 
 
 import  LoginPage from "@scripts/pages/auth/LoginPage";
