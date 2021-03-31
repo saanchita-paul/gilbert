@@ -22,6 +22,12 @@ class AuthController extends Controller
         return response()->json(['mgs' => 'failed'], 403);
     }
 
+    public function logout(Request $request)
+    {
+        auth()->logout();
+        return response()->json(['mgs' => 'success'], 200);
+    }
+
     public function authUser(Request  $request)
     {
         $user = $request->user();

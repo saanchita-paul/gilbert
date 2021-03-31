@@ -6,6 +6,9 @@ export default {
         await  axios.get('/sanctum/csrf-cookie');
         return axios.post('/login', form);
     },
+    logout: () => {
+        axios.get('/api/logout');
+    },
     getAuthUser: async () =>  {
         const res = (await axios.get('/api/user')).data;
 

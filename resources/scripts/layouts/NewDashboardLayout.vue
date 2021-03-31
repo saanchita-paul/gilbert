@@ -1,5 +1,5 @@
 <template>
-    <v-app id="inspire">
+    <v-app id="inspire" v-if="user">
         <v-navigation-drawer
             v-model="drawer"
             app
@@ -13,10 +13,10 @@
                 </v-list-item-avatar>
                 <v-list-item-content class="text-center">
                     <v-list-item-title class="nav-user-name">
-                        Jones Ferdinand
+                        {{user.name}}
                     </v-list-item-title>
                     <v-list-item-subtitle class="nav-user-email">
-                        jones.ferdinand@hood.ai
+                        {{user.email}}
                     </v-list-item-subtitle>
                 </v-list-item-content>
             </v-list>
@@ -78,8 +78,10 @@
             <v-spacer/>
             <v-img  src="/assets/images/icons/Search.svg" max-width="24px"/>
             <div class="vertical-divider"></div>
-            <p class="app-bar-user-name">Jones Ferdinand</p>
-            <img  src="/assets/images/icons/Logout.svg" max-width="24px"/>
+
+            <p class="app-bar-user-name">{{user.name}}</p>
+<!--            <v-icon medium class="app-bar-icon app-bar-login-button"> mdi-login</v-icon>-->
+            <v-img  @click="onLogout" src="/assets/images/icons/Logout.svg" max-width="24px"/>
         </v-app-bar>
 
         <v-main>
@@ -90,15 +92,26 @@
 
 <script>
 import ApplicationService from "../services/ApplicationService";
+import AuthService from "@scripts/services/AuthService";
 
 export default {
     name: "NewDashboardLayout",
     data() {
         return {
+            user: null,
             drawer: null,
             routes: ApplicationService.getMainNavigationRoutes()
         }
-    }
+    },
+    mounted() {
+        this.user = AuthService.getAuthUser();
+        setInterval(AuthService.authUser, 300000)
+    },
+     methods: {
+        async onLogout() {
+            await AuthService.logout();
+        },
+    },
 }
 </script>
 
