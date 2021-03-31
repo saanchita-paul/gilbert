@@ -27,6 +27,11 @@ export const login = async form => {
     }
 }
 
+export const logout = () => {
+    kickOut();
+    AuthAPI.logout();
+}
+
 /**
  * update user in store
  *
@@ -72,7 +77,8 @@ export default {
     authUser,
     isAuthenticated,
     kickOut,
-    checkRouteAuthorization
+    checkRouteAuthorization,
+    logout
 }
 
 

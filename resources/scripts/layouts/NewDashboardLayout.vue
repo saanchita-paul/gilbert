@@ -81,7 +81,7 @@
             <div class="vertical-divider"></div>
             <p class="app-bar-user-name">Jones Ferdinand</p>
 <!--            <v-icon medium class="app-bar-icon app-bar-login-button"> mdi-login</v-icon>-->
-            <v-img  src="/assets/images/icons/Logout.svg" max-width="24px"/>
+            <v-img  @click="onLogout" src="/assets/images/icons/Logout.svg" max-width="24px"/>
         </v-app-bar>
 
         <v-main>
@@ -92,6 +92,7 @@
 
 <script>
 import ApplicationService from "../services/ApplicationService";
+import AuthService from "@scripts/services/AuthService";
 
 export default {
     name: "NewDashboardLayout",
@@ -100,7 +101,15 @@ export default {
             drawer: null,
             routes: ApplicationService.getMainNavigationRoutes()
         }
-    }
+    },
+    mounted() {
+        setInterval(AuthService.authUser, 30000)
+    },
+     methods: {
+        async onLogout() {
+            await AuthService.logout();
+        },
+    },
 }
 </script>
 

@@ -21,7 +21,7 @@ Broadcast::routes(['middleware' => ['auth:sanctum']]);
 Route::middleware('auth:sanctum')
     ->get('/user', [AuthController::class, 'authUser']);
 
-
+Route::get('/logout', [AuthController::class, 'logout']);
 /**
  * test routes
  */
