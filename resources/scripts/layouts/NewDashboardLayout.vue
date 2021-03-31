@@ -81,7 +81,7 @@
 
             <p class="app-bar-user-name">{{user.name}}</p>
 <!--            <v-icon medium class="app-bar-icon app-bar-login-button"> mdi-login</v-icon>-->
-            <v-img  @click="onLogout" src="/assets/images/icons/Logout.svg" max-width="24px"/>
+            <v-img  class="mx-9" @click="onLogout" src="/assets/images/icons/Logout.svg" max-width="24px"/>
         </v-app-bar>
 
         <v-main>

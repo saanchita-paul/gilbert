@@ -2,7 +2,8 @@
     <v-app>
         <v-row>
             <v-app-bar>
-                <v-icon @click="goBack">keyboard_backspace</v-icon>
+<!--                <v-icon @click="goBack">keyboard_backspace</v-icon>-->
+                <v-img src="/assets/images/icons/Back.svg" @click="goBack" max-width="24px" class="mb-3"/>
             </v-app-bar>
         </v-row>
         <v-container class="pt-0 container-background">
