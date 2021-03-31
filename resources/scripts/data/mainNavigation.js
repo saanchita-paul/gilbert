@@ -3,7 +3,7 @@ export default [
         type: 'group',
         title: 'Dashboard',
         icon: 'mdi-chart-pie',
-        model: false,
+        model: true,
         children: [
             {
                 type: 'route',
@@ -14,7 +14,7 @@ export default [
             {
                 type: 'route',
                 title: 'Chatbot',
-                route_name: 'dashboard.chatbot',
+                route_name: 'chatbot',
                 disabled: true,
             }
         ]

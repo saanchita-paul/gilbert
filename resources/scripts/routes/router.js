@@ -32,6 +32,14 @@ const router = new VueRouter({
                     }
                 },
                 {
+                    path: '/chatbot',
+                    component: UtilityAnalyticPage,
+                    name: 'chatbot',
+                    meta: {
+                        isProtected: true
+                    }
+                },
+                {
                     path: '/customers',
                     component: CustomerListPage,
                     name: 'customer.list',
