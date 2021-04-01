@@ -25,7 +25,7 @@
                         <div v-for="(item, index) in customerMessages" :key="index"
                             :class="['d-flex flex-row align-center my-2', item.type === 'RESPONSE' ? 'justify-end': null]">
                             <template v-if="item.type === 'RESPONSE'">
-                                <v-card elevation="1" class="pa-2 mr-2 expansion-header-background-active message-card">
+                                <v-card elevation="1" class="pa-2 mr-2 expansion-header-background-active message-card" v-bind:class="{'mr-13':!item.isAvatarNeed}">
                                     <span  class=" mgs-text">{{ item.text_content }}</span>
                                      <p v-if="item.isAvatarNeed" class="message-time-right">{{item.created_at}}</p>
                                 </v-card>
