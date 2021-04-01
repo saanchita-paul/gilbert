@@ -124,7 +124,7 @@ export default {
         },
 
         openConversation(id) {
-            this.$router.push({name: `helpdesk`})
+            this.$router.push({name: `helpdesk`, query: {customerId: id}})
         },
 
         openProfile(id) {
