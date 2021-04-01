@@ -162,6 +162,7 @@ export default {
             energy: mapTotalEnergyConnection(data.total_energy_connection),
             conversion: mapConversionRate(data.conversion_rate),
             automation: mapAutomationRate(data.automation_rate),
+            total_assistance_needed: data.total_assistance_needed
         };
     },
 }

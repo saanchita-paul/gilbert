@@ -1,7 +1,7 @@
 <template>
     <div class="px-2 analytic-bg hood-gradiant" v-if="isLoaded">
-        <v-app-bar class="alert-box pb-5"  dense>
-            <p class="mt-5 alert-box-p"><v-icon class="px-3" color="white --text">error_outline</v-icon>Some Users need your attention.</p>
+        <v-app-bar class="alert-box pb-5"  dense v-if="showWarningFlag" >
+            <p class="mt-5 alert-box-p"><v-img  src="/assets/images/icons/Error.svg" max-width="24px" class="mb-3 mr-3 top-2" style="top:1px"/>Some Users need your attention.</p>
             <v-spacer></v-spacer>
             <v-btn small>
                 <span style="color: #FF5722">GO TO LIST</span>
@@ -155,6 +155,11 @@ export default {
             connectionSummary: null,
         }
     },
+    computed: {
+        showWarningFlag() {
+            return Boolean(this.utilityDashboardData.lead_overview.total_assistance_needed);
+        }
+    },
     mounted() {
         UtilityAPI.utilityAnalytic()
         this.load()
@@ -163,6 +168,7 @@ export default {
         async load() {
             this.utilityDashboardData = await UtilityDashboardService.getUtilityDashboardData();
             this.connectionSummary = await UtilityDashboardService.getConnectionSummary();
+            console.log(this.utilityDashboardData.lead_overview.total_assistance_needed);
             this.isLoaded = true;
         }
     }
@@ -186,6 +192,9 @@ export default {
 .alert-box{
    background:#FF5722 !important;
 }
+.top-2{
+    top:2px !important;
+}
 
 .alert-box-p{
     font-family: Roboto;
@@ -195,6 +204,7 @@ export default {
     line-height: 28px;
     text-align: left;
     color:#FFFFFF;
+    display: flex;
 
 }
 </style>

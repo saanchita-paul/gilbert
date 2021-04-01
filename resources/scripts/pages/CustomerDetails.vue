@@ -1,5 +1,5 @@
 <template>
-    <v-app style="min-height: auto !important;">
+    <div style="min-height: auto !important;">
         <v-row>
             <v-app-bar>
                 <v-img src="/assets/images/icons/Back.svg" @click="goBack" max-width="24px" class="mb-3"/>
@@ -173,7 +173,7 @@
 
         </v-container >
         </v-row>
-    </v-app>
+    </div>
 </template>
 
 <script>
@@ -202,7 +202,7 @@ export default {
         {
             electricityPlan() {
                 return  this.customerinfo.connectionSelectedPlan === 'electricity'
-                    ||  this.customerinfo.connectionSelectedPlan === 'electricity_and_gas' || true;
+                    ||  this.customerinfo.connectionSelectedPlan === 'electricity_and_gas' ;
             },
             gasPlan() {
                 return  this.customerinfo.connectionSelectedPlan === 'gas'
