@@ -39,7 +39,7 @@
                         {{ item.issue_status | mapInterventionStatus }}
                     </td>
                     <td class="fontweight400 font-size14 font-colorblack pl-4">
-                        {{ item.connection_status }}
+                        {{ item.overall_progress }}
                     </td>
                     <td class="fontweight400 font-size14 font-colorblack">
                         <p small class="sentiment py-1 mb-0" v-bind:style="{backgroundColor: item.sentiment.color}">

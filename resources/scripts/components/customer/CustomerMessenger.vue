@@ -97,7 +97,7 @@ export default {
             return this.customerMessages.length > 0;
         },
         sentimentText() {
-            return this.getSentimentText(this.customer.sentiment);
+            return this.getSentimentText(this.customer.sentiment||'');
         }
     },
     async mounted() {
@@ -143,7 +143,7 @@ export default {
             }
         },
         getSentimentText(sentiment) {
-            return mapSentiment(sentiment).text;
+            if(sentiment) return mapSentiment(sentiment).text;
         },
     },
 }

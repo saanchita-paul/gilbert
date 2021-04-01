@@ -146,7 +146,7 @@ export default {
             connectionEneryType: customerData.connection_info.energy_type || '',
             connectionAddress: customerData.connection_info.connection_address || '',
             connectionEnergyType: customerData.connection_info.id || '',
-            connectionGasProvider: customerData.connection_info.id || '',
+            connectionGasProvider: customerData.gas_distributor || '',
             connectionElectricyFee: customerData.connection_info.electricity_connection_fee || '',
             connectionEDestributor: customerData.connection_info.electricity_distributor || '',
             gasMeterCharge: customerData.connection_info.gas_meter_reading_charge || '',
@@ -156,6 +156,15 @@ export default {
             connectionMernNo: customerData.connection_info.mirn || '',
             manualInterventionIsActive: customerData.manual_intervention_is_active || null,
             manualInterventionStatus: customerData.manual_intervention_status || null,
+
+            //new data after changing api
+            eQuoteID: customerData.connection_info?.quote_id?.electricity,
+            gQuoteID: customerData.connection_info?.quote_id?.gas,
+            eReason: customerData.connection_info?.rejection_reason?.electricity,
+            gReason: customerData.connection_info?.rejection_reason?.gas,
+            eConnectionStatus: customerData.connection_status?.electricity,
+            gConnectionStatus: customerData.connection_status?.gas,
+            overallProgress: customerData.overall_progress || ''
 
 
 
