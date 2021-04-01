@@ -41,7 +41,14 @@ export default class CustomerDetails {
                     connectionReason,
                     manualInterventionStatus,
                     manualInterventionIsActive,
-                    manualInterventionAt
+                    manualInterventionAt,
+                    eQuoteID,
+                    gQuoteID,
+                    eReason,
+                    gReason,
+                    eConnectionStatus,
+                    gConnectionStatus,
+                    overallProgress
 
                 } = {}) {
         this.id = id;
@@ -86,6 +93,13 @@ export default class CustomerDetails {
         this.manualInterventionStatus = manualInterventionStatus || null;
         this.manualInterventionIsActive = manualInterventionIsActive || false;
         this.manualInterventionAt = manualInterventionAt || null;
+        this.e_quote_id = eQuoteID || null;
+        this.g_quote_id = gQuoteID || null;
+        this.e_reason = eReason || null;
+        this.g_reason = gReason || null;
+        this.e_connection_status = eConnectionStatus || null;
+        this.g_connection_status = gConnectionStatus || null;
+        this.overall_progress = overallProgress
     }
 
 }

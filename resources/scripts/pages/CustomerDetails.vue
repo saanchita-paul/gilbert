@@ -1,11 +1,11 @@
 <template>
-    <v-app>
+    <v-app style="min-height: auto !important;">
         <v-row>
             <v-app-bar>
-<!--                <v-icon @click="goBack">keyboard_backspace</v-icon>-->
                 <v-img src="/assets/images/icons/Back.svg" @click="goBack" max-width="24px" class="mb-3"/>
             </v-app-bar>
         </v-row>
+        <v-row>
         <v-container class="pt-0 container-background">
             <v-row align-center class="header color--text">
                 <v-col class="avatar-containner pr-0">
@@ -83,13 +83,13 @@
                             </v-row>
                             <v-divider style="background-color:#000000"></v-divider>
                             <v-row class="py-2">
-                                <v-col cols="6">
+                                <v-col cols="6" v-if="electricityPlan">
                                     <p class="enery-title">ELECTRICITY</p>
                                     <v-row>
-                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Quote ID:</span> {{customerinfo.connection_gas_provider}}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Quote ID:</span> {{customerinfo.e_quote_id}}</p></v-col>
                                         <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Distributor:</span> {{customerinfo.e_destributor}}</p></v-col>
                                         <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Connection Fee:</span> {{customerinfo.connection_electricy_fee}}</p></v-col>
-                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Connection Status:</span> {{customerinfo.connection_status}}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Connection Status:</span> {{customerinfo.e_connection_status}}</p></v-col>
                                         <v-col cols="12" class="py-0">
                                             <p class="mb-0 profile-info-title font-weight-bold">NMI No:</p>
                                             <div cols="12"  class="profile-info-title">
@@ -97,31 +97,31 @@
                                             </div>
                                         </v-col>
 
-                                        <v-col cols="12" class="py-0">
+                                        <v-col cols="12" class="py-0" v-if="customerinfo.e_connection_status">
                                             <p class="mb-0 profile-info-title">Reason:</p>
                                             <div cols="12"  class="reason pa-5 profile-info-title">
-                                                <p>{{'The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the ....'}}</p>
+                                                <p>{{customerinfo.e_reason}}</p>
                                             </div>
                                         </v-col>
                                     </v-row>
                                 </v-col>
-                                <v-col cols="6">
+                                <v-col cols="6" v-if="gasPlan">
                                     <p class="enery-title">Gas</p>
                                     <v-row>
-                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Quote ID:</span> {{customerinfo.connection_gas_provider}}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Quote ID:</span> {{customerinfo.g_quote_id}}</p></v-col>
                                         <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Distributor:</span> {{customerinfo.connection_gas_provider}}</p></v-col>
                                         <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Gas meter Reading Charge:</span> {{customerinfo.gas_meter_charge}}</p></v-col>
-                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Connection Status:</span> {{customerinfo.connection_status}}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Connection Status:</span> {{customerinfo.g_connection_status}}</p></v-col>
                                         <v-col cols="12" class="py-0">
                                             <p class="mb-0 profile-info-title font-weight-bold">MIRN No:</p>
                                             <div cols="12"  class="profile-info-title">
                                                 <v-text-field  class="border-radious-5" readonly filled rounded dense v-model="customerinfo.connection_mern_no"></v-text-field>
                                             </div>
                                         </v-col>
-                                        <v-col cols="12" class="py-0">
+                                        <v-col cols="12" class="py-0" v-if="customerinfo.g_connection_status">
                                             <p class="mb-0 profile-info-title">Reason:</p>
                                             <div cols="12"  class="reason pa-5 profile-info-title">
-                                                <p>{{'The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the ....'}}</p>
+                                                <p>{{customerinfo.g_reason}}</p>
                                             </div>
                                         </v-col>
                                     </v-row>
@@ -172,6 +172,7 @@
             </v-row>
 
         </v-container >
+        </v-row>
     </v-app>
 </template>
 
@@ -197,6 +198,19 @@ export default {
         },
     },
 
+    computed:
+        {
+            electricityPlan() {
+                return  this.customerinfo.connectionSelectedPlan === 'electricity'
+                    ||  this.customerinfo.connectionSelectedPlan === 'electricity_and_gas' || true;
+            },
+            gasPlan() {
+                return  this.customerinfo.connectionSelectedPlan === 'gas'
+                    ||  this.customerinfo.connectionSelectedPlan === 'electricity_and_gas';
+            }
+
+        },
+
     methods: {
         goBack() {
             this.$router.go(-1);
@@ -208,7 +222,6 @@ export default {
         async getCustomerDetailsData (id) {
             this.customerinfo = await CustomerService.getCustomerDetails(id);
             this.sentiment = this.getSentimentText( this.customerinfo.sentiment);
-            console.log( this.sentiment);
         },
 
         getSentimentText(sentiment) {
@@ -316,6 +329,10 @@ body {
     letter-spacing: 0.15000000596046448px;
     text-align: left;
     color:#000000;
+}
+
+v-application--wrap {
+    min-height: 10vh !important;
 }
 
 
