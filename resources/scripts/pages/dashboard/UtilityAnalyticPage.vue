@@ -1,9 +1,12 @@
 <template>
-    <div class="px-2 analytic-bg hood-gradiant" v-if="isLoaded">
-        <v-app-bar class="alert-box pb-5"  dense v-if="showWarningFlag" >
-            <p class="mt-5 alert-box-p"><v-img  src="/assets/images/icons/Error.svg" max-width="24px" class="mb-3 mr-3 top-2" style="top:1px"/>Some Users need your attention.</p>
+    <div class="hood-gradiant" v-if="isLoaded" :style="{height: totalAssistanceNeeded > 0 ? '360px' : '320px'}">
+        <v-app-bar class="alert-box pb-5 px-0 mx-0" dense v-if="totalAssistanceNeeded > 0">
+            <p class="mt-5 alert-box-p">
+                <v-img src="/assets/images/icons/Error.svg" max-width="24px" class="mb-3 mr-3 top-2" style="top:1px"/>
+                {{totalAssistanceNeeded}} Users need your attention.
+            </p>
             <v-spacer></v-spacer>
-            <v-btn small>
+            <v-btn small :to="{name: 'helpdesk'}">
                 <span style="color: #FF5722">GO TO LIST</span>
             </v-btn>
         </v-app-bar>
@@ -17,7 +20,7 @@
                 </div>
             </div>
             <div class="widgets">
-<!--                Total-->
+                <!--                Total-->
                 <LeadWidget
                     :tooltip="utilityDashboardData.lead_overview.lead.tooltip"
                     title="Total Lead"
@@ -26,40 +29,40 @@
                     <BarChart :data="utilityDashboardData.lead_overview.lead.chartData" chartId="totalLead"/>
                 </LeadWidget>
 
-<!--                Qualified-->
+                <!--                Qualified-->
                 <LeadWidget
                     :tooltip="utilityDashboardData.lead_overview.qualified.tooltip"
                     title="Qualified Lead"
                     :value="utilityDashboardData.lead_overview.qualified.value"
                 >
-                    <LineChart  :data="utilityDashboardData.lead_overview.qualified.chartData" chartId="qualifiedLead"/>
+                    <LineChart :data="utilityDashboardData.lead_overview.qualified.chartData" chartId="qualifiedLead"/>
                 </LeadWidget>
 
-<!--                Energy connection-->
+                <!--                Energy connection-->
                 <LeadWidget
                     :tooltip="utilityDashboardData.lead_overview.energy.tooltip"
                     title="Total Energy Connection"
                     :value="utilityDashboardData.lead_overview.energy.value"
                 >
-                    <BarChart :data="utilityDashboardData.lead_overview.energy.chartData"  chartId="totalLead3"/>
+                    <BarChart :data="utilityDashboardData.lead_overview.energy.chartData" chartId="totalLead3"/>
                 </LeadWidget>
 
-<!--                Conversation rate-->
+                <!--                Conversation rate-->
                 <LeadWidget
                     :tooltip="utilityDashboardData.lead_overview.conversion.tooltip"
                     title="Conversion Rate"
                     :value="utilityDashboardData.lead_overview.conversion.value"
                 >
-                    <LineChart :data="utilityDashboardData.lead_overview.conversion.chartData"  chartId="totalLead4"/>
+                    <LineChart :data="utilityDashboardData.lead_overview.conversion.chartData" chartId="totalLead4"/>
                 </LeadWidget>
 
-<!--                Automation rate-->
+                <!--                Automation rate-->
                 <LeadWidget
                     :tooltip="utilityDashboardData.lead_overview.automation.tooltip"
                     title="Full Automation Rate"
                     :value="utilityDashboardData.lead_overview.automation.value"
                 >
-                    <LineChart :data="utilityDashboardData.lead_overview.automation.chartData"  chartId="totalLead5"/>
+                    <LineChart :data="utilityDashboardData.lead_overview.automation.chartData" chartId="totalLead5"/>
                 </LeadWidget>
             </div>
 
@@ -112,7 +115,7 @@
                     </v-row>
                 </v-col>
                 <v-col md="4" class="mx-0 pr-0">
-                    <h3  class="section-title mb-3">Age Summary</h3>
+                    <h3 class="section-title mb-3">Age Summary</h3>
                     <AgeWidget :data="utilityDashboardData.age_group_summary.age_group"/>
                 </v-col>
             </v-row>
@@ -156,15 +159,15 @@ export default {
         }
     },
     computed: {
-        showWarningFlag() {
-            return Boolean(this.utilityDashboardData.lead_overview.total_assistance_needed);
+        totalAssistanceNeeded() {
+            return this.utilityDashboardData.lead_overview.total_assistance_needed;
         }
     },
     mounted() {
         UtilityAPI.utilityAnalytic()
         this.load()
     },
-    methods:{
+    methods: {
         async load() {
             this.utilityDashboardData = await UtilityDashboardService.getUtilityDashboardData();
             this.connectionSummary = await UtilityDashboardService.getConnectionSummary();
@@ -181,29 +184,33 @@ export default {
     flex-direction: row;
     justify-content: space-between;
 }
+
 .lead-connection-section {
     margin-top: 50px;
 }
+
 .widgets {
 
     display: flex;
     flex-direction: row;
 }
-.alert-box{
-   background:#FF5722 !important;
-}
-.top-2{
-    top:2px !important;
+
+.alert-box {
+    background: #FF5722 !important;
 }
 
-.alert-box-p{
+.top-2 {
+    top: 2px !important;
+}
+
+.alert-box-p {
     font-family: Roboto;
     font-size: 16px;
     font-style: normal;
     font-weight: 500;
     line-height: 28px;
     text-align: left;
-    color:#FFFFFF;
+    color: #FFFFFF;
     display: flex;
 
 }
