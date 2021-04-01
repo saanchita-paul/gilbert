@@ -81,36 +81,84 @@
                                 </v-col>
                                 <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title "><span class="font-weight-bold">Connection Address:</span></p><p class="profile-info-title">{{customerinfo.connection_address}}</p></v-col>
                             </v-row>
+                            <v-divider style="background-color:#000000"></v-divider>
                             <v-row class="py-2">
-                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Energy Type:</span> {{customerinfo.connection_energy_type | mapEnergyType}}</p></v-col>
-                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Gas Provider:</span> {{customerinfo.connection_gas_provider}}</p></v-col>
-                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">E-Destributor:</span> {{customerinfo.e_destributor}}</p></v-col>
-                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0"><span class="font-weight-bold">Gas meter Reading Charge:</span> {{customerinfo.gas_meter_charge}}</p></v-col>
-                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0"><span class="font-weight-bold">Electricity Connection Fee:</span> {{customerinfo.connection_electricy_fee}}</p></v-col>
-                            </v-row>
-                            <v-row class="ml-0" >
-                                <v-col cols="6" class="py-0">
-                                    <v-row class="align-baseline">
-                                        <label  class="font-weight-bold profile-info-title">MIRN no:</label>
-                                        <v-col class="px-0 pb-0" cols="7"><v-text-field  class="border-radious-5" readonly filled rounded dense v-model="customerinfo.connection_mern_no"></v-text-field></v-col>
-                                    </v-row>
-                                </v-col>
-                                <v-col cols="6" class="py-0">
-                                    <v-row class="align-baseline">
-                                        <label class="font-weight-bold profile-info-title">NMI no:</label>
-                                        <v-col class="px-0 pb-0" cols="7"><v-text-field  class="border-radious-5" readonly filled rounded dense v-model="customerinfo.connection_nmi_no"></v-text-field></v-col>
-                                    </v-row>
-                                </v-col>
+                                <v-col cols="6">
+                                    <p class="enery-title">ELECTRICITY</p>
+                                    <v-row>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Quote ID:</span> {{customerinfo.connection_gas_provider}}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Distributor:</span> {{customerinfo.e_destributor}}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Connection Fee:</span> {{customerinfo.connection_electricy_fee}}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Connection Status:</span> {{customerinfo.connection_status}}</p></v-col>
+                                        <v-col cols="12" class="py-0">
+                                            <p class="mb-0 profile-info-title font-weight-bold">NMI No:</p>
+                                            <div cols="12"  class="profile-info-title">
+                                                <v-text-field  class="border-radious-5" readonly filled rounded dense v-model="customerinfo.connection_nmi_no"></v-text-field>
+                                            </div>
+                                        </v-col>
 
-                            </v-row>
-                            <v-row class="py-0">
-                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Connection Status:</span><span class="rejected-text">{{customerinfo.connection_status}}</span></p></v-col>
-                                <v-col cols="12" class="py-0">
-                                    <p class="mb-0 profile-info-title">Reason:</p>
-                                    <div cols="12"  class="reason pa-5 profile-info-title">
-                                        <p>{{customerinfo.connection_reason}}</p>
-                                    </div>
+                                        <v-col cols="12" class="py-0">
+                                            <p class="mb-0 profile-info-title">Reason:</p>
+                                            <div cols="12"  class="reason pa-5 profile-info-title">
+                                                <p>{{'The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the ....'}}</p>
+                                            </div>
+                                        </v-col>
+                                    </v-row>
                                 </v-col>
+                                <v-col cols="6">
+                                    <p class="enery-title">Gas</p>
+                                    <v-row>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Quote ID:</span> {{customerinfo.connection_gas_provider}}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Distributor:</span> {{customerinfo.connection_gas_provider}}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Gas meter Reading Charge:</span> {{customerinfo.gas_meter_charge}}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Connection Status:</span> {{customerinfo.connection_status}}</p></v-col>
+                                        <v-col cols="12" class="py-0">
+                                            <p class="mb-0 profile-info-title font-weight-bold">MIRN No:</p>
+                                            <div cols="12"  class="profile-info-title">
+                                                <v-text-field  class="border-radious-5" readonly filled rounded dense v-model="customerinfo.connection_mern_no"></v-text-field>
+                                            </div>
+                                        </v-col>
+                                        <v-col cols="12" class="py-0">
+                                            <p class="mb-0 profile-info-title">Reason:</p>
+                                            <div cols="12"  class="reason pa-5 profile-info-title">
+                                                <p>{{'The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the ....'}}</p>
+                                            </div>
+                                        </v-col>
+                                    </v-row>
+                                </v-col>
+                            </v-row>
+<!--                            <v-row class="py-2">-->
+<!--                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Energy Type:</span> {{customerinfo.connection_energy_type | mapEnergyType}}</p></v-col>-->
+<!--                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Gas Provider:</span> {{customerinfo.connection_gas_provider}}</p></v-col>-->
+<!--                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">E-Destributor:</span> {{customerinfo.e_destributor}}</p></v-col>-->
+<!--                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0"><span class="font-weight-bold">Gas meter Reading Charge:</span> {{customerinfo.gas_meter_charge}}</p></v-col>-->
+<!--                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0"><span class="font-weight-bold">Electricity Connection Fee:</span> {{customerinfo.connection_electricy_fee}}</p></v-col>-->
+
+
+<!--                            </v-row>-->
+<!--                            <v-row class="ml-0" >-->
+<!--                                <v-col cols="6" class="py-0">-->
+<!--                                    <v-row class="align-baseline">-->
+<!--                                        <label  class="font-weight-bold profile-info-title">MIRN no:</label>-->
+<!--                                        <v-col class="px-0 pb-0" cols="7"><v-text-field  class="border-radious-5" readonly filled rounded dense v-model="customerinfo.connection_mern_no"></v-text-field></v-col>-->
+<!--                                    </v-row>-->
+<!--                                </v-col>-->
+<!--                                <v-col cols="6" class="py-0">-->
+<!--                                    <v-row class="align-baseline">-->
+<!--                                        <label class="font-weight-bold profile-info-title">NMI no:</label>-->
+<!--                                        <v-col class="px-0 pb-0" cols="7"><v-text-field  class="border-radious-5" readonly filled rounded dense v-model="customerinfo.connection_nmi_no"></v-text-field></v-col>-->
+<!--                                    </v-row>-->
+<!--                                </v-col>-->
+
+<!--                            </v-row>-->
+                            <v-row class="py-0">
+<!--                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Connection Status:</span><span class="rejected-text">{{customerinfo.connection_status}}</span></p></v-col>-->
+<!--                                <v-col cols="12" class="py-0">-->
+<!--                                    <p class="mb-0 profile-info-title">Reason:</p>-->
+<!--                                    <div cols="12"  class="reason pa-5 profile-info-title">-->
+<!--                                        <p>{{customerinfo.connection_reason}}</p>-->
+<!--                                    </div>-->
+<!--                                </v-col>-->
                                 <v-col col="12" class="form-submit">
                                     <div>
                                         <v-btn color="primary" >Save</v-btn>
@@ -257,6 +305,17 @@ body {
 }
 .neural {
     border: 2px solid rgb(189, 189, 189);
+}
+
+.enery-title {
+    font-family: Roboto;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 28px;
+    letter-spacing: 0.15000000596046448px;
+    text-align: left;
+    color:#000000;
 }
 
 
