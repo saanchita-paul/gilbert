@@ -1,5 +1,12 @@
 <template>
     <div class="px-2 analytic-bg hood-gradiant" v-if="isLoaded">
+        <v-app-bar class="alert-box pb-5"  dense>
+            <p class="mt-5 alert-box-p"><v-icon class="px-3" color="white --text">error_outline</v-icon>Some Users need your attention.</p>
+            <v-spacer></v-spacer>
+            <v-btn small>
+                <span style="color: #FF5722">GO TO LIST</span>
+            </v-btn>
+        </v-app-bar>
         <v-container>
             <div class="my-lead-head my-3 mx-2">
                 <h3 class="section-title white--text">My leads overview</h3>
@@ -175,5 +182,19 @@ export default {
 
     display: flex;
     flex-direction: row;
+}
+.alert-box{
+   background:#FF5722 !important;
+}
+
+.alert-box-p{
+    font-family: Roboto;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 28px;
+    text-align: left;
+    color:#FFFFFF;
+
 }
 </style>
