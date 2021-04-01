@@ -4,16 +4,22 @@
             <v-row align-center class="header color--text">
                 <v-col class="avatar-containner pr-0">
                     <v-avatar>
-                        <v-img v-bind:src="customer.profile_pic" class="rejected"/>
+                        <v-img v-bind:src="customer.profile_pic" v-bind:class="{'bad': sentimentText === 'BAD', 'good': sentimentText === 'Good', 'neural':sentimentText === 'Nuetral'}"/>
                     </v-avatar>
                 </v-col>
                 <v-col cols="7" class="pt-0 pt-5">
                     <h3 class="mb-0 font-weight-bold profile-title">{{customer.name}}</h3>
-                    <p class="mb-0 last-interactive profile-subtitle">Interact {{customer.last_interaction}}</p>
+                    <p class="mb-0 last-interactive profile-subtitle">Interacted {{customer.last_interaction}}</p>
                 </v-col>
-                <v-col cols="3" class="messenger-header">
+                <v-col cols="3" class="messenger-header mt-4">
+                    <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-icon class="messenger-info-icon" v-bind="attrs" v-on="on" color="grey darken-4">mdi-information-outline </v-icon>
+                        </template>
+                        <span>Manual conversation</span>
+                    </v-tooltip>
                     <v-switch v-model="customer.manualInterventionIsActive" @click="manualInterventionToggle"></v-switch>
-                    <p class="messenger-header-p">Switch to Conversation</p>
+                    <p class="messenger-header-p">Switch to manual conversation</p>
                 </v-col>
             </v-row>
         </v-app-bar>
@@ -25,7 +31,7 @@
                         <div v-for="(item, index) in customerMessages" :key="index"
                             :class="['d-flex flex-row align-center my-2', item.type === 'RESPONSE' ? 'justify-end': null]">
                             <template v-if="item.type === 'RESPONSE'">
-                                <v-card elevation="1" class="pa-2 mr-2 expansion-header-background-active message-card">
+                                <v-card elevation="1" class="pa-2 mr-2 expansion-header-background-active message-card" v-bind:class="{'mr-13':!item.isAvatarNeed}">
                                     <span  class=" mgs-text">{{ item.text_content }}</span>
                                      <p v-if="item.isAvatarNeed" class="message-time-right">{{item.created_at}}</p>
                                 </v-card>
@@ -69,6 +75,7 @@ import CustomerService from "@scripts/services/CustomerService";
 import InfiniteLoading from "vue-infinite-loading";
 import Pagination from "@scripts/models/Pagination";
 import {merge} from "lodash-es";
+import {mapSentiment} from "@scripts/data/SentimentColor";
 
 export default {
     props: ['customer'],
@@ -78,7 +85,8 @@ export default {
             autoScroll: false,
             customerMessages: [],
             pageIndex: 0,
-            pagination: new Pagination()
+            pagination: new Pagination(),
+            sentiment: null
         }
     },
     components:{
@@ -87,12 +95,16 @@ export default {
     computed: {
         hasMessages() {
             return this.customerMessages.length > 0;
+        },
+        sentimentText() {
+            return this.getSentimentText(this.customer.sentiment);
         }
     },
     async mounted() {
         if (this.customer?.id) {
             await this.getCustomerMessages(this.customer.id, this.pagination.page);
         }
+
     },
     watch: {
         customer (newCustomer, oldCustomer) {
@@ -101,6 +113,7 @@ export default {
                 this.customerMessages = [];
                 this.pagination = new Pagination();
                 this.getCustomerMessages(newCustomer.id, this.pagination.page);
+                this.sentiment = this.getSentimentText(newCustomer.sentiment);
             }
         }
     },
@@ -128,7 +141,10 @@ export default {
             } else {
                 $state.complete();
             }
-        }
+        },
+        getSentimentText(sentiment) {
+            return mapSentiment(sentiment).text;
+        },
     },
 }
 </script>
@@ -193,6 +209,8 @@ body {
 .messenger-header-p {
     font-size: 12px;
     line-height: normal;
+    font-weight: 700;
+    color: rgb(84,46,137);
 }
 .mgs-text {
     font-size: 16px;
@@ -228,6 +246,22 @@ body {
     font-size: 10px;
     color: rgba(130, 130, 130, 1);
     min-width: 200px;
+}
+.messenger-info-icon {
+    margin-left: 10px !important;
+    margin-top: -17px !important;
+}
+
+.bad {
+    border: 2px solid rgb(233, 30, 99);
+}
+.good {
+    border: 2px solid rgb(76, 175, 80);
+
+}
+.neural {
+    border: 2px solid rgb(189, 189, 189);
+
 }
 
 </style>
