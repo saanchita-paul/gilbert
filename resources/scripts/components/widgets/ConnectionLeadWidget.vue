@@ -45,6 +45,14 @@ export default {
             },
             options: {
                 maintainAspectRatio: false,
+                tooltips: {
+                    callbacks: {
+                        title: function (itemObj) {
+                            const label = itemObj?.[0]?.label;
+                            return label ? label.replace(',', ' ') : '';
+                        }
+                    }
+                },
                 layout: {
                     padding: {
                         top: 40,
