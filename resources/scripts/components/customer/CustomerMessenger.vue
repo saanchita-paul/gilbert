@@ -4,7 +4,7 @@
             <v-row align-center class="header color--text">
                 <v-col class="avatar-containner pr-0">
                     <v-avatar>
-                        <v-img v-bind:src="customer.profile_pic" class="rejected"/>
+                        <v-img v-bind:src="customer.profile_pic" v-bind:class="{'bad': sentimentText === 'BAD', 'good': sentimentText === 'Good', 'neural':sentimentText === 'Nuetral'}"/>
                     </v-avatar>
                 </v-col>
                 <v-col cols="7" class="pt-0 pt-5">
@@ -75,6 +75,7 @@ import CustomerService from "@scripts/services/CustomerService";
 import InfiniteLoading from "vue-infinite-loading";
 import Pagination from "@scripts/models/Pagination";
 import {merge} from "lodash-es";
+import {mapSentiment} from "@scripts/data/SentimentColor";
 
 export default {
     props: ['customer'],
@@ -84,7 +85,8 @@ export default {
             autoScroll: false,
             customerMessages: [],
             pageIndex: 0,
-            pagination: new Pagination()
+            pagination: new Pagination(),
+            sentiment: null
         }
     },
     components:{
@@ -93,12 +95,16 @@ export default {
     computed: {
         hasMessages() {
             return this.customerMessages.length > 0;
+        },
+        sentimentText() {
+            return this.getSentimentText(this.customer.sentiment);
         }
     },
     async mounted() {
         if (this.customer?.id) {
             await this.getCustomerMessages(this.customer.id, this.pagination.page);
         }
+
     },
     watch: {
         customer (newCustomer, oldCustomer) {
@@ -107,6 +113,7 @@ export default {
                 this.customerMessages = [];
                 this.pagination = new Pagination();
                 this.getCustomerMessages(newCustomer.id, this.pagination.page);
+                this.sentiment = this.getSentimentText(newCustomer.sentiment);
             }
         }
     },
@@ -134,7 +141,10 @@ export default {
             } else {
                 $state.complete();
             }
-        }
+        },
+        getSentimentText(sentiment) {
+            return mapSentiment(sentiment).text;
+        },
     },
 }
 </script>
@@ -240,6 +250,18 @@ body {
 .messenger-info-icon {
     margin-left: 10px !important;
     margin-top: -17px !important;
+}
+
+.bad {
+    border: 2px solid rgb(233, 30, 99);
+}
+.good {
+    border: 2px solid rgb(76, 175, 80);
+
+}
+.neural {
+    border: 2px solid rgb(189, 189, 189);
+
 }
 
 </style>
