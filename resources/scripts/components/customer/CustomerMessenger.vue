@@ -9,11 +9,17 @@
                 </v-col>
                 <v-col cols="7" class="pt-0 pt-5">
                     <h3 class="mb-0 font-weight-bold profile-title">{{customer.name}}</h3>
-                    <p class="mb-0 last-interactive profile-subtitle">Interact {{customer.last_interaction}}</p>
+                    <p class="mb-0 last-interactive profile-subtitle">Interacted {{customer.last_interaction}}</p>
                 </v-col>
-                <v-col cols="3" class="messenger-header">
+                <v-col cols="3" class="messenger-header mt-4">
+                    <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-icon class="messenger-info-icon" v-bind="attrs" v-on="on" color="grey darken-4">mdi-information-outline </v-icon>
+                        </template>
+                        <span>Manual conversation</span>
+                    </v-tooltip>
                     <v-switch v-model="customer.manualInterventionIsActive" @click="manualInterventionToggle"></v-switch>
-                    <p class="messenger-header-p">Switch to Conversation</p>
+                    <p class="messenger-header-p">Switch to manual conversation</p>
                 </v-col>
             </v-row>
         </v-app-bar>
@@ -193,6 +199,8 @@ body {
 .messenger-header-p {
     font-size: 12px;
     line-height: normal;
+    font-weight: 700;
+    color: rgb(84,46,137);
 }
 .mgs-text {
     font-size: 16px;
@@ -228,6 +236,10 @@ body {
     font-size: 10px;
     color: rgba(130, 130, 130, 1);
     min-width: 200px;
+}
+.messenger-info-icon {
+    margin-left: 10px !important;
+    margin-top: -17px !important;
 }
 
 </style>
