@@ -23,6 +23,38 @@
                 </v-col>
             </v-row>
         </v-app-bar>
+        <v-snackbar v-if="!errorConnction" v-model="snacbarStatus" color="green white--text" left
+        >
+            {{ snacbarMessage }}
+
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    color="white"
+                    text
+                    v-bind="attrs"
+                    @click="snacbarStatus = false"
+                >
+                    <v-icon>close</v-icon>
+                </v-btn>
+            </template>
+        </v-snackbar>
+        <v-snackbar  v-if="errorConnction" left
+            v-model="snacbarStatus" color="red white--text"
+        >
+            {{ snacbarMessage }}
+
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    color="pink"
+                    text
+                    v-bind="attrs"
+                    @click="snacbarStatus = false"
+                >
+                    <v-icon>close</v-icon>
+                </v-btn>
+            </template>
+        </v-snackbar>
+
         <v-col cols="12" style="height: 78vh;display: flex;">
 
             <v-container class="fill-height">
@@ -86,7 +118,10 @@ export default {
             customerMessages: [],
             pageIndex: 0,
             pagination: new Pagination(),
-            sentiment: null
+            sentiment: null,
+            snacbarStatus: false,
+            snacbarMessage: '',
+            errorConnction:null,
         }
     },
     components:{
@@ -125,7 +160,18 @@ export default {
 
         async manualInterventionToggle() {
             let manualInterventionRequire = this.customer.manualInterventionIsActive ? 1 : 0;
-            await CustomerService.toggleManualIntervention(this.customer.id, manualInterventionRequire);
+            const response = await CustomerService.toggleManualIntervention(this.customer.id, manualInterventionRequire);
+            console.log(response);
+            this.snacbarStatus = true;
+            if(response.status === 200)
+            {
+                this.errorConnction = false;
+                this.snacbarMessage = this.customer.manualInterventionIsActive?"Automatic reply successfully  turned on for this conversation":"Automatic reply successfully  turned off for this conversation";
+            }
+            else {
+                this.snacbarMessage = "Connection Failed"
+                this.errorConnction = true;
+            }
         },
 
         async getCustomerMessages (customerId, page = 1) {
@@ -261,7 +307,13 @@ body {
 }
 .neural {
     border: 2px solid rgb(189, 189, 189);
+}
 
+.success-snacbar{
+    color: white !important;
+}
+.error-snacbar{
+    color:red !important;
 }
 
 </style>
