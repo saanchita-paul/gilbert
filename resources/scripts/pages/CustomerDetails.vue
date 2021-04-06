@@ -1,14 +1,14 @@
 <template>
-    <div :class="{invisible: !isLoaded}">
+    <div ref="cDetails"  style="position: relative">
         <v-app-bar height="50px">
             <v-img src="/assets/images/icons/Back.svg" @click="goBack" max-width="24px" class="mb-2" style="cursor: pointer"/>
         </v-app-bar>
-        <v-container class="manual-margin">
+        <v-container :class="{invisible: !isLoaded, 'manual-margin': true}">
             <v-row align-center class=" header color--text pt-0">
                 <v-col class="avatar-containner pr-0">
                     <v-avatar>
                         <v-img v-bind:src="customerinfo.profile_pic"
-                               v-bind:class="{'bad':  sentiment === 'BAD', 'good': sentiment === 'Good', 'neural':sentiment === 'Nuetral'}"/>
+                               v-bind:class="{'bad':  sentiment === 'BAD', 'good': sentiment === 'Good', 'neural': sentiment === 'Neutral'}"/>
                     </v-avatar>
                 </v-col>
                 <v-col cols="10" class="pt-0 pt-5">
@@ -215,9 +215,10 @@ import CustomerDetails from "@scripts/models/CustomerDetails";
 import CustomerService from "@scripts/services/CustomerService";
 import {mapEnergyType, mapAccountType} from "@scripts/data/CustomerDataMapper";
 import {mapSentiment} from "@scripts/data/SentimentColor";
+import Spinner from "@scripts/plugins/Spinner";
 
 export default {
-    name: "CustomerDetials",
+    name: "CustomerDetails",
     data() {
         return {
             isLoaded: false,
@@ -225,6 +226,7 @@ export default {
             sentiment: '',
             editMode: false,
             loadingBtn: false,
+            spinner: null
 
         }
     },
@@ -247,6 +249,21 @@ export default {
             }
 
         },
+    mounted() {
+        this.spinner = new Spinner(this.$refs.cDetails, {autoStart: true})
+        this.getCustomerDetailsData(this.id);
+    },
+    watch: {
+        isLoaded(value) {
+            if (value) {
+                if (this.spinner) {
+                    this.spinner.stop()
+                }
+            } else {
+                this.spinner.spin();
+            }
+        }
+    },
 
     methods: {
         goBack() {
@@ -277,9 +294,6 @@ export default {
             this.editMode = false;
         }
 
-    },
-    mounted() {
-        this.getCustomerDetailsData(this.id);
     },
     filters: {
         mapEnergyType(value) {

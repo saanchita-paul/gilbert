@@ -1,5 +1,5 @@
 <template>
-    <v-app id="inspire" v-if="user">
+    <v-app id="inspire" v-if="user" style="position: relative" ref="mainSpinner">
         <v-navigation-drawer
             v-model="drawer"
             app
