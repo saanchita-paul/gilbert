@@ -109,7 +109,7 @@
                             </v-row>
                             <v-divider style="background-color:#000000"></v-divider>
                             <v-row class="py-2">
-                                <v-col cols="6" :class="{lowOpacity: gasPlan}">
+                                <v-col cols="6" :class="{'low-opacity': gasOnly}">
                                     <p class="enery-title">ELECTRICITY</p>
                                     <v-row>
                                         <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
@@ -140,7 +140,7 @@
                                             </div>
                                         </v-col>
 
-                                        <v-col cols="12" class="py-0" v-if="gasPlan">
+                                        <v-col cols="12" class="py-0">
                                             <p class="mb-0 profile-info-title">Reason:</p>
                                             <div cols="12" class="reason pa-5 profile-info-title">
                                                 <p>{{ customerinfo.e_reason }}</p>
@@ -148,7 +148,7 @@
                                         </v-col>
                                     </v-row>
                                 </v-col>
-                                <v-col cols="6" :class="{'low-opacity': electricityPlan}">
+                                <v-col cols="6" :class="{'low-opacity': electricityOnly}">
                                     <p class="enery-title">Gas</p>
                                     <v-row>
                                         <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
@@ -178,7 +178,7 @@
                                                 ></v-text-field>
                                             </div>
                                         </v-col>
-                                        <v-col cols="12" class="py-0" v-if="electricityPlan">
+                                        <v-col cols="12" class="py-0">
                                             <p class="mb-0 profile-info-title">Reason:</p>
                                             <div cols="12" class="reason pa-5 profile-info-title">
                                                 <p>{{ customerinfo.g_reason }}</p>
@@ -190,11 +190,11 @@
                             <v-row class="py-0">
                                 <v-col col="12" class="form-submit">
                                     <div>
-                                        <v-btn v-if="editMode" @click="editMode = false">
+                                        <v-btn small v-if="editMode" @click="editMode = false">
                                             cancel
                                         </v-btn>
                                         <!--                                        <v-btn v-if="!editMode" color="primary" disabled>Save</v-btn>-->
-                                        <v-btn v-if="editMode" :loading="loadingBtn" color="primary" @click="updateNMIAndMIRN">
+                                        <v-btn small v-if="editMode" :loading="loadingBtn" color="primary" @click="updateNMIAndMIRN">
                                             Save
                                         </v-btn>
                                     </div>
@@ -246,6 +246,12 @@ export default {
             gasPlan() {
                 return this.customerinfo.connection_energy_type === 'gas'
                     || this.customerinfo.connection_energy_type === 'electricity_and_gas';
+            },
+            gasOnly() {
+                return this.customerinfo.connection_energy_type === 'gas';
+            },
+            electricityOnly() {
+                return this.customerinfo.connection_energy_type === 'electricity';
             }
 
         },
