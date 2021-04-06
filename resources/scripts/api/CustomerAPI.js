@@ -141,17 +141,10 @@ export default {
 
     /**
      *
-     * @param customerId
-     * @param manualInterventionStatus
+     * @param movingUtilityId
+     * @param params
      */
-    updateNMIAndMIRN: async (movingUtilityId, params) => {
-
-        const response = (await axios.put(`${BOT_API}/moving-utility/${movingUtilityId}`, {
-            params: params
-        }));
-         return response;
+    updateNMIAndMIRN: (movingUtilityId, params) => {
+        return axios.put(`${BOT_API}/moving-utility/${movingUtilityId}`, params);
     },
-
-
-
 }
