@@ -1,197 +1,193 @@
 <template>
-    <div style="min-height: auto !important;">
-        <v-row>
-            <v-app-bar>
-                <v-img src="/assets/images/icons/Back.svg" @click="goBack" max-width="24px" class="mb-3"/>
-            </v-app-bar>
-        </v-row>
-        <v-row>
-            <v-container class="pt-0 container-background">
-                <v-row align-center class="header color--text">
-                    <v-col class="avatar-containner pr-0">
-                        <v-avatar>
-                            <v-img v-bind:src="customerinfo.profile_pic"
-                                   v-bind:class="{'bad':  sentiment === 'BAD', 'good': sentiment === 'Good', 'neural':sentiment === 'Nuetral'}"/>
-                        </v-avatar>
-                    </v-col>
-                    <v-col cols="10" class="pt-0 pt-5">
-                        <h3 class="mb-0 font-weight-bold profile-title">{{ customerinfo.name }}</h3>
-                        <p class="mb-0 last-interactive profile-subtitle" v-show="customerinfo.last_interaction">Interact
-                            {{ customerinfo.last_interaction }}</p>
-                    </v-col>
-                    <v-col cols="5">
-                        <p class="mb-0">HOOD UID: {{ customerinfo.hood_uid }}</p>
-                        <p class="mb-0">Messenger ID: {{ customerinfo.messager_id }}</p>
-                    </v-col>
-                    <v-col cols="5">
-                        <p class="mb-0">Email: {{ customerinfo.email }}</p>
-                        <p class="mb-0">Ph: {{ customerinfo.ph }}</p>
-                    </v-col>
-                </v-row>
+    <div>
+        <v-app-bar height="60px">
+            <v-img src="/assets/images/icons/Back.svg" @click="goBack" max-width="24px" class="mb-2"/>
+        </v-app-bar>
+        <v-container>
+            <v-row align-center class=" header color--text pt-0">
+                <v-col class="avatar-containner pr-0">
+                    <v-avatar>
+                        <v-img v-bind:src="customerinfo.profile_pic"
+                               v-bind:class="{'bad':  sentiment === 'BAD', 'good': sentiment === 'Good', 'neural':sentiment === 'Nuetral'}"/>
+                    </v-avatar>
+                </v-col>
+                <v-col cols="10" class="pt-0 pt-5">
+                    <h3 class="mb-0 font-weight-bold profile-title">{{ customerinfo.name }}</h3>
+                    <p class="mb-0 last-interactive profile-subtitle" v-show="customerinfo.last_interaction">Interact
+                        {{ customerinfo.last_interaction }}</p>
+                </v-col>
+                <v-col cols="5">
+                    <p class="mb-0">HOOD UID: {{ customerinfo.hood_uid }}</p>
+                    <p class="mb-0">Messenger ID: {{ customerinfo.messager_id }}</p>
+                </v-col>
+                <v-col cols="5">
+                    <p class="mb-0">Email: {{ customerinfo.email }}</p>
+                    <p class="mb-0">Ph: {{ customerinfo.ph }}</p>
+                </v-col>
+            </v-row>
 
-                <v-row class="gray-bg">
-                    <v-col cols="6">
-                        <v-card>
-                            <v-card-title>
-                                <v-row>
-                                    <v-col color="black--text" class="profile_body_header">Property Information</v-col>
-                                </v-row>
-                            </v-card-title>
-                            <v-card-text>
-                                <v-row class="pb-2">
-                                    <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title"><span
-                                        class=" font-weight-bold">Id#{{ customerinfo.property_profile_id }}</span></p></v-col>
-                                    <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
-                                        class="font-weight-bold ">Account Type:</span>
-                                        {{ customerinfo.property_account_type | mapAccountType }}</p></v-col>
-                                    <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
-                                        class="font-weight-bold ">Life Support:</span> {{ customerinfo.property_life_support }}
-                                    </p></v-col>
-                                    <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
-                                        class="font-weight-bold  ">Tenancy Type:</span> {{ customerinfo.property_tenancy_type }}
-                                    </p></v-col>
-                                    <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
-                                        class="font-weight-bold  ">Solar Powered:</span> {{ customerinfo.property_solar_powered }}
-                                    </p></v-col>
-                                </v-row>
-                                <v-row class="py-2">
-                                    <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
-                                        class="font-weight-bold ">ID Type:</span> {{ customerinfo.property_id_type }}</p></v-col>
-                                    <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
-                                        class="font-weight-bold ">EA Response Time:</span>
-                                        {{ customerinfo.property_ea_response_time }}</p></v-col>
-                                    <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
-                                        class="font-weight-bold ">Estimated moving period:</span>
-                                        {{ customerinfo.property_estimated_moving_period }}</p></v-col>
-                                    <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
-                                        class="font-weight-bold ">User Agree Time:</span>{{ customerinfo.user_agree_time }}</p>
-                                    </v-col>
-                                </v-row>
+            <v-row class="gray-bg">
+                <v-col cols="6">
+                    <v-card>
+                        <v-card-title>
+                            <v-row>
+                                <v-col color="black--text" class="profile_body_header">Property Information</v-col>
+                            </v-row>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-row class="pb-2">
+                                <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class=" font-weight-bold">Id#{{ customerinfo.property_profile_id }}</span></p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold ">Account Type:</span>
+                                    {{ customerinfo.property_account_type | mapAccountType }}</p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold ">Life Support:</span> {{ customerinfo.property_life_support }}
+                                </p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold  ">Tenancy Type:</span> {{ customerinfo.property_tenancy_type }}
+                                </p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold  ">Solar Powered:</span> {{ customerinfo.property_solar_powered }}
+                                </p></v-col>
+                            </v-row>
+                            <v-row class="py-2">
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold ">ID Type:</span> {{ customerinfo.property_id_type }}</p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold ">EA Response Time:</span>
+                                    {{ customerinfo.property_ea_response_time }}</p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold ">Estimated moving period:</span>
+                                    {{ customerinfo.property_estimated_moving_period }}</p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold ">User Agree Time:</span>{{ customerinfo.user_agree_time }}</p>
+                                </v-col>
+                            </v-row>
 
-                                <v-row class="py-2">
-                                    <v-col cols="6"><p class="mb-0 profile-info-title"><span
-                                        class="font-weight-bold profile-info-title">Is Manual Address:</span>
-                                        {{ customerinfo.is_manual_address }}</p></v-col>
-                                </v-row>
-                            </v-card-text>
-                        </v-card>
-                    </v-col>
-                    <v-col cols="6">
-                        <v-card>
-                            <v-card-title>
-                                <v-row class="align-baseline">
-                                    <v-col cols="10" class="profile_body_header">
-                                        Connection Information
-                                    </v-col>
-                                    <v-spacer></v-spacer>
-                                    <v-btn v-if="customerinfo.moving_utility_id" class="edit-icon" small depressed
-                                           @click="editMode = true">
-                                        <v-img src="/assets/images/icons/Edit.svg"/>
-                                        <!--                                    <v-icon small>mdi-pencil</v-icon>-->
-                                    </v-btn>
-                                </v-row>
-                            </v-card-title>
-                            <v-card-text>
-                                <v-row>
-                                    <v-col cols="12" class="py-0"><p class="mb-0"><span
-                                        class="font-weight-bold  profile-info-title">Id#{{ customerinfo.connection_id }}</span>
-                                    </p></v-col>
-                                    <v-col cols="6" class="py-1">
-                                        <v-row>
-                                            <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title"><span
-                                                class="font-weight-bold">Provider:</span> {{ customerinfo.connection_provider }}
-                                            </p></v-col>
-                                            <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title "><span
-                                                class="font-weight-bold">Selected Plan:</span>
-                                                {{ customerinfo.connection_selected_plan }}</p></v-col>
-                                        </v-row>
-                                    </v-col>
-                                    <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title "><span
-                                        class="font-weight-bold">Connection Address:</span></p>
-                                        <p class="profile-info-title">{{ customerinfo.connection_address }}</p></v-col>
-                                </v-row>
-                                <v-divider style="background-color:#000000"></v-divider>
-                                <v-row class="py-2">
-                                    <v-col cols="6" v-if="electricityPlan">
-                                        <p class="enery-title">ELECTRICITY</p>
-                                        <v-row>
-                                            <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
-                                                <span class="font-weight-bold">Quote ID:</span> {{ customerinfo.e_quote_id }}</p>
-                                            </v-col>
-                                            <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
-                                                <span class="font-weight-bold">Distributor:</span>
-                                                {{ customerinfo.e_destributor }}</p></v-col>
-                                            <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
-                                                <span class="font-weight-bold">Connection Fee:</span>
-                                                {{ customerinfo.connection_electricy_fee }}</p></v-col>
-                                            <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
-                                                <span class="font-weight-bold">Connection Status:</span>
-                                                {{ customerinfo.e_connection_status }}</p></v-col>
-                                            <v-col cols="12" class="py-0">
-                                                <p class="mb-0 profile-info-title font-weight-bold">NMI No:</p>
-                                                <div cols="12" class="profile-info-title">
-                                                    <v-text-field :readonly="!editMode" class="border-radious-5" filled rounded
-                                                                  dense v-model="customerinfo.connection_nmi_no"
-                                                                  v-on:keyup.enter="updateNMIAndMIRN"></v-text-field>
-                                                </div>
-                                            </v-col>
+                            <v-row class="py-2">
+                                <v-col cols="6"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold profile-info-title">Is Manual Address:</span>
+                                    {{ customerinfo.is_manual_address }}</p></v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+                <v-col cols="6">
+                    <v-card>
+                        <v-card-title>
+                            <v-row class="align-baseline">
+                                <v-col cols="10" class="profile_body_header">
+                                    Connection Information
+                                </v-col>
+                                <v-spacer></v-spacer>
+                                <v-btn v-if="customerinfo.moving_utility_id" class="edit-icon" small depressed
+                                       @click="editMode = true">
+                                    <v-img src="/assets/images/icons/Edit.svg"/>
+                                    <!--                                    <v-icon small>mdi-pencil</v-icon>-->
+                                </v-btn>
+                            </v-row>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-row>
+                                <v-col cols="12" class="py-0"><p class="mb-0"><span
+                                    class="font-weight-bold  profile-info-title">Id#{{ customerinfo.connection_id }}</span>
+                                </p></v-col>
+                                <v-col cols="6" class="py-1">
+                                    <v-row>
+                                        <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title"><span
+                                            class="font-weight-bold">Provider:</span> {{ customerinfo.connection_provider }}
+                                        </p></v-col>
+                                        <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title "><span
+                                            class="font-weight-bold">Selected Plan:</span>
+                                            {{ customerinfo.connection_selected_plan }}</p></v-col>
+                                    </v-row>
+                                </v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title "><span
+                                    class="font-weight-bold">Connection Address:</span></p>
+                                    <p class="profile-info-title">{{ customerinfo.connection_address }}</p></v-col>
+                            </v-row>
+                            <v-divider style="background-color:#000000"></v-divider>
+                            <v-row class="py-2">
+                                <v-col cols="6" v-if="electricityPlan">
+                                    <p class="enery-title">ELECTRICITY</p>
+                                    <v-row>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
+                                            <span class="font-weight-bold">Quote ID:</span> {{ customerinfo.e_quote_id }}</p>
+                                        </v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
+                                            <span class="font-weight-bold">Distributor:</span>
+                                            {{ customerinfo.e_destributor }}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
+                                            <span class="font-weight-bold">Connection Fee:</span>
+                                            {{ customerinfo.connection_electricy_fee }}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
+                                            <span class="font-weight-bold">Connection Status:</span>
+                                            {{ customerinfo.e_connection_status }}</p></v-col>
+                                        <v-col cols="12" class="py-0">
+                                            <p class="mb-0 profile-info-title font-weight-bold">NMI No:</p>
+                                            <div cols="12" class="profile-info-title">
+                                                <v-text-field :readonly="!editMode" class="border-radious-5" filled rounded
+                                                              dense v-model="customerinfo.connection_nmi_no"
+                                                              v-on:keyup.enter="updateNMIAndMIRN"></v-text-field>
+                                            </div>
+                                        </v-col>
 
-                                            <v-col cols="12" class="py-0" v-if="customerinfo.e_connection_status">
-                                                <p class="mb-0 profile-info-title">Reason:</p>
-                                                <div cols="12" class="reason pa-5 profile-info-title">
-                                                    <p>{{ customerinfo.e_reason }}</p>
-                                                </div>
-                                            </v-col>
-                                        </v-row>
-                                    </v-col>
-                                    <v-col cols="6" v-if="gasPlan">
-                                        <p class="enery-title">Gas</p>
-                                        <v-row>
-                                            <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
-                                                <span class="font-weight-bold">Quote ID:</span> {{ customerinfo.g_quote_id }}</p>
-                                            </v-col>
-                                            <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
-                                                <span class="font-weight-bold">Distributor:</span>
-                                                {{ customerinfo.connection_gas_provider }}</p></v-col>
-                                            <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
-                                                <span class="font-weight-bold">Gas meter Reading Charge:</span>
-                                                {{ customerinfo.gas_meter_charge }}</p></v-col>
-                                            <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
-                                                <span class="font-weight-bold">Connection Status:</span>
-                                                {{ customerinfo.g_connection_status }}</p></v-col>
-                                            <v-col cols="12" class="py-0">
-                                                <p class="mb-0 profile-info-title font-weight-bold">MIRN No:</p>
-                                                <div cols="12" class="profile-info-title">
-                                                    <v-text-field :readonly="!editMode" class="border-radious-5" filled rounded
-                                                                  dense v-model="customerinfo.connection_mern_no"
-                                                                  v-on:keyup.enter="updateNMIAndMIRN"></v-text-field>
-                                                </div>
-                                            </v-col>
-                                            <v-col cols="12" class="py-0" v-if="customerinfo.g_connection_status">
-                                                <p class="mb-0 profile-info-title">Reason:</p>
-                                                <div cols="12" class="reason pa-5 profile-info-title">
-                                                    <p>{{ customerinfo.g_reason }}</p>
-                                                </div>
-                                            </v-col>
-                                        </v-row>
-                                    </v-col>
-                                </v-row>
-                                <v-row class="py-0">
-                                    <v-col col="12" class="form-submit">
-                                        <div>
-                                            <!--                                        <v-btn v-if="!editMode" color="primary" disabled>Save</v-btn>-->
-                                            <v-btn v-if="editMode" :loading="loadingBtn" color="primary" @click="updateNMIAndMIRN">Save</v-btn>
-                                        </div>
-                                    </v-col>
+                                        <v-col cols="12" class="py-0" v-if="customerinfo.e_connection_status">
+                                            <p class="mb-0 profile-info-title">Reason:</p>
+                                            <div cols="12" class="reason pa-5 profile-info-title">
+                                                <p>{{ customerinfo.e_reason }}</p>
+                                            </div>
+                                        </v-col>
+                                    </v-row>
+                                </v-col>
+                                <v-col cols="6" v-if="gasPlan">
+                                    <p class="enery-title">Gas</p>
+                                    <v-row>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
+                                            <span class="font-weight-bold">Quote ID:</span> {{ customerinfo.g_quote_id }}</p>
+                                        </v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
+                                            <span class="font-weight-bold">Distributor:</span>
+                                            {{ customerinfo.connection_gas_provider }}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
+                                            <span class="font-weight-bold">Gas meter Reading Charge:</span>
+                                            {{ customerinfo.gas_meter_charge }}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
+                                            <span class="font-weight-bold">Connection Status:</span>
+                                            {{ customerinfo.g_connection_status }}</p></v-col>
+                                        <v-col cols="12" class="py-0">
+                                            <p class="mb-0 profile-info-title font-weight-bold">MIRN No:</p>
+                                            <div cols="12" class="profile-info-title">
+                                                <v-text-field :readonly="!editMode" class="border-radious-5" filled rounded
+                                                              dense v-model="customerinfo.connection_mern_no"
+                                                              v-on:keyup.enter="updateNMIAndMIRN"></v-text-field>
+                                            </div>
+                                        </v-col>
+                                        <v-col cols="12" class="py-0" v-if="customerinfo.g_connection_status">
+                                            <p class="mb-0 profile-info-title">Reason:</p>
+                                            <div cols="12" class="reason pa-5 profile-info-title">
+                                                <p>{{ customerinfo.g_reason }}</p>
+                                            </div>
+                                        </v-col>
+                                    </v-row>
+                                </v-col>
+                            </v-row>
+                            <v-row class="py-0">
+                                <v-col col="12" class="form-submit">
+                                    <div>
+                                        <!--                                        <v-btn v-if="!editMode" color="primary" disabled>Save</v-btn>-->
+                                        <v-btn v-if="editMode" :loading="loadingBtn" color="primary" @click="updateNMIAndMIRN">Save
+                                        </v-btn>
+                                    </div>
+                                </v-col>
 
-                                </v-row>
-                            </v-card-text>
-                        </v-card>
-                    </v-col>
-                </v-row>
-
-            </v-container>
-        </v-row>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-container>
     </div>
 </template>
 
@@ -371,10 +367,6 @@ body {
     letter-spacing: 0.15000000596046448px;
     text-align: left;
     color: #000000;
-}
-
-v-application--wrap {
-    min-height: 10vh !important;
 }
 
 .edit-icon {
