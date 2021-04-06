@@ -15,7 +15,7 @@
                 </v-col>
                 <v-col cols="10" class="pt-0 pt-5">
                     <h3 class="mb-0 font-weight-bold profile-title">{{customerinfo.name}}</h3>
-                    <p class="mb-0 last-interactive profile-subtitle">Interact {{customerinfo.last_interactive_time}}</p>
+                    <p class="mb-0 last-interactive profile-subtitle" v-show="customerinfo.last_interaction">Interact {{customerinfo.last_interaction}}</p>
                 </v-col>
                 <v-col cols="5" >
                     <p class="mb-0">HOOD UID: {{customerinfo.hood_uid}}</p>
@@ -64,7 +64,7 @@
                                     Connection Information
                                 </v-col>
                                 <v-spacer></v-spacer>
-                                <v-btn small depressed>
+                                <v-btn small depressed v-show="false">
                                     <v-img  src="/assets/images/icons/Edit.svg" max-width="24px"/>
 <!--                                    <v-icon small>mdi-pencil</v-icon>-->
                                 </v-btn>
@@ -201,12 +201,12 @@ export default {
     computed:
         {
             electricityPlan() {
-                return  this.customerinfo.connectionSelectedPlan === 'electricity'
-                    ||  this.customerinfo.connectionSelectedPlan === 'electricity_and_gas' ;
+                return  this.customerinfo.connection_energy_type === 'electricity'
+                    ||  this.customerinfo.connection_energy_type === 'electricity_and_gas';
             },
             gasPlan() {
-                return  this.customerinfo.connectionSelectedPlan === 'gas'
-                    ||  this.customerinfo.connectionSelectedPlan === 'electricity_and_gas';
+                return  this.customerinfo.connection_energy_type === 'gas'
+                    ||  this.customerinfo.connection_energy_type === 'electricity_and_gas';
             }
 
         },

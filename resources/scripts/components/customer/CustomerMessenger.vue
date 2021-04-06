@@ -166,7 +166,7 @@ export default {
             if(response.status === 200)
             {
                 this.errorConnction = false;
-                this.snacbarMessage = this.customer.manualInterventionIsActive?"Automatic reply successfully  turned on for this conversation":"Automatic reply successfully  turned off for this conversation";
+                this.snacbarMessage = this.customer.manualInterventionIsActive?"Automatic reply successfully  turned off for this conversation":"Automatic reply successfully  turned on for this conversation";
             }
             else {
                 this.snacbarMessage = "Connection Failed"
