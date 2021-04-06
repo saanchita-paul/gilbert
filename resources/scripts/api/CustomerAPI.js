@@ -146,7 +146,7 @@ export default {
      */
     updateNMIAndMIRN: async (movingUtilityId, params) => {
 
-        const response = (await axios.put(`${BOT_API}/moving-utility/{movingUtilityId}`, {
+        const response = (await axios.put(`${BOT_API}/moving-utility/${movingUtilityId}`, {
             params: params
         }));
          return response;
