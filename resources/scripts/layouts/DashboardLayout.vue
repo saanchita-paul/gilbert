@@ -56,7 +56,7 @@
                                 </v-list-item>
                             </span>
                         </v-list-group>
-                        <v-list-item link exact-active-class="nav-active" v-if="route.type === 'route'" :to="{name:route.route_name}" exact>
+                        <v-list-item link active-class="nav-active" v-if="route.type === 'route'" :to="{name:route.route_name}">
                            <v-list-item-icon>
                                <v-img v-bind:src="route.icon"/>
                            </v-list-item-icon>
