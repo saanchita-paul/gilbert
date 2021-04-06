@@ -21,3 +21,14 @@ export const interventionStatus = {
 }
 
 export const mapInterventionStatus = key => interventionStatus[key.toUpperCase()]
+
+
+
+const planTypes = {
+    basic_plan: 'Basic - Home',
+    no_frills: 'No Frills (Home)',
+    total_plan: 'Total Plan (Home)'
+}
+export const mapPlanType = key => planTypes[key?.toLowerCase()]
+
+

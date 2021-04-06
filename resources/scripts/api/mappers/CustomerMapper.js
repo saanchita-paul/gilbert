@@ -11,6 +11,7 @@ import Pagination from "@scripts/models/Pagination";
 import DayJs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import {mapSentiment} from "@scripts/data/SentimentColor";
+import {mapPlanType} from "@scripts/data/CustomerDataMapper";
 
 export default {
     toClientDetail: (data) => {
@@ -142,7 +143,9 @@ export default {
 
             connectionId: customerData.connection_info.id || '',
             connectionProvider: customerData.connection_info.provider || '',
-            connectionSelectedPlan: customerData.connection_info.selected_plan || '',
+            connectionSelectedPlan: customerData.connection_info.selected_plan
+                ? mapPlanType(customerData.connection_info.selected_plan)
+                : '',
             connectionEneryType: customerData.connection_info.energy_type || '',
             connectionAddress: customerData.connection_info.connection_address || '',
             connectionEnergyType: customerData.connection_info.id || '',
