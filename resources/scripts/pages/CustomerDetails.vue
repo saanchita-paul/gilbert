@@ -109,7 +109,7 @@
                             </v-row>
                             <v-divider style="background-color:#000000"></v-divider>
                             <v-row class="py-2">
-                                <v-col cols="6" :class="{'low-opacity': gasOnly}">
+                                <v-col cols="6" :class="{'low-opacity': noElectricity}">
                                     <p class="enery-title">ELECTRICITY</p>
                                     <v-row>
                                         <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
@@ -148,7 +148,7 @@
                                         </v-col>
                                     </v-row>
                                 </v-col>
-                                <v-col cols="6" :class="{'low-opacity': electricityOnly}">
+                                <v-col cols="6" :class="{'low-opacity': noGas}">
                                     <p class="enery-title">Gas</p>
                                     <v-row>
                                         <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
@@ -247,11 +247,13 @@ export default {
                 return this.customerinfo.connection_energy_type === 'gas'
                     || this.customerinfo.connection_energy_type === 'electricity_and_gas';
             },
-            gasOnly() {
-                return this.customerinfo.connection_energy_type === 'gas';
+            noGas() {
+                const type = this.customerinfo.connection_energy_type
+                return type === 'electricity' ||  type === '';
             },
-            electricityOnly() {
-                return this.customerinfo.connection_energy_type === 'electricity';
+            noElectricity() {
+                const type = this.customerinfo.connection_energy_type;
+                return type === 'gas' || type === '';
             }
 
         },
