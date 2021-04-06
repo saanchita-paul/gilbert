@@ -1,9 +1,9 @@
 <template>
     <div>
-        <v-app-bar height="60px">
+        <v-app-bar height="50px">
             <v-img src="/assets/images/icons/Back.svg" @click="goBack" max-width="24px" class="mb-2"/>
         </v-app-bar>
-        <v-container>
+        <v-container class="manual-margin">
             <v-row align-center class=" header color--text pt-0">
                 <v-col class="avatar-containner pr-0">
                     <v-avatar>
@@ -375,6 +375,11 @@ body {
     height: 30px !important;
     min-width: 30px !important;
 }
-
+@media only screen and (width: 1920px) {
+    .manual-margin {
+        width: 90% !important;
+        margin: auto !important;
+    }
+}
 
 </style>
