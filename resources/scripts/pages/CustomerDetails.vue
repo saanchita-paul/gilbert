@@ -207,7 +207,7 @@ export default {
                 mirn: this.customerinfo.connection_mern_no,
                 nmi: this.customerinfo.connection_nmi_no,
             }
-            const response = await CustomerService.updateNMIAndMIRN(this.customerinfo.id, data);
+            const response = await CustomerService.updateNMIAndMIRN(this.customerinfo.moving_utility_id, data);
             console.log(response);
 
         }
