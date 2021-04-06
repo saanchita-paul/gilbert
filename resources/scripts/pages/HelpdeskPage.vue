@@ -48,7 +48,7 @@
                                                     <p class="mb-0 expand-header-info">Billing Preference: {{item.billing_preference}}</p>
                                                 </v-col>
                                                 <v-col >
-                                                    <v-btn  rounded small color="white primary--text" @click="testFunction()">View Profile</v-btn>
+                                                    <v-btn  rounded small color="white primary--text" @click="viewProfile()">View Profile</v-btn>
                                                 </v-col>
 
                                             </v-row>
