@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div :class="{invisible: !isLoaded}">
         <v-app-bar height="50px">
-            <v-img src="/assets/images/icons/Back.svg" @click="goBack" max-width="24px" class="mb-2"/>
+            <v-img src="/assets/images/icons/Back.svg" @click="goBack" max-width="24px" class="mb-2" style="cursor: pointer"/>
         </v-app-bar>
         <v-container class="manual-margin">
             <v-row align-center class=" header color--text pt-0">
@@ -81,7 +81,7 @@
                                     Connection Information
                                 </v-col>
                                 <v-spacer></v-spacer>
-                                <v-btn v-if="customerinfo.moving_utility_id" class="edit-icon" small depressed
+                                <v-btn v-if="customerinfo.moving_utility_id && !editMode" class="edit-icon" small depressed
                                        @click="editMode = true">
                                     <v-img src="/assets/images/icons/Edit.svg"/>
                                     <!--                                    <v-icon small>mdi-pencil</v-icon>-->
@@ -109,7 +109,7 @@
                             </v-row>
                             <v-divider style="background-color:#000000"></v-divider>
                             <v-row class="py-2">
-                                <v-col cols="6" v-if="electricityPlan">
+                                <v-col cols="6" :class="{lowOpacity: gasPlan}">
                                     <p class="enery-title">ELECTRICITY</p>
                                     <v-row>
                                         <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
@@ -124,16 +124,23 @@
                                         <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
                                             <span class="font-weight-bold">Connection Status:</span>
                                             {{ customerinfo.e_connection_status }}</p></v-col>
-                                        <v-col cols="12" class="py-0">
+                                        <v-col cols="12" class="py-0 mt-2">
                                             <p class="mb-0 profile-info-title font-weight-bold">NMI No:</p>
                                             <div cols="12" class="profile-info-title">
-                                                <v-text-field :readonly="!editMode" class="border-radious-5" filled rounded
-                                                              dense v-model="customerinfo.connection_nmi_no"
-                                                              v-on:keyup.enter="updateNMIAndMIRN"></v-text-field>
+                                                <v-text-field
+                                                    :readonly="!editMode"
+                                                    class="border-radious-5"
+                                                    filled
+                                                    hide-details
+                                                    rounded
+                                                    dense
+                                                    v-model="customerinfo.connection_nmi_no"
+                                                    :style="{border: editMode ? `1px solid ${$vuetify.theme.themes.light.primary} !important` : 'none'}"
+                                                    v-on:keyup.enter="updateNMIAndMIRN"></v-text-field>
                                             </div>
                                         </v-col>
 
-                                        <v-col cols="12" class="py-0" v-if="customerinfo.e_connection_status">
+                                        <v-col cols="12" class="py-0" v-if="gasPlan">
                                             <p class="mb-0 profile-info-title">Reason:</p>
                                             <div cols="12" class="reason pa-5 profile-info-title">
                                                 <p>{{ customerinfo.e_reason }}</p>
@@ -141,7 +148,7 @@
                                         </v-col>
                                     </v-row>
                                 </v-col>
-                                <v-col cols="6" v-if="gasPlan">
+                                <v-col cols="6" :class="{'low-opacity': electricityPlan}">
                                     <p class="enery-title">Gas</p>
                                     <v-row>
                                         <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
@@ -156,15 +163,22 @@
                                         <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
                                             <span class="font-weight-bold">Connection Status:</span>
                                             {{ customerinfo.g_connection_status }}</p></v-col>
-                                        <v-col cols="12" class="py-0">
+                                        <v-col cols="12" class="py-0 mt-2">
                                             <p class="mb-0 profile-info-title font-weight-bold">MIRN No:</p>
                                             <div cols="12" class="profile-info-title">
-                                                <v-text-field :readonly="!editMode" class="border-radious-5" filled rounded
-                                                              dense v-model="customerinfo.connection_mern_no"
-                                                              v-on:keyup.enter="updateNMIAndMIRN"></v-text-field>
+                                                <v-text-field
+                                                    :readonly="!editMode"
+                                                    class="border-radious-5"
+                                                    filled
+                                                    rounded
+                                                    hide-details
+                                                    dense v-model="customerinfo.connection_mern_no"
+                                                    v-on:keyup.enter="updateNMIAndMIRN"
+                                                    :style="{border: editMode ? `1px solid ${$vuetify.theme.themes.light.primary} !important` : 'none'}"
+                                                ></v-text-field>
                                             </div>
                                         </v-col>
-                                        <v-col cols="12" class="py-0" v-if="customerinfo.g_connection_status">
+                                        <v-col cols="12" class="py-0" v-if="electricityPlan">
                                             <p class="mb-0 profile-info-title">Reason:</p>
                                             <div cols="12" class="reason pa-5 profile-info-title">
                                                 <p>{{ customerinfo.g_reason }}</p>
@@ -176,8 +190,12 @@
                             <v-row class="py-0">
                                 <v-col col="12" class="form-submit">
                                     <div>
+                                        <v-btn v-if="editMode" @click="editMode = false">
+                                            cancel
+                                        </v-btn>
                                         <!--                                        <v-btn v-if="!editMode" color="primary" disabled>Save</v-btn>-->
-                                        <v-btn v-if="editMode" :loading="loadingBtn" color="primary" @click="updateNMIAndMIRN">Save
+                                        <v-btn v-if="editMode" :loading="loadingBtn" color="primary" @click="updateNMIAndMIRN">
+                                            Save
                                         </v-btn>
                                     </div>
                                 </v-col>
@@ -202,6 +220,7 @@ export default {
     name: "CustomerDetials",
     data() {
         return {
+            isLoaded: false,
             customerinfo: this.getCustomerDetails(),
             sentiment: '',
             editMode: false,
@@ -240,7 +259,7 @@ export default {
         async getCustomerDetailsData(id) {
             this.customerinfo = await CustomerService.getCustomerDetails(id);
             this.sentiment = this.getSentimentText(this.customerinfo.sentiment);
-            console.log(this.customerinfo);
+            this.isLoaded = true;
         },
 
         getSentimentText(sentiment) {
@@ -253,8 +272,9 @@ export default {
                 mirn: this.customerinfo.connection_mern_no,
                 nmi: this.customerinfo.connection_nmi_no,
             }
-            const response = await CustomerService.updateNMIAndMIRN(this.customerinfo.moving_utility_id, data);
+            await CustomerService.updateNMIAndMIRN(this.customerinfo.moving_utility_id, data);
             this.loadingBtn = false;
+            this.editMode = false;
         }
 
     },
@@ -294,7 +314,7 @@ body {
     color: white;
     line-height: 28px;
     font-size: 16px;
-    margin-top: 30px !important;
+    margin-top: 10px !important;
 }
 
 .profile-title {
@@ -375,11 +395,14 @@ body {
     height: 30px !important;
     min-width: 30px !important;
 }
+
 @media only screen and (width: 1920px) {
     .manual-margin {
         width: 90% !important;
         margin: auto !important;
     }
 }
+
+
 
 </style>
