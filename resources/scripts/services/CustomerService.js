@@ -76,4 +76,11 @@ export default {
      * @returns {Promise<{pagination: Pagination, data}>}
      */
     getCustomerTableData: page => CustomerAPI.getCustomerList(page),
+
+    /**
+     *
+     * @param params
+     */
+    updateNMIAndMIRN: (id, params) => CustomerAPI.updateNMIAndMIRN(id, params),
+
 }

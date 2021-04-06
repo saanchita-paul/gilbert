@@ -133,7 +133,7 @@ export default {
             propertyAccountType: customerData.property_info.account_type || '',
             propertyTenancyType: customerData.property_info.tenancy_type || '',
             propertyLifeSupport: customerData.property_info.life_support || '',
-            propertySolarPowered: customerData.property_info.solar_power || '',
+            propertySolarPowered: customerData.property_info.solar_power === 'solar'? 'YES': 'NO',
             propertyIdType: customerData.property_info.id_type || '',
             propertyEAResponseTime: customerData.property_info.ea_response_time || '',
             propertyEstimatedMovingPeriod: customerData.property_info.moving_date || '',
@@ -164,8 +164,8 @@ export default {
             gReason: customerData.connection_info?.rejection_reason?.gas,
             eConnectionStatus: customerData.connection_status?.electricity,
             gConnectionStatus: customerData.connection_status?.gas,
-            overallProgress: customerData.overall_progress || ''
-
+            overallProgress: customerData.overall_progress || '',
+            movingUtilityId: customerData.moving_utility_id || null,
 
 
         })

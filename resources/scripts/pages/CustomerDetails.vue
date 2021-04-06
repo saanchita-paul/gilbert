@@ -64,8 +64,8 @@
                                     Connection Information
                                 </v-col>
                                 <v-spacer></v-spacer>
-                                <v-btn small depressed v-show="false">
-                                    <v-img  src="/assets/images/icons/Edit.svg" max-width="24px"/>
+                                <v-btn v-if="customerinfo.moving_utility_id" class="edit-icon" small depressed @click="editMode = true">
+                                    <v-img  src="/assets/images/icons/Edit.svg" />
 <!--                                    <v-icon small>mdi-pencil</v-icon>-->
                                 </v-btn>
                             </v-row>
@@ -93,7 +93,8 @@
                                         <v-col cols="12" class="py-0">
                                             <p class="mb-0 profile-info-title font-weight-bold">NMI No:</p>
                                             <div cols="12"  class="profile-info-title">
-                                                <v-text-field  class="border-radious-5" readonly filled rounded dense v-model="customerinfo.connection_nmi_no"></v-text-field>
+                                                <v-text-field v-if="!editMode" class="border-radious-5" readonly filled rounded dense v-model="customerinfo.connection_nmi_no"></v-text-field>
+                                                <v-text-field v-if="editMode"  class="border-radious-5"  filled rounded dense v-model="customerinfo.connection_nmi_no" v-on:keyup.enter="updateNMIAndMIRN"></v-text-field>
                                             </div>
                                         </v-col>
 
@@ -115,7 +116,8 @@
                                         <v-col cols="12" class="py-0">
                                             <p class="mb-0 profile-info-title font-weight-bold">MIRN No:</p>
                                             <div cols="12"  class="profile-info-title">
-                                                <v-text-field  class="border-radious-5" readonly filled rounded dense v-model="customerinfo.connection_mern_no"></v-text-field>
+                                                <v-text-field v-if="!editMode" class="border-radious-5" readonly filled rounded dense v-model="customerinfo.connection_mern_no"></v-text-field>
+                                                <v-text-field v-if="editMode" class="border-radious-5"  filled rounded dense v-model="customerinfo.connection_mern_no" v-on:keyup.enter="updateNMIAndMIRN"></v-text-field>
                                             </div>
                                         </v-col>
                                         <v-col cols="12" class="py-0" v-if="customerinfo.g_connection_status">
@@ -127,41 +129,11 @@
                                     </v-row>
                                 </v-col>
                             </v-row>
-<!--                            <v-row class="py-2">-->
-<!--                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Energy Type:</span> {{customerinfo.connection_energy_type | mapEnergyType}}</p></v-col>-->
-<!--                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Gas Provider:</span> {{customerinfo.connection_gas_provider}}</p></v-col>-->
-<!--                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0 profile-info-title"><span class="font-weight-bold">E-Destributor:</span> {{customerinfo.e_destributor}}</p></v-col>-->
-<!--                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0"><span class="font-weight-bold">Gas meter Reading Charge:</span> {{customerinfo.gas_meter_charge}}</p></v-col>-->
-<!--                                <v-col cols="6" class="py-0 profile-info-title"><p class="mb-0"><span class="font-weight-bold">Electricity Connection Fee:</span> {{customerinfo.connection_electricy_fee}}</p></v-col>-->
-
-
-<!--                            </v-row>-->
-<!--                            <v-row class="ml-0" >-->
-<!--                                <v-col cols="6" class="py-0">-->
-<!--                                    <v-row class="align-baseline">-->
-<!--                                        <label  class="font-weight-bold profile-info-title">MIRN no:</label>-->
-<!--                                        <v-col class="px-0 pb-0" cols="7"><v-text-field  class="border-radious-5" readonly filled rounded dense v-model="customerinfo.connection_mern_no"></v-text-field></v-col>-->
-<!--                                    </v-row>-->
-<!--                                </v-col>-->
-<!--                                <v-col cols="6" class="py-0">-->
-<!--                                    <v-row class="align-baseline">-->
-<!--                                        <label class="font-weight-bold profile-info-title">NMI no:</label>-->
-<!--                                        <v-col class="px-0 pb-0" cols="7"><v-text-field  class="border-radious-5" readonly filled rounded dense v-model="customerinfo.connection_nmi_no"></v-text-field></v-col>-->
-<!--                                    </v-row>-->
-<!--                                </v-col>-->
-
-<!--                            </v-row>-->
                             <v-row class="py-0">
-<!--                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span class="font-weight-bold">Connection Status:</span><span class="rejected-text">{{customerinfo.connection_status}}</span></p></v-col>-->
-<!--                                <v-col cols="12" class="py-0">-->
-<!--                                    <p class="mb-0 profile-info-title">Reason:</p>-->
-<!--                                    <div cols="12"  class="reason pa-5 profile-info-title">-->
-<!--                                        <p>{{customerinfo.connection_reason}}</p>-->
-<!--                                    </div>-->
-<!--                                </v-col>-->
                                 <v-col col="12" class="form-submit">
                                     <div>
-                                        <v-btn color="primary" >Save</v-btn>
+<!--                                        <v-btn v-if="!editMode" color="primary" disabled>Save</v-btn>-->
+                                        <v-btn v-if="editMode" color="primary" @click="updateNMIAndMIRN">Save</v-btn>
                                     </div>
                                 </v-col>
 
@@ -188,7 +160,8 @@ export default {
     data() {
         return {
                 customerinfo: this.getCustomerDetails(),
-                sentiment : ''
+                sentiment : '',
+                editMode : false,
         }
     },
 
@@ -222,11 +195,23 @@ export default {
         async getCustomerDetailsData (id) {
             this.customerinfo = await CustomerService.getCustomerDetails(id);
             this.sentiment = this.getSentimentText( this.customerinfo.sentiment);
+            console.log(this.customerinfo);
         },
 
         getSentimentText(sentiment) {
             return mapSentiment(sentiment).text;
         },
+
+      async updateNMIAndMIRN() {
+            const data = {
+                mirn: this.customerinfo.connection_mern_no,
+                nmi: this.customerinfo.connection_nmi_no,
+            }
+            const response = await CustomerService.updateNMIAndMIRN(this.customerinfo.id, data);
+            console.log(response);
+
+        }
+
     },
     mounted() {
         this.getCustomerDetailsData(this.id);
@@ -333,6 +318,13 @@ body {
 
 v-application--wrap {
     min-height: 10vh !important;
+}
+
+.edit-icon{
+    left: -6px !important;
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
 }
 
 

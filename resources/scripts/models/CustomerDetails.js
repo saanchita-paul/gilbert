@@ -48,7 +48,8 @@ export default class CustomerDetails {
                     gReason,
                     eConnectionStatus,
                     gConnectionStatus,
-                    overallProgress
+                    overallProgress,
+                    movingUtilityId
 
                 } = {}) {
         this.id = id;
@@ -69,7 +70,7 @@ export default class CustomerDetails {
         this.property_tenancy_type = propertyTenancyType || '';
         this.property_house_type = propertyHouseType || '--';
         this.property_house_size = propertyHouseSize || '--';
-        this.property_solar_powered = propertySolarPowered || '';
+        this.property_solar_powered = propertySolarPowered ;
         this.property_life_support = propertyLifeSupport || '';
         this.is_manual_address = isManualAddress || '';
         this.property_ea_response_time = propertyEAResponseTime || '';
@@ -99,7 +100,8 @@ export default class CustomerDetails {
         this.g_reason = gReason || null;
         this.e_connection_status = eConnectionStatus || null;
         this.g_connection_status = gConnectionStatus || null;
-        this.overall_progress = overallProgress
+        this.overall_progress = overallProgress;
+        this.moving_utility_id = movingUtilityId
     }
 
 }
