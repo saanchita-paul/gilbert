@@ -48,7 +48,7 @@
                                                     <p class="mb-0 expand-header-info">Billing Preference: {{item.billing_preference}}</p>
                                                 </v-col>
                                                 <v-col >
-                                                    <v-btn  rounded small color="white primary--text">View Profile</v-btn>
+                                                    <v-btn  rounded small color="white primary--text" @click="viewProfile()">View Profile</v-btn>
                                                 </v-col>
 
                                             </v-row>
@@ -108,7 +108,7 @@ export default {
             customerList: [],
             customerMessages: null,
             customerId: this.$route.query.customerId || null,
-            pagination: new Pagination()
+            pagination: new Pagination(),
         }
     },
     components:{
@@ -191,7 +191,10 @@ export default {
             } else {
                 $state.complete();
             }
-        }
+        },
+        viewProfile() {
+            this.$router.push({name: `customer.details`, params: {id: this.customerinfo.id}});
+        },
     },
 }
 </script>
