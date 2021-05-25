@@ -2,8 +2,8 @@ export default [
     {
         type: 'group',
         title: 'Dashboard',
-        icon: 'mdi-chart-pie',
-        model: false,
+        icon: '/assets/images/icons/Dashboard.svg',
+        model: true,
         children: [
             {
                 type: 'route',
@@ -14,7 +14,7 @@ export default [
             {
                 type: 'route',
                 title: 'Chatbot',
-                route_name: 'dashboard.chatbot',
+                route_name: 'chatbot',
                 disabled: true,
             }
         ]
@@ -22,13 +22,13 @@ export default [
     {
         type: 'route',
         title: 'Customers',
-        icon: 'mdi-account-group',
+        icon: '/assets/images/icons/Customers.svg',
         route_name: 'customer.list',
     },
     {
         type: 'route',
         title: 'Helpdesk',
-        icon: 'mdi-account-tie',
+        icon: '/assets/images/icons/Helpdesk.svg',
         route_name: 'helpdesk'
     },
 ]

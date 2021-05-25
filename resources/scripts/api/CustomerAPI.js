@@ -6,6 +6,7 @@ import CustomerConnection from "@scripts/models/customer-profile/CustomerConnect
 import CustomerMovingInfo from "@scripts/models/customer-profile/CustomerMovingInfo";
 import CustomerOrder from "@scripts/models/customer-profile/CustomerOrder";
 import root from "lodash-es/_root";
+import Pagination from "@scripts/models/Pagination";
 
 const ROOT = `${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api`;
 
@@ -34,6 +35,19 @@ export default {
             const data = await axios.get(`${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api/customers/${customerId}`);
             console.log(`RECEIVED CUSTOMER ${customerId} DATA `, data);
             return CustomerMapper.toClientDetail(data.data.data);
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    /**
+     * getting all messages of a Customer
+     * @param customerId
+     */
+     getCustomerMessages: async (customerId, pageIndex) => {
+        try {
+            const data = await axios.get(`${BOT_API}/customers/${customerId}/chat-histories?page=${pageIndex}`);
+            return CustomerMapper.mapCustomerMessages(data.data);
         } catch (error) {
             return error.data;
         }
@@ -87,122 +101,28 @@ export default {
     },
 
     getCustomerDetails: async customerId => {
-        // Todo API End point will be replaced later
-        // const data =(await axios.get(`${ROOT}/customers/${customerId}/local-business-search`)).data;
-        // working with some dummy data
-        const data = {
-            data: {
-                id: 2135,
-                propertyProfileId: '100004406028484',
-                propertyAccountType: 'Residensial',
-                propertyLifeSupport: 'Y/N',
-                propertyTenancyType: 'Rent',
-                propertyIdType: 'Residensial',
-                propertyEAResponseTime: '20/03/2020',
-                propertySolarPowered: '20/03/2020',
-                estimetedMovingPeriod: '20/03/2020',
-                isManualAddress: 'Email/Address',
-                userAgreeTime:'20/03/2020',
-
-                connectionId: '1901',
-                connectionProvider: 'Residensial',
-                connectionAddress: '26 Highpoint, sunbury VIC 3429',
-                connectionSelectedPlan: 'Total Plan',
-                connectionEnergyType: '--',
-                connectionGasProvider: 'Envesta Country',
-                connectionEDestributor: 'Envesta Country',
-                connectionElectricyFee: '$56',
-                gasMeterCharge: '$56',
-                connectionMernNo: 52456465454165,
-                connectionNmiNo: 52456465454165,
-                connectionStatus: 'Rejected',
-                connectionReason: 'The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the ....',
-                manualInterventionStatus: 'in_progress',
-                manualInterventionIsActive: false,
-                manualInterventionAt: '2020-12-17 08:30:17'
-            }
-        }
+        const data =(await axios.get(`${BOT_API}/customers/${customerId}`)).data;
         return CustomerMapper.mapCustomerDetailsServices(data.data);
     },
 
     /**
      *
      * @param pageIndex
-     * @returns {Promise<CustomerListInfo[]>}
+     * @returns {Promise<{pagination: Pagination, data}>}
      */
     getCustomerList: async pageIndex=> {
-        // Todo API End point will be replaced later
-        // const data =(await axios.get(`${ROOT}/customers/${customerId}/local-business-search`)).data;
-        const data = {
-            data: [
-                {
-                    id: 1,
-                    name: 'Sazzad Ahmed',
-                    profilePic: 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/106438752/original/3c4d95e3604313ecca407541a45b6a58dcc67c5c/update-your-online-dating-profile-bio-to-get-you-more-matches.jpg',
-                    lastInteractiveTime: '10m',
-                    hoodUid: '#1671408574925',
-                    messagerId: '#1671419574925',
-                    email: 'sazzadahmed@gmail.com',
-                    ph: '1671408219574925',
+        const data =(await axios.get(`${BOT_API}/customers?page=${pageIndex}`)).data;
 
-                    issueStatus: 'In Progress',
-                    connectionStatus: 'Accepted',
-                    sentiment: 'good',
-                    location: 'SA',
-                    connectionDate: 'May 26 2019 6.0pm'
-                },
-                {
-                    id: 2,
-                    name: 'Sazzad Ahmed',
-                    profilePic: 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/106438752/original/3c4d95e3604313ecca407541a45b6a58dcc67c5c/update-your-online-dating-profile-bio-to-get-you-more-matches.jpg',
-                    lastInteractiveTime: '10m',
-                    hoodUid: '#1671408574925',
-                    messagerId: '#1671419574925',
-                    email: 'sazzadahmed@gmail.com',
-                    ph: '1671408219574925',
-
-                    issueStatus: 'In Progress',
-                    connection_status: 'Accepted',
-                    sentiment: 'good',
-                    location: 'SA',
-                    connectionDate: 'May 26 2019 6.0pm'
-                },
-                {
-                    id: 3,
-                    name: 'Sazzad Ahmed',
-                    profilePic: 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/106438752/original/3c4d95e3604313ecca407541a45b6a58dcc67c5c/update-your-online-dating-profile-bio-to-get-you-more-matches.jpg',
-                    lastInteractiveTime: '10m',
-                    hoodUid: '#1671408574925',
-                    messagerId: '#1671419574925',
-                    email: 'sazzadahmed@gmail.com',
-                    ph: '1671408219574925',
-
-                    issueStatus: 'In Progress',
-                    connectionStatus: 'Accepted',
-                    sentiment: 'negative',
-                    location: 'SA',
-                    connectionDate: 'May 26 2019 6.0pm'
-                },
-                {
-                    id: 4,
-                    name: 'Sazzad Ahmed',
-                    profilePic: 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/106438752/original/3c4d95e3604313ecca407541a45b6a58dcc67c5c/update-your-online-dating-profile-bio-to-get-you-more-matches.jpg',
-                    lastInteractiveTime: '10m',
-                    hoodUid: '#1671408574925',
-                    messagerId: '#1671419574925',
-                    email: 'sazzadahmed@gmail.com',
-                    ph: '1671408219574925',
-
-                    issueStatus: 'In Progress',
-                    connectionStatus: 'Accepted',
-                    sentiment: 'positive',
-                    location: 'SA',
-                    connectionDate: 'May 26 2019 6.00pm'
-                },
-
-            ],
+        return {
+            data: CustomerMapper.mapCustomerList(data.data),
+            pagination: new Pagination({
+                page: data.pagination ? data.pagination.currentPage : 1,
+                hasMorePages: data.pagination ? data.pagination.hasMorePages : 0,
+                pageCount: data.pagination ? Math.ceil(data.pagination.total / data.pagination.perPage) : 1,
+                perPage: data.pagination ? data.pagination.perPage : 0,
+                total: data.pagination ? data.pagination.total : 0
+            })
         };
-        return CustomerMapper.mapCustomerList(data.data);
     },
 
     /**
@@ -211,10 +131,20 @@ export default {
      * @param manualInterventionStatus
      */
      toggleManualIntervention: async (customerId, manualInterventionStatus) => {
-        const response = (await axios.post(`${ROOT}/utility/${customerId}/manual-intervention`, {
-            manualInterventionStatus: manualInterventionStatus
+        const response = (await axios.get(`${BOT_API}/utility/${customerId}/manual-intervention`, {
+            params: {
+                manualInterventionStatus: manualInterventionStatus
+            }
         }));
         return response;
     },
 
+    /**
+     *
+     * @param movingUtilityId
+     * @param params
+     */
+    updateNMIAndMIRN: (movingUtilityId, params) => {
+        return axios.put(`${BOT_API}/moving-utility/${movingUtilityId}`, params);
+    },
 }

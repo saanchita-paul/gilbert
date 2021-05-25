@@ -1,7 +1,17 @@
 <template>
-    <div class="px-2 analytic-bg hood-gradiant" v-if="isLoaded">
+    <div class="hood-gradiant" v-if="isLoaded" :style="{height: totalAssistanceNeeded > 0 ? '360px' : '320px'}">
+        <v-app-bar class="alert-box pb-5 px-0 mx-0" dense v-if="totalAssistanceNeeded > 0">
+            <p class="mt-5 alert-box-p">
+                <v-img src="/assets/images/icons/Error.svg" max-width="24px" class="mb-3 mr-3 top-2" style="top:1px"/>
+                {{totalAssistanceNeeded}} Users need your attention.
+            </p>
+            <v-spacer></v-spacer>
+            <v-btn small :to="{name: 'helpdesk'}">
+                <span style="color: #FF5722">GO TO LIST</span>
+            </v-btn>
+        </v-app-bar>
         <v-container>
-            <div class="my-lead-head my-3">
+            <div class="my-lead-head my-3 mx-2">
                 <h3 class="section-title white--text">My leads overview</h3>
                 <div>
                     <v-btn>filter
@@ -10,7 +20,7 @@
                 </div>
             </div>
             <div class="widgets">
-<!--                Total-->
+                <!--                Total-->
                 <LeadWidget
                     :tooltip="utilityDashboardData.lead_overview.lead.tooltip"
                     title="Total Lead"
@@ -19,48 +29,48 @@
                     <BarChart :data="utilityDashboardData.lead_overview.lead.chartData" chartId="totalLead"/>
                 </LeadWidget>
 
-<!--                Qualified-->
+                <!--                Qualified-->
                 <LeadWidget
                     :tooltip="utilityDashboardData.lead_overview.qualified.tooltip"
                     title="Qualified Lead"
                     :value="utilityDashboardData.lead_overview.qualified.value"
                 >
-                    <LineChart  :data="utilityDashboardData.lead_overview.qualified.chartData" chartId="qualifiedLead"/>
+                    <LineChart :data="utilityDashboardData.lead_overview.qualified.chartData" chartId="qualifiedLead"/>
                 </LeadWidget>
 
-<!--                Energy connection-->
+                <!--                Energy connection-->
                 <LeadWidget
                     :tooltip="utilityDashboardData.lead_overview.energy.tooltip"
                     title="Total Energy Connection"
                     :value="utilityDashboardData.lead_overview.energy.value"
                 >
-                    <BarChart :data="utilityDashboardData.lead_overview.energy.chartData"  chartId="totalLead3"/>
+                    <BarChart :data="utilityDashboardData.lead_overview.energy.chartData" chartId="totalLead3"/>
                 </LeadWidget>
 
-<!--                Conversation rate-->
+                <!--                Conversation rate-->
                 <LeadWidget
                     :tooltip="utilityDashboardData.lead_overview.conversion.tooltip"
                     title="Conversion Rate"
                     :value="utilityDashboardData.lead_overview.conversion.value"
                 >
-                    <LineChart :data="utilityDashboardData.lead_overview.conversion.chartData"  chartId="totalLead4"/>
+                    <LineChart :data="utilityDashboardData.lead_overview.conversion.chartData" chartId="totalLead4"/>
                 </LeadWidget>
 
-<!--                Automation rate-->
+                <!--                Automation rate-->
                 <LeadWidget
                     :tooltip="utilityDashboardData.lead_overview.automation.tooltip"
                     title="Full Automation Rate"
                     :value="utilityDashboardData.lead_overview.automation.value"
                 >
-                    <LineChart :data="utilityDashboardData.lead_overview.automation.chartData"  chartId="totalLead5"/>
+                    <LineChart :data="utilityDashboardData.lead_overview.automation.chartData" chartId="totalLead5"/>
                 </LeadWidget>
             </div>
 
-            <div class="lead-connection-section">
+            <div class="lead-connection-section mx-2">
                 <h3 class="section-title">How are my lead is going?</h3>
                 <v-row>
                     <v-col md="7" sm="12" style="height: 466px;">
-                        <ConnectionLeadWidget/>
+                        <ConnectionLeadWidget :chart-data="utilityDashboardData.lead_to_connection"/>
                     </v-col>
                     <v-col md="5" sm="12">
                         <div style="height: 270px; width: 100%; background: lightgreen">
@@ -72,7 +82,7 @@
                         </div>
                         <div style="width: 100%; margin-top: 12px; height: 150px;">
                             <LocationInsight
-                                :data="utilityDashboardData.location_insight"    
+                                :data="utilityDashboardData.location_insight"
                             >
                             </LocationInsight>
                         </div>
@@ -80,8 +90,8 @@
                 </v-row>
             </div>
 
-            <v-row class="mt-4">
-                <v-col md="8">
+            <v-row class="mt-4 mx-2">
+                <v-col md="8 mx-0 pl-0">
                     <h3 class="section-title">Connection Summary</h3>
                     <v-row>
                         <v-col md="4">
@@ -104,8 +114,8 @@
                         </v-col>
                     </v-row>
                 </v-col>
-                <v-col md="4">
-                    <h3  class="section-title mb-3">Age Summary</h3>
+                <v-col md="4" class="mx-0 pr-0">
+                    <h3 class="section-title mb-3">Age Summary</h3>
                     <AgeWidget :data="utilityDashboardData.age_group_summary.age_group"/>
                 </v-col>
             </v-row>
@@ -148,14 +158,20 @@ export default {
             connectionSummary: null,
         }
     },
+    computed: {
+        totalAssistanceNeeded() {
+            return this.utilityDashboardData.lead_overview.total_assistance_needed;
+        }
+    },
     mounted() {
         UtilityAPI.utilityAnalytic()
         this.load()
     },
-    methods:{
+    methods: {
         async load() {
             this.utilityDashboardData = await UtilityDashboardService.getUtilityDashboardData();
             this.connectionSummary = await UtilityDashboardService.getConnectionSummary();
+            console.log(this.utilityDashboardData.lead_overview.total_assistance_needed);
             this.isLoaded = true;
         }
     }
@@ -168,11 +184,34 @@ export default {
     flex-direction: row;
     justify-content: space-between;
 }
+
 .lead-connection-section {
     margin-top: 50px;
 }
+
 .widgets {
+
     display: flex;
     flex-direction: row;
+}
+
+.alert-box {
+    background: #FF5722 !important;
+}
+
+.top-2 {
+    top: 2px !important;
+}
+
+.alert-box-p {
+    font-family: Roboto;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 28px;
+    text-align: left;
+    color: #FFFFFF;
+    display: flex;
+
 }
 </style>

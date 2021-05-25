@@ -1,11 +1,11 @@
 <template>
-        <v-tooltip bottom >
+        <v-tooltip bottom  color="#263238" class="white--text">
             <template v-slot:activator="{ on, attrs }">
                 <v-card v-if="tooltip" class="widget mx-2" v-bind="attrs"
                         v-on="on">
                     <div class="widget-container">
-                        <h2 class="widget-value">{{value}}</h2>
-                        <p class="mb-5 lead-title">{{title}}</p>
+                        <h2 class="widget-value mt-5">{{value}}</h2>
+                        <p class="mb-8 lead-title">{{title}}</p>
                         <div class="small-chart">
                             <slot/>
                         </div>
@@ -13,8 +13,8 @@
                 </v-card>
                 <v-card class="widget mx-2" v-else>
                     <div class="widget-container">
-                        <h2 class="widget-value">{{value}}</h2>
-                        <p class="mb-5 lead-title">{{title}}</p>
+                        <h2 class="widget-value mt-5">{{value}}</h2>
+                        <p class="mb-8 lead-title">{{title}}</p>
                         <div class="small-chart">
                             <slot/>
                         </div>
@@ -63,7 +63,7 @@ export default {
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: space-around;
     align-items: center;
     margin: auto;
 }
@@ -89,5 +89,8 @@ export default {
         margin: 0px;
         text-align: center;
     }
+}
+.v-tooltip__content.menuable__content__active {
+    opacity: 1!important;
 }
 </style>

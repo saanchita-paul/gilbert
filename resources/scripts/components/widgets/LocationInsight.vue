@@ -5,7 +5,7 @@
                 <v-col md="6" class="my-0 pt-0">
                     <p class="widget-title mb-2">Location Insight</p>
                     <div class="au-states pl-2">
-                        <p class="state" v-for="v in data">
+                        <p class="state" v-for="v in mapData">
                             <v-icon
                                 :style="{color: `rgba(86,48,139,${v.opacity})`}"
                                 class="pt-0"
@@ -32,7 +32,7 @@ export default {
     data() {
         return {
             isLoaded: false,
-           
+
         }
     },
     computed: {

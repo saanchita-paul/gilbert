@@ -1,13 +1,14 @@
 export default class CustomerDetails {
-    constructor({ 
+    constructor({
                     id,
-                    name,
-                    profilePic,
-                    lastInteractiveTime,
-                    hoodUid,
-                    messagerId,
+                    full_name,
+                    avatar,
+                    last_interaction,
+                    hood_ui,
+                    facebook_id,
                     email,
-                    ph,
+                    phone,
+                    sentiment,
 
                     propertyProfileId,
                     propertyAccountType,
@@ -40,42 +41,49 @@ export default class CustomerDetails {
                     connectionReason,
                     manualInterventionStatus,
                     manualInterventionIsActive,
-                    manualInterventionAt
+                    manualInterventionAt,
+                    eQuoteID,
+                    gQuoteID,
+                    eReason,
+                    gReason,
+                    eConnectionStatus,
+                    gConnectionStatus,
+                    overallProgress,
+                    movingUtilityId
 
                 } = {}) {
-        this.id = id || null;
-        this.name = name || 'Sazzad';
-        this.profile_pic = profilePic || 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/106438752/original/3c4d95e3604313ecca407541a45b6a58dcc67c5c/update-your-online-dating-profile-bio-to-get-you-more-matches.jpg';
-        this.last_interactive_time = lastInteractiveTime || '10m';
-        this.hood_uid = hoodUid || '#1671408219574925';
-        this.messager_id = messagerId || '#1671408219574925';
-        this.email = email || 'sazzadahmed41@gmail.com';
-        this.ph = ph || '1671408219574925';
+        this.id = id;
+        this.name = full_name;
+        this.profile_pic = avatar
+        this.last_interaction = last_interaction;
+        this.hood_uid = hood_ui;
+        this.messager_id = facebook_id;
+        this.email = email;
+        this.ph = phone;
+        this.sentiment = sentiment;
 
-        this.property_profile_id = propertyProfileId || '#1901';
-        this.property_account_type = propertyAccountType || '#1901';
-        this.property_estimated_moving_period = propertyEstimatedMovingPeriod || '20/03/2020';
-        this.property_currnt_address = propertyCurrentAddress || '26 Highpoint, Sunbury VIC 3429 Australia';
-        this.property_previous_address = propertyPriviousAddress || '26 Highpoint, Sunbury VIC 3429 Australia';
-        this.property_tenancy_type = propertyTenancyType || 'Rent';
+        this.property_profile_id = propertyProfileId || '';
+        this.property_account_type = propertyAccountType || '';
+        this.property_estimated_moving_period = propertyEstimatedMovingPeriod || '';
+        this.property_currnt_address = propertyCurrentAddress || '';
+        this.property_previous_address = propertyPriviousAddress || '';
+        this.property_tenancy_type = propertyTenancyType || '';
         this.property_house_type = propertyHouseType || '--';
         this.property_house_size = propertyHouseSize || '--';
-        this.property_solar_powered = propertySolarPowered || 'yes';
-        this.property_life_support = propertyLifeSupport || 'Y/N';
-        this.is_manual_address = isManualAddress || 'Y/N';
-        this.estimeted_moving_period = estimetedMovingPeriod || '';
+        this.property_solar_powered = propertySolarPowered ;
+        this.property_life_support = propertyLifeSupport || '';
+        this.is_manual_address = isManualAddress || '';
         this.property_ea_response_time = propertyEAResponseTime || '';
         this.user_agree_time = userAgreeTime || '';
         this.property_id_type = propertyIdType || '';
 
-        this.connection_id = connectionId || '#1901';
-        this.connection_provider = connectionProvider || 'Energy Australia';
-        this.connection_selected_plan = connectionSelectedPlan || 'Total Plan';
-        this.connection_energy_type = connectionEneryType || '--';
-        this.connection_address = connectionAddress || '26 Highpoint, Sunbury VIC 3429 Australia';
-        this.e_destributor = connectionEDestributor || 'Energy Australia';
+        this.connection_id = connectionId || '';
+        this.connection_provider = connectionProvider || '';
+        this.connection_selected_plan = connectionSelectedPlan || '';
+        this.connection_energy_type = connectionEneryType;
+        this.connection_address = connectionAddress || '';
+        this.e_destributor = connectionEDestributor || '';
 
-        this.connection_energy_type = connectionEnergyType || '';
         this.connection_gas_provider = connectionGasProvider || '';
         this.connection_electricy_fee = connectionElectricyFee || '';
         this.connection_mern_no = connectionMernNo || '';
@@ -86,6 +94,14 @@ export default class CustomerDetails {
         this.manualInterventionStatus = manualInterventionStatus || null;
         this.manualInterventionIsActive = manualInterventionIsActive || false;
         this.manualInterventionAt = manualInterventionAt || null;
+        this.e_quote_id = eQuoteID || null;
+        this.g_quote_id = gQuoteID || null;
+        this.e_reason = eReason || null;
+        this.g_reason = gReason || null;
+        this.e_connection_status = eConnectionStatus || null;
+        this.g_connection_status = gConnectionStatus || null;
+        this.overall_progress = overallProgress;
+        this.moving_utility_id = movingUtilityId
     }
 
 }

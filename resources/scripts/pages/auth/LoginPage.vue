@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <v-container style="height: 100%"  >
+        <v-container style="height: 100%">
             <div style="height: 100%; display: flex; justify-content: center; align-items: center">
                 <v-card width="400px">
                     <v-card-title class="primary white--text">LOGIN</v-card-title>
@@ -17,31 +17,35 @@
                             ref="observer"
                             v-slot=""
                         >
-                            <validation-provider
-                                v-slot="{ errors }"
-                                name="email"
-                                rules="required|email"
-                            >
-                                <v-text-field
-                                    v-model="form.email"
-                                    :error-messages="errors"
-                                    label="Email"
-                                    required
-                                ></v-text-field>
-                            </validation-provider>
-                            <validation-provider
-                                v-slot="{ errors }"
-                                name="password"
-                                rules="required"
-                            >
-                                <v-text-field
-                                    v-model="form.password"
-                                    :error-messages="errors"
-                                    label="Password"
-                                    type="password"
-                                    required
-                                ></v-text-field>
-                            </validation-provider>
+                            <form @submit.prevent="onSubmit">
+                                <validation-provider
+                                    v-slot="{ errors }"
+                                    name="email"
+                                    rules="required|email"
+                                >
+                                    <v-text-field
+                                        v-model="form.email"
+                                        :error-messages="errors"
+                                        label="Email"
+                                        required
+                                        @keyup.enter="onSubmit"
+                                    ></v-text-field>
+                                </validation-provider>
+                                <validation-provider
+                                    v-slot="{ errors }"
+                                    name="password"
+                                    rules="required"
+                                >
+                                    <v-text-field
+                                        v-model="form.password"
+                                        :error-messages="errors"
+                                        label="Password"
+                                        type="password"
+                                        required
+                                        @keyup.enter="onSubmit"
+                                    ></v-text-field>
+                                </validation-provider>
+                            </form>
                         </validation-observer>
                     </v-card-text>
                     <v-card-actions>
@@ -103,10 +107,16 @@ export default {
             if (!(await AuthService.login(this.form))) {
                 this.isLoginFailed = true;
             } else {
-                await this.$router.push({name: 'dashboard'})
+                await this.$router.push({name: 'dashboard.utility'})
             }
             this.loginLoading = false;
         },
+        async onSubmit() {
+            console.log("YO");
+            if (await this.$refs.observer.validate()) {
+                await this.onLogin()
+            }
+        }
     },
 }
 </script>

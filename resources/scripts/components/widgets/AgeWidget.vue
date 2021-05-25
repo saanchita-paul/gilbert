@@ -38,6 +38,5 @@ export default {
 
 <style scoped>
 .age-chart {
-    width: 100%;
 }
 </style>

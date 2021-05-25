@@ -14,8 +14,6 @@
         "cross-env": "^7.0.2",
         "fibers": "^5.0.0",
         "laravel-mix": "^5.0.9",
-
-
         "resolve-url-loader": "^3.1.1",
         "sass": "^1.26.10",
         "sass-loader": "^10.0.0",
@@ -32,8 +30,10 @@
         "laravel-echo": "^1.9.0",
         "lodash-es": "^4.17.15",
         "pusher-js": "^7.0.0",
+        "spin.js": "^4.1.0",
         "vee-validate": "^3.4.1",
         "vue": "^2.6.12",
+        "vue-infinite-loading": "^2.4.5",
         "vue-router": "^3.4.3",
         "vue2-google-maps": "0.8.11",
         "vuetify": "^2.3.13",

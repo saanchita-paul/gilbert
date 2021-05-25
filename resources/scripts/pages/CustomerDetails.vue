@@ -1,0 +1,430 @@
+<template>
+    <div ref="cDetails"  style="position: relative">
+        <v-app-bar height="50px">
+            <v-img src="/assets/images/icons/Back.svg" @click="goBack" max-width="24px" class="mb-2" style="cursor: pointer"/>
+        </v-app-bar>
+        <v-container :class="{invisible: !isLoaded, 'manual-margin': true}">
+            <v-row align-center class=" header color--text pt-0">
+                <v-col class="avatar-containner pr-0">
+                    <v-avatar>
+                        <v-img v-bind:src="customerinfo.profile_pic"
+                               v-bind:class="{'bad':  sentiment === 'BAD', 'good': sentiment === 'Good', 'neural': sentiment === 'Neutral'}"/>
+                    </v-avatar>
+                </v-col>
+                <v-col cols="10" class="pt-0 pt-5">
+                    <h3 class="mb-0 font-weight-bold profile-title">{{ customerinfo.name }}</h3>
+                    <p class="mb-0 last-interactive profile-subtitle" v-show="customerinfo.last_interaction">Interact
+                        {{ customerinfo.last_interaction }}</p>
+                </v-col>
+                <v-col cols="5">
+                    <p class="mb-0">HOOD UID: {{ customerinfo.hood_uid }}</p>
+                    <p class="mb-0">Messenger ID: {{ customerinfo.messager_id }}</p>
+                </v-col>
+                <v-col cols="5">
+                    <p class="mb-0">Email: {{ customerinfo.email }}</p>
+                    <p class="mb-0">Ph: {{ customerinfo.ph }}</p>
+                </v-col>
+            </v-row>
+
+            <v-row class="gray-bg">
+                <v-col cols="6">
+                    <v-card>
+                        <v-card-title>
+                            <v-row>
+                                <v-col color="black--text" class="profile_body_header">Property Information</v-col>
+                            </v-row>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-row class="pb-2">
+                                <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class=" font-weight-bold">Id#{{ customerinfo.property_profile_id }}</span></p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold ">Account Type:</span>
+                                    {{ customerinfo.property_account_type | mapAccountType }}</p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold ">Life Support:</span> {{ customerinfo.property_life_support }}
+                                </p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold  ">Tenancy Type:</span> {{ customerinfo.property_tenancy_type }}
+                                </p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold  ">Solar Powered:</span> {{ customerinfo.property_solar_powered }}
+                                </p></v-col>
+                            </v-row>
+                            <v-row class="py-2">
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold ">ID Type:</span> {{ customerinfo.property_id_type }}</p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold ">EA Response Time:</span>
+                                    {{ customerinfo.property_ea_response_time }}</p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold ">Estimated moving period:</span>
+                                    {{ customerinfo.property_estimated_moving_period }}</p></v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold ">User Agree Time:</span>{{ customerinfo.user_agree_time }}</p>
+                                </v-col>
+                            </v-row>
+
+                            <v-row class="py-2">
+                                <v-col cols="6"><p class="mb-0 profile-info-title"><span
+                                    class="font-weight-bold profile-info-title">Is Manual Address:</span>
+                                    {{ customerinfo.is_manual_address }}</p></v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+                <v-col cols="6">
+                    <v-card>
+                        <v-card-title>
+                            <v-row class="align-baseline">
+                                <v-col cols="10" class="profile_body_header">
+                                    Connection Information
+                                </v-col>
+                                <v-spacer></v-spacer>
+                                <v-btn v-if="customerinfo.moving_utility_id && !editMode" class="edit-icon" small depressed
+                                       @click="editMode = true">
+                                    <v-img src="/assets/images/icons/Edit.svg"/>
+                                    <!--                                    <v-icon small>mdi-pencil</v-icon>-->
+                                </v-btn>
+                            </v-row>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-row>
+                                <v-col cols="12" class="py-0"><p class="mb-0"><span
+                                    class="font-weight-bold  profile-info-title">Id#{{ customerinfo.connection_id }}</span>
+                                </p></v-col>
+                                <v-col cols="6" class="py-1">
+                                    <v-row>
+                                        <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title"><span
+                                            class="font-weight-bold">Provider:</span> {{ customerinfo.connection_provider }}
+                                        </p></v-col>
+                                        <v-col cols="12" class="py-0"><p class="mb-0 profile-info-title "><span
+                                            class="font-weight-bold">Selected Plan:</span>
+                                            {{ customerinfo.connection_selected_plan }}</p></v-col>
+                                    </v-row>
+                                </v-col>
+                                <v-col cols="6" class="py-0"><p class="mb-0 profile-info-title "><span
+                                    class="font-weight-bold">Connection Address:</span></p>
+                                    <p class="profile-info-title">{{ customerinfo.connection_address }}</p></v-col>
+                            </v-row>
+                            <v-divider style="background-color:#000000"></v-divider>
+                            <v-row class="py-2">
+                                <v-col cols="6" :class="{'low-opacity': noElectricity}">
+                                    <p class="enery-title">ELECTRICITY</p>
+                                    <v-row>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
+                                            <span class="font-weight-bold">Quote ID:</span> {{ customerinfo.e_quote_id }}</p>
+                                        </v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
+                                            <span class="font-weight-bold">Distributor:</span>
+                                            {{ customerinfo.e_destributor }}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
+                                            <span class="font-weight-bold">Connection Fee:</span>
+                                            {{ customerinfo.connection_electricy_fee }}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
+                                            <span class="font-weight-bold">Connection Status:</span>
+                                            {{ customerinfo.e_connection_status }}</p></v-col>
+                                        <v-col cols="12" class="py-0 mt-2">
+                                            <p class="mb-0 profile-info-title font-weight-bold">NMI No:</p>
+                                            <div cols="12" class="profile-info-title">
+                                                <v-text-field
+                                                    :readonly="!editMode"
+                                                    class="border-radious-5"
+                                                    filled
+                                                    hide-details
+                                                    rounded
+                                                    dense
+                                                    v-model="customerinfo.connection_nmi_no"
+                                                    :style="{border: editMode ? `1px solid ${$vuetify.theme.themes.light.primary} !important` : 'none'}"
+                                                    v-on:keyup.enter="updateNMIAndMIRN"></v-text-field>
+                                            </div>
+                                        </v-col>
+
+                                        <v-col cols="12" class="py-0">
+                                            <p class="mb-0 profile-info-title">Reason:</p>
+                                            <div cols="12" class="reason pa-5 profile-info-title">
+                                                <p>{{ customerinfo.e_reason }}</p>
+                                            </div>
+                                        </v-col>
+                                    </v-row>
+                                </v-col>
+                                <v-col cols="6" :class="{'low-opacity': noGas}">
+                                    <p class="enery-title">Gas</p>
+                                    <v-row>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
+                                            <span class="font-weight-bold">Quote ID:</span> {{ customerinfo.g_quote_id }}</p>
+                                        </v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
+                                            <span class="font-weight-bold">Distributor:</span>
+                                            {{ customerinfo.connection_gas_provider }}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
+                                            <span class="font-weight-bold">Gas meter Reading Charge:</span>
+                                            {{ customerinfo.gas_meter_charge }}</p></v-col>
+                                        <v-col cols="12" class="py-0 profile-info-title"><p class="mb-0 profile-info-title">
+                                            <span class="font-weight-bold">Connection Status:</span>
+                                            {{ customerinfo.g_connection_status }}</p></v-col>
+                                        <v-col cols="12" class="py-0 mt-2">
+                                            <p class="mb-0 profile-info-title font-weight-bold">MIRN No:</p>
+                                            <div cols="12" class="profile-info-title">
+                                                <v-text-field
+                                                    :readonly="!editMode"
+                                                    class="border-radious-5"
+                                                    filled
+                                                    rounded
+                                                    hide-details
+                                                    dense v-model="customerinfo.connection_mern_no"
+                                                    v-on:keyup.enter="updateNMIAndMIRN"
+                                                    :style="{border: editMode ? `1px solid ${$vuetify.theme.themes.light.primary} !important` : 'none'}"
+                                                ></v-text-field>
+                                            </div>
+                                        </v-col>
+                                        <v-col cols="12" class="py-0">
+                                            <p class="mb-0 profile-info-title">Reason:</p>
+                                            <div cols="12" class="reason pa-5 profile-info-title">
+                                                <p>{{ customerinfo.g_reason }}</p>
+                                            </div>
+                                        </v-col>
+                                    </v-row>
+                                </v-col>
+                            </v-row>
+                            <v-row class="py-0">
+                                <v-col col="12" class="form-submit">
+                                    <div>
+                                        <v-btn small v-if="editMode" @click="editMode = false">
+                                            cancel
+                                        </v-btn>
+                                        <!--                                        <v-btn v-if="!editMode" color="primary" disabled>Save</v-btn>-->
+                                        <v-btn small v-if="editMode" :loading="loadingBtn" color="primary" @click="updateNMIAndMIRN">
+                                            Save
+                                        </v-btn>
+                                    </div>
+                                </v-col>
+
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-container>
+    </div>
+</template>
+
+<script>
+
+import CustomerDetails from "@scripts/models/CustomerDetails";
+import CustomerService from "@scripts/services/CustomerService";
+import {mapEnergyType, mapAccountType} from "@scripts/data/CustomerDataMapper";
+import {mapSentiment} from "@scripts/data/SentimentColor";
+import Spinner from "@scripts/plugins/Spinner";
+
+export default {
+    name: "CustomerDetails",
+    data() {
+        return {
+            isLoaded: false,
+            customerinfo: this.getCustomerDetails(),
+            sentiment: '',
+            editMode: false,
+            loadingBtn: false,
+            spinner: null
+
+        }
+    },
+
+    props: {
+        id: {
+            required: false,
+        },
+    },
+
+    computed:
+        {
+            electricityPlan() {
+                return this.customerinfo.connection_energy_type === 'electricity'
+                    || this.customerinfo.connection_energy_type === 'electricity_and_gas';
+            },
+            gasPlan() {
+                return this.customerinfo.connection_energy_type === 'gas'
+                    || this.customerinfo.connection_energy_type === 'electricity_and_gas';
+            },
+            noGas() {
+                const type = this.customerinfo.connection_energy_type
+                return type === 'electricity' ||  type === '';
+            },
+            noElectricity() {
+                const type = this.customerinfo.connection_energy_type;
+                return type === 'gas' || type === '';
+            }
+
+        },
+    mounted() {
+        this.spinner = new Spinner(this.$refs.cDetails, {autoStart: true})
+        this.getCustomerDetailsData(this.id);
+    },
+    watch: {
+        isLoaded(value) {
+            if (value) {
+                if (this.spinner) {
+                    this.spinner.stop()
+                }
+            } else {
+                this.spinner.spin();
+            }
+        }
+    },
+
+    methods: {
+        goBack() {
+            this.$router.go(-1);
+        },
+        getCustomerDetails() {
+            return new CustomerDetails();
+        },
+
+        async getCustomerDetailsData(id) {
+            this.customerinfo = await CustomerService.getCustomerDetails(id);
+            this.sentiment = this.getSentimentText(this.customerinfo.sentiment);
+            this.isLoaded = true;
+        },
+
+        getSentimentText(sentiment) {
+            return mapSentiment(sentiment).text;
+        },
+
+        async updateNMIAndMIRN() {
+            this.loadingBtn = true;
+            const data = {
+                mirn: this.customerinfo.connection_mern_no,
+                nmi: this.customerinfo.connection_nmi_no,
+            }
+            await CustomerService.updateNMIAndMIRN(this.customerinfo.moving_utility_id, data);
+            this.loadingBtn = false;
+            this.editMode = false;
+        }
+
+    },
+    filters: {
+        mapEnergyType(value) {
+            if (value) {
+                return mapEnergyType(value);
+            }
+            return '';
+        },
+        mapAccountType(value) {
+            if (value) {
+                return mapAccountType(value);
+            }
+            return '';
+        }
+    }
+}
+</script>
+
+<style scoped>
+body {
+    font-family: "Roboto" !important;
+}
+
+.gray-bg {
+    background: rgb(242, 242, 242);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(to right bottom, #56CCF2 -75.93%, #542E89 42.76%, #9C27B0 118.83%);
+    color: white;
+    line-height: 28px;
+    font-size: 16px;
+    margin-top: 10px !important;
+}
+
+.profile-title {
+    font-size: 24px !important;
+}
+
+.profile-subtitle {
+    font-size: 16px;
+    font-weight: 400 !important;
+}
+
+.profile_body_header {
+    font-size: 14px;
+    font-weight: 500 !important;
+    color: rgba(37, 39, 51, 1);
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.profile-info-title {
+    font-size: 12px;
+    color: rgba(37, 39, 51, 1);
+}
+
+.form-submit {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.avatar-containner {
+    flex-grow: 0;
+}
+
+.reason {
+    background: rgba(242, 242, 242, 1);
+}
+
+.rejected {
+    border: 1px solid red;
+    color: red !important;
+}
+
+.rejected-text {
+    color: red !important;
+}
+
+.border-radious-5 {
+    border-radius: 5px;
+}
+
+.bad {
+    border: 2px solid rgb(233, 30, 99);
+}
+
+.good {
+    border: 2px solid rgb(76, 175, 80);
+
+}
+
+.neural {
+    border: 2px solid rgb(189, 189, 189);
+}
+
+.enery-title {
+    font-family: Roboto;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 28px;
+    letter-spacing: 0.15000000596046448px;
+    text-align: left;
+    color: #000000;
+}
+
+.edit-icon {
+    left: -6px !important;
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+}
+
+@media only screen and (width: 1920px) {
+    .manual-margin {
+        width: 90% !important;
+        margin: auto !important;
+    }
+}
+
+
+
+</style>

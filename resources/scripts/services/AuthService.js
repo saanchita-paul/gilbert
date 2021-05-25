@@ -27,6 +27,11 @@ export const login = async form => {
     }
 }
 
+export const logout = () => {
+    kickOut();
+    AuthAPI.logout();
+}
+
 /**
  * update user in store
  *
@@ -34,7 +39,7 @@ export const login = async form => {
  */
 export const authUser = async () => {
     const user = await AuthAPI.getAuthUser();
-    AuthAPI.checkBotAuth(); //for testing purpose
+    // AuthAPI.checkBotAuth(); //for testing purpose
     Store.commit('setUser', user)
 }
 
@@ -50,7 +55,7 @@ export const checkRouteAuthorization = (to, from, next) => {
     if (to.meta.isProtected) {
         isLoggedIn ? next() : next({name: 'login'})
     } else {
-        isLoggedIn ? next({name: 'dashboard'}) : next()
+        isLoggedIn ? next({name: 'dashboard.utility'}) : next()
     }
 }
 
@@ -72,7 +77,8 @@ export default {
     authUser,
     isAuthenticated,
     kickOut,
-    checkRouteAuthorization
+    checkRouteAuthorization,
+    logout
 }
 
 

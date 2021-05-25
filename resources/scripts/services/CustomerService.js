@@ -60,13 +60,27 @@ export default {
     /**
      *
      * @param customerId
+     */
+    getCustomerMessages: (customerId, page) => CustomerAPI.getCustomerMessages(customerId, page),
+
+    /**
+     *
+     * @param customerId
      * @param manualInterventionStatus
      */
     toggleManualIntervention: (customerId, manualInterventionStatus) => CustomerAPI.toggleManualIntervention(customerId, manualInterventionStatus),
-    
+
     /**
-    * @param pageIndex
-     * @returns {Promise<CustomerListInfo>}
+     *
+     * @param page
+     * @returns {Promise<{pagination: Pagination, data}>}
      */
-    getCustomerTableData: pageIndex => CustomerAPI.getCustomerList(pageIndex),
+    getCustomerTableData: page => CustomerAPI.getCustomerList(page),
+
+    /**
+     *
+     * @param params
+     */
+    updateNMIAndMIRN: (id, params) => CustomerAPI.updateNMIAndMIRN(id, params),
+
 }

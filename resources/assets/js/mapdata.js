@@ -9,7 +9,7 @@ var simplemaps_australiamap_mapdata = {
 
         //State defaults
         state_description: "",
-        state_color: "#E0E0E0",
+        state_color: "#BDBDBD",
         state_opacity: 1,
         state_hover_color: "#BB6BD9",
         state_url: null,

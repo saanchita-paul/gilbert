@@ -18,7 +18,7 @@ export default {
                 chartData: {
                     labels: chartLabels,
                     datasets: [{
-                        borderWidth: 1,
+                        borderWidth: 2,
                         data: chartData,
                         fill: false,
                         maxBarThickness: 13,
@@ -44,7 +44,7 @@ export default {
                 chartData: {
                     labels: chartLabels,
                     datasets: [{
-                        borderWidth: 1,
+                        borderWidth: 2,
                         data: chartData,
                         fill: false,
                         backgroundColor: COLOR.themes.light.secondary
@@ -70,7 +70,7 @@ export default {
                     labels: chartLabels,
                     datasets: [{
                         maxBarThickness: 13,
-                        borderWidth: 1,
+                        borderWidth: 2,
                         data: chartData,
                         fill: false,
                         backgroundColor: COLOR.themes.light.secondary
@@ -139,13 +139,13 @@ export default {
                     labels: chartLabels,
                     datasets: [
                         {
-                            borderWidth: 1,
+                            borderWidth: 2,
                             data: chartData1,
                             fill: false,
                             backgroundColor: COLOR.themes.light.primary
                         },
                         {
-                            borderWidth: 1,
+                            borderWidth: 2,
                             data: chartData2,
                             fill: false,
                             backgroundColor: COLOR.themes.light.secondary
@@ -162,6 +162,7 @@ export default {
             energy: mapTotalEnergyConnection(data.total_energy_connection),
             conversion: mapConversionRate(data.conversion_rate),
             automation: mapAutomationRate(data.automation_rate),
+            total_assistance_needed: data.total_assistance_needed
         };
     },
 }

@@ -19,7 +19,7 @@ export default {
         },
         height: {
             type: String,
-            default: '100px'
+            default: '80px'
         },
     },
     mounted() {
@@ -32,9 +32,12 @@ export default {
                 type: 'line',
                 data: this.data,
                 options: {
+                    layout: {
+                        padding: 10
+                    },
                     elements: {
                         point:{
-                            radius: 2
+                            radius: 3
                         }
                     },
                     label: {
