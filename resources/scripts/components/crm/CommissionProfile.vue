@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+    <v-container>
     <v-row>
       <v-col class="section-dialogs" cols="12">
         <div class="dialogs-title">

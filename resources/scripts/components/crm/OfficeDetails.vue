@@ -13,11 +13,7 @@
             outlined
             dense
           ></v-text-field>
-          <v-text-field
-            label="Office Address*"
-            outlined
-            dense
-          ></v-text-field>
+          <v-text-field label="Office Address*" outlined dense></v-text-field>
           <v-text-field
             label="Contact Phone Number*"
             outlined
@@ -28,11 +24,7 @@
             outlined
             dense
           ></v-text-field>
-          <v-text-field
-            label="ABN (Optional)"
-            outlined
-            dense
-          ></v-text-field>
+          <v-text-field label="ABN (Optional)" outlined dense></v-text-field>
         </div>
 
         <div class="d-flex justify-space-between">
