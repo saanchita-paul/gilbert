@@ -1,5 +1,5 @@
 <template>
-    <h1>Commitssion detail form</h1>
+    <h1> 2 Commitssion detail form</h1>
 </template>
 
 <script>

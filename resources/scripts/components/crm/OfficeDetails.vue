@@ -1,5 +1,5 @@
 <template>
-    <h1>sdfksadj detail form</h1>
+    <h1> 4 sdfksadj detail form</h1>
 </template>
 
 <script>
