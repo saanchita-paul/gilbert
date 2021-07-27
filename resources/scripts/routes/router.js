@@ -11,6 +11,9 @@ import CustomerDetails from "@scripts/pages/CustomerDetails";
 import CustomerListPage from "@scripts/pages/CustomerListTablePage";
 import UtilityAnalyticPage from "@scripts/pages/dashboard/UtilityAnalyticPage";
 import CustomerList from "@scripts/pages/HelpdeskPage";
+import Test from "@scripts/pages/Test";
+import RealStateAgency from "@scripts/pages/RealStateAgencyPage";
+import RealStateAgencyPage from "@scripts/pages/RealStateAgencyPage";
 
 Vue.use(VueRouter);
 
@@ -63,6 +66,23 @@ const router = new VueRouter({
                         isProtected: true
                     }
                 },
+                ,
+                {
+                    path: '/real-state-agency',
+                    component: RealStateAgencyPage,
+                    name: 'real.state.agency',
+                    meta: {
+                        isProtected: true
+                    }
+                },
+                {
+                    path: '/test',
+                    component: Test,
+                    name: 'test',
+                    meta: {
+                        isProtected: true
+                    }
+                }
 
             ]
         },
