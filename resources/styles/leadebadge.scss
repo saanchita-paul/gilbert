@@ -1,0 +1,27 @@
+.leade-badge {
+    padding: 15px;
+    border: 2px solid #E0E0E0;
+    background: #fff;
+    border-radius: 10px;
+    h3 {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 0px;
+    }
+    .leade-icon {
+       display: flex;
+       align-items: center;
+       i {
+           padding-right: 10px;
+       }
+        span {
+            font-size: 32px;
+            font-weight: 700;
+        }
+    }
+    .leade-text {
+        color: #7E8A8F;
+        font-size: 16px;
+        font-weight: 400;
+    }
+}

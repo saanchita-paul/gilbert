@@ -1,13 +1,36 @@
 <template>
-    <h1>Commitssion detail form</h1>
+  <v-container>
+    <v-row>
+      <v-col class="section-dialogs" cols="12">
+        <div class="dialogs-title">
+          <p>Agency Details</p>
+        </div>
+
+        <div class="dialogs-area">
+          <p class="title">What type of agency?</p>
+          <v-select outlined dense label="Please select agency type"></v-select>
+          <v-text-field
+            label="Order ID"
+            placeholder="Office name"
+            outlined
+            dense
+          ></v-text-field>
+        </div>
+
+        <div class="d-flex justify-space-between">
+          <v-btn>Cancel</v-btn>
+          <v-btn color="primary">Save</v-btn>
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
 export default {
-name: "AgencyDetails"
-}
+  name: "AgencyDetails",
+};
 </script>
 
 <style scoped>
-
 </style>

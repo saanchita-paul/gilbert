@@ -1,13 +1,62 @@
 <template>
-    <h1>Commitssion detail form</h1>
+  <v-container>
+    <v-row>
+      <v-col class="section-dialogs" cols="12">
+        <div class="dialogs-title">
+          <p>Office Allocator Details</p>
+        </div>
+
+        <div class="dialogs-area">
+          <p class="title">Person to allocate commisions</p>
+          <v-text-field
+            label="Fistname"
+            placeholder="Fistname"
+            outlined
+            dense
+          ></v-text-field>
+          <v-text-field
+            label="Lastname"
+            placeholder="Lastname"
+            outlined
+            dense
+          ></v-text-field>
+
+          <v-select
+            outlined
+            dense
+            label="Job Title"
+            placeholder="Job title selector"
+          ></v-select>
+
+          <v-text-field label="212f ID" outlined dense></v-text-field>
+
+          <v-text-field
+            label="Email Address*"
+            placeholder="firstname.lastname@barryplantcamberwell.com.au"
+            outlined
+            dense
+          ></v-text-field>
+          <v-text-field
+            label="Phone Number (Optional)"
+            outlined
+            dense
+          ></v-text-field>
+        </div>
+
+        <div class="d-flex justify-space-between">
+          <v-btn>Cancel</v-btn>
+          <v-btn color="primary">Next</v-btn>
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
 export default {
-name: "AllocatorDetails"
-}
+  name: "AllocatorDetails",
+};
 </script>
 
 <style scoped>
-
 </style>

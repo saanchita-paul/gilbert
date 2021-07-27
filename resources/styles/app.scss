@@ -4,6 +4,9 @@ $toolbar_color: white;
 $shade_one_color: #00355E;
 $shade_two_color: white;
 
+@import "dialogs";
+@import "leadebadge";
+
 body {
     font-family: 'Roboto', sans-serif !important;
     font-weight: 400;
