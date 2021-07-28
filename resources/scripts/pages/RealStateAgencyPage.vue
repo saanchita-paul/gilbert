@@ -28,8 +28,10 @@
                 </v-icon> Add New Agency
                 </v-btn>
                 </v-col>
+               
                 <v-col cols="12" v-if="isAgencyCreating">
                     <component v-bind:is="currentComponent"></component>
+                     <ProgressBar></ProgressBar>
                     <div class="d-flex justify-space-between">
                         <v-btn @click="cancel"
                         >Cancel
@@ -41,6 +43,8 @@
                     </div>
                 </v-col>
         </v-row>
+
+       
     </v-container>
 </template>
 
@@ -50,10 +54,11 @@ import AllocatorDetails from "@scripts/components/crm/AllocatorDetails";
 import CommissionProfile from "@scripts/components/crm/CommissionProfile";
 import OfficeDetails from "@scripts/components/crm/OfficeDetails";
 import LeadMetrics from "@scripts/components/crm/LeadMetrics";
+import ProgressBar from "@scripts/components/crm/ProgressBar";
 const agencyForm = ['AgencyDetails','AllocatorDetails', 'CommissionProfile', 'OfficeDetails','OfficeDetails'];
 export default {
     name: "RealStateAgencyPage",
-    components: {LeadMetrics, OfficeDetails, CommissionProfile, AllocatorDetails, AgencyDetails},
+    components: {LeadMetrics, OfficeDetails, CommissionProfile, AllocatorDetails, AgencyDetails, ProgressBar},
     data(){
         return {
             currentComponent:'',
