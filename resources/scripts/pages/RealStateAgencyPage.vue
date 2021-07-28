@@ -6,38 +6,34 @@
             </v-container>
         </v-card>
         
-        <v-container>
-                <v-row>
-                    <v-col cols="8">
-                        <v-text-field
-                                label="Search"
-                                outlined
-                                dense
-                                prepend-inner-icon="mdi-magnify"
-                                hide-details="auto"
-                            ></v-text-field>
-                    </v-col>
-                        <v-col cols="4" class="text-right">
-                            <v-btn  v-if="!isAgencyCreating" @click="addAgency"
-                                color="primary"
-                                dark
-                                ><v-icon
-                                    left
-                                    dark
-                                >
-                                add
-                                </v-icon> Add New Agency
-                            </v-btn>
-                        </v-col>
-                </v-row>
-        </v-container>
-       
+        <v-row class="mt-5">
+            <v-col cols="8" class="search-bg">
+                <v-text-field
+                    label="Search"
+                    outlined
+                    dense
+                    prepend-inner-icon="mdi-magnify"
+                    hide-details="auto"
+                ></v-text-field>
+            </v-col>
+            <v-col cols="4" class="text-right">
+                <v-btn  v-if="!isAgencyCreating" @click="addAgency"
+                    color="primary"
+                    dark
+                    ><v-icon
+                        left
+                        dark
+                    >
+                    add
+                    </v-icon> Add New Agency
+                </v-btn>
+            </v-col>
+        </v-row>
+
         <v-card>
             <CrmDataTable></CrmDataTable>
         </v-card>
         
-        
-
         <v-row>
             <v-col cols="12" v-if="isAgencyCreating">
                 <component v-bind:is="currentComponent"></component>
