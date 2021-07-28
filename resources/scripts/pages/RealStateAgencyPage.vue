@@ -2,34 +2,33 @@
     <v-container>
         <LeadMetrics></LeadMetrics>
         <v-row>
-            <div cols="12">
-            <v-btn  v-if="!isAgencyCreating" @click="addAgency"
-                small
-                color="primary"
-                dark
-            > <v-icon
-                right
-                dark
-            >
-                add
-            </v-icon >
-                Add New Agency
-            </v-btn>
-            </div>
-            <div cols="12" v-if="isAgencyCreating">
-                <component v-bind:is="currentComponent"></component>
-                <div class="d-flex justify-space-between">
-                    <v-btn @click="cancel"
-                    >Cancel
-                    </v-btn>
-                    <v-btn @click="addAgency"
-                           color="primary"
-                    >Save
-                    </v-btn>
-                </div>
-            </div>
+            <v-col cols="12">
+                <v-btn  v-if="!isAgencyCreating" @click="addAgency"
+                    small
+                    color="primary"
+                    dark
+                > <v-icon
+                    right
+                    dark
+                >
+                    add
+                </v-icon >
+                    Add New Agency
+                </v-btn>
+                </v-col>
+                <v-col cols="12" v-if="isAgencyCreating">
+                    <component v-bind:is="currentComponent"></component>
+                    <div class="d-flex justify-space-between">
+                        <v-btn @click="cancel"
+                        >Cancel
+                        </v-btn>
+                        <v-btn @click="addAgency"
+                            color="primary"
+                        >Save
+                        </v-btn>
+                    </div>
+                </v-col>
         </v-row>
-
     </v-container>
 </template>
 

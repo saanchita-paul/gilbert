@@ -1,5 +1,4 @@
 <template>
-  <v-container>
     <v-row>
       <v-col cols="2">
         <div class="leade-badge">
@@ -67,7 +66,6 @@
         </div>
       </v-col>
     </v-row>
-  </v-container>
 </template>
 
 <script>

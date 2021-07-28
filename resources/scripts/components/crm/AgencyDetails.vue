@@ -1,5 +1,4 @@
 <template>
-  <v-container>
     <v-row>
       <v-col class="section-dialogs" cols="12">
         <div class="dialogs-title">
@@ -16,14 +15,8 @@
             dense
           ></v-text-field>
         </div>
-
-        <div class="d-flex justify-space-between">
-          <v-btn>Cancel</v-btn>
-          <v-btn color="primary">Save</v-btn>
-        </div>
       </v-col>
     </v-row>
-  </v-container>
 </template>
 
 <script>
