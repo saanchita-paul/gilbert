@@ -1,6 +1,6 @@
 <template>
   <div>
-    <LeadMetrics></LeadMetrics>
+    <OfficeProfile></OfficeProfile>
   </div>
 </template>
 
@@ -11,6 +11,7 @@ import AllocatorDetails from "@scripts/components/crm/AllocatorDetails";
 import CommissionProfile from "@scripts/components/crm/CommissionProfile";
 import Created from "@scripts/components/crm/Created";
 import LeadMetrics from "@scripts/components/crm/LeadMetrics";
+import OfficeProfile from "@scripts/components/crm/OfficeProfile";
 export default {
   name: "Test",
   components: {
@@ -20,6 +21,7 @@ export default {
     CommissionProfile,
     Created,
     LeadMetrics,
+    OfficeProfile
   },
 };
 </script>
