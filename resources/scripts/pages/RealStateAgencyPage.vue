@@ -27,6 +27,8 @@
                     </div>
                 </v-col>
         </v-row>
+
+       <ProgressBar></ProgressBar>
     </v-container>
 </template>
 
@@ -36,10 +38,11 @@ import AllocatorDetails from "@scripts/components/crm/AllocatorDetails";
 import CommissionProfile from "@scripts/components/crm/CommissionProfile";
 import OfficeDetails from "@scripts/components/crm/OfficeDetails";
 import LeadMetrics from "@scripts/components/crm/LeadMetrics";
+import ProgressBar from "@scripts/components/crm/ProgressBar";
 const agencyForm = ['AgencyDetails','AllocatorDetails', 'CommissionProfile', 'OfficeDetails','OfficeDetails'];
 export default {
     name: "RealStateAgencyPage",
-    components: {LeadMetrics, OfficeDetails, CommissionProfile, AllocatorDetails, AgencyDetails},
+    components: {LeadMetrics, OfficeDetails, CommissionProfile, AllocatorDetails, AgencyDetails, ProgressBar},
     data(){
         return {
             currentComponent:'',
