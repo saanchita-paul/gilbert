@@ -1,5 +1,5 @@
 <template>
-  <v-container color="white">
+  <v-container>
     <v-row>
       <v-col cols="2">
         <div class="leade-badge">

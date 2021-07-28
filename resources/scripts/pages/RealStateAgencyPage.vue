@@ -1,34 +1,36 @@
 <template>
-    <div>
-        <v-btn  v-if="!isAgencyCreating" @click="addAgency"
-            small
-            color="primary"
-            dark
-        > <v-icon
-            right
-            dark
-        >
-            add
-        </v-icon >
-            Add New Agency
-        </v-btn>
-        <div v-if="isAgencyCreating">
-            <component v-bind:is="currentComponent"></component>
-            <v-btn @click="cancel"
-                   small
-                   color="primary"
-                   dark
-            >Cancel
+    <v-container>
+        <LeadMetrics></LeadMetrics>
+        <v-row>
+            <div cols="12">
+            <v-btn  v-if="!isAgencyCreating" @click="addAgency"
+                small
+                color="primary"
+                dark
+            > <v-icon
+                right
+                dark
+            >
+                add
+            </v-icon >
+                Add New Agency
             </v-btn>
-            <v-btn @click="addAgency"
-                   small
-                   color="primary"
-                   dark
-            >Save
-            </v-btn>
-        </div>
+            </div>
+            <div cols="12" v-if="isAgencyCreating">
+                <component v-bind:is="currentComponent"></component>
+                <div class="d-flex justify-space-between">
+                    <v-btn @click="cancel"
+                    >Cancel
+                    </v-btn>
+                    <v-btn @click="addAgency"
+                           color="primary"
+                    >Save
+                    </v-btn>
+                </div>
+            </div>
+        </v-row>
 
-    </div>
+    </v-container>
 </template>
 
 <script>
@@ -36,10 +38,11 @@ import AgencyDetails from "@scripts/components/crm/AgencyDetails";
 import AllocatorDetails from "@scripts/components/crm/AllocatorDetails";
 import CommissionProfile from "@scripts/components/crm/CommissionProfile";
 import OfficeDetails from "@scripts/components/crm/OfficeDetails";
+import LeadMetrics from "@scripts/components/crm/LeadMetrics";
 const agencyForm = ['AgencyDetails','AllocatorDetails', 'CommissionProfile', 'OfficeDetails','OfficeDetails'];
 export default {
     name: "RealStateAgencyPage",
-    components: {OfficeDetails, CommissionProfile, AllocatorDetails, AgencyDetails},
+    components: {LeadMetrics, OfficeDetails, CommissionProfile, AllocatorDetails, AgencyDetails},
     data(){
         return {
             currentComponent:'',
