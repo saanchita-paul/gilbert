@@ -11,17 +11,21 @@
     .leade-icon {
        display: flex;
        align-items: center;
-       i {
-           padding-right: 10px;
-       }
+        i {
+            padding-right: 10px;
+        }
         span {
             font-size: 32px;
             font-weight: 700;
+        }
+        .v-input {
+            max-width: 100px;
         }
     }
     .leade-text {
         color: #7E8A8F;
         font-size: 16px;
         font-weight: 400;
+        margin-bottom: 0px;
     }
 }

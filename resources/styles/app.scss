@@ -4,6 +4,8 @@ $toolbar_color: white;
 $shade_one_color: #00355E;
 $shade_two_color: white;
 
+@import "overridevuetify";
+@import "typography";
 @import "dialogs";
 @import "leadebadge";
 @import "progressbar";
@@ -22,6 +24,9 @@ body {
         background-color: #D6D6D6 !important;
     }
 }
+
+
+
 .body-bg {
     background-color: #D6D6D6 !important;
 }

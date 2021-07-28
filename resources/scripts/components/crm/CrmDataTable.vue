@@ -1,41 +1,39 @@
 <template>
-    <v-container>
-        <v-row>
-            <v-col cols="12" class="crm-table">
-                <v-simple-table>
-                    <template v-slot:default>
-                    <thead>
-                        <tr>
-                            <th class="text-left">
-                                Agency name
-                            </th>
-                            <th class="text-left">
-                                Total leads
-                            </th>
-                            <th class="text-left">
-                                Last updated
-                            </th>
-                            <th class="text-left">
-                                Offices
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                        v-for="item in agency"
-                        :key="item.name"
-                        >
-                        <td>{{ item.agencyname }}</td>
-                        <td>{{ item.totalleads }}</td>
-                        <td>{{ item.lastupdated }}</td>
-                        <td>{{ item.Offices }}</td>
-                        </tr>
-                    </tbody>
-                    </template>
-                </v-simple-table>
-            </v-col>
-        </v-row>
-    </v-container>
+      <v-row>
+          <v-col cols="12" class="crm-table">
+              <v-simple-table>
+                  <template v-slot:default>
+                  <thead>
+                      <tr>
+                          <th class="text-left">
+                              Agency name
+                          </th>
+                          <th class="text-left">
+                              Total leads
+                          </th>
+                          <th class="text-left">
+                              Last updated
+                          </th>
+                          <th class="text-left">
+                              Offices
+                          </th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr
+                      v-for="item in agency"
+                      :key="item.name"
+                      >
+                      <td>{{ item.agencyname }}</td>
+                      <td>{{ item.totalleads }}</td>
+                      <td>{{ item.lastupdated }}</td>
+                      <td>{{ item.Offices }}</td>
+                      </tr>
+                  </tbody>
+                  </template>
+              </v-simple-table>
+          </v-col>
+      </v-row>
 </template>
 
 <script>

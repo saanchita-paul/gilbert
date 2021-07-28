@@ -1,20 +1,12 @@
 <template>
     <v-container>
-        <v-card>
-            <v-container>
-                <LeadMetrics></LeadMetrics>
-            </v-container>
+        <v-card class="pa-4">
+            <LeadMetrics></LeadMetrics>
         </v-card>
         
         <v-row class="mt-5">
             <v-col cols="8" class="search-bg">
-                <v-text-field
-                    label="Search"
-                    outlined
-                    dense
-                    prepend-inner-icon="mdi-magnify"
-                    hide-details="auto"
-                ></v-text-field>
+                <Search></Search>
             </v-col>
             <v-col cols="4" class="text-right">
                 <v-btn  v-if="!isAgencyCreating" @click="addAgency"
@@ -30,7 +22,7 @@
             </v-col>
         </v-row>
 
-        <v-card>
+        <v-card class="pa-4">
             <CrmDataTable></CrmDataTable>
         </v-card>
         
@@ -62,6 +54,7 @@ import OfficeDetails from "@scripts/components/crm/OfficeDetails";
 import LeadMetrics from "@scripts/components/crm/LeadMetrics";
 import ProgressBar from "@scripts/components/crm/ProgressBar";
 import CrmDataTable from "@scripts/components/crm/CrmDataTable";
+import Search from "@scripts/components/crm/Search";
 const agencyForm = ['AgencyDetails','AllocatorDetails', 'CommissionProfile', 'OfficeDetails','OfficeDetails'];
 export default {
     name: "RealStateAgencyPage",
@@ -72,7 +65,8 @@ export default {
         AllocatorDetails,
         AgencyDetails,
         ProgressBar,
-        CrmDataTable
+        CrmDataTable,
+        Search
     },
     data(){
         return {
