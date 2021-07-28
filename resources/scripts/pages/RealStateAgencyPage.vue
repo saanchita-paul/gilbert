@@ -1,6 +1,20 @@
 <template>
     <v-container>
-        <LeadMetrics></LeadMetrics>
+        <v-row>
+            <v-col cols="12">
+                <v-container  class="white">
+                    <LeadMetrics></LeadMetrics>
+                </v-container>
+            </v-col>
+        </v-row>
+        <v-row >
+            <v-col cols="12">
+                <v-container  class="white">
+                    <LeadMetrics></LeadMetrics>
+                </v-container>
+            </v-col>
+        </v-row>
+
         <v-row>
             <v-col cols="12">
                 <v-btn  v-if="!isAgencyCreating" @click="addAgency"
