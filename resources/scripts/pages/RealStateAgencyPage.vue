@@ -4,16 +4,14 @@
         <v-row>
             <v-col cols="12">
                 <v-btn  v-if="!isAgencyCreating" @click="addAgency"
-                    small
                     color="primary"
                     dark
-                > <v-icon
-                    right
+                ><v-icon
+                    left
                     dark
                 >
                     add
-                </v-icon >
-                    Add New Agency
+                </v-icon> Add New Agency
                 </v-btn>
                 </v-col>
                 <v-col cols="12" v-if="isAgencyCreating">
