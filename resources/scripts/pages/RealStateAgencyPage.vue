@@ -14,8 +14,10 @@
                 </v-icon> Add New Agency
                 </v-btn>
                 </v-col>
+               
                 <v-col cols="12" v-if="isAgencyCreating">
                     <component v-bind:is="currentComponent"></component>
+                     <ProgressBar></ProgressBar>
                     <div class="d-flex justify-space-between">
                         <v-btn @click="cancel"
                         >Cancel
@@ -28,7 +30,7 @@
                 </v-col>
         </v-row>
 
-       <ProgressBar></ProgressBar>
+       
     </v-container>
 </template>
 

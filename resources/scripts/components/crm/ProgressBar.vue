@@ -1,13 +1,13 @@
 <template>
     <v-row class="section-progressbar">
       <v-col cols="4">
-        <span></span>
-      </v-col>
-      <v-col cols="4">
-        <span></span>
+        <span class="active"></span>
       </v-col>
       <v-col cols="4">
         <span class="active"></span>
+      </v-col>
+      <v-col cols="4">
+        <span></span>
       </v-col>
     </v-row>
 </template>
