@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router'
 import NewDashboardLayout from "@scripts/layouts/DashboardLayout";
+import AgentDashboardLayout from "@scripts/layouts/AgentDashboardLayout";
 
 
 import  LoginPage from "@scripts/pages/auth/LoginPage";
@@ -14,6 +15,7 @@ import CustomerList from "@scripts/pages/HelpdeskPage";
 import Test from "@scripts/pages/Test";
 import RealStateAgency from "@scripts/pages/RealStateAgencyPage";
 import RealStateAgencyPage from "@scripts/pages/RealStateAgencyPage";
+import AgentApplicationPage from "@scripts/pages/agent/AgentApplicationPage";
 
 Vue.use(VueRouter);
 
@@ -94,6 +96,20 @@ const router = new VueRouter({
             meta: {
                 isProtected: false
             }
+        },
+        {
+            path: '/agent',
+            component: AgentDashboardLayout,
+            children: [
+                {
+                    path: '',
+                    component: AgentApplicationPage,
+                    name: 'agent.applications',
+                    meta: {
+                        isProtected: true
+                    }
+                },
+            ]
         }
     ]
 })
