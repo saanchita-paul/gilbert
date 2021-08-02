@@ -2,13 +2,15 @@
     <v-container>
         <v-row>
              <v-col cols="8">
-                    <v-card class="pa-4">
+                 <div class="grey lighten-4 pa-5">
+                     <v-card class="pa-4">
                         <p>Your Metrics</p>
                         <h3 class="page-title">Total Applications: 500</h3>
                         <AgentLeadMetrics></AgentLeadMetrics>
                     </v-card>
 
                     <ApplicantTable></ApplicantTable>
+                 </div>
              </v-col>
              <v-col cols="4">
                  <ApplicationDetails></ApplicationDetails>
