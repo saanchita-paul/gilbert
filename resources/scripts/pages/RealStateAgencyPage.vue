@@ -4,98 +4,25 @@
             <h2>All Application Metrics</h2>
             <LeadMetrics></LeadMetrics>
         </v-card>
-        
-        <v-row class="mt-5">
-            <v-col cols="8" class="search-bg">
-                <Search></Search>
-            </v-col>
-            <v-col cols="4" class="text-right">
-                <v-btn  v-if="!isAgencyCreating" @click="addAgency"
-                    color="primary"
-                    dark
-                    ><v-icon
-                        left
-                        dark
-                    >
-                    add
-                    </v-icon> Add New Agency
-                </v-btn>
-            </v-col>
-        </v-row>
-
-        <v-card class="pa-4">
-            <CrmDataTable></CrmDataTable>
-        </v-card>
-        
-        <v-row>
-            <v-col cols="12" v-if="isAgencyCreating">
-                <component v-bind:is="currentComponent"></component>
-                    <ProgressBar></ProgressBar>
-                <div class="d-flex justify-space-between">
-                    <v-btn @click="cancel"
-                    >Cancel
-                    </v-btn>
-                    <v-btn @click="addAgency"
-                        color="primary"
-                    >Save
-                    </v-btn>
-                </div>
-            </v-col>
-        </v-row>
-
-       
+        <CrmAgencyDataTable></CrmAgencyDataTable>
+        <CrmOfficeDataTable></CrmOfficeDataTable>
+        <CrmUserDatatable></CrmUserDatatable>
     </v-container>
 </template>
 
 <script>
-import AgencyDetails from "@scripts/components/crm/AgencyDetails";
-import AllocatorDetails from "@scripts/components/crm/AllocatorDetails";
-import CommissionProfile from "@scripts/components/crm/CommissionProfile";
-import OfficeDetails from "@scripts/components/crm/OfficeDetails";
 import LeadMetrics from "@scripts/components/crm/LeadMetrics";
-import ProgressBar from "@scripts/components/crm/ProgressBar";
-import CrmDataTable from "@scripts/components/crm/CrmDataTable";
-import Search from "@scripts/components/crm/Search";
-const agencyForm = ['AgencyDetails','AllocatorDetails', 'CommissionProfile', 'OfficeDetails','OfficeDetails'];
+import CrmAgencyDataTable from "@scripts/components/crm/agency/CrmAgencyDataTable";
+import CrmOfficeDataTable from "@scripts/components/crm/office/CrmOfficeDataTable";
+import CrmUserDatatable from "@scripts/components/crm/user/CrmUserDatatable";
 export default {
     name: "RealStateAgencyPage",
     components: {
+        CrmUserDatatable,
+        CrmOfficeDataTable,
+        CrmAgencyDataTable,
         LeadMetrics,
-        OfficeDetails, 
-        CommissionProfile,
-        AllocatorDetails,
-        AgencyDetails,
-        ProgressBar,
-        CrmDataTable,
-        Search
     },
-    data(){
-        return {
-            currentComponent:'',
-            isAgencyCreating: false,
-            agencyFormIndex: -1
-
-        }
-    },
-
-    methods: {
-        addAgency() {
-            this.isAgencyCreating = true;
-
-            if(this.agencyFormIndex === 4 ) {
-                this.isAgencyCreating = false;
-                this.agencyFormIndex === -1;
-            }
-
-            this.agencyFormIndex++;
-            this.currentComponent = agencyForm[this.agencyFormIndex];
-
-        },
-        cancel() {
-            this.isAgencyCreating = false;
-            this.agencyFormIndex === -1;
-        }
-    }
 
 }
 </script>
