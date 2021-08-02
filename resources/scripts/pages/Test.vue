@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ApplicationDetails></ApplicationDetails>
+    <LeadApplications></LeadApplications>
   </div>
 </template>
 
@@ -14,6 +14,8 @@ import LeadMetrics from "@scripts/components/crm/LeadMetrics";
 import OfficeProfile from "@scripts/components/crm/OfficeProfile";
 import AddNewApplication from "@scripts/components/crm/application/AddNewApplication";
 import ApplicationDetails from "@scripts/components/crm/application/ApplicationDetails";
+import LeadApplications from "@scripts/components/crm/leadmanagement/LeadApplications";
+import AssignedtoPopUp from "@scripts/components/crm/leadmanagement/AssignedtoPopUp";
 export default {
   name: "Test",
   components: {
@@ -25,7 +27,9 @@ export default {
     LeadMetrics,
     OfficeProfile,
     AddNewApplication,
-    ApplicationDetails
+    ApplicationDetails,
+    LeadApplications,
+    AssignedtoPopUp
   },
 };
 </script>
