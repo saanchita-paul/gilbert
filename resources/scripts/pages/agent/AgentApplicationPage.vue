@@ -3,10 +3,8 @@
         <v-row class="mt-0">
             <v-col cols="8">
                 <v-card class="pa-4">
-                    <div>
-                        <span class="user-details">Hi Dimuthusathrasinghe, </span>
-                        <span>heres a summary of your applications.</span>
-                    </div>
+                    <h3 class="page-title">Hi Dimuthusathrasinghe,  <small class="font-weight-thin">heres a summary of your applications.</small></h3>
+                    
                     <AgentLeadMetrics></AgentLeadMetrics>
                 </v-card>
                 <AgentApplicationTable></AgentApplicationTable>

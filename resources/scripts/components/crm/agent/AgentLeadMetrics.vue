@@ -1,5 +1,14 @@
 <template>
+    
+
     <v-row>
+      <v-col cols="4" class="pb-0">
+        <p class="mb-0">Leads Data</p>
+      </v-col>
+      <v-col cols="8" class="pb-0">
+        <p class="mb-0 ">Successful Connections</p>
+      </v-col>
+
       <v-col cols="2">
         <div class="leade-badge">
             <h3>Applications</h3>

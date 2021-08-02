@@ -137,13 +137,10 @@
 
                 <v-col cols="12">
                     <p class="sub-title  mt-5">Additional Instructions</p>
-                    <div class="grey lighten-3 pa-3 grey--text">
-                        <p>Additional Instructions goes here. </p>  
-
-                        <p>Maybe it’s extra long so I have to write something down to show how it
-                             will look like when a property manager has soooo much things to say about his lead.</p>
-                        <p>Maybe another ine of the agent forgot to say something about the lead.</p>
-                    </div>
+                    <v-textarea
+                        outlined
+                        placeholder="Additional Instructions goes here."
+                    ></v-textarea>
                 </v-col>
 
                 
