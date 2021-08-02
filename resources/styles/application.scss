@@ -1,0 +1,17 @@
+.new-application {
+    max-width: 800px;
+    margin: 0px auto;
+    .large-title {
+        font-size: 32px;;
+    }
+    .application-info {
+        tr {
+             td:first-child  {
+                width: 110px;
+                display: block;
+                text-align: right;
+                margin-right: 15px;
+            }
+        }
+    }
+}
