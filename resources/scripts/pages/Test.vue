@@ -1,6 +1,6 @@
 <template>
   <div>
-    <OfficeProfile></OfficeProfile>
+    <ApplicationDetails></ApplicationDetails>
   </div>
 </template>
 
@@ -12,6 +12,8 @@ import CommissionProfile from "@scripts/components/crm/CommissionProfile";
 import Created from "@scripts/components/crm/Created";
 import LeadMetrics from "@scripts/components/crm/LeadMetrics";
 import OfficeProfile from "@scripts/components/crm/OfficeProfile";
+import AddNewApplication from "@scripts/components/crm/application/AddNewApplication";
+import ApplicationDetails from "@scripts/components/crm/application/ApplicationDetails";
 export default {
   name: "Test",
   components: {
@@ -21,7 +23,9 @@ export default {
     CommissionProfile,
     Created,
     LeadMetrics,
-    OfficeProfile
+    OfficeProfile,
+    AddNewApplication,
+    ApplicationDetails
   },
 };
 </script>
