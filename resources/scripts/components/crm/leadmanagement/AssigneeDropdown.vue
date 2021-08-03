@@ -21,24 +21,32 @@
                 </template>
 
                 <v-list>
+                    <div class="assigneesearch">
+                        <v-text-field
+                            label="Search"
+                            outlined
+                            dense
+                            prepend-inner-icon="mdi-magnify"
+                            hide-details="auto"
+                        ></v-text-field>
+                    </div>
                     <v-list-item>
                         <v-avatar size="30">
                             <img src="https://cdn.vuetifyjs.com/images/john.jpg">
                         </v-avatar>
+                        <small  class="pl-2">John Doe</small>
                     </v-list-item>
                     <v-list-item>
-                        <v-list-item-title>
                             <v-avatar size="30">
                             <img src="https://cdn.vuetifyjs.com/images/john.jpg">
                         </v-avatar>
-                        </v-list-item-title>
+                        <small class="pl-2">John Doe</small>
                     </v-list-item>
                     <v-list-item>
-                        <v-list-item-title>
                             <v-avatar size="30">
                                 <img src="https://cdn.vuetifyjs.com/images/john.jpg">
                             </v-avatar>
-                        </v-list-item-title>
+                        <small class="pl-2">John Doe</small>
                     </v-list-item>
                 </v-list>
     </v-menu>
@@ -48,6 +56,7 @@
 <script>
 export default {
   name: "AssigneeDropdown",
+
 };
 </script>
 
