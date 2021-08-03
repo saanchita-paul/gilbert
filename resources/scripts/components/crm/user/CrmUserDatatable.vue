@@ -33,7 +33,7 @@
                         </thead>
                         <tbody>
                         <tr
-                            v-for="item in agency"
+                            v-for="item in  crmUsers"
                             :key="item.name"
                         >
                             <td>{{ item.proerty_manager_name }}</td>
@@ -63,40 +63,6 @@ name: "CrmUserDatatable",
     components: {UserCreatedSuccessfulModal, UserCreationConfirmationModal, CreateUserModal, Search},
     data () {
         return {
-            agency: [
-                {
-                    id: 1,
-                    proerty_manager_name: 'Barry Plant',
-                    submitted_lead: '000',
-                    role: 'manager',
-                    mobile: '941293823',
-                    email: 'sazzadahmed41@gmail.com',
-                },
-                {
-                    id: 2,
-                    proerty_manager_name: 'Barry Plant',
-                    submitted_lead: '000',
-                    role: 'manager',
-                    mobile: '941293823',
-                    email: 'sazzadahmed41@gmail.com',
-                },
-                {
-                    id: 3,
-                    proerty_manager_name: 'Barry Plant',
-                    submitted_lead: '000',
-                    role: 'manager',
-                    mobile: '941293823',
-                    email: 'sazzadahmed41@gmail.com',
-                },
-                {
-                    id: 4,
-                    proerty_manager_name: 'Barry Plant',
-                    submitted_lead: '000',
-                    role: 'manager',
-                    mobile: '941293823',
-                    email: 'sazzadahmed41@gmail.com',
-                },
-            ],
             isCreatingUser: false,
             dataVerificationFlag: false,
             creationDoneFlag: false,
@@ -120,7 +86,7 @@ name: "CrmUserDatatable",
             this.user = user;
         },
 
-        backToEdit(user) {
+        backToEdit() {
             this.isCreatingUser= true;
             this.dataVerificationFlag = false;
         },
@@ -128,16 +94,23 @@ name: "CrmUserDatatable",
         confirmedData() {
             this.dataVerificationFlag = false;
             this.creationDoneFlag = true;
+            this.saveUser();
+
         },
 
         done() {
             this.creationDoneFlag = false
         },
+
         loadUserData()
         {
-            console.log('crm user', this.crmUsers);
            this.crmUsers = CrmUserService.loadUserData();
-           console.log('crm user', this.crmUsers);
+           console.log(this.crmUsers);
+        },
+
+        saveUser() {
+          let newUser = CrmUserService.saveUser(this.user);
+          this.crmUsers.push(newUser);
         }
     },
     mounted() {

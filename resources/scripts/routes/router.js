@@ -16,6 +16,9 @@ import Test from "@scripts/pages/Test";
 import RealStateAgency from "@scripts/pages/RealStateAgencyPage";
 import RealStateAgencyPage from "@scripts/pages/RealStateAgencyPage";
 import AgentApplicationPage from "@scripts/pages/agent/AgentApplicationPage";
+import CrmAgencyDataTable from "@scripts/components/crm/agency/CrmAgencyDataTable";
+import CrmOfficeDataTable from "@scripts/components/crm/office/CrmOfficeDataTable";
+import CrmUserDatatable from "@scripts/components/crm/user/CrmUserDatatable";
 
 Vue.use(VueRouter);
 
@@ -73,6 +76,34 @@ const router = new VueRouter({
                     path: '/real-state-agency',
                     component: RealStateAgencyPage,
                     name: 'real.state.agency',
+                    children: [
+                        {
+                            path: '',
+                            name: 'real.state.agency.home',
+                            component: CrmAgencyDataTable,
+                            meta: {
+                                isProtected: true
+                            }
+                        },
+                        {
+                            path: 'office',
+                            component: CrmOfficeDataTable,
+                            name: 'real.state.agency.office',
+                            meta: {
+                                isProtected: true
+                            }
+
+                        },
+                        {
+                            path: 'users',
+                            component: CrmUserDatatable,
+                            name: 'real.state.agency.users',
+                            meta: {
+                                isProtected: true
+                            }
+
+                        }
+                    ],
                     meta: {
                         isProtected: true
                     }

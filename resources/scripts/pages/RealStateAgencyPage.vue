@@ -4,9 +4,7 @@
             <h2>All Application Metrics</h2>
             <LeadMetrics></LeadMetrics>
         </v-card>
-        <CrmAgencyDataTable></CrmAgencyDataTable>
-        <CrmOfficeDataTable></CrmOfficeDataTable>
-        <CrmUserDatatable></CrmUserDatatable>
+        <router-view :agency="asdfsdf"></router-view>
     </v-container>
 </template>
 

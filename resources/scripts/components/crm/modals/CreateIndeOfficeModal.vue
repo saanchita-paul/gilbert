@@ -7,8 +7,12 @@
         >
             <v-card>
                 <v-container>
-                   <component :is="currentComponent"> </component>
-                    <ProgressBar :total-step="totalStep" :current-index="currentCompIndex"></ProgressBar>
+                   <component :is="currentComponent" v-model="agency"
+                              @updateOffice = "updateOffice"
+                              @updateAllocator = "updateAllocator"
+                              @updateProfile = "updateProfile"
+                   > </component>
+                    <ProgressBar :total-step="totalStep" :current-index="currentCompIndex" ></ProgressBar>
                     <v-row>
                         <v-col cols="12">
                             <div class="d-flex justify-space-between">
@@ -52,7 +56,18 @@ name: "CreateIndeOfficeModal",
         return {
             currentComponent: "OfficeDetails",
             currentCompIndex : 0,
-            totalStep: 3
+            totalStep: 3,
+            agency: {
+                office: {
+
+                },
+                allocator: {
+
+                },
+                profile: {
+
+                }
+            }
         }
     },
     computed: {
@@ -61,17 +76,31 @@ name: "CreateIndeOfficeModal",
         }
     },
     methods: {
+
         goNextOrSave() {
             if((this.totalStep -1 ) === this.currentCompIndex) {
-                this.$emit('openSuccessfulModal');
+                this.$emit('goToNext', this.agency);
                 return;
 
             }
             this.currentCompIndex ++;
             this.currentComponent = agencyForm[ this.currentCompIndex];
         },
+
         cancel() {
             this.$emit('cancelDialog');
+        },
+
+        updateOffice(officeData) {
+            this.agency.office = officeData;
+        },
+
+        updateAllocator(allocator) {
+            this.agency.allocator = allocator;
+        },
+
+        updateProfile(profile) {
+            this.agency.profile = profile;
         }
     }
 }

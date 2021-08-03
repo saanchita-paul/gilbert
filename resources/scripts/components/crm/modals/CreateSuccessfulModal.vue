@@ -25,7 +25,14 @@ export default {
             this.dialog = false;
             this.$emit('cancel');
         }
-    }
+    },
+
+  watch:{
+      title: function (newTitle, previousTitle) {
+        console.log(newTitle);
+      }
+  }
+
 }
 </script>
 

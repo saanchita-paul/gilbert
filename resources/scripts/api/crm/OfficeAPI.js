@@ -1,5 +1,6 @@
 import axios from "axios";
 import AgencyMqpper from "@scripts/api/mappers/crm/AgencyMqpper";
+import OfficeMapper from "@scripts/api/mappers/crm/OfficeMapper";
 
 const data = [
     {
@@ -7,14 +8,14 @@ const data = [
         title: 'Barry Plant',
         total_leads: 500,
         last_updated: '00/00/2021',
-        offices: 30,
+        user_account: 30,
     },
     {
         id: 2,
         title: 'Raine & Horne',
         total_leads: 100,
         last_updated: '06/00/2021',
-        offices: 100,
+        user_account: 100,
     },
     {
         id: 3,
@@ -28,25 +29,26 @@ const data = [
         title: 'Raine & Horne',
         total_leads: 200,
         last_updated: '08/00/2021',
-        offices: 10,
+        user_account: 10,
     },
 ];
 
 export default {
-    getAgencyAllData:  () => {
+    getOfficeAllData:  () => {
         try {
             // const data = await axios.get('/');
-            return AgencyMqpper.mapAgencyList(data);
+            return OfficeMapper.mapOfficeList(data);
 
         } catch (error) {
+            console.log(error);
             return error.data;
         }
     },
 
-    saveAgency: (agency) => {
+    saveOfficeData: (officeData) => {
         try {
             // const data = await axios.get('/');
-            return AgencyMqpper.mapAgency(agency);
+            return OfficeMapper.mapOffice(officeData);
 
         } catch (error) {
             return error.data;

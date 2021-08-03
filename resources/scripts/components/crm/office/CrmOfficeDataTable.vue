@@ -30,21 +30,23 @@
                         </thead>
                         <tbody>
                         <tr
-                            v-for="item in agency"
-                            :key="item.id"
+                            v-for="item in officesList"
+                            :key="item.id" @click="openOffice"
                         >
-                            <td>{{ item.agencyname }}</td>
-                            <td>{{ item.totalleads }}</td>
-                            <td>{{ item.lastupdated }}</td>
-                            <td>{{ item.Offices }}</td>
+                            <td>{{ item.title }}</td>
+                            <td>{{ item.total_leads }}</td>
+                            <td>{{ item.last_updated }}</td>
+                            <td>{{ item.user_account }}</td>
                         </tr>
                         </tbody>
                     </template>
                 </v-simple-table>
             </v-col>
         </v-row>
-        <CreateIndeOfficeModal v-if="isCreatingOffice" :dialog="isCreatingOffice" @openSuccessfulModal="openCreationSuccModal" @cancelDialog="cancelIndOfficeModal">
+
+        <CreateIndeOfficeModal v-if="independenceAgencyModal" :dialog="independenceAgencyModal" @goToNext="openCreationSuccModal" @cancelDialog="cancelIndOfficeModal">
         </CreateIndeOfficeModal>
+
         <CreateSuccessfulModal v-if="isCreatedSuccessfully" :dialog="isCreatedSuccessfully" :title="officeTitle" @cancel="cancelSuccessfulModal">
         </CreateSuccessfulModal>
     </div>
@@ -55,58 +57,70 @@
 import Search from "@scripts/components/crm/Search";
 import CreateSuccessfulModal from "@scripts/components/crm/modals/CreateSuccessfulModal";
 import CreateIndeOfficeModal from "@scripts/components/crm/modals/CreateIndeOfficeModal";
+import OfficeService from "@scripts/services/crm/OfficeService";
+import AgencyService from "@scripts/services/crm/AgencyService";
 export default {
 name: "CrmOfficeDataTable",
+    props: ['agency'],
     components: {CreateIndeOfficeModal, CreateSuccessfulModal, Search},
     data () {
         return {
-            agency: [
-                {
-                    agencyname: 'Barry Plant',
-                    totalleads: 500,
-                    lastupdated: '00/00/2021',
-                    Offices: 30,
-                },
-                {
-                    agencyname: 'Raine & Horne',
-                    totalleads: 100,
-                    lastupdated: '06/00/2021',
-                    Offices: 100,
-                },
-                {
-                    agencyname: '[EA Homes]_(Independent)',
-                    totalleads: 300,
-                    lastupdated: '07/00/2021',
-                    Offices: 30,
-                },
-                {
-                    agencyname: 'Raine & Horne',
-                    totalleads: 200,
-                    lastupdated: '08/00/2021',
-                    Offices: 10,
-                },
-            ],
-            isCreatingOffice: false,
+            independenceAgencyModal: false,
             isCreatedSuccessfully: false,
-            officeTitle: ''
+            officeTitle: '',
+            officeInfo: null,
+            officesList: [],
         }
     },
     methods: {
         addOffice() {
-            console.log('is creating office');
-           this.isCreatingOffice = true;
+           this.independenceAgencyModal = true;
         },
-        openCreationSuccModal() {
-            this.isCreatingOffice = false;
+
+        openCreationSuccModal(officeInfo) {
+            this.independenceAgencyModal = false;
+
+            this.officeInfo = {
+                ...this.agency,
+                ...officeInfo
+            };
+
+            this.officeTitle = this.officeInfo.office.title;
+            this.independenceAgencyModal = false;
+            this.saveOfficeData();
+
+
             this.isCreatedSuccessfully = true;
         },
         cancelIndOfficeModal() {
-          this.isCreatingOffice = false;
+          this.independenceAgencyModal = false;
         },
 
         cancelSuccessfulModal() {
             this.isCreatedSuccessfully = false;
+        },
+
+        saveOfficeData() {
+            console.log('agency', this.agency);
+             let newOffice = OfficeService.saveOfficeData(this.officeInfo);
+             this.officesList.push(newOffice);
+
+
+        },
+
+        loadOffices() {
+            this.officesList = OfficeService.loadOfficeData();
+
+        },
+
+        openOffice(office) {
+            this.$router.push({name: 'real.state.agency.users', params: {office:office}});
         }
+    },
+
+    mounted() {
+        console.log(this.agency);
+        this.loadOffices();
     }
 }
 </script>
