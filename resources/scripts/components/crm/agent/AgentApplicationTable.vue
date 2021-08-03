@@ -39,15 +39,16 @@
                             <tr
                                 v-for="item in applications"
                                 :key="item.id"
+                                @click="openApplicationSummary(item.id)"
                             >
-                                <td>{{ item.application_name }}</td>
+                                <td>{{ item.applicant_name }}</td>
                                 <td>{{ item.moving_date }}</td>
                                 <td>{{ item.phone }}</td>
                                 <td>
-                                    <v-icon color="yellow">mdi-flash</v-icon>
-                                    <v-icon color="red">mdi-fire</v-icon>
-                                    <v-icon color="grey lighten-1">mdi-wifi</v-icon>
-                                    <v-icon color="grey lighten-1">mdi-water</v-icon>
+                                    <v-icon :disabled="isServiceAllowed(item.service_types, 'power')" color="yellow">mdi-flash</v-icon>
+                                    <v-icon :disabled="isServiceAllowed(item.service_types, 'gas')" color="red">mdi-fire</v-icon>
+                                    <v-icon :disabled="isServiceAllowed(item.service_types, 'internet')" color="green">mdi-wifi</v-icon>
+                                    <v-icon :disabled="isServiceAllowed(item.service_types, 'water')" color="blue" >mdi-water</v-icon>
                                 </td>
                                 <td>{{ item.status }}</td>
                             </tr>
@@ -64,13 +65,19 @@
 import Search from "@scripts/components/crm/Search";
 
 export default {
-name: "AgencyApplicationTable",
+    name: "AgencyApplicationTable",
     props: ["applications"],
     components: {
         Search
     },
     methods: {
-        addNewApplication() {}
+        addNewApplication() {},
+        openApplicationSummary(id) {
+            this.$emit("openApplicationSummary", id);
+        },
+        isServiceAllowed(services, type) {
+           return !services.includes(type);
+        }
     },
 }
 </script>
