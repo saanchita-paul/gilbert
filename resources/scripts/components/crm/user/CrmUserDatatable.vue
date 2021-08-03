@@ -105,7 +105,6 @@ name: "CrmUserDatatable",
         loadUserData()
         {
            this.crmUsers = CrmUserService.loadUserData();
-           console.log(this.crmUsers);
         },
 
         saveUser() {

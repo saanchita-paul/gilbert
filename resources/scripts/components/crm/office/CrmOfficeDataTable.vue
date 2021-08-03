@@ -31,7 +31,7 @@
                         <tbody>
                         <tr
                             v-for="item in officesList"
-                            :key="item.id" @click="openOffice"
+                            :key="item.id" @click="openOffice(item)"
                         >
                             <td>{{ item.title }}</td>
                             <td>{{ item.total_leads }}</td>
@@ -61,7 +61,11 @@ import OfficeService from "@scripts/services/crm/OfficeService";
 import AgencyService from "@scripts/services/crm/AgencyService";
 export default {
 name: "CrmOfficeDataTable",
-    props: ['agency'],
+    props: {
+        id: {
+            required: false,
+        }
+    },
     components: {CreateIndeOfficeModal, CreateSuccessfulModal, Search},
     data () {
         return {
@@ -98,7 +102,6 @@ name: "CrmOfficeDataTable",
         },
 
         cancelSuccessfulModal() {
-            console.log('I am here bro');
             this.isCreatedSuccessfully = false;
             this.openOffice(this.lastCreatedOffice);
 
@@ -117,12 +120,11 @@ name: "CrmOfficeDataTable",
         },
 
         openOffice(office) {
-            this.$router.push({name: 'real.state.agency.users', params: {office:office}});
+            this.$router.push({name: 'real.state.agency.users', params: { id : this.id, officeId: office.id}});
         }
     },
 
     mounted() {
-        console.log(this.agency);
         this.loadOffices();
     }
 }

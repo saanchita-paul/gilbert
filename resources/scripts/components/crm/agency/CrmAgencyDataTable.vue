@@ -82,6 +82,7 @@ name: "CrmAgencyDataTable",
             agencies:[],
             agency: null,
             title: '',
+            newAgency: null,
 
         }
     },
@@ -115,6 +116,12 @@ name: "CrmAgencyDataTable",
 
         cancelSuccessfulModal() {
             this.agencyCreateSuccessFullModal = false;
+            console.log(this.newAgency);
+            if(this.agency.type === 'Independent Agency') {
+                this.$router.push({name: 'real.state.agency.users', params: {id: this.newAgency.id, officeId: 10}});
+            } else {
+                this.$router.push({name: 'real.state.agency.office', params: {id: this.newAgency.id}});
+            }
 
         },
 
@@ -135,17 +142,13 @@ name: "CrmAgencyDataTable",
         },
 
         saveAgencyData() {
-            let newAgency = AgencyService.saveAgency(this.agency);
-            this.agencies.push(newAgency);
-            if(this.agency.type === 'Independent Agency') {
-                this.$router.push({name: 'real.state.agency.users', params: {agency:newAgency}});
-            } else {
-                this.$router.push({name: 'real.state.agency.office', params: {agency:newAgency}});
-            }
+            this.newAgency = AgencyService.saveAgency(this.agency);
+            this.agencies.push(this.newAgency);
+
         },
 
         openAgency(agency) {
-            this.$router.push({name: 'real.state.agency.office', params: {agency:agency}});
+            this.$router.push({name: 'real.state.agency.office', params: {id : agency.id}});
         }
 
     },

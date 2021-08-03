@@ -4,7 +4,7 @@
             <h2>All Application Metrics</h2>
             <LeadMetrics></LeadMetrics>
         </v-card>
-        <router-view :agency="asdfsdf"></router-view>
+        <router-view></router-view>
     </v-container>
 </template>
 
@@ -21,6 +21,7 @@ export default {
         CrmAgencyDataTable,
         LeadMetrics,
     },
+
 
 }
 </script>
