@@ -3,14 +3,13 @@
         <v-row class="mt-0">
             <v-col cols="8" class="grey lighten-4 pa-5">
                 <v-card class="pa-4">
-                    <h3 class="page-title">Hi Dada,  <small class="font-weight-thin">heres a summary of your applications.</small></h3>
-
+                    <h3 v-if="user" class="page-title">Hi {{user.name}}, <small class="font-weight-thin">heres a summary of your applications.</small></h3>
                     <AgentLeadMetrics></AgentLeadMetrics>
                 </v-card>
-                <AgentApplicationTable :applications="applicationList"></AgentApplicationTable>
+                <AgentApplicationTable :applications="applicationList" @openApplicationSummary="openApplicationSummary"></AgentApplicationTable>
             </v-col>
             <v-col cols="4">
-                <AgentApplicationSummary ></AgentApplicationSummary>
+                <AgentApplicationSummary :application="applicationSummary"></AgentApplicationSummary>
             </v-col>
         </v-row>
 
@@ -36,6 +35,7 @@ export default {
             applicationMetrics: null,
             applicationList: null,
             applicationSummary: null,
+            selected_application_id: null,
         }
     },
     mounted() {
@@ -50,6 +50,16 @@ export default {
         },
         getApplicationList() {
             this.applicationList = AgentApplicationService.getApplicationList();
+            this.selected_application_id = this.applicationList[0].id;
+            this.getApplicationSummary();
+        },
+        getApplicationSummary() {
+            this.applicationSummary = AgentApplicationService.getApplicationSummary(this.selected_application_id);
+            console.log('summary', this.selected_application_id, this.applicationSummary);
+        },
+        openApplicationSummary(id) {
+            this.selected_application_id = id;
+            this.getApplicationSummary();
         }
     },
 }

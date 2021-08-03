@@ -1,5 +1,5 @@
 <template>
-    <v-card class="pa-4">
+    <v-card class="pa-4" v-if="application">
         <h3 class="page-title">{{ application.applicant_name }}</h3>
         <p class="sub-title mt-4 mb-2">Personal Details</p>
         <table width="100%" class="application-info">
@@ -40,10 +40,18 @@
 
         <v-divider class="mt-4 mb-2"></v-divider>
         <p class="sub-title py-2">Service Interests
-          <span class="mx-2"><v-icon color="yellow">mdi-flash</v-icon> Power</span>
-          <span  class="mx-2"><v-icon color="red">mdi-fire</v-icon> Gas</span>
-          <span  class="mx-2"><v-icon color="grey lighten-1">mdi-wifi</v-icon> Internet</span>
-          <span  class="mx-2"><v-icon color="grey lighten-1">mdi-water</v-icon> Water</span>
+          <span class="mx-2">
+              <v-icon :disabled="isServiceAllowed(application.service_types, 'power')" color="yellow">mdi-flash</v-icon>
+          </span>
+          <span class="mx-2">
+              <v-icon :disabled="isServiceAllowed(application.service_types, 'gas')" color="red">mdi-fire</v-icon>
+          </span>
+          <span class="mx-2">
+              <v-icon :disabled="isServiceAllowed(application.service_types, 'internet')" color="green">mdi-wifi</v-icon>
+          </span>
+          <span class="mx-2">
+              <v-icon :disabled="isServiceAllowed(application.service_types, 'water')" color="blue" >mdi-water</v-icon>
+          </span>
         </p>
 
         <div>
@@ -61,23 +69,15 @@
 <script>
 export default {
     name: "AgentApplicationSummary",
+    props: ["application"],
     data() {
         return {
-            application : {
-                id: 1,
-                applicant_name: 'Staedtler Marker',
-                date_of_birth: '06/08/2021',
-                phone: '0410758782',
-                email: 'staedtler.marker@gmail.com',
-                moving_date: '02/22/2022',
-                email_billing: 'Email/Paper',
-                tenancy_type: 'Renter or Home Owner',
-                service_address: '398 Bourke Road, Camberwell 3124 VIC',
-                service_types: 'Not Confirmed Connection',
-                additional_instruction: 'Additional Instructions goes here. Maybe it’s extra long so I have ' +
-                    'to write something down to show how it will look like when a property manager has soooo ' +
-                    'much things to say on his lead.'
-            },
+
+        }
+    },
+    methods: {
+        isServiceAllowed(services, type) {
+            return !services.includes(type);
         }
     },
 };
