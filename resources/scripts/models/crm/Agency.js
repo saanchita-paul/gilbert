@@ -1,6 +1,6 @@
 export default class Agency {
     constructor({
-        id, title = 'ABC company', total_leads=70, last_updated = '2021/10/10', offices = 100
+        id = 5 , title = 'ABC company', total_leads=70, last_updated = '2021/10/10', offices = 100
                 }) {
         this.id = id;
         this.title = title;

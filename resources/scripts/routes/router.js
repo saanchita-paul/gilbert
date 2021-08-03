@@ -72,7 +72,7 @@ const router = new VueRouter({
                 },
                 ,
                 {
-                    path: '/real-state-agency',
+                    path: '/agencies',
                     component: RealStateAgencyPage,
                     name: 'real.state.agency',
                     children: [
@@ -85,21 +85,23 @@ const router = new VueRouter({
                             }
                         },
                         {
-                            path: 'agency',
+                            path: ':id/offices',
                             component: CrmOfficeDataTable,
                             name: 'real.state.agency.office',
                             meta: {
                                 isProtected: true
-                            }
+                            },
+                            props: true
 
                         },
                         {
-                            path: 'office',
+                            path: ':id/offices/:officeId/users',
                             component: CrmUserDatatable,
                             name: 'real.state.agency.users',
                             meta: {
                                 isProtected: true
-                            }
+                            },
+                            props: true
 
                         }
                     ],
