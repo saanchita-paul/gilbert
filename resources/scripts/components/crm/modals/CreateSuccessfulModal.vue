@@ -29,7 +29,6 @@ export default {
 
   watch:{
       title: function (newTitle, previousTitle) {
-        console.log(newTitle);
       }
   }
 

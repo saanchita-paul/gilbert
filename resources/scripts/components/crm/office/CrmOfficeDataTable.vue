@@ -70,6 +70,7 @@ name: "CrmOfficeDataTable",
             officeTitle: '',
             officeInfo: null,
             officesList: [],
+            lastCreatedOffice: null,
         }
     },
     methods: {
@@ -97,13 +98,15 @@ name: "CrmOfficeDataTable",
         },
 
         cancelSuccessfulModal() {
+            console.log('I am here bro');
             this.isCreatedSuccessfully = false;
+            this.openOffice(this.lastCreatedOffice);
+
         },
 
         saveOfficeData() {
-            console.log('agency', this.agency);
-             let newOffice = OfficeService.saveOfficeData(this.officeInfo);
-             this.officesList.push(newOffice);
+             this.lastCreatedOffice = OfficeService.saveOfficeData(this.officeInfo);
+             this.officesList.push(this.lastCreatedOffice);
 
 
         },

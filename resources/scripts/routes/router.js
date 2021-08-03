@@ -13,7 +13,6 @@ import CustomerListPage from "@scripts/pages/CustomerListTablePage";
 import UtilityAnalyticPage from "@scripts/pages/dashboard/UtilityAnalyticPage";
 import CustomerList from "@scripts/pages/HelpdeskPage";
 import Test from "@scripts/pages/Test";
-import RealStateAgency from "@scripts/pages/RealStateAgencyPage";
 import RealStateAgencyPage from "@scripts/pages/RealStateAgencyPage";
 import AgentApplicationPage from "@scripts/pages/agent/AgentApplicationPage";
 import CrmAgencyDataTable from "@scripts/components/crm/agency/CrmAgencyDataTable";
@@ -86,7 +85,7 @@ const router = new VueRouter({
                             }
                         },
                         {
-                            path: 'office',
+                            path: 'agency',
                             component: CrmOfficeDataTable,
                             name: 'real.state.agency.office',
                             meta: {
@@ -95,7 +94,7 @@ const router = new VueRouter({
 
                         },
                         {
-                            path: 'users',
+                            path: 'office',
                             component: CrmUserDatatable,
                             name: 'real.state.agency.users',
                             meta: {
