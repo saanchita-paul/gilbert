@@ -1,6 +1,4 @@
 <template>
-    
-
     <v-row>
       <v-col cols="4" class="pb-0">
         <p class="mb-0">Leads Data</p>
@@ -79,9 +77,6 @@
 
 <script>
 export default {
-  name: "LeadMetrics",
+  name: "AgentLeadMetrics",
 };
 </script>
-
-<style scoped>
-</style>

@@ -5,7 +5,7 @@
                 <Search></Search>
             </v-col>
             <v-col cols="4" class="text-right">
-                <v-btn color="primary" @click="addAgency"
+                <v-btn color="primary" @click="addNewApplication"
                 ><v-icon left>add
                 </v-icon> Add New Application
                 </v-btn>
@@ -65,54 +65,13 @@ import Search from "@scripts/components/crm/Search";
 
 export default {
 name: "AgencyApplicationTable",
+    props: ["applications"],
     components: {
         Search
     },
-    data(){
-        return {
-            applications : [
-                {
-                    id: 1,
-                    application_name: 'Applicant Name goes here',
-                    moving_date: '06/08/2021',
-                    phone: '0410758782',
-                    service_types: 30,
-                    status: 'Not Confirmed Connection',
-                },
-                {
-                    id: 2,
-                    application_name: 'Applicant Name goes here',
-                    moving_date: '06/08/2021',
-                    phone: '0410758782',
-                    service_types: 30,
-                    status: 'Not Confirmed Connection',
-                },
-                {
-                    id: 3,
-                    application_name: 'Applicant Name goes here',
-                    moving_date: '06/08/2021',
-                    phone: '0410758782',
-                    service_types: 30,
-                    status: 'Not Confirmed Connection',
-                },
-                {
-                    id: 4,
-                    application_name: 'Applicant Name goes here',
-                    moving_date: '06/08/2021',
-                    phone: '0410758782',
-                    service_types: 30,
-                    status: 'Not Confirmed Connection',
-                },
-            ]
-
-        }
-    },
     methods: {
-
+        addNewApplication() {}
     },
-    mounted() {
-
-    }
 }
 </script>
 

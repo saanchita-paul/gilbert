@@ -36,8 +36,9 @@
                             <tr
                                 v-for="item in agencies"
                                 :key="item.id"
+                                @click="openAgency(item)"
                             >
-                                <td>{{ item.agency_name }}</td>
+                                <td>{{ item.title }}</td>
                                 <td>{{ item.total_leads }}</td>
                                 <td>{{ item.last_updated }}</td>
                                 <td>{{ item.offices }}</td>
@@ -50,9 +51,9 @@
         </v-card>
         <AgencyDetailsModal v-if="agencyCreateModal" :dialog="agencyCreateModal" @openSuccessfulModal="openSuccessfulModal" @cancelDialog="cancelAgencyModal">
         </AgencyDetailsModal>
-        <CreateIndeOfficeModal v-if="independenceAgencyModal" :dialog="independenceAgencyModal" @openSuccessfulModal="openCreationSuccModal" @cancelDialog="cancelIndOfficeModal">
+        <CreateIndeOfficeModal v-if="independenceAgencyModal" :dialog="independenceAgencyModal" @goToNext="openCreationSuccModal" @cancelDialog="cancelIndOfficeModal">
         </CreateIndeOfficeModal>
-        <CreateSuccessfulModal v-if="agencyCreateSuccessFullModal" :dialog="agencyCreateSuccessFullModal" :title="officeTitle" @cancel="cancelSuccessfulModal">
+        <CreateSuccessfulModal v-if="agencyCreateSuccessFullModal" :dialog="agencyCreateSuccessFullModal" :title="title" @cancel="cancelSuccessfulModal">
         </CreateSuccessfulModal>
     </div>
 </template>
@@ -79,6 +80,9 @@ name: "CrmAgencyDataTable",
             independenceAgencyModal: false,
             officeTitle : '',
             agencies:[],
+            agency: null,
+            title: '',
+            newAgency: null,
 
         }
     },
@@ -92,10 +96,18 @@ name: "CrmAgencyDataTable",
             this.agencyCreateModal = false;
         },
 
-        openSuccessfulModal(title) {
-
-            this.independenceAgencyModal = true;
+        openSuccessfulModal(agency) {
             this.agencyCreateModal = false;
+            this.agency = agency;
+            if(agency && agency.type === 'Independent Agency')
+            {
+                this.independenceAgencyModal = true;
+            } else {
+                this.title = agency.title;
+                this.saveAgencyData();
+                this.agencyCreateSuccessFullModal = true;
+            }
+
         },
 
         cancelIndOfficeModal() {
@@ -104,18 +116,41 @@ name: "CrmAgencyDataTable",
 
         cancelSuccessfulModal() {
             this.agencyCreateSuccessFullModal = false;
+            console.log(this.newAgency);
+            if(this.agency.type === 'Independent Agency') {
+                this.$router.push({name: 'real.state.agency.users', params: {id: this.newAgency.id, officeId: 10}});
+            } else {
+                this.$router.push({name: 'real.state.agency.office', params: {id: this.newAgency.id}});
+            }
 
         },
 
-        openCreationSuccModal() {
+        openCreationSuccModal(agency) {
+            this.agency = {
+                ...this.agency,
+                ...agency
+            };
+            this.title = this.agency.office.title;
             this.independenceAgencyModal = false;
+            this.saveAgencyData();
             this.agencyCreateSuccessFullModal = true;
+
         },
 
         loadAgencyData() {
             this.agencies =  AgencyService.loadAgencyData();
-            console.log('agency', this.agencies);
+        },
+
+        saveAgencyData() {
+            this.newAgency = AgencyService.saveAgency(this.agency);
+            this.agencies.push(this.newAgency);
+
+        },
+
+        openAgency(agency) {
+            this.$router.push({name: 'real.state.agency.office', params: {id : agency.id}});
         }
+
     },
 
     mounted() {

@@ -13,9 +13,11 @@ import CustomerListPage from "@scripts/pages/CustomerListTablePage";
 import UtilityAnalyticPage from "@scripts/pages/dashboard/UtilityAnalyticPage";
 import CustomerList from "@scripts/pages/HelpdeskPage";
 import Test from "@scripts/pages/Test";
-import RealStateAgency from "@scripts/pages/RealStateAgencyPage";
 import RealStateAgencyPage from "@scripts/pages/RealStateAgencyPage";
 import AgentApplicationPage from "@scripts/pages/agent/AgentApplicationPage";
+import CrmAgencyDataTable from "@scripts/components/crm/agency/CrmAgencyDataTable";
+import CrmOfficeDataTable from "@scripts/components/crm/office/CrmOfficeDataTable";
+import CrmUserDatatable from "@scripts/components/crm/user/CrmUserDatatable";
 
 Vue.use(VueRouter);
 
@@ -70,9 +72,39 @@ const router = new VueRouter({
                 },
                 ,
                 {
-                    path: '/real-state-agency',
+                    path: '/agencies',
                     component: RealStateAgencyPage,
                     name: 'real.state.agency',
+                    children: [
+                        {
+                            path: '',
+                            name: 'real.state.agency.home',
+                            component: CrmAgencyDataTable,
+                            meta: {
+                                isProtected: true
+                            }
+                        },
+                        {
+                            path: ':id/offices',
+                            component: CrmOfficeDataTable,
+                            name: 'real.state.agency.office',
+                            meta: {
+                                isProtected: true
+                            },
+                            props: true
+
+                        },
+                        {
+                            path: ':id/offices/:officeId/users',
+                            component: CrmUserDatatable,
+                            name: 'real.state.agency.users',
+                            meta: {
+                                isProtected: true
+                            },
+                            props: true
+
+                        }
+                    ],
                     meta: {
                         isProtected: true
                     }

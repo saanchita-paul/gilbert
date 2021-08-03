@@ -26,7 +26,7 @@ name: "AgencyDetailsModal",
             this.$emit('cancelDialog');
         },
         saveAgency(agency) {
-           this.$emit('openSuccessfulModal',agency.type);
+           this.$emit('openSuccessfulModal',agency);
         }
     }
 }

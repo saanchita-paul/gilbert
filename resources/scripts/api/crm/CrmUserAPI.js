@@ -1,7 +1,7 @@
 import AgencyMqpper from "@scripts/api/mappers/crm/AgencyMqpper";
 import CrmUserMapper from "@scripts/api/mappers/crm/CrmUserMapper";
 
-const crmUser = [
+const data = [
     {
         id: 1,
         proerty_manager_name: 'Barry Plant',
@@ -42,8 +42,20 @@ export default {
     getUsersData: ()=> {
         try {
             // const data = await axios.get('/');
-            console.log(data);
+
             return CrmUserMapper.mapUserList(data);
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    saveUser: (crmUser)=> {
+        try {
+            // const data = await axios.get('/');
+            console.log('crmUser', crmUser);
+
+            return CrmUserMapper.mapUser(crmUser);
 
         } catch (error) {
             return error.data;

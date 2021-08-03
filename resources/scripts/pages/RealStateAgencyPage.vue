@@ -4,9 +4,7 @@
             <h2>All Application Metrics</h2>
             <LeadMetrics></LeadMetrics>
         </v-card>
-        <CrmAgencyDataTable></CrmAgencyDataTable>
-        <CrmOfficeDataTable></CrmOfficeDataTable>
-        <CrmUserDatatable></CrmUserDatatable>
+        <router-view></router-view>
     </v-container>
 </template>
 
@@ -23,6 +21,7 @@ export default {
         CrmAgencyDataTable,
         LeadMetrics,
     },
+
 
 }
 </script>

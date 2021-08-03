@@ -9,9 +9,9 @@
           <p class="title">What type of agency?</p>
           <v-select outlined dense :items="agencyType"  v-model="agency.type" label="Please select agency type">
           </v-select>
-          <v-text-field
-            label="Order ID"
-            placeholder="Office name"
+          <v-text-field v-model="agency.title"
+            label="Company Name"
+            placeholder="Barry Plant"
             outlined
             dense
           ></v-text-field>
@@ -37,7 +37,8 @@ export default {
     data(){
       return {
           agency:{
-              type:null,
+              type:'',
+              title: '',
           },
         agencyType: [
             'Independent Agency',
@@ -47,11 +48,9 @@ export default {
     },
     methods: {
         cancel() {
-            console.log('agen',this.agency);
             this.$emit('cancelDialog');
         },
         saveAgency() {
-            console.log('agen',this.agency);
             this.$emit('saveAgency',this.agency);
 
         }
