@@ -1,7 +1,7 @@
 <template>
     <v-row>
         <v-col cols="4">
-            <p class="sub-title">Personal Details</p>
+            <p class="sub-title title-align">Personal Details</p>
             <div class="crm-text-field">
                 <div class="field-label">
                     <span>Title</span>
@@ -95,7 +95,7 @@
         </v-col>
         
         <v-col cols="4">
-            <p class="sub-title">Property Details</p>
+            <p class="sub-title title-align">Property Details</p>
             <div class="crm-text-field">
                 <div class="field-label">
                     <span>Connection Date</span>
@@ -188,7 +188,7 @@
         </v-col>
 
         <v-col cols="4">
-            <p class="sub-title">Identification</p>
+            <p class="sub-title title-align">Identification</p>
             <div class="crm-text-field">
                 <div class="field-label">
                     <span>Identification</span>

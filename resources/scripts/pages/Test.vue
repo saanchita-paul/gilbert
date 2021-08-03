@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ApplicationDetailScreen></ApplicationDetailScreen>
+    <ConfirmSubmission></ConfirmSubmission>
   </div>
 </template>
 
@@ -17,6 +17,7 @@ import ApplicationDetails from "@scripts/components/crm/application/ApplicationD
 import LeadApplications from "@scripts/components/crm/leadmanagement/LeadApplications";
 import AssignedtoPopUp from "@scripts/components/crm/leadmanagement/AssignedtoPopUp";
 import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
+import ConfirmSubmission from "@scripts/components/crm/leadmanagement/ConfirmSubmission";
 export default {
   name: "Test",
   components: {
@@ -31,7 +32,8 @@ export default {
     ApplicationDetails,
     LeadApplications,
     AssignedtoPopUp,
-    ApplicationDetailScreen
+    ApplicationDetailScreen,
+    ConfirmSubmission
   },
 };
 </script>
