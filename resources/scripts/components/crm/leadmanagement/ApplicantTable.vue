@@ -38,12 +38,7 @@
                                     <v-icon color="red">mdi-fire</v-icon>
                                 </td>
                                 <td>
-                                    <v-avatar size="20">
-                                        <img
-                                            alt="user"
-                                            src="https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
-                                        >
-                                    </v-avatar>
+                                    <AssigneeDropdown></AssigneeDropdown>
                                 </td>
                             </tr>
                             </tbody>
@@ -57,10 +52,12 @@
 
 <script>
 import Search from "@scripts/components/crm/Search";
+import AssigneeDropdown from "@scripts/components/crm/leadmanagement/AssigneeDropdown";
 export default {
   name: "ApplicantTable",
   components: {
         Search,
+        AssigneeDropdown
     },
     data(){
         return {
