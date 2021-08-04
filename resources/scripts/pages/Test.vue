@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ConfirmSubmission></ConfirmSubmission>
+    <AgentsAdditionalInstructions></AgentsAdditionalInstructions>
   </div>
 </template>
 
@@ -18,6 +18,7 @@ import LeadApplications from "@scripts/components/crm/leadmanagement/LeadApplica
 import AssignedtoPopUp from "@scripts/components/crm/leadmanagement/AssignedtoPopUp";
 import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
 import ConfirmSubmission from "@scripts/components/crm/leadmanagement/ConfirmSubmission";
+import AgentsAdditionalInstructions from "@scripts/components/crm/leadmanagement/AgentsAdditionalInstructions";
 export default {
   name: "Test",
   components: {
@@ -33,7 +34,8 @@ export default {
     LeadApplications,
     AssignedtoPopUp,
     ApplicationDetailScreen,
-    ConfirmSubmission
+    ConfirmSubmission,
+    AgentsAdditionalInstructions
   },
 };
 </script>
