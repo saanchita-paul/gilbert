@@ -18,6 +18,10 @@ import AgentApplicationPage from "@scripts/pages/agent/AgentApplicationPage";
 import CrmAgencyDataTable from "@scripts/components/crm/agency/CrmAgencyDataTable";
 import CrmOfficeDataTable from "@scripts/components/crm/office/CrmOfficeDataTable";
 import CrmUserDatatable from "@scripts/components/crm/user/CrmUserDatatable";
+import LeadApplications from "@scripts/components/crm/leadmanagement/LeadApplications";
+import ApplicationPage from "@scripts/pages/ApplicationPage";
+import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
+import ApplicationDetailsPage from "@scripts/pages/ApplicationDetailsPage";
 
 Vue.use(VueRouter);
 
@@ -113,6 +117,22 @@ const router = new VueRouter({
                     path: '/test',
                     component: Test,
                     name: 'test',
+                    meta: {
+                        isProtected: true
+                    }
+                },
+                {
+                    path: '/applications',
+                    component: ApplicationPage,
+                    name: 'applications',
+                    meta: {
+                        isProtected: true
+                    }
+                },
+                {
+                    path: '/applications/:id',
+                    component: ApplicationDetailsPage,
+                    name: 'applications.details',
                     meta: {
                         isProtected: true
                     }

@@ -38,6 +38,29 @@ const data = [
     },
 ];
 
+const userData = [
+    {
+        id: 1,
+        first_name: 'Barry Plant',
+        profile_img: 500,
+    },
+    {
+        id: 2,
+        first_name: 'Barry Ahna',
+        profile_img: 500,
+    },
+    {
+        id: 3,
+        first_name: 'adfWERa Plant',
+        profile_img: 500,
+    },
+    {
+        id: 4,
+        first_name: 'AEREW Plant',
+        profile_img: 500,
+    },
+];
+
 export default {
     getUsersData: ()=> {
         try {
@@ -45,6 +68,14 @@ export default {
 
             return CrmUserMapper.mapUserList(data);
 
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    getUserAllData: ()=> {
+        try {
+            return CrmUserMapper.mapUserList(userData);
         } catch (error) {
             return error.data;
         }

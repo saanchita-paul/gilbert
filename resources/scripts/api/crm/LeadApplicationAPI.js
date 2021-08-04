@@ -1,5 +1,7 @@
 import CrmUserMapper from "@scripts/api/mappers/crm/CrmUserMapper";
 import AppMetricsMapper from "@scripts/api/mappers/crm/AppMetricsMapper";
+import AppLeadMapper from "@scripts/api/mappers/crm/AppLeadMapper";
+import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 
 const data = [
     {
@@ -39,12 +41,191 @@ const data = [
         status: 'Successfully connected',
     },
 ];
+const userData = [
+    {
+        id: 1,
+        title: 'My Applications',
+        lead_count: 500,
+    },
+    {
+        id: 2,
+        title: 'Unassigned',
+        lead_count: 100,
+    },
+    {
+        id: 3,
+        title: 'Assigned',
+        lead_count: 300,
+    },
+    {
+        id: 4,
+        title: 'Escalated',
+        lead_count: 200,
+
+    },
+    {
+        id: 5,
+        title: 'Submitted',
+        lead_count: 200,
+    }
+];
+
+const applications = [
+    {
+        id: 1,
+        applicant_name: 'Staedtler Marker',
+        moving_date: '06/08/2021',
+        phone: '0410758782',
+        service_types: ['power', 'gas', 'internet'],
+        status: 'Not Confirmed Connection',
+    },
+    {
+        id: 2,
+        applicant_name: 'Applicant Name goes here',
+        moving_date: '06/08/2021',
+        phone: '0410758782',
+        service_types: ['power', 'gas', 'internet'],
+        status: 'Not Confirmed Connection',
+    },
+    {
+        id: 3,
+        applicant_name: 'Applicant Name goes here',
+        moving_date: '06/08/2021',
+        phone: '0410758782',
+        service_types: ['power', 'gas', 'internet'],
+        status: 'Not Confirmed Connection',
+    },
+    {
+        id: 4,
+        applicant_name: 'Applicant Name goes here',
+        moving_date: '06/08/2021',
+        phone: '0410758782',
+        service_types: ['power', 'gas', 'internet'],
+        status: 'Not Confirmed Connection',
+    },
+];
+const application = {
+    id: 1,
+    applicant_name: 'Staedtler Marker',
+    date_of_birth: '06/08/2021',
+    phone: '0410758782',
+    email: 'staedtler.marker@gmail.com',
+    moving_date: '02/22/2022',
+    email_billing: 'Email/Paper',
+    tenancy_type: 'Renter or Home Owner',
+    service_address: '398 Bourke Road, Camberwell 3124 VIC',
+    service_types: ['power', 'gas', 'internet'],
+    additional_instruction: 'Additional Instructions goes here. Maybe it’s extra long so I have ' +
+        'to write something down to show how it will look like when a property manager has soooo ' +
+        'much things to say on his lead.'
+}
+
+const plans = [
+    {
+        id: 1,
+        title: 'Total Plan (Home)',
+        active: true,
+    },
+    {
+        id: 2,
+        title: 'No Frills (Home)',
+        active: false,
+    },
+    {
+        id: 3,
+        title: 'Basic Home',
+        active: false,
+    },
+
+];
+const notes = [
+    {
+        id: 1,
+        title: 'Note by John',
+        created_at:  '00/00/2021_00:00:00',
+        text: 'Called Cx. No Answer. Please Callback on 12/20 at 1pm.',
+        active: true,
+    },
+    {
+        id: 2,
+        title: 'Note by John',
+        created_at:  '00/00/2021_00:00:00',
+        text: 'Called Cx. No Answer. Please Callback on 12/20 at 1pm.',
+        active: false,
+    },
+    {
+        id: 3,
+        title: 'Note by John',
+        created_at:  '00/00/2021_00:00:00',
+        text: 'Called Cx. No Answer. Please Callback on 12/20 at 1pm.',
+        active: false,
+    },
+    {
+        id: 1,
+        title: 'Note by John',
+        created_at:  '00/00/2021_00:00:00',
+        text: 'Called Cx. No Answer. Please Callback on 12/20 at 1pm.',
+        active: false,
+    },
+
+];
+
 export default {
 
     getMetrics() {
         try {
             // const data = await axios.get('/');
             return AppMetricsMapper.mapAppMetricList(data);
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    getUserLeadMetrics() {
+        try {
+            // const data = await axios.get('/');
+            return AppMetricsMapper.mapUserMetLeads(userData);
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    getUserLeads(types) {
+        try {
+            // const data = await axios.get('/');
+            return ApplicationMapper.mapApplicationList(applications);
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    getUserLead (id) {
+        try {
+            // const data = await axios.get('/');
+            return ApplicationMapper.mapApplicationSummary(application);
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    getPlan() {
+        try {
+            // const data = await axios.get('/');
+            return ApplicationMapper.mapPlans(plans);
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    getNote(id) {
+        try {
+            // const data = await axios.get('/');
+            return ApplicationMapper.mapNote(notes);
 
         } catch (error) {
             return error.data;

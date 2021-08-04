@@ -1,7 +1,6 @@
 import CrmUser from "@scripts/models/crm/CrmUser";
 
 function mapUser(user) {
-    console.log('user', user);
     return new CrmUser({...user});
 }
 
@@ -12,8 +11,9 @@ export default {
         })
 
     },
+
     mapUser: (user) => {
-        console.log('user', user);
         return mapUser(user);
     }
+
 }

@@ -1,4 +1,5 @@
 import AppMetric from "@scripts/models/crm/AppMetric";
+import UserLead from "@scripts/models/crm/UserLead";
 
 
 function mapAppMetric(appMetric) {
@@ -42,6 +43,10 @@ function mapAppMetric(appMetric) {
     return temAppMetric;
 }
 
+function mapUserLead(lead) {
+    return new UserLead({...lead})
+}
+
 export default {
     mapAppMetricList: (appMetrics)=> {
         return appMetrics.map(appMetric=> {
@@ -51,5 +56,11 @@ export default {
 
     mapAppMetric: (appMetric) => {
         return mapAppMetric(appMetric);
+    },
+
+    mapUserMetLeads: (userLeads) => {
+        return userLeads.map(lead=> {
+            return mapUserLead(lead);
+        })
     }
 }

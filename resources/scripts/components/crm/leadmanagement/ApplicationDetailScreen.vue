@@ -14,11 +14,11 @@
                         <sapan class="mx-1 pa-2 elevation-3"><v-icon color="red">mdi-fire</v-icon> Gas</sapan>
                         <sapan><v-icon color="grey lighten-1">mdi-wifi</v-icon> Internet</sapan>
                         <sapan><v-icon color="grey lighten-1">mdi-water</v-icon> Water</sapan>
-                      </small> 
+                      </small>
                     </div>
                 </div>
 
-                
+
 
                 <div>
                   <v-btn outlined>Escalate</v-btn>
