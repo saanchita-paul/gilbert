@@ -15,6 +15,7 @@ import CustomerList from "@scripts/pages/HelpdeskPage";
 import Test from "@scripts/pages/Test";
 import RealStateAgencyPage from "@scripts/pages/RealStateAgencyPage";
 import AgentApplicationPage from "@scripts/pages/agent/AgentApplicationPage";
+import AgentCreateNewApplication from "@scripts/components/crm/agent/AgentCreateNewApplication";
 import CrmAgencyDataTable from "@scripts/components/crm/agency/CrmAgencyDataTable";
 import CrmOfficeDataTable from "@scripts/components/crm/office/CrmOfficeDataTable";
 import CrmUserDatatable from "@scripts/components/crm/user/CrmUserDatatable";
@@ -136,7 +137,15 @@ const router = new VueRouter({
                 {
                     path: '',
                     component: AgentApplicationPage,
-                    name: 'agent.applications',
+                    name: 'agent.application.dashboard',
+                    meta: {
+                        isProtected: true
+                    }
+                },
+                {
+                    path: '/create-application',
+                    component: AgentCreateNewApplication,
+                    name: 'agent.create.application',
                     meta: {
                         isProtected: true
                     }
