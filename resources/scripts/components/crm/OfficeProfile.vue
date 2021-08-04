@@ -83,80 +83,75 @@
                     <p class="sub-title mb-0">Comission Orofiles for this Office.</p>
                 </v-col>
 
-                <v-col cols="3">
-                    <div class="leade-badge">
-                        <h3>Power</h3>
-                        <div class="leade-icon pb-2">
-                            <v-icon color="yellow">mdi-flash</v-icon>
-                            <span class="mr-4">$</span>
-                            <v-text-field
-                                outlined
-                                dense
-                                hide-details
-                                placeholder="50"
-                            ></v-text-field>
+               <v-row  class="section-leademetriics pa-4">
+                    <v-col cols="3" class="pa-0">
+                        <div class="leade-badge">
+                            <h3>Power</h3>
+                            <div class="leade-icon pb-2">
+                                <v-icon color="yellow">mdi-flash</v-icon>
+                                <span class="mr-4">$</span>
+                                <v-text-field
+                                    outlined
+                                    dense
+                                    hide-details
+                                    placeholder="50"
+                                ></v-text-field>
+                            </div>
+                            <p class="leade-text pr-5 mb-0">Per successful connection</p>
                         </div>
-                        <p class="leade-text pr-5 mb-0">Per successful connection</p>
-                    </div>
-                </v-col>
+                    </v-col>
 
-                <v-col cols="3">
-                    <div class="leade-badge">
-                        <h3>Gas</h3>
-                        <div class="leade-icon pb-2">
-                            <v-icon color="red">mdi-fire</v-icon>
-                            <span class="mr-4">$</span>
-                            <v-text-field
-                                outlined
-                                dense
-                                hide-details
-                                placeholder="50"
-                            ></v-text-field>
+                    <v-col cols="3" class="pa-0">
+                        <div class="leade-badge">
+                            <h3>Gas</h3>
+                            <div class="leade-icon pb-2">
+                                <v-icon color="red">mdi-fire</v-icon>
+                                <span class="mr-4">$</span>
+                                <v-text-field
+                                    outlined
+                                    dense
+                                    hide-details
+                                    placeholder="50"
+                                ></v-text-field>
+                            </div>
+                            <p class="leade-text pr-5">Per successful connection</p>
                         </div>
-                        <p class="leade-text pr-5">Per successful connection</p>
-                    </div>
-                </v-col>
+                    </v-col>
 
-                <v-col cols="3">
-                    <div class="leade-badge">
-                        <h3>Internet</h3>
-                        <div class="leade-icon pb-2">
-                            <v-icon color="grey lighten-1">mdi-wifi</v-icon>
-                            <span class="mr-4">$</span>
-                            <v-text-field
-                                outlined
-                                dense
-                                hide-details
-                                placeholder="50"
-                            ></v-text-field>
+                    <v-col cols="3" class="pa-0">
+                        <div class="leade-badge">
+                            <h3>Internet</h3>
+                            <div class="leade-icon pb-2">
+                                <v-icon color="grey lighten-1">mdi-wifi</v-icon>
+                                <span class="mr-4">$</span>
+                                <v-text-field
+                                    outlined
+                                    dense
+                                    hide-details
+                                    placeholder="50"
+                                ></v-text-field>
+                            </div>
+                            <p class="leade-text pr-5">Per successful connection</p>
                         </div>
-                        <p class="leade-text pr-5">Per successful connection</p>
-                    </div>
-                </v-col>
+                    </v-col>
 
-                <v-col cols="3">
-                    <div class="leade-badge">
-                        <h3>Water</h3>
-                        <div class="leade-icon pb-2">
-                            <v-icon color="grey lighten-1">mdi-water</v-icon>
-                            <span class="mr-4">$</span>
-                            <v-text-field
-                                outlined
-                                dense
-                                hide-details
-                                placeholder="50"
-                            ></v-text-field>
+                    <v-col cols="3" class="pa-0">
+                        <div class="leade-badge">
+                            <h3>Water</h3>
+                            <div class="leade-icon pb-2">
+                                <v-icon color="grey lighten-1">mdi-water</v-icon>
+                                <span class="mr-4">$</span>
+                                <v-text-field
+                                    outlined
+                                    dense
+                                    hide-details
+                                    placeholder="50"
+                                ></v-text-field>
+                            </div>
+                            <p class="leade-text pr-5">Per successful connection</p>
                         </div>
-                        <p class="leade-text pr-5">Per successful connection</p>
-                    </div>
-                </v-col>
-
-                <v-col cols="12">
-                    <div class="d-flex justify-end">
-                        <v-btn class="mx-4">Cancel</v-btn>
-                        <v-btn color="primary">Save</v-btn>
-                    </div>
-                </v-col>
+                    </v-col>
+               </v-row>
 
             </v-row>
         </v-card>

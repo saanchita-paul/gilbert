@@ -1,8 +1,8 @@
 <template>
         <v-container>
                 <v-card>
-                    <v-app-bar>
-                        <h2 class="large-title py-5 primary--text">Confirm Submission</h2>
+                    <v-app-bar height="80px">
+                        <spam class="py-4 dialogs-title">Confirm Submission</spam>
                     </v-app-bar>
                     <section class="pa-4 submission-section">
                         <v-row>

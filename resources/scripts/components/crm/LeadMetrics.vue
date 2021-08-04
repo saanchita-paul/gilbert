@@ -1,15 +1,15 @@
 <template>
     <v-row>
-      <v-col cols="2" v-for=" appMetric in appMetrics" :key="appMetric.id">
-        <div class="leade-badge">
+      <div class="section-leademetriics">
+        <div class="leade-badge" v-for=" appMetric in appMetrics" :key="appMetric.id">
             <h3>{{appMetric.title}}</h3>
             <div class="leade-icon">
-                <v-icon color="yellow">{{appMetric.icon}}</v-icon>
+                <v-icon color="grey lighten-1">{{appMetric.icon}}</v-icon>
                 <span>{{appMetric.lead_count}}</span>
             </div>
             <p class="leade-text">{{appMetric.status}}</p>
         </div>
-      </v-col>
+      </div>
 
 <!--      <v-col cols="2">-->
 <!--        <div class="leade-badge">-->
