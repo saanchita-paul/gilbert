@@ -28,7 +28,7 @@
                                     Mobile
                                 </th>
                                 <th class="text-left">
-                                    Service Type
+                                    Preference
                                 </th>
                                 <th class="text-left">
                                     Status
@@ -41,14 +41,14 @@
                                 :key="item.id"
                                 @click="openApplicationSummary(item.id)"
                             >
-                                <td>{{ item.applicant_name }}</td>
+                                <td>{{ item.first_name + ' ' + item.last_name }}</td>
                                 <td>{{ item.moving_date }}</td>
                                 <td>{{ item.phone }}</td>
                                 <td>
-                                    <v-icon :disabled="isServiceAllowed(item.service_types, 'power')" color="yellow">mdi-flash</v-icon>
-                                    <v-icon :disabled="isServiceAllowed(item.service_types, 'gas')" color="red">mdi-fire</v-icon>
-                                    <v-icon :disabled="isServiceAllowed(item.service_types, 'internet')" color="green">mdi-wifi</v-icon>
-                                    <v-icon :disabled="isServiceAllowed(item.service_types, 'water')" color="blue" >mdi-water</v-icon>
+                                    <v-icon :disabled="isServiceAllowed(item.service_interests, 'power')" color="yellow">mdi-flash</v-icon>
+                                    <v-icon :disabled="isServiceAllowed(item.service_interests, 'gas')" color="red">mdi-fire</v-icon>
+                                    <v-icon :disabled="isServiceAllowed(item.service_interests, 'internet')" color="green">mdi-wifi</v-icon>
+                                    <v-icon :disabled="isServiceAllowed(item.service_interests, 'water')" color="blue" >mdi-water</v-icon>
                                 </td>
                                 <td>{{ item.status }}</td>
                             </tr>
@@ -65,13 +65,15 @@
 import Search from "@scripts/components/crm/Search";
 
 export default {
-    name: "AgencyApplicationTable",
+    name: "AgentApplicationTable",
     props: ["applications"],
     components: {
         Search
     },
     methods: {
-        addNewApplication() {},
+        addNewApplication() {
+            this.$router.push({name: 'agent.create.application'});
+        },
         openApplicationSummary(id) {
             this.$emit("openApplicationSummary", id);
         },

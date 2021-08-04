@@ -1,9 +1,10 @@
 export default class Application {
     id = null;
-    applicant_name = null;
+    first_name = null;
+    last_name = null;
     moving_date = null;
     phone = null;
-    service_types = null;
+    service_interests = null;
     status = null;
     constructor() {}
 }
