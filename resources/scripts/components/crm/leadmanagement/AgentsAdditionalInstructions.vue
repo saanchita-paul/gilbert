@@ -1,5 +1,5 @@
 <template>
-        <v-row>
+        <v-row class="text-center">
             <v-col cols="12">
                 <span class="popup-title">
                     Agent’s Additional Instructions
@@ -8,6 +8,7 @@
             <v-col cols="12">
                     <v-textarea
                         outlined
+                        hide-details="auto"
                         placeholder="Additional Instructions goes here."
                     ></v-textarea>
             </v-col>
