@@ -2,7 +2,7 @@
         <v-container>
                 <v-card>
                     <v-app-bar>
-                        <h2 class="large-title py-5 primary--text">Confirm Submission</h2>
+                        <spam class="py-5 dialogs-title">Confirm Submission</spam>
                     </v-app-bar>
                     <section class="pa-4 submission-section">
                         <v-row>

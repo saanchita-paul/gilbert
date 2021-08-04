@@ -1,7 +1,7 @@
 <template>
-        <v-row class="text-center">
+        <v-row class="text-center section-dialogs">
             <v-col cols="12">
-                <span class="popup-title">
+                <span class="dialogs-title">
                     Agent’s Additional Instructions
                 </span>
             </v-col>

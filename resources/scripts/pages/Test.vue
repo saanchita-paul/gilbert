@@ -1,6 +1,6 @@
 <template>
   <div>
-    <AgentsAdditionalInstructions></AgentsAdditionalInstructions>
+    <ConfirmSubmission></ConfirmSubmission>
   </div>
 </template>
 
