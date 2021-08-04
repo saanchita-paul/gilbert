@@ -107,33 +107,35 @@
                     <p class="sub-title mb-0">Service Interests</p>
                 </v-col>
 
-                <v-col cols="3">
-                    <div class="leade-badge text-center">
-                        <h4>Power</h4>
-                        <v-icon color="yellow">mdi-flash</v-icon>
-                    </div>
-                </v-col>
+                <v-row class="section-leademetriics pa-4">
+                        <v-col cols="3" class="pa-0">
+                            <div class="leade-badge text-center">
+                                <h4>Power</h4>
+                                <v-icon color="yellow">mdi-flash</v-icon>
+                            </div>
+                        </v-col>
 
-                <v-col cols="3">
-                    <div class="leade-badge text-center">
-                        <h4>Gas</h4>
-                        <v-icon color="red">mdi-fire</v-icon>
-                    </div>
-                </v-col>
+                        <v-col cols="3" class="pa-0">
+                            <div class="leade-badge text-center">
+                                <h4>Gas</h4>
+                                <v-icon color="red">mdi-fire</v-icon>
+                            </div>
+                        </v-col>
 
-                <v-col cols="3">
-                    <div class="leade-badge text-center">
-                        <h4>Water</h4>
-                        <v-icon color="grey lighten-1">mdi-water</v-icon>
-                    </div>
-                </v-col>
+                        <v-col cols="3" class="pa-0">
+                            <div class="leade-badge text-center">
+                                <h4>Water</h4>
+                                <v-icon color="grey lighten-1">mdi-water</v-icon>
+                            </div>
+                        </v-col>
 
-                <v-col cols="3">
-                    <div class="leade-badge text-center">
-                        <h4>Internet</h4>
-                        <v-icon color="grey lighten-1">mdi-wifi</v-icon>
-                    </div>
-                </v-col>
+                        <v-col cols="3" class="pa-0">
+                            <div class="leade-badge text-center">
+                                <h4>Internet</h4>
+                                <v-icon color="grey lighten-1">mdi-wifi</v-icon>
+                            </div>
+                        </v-col>
+                </v-row>
 
                 <v-col cols="12">
                     <p class="sub-title  mt-5">Additional Instructions</p>

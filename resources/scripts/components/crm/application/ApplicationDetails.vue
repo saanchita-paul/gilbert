@@ -4,7 +4,7 @@
             <v-row>
                 <v-col cols="12" class="pb-0">
                     <v-btn><v-icon left dark>mdi-arrow-left</v-icon>Back to Edit</v-btn>
-                    <h2 class="large-title my-5 pt-5 primary--text">Please confirm your application details.</h2>
+                    <h2 class="dialogs-title my-5 pt-5">Please confirm your application details.</h2>
                 </v-col>
 
                 <v-col cols="6">
@@ -51,8 +51,8 @@
                     <v-row>
                         <v-col cols="6">
                             <p class="font-weight-bold mb-0">Service Interests</p>
-                            <v-row>
-                                <v-col cols="3">
+                            <v-row class="pa-4 section-leademetriics">
+                                <v-col cols="3" class="pa-0">
                                     <div class="leade-badge text-center elevation-3">
                                         <p class="mb-0">
                                             <small>Power</small>
@@ -61,7 +61,7 @@
                                     </div>
                                 </v-col>
 
-                                <v-col cols="3">
+                                <v-col cols="3" class="pa-0">
                                     <div class="leade-badge text-center elevation-3">
                                         <p class="mb-0">
                                             <small>Gas</small>
@@ -70,7 +70,7 @@
                                     </div>
                                 </v-col>
 
-                                <v-col cols="3">
+                                <v-col cols="3" class="pa-0">
                                     <div class="leade-badge text-center ">
                                         <p class="mb-0">
                                             <small>Water</small>
@@ -79,7 +79,7 @@
                                     </div>
                                 </v-col>
 
-                                <v-col cols="3">
+                                <v-col cols="3" class="pa-0">
                                     <div class="leade-badge text-center">
                                         <p class="mb-0">
                                             <small>Internet</small>
