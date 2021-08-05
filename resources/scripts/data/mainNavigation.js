@@ -43,4 +43,10 @@ export default [
         icon: '/assets/images/icons/Helpdesk.svg',
         route_name: 'test'
     },
+    {
+        type: 'route',
+        title: 'Application',
+        icon: '/assets/images/icons/Helpdesk.svg',
+        route_name: 'applications'
+    },
 ]

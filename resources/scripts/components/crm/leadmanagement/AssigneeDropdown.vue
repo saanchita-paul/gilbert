@@ -4,6 +4,8 @@
             bottom
             origin="center center"
             transition="scale-transition"
+            :close-on-content-click="false"
+            v-model="menu"
             >
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn text
@@ -16,8 +18,8 @@
                         </v-avatar>
                         <v-icon x-small>mdi-menu-down</v-icon>
                     </v-btn>
-                    
-                    
+
+
                 </template>
 
                 <v-list>
@@ -30,23 +32,13 @@
                             hide-details="auto"
                         ></v-text-field>
                     </div>
-                    <v-list-item>
+                    <v-list-item v-for="user in users" :key="user.id">
                         <v-avatar size="30">
-                            <img src="https://cdn.vuetifyjs.com/images/john.jpg">
+                            <img v-bind:src="user.profile_img">
                         </v-avatar>
-                        <small  class="pl-2">John Doe</small>
-                    </v-list-item>
-                    <v-list-item>
-                            <v-avatar size="30">
-                            <img src="https://cdn.vuetifyjs.com/images/john.jpg">
-                        </v-avatar>
-                        <small class="pl-2">John Doe</small>
-                    </v-list-item>
-                    <v-list-item>
-                            <v-avatar size="30">
-                                <img src="https://cdn.vuetifyjs.com/images/john.jpg">
-                            </v-avatar>
-                        <small class="pl-2">John Doe</small>
+                        <small  class="pl-2">{{user.first_name}}</small>
+                        <v-spacer></v-spacer>
+                        <span flat ><small>Reassign</small><v-icon small @click="reassigning(user)">mdi-checkbox-marked-circle</v-icon></span>
                     </v-list-item>
                 </v-list>
     </v-menu>
@@ -56,6 +48,29 @@
 <script>
 export default {
   name: "AssigneeDropdown",
+    props:{
+      users:{
+          required: true
+      },
+        lead: {
+          required: true
+        }
+    },
+    data() {
+      return {
+          menu: false,
+      }
+    },
+
+    methods: {
+        reassigning(user)
+        {
+            this.$emit('reassigning', user, this.lead);
+        }
+    },
+    mounted() {
+      console.log('user id', this.users);
+    }
 
 };
 </script>
