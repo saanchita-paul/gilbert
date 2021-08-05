@@ -1,85 +1,69 @@
 <template>
     <v-container>
         <v-card class="pa-4 new-application">
-            <v-row>
-                <v-col cols="12 pb-0">
-                    <v-btn @click="onCancel"><v-icon left dark>mdi-arrow-left</v-icon>Back to my Dashboard</v-btn>
-                    <h3 class="page-title my-5 pt-5">Add a new Application</h3>
-                    <p class="sub-title mb-0">Contact Details  <small class="font-weight-thin">Personal details or your applicant.</small>  <small class="font-weight-thin float-right">All fields are mandatory*</small></p>
-                </v-col>
+            <ValidationObserver ref="create_application">
+                <v-row>
+                    <v-col cols="12 pb-0">
+                        <v-btn @click="onCancel"><v-icon left dark>mdi-arrow-left</v-icon>Back to my Dashboard</v-btn>
+                        <h3 class="page-title my-5 pt-5">Add a new Application</h3>
+                        <p class="sub-title mb-0">Contact Details  <small class="font-weight-thin">Personal details or your applicant.</small>  <small class="font-weight-thin float-right">All fields are mandatory*</small></p>
+                    </v-col>
 
-                <v-col cols="6">
-                    <v-text-field
-                        label="Firstname*"
-                        outlined
-                        dense
-                        placeholder="Firstname"
-                        v-model="application.first_name"
-                    ></v-text-field>
-                    <v-text-field
-                        label="Email*"
-                        outlined
-                        dense
-                        placeholder="example@domain.com"
-                        v-model="application.email"
-                    ></v-text-field>
-                    <v-select outlined dense
-                              v-model="application.tenancy_type"
-                              :items="tenancy_types"
-                              label="Tenancy Type*"
-                              placeholder="Please Select">
-                    </v-select>
-                </v-col>
-
-                <v-col cols="6">
-
-                    <v-text-field
-                        label="Lastname*"
-                        outlined
-                        dense
-                        placeholder="Lastname*"
-                        v-model="application.last_name"
-                    ></v-text-field>
-                    <v-text-field
-                        label="Mobile number*"
-                        outlined
-                        dense
-                        placeholder="+61 410"
-                        v-model="application.phone"
-                    ></v-text-field>
-                    <v-menu
-                        v-model="showDOB"
-                        :close-on-content-click="false"
-                        :nudge-right="40"
-                        transition="scale-transition"
-                        offset-y
-                        min-width="290px"
-                    >
-                        <template v-slot:activator="{ on, attrs }">
+                    <v-col cols="6">
+                        <ValidationProvider name="Firstname" rules="required"  v-slot="{ errors }">
                             <v-text-field
-                                label="Date of Birth*"
-                                placeholder="DD/MM/YYYY"
+                                label="Firstname*"
                                 outlined
                                 dense
-                                append-icon="mdi-calendar"
-                                v-model="application.date_of_birth"
-                                readonly
-                                v-bind="attrs"
-                                v-on="on"
+                                placeholder="Firstname"
+                                v-model="application.first_name"
+                                :error-messages=" errors[0]"
                             ></v-text-field>
-                        </template>
-                        <v-date-picker v-model="application.date_of_birth" @input="showDOB = false"></v-date-picker>
-                    </v-menu>
-                </v-col>
+                        </ValidationProvider>
+                        <ValidationProvider name="Email" rules="required|email"  v-slot="{ errors }">
+                            <v-text-field
+                                label="Email*"
+                                outlined
+                                dense
+                                placeholder="example@domain.com"
+                                v-model="application.email"
+                                :error-messages=" errors[0]"
+                            ></v-text-field>
+                        </ValidationProvider>
+                        <ValidationProvider name="Tenancy Types" rules="required"  v-slot="{ errors }">
+                            <v-select outlined dense
+                                      v-model="application.tenancy_type"
+                                      :items="tenancy_types"
+                                      label="Tenancy Type*"
+                                      :error-messages=" errors[0]"
+                                      placeholder="Please Select">
+                            </v-select>
+                        </ValidationProvider>
+                    </v-col>
 
-                <v-col cols="12" class="py-0">
-                    <p class="sub-title mb-0">Moving Details <small class="font-weight-thin">Information about your lead’s move.</small></p>
-                </v-col>
-                <v-col cols="12" class="pb-0">
-                    <v-row>
-                        <v-col cols="6" class="py-0">
+                    <v-col cols="6">
+                        <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
+                            <v-text-field
+                                label="Lastname*"
+                                outlined
+                                dense
+                                placeholder="Lastname*"
+                                v-model="application.last_name"
+                                :error-messages=" errors[0]"
+                            ></v-text-field>
+                        </ValidationProvider>
+                        <ValidationProvider name="Mobile number" rules="required|cv-phone"  v-slot="{ errors }">
+                            <v-text-field
+                                label="Mobile number*"
+                                outlined
+                                dense
+                                placeholder="+61 410"
+                                v-model="application.phone"
+                                :error-messages=" errors[0]"
+                            ></v-text-field>
+                        </ValidationProvider>
                             <v-menu
-                                v-model="showMovingDate"
+                                v-model="showDOB"
                                 :close-on-content-click="false"
                                 :nudge-right="40"
                                 transition="scale-transition"
@@ -87,121 +71,174 @@
                                 min-width="290px"
                             >
                                 <template v-slot:activator="{ on, attrs }">
-                                    <v-text-field
-                                        label="Moving Date*"
-                                        placeholder="DD/MM/YYYY"
-                                        outlined
-                                        dense
-                                        append-icon="mdi-calendar"
-                                        v-model="application.moving_date"
-                                        readonly
-                                        v-bind="attrs"
-                                        v-on="on"
-                                    ></v-text-field>
+                                    <ValidationProvider name="Date of Birth" rules="required"  v-slot="{ errors }">
+                                        <v-text-field
+                                            label="Date of Birth*"
+                                            placeholder="DD/MM/YYYY"
+                                            outlined
+                                            dense
+                                            append-icon="mdi-calendar"
+                                            v-model="application.date_of_birth"
+                                            readonly
+                                            v-bind="attrs"
+                                            v-on="on"
+                                            :error-messages=" errors[0]"
+                                        ></v-text-field>
+                                    </ValidationProvider>
                                 </template>
-                                <v-date-picker v-model="application.moving_date" @input="showMovingDate = false"></v-date-picker>
+                                <v-date-picker v-model="application.date_of_birth" @input="showDOB = false"></v-date-picker>
                             </v-menu>
-                        </v-col>
-                    </v-row>
-                </v-col>
-                <v-col cols="6" class="pt-0">
-                    <v-text-field
-                        label="To Address Unit"
-                        outlined
-                        dense
-                        placeholder="2/56"
-                        v-model="application.address_unit"
-                    ></v-text-field>
-                    <v-text-field
-                        label="City"
-                        outlined
-                        dense
-                        placeholder="Camberwell"
-                        v-model="application.city"
-                    ></v-text-field>
-                    <v-text-field
-                        label="Country"
-                        outlined
-                        dense
-                        placeholder="Australia"
-                        v-model="application.country"
-                    ></v-text-field>
-                </v-col>
 
-                <v-col cols="6" class="pt-0">
-                    <v-text-field
-                        label="Apartment, suite, etc.."
-                        outlined
-                        dense
-                        placeholder="House / Apartment, Bldg, etc"
-                        v-model="application.address_apartment"
-                    ></v-text-field>
-                    <v-select outlined dense
-                              v-model="application.state"
-                              :items="states"
-                              label="State"
-                              placeholder="Please Select">
-                    </v-select>
-                    <v-text-field
-                        label="Postcode"
-                        outlined
-                        dense
-                        placeholder="3429"
-                        v-model="application.postcode"
-                    ></v-text-field>
-                </v-col>
+                    </v-col>
 
-                <v-col cols="12" class="pb-0">
-                    <p class="sub-title mb-0">Service Interests</p>
-                </v-col>
+                    <v-col cols="12" class="py-0">
+                        <p class="sub-title mb-0">Moving Details <small class="font-weight-thin">Information about your lead’s move.</small></p>
+                    </v-col>
+                    <v-col cols="12" class="pb-0">
+                        <v-row>
+                            <v-col cols="6" class="py-0">
+                                <v-menu
+                                    v-model="showMovingDate"
+                                    :close-on-content-click="false"
+                                    :nudge-right="40"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <ValidationProvider name="Moving Date" rules="required"  v-slot="{ errors }">
+                                            <v-text-field
+                                                label="Moving Date*"
+                                                placeholder="DD/MM/YYYY"
+                                                outlined
+                                                dense
+                                                append-icon="mdi-calendar"
+                                                v-model="application.moving_date"
+                                                readonly
+                                                v-bind="attrs"
+                                                v-on="on"
+                                                :error-messages=" errors[0]"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </template>
+                                    <v-date-picker v-model="application.moving_date" @input="showMovingDate = false"></v-date-picker>
+                                </v-menu>
+                            </v-col>
+                        </v-row>
+                    </v-col>
+                    <v-col cols="6" class="pt-0">
+                        <ValidationProvider name="Address Unit" rules="required"  v-slot="{ errors }">
+                            <v-text-field
+                                label="To Address Unit"
+                                outlined
+                                dense
+                                placeholder="2/56"
+                                v-model="application.address_unit"
+                                :error-messages=" errors[0]"
+                            ></v-text-field>
+                        </ValidationProvider>
+                        <ValidationProvider name="City" rules="required"  v-slot="{ errors }">
+                            <v-text-field
+                                label="City"
+                                outlined
+                                dense
+                                placeholder="Camberwell"
+                                v-model="application.city"
+                                :error-messages=" errors[0]"
+                            ></v-text-field>
+                        </ValidationProvider>
+                        <ValidationProvider name="Country" rules="required"  v-slot="{ errors }">
+                            <v-text-field
+                                label="Country"
+                                outlined
+                                dense
+                                placeholder="Australia"
+                                v-model="application.country"
+                                :error-messages=" errors[0]"
+                            ></v-text-field>
+                        </ValidationProvider>
+                    </v-col>
 
-                <v-col cols="3">
-                    <div class="leade-badge text-center" :class="service_types.power ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('power')">
-                        <h4 :class="service_types.power ? 'enabled' : 'disabled'">Power</h4>
-                        <v-icon :disabled="!service_types.power" color="yellow">mdi-flash</v-icon>
-                    </div>
-                </v-col>
+                    <v-col cols="6" class="pt-0">
+                        <v-text-field
+                            label="Apartment, suite, etc.."
+                            outlined
+                            dense
+                            placeholder="House / Apartment, Bldg, etc"
+                            v-model="application.address_apartment"
+                        ></v-text-field>
+                        <ValidationProvider name="State" rules="required"  v-slot="{ errors }">
+                            <v-select outlined dense
+                                      v-model="application.state"
+                                      :items="states"
+                                      label="State"
+                                      :error-messages=" errors[0]"
+                                      placeholder="Please Select">
+                            </v-select>
+                        </ValidationProvider>
+                        <ValidationProvider name="Postcode" rules="required"  v-slot="{ errors }">
+                            <v-text-field
+                                label="Postcode"
+                                outlined
+                                dense
+                                placeholder="3429"
+                                v-model="application.postcode"
+                                :error-messages=" errors[0]"
+                            ></v-text-field>
+                        </ValidationProvider>
+                    </v-col>
 
-                <v-col cols="3">
-                    <div class="leade-badge text-center" :class="service_types.gas ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('gas')">
-                        <h4 :class="service_types.gas ? 'enabled' : 'disabled'">Gas</h4>
-                        <v-icon :disabled="!service_types.gas" color="red">mdi-fire</v-icon>
-                    </div>
-                </v-col>
+                    <v-col cols="12" class="pb-0">
+                        <p class="sub-title mb-0">Service Interests</p>
+                    </v-col>
 
-                <v-col cols="3">
-                    <div class="leade-badge text-center" :class="service_types.water ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('water')">
-                        <h4 :class="service_types.water ? 'enabled' : 'disabled'">Water</h4>
-                        <v-icon :disabled="!service_types.water" color="blue">mdi-water</v-icon>
-                    </div>
-                </v-col>
+                    <v-col cols="3">
+                        <div class="leade-badge text-center" :class="service_types.power ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('power')">
+                            <h4 :class="service_types.power ? 'enabled' : 'disabled'">Power</h4>
+                            <v-icon :disabled="!service_types.power" color="yellow">mdi-flash</v-icon>
+                        </div>
+                    </v-col>
 
-                <v-col cols="3">
-                    <div class="leade-badge text-center" :class="service_types.internet ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('internet')">
-                        <h4 :class="service_types.internet ? 'enabled' : 'disabled'">Internet</h4>
-                        <v-icon :disabled="!service_types.internet" color="green">mdi-wifi</v-icon>
-                    </div>
-                </v-col>
+                    <v-col cols="3">
+                        <div class="leade-badge text-center" :class="service_types.gas ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('gas')">
+                            <h4 :class="service_types.gas ? 'enabled' : 'disabled'">Gas</h4>
+                            <v-icon :disabled="!service_types.gas" color="red">mdi-fire</v-icon>
+                        </div>
+                    </v-col>
 
-                <v-col cols="12">
-                    <p class="sub-title  mt-5">Additional Instructions</p>
-                    <v-textarea
-                        outlined
-                        placeholder="Additional Instructions goes here."
-                        v-model="application.additional_instruction"
-                    ></v-textarea>
-                </v-col>
+                    <v-col cols="3">
+                        <div class="leade-badge text-center" :class="service_types.water ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('water')">
+                            <h4 :class="service_types.water ? 'enabled' : 'disabled'">Water</h4>
+                            <v-icon :disabled="!service_types.water" color="blue">mdi-water</v-icon>
+                        </div>
+                    </v-col>
+
+                    <v-col cols="3">
+                        <div class="leade-badge text-center" :class="service_types.internet ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('internet')">
+                            <h4 :class="service_types.internet ? 'enabled' : 'disabled'">Internet</h4>
+                            <v-icon :disabled="!service_types.internet" color="green">mdi-wifi</v-icon>
+                        </div>
+                    </v-col>
+
+                    <v-col cols="12">
+                        <p class="sub-title  mt-5">Additional Instructions</p>
+                        <v-textarea
+                            outlined
+                            placeholder="Additional Instructions goes here."
+                            v-model="application.additional_instruction"
+                        ></v-textarea>
+                    </v-col>
 
 
 
-                <v-col cols="12">
-                    <div class="d-flex justify-end">
-                        <v-btn @click="onCancel" class="mx-4">Cancel</v-btn>
-                        <v-btn @click="onSubmit" color="primary">Submit</v-btn>
-                    </div>
-                </v-col>
-
-            </v-row>
+                    <v-col cols="12">
+                        <div class="d-flex justify-end">
+                            <v-btn @click="onCancel" class="mx-4">Cancel</v-btn>
+                            <v-btn @click="onSubmit" color="primary">Submit</v-btn>
+                        </div>
+                    </v-col>
+                </v-row>
+            </ValidationObserver>
         </v-card>
         <AgentConfirmApplicationModal
             v-if="confirmApplicationModal" :dialog="confirmApplicationModal"
@@ -250,8 +287,12 @@ export default {
         onCancel() {
             this.$router.push({name: 'agent.application.dashboard'});
         },
-        onSubmit() {
-            this.confirmApplicationModal = true;
+        async onSubmit() {
+            let v = await this.$refs.create_application.validate();
+            if (v) {
+                this.confirmApplicationModal = true;
+            }
+            return v;
         },
         cancelApplicationModal() {
             this.confirmApplicationModal = false;
