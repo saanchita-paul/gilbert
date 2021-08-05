@@ -1,11 +1,12 @@
 <template>
   <div>
-    <ConfirmSubmission></ConfirmSubmission>
+    <EditingProfile></EditingProfile>
   </div>
 </template>
 
 <script>
 import OfficeDetails from "@scripts/components/crm/OfficeDetails";
+import EditingProfile from "@scripts/components/crm/EditingProfile";
 import AgencyDetails from "@scripts/components/crm/AgencyDetails";
 import AllocatorDetails from "@scripts/components/crm/AllocatorDetails";
 import CommissionProfile from "@scripts/components/crm/CommissionProfile";
@@ -31,7 +32,8 @@ export default {
     AssignedtoPopUp,
     ApplicationDetailScreen,
     ConfirmSubmission,
-    AgentsAdditionalInstructions
+    AgentsAdditionalInstructions,
+    EditingProfile
   },
 };
 </script>

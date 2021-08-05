@@ -19,13 +19,21 @@
                 <h6>Dimuthu Sathrasinghe</h6>
                 <h6>dimuthu.sathrasinghe@brccappital.com.au</h6>
             </v-toolbar-title>
-            <v-img
-                class="mx-2"
-                src="/assets/images/logo/hood_logo_while.png"
-                max-height="40"
-                max-width="40"
-                contain
-            ></v-img>
+
+            <v-menu offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                    <v-img v-bind="attrs"
+                    v-on="on"
+                        class="mx-2"
+                        src="/assets/images/logo/hood_logo_while.png"
+                        max-height="40"
+                        max-width="40"
+                        contain
+                    ></v-img>
+                </template>
+                <ProfileDropdown></ProfileDropdown>
+            </v-menu>
+            
         </v-app-bar>
 
         <v-main>
@@ -35,11 +43,15 @@
 </template>
 
 <script>
+import ProfileDropdown from "@scripts/components/crm/ProfileDropdown";
 import ApplicationService from "../services/ApplicationService";
 import AuthService from "@scripts/services/AuthService";
 
 export default {
     name: "NewDashboardLayout",
+    components: {
+        ProfileDropdown,
+    },
     data() {
         return {
             user: null,
