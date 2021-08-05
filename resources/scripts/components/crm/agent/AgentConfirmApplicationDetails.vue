@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-card class="pa-4 new-application">
+        <section class="pa-4 new-application">
             <v-row>
                 <v-col cols="12" class="pb-0">
                     <v-btn @click="cancelDialog"><v-icon left dark>mdi-arrow-left</v-icon>Back to Edit</v-btn>
@@ -107,7 +107,7 @@
                     </div>
                 </v-col>
             </v-row>
-        </v-card>
+        </section>
     </v-container>
 </template>
 
