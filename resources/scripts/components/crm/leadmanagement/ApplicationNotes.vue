@@ -2,13 +2,13 @@
     <v-row>
         <v-col cols="12">
             <p class="sub-title">Notes</p>
-            <v-textarea
+            <v-textarea v-model ="newNote"
                 outlined
                 hide-details="auto"
                 placeholder="Notes goes here."
             ></v-textarea>
 
-            <v-btn class="ma-2 float-right">Submit Note</v-btn>
+            <v-btn class="ma-2 float-right" @click="saveNote">Submit Note</v-btn>
         </v-col>
 
         <v-col cols="12">
@@ -23,27 +23,6 @@
                                 <p>{{note.text}}</p>
                             </v-card>
                     </v-timeline-item>
-                    <v-timeline-item color="gray" small>
-                            <v-card class="elevation-2  timeline-card">
-                                <p class="title">Escalated</p>
-                                <p>00/00/2021_00:00:00</p>
-                                <p>Called Cx. No Answer. Please Callback on 12/20 at 1pm.</p>
-                            </v-card>
-                    </v-timeline-item>
-<!--                    <v-timeline-item color="gray" small>-->
-<!--                            <v-card class="elevation-2  timeline-card">-->
-<!--                                <p class="title">Confirmed Connection</p>-->
-<!--                                <p>00/00/2021_00:00:00</p>-->
-<!--                                <p>Called Cx. No Answer. Please Callback on 12/20 at 1pm.</p>-->
-<!--                            </v-card>-->
-<!--                    </v-timeline-item>-->
-<!--                    <v-timeline-item color="gray" small>-->
-<!--                            <v-card class="elevation-2  timeline-card">-->
-<!--                                <p class="title">Lead Submitted for Connection</p>-->
-<!--                                <p>00/00/2021_00:00:00</p>-->
-<!--                                <p>Called Cx. No Answer. Please Callback on 12/20 at 1pm.</p>-->
-<!--                            </v-card>-->
-<!--                    </v-timeline-item>-->
              </v-timeline>
         </v-col>
     </v-row>
@@ -57,11 +36,20 @@ export default {
           require: true
       }
     },
+    data() {
+      return {
+          newNote: null,
+      }
+    },
     methods: {
         getColor(isActive) {
 
             if(isActive == true) return 'primary';
             return 'gray';
+        },
+        saveNote() {
+            this.$emit('saveNote', this.newNote);
+            this.newNote = null;
         }
     }
 };

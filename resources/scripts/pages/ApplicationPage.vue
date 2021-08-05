@@ -72,8 +72,8 @@ export default {
 
     mounted() {
         this.loadMetricTypes();
-        this.loadLead();
         this.loadLeads();
+        this.loadLead();
     },
     watch: {
         '$route': {

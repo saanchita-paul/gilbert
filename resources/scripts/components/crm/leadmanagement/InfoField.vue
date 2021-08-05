@@ -255,7 +255,7 @@
                     </v-select>
                 </div>
             </div>
-            <p class="sub-title mt-5">Agent’s Additional Instructions</p>
+            <p class="sub-title mt-5">Agent’s Additional Instructions <v-btn @click="readMore">read more ...</v-btn></p>
             <v-textarea
                 v-model="indentification.additional_instruction"
                 @input="updateLeads"
@@ -339,6 +339,9 @@ export default {
                property_details: this.property_details,
                person_details: this.person_details,
            })
+        },
+        readMore() {
+            this.$emit('readMore');
         }
     },
 

@@ -161,12 +161,30 @@ const notes = [
         active: false,
     },
     {
-        id: 1,
+        id: 4,
         title: 'Note by John',
         created_at:  '00/00/2021_00:00:00',
         text: 'Called Cx. No Answer. Please Callback on 12/20 at 1pm.',
         active: false,
     },
+
+];
+
+const newNote = {
+    id: 7,
+    title: 'Note by John',
+    created_at:  '00/00/2021_00:00:00',
+    text: 'Called Cx. No Answer. Please Callback on 12/20 at 1pm.',
+    active: false,
+};
+
+const serviceProvider = [
+    {
+        id: 1,
+        logo: '/assets/images/SupplierLogo.png',
+        title: 'EA'
+    }
+
 
 ];
 
@@ -212,7 +230,7 @@ export default {
         }
     },
 
-    getPlan() {
+    getPlan(serviceProvider) {
         try {
             // const data = await axios.get('/');
             return ApplicationMapper.mapPlans(plans);
@@ -225,7 +243,39 @@ export default {
     getNote(id) {
         try {
             // const data = await axios.get('/');
-            return ApplicationMapper.mapNote(notes);
+            return ApplicationMapper.mapNotes(notes);
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    getServiceProvider(service) {
+        try {
+            // const data = await axios.get('/');
+            return ApplicationMapper.mapServiceProvider(serviceProvider);
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    saveNote() {
+        try {
+            // const data = await axios.get('/');
+            const note = ApplicationMapper.mapNote(newNote)
+            notes.push({...note});
+            console.log(notes);
+            return note;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+    eacalate(leadId) {
+        try {
+          //call
+            return true;
 
         } catch (error) {
             return error.data;

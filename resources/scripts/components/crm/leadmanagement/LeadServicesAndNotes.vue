@@ -2,12 +2,12 @@
     <v-row>
         <v-col cols="8" class="mb-8 pb-8">
             <v-card class="pa-4">
-                <ServiceApplications :plans="plans"></ServiceApplications>
+                <ServiceApplications :leadSummary="leadSummary" @updatePlan="updatePlan"></ServiceApplications>
             </v-card>
         </v-col>
         <v-col cols="4" class="mb-8 pb-8">
             <v-card class="pa-4">
-                <ApplicationNotes :notes="notes"></ApplicationNotes>
+                <ApplicationNotes :notes="notes" @saveNote="saveNote"></ApplicationNotes>
             </v-card>
         </v-col>
     </v-row>
@@ -16,6 +16,7 @@
 <script>
 import ServiceApplications from "@scripts/components/crm/leadmanagement/ServiceApplications";
 import ApplicationNotes from "@scripts/components/crm/leadmanagement/ApplicationNotes";
+import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 
 export default {
 name: "LeadServicesAndNotes",
@@ -23,7 +24,7 @@ name: "LeadServicesAndNotes",
         notes: {
 
         },
-        plans: {
+        leadSummary: {
             require: true
         }
     },
@@ -31,9 +32,20 @@ name: "LeadServicesAndNotes",
         ServiceApplications,
         ApplicationNotes
     },
+    methods: {
+        updatePlan(plan)
+        {
+            this.$emit('updatePlan', plan);
+        },
+
+        saveNote(newNote) {
+            LeadApplicationService.saveNote(newNote, this.leadSummary.id);
+            this.$emit('updateNote');
+        }
+
+
+    },
     mounted() {
-        console.log('notes', this.notes);
-        console.log('this.plans',this.plans);
     }
 }
 </script>

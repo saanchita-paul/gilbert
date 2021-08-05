@@ -5,6 +5,9 @@ export default {
     loadUserLeadMetrics: () => LeadApplicationAPI.getUserLeadMetrics(),
     loadUserLeads: (types) => LeadApplicationAPI.getUserLeads(types),
     loadUserLead: (id) => LeadApplicationAPI.getUserLead(id),
-    loadPlan: () => LeadApplicationAPI.getPlan(),
+    loadPlan: (serviceProvider) => LeadApplicationAPI.getPlan(serviceProvider),
     loadNote: (leadUser)=> LeadApplicationAPI.getNote(leadUser),
+    loadServiceProvider: (services)=> LeadApplicationAPI.getServiceProvider(services),
+    saveNote: (note, leadId) => LeadApplicationAPI.saveNote(note, leadId),
+    eacalate: (leadId) => LeadApplicationAPI.eacalate(leadId)
 }

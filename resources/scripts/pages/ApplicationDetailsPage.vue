@@ -1,30 +1,40 @@
 <template>
     <v-container>
-            <LeadUserDetails></LeadUserDetails>
-            <LeadServicesAndNotes  v-if="planNoteFlag" :plans="plans" :notes="notes"></LeadServicesAndNotes>
+            <LeadUserDetails v-if="planNoteFlag" @eacalate="eacalate" @readMore="readMore" :leadSummary="leadSummary"></LeadUserDetails>
+            <LeadServicesAndNotes  v-if="planNoteFlag" @updatePlan="updatePlan" @updateNote= "updateNote" :leadSummary="leadSummary" :notes="notes"></LeadServicesAndNotes>
             <LeadsDetailsFotter></LeadsDetailsFotter>
+            <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
+            <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" title="agd"></EscalationConfirmModal>
+            <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag" @close="closeReadMore"> </LeadReadMoreModal>
 
     </v-container>
 </template>
 
 <script>
-import InfoField from "@scripts/components/crm/leadmanagement/InfoField";
-import ServiceApplications from "@scripts/components/crm/leadmanagement/ServiceApplications";
-import ApplicationNotes from "@scripts/components/crm/leadmanagement/ApplicationNotes";
-import LeadUserDetails from "@scripts/components/crm/leadmanagement/leaddetail/LeadUserDetails";
-import LeadServicesAndNotes from "@scripts/components/crm/leadmanagement/leaddetail/LeadServicesAndNotes";
-import LeadsDetailsFotter from "@scripts/components/crm/leadmanagement/leaddetail/LeadsDetailsFotter";
+import LeadUserDetails from "@scripts/components/crm/leadmanagement/LeadUserDetails";
+import LeadServicesAndNotes from "@scripts/components/crm/leadmanagement/LeadServicesAndNotes";
+import LeadsDetailsFotter from "@scripts/components/crm/leadmanagement/LeadsDetailsFotter";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import EscalateReasonModal from "@scripts/components/crm/modals/EscalateReasonModal";
+import EscalationConfirmModal from "@scripts/components/crm/modals/EscalationConfirmModal";
+import LeadReadMoreModal from "@scripts/components/crm/modals/LeadReadMoreModal";
 export default {
     name: "ApplicationDetailsPage",
     data() {
       return {
-          plans: null,
+          leadId: null,
+          leadSummary: null,
           notes: null,
-          planNoteFlag: false
+          planNoteFlag: false,
+          escalateLead: false,
+          escalateLeadConfirm: false,
+          readMoreFlag: false
       }
     },
     components: {
+        LeadReadMoreModal,
+        EscalationConfirmModal,
+        EscalateReasonModal,
         LeadsDetailsFotter,
         LeadServicesAndNotes,
         LeadUserDetails,
@@ -32,20 +42,47 @@ export default {
     },
 
     methods: {
-        async loadPlanAndNote()
+        async loadPlanNoteAndLead()
         {
-            this.plans = await LeadApplicationService.loadPlan();
-            this.notes = await LeadApplicationService.loadNote();
+            this.notes = await LeadApplicationService.loadNote(this.leadId);
+            this.leadSummary = await LeadApplicationService.loadUserLead(this.leadId);
             this.planNoteFlag = true;
+            console.log(this.notes);
         },
 
-       async loadNote() {
+        updatePlan(plan)
+        {
+            console.log('plan', plan);
+        },
 
+        updateNote() {
+            this.loadPlanNoteAndLead();
+        },
+
+        eacalate() {
+            this.escalateLead = true;
+        },
+        sucessSaveEscal()
+        {
+            this.escalateLead = false;
+            this.escalateLeadConfirm = true;
+        },
+        cancelEscal() {
+            this.escalateLead = false;
+        },
+        readMore() {
+            this.readMoreFlag = true;
+        },
+        closeReadMore() {
+            this.readMoreFlag = false;
         }
+
     },
 
     mounted() {
-       this.loadPlanAndNote();
+       this.leadId = this.$route.params.id;
+       this.loadPlanNoteAndLead();
+       this.loadLead();
 
     }
 };

@@ -1,7 +1,8 @@
 import Application from "@scripts/models/crm/Application";
 import ApplicationSummary from "@scripts/models/crm/ApplicationSummary";
-import Plan from "@scripts/models/crm/Note";
+import Plan from "@scripts/models/crm/Plan";
 import Note from "@scripts/models/crm/Note";
+import ServiceProvider from "@scripts/models/crm/ServiceProvider";
 export default {
     mapApplication(data) {
         let model = Object.assign(new Application(), { ...data });
@@ -25,9 +26,18 @@ export default {
         });
     },
 
-    mapNote(data) {
+    mapNotes(data) {
         return data.map(dt=> {
             return Object.assign(new Note(), { ...dt });
         });
     },
+    mapNote(data) {
+        return Object.assign(new Note(), { ...data });
+    },
+
+    mapServiceProvider(data) {
+        return data.map(dt=> {
+            return Object.assign(new ServiceProvider(), { ...dt });
+        });
+    }
 };

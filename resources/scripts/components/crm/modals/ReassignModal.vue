@@ -7,7 +7,6 @@
         >
             <AssignedtoPopUp :lead="lead" :user="user" @cancelModal="cancelModal"></AssignedtoPopUp>
         </v-dialog>
-        <ApplicationDetailScreen></ApplicationDetailScreen>
     </v-row>
 </template>
 

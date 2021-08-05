@@ -1,42 +1,16 @@
 <template>
     <v-row>
-        <v-col cols="12">
             <p class="sub-title">Service Applications</p>
-            <div class="d-flex">
-                    <div>
-                        <p class="mb-0">Energy</p>
-                        <div class="d-flex">
-                            <div class="service-box active">
-                                <p class="mb-0"><v-icon color="yellow">mdi-flash</v-icon> Power</p>
-                            </div>
-                            <div class="service-box active">
-                                <p class="mb-0"><v-icon color="red">mdi-fire</v-icon> Gas</p>
-                                <img src="/assets/images/SupplierLogo.png" width="60px">
-                            </div>
-                    </div>
-                    </div>
-                    <div>
-                        <p class="mb-0 ml-2">Water</p>
-                        <div class="service-box">
-                            <p class="mb-0"><v-icon color="grey lighten-1">mdi-water</v-icon> water</p>
-                        </div>
-                    </div>
-                    <div>
-                        <p class="mb-0 ml-2">Internet</p>
-                        <div class="service-box">
-                            <p class="mb-0"><v-icon color="grey lighten-1">mdi-wifi</v-icon> Internet</p>
-                        </div>
-                    </div>
-            </div>
-        </v-col>
-
         <v-col cols="12">
             <v-divider></v-divider>
         </v-col>
 
         <v-col cols="12">
             <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
-            <img class="my-3" src="/assets/images/SupplierLogo.png" width="150px">
+            <div class="d-flex">
+                <ServiceProvider v-if="serviceProviderFlag" v-for="provider in serviceProvider"
+                                 :key="provider.id" :provider="provider" ></ServiceProvider>
+            </div>
         </v-col>
 
         <v-col cols="12">
@@ -47,27 +21,8 @@
             <p class="sub-title">Select a plan for [POWER1] and [GAS2]</p>
 
             <div class="d-flex">
-                <div class="your-plan" v-for="plan in plans" :key="plan.id" :class="{active:plan.active}">
-                    <p>{{plan.title}}</p>
-                    <div class="pa-4">
-                        <v-btn @click="reviewPlan(plan.id)" block outlined class="mb-3">Review Plan Details</v-btn>
-                        <v-btn @click="selectPlan(plan.id)" block outlined class="mb-3">Select Plan</v-btn>
-                    </div>
-                </div>
-<!--                <div class="your-plan">-->
-<!--                    <p>No Frills (Home)</p>-->
-<!--                    <div class="pa-4">-->
-<!--                        <v-btn block outlined class="mb-3">Review Plan Details</v-btn>-->
-<!--                        <v-btn block outlined class="mb-3">Select Plan</v-btn>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="your-plan">-->
-<!--                    <p>Basic Home</p>-->
-<!--                    <div class="pa-4">-->
-<!--                        <v-btn block outlined class="mb-3">Review Plan Details</v-btn>-->
-<!--                        <v-btn block outlined class="mb-3">Select Plan</v-btn>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <EneryPlan v-for="plan in plans"  :key="plan.id" :plan="plan" :selectedPlan="selectedPlan" @selectPlan="planSelect">
+                </EneryPlan>
             </div>
         </v-col>
 
@@ -75,20 +30,94 @@
 </template>
 
 <script>
+import EneryService from "@scripts/components/crm/leadmanagement/EneryService";
+import ServiceProvider from "@scripts/components/crm/leadmanagement/ServiceProvider";
+import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import EneryPlan from "@scripts/components/crm/leadmanagement/EneryPlan";
 export default {
   name: "ServiceApplications",
+    components: {EneryPlan, ServiceProvider, EneryService},
     props:{
-      plans : {
-          require: true
-      }
+        leadSummary: {
+            require: true
+        }
     },
+
+    data() {
+        return {
+            activePower: false,
+            activeGas: false,
+            activeWater: false,
+            activeInternet: false,
+            serviceFlag: false,
+            selectedService: [],
+            serviceProviderFlag: false,
+            serviceProvider: [],
+            plans: [],
+            selectedPlan: 1
+        }
+    },
+
     methods: {
         reviewPlan() {
             //todo
         },
-        selectPlan() {
-            //todo
+        planSelect(planId) {
+           this.selectedPlan = planId;
+           console.log(planId);
+            this.$emit('updatePlan', planId);
+        },
+        isActive(service) {
+            return this.leadSummary.service_types.includes(service.toLowerCase())?true:false;
+
+        },
+        inializingServiceProps() {
+            this.activePower = this.isActive('Power');
+            this.activeGas = this.isActive('Gas');
+            this.activeWater = this.isActive('Water');
+            this.activeInternet = this.isActive('Internet');
+            this.serviceFlag = true;
+
+        },
+
+        toggleEnegry(service) {
+                if(service.toLowerCase() === 'power') {
+                    this.activePower =  !this.activePower
+                }
+                if(service.toLowerCase() === 'gas') {
+                    this.activeGas = !this.activeGas
+                }
+                if(service.toLowerCase() === 'internet') {
+                    this.activeInternet = !this.activeInternet
+                }
+                if(service.toLowerCase() === 'water') {
+                    this.activeWater = !this.activeWater
+                }
+                this.loadServiceProvider();
+        },
+
+      async  loadServiceProvider()
+        {
+            this.serviceProvider = await LeadApplicationService.loadServiceProvider({
+                service:{
+                    'power': this.activePower,
+                    'gas': this.activeGas,
+                    'internet': this.activeInternet,
+                    'water': this.activeWater,
+                }
+            });
+            this.serviceProviderFlag = true;
+        },
+        async loadPlan(serviceProvider) {
+            this.plans = await LeadApplicationService.loadPlan(serviceProvider);
         }
+    },
+
+    mounted() {
+      this.inializingServiceProps();
+      this.loadServiceProvider();
+      this.loadPlan(1);
+
     }
 };
 </script>
