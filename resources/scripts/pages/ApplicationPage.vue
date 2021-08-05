@@ -2,14 +2,12 @@
     <v-container>
         <v-row>
             <v-col cols="8">
-                <div class="grey lighten-4 pa-5">
-                    <v-card class="pa-4">
-                        <p>Your Metrics</p>
-                        <h3 class="page-title">Total Applications: {{total_leads}}</h3>
-                        <AgentLeadMetrics v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal" @goToActiveApp="goToActiveApp"></AgentLeadMetrics>
-                    </v-card>
-                    <ApplicantTable :applications="leads"></ApplicantTable>
-                </div>
+                <v-card class="pa-4">
+                    <p>Your Metrics</p>
+                    <h3 class="page-title">Total Applications: {{total_leads}}</h3>
+                    <AgentLeadMetrics v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal" @goToActiveApp="goToActiveApp"></AgentLeadMetrics>
+                </v-card>
+                <ApplicantTable :applications="leads"></ApplicantTable>
             </v-col>
             <v-col cols="4">
                 <ApplicationDetails :lead="leadDetails"></ApplicationDetails>

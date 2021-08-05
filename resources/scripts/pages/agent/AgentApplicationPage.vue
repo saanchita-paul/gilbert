@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-row class="mt-0">
-            <v-col cols="8" class="grey lighten-4 pa-5">
+            <v-col cols="8">
                 <v-card class="pa-4">
                     <h3 v-if="user" class="page-title">Hi {{user.name}}, <small class="font-weight-thin">heres a summary of your applications.</small></h3>
                     <AgentLeadMetrics></AgentLeadMetrics>
