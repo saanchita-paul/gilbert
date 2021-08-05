@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-card class="pa-4 new-application">
+        <section class="pa-4 new-application">
             <v-row>
                 <v-col cols="12" class="pb-0">
                     <v-btn @click="cancelDialog"><v-icon left dark>mdi-arrow-left</v-icon>Back to Edit</v-btn>
@@ -52,7 +52,7 @@
                         <v-col cols="6">
                             <p class="font-weight-bold mb-0">Service Interests</p>
                             <v-row>
-                                <v-col cols="3">
+                                <v-col cols="3" class="px-1">
                                     <div class="leade-badge text-center elevation-3"
                                          :class="application.service_interests.includes('power') ? 'div_enabled' : 'div_disabled' ">
                                         <p class="mb-0">
@@ -62,7 +62,7 @@
                                     </div>
                                 </v-col>
 
-                                <v-col cols="3">
+                                <v-col cols="3" class="px-1">
                                     <div class="leade-badge text-center elevation-3"
                                          :class="application.service_interests.includes('gas') ? 'div_enabled' : 'div_disabled' ">
                                         <p class="mb-0">
@@ -72,7 +72,7 @@
                                     </div>
                                 </v-col>
 
-                                <v-col cols="3">
+                                <v-col cols="3" class="px-1">
                                     <div class="leade-badge text-center elevation-3"
                                          :class="application.service_interests.includes('water') ? 'div_enabled' : 'div_disabled' ">
                                         <p class="mb-0">
@@ -82,7 +82,7 @@
                                     </div>
                                 </v-col>
 
-                                <v-col cols="3">
+                                <v-col cols="3" class="px-1">
                                     <div class="leade-badge text-center elevation-3"
                                          :class="application.service_interests.includes('internet') ? 'div_enabled' : 'div_disabled' ">
                                         <p class="mb-0">
@@ -107,7 +107,7 @@
                     </div>
                 </v-col>
             </v-row>
-        </v-card>
+        </section>
     </v-container>
 </template>
 
