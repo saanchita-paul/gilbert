@@ -45,10 +45,10 @@
                                 <td>{{ item.moving_date }}</td>
                                 <td>{{ item.phone }}</td>
                                 <td>
-                                    <v-icon x-small :disabled="isServiceAllowed(item.service_interests, 'power')" color="yellow">mdi-flash</v-icon>
-                                    <v-icon x-small :disabled="isServiceAllowed(item.service_interests, 'gas')" color="red">mdi-fire</v-icon>
-                                    <v-icon x-small :disabled="isServiceAllowed(item.service_interests, 'internet')" color="green">mdi-wifi</v-icon>
-                                    <v-icon x-small :disabled="isServiceAllowed(item.service_interests, 'water')" color="blue" >mdi-water</v-icon>
+                                    <v-icon small :disabled="isServiceAllowed(item.service_interests, 'power')" color="yellow">mdi-flash</v-icon>
+                                    <v-icon small :disabled="isServiceAllowed(item.service_interests, 'gas')" color="red">mdi-fire</v-icon>
+                                    <v-icon small :disabled="isServiceAllowed(item.service_interests, 'internet')" color="green">mdi-wifi</v-icon>
+                                    <v-icon small :disabled="isServiceAllowed(item.service_interests, 'water')" color="blue" >mdi-water</v-icon>
                                 </td>
                                 <td>{{ item.status }}</td>
                             </tr>

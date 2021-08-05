@@ -38,7 +38,7 @@
                         </v-avatar>
                         <small  class="pl-2">{{user.first_name}}</small>
                         <v-spacer></v-spacer>
-                        <span flat ><small>Reassign</small><v-icon small @click="reassigning(user)">mdi-checkbox-marked-circle</v-icon></span>
+                        <span flat ><small>Reassign</small><v-icon small @click="reassigning(user)">mdi-menu-right</v-icon></span>
                     </v-list-item>
                 </v-list>
     </v-menu>

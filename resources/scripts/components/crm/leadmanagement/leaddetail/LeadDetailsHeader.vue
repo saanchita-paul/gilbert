@@ -8,10 +8,10 @@
                 <div>
                     <small class="font-weight-thin">
                         Service Interests
-                        <span class="mx-1 pa-2 elevation-3" ><v-icon color="yellow">mdi-flash</v-icon> Power</span>
-                        <span class="mx-1 pa-2 elevation-3"><v-icon color="red">mdi-fire</v-icon> Gas</span>
-                        <span><v-icon color="grey lighten-1">mdi-wifi</v-icon> Internet</span>
-                        <span><v-icon color="grey lighten-1">mdi-water</v-icon> Water</span>
+                        <span class="mx-1 pa-2 elevation-3" ><v-icon small color="yellow">mdi-flash</v-icon> Power</span>
+                        <span class="mx-1 pa-2 elevation-3"><v-icon small color="red">mdi-fire</v-icon> Gas</span>
+                        <span><v-icon small color="grey lighten-1">mdi-wifi</v-icon> Internet</span>
+                        <span><v-icon small color="grey lighten-1">mdi-water</v-icon> Water</span>
                     </small>
                 </div>
             </div>

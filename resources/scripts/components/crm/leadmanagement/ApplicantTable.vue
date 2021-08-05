@@ -35,10 +35,10 @@
                                 <td>{{ item.applicant_name }}</td>
                                 <td>{{ item.moving_date }}</td>
                                 <td>
-                                    <v-icon :disabled="isServiceAllowed(item.service_types, 'power')" color="yellow">mdi-flash</v-icon>
-                                    <v-icon :disabled="isServiceAllowed(item.service_types, 'gas')" color="red">mdi-fire</v-icon>
-                                    <v-icon :disabled="isServiceAllowed(item.service_types, 'internet')" color="green">mdi-wifi</v-icon>
-                                    <v-icon :disabled="isServiceAllowed(item.service_types, 'water')" color="blue" >mdi-water</v-icon>
+                                    <v-icon small :disabled="isServiceAllowed(item.service_types, 'power')" color="yellow">mdi-flash</v-icon>
+                                    <v-icon small :disabled="isServiceAllowed(item.service_types, 'gas')" color="red">mdi-fire</v-icon>
+                                    <v-icon small :disabled="isServiceAllowed(item.service_types, 'internet')" color="green">mdi-wifi</v-icon>
+                                    <v-icon small :disabled="isServiceAllowed(item.service_types, 'water')" color="blue" >mdi-water</v-icon>
 
                                 </td>
                                 <td>

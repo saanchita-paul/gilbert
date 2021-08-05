@@ -11,6 +11,7 @@
                             </div>
                             <div class="service-box active">
                                 <p class="mb-0"><v-icon color="red">mdi-fire</v-icon> Gas</p>
+                                <img src="/assets/images/SupplierLogo.png" width="60px">
                             </div>
                     </div>
                     </div>

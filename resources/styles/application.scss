@@ -66,10 +66,11 @@
     }
 }
 .service-box {
-    padding: 5px 20px;
+    padding: 10px 20px;
     background-color: #E0E0E0;
     margin: 5px;
     border-radius: 10px;
+    min-height: 70px;
     &.active {
         background-color:$primary_color !important;
         color: #fff !important;
@@ -103,9 +104,11 @@
         margin-bottom: 0px;
         color: #9BA2A6;
         font-weight: 400;
+        font-size: 14px;
         &.title {
             font-weight: 400;
             color: #7E8A8F;
+            font-size: 16px !important;
         }
     }
     &.active {
