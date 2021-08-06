@@ -1,36 +1,54 @@
 <template>
-      <v-row>
-        <v-col class="section-dialogs" cols="12">
-          <div class="dialogs-title">
-            <p>Let’s setup a new office</p>
-          </div>
+          <v-row>
+            <v-col class="section-dialogs" cols="12">
+              <div class="dialogs-title">
+                <p>Let’s setup a new office</p>
+              </div>
 
-          <div class="dialogs-area">
-            <p class="title">Office Details</p>
-            <v-text-field v-model = "office.title" @input="updateOffice"
-              label="Office Name Location*"
-              outlined
-              dense
-            ></v-text-field>
-            <v-text-field label="Office Address*" @input="updateOffice" v-model = "office.address" outlined dense></v-text-field>
-            <v-text-field
-                v-model = "office.contact"
-                @input="updateOffice"
-              label="Contact Phone Number*"
-              outlined
-              dense
-            ></v-text-field>
-            <v-text-field
-                @input="updateOffice"
-                v-model = "office.email"
-              label="Contact Email Address*"
-              outlined
-              dense
-            ></v-text-field>
-            <v-text-field  v-model = "office.abn" @input="updateOffice" label="ABN (Optional)" outlined dense></v-text-field>
-          </div>
-        </v-col>
-      </v-row>
+              <div class="dialogs-area">
+                <p class="title">Office Details</p>
+                  <ValidationProvider name="Title" rules="required"  v-slot="{ errors }">
+                    <v-text-field v-model = "office.title" @input="updateOffice"
+                      label="Office Name Location*"
+                      outlined
+                      dense
+                      :error-messages=" errors[0]"
+                    ></v-text-field>
+                  </ValidationProvider>
+                  <ValidationProvider name="address" rules="required"  v-slot="{ errors }">
+                        <v-text-field label="Office Address*"
+                                      @input="updateOffice"
+                                      v-model = "office.address"
+                                      :error-messages=" errors[0]"
+                                      outlined dense></v-text-field>
+                  </ValidationProvider>
+                  <ValidationProvider name="Contact" rules="required"  v-slot="{ errors }">
+                      <v-text-field
+                        v-model = "office.contact"
+                        @input="updateOffice"
+                        label="Contact Phone Number*"
+                        :error-messages=" errors[0]"
+                      outlined
+                      dense
+                    ></v-text-field>
+                  </ValidationProvider>
+                  <ValidationProvider name="Email" rules="required|email"  v-slot="{ errors }">
+                <v-text-field
+                    @input="updateOffice"
+                    v-model = "office.email"
+                  label="Contact Email Address*"
+                    :error-messages=" errors[0]"
+                  outlined
+                  dense
+                ></v-text-field>
+                  </ValidationProvider>
+                <v-text-field  v-model = "office.abn" @input="updateOffice"
+                               label="ABN (Optional)"
+                               outlined dense
+                ></v-text-field>
+              </div>
+            </v-col>
+          </v-row>
 </template>
 
 <script>
