@@ -34,4 +34,12 @@ class Office extends Model
     {
         return $this->hasMany(OfficeCommission::class);
     }
+
+    /**
+     * @return HasMany
+     */
+    public function connectionApplications()
+    {
+        return $this->hasMany(ConnectionApplication::class);
+    }
 }
