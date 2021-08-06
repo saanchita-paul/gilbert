@@ -7,11 +7,13 @@
         >
             <v-card>
                 <v-container>
-                   <component :is="currentComponent" v-model="agency"
-                              @updateOffice = "updateOffice"
-                              @updateAllocator = "updateAllocator"
-                              @updateProfile = "updateProfile"
-                   > </component>
+                    <ValidationObserver :ref="currentRef">
+                           <component :is="currentComponent" v-model="agency"
+                                      @updateOffice = "updateOffice"
+                                      @updateAllocator = "updateAllocator"
+                                      @updateProfile = "updateProfile"
+                           > </component>
+                    </ValidationObserver>
                     <ProgressBar :total-step="totalStep" :current-index="currentCompIndex" ></ProgressBar>
                     <v-row>
                         <v-col cols="12">
@@ -42,6 +44,7 @@ import OfficeDetails from "@scripts/components/crm/OfficeDetails";
 
 
 const agencyForm = ['OfficeDetails','AllocatorDetails', 'CommissionProfile'];
+const formRef = ['create_office','create_allocator', 'create_commission'];
 export default {
 name: "CreateIndeOfficeModal",
     components:{
@@ -55,6 +58,7 @@ name: "CreateIndeOfficeModal",
     data() {
         return {
             currentComponent: "OfficeDetails",
+            currentRef : 'create_office',
             currentCompIndex : 0,
             totalStep: 3,
             agency: {
@@ -67,7 +71,8 @@ name: "CreateIndeOfficeModal",
                 profile: {
 
                 }
-            }
+            },
+            validatedMessage : null,
         }
     },
     computed: {
@@ -77,14 +82,35 @@ name: "CreateIndeOfficeModal",
     },
     methods: {
 
-        goNextOrSave() {
+      async  goNextOrSave() {
             if((this.totalStep -1 ) === this.currentCompIndex) {
                 this.$emit('goToNext', this.agency);
                 return;
 
             }
-            this.currentCompIndex ++;
-            this.currentComponent = agencyForm[ this.currentCompIndex];
+            if( await this.isValidateForm()) {
+                this.currentCompIndex ++;
+                this.currentComponent = agencyForm[ this.currentCompIndex];
+                this.currentRef = formRef[this.currentCompIndex];
+
+            } else
+            {
+                return;
+            }
+
+        },
+
+       async isValidateForm() {
+
+            if(this.currentCompIndex == 0) {
+                return await this.$refs.create_office.validate();
+            }
+           if(this.currentCompIndex == 1) {
+               return await this.$refs.create_allocator.validate();
+           }
+           if(this.currentCompIndex == 2) {
+               return await this.$refs.create_commission.validate();
+           }
         },
 
         cancel() {

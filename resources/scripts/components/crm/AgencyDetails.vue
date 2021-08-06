@@ -1,5 +1,6 @@
 <template>
-    <v-row>
+    <ValidationObserver ref="create_agency">
+        <v-row>
       <v-col class="section-dialogs" cols="12">
         <div class="dialogs-title">
           <p>Agency Details</p>
@@ -7,14 +8,18 @@
 
         <div class="dialogs-area">
           <p class="title">What type of agency?</p>
-          <v-select outlined dense :items="agencyType"  v-model="agency.type" label="Please select agency type">
-          </v-select>
-          <v-text-field v-model="agency.title"
-            label="Company Name"
-            placeholder="Barry Plant"
-            outlined
-            dense
-          ></v-text-field>
+            <ValidationProvider name="agencyType" rules="required"  v-slot="{ errors }">
+                <v-select outlined dense :items="agencyType"  v-model="agency.type" :error-messages=" errors[0]" label="Please select agency type"> </v-select>
+              </ValidationProvider>
+            <ValidationProvider name="Title" rules="required"  v-slot="{ errors }">
+              <v-text-field v-model="agency.title"
+                label="Company Name"
+                placeholder="Barry Plant"
+                outlined
+                dense
+                :error-messages=" errors[0]"
+              ></v-text-field>
+            </ValidationProvider>
         </div>
           <div class="d-flex justify-space-between">
               <v-btn @click="cancel"
@@ -28,6 +33,7 @@
       </v-col>
 
     </v-row>
+    </ValidationObserver>
 </template>
 
 <script>
@@ -50,8 +56,15 @@ export default {
         cancel() {
             this.$emit('cancelDialog');
         },
-        saveAgency() {
-            this.$emit('saveAgency',this.agency);
+       async saveAgency() {
+
+            let v = await this.$refs.create_agency.validate();
+            if (v) {
+                this.$emit('saveAgency',this.agency);
+            }
+            return v;
+
+
 
         }
     }
