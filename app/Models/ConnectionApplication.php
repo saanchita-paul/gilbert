@@ -45,7 +45,8 @@ class ConnectionApplication extends Model
         'mirn',
         'is_escalated',
         'supplier',
-        'plan_type'
+        'plan_type',
+        'status'
     ];
 
     /**

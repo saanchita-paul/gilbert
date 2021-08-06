@@ -59,6 +59,7 @@ class CreateConnectionApplicationsTable extends Migration
             $table->tinyInteger('is_escalated')->nullable();
             $table->tinyInteger('supplier')->nullable();
             $table->tinyInteger('plan_type')->nullable();
+            $table->tinyInteger('status')->nullable();
             $table->timestamps();
         });
     }
