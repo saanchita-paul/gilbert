@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Agency\AgencyController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Http\Request;
@@ -22,6 +23,19 @@ Route::middleware('auth:sanctum')
     ->get('/user', [AuthController::class, 'authUser']);
 
 Route::get('/logout', [AuthController::class, 'logout']);
+
+/**
+ * @Module AGENCY
+ */
+//Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
+Route::namespace('agency')->middleware([])->group(function () {
+    Route::get('/agencies', [AgencyController::class, 'index']);
+});
+
+
+
+
+
 /**
  * test routes
  */
