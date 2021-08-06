@@ -14,6 +14,16 @@ class Agency extends Model
     const TYPE_FRANCHISED = 2;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'type',
+        'name'
+    ];
+
+    /**
      * @return HasMany
      */
     public function offices()

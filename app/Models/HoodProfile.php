@@ -11,6 +11,17 @@ class HoodProfile extends Model
     use HasFactory;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'profile_photo'
+    ];
+
+    /**
      * @return MorphOne
      */
     public function user()

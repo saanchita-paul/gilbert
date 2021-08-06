@@ -13,6 +13,42 @@ class ConnectionApplication extends Model
     use HasFactory;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'office_id',
+        'agency_id',
+        'created_by',
+        'assigned_to',
+        'first_name',
+        'last_name',
+        'email',
+        'phone',
+        'tenancy_type',
+        'dob',
+        'moving_date',
+        'address_unit',
+        'street_address',
+        'city',
+        'postcode',
+        'state',
+        'country',
+        'additional_instruction',
+        'address_text',
+        'is_email_billing',
+        'property_type',
+        'has_life_support',
+        'has_solar',
+        'nmi',
+        'mirn',
+        'is_escalated',
+        'supplier',
+        'plan_type'
+    ];
+
+    /**
      * @return BelongsTo
      */
     public function office()

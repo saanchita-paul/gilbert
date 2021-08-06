@@ -12,6 +12,24 @@ class Office extends Model
     use HasFactory;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'agency_id',
+        'name',
+        'street_address',
+        'city',
+        'state',
+        'postcode',
+        'country',
+        'abn',
+        'phone',
+        'email'
+    ];
+
+    /**
      * @return BelongsTo
      */
     public function agency()

@@ -13,6 +13,21 @@ class AgentProfile extends Model
     use HasFactory;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'office_id',
+        'agency_id',
+        'first_name',
+        'last_name',
+        '12f_id',
+        'phone',
+        'profile_photo'
+    ];
+
+    /**
      * @return MorphOne
      */
     public function user()

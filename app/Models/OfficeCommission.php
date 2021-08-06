@@ -11,6 +11,17 @@ class OfficeCommission extends Model
     use HasFactory;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'office_id',
+        'type',
+        'rate'
+    ];
+
+    /**
      * @return BelongsTo
      */
     public function office()

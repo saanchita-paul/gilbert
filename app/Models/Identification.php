@@ -11,6 +11,22 @@ class Identification extends Model
     use HasFactory;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'connection_application_id',
+        'type',
+        'card_number',
+        'state',
+        'country',
+        'card_color',
+        'special_number',
+        'expire_date'
+    ];
+
+    /**
      * @return BelongsTo
      */
     public function connectionApplication()

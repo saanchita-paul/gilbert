@@ -11,6 +11,16 @@ class ConnectionService extends Model
     use HasFactory;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'connection_application_id',
+        'service_type'
+    ];
+
+    /**
      * @return BelongsTo
      */
     public function connectionApplication()
