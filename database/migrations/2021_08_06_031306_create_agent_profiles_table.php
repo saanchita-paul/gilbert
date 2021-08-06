@@ -14,7 +14,22 @@ class CreateAgentProfilesTable extends Migration
     public function up()
     {
         Schema::create('agent_profiles', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('office_id');
+            $table->foreign('office_id')
+                ->references('id')
+                ->on('offices')
+                ->onDelete('cascade');
+            $table->unsignedBigInteger('agency_id');
+            $table->foreign('agency_id')
+                ->references('id')
+                ->on('agencies')
+                ->onDelete('cascade');
+            $table->string('first_name', 100)->nullable();
+            $table->string('last_name', 100)->nullable();
+            $table->string('12f_id', 45)->nullable();
+            $table->string('phone', 45)->nullable();
+            $table->string('profile_photo', 100)->nullable();
             $table->timestamps();
         });
     }
