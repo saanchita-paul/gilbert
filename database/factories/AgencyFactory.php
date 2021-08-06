@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories\Agency;
+namespace Database\Factories;
 
 use App\Models\Agency;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,8 +21,11 @@ class AgencyFactory extends Factory
      */
     public function definition()
     {
+        $index = rand(0, 1);
+        $types = [Agency::TYPE_INDEPENDENT, Agency::TYPE_FRANCHISED];
         return [
-            //
+            'name' => $this->faker->company(),
+            'type' => $types[$index]
         ];
     }
 }

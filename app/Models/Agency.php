@@ -10,6 +10,9 @@ class Agency extends Model
 {
     use HasFactory;
 
+    const TYPE_INDEPENDENT = 1;
+    const TYPE_FRANCHISED = 2;
+
     /**
      * @return HasMany
      */
