@@ -20,9 +20,9 @@
         <v-col cols="12">
             <p class="sub-title">Select a plan for [POWER1] and [GAS2]</p>
 
-            <div class="d-flex">
-                <EneryPlan v-for="plan in plans"  :key="plan.id" :plan="plan" :selectedPlan="selectedPlan" @selectPlan="planSelect">
-                </EneryPlan>
+            <div class="d-flex" v-if="plansFlag">
+                <EnergyPlan v-for="plan in plans"  :key="plan.id" :plan="plan" :selectedPlan="selectedPlan" @selectPlan="planSelect">
+                </EnergyPlan>
             </div>
         </v-col>
 
@@ -30,13 +30,13 @@
 </template>
 
 <script>
-import EneryService from "@scripts/components/crm/leadmanagement/EneryService";
+import EnergyService from "@scripts/components/crm/leadmanagement/EneryService";
 import ServiceProvider from "@scripts/components/crm/leadmanagement/ServiceProvider";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
-import EneryPlan from "@scripts/components/crm/leadmanagement/EneryPlan";
+import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
 export default {
   name: "ServiceApplications",
-    components: {EneryPlan, ServiceProvider, EneryService},
+    components: {EnergyPlan, ServiceProvider, EnergyService},
     props:{
         leadSummary: {
             require: true
@@ -54,6 +54,7 @@ export default {
             serviceProviderFlag: false,
             serviceProvider: [],
             plans: [],
+            plansFlag : false,
             selectedPlan: 1
         }
     },
@@ -110,6 +111,7 @@ export default {
         },
         async loadPlan(serviceProvider) {
             this.plans = await LeadApplicationService.loadPlan(serviceProvider);
+            this.plansFlag = true;
         }
     },
 

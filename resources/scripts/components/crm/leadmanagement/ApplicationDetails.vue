@@ -1,6 +1,6 @@
 <template>
    <v-card class="pa-4">
-        <h3 class="page-title">{{lead.title}}</h3>
+        <h3 class="page-title">{{lead.applicant_name}}</h3>
         <p class="sub-title mt-4 mb-2">Personal Details</p>
         <table width="100%" class="application-info">
             <tr>
@@ -72,7 +72,7 @@ export default {
         }
     },
     mounted() {
-      console.log(this.lead)
+      console.log(this.lead);
     }
 };
 </script>

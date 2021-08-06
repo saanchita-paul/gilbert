@@ -5,12 +5,12 @@
                 <v-card class="pa-4">
                     <p>Your Metrics</p>
                     <h3 class="page-title">Total Applications: {{total_leads}}</h3>
-                    <AgentLeadMetrics v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal" @goToActiveApp="goToActiveApp"></AgentLeadMetrics>
+                    <AgentLeadMetrics v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal"></AgentLeadMetrics>
                 </v-card>
                 <ApplicantTable :applications="leads"></ApplicantTable>
             </v-col>
             <v-col cols="4">
-                <ApplicationDetails :lead="leadDetails"></ApplicationDetails>
+                <ApplicationDetails v-if="leadDetailssFlag" :lead="leadDetails"></ApplicationDetails>
             </v-col>
         </v-row>
     </v-container>
@@ -41,6 +41,7 @@ export default {
             activeLead: null,
             total_leads: 0,
             leadDetails: null,
+            leadDetailssFlag: false
         }
     },
 
@@ -61,6 +62,7 @@ export default {
         async loadLead() {
             this.activeLead = this.$route.query?.lead;
             this.leadDetails = await LeadApplicationService.loadUserLead(this.activeLead);
+            this.leadDetailssFlag = true;
         },
 
         updateTotal(total) {
@@ -79,8 +81,8 @@ export default {
         '$route': {
             handler() {
                 this.activeLeadType = this.$route.query?.type;
-                this.loadLeads(this.activeLeadType);
-                this.loadLead(this.activeLead);
+                this.loadLeads();
+                this.loadLead();
 
 
             }

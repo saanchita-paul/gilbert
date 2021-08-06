@@ -12,15 +12,8 @@
 
 <script>
 export default {
-name: "EneryPlan",
-    props:{
-        plan: {
-            require
-        },
-        selectedPlan: {
-            require
-        }
-    },
+name: "EnergyPlan",
+    props:['selectedPlan','plan'],
 
 
     methods: {
@@ -31,10 +24,6 @@ name: "EneryPlan",
            this.$emit('selectPlan', plan);
         },
     },
-    mounted() {
-        console.log(this.selectedPlan);
-        console.log(this.plan);
-    }
 }
 </script>
 

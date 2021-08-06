@@ -12,10 +12,9 @@
 
 <script>
 import AssignedtoPopUp from "@scripts/components/crm/leadmanagement/AssignedtoPopUp";
-import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
 export default {
 name: "ReassignModal",
-    components: {ApplicationDetailScreen, AssignedtoPopUp},
+    components: {AssignedtoPopUp},
     props:['dialog', 'user', 'lead'],
     methods: {
         cancelModal() {
