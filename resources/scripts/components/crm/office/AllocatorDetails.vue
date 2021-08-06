@@ -1,5 +1,5 @@
 <template>
-    <v-row>
+        <v-row>
       <v-col class="section-dialogs" cols="12">
         <div class="dialogs-title">
           <p>Office Allocator Details</p>
@@ -7,40 +7,50 @@
 
         <div class="dialogs-area">
           <p class="title">Person to allocate commisions</p>
+            <ValidationProvider name="Firstname" rules="required"  v-slot="{ errors }">
+              <v-text-field
+                label="Firstname*"
+                @input="updateAllocator"
+                placeholder="Firstname"
+                v-model="allocator.first_name"
+                outlined
+                dense
+                :error-messages=" errors[0]"
+              ></v-text-field>
+            </ValidationProvider>
+            <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
           <v-text-field
-            label="Fistname"
-            @input="updateAllocator"
-            placeholder="Fistname"
-            v-model="allocator.first_name"
-            outlined
-            dense
-          ></v-text-field>
-          <v-text-field
-            label="Lastname"
+            label="Lastname*"
             @input="updateAllocator"
             v-model="allocator.last_name"
             placeholder="Lastname"
             outlined
             dense
+            :error-messages=" errors[0]"
           ></v-text-field>
+            </ValidationProvider>
+<!--            <ValidationProvider name="Jobtitle" rules="required"  v-slot="{ errors }">-->
+<!--              <v-select v-model="allocator.job_title" @input="updateAllocator"-->
+<!--                outlined-->
+<!--                dense-->
+<!--                label="Job Title"-->
 
-          <v-select v-model="allocator.job_title" @input="updateAllocator"
-            outlined
-            dense
-            label="Job Title"
-            placeholder="Job title selector"
-          ></v-select>
+<!--                placeholder="Job title selector"-->
+<!--              ></v-select>-->
+<!--            </ValidationProvider>-->
 
           <v-text-field  v-model="allocator.id_212f" @input="updateAllocator" label="212f ID" outlined dense></v-text-field>
-
-          <v-text-field
-            label="Email Address*"
-            v-model="allocator.email"
-            @input="updateAllocator"
-            placeholder="firstname.lastname@barryplantcamberwell.com.au"
-            outlined
-            dense
-          ></v-text-field>
+            <ValidationProvider name="Email" rules="required|email"  v-slot="{ errors }">
+              <v-text-field
+                label="Email Address*"
+                v-model="allocator.email"
+                @input="updateAllocator"
+                placeholder="firstname.lastname@barryplantcamberwell.com.au"
+                outlined
+                dense
+                :error-messages=" errors[0]"
+              ></v-text-field>
+            </ValidationProvider>
           <v-text-field
               v-model="allocator.phone_number" @input="updateAllocator"
             label="Phone Number (Optional)"
