@@ -20,10 +20,8 @@ class CreateOfficeCommissionsTable extends Migration
                 ->references('id')
                 ->on('offices')
                 ->onDelete('cascade');
-            $table->decimal('electricity', $precision = 10, $scale = 4)->nullable();
-            $table->decimal('gas', $precision = 10, $scale = 4)->nullable();
-            $table->decimal('water', $precision = 10, $scale = 4)->nullable();
-            $table->decimal('internet', $precision = 10, $scale = 4)->nullable();
+            $table->tinyInteger('type')->nullable();
+            $table->decimal('rate', $precision = 10, $scale = 4)->nullable();
             $table->timestamps();
         });
     }
