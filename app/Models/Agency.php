@@ -28,4 +28,12 @@ class Agency extends Model
     {
         return $this->hasMany(AgentProfile::class);
     }
+
+    /**
+     * @return HasMany
+     */
+    public function connectionApplications()
+    {
+        return $this->hasMany(ConnectionApplication::class);
+    }
 }
