@@ -34,7 +34,7 @@ class SearchAgencyService
         $this->search = empty($request['search']) ? null : $request['search'];
         $this->perPage = empty($request['per_page']) ? null : (int) $request['per_page'];
         $this->sortBy = empty($request['sort_by']) ? null : $request['sort_by'];
-        $this->sortDir = optional($request['is_descending']) === 'true' ? 'desc' : false;
+        $this->sortDir = optional($request)['is_descending'] === 'true' ? 'desc' : 'asc';
     }
 
     /**
