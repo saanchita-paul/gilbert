@@ -9,10 +9,10 @@ export default class ApplicationSummary {
     email_billing = null;
     tenancy_type = null;
     address_unit = null;
-    address_apartment = null;
+    street_address = null;
     city = null;
     state = null;
-    country = null;
+    country = 'Australia';
     postcode = null;
     service_interests = [];
     additional_instruction = null;
