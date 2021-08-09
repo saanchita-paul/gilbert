@@ -108,7 +108,7 @@
                                     <template v-slot:activator="{ on, attrs }">
                                         <ValidationProvider name="Moving Date" rules="required"  v-slot="{ errors }">
                                             <v-text-field
-                                                label="Moving Date*"
+                                                label="Connection Date*"
                                                 placeholder="DD/MM/YYYY"
                                                 outlined
                                                 dense
@@ -126,59 +126,72 @@
                             </v-col>
                         </v-row>
                     </v-col>
-                    <v-col cols="6" class="pt-0">
-                        <ValidationProvider name="Address Unit" rules="required"  v-slot="{ errors }">
-                            <v-text-field
-                                label="To Address Unit"
-                                outlined
-                                dense
-                                placeholder="2/56"
-                                v-model="application.address_unit"
-                                :error-messages=" errors[0]"
-                            ></v-text-field>
-                        </ValidationProvider>
-                        <ValidationProvider name="City" rules="required"  v-slot="{ errors }">
-                            <v-text-field
-                                label="City"
-                                outlined
-                                dense
-                                placeholder="Camberwell"
-                                v-model="application.city"
-                                :error-messages=" errors[0]"
-                            ></v-text-field>
-                        </ValidationProvider>
-                        <ValidationProvider name="Country" rules="required"  v-slot="{ errors }">
-                            <v-text-field
-                                label="Country"
-                                outlined
-                                dense
-                                placeholder="Australia"
-                                v-model="application.country"
-                                :error-messages=" errors[0]"
-                            ></v-text-field>
-                        </ValidationProvider>
+
+                    <v-col cols="12" class="pb-0">
+                        <v-row>
+                            <v-col cols="12" class="py-0">
+                                <v-menu offset-y v-model="showMenu">
+                                    <template v-slot:activator="{ on }">
+                                        <v-text-field
+                                            label="Search address"
+                                            outlined
+                                            dense
+                                            placeholder="Type house address here"
+                                            append-icon="mdi-magnify"
+                                            v-model="address_text"
+                                            @keyup.native="onStreetChanged"
+                                        ></v-text-field>
+                                    </template>
+                                    <v-list>
+                                        <v-list-item
+                                            v-for="place in searchResult"
+                                            :key="place.place_id"
+                                            @click="onAddressSelected(place)"
+                                        >
+                                            <v-list-item-title v-text="place.description">
+                                            </v-list-item-title>
+                                        </v-list-item>
+                                    </v-list>
+                                </v-menu>
+                            </v-col>
+                        </v-row>
                     </v-col>
 
                     <v-col cols="6" class="pt-0">
-                        <v-text-field
-                            label="Apartment, suite, etc.."
-                            outlined
-                            dense
-                            placeholder="House / Apartment, Bldg, etc"
-                            v-model="application.address_apartment"
-                        ></v-text-field>
-                        <ValidationProvider name="State" rules="required"  v-slot="{ errors }">
+                        <ValidationProvider name="Address" rules="required"  v-slot="{ errors }">
+                            <v-text-field
+                                label="Address*"
+                                outlined
+                                dense
+                                placeholder="2/56, Bradman Drive"
+                                v-model="application.street_address"
+                            ></v-text-field>
+                        </ValidationProvider>
+                        <ValidationProvider name="State/Territory" rules="required"  v-slot="{ errors }">
                             <v-select outlined dense
                                       v-model="application.state"
                                       :items="states"
-                                      label="State"
+                                      label="State/Territory*"
                                       :error-messages=" errors[0]"
                                       placeholder="Please Select">
                             </v-select>
                         </ValidationProvider>
+                    </v-col>
+
+                    <v-col cols="6" class="pt-0">
+                        <ValidationProvider name="City/Suburb" rules="required"  v-slot="{ errors }">
+                            <v-text-field
+                                label="City/Suburb*"
+                                outlined
+                                dense
+                                placeholder="Sunbury"
+                                v-model="application.city"
+                                :error-messages=" errors[0]"
+                            ></v-text-field>
+                        </ValidationProvider>
                         <ValidationProvider name="Postcode" rules="required"  v-slot="{ errors }">
                             <v-text-field
-                                label="Postcode"
+                                label="Postcode*"
                                 outlined
                                 dense
                                 placeholder="3429"
@@ -253,6 +266,8 @@
 import ApplicationSummary from "@scripts/models/crm/ApplicationSummary";
 import AgentConfirmApplicationModal from "@scripts/components/crm/modals/agent/AgentConfirmApplicationModal";
 import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
+import debounce from 'lodash-es/debounce';
+import GoogleMapService from "@scripts/services/GoogleMapService";
 
 export default {
     name: "AgentCreateNewApplication",
@@ -281,9 +296,31 @@ export default {
                 water: false,
                 internet: false,
             },
+            showMenu: false,
+            searchResult: [],
+            address_text: null,
         }
     },
+    created() {
+        this.onStreetChanged = debounce(() => {
+            if (this.address_text.length > 0) {
+                GoogleMapService.getStreetAddressesByKeyword(this.address_text)
+                    .then((data) => {
+                        this.searchResult = data;
+                        this.showMenu = this.searchResult.length > 0
+                    });
+            }
+        }, 250);
+
+    },
     methods: {
+        onAddressSelected(place) {
+            GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
+                .then((data) => {
+                    console.log(data);
+                    // this.mapToModel(data)
+                });
+        },
         onCancel() {
             this.$router.push({name: 'agent.application.dashboard'});
         },
