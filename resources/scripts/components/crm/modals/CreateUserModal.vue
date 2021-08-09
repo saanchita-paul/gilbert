@@ -1,5 +1,6 @@
 <template>
-    <v-row justify="center">
+    <ValidationObserver ref="create_agency">
+        <v-row justify="center">
         <v-dialog
             v-model="dialog"
             persistent
@@ -15,24 +16,34 @@
 
                             <div class="dialogs-area">
                                 <p class="title">New user details</p>
-                                <v-text-field label="Job Title" v-model="user.job_title" placeholder="Property Manager / Admin / Director, etc....
-" outlined dense></v-text-field>
-                                <v-text-field
-                                    v-model="user.first_name"
-                                    label="Firstname*"
-                                    placeholder="Firstname"
-                                    outlined
-                                    dense
-                                ></v-text-field>
-                                <v-text-field
-                                    v-model="user.last_name"
-                                    label="Lastname*"
-                                    placeholder="Lastname"
-                                    outlined
-                                    dense
-                                ></v-text-field>
+                                    <v-text-field label="Job Title" v-model="user.job_title"
+                                                  placeholder="Property Manager / Admin / Director, etc...." outlined dense>
+
+                                    </v-text-field>
+                                <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
+                                    <v-text-field
+                                        v-model="user.first_name"
+                                        label="Firstname*"
+                                        placeholder="Firstname"
+                                        outlined
+                                        dense
+                                        :error-messages=" errors[0]"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                                <ValidationProvider name="Last Name" rules="required"  v-slot="{ errors }">
+                                    <v-text-field
+                                        v-model="user.last_name"
+                                        label="Lastname*"
+                                        placeholder="Lastname"
+                                        outlined
+                                        dense
+                                        :error-messages=" errors[0]"
+                                    ></v-text-field>
+                                </ValidationProvider>
                                 <v-text-field   v-model="user.phone_number" label="Phone Number" placeholder="Phone Number" outlined dense></v-text-field>
-                                <v-text-field    v-model="user.email" label="Email Address" placeholder="firstname.lastname@barryplantcamberwell.com.au" outlined dense></v-text-field>
+                                <ValidationProvider name="Last Name" rules="email"  v-slot="{ errors }">
+                                    <v-text-field  :error-messages=" errors[0]"   v-model="user.email" label="Email Address" placeholder="firstname.lastname@barryplantcamberwell.com.au" outlined dense></v-text-field>
+                                </ValidationProvider>
                             </div>
                         </v-col>
                     </v-row>
@@ -55,6 +66,7 @@
             </v-card>
         </v-dialog>
     </v-row>
+    </ValidationObserver>
 </template>
 
 <script>
@@ -69,9 +81,12 @@ export default {
         }
     },
     methods: {
-        askConfirmation()
+        async askConfirmation()
         {
-            this.$emit('goToNext',this.user);
+            let v = await this.$refs.create_agency.validate();
+            if (v) {
+                this.$emit('goToNext',this.user);
+            }
         },
         cancelUser() {
          this.$emit('cancelUserDialog');

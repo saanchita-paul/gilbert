@@ -14,38 +14,47 @@
         <v-card class="pa-4">
             <v-row>
                 <v-col cols="12" class="crm-table">
-                    <v-simple-table>
-                        <template v-slot:default>
-                            <thead>
-                            <tr>
-                                <th class="text-left">
-                                    Agency name
-                                </th>
-                                <th class="text-left">
-                                    Total leads
-                                </th>
-                                <th class="text-left">
-                                    Last updated
-                                </th>
-                                <th class="text-left">
-                                    Offices
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr
-                                v-for="item in agencies"
-                                :key="item.id"
-                                @click="openAgency(item)"
-                            >
-                                <td>{{ item.title }}</td>
-                                <td>{{ item.total_leads }}</td>
-                                <td>{{ item.last_updated }}</td>
-                                <td>{{ item.offices }}</td>
-                            </tr>
-                            </tbody>
-                        </template>
-                    </v-simple-table>
+<!--                    <v-simple-table>-->
+<!--                        <template v-slot:default>-->
+<!--                            <thead>-->
+<!--                            <tr>-->
+<!--                                <th class="text-left">-->
+<!--                                    Agency name-->
+<!--                                </th>-->
+<!--                                <th class="text-left">-->
+<!--                                    Total leads-->
+<!--                                </th>-->
+<!--                                <th class="text-left">-->
+<!--                                    Last updated-->
+<!--                                </th>-->
+<!--                                <th class="text-left">-->
+<!--                                    Offices-->
+<!--                                </th>-->
+<!--                            </tr>-->
+<!--                            </thead>-->
+<!--                            <tbody>-->
+<!--                            <tr-->
+<!--                                v-for="item in agencies"-->
+<!--                                :key="item.id"-->
+<!--                                @click="openAgency(item)"-->
+<!--                            >-->
+<!--                                <td>{{ item.title }}</td>-->
+<!--                                <td>{{ item.total_leads }}</td>-->
+<!--                                <td>{{ item.last_updated }}</td>-->
+<!--                                <td>{{ item.offices }}</td>-->
+<!--                            </tr>-->
+<!--                            </tbody>-->
+<!--                        </template>-->
+<!--                    </v-simple-table>-->
+                    <v-data-table
+                        :headers="headers"
+                        :items="agencies"
+                        :options.sync="options"
+                        :server-items-length="totalItem"
+                        :loading="loading"
+                        class="elevation-1"
+                    >
+                    </v-data-table>
                 </v-col>
             </v-row>
         </v-card>
@@ -84,6 +93,39 @@ name: "CrmAgencyDataTable",
             title: '',
             newAgency: null,
 
+            page: 1,
+            pageCount: 0,
+            itemsPerPage: 10,
+            totalItem: null,
+            loading: true,
+            options: {},
+            headers:  [
+                {
+                text: ' Agency name',
+                align: 'start',
+                sortable: true,
+                value: 'title'
+                },
+                {
+                    text: 'Total leads',
+                    align: 'start',
+                    sortable: true,
+                    value: 'total_leads'
+                },
+                {
+                    text: 'Last updated',
+                    align: 'start',
+                    sortable: true,
+                    value: 'last_updated'
+                },
+                {
+                    text: 'Offices',
+                    align: 'start',
+                    sortable: false,
+                    value: 'offices'
+                }
+            ]
+
         }
     },
 
@@ -116,7 +158,6 @@ name: "CrmAgencyDataTable",
 
         cancelSuccessfulModal() {
             this.agencyCreateSuccessFullModal = false;
-            console.log(this.newAgency);
             if(this.agency.type === 'Independent Agency') {
                 this.$router.push({name: 'real.state.agency.users', params: {id: this.newAgency.id, officeId: 10}});
             } else {
@@ -137,14 +178,17 @@ name: "CrmAgencyDataTable",
 
         },
 
-        loadAgencyData() {
-            this.agencies =  AgencyService.loadAgencyData();
+        async loadAgencyData() {
+
+            console.log(this.options);
+
+            this.agencies =  await AgencyService.loadAgencyData();
+            this.loading = false;
+            this.totalItem = 100;
         },
 
         saveAgencyData() {
             this.newAgency = AgencyService.saveAgency(this.agency);
-            this.agencies.push(this.newAgency);
-
         },
 
         openAgency(agency) {
@@ -155,7 +199,16 @@ name: "CrmAgencyDataTable",
 
     mounted() {
         this.loadAgencyData();
-    }
+    },
+
+    watch: {
+        options: {
+            handler () {
+                this.loadAgencyData()
+            },
+            deep: true,
+        },
+    },
 
 }
 </script>

@@ -108,7 +108,8 @@ name: "CrmUserDatatable",
         },
 
         saveUser() {
-          let newUser = CrmUserService.saveUser(this.user);
+            let officeId = this.$route.params?.id;
+          let newUser = CrmUserService.saveUser(this.user, officeId);
           this.crmUsers.push(newUser);
         }
     },

@@ -81,12 +81,13 @@ export default {
         }
     },
 
-    saveUser: (crmUser)=> {
+    saveUser: (crmUser, officeId)=> {
         try {
             // const data = await axios.get('/');
             console.log('crmUser', crmUser);
 
-            return CrmUserMapper.mapUser(crmUser);
+            // return CrmUserMapper.mapUser(crmUser);
+            return CrmUserMapper.mapuserToServer(crmUser, officeId);
 
         } catch (error) {
             return error.data;

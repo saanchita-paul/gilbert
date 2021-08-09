@@ -45,9 +45,10 @@ export default {
         }
     },
 
-    saveOfficeData: (officeData) => {
+    saveOfficeData: (officeData, agencyId) => {
         try {
-            // const data = await axios.get('/');
+            // const data = await axios.get('/')
+            officeData = OfficeMapper.mapOfficeToserver(officeData , agencyId);
             return OfficeMapper.mapOffice(officeData);
 
         } catch (error) {

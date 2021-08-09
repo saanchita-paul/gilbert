@@ -108,7 +108,8 @@ name: "CrmOfficeDataTable",
         },
 
         saveOfficeData() {
-             this.lastCreatedOffice = OfficeService.saveOfficeData(this.officeInfo);
+            let agencyId = this.$route.params?.id
+             this.lastCreatedOffice = OfficeService.saveOfficeData(this.officeInfo, agencyId);
              this.officesList.push(this.lastCreatedOffice);
 
 

@@ -1,11 +1,11 @@
 export default class Agency {
     constructor({
-        id = 5 , title = 'ABC company', total_leads=70, last_updated = '2021/10/10', offices = 100
+        id = null , name = '', total_leads=70, updated_at = '', offices_count = 0
                 }) {
         this.id = id;
-        this.title = title;
+        this.title = name;
         this.total_leads =  total_leads;
-        this.last_updated = last_updated;
-        this.offices = offices;
+        this.last_updated = updated_at;
+        this.offices = offices_count;
     }
 }
