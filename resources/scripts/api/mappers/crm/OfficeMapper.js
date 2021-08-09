@@ -1,4 +1,7 @@
 import Office from "@scripts/models/crm/Office";
+import PaginationMapper from "@scripts/api/mappers/crm/PaginationMapper";
+import OFFICE_COMMISSION from "@scripts/data/constants/COMMISSION";
+import COMMISSION from "@scripts/data/constants/COMMISSION";
 
 function mapOffice(office) {
     return new Office({...office});
@@ -6,9 +9,17 @@ function mapOffice(office) {
 
 export default {
     mapOfficeList: (officeList)=> {
-        return officeList.map(office=> {
+
+        const offices =  officeList?.data.map(office=> {
             return mapOffice(office);
-        })
+        });
+
+        const pagination =  PaginationMapper.mapPagination(officeList?.meta);
+
+        return {
+            offices: offices,
+            pagination: pagination,
+        };
     },
     mapOffice: (office) => {
         return mapOffice(office.office);
@@ -16,13 +27,14 @@ export default {
 
     mapOfficeToserver: (officedData, agency) => {
         let office = null;
-        let agent_profile = null;
+        let agent = null;
         let office_commissions = null;
 
         let ofc = officedData.office;
         let agPro = officedData.allocator;
         let commission = officedData.profile;
         office = {
+                agency: agency,
                 name: ofc.title,
                 street_address: ofc.street_address,
                 city: ofc.city,
@@ -33,39 +45,47 @@ export default {
                 phone: ofc.contact,
                 email: ofc.email,
             };
-        agent_profile = {
+        agent = {
                 first_name: agPro.first_name,
                 last_name: agPro.last_name,
                 email: agPro.email,
                 f_id_12: agPro.last_name,
                 phone: agPro.phone_number,
+                role: 'agency_office_allocator'
             };
         office_commissions = [
                 {
-                    type: 'gas',
+                    type: COMMISSION.GAS,
                     rate: commission.gas,
                 },
                 {
-                    type: 'internet',
+                    type: COMMISSION.INTERNET,
                     rate: commission.internet,
                 },
                 {
-                    type: 'power',
+                    type: COMMISSION.POWER,
                     rate: commission.power,
                 },
                 {
-                    type: 'water',
+                    type: COMMISSION.WATER,
                     rate: commission.water,
                 },
             ];
 
 
         return {
-            agency: agency,
             office: office,
-            agent_profile: agent_profile,
+            agent: agent,
             office_commissions: office_commissions,
         }
+    },
+
+    mapMetaData: (meta) => {
+            if(meta.sort_by === 'title') meta.sort_by = 'name';
+            if(meta.sort_by === 'last_updated') meta.sort_by = 'updated_at';
+            if(meta.sort_by === 'user_account') meta.sort_by = 'agents_count';
+            if(meta.sort_by === 'total_leads') meta.sort_by = 'applications_count';
+            return meta;
     }
 
 }

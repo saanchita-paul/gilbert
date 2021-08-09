@@ -2,7 +2,7 @@
     <div>
         <v-row class="mt-5">
             <v-col cols="8" class="search-bg">
-                <Search></Search>
+                <Search @updateSearch="updateSearch"></Search>
             </v-col>
             <v-col cols="4" class="text-right">
                 <v-btn color="primary" @click="addAgency"
@@ -14,38 +14,6 @@
         <v-card class="pa-4">
             <v-row>
                 <v-col cols="12" class="crm-table">
-<!--                    <v-simple-table>-->
-<!--                        <template v-slot:default>-->
-<!--                            <thead>-->
-<!--                            <tr>-->
-<!--                                <th class="text-left">-->
-<!--                                    Agency name-->
-<!--                                </th>-->
-<!--                                <th class="text-left">-->
-<!--                                    Total leads-->
-<!--                                </th>-->
-<!--                                <th class="text-left">-->
-<!--                                    Last updated-->
-<!--                                </th>-->
-<!--                                <th class="text-left">-->
-<!--                                    Offices-->
-<!--                                </th>-->
-<!--                            </tr>-->
-<!--                            </thead>-->
-<!--                            <tbody>-->
-<!--                            <tr-->
-<!--                                v-for="item in agencies"-->
-<!--                                :key="item.id"-->
-<!--                                @click="openAgency(item)"-->
-<!--                            >-->
-<!--                                <td>{{ item.title }}</td>-->
-<!--                                <td>{{ item.total_leads }}</td>-->
-<!--                                <td>{{ item.last_updated }}</td>-->
-<!--                                <td>{{ item.offices }}</td>-->
-<!--                            </tr>-->
-<!--                            </tbody>-->
-<!--                        </template>-->
-<!--                    </v-simple-table>-->
                     <v-data-table
                         :headers="headers"
                         :items="agencies"
@@ -53,6 +21,7 @@
                         :server-items-length="totalItem"
                         :loading="loading"
                         class="elevation-1"
+                        @click:row="openAgency"
                     >
                     </v-data-table>
                 </v-col>
@@ -121,10 +90,11 @@ name: "CrmAgencyDataTable",
                 {
                     text: 'Offices',
                     align: 'start',
-                    sortable: false,
+                    sortable: true,
                     value: 'offices'
                 }
-            ]
+            ],
+            search: '',
 
         }
     },
@@ -179,12 +149,21 @@ name: "CrmAgencyDataTable",
         },
 
         async loadAgencyData() {
-
             console.log(this.options);
 
-            this.agencies =  await AgencyService.loadAgencyData();
+            const meta = {
+                search: this.search,
+                page: this.options.page,
+                per_page: this.options.itemsPerPage,
+                is_descending: this.options.sortDesc.length != 0? this.options.sortDesc[0]: false,
+                sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: 'title',
+            }
+            const data =  await AgencyService.loadAgencyData(meta);
+            this.agencies = data.agencies;
+            this.page = data.pagination.current_page;
+            this.itemsPerPage = data.pagination.per_page;
+            this.totalItem = data.pagination.total;
             this.loading = false;
-            this.totalItem = 100;
         },
 
         saveAgencyData() {
@@ -193,8 +172,16 @@ name: "CrmAgencyDataTable",
 
         openAgency(agency) {
             this.$router.push({name: 'real.state.agency.office', params: {id : agency.id}});
-        }
+        },
 
+        updateSearch(search) {
+            this.search = search;
+            this.loadAgencyData();
+        },
+
+        asw(d) {
+            console.log(d);
+        }
     },
 
     mounted() {
@@ -204,7 +191,7 @@ name: "CrmAgencyDataTable",
     watch: {
         options: {
             handler () {
-                this.loadAgencyData()
+                this.loadAgencyData();
             },
             deep: true,
         },

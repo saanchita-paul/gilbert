@@ -81,7 +81,7 @@ export default {
 
     methods: {
         updateAllocator() {
-            console.log(this.allocator);
+            // console.log(this.allocator);
             this.$emit('updateAllocator', this.allocator);
         }
     }

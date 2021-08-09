@@ -34,10 +34,14 @@ const data = [
 ];
 
 export default {
-    getOfficeAllData:  () => {
+    getOfficeAllData: async (meta, agencyId) => {
         try {
-            // const data = await axios.get('/');
-            return OfficeMapper.mapOfficeList(data);
+
+            meta = OfficeMapper.mapMetaData(meta);
+
+            console.log('log', meta);
+            const data = await axios.get('/api/agencies/'+ agencyId + '/offices',{params: {...meta}});
+            return OfficeMapper.mapOfficeList(data.data);
 
         } catch (error) {
             console.log(error);
@@ -49,6 +53,7 @@ export default {
         try {
             // const data = await axios.get('/')
             officeData = OfficeMapper.mapOfficeToserver(officeData , agencyId);
+            console.log('officeData' ,officeData);
             return OfficeMapper.mapOffice(officeData);
 
         } catch (error) {

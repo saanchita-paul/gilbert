@@ -1,4 +1,6 @@
 import Agency from "@scripts/models/crm/Agency";
+import PaginationMapper from "@scripts/api/mappers/crm/PaginationMapper";
+import COMMISSION from "@scripts/data/constants/COMMISSION";
 
 function mapAgency(agency) {
     return new Agency({...agency})
@@ -6,9 +8,17 @@ function mapAgency(agency) {
 
 export default {
     mapAgencyList: (agencyList)=> {
-        return agencyList.map(agency=> {
+        const agencies =  agencyList?.data.map(agency=> {
             return mapAgency(agency);
-        })
+        });
+
+       const pagination =  PaginationMapper.mapPagination(agencyList?.meta);
+
+       return {
+           agencies: agencies,
+           pagination: pagination,
+       };
+
     },
 
     mapAgency: (agency) => {
@@ -33,7 +43,7 @@ export default {
 
     mapAgencytoServer: (agency) => {
         let office = null;
-        let agent_profile = null;
+        let agent = null;
         let office_commissions = null;
         let newAgency = {
             name: agency.title,
@@ -55,38 +65,56 @@ export default {
                 phone: ofc.contact,
                 email: ofc.email,
             };
-            agent_profile = {
+            agent = {
                 first_name: agPro.first_name,
                 last_name: agPro.last_name,
                 email: agPro.email,
-                f_id_12: agPro.last_name,
+                f_id_12: agPro.f_id_12,
                 phone: agPro.phone_number,
+                role: 'agency_office_allocator'
             };
             office_commissions = [
                 {
-                    type: 'gas',
+                    type: COMMISSION.GAS,
                     rate: commission.gas,
                 },
                 {
-                    type: 'internet',
+                    type: COMMISSION.INTERNET,
                     rate: commission.internet,
                 },
                 {
-                    type: 'power',
+                    type: COMMISSION.POWER,
                     rate: commission.power,
                 },
                 {
-                    type: 'water',
+                    type: COMMISSION.WATER,
                     rate: commission.water,
                 },
             ];
         }
 
-        return {
-            ...newAgency,
-            office: office,
-            agent_profile: agent_profile,
-            office_commissions: office_commissions,
+        if(newAgency.type  === 'Independent Agency')
+        {
+            return {
+                ...newAgency,
+                office: office,
+                agent: agent,
+                office_commissions: office_commissions,
+            }
         }
+
+        return {
+            ...newAgency
+        }
+
+
+    },
+
+    mapMetaData: (meta) => {
+        if(meta.sort_by === 'title') meta.sort_by = 'name';
+        if(meta.sort_by === 'last_updated') meta.sort_by = 'updated_at';
+        if(meta.sort_by === 'offices') meta.sort_by = 'offices_count';
+        if(meta.sort_by === 'total_leads') meta.sort_by = 'applications_count';
+        return meta;
     }
 }

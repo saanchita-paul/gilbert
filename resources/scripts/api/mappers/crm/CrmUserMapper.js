@@ -17,7 +17,11 @@ export default {
     },
 
     mapuserToServer: (user, officeId) => {
-        return mapUser(user);
+        return {
+            office_id :officeId,
+            ...user
+
+        };
     }
 
 }

@@ -59,7 +59,7 @@ export default {
     methods: {
         askConfirmation()
         {
-            console.log(this.user);
+            // console.log(this.user);
             this.$emit('confirmData');
         },
         backToEdit() {
