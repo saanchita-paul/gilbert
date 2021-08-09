@@ -31,7 +31,7 @@ extend('secret', {
 });
 
 extend('cv-phone', {
-    message: field => `${field} is not valid`,
+    message: field => `${field} should contain only number`,
     validate: value =>  {
         return new Promise(resolve => {
             let isValid = value.match('^[+]*[-\\s0-9]*$');
@@ -48,3 +48,8 @@ extend('date-range-check', {
     },
     message: '{_field_} should contain at least 2 valid datetimes.'
 });
+
+extend('length', {
+    ...length,
+    message: 'Phone should contain 10 numbers',
+})
