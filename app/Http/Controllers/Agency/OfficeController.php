@@ -12,6 +12,14 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class OfficeController extends Controller
 {
+    /**
+     * Getting Office List for an agency
+     *
+     * @param Request $request
+     * @param int $agencyId
+     *
+     * @return AnonymousResourceCollection|JsonResponse
+     */
     public function index(Request $request, int $agencyId): AnonymousResourceCollection | JsonResponse
     {
         try {
