@@ -98,7 +98,7 @@ export default {
             return {
                 ...newAgency,
                 office: office,
-                agent_profile: agent,
+                agent: agent,
                 office_commissions: office_commissions,
             }
         }

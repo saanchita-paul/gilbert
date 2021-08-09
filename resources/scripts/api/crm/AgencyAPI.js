@@ -48,6 +48,7 @@ export default {
 
         try {
             agency = AgencyMqpper.mapAgencytoServer(agency);
+            console.log('agency' ,agency);
             const p = {
                 id: data.length + 1,
                 ...AgencyMqpper.mapAgency(agency)
@@ -55,6 +56,7 @@ export default {
            return p;
 
         } catch (error) {
+            console.log('agency' ,agency);
             return error.data;
         }
     }

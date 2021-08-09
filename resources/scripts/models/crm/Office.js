@@ -1,10 +1,10 @@
 export default class Office {
-    constructor({id = 4, title = 'AAAAAA', total_leads = 0, last_updated = '10/10/2021' , user_account = 'sazzad'}) {
+    constructor({id , name , total_leads = 0, updated_at  , applications_count, agents_count = 0}) {
         this.id = id;
-        this.title = title;
-        this.total_leads = total_leads;
-        this.last_updated = last_updated;
-        this.user_account = user_account;
+        this.title = name;
+        this.total_leads = applications_count;
+        this.last_updated = updated_at;
+        this.user_count = agents_count;
 
     }
 

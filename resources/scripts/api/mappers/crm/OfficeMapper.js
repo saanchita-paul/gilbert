@@ -10,8 +10,6 @@ function mapOffice(office) {
 export default {
     mapOfficeList: (officeList)=> {
 
-        console.log('officeList', officeList);
-
         const offices =  officeList?.data.map(office=> {
             return mapOffice(office);
         });

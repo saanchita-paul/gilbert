@@ -3,6 +3,6 @@ import CrmUserAPI from "@scripts/api/crm/CrmUserAPI";
 
 export default {
     loadUserData: () => CrmUserAPI.getUsersData(),
-    saveUser: (crmUser)=> CrmUserAPI.saveUser(crmUser, officeId),
+    saveUser: (crmUser, officeId)=> CrmUserAPI.saveUser(crmUser, officeId),
     loadAllUser: ()=> CrmUserAPI.getUserAllData(),
 }

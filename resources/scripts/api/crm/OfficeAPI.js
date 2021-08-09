@@ -53,6 +53,7 @@ export default {
         try {
             // const data = await axios.get('/')
             officeData = OfficeMapper.mapOfficeToserver(officeData , agencyId);
+            console.log('officeData' ,officeData);
             return OfficeMapper.mapOffice(officeData);
 
         } catch (error) {

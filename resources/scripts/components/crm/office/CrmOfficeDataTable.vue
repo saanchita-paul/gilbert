@@ -82,10 +82,10 @@ name: "CrmOfficeDataTable",
                     value: 'last_updated'
                 },
                 {
-                    text: 'User Account',
+                    text: 'User Count',
                     align: 'start',
                     sortable: true,
-                    value: 'user_account'
+                    value: 'user_count'
                 }
             ],
             search: '',
@@ -140,7 +140,6 @@ name: "CrmOfficeDataTable",
                 sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: 'title',
             }
             const data = await OfficeService.loadOfficeData(meta, this.$route.params.id);
-            console.log('data', data);
             this.officesList = data?.offices;
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
