@@ -40,7 +40,7 @@ class Office extends Model
     /**
      * @return HasMany
      */
-    public function agentProfiles()
+    public function agents(): HasMany
     {
         return $this->hasMany(AgentProfile::class);
     }
@@ -56,7 +56,7 @@ class Office extends Model
     /**
      * @return HasMany
      */
-    public function connectionApplications()
+    public function applications(): HasMany
     {
         return $this->hasMany(ConnectionApplication::class);
     }
