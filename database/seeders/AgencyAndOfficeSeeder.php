@@ -3,9 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Agency;
+use App\Models\Office;
 use Illuminate\Database\Seeder;
 
-class AgencySeeder extends Seeder
+class AgencyAndOfficeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +15,9 @@ class AgencySeeder extends Seeder
      */
     public function run()
     {
-        Agency::factory()->count(50)->create();
+        Agency::factory()
+            ->count(50)
+            ->has(Office::factory()->count(3), 'offices')
+            ->create();
     }
 }

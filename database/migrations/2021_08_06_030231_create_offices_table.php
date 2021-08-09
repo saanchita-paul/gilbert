@@ -25,7 +25,7 @@ class CreateOfficesTable extends Migration
             $table->string('city', 45)->nullable();
             $table->string('state', 45)->nullable();
             $table->string('postcode', 10)->nullable();
-            $table->string('country', 45)->nullable();
+            $table->string('country', 100)->nullable();
             $table->string('abn', 45)->nullable();
             $table->string('phone', 45)->nullable();
             $table->string('email', 45)->nullable();

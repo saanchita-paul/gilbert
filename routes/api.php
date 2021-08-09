@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Agency\AgencyController;
+use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Http\Request;
@@ -30,6 +31,7 @@ Route::get('/logout', [AuthController::class, 'logout']);
 //Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
 Route::namespace('agency')->middleware([])->group(function () {
     Route::get('/agencies', [AgencyController::class, 'index']);
+    Route::get('/agencies/{id}/offices', [OfficeController::class, 'index']);
 });
 
 
