@@ -1,5 +1,6 @@
 import axios from "axios";
 import AgencyMqpper from "@scripts/api/mappers/crm/AgencyMqpper";
+import PaginationMapper from "@scripts/api/mappers/crm/PaginationMapper";
 
 const data = [
     {
@@ -33,13 +34,11 @@ const data = [
 ];
 
 export default {
-    getAgencyAllData: async () => {
+    getAgencyAllData: async (meta) => {
         try {
-            console.log(process.env.APP_URL);
-
-            const data = await axios.get('api/agencies');
-            console.log('agency data', data.data);
-            return AgencyMqpper.mapAgencyList(data.data.data);
+            meta = AgencyMqpper.mapMetaData(meta);
+            const data = await axios.get('/api/agencies',{params: {...meta}});
+            return AgencyMqpper.mapAgencyList(data.data);
         } catch (error) {
             return error.data;
         }

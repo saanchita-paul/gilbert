@@ -22,9 +22,9 @@ name: "ReassignModal",
         }
     },
     mounted() {
-        console.log(this.dialog);
-        console.log(this.user);
-        console.log(this.user);
+        // console.log(this.dialog);
+        // console.log(this.user);
+        // console.log(this.user);
     }
 }
 </script>

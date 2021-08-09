@@ -65,7 +65,7 @@ export default {
         },
         planSelect(planId) {
            this.selectedPlan = planId;
-           console.log(planId);
+           // console.log(planId);
             this.$emit('updatePlan', planId);
         },
         isActive(service) {
