@@ -26,7 +26,7 @@ class Agency extends Model
     /**
      * @return HasMany
      */
-    public function offices()
+    public function offices(): HasMany
     {
         return $this->hasMany(Office::class);
     }
@@ -34,7 +34,7 @@ class Agency extends Model
     /**
      * @return HasMany
      */
-    public function agentProfiles()
+    public function agentProfiles(): HasMany
     {
         return $this->hasMany(AgentProfile::class);
     }
@@ -42,7 +42,7 @@ class Agency extends Model
     /**
      * @return HasMany
      */
-    public function connectionApplications()
+    public function applications(): HasMany
     {
         return $this->hasMany(ConnectionApplication::class);
     }

@@ -14,6 +14,7 @@ class SearchAgencyService
     {
         return Agency::query()
             ->withCount('offices')
+            ->withCount('applications')
             ->paginate(12);
     }
 
