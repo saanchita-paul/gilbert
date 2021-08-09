@@ -52,9 +52,10 @@
                                 :error-messages=" errors[0]"
                             ></v-text-field>
                         </ValidationProvider>
-                        <ValidationProvider name="Mobile number" rules="required|cv-phone"  v-slot="{ errors }">
+                        <ValidationProvider name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
                             <v-text-field
                                 label="Mobile number*"
+                                :maxlength="10"
                                 outlined
                                 dense
                                 placeholder="+61 410"
@@ -317,7 +318,11 @@ export default {
         onAddressSelected(place) {
             GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
                 .then((data) => {
-                    console.log(data);
+                    this.address_text = data.formatted_address;
+                    this.application.street_address = data.street;
+                    this.application.city = data.city;
+                    this.application.postcode = data.postcode;
+                    this.application.state = data.state;
                     // this.mapToModel(data)
                 });
         },
