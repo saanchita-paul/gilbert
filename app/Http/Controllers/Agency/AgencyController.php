@@ -12,11 +12,12 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AgencyController extends Controller
 {
-    public function index(): AnonymousResourceCollection | JsonResponse
+    public function index(Request $request): AnonymousResourceCollection | JsonResponse
     {
         try {
-            $service = new SearchAgencyService();
+            $service = new SearchAgencyService($request->toArray());
             return AgencyResource::collection($service->get());
+
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
