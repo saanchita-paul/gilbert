@@ -31,7 +31,7 @@ Route::get('/logout', [AuthController::class, 'logout']);
 //Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
 Route::namespace('agency')->middleware([])->group(function () {
     Route::get('/agencies', [AgencyController::class, 'index']);
-    Route::get('/agencies/{id}/offices', [OfficeController::class, 'index']);
+    Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
 });
 
 

@@ -12,15 +12,14 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class OfficeController extends Controller
 {
-    public function index(Request $request): AnonymousResourceCollection | JsonResponse
+    public function index(Request $request, int $agencyId): AnonymousResourceCollection | JsonResponse
     {
         try {
             $service = new SearchOfficeService($request->toArray());
-            return OfficeResource::collection($service->get());
+            return OfficeResource::collection($service->get($agencyId));
 
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
-
     }
 }

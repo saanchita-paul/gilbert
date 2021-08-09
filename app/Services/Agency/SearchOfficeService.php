@@ -30,18 +30,33 @@ class SearchOfficeService
     /**
      * Getting Offices list
      *
+     * @param int|null $agencyId
      * @return LengthAwarePaginator
      */
-    public function get(): LengthAwarePaginator
+    public function get(int $agencyId = null): LengthAwarePaginator
     {
-        $agencyBuilder = Office::query()
-            ->with('agency')
-            ->withCount('agents')
-            ->withCount('applications');
+        $agencyBuilder = $this->createAgencyBuilder();
+
+        if ($agencyId) {
+            $agencyBuilder->where('agency_id', $agencyId);
+        }
 
         $agencyBuilder = $this->applySearch($agencyBuilder, 'name');
         $agencyBuilder = $this->applySorting($agencyBuilder);
 
         return  $agencyBuilder->paginate($this->perPage);
+    }
+
+    /**
+     * Creating agency builder
+     *
+     * @return Builder
+     */
+    private function createAgencyBuilder(): Builder
+    {
+        return Office::query()
+            ->with('agency')
+            ->withCount('agents')
+            ->withCount('applications');
     }
 }
