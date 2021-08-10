@@ -8,6 +8,7 @@ use App\Models\ConnectionApplication;
 use App\Models\User;
 use App\Services\Agency\AgencyService;
 use App\Services\Agency\SearchAgencyService;
+use App\Services\Agent\ApplicationService;
 use App\Services\Office\OfficeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,6 +16,24 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ApplicationController extends Controller
 {
+    /**
+     * Create new application
+     *
+     * @param Request $request
+     *
+     * @return AnonymousResourceCollection|JsonResponse
+     */
+    public function create(Request $request)
+    {
+        try{
+            $service = new ApplicationService();
+            return ApplicationResource::make($service->createApplication($request->toArray()));
+
+        } catch ( \Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
     /**
      * Getting Agency list
      *
