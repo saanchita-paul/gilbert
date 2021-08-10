@@ -71,6 +71,23 @@ export const kickOut = () => {
     router.push({name: 'login'})
 }
 
+
+const hasUserPermissions = allowedPermissions => {
+    let hasPermission = false;
+    Store.getters.userPermissions.map(p => {
+        hasPermission = hasPermission || allowedPermissions.includes(p);
+    });
+    return hasPermission;
+}
+
+const hasUserRoles = allowedRoles => {
+    let hasRoles = false;
+    Store.getters.userRoles.map(p => {
+        hasRoles = hasRoles || allowedRoles.includes(p);
+    });
+    return hasRoles;
+}
+
 export default {
     getAuthUser,
     login,
@@ -78,7 +95,9 @@ export default {
     isAuthenticated,
     kickOut,
     checkRouteAuthorization,
-    logout
+    logout,
+    hasUserRoles,
+    hasUserPermissions
 }
 
 
