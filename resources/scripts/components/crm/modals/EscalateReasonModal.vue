@@ -6,10 +6,10 @@
             max-width="400px"
         >
             <v-card>
-                <v-container>
-                <v-row>
+                <div class="section-dialogs">
+                    <v-row>
                     <v-col cols="12">
-                        <p class="font-weight-bold">What’s the reason why you want to Escalate this application?</p>
+                        <p class="dialogs-title">What’s the reason why you want to Escalate this application?</p>
                     </v-col>
                     <v-col>
                         <v-textarea v-model="escalated_reason">
@@ -18,15 +18,13 @@
                     </v-col>
                     <v-col cols="12">
                         <div class="d-flex justify-space-between">
-                            <v-btn @click="cancelEscalasion" class="mx-4">Back</v-btn>
+                            <v-btn @click="cancelEscalasion">Back</v-btn>
                             <v-btn @click="saveEscalasionReason" color="primary">Confirm</v-btn>
                         </div>
                     </v-col>
-                </v-row>
-                </v-container>
+                    </v-row>
+                </div>
             </v-card>
-
-
         </v-dialog>
     </v-row>
 </template>

@@ -7,11 +7,11 @@
         >
             <v-card>
                 <v-container>
-                    <v-row class="text-center section-dialogs">
+                    <v-row class="section-dialogs">
                         <v-col cols="12">
-                <span class="dialogs-title">
-                    Agent’s Additional Instructions
-                </span>
+                            <span class="dialogs-title">
+                                Agent’s Additional Instructions
+                            </span>
                         </v-col>
                         <v-col cols="12">
                             <v-textarea
