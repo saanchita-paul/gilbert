@@ -5,7 +5,9 @@ export default {
     },
     getters: {
         isAuthenticated: state => state.isAuthenticated,
-        user: state => state.user
+        user: state => state.user,
+        userRoles: state => state.user.roles,
+        userPermissions: state => state.user.permissions,
     },
     mutations: {
         setUser(state, user) {
