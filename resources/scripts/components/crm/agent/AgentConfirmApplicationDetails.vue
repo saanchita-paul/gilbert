@@ -42,7 +42,7 @@
                             </tr>
                             <tr>
                                 <td class="font-weight-bold">Address:</td>
-                                <td>{{ service_address }}</td>
+                                <td>{{ application.address_text }}</td>
                             </tr>
                     </table>
                 </v-col>
@@ -124,11 +124,7 @@ export default {
         }
     },
     computed: {
-        service_address() {
-            return this.application.address_unit + ' ' + this.application.address_apartment + ', '
-                + this.application.city + ', ' + this.application.state + ', '  + this.application.country
-                + ' ' + this.application.postcode;
-        }
+
     },
 };
 </script>

@@ -34,7 +34,7 @@
             </tr>
             <tr>
                 <td class="font-weight-bold">Service Address:</td>
-                <td>{{ service_address }}</td>
+                <td>{{ application.address_text }}</td>
             </tr>
         </table>
 
@@ -76,11 +76,7 @@ export default {
         }
     },
     computed: {
-        service_address() {
-            return this.application.address_unit + ' ' + this.application.address_apartment + ', '
-                + this.application.city + ', ' + this.application.state + ', '  + this.application.country
-                + ' ' + this.application.postcode;
-        }
+
     },
     methods: {
         isServiceAllowed(services, type) {

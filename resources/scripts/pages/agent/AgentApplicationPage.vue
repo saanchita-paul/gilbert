@@ -53,8 +53,8 @@ export default {
             this.selected_application_id = this.applicationList[0].id;
             this.getApplicationSummary();
         },
-        getApplicationSummary() {
-            this.applicationSummary = AgentApplicationService.getApplicationSummary(this.selected_application_id);
+        async getApplicationSummary() {
+            this.applicationSummary = await AgentApplicationService.getApplicationSummary(this.selected_application_id);
             console.log('summary', this.selected_application_id, this.applicationSummary);
         },
         openApplicationSummary(id) {

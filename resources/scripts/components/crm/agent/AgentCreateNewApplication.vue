@@ -139,7 +139,7 @@
                                             dense
                                             placeholder="Type house address here"
                                             append-icon="mdi-magnify"
-                                            v-model="address_text"
+                                            v-model="application.address_text"
                                             @keyup.native="onStreetChanged"
                                         ></v-text-field>
                                     </template>
@@ -280,8 +280,8 @@ export default {
             confirmApplicationModal: false,
             application: new ApplicationSummary(),
             tenancy_types:  [
-                {text: 'Renter', value: 'renter'},
-                {text: 'Home Owner', value: 'home_owner'},
+                {text: 'Renter', value: 1},
+                {text: 'Home Owner', value: 2},
             ],
             states: [
                 {text: 'NSW', value: 'NSW'},
@@ -298,14 +298,13 @@ export default {
                 internet: false,
             },
             showMenu: false,
-            searchResult: [],
-            address_text: null,
+            searchResult: []
         }
     },
     created() {
         this.onStreetChanged = debounce(() => {
-            if (this.address_text.length > 0) {
-                GoogleMapService.getStreetAddressesByKeyword(this.address_text)
+            if (this.application.address_text.length > 0) {
+                GoogleMapService.getStreetAddressesByKeyword(this.application.address_text)
                     .then((data) => {
                         this.searchResult = data;
                         this.showMenu = this.searchResult.length > 0
@@ -318,7 +317,7 @@ export default {
         onAddressSelected(place) {
             GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
                 .then((data) => {
-                    this.address_text = data.formatted_address;
+                    this.application.address_text = data.formatted_address;
                     this.application.street_address = data.street;
                     this.application.city = data.city;
                     this.application.postcode = data.postcode;

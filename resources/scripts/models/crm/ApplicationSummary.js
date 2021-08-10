@@ -14,6 +14,7 @@ export default class ApplicationSummary {
     state = null;
     country = 'Australia';
     postcode = null;
+    address_text = null;
     service_interests = [];
     additional_instruction = null;
     constructor() {}

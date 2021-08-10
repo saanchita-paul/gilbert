@@ -1,4 +1,5 @@
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
+import axios from "axios";
 const applications = [
     {
         id: 1,
@@ -54,6 +55,7 @@ const application = {
         state: 'VIC',
         country: 'Australia',
         postcode: 3124,
+        address_text: '2/56 Bradman Dr, Sunbury VIC 3429, Australia',
         additional_instruction: 'Additional Instructions goes here. Maybe it’s extra long so I have ' +
             'to write something down to show how it will look like when a property manager has soooo ' +
             'much things to say on his lead.'
@@ -70,10 +72,11 @@ export default {
             return error.data;
         }
     },
-    getApplicationSummary:  (id) => {
+    getApplicationSummary: async (id) => {
         try {
             // get application summary by application id
-            return ApplicationMapper.mapApplicationSummary(application);
+            let response = (await axios.get(`/api/application/summary/${id}`)).data;
+            return ApplicationMapper.mapApplicationSummary(response.data);
         } catch (error) {
             return error.data;
         }
