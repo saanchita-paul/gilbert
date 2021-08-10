@@ -9,7 +9,7 @@
         <div class="dialogs-area">
           <p class="title">What type of agency?</p>
             <ValidationProvider name="agencyType" rules="required"  v-slot="{ errors }">
-                <v-select outlined dense :items="agencyType"  v-model="agency.type" :error-messages=" errors[0]" label="Please select agency type"> </v-select>
+                <v-select outlined dense :items="agencyType" item-text="title" item-value="id" v-model="agency.type" :error-messages=" errors[0]" label="Please select agency type"> </v-select>
               </ValidationProvider>
             <ValidationProvider name="Title" rules="required"  v-slot="{ errors }">
               <v-text-field v-model="agency.title"
@@ -47,8 +47,14 @@ export default {
               title: '',
           },
         agencyType: [
-            'Independent Agency',
-             'Franchised Agency'
+            {
+                id: 0,
+                title:  'Independent Agency',
+            },
+            {
+                id: 1,
+                title:  'Franchised Agency',
+            },
         ]
       };
     },

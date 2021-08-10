@@ -20,6 +20,7 @@ class Office extends Model
         'agency_id',
         'name',
         'street_address',
+        'address',
         'city',
         'state',
         'postcode',

@@ -29,14 +29,13 @@ Route::get('/logout', [AuthController::class, 'logout']);
  * @Module AGENCY
  */
 //Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
-Route::namespace('agency')->middleware([])->group(function () {
+    Route::namespace('agency')->middleware([])->group(function () {
     Route::get('/agencies', [AgencyController::class, 'index']);
     Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
+    Route::post('/agency', [AgencyController::class, 'create']);
+    Route::post('/office', [OfficeController::class, 'createOffice']);
+
 });
-
-
-
-
 
 /**
  * test routes

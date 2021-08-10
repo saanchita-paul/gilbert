@@ -34,13 +34,13 @@ export default {
         let agPro = officedData.allocator;
         let commission = officedData.profile;
         office = {
-                agency: agency,
+                agency_id: agency,
+                address: ofc.address,
                 name: ofc.title,
                 street_address: ofc.street_address,
                 city: ofc.city,
                 state: ofc.state,
                 postcode: ofc.postcode,
-                country: ofc,
                 abn: ofc.abn,
                 phone: ofc.contact,
                 email: ofc.email,
@@ -55,19 +55,19 @@ export default {
             };
         office_commissions = [
                 {
-                    type: COMMISSION.GAS,
+                    type: COMMISSION.GAS.type,
                     rate: commission.gas,
                 },
                 {
-                    type: COMMISSION.INTERNET,
+                    type: COMMISSION.INTERNET.type,
                     rate: commission.internet,
                 },
                 {
-                    type: COMMISSION.POWER,
+                    type: COMMISSION.POWER.type,
                     rate: commission.power,
                 },
                 {
-                    type: COMMISSION.WATER,
+                    type: COMMISSION.WATER.type,
                     rate: commission.water,
                 },
             ];

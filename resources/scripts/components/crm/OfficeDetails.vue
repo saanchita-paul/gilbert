@@ -63,6 +63,7 @@ export default {
               contact: '',
               email: '',
               abn: '',
+              address: ''
           }
       }
     },

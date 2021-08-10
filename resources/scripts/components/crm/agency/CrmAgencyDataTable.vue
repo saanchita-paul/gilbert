@@ -108,15 +108,16 @@ name: "CrmAgencyDataTable",
             this.agencyCreateModal = false;
         },
 
-        openSuccessfulModal(agency) {
+    async  openSuccessfulModal(agency) {
             this.agencyCreateModal = false;
             this.agency = agency;
-            if(agency && agency.type === 'Independent Agency')
+
+            if(agency && agency.type === 0)
             {
                 this.independenceAgencyModal = true;
             } else {
                 this.title = agency.title;
-                this.saveAgencyData();
+               await this.saveAgencyData();
                 this.agencyCreateSuccessFullModal = true;
             }
 
@@ -136,14 +137,14 @@ name: "CrmAgencyDataTable",
 
         },
 
-        openCreationSuccModal(agency) {
+      async openCreationSuccModal(agency) {
             this.agency = {
                 ...this.agency,
                 ...agency
             };
             this.title = this.agency.office.title;
             this.independenceAgencyModal = false;
-            this.saveAgencyData();
+            await this.saveAgencyData();
             this.agencyCreateSuccessFullModal = true;
 
         },
@@ -166,8 +167,8 @@ name: "CrmAgencyDataTable",
             this.loading = false;
         },
 
-        saveAgencyData() {
-            this.newAgency = AgencyService.saveAgency(this.agency);
+       async saveAgencyData() {
+            this.newAgency = await AgencyService.saveAgency(this.agency);
         },
 
         openAgency(agency) {
@@ -178,10 +179,6 @@ name: "CrmAgencyDataTable",
             this.search = search;
             this.loadAgencyData();
         },
-
-        asw(d) {
-            console.log(d);
-        }
     },
 
     mounted() {

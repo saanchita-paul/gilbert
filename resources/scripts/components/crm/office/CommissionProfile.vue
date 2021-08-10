@@ -55,10 +55,10 @@ export default {
     data() {
       return {
           profile: {
-              power: 0,
-              gas: 0,
-              water: 0,
-              internet: 0,
+              power: null,
+              gas: null,
+              water: null,
+              internet: null,
 
           }
       }

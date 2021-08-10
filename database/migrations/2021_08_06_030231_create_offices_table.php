@@ -22,6 +22,7 @@ class CreateOfficesTable extends Migration
                 ->onDelete('cascade');
             $table->string('name', 100)->nullable();
             $table->string('street_address', 100)->nullable();
+            $table->string('address', 200)->nullable();
             $table->string('city', 45)->nullable();
             $table->string('state', 45)->nullable();
             $table->string('postcode', 10)->nullable();

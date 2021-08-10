@@ -44,19 +44,13 @@ export default {
         }
     },
 
-    saveAgency: (agency) => {
-
+     saveAgency: async (agency) => {
         try {
             agency = AgencyMqpper.mapAgencytoServer(agency);
-            console.log('agency' ,agency);
-            const p = {
-                id: data.length + 1,
-                ...AgencyMqpper.mapAgency(agency)
-            };
-           return p;
+            const data = await axios.post('/api/agency',{...agency});
+            return AgencyMqpper.mapAgency( data.data.data);
 
         } catch (error) {
-            console.log('agency' ,agency);
             return error.data;
         }
     }

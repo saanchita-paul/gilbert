@@ -49,11 +49,13 @@ export default {
         }
     },
 
-    saveOfficeData: (officeData, agencyId) => {
+    saveOfficeData: async (officeData, agencyId) => {
         try {
             // const data = await axios.get('/')
             officeData = OfficeMapper.mapOfficeToserver(officeData , agencyId);
             console.log('officeData' ,officeData);
+            const data = await axios.post('/api/office',{...officeData});
+            console.log('officeData' ,data);
             return OfficeMapper.mapOffice(officeData);
 
         } catch (error) {

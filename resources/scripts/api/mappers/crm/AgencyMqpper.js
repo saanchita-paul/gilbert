@@ -56,6 +56,7 @@ export default {
             let commission = agency.profile;
             office = {
                 name: ofc.title,
+                address: ofc.address,
                 street_address: ofc.street_address,
                 city: ofc.city,
                 state: ofc.state,
