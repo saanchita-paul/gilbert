@@ -23,6 +23,7 @@ class AgentProfile extends Model
         'first_name',
         'last_name',
         '12f_id',
+        'email',
         'phone',
         'profile_photo'
     ];

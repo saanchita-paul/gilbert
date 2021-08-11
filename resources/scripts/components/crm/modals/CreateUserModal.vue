@@ -16,10 +16,10 @@
 
                             <div class="dialogs-area">
                                 <p class="title">New user details</p>
-                                    <v-text-field label="Job Title" v-model="user.job_title"
+                                    <v-select label="Job Title" v-model="user.job_title" :items="jobTitleDD" :item-value="value" :item-text="text"
                                                   placeholder="Property Manager / Admin / Director, etc...." outlined dense>
 
-                                    </v-text-field>
+                                    </v-select>
                                 <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
                                     <v-text-field
                                         v-model="user.first_name"
@@ -40,7 +40,7 @@
                                         :error-messages=" errors[0]"
                                     ></v-text-field>
                                 </ValidationProvider>
-                                <v-text-field   v-model="user.phone_number" label="Phone Number" placeholder="Phone Number" outlined dense></v-text-field>
+                                <v-text-field   v-model="user.phone" label="Phone Number" placeholder="Phone Number" outlined dense></v-text-field>
                                 <ValidationProvider name="Last Name" rules="email"  v-slot="{ errors }">
                                     <v-text-field  :error-messages=" errors[0]"   v-model="user.email" label="Email Address" placeholder="firstname.lastname@barryplantcamberwell.com.au" outlined dense></v-text-field>
                                 </ValidationProvider>
@@ -70,14 +70,15 @@
 </template>
 
 <script>
+import UserRoles from "@scripts/data/UserRoles";
+
 export default {
     name: "CreateUserModal",
     props:['dialog'],
     data() {
         return {
-            user: {
-
-            }
+            jobTitleDD: [],
+            user: {}
         }
     },
     methods: {
@@ -91,6 +92,9 @@ export default {
         cancelUser() {
          this.$emit('cancelUserDialog');
         }
+    },
+    mounted() {
+        this.jobTitleDD = UserRoles.ROLES;
     }
 }
 </script>

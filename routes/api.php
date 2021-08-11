@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Agency\AgencyController;
+use App\Http\Controllers\Agency\AgentProfileController;
 use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agent\ApplicationController;
 use App\Http\Controllers\Auth\AuthController;
@@ -35,6 +36,7 @@ Route::get('/logout', [AuthController::class, 'logout']);
     Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
     Route::post('/agency', [AgencyController::class, 'create']);
     Route::post('/office', [OfficeController::class, 'createOffice']);
+    Route::post('/agent', [AgentProfileController::class, 'createAgent']);
 
 });
 

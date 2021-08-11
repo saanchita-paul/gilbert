@@ -1,5 +1,6 @@
 import AgencyMqpper from "@scripts/api/mappers/crm/AgencyMqpper";
 import CrmUserMapper from "@scripts/api/mappers/crm/CrmUserMapper";
+import axios from "axios";
 
 const data = [
     {
@@ -81,11 +82,16 @@ export default {
         }
     },
 
-    saveUser: (crmUser, officeId)=> {
+    saveUser: async (crmUser, officeId)=> {
         try {
 
             crmUser = CrmUserMapper.mapuserToServer(crmUser, officeId);
+            console.log('crmUser',crmUser)
+            const data = await axios.post('/api/agent', {...crmUser});
+            console.log(data);
+
         } catch (error) {
+            console.log(error);
             return error.data;
         }
     }

@@ -55,8 +55,8 @@ export default {
             officeData = OfficeMapper.mapOfficeToserver(officeData , agencyId);
             console.log('officeData' ,officeData);
             const data = await axios.post('/api/office',{...officeData});
-            console.log('officeData' ,data);
-            return OfficeMapper.mapOffice(officeData);
+            console.log('officeData' ,data.data.data);
+            return OfficeMapper.mapOffice(data.data.data);
 
         } catch (error) {
             return error.data;

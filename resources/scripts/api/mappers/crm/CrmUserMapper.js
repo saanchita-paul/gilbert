@@ -17,11 +17,14 @@ export default {
     },
 
     mapuserToServer: (user, officeId) => {
-        return {
-            office_id :officeId,
-            ...user
 
+        return  {
+            office_id :officeId,
+            ...user,
+            role: user.job_title
         };
+
+
     }
 
 }

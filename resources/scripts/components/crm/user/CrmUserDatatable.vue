@@ -91,10 +91,10 @@ name: "CrmUserDatatable",
             this.dataVerificationFlag = false;
         },
 
-        confirmedData() {
+        async confirmedData() {
             this.dataVerificationFlag = false;
             this.creationDoneFlag = true;
-            this.saveUser();
+            await this.saveUser();
 
         },
 
@@ -107,9 +107,9 @@ name: "CrmUserDatatable",
            this.crmUsers = CrmUserService.loadUserData();
         },
 
-        saveUser() {
-            let officeId = this.$route.params?.id;
-          let newUser = CrmUserService.saveUser(this.user, officeId);
+      async saveUser() {
+          let officeId = this.$route.params?.id;
+          let newUser = await CrmUserService.saveUser(this.user, officeId);
           this.crmUsers.push(newUser);
         }
     },

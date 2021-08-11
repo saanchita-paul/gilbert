@@ -19,7 +19,7 @@
                                     <v-col cols="4" class="pb-1 pt-0" ><h5 class="text-align-right" >Job Title</h5></v-col><v-col cols="8"  class="pb-1 pt-0">{{user.job_title}}</v-col>
                                     <v-col cols="4"   class="pb-1 pt-0" ><h5 class="text-align-right" >First Name</h5></v-col><v-col cols="8"  class="pb-1 pt-0">{{user.first_name}}</v-col>
                                     <v-col cols="4"  class="pb-1 pt-0" ><h5 class="text-align-right" >Last Name</h5></v-col><v-col cols="8"  class="pb-1 pt-0">{{user.last_name}}</v-col>
-                                    <v-col cols="4"  class="pb-1 pt-0" ><h5 class="text-align-right" >Phone Number</h5></v-col><v-col cols="8"  class="pb-1 pt-0">{{user.phone_number}}</v-col>
+                                    <v-col cols="4"  class="pb-1 pt-0" ><h5 class="text-align-right" >Phone Number</h5></v-col><v-col cols="8"  class="pb-1 pt-0">{{user.phone}}</v-col>
                                     <v-col cols="4" class="pb-1 pt-0" ><h5 class="text-align-right" >Email</h5></v-col><v-col cols="8"  class="pb-1 pt-0">{{user.email}}</v-col>
                                 </v-row>
                             </div>
