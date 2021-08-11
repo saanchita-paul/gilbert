@@ -1,8 +1,5 @@
 <?php
-
-
 namespace App\Services\Agent;
-
 
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
