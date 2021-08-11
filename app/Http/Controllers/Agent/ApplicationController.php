@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Agent;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Agent\ApplicationRequest;
 use App\Http\Resources\Agent\ApplicationResource;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
@@ -20,11 +21,10 @@ class ApplicationController extends Controller
     /**
      * Create new application
      *
-     * @param Request $request
+     * @param ApplicationRequest $request
      *
-
      */
-    public function create(Request $request)
+    public function create(ApplicationRequest $request)
     {
         try{
             /** @var  User $user */

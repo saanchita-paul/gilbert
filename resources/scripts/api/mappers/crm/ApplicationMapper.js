@@ -48,23 +48,23 @@ export default {
             if(service === COMMISSION.GAS.text)
             {
                 commsission.push({
-                    service_type: COMMISSION.GAS.type
+                    service_type: COMMISSION.GAS.text
                 })
             }
             if(service === COMMISSION.INTERNET.text)
             {
                 commsission.push({
-                    service_type: COMMISSION.GAS.type
+                    service_type: COMMISSION.GAS.text
                 })
             } if(service === COMMISSION.WATER.text)
             {
                 commsission.push({
-                    service_type: COMMISSION.WATER.type
+                    service_type: COMMISSION.WATER.text
                 })
             } if(service === COMMISSION.POWER.text)
             {
                 commsission.push({
-                    service_type: COMMISSION.POWER.type
+                    service_type: COMMISSION.POWER.text
                 })
             }
 
@@ -74,7 +74,7 @@ export default {
        return {
            ...data,
            dob: data.date_of_birth,
-           is_email_billing: data.email_billing
+           is_email_billing: data.email_billing?data.email_billing:0
        }
     }
 };
