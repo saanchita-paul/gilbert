@@ -40,7 +40,7 @@ class CreateConnectionApplicationsTable extends Migration
             $table->string('email', 45)->nullable();
             $table->string('phone', 45)->nullable();
             $table->tinyInteger('tenancy_type')->nullable();
-            $table->date('tenancy_type')->nullable();
+            $table->date('dob')->nullable();
             $table->dateTime('moving_date')->nullable();
             $table->string('address_unit', 45)->nullable();
             $table->string('street_address', 100)->nullable();
