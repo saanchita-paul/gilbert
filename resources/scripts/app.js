@@ -8,6 +8,7 @@ import '@scripts/plugins/GoogleMap';
 import store from '@scripts/store';
 import { authUser } from "@scripts/services/AuthService";
 import GoogleMapService from "@scripts/services/GoogleMapService";
+import '@scripts/directives';
 
 /**
  * initializing GoogleMapService

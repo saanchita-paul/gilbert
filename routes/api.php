@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Agency\AgencyController;
+use App\Http\Controllers\Agency\AgentProfileController;
+use App\Http\Controllers\Agency\OfficeController;
+use App\Http\Controllers\Agent\ApplicationController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Http\Request;
@@ -22,6 +26,29 @@ Route::middleware('auth:sanctum')
     ->get('/user', [AuthController::class, 'authUser']);
 
 Route::get('/logout', [AuthController::class, 'logout']);
+
+/**
+ * @Module AGENCY
+ */
+//Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
+    Route::namespace('agency')->middleware([])->group(function () {
+    Route::get('/agencies', [AgencyController::class, 'index']);
+    Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
+    Route::post('/agency', [AgencyController::class, 'create']);
+    Route::post('/office', [OfficeController::class, 'createOffice']);
+    Route::post('/agent', [AgentProfileController::class, 'createAgent']);
+
+});
+
+/**
+ * @Module AGENCY
+ */
+Route::namespace('agent')->middleware([])->group(function () {
+    Route::get('/application/summary/{application}', [ApplicationController::class, 'summary']);
+    Route::get('/application', [ApplicationController::class, 'index']);
+    Route::post('/application', [ApplicationController::class, 'create']);
+});
+
 /**
  * test routes
  */

@@ -1,0 +1,49 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class Agency extends Model
+{
+    use HasFactory;
+
+    const TYPE_INDEPENDENT = 1;
+    const TYPE_FRANCHISED = 2;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'type',
+        'name'
+    ];
+
+    /**
+     * @return HasMany
+     */
+    public function offices(): HasMany
+    {
+        return $this->hasMany(Office::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function agentProfiles(): HasMany
+    {
+        return $this->hasMany(AgentProfile::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function applications(): HasMany
+    {
+        return $this->hasMany(ConnectionApplication::class);
+    }
+}

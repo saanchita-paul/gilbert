@@ -18,6 +18,8 @@ export default {
             id: res?.user.id,
             name: res?.user.name,
             email: res?.user.email,
+            permissions: res?.user.permissions,
+            roles: res?.user.roles
         });
     },
 

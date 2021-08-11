@@ -1,0 +1,71 @@
+<?php
+namespace App\Services;
+
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Encryption\Encrypter;
+use JetBrains\PhpStorm\ArrayShape;
+use Spatie\Permission\Models\Role;
+
+class AuthUserDetails
+{
+
+    /**
+     * Getting authenticated user details
+     *
+     * @return array
+     */
+    #[ArrayShape(['user' => 'array', 'bot_access_token' => 'string'])]
+    public function toArray(): array
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        return [
+            'user' => array_merge($user->toArray(), $this->getUserRolesAndPermissions($user)),
+            'bot_access_token' => $this->getBotAuthKey($user)
+        ];
+    }
+
+    /**
+     * getting user roles & permissions
+     *
+     * @param User $user
+     *
+     * @return array
+     */
+    #[ArrayShape(['roles' => "array", 'permissions' => "array"])]
+    public function getUserRolesAndPermissions(User $user): array
+    {
+        $roles = $user->roles()->with('permissions')->get();
+
+        $permissions = $roles->map(function (Role $role) {
+            return $role->permissions->pluck('name')->toArray();
+        })->toArray();
+
+        return [
+            'roles' => $roles->pluck('name')->toArray(),
+            'permissions' => array_shift($permissions)
+        ];
+    }
+
+    /**
+     * Generating bot access token
+     *
+     * @param User $user
+     *
+     * @return string
+     */
+    private function getBotAuthKey(User $user): string
+    {
+        $data = [
+            'expired_at' => Carbon::now()->addMinutes((int) config('session.lifetime'))->timestamp,
+            'access_key' => config('bot.access_key'),
+            'user_email' => $user->email
+        ];
+
+        $crypt = new Encrypter( config('bot.encryption_key'), 'AES-128-CBC');
+        return $crypt->encrypt($data, true);
+    }
+
+}
