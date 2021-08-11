@@ -28,7 +28,7 @@ class ApplicationRequest extends FormRequest
             'last_name'=> 'required|string',
             'email'=> 'required|string|email',
             'phone'=> 'required|string',
-            'tenancy_type'=> 'nullable|integer',
+            'tenancy_type'=> 'nullable|string',
             'moving_date'=> 'required',
             'address_unit'=> 'nullable|string',
             'street_address'=> 'required|string',
