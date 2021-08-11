@@ -2,7 +2,7 @@
     <div>
         <v-row class="mt-5">
             <v-col cols="8" class="search-bg">
-                <Search></Search>
+                <Search @updateSearch="updateSearch"></Search>
             </v-col>
             <v-col cols="4" class="text-right">
                 <v-btn color="primary" @click="addNewApplication"
@@ -14,47 +14,25 @@
         <v-card class="pa-4">
             <v-row>
                 <v-col cols="12" class="crm-table">
-                    <v-simple-table>
-                        <template v-slot:default>
-                            <thead>
-                            <tr>
-                                <th class="text-left">
-                                    Name
-                                </th>
-                                <th class="text-left">
-                                    Moving date
-                                </th>
-                                <th class="text-left">
-                                    Mobile
-                                </th>
-                                <th class="text-left">
-                                    Preference
-                                </th>
-                                <th class="text-left">
-                                    Status
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr
-                                v-for="item in applications"
-                                :key="item.id"
-                                @click="openApplicationSummary(item.id)"
-                            >
-                                <td>{{ item.first_name + ' ' + item.last_name }}</td>
-                                <td>{{ item.moving_date }}</td>
-                                <td>{{ item.phone }}</td>
-                                <td>
-                                    <v-icon small :disabled="isServiceAllowed(item.service_interests, 'power')" color="yellow">mdi-flash</v-icon>
-                                    <v-icon small :disabled="isServiceAllowed(item.service_interests, 'gas')" color="red">mdi-fire</v-icon>
-                                    <v-icon small :disabled="isServiceAllowed(item.service_interests, 'internet')" color="green">mdi-wifi</v-icon>
-                                    <v-icon small :disabled="isServiceAllowed(item.service_interests, 'water')" color="blue" >mdi-water</v-icon>
-                                </td>
-                                <td>{{ item.status }}</td>
-                            </tr>
-                            </tbody>
-                        </template>
-                    </v-simple-table>
+                  <v-data-table
+                      :headers="headers"
+                      :items="applications"
+                      :options.sync="options"
+                      :server-items-length="totalItem"
+                      :loading="loading"
+                      class="elevation-1"
+                      @click:row="openApplicationSummary"
+                  >
+                    <template v-slot:item.first_name="{ item }">
+                      {{ item.first_name + ' ' + item.last_name }}
+                    </template>
+                    <template v-slot:item.services="{ item }">
+                      <v-icon small  :disabled="isServiceAllowed(item.services, 'water')" color="yellow">mdi-flash</v-icon>
+                      <v-icon small :disabled="isServiceAllowed(item.services, 'water')" color="red">mdi-fire</v-icon>
+                      <v-icon small  :disabled="isServiceAllowed(item.services, 'water')" color="green">mdi-wifi</v-icon>
+                      <v-icon small :disabled="isServiceAllowed(item.services, 'water')" color="blue" >mdi-water</v-icon>
+                    </template>
+                  </v-data-table>
                 </v-col>
             </v-row>
         </v-card>
@@ -66,21 +44,87 @@ import Search from "@scripts/components/crm/Search";
 
 export default {
     name: "AgentApplicationTable",
-    props: ["applications"],
+    props: ["applications","totalItem"],
     components: {
         Search
     },
+
+
+    data() {
+      return {
+        page: 1,
+        pageCount: 0,
+        itemsPerPage: 10,
+        loading: false,
+        options: {},
+        headers:  [
+          {
+            text: 'Name',
+            align: 'start',
+            sortable: true,
+            value: 'first_name'
+          },
+          {
+            text: 'Moving date',
+            align: 'start',
+            sortable: true,
+            value: 'moving_date'
+          },
+          {
+            text: 'Mobile',
+            align: 'start',
+            sortable: true,
+            value: 'phone'
+          },
+          {
+            text: 'Preference',
+            align: 'start',
+            sortable: true,
+            value: 'services'
+          }
+        ],
+        search: '',
+      }
+    },
+
     methods: {
         addNewApplication() {
             this.$router.push({name: 'agent.create.application'});
         },
-        openApplicationSummary(id) {
-            this.$emit("openApplicationSummary", id);
+        openApplicationSummary(application) {
+            this.$emit("openApplicationSummary", application.id);
         },
         isServiceAllowed(services, type) {
            return !services.includes(type);
+        },
+      loadApplication() {
+        const meta = {
+          search: this.search,
+          page: this.options.page,
+          per_page: this.options.itemsPerPage,
+          is_descending: this.options.sortDesc.length != 0? this.options.sortDesc[0]: false,
+          sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: 'first_name',
         }
+        this.$emit('refreshDataTable',meta);
+      },
+
+      updateSearch(search) {
+          this.search = search;
+          this.loadApplication();
+      }
     },
+  watch: {
+    options: {
+      handler () {
+        this.loadApplication();
+      },
+      deep: true,
+    },
+  },
+
+  mounted() {
+      console.log('app',this.applications);
+  }
 }
 </script>
 

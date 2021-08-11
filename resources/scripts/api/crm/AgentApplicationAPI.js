@@ -66,9 +66,11 @@ export default {
     getApplicationMetrics() {
         return null;
     },
-    getApplicationList:  () => {
+  getApplicationList:  async (sort_search_meta) => {
         try {
-            return ApplicationMapper.mapApplicationList(applications);
+            let data = await axios.get('/api/application',{params:{...sort_search_meta}});
+            console.log('data', data);
+            return ApplicationMapper.mapApplicationList(data.data);
         } catch (error) {
             return error.data;
         }

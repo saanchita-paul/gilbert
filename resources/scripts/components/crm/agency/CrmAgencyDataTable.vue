@@ -150,7 +150,6 @@ name: "CrmAgencyDataTable",
         },
 
         async loadAgencyData() {
-            console.log(this.options);
 
             const meta = {
                 search: this.search,

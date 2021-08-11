@@ -6,7 +6,11 @@
                     <h3 v-if="user" class="page-title">Hi {{user.name}}, <small class="font-weight-thin">heres a summary of your applications.</small></h3>
                     <AgentLeadMetrics></AgentLeadMetrics>
                 </v-card>
-                <AgentApplicationTable :applications="applicationList" @openApplicationSummary="openApplicationSummary"></AgentApplicationTable>
+                <AgentApplicationTable v-if="isLoaded"
+                    :applications="applicationList"
+                    :totalItem="totalItem"
+                    @refreshDataTable="refreshDataTable"
+                    @openApplicationSummary="openApplicationSummary"></AgentApplicationTable>
             </v-col>
             <v-col cols="4">
                 <AgentApplicationSummary :application="applicationSummary"></AgentApplicationSummary>
@@ -36,6 +40,14 @@ export default {
             applicationList: null,
             applicationSummary: null,
             selected_application_id: null,
+            sort_search_meta : null,
+
+            page: 1,
+            pageCount: 0,
+            itemsPerPage: 10,
+            totalItem: null,
+            options: {},
+            isLoaded: false,
         }
     },
     mounted() {
@@ -48,8 +60,13 @@ export default {
         getApplicationMetrics() {
             this.applicationMetrics = AgentApplicationService.getApplicationMetrics();
         },
-        getApplicationList() {
-            this.applicationList = AgentApplicationService.getApplicationList();
+     async getApplicationList() {
+            let data = await AgentApplicationService.getApplicationList(this.sort_search_meta);
+            this.applicationList = data.applications;
+            this.isLoaded = true;
+            this.page = data.pagination.current_page;
+            this.itemsPerPage = data.pagination.per_page;
+            this.totalItem = data.pagination.total;
             this.selected_application_id = this.applicationList[0].id;
             this.getApplicationSummary();
         },
@@ -60,6 +77,12 @@ export default {
         openApplicationSummary(id) {
             this.selected_application_id = id;
             this.getApplicationSummary();
+        },
+
+        refreshDataTable(meta) {
+            this.sort_search_meta = meta;
+            console.log('meta', this.sort_search_meta);
+            this.getApplicationList();
         }
     },
 }
