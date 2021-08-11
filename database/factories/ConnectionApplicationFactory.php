@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ConnectionApplicationFactory extends Factory
@@ -22,8 +23,7 @@ class ConnectionApplicationFactory extends Factory
      */
     public function definition()
     {
-        $profile = AgentProfile::where('email', 'agent@hood.ai')->first();
-
+        $profile = User::query()->where('email', 'agent@hood.ai')->first()->profile;
         return [
             'office_id' => $profile->office->id,
             'agency_id' => $profile->office->agency->id,
