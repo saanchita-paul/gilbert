@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Services\Agency\CreateOfficeAndAgency;
 use App\Services\Agent\AgentProfileService;
 use App\Services\Agent\ApplicationService;
+use App\Services\Agent\SearchConnectionApplication;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -18,6 +19,27 @@ use Illuminate\Support\Facades\Auth;
 
 class ApplicationController extends Controller
 {
+
+    /**
+     * Getting Application list
+     *
+     * @param Request $request
+     *
+     * @return AnonymousResourceCollection|JsonResponse
+     */
+
+    public function index(Request $request): AnonymousResourceCollection | JsonResponse
+    {
+        try {
+            $service = new SearchConnectionApplication($request->toArray());
+            return ApplicationResource::collection($service->get());
+
+        } catch ( \Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+
     /**
      * Create new application
      *

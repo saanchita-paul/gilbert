@@ -40,9 +40,7 @@ Route::namespace('agency')->middleware([])->group(function () {
     Route::post('/agent', [AgentProfileController::class, 'createAgent']);
     Route::post('/application', [ApplicationController::class, 'create']);
     Route::get('/application/summary/{application}', [ApplicationController::class, 'summary']);
-
 });
-
 
 /**
  * test routes
