@@ -30,7 +30,7 @@ class CreateConnectionApplicationsTable extends Migration
                 ->references('id')
                 ->on('agent_profiles')
                 ->onDelete('cascade');
-            $table->unsignedBigInteger('assigned_to');
+            $table->unsignedBigInteger('assigned_to')->nullable();
             $table->foreign('assigned_to')
                 ->references('id')
                 ->on('agent_profiles')

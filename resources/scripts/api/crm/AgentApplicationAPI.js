@@ -1,5 +1,6 @@
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
+import COMMISSION from "@scripts/data/constants/COMMISSION";
 const applications = [
     {
         id: 1,
@@ -82,7 +83,9 @@ export default {
         }
     },
     async createApplication(application) {
-        // return axios.post(`url`, application);
-        return true;
+
+        application = ApplicationMapper.mapToServer(application);
+         return await axios.post(`/api/application`, {...application});
+
     },
 }
