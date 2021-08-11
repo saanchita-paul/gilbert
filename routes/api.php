@@ -45,6 +45,7 @@ Route::get('/logout', [AuthController::class, 'logout']);
  */
 Route::namespace('agent')->middleware([])->group(function () {
     Route::get('/application/summary/{application}', [ApplicationController::class, 'summary']);
+    Route::get('/application', [ApplicationController::class, 'index']);
     Route::post('/application', [ApplicationController::class, 'create']);
 });
 

@@ -21,7 +21,6 @@ class ConnectionApplicationFactory extends Factory
      */
     public function definition()
     {
-        $boolean_type = rand(0, 1);
         return [
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),

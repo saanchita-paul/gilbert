@@ -19,7 +19,7 @@ class ConnectionApplicationSeeder extends Seeder
     public function run()
     {
         ConnectionApplication::factory()
-            ->count(10)
+            ->count(50)
             ->state(new Sequence(
                 fn($sequence) => ['office_id' => Office::all()->random()],
             ))
