@@ -22,9 +22,12 @@ class AgentProfileFactory extends Factory
     public function definition()
     {
         return [
+
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
-            'phone' => $this->faker->phoneNumber(),
+            'f_id_12' => $this->faker->numberBetween(100, 900),
+            'email' => $this->faker->email(),
+            'phone' => $this->faker->phoneNumber()
         ];
     }
 }

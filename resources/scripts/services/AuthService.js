@@ -19,8 +19,16 @@ export const login = async form => {
     try {
         await AuthAPI.login(form)
         await authUser();
-        console.log('LOGIN SUCCESS')
-        return true;
+        console.log('LOGIN SUCCESS');
+
+        const user = await AuthAPI.getAuthUser();
+        if(user.roles.includes('agency_agent')) {
+            await router.push({name: 'agent.application.dashboard'})
+        } else {
+            return true;
+        }
+        // return true;
+
     } catch (e) {
         console.log('LOGIN FAILED', e)
         return false;

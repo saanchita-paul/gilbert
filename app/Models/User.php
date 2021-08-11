@@ -14,6 +14,9 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
+    const PROFILE_TYPE_HOOD = 'App\Models\HoodProfile';
+    const PROFILE_TYPE_AGENT = 'App\Models\AgentProfile';
+
     /**
      * The attributes that are mass assignable.
      *

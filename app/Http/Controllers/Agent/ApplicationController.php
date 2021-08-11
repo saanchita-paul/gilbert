@@ -3,13 +3,19 @@
 namespace App\Http\Controllers\Agent;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Agent\ApplicationRequest;
 use App\Http\Resources\Agent\ApplicationResource;
+use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
+use App\Models\User;
+use App\Services\Agency\CreateOfficeAndAgency;
+use App\Services\Agent\AgentProfileService;
 use App\Services\Agent\ApplicationService;
 use App\Services\Agent\SearchConnectionApplication;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 
 class ApplicationController extends Controller
 {
@@ -24,9 +30,11 @@ class ApplicationController extends Controller
 
     public function index(Request $request): AnonymousResourceCollection | JsonResponse
     {
+        /** @var User $user */
+        $user = auth()->user();
         try {
             $service = new SearchConnectionApplication($request->toArray());
-            return ApplicationResource::collection($service->get());
+            return ApplicationResource::collection($service->get($user));
 
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
@@ -37,15 +45,18 @@ class ApplicationController extends Controller
     /**
      * Create new application
      *
-     * @param Request $request
+     * @param ApplicationRequest $request
      *
-     * @return AnonymousResourceCollection|JsonResponse
      */
-    public function create(Request $request)
+    public function create(ApplicationRequest $request)
     {
         try{
+            /** @var  User $user */
+            $user = Auth::user();
+
             $service = new ApplicationService();
-            return ApplicationResource::make($service->createApplication($request->toArray()));
+            $inputData = $request->toArray();
+            return ApplicationResource::make($service->createApplication($inputData, $user));
 
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
