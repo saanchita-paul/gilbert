@@ -3,6 +3,7 @@
 namespace App\Services\Agent;
 
 use App\Models\ConnectionApplication;
+use App\Models\User;
 use App\Traits\Agency\Searchable;
 use App\Traits\Agency\Sortable;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -27,9 +28,10 @@ class SearchConnectionApplication
     /**
      * @return LengthAwarePaginator
      */
-    public function get(): LengthAwarePaginator
+    public function get($user): LengthAwarePaginator
     {
         $agencyBuilder = ConnectionApplication::query()
+            ->where('office_id', $user->profile->office_id)
             ->with('connectionServices');
 
         $agencyBuilder = $this->applySearch($agencyBuilder, 'name');
