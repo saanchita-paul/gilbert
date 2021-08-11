@@ -28,25 +28,21 @@ Route::middleware('auth:sanctum')
 Route::get('/logout', [AuthController::class, 'logout']);
 
 /**
- * @Module AGENCY
+ * @Module AGENCY CRM
  */
 //Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
-    Route::namespace('agency')->middleware([])->group(function () {
+Route::namespace('agency')->middleware([])->group(function () {
     Route::get('/agencies', [AgencyController::class, 'index']);
     Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
     Route::post('/agency', [AgencyController::class, 'create']);
     Route::post('/office', [OfficeController::class, 'createOffice']);
+    Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index']);
     Route::post('/agent', [AgentProfileController::class, 'createAgent']);
-
-});
-
-/**
- * @Module AGENCY
- */
-Route::namespace('agent')->middleware([])->group(function () {
-    Route::get('/application/summary/{application}', [ApplicationController::class, 'summary']);
     Route::post('/application', [ApplicationController::class, 'create']);
+    Route::get('/application/summary/{application}', [ApplicationController::class, 'summary']);
+
 });
+
 
 /**
  * test routes
