@@ -21,8 +21,10 @@ class ConnectionServiceFactory extends Factory
      */
     public function definition()
     {
+        $index = rand(0, 3);
+        $types = ['power', 'gas', 'internet', 'water'];
         return [
-            'service_type' => 'gas',
+            'service_type' => $types[$index],
         ];
     }
 }

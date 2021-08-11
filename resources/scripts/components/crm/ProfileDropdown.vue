@@ -20,15 +20,22 @@
                     Edit My Profile
                 </v-btn>
             </div>
-            <v-btn color="error" block>
+            <v-btn @click="onLogout" color="error" block>
                 Sign out
             </v-btn>
     </v-card>
 </template>
 
 <script>
+import AuthService from "@scripts/services/AuthService";
+
 export default {
   name: "ProfileDropdown",
+    methods: {
+        onLogout () {
+            this.$emit('onLogout');
+        },
+    },
 };
 </script>
 

@@ -31,9 +31,9 @@
                         contain
                     ></v-img>
                 </template>
-                <ProfileDropdown></ProfileDropdown>
+                <ProfileDropdown @onLogout="onLogout"></ProfileDropdown>
             </v-menu>
-            
+
         </v-app-bar>
 
         <v-main>
