@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Agency;
+use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\Office;
 use Illuminate\Database\Eloquent\Factories\Sequence;
@@ -21,7 +22,15 @@ class ConnectionApplicationSeeder extends Seeder
             ->count(10)
             ->state(new Sequence(
                 fn($sequence) => ['office_id' => Office::all()->random()],
+            ))
+            ->state(new Sequence(
                 fn($sequence) => ['agency_id' => Agency::all()->random()],
+            ))
+            ->state(new Sequence(
+                fn($sequence) => ['created_by' => AgentProfile::all()->random()],
+            ))
+            ->state(new Sequence(
+                fn($sequence) => ['assigned_to' => AgentProfile::all()->random()],
             ))
             ->create();
     }
