@@ -13,6 +13,14 @@ class RolePermissionSeeder extends Seeder
         RolePermission::ROLE_HOOD_ADMIN,
         RolePermission::ROLE_AGENCY_AGENT,
         RolePermission::ROLE_AGENCY_TEAM_LEAD,
+        RolePermission::ROLE_AGENCY_OFFICE_ALLOCATOR,
+        RolePermission::ROLE_AGENCY_OFFICE_ADMIN,
+        RolePermission::ROLE_AGENCY_OFFICE_DIRECTOR,
+        RolePermission::ROLE_AGENCY_OFFICE_PROPERTY_MANAGER,
+        RolePermission::ROLE_AGENCY_OFFICE_SENIOR_PROPERTY_MANAGER,
+        RolePermission::ROLE_AGENCY_OFFICE_REAL_ESTATE_AGENT
+
+
     ];
 
     protected array $permissions = [
@@ -26,6 +34,25 @@ class RolePermissionSeeder extends Seeder
         RolePermission::ROLE_AGENCY_TEAM_LEAD => [
             RolePermission::P_AGENCY_TEAM_LEAD_CORE
         ],
+        RolePermission::ROLE_AGENCY_OFFICE_ALLOCATOR => [
+            RolePermission::P_AGENCY_AGENT_OFFICE_ALLOCATOR_CORE
+        ],
+        RolePermission::ROLE_AGENCY_OFFICE_ADMIN => [
+            RolePermission::P_AGENCY_OFFICE_ADMIN
+        ],
+        RolePermission::ROLE_AGENCY_OFFICE_DIRECTOR => [
+            RolePermission::P_AGENCY_OFFICE_DIRECTOR
+        ],
+        RolePermission::ROLE_AGENCY_OFFICE_PROPERTY_MANAGER => [
+            RolePermission::P_AGENCY_OFFICE_PROPERTY_MANAGER
+        ],
+        RolePermission::ROLE_AGENCY_OFFICE_SENIOR_PROPERTY_MANAGER => [
+            RolePermission::P_AGENCY_OFFICE_SENIOR_PROPERTY_MANAGER
+        ],
+        RolePermission::ROLE_AGENCY_OFFICE_REAL_ESTATE_AGENT => [
+            RolePermission::P_AGENCY_OFFICE_REAL_ESTATE_AGENT
+        ],
+
     ];
         /**
      * Run the database seeds.

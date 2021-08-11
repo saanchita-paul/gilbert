@@ -97,7 +97,7 @@ name: "CrmOfficeDataTable",
            this.independenceAgencyModal = true;
         },
 
-        openCreationSuccModal(officeInfo) {
+      async openCreationSuccModal(officeInfo) {
             this.independenceAgencyModal = false;
 
             this.officeInfo = {
@@ -107,9 +107,7 @@ name: "CrmOfficeDataTable",
 
             this.officeTitle = this.officeInfo.office.title;
             this.independenceAgencyModal = false;
-            this.saveOfficeData();
-
-
+            await this.saveOfficeData();
             this.isCreatedSuccessfully = true;
         },
         cancelIndOfficeModal() {
@@ -122,12 +120,11 @@ name: "CrmOfficeDataTable",
 
         },
 
-        saveOfficeData() {
+      async  saveOfficeData() {
             let agencyId = this.$route.params?.id
-             this.lastCreatedOffice = OfficeService.saveOfficeData(this.officeInfo, agencyId);
-             this.officesList.push(this.lastCreatedOffice);
-
-
+             this.lastCreatedOffice = await OfficeService.saveOfficeData(this.officeInfo, agencyId);
+            console.log('this.lastCreatedOffice', this.lastCreatedOffice);
+             // this.officesList.push(this.lastCreatedOffice);
         },
 
       async  loadOffices() {
@@ -149,7 +146,8 @@ name: "CrmOfficeDataTable",
         },
 
         openOffice(office) {
-            this.$router.push({name: 'real.state.agency.users', params: { id : this.id, officeId: office.id}});
+            console.log('agency', this.id, 'office', office);
+             this.$router.push({name: 'real.state.agency.users', params: { id : this.id, officeId: office.id}});
         },
 
         updateSearch(search) {

@@ -37,7 +37,6 @@ class DefaultSeeder extends Seeder
     private function createAdmin()
     {
         $user = new User();
-        $user->name = 'Admin';
         $user->password = bcrypt('123456');
         $user->email = 'admin@hood.ai';
         $user->save();

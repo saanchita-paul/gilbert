@@ -22,7 +22,7 @@ export default {
         };
     },
     mapOffice: (office) => {
-        return mapOffice(office.office);
+        return mapOffice(office);
     },
 
     mapOfficeToserver: (officedData, agency) => {
