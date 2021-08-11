@@ -30,9 +30,11 @@ class ApplicationController extends Controller
 
     public function index(Request $request): AnonymousResourceCollection | JsonResponse
     {
+        /** @var User $user */
+        $user = auth()->user();
         try {
             $service = new SearchConnectionApplication($request->toArray());
-            return ApplicationResource::collection($service->get());
+            return ApplicationResource::collection($service->get($user));
 
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
