@@ -37,12 +37,12 @@ export default [
         icon: '/assets/images/icons/Helpdesk.svg',
         route_name: 'real.state.agency.home'
     },
-    {
-        type: 'route',
-        title: 'Test',
-        icon: '/assets/images/icons/Helpdesk.svg',
-        route_name: 'test'
-    },
+    // {
+    //     type: 'route',
+    //     title: 'Test',
+    //     icon: '/assets/images/icons/Helpdesk.svg',
+    //     route_name: 'test'
+    // },
     {
         type: 'route',
         title: 'Application',
