@@ -56,16 +56,6 @@ class SearchAgentProfileService
     private function createAgencyBuilder(): Builder
     {
         return AgentProfile::query()
-            ->with('user');
-    }
-
-    /**
-     * find office with id
-     *
-     * @return Office
-     */
-    public function getOffice(int $id)
-    {
-        return Office::query()->find($id);
+            ->with('user.roles:name');
     }
 }
