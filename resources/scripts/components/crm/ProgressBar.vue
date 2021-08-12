@@ -11,9 +11,6 @@ export default {
   name: "ProgressBar",
     props:["totalStep","currentIndex"],
     mounted() {
-      console.log(this.totalStep);
-      console.log(this.currentIndex);
-
     }
 };
 </script>

@@ -38,13 +38,10 @@ export default {
         try {
 
             meta = OfficeMapper.mapMetaData(meta);
-
-            console.log('log', meta);
             const data = await axios.get('/api/agencies/'+ agencyId + '/offices',{params: {...meta}});
             return OfficeMapper.mapOfficeList(data.data);
 
         } catch (error) {
-            console.log(error);
             return error.data;
         }
     },
@@ -53,9 +50,7 @@ export default {
         try {
             // const data = await axios.get('/')
             officeData = OfficeMapper.mapOfficeToserver(officeData , agencyId);
-            console.log('officeData' ,officeData);
             const data = await axios.post('/api/office',{...officeData});
-            console.log('officeData' ,data.data.data);
             return OfficeMapper.mapOffice(data.data.data);
 
         } catch (error) {

@@ -16,7 +16,7 @@
 
                             <div class="dialogs-area">
                                 <p class="title">New user details</p>
-                                    <v-select label="Job Title" v-model="user.job_title" :items="jobTitleDD" :item-value="value" :item-text="text"
+                                    <v-select label="Job Title" v-model="user.job_title" :items="jobTitleDD" item-value="value" item-text="text"
                                                   placeholder="Property Manager / Admin / Director, etc...." outlined dense>
 
                                     </v-select>

@@ -123,7 +123,7 @@ name: "CrmOfficeDataTable",
       async  saveOfficeData() {
             let agencyId = this.$route.params?.id
              this.lastCreatedOffice = await OfficeService.saveOfficeData(this.officeInfo, agencyId);
-            console.log('this.lastCreatedOffice', this.lastCreatedOffice);
+            // console.log('this.lastCreatedOffice', this.lastCreatedOffice);
              // this.officesList.push(this.lastCreatedOffice);
         },
 

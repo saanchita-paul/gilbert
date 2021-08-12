@@ -35,7 +35,7 @@ const data = [
         status: 'Successfully connected',
     },
     {
-        id: 5,
+        id: 6,
         title: 'Water',
         lead_count: 200,
         status: 'Successfully connected',
@@ -212,8 +212,11 @@ export default {
 
     getUserLeads(types) {
         try {
+            return applications.map(mp=>{
+                return ApplicationMapper.mapApplication(mp);
+            })
             // const data = await axios.get('/');
-            return ApplicationMapper.mapApplicationList(applications);
+            // return ApplicationMapper.mapApplicationList(applications);
 
         } catch (error) {
             return error.data;

@@ -21,9 +21,9 @@
                 </v-data-table>
             </v-col>
         </v-row>
-        <CreateUserModal :dialog="isCreatingUser" @goToNext="goToNextConfirmationModal" @cancelUserDialog="cancleUserDialog"></CreateUserModal>
-        <UserCreationConfirmationModal :dialog="dataVerificationFlag" :user="user" @backToEdit="backToEdit" @confirmData="confirmedData"></UserCreationConfirmationModal>
-        <UserCreatedSuccessfulModal :dialog="creationDoneFlag" :user="user" @done="done"></UserCreatedSuccessfulModal>
+        <CreateUserModal v-if="isCreatingUser" :dialog="isCreatingUser" @goToNext="goToNextConfirmationModal" @cancelUserDialog="cancleUserDialog"></CreateUserModal>
+        <UserCreationConfirmationModal v-if="dataVerificationFlag" :dialog="dataVerificationFlag" :user="user" @backToEdit="backToEdit" @confirmData="confirmedData"></UserCreationConfirmationModal>
+        <UserCreatedSuccessfulModal v-if="creationDoneFlag" :dialog="creationDoneFlag" :user="user" @done="done"></UserCreatedSuccessfulModal>
     </div>
 </template>
 <script>
@@ -104,20 +104,15 @@ name: "CrmUserDatatable",
         },
 
         async confirmedData() {
+            await this.saveUser();
             this.dataVerificationFlag = false;
             this.creationDoneFlag = true;
-            await this.saveUser();
-
         },
 
         done() {
             this.creationDoneFlag = false
         },
 
-        // loadUserData()
-        // {
-        //    this.crmUsers = CrmUserService.loadUserData();
-        // },
         async loadUserData() {
             const meta = {
                 search: this.search,
@@ -135,9 +130,9 @@ name: "CrmUserDatatable",
         },
 
         async saveUser() {
-          let officeId = this.$route.params?.id;
-          let newUser = await CrmUserService.saveUser(this.user, officeId);
-          this.usersList.push(newUser);
+          let officeId = this.$route.params?.officeId;
+          await CrmUserService.saveUser(this.user, officeId);
+          this.loadUserData();
         },
         updateSearch(search) {
             this.search = search;
