@@ -34,10 +34,10 @@ Route::get('/logout', [AuthController::class, 'logout']);
 Route::namespace('agency')->middleware([])->group(function () {
     Route::get('/agencies', [AgencyController::class, 'index']);
     Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
-    Route::post('/agency', [AgencyController::class, 'create']);
-    Route::post('/office', [OfficeController::class, 'createOffice']);
+    Route::post('/agencies', [AgencyController::class, 'create']);
+    Route::post('/offices', [OfficeController::class, 'createOffice']);
     Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index']);
-    Route::post('/agent', [AgentProfileController::class, 'createAgent']);
+    Route::post('/offices/{officeId}/users', [AgentProfileController::class, 'createAgent']);
     Route::post('/application', [ApplicationController::class, 'create']);
     Route::get('/application', [ApplicationController::class, 'index']);
     Route::get('/application/summary/{application}', [ApplicationController::class, 'summary']);

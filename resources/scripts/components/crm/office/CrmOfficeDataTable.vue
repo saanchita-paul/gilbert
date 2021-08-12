@@ -134,7 +134,7 @@ name: "CrmOfficeDataTable",
                 page: this.options.page,
                 per_page: this.options.itemsPerPage,
                 is_descending: this.options.sortDesc.length != 0? this.options.sortDesc[0]: false,
-                sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: 'title',
+                sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: '',
             }
             const data = await OfficeService.loadOfficeData(meta, this.$route.params.id);
             this.officesList = data?.offices;

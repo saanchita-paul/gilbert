@@ -91,7 +91,8 @@ export default {
 
             crmUser = CrmUserMapper.mapuserToServer(crmUser, officeId);
             console.log('crmUser',crmUser)
-            const data = await axios.post('/api/agent', {...crmUser});
+
+            const data = await axios.post('/api/offices/'+ officeId+ '/users', {...crmUser});
             console.log(data);
 
         } catch (error) {

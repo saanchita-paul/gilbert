@@ -60,13 +60,4 @@ class SearchOfficeService
             ->withCount('applications');
     }
 
-    /**
-     * find office with id
-     *
-     * @return Office
-     */
-    public function getOffice(int $id)
-    {
-        return Office::query()->find($id);
-    }
 }

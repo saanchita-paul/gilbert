@@ -21,7 +21,7 @@
                 </v-data-table>
             </v-col>
         </v-row>
-        <CreateUserModal v-if="isCreatingUser" :dialog="isCreatingUser" @goToNext="goToNextConfirmationModal" @cancelUserDialog="cancleUserDialog"></CreateUserModal>
+        <CreateUserModal :dialog="isCreatingUser" @goToNext="goToNextConfirmationModal" @cancelUserDialog="cancleUserDialog"></CreateUserModal>
         <UserCreationConfirmationModal v-if="dataVerificationFlag" :dialog="dataVerificationFlag" :user="user" @backToEdit="backToEdit" @confirmData="confirmedData"></UserCreationConfirmationModal>
         <UserCreatedSuccessfulModal v-if="creationDoneFlag" :dialog="creationDoneFlag" :user="user" @done="done"></UserCreatedSuccessfulModal>
     </div>
@@ -119,7 +119,7 @@ name: "CrmUserDatatable",
                 page: this.options.page,
                 per_page: this.options.itemsPerPage,
                 is_descending: this.options.sortDesc.length != 0? this.options.sortDesc[0]: false,
-                sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: 'first_name',
+                sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: '',
             }
             const data = await CrmUserService.loadUserData(meta, this.$route.params.id, this.$route.params.officeId);
             this.usersList = data?.users;

@@ -6,6 +6,7 @@ namespace App\Services\Agency;
 
 use App\Mail\InviteUserMail;
 use App\Models\AgentProfile;
+use App\Models\Office;
 use App\Models\User;
 
 class CreateAgentAndUser
@@ -26,4 +27,15 @@ class CreateAgentAndUser
         return $user;
 
     }
+
+    public function createAgentAndUser(array $inputData)
+    {
+        $office =  Office::query()->find($inputData['office_id']);
+        $inputData['agency_id'] = $office->agency_id;
+        $agent = $this->createAgent($inputData);
+        $inputData['profile_id'] = $agent->id;
+        $user = $this->createUser($inputData);
+        return $agent;
+    }
+
 }
