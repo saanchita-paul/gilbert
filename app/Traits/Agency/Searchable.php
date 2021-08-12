@@ -25,7 +25,7 @@ trait Searchable
      * @return Builder
      */
     //todo: replace this 'like' search with FULL-TEXT-SEARCH
-    private function applySearch(Builder $builder, string $searchFrom): Builder
+    private function applySearch(Builder $builder, array $searchFrom): Builder
     {
         if (!$this->search) {
             return $builder;
@@ -33,7 +33,9 @@ trait Searchable
         $keys = explode(' ', $this->search);
         return $builder->where(function (Builder $builder) use ($keys, $searchFrom) {
             foreach ($keys as $key) {
-                $builder->orWhere($searchFrom, 'like', '%' . $key . '%');
+                foreach ($searchFrom as $query) {
+                    $builder->orWhere($query, 'like', '%' . $key . '%');
+                }
             }
         });
     }

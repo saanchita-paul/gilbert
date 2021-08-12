@@ -34,7 +34,7 @@ class SearchConnectionApplication
             ->where('office_id', $user->profile->office_id)
             ->with('connectionServices');
 
-        $agencyBuilder = $this->applySearch($agencyBuilder, 'name');
+        $agencyBuilder = $this->applySearch($agencyBuilder, ['first_name', 'last_name']);
 
         $agencyBuilder = $this->applySorting($agencyBuilder);
 

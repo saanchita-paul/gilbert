@@ -42,7 +42,7 @@ class SearchAgentProfileService
             $agencyBuilder->where('office_id', $officeId);
         }
 
-//        $agencyBuilder = $this->applySearch($agencyBuilder, 'name');
+        $agencyBuilder = $this->applySearch($agencyBuilder, ['first_name', 'last_name']);
         $agencyBuilder = $this->applySorting($agencyBuilder);
 
         return  $agencyBuilder->paginate($this->perPage);

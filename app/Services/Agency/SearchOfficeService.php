@@ -41,7 +41,7 @@ class SearchOfficeService
             $agencyBuilder->where('agency_id', $agencyId);
         }
 
-        $agencyBuilder = $this->applySearch($agencyBuilder, 'name');
+        $agencyBuilder = $this->applySearch($agencyBuilder, ['name']);
         $agencyBuilder = $this->applySorting($agencyBuilder);
 
         return  $agencyBuilder->paginate($this->perPage);
