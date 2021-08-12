@@ -20,7 +20,7 @@
                         :options.sync="options"
                         :server-items-length="totalItem"
                         :loading="loading"
-                        class="elevation-1"
+                        class="elevation-1 row-pointer"
                         @click:row="openAgency"
                     >
                     </v-data-table>
@@ -197,5 +197,7 @@ name: "CrmAgencyDataTable",
 </script>
 
 <style scoped>
-
+.row-pointer >>> tbody tr :hover {
+    cursor: pointer;
+}
 </style>

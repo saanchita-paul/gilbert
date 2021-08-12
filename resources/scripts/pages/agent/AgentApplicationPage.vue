@@ -87,3 +87,8 @@ export default {
     },
 }
 </script>
+<style scoped>
+.row-pointer >>> tbody tr :hover {
+  cursor: pointer;
+}
+</style>

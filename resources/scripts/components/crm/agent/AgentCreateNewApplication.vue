@@ -284,10 +284,13 @@ export default {
                 {text: 'Home Owner', value: 2},
             ],
             states: [
-                {text: 'NSW', value: 'NSW'},
-                {text: 'VIC', value: 'VIC'},
-                {text: 'QLD', value: 'QLD'},
-                {text: 'SA', value: 'SA'},
+                {text: 'NSW', value: 'New South Wales'},
+                {text: 'VIC', value: 'Victoria'},
+                {text: 'QLD', value: 'Queensland'},
+                {text: 'SA', value: 'South Australia'},
+                {text: 'NT', value: 'Northern Territory'},
+                {text: 'TAS', value: 'Tasmania'},
+                {text: 'ACT', value: 'Australian Capital Territory'},
             ],
             showMovingDate: false,
             showDOB: false,
@@ -317,6 +320,9 @@ export default {
         onAddressSelected(place) {
             GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
                 .then((data) => {
+
+                    console.log('data', data);
+
                     this.application.address_text = data.formatted_address;
                     this.application.street_address = data.street;
                     this.application.city = data.city;
