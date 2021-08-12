@@ -12,6 +12,7 @@ use App\Services\Agent\ApplicationService;
 use App\Services\Agent\SearchConnectionApplication;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 
@@ -73,6 +74,26 @@ class ApplicationController extends Controller
         try {
             $application->load(['connectionServices']);
             return new ApplicationResource($application);
+
+        } catch ( \Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    /**
+     * Updating assignee of an application
+     *
+     * @param Request $request
+     * @param int $applicationId
+     *
+     * @return ApplicationResource|JsonResponse
+     */
+    public function updateAssignee(Request $request, int $applicationId): ApplicationResource | JsonResponse
+    {
+        try {
+            $service = new ApplicationService();
+            $inputData = $request->toArray();
+            return ApplicationResource::make($service->updateApplication($inputData, $applicationId));
 
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);

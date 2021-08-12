@@ -28,7 +28,11 @@ class ApplicationService
 
     }
 
-    public function updateApplication() {
+    public function updateApplication(array $application, int $applicationId) {
+        $existingApplication = ConnectionApplication::find($applicationId);
+        $existingApplication->assigned_to = $application['agent_profile_id'];
+        $existingApplication->save();
 
+        return $existingApplication;
     }
 }
