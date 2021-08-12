@@ -1,13 +1,20 @@
 import CrmUser from "@scripts/models/crm/CrmUser";
 import PaginationMapper from "@scripts/api/mappers/crm/PaginationMapper";
+import UserRoles from "@scripts/data/UserRoles";
 
 function mapUser(user) {
     return new CrmUser({...user});
 }
 
+function mapRole(role) {
+    let checkRole = UserRoles.ROLES.find((r) => { return r.value == role });
+    return checkRole.text;
+}
+
 export default {
     mapUserList: (userList)=> {
         const users =  userList?.data.map(user=> {
+            user.role = mapRole(user.user.roles[0]);
             return mapUser(user);
         });
         const pagination =  PaginationMapper.mapPagination(userList?.meta);

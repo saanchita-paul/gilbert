@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Agent;
+namespace App\Services\Agency;
 
 use App\Models\ConnectionApplication;
 use App\Models\User;
