@@ -33,7 +33,7 @@ export default [
     },
     {
         type: 'route',
-        title: 'Real State Agency',
+        title: 'Real Estate Agency',
         icon: '/assets/images/icons/Helpdesk.svg',
         route_name: 'real.state.agency.home'
     },
