@@ -41,16 +41,16 @@
         <v-divider class="mt-4 mb-2"></v-divider>
         <p class="sub-title py-2">Service Interests
           <span class="mx-2">
-              <v-icon :disabled="isServiceAllowed(application.service_interests, 'power')" color="yellow">mdi-flash</v-icon>
+              <v-icon :disabled="isServiceAllowed(application.services, 'power')" color="yellow">mdi-flash</v-icon>
           </span>
           <span class="mx-2">
-              <v-icon :disabled="isServiceAllowed(application.service_interests, 'gas')" color="red">mdi-fire</v-icon>
+              <v-icon :disabled="isServiceAllowed(application.services, 'gas')" color="red">mdi-fire</v-icon>
           </span>
           <span class="mx-2">
-              <v-icon :disabled="isServiceAllowed(application.service_interests, 'internet')" color="green">mdi-wifi</v-icon>
+              <v-icon :disabled="isServiceAllowed(application.services, 'internet')" color="green">mdi-wifi</v-icon>
           </span>
           <span class="mx-2">
-              <v-icon :disabled="isServiceAllowed(application.service_interests, 'water')" color="blue" >mdi-water</v-icon>
+              <v-icon :disabled="isServiceAllowed(application.services, 'water')" color="blue" >mdi-water</v-icon>
           </span>
         </p>
 

@@ -20,16 +20,16 @@
                       :options.sync="options"
                       :server-items-length="totalItem"
                       :loading="loading"
-                      class="elevation-1"
+                      class="elevation-1 row-pointer"
                       @click:row="openApplicationSummary"
                   >
                     <template v-slot:item.first_name="{ item }">
                       {{ item.first_name + ' ' + item.last_name }}
                     </template>
                     <template v-slot:item.services="{ item }">
-                      <v-icon small  :disabled="isServiceAllowed(item.services, 'water')" color="yellow">mdi-flash</v-icon>
-                      <v-icon small :disabled="isServiceAllowed(item.services, 'water')" color="red">mdi-fire</v-icon>
-                      <v-icon small  :disabled="isServiceAllowed(item.services, 'water')" color="green">mdi-wifi</v-icon>
+                      <v-icon small  :disabled="isServiceAllowed(item.services, 'power')" color="yellow">mdi-flash</v-icon>
+                      <v-icon small :disabled="isServiceAllowed(item.services, 'gas')" color="red">mdi-fire</v-icon>
+                      <v-icon small  :disabled="isServiceAllowed(item.services, 'internet')" color="green">mdi-wifi</v-icon>
                       <v-icon small :disabled="isServiceAllowed(item.services, 'water')" color="blue" >mdi-water</v-icon>
                     </template>
                   </v-data-table>
@@ -129,5 +129,7 @@ export default {
 </script>
 
 <style scoped>
-
+.row-pointer >>> tbody tr :hover {
+  cursor: pointer;
+}
 </style>

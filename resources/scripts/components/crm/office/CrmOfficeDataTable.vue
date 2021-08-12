@@ -16,8 +16,8 @@
                     :options.sync="options"
                     :server-items-length="totalItem"
                     :loading="loading"
-                    class="elevation-1"
-                    @click:row="openOffice"
+                    class="elevation-1 row-pointer"
+                    @click:row="openOffice "
                 >
                 </v-data-table>
             </v-col>
@@ -171,6 +171,8 @@ name: "CrmOfficeDataTable",
 </script>
 
 <style scoped>
-
+.row-pointer >>> tbody tr :hover {
+    cursor: pointer;
+}
 </style>
 

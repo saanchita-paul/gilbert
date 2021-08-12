@@ -16,15 +16,20 @@
 
                             <div class="dialogs-area">
                                 <p class="title">New user details</p>
+                                <ValidationProvider name="Job Title" rules="required"  v-slot="{ errors }">
                                     <v-select label="Job Title" v-model="user.job_title" :items="jobTitleDD" item-value="value" item-text="text"
-                                                  placeholder="Property Manager / Admin / Director, etc...." outlined dense>
+                                                  placeholder="Property Manager / Admin / Director, etc...."
+                                              :error-messages=" errors[0]"
+                                              outlined dense>
 
                                     </v-select>
+                                </ValidationProvider>
                                 <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
                                     <v-text-field
                                         v-model="user.first_name"
                                         label="Firstname*"
                                         placeholder="Firstname"
+                                        name="First Name"
                                         outlined
                                         dense
                                         :error-messages=" errors[0]"
@@ -40,8 +45,10 @@
                                         :error-messages=" errors[0]"
                                     ></v-text-field>
                                 </ValidationProvider>
-                                <v-text-field   v-model="user.phone" label="Phone Number" placeholder="Phone Number" outlined dense></v-text-field>
-                                <ValidationProvider name="Last Name" rules="email"  v-slot="{ errors }">
+                                <ValidationProvider name="Phone" rules="cv-phone|length:10"  v-slot="{ errors }">
+                                    <v-text-field   v-model="user.phone" label="Phone Number" :error-messages=" errors[0]" placeholder="Phone Number" outlined dense></v-text-field>
+                                </ValidationProvider>
+                                <ValidationProvider name="Email" rules="required|email"  v-slot="{ errors }">
                                     <v-text-field  :error-messages=" errors[0]"   v-model="user.email" label="Email Address" placeholder="firstname.lastname@barryplantcamberwell.com.au" outlined dense></v-text-field>
                                 </ValidationProvider>
                             </div>
