@@ -15,6 +15,13 @@ class AgentProfileResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        $data = parent::toArray($request);
+        $data['user']['roles'] = $this->roles($data['user']['roles']);
+        return  $data;
+    }
+
+    public function roles($roles): array
+    {
+        return collect($roles)->pluck('name')->toArray();
     }
 }

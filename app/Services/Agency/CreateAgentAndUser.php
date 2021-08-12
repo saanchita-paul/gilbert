@@ -21,7 +21,7 @@ class CreateAgentAndUser
     public function createUser(array $userData)
     {
         /** @var User $user */
-        $user = User::create($userData);
+        $user = User::create(array_merge($userData, ['profile_type' => 'App\Models\AgentProfile']));
         $user->assignRole($userData['role']);
         return $user;
 
