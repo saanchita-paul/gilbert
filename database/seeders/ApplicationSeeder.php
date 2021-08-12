@@ -27,7 +27,6 @@ class ApplicationSeeder extends Seeder
         $profile->first_name = 'Hood';
         $profile->last_name = 'Agent';
         $profile->{'f_id_12'} = '123';
-        $profile->email = 'agent@hood.ai';
         $profile->phone = '1234567890';
         $profile->save();
 

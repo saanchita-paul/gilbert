@@ -4,7 +4,7 @@ export default class CrmUser{
         this.id = id;
         this.proerty_manager_name = first_name + ' ' + last_name;
         this.submitted_lead = submitted_lead;
-        this.role = 'agent';
+        this.role = role;
         this.phone = phone;
         this.email = user?.email;
         this.profile_img = profile_photo;

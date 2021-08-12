@@ -3,7 +3,7 @@
 use App\Http\Controllers\Agency\AgencyController;
 use App\Http\Controllers\Agency\AgentProfileController;
 use App\Http\Controllers\Agency\OfficeController;
-use App\Http\Controllers\Agent\ApplicationController;
+use App\Http\Controllers\Agency\ApplicationController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Http\Request;
