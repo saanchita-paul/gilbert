@@ -35,6 +35,7 @@ export default {
     },
 
     mapNotes(data) {
+
         return data.map(dt=> {
             return Object.assign(new Note(), { ...dt });
         });

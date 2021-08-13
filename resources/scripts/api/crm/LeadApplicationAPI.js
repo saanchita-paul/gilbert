@@ -2,6 +2,7 @@ import CrmUserMapper from "@scripts/api/mappers/crm/CrmUserMapper";
 import AppMetricsMapper from "@scripts/api/mappers/crm/AppMetricsMapper";
 import AppLeadMapper from "@scripts/api/mappers/crm/AppLeadMapper";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
+import axios from "axios";
 
 const data = [
     {
@@ -243,12 +244,12 @@ export default {
         }
     },
 
-    getNote(id) {
+   async getNote(id) {
         try {
-            // const data = await axios.get('/');
-            return ApplicationMapper.mapNotes(notes);
-
+            const data = await axios.get('/api/applications/1/notes');
+            return ApplicationMapper.mapNotes(data.data.data);
         } catch (error) {
+
             return error.data;
         }
     },
@@ -263,13 +264,10 @@ export default {
         }
     },
 
-    saveNote() {
+   async saveNote(newNote, leadId) {
         try {
-            // const data = await axios.get('/');
-            const note = ApplicationMapper.mapNote(newNote)
-            notes.push({...note});
-            console.log(notes);
-            return note;
+            const data = await axios.post('/api/applications/1/notes',{...newNote});
+            return ApplicationMapper.mapNote(data);
 
         } catch (error) {
             return error.data;

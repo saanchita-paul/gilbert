@@ -47,7 +47,7 @@ class CreateConnectionApplicationsTable extends Migration
             $table->string('city', 45)->nullable();
             $table->string('postcode', 10)->nullable();
             $table->string('state', 20)->nullable();
-            $table->string('country', 45)->nullable();
+            $table->string('country', 200)->nullable();
             $table->text('additional_instruction')->nullable();
             $table->string('address_text', 150)->nullable();
             $table->tinyInteger('is_email_billing')->nullable();

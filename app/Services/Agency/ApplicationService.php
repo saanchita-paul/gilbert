@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\Agency;
 
+use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\User;
@@ -28,7 +29,16 @@ class ApplicationService
 
     }
 
-    public function updateApplication() {
-
+    public function getNotes($application_id)
+    {
+        return ApplicationNote::query()->where('connection_application_id','=', $application_id)->get();
     }
+
+    public function createNotes(array $note, User $user, $applicationId) {
+
+        $note['connection_application_id'] = $applicationId;
+        $note['created_by'] = $user->id;
+        return ApplicationNote::create($note);
+    }
+
 }

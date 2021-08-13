@@ -38,9 +38,9 @@ name: "LeadServicesAndNotes",
             this.$emit('updatePlan', plan);
         },
 
-        saveNote(newNote) {
-            LeadApplicationService.saveNote(newNote, this.leadSummary.id);
-            this.$emit('updateNote');
+        async saveNote(note) {
+          await LeadApplicationService.saveNote(note, this.leadSummary.id);
+          this.$emit('updateNote');
         }
 
 

@@ -82,7 +82,7 @@ export default {
     mounted() {
        this.leadId = this.$route.params.id;
        this.loadPlanNoteAndLead();
-       this.loadLead();
+       // this.loadLead();
 
     }
 };
