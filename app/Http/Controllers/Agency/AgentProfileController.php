@@ -40,17 +40,8 @@ class AgentProfileController
     public function createAgent(CreateAgentProfileRequest $request)
     {
         try {
-            $inputData = $request->toArray();
             $agentAndUserSvc = new CreateAgentAndUser();
-            $searchOfficeSvc = new SearchOfficeService([]);
-
-            $office = $searchOfficeSvc->getOffice($inputData['office_id']);
-            $inputData['agency_id'] = $office->agency_id;
-
-            $agent = $agentAndUserSvc->createAgent($inputData);
-            $inputData['profile_id'] = $agent->id;
-            $user = $agentAndUserSvc->createUser($inputData);
-            return AgencyResource::make($agent);
+            return AgencyResource::make($agentAndUserSvc->createAgentAndUser($request->toArray()));
 
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);

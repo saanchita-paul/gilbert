@@ -26,6 +26,7 @@ trait Searchable
      */
     //todo: replace this 'like' search with FULL-TEXT-SEARCH
     private function applySearch(Builder $builder, string ...$searchFrom): Builder
+
     {
         if (!$this->search) {
             return $builder;

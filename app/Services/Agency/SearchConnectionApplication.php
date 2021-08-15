@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Agent;
+namespace App\Services\Agency;
 
 use App\Models\ConnectionApplication;
 use App\Traits\Agency\Searchable;
@@ -38,18 +38,16 @@ class SearchConnectionApplication
      */
     public function get($user): LengthAwarePaginator
     {
-        $applicationBuilder = ConnectionApplication::query()
+        $agencyBuilder = ConnectionApplication::query()
             ->where('office_id', $user->profile->office_id)
             ->with('connectionServices');
 
-        $applicationBuilder = $this->applyFilter($applicationBuilder);
+        $agencyBuilder = $this->applySearch($agencyBuilder, ['first_name', 'last_name']);
 
-        $applicationBuilder = $this->applySearch($applicationBuilder, 'first_name', 'last_name');
-
-        $applicationBuilder = $this->applySorting($applicationBuilder);
+        $agencyBuilder = $this->applySorting($agencyBuilder);
 
 
-        return  $applicationBuilder->paginate($this->perPage);
+        return  $agencyBuilder->paginate($this->perPage);
     }
 
     /**

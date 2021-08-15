@@ -3,7 +3,7 @@
 use App\Http\Controllers\Agency\AgencyController;
 use App\Http\Controllers\Agency\AgentProfileController;
 use App\Http\Controllers\Agency\OfficeController;
-use App\Http\Controllers\Agent\ApplicationController;
+use App\Http\Controllers\Agency\ApplicationController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Http\Request;
@@ -34,10 +34,10 @@ Route::get('/logout', [AuthController::class, 'logout']);
 Route::namespace('agency')->middleware([])->group(function () {
     Route::get('/agencies', [AgencyController::class, 'index']);
     Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
-    Route::post('/agency', [AgencyController::class, 'create']);
-    Route::post('/office', [OfficeController::class, 'createOffice']);
+    Route::post('/agencies', [AgencyController::class, 'create']);
+    Route::post('/offices', [OfficeController::class, 'createOffice']);
     Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index']);
-    Route::post('/agent', [AgentProfileController::class, 'createAgent']);
+    Route::post('/offices/{officeId}/users', [AgentProfileController::class, 'createAgent']);
     Route::post('/application', [ApplicationController::class, 'create']);
     Route::get('/application', [ApplicationController::class, 'index']);
     Route::post('/applications/{applicationId}/assignee', [ApplicationController::class, 'updateAssignee']);

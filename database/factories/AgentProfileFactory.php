@@ -26,7 +26,7 @@ class AgentProfileFactory extends Factory
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'f_id_12' => $this->faker->numberBetween(100, 900),
-            'email' => $this->faker->email(),
+//            'email' => $this->faker->email(),
             'phone' => $this->faker->phoneNumber()
         ];
     }

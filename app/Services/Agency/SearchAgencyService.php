@@ -32,7 +32,7 @@ class SearchAgencyService
             ->withCount('offices')
             ->withCount('applications');
 
-        $agencyBuilder = $this->applySearch($agencyBuilder, 'name');
+        $agencyBuilder = $this->applySearch($agencyBuilder, ['name']);
 
         $agencyBuilder = $this->applySorting($agencyBuilder);
 

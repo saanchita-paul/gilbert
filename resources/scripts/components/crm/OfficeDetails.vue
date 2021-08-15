@@ -22,7 +22,7 @@
                                       :error-messages=" errors[0]"
                                       outlined dense></v-text-field>
                   </ValidationProvider>
-                  <ValidationProvider name="Contact" rules="required"  v-slot="{ errors }">
+                  <ValidationProvider name="Contact" rules="required|cv-phone|length:10"  v-slot="{ errors }">
                       <v-text-field
                         v-model = "office.contact"
                         @input="updateOffice"
@@ -42,10 +42,13 @@
                   dense
                 ></v-text-field>
                   </ValidationProvider>
-                <v-text-field  v-model = "office.abn" @input="updateOffice"
-                               label="ABN (Optional)"
-                               outlined dense
-                ></v-text-field>
+                  <ValidationProvider name="Abn" rules="cv-phone"  v-slot="{ errors }">
+                    <v-text-field  v-model = "office.abn" @input="updateOffice"
+                                   label="ABN (Optional)"
+                                   outlined dense
+                                   :error-messages=" errors[0]"
+                    ></v-text-field>
+                  </ValidationProvider>
               </div>
             </v-col>
           </v-row>
@@ -54,7 +57,7 @@
 <script>
 export default {
   name: "OfficeDetails",
-    props:['agency'],
+    props:['data'],
     data() {
       return {
           office: {
@@ -71,13 +74,21 @@ export default {
     methods: {
         updateOffice() {
         this.$emit('updateOffice',this.office);
-      }
+      },
+
+        updateWithProps()
+        {
+            console.log(this.data);
+            this.office = this.data?.office;
+        }
+
 
 
     },
 
     mounted() {
-     this.updateOffice();
+     // this.updateOffice();
+     this.updateWithProps();
     },
 
     watch: {

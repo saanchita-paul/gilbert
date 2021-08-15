@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Agent;
+namespace App\Http\Controllers\Agency;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Agent\ApplicationRequest;
 use App\Http\Resources\Agent\ApplicationResource;
+use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\User;
 use App\Services\Agent\AgentProfileService;
-use App\Services\Agent\ApplicationService;
-use App\Services\Agent\SearchConnectionApplication;
+use App\Services\Agency\ApplicationService;
+use App\Services\Agency\SearchConnectionApplication;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResource;
