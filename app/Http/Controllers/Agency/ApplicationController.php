@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Agency;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Agency\ApplicationRequest;
-use App\Http\Resources\Agency\ApplicationResource;
+use App\Http\Requests\Agent\ApplicationRequest;
+use App\Http\Resources\Agent\ApplicationResource;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\User;
-use App\Services\Agency\CreateOfficeAndAgency;
 use App\Services\Agent\AgentProfileService;
 use App\Services\Agency\ApplicationService;
 use App\Services\Agency\SearchConnectionApplication;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 
@@ -75,6 +75,26 @@ class ApplicationController extends Controller
         try {
             $application->load(['connectionServices']);
             return new ApplicationResource($application);
+
+        } catch ( \Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    /**
+     * Updating assignee of an application
+     *
+     * @param Request $request
+     * @param int $applicationId
+     *
+     * @return ApplicationResource|JsonResponse
+     */
+    public function updateAssignee(Request $request, int $applicationId): ApplicationResource | JsonResponse
+    {
+        try {
+            $service = new ApplicationService();
+            $inputData = $request->toArray();
+            return ApplicationResource::make($service->updateApplication($inputData, $applicationId));
 
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);

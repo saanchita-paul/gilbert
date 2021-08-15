@@ -40,6 +40,7 @@ Route::namespace('agency')->middleware([])->group(function () {
     Route::post('/offices/{officeId}/users', [AgentProfileController::class, 'createAgent']);
     Route::post('/application', [ApplicationController::class, 'create']);
     Route::get('/application', [ApplicationController::class, 'index']);
+    Route::post('/applications/{applicationId}/assignee', [ApplicationController::class, 'updateAssignee']);
     Route::get('/application/summary/{application}', [ApplicationController::class, 'summary']);
 });
 

@@ -24,19 +24,20 @@ class ApplicationRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name'=> 'required|string',
-            'last_name'=> 'required|string',
-            'email'=> 'required|string|email',
-            'phone'=> 'required|string',
-            'tenancy_type'=> 'nullable|integer',
-            'moving_date'=> 'required',
-            'address_unit'=> 'nullable|string',
-            'street_address'=> 'required|string',
-            'city'=> 'required|string',
-            'postcode'=> 'required|string',
-            'state'=> 'required|string',
-            'additional_instruction'=> 'nullable|string',
-            'is_email_billing'=> 'nullable|integer',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'email' => 'required|string|email',
+            'phone' => 'required|string',
+            'tenancy_type' => 'required|integer',
+            'dob' => 'required|date|before_or_equal:-18 years',
+            'moving_date' => 'required|date|after_or_equal:3 days',
+            'address_unit' => 'nullable|string',
+            'street_address' => 'required|string',
+            'city' => 'required|string',
+            'postcode' => 'required|string',
+            'state' => 'required|string',
+            'additional_instruction' => 'nullable|string',
+            'is_email_billing' => 'nullable|integer',
         ];
     }
 }
