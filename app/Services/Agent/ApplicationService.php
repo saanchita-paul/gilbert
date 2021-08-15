@@ -8,7 +8,7 @@ use App\Services\Agency\CreateOfficeAndAgency;
 
 class ApplicationService
 {
-    public function createApplication(array $application, User $user) {
+    public function createApplication(array $application, User $user){
 
         $agentProfile = $user->profile;
         $application['office_id'] = $agentProfile->office_id;
@@ -21,7 +21,10 @@ class ApplicationService
         $connectionService = [];
 
         foreach ($application['service_interests'] as $service) {
-            $connectionService[] = ConnectionService::create(['service_type'=>$service['service_type'], 'connection_application_id'=>$newApplication->id]);
+            $connectionService[] = ConnectionService::create(
+                ['service_type'=>$service['service_type'],
+                'connection_application_id'=>$newApplication->id]
+            );
         }
 
         return $newApplication;
@@ -29,10 +32,8 @@ class ApplicationService
     }
 
     public function updateApplication(array $application, int $applicationId) {
-        $existingApplication = ConnectionApplication::find($applicationId);
-        $existingApplication->assigned_to = $application['agent_profile_id'];
-        $existingApplication->save();
 
-        return $existingApplication;
+        return ConnectionApplication::where('id', $applicationId)
+            ->update('assigned_to', $application['agent_profile_id']);
     }
 }

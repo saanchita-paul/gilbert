@@ -3,7 +3,6 @@
 namespace App\Services\Agent;
 
 use App\Models\ConnectionApplication;
-use App\Models\User;
 use App\Traits\Agency\Searchable;
 use App\Traits\Agency\Sortable;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,7 +17,7 @@ class SearchConnectionApplication
      */
     private ?int $perPage;
     private ?string $status;
-    private $statusMap = [
+    private array $statusMap = [
         'unassigned' => 1,
         'assigned' => 2,
         'escalated' => 3,
@@ -64,7 +63,7 @@ class SearchConnectionApplication
             return $builder;
         }
 
-        $statusValue = $this->statusMap[$this->status];
+        $statusValue = ConnectionApplication::STATUS_MAPPING[$this->status];
 
         return $builder->where('status', $statusValue);
     }
