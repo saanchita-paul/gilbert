@@ -46,8 +46,9 @@ Route::namespace('agency')->middleware([])->group(function () {
     Route::get('/applications/{id}/notes', [ApplicationController::class, 'getConnectionNotes']);
     Route::post('/applications/{id}/notes', [ApplicationController::class, 'createConnectionNotes']);
     Route::post('/applications/{applicationId}/assignee', [ApplicationController::class, 'updateAssignee']);
-
     Route::post('/applications/{id}/update', [ApplicationController::class, 'createNewConnection']);
+    Route::post('/applications/{applicationId}/escalate', [ApplicationController::class, 'updateEscalate']);
+    Route::get('/application/summary/{application}', [ApplicationController::class, 'summary']);
 });
 
 /**

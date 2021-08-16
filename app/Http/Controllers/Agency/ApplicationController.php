@@ -126,13 +126,33 @@ class ApplicationController extends Controller
         }
     }
 
-    public function createNewConnection(Request $request, string $id) {
+
+    public function createNewConnection(Request $request, string $id)
+    {
 
         try {
             $service = new ApplicationService();
             $user = Auth::user();
             $profile = $user->profile;
-            return  ApplicationResource::make($service->reCreateLead($request->toArray(), $id, $profile));
+            return ApplicationResource::make($service->reCreateLead($request->toArray(), $id, $profile));
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+    /**
+     * Updating status to escalate of an application
+     *
+     * @param Request $request
+     * @param int $applicationId
+     *
+     * @return ApplicationResource|JsonResponse
+     */
+    public function updateEscalate(Request $request, int $applicationId): ApplicationResource | JsonResponse
+    {
+        try {
+            $service = new ApplicationService();
+            $inputData = $request->toArray();
+            return ApplicationResource::make($service->updateApplication($inputData, $applicationId));
 
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);

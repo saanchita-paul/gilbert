@@ -71,6 +71,7 @@ class ApplicationService
 
     }
 
+
     public function reCreateLead(array $applications, $id, $user) {
 
         $applications['office_id'] = $user->office_id;
@@ -85,4 +86,14 @@ class ApplicationService
         return $existLead;
     }
 
+
+    public function updateEscalateApplication(array $application, int $applicationId) {
+
+        $existingApplication = ConnectionApplication::find($applicationId);
+        $existingApplication->escalate_reason = $application['reason'];
+        $existingApplication->status = ConnectionApplication::STATUS_MAPPING[$application['status']];
+        $existingApplication->save();
+
+        return $existingApplication;
+    }
 }

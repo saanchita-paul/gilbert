@@ -32,7 +32,8 @@ class ApplicationResource extends JsonResource
             'additional_instruction' => $this->additional_instruction,
             'address_text' => $this->address_text,
             'email_billing' => $this->is_email_billing == 1 ? 'Email' : 'Paper',
-            'services' => $this->getConnectionServices($this->connectionServices)
+            'services' => $this->getConnectionServices($this->connectionServices),
+            'identification' => $this->identification
         ];
     }
 
