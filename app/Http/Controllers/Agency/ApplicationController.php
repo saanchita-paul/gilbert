@@ -10,8 +10,6 @@ use App\Http\Resources\Agency\ApplicationResource;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\User;
-use App\Services\Agency\CreateOfficeAndAgency;
-use App\Services\Agent\AgentProfileService;
 use App\Services\Agency\ApplicationService;
 use App\Services\Agency\SearchConnectionApplication;
 use Illuminate\Http\JsonResponse;
@@ -104,6 +102,37 @@ class ApplicationController extends Controller
             $service = new ApplicationService();
             $user = Auth::user();
             return ApplicationNoteResourse::make($service->createNotes($request->toArray(), $user, $id));
+        } catch ( \Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+     /** Updating assignee of an application
+     *
+     * @param Request $request
+     * @param int $applicationId
+     *
+     * @return ApplicationResource|JsonResponse
+     */
+    public function updateAssignee(Request $request, int $applicationId): ApplicationResource | JsonResponse
+    {
+        try {
+            $service = new ApplicationService();
+            $inputData = $request->toArray();
+            return ApplicationResource::make($service->updateApplication($inputData, $applicationId));
+
+        } catch ( \Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    public function createNewConnection(Request $request, string $id) {
+
+        try {
+            $service = new ApplicationService();
+            $user = Auth::user();
+            $profile = $user->profile;
+            return  ApplicationResource::make($service->reCreateLead($request->toArray(), $id, $profile));
 
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 
@@ -15,7 +16,7 @@ class ConnectionServiceSeeder extends Seeder
      */
     public function run()
     {
-        ConnectionApplication::factory()
+        ConnectionService::factory()
             ->count(50)
             ->state(new Sequence(
                 fn($sequence) => ['connection_application_id' => ConnectionApplication::all()->random()],

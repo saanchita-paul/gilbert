@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="d-flex">
-            <div class="service-box" :class="{active: active}">
+            <div class="service-box" :class="{active: isActive(title)}">
                 <p class="mb-0"><v-icon :color="getColor(title)">{{icon}}</v-icon> {{title}}</p>
             </div>
         </div>
@@ -10,25 +10,20 @@
 
 <script>
 export default {
-name: "EneryService",
+name: "EnergyService",
     props: {
         title: {
             require: true,
-        },
-        active: {
-          require: true,
         },
         leadSummary: {
             require: true
         }
     },
-
     data() {
-      return {
-          icon: null,
-      }
+        return {
+            icon: null,
+        }
     },
-
     methods: {
         isActive(service) {
             return this.leadSummary.service_types.includes(service.toLowerCase())?true:false;
@@ -67,6 +62,11 @@ name: "EneryService",
             if(service.toLowerCase() === 'water') {
                 this.icon = 'mdi-water'
             }
+        },
+
+        updateService(service)
+        {
+            this.$emit('updateService', service);
         }
     },
 

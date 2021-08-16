@@ -18,6 +18,7 @@ name: "LeadUserDetails",
     },
     methods: {
         updateLead(lead) {
+            this.$emit('updateLead',lead);
             console.log('lead', lead);
         },
         eacalate(){

@@ -38,11 +38,16 @@ Route::namespace('agency')->middleware([])->group(function () {
     Route::post('/offices', [OfficeController::class, 'createOffice']);
     Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index']);
     Route::post('/offices/{officeId}/users', [AgentProfileController::class, 'createAgent']);
+
     Route::post('/applications', [ApplicationController::class, 'create']);
     Route::get('/applications', [ApplicationController::class, 'index']);
+    Route::get('/applications/{id}', [ApplicationController::class, 'createNewConnection']);
     Route::get('/applications/summary/{application}', [ApplicationController::class, 'summary']);
     Route::get('/applications/{id}/notes', [ApplicationController::class, 'getConnectionNotes']);
     Route::post('/applications/{id}/notes', [ApplicationController::class, 'createConnectionNotes']);
+    Route::post('/applications/{applicationId}/assignee', [ApplicationController::class, 'updateAssignee']);
+
+    Route::post('/applications/{id}/update', [ApplicationController::class, 'createNewConnection']);
 });
 
 /**
