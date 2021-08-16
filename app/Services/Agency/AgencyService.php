@@ -12,9 +12,17 @@ class AgencyService
         return Agency::query()->updateOrCreate($agency);
     }
 
-    public function updateAgency() {
-
+    /**
+     * Retrieve a single Agency instance by ID or fail.
+     *
+     * @param int $agencyId
+     *
+     * @return Agency
+     */
+    public function getAgency(int $agencyId): Agency
+    {
+        return Agency::findOrFail($agencyId);
     }
 
-
+    public function updateAgency() {}
 }

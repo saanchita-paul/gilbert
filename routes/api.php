@@ -33,8 +33,9 @@ Route::get('/logout', [AuthController::class, 'logout']);
 //Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
 Route::namespace('agency')->middleware([])->group(function () {
     Route::get('/agencies', [AgencyController::class, 'index']);
-    Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
     Route::post('/agencies', [AgencyController::class, 'create']);
+    Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
+    Route::post('/agencies/{agencyId}/offices', [OfficeController::class, 'createAgencyOffice']);
     Route::post('/offices', [OfficeController::class, 'createOffice']);
     Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index']);
     Route::post('/offices/{officeId}/users', [AgentProfileController::class, 'createAgent']);
