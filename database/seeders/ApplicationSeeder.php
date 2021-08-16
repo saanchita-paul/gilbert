@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\ConnectionApplication;
+use App\Models\Identification;
 use App\Models\Office;
 use App\Models\AgentProfile;
 use App\Models\User;
@@ -41,6 +42,7 @@ class ApplicationSeeder extends Seeder
         ConnectionApplication::factory()
             ->count(20)
             ->has(ConnectionService::factory()->count(1), 'connectionServices')
+            ->has(Identification::factory()->count(1), 'identification')
             ->create();
     }
 }
