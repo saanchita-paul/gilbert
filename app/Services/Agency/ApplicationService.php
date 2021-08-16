@@ -33,7 +33,10 @@ class ApplicationService
 
     public function updateApplication(array $application, int $applicationId) {
 
-        return ConnectionApplication::where('id', $applicationId)
-            ->update('assigned_to', $application['agent_profile_id']);
+        $existingApplication = ConnectionApplication::find($applicationId);
+        $existingApplication->assigned_to = $application['agent_profile_id'];
+        $existingApplication->save();
+
+        return $existingApplication;
     }
 }
