@@ -24,10 +24,10 @@ class IdentificationFactory extends Factory
     public function definition()
     {
 
-        $applications = ConnectionApplication::all();
+        #$applications = ConnectionApplication::all();
         return [
 
-            'connection_application_id' => $this->faker->unique->numberBetween(1,50),
+            'connection_application_id' => ConnectionApplication::factory()->create()->id,
             'card_number' => $this->faker->creditCardNumber,
             'state' => $this->faker->streetName,
             'country' => $this->faker->country,
