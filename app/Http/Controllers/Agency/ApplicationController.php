@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Agency;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Agent\ApplicationRequest;
-use App\Http\Resources\Agent\ApplicationResource;
+use App\Http\Resources\Agency\ApplicationResource;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\User;
