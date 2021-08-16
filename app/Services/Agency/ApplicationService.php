@@ -39,4 +39,14 @@ class ApplicationService
 
         return $existingApplication;
     }
+
+    public function updateEscalateApplication(array $application, int $applicationId) {
+
+        $existingApplication = ConnectionApplication::find($applicationId);
+        $existingApplication->escalate_reason = $application['reason'];
+        $existingApplication->status = ConnectionApplication::STATUS_MAPPING[$application['status']];
+        $existingApplication->save();
+
+        return $existingApplication;
+    }
 }
