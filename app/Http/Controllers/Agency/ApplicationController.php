@@ -114,7 +114,7 @@ class ApplicationController extends Controller
         try {
             $service = new ApplicationService();
             $inputData = $request->toArray();
-            return ApplicationResource::make($service->updateApplication($inputData, $applicationId));
+            return ApplicationResource::make($service->updateEscalateApplication($inputData, $applicationId));
 
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
