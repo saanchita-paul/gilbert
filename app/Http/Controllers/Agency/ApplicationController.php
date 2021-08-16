@@ -100,4 +100,24 @@ class ApplicationController extends Controller
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
+
+    /**
+     * Updating status to escalate of an application
+     *
+     * @param Request $request
+     * @param int $applicationId
+     *
+     * @return ApplicationResource|JsonResponse
+     */
+    public function updateEscalate(Request $request, int $applicationId): ApplicationResource | JsonResponse
+    {
+        try {
+            $service = new ApplicationService();
+            $inputData = $request->toArray();
+            return ApplicationResource::make($service->updateApplication($inputData, $applicationId));
+
+        } catch ( \Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
 }
