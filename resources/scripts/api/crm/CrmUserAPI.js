@@ -78,10 +78,12 @@ export default {
         }
     },
 
-    getUserAllData: ()=> {
+    getUserAllData: async (meta)=> {
         try {
-            return CrmUserMapper.mapUserList(userData);
+            const data = await axios.get('/api/application/users',{params: {...meta}});
+            return CrmUserMapper.mapUserList(data.data);
         } catch (error) {
+            console.log(error);
             return error.data;
         }
     },

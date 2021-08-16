@@ -42,6 +42,7 @@ Route::namespace('agency')->middleware([])->group(function () {
     Route::get('/application', [ApplicationController::class, 'index']);
     Route::post('/applications/{applicationId}/assignee', [ApplicationController::class, 'updateAssignee']);
     Route::get('/application/summary/{application}', [ApplicationController::class, 'summary']);
+    Route::get('/application/users', [AgentProfileController::class, 'users']);
 });
 
 /**

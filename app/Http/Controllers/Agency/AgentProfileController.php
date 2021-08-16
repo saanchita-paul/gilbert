@@ -14,6 +14,7 @@ use App\Services\Agency\SearchOfficeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 
 class AgentProfileController
 {
@@ -28,6 +29,19 @@ class AgentProfileController
     public function index(Request $request, int $officeId): AnonymousResourceCollection | JsonResponse
     {
         try {
+            $service = new SearchAgentProfileService($request->toArray());
+            return AgentProfileResource::collection($service->get($officeId));
+
+        } catch ( \Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    public function users(Request $request): AnonymousResourceCollection | JsonResponse
+    {
+        try {
+            $user = Auth::user();
+            $officeId = $user->profile->office->id;
             $service = new SearchAgentProfileService($request->toArray());
             return AgentProfileResource::collection($service->get($officeId));
 

@@ -30,15 +30,17 @@
                             dense
                             prepend-inner-icon="mdi-magnify"
                             hide-details="auto"
+                            v-model="search"
+                            @input="changeInput"
                         ></v-text-field>
                     </div>
                     <v-list-item v-for="user in users" :key="user.id">
                         <v-avatar size="30">
                             <img v-bind:src="user.profile_img">
                         </v-avatar>
-                        <small  class="pl-2">{{user.first_name}}</small>
+                        <small  class="pl-2">{{user.proerty_manager_name}}</small>
                         <v-spacer></v-spacer>
-                        <span flat ><small>Reassign</small><v-icon small @click="reassigning(user)">mdi-menu-right</v-icon></span>
+                        <span flat ><small>Assign</small><v-icon small @click="assignUser(user)">mdi-menu-right</v-icon></span>
                     </v-list-item>
                 </v-list>
     </v-menu>
@@ -59,19 +61,18 @@ export default {
     data() {
       return {
           menu: false,
+          search: '',
       }
     },
 
     methods: {
-        reassigning(user)
-        {
-            this.$emit('reassigning', user, this.lead);
+        assignUser(user) {
+            this.$emit('assignUser', user, this.lead);
+        },
+        changeInput() {
+            this.$emit('updateSearch', this.search);
         }
     },
-    mounted() {
-      console.log('user id', this.users);
-    }
-
 };
 </script>
 
