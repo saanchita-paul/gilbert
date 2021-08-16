@@ -36,6 +36,7 @@ Route::namespace('agency')->middleware([])->group(function () {
     Route::post('/agencies', [AgencyController::class, 'create']);
     Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
     Route::post('/agencies/{agencyId}/offices', [OfficeController::class, 'createAgencyOffice']);
+    Route::post('/independent-agency', [AgencyController::class, 'createIndependentAgency']);
     Route::post('/offices', [OfficeController::class, 'createOffice']);
     Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index']);
     Route::post('/offices/{officeId}/users', [AgentProfileController::class, 'createAgent']);

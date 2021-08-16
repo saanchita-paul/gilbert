@@ -9,7 +9,7 @@ use App\Models\Agency;
 class AgencyService
 {
     public function createAgency(array $agency) {
-        return Agency::query()->updateOrCreate($agency);
+        return Agency::create($agency);
     }
 
     /**

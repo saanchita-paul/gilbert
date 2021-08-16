@@ -5,6 +5,7 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\User;
 use App\Services\Agency\CreateOfficeAndAgency;
+use Illuminate\Console\Application;
 
 class ApplicationService
 {
@@ -32,7 +33,6 @@ class ApplicationService
     }
 
     public function updateApplication(array $application, int $applicationId) {
-
         $existingApplication = ConnectionApplication::find($applicationId);
         $existingApplication->assigned_to = $application['agent_profile_id'];
         $existingApplication->save();
@@ -43,7 +43,7 @@ class ApplicationService
     public function updateEscalateApplication(array $application, int $applicationId) {
 
         $existingApplication = ConnectionApplication::find($applicationId);
-        $existingApplication->escalate_reason = $application['reason'];
+        $existingApplication->reason = $application['reason'];
         $existingApplication->status = ConnectionApplication::STATUS_MAPPING[$application['status']];
         $existingApplication->save();
 
