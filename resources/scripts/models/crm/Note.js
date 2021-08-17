@@ -3,6 +3,7 @@ export default class Note {
     text = null;
     active = false;
     title = null;
+    type = null;
     created_at = null;
     constructor() {}
 }

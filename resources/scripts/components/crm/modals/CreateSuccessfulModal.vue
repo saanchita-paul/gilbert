@@ -22,7 +22,6 @@ export default {
     props:['dialog','title'],
     methods: {
         cancelDialog() {
-            this.dialog = false;
             this.$emit('cancel');
         }
     },

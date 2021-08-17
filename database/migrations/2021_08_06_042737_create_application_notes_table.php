@@ -23,9 +23,12 @@ class CreateApplicationNotesTable extends Migration
             $table->unsignedBigInteger('created_by');
             $table->foreign('created_by')
                 ->references('id')
-                ->on('agent_profiles')
+                ->on('users')
                 ->onDelete('cascade');
             $table->text('text')->nullable();
+            $table->text('type')->nullable();
+            $table->text('title')->nullable();
+
             $table->timestamps();
         });
     }

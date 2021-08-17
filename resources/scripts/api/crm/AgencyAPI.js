@@ -47,7 +47,7 @@ export default {
      saveAgency: async (agency) => {
         try {
             agency = AgencyMqpper.mapAgencytoServer(agency);
-            const data = await axios.post('/api/agency',{...agency});
+            const data = await axios.post('/api/agencies',{...agency});
             return AgencyMqpper.mapAgency( data.data.data);
 
         } catch (error) {

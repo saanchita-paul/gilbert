@@ -1,12 +1,20 @@
 <template>
     <v-container>
-            <LeadUserDetails v-if="planNoteFlag" @eacalate="eacalate" @readMore="readMore" :leadSummary="leadSummary"></LeadUserDetails>
-            <LeadServicesAndNotes  v-if="planNoteFlag" @updatePlan="updatePlan" @updateNote= "updateNote" :leadSummary="leadSummary" :notes="notes"></LeadServicesAndNotes>
-            <LeadsDetailsFotter></LeadsDetailsFotter>
+            <ValidationObserver ref="submit_lead">
+                <LeadUserDetails v-if="planNoteFlag" @eacalate="eacalate"
+                                 @updateLead="updateLead"
+                                 @readMore="readMore" :leadSummary="leadSummary"></LeadUserDetails>
+                <LeadServicesAndNotes  v-if="planNoteFlag"
+                                   @updateService="updateService"
+                                   @updatePlan="updatePlan"
+                                   @updateNote= "updateNote"
+                                   :leadSummary="leadSummary" :notes="notes"></LeadServicesAndNotes>
+             </ValidationObserver>
+            <LeadsDetailsFotter @submitConnection="submitConnection"></LeadsDetailsFotter>
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
             <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" title="agd"></EscalationConfirmModal>
             <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag" @close="closeReadMore"> </LeadReadMoreModal>
-
+            <LeadSubmitConfirmationModal :dialog="showSubmitModal" v-if="showSubmitModal" @saveData="saveData" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
     </v-container>
 </template>
 
@@ -18,6 +26,7 @@ import LeadApplicationService from "@scripts/services/crm/LeadApplicationService
 import EscalateReasonModal from "@scripts/components/crm/modals/EscalateReasonModal";
 import EscalationConfirmModal from "@scripts/components/crm/modals/EscalationConfirmModal";
 import LeadReadMoreModal from "@scripts/components/crm/modals/LeadReadMoreModal";
+import LeadSubmitConfirmationModal from "@scripts/components/crm/modals/LeadSubmitConfirmationModal";
 export default {
     name: "ApplicationDetailsPage",
     data() {
@@ -28,7 +37,12 @@ export default {
           planNoteFlag: false,
           escalateLead: false,
           escalateLeadConfirm: false,
-          readMoreFlag: false
+          readMoreFlag: false,
+          lead: null,
+          plan: null,
+          supplier: 'ea',
+          services: [],
+          showSubmitModal: false,
       }
     },
     components: {
@@ -38,6 +52,7 @@ export default {
         LeadsDetailsFotter,
         LeadServicesAndNotes,
         LeadUserDetails,
+        LeadSubmitConfirmationModal
 
     },
 
@@ -46,13 +61,15 @@ export default {
         {
             this.notes = await LeadApplicationService.loadNote(this.leadId);
             this.leadSummary = await LeadApplicationService.loadUserLead(this.leadId);
+            this.lead = this.leadSummary;
+            this.services = this.leadSummary?.service_interests;
+
             this.planNoteFlag = true;
-            console.log(this.notes);
         },
 
         updatePlan(plan)
         {
-            console.log('plan', plan);
+            this.plan = plan;
         },
 
         updateNote() {
@@ -62,19 +79,75 @@ export default {
         eacalate() {
             this.escalateLead = true;
         },
+
         sucessSaveEscal()
         {
             this.escalateLead = false;
             this.escalateLeadConfirm = true;
         },
+
         cancelEscal() {
             this.escalateLead = false;
         },
+
         readMore() {
             this.readMoreFlag = true;
         },
+
         closeReadMore() {
             this.readMoreFlag = false;
+        },
+
+        updateLead(lead) {
+            this.lead = lead;
+        },
+        updateService(service) {
+            let index = this.services.findIndex(svc => svc === service.toLowerCase());
+            if(index == -1) {
+                this.services.push(service.toLowerCase());
+                return;
+            }
+            this.services.splice(index,1);
+            this.leadSummary.service_types = this.services;
+
+        },
+
+        async submitConnection() {
+            let v = await this.validateLead();
+            this.showSubmitModal = true;
+
+            if(!v) return;
+            this.showSubmitModal = true;
+        },
+
+        backToEdit() {
+            this.showSubmitModal = false;
+        },
+
+      async validateLead() {
+          return await this.$refs.submit_lead.validate();
+        },
+
+       async saveData() {
+
+            this.showSubmitModal = false;
+            let payload = null;
+            if(this.lead.property_details === undefined)
+            {
+                payload = {...this.lead};
+
+            } else
+            {
+                payload=  { ...this.lead.property_details,
+                    ...this.lead.person_details,
+                    'service_interests':this.services,
+                    'identification':this.lead.indentification,
+                    supplier: 1,
+                    plan_type: this.plan
+                };
+            }
+
+            LeadApplicationService.saveLead(payload, this.leadId);
         }
 
     },

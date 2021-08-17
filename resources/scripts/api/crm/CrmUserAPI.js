@@ -1,6 +1,7 @@
 import AgencyMqpper from "@scripts/api/mappers/crm/AgencyMqpper";
 import CrmUserMapper from "@scripts/api/mappers/crm/CrmUserMapper";
 import axios from "axios";
+import OfficeMapper from "@scripts/api/mappers/crm/OfficeMapper";
 
 const data = [
     {
@@ -63,21 +64,26 @@ const userData = [
 ];
 
 export default {
-    getUsersData: ()=> {
+    getUsersData: async (meta, agencyId, officeId)=> {
         try {
             // const data = await axios.get('/');
-
-            return CrmUserMapper.mapUserList(data);
+            // return CrmUserMapper.mapUserList(data);
+            meta = CrmUserMapper.mapMetaData(meta);
+            const data = await axios.get('/api/offices/'+ officeId + '/users',{params: {...meta}});
+            return CrmUserMapper.mapUserList(data.data);
 
         } catch (error) {
+            console.log(error);
             return error.data;
         }
     },
 
-    getUserAllData: ()=> {
+    getUserAllData: async (meta)=> {
         try {
-            return CrmUserMapper.mapUserList(userData);
+            const data = await axios.get('/api/application/users',{params: {...meta}});
+            return CrmUserMapper.mapUserList(data.data);
         } catch (error) {
+            console.log(error);
             return error.data;
         }
     },
@@ -87,7 +93,8 @@ export default {
 
             crmUser = CrmUserMapper.mapuserToServer(crmUser, officeId);
             console.log('crmUser',crmUser)
-            const data = await axios.post('/api/agent', {...crmUser});
+
+            const data = await axios.post('/api/offices/'+ officeId+ '/users', {...crmUser});
             console.log(data);
 
         } catch (error) {

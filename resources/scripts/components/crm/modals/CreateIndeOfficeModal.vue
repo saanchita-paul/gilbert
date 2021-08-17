@@ -8,7 +8,7 @@
             <v-card>
                 <v-container>
                     <ValidationObserver :ref="currentRef">
-                           <component :is="currentComponent" v-model="agency"
+                           <component :is="currentComponent" v-model="agency" :data="agency"
                                       @updateOffice = "updateOffice"
                                       @updateAllocator = "updateAllocator"
                                       @updateProfile = "updateProfile"
@@ -19,10 +19,11 @@
                         <v-col cols="12">
                             <div class="d-flex justify-space-between">
                                 <v-btn @click="cancel"
-                                >Cancel
+                                >{{backOrCancel}}
                                 </v-btn>
                                 <v-btn @click="goNextOrSave"
                                        color="primary"
+                                       :disabled="isDisable"
                                 >
                                    {{nextOrSave}}
                                 </v-btn>
@@ -57,6 +58,9 @@ name: "CreateIndeOfficeModal",
     props:['dialog'],
     data() {
         return {
+            isDisable: false,
+            checkDisability: false,
+            checkDisabilitySave: true,
             currentComponent: "OfficeDetails",
             currentRef : 'create_office',
             currentCompIndex : 0,
@@ -77,8 +81,16 @@ name: "CreateIndeOfficeModal",
     },
     computed: {
         nextOrSave: function () {
-            return this.currentCompIndex < 2?'Next':'Save';
-        }
+            if(this.currentCompIndex < 2) {
+                this.isDisable = false;
+                return 'Next'
+            }
+            this.isDisable = !this.checkNumberProfileValidity();
+            return 'Save';
+        },
+        backOrCancel: function () {
+            return this.currentCompIndex > 0?'Back':'Cancel';
+        },
     },
     methods: {
 
@@ -93,12 +105,15 @@ name: "CreateIndeOfficeModal",
                 this.currentComponent = agencyForm[ this.currentCompIndex];
                 this.currentRef = formRef[this.currentCompIndex];
 
-            } else
-            {
-                return;
+                if(this.currentCompIndex == 2) {
+                     this.isDisable = !this.checkNumberProfileValidity();
+                }
+
+
             }
 
         },
+
 
        async isValidateForm() {
 
@@ -114,7 +129,14 @@ name: "CreateIndeOfficeModal",
         },
 
         cancel() {
-            this.$emit('cancelDialog');
+            this.currentCompIndex --;
+
+            if(this.currentCompIndex < 0) {
+                this.$emit('cancelDialog');
+                return;
+            }
+            this.currentComponent = agencyForm[ this.currentCompIndex];
+            this.currentRef = formRef[this.currentCompIndex];
         },
 
         updateOffice(officeData) {
@@ -125,9 +147,41 @@ name: "CreateIndeOfficeModal",
             this.agency.allocator = allocator;
         },
 
-        updateProfile(profile) {
+         updateProfile(profile) {
             this.agency.profile = profile;
+             this.isDisable = !this.checkNumberProfileValidity();
+
+        },
+
+        checkNumberProfileValidity() {
+          console.log( this.agency.profile);
+          let gas =  this.agency.profile?.gas
+          let power =  this.agency.profile?.power
+          let water =  this.agency.profile?.water
+          let internet =  this.agency.profile?.internet
+
+            if(isNaN(gas) ||
+                isNaN(power) ||
+                isNaN(water) ||
+                isNaN(internet)
+            ) {
+                return false;
+            }
+
+            if((gas.length >2 || (Number(gas)<1 || Number(gas)> 99) ) ||
+                (power.length >2 || (Number(power)<1 || Number(power)> 99) ) ||
+                (water.length >2 || (Number(water)<1 || Number(water)> 99) ) ||
+                (internet.length >2 || (Number(internet)<1 || Number(internet)> 99) )) return  false;
+
+            return true;
         }
+
+
+
+
+
+
+
     }
 }
 </script>

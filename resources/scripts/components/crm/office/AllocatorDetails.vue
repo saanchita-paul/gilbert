@@ -51,12 +51,15 @@
                 :error-messages=" errors[0]"
               ></v-text-field>
             </ValidationProvider>
-          <v-text-field
-              v-model="allocator.phone_number" @input="updateAllocator"
-            label="Phone Number (Optional)"
-            outlined
-            dense
-          ></v-text-field>
+            <ValidationProvider name="PhoneNumber" rules="cv-phone|length:10"  v-slot="{ errors }">
+              <v-text-field
+                  v-model="allocator.phone_number" @input="updateAllocator"
+                label="Phone Number (Optional)"
+                outlined
+                dense
+                  :error-messages=" errors[0]"
+              ></v-text-field>
+            </ValidationProvider>
         </div>
       </v-col>
     </v-row>
@@ -65,7 +68,7 @@
 <script>
 export default {
   name: "AllocatorDetails",
-    props: ['agency'],
+    props: ['data'],
     data() {
       return {
           allocator: {
@@ -80,10 +83,22 @@ export default {
     },
 
     methods: {
+
         updateAllocator() {
             // console.log(this.allocator);
             this.$emit('updateAllocator', this.allocator);
-        }
+        },
+
+        updateWithProps()
+        {
+            console.log(this.data);
+            this.allocator = this.data?.allocator;
+        },
+
+    },
+
+    mounted() {
+     this.updateWithProps();
     }
 
 }

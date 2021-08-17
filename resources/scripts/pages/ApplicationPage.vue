@@ -66,9 +66,7 @@ export default {
         },
 
         updateTotal(total) {
-
             this.total_leads = total
-
         },
     },
 

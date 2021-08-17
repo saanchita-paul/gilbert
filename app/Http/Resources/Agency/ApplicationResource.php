@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Agent;
+namespace App\Http\Resources\Agency;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,7 +20,7 @@ class ApplicationResource extends JsonResource
             'last_name' => $this->last_name,
             'email' => $this->email,
             'phone' => $this->phone,
-            'tenancy_type' => $this->tenancy_type == 1 ? 'Renter' : 'Home Owner',
+            'tenancy_type' => $this->tenancy_type,
             'date_of_birth' => $this->dob,
             'moving_date' => $this->moving_date,
             'address_unit' => $this->address_unit,
@@ -31,8 +31,10 @@ class ApplicationResource extends JsonResource
             'country' => $this->country,
             'additional_instruction' => $this->additional_instruction,
             'address_text' => $this->address_text,
-            'email_billing' => $this->is_email_billing == 1 ? 'Email' : 'Paper',
-            'service_interests' => $this->getConnectionServices($this->connectionServices)
+            'services' => $this->getConnectionServices($this->connectionServices),
+            'identification' => $this->identification,
+            'is_email_billing' => $this->is_email_billing,
+
         ];
     }
 

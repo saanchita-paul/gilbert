@@ -2,6 +2,11 @@
     <v-row>
             <p class="sub-title">Service Applications</p>
         <v-col cols="12">
+            <v-row>
+                <v-col v-for="service in services" :key="service">
+                    <EnergyService @click.native="updateService(service)" :title="service"  :lead-summary="leadSummary"></EnergyService>
+                </v-col>
+            </v-row>
             <v-divider></v-divider>
         </v-col>
 
@@ -30,7 +35,7 @@
 </template>
 
 <script>
-import EnergyService from "@scripts/components/crm/leadmanagement/EneryService";
+import EnergyService from "@scripts/components/crm/leadmanagement/EnergyService";
 import ServiceProvider from "@scripts/components/crm/leadmanagement/ServiceProvider";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
@@ -45,12 +50,7 @@ export default {
 
     data() {
         return {
-            activePower: false,
-            activeGas: false,
-            activeWater: false,
-            activeInternet: false,
-            serviceFlag: false,
-            selectedService: [],
+            services:['Power', 'Gas', 'Water', 'Internet'],
             serviceProviderFlag: false,
             serviceProvider: [],
             plans: [],
@@ -72,31 +72,6 @@ export default {
             return this.leadSummary.service_types.includes(service.toLowerCase())?true:false;
 
         },
-        inializingServiceProps() {
-            this.activePower = this.isActive('Power');
-            this.activeGas = this.isActive('Gas');
-            this.activeWater = this.isActive('Water');
-            this.activeInternet = this.isActive('Internet');
-            this.serviceFlag = true;
-
-        },
-
-        toggleEnegry(service) {
-                if(service.toLowerCase() === 'power') {
-                    this.activePower =  !this.activePower
-                }
-                if(service.toLowerCase() === 'gas') {
-                    this.activeGas = !this.activeGas
-                }
-                if(service.toLowerCase() === 'internet') {
-                    this.activeInternet = !this.activeInternet
-                }
-                if(service.toLowerCase() === 'water') {
-                    this.activeWater = !this.activeWater
-                }
-                this.loadServiceProvider();
-        },
-
       async  loadServiceProvider()
         {
             this.serviceProvider = await LeadApplicationService.loadServiceProvider({
@@ -112,11 +87,15 @@ export default {
         async loadPlan(serviceProvider) {
             this.plans = await LeadApplicationService.loadPlan(serviceProvider);
             this.plansFlag = true;
+        },
+
+        updateService(service) {
+            this.$emit('updateService', service);
+            console.log('service', service);
         }
     },
 
     mounted() {
-      this.inializingServiceProps();
       this.loadServiceProvider();
       this.loadPlan(1);
 

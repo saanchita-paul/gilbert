@@ -2,7 +2,7 @@
     <v-row>
         <v-col cols="8" class="mb-8 pb-8">
             <v-card class="pa-4">
-                <ServiceApplications :leadSummary="leadSummary" @updatePlan="updatePlan"></ServiceApplications>
+                <ServiceApplications @updateService="updateService" :leadSummary="leadSummary" @updatePlan="updatePlan"></ServiceApplications>
             </v-card>
         </v-col>
         <v-col cols="4" class="mb-8 pb-8">
@@ -38,9 +38,13 @@ name: "LeadServicesAndNotes",
             this.$emit('updatePlan', plan);
         },
 
-        saveNote(newNote) {
-            LeadApplicationService.saveNote(newNote, this.leadSummary.id);
-            this.$emit('updateNote');
+        async saveNote(note) {
+          await LeadApplicationService.saveNote(note, this.leadSummary.id);
+          this.$emit('updateNote');
+        },
+        updateService(service)
+        {
+            this.$emit('updateService',service);
         }
 
 

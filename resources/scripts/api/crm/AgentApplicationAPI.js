@@ -1,5 +1,6 @@
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
+import COMMISSION from "@scripts/data/constants/COMMISSION";
 const applications = [
     {
         id: 1,
@@ -65,9 +66,11 @@ export default {
     getApplicationMetrics() {
         return null;
     },
-    getApplicationList:  () => {
+  getApplicationList:  async (sort_search_meta) => {
         try {
-            return ApplicationMapper.mapApplicationList(applications);
+            let data = await axios.get('/api/applications',{params:{...sort_search_meta}});
+            console.log('data', data);
+            return ApplicationMapper.mapApplicationList(data.data);
         } catch (error) {
             return error.data;
         }
@@ -75,14 +78,16 @@ export default {
     getApplicationSummary: async (id) => {
         try {
             // get application summary by application id
-            let response = (await axios.get(`/api/application/summary/${id}`)).data;
+            let response = (await axios.get(`/api/applications/summary/${id}`)).data;
             return ApplicationMapper.mapApplicationSummary(response.data);
         } catch (error) {
             return error.data;
         }
     },
     async createApplication(application) {
-        // return axios.post(`url`, application);
-        return true;
+
+        application = ApplicationMapper.mapToServer(application);
+         return await axios.post(`/api/applications`, {...application});
+
     },
 }

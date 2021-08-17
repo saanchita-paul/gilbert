@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ConnectionApplicationFactory extends Factory
@@ -21,30 +23,26 @@ class ConnectionApplicationFactory extends Factory
      */
     public function definition()
     {
+        $profile = User::query()->where('email', 'agent@hood.ai')->first()->profile;
         return [
+            'office_id' => $profile->office->id,
+            'agency_id' => $profile->office->agency->id,
+            'created_by' => $profile->id,
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'email' => $this->faker->email(),
             'phone' => $this->faker->phoneNumber(),
+            'tenancy_type' => rand(1, 3),
             'dob' => $this->faker->date(),
-            'moving_date' => $this->faker->dateTime(),
+            'moving_date' => $this->faker->date(),
             'street_address' => $this->faker->streetAddress(),
             'city' => $this->faker->city(),
             'postcode' => $this->faker->postcode(),
-            'state' => $this->faker->streetName(),
+            'state' => $this->faker->city(),
             'country' => $this->faker->country(),
-            'additional_instruction' => $this->faker->text(),
+            'additional_instruction' => $this->faker->sentence(10),
             'address_text' => $this->faker->address(),
-            'is_email_billing' => $this->faker->boolean(),
-            'property_type' => $this->faker->boolean(),
-            'has_life_support' => $this->faker->boolean(),
-            'has_solar' => $this->faker->boolean(),
-            'nmi' => $this->faker->shuffleString(),
-            'mirn' => $this->faker->shuffleString(),
-            'is_escalated' => $this->faker->boolean(),
-            'supplier' => $this->faker->boolean(),
-            'plan_type' => $this->faker->boolean(),
-            'status' => $this->faker->boolean(),
+            'is_email_billing' => rand(0, 1),
         ];
     }
 }

@@ -46,7 +46,7 @@ class OfficeController extends Controller
     {
         try{
 
-            $ofcAndAgencySvc = new CreateOfficeAndAgency();
+            $ofcAndAgencySvc = new CreateOfficeAndAgency($request->toArray());
             $agentAndUserSvc = new CreateAgentAndUser();
             $inputData = $request->toArray();
 
