@@ -14,7 +14,8 @@
                         >
                        <v-avatar size="30"
                             v-on="on">
-                           <v-icon color="grey" large>mdi-account-circle</v-icon>
+                           <img v-if="isProfilePhotoAvailable" :src="getAssigneePhoto">
+                           <v-icon v-else color="grey" large>mdi-account-circle</v-icon>
                         </v-avatar>
                         <v-icon x-small>mdi-menu-down</v-icon>
                     </v-btn>
@@ -75,13 +76,21 @@ export default {
 
     methods: {
         assignUser(user) {
-            this.$emit('assignUser', user, this.lead);
+            this.$emit('assignUser', user, this.lead, this.lead?.assigned_to ? 'Reassign' : 'Assign');
         },
         changeInput() {
             this.$emit('updateSearch', this.search);
         },
         getAssignText() {
             return this.lead?.assigned_to ? 'Reassign' : 'Assign';
+        }
+    },
+    computed : {
+        getAssigneePhoto() {
+            return this.lead.agent_profile?.profile_photo;
+        },
+        isProfilePhotoAvailable() {
+            return !!(this.lead.assigned_to && this.lead.agent_profile?.profile_photo);
         }
     },
     mounted() {

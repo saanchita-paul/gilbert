@@ -11,6 +11,7 @@
                     v-if="isLoaded"
                     :applications="leads"
                     :totalItem="totalItem"
+                    :currentLead="leadDetails"
                     @refreshDataTable="refreshDataTable"
                     @openLeadSummary="openLeadSummary">
                 </ApplicantTable>

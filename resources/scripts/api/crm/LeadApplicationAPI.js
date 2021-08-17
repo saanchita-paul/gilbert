@@ -213,9 +213,6 @@ export default {
 
     async getUserLeads(sort_search_meta) {
         try {
-            // return applications.map(mp=>{
-            //     return ApplicationMapper.mapApplication(mp);
-            // })
             const data = await axios.get('/api/applications',{params:{...sort_search_meta}});
             return ApplicationMapper.mapApplicationList(data.data);
 

@@ -11,6 +11,7 @@
                     <v-data-table
                         :headers="headers"
                         :items="applications"
+                        :item-class="isSelectedClass"
                         :options.sync="options"
                         :server-items-length="totalItem"
                         :loading="loading"
@@ -35,7 +36,10 @@
                     </v-data-table>
                 </v-col>
             </v-row>
-            <ReassignModal  :dialog="reassignFlag" :user="selectedUser" :lead="selectedLead" @cancelModal="cancelModal"> </ReassignModal>
+            <ReassignModal
+                :dialog="reassignFlag" :user="selectedUser"  :assignedText="assignedText"
+                :lead="selectedLead" @cancelModal="cancelModal">
+            </ReassignModal>
         </v-card>
     </div>
 </template>
@@ -43,12 +47,11 @@
 <script>
 import Search from "@scripts/components/crm/Search";
 import AssigneeDropdown from "@scripts/components/crm/leadmanagement/AssigneeDropdown";
-import {omit} from "lodash-es";
 import CrmUserService from "@scripts/services/crm/CrmUserService";
 import AssignedtoPopUp from "@scripts/components/crm/leadmanagement/AssignedtoPopUp";
 import ReassignModal from "@scripts/components/crm/modals/ReassignModal";
-import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+
 export default {
   name: "ApplicantTable",
   components: {
@@ -64,15 +67,20 @@ export default {
       },
         totalItem: {
           required: true
+      },
+        currentLead: {
+          required: true
       }
     },
 
     data() {
         return {
+            isActive: true,
             users: null,
             reassignFlag: false,
             selectedLead: null,
             selectedUser: null,
+            assignedText: null,
 
             userSearch: '',
             leadSearch: '',
@@ -112,6 +120,11 @@ export default {
     },
 
     methods: {
+        isSelectedClass(item) {
+            if(item.id === this.currentLead.id) {
+                return 'selectedRow';
+            }
+        },
         updateUserSearch(search) {
             this.userSearch = search;
             this.loadUserList();
@@ -136,14 +149,16 @@ export default {
             this.totalUserItem = data.pagination.total;
         },
 
-        async assignUser(user, lead)
+        async assignUser(user, lead, assignedText)
         {
             console.log(user, lead);
             this.selectedLead = lead;
             this.selectedUser = user;
+            this.assignedText = assignedText;
             await LeadApplicationService.assignUser(lead.id, user.id)
                 .then(res =>  {
                     console.log('Assigned Successfully');
+                    this.loadLeadList();
                     this.reassignFlag = true;
                 })
         },
@@ -167,8 +182,6 @@ export default {
                 per_page: this.options.itemsPerPage,
                 is_descending: this.options.sortDesc.length != 0? this.options.sortDesc[0]: false,
                 sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: '',
-                // is_descending: false,
-                // sort_by: '',
             }
             this.$emit('refreshDataTable',meta);
         }
@@ -187,5 +200,8 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+.selectedRow {
+    background-color: lightgray !important;
+}
 </style>
