@@ -211,13 +211,13 @@ export default {
         }
     },
 
-    getUserLeads(types) {
+    async getUserLeads(sort_search_meta) {
         try {
-            return applications.map(mp=>{
-                return ApplicationMapper.mapApplication(mp);
-            })
-            // const data = await axios.get('/');
-            // return ApplicationMapper.mapApplicationList(applications);
+            // return applications.map(mp=>{
+            //     return ApplicationMapper.mapApplication(mp);
+            // })
+            const data = await axios.get('/api/applications',{params:{...sort_search_meta}});
+            return ApplicationMapper.mapApplicationList(data.data);
 
         } catch (error) {
             return error.data;
@@ -295,9 +295,19 @@ export default {
             return error.data;
         }
     },
+
     async saveEscalateReason(reason, leadId) {
         try {
             const data = await axios.post('/api/applications/'+leadId+'/escalate',{reason:reason});
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+    async assignUser(leadId, agentProfileId) {
+        try {
+            const data = await axios.post('/api/applications/'+leadId+'/assignee',{agent_profile_id: agentProfileId});
+            return ApplicationMapper.mapNote(data);
 
         } catch (error) {
             return error.data;

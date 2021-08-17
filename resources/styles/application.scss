@@ -54,6 +54,9 @@
 .cursor-pointer {
     cursor: pointer;
 }
+.list-tile:hover {
+    background: lightcyan;
+}
 .crm-text-field {
     display: flex;
     margin-bottom: 10px;;

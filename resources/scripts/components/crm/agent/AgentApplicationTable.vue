@@ -121,10 +121,6 @@ export default {
       deep: true,
     },
   },
-
-  mounted() {
-      console.log('app',this.applications);
-  }
 }
 </script>
 

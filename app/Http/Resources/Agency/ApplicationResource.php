@@ -39,6 +39,10 @@ class ApplicationResource extends JsonResource
             'property_type' => $this->property_type,
             'has_life_support' => $this->has_life_support,
             'has_solar' => $this->has_solar,
+            'office_id' => $this->office_id,
+            'agency_id' => $this->agency_id,
+            'created_by' => $this->created_by,
+            'assigned_to' => $this->assigned_to
 
 
         ];
