@@ -29,6 +29,11 @@ export default {
 
             text: 'REAL ESTATE AGENT',
             value: 'agency_office_real_estate_agent'
+        },
+        {
+
+            text: 'HOOD ADMIN',
+            value: 'hood_admin'
         }
     ]
 }

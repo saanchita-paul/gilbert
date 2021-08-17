@@ -1,5 +1,4 @@
 <template>
-        <v-container>
                 <v-card>
                     <v-app-bar height="80px">
                         <spam class="py-4 dialogs-title">Confirm Submission</spam>
@@ -98,7 +97,7 @@
                                         </div>
                                     </div>
                             </v-col>
-        
+
                             <v-col cols="">
                                     <p class="sub-title title-align">Property Details</p>
                                     <div class="crm-text-field">
@@ -258,10 +257,10 @@
                                             <p class="mb-0">Energy</p>
                                             <div class="d-flex">
                                                 <div class="service-box active">
-                                                    <p class="mb-0"><v-icon color="yellow">mdi-flash</v-icon> Power</p>  
+                                                    <p class="mb-0"><v-icon color="yellow">mdi-flash</v-icon> Power</p>
                                                 </div>
                                                 <div class="service-box active">
-                                                    <p class="mb-0"><v-icon color="red">mdi-fire</v-icon> Gas</p> 
+                                                    <p class="mb-0"><v-icon color="red">mdi-fire</v-icon> Gas</p>
                                                 </div>
                                         </div>
                                         </div>
@@ -399,17 +398,25 @@
 
                     <v-footer  class="text-right">
                         <v-col class="text-right" cols="12">
-                            <v-btn>Back to Edit</v-btn>
-                            <v-btn>Confirm and Submit</v-btn>
+                            <v-btn @click="backToEdit">Back to Edit</v-btn>
+                            <v-btn @click="finalConfirmation">Confirm and Submit</v-btn>
                         </v-col>
                     </v-footer>
                 </v-card>
-        </v-container>
 </template>
 
 <script>
 export default {
   name: "ConfirmSubmission",
+    methods: {
+        backToEdit() {
+            this.$emit('backToEdit');
+        },
+        finalConfirmation() {
+            this.$emit('saveData');
+        }
+
+        }
 };
 </script>
 

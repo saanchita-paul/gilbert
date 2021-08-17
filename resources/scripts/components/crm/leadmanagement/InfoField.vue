@@ -6,9 +6,19 @@
                 <div class="field-label">
                     <span>Title</span>
                 </div>
+
                 <div class="text-field">
-                <v-select @input="updateLeads" outlined dense hide-details="auto" :items="titlesDD" v-model="person_details.title" placeholder="Mr">
-                </v-select>
+                    <ValidationProvider name="Title" rules="required"  v-slot="{ errors }">
+                        <v-select
+                            @input="updateLeads"
+                            outlined dense hide-details="auto"
+                            :items="titlesDD"
+                            v-model="person_details.title"
+                            :error-messages=" errors[0]"
+                            placeholder="Mr">
+                        </v-select>
+                    </ValidationProvider>
+
                 </div>
             </div>
             <div class="crm-text-field">
@@ -16,12 +26,16 @@
                     <span>Firstname</span>
                 </div>
                 <div class="text-field">
-                    <v-text-field
-                        v-model="person_details.first_name"  @input="updateLeads"
-                    outlined
-                    dense
-                    hide-details="auto"
-                ></v-text-field>
+                        <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
+                        <v-text-field
+                            v-model="person_details.first_name"  @input="updateLeads"
+                            outlined
+                            dense
+                            hide-details="auto"
+                            placeholder="Firstname"
+                            :error-messages=" errors[0]"
+                    ></v-text-field>
+                    </ValidationProvider>
                 </div>
             </div>
             <div class="crm-text-field">
@@ -29,12 +43,14 @@
                     <span>Lastname</span>
                 </div>
                 <div class="text-field">
-                    <v-text-field
-                        v-model="person_details.last_name"  @input="updateLeads"
-                    outlined
-                    dense
-                    hide-details="auto"
-                ></v-text-field>
+                    <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
+                        <v-text-field
+                            v-model="person_details.last_name"  @input="updateLeads"
+                        outlined
+                        dense :error-messages=" errors[0]"
+                        hide-details="auto"
+                    ></v-text-field>
+                    </ValidationProvider>
                 </div>
             </div>
             <div class="crm-text-field">
@@ -42,13 +58,38 @@
                     <span>Date of Birth</span>
                 </div>
                 <div class="text-field">
-                    <v-text-field v-model="person_details.dob"  @input="updateLeads"
-                    outlined
-                    dense
-                    placeholder="DD/MM/YYYY"
-                    hide-details="auto"
-                    append-icon="mdi-calendar"
-                ></v-text-field>
+                    <ValidationProvider name="Date of Birth" rules="required"  v-slot="{ errors }">
+
+                        <v-menu
+                            v-model="showDateOfBirth"
+                            :close-on-content-click="false"
+                            :nudge-right="40"
+                            transition="scale-transition"
+                            offset-y
+                            min-width="290px"
+                        >
+                            <template v-slot:activator="{ on, attrs }">
+                                <ValidationProvider name="Bate Of Birth" rules="required"  v-slot="{ errors }">
+                                    <v-text-field
+                                        label="Date of Birth*"
+                                        placeholder="DD/MM/YYYY"
+                                        outlined
+                                        dense
+                                        append-icon="mdi-calendar"
+                                        v-model="person_details.dob"
+                                        readonly
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        :error-messages=" errors[0]"
+                                        hide-details="auto"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </template>
+                            <v-date-picker v-model="person_details.dob" @input="showDateOfBirth = false"></v-date-picker>
+                        </v-menu>
+
+                    </ValidationProvider>
+
                 </div>
             </div>
             <div class="crm-text-field">
@@ -56,12 +97,15 @@
                     <span>Mobile</span>
                 </div>
                 <div class="text-field">
-                    <v-text-field
-                        v-model="person_details.mobile"  @input="updateLeads"
-                    outlined
-                    dense
-                    hide-details="auto"
-                ></v-text-field>
+                    <ValidationProvider name="Mobile Number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                        <v-text-field
+                            v-model="person_details.phone"  @input="updateLeads"
+                        outlined
+                        dense
+                            :error-messages=" errors[0]"
+                        hide-details="auto"
+                    ></v-text-field>
+                    </ValidationProvider>
                 </div>
             </div>
             <div class="crm-text-field">
@@ -69,11 +113,13 @@
                     <span>Email</span>
                 </div>
                 <div class="text-field">
-                    <v-text-field v-model="person_details.email"  @input="updateLeads"
-                    outlined
-                    dense
-                    hide-details="auto"
-                ></v-text-field>
+                    <ValidationProvider name="Email" rules="required|email"  v-slot="{ errors }">
+                            <v-text-field v-model="person_details.email"  @input="updateLeads"
+                            outlined
+                            dense
+                            hide-details="auto" :error-messages=" errors[0]"
+                        ></v-text-field>
+                    </ValidationProvider>
                 </div>
             </div>
             <div class="crm-text-field">
@@ -81,8 +127,10 @@
                     <span>Email Billing</span>
                 </div>
                 <div class="text-field">
-                    <v-select v-model="person_details.email_billing" :items="emailBillingDD"  @input="updateLeads" outlined dense hide-details="auto">
-                </v-select>
+                    <ValidationProvider name="Email Billing" rules="required"  v-slot="{ errors }">
+                        <v-select v-model="person_details.is_email_billing" :items="emailBillingDD" item-text="text" item-value="value"  @input="updateLeads" :error-messages=" errors[0]" outlined dense hide-details="auto">
+                    </v-select>
+                    </ValidationProvider>
                 </div>
             </div>
             <div class="crm-text-field">
@@ -90,8 +138,11 @@
                     <span>Tenancy Type</span>
                 </div>
                 <div class="text-field">
-                <v-select v-model="person_details.tenancy_type" :items="tenantTypeDD"  @input="updateLeads" outlined dense hide-details="auto" >
-                </v-select>
+                    <ValidationProvider name="Tenant Type" rules="required"  v-slot="{ errors }">
+                        <v-select v-model="person_details.tenancy_type" :items="tenantTypeDD" item-text="text" item-value="value" :error-messages=" errors[0]"
+                                  @input="updateLeads" outlined dense hide-details="auto" >
+                        </v-select>
+                    </ValidationProvider>
                 </div>
             </div>
 
@@ -104,15 +155,37 @@
                     <span>Connection Date</span>
                 </div>
                 <div class="text-field">
-                    <v-text-field
-                        @input="updateLeads"
-                        v-model="property_details.connection_date"
-                        outlined
-                        dense
-                        placeholder="DD/MM/YYYY"
-                        hide-details="auto"
-                        append-icon="mdi-calendar"
-                    ></v-text-field>
+                    <ValidationProvider name="Connection Date" rules="required"  v-slot="{ errors }">
+                        <v-menu
+                            v-model="connection_date"
+                            :close-on-content-click="false"
+                            :nudge-right="40"
+                            transition="scale-transition"
+                            offset-y
+                            min-width="290px"
+                        >
+                            <template v-slot:activator="{ on, attrs }">
+                                <ValidationProvider name="Date Of Birth" rules="required"  v-slot="{ errors }">
+                                    <v-text-field
+                                        label="Connection Date*"
+                                        placeholder="DD/MM/YYYY"
+                                        outlined
+                                        dense
+                                        append-icon="mdi-calendar"
+                                        v-model="property_details.moving_date"
+                                        readonly
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        :error-messages=" errors[0]"
+                                        hide-details="auto"
+                                        @input="updateLeads"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </template>
+                            <v-date-picker v-model="property_details.moving_date" @input="connection_date = false"></v-date-picker>
+                        </v-menu>
+
+                    </ValidationProvider>
                 </div>
             </div>
             <div class="crm-text-field">
@@ -120,13 +193,16 @@
                     <span>Service Address</span>
                 </div>
                 <div class="text-field">
-                    <v-textarea
-                        @input="updateLeads"
-                        v-model="property_details.service_address"
-                        outlined
-                        hide-details="auto"
-                        placeholder="This is an extra long address, 398 Bourke Road, Camberwell 3124 VIC"
-                    ></v-textarea>
+                    <ValidationProvider name="Service Address" rules="required"  v-slot="{ errors }">
+                        <v-textarea
+                            @input="updateLeads"
+                            v-model="property_details.address_text"
+                            outlined
+                            hide-details="auto"
+                            :error-messages=" errors[0]"
+                            placeholder="This is an extra long address, 398 Bourke Road, Camberwell 3124 VIC"
+                        ></v-textarea>
+                    </ValidationProvider>
                 </div>
             </div>
             <div class="crm-text-field">
@@ -134,11 +210,13 @@
                     <span>Billing Address</span>
                 </div>
                 <div class="text-field">
-                    <v-text-field v-model="property_details.billing_address" @input="updateLeads"
-                    outlined
-                    dense
-                    hide-details="auto"
-                ></v-text-field>
+                    <ValidationProvider name="Billing Address" rules="required"  v-slot="{ errors }">
+                        <v-text-field v-model="property_details.billing_address" @input="updateLeads"
+                        outlined
+                        dense
+                        hide-details="auto" :error-messages=" errors[0]"
+                    ></v-text-field>
+                    </ValidationProvider>
                 </div>
             </div>
             <div class="crm-text-field">
@@ -146,8 +224,11 @@
                     <span>Property Type</span>
                 </div>
                 <div class="text-field">
-                   <v-select @input="updateLeads" v-model="property_details.property_type" :items="propertyTypeDD" outlined placeholder="Residentail / Business" dense hide-details="auto">
-                    </v-select>
+                    <ValidationProvider name="Property Type" rules="required"  v-slot="{ errors }">
+                       <v-select @input="updateLeads"  :error-messages=" errors[0]"
+                                 v-model="property_details.property_type" :items="propertyTypeDD" outlined placeholder="Residentail / Business" dense hide-details="auto">
+                        </v-select>
+                    </ValidationProvider>
                 </div>
             </div>
             <div class="crm-text-field">
@@ -155,8 +236,11 @@
                     <span>Life Support</span>
                 </div>
                 <div class="text-field">
-                    <v-select @input="updateLeads" v-model="property_details.life_support" :items="lifeSupportDD" outlined placeholder="Residentail / Business" dense hide-details="auto">
-                    </v-select>
+                    <ValidationProvider name="Life Support" rules="required"  v-slot="{ errors }">
+                        <v-select @input="updateLeads"  :error-messages=" errors[0]"
+                                  v-model="property_details.has_life_support" :items="lifeSupportDD" outlined  placeholder="Yes or No" dense hide-details="auto">
+                        </v-select>
+                    </ValidationProvider>
                 </div>
             </div>
             <div class="crm-text-field">
@@ -164,8 +248,11 @@
                     <span>Solar Power</span>
                 </div>
                 <div class="text-field">
-                    <v-select @input="updateLeads" v-model="property_details.solor_power" :items="solarPowerDD" outlined placeholder="Residentail / Business" dense hide-details="auto">
-                    </v-select>
+                    <ValidationProvider name="Solar Power" rules="required"  v-slot="{ errors }">
+                        <v-select @input="updateLeads" :error-messages=" errors[0]"
+                                  v-model="property_details.has_solar" :items="solarPowerDD" outlined placeholder="Yes or No" dense hide-details="auto">
+                        </v-select>
+                    </ValidationProvider>
                 </div>
             </div>
             <div class="crm-text-field">
@@ -173,19 +260,22 @@
                     <span>NMI (Power)</span>
                 </div>
                 <div class="text-field">
-                    <v-text-field @input="updateLeads"
-                        v-model="property_details.nmi"
-                        outlined
-                        dense
-                        hide-details="auto"
-                    ></v-text-field>
+                    <ValidationProvider name="DOB" rules="required"  v-slot="{ errors }">
+                        <v-text-field @input="updateLeads"
+                            v-model="property_details.nmi"
+                            outlined
+                            dense
+                            hide-details="auto"
+                        ></v-text-field>
+                    </ValidationProvider>
                 </div>
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>MIRN (Gas</span>
+                    <span>MIRN (Gas)</span>
                 </div>
                 <div class="text-field">
+                    <ValidationProvider name="DOB"  v-slot="{ errors }">
                         <v-text-field
                             @input="updateLeads"
                             v-model="property_details.mirn"
@@ -193,6 +283,7 @@
                             dense
                             hide-details="auto"
                         ></v-text-field>
+                    </ValidationProvider>
                 </div>
             </div>
         </v-col>
@@ -204,32 +295,82 @@
                     <span>Identification</span>
                 </div>
                 <div class="text-field">
-                    <v-select v-model="indentification.type" @input="updateLeads" :items="idenficationTypeDD" outlined dense hide-details="auto" >
-                    </v-select>
+                    <ValidationProvider name="Identification Number" rules="required"  v-slot="{ errors }">
+                        <v-select v-model="indentification.type"  :error-messages=" errors[0]"  @input="updateLeads" item-text="text" item-value="value" :items="idenficationTypeDD" outlined dense hide-details="auto" >
+                        </v-select>
+                    </ValidationProvider>
                 </div>
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>Card Number</span>
+                    <span>{{indentification.type == 1?'Passport ':indentification.type == 2?'Driver’s License':indentification.type == 3?'Medicare Card ':'Card'}} Number</span>
                 </div>
                 <div class="text-field">
-                    <v-text-field
-                        v-model="indentification.number"
-                        @input="updateLeads"
-                        indentification
-                    outlined
-                    dense
-                    hide-details="auto"
-                ></v-text-field>
+                    <ValidationProvider name="Card Number" rules="required"  v-slot="{ errors }">
+                        <v-text-field
+                            :error-messages=" errors[0]"
+                            v-model="indentification.card_number"
+                            @input="updateLeads"
+                            indentification
+                        outlined
+                        dense
+                        hide-details="auto"
+                    ></v-text-field>
+                    </ValidationProvider>
                 </div>
             </div>
-            <div class="crm-text-field">
+            <div class="crm-text-field" v-if="indentification.type == 1">
+                <div class="field-label">
+                    <span>Country</span>
+                </div>
+                <div class="text-field" >
+                    <ValidationProvider name="Country" rules="required"  v-slot="{ errors }">
+                        <v-text-field
+                            v-model="indentification.country"
+                            @input="updateLeads"
+                            indentification
+                            :error-messages=" errors[0]"
+                            outlined
+                            dense
+                            hide-details="auto"
+                        ></v-text-field>
+                    </ValidationProvider>
+                </div>
+            </div>
+
+            <div class="crm-text-field" v-if="indentification.type == 2">
+                <div class="field-label">
+                    <span>State</span>
+                </div>
+                <div class="text-field" >
+                    <ValidationProvider name="State" rules="required"  v-slot="{ errors }">
+                        <v-select
+                            v-model="indentification.state"
+                            :items="statesDD"
+                            item-text="text"
+                            item-value="value"
+                            :error-messages=" errors[0]"
+                            @input="updateLeads"
+                            indentification
+                            outlined
+                            dense
+                            hide-details="auto"
+                        ></v-select>
+                    </ValidationProvider>
+                </div>
+            </div>
+
+            <div class="crm-text-field" v-if="indentification.type == 3">
                 <div class="field-label">
                     <span>Special Number</span>
                 </div>
                 <div class="text-field">
-                    <v-select v-model="indentification.special_number" @input="updateLeads" :items="specialNumberDD" outlined dense hide-details="auto" >
+                    <ValidationProvider name="DOB" rules="required"  v-slot="{ errors }">
+                    <v-select v-model="indentification.special_number"
+                              :error-messages=" errors[0]"
+                              @input="updateLeads" :items="specialNumberDD" outlined dense hide-details="auto" >
                     </v-select>
+                    </ValidationProvider>
                 </div>
             </div>
             <div class="crm-text-field">
@@ -237,32 +378,60 @@
                     <span>Expiry Date</span>
                 </div>
                 <div class="text-field">
-                    <v-text-field
-                        v-model="indentification.expire_date"
-                        @input="updateLeads"
-                    outlined
-                    dense
-                    hide-details="auto"
-                ></v-text-field>
+                    <ValidationProvider name="Expired Date" rules="required"  v-slot="{ errors }">
+
+                        <v-menu
+                            v-model="showMovingDate"
+                            :close-on-content-click="false"
+                            :nudge-right="40"
+                            transition="scale-transition"
+                            offset-y
+                            min-width="290px"
+                        >
+                            <template v-slot:activator="{ on, attrs }">
+                                <ValidationProvider name="Expired Date" rules="required"  v-slot="{ errors }">
+                                    <v-text-field
+                                        label="Expired Date*"
+                                        placeholder="DD/MM/YYYY"
+                                        outlined
+                                        dense
+                                        append-icon="mdi-calendar"
+                                        v-model="indentification.expire_date"
+                                        readonly
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        :error-messages=" errors[0]"
+                                        hide-details="auto"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </template>
+                            <v-date-picker v-model="indentification.expire_date" @input="showMovingDate = false"></v-date-picker>
+                        </v-menu>
+
+                    </ValidationProvider>
                 </div>
             </div>
-            <div class="crm-text-field">
+            <div class="crm-text-field" v-if="indentification.type == 3">
                 <div class="field-label">
                     <span>Card Colour</span>
                 </div>
                 <div class="text-field">
-                    <v-select v-model="indentification.color" @input="updateLeads" :items="colorDD" outlined dense hide-details="auto" >
+                    <ValidationProvider name="DOB" rules="required"  v-slot="{ errors }">
+                    <v-select v-model="indentification.card_color"  item-text="text" item-value="value" @input="updateLeads" :items="colorDD" outlined dense hide-details="auto" >
                     </v-select>
+                    </ValidationProvider>
                 </div>
             </div>
             <p class="sub-title mt-5">Agent’s Additional Instructions <v-btn text  @click="readMore">read more ...</v-btn></p>
-            <v-textarea
-                v-model="indentification.additional_instruction"
-                @input="updateLeads"
-                outlined
-                hide-details="auto"
-                placeholder="Additional Instructions goes here."
-            ></v-textarea>
+            <ValidationProvider name="DOB" rules="required"  v-slot="{ errors }">
+                <v-textarea
+                    v-model="person_details.additional_instruction"
+                    @input="updateLeads"
+                    outlined
+                    hide-details="auto"
+                    placeholder="Additional Instructions goes here."
+                ></v-textarea>
+            </ValidationProvider>
         </v-col>
     </v-row>
 </template>
@@ -272,76 +441,183 @@
 export default {
   name: "InfoField",
     props: {
-
+        lead:{
+            require: true,
+        }
     },
     data () {
         return {
             titlesDD:[
                 'Mrs','Mr'
             ],
-            emailBillingDD: ['Yes','No'],
-            tenantTypeDD: ['Renter','Owner'],
+            emailBillingDD: [ {
+                text: 'Yes',
+                value: 1
+                },
+                {
+                    text: 'No',
+                    value: 2
+                }],
+
+            statesDD: [
+                {text: 'NSW', value: 'New South Wales'},
+                {text: 'VIC', value: 'Victoria'},
+                {text: 'QLD', value: 'Queensland'},
+                {text: 'SA', value: 'South Australia'},
+                {text: 'NT', value: 'Northern Territory'},
+                {text: 'TAS', value: 'Tasmania'},
+                {text: 'ACT', value: 'Australian Capital Territory'},
+            ],
+            tenantTypeDD: [
+                {
+                    text: 'Renter',
+                    value: 1
+                },
+                {
+                    text: 'Owner',
+                    value: 2
+                }
+            ],
+
             propertyTypeDD:[
-                'Recidential','Business'
+                {
+                    text: 'Recidential',
+                    value: 1
+                },
+                {
+                    text: 'Business',
+                    value: 2
+                }
             ],
             lifeSupportDD:[
-                'Yes','No'
+                {
+                    text: 'Yes',
+                    value: 1
+                },
+                {
+                    text: 'No',
+                    value: 2
+                }
             ],
             solarPowerDD:[
-                'Yes','No'
+                {
+                    text: 'Yes',
+                    value: 1
+                },
+                {
+                    text: 'No',
+                    value: 2
+                }
             ],
             idenficationTypeDD:[
-                'Passport','Driver\'s License','Medical Card'
+                {
+                    text: 'Passport',
+                    value: 1
+                },
+                {
+                    text: 'Driver\'s License',
+                    value: 2
+                },
+                {
+                    text: 'Medical Card',
+                    value: 3
+                }
             ],
             specialNumberDD:[
-                1,2
+                "1","2"
             ],
             colorDD:[
-                'Green','Blue', 'Yellow'
+                {
+                    text: 'Green',
+                    value: 'green'
+                },
+                {
+                    text: 'Blue',
+                    value: 'blue'
+                },
+                {
+                    text: 'Yellow',
+                    value: 'yellow'
+                }
             ],
             indentification: {
                 type: '',
-                number: '',
+                card_number: '',
                 special_number: '',
                 expire_date: '',
-                color: '',
-                additional_instruction: ''
+                card_color: '',
+                state: '',
+                country: ''
+
             },
             property_details: {
-                connection_date: '',
-                service_address: '',
+                moving_date: '',
+                address_text: '',
                 billing_address: '',
                 property_type: '',
                 life_support: '',
                 solor_power: '',
                 nmi: '',
                 mirn: '',
+                additional_instruction: '',
             },
             person_details: {
                 title: '',
                 first_name: '',
                 last_name: '',
                 dob: '',
-                mobile: '',
+                phone: '',
                 email: '',
-                email_billing: '',
+                is_email_billing: '',
                 tenancy_type: '',
 
-            }
+            },
+            showMovingDate: false,
+            connection_date: false,
+            showDateOfBirth: false
         }
     },
 
     methods: {
-        updateLeads()
-        {
+        updateLeads() {
            this.$emit('updateLead',{
-               identifacation: this.indentification,
+               indentification: this.indentification,
                property_details: this.property_details,
                person_details: this.person_details,
            })
         },
+
         readMore() {
             this.$emit('readMore');
+        },
+
+        synFormData () {
+            this.person_details.title = this.lead.title;
+            this.person_details.first_name = this.lead.first_name;
+            this.person_details.last_name = this.lead.last_name;
+            this.person_details.dob = this.lead.dob;
+            this.person_details.email = this.lead.email;
+            this.person_details.phone = this.lead.phone;
+            this.person_details.tenancy_type = this.lead.tenancy_type;
+            this.person_details.is_email_billing = this.lead.is_email_billing;
+            this.person_details.additional_instruction = this.lead.additional_instruction;
+
+            this.property_details.moving_date = this.lead.moving_date;
+            this.property_details.address_text = this.lead.address_text;
+            this.property_details.billing_address = this.lead.billing_address;
+            this.property_details.property_type = this.lead.property_type;
+            this.property_details.has_life_support = this.lead.has_life_support;
+            this.property_details.has_solar = this.lead.has_solar;
+            this.property_details.nmi = this.lead.nmi;
+            this.property_details.mirn = this.lead.mirn;
+
+            this.indentification.type = this.lead.identification?.type;
+            this.indentification.card_number = this.lead.identification?.card_number;
+            this.indentification.state = this.lead.identification?.state;
+            this.indentification.country = this.lead.identification?.country;
+            this.indentification.special_number = this.lead.identification?.special_number;
+            this.indentification.expire_date = this.lead.identification?.expire_date;
+            this.indentification.card_color = this.lead.identification?.card_color;
         }
     },
 
@@ -359,8 +635,11 @@ export default {
             console.log('I am changed')
         }
 
+    },
 
-
+    mounted() {
+      this.synFormData();
+      this. updateLeads();
     }
 };
 </script>

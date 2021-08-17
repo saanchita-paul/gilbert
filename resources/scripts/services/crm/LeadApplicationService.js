@@ -9,5 +9,6 @@ export default {
     loadNote: (leadUser)=> LeadApplicationAPI.getNote(leadUser),
     loadServiceProvider: (services)=> LeadApplicationAPI.getServiceProvider(services),
     saveNote: (note, leadId) => LeadApplicationAPI.saveNote(note, leadId),
-    eacalate: (leadId) => LeadApplicationAPI.eacalate(leadId)
+    eacalate: (leadId) => LeadApplicationAPI.eacalate(leadId),
+    saveLead: (lead, leadId) => LeadApplicationAPI.saveLead(lead, leadId)
 }
