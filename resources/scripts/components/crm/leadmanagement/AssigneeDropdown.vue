@@ -14,7 +14,7 @@
                         >
                        <v-avatar size="30"
                             v-on="on">
-                            <img src="https://cdn.vuetifyjs.com/images/john.jpg">
+                           <v-icon color="grey" large>mdi-account-circle</v-icon>
                         </v-avatar>
                         <v-icon x-small>mdi-menu-down</v-icon>
                     </v-btn>
@@ -36,14 +36,15 @@
                     </div>
                     <v-list-item v-for="user in users" :key="user.id">
                         <v-avatar size="30">
-                            <img v-bind:src="user.profile_img">
+                            <img v-if="user.profile_img" v-bind:src="user.profile_img">
+                            <v-icon v-else large>mdi-account-circle</v-icon>
                         </v-avatar>
                         <small  class="pl-2">{{user.proerty_manager_name}}</small>
                         <v-spacer></v-spacer>
-                        <span flat ><small>Assign</small><v-icon small @click="assignUser(user)">mdi-menu-right</v-icon></span>
+                        <span class="cursor-pointer" flat @click="assignUser(user)"><small>Assign</small><v-icon small>mdi-menu-right</v-icon></span>
                     </v-list-item>
                 </v-list>
-    </v-menu>
+        </v-menu>
     </div>
 </template>
 

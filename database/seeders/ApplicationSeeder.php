@@ -44,7 +44,7 @@ class ApplicationSeeder extends Seeder
         $user->profile_type = User::PROFILE_TYPE_AGENT;
         $user->profile_id = $profile->id;
         $user->save();
-        $user->assignRole(RolePermission::ROLE_AGENCY_AGENT);
+        $user->assignRole(RolePermission::ROLE_AGENCY_OFFICE_REAL_ESTATE_AGENT);
     }
 
     private function createAgentTeamLeaderProfile() {

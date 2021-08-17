@@ -22,6 +22,11 @@ export default {
         },
         {
 
+            text: 'TEAM LEADER',
+            value: 'agency_team_lead'
+        },
+        {
+
             text: 'REAL ESTATE AGENT',
             value: 'agency_office_real_estate_agent'
         }
