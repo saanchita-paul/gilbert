@@ -21,7 +21,7 @@
             </tr>
             <tr>
                 <td class="font-weight-bold">Email billing</td>
-                <td>{{ application.is_email_billing == 1?'Email':'Paper' }}</td>
+                <td>{{ application.is_email_billing == 1 ? 'Email' : 'Paper' }}</td>
             </tr>
         </table>
 

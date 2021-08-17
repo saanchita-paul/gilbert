@@ -1,5 +1,5 @@
 <template>
-   <v-card class="pa-4">
+   <v-card class="pa-4" v-if="lead">
         <h3 class="page-title">{{lead.applicant_name}}</h3>
         <p class="sub-title mt-4 mb-2">Personal Details</p>
         <table width="100%" class="application-info">
@@ -21,7 +21,7 @@
             </tr>
             <tr>
                 <td class="font-weight-bold">Email billing</td>
-                <td>{{lead.email_billing}}</td>
+                <td>{{ lead.is_email_billing == 1?'Email':'Paper' }}</td>
             </tr>
         </table>
 
@@ -35,17 +35,25 @@
             </tr>
             <tr>
                 <td class="font-weight-bold">Service Address:</td>
-                <td>{{lead.service_address}}</td>
+                <td>{{lead.address_text}}</td>
             </tr>
         </table>
 
         <v-divider class="mt-4 mb-2"></v-divider>
-        <span class="mt-3"><b>Service Interests</b>
-          <span class="mx-2"><v-icon color="yellow">mdi-flash</v-icon> Power</span>
-          <span  class="mx-2"><v-icon color="red">mdi-fire</v-icon> Gas</span>
-          <span  class="mx-2"><v-icon color="grey lighten-1">mdi-wifi</v-icon> Internet</span>
-          <span  class="mx-2"><v-icon color="grey lighten-1">mdi-water</v-icon> Water</span>
-        </span>
+       <p class="sub-title py-2">Service Interests
+           <span class="mx-2">
+              <v-icon :disabled="isServiceAllowed(lead.service_interests, 'power')" color="yellow">mdi-flash</v-icon>
+          </span>
+           <span class="mx-2">
+              <v-icon :disabled="isServiceAllowed(lead.service_interests, 'gas')" color="red">mdi-fire</v-icon>
+          </span>
+           <span class="mx-2">
+              <v-icon :disabled="isServiceAllowed(lead.service_interests, 'internet')" color="green">mdi-wifi</v-icon>
+          </span>
+           <span class="mx-2">
+              <v-icon :disabled="isServiceAllowed(lead.service_interests, 'water')" color="blue" >mdi-water</v-icon>
+          </span>
+       </p>
 
         <div class="mt-3">
           <p class="sub-title mb-1">Agent’s Additional Instructions</p>
@@ -69,10 +77,10 @@ export default {
     methods: {
         goToLeadDetails(id) {
             this.$router.push({name:'applications.details', params:{id:id}});
+        },
+        isServiceAllowed(services, type) {
+            return !services.includes(type);
         }
-    },
-    mounted() {
-      console.log(this.lead);
     }
 };
 </script>

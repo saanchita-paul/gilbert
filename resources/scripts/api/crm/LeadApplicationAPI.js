@@ -211,13 +211,13 @@ export default {
         }
     },
 
-    getUserLeads(types) {
+    async getUserLeads(sort_search_meta) {
         try {
-            return applications.map(mp=>{
-                return ApplicationMapper.mapApplication(mp);
-            })
-            // const data = await axios.get('/');
-            // return ApplicationMapper.mapApplicationList(applications);
+            // return applications.map(mp=>{
+            //     return ApplicationMapper.mapApplication(mp);
+            // })
+            const data = await axios.get('/api/applications',{params:{...sort_search_meta}});
+            return ApplicationMapper.mapApplicationList(data.data);
 
         } catch (error) {
             return error.data;
@@ -292,6 +292,16 @@ export default {
    async saveLead(lead, leadId) {
         try {
             const data = await axios.post('/api/applications/1/abcd',{lead});
+            return ApplicationMapper.mapNote(data);
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    async assignUser(leadId, agentProfileId) {
+        try {
+            const data = await axios.post('/api/applications/'+leadId+'/assignee',{agent_profile_id: agentProfileId});
             return ApplicationMapper.mapNote(data);
 
         } catch (error) {

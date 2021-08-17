@@ -7,10 +7,16 @@
                     <h3 class="page-title">Total Applications: {{total_leads}}</h3>
                     <AgentLeadMetrics v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal"></AgentLeadMetrics>
                 </v-card>
-                <ApplicantTable :applications="leads"></ApplicantTable>
+                <ApplicantTable
+                    v-if="isLoaded"
+                    :applications="leads"
+                    :totalItem="totalItem"
+                    @refreshDataTable="refreshDataTable"
+                    @openLeadSummary="openLeadSummary">
+                </ApplicantTable>
             </v-col>
             <v-col cols="4">
-                <ApplicationDetails v-if="leadDetailssFlag" :lead="leadDetails"></ApplicationDetails>
+                <ApplicationDetails :lead="leadDetails"></ApplicationDetails>
             </v-col>
         </v-row>
     </v-container>
@@ -22,6 +28,7 @@ import ApplicantTable from "@scripts/components/crm/leadmanagement/ApplicantTabl
 import ApplicationDetails from "@scripts/components/crm/leadmanagement/ApplicationDetails";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
+import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
 export default {
     name: "ApplicationPage",
     components: {
@@ -35,13 +42,19 @@ export default {
         return {
             leadTypes:[],
             activeLeadType: 'My Applications',
-            leads:[],
-            leadFlag: false,
             leadTypesFlag: false,
-            activeLead: null,
             total_leads: 0,
+
+            leads: null,
             leadDetails: null,
-            leadDetailssFlag: false
+            selected_lead_id: null,
+            isLoaded: false,
+            sort_search_meta : null,
+            page: 1,
+            pageCount: 0,
+            itemsPerPage: 10,
+            totalItem: null,
+            options: {},
         }
     },
 
@@ -55,34 +68,46 @@ export default {
         },
 
         async loadLeads () {
-            this.leads = await LeadApplicationService.loadUserLeads(this.activeLeadType);
-            this.leadFlag = true;
+            let data = await LeadApplicationService.loadUserLeads(this.sort_search_meta);
+            this.leads = data.applications;
+            this.isLoaded = true;
+            this.page = data.pagination.current_page;
+            this.itemsPerPage = data.pagination.per_page;
+            this.totalItem = data.pagination.total;
+            this.selected_lead_id = this.leads[0].id;
+            this.loadLeadSummary();
+            console.log('lead list', this.leads);
         },
 
-        async loadLead() {
-            this.activeLead = this.$route.query?.lead;
-            this.leadDetails = await LeadApplicationService.loadUserLead(this.activeLead);
-            this.leadDetailssFlag = true;
+        async loadLeadSummary() {
+            // this.activeLead = this.$route.query?.lead;
+            this.leadDetails = await LeadApplicationService.loadUserLead(this.selected_lead_id);
         },
 
         updateTotal(total) {
             this.total_leads = total
         },
+
+        openLeadSummary(id) {
+            this.selected_lead_id = id;
+            this.loadLeadSummary();
+        },
+
+        refreshDataTable(meta) {
+            this.sort_search_meta = meta;
+            this.loadLeads();
+        }
     },
 
     mounted() {
         this.loadMetricTypes();
         this.loadLeads();
-        this.loadLead();
     },
     watch: {
         '$route': {
             handler() {
                 this.activeLeadType = this.$route.query?.type;
                 this.loadLeads();
-                this.loadLead();
-
-
             }
         },
     },

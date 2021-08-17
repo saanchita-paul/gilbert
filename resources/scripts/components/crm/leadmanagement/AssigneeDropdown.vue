@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="lead">
         <v-menu
             bottom
             origin="center center"
@@ -34,14 +34,20 @@
                             @input="changeInput"
                         ></v-text-field>
                     </div>
-                    <v-list-item v-for="user in users" :key="user.id">
-                        <v-avatar size="30">
-                            <img v-if="user.profile_img" v-bind:src="user.profile_img">
-                            <v-icon v-else large>mdi-account-circle</v-icon>
-                        </v-avatar>
-                        <small  class="pl-2">{{user.proerty_manager_name}}</small>
-                        <v-spacer></v-spacer>
-                        <span class="cursor-pointer" flat @click="assignUser(user)"><small>Assign</small><v-icon small>mdi-menu-right</v-icon></span>
+                    <v-list-item v-for="user in users" :key="user.id"
+                                 @mouseover="selectedUser = user.id" @mouseleave="selectedUser = -1"
+                                 class="cursor-pointer list-tile" @click="assignUser(user)">
+                            <v-avatar size="30">
+                                <img v-if="user.profile_img" v-bind:src="user.profile_img">
+                                <v-icon v-else large>mdi-account-circle</v-icon>
+                            </v-avatar>
+                            <small  class="pl-2">{{user.proerty_manager_name}}</small>
+                            <v-spacer></v-spacer>
+                            <span v-show="selectedUser===user.id"
+                                  flat>
+                                <small>{{ getAssignText() }}</small>
+                                <v-icon small>mdi-menu-right</v-icon>
+                            </span>
                     </v-list-item>
                 </v-list>
         </v-menu>
@@ -63,6 +69,7 @@ export default {
       return {
           menu: false,
           search: '',
+          selectedUser: false,
       }
     },
 
@@ -72,8 +79,14 @@ export default {
         },
         changeInput() {
             this.$emit('updateSearch', this.search);
+        },
+        getAssignText() {
+            return this.lead?.assigned_to ? 'Reassign' : 'Assign';
         }
     },
+    mounted() {
+
+    }
 };
 </script>
 
