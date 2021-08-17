@@ -10,5 +10,6 @@ export default {
     loadServiceProvider: (services)=> LeadApplicationAPI.getServiceProvider(services),
     saveNote: (note, leadId) => LeadApplicationAPI.saveNote(note, leadId),
     eacalate: (leadId) => LeadApplicationAPI.eacalate(leadId),
+    saveEscalateReason: (reason, leadId) => LeadApplicationAPI.saveEscalateReason(reason,leadId),
     saveLead: (lead, leadId) => LeadApplicationAPI.saveLead(lead, leadId)
 }

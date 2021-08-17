@@ -69,9 +69,14 @@ class ApplicationService
 
     public function createIdentification($identificationData, $id)
     {
-        return Identification::where('connection_application_id' , $id)
-            ->update($identificationData);
-
+        $identification = Identification::where('connection_application_id' , $id);
+        if($identification)
+        {
+           return $identification->update($identificationData);
+        }
+        $identificationData['connection_application_id'] = $id;
+        return Identification::create($identificationData);
+        
     }
 
 
@@ -90,12 +95,21 @@ class ApplicationService
     }
 
 
-    public function updateEscalateApplication(array $application, int $applicationId) {
+    public function updateEscalateApplication(array $application, int $applicationId, User $user) {
 
         $existingApplication = ConnectionApplication::find($applicationId);
         $existingApplication->reason = $application['reason'];
-        $existingApplication->status = ConnectionApplication::STATUS_MAPPING[$application['status']];
+//        $existingApplication->status = ConnectionApplication::STATUS_MAPPING[$application['status']];
+        $existingApplication->status = ConnectionApplication::STATUS_ESCALATED;
         $existingApplication->save();
+
+        $allicationNoteService = new ApplicationNoteService($user);
+        $eacalateNote = [];
+        $eacalateNote['text'] = $application['reason'];
+        $eacalateNote['type'] = 'Escalated';
+
+        $allicationNoteService->createNotes($eacalateNote, $applicationId);
+
         return $existingApplication;
     }
 }

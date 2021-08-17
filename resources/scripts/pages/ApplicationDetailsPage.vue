@@ -4,17 +4,18 @@
                 <LeadUserDetails v-if="planNoteFlag" @eacalate="eacalate"
                                  @updateLead="updateLead"
                                  @readMore="readMore" :leadSummary="leadSummary"></LeadUserDetails>
+            </ValidationObserver>
                 <LeadServicesAndNotes  v-if="planNoteFlag"
                                    @updateService="updateService"
                                    @updatePlan="updatePlan"
                                    @updateNote= "updateNote"
                                    :leadSummary="leadSummary" :notes="notes"></LeadServicesAndNotes>
-             </ValidationObserver>
+
             <LeadsDetailsFotter @submitConnection="submitConnection"></LeadsDetailsFotter>
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
             <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" title="agd"></EscalationConfirmModal>
             <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag" @close="closeReadMore"> </LeadReadMoreModal>
-            <LeadSubmitConfirmationModal :dialog="showSubmitModal" v-if="showSubmitModal" @saveData="saveData" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
+            <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" v-if="showSubmitModal" @saveData="saveData" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
     </v-container>
 </template>
 
@@ -43,6 +44,7 @@ export default {
           supplier: 'ea',
           services: [],
           showSubmitModal: false,
+          payload: null,
       }
     },
     components: {
@@ -114,9 +116,16 @@ export default {
 
         async submitConnection() {
             let v = await this.validateLead();
-            this.showSubmitModal = true;
 
             if(!v) return;
+
+            this.payload = { ...this.lead.property_details,
+                ...this.lead.person_details,
+                'service_interests':this.services,
+                'identification':this.lead.indentification,
+                supplier: 1,
+                plan_type: this.plan
+            };
             this.showSubmitModal = true;
         },
 
@@ -155,7 +164,7 @@ export default {
     mounted() {
        this.leadId = this.$route.params.id;
        this.loadPlanNoteAndLead();
-       this.loadLead();
+        // this.loadLead();
 
     }
 };

@@ -227,12 +227,8 @@ export default {
   async getUserLead (id) {
         try {
             const data = await axios.get('/api/applications/summary/' + id);
-            console.log('response1', data);
-            const response1 = ApplicationMapper.mapApplicationSummary(data.data.data);
-            // const response = ApplicationMapper.mapApplicationSummary(application);
-            console.log('response1', response1);
-
-            return response1;
+            const response = ApplicationMapper.mapApplicationSummary(data.data.data);
+            return response;
 
         } catch (error) {
             console.log('response2', error);
@@ -291,8 +287,17 @@ export default {
 
    async saveLead(lead, leadId) {
         try {
-            const data = await axios.post('/api/applications/1/abcd',{lead});
+            lead.plan_type = lead.plan_type.id;
+            const data = await axios.post('/api/applications/'+leadId+'/update',{lead});
             return ApplicationMapper.mapNote(data);
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+    async saveEscalateReason(reason, leadId) {
+        try {
+            const data = await axios.post('/api/applications/'+leadId+'/escalate',{reason:reason});
 
         } catch (error) {
             return error.data;
