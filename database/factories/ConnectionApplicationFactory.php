@@ -23,7 +23,7 @@ class ConnectionApplicationFactory extends Factory
      */
     public function definition()
     {
-        $profile = User::query()->where('email', 'agent@hood.ai')->first()->profile;
+        $profile = User::query()->where('email', 'robert@barryplant.com')->first()->profile;
         return [
             'office_id' => $profile->office->id,
             'agency_id' => $profile->office->agency->id,
