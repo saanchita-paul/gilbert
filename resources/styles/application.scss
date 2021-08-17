@@ -48,10 +48,12 @@
     }
 }
 .assigneesearch {
-    max-width: 200px;
+    max-width: 350px;
     padding: 10px;
 }
-
+.cursor-pointer {
+    cursor: pointer;
+}
 .crm-text-field {
     display: flex;
     margin-bottom: 10px;;

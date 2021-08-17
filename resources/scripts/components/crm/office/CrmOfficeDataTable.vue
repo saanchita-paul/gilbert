@@ -16,8 +16,8 @@
                     :options.sync="options"
                     :server-items-length="totalItem"
                     :loading="loading"
-                    class="elevation-1"
-                    @click:row="openOffice"
+                    class="elevation-1 row-pointer"
+                    @click:row="openOffice "
                 >
                 </v-data-table>
             </v-col>
@@ -123,7 +123,7 @@ name: "CrmOfficeDataTable",
       async  saveOfficeData() {
             let agencyId = this.$route.params?.id
              this.lastCreatedOffice = await OfficeService.saveOfficeData(this.officeInfo, agencyId);
-            console.log('this.lastCreatedOffice', this.lastCreatedOffice);
+            // console.log('this.lastCreatedOffice', this.lastCreatedOffice);
              // this.officesList.push(this.lastCreatedOffice);
         },
 
@@ -134,7 +134,7 @@ name: "CrmOfficeDataTable",
                 page: this.options.page,
                 per_page: this.options.itemsPerPage,
                 is_descending: this.options.sortDesc.length != 0? this.options.sortDesc[0]: false,
-                sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: 'title',
+                sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: '',
             }
             const data = await OfficeService.loadOfficeData(meta, this.$route.params.id);
             this.officesList = data?.offices;
@@ -171,6 +171,8 @@ name: "CrmOfficeDataTable",
 </script>
 
 <style scoped>
-
+.row-pointer >>> tbody tr :hover {
+    cursor: pointer;
+}
 </style>
 

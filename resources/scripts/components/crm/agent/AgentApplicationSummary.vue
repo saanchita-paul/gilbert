@@ -21,7 +21,7 @@
             </tr>
             <tr>
                 <td class="font-weight-bold">Email billing</td>
-                <td>{{ application.email_billing }}</td>
+                <td>{{ application.is_email_billing == 1?'Email':'Paper' }}</td>
             </tr>
         </table>
 
@@ -83,6 +83,9 @@ export default {
             return !services.includes(type);
         }
     },
+    mounted() {
+        console.log('sazzad',this.application );
+    }
 };
 </script>
 

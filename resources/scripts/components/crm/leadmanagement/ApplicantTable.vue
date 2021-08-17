@@ -42,7 +42,10 @@
 
                                 </td>
                                 <td>
-                                    <AssigneeDropdown :lead="item" :users="users" @reassigning="reassigning"></AssigneeDropdown>
+                                    <AssigneeDropdown
+                                        :lead="item" :users="users"
+                                        @assignUser="assignUser" @updateSearch="updateSearch">
+                                    </AssigneeDropdown>
                                 </td>
                             </tr>
                             </tbody>
@@ -83,13 +86,36 @@ export default {
             reassignFlag: false,
             selectedLead: null,
             selectedUser: null,
+            search: '',
+            options: {},
+            page: 1,
+            pageCount: 0,
+            itemsPerPage: 10,
+            totalItem: null,
+            loading: true,
         }
     },
 
     methods: {
-
+        updateSearch(search) {
+            this.search = search;
+            this.loadUserList();
+        },
         async loadUserList() {
-           this.users = CrmUserService.loadAllUser();
+            const meta = {
+                search: this.search,
+                page: this.options.page,
+                per_page: this.options.itemsPerPage,
+                is_descending: false,
+                sort_by: '',
+            }
+            const data = await CrmUserService.loadAllUser(meta);
+            console.log('users', data);
+            this.users = data?.users;
+            this.page = data.pagination.current_page;
+            this.itemsPerPage = data.pagination.per_page;
+            this.totalItem = data.pagination.total;
+            this.loading = false;
         },
 
         isServiceAllowed(services, type) {
@@ -108,8 +134,9 @@ export default {
             }
         },
 
-        reassigning(user, lead)
+        assignUser(user, lead)
         {
+            console.log(user, lead);
             this.reassignFlag = true;
             this.selectedUser = user;
             this.selectedLead = lead;

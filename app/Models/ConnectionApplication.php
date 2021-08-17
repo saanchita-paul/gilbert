@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class ConnectionApplication extends Model
 {
     use HasFactory;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -47,6 +46,19 @@ class ConnectionApplication extends Model
         'supplier',
         'plan_type',
         'status'
+    ];
+
+
+    const STATUS_UNASSIGNED = 1;
+    const STATUS_ASSIGNED = 2;
+    const STATUS_ESCALATED = 3;
+    const STATUS_SUBMITTED = 4;
+
+    const STATUS_MAPPING = [
+        'unassigned' => self::STATUS_UNASSIGNED,
+        'assigned' => self::STATUS_ASSIGNED,
+        'escalated' => self::STATUS_ESCALATED,
+        'submitted' => self::STATUS_SUBMITTED,
     ];
 
     /**

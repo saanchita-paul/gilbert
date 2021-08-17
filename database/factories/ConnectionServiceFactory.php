@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ConnectionServiceFactory extends Factory
 {
+    private static $types_index = -1;
+
     /**
      * The name of the factory's corresponding model.
      *
@@ -21,10 +23,10 @@ class ConnectionServiceFactory extends Factory
      */
     public function definition()
     {
-        $index = rand(0, 3);
+        ConnectionServiceFactory::$types_index += 1;
         $types = ['power', 'gas', 'internet', 'water'];
         return [
-            'service_type' => $types[$index],
+            'service_type' => $types[ConnectionServiceFactory::$types_index % 4],
         ];
     }
 }

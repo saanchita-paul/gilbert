@@ -2,6 +2,7 @@ import CrmUserMapper from "@scripts/api/mappers/crm/CrmUserMapper";
 import AppMetricsMapper from "@scripts/api/mappers/crm/AppMetricsMapper";
 import AppLeadMapper from "@scripts/api/mappers/crm/AppLeadMapper";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
+import axios from "axios";
 
 const data = [
     {
@@ -35,7 +36,7 @@ const data = [
         status: 'Successfully connected',
     },
     {
-        id: 5,
+        id: 6,
         title: 'Water',
         lead_count: 200,
         status: 'Successfully connected',
@@ -212,20 +213,29 @@ export default {
 
     getUserLeads(types) {
         try {
+            return applications.map(mp=>{
+                return ApplicationMapper.mapApplication(mp);
+            })
             // const data = await axios.get('/');
-            return ApplicationMapper.mapApplicationList(applications);
+            // return ApplicationMapper.mapApplicationList(applications);
 
         } catch (error) {
             return error.data;
         }
     },
 
-    getUserLead (id) {
+  async getUserLead (id) {
         try {
-            // const data = await axios.get('/');
-            return ApplicationMapper.mapApplicationSummary(application);
+            const data = await axios.get('/api/applications/summary/' + id);
+            console.log('response1', data);
+            const response1 = ApplicationMapper.mapApplicationSummary(data.data.data);
+            // const response = ApplicationMapper.mapApplicationSummary(application);
+            console.log('response1', response1);
+
+            return response1;
 
         } catch (error) {
+            console.log('response2', error);
             return error.data;
         }
     },
@@ -240,12 +250,12 @@ export default {
         }
     },
 
-    getNote(id) {
+   async getNote(id) {
         try {
-            // const data = await axios.get('/');
-            return ApplicationMapper.mapNotes(notes);
-
+            const data = await axios.get('/api/applications/'+id+'/notes');
+            return ApplicationMapper.mapNotes(data.data.data);
         } catch (error) {
+
             return error.data;
         }
     },
@@ -260,13 +270,10 @@ export default {
         }
     },
 
-    saveNote() {
+   async saveNote(newNote, leadId) {
         try {
-            // const data = await axios.get('/');
-            const note = ApplicationMapper.mapNote(newNote)
-            notes.push({...note});
-            console.log(notes);
-            return note;
+            const data = await axios.post('/api/applications/'+leadId+'/notes',{...newNote});
+            return ApplicationMapper.mapNote(data);
 
         } catch (error) {
             return error.data;
@@ -280,5 +287,16 @@ export default {
         } catch (error) {
             return error.data;
         }
+    },
+
+   async saveLead(lead, leadId) {
+        try {
+            const data = await axios.post('/api/applications/1/abcd',{lead});
+            return ApplicationMapper.mapNote(data);
+
+        } catch (error) {
+            return error.data;
+        }
     }
+
 }

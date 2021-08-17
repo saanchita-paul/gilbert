@@ -22,7 +22,7 @@ class AuthUserDetails
         $user = auth()->user();
 
         return [
-            'user' => array_merge($user->toArray(), $this->getUserRolesAndPermissions($user)),
+            'user' => array_merge($user->toArray(), $this->getUserRolesAndPermissions($user), $this->getOfficeDetails($user)),
             'bot_access_token' => $this->getBotAuthKey($user)
         ];
     }
@@ -68,4 +68,12 @@ class AuthUserDetails
         return $crypt->encrypt($data, true);
     }
 
+    public function getOfficeDetails(User $user)
+    {
+        if ($user->profile_type === User::PROFILE_TYPE_AGENT) {
+            return ['office' => $user->profile->office];
+        } else {
+            return ['office' => null];
+        }
+    }
 }

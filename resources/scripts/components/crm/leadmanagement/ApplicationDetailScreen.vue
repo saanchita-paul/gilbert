@@ -17,9 +17,6 @@
                       </small>
                     </div>
                 </div>
-
-
-
                 <div>
                   <v-btn outlined>Escalate</v-btn>
                   <v-btn outlined>Close Application</v-btn>

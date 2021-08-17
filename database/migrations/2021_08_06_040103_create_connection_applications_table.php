@@ -47,16 +47,16 @@ class CreateConnectionApplicationsTable extends Migration
             $table->string('city', 45)->nullable();
             $table->string('postcode', 10)->nullable();
             $table->string('state', 20)->nullable();
-            $table->string('country', 45)->nullable();
+            $table->string('country', 200)->nullable();
             $table->text('additional_instruction')->nullable();
             $table->string('address_text', 150)->nullable();
+            $table->string('reason', 255)->nullable();
             $table->tinyInteger('is_email_billing')->nullable();
             $table->tinyInteger('property_type')->nullable();
             $table->tinyInteger('has_life_support')->nullable();
             $table->tinyInteger('has_solar')->nullable();
             $table->string('nmi', 45)->nullable();
             $table->string('mirn', 45)->nullable();
-            $table->tinyInteger('is_escalated')->nullable();
             $table->tinyInteger('supplier')->nullable();
             $table->tinyInteger('plan_type')->nullable();
             $table->tinyInteger('status')->nullable();

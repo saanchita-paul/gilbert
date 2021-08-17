@@ -66,9 +66,11 @@ export default {
     getApplicationMetrics() {
         return null;
     },
-    getApplicationList:  () => {
+  getApplicationList:  async (sort_search_meta) => {
         try {
-            return ApplicationMapper.mapApplicationList(applications);
+            let data = await axios.get('/api/applications',{params:{...sort_search_meta}});
+            console.log('data', data);
+            return ApplicationMapper.mapApplicationList(data.data);
         } catch (error) {
             return error.data;
         }
@@ -76,7 +78,7 @@ export default {
     getApplicationSummary: async (id) => {
         try {
             // get application summary by application id
-            let response = (await axios.get(`/api/application/summary/${id}`)).data;
+            let response = (await axios.get(`/api/applications/summary/${id}`)).data;
             return ApplicationMapper.mapApplicationSummary(response.data);
         } catch (error) {
             return error.data;
@@ -85,7 +87,7 @@ export default {
     async createApplication(application) {
 
         application = ApplicationMapper.mapToServer(application);
-         return await axios.post(`/api/application`, {...application});
+         return await axios.post(`/api/applications`, {...application});
 
     },
 }

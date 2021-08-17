@@ -20,7 +20,7 @@
                         :options.sync="options"
                         :server-items-length="totalItem"
                         :loading="loading"
-                        class="elevation-1"
+                        class="elevation-1 row-pointer"
                         @click:row="openAgency"
                     >
                     </v-data-table>
@@ -150,14 +150,13 @@ name: "CrmAgencyDataTable",
         },
 
         async loadAgencyData() {
-            console.log(this.options);
 
             const meta = {
                 search: this.search,
                 page: this.options.page,
                 per_page: this.options.itemsPerPage,
                 is_descending: this.options.sortDesc.length != 0? this.options.sortDesc[0]: false,
-                sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: 'title',
+                sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: '',
             }
             const data =  await AgencyService.loadAgencyData(meta);
             this.agencies = data.agencies;
@@ -198,5 +197,7 @@ name: "CrmAgencyDataTable",
 </script>
 
 <style scoped>
-
+.row-pointer >>> tbody tr :hover {
+    cursor: pointer;
+}
 </style>

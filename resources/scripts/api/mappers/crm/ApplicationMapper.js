@@ -4,20 +4,29 @@ import Plan from "@scripts/models/crm/Plan";
 import Note from "@scripts/models/crm/Note";
 import ServiceProvider from "@scripts/models/crm/ServiceProvider";
 import COMMISSION from "@scripts/data/constants/COMMISSION";
+import PaginationMapper from "@scripts/api/mappers/crm/PaginationMapper";
 export default {
     mapApplication(data) {
         let model = Object.assign(new Application(), { ...data });
         return model;
     },
     mapApplicationList(data) {
+
         const models = [];
-        data.forEach((item) => {
+        data.data.forEach((item) => {
             models.push(this.mapApplication(item));
         });
-        return models;
+        const pagination =  PaginationMapper.mapPagination(data?.meta);
+        const p =  {
+            applications: models,
+            pagination: pagination,
+        };
+        return p;
     },
     mapApplicationSummary(data) {
-        let model = Object.assign(new ApplicationSummary(), { ...data });
+        console.log(data);
+        // let model = Object.assign(new ApplicationSummary(), { ...data });
+        let model = new ApplicationSummary({...data});
         return model;
     },
 
@@ -28,6 +37,7 @@ export default {
     },
 
     mapNotes(data) {
+
         return data.map(dt=> {
             return Object.assign(new Note(), { ...dt });
         });
