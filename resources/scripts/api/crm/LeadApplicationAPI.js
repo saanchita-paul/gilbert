@@ -252,7 +252,7 @@ export default {
 
    async getNote(id) {
         try {
-            const data = await axios.get('/api/applications/1/notes');
+            const data = await axios.get('/api/applications/'+id+'/notes');
             return ApplicationMapper.mapNotes(data.data.data);
         } catch (error) {
 
@@ -272,7 +272,7 @@ export default {
 
    async saveNote(newNote, leadId) {
         try {
-            const data = await axios.post('/api/applications/1/notes',{...newNote});
+            const data = await axios.post('/api/applications/'+leadId+'/notes',{...newNote});
             return ApplicationMapper.mapNote(data);
 
         } catch (error) {

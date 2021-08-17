@@ -114,6 +114,8 @@ export default {
 
         async submitConnection() {
             let v = await this.validateLead();
+            this.showSubmitModal = true;
+
             if(!v) return;
             this.showSubmitModal = true;
         },
