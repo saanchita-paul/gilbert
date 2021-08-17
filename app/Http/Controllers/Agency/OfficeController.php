@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Agency\CreateOfficeRequest;
 use App\Http\Resources\Agency\AgencyResource;
 use App\Http\Resources\Agency\OfficeResource;
+use App\Services\Agency\AgencyService;
 use App\Services\Agency\CreateAgentAndUser;
 use App\Services\Agency\CreateOfficeAndAgency;
 use App\Services\Agency\SearchOfficeService;
@@ -68,6 +69,48 @@ class OfficeController extends Controller
             $commissions = $ofcAndAgencySvc->createCommistions($officeCommissions, $office->id, $officeData['agency_id']);
             return AgencyResource::make($office);
 
+        } catch ( \Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    /**
+     * Creating new Office under Agency.
+     *
+     * @param CreateOfficeRequest $request
+     * @param int $agencyId
+     *
+     * @return AgencyResource|JsonResponse
+     */
+    public function createAgencyOffice(CreateOfficeRequest $request, int $agencyId): AgencyResource | JsonResponse
+    {
+        try {
+            $agencySvc = new AgencyService();
+            $agency = $agencySvc->getAgency($agencyId);
+
+            $inputData = $request->toArray();
+            $officeData = $inputData['office'];
+            $officeData['agency_id'] = $agency->id;
+            $officeCommissionsData = $inputData['office_commissions'];
+            $officeAllocatorData = $inputData['agent'];
+            $officeAllocatorData['agency_id'] = $agency->id;
+
+            // Create service instances.
+            $ofcAndAgencySvc = new CreateOfficeAndAgency();
+            $agentAndUserSvc = new CreateAgentAndUser();
+
+            // Create office.
+            $office = $ofcAndAgencySvc->createOffice($officeData);
+
+            // Create office allocator (agent) profile.
+            $officeAllocatorData['office_id'] = $office->id;
+            $agent = $agentAndUserSvc->createAgent($officeAllocatorData);
+
+            // Create office commissions.
+            $commissions = $ofcAndAgencySvc->createCommistions(
+                $officeCommissionsData, $office->id, $officeData['agency_id']);
+
+            return AgencyResource::make($office);
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }

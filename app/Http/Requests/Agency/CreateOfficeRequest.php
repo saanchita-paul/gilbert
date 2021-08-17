@@ -24,7 +24,6 @@ class CreateOfficeRequest extends FormRequest
     public function rules()
     {
         return [
-            'office.agency_id'=>'required|integer',
             'office.address'=>'required|string',
             'office.name'=>'required|string',
             'office.phone'=>'required|string',
@@ -36,7 +35,6 @@ class CreateOfficeRequest extends FormRequest
             'agent.email'=>'required|email',
             'agent.f_id_12'=>'nullable|string',
             'agent.phone'=>'nullable|string',
-            'agent.role'=>'required|string',
         ];
     }
 
