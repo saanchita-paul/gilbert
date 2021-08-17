@@ -21,7 +21,8 @@ class DefaultSeeder extends Seeder
     {
         $this->deleteAdminIfExist();
 
-        $this->createAdmin();
+        $this->createAdmin('admin@hood.ai', 'Hood', 'Admin' );
+        $this->createAdmin('nick@hood-agent.com', 'Hood', 'Agent' );
     }
 
     /**
@@ -30,21 +31,22 @@ class DefaultSeeder extends Seeder
     private function deleteAdminIfExist()
     {
         User::query()->where('email', 'admin@hood.ai')->delete();
+        User::query()->where('email', 'nick@hood-agent.com')->delete();
     }
 
     /**
      *
      */
-    private function createAdmin()
+    private function createAdmin($email, $fName, $lName)
     {
         $profile = new HoodProfile();
-        $profile->first_name = 'Hood';
-        $profile->last_name = 'Admin';
+        $profile->first_name = $fName;
+        $profile->last_name = $lName;
         $profile->save();
 
         $user = new User();
         $user->password = bcrypt('123456');
-        $user->email = 'admin@hood.ai';
+        $user->email = $email;
         $user->profile_type = User::PROFILE_TYPE_HOOD;
         $user->profile_id = $profile->id;
         $user->save();

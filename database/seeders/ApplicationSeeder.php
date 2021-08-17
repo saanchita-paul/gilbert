@@ -42,7 +42,7 @@ class ApplicationSeeder extends Seeder
 
         $user = new User();
         $user->password = bcrypt('123456');
-        $user->email = 'agent@hood.ai';
+        $user->email = 'nick@hood-agent.com';
         $user->profile_type = User::PROFILE_TYPE_AGENT;
         $user->profile_id = $profile->id;
         $user->save();
