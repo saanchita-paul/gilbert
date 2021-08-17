@@ -121,7 +121,7 @@ export default {
 
     methods: {
         isSelectedClass(item) {
-            if(item.id === this.currentLead.id) {
+            if(item.id === this.currentLead?.id) {
                 return 'selectedRow';
             }
         },
