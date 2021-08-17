@@ -224,12 +224,18 @@ export default {
         }
     },
 
-    getUserLead (id) {
+  async getUserLead (id) {
         try {
-            // const data = await axios.get('/');
-            return ApplicationMapper.mapApplicationSummary(application);
+            const data = await axios.get('/api/applications/summary/' + id);
+            console.log('response1', data);
+            const response1 = ApplicationMapper.mapApplicationSummary(data.data.data);
+            // const response = ApplicationMapper.mapApplicationSummary(application);
+            console.log('response1', response1);
+
+            return response1;
 
         } catch (error) {
+            console.log('response2', error);
             return error.data;
         }
     },
@@ -285,15 +291,6 @@ export default {
 
    async saveLead(lead, leadId) {
         try {
-            console.log('lead', lead );
-            lead.identification = {
-                type: 1,
-                card_number: '12123',
-                state: 'VIC',
-                country: 'VIC',
-                card_color: 'VIC',
-                special_number: 'VIC',
-            }
             const data = await axios.post('/api/applications/1/abcd',{lead});
             return ApplicationMapper.mapNote(data);
 

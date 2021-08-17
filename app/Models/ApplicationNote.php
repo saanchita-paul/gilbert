@@ -18,7 +18,8 @@ class ApplicationNote extends Model
     protected $fillable = [
         'connection_application_id',
         'created_by',
-        'text'
+        'text',
+        'title'
     ];
 
     /**

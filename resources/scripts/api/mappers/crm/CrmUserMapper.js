@@ -13,6 +13,7 @@ function mapRole(role) {
 
 export default {
     mapUserList: (userList)=> {
+
         const users =  userList?.data.map(user=> {
             user.role = mapRole(user.user.roles[0]);
             return mapUser(user);

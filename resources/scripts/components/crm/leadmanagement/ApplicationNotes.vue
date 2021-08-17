@@ -2,11 +2,16 @@
     <v-row>
         <v-col cols="12">
             <p class="sub-title">Notes</p>
+            <ValidationObserver ref="submit_note">
+            <ValidationProvider name="Expired Date" rules="required"  v-slot="{ errors }">
+
             <v-textarea v-model ="note.text"
                 outlined
-                hide-details="auto"
+                        hide-details="auto"
                 placeholder="Notes goes here."
             ></v-textarea>
+            </ValidationProvider>
+            </ValidationObserver>
 
             <v-btn class="ma-2 float-right" @click="saveNote">Submit Note</v-btn>
         </v-col>
@@ -39,7 +44,8 @@ export default {
     data() {
       return {
           note: {
-              text:''
+              text:'',
+              title: '',
           },
       }
     },
@@ -49,7 +55,11 @@ export default {
             if(isActive == true) return 'primary';
             return 'gray';
         },
-        saveNote() {
+      async saveNote() {
+
+            let v =  await this.$refs.submit_note.validate();
+            if(!v) return;
+
             this.$emit('saveNote', this.note);
             this.note.text = '';
         },

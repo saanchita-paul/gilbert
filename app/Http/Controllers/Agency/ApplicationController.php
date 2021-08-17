@@ -139,6 +139,7 @@ class ApplicationController extends Controller
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
+
     /**
      * Updating status to escalate of an application
      *

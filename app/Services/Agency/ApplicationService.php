@@ -44,6 +44,9 @@ class ApplicationService
 
         $note['connection_application_id'] = $applicationId;
         $note['created_by'] = $user->id;
+        if($note['title'] == null) {
+            $note['title'] = 'Note by '.$user->profile->first_name;
+        }
         return ApplicationNote::create($note);
     }
     public function updateApplication(array $application, int $applicationId) {
@@ -66,8 +69,8 @@ class ApplicationService
 
     public function createIdentification($identificationData, $id)
     {
-        $identificationData['connection_application_id'] = $id;
-        return Identification::create($identificationData);
+        return Identification::where('connection_application_id' , $id)
+            ->update($identificationData);
 
     }
 
@@ -82,7 +85,7 @@ class ApplicationService
         $existLead = ConnectionApplication::findOrFail($id);
         $existLead->update($lead);
         $this->createIdentification($lead['identification'], $id);
-        $this->updateConnectionService($lead['services'], $id);
+        $this->updateConnectionService($lead['service_interests'], $id);
         return $existLead;
     }
 
@@ -93,7 +96,6 @@ class ApplicationService
         $existingApplication->escalate_reason = $application['reason'];
         $existingApplication->status = ConnectionApplication::STATUS_MAPPING[$application['status']];
         $existingApplication->save();
-
         return $existingApplication;
     }
 }

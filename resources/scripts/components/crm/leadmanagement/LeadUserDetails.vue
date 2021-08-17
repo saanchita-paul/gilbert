@@ -1,7 +1,7 @@
 <template>
     <v-card class="pa-4 mb-5">
        <LeadDetailsHeader :leadSummary="leadSummary" @eacalate="eacalate"></LeadDetailsHeader>
-        <InfoField @updateLead="updateLead" @readMore="readMore"></InfoField>
+        <InfoField @updateLead="updateLead" :lead="leadSummary" @readMore="readMore"></InfoField>
     </v-card>
 </template>
 
@@ -29,7 +29,7 @@ name: "LeadUserDetails",
         }
     },
     mounted() {
-        console.log(this.leadSummary);
+        console.log('load summary header',this.leadSummary);
     }
 }
 </script>

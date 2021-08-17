@@ -24,7 +24,9 @@ export default {
         return p;
     },
     mapApplicationSummary(data) {
-        let model = Object.assign(new ApplicationSummary(), { ...data });
+        console.log(data);
+        // let model = Object.assign(new ApplicationSummary(), { ...data });
+        let model = new ApplicationSummary({...data});
         return model;
     },
 

@@ -60,7 +60,7 @@ name: "LeadDetailsHeader",
         },
 
         isActive(service) {
-            return this.leadSummary.service_types.includes(service.toLowerCase())?true:false;
+            return this.leadSummary.service_interests.includes(service.toLowerCase())?true:false;
         },
 
         getColor(service) {
@@ -83,6 +83,9 @@ name: "LeadDetailsHeader",
 
 
 
+    },
+    mounted() {
+        console.log('load_summary_he', this.leadSummary);
     }
 }
 </script>

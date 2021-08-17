@@ -1,7 +1,15 @@
 <template>
     <v-container>
-            <LeadUserDetails v-if="planNoteFlag" @eacalate="eacalate" @updateLead="updateLead" @readMore="readMore" :leadSummary="leadSummary"></LeadUserDetails>
-            <LeadServicesAndNotes  v-if="planNoteFlag" @updateService="updateService" @updatePlan="updatePlan" @updateNote= "updateNote" :leadSummary="leadSummary" :notes="notes"></LeadServicesAndNotes>
+            <ValidationObserver ref="submit_lead">
+                <LeadUserDetails v-if="planNoteFlag" @eacalate="eacalate"
+                                 @updateLead="updateLead"
+                                 @readMore="readMore" :leadSummary="leadSummary"></LeadUserDetails>
+                <LeadServicesAndNotes  v-if="planNoteFlag"
+                                   @updateService="updateService"
+                                   @updatePlan="updatePlan"
+                                   @updateNote= "updateNote"
+                                   :leadSummary="leadSummary" :notes="notes"></LeadServicesAndNotes>
+             </ValidationObserver>
             <LeadsDetailsFotter @submitConnection="submitConnection"></LeadsDetailsFotter>
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
             <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" title="agd"></EscalationConfirmModal>
@@ -53,9 +61,10 @@ export default {
         {
             this.notes = await LeadApplicationService.loadNote(this.leadId);
             this.leadSummary = await LeadApplicationService.loadUserLead(this.leadId);
-            this.services = this.leadSummary?.service_types;
+            this.lead = this.leadSummary;
+            this.services = this.leadSummary?.service_interests;
+
             this.planNoteFlag = true;
-            console.log(this.notes);
         },
 
         updatePlan(plan)
@@ -93,7 +102,6 @@ export default {
             this.lead = lead;
         },
         updateService(service) {
-            console.log('our service', service);
             let index = this.services.findIndex(svc => svc === service.toLowerCase());
             if(index == -1) {
                 this.services.push(service.toLowerCase());
@@ -104,19 +112,40 @@ export default {
 
         },
 
-        submitConnection() {
+        async submitConnection() {
+            let v = await this.validateLead();
+            if(!v) return;
             this.showSubmitModal = true;
         },
 
         backToEdit() {
             this.showSubmitModal = false;
         },
-        saveData() {
+
+      async validateLead() {
+          return await this.$refs.submit_lead.validate();
+        },
+
+       async saveData() {
+
             this.showSubmitModal = false;
-            LeadApplicationService.saveLead({...this.lead.property_details,
-                ...this.lead.person_details,
-                'services':this.services,
-                'identification':this.lead.indentification},this.leadId);
+            let payload = null;
+            if(this.lead.property_details === undefined)
+            {
+                payload = {...this.lead};
+
+            } else
+            {
+                payload=  { ...this.lead.property_details,
+                    ...this.lead.person_details,
+                    'service_interests':this.services,
+                    'identification':this.lead.indentification,
+                    supplier: 1,
+                    plan_type: this.plan
+                };
+            }
+
+            LeadApplicationService.saveLead(payload, this.leadId);
         }
 
     },

@@ -278,7 +278,7 @@ export default {
     data() {
         return {
             confirmApplicationModal: false,
-            application: new ApplicationSummary(),
+            application: new ApplicationSummary({}),
             tenancy_types:  [
                 {text: 'Renter', value: 1},
                 {text: 'Home Owner', value: 2},
