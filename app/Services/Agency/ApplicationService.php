@@ -8,6 +8,7 @@ use App\Models\Identification;
 use App\Models\User;
 use App\Services\Agency\CreateOfficeAndAgency;
 use Illuminate\Console\Application;
+use function PHPUnit\Framework\isNull;
 
 class ApplicationService
 {
@@ -70,7 +71,8 @@ class ApplicationService
     public function createIdentification($identificationData, $id)
     {
         $identification = Identification::where('connection_application_id' , $id);
-        if($identification)
+
+        if(!empty($identification))
         {
            return $identification->update($identificationData);
         }
