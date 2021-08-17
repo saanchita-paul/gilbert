@@ -72,7 +72,7 @@ class ApplicationService
     {
         $identification = Identification::where('connection_application_id' , $id);
 
-        if(!empty($identification))
+        if($identification->first())
         {
            return $identification->update($identificationData);
         }
@@ -87,8 +87,9 @@ class ApplicationService
         $applications['office_id'] = $user->office_id;
         $applications['agency_id'] = $user->agency_id;
         $lead = $applications['lead'];
-        $lead['office_id'] = $user->office_id;;
-        $lead['agency_id'] = $user->agency_id;;
+        $lead['office_id'] = $user->office_id;
+        $lead['agency_id'] = $user->agency_id;
+        $lead['status'] = ConnectionApplication::STATUS_SUBMITTED;
         $existLead = ConnectionApplication::findOrFail($id);
         $existLead->update($lead);
         $this->createIdentification($lead['identification'], $id);
