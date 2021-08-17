@@ -10,6 +10,7 @@ use App\Http\Resources\Agency\ApplicationResource;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\User;
+use App\Services\Agency\ApplicationNoteService;
 use App\Services\Agency\ApplicationService;
 use App\Services\Agency\SearchConnectionApplication;
 use Illuminate\Http\JsonResponse;
@@ -99,9 +100,8 @@ class ApplicationController extends Controller
     public function createConnectionNotes(Request $request, string $id):ApplicationNoteResourse|JsonResponse
     {
         try {
-            $service = new ApplicationService();
-            $user = Auth::user();
-            return ApplicationNoteResourse::make($service->createNotes($request->toArray(), $user, $id));
+            $service = new ApplicationNoteService(Auth::user());
+            return ApplicationNoteResourse::make($service->createNotes($request->toArray(), $id));
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
@@ -127,7 +127,7 @@ class ApplicationController extends Controller
     }
 
 
-    public function createNewConnection(Request $request, string $id)
+    public function createNewConnection(Request $request, $id)
     {
 
         try {
@@ -153,7 +153,8 @@ class ApplicationController extends Controller
         try {
             $service = new ApplicationService();
             $inputData = $request->toArray();
-            return ApplicationResource::make($service->updateEscalateApplication($inputData, $applicationId));
+            $user = Auth::user();
+            return ApplicationResource::make($service->updateEscalateApplication($inputData, $applicationId, $user));
 
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);

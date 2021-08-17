@@ -592,6 +592,9 @@ export default {
         },
 
         synFormData () {
+
+            console.log(this.lead);
+
             this.person_details.title = this.lead.title;
             this.person_details.first_name = this.lead.first_name;
             this.person_details.last_name = this.lead.last_name;

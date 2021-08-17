@@ -4,7 +4,7 @@
                 <p>{{plan.title}}</p>
                 <div class="pa-4">
                     <v-btn @click="reviewPlan(plan.id)" block outlined class="mb-3">Review Plan Details</v-btn>
-                    <v-btn @click="selectPlan(plan.id)" block outlined class="mb-3">Select Plan</v-btn>
+                    <v-btn @click="selectPlan(plan)" block outlined class="mb-3">Select Plan</v-btn>
                 </div>
             </div>
         </div>
@@ -20,10 +20,22 @@ name: "EnergyPlan",
         reviewPlan() {
             //todo
         },
+
         selectPlan(plan) {
            this.$emit('selectPlan', plan);
         },
+
+        isActive() {
+            if(this.plan.id === this.selectedPlan) {
+                this.selectPlan(this.plan);
+            }
+        }
+
     },
+    mounted() {
+    this.isActive();
+
+    }
 }
 </script>
 

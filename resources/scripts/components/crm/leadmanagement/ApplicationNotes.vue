@@ -43,6 +43,7 @@ export default {
     },
     data() {
       return {
+          reverse: true,
           note: {
               text:'',
               title: '',
