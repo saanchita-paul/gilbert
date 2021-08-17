@@ -5,7 +5,7 @@
             persistent
             max-width="400px"
         >
-            <AssignedtoPopUp :lead="lead" :user="user" @cancelModal="cancelModal"></AssignedtoPopUp>
+            <AssignedtoPopUp :lead="lead" :user="user" :assignedText="assignedText" @cancelModal="cancelModal"></AssignedtoPopUp>
         </v-dialog>
     </v-row>
 </template>
@@ -15,7 +15,7 @@ import AssignedtoPopUp from "@scripts/components/crm/leadmanagement/AssignedtoPo
 export default {
 name: "ReassignModal",
     components: {AssignedtoPopUp},
-    props:['dialog', 'user', 'lead'],
+    props:['dialog', 'user', 'lead', 'assignedText'],
     methods: {
         cancelModal() {
             this.$emit('cancelModal');

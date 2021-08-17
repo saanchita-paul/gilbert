@@ -19,6 +19,11 @@ export default class ApplicationSummary {
     additional_instruction = null;
     applicant_name = null;
     identification = null;
+    mirn = null;
+    nmi = null;
+    property_type = null;
+    has_life_support = null;
+    has_solar = null;
     constructor(
         {
             id = null,
@@ -40,7 +45,12 @@ export default class ApplicationSummary {
             address_text = null,
             services = [],
             additional_instruction = null,
-            identification= null
+            identification= null,
+            mirn = null,
+            nmi = null,
+            has_life_support = null,
+            has_solar = null,
+            property_type = null,
         }
     ) {
 
@@ -67,7 +77,12 @@ export default class ApplicationSummary {
         this.service_interests = services;
         this.additional_instruction = additional_instruction;
         this.title = title;
-        this.identification = identification
+        this.identification = identification;
+        this.mirn = mirn;
+        this.nmi = nmi;
+        this.has_life_support = has_life_support;
+        this.has_solar = has_solar;
+        this.property_type = property_type;
 
     }
 }

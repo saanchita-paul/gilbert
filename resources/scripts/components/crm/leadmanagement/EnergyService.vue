@@ -26,7 +26,6 @@ name: "EnergyService",
     },
     methods: {
         isActive(service) {
-            console.log('hello lelin', this.leadSummary);
             return this.leadSummary.service_interests.includes(service.toLowerCase())?true:false;
 
         },

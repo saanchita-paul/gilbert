@@ -47,15 +47,15 @@ export default {
     },
     data() {
         return {
-            escalated_reason: 'Reason goes here. Maybe it’s extra long so I have to write something down to show how it will look like when a Service rRep has soooo much things to say on this applicant. Maybe another line if the agent forgot to say something important about the application.'
+            escalated_reason: ''
         }
     },
     methods: {
         cancelEscalasion() {
             this.$emit('cancelEscal');
         },
-        saveEscalasionReason() {
-            LeadApplicationService.saveNote(this.escalated_reason, this.leadSummary.id);
+        async saveEscalasionReason() {
+             await LeadApplicationService.saveEscalateReason(this.escalated_reason, this.leadSummary.id);
             this.$emit('sucessSaveEscal');
         }
     }

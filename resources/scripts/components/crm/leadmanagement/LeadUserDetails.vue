@@ -19,7 +19,7 @@ name: "LeadUserDetails",
     methods: {
         updateLead(lead) {
             this.$emit('updateLead',lead);
-            console.log('lead', lead);
+            // console.log('lead', lead);
         },
         eacalate(){
             this.$emit('eacalate');
@@ -29,7 +29,7 @@ name: "LeadUserDetails",
         }
     },
     mounted() {
-        console.log('load summary header',this.leadSummary);
+        // console.log('load summary header',this.leadSummary);
     }
 }
 </script>

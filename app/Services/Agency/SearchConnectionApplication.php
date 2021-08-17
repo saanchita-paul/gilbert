@@ -40,7 +40,8 @@ class SearchConnectionApplication
     {
         $agencyBuilder = ConnectionApplication::query()
             ->where('office_id', $user->profile->office_id)
-            ->with('connectionServices');
+            ->with('connectionServices')
+            ->with('assignedTo');
 
         $agencyBuilder = $this->applySearch($agencyBuilder, ['first_name', 'last_name']);
 

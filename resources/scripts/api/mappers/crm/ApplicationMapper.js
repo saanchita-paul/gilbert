@@ -11,20 +11,18 @@ export default {
         return model;
     },
     mapApplicationList(data) {
-
         const models = [];
         data.data.forEach((item) => {
             models.push(this.mapApplication(item));
         });
         const pagination =  PaginationMapper.mapPagination(data?.meta);
-        const p =  {
+        return  {
             applications: models,
             pagination: pagination,
         };
-        return p;
     },
     mapApplicationSummary(data) {
-        console.log(data);
+        // console.log(data);
         // let model = Object.assign(new ApplicationSummary(), { ...data });
         let model = new ApplicationSummary({...data});
         return model;

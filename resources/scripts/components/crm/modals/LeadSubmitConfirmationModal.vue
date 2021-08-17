@@ -7,7 +7,7 @@
         >
             <v-card>
                 <div class="section-dialogs">
-                  <ConfirmSubmission @backToEdit="backToEdit" @saveData="saveData"></ConfirmSubmission>
+                  <ConfirmSubmission @backToEdit="backToEdit"  :data="data" @saveData="saveData"></ConfirmSubmission>
                 </div>
             </v-card>
         </v-dialog>
@@ -29,7 +29,10 @@ export default {
         },
         leadSummary: {
             require: true,
-        }
+        },
+      data: {
+          require: true
+      }
     },
     methods: {
         backToEdit() {
@@ -38,7 +41,10 @@ export default {
         saveData() {
             this.$emit('saveData');
         }
-    }
+    },
+  mounted() {
+      console.log('data get from ', this.data);
+  }
 }
 </script>
 

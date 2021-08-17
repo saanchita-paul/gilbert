@@ -1,7 +1,9 @@
 <template>
             <v-col cols="12" >
                  <v-card class="pa-4">
-                     <h2 class="page-title my-5 primary--text">{{lead.applicant_name}} has been assigned to {{user.first_name}}.</h2>
+                     <h2 class="page-title my-5 primary--text">
+                         {{lead.first_name}} {{lead.last_name}} has been {{ assignedText }} to {{user.proerty_manager_name}}.
+                     </h2>
                     <p>It will now show on the his/her “My Leads”</p>
                     <v-btn color="primary" class="mx-auto" @click="cancelModal">Done</v-btn>
                  </v-card>
@@ -11,7 +13,7 @@
 <script>
 export default {
   name: "AssignedtoPopUp",
-    props:['lead', 'user'],
+    props:['lead', 'user', 'assignedText'],
     methods: {
         cancelModal()
         {

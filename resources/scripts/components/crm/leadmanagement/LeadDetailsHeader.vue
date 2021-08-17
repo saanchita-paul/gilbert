@@ -85,7 +85,7 @@ name: "LeadDetailsHeader",
 
     },
     mounted() {
-        console.log('load_summary_he', this.leadSummary);
+        // console.log('load_summary_he', this.leadSummary);
     }
 }
 </script>

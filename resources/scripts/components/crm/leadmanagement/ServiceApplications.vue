@@ -64,7 +64,7 @@ export default {
             //todo
         },
         planSelect(planId) {
-           this.selectedPlan = planId;
+           this.selectedPlan = planId.id;
            // console.log(planId);
             this.$emit('updatePlan', planId);
         },
@@ -86,12 +86,13 @@ export default {
         },
         async loadPlan(serviceProvider) {
             this.plans = await LeadApplicationService.loadPlan(serviceProvider);
+            console.log('plan', this.plans);
             this.plansFlag = true;
         },
 
         updateService(service) {
             this.$emit('updateService', service);
-            console.log('service', service);
+            // console.log('service', service);
         }
     },
 
