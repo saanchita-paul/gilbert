@@ -286,7 +286,7 @@ export default {
         try {
             lead.plan_type = lead.plan_type.id;
             const data = await axios.post('/api/applications/'+leadId+'/update',{lead});
-            return ApplicationMapper.mapNote(data);
+            return data;
 
         } catch (error) {
             return error.data;

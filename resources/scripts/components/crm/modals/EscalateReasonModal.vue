@@ -9,7 +9,7 @@
                 <div class="section-dialogs">
                     <v-row>
                     <v-col cols="12">
-                        <p class="dialogs-title">What’s the reason why you want to Escalate this application?</p>
+                        <p class="dialogs-title popup-escalate-title">What’s the reason why you want to Escalate this application?</p>
                     </v-col>
                     <v-col>
                         <v-textarea v-model="escalated_reason">

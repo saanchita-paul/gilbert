@@ -28,6 +28,7 @@ class ConnectionApplicationFactory extends Factory
             'office_id' => $profile->office->id,
             'agency_id' => $profile->office->agency->id,
             'created_by' => $profile->id,
+            'title' => 'Mr',
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'email' => $this->faker->email(),

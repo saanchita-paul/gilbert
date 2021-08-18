@@ -15,7 +15,8 @@
                         </v-col>
                         <v-col cols="12">
                             <v-textarea
-                                v-model="agentInstruction"
+                                :value="readmore"
+                                readonly
                                 outlined
                                 hide-details="auto"
                                 placeholder="Additional Instructions goes here."
@@ -38,14 +39,12 @@ name: "LeadReadMoreModal",
     props: {
         dialog: {
             required: true
+        },
+        readmore: {
+            required: true
         }
     },
 
-    data() {
-        return  {
-            agentInstruction: 'Additional Instructions goes here. Maybe it’s extra long so I have to write something down to show how it will look like when a property manager has soooo much things to say about his lead.  Maybe another ine of the agent forgot to say something about the lead.',
-        }
-    },
     methods: {
         closeReadMore() {
             this.$emit('close');

@@ -16,6 +16,7 @@ class ApplicationResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'title' => $this->title,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'email' => $this->email,
@@ -43,7 +44,8 @@ class ApplicationResource extends JsonResource
             'agency_id' => $this->agency_id,
             'created_by' => $this->created_by,
             'assigned_to' => $this->assigned_to,
-            'agent_profile' => $this->assignedTo
+            'agent_profile' => $this->assignedTo,
+            'status' => $this->status
         ];
     }
 

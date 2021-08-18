@@ -13,8 +13,10 @@
 
             <LeadsDetailsFotter @submitConnection="submitConnection"></LeadsDetailsFotter>
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
-            <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" title="agd"></EscalationConfirmModal>
-            <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag" @close="closeReadMore"> </LeadReadMoreModal>
+            <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" :title="fullName"></EscalationConfirmModal>
+            <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag"
+                               :readmore="additionalInstruction"
+                               @close="closeReadMore"> </LeadReadMoreModal>
             <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" v-if="showSubmitModal" @saveData="saveData" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
     </v-container>
 </template>
@@ -39,12 +41,14 @@ export default {
           escalateLead: false,
           escalateLeadConfirm: false,
           readMoreFlag: false,
+          additionalInstruction:null,
           lead: null,
           plan: null,
           supplier: 'ea',
           services: [],
           showSubmitModal: false,
           payload: null,
+          fullName: null,
       }
     },
     components: {
@@ -93,6 +97,7 @@ export default {
         },
 
         readMore() {
+            this.additionalInstruction = this.lead.person_details.additional_instruction;
             this.readMoreFlag = true;
         },
 
@@ -101,6 +106,7 @@ export default {
         },
 
         updateLead(lead) {
+            this.fullName = lead.person_details.first_name + lead.person_details.last_name;
             this.lead = lead;
         },
         updateService(service) {
@@ -156,7 +162,8 @@ export default {
                 };
             }
 
-            LeadApplicationService.saveLead(payload, this.leadId);
+            let response = await LeadApplicationService.saveLead(payload, this.leadId);
+           this.$router.push({name:'applications'});
         }
 
     },
