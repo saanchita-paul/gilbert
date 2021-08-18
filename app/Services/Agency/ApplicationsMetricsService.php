@@ -71,7 +71,7 @@ class ApplicationsMetricsService
     {
         $res = DB::table('connection_applications')
             ->where('assigned_to', $this->assignedUserId)
-            ->select(DB::raw("count(status) as total"))
+            ->select(DB::raw("count(*) as count"))
             ->get()->toArray();
 
         $this->metrics[] = array_merge(['type' => 'my_application'], (array)array_shift($res));
