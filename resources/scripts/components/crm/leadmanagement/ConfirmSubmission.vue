@@ -417,70 +417,29 @@
 
                             <v-col cols="12">
                                 <p class="sub-title">Have you read and accepted the Terms and Conditions to the Lead? TBA by Tomy</p>
-                                    <v-radio-group
-                                        v-model="is_temp_condition"
-                                        row
-                                        >
-                                        <v-radio
-                                            label="Yes"
-                                            value="yes"
-                                        ></v-radio>
-                                        <v-radio
-                                            label="No"
-                                            value="no"
-                                        ></v-radio>
-                                    </v-radio-group>
+                                   <v-checkbox v-model="is_temp_condition"></v-checkbox>
                             </v-col>
 
                             <v-col cols="12">
                                 <p class="sub-title">Consent to us verifying your identity information with the document issuer or official record holder? TBA by Tomy</p>
-                                    <v-radio-group
-                                        v-model="is_discount_condition"
-                                        row
-                                        >
-                                        <v-radio
-                                            label="Yes"
-                                            value="yes"
-                                        ></v-radio>
-                                        <v-radio
-                                            label="No"
-                                            value="no"
-                                        ></v-radio>
-                                    </v-radio-group>
+
+                                <v-checkbox v-model="is_discount_condition">
+                                </v-checkbox>
                             </v-col>
 
                             <v-col cols="12">
                                 <p class="sub-title">Acknowledge we will perform a credit check before transferring you (we will let you know if there is a problem) TBA by Tomy</p>
-                                    <v-radio-group
-                                        v-model="is_credit_condition"
-                                        row
-                                        >
-                                        <v-radio
-                                            label="Yes"
-                                            value="yes"
-                                        ></v-radio>
-                                        <v-radio
-                                            label="No"
-                                            value="no"
-                                        ></v-radio>
-                                    </v-radio-group>
+                                <v-checkbox v-model="is_credit_condition">
+                                </v-checkbox>
+
                             </v-col>
 
                             <v-col cols="12">
+
+
                                 <p class="sub-title">Acknowledge we will perform a credit check before transferring you (we will let you know if there is a problem) TBA by Tomy</p>
-                                    <v-radio-group
-                                        v-model="is_credit2_condition"
-                                        row
-                                        >
-                                        <v-radio
-                                            label="Yes"
-                                            value="yes"
-                                        ></v-radio>
-                                        <v-radio
-                                            label="No"
-                                            value="no"
-                                        ></v-radio>
-                                    </v-radio-group>
+                                <v-checkbox v-model="is_credit2_condition">
+                                </v-checkbox>
                             </v-col>
 
                         </v-row>
@@ -608,10 +567,10 @@ export default {
     computed:{
       allOk()
       {
-          return this.is_temp_condition === 'yes' &&
-              this.is_discount_condition === 'yes'&&
-              this.is_credit_condition === 'yes' &&
-              this.is_credit2_condition === 'yes';
+          return this.is_temp_condition  &&
+              this.is_discount_condition &&
+              this.is_credit_condition  &&
+              this.is_credit2_condition;
       }
     },
     methods: {

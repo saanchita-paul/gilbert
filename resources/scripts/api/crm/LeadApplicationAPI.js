@@ -285,7 +285,7 @@ export default {
    async saveLead(lead, leadId) {
         try {
             lead.plan_type = lead.plan_type.id;
-            const data = await axios.post('/api/applications/'+leadId+'/update',{lead});
+            const data = await axios.post('/api/applications/'+leadId+'/submit',{lead});
             return data;
 
         } catch (error) {

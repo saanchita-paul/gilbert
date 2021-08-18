@@ -11,7 +11,7 @@
                                    @updateNote= "updateNote"
                                    :leadSummary="leadSummary" :notes="notes"></LeadServicesAndNotes>
 
-            <LeadsDetailsFotter @submitConnection="submitConnection"></LeadsDetailsFotter>
+            <LeadsDetailsFotter v-if="leadSummary.status == 1 || leadSummary.status == null" @submitConnection="submitConnection"></LeadsDetailsFotter>
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
             <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" :title="fullName"></EscalationConfirmModal>
             <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag"

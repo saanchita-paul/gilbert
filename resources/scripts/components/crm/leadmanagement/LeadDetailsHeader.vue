@@ -19,7 +19,8 @@
 
 
             <div>
-                <v-btn outlined @click="escalate" :disabled="leadSummary.status == 3">Escalate</v-btn>
+                <v-btn outlined @click="escalate"  v-if="leadSummary.status != 3">Escalate</v-btn>
+                <v-btn v-if="leadSummary.status == 3"  outlined @click="escalate" :disabled="leadSummary.status == 3" class="border-warning">Escalated</v-btn>
                 <v-btn outlined @click="closeConnection">Close Application</v-btn>
             </div>
         </v-col>
@@ -85,11 +86,13 @@ name: "LeadDetailsHeader",
 
     },
     mounted() {
-         console.log('load_summary_he', this.leadSummary);
+         // console.log('load_summary_he', this.leadSummary);
     }
 }
 </script>
 
 <style scoped>
-
+.border-warning{
+    border-color: #fb8c00 !important;
+}
 </style>
