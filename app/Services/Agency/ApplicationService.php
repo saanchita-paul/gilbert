@@ -18,7 +18,7 @@ class ApplicationService
         $application['office_id'] = $agentProfile->office_id;
         $application['agency_id'] = $agentProfile->agency_id;
         $application['created_by'] = $agentProfile->id;
-//        $application['assigned_to'] = $agentProfile->id;
+        $application['status'] = ConnectionApplication::STATUS_UNASSIGNED;
 
         /** @var $newApplication ConnectionApplication */
         $newApplication = ConnectionApplication::create($application);
@@ -56,9 +56,24 @@ class ApplicationService
         $existingApplication->assigned_to = $application['agent_profile_id'];
         $existingApplication->status = ConnectionApplication::STATUS_SUBMITTED;
         $existingApplication->save();
+    }
+    
+    public function assignUser(string $agentId, int $applicationId)
+    {
+        ConnectionApplication::query()
+            ->where('id', $applicationId)
+            ->update(['assigned_to' => $agentId, 'status' => ConnectionApplication::STATUS_ASSIGNED]);
 
-        return $existingApplication;
+        return $this->findApplications($applicationId);
+    }
 
+
+    public function findApplications(int $id)
+    {
+        return ConnectionApplication::query()
+            ->where('id', $id)
+            ->with('connectionServices', 'identification')
+            ->first();
     }
 
     public function updateConnectionService(array $serviceList, $id)

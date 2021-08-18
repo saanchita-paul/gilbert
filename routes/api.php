@@ -63,6 +63,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/applications/{id}/notes', [ApplicationController::class, 'getConnectionNotes']);
     Route::post('/applications/{id}/notes', [ApplicationController::class, 'createConnectionNotes']);
 
+    Route::get('/applications-metrics', [ApplicationController::class, 'getMetrics']);
 });
 
 /**
