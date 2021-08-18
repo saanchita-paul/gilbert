@@ -28,8 +28,8 @@
                             <v-icon small :disabled="isServiceAllowed(item.services, 'water')" color="blue" >mdi-water</v-icon>
                         </template>
                         <template v-slot:item.assignee="{ item }">
-                            <AssigneeDropdown
-                                :lead="item" :users="users"
+                            <AssigneeDropdown v-if="currentUser && users"
+                                :lead="item" :users="users" :currentUser="currentUser.profile"
                                 @assignUser="assignUser" @updateSearch="updateUserSearch">
                             </AssigneeDropdown>
                         </template>
@@ -51,6 +51,7 @@ import CrmUserService from "@scripts/services/crm/CrmUserService";
 import AssignedtoPopUp from "@scripts/components/crm/leadmanagement/AssignedtoPopUp";
 import ReassignModal from "@scripts/components/crm/modals/ReassignModal";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import AuthService from "@scripts/services/AuthService";
 
 export default {
   name: "ApplicantTable",
@@ -81,6 +82,7 @@ export default {
             selectedLead: null,
             selectedUser: null,
             assignedText: null,
+            currentUser: null,
 
             userSearch: '',
             leadSearch: '',
@@ -188,6 +190,7 @@ export default {
     },
     mounted() {
       this.loadUserList();
+      this.currentUser = AuthService.getAuthUser();
     },
     watch: {
         options: {
