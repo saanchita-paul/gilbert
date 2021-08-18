@@ -69,7 +69,6 @@ export default {
         },
 
         async loadLeads () {
-            console.log('Type', this.activeLeadType);
             let data = await LeadApplicationService.loadUserLeads(this.sort_search_meta, this.activeLeadType);
             this.leads = data.applications;
             this.isLoaded = true;
@@ -98,6 +97,7 @@ export default {
         refreshDataTable(meta) {
             this.sort_search_meta = meta;
             this.loadLeads();
+            this.loadMetricTypes();
         }
     },
 

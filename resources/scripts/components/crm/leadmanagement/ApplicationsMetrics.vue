@@ -38,27 +38,27 @@ export default {
       updateCount() {
          let totalLeads = 0;
           this.leads.forEach(lead=>{
-              switch (lead.title)
+              switch (lead.type)
               {
-                  case 'My Applications':
-                      totalLeads += lead.lead_count;
-                      this.myAppCount = lead.lead_count;
+                  case 'my_application':
+                      totalLeads += lead.count;
+                      this.myAppCount = lead.count;
                       break;
-                  case 'Unassigned':
-                      totalLeads += lead.lead_count;
-                      this.unassignCount = lead.lead_count;
+                  case 'unassigned':
+                      totalLeads += lead.count;
+                      this.unassignCount = lead.count;
                       break;
-                  case 'Assigned':
-                      totalLeads += lead.lead_count;
-                      this.assignCount = lead.lead_count;
+                  case 'assigned':
+                      totalLeads += lead.count;
+                      this.assignCount = lead.count;
                       break;
-                  case 'Escalated':
-                      totalLeads += lead.lead_count;
-                      this.escalatedCount = lead.lead_count;
+                  case 'escalated':
+                      totalLeads += lead.count;
+                      this.escalatedCount = lead.count;
                       break;
-                  case 'Submitted':
-                      totalLeads += lead.lead_count;
-                      this.submittedCount = lead.lead_count;
+                  case 'submitted':
+                      totalLeads += lead.count;
+                      this.submittedCount = lead.count;
                       break;
                   default:
                       break
