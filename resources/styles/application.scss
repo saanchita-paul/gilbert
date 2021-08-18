@@ -54,6 +54,10 @@
 .cursor-pointer {
     cursor: pointer;
 }
+.avatarBorder{
+    border: 3px solid $primary_color !important;
+}
+
 .list-tile:hover {
     background: lightcyan;
 }

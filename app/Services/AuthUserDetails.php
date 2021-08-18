@@ -22,7 +22,8 @@ class AuthUserDetails
         $user = auth()->user();
 
         return [
-            'user' => array_merge($user->toArray(), $this->getUserRolesAndPermissions($user), $this->getOfficeDetails($user)),
+            'user' => array_merge($user->toArray(), $this->getUserRolesAndPermissions($user),
+                $this->getOfficeDetails($user), $this->getProfileDetails($user)),
             'bot_access_token' => $this->getBotAuthKey($user)
         ];
     }
@@ -75,5 +76,9 @@ class AuthUserDetails
         } else {
             return ['office' => null];
         }
+    }
+    public function getProfileDetails(User $user)
+    {
+        return ['profile' => $user->profile];
     }
 }

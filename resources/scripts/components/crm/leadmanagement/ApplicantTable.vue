@@ -51,6 +51,7 @@ import CrmUserService from "@scripts/services/crm/CrmUserService";
 import AssignedtoPopUp from "@scripts/components/crm/leadmanagement/AssignedtoPopUp";
 import ReassignModal from "@scripts/components/crm/modals/ReassignModal";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import AuthService from "@scripts/services/AuthService";
 
 export default {
   name: "ApplicantTable",
@@ -188,6 +189,9 @@ export default {
     },
     mounted() {
       this.loadUserList();
+
+        console.log('dfg', AuthService.getAuthUser());
+
     },
     watch: {
         options: {

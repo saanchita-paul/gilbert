@@ -11,7 +11,6 @@ export default {
     },
     getAuthUser: async () =>  {
         const res = (await axios.get('/api/user')).data;
-
         axios.defaults.headers.common['Bot-Access-Token'] = res.bot_access_token;
 
         return new User({
@@ -19,7 +18,8 @@ export default {
             name: res?.user.name,
             email: res?.user.email,
             permissions: res?.user.permissions,
-            roles: res?.user.roles
+            roles: res?.user.roles,
+            profile: res?.user.profile
         });
     },
 
