@@ -69,6 +69,7 @@ export default {
         },
 
         async loadLeads () {
+            console.log('Type', this.activeLeadType);
             let data = await LeadApplicationService.loadUserLeads(this.sort_search_meta);
             this.leads = data.applications;
             this.isLoaded = true;
