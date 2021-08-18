@@ -35,9 +35,25 @@
                             @input="changeInput"
                         ></v-text-field>
                     </div>
+                    <v-list-item @mouseover="selectedUser = currentUser.id" @mouseleave="selectedUser = -1"
+                                 class="cursor-pointer list-tile" @click="assignUser(currentUser)"
+                                 :disabled="isAlreadySelected(currentUser.id)">
+                        <v-avatar size="30">
+                            <img v-if="currentUser.profile_photo" v-bind:src="currentUser.profile_photo">
+                            <v-icon v-else large>mdi-account-circle</v-icon>
+                        </v-avatar>
+                        <small  class="pl-2">{{currentUser.first_name + ' ' + currentUser.last_name|formatName(currentUser.id, lead)}}</small>
+                        <v-spacer></v-spacer>
+                        <span v-show="selectedUser===currentUser.id"
+                              flat>
+                                <small>{{ getAssignText() }}</small>
+                                <v-icon small>mdi-menu-right</v-icon>
+                            </span>
+                    </v-list-item>
                     <v-list-item v-for="user in users" :key="user.id"
                                  @mouseover="selectedUser = user.id" @mouseleave="selectedUser = -1"
-                                 class="cursor-pointer list-tile" @click="assignUser(user)" :disabled="isAlreadySelected(user.id)">
+                                 class="cursor-pointer list-tile" @click="assignUser(user)"
+                                 :disabled="isAlreadySelected(user.id)" v-if="user.id !== currentUser.id">
                             <v-avatar size="30">
                                 <img v-if="user.profile_img" v-bind:src="user.profile_img">
                                 <v-icon v-else large>mdi-account-circle</v-icon>
@@ -63,6 +79,9 @@ export default {
           required: true
       },
         lead: {
+          required: true
+        },
+        currentUser: {
           required: true
         }
     },

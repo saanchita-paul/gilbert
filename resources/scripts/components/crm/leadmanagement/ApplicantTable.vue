@@ -28,8 +28,8 @@
                             <v-icon small :disabled="isServiceAllowed(item.services, 'water')" color="blue" >mdi-water</v-icon>
                         </template>
                         <template v-slot:item.assignee="{ item }">
-                            <AssigneeDropdown
-                                :lead="item" :users="users"
+                            <AssigneeDropdown v-if="currentUser && users"
+                                :lead="item" :users="users" :currentUser="currentUser.profile"
                                 @assignUser="assignUser" @updateSearch="updateUserSearch">
                             </AssigneeDropdown>
                         </template>
@@ -82,6 +82,7 @@ export default {
             selectedLead: null,
             selectedUser: null,
             assignedText: null,
+            currentUser: null,
 
             userSearch: '',
             leadSearch: '',
@@ -189,9 +190,7 @@ export default {
     },
     mounted() {
       this.loadUserList();
-
-        console.log('dfg', AuthService.getAuthUser());
-
+      this.currentUser = AuthService.getAuthUser();
     },
     watch: {
         options: {

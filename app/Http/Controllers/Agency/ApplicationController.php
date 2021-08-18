@@ -114,7 +114,7 @@ class ApplicationController extends Controller
      *
      * @return ApplicationResource|JsonResponse
      */
-    public function updateAssignee(Request $request, int $applicationId): ApplicationResource | JsonResponse
+    public function assignUser(Request $request, int $applicationId): ApplicationResource | JsonResponse
     {
         try {
             $service = new ApplicationService();
