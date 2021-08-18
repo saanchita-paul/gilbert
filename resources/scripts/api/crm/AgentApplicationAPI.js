@@ -77,7 +77,7 @@ export default {
     getApplicationSummary: async (id) => {
         try {
             // get application summary by application id
-            let response = (await axios.get(`/api/applications/summary/${id}`)).data;
+            let response = (await axios.get(`/api/applications/${id}`)).data;
             return ApplicationMapper.mapApplicationSummary(response.data);
         } catch (error) {
             return error.data;

@@ -37,7 +37,7 @@ class AgentProfileController
         }
     }
 
-    public function users(Request $request): AnonymousResourceCollection | JsonResponse
+    public function officeAgents(Request $request): AnonymousResourceCollection | JsonResponse
     {
         try {
             $user = Auth::user();

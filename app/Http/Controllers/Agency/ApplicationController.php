@@ -71,7 +71,7 @@ class ApplicationController extends Controller
      *
      * @return ApplicationResource|JsonResponse
      */
-    public function summary(Request $request, ConnectionApplication $application): ApplicationResource | JsonResponse
+    public function view(Request $request, ConnectionApplication $application): ApplicationResource | JsonResponse
     {
         try {
             $application->load(['connectionServices']);
@@ -127,7 +127,7 @@ class ApplicationController extends Controller
     }
 
 
-    public function createNewConnection(Request $request, $id)
+    public function submit(Request $request, $id)
     {
 
         try {
@@ -148,7 +148,7 @@ class ApplicationController extends Controller
      *
      * @return ApplicationResource|JsonResponse
      */
-    public function updateEscalate(Request $request, int $applicationId): ApplicationResource | JsonResponse
+    public function escalate(Request $request, int $applicationId): ApplicationResource | JsonResponse
     {
         try {
             $service = new ApplicationService();
