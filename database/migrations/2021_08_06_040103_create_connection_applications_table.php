@@ -35,6 +35,7 @@ class CreateConnectionApplicationsTable extends Migration
                 ->references('id')
                 ->on('agent_profiles')
                 ->onDelete('cascade');
+            $table->string('title', 45)->nullable();
             $table->string('first_name', 45)->nullable();
             $table->string('last_name', 45)->nullable();
             $table->string('email', 45)->nullable();

@@ -17,6 +17,7 @@ class ConnectionApplication extends Model
      * @var array
      */
     protected $fillable = [
+        'title',
         'office_id',
         'agency_id',
         'created_by',

@@ -145,13 +145,7 @@
                                             <span>Billing Address</span>
                                         </div>
                                         <div class="text-field">
-                                            <v-text-field
-                                                readonly
-                                                :value="data.billing_address"
-                                            outlined
-                                            dense
-                                            hide-details="auto"
-                                        ></v-text-field>
+                                            <span>Same as service address</span>
                                         </div>
                                     </div>
                                     <div class="crm-text-field">
@@ -423,70 +417,29 @@
 
                             <v-col cols="12">
                                 <p class="sub-title">Have you read and accepted the Terms and Conditions to the Lead? TBA by Tomy</p>
-                                    <v-radio-group
-                                        v-model="row"
-                                        row
-                                        >
-                                        <v-radio
-                                            label="Yes"
-                                            value="radio-1"
-                                        ></v-radio>
-                                        <v-radio
-                                            label="No"
-                                            value="radio-2"
-                                        ></v-radio>
-                                    </v-radio-group>
+                                   <v-checkbox v-model="is_temp_condition"></v-checkbox>
                             </v-col>
 
                             <v-col cols="12">
                                 <p class="sub-title">Consent to us verifying your identity information with the document issuer or official record holder? TBA by Tomy</p>
-                                    <v-radio-group
-                                        v-model="row"
-                                        row
-                                        >
-                                        <v-radio
-                                            label="Yes"
-                                            value="radio-1"
-                                        ></v-radio>
-                                        <v-radio
-                                            label="No"
-                                            value="radio-2"
-                                        ></v-radio>
-                                    </v-radio-group>
+
+                                <v-checkbox v-model="is_discount_condition">
+                                </v-checkbox>
                             </v-col>
 
                             <v-col cols="12">
                                 <p class="sub-title">Acknowledge we will perform a credit check before transferring you (we will let you know if there is a problem) TBA by Tomy</p>
-                                    <v-radio-group
-                                        v-model="row"
-                                        row
-                                        >
-                                        <v-radio
-                                            label="Yes"
-                                            value="radio-1"
-                                        ></v-radio>
-                                        <v-radio
-                                            label="No"
-                                            value="radio-2"
-                                        ></v-radio>
-                                    </v-radio-group>
+                                <v-checkbox v-model="is_credit_condition">
+                                </v-checkbox>
+
                             </v-col>
 
                             <v-col cols="12">
+
+
                                 <p class="sub-title">Acknowledge we will perform a credit check before transferring you (we will let you know if there is a problem) TBA by Tomy</p>
-                                    <v-radio-group
-                                        v-model="row"
-                                        row
-                                        >
-                                        <v-radio
-                                            label="Yes"
-                                            value="radio-1"
-                                        ></v-radio>
-                                        <v-radio
-                                            label="No"
-                                            value="radio-2"
-                                        ></v-radio>
-                                    </v-radio-group>
+                                <v-checkbox v-model="is_credit2_condition">
+                                </v-checkbox>
                             </v-col>
 
                         </v-row>
@@ -495,7 +448,7 @@
                     <v-footer  class="text-right">
                         <v-col class="text-right" cols="12">
                             <v-btn @click="backToEdit">Back to Edit</v-btn>
-                            <v-btn @click="finalConfirmation">Confirm and Submit</v-btn>
+                            <v-btn  color="primary" @click="finalConfirmation" :disabled="!allOk">Confirm and Submit</v-btn>
                         </v-col>
                     </v-footer>
                 </v-card>
@@ -511,6 +464,10 @@ export default {
     },
     data() {
       return {
+          is_temp_condition:null,
+          is_discount_condition:null,
+          is_credit_condition:null,
+          is_credit2_condition:null,
           row:null,
           titlesDD:[
               'Mrs','Mr'
@@ -605,6 +562,15 @@ export default {
                   value: 'yellow'
               }
           ],
+      }
+    },
+    computed:{
+      allOk()
+      {
+          return this.is_temp_condition  &&
+              this.is_discount_condition &&
+              this.is_credit_condition  &&
+              this.is_credit2_condition;
       }
     },
     methods: {

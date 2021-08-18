@@ -24,6 +24,7 @@ export default class ApplicationSummary {
     property_type = null;
     has_life_support = null;
     has_solar = null;
+    status = null;
     constructor(
         {
             id = null,
@@ -51,6 +52,7 @@ export default class ApplicationSummary {
             has_life_support = null,
             has_solar = null,
             property_type = null,
+            status = null,
         }
     ) {
 
@@ -83,6 +85,7 @@ export default class ApplicationSummary {
         this.has_life_support = has_life_support;
         this.has_solar = has_solar;
         this.property_type = property_type;
+        this.status = status;
 
     }
 }

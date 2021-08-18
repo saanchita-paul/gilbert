@@ -3,13 +3,11 @@
         <v-dialog
             v-model="dialog"
             persistent
-            max-width="800px"
+            max-width="70%"
         >
-            <v-card>
                 <div class="section-dialogs">
                   <ConfirmSubmission @backToEdit="backToEdit"  :data="data" @saveData="saveData"></ConfirmSubmission>
                 </div>
-            </v-card>
         </v-dialog>
     </v-row>
 </template>

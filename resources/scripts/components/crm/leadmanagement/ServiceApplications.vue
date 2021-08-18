@@ -86,7 +86,7 @@ export default {
         },
         async loadPlan(serviceProvider) {
             this.plans = await LeadApplicationService.loadPlan(serviceProvider);
-            console.log('plan', this.plans);
+            // console.log('plan', this.plans);
             this.plansFlag = true;
         },
 
