@@ -30,7 +30,7 @@
         <table width="100%" class="application-info">
             <tr>
                 <td class="font-weight-bold">Tenancy Type:</td>
-                <td>{{ application.tenancy_type }}</td>
+                <td>{{ application.tenancy_type == 1? 'Renter': 'Owner' }}</td>
             </tr>
             <tr>
                 <td class="font-weight-bold">Service Address:</td>

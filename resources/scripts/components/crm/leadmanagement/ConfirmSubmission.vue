@@ -388,27 +388,7 @@
                                     ></v-text-field>
                                     </div>
                                 </div>
-<!--                                <div class="crm-text-field">-->
-<!--                                    <div class="field-label">-->
-<!--                                        <span>Gas Supplier</span>-->
-<!--                                    </div>-->
-<!--                                    <div class="text-field">-->
-<!--                                        <v-select outlined dense hide-details="auto" >-->
-<!--                                        </v-select>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="crm-text-field">-->
-<!--                                    <div class="field-label">-->
-<!--                                        <span>Gas Plan</span>-->
-<!--                                    </div>-->
-<!--                                    <div class="text-field">-->
-<!--                                        <v-text-field-->
-<!--                                        outlined-->
-<!--                                        dense-->
-<!--                                        hide-details="auto"-->
-<!--                                    ></v-text-field>-->
-<!--                                    </div>-->
-<!--                                </div>-->
+
                             </v-col>
 
                             <v-col cols="12">

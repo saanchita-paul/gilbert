@@ -11,7 +11,7 @@
                                    @updateNote= "updateNote"
                                    :leadSummary="leadSummary" :notes="notes"></LeadServicesAndNotes>
 
-            <LeadsDetailsFotter v-if="leadSummary.status == 1 || leadSummary.status == null" @submitConnection="submitConnection"></LeadsDetailsFotter>
+            <LeadsDetailsFotter v-if="leadSummary.status != 1" @submitConnection="submitConnection"></LeadsDetailsFotter>
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
             <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" :title="fullName"></EscalationConfirmModal>
             <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag"
@@ -106,7 +106,7 @@ export default {
         },
 
         updateLead(lead) {
-            this.fullName = lead.person_details.first_name + lead.person_details.last_name;
+            this.fullName = lead.person_details.first_name +' '+ lead.person_details.last_name;
             this.lead = lead;
         },
         updateService(service) {
