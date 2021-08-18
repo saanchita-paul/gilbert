@@ -41,7 +41,6 @@ export default {
               switch (lead.type)
               {
                   case 'my_application':
-                      totalLeads += lead.count;
                       this.myAppCount = lead.count;
                       break;
                   case 'unassigned':
