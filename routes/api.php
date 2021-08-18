@@ -30,29 +30,39 @@ Route::get('/logout', [AuthController::class, 'logout']);
 /**
  * @Module AGENCY CRM
  */
-//Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
-Route::namespace('agency')->middleware([])->group(function () {
+Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
+//Route::namespace('agency')->middleware([])->group(function () {
+    /**
+     * Agency, Office Users
+     */
     Route::get('/agencies', [AgencyController::class, 'index']);
     Route::post('/agencies', [AgencyController::class, 'create']);
     Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
     Route::post('/agencies/{agencyId}/offices', [OfficeController::class, 'createAgencyOffice']);
+
     Route::post('/independent-agency', [AgencyController::class, 'createIndependentAgency']);
+
     Route::post('/offices', [OfficeController::class, 'createOffice']);
     Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index']);
     Route::post('/offices/{officeId}/users', [AgentProfileController::class, 'createAgent']);
 
+    Route::get('/office-agents', [AgentProfileController::class, 'officeAgents']);
+
+    /**
+     * Applications
+     */
     Route::post('/applications', [ApplicationController::class, 'create']);
     Route::get('/applications', [ApplicationController::class, 'index']);
-    Route::get('/applications/{id}', [ApplicationController::class, 'createNewConnection']);
-    Route::get('/applications/summary/{application}', [ApplicationController::class, 'summary']);
+    Route::get('/applications/{application}', [ApplicationController::class, 'view']);
+
+    Route::post('/applications/{id}/submit', [ApplicationController::class, 'submit']);
+    Route::post('/applications/{applicationId}/assignee', [ApplicationController::class, 'assignUser']);
+    Route::post('/applications/{applicationId}/escalate', [ApplicationController::class, 'escalate']);
+
+    //todo: make a  separate controller for notes
     Route::get('/applications/{id}/notes', [ApplicationController::class, 'getConnectionNotes']);
     Route::post('/applications/{id}/notes', [ApplicationController::class, 'createConnectionNotes']);
-    Route::post('/applications/{applicationId}/assignee', [ApplicationController::class, 'updateAssignee']);
-    Route::post('/applications/{id}/update', [ApplicationController::class, 'createNewConnection']);
 
-    Route::post('/applications/{applicationId}/escalate', [ApplicationController::class, 'updateEscalate']);
-    Route::get('/application/summary/{application}', [ApplicationController::class, 'summary']);
-    Route::get('/application/users', [AgentProfileController::class, 'users']);
 });
 
 /**
