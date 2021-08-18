@@ -201,10 +201,10 @@ export default {
         }
     },
 
-    getUserLeadMetrics() {
+   async getUserLeadMetrics() {
         try {
-            // const data = await axios.get('/');
-            return AppMetricsMapper.mapUserMetLeads(userData);
+            const data = await axios.get('/api/applications-metrics');
+            return AppMetricsMapper.mapUserMetLeads(data.data.data);
 
         } catch (error) {
             return error.data;
