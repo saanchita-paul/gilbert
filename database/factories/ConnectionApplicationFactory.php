@@ -43,6 +43,7 @@ class ConnectionApplicationFactory extends Factory
             'additional_instruction' => $this->faker->sentence(10),
             'address_text' => $this->faker->address(),
             'is_email_billing' => rand(0, 1),
+            'status' => ConnectionApplication::STATUS_UNASSIGNED
         ];
     }
 }

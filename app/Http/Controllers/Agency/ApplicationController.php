@@ -12,6 +12,7 @@ use App\Models\ConnectionApplication;
 use App\Models\User;
 use App\Services\Agency\ApplicationNoteService;
 use App\Services\Agency\ApplicationService;
+use App\Services\Agency\ApplicationsMetricsService;
 use App\Services\Agency\SearchConnectionApplication;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,14 +23,14 @@ class ApplicationController extends Controller
 {
 
     /**
-     * Getting Application list
+     * Getting Applications list
      *
      * @param Request $request
      *
      * @return AnonymousResourceCollection|JsonResponse
      */
 
-    public function index(Request $request): AnonymousResourceCollection | JsonResponse
+    public function index(Request $request): AnonymousResourceCollection|JsonResponse
     {
         /** @var User $user */
         $user = auth()->user();
@@ -37,7 +38,7 @@ class ApplicationController extends Controller
             $service = new SearchConnectionApplication($request->toArray());
             return ApplicationResource::collection($service->get($user));
 
-        } catch ( \Exception $exception) {
+        } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
@@ -51,7 +52,7 @@ class ApplicationController extends Controller
      */
     public function create(ApplicationRequest $request)
     {
-        try{
+        try {
             /** @var  User $user */
             $user = Auth::user();
 
@@ -59,7 +60,7 @@ class ApplicationController extends Controller
             $inputData = $request->toArray();
             return ApplicationResource::make($service->createApplication($inputData, $user));
 
-        } catch ( \Exception $exception) {
+        } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
@@ -71,13 +72,31 @@ class ApplicationController extends Controller
      *
      * @return ApplicationResource|JsonResponse
      */
-    public function view(Request $request, ConnectionApplication $application): ApplicationResource | JsonResponse
+    public function view(Request $request, ConnectionApplication $application): ApplicationResource|JsonResponse
     {
         try {
             $application->load(['connectionServices']);
             return new ApplicationResource($application);
 
-        } catch ( \Exception $exception) {
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    /**
+     * Getting Application Metrics
+     *
+     * @return JsonResponse
+     */
+    public function getMetrics(): JsonResponse
+    {
+        try {
+            /** @var User $user */
+            $user = auth()->user();
+            $service = new ApplicationsMetricsService($user->profile_id, $user->profile?->office_id);
+            return response()->json(['data' => $service->toArray()]);
+
+        } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
@@ -92,36 +111,39 @@ class ApplicationController extends Controller
         try {
             $service = new ApplicationService();
             return ApplicationNoteResourse::collection($service->getNotes($application));
-        } catch ( \Exception $exception) {
+        } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
 
-    public function createConnectionNotes(Request $request, string $id):ApplicationNoteResourse|JsonResponse
+    public function createConnectionNotes(Request $request, string $id): ApplicationNoteResourse|JsonResponse
     {
         try {
             $service = new ApplicationNoteService(Auth::user());
             return ApplicationNoteResourse::make($service->createNotes($request->toArray(), $id));
-        } catch ( \Exception $exception) {
+        } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
 
-     /** Updating assignee of an application
-     *
-     * @param Request $request
-     * @param int $applicationId
-     *
-     * @return ApplicationResource|JsonResponse
-     */
-    public function updateAssignee(Request $request, int $applicationId): ApplicationResource | JsonResponse
+     /**
+      * Assigning user to an Application
+      *
+      * @param Request $request
+      * @param int $applicationId
+      *
+      * @return ApplicationResource|JsonResponse
+      */
+    public function assignUser(Request $request, int $applicationId): ApplicationResource|JsonResponse
     {
         try {
             $service = new ApplicationService();
-            $inputData = $request->toArray();
-            return ApplicationResource::make($service->updateApplication($inputData, $applicationId));
+            return ApplicationResource::make($service->assignUser(
+                $request->get('agent_profile_id'),
+                $applicationId
+            ));
 
-        } catch ( \Exception $exception) {
+        } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
@@ -148,7 +170,7 @@ class ApplicationController extends Controller
      *
      * @return ApplicationResource|JsonResponse
      */
-    public function escalate(Request $request, int $applicationId): ApplicationResource | JsonResponse
+    public function escalate(Request $request, int $applicationId): ApplicationResource|JsonResponse
     {
         try {
             $service = new ApplicationService();
@@ -156,7 +178,7 @@ class ApplicationController extends Controller
             $user = Auth::user();
             return ApplicationResource::make($service->updateEscalateApplication($inputData, $applicationId, $user));
 
-        } catch ( \Exception $exception) {
+        } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }

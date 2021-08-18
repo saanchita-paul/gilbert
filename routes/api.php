@@ -56,13 +56,14 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/applications/{application}', [ApplicationController::class, 'view']);
 
     Route::post('/applications/{id}/submit', [ApplicationController::class, 'submit']);
-    Route::post('/applications/{applicationId}/assignee', [ApplicationController::class, 'assignUser']);
+    Route::post('/applications/{applicationId}/assign', [ApplicationController::class, 'assignUser']);
     Route::post('/applications/{applicationId}/escalate', [ApplicationController::class, 'escalate']);
 
     //todo: make a  separate controller for notes
     Route::get('/applications/{id}/notes', [ApplicationController::class, 'getConnectionNotes']);
     Route::post('/applications/{id}/notes', [ApplicationController::class, 'createConnectionNotes']);
 
+    Route::get('/applications-metrics', [ApplicationController::class, 'getMetrics']);
 });
 
 /**
