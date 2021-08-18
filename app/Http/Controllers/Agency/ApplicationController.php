@@ -9,6 +9,7 @@ use App\Http\Resources\Agency\ApplicationNoteResourse;
 use App\Http\Resources\Agency\ApplicationResource;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
+use App\Models\Identification;
 use App\Models\User;
 use App\Services\Agency\ApplicationNoteService;
 use App\Services\Agency\ApplicationService;

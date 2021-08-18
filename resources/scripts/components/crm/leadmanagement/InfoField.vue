@@ -210,13 +210,14 @@
                     <span>Billing Address</span>
                 </div>
                 <div class="text-field">
-                    <ValidationProvider name="Billing Address" rules="required"  v-slot="{ errors }">
-                        <v-text-field v-model="property_details.billing_address" @input="updateLeads"
-                        outlined
-                        dense
-                        hide-details="auto" :error-messages=" errors[0]"
-                    ></v-text-field>
-                    </ValidationProvider>
+                    <span>Same as service address</span>
+<!--                    <ValidationProvider name="Billing Address" rules="required"  v-slot="{ errors }">-->
+<!--                        <v-text-field v-model="property_details.billing_address" @input="updateLeads"-->
+<!--                        outlined-->
+<!--                        dense-->
+<!--                        hide-details="auto" :error-messages=" errors[0]"-->
+<!--                    ></v-text-field>-->
+<!--                    </ValidationProvider>-->
                 </div>
             </div>
             <div class="crm-text-field">
@@ -422,7 +423,7 @@
                     </ValidationProvider>
                 </div>
             </div>
-            <p class="sub-title mt-5">Agent’s Additional Instructions <v-btn text  @click="readMore">read more ...</v-btn></p>
+            <p class="sub-title mt-5">Agent’s Additional Instructions <v-btn text right class="primary--text" @click="readMore">read more ...</v-btn></p>
             <ValidationProvider name="DOB" rules="required"  v-slot="{ errors }">
                 <v-textarea
                     v-model="person_details.additional_instruction"
@@ -559,7 +560,7 @@ export default {
                 solor_power: '',
                 nmi: '',
                 mirn: '',
-                additional_instruction: '',
+
             },
             person_details: {
                 title: '',
@@ -570,6 +571,7 @@ export default {
                 email: '',
                 is_email_billing: '',
                 tenancy_type: '',
+                additional_instruction: '',
 
             },
             showMovingDate: false,
@@ -593,7 +595,7 @@ export default {
 
         synFormData () {
 
-            console.log(this.lead);
+            // console.log(this.lead);
 
             this.person_details.title = this.lead.title;
             this.person_details.first_name = this.lead.first_name;
@@ -607,7 +609,7 @@ export default {
 
             this.property_details.moving_date = this.lead.moving_date;
             this.property_details.address_text = this.lead.address_text;
-            this.property_details.billing_address = this.lead.billing_address;
+            // this.property_details.billing_address = this.lead.billing_address;
             this.property_details.property_type = this.lead.property_type;
             this.property_details.has_life_support = this.lead.has_life_support;
             this.property_details.has_solar = this.lead.has_solar;
@@ -627,15 +629,15 @@ export default {
     watch: {
         indentification()
         {
-            console.log('I am changed')
+            // console.log('I am changed')
         },
 
         property_details() {
-            console.log('I am changed')
+            // console.log('I am changed')
         },
 
         person_details() {
-            console.log('I am changed')
+            // console.log('I am changed')
         }
 
     },
