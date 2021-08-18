@@ -11,6 +11,7 @@ use App\Http\Resources\Agency\IndependentAgencyResource;
 use App\Services\Agency\AgencyService;
 use App\Services\Agency\CreateAgentAndUser;
 use App\Services\Agency\CreateOfficeAndAgency;
+use App\Services\Agency\IndepentAgencyService;
 use App\Services\Agency\SearchAgencyService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -54,37 +55,11 @@ class AgencyController extends Controller
      *
      * @return IndependentAgencyResource|JsonResponse
      */
-    public function createIndependentAgency(CreateIndependentAgencyRequest $request): IndependentAgencyResource | JsonResponse
+    public function createIndependentAgency(CreateIndependentAgencyRequest $request)
     {
         try {
-            $inputData = $request->toArray();
-            $officeData = $inputData['office'];
-            $agencyData = $inputData['agency'];
-
-            $agencySvc = new AgencyService();
-            $agency = $agencySvc->createAgency($agencyData);
-
-            $officeData['agency_id'] = $agency->id;
-            $officeCommissionsData = $inputData['office_commissions'];
-            $officeAllocatorData = $inputData['agent'];
-            $officeAllocatorData['agency_id'] = $agency->id;
-
-            // Create service instances.
-            $ofcAndAgencySvc = new CreateOfficeAndAgency();
-            $agentAndUserSvc = new CreateAgentAndUser();
-
-            // Create office.
-            $office = $ofcAndAgencySvc->createOffice($officeData);
-
-            // Create office allocator (agent) profile.
-            $officeAllocatorData['office_id'] = $office->id;
-            $agent = $agentAndUserSvc->createAgent($officeAllocatorData);
-
-            // Create office commissions.
-            $commissions = $ofcAndAgencySvc->createCommistions(
-                $officeCommissionsData, $office->id, $officeData['agency_id']);
-
-            return IndependentAgencyResource::make($agency);
+            $independentAgencyService = new IndepentAgencyService();
+            return IndependentAgencyResource::make($independentAgencyService->create($request->toArray()));
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }

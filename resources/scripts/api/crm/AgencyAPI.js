@@ -53,5 +53,19 @@ export default {
         } catch (error) {
             return error.data;
         }
+    },
+
+    saveIndependent: async (agency) => {
+        try {
+            console.log('agency', agency);
+            agency = AgencyMqpper.mapAgencytoServer(agency);
+            console.log('agency', agency);
+            const data = await axios.post('/api/independent-agency',{...agency});
+            return AgencyMqpper.mapAgency( data.data.data);
+
+        } catch (error) {
+            return error.data;
+        }
     }
+
 }

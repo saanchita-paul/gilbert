@@ -1,11 +1,11 @@
 <template>
-    <v-container>
+    <v-container  v-if="planNoteFlag">
             <ValidationObserver ref="submit_lead">
-                <LeadUserDetails v-if="planNoteFlag" @eacalate="eacalate"
+                <LeadUserDetails @eacalate="eacalate"
                                  @updateLead="updateLead"
                                  @readMore="readMore" :leadSummary="leadSummary"></LeadUserDetails>
             </ValidationObserver>
-                <LeadServicesAndNotes  v-if="planNoteFlag"
+                <LeadServicesAndNotes
                                    @updateService="updateService"
                                    @updatePlan="updatePlan"
                                    @updateNote= "updateNote"

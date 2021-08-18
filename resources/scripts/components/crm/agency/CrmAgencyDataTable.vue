@@ -167,7 +167,14 @@ name: "CrmAgencyDataTable",
         },
 
        async saveAgencyData() {
-            this.newAgency = await AgencyService.saveAgency(this.agency);
+            if(this.agency.type)
+            {
+                this.newAgency = await AgencyService.saveAgency(this.agency);
+            } else {
+                this.newAgency = await AgencyService.saveIndependentAgency(this.agency);
+            }
+
+
         },
 
         openAgency(agency) {

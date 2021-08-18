@@ -50,7 +50,7 @@ export default {
             type: agency.type
         };
 
-        if(agency.type === 'Independent Agency') {
+        if(agency.type === 0) {
             let ofc = agency.office;
             let agPro = agency.allocator;
             let commission = agency.profile;
@@ -61,7 +61,6 @@ export default {
                 city: ofc.city,
                 state: ofc.state,
                 postcode: ofc.postcode,
-                country: ofc,
                 abn: ofc.abn,
                 phone: ofc.contact,
                 email: ofc.email,
@@ -76,28 +75,28 @@ export default {
             };
             office_commissions = [
                 {
-                    type: COMMISSION.GAS,
+                    type: COMMISSION.GAS.type,
                     rate: commission.gas,
                 },
                 {
-                    type: COMMISSION.INTERNET,
+                    type: COMMISSION.INTERNET.type,
                     rate: commission.internet,
                 },
                 {
-                    type: COMMISSION.POWER,
+                    type: COMMISSION.POWER.type,
                     rate: commission.power,
                 },
                 {
-                    type: COMMISSION.WATER,
+                    type: COMMISSION.WATER.type,
                     rate: commission.water,
                 },
             ];
         }
 
-        if(newAgency.type  === 'Independent Agency')
+        if(newAgency.type  === 0)
         {
             return {
-                ...newAgency,
+                agency:newAgency,
                 office: office,
                 agent: agent,
                 office_commissions: office_commissions,

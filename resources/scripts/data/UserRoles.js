@@ -34,6 +34,11 @@ export default {
 
             text: 'HOOD ADMIN',
             value: 'hood_admin'
+        },
+        {
+
+            text: 'AGENCY OFFICE ALLOCATOR',
+            value: 'agency_office_allocator'
         }
     ]
 }
