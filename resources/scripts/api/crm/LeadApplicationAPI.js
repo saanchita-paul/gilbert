@@ -223,7 +223,7 @@ export default {
 
   async getUserLead (id) {
         try {
-            const data = await axios.get('/api/applications/summary/' + id);
+            const data = await axios.get('/api/applications/' + id);
             const response = ApplicationMapper.mapApplicationSummary(data.data.data);
             return response;
 
@@ -303,7 +303,7 @@ export default {
     },
     async assignUser(leadId, agentProfileId) {
         try {
-            const data = await axios.post('/api/applications/'+leadId+'/assignee',{agent_profile_id: agentProfileId});
+            const data = await axios.post('/api/applications/'+leadId+'/assign',{agent_profile_id: agentProfileId});
             return ApplicationMapper.mapNote(data);
 
         } catch (error) {

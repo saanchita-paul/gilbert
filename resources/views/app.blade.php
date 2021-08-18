@@ -11,7 +11,16 @@
 
 </head>
 <body>
-<div id="app"></div>
+<div id="app"></div><script>
+    window.Userback = window.Userback || {};
+    Userback.access_token = '31538|47548|prFQbybNR6KbB12DXYGaFYQMb';
+    (function(d) {
+        var s = d.createElement('script');s.async = true;
+        s.src = 'https://static.userback.io/widget/v1.js';
+        (d.head || d.body).appendChild(s);
+    })(document);
+</script>
+
 <script src="{{url('assets/js/mapdata.js')}}"></script>
 <script src="{{url('assets/js/australiamap.js')}}"></script>
 <script src="{{mix('js/app.js')}}"></script>
