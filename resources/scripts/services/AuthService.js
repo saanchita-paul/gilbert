@@ -22,7 +22,7 @@ export const login = async form => {
         console.log('LOGIN SUCCESS');
 
         const user = await AuthAPI.getAuthUser();
-        if(user.roles.includes('agency_agent')) {
+        if(user.roles.includes('agency_office_real_estate_agent')) {
             await router.push({name: 'agent.application.dashboard'})
         } else {
             return true;

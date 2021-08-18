@@ -1,10 +1,10 @@
 <template>
     <div class="d-flex justify-start">
-        <single-lead-type title="My Applications" :count="myAppCount" :active="activeLeadType" @changeLeadType="changeLeadType" subtext="Assigned to me"> </single-lead-type>
-        <single-lead-type title="Unassigned" :count="unassignCount"  :active="activeLeadType" @changeLeadType="changeLeadType" subtext="Waiting on queue"> </single-lead-type>
-        <single-lead-type title="Assigned" :count="assignCount" :active="activeLeadType" @changeLeadType="changeLeadType" subtext="Being attended"> </single-lead-type>
-        <single-lead-type title="Escalated" :count="escalatedCount" :active="activeLeadType" @changeLeadType="changeLeadType" subtext="Needs attention"> </single-lead-type>
-        <single-lead-type title="Submitted" :count="submittedCount"  :active="activeLeadType" @changeLeadType="changeLeadType" subtext="For connection"> </single-lead-type>
+        <single-lead-type title="My Applications" type="my_applications" :count="myAppCount" :active="activeLeadType" @changeLeadType="changeLeadType" subtext="Assigned to me"> </single-lead-type>
+        <single-lead-type title="Unassigned" type="unassigned" :count="unassignCount"  :active="activeLeadType" @changeLeadType="changeLeadType" subtext="Waiting on queue"> </single-lead-type>
+        <single-lead-type title="Assigned" type="assigned" :count="assignCount" :active="activeLeadType" @changeLeadType="changeLeadType" subtext="Being attended"> </single-lead-type>
+        <single-lead-type title="Escalated" type="escalated" :count="escalatedCount" :active="activeLeadType" @changeLeadType="changeLeadType" subtext="Needs attention"> </single-lead-type>
+        <single-lead-type title="Submitted" type="submitted" :count="submittedCount"  :active="activeLeadType" @changeLeadType="changeLeadType" subtext="For connection"> </single-lead-type>
 
     </div>
 </template>
@@ -66,10 +66,10 @@ export default {
           });
           this.$emit('updateTotal', totalLeads);
       },
-        changeLeadType(title) {
-            this.activeLead = title;
+        changeLeadType(type) {
+            this.activeLead = type;
             let query =omit({...this.$route.query}, 'type');
-            this.$router.push({query:{type:title, ...query}});
+            this.$router.push({query:{type:type, ...query}});
         }
     },
 

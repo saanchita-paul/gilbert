@@ -1,5 +1,5 @@
 <template>
-    <div class="applications-badge" v-bind:class="{active:title == active }" @click="changeLeadType(title)">
+    <div class="applications-badge" v-bind:class="{active:type == active }" @click="changeLeadType(type)">
         <p class="title">{{title}}</p>
         <p class="number">{{count}}</p>
         <p class="text">{{subtext}}</p>
@@ -24,12 +24,16 @@ name: "SingleLeadType",
 
         active: {
             required:true
+        },
+
+        type: {
+            required:true
         }
 
     },
     methods: {
-        changeLeadType(title) {
-            this.$emit('changeLeadType',title);
+        changeLeadType(type) {
+            this.$emit('changeLeadType',type);
         }
     }
 }

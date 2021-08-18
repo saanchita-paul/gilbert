@@ -54,6 +54,7 @@ class ConnectionApplication extends Model
     const STATUS_ASSIGNED = 2;
     const STATUS_ESCALATED = 3;
     const STATUS_SUBMITTED = 4;
+    const MY_APPLICATIONS = 'my_applications';
 
     const STATUS_MAPPING = [
         'unassigned' => self::STATUS_UNASSIGNED,

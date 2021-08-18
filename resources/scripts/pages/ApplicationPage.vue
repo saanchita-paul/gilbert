@@ -42,7 +42,7 @@ export default {
     data() {
         return {
             leadTypes:[],
-            activeLeadType: 'My Applications',
+            activeLeadType: 'my_applications',
             leadTypesFlag: false,
             total_leads: 0,
 
@@ -70,7 +70,7 @@ export default {
 
         async loadLeads () {
             console.log('Type', this.activeLeadType);
-            let data = await LeadApplicationService.loadUserLeads(this.sort_search_meta);
+            let data = await LeadApplicationService.loadUserLeads(this.sort_search_meta, this.activeLeadType);
             this.leads = data.applications;
             this.isLoaded = true;
             this.page = data.pagination.current_page;

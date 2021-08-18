@@ -54,7 +54,7 @@ class ApplicationService
     public function updateApplication(array $application, int $applicationId) {
         $existingApplication = ConnectionApplication::find($applicationId);
         $existingApplication->assigned_to = $application['agent_profile_id'];
-        $existingApplication->status = ConnectionApplication::STATUS_ASSIGNED;
+        $existingApplication->status = ConnectionApplication::STATUS_SUBMITTED;
         $existingApplication->save();
 
         return $existingApplication;

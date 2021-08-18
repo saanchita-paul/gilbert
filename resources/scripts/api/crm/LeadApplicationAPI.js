@@ -211,9 +211,9 @@ export default {
         }
     },
 
-    async getUserLeads(sort_search_meta) {
+    async getUserLeads(sort_search_meta, active_lead_type) {
         try {
-            const data = await axios.get('/api/applications',{params:{...sort_search_meta}});
+            const data = await axios.get('/api/applications',{params:{...sort_search_meta, active_lead_type}});
             return ApplicationMapper.mapApplicationList(data.data);
 
         } catch (error) {
