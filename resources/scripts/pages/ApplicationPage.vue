@@ -61,6 +61,7 @@ export default {
 
     methods: {
         async loadMetricTypes() {
+            this.leadTypesFlag = false;
             this.leadTypes = await LeadApplicationService.loadUserLeadMetrics();
             if(this.$route.query?.type) {
                 this.activeLeadType = this.$route.query?.type
