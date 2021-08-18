@@ -51,13 +51,14 @@ class ApplicationService
         }
         return ApplicationNote::create($note);
     }
+    
     public function updateApplication(array $application, int $applicationId) {
         $existingApplication = ConnectionApplication::find($applicationId);
         $existingApplication->assigned_to = $application['agent_profile_id'];
         $existingApplication->status = ConnectionApplication::STATUS_SUBMITTED;
         $existingApplication->save();
     }
-    
+
     public function assignUser(string $agentId, int $applicationId)
     {
         ConnectionApplication::query()
