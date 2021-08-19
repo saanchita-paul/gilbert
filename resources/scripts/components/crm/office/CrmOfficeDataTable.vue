@@ -137,6 +137,13 @@ name: "CrmOfficeDataTable",
                 sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: '',
             }
             const data = await OfficeService.loadOfficeData(meta, this.$route.params.id);
+
+            if(data.offices.length > 0 )
+            {
+                if (data.offices[0].agency.type == 0) {
+                    this.$router.push({name: 'real.state.agency.users', params: { id : this.id, officeId: data.offices[0].id}});
+                }
+            }
             this.officesList = data?.offices;
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
@@ -158,6 +165,7 @@ name: "CrmOfficeDataTable",
 
     mounted() {
         this.loadOffices();
+
     },
     watch: {
         options: {
