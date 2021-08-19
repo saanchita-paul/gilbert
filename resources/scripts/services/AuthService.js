@@ -30,12 +30,12 @@ export const login = async form => {
             return true;
         }
         if(user.roles.includes('hood_agent')) {
-            await router.push({name: 'real.state.agency.home'})
+            return await router.push({name: 'real.state.agency'})
         }
         if(user.roles.includes('agency_office_real_estate_agent')) {
-            await router.push({name: 'agent.application.dashboard'})
+            return await router.push({name: 'agent.application.dashboard'})
         } else {
-            await router.push({name: 'applications'})
+            return await router.push({name: 'applications'})
         }
         // return true;
 
