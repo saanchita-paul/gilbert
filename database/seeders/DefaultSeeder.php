@@ -21,8 +21,8 @@ class DefaultSeeder extends Seeder
     {
         $this->deleteAdminIfExist();
 
-        $this->createAdmin('admin@hood.ai', 'Hood', 'Admin' );
-        $this->createAdmin('nick@hood-agent.com', 'Hood', 'Agent' );
+        $this->createAdmin('admin@hood.ai', 'Hood', 'Admin', RolePermission::ROLE_HOOD_ADMIN);
+        $this->createAdmin('nick@hood-agent.com', 'Hood', 'Agent', RolePermission::ROLE_HOOD_AGENT);
     }
 
     /**
@@ -37,7 +37,7 @@ class DefaultSeeder extends Seeder
     /**
      *
      */
-    private function createAdmin($email, $fName, $lName)
+    private function createAdmin($email, $fName, $lName, $role)
     {
         $profile = new HoodProfile();
         $profile->first_name = $fName;
@@ -50,6 +50,6 @@ class DefaultSeeder extends Seeder
         $user->profile_type = User::PROFILE_TYPE_HOOD;
         $user->profile_id = $profile->id;
         $user->save();
-        $user->assignRole(RolePermission::ROLE_HOOD_ADMIN);
+        $user->assignRole($role);
     }
 }

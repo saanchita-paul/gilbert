@@ -99,7 +99,7 @@ export default {
         return {
             user: null,
             drawer: null,
-            routes: ApplicationService.getMainNavigationRoutes()
+            all_routes: ApplicationService.getMainNavigationRoutes()
         }
     },
     mounted() {
@@ -111,6 +111,15 @@ export default {
             await AuthService.logout();
         },
     },
+    computed: {
+        routes() {
+            return this.all_routes.filter(route => {
+                if(this.user.id){
+                    return this.user.permissions.includes(route.permissions)
+                }
+            })
+        }
+    }
 }
 </script>
 
