@@ -22,20 +22,10 @@ export const login = async form => {
         console.log('LOGIN SUCCESS');
 
         const user = await AuthAPI.getAuthUser();
-
-        /**
-         * todo: refactored this dirty code, use constants
-         */
-        if(user.roles.includes('hood_admin')) {
-            return true;
-        }
-        if(user.roles.includes('hood_agent')) {
-            return await router.push({name: 'real.state.agency'})
-        }
         if(user.roles.includes('agency_office_real_estate_agent')) {
-            return await router.push({name: 'agent.application.dashboard'})
+            await router.push({name: 'agent.application.dashboard'})
         } else {
-            return await router.push({name: 'applications'})
+            return true;
         }
         // return true;
 
