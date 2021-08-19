@@ -107,12 +107,12 @@ export default {
             if (!(await AuthService.login(this.form))) {
                 this.isLoginFailed = true;
             } else {
-                await this.$router.push({name: 'dashboard.utility'})
+                console.log('Successfully Logged In');
+                //await this.$router.push({name: 'dashboard.utility'})
             }
             this.loginLoading = false;
         },
         async onSubmit() {
-            console.log("YO");
             if (await this.$refs.observer.validate()) {
                 await this.onLogin()
             }
