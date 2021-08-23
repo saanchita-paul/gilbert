@@ -1,6 +1,16 @@
 <template>
     <div>
         <v-row class="mt-5">
+<!--            <v-card>-->
+                <v-col cols="8" class="search-bg">
+                    <p>Sunbury Office</p>
+                </v-col>
+                <v-col cols="4" class="text-right">
+                    <v-btn color="primary" @click="viewOfficeProfile">View Office Profile</v-btn>
+                </v-col>
+<!--            </v-card>-->
+        </v-row>
+        <v-row class="mt-5">
             <v-col cols="8" class="search-bg">
                 <Search @updateSearch="updateSearch"></Search>
             </v-col>
@@ -138,6 +148,10 @@ name: "CrmUserDatatable",
             this.search = search;
             this.loadUserData();
         },
+        viewOfficeProfile() {
+            this.$router.push(
+                {name:'real.state.office.profile',params: {'id':1,'officeId':1}});
+        }
     },
     mounted() {
         this.loadUserData();

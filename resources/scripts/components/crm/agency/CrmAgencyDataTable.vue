@@ -23,6 +23,16 @@
                         class="elevation-1 row-pointer"
                         @click:row="openAgency"
                     >
+                        <template v-slot:item.action="{ item }">
+                            <v-btn>
+                                <v-icon
+                                    small
+                                    @click.stop="editItem(item)"
+                                >
+                                    mdi-pencil
+                                </v-icon>
+                            </v-btn>
+                        </template>
                     </v-data-table>
                 </v-col>
             </v-row>
@@ -185,6 +195,10 @@ name: "CrmAgencyDataTable",
             this.search = search;
             this.loadAgencyData();
         },
+
+        editItem(item) {
+
+        }
     },
 
     mounted() {

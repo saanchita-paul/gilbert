@@ -7,6 +7,52 @@ function mapOffice(office) {
     return new Office({...office});
 }
 
+function mapOfficeDetails(office){
+
+    return {
+        ...office
+    }
+
+    }
+
+
+function mapCommissions (commissions){
+    return commissions.map(cmtn => {
+        const commission = {
+            id: cmtn.id,
+            rate: cmtn.rate,
+        };
+
+        switch (cmtn.type) {
+            case 1:
+                commission.text = COMMISSION.GAS.text;
+                break;
+            case 2:
+                commission.text = COMMISSION.INTERNET.text;
+                break;
+            case 3:
+                commission.text = COMMISSION.POWER.text;
+                break;
+            case 4:
+                commission.text = COMMISSION.WATER.text;
+                break;
+            default:
+                break;
+        }
+        return commission;
+    });
+}
+
+   function mapAgent (agent) {
+
+    return {
+        ...agent,
+        full_name: agent.first_name + ' ' + agent.last_name,
+        email: agent.user.email
+    }
+}
+
+
 export default {
     mapOfficeList: (officeList)=> {
 
@@ -86,6 +132,20 @@ export default {
             if(meta.sort_by === 'user_account') meta.sort_by = 'agents_count';
             if(meta.sort_by === 'total_leads') meta.sort_by = 'applications_count';
             return meta;
+    },
+
+
+
+
+    mapOfficeCommissionAgent: (data)=> {
+        let office = mapOfficeDetails(data);
+        let commissions = mapCommissions(data.commissions);
+        let agent = mapAgent(data.agent);
+        return {
+            office: office,
+            commissions: commissions,
+            agent: agent,
+        }
     }
 
 }

@@ -23,16 +23,23 @@ class UpdateOfficeService
         $office = Office::findOrFail($this->id);
         $office->update($data['office']);
         $office = $office->refresh()->toArray();
-        $office['commissions'] = $this->updateCommissions($data['commissions']);
+        $office['commissions'] = $this->updateCommissions($data['commissions'], $office);
         $office['agent'] = $this->updateAgent($data['agent']);
         return $office;
     }
 
-    public function updateCommissions($commistions)
+    public function updateCommissions($commistions, $office)
     {
         foreach ($commistions as $commission) {
-            $officeCmtn = OfficeCommission::findOrFail($commission['id']);
-            $officeCmtn->update($commission);
+            if(isset($commission['id']))  {
+                $officeCmtn = OfficeCommission::findOrFail($commission['id']);
+                $officeCmtn->update($commission);
+            } else {
+                $commission['office_id'] = $this->id;
+                $commission['agency_id'] = $office->agency_id;
+                OfficeCommission::create($commission);
+            }
+
         }
         return OfficeCommission::query()->where('office_id','=', $this->id)->get();
     }

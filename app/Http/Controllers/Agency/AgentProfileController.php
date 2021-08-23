@@ -63,6 +63,18 @@ class AgentProfileController
         }
 
     }
+
+    public function getAgent(int $id)
+    {
+        try {
+            $updateAgentService = new UpdateAgentService();
+            return response()->json(['success' => false, 'message' => $updateAgentService->update($request->toArray(), $id)]);
+//            return AgencyResource::make();
+        } catch ( \Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
     public function updateAgent(Request $request, int $id)
     {
         try {

@@ -56,5 +56,27 @@ export default {
         } catch (error) {
             return error.data;
         }
+    },
+
+    getOfficeData: async (id) => {
+        try {
+            const data = await axios.get('/api/offices/'+id);
+            return OfficeMapper.mapOfficeCommissionAgent(data.data.data);
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    updateOffice: async (office, id) => {
+        console.log('data',{...office});
+
+        try {
+            const data = await axios.post('/api/offices/'+id+'/update',{...office});
+
+        } catch (error) {
+            console.log(error)
+            return error.data;
+        }
     }
 }
