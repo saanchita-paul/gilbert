@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Agency;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Agency\CreateOfficeRequest;
+use App\Http\Requests\Agency\UpdateOfficeRequest;
 use App\Http\Resources\Agency\AgencyResource;
 use App\Http\Resources\Agency\OfficeResource;
 use App\Services\Agency\AgencyService;
 use App\Services\Agency\CreateAgentAndUser;
 use App\Services\Agency\CreateOfficeAndAgency;
+use App\Services\Agency\OfficeService;
 use App\Services\Agency\SearchOfficeService;
+use App\Services\Agency\UpdateOfficeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -111,6 +114,29 @@ class OfficeController extends Controller
                 $officeCommissionsData, $office->id, $officeData['agency_id']);
 
             return AgencyResource::make($office);
+        } catch ( \Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    public function updateOffice(UpdateOfficeRequest $request, int $id)
+    {
+        try {
+            $service = new UpdateOfficeService($id);
+            return response()->json(['success' => false, 'message' => $service->updateOffice($request->toArray())]);
+
+        } catch ( \Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    public function getOffice(int $id)
+    {
+
+        try {
+            $service = new OfficeService($id);
+            return response()->json(['success' => false, 'message' => $service->getOffice()]);
+
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }

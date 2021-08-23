@@ -11,6 +11,7 @@ use App\Http\Resources\Agency\OfficeResource;
 use App\Services\Agency\CreateAgentAndUser;
 use App\Services\Agency\SearchAgentProfileService;
 use App\Services\Agency\SearchOfficeService;
+use App\Services\Agency\UpdateAgentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -62,4 +63,17 @@ class AgentProfileController
         }
 
     }
+    public function updateAgent(Request $request, int $id)
+    {
+        try {
+            $updateAgentService = new UpdateAgentService();
+            return response()->json(['success' => false, 'message' => $updateAgentService->update($request->toArray(), $id)]);
+//            return AgencyResource::make();
+        } catch ( \Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+
+    }
+
+
 }
