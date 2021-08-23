@@ -24,5 +24,12 @@ class AgencyService
         return Agency::findOrFail($agencyId);
     }
 
-    public function updateAgency() {}
+    public function updateAgency(array $updateAgency, int $agencyId)
+    {
+        $agency = Agency::findOrFail($agencyId);
+        $agency->update($updateAgency);
+        return $agency;
+    }
+
+
 }

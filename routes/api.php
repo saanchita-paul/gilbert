@@ -37,16 +37,20 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::get('/agencies', [AgencyController::class, 'index']);
     Route::post('/agencies', [AgencyController::class, 'create']);
+    Route::get('/agencies/{id}', [AgencyController::class, 'getAgency']);
+    Route::post('/agencies/{id}/update', [AgencyController::class, 'update']);
     Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
     Route::post('/agencies/{agencyId}/offices', [OfficeController::class, 'createAgencyOffice']);
 
     Route::post('/independent-agency', [AgencyController::class, 'createIndependentAgency']);
 
     Route::post('/offices', [OfficeController::class, 'createOffice']);
+    Route::post('/offices/{id}/update', [OfficeController::class, 'updateOffice']);
     Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index']);
     Route::post('/offices/{officeId}/users', [AgentProfileController::class, 'createAgent']);
 
     Route::get('/office-agents', [AgentProfileController::class, 'officeAgents']);
+    Route::post('/office-agents/{id}/update', [AgentProfileController::class, 'updateAgent']);
 
     /**
      * Applications
