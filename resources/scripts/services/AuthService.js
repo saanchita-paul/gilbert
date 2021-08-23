@@ -22,13 +22,21 @@ export const login = async form => {
         console.log('LOGIN SUCCESS');
 
         const user = await AuthAPI.getAuthUser();
-        if(user.roles.includes('agency_office_real_estate_agent')) {
-            await router.push({name: 'agent.application.dashboard'})
-        } else {
-            return true;
-        }
-        // return true;
 
+        /**
+         * todo: refactored this dirty code, use constants
+         */
+        if(user.roles.includes('hood_admin')) {
+            return await router.push({name: 'dashboard.utility'})
+        }
+        if(user.roles.includes('hood_agent')) {
+            return await router.push({name: 'real.state.agency.home'})
+        }
+        if(user.roles.includes('agency_office_real_estate_agent')) {
+            return await router.push({name: 'agent.application.dashboard'})
+        } else {
+            return await router.push({name: 'applications'})
+        }
     } catch (e) {
         console.log('LOGIN FAILED', e)
         return false;
@@ -63,7 +71,7 @@ export const checkRouteAuthorization = (to, from, next) => {
     if (to.meta.isProtected) {
         isLoggedIn ? next() : next({name: 'login'})
     } else {
-        isLoggedIn ? next({name: 'dashboard.utility'}) : next()
+        next()
     }
 }
 
