@@ -24,6 +24,7 @@ import ApplicationPage from "@scripts/pages/ApplicationPage";
 import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
 import ApplicationDetailsPage from "@scripts/pages/ApplicationDetailsPage";
 import OfficeProfile from "@scripts/components/crm/office/OfficeProfile";
+import InviteUser from "@scripts/components/crm/user/InviteUser";
 
 Vue.use(VueRouter);
 
@@ -182,6 +183,14 @@ const router = new VueRouter({
                     }
                 },
             ]
+        },
+        {
+           path: '/confirm-invitation',
+           component: InviteUser,
+           name:'confirm.user.invite',
+           meta: {
+               isProtected: false
+           }
         }
     ]
 })
