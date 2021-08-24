@@ -140,7 +140,7 @@ class ApplicationController extends Controller
         try {
             $service = new ApplicationService();
             return ApplicationResource::make($service->assignUser(
-                $request->get('agent_profile_id'),
+                $request->get('hood_user_id'),
                 $applicationId
             ));
 

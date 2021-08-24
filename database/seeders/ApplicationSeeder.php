@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\ConnectionApplication;
+use App\Models\HoodProfile;
 use App\Models\Identification;
 use App\Models\Office;
 use App\Models\AgentProfile;
@@ -21,7 +22,7 @@ class ApplicationSeeder extends Seeder
     public function run()
     {
         $this->createAgentProfile();
-        $this->createAgentTeamLeaderProfile();
+        $this->createTeamLeaderProfile();
         ConnectionApplication::factory()
             ->count(20)
             ->has(ConnectionService::factory()->count(1), 'connectionServices')
@@ -49,23 +50,19 @@ class ApplicationSeeder extends Seeder
         $user->assignRole(RolePermission::ROLE_AGENCY_OFFICE_REAL_ESTATE_AGENT);
     }
 
-    private function createAgentTeamLeaderProfile() {
+    private function createTeamLeaderProfile() {
         $office = Office::first();
-        $profile = new AgentProfile();
-        $profile->office_id = $office->id;
-        $profile->agency_id = $office->agency->id;
+        $profile = new HoodProfile();
         $profile->first_name = 'Team';
         $profile->last_name = 'Leader';
-        $profile->{'f_id_12'} = '123';
-        $profile->phone = '1234567890';
         $profile->save();
 
         $user = new User();
         $user->password = bcrypt('123456');
         $user->email = 'leader@hood.ai';
-        $user->profile_type = User::PROFILE_TYPE_AGENT;
+        $user->profile_type = User::PROFILE_TYPE_HOOD;
         $user->profile_id = $profile->id;
         $user->save();
-        $user->assignRole(RolePermission::ROLE_AGENCY_TEAM_LEAD);
+        $user->assignRole(RolePermission::ROLE_HOOD_TEAM_LEAD);
     }
 }

@@ -43,7 +43,7 @@ export default [
         title: 'Real Estate Agency',
         icon: '/assets/images/icons/Helpdesk.svg',
         route_name: 'real.state.agency.home',
-        permissions: permissions.P_HOOD_AGENT_CORE
+        permissions: permissions.P_CAN_MANAGE_AGENCY
     },
     {
         type: 'route',

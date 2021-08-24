@@ -22,8 +22,8 @@ class CreateIdentificationsTable extends Migration
                 ->onDelete('cascade');
             $table->tinyInteger('type')->nullable();
             $table->string('card_number', 45)->nullable();
-            $table->string('state', 45)->nullable();
-            $table->string('country', 45)->nullable();
+            $table->string('state', 70)->nullable();
+            $table->string('country', 100)->nullable();
             $table->string('card_color', 45)->nullable();
             $table->string('special_number', 45)->nullable();
             $table->date('expire_date')->nullable();
