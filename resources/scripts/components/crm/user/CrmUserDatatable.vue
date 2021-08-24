@@ -1,5 +1,6 @@
 <template>
     <v-container fluid>
+        
         <v-card class="hood-card">
             <h2>All Application Metrics</h2>
             <LeadMetrics></LeadMetrics>
@@ -25,6 +26,7 @@
                     <v-btn color="primary" @click="addNewUser"><v-icon left>add</v-icon> Add New User</v-btn>
                 </v-col>
             </v-row>
+
             <v-row>
                 <v-col cols="12" class="crm-table">
                     <v-data-table
@@ -38,6 +40,7 @@
                     </v-data-table>
                 </v-col>
             </v-row>
+
             <CreateUserModal :dialog="isCreatingUser" @goToNext="goToNextConfirmationModal" @cancelUserDialog="cancleUserDialog"></CreateUserModal>
             <UserCreationConfirmationModal v-if="dataVerificationFlag" :dialog="dataVerificationFlag" :user="user" @backToEdit="backToEdit" @confirmData="confirmedData"></UserCreationConfirmationModal>
             <UserCreatedSuccessfulModal v-if="creationDoneFlag" :dialog="creationDoneFlag" :user="user" @done="done"></UserCreatedSuccessfulModal>
