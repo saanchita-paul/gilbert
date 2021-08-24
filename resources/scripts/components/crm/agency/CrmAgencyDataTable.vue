@@ -1,6 +1,6 @@
 <template>
-    <v-container >
-        <v-card class="pa-4">
+    <v-container fluid>
+        <v-card class="hood-card">
             <h2>All Application Metrics</h2>
             <LeadMetrics></LeadMetrics>
         </v-card>
@@ -16,7 +16,8 @@
                     </v-btn>
                 </v-col>
             </v-row>
-            <v-card class="pa-4">
+            
+            <v-card class="hood-card">
                 <v-row>
                     <v-col cols="12" class="crm-table">
                         <v-data-table

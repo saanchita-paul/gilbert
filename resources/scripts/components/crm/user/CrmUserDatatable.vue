@@ -1,21 +1,22 @@
 <template>
-
-    <v-container>
-        <v-card class="pa-4">
+    <v-container fluid>
+        <v-card class="hood-card">
             <h2>All Application Metrics</h2>
             <LeadMetrics></LeadMetrics>
         </v-card>
+
         <div>
-            <v-row class="mt-5">
-                <!--            <v-card>-->
-                <v-col cols="8" class="search-bg">
-                    <p>Sunbury Office</p>
-                </v-col>
-                <v-col cols="4" class="text-right">
-                    <v-btn color="primary" @click="viewOfficeProfile">View Office Profile</v-btn>
-                </v-col>
-                <!--            </v-card>-->
-            </v-row>
+            <v-card class="hood-card  mt-4">
+                <v-row>
+                    <v-col cols="8">
+                        <span>Sunbury Office</span>
+                    </v-col>
+                    <v-col cols="4" class="text-right">
+                        <v-btn color="primary" @click="viewOfficeProfile">View Office Profile</v-btn>
+                    </v-col>
+                </v-row>
+            </v-card>
+
             <v-row class="mt-5">
                 <v-col cols="8" class="search-bg">
                     <Search @updateSearch="updateSearch"></Search>
