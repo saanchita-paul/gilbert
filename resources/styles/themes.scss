@@ -1,0 +1,23 @@
+.hood-card{
+    border-radius: 8px !important;
+}
+.dialogs-title {
+    font-size: 25px;
+    color: $primary_color;
+    font-weight: 700;
+}
+.primary-text {
+    color: $primary_color;
+}
+.login-header {
+    margin-bottom: 40px;
+    .v-image {
+        display: block;
+        margin: 60px auto 15px auto;
+        max-width: 180px;
+        .v-image__image--cover {
+            width: 100% !important;
+            background-size: contain !important;
+        }
+    }
+}
