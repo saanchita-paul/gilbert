@@ -3,6 +3,7 @@
     <v-container>
         <v-card class="pa-4">
             <h2>All Application Metrics</h2>
+            <v-btn @click="editAgencyName">Edit Agency Name</v-btn>
             <LeadMetrics></LeadMetrics>
         </v-card>
         <div>
@@ -34,6 +35,11 @@
 
             <CreateSuccessfulModal v-if="isCreatedSuccessfully" :dialog="isCreatedSuccessfully" :title="officeTitle" @cancel="cancelSuccessfulModal">
             </CreateSuccessfulModal>
+
+            <AgencyEditModal v-if="editAgencyNameFlag" :dialog="editAgencyNameFlag" @cancelDialog="cancelEditAgency"  @openSuccessfulModal="saveAgencyName">
+
+            </AgencyEditModal>
+
         </div>
     </v-container>
 </template>
@@ -46,6 +52,7 @@ import CreateIndeOfficeModal from "@scripts/components/crm/modals/CreateIndeOffi
 import OfficeService from "@scripts/services/crm/OfficeService";
 import LeadMetrics from "@scripts/components/crm/LeadMetrics";
 import AgencyService from "@scripts/services/crm/AgencyService";
+import AgencyEditModal from "@scripts/components/crm/modals/AgencyEditModal";
 export default {
 name: "CrmOfficeDataTable",
     props: {
@@ -53,9 +60,10 @@ name: "CrmOfficeDataTable",
             required: false,
         }
     },
-    components: {CreateIndeOfficeModal, CreateSuccessfulModal, Search, LeadMetrics},
+    components: {AgencyEditModal, CreateIndeOfficeModal, CreateSuccessfulModal, Search, LeadMetrics},
     data () {
         return {
+            editAgencyNameFlag: false,
             independenceAgencyModal: false,
             isCreatedSuccessfully: false,
             officeTitle: '',
@@ -169,6 +177,25 @@ name: "CrmOfficeDataTable",
             this.search = search;
             this.loadOffices();
         },
+
+        editAgencyName()
+        {
+            this.editAgencyNameFlag = true;
+        },
+
+        cancelEditAgency() {
+            this.editAgencyNameFlag = false;
+
+        },
+
+        async saveAgencyName(agency) {
+            console.log(agency);
+            let payload = {name: agency}
+           await AgencyService.updateAgency(payload, this.$route.params.id)
+            this.editAgencyNameFlag = false;
+
+        }
+
     },
 
     mounted() {
