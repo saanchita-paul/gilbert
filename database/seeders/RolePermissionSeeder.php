@@ -24,8 +24,6 @@ class RolePermissionSeeder extends Seeder
         RolePermission::ROLE_AGENCY_OFFICE_PROPERTY_MANAGER,
         RolePermission::ROLE_AGENCY_OFFICE_SENIOR_PROPERTY_MANAGER,
         RolePermission::ROLE_AGENCY_OFFICE_REAL_ESTATE_AGENT
-
-
     ];
 
     protected array $permissions = [

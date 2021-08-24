@@ -55,7 +55,11 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/office-agents/{id}/update', [AgentProfileController::class, 'updateAgent']);
     Route::post('/office-agents/{id}', [AgentProfileController::class, 'getAgent']);
 
+    /**
+     * Hood User
+     */
     Route::get('/application-assignees', [HoodUserController::class, 'getAssignee']);
+    Route::post('/hood-users', [HoodUserController::class, 'store']);
 
     /**
      * Applications
