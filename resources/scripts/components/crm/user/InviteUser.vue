@@ -1,13 +1,15 @@
 <template>
     <v-app>
         <v-container>
-            <v-card class="pa-4">
-                <v-row>
-                    <v-col cols="12 pb-0">
-                    </v-col>
-
-                    <v-col cols="10">
-                        <v-text-field
+                <v-row class="d-flex justify-center">
+                    <v-col cols="5">
+                        <v-card class="pa-4 hood-card">
+                            <div class="login-header">
+                                <v-img  src="/assets/images/logo.png"/>
+                                <p class="dialogs-title">Hello  jones</p>
+                                <p class="primary-text">Confirm NEW Password</p>
+                            </div>
+                            <v-text-field
                             label="Password *"
                             outlined
                             dense
@@ -16,9 +18,8 @@
                             :type="'password'"
 
                         ></v-text-field>
-                    </v-col>
+                    
 
-                    <v-col cols="10">
                         <v-text-field
                             label="Email Address (Optional)"
                             outlined
@@ -27,15 +28,10 @@
                             :type="'password'"
                             placeholder="confirm password"
                         ></v-text-field>
-                    </v-col>
-
-                </v-row>
-                <v-row>
-                    <v-col cols="1">
-                        <v-btn @click="setPassword">Set Password</v-btn>
+                         <v-btn block color="primary" @click="setPassword">Set Password</v-btn>
+                        </v-card>
                     </v-col>
                 </v-row>
-            </v-card>
         </v-container>
         </v-app>
 </template>

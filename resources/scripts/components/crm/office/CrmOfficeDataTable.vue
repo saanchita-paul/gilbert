@@ -1,11 +1,13 @@
 <template>
-
-    <v-container>
-        <v-card class="pa-4">
-            <h2>All Application Metrics</h2>
-            <v-btn @click="editAgencyName">Edit Agency Name</v-btn>
+    <v-container fluid>
+        <v-card class="hood-card ">
+            <div class="d-flex justify-space-between pb-4">
+                <h2>All Application Metrics</h2>
+                <v-btn outlined @click="editAgencyName">Edit Agency Name</v-btn>
+            </div>
             <LeadMetrics></LeadMetrics>
         </v-card>
+
         <div>
             <v-row class="mt-5">
                 <v-col cols="8" class="search-bg">

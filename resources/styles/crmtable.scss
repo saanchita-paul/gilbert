@@ -1,4 +1,7 @@
 .crm-table {
+    .v-data-table {
+        border-radius: 8px !important;
+    }
     table {
         tr {
             th {
@@ -20,10 +23,5 @@
             }
 
         }
-    }
-}
-.search-bg {
-    .v-input {
-        background: white !important;
     }
 }

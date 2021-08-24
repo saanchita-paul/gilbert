@@ -43,12 +43,12 @@ class AgentProfileController
     {
         try {
             $user = Auth::user();
-            $officeId = $user->profile->office->id;
+            $officeId = $user->profile->office?->id;
             $service = new SearchAgentProfileService($request->toArray());
             return AgentProfileResource::collection($service->get($officeId));
 
         } catch ( \Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return response()->json(['success' => false, 'message' => $exception->getTrace()]);
         }
     }
 

@@ -80,7 +80,7 @@ export default {
 
     getUserAllData: async (meta)=> {
         try {
-            const data = await axios.get('/api/office-agents',{params: {...meta}});
+            const data = await axios.get('/api/application-assignees',{params: {...meta}});
             return CrmUserMapper.mapUserList(data.data);
         } catch (error) {
             console.log(error);
