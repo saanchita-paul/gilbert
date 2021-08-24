@@ -81,9 +81,7 @@ export default {
     getUserAllData: async (meta)=> {
         try {
             const data = await axios.get('/api/application-assignees',{params: {...meta}});
-            let d = CrmUserMapper.mapUserList(data.data);
-            console.log(d, "HOOD")
-            return d;
+            return CrmUserMapper.mapUserList(data.data);
         } catch (error) {
             console.log(error);
             return error.data;
