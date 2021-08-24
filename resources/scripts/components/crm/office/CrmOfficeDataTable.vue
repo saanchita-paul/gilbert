@@ -1,34 +1,47 @@
 <template>
-    <div>
-        <v-row class="mt-5">
-            <v-col cols="8" class="search-bg">
-                <Search @updateSearch="updateSearch"></Search>
-            </v-col>
-            <v-col cols="4" class="text-right">
-                <v-btn @click="addOffice" color="primary"><v-icon left>add</v-icon> Add New Office</v-btn>
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-col cols="12" class="crm-table">
-                <v-data-table
-                    :headers="headers"
-                    :items="officesList"
-                    :options.sync="options"
-                    :server-items-length="totalItem"
-                    :loading="loading"
-                    class="elevation-1 row-pointer"
-                    @click:row="openOffice "
-                >
-                </v-data-table>
-            </v-col>
-        </v-row>
 
-        <CreateIndeOfficeModal v-if="independenceAgencyModal" :dialog="independenceAgencyModal" @goToNext="openCreationSuccModal" @cancelDialog="cancelIndOfficeModal">
-        </CreateIndeOfficeModal>
+    <v-container>
+        <v-card class="pa-4">
+            <h2>All Application Metrics</h2>
+            <v-btn @click="editAgencyName">Edit Agency Name</v-btn>
+            <LeadMetrics></LeadMetrics>
+        </v-card>
+        <div>
+            <v-row class="mt-5">
+                <v-col cols="8" class="search-bg">
+                    <Search @updateSearch="updateSearch"></Search>
+                </v-col>
+                <v-col cols="4" class="text-right">
+                    <v-btn @click="addOffice" color="primary"><v-icon left>add</v-icon> Add New Office</v-btn>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" class="crm-table">
+                    <v-data-table
+                        :headers="headers"
+                        :items="officesList"
+                        :options.sync="options"
+                        :server-items-length="totalItem"
+                        :loading="loading"
+                        class="elevation-1 row-pointer"
+                        @click:row="openOffice "
+                    >
+                    </v-data-table>
+                </v-col>
+            </v-row>
 
-        <CreateSuccessfulModal v-if="isCreatedSuccessfully" :dialog="isCreatedSuccessfully" :title="officeTitle" @cancel="cancelSuccessfulModal">
-        </CreateSuccessfulModal>
-    </div>
+            <CreateIndeOfficeModal v-if="independenceAgencyModal" :dialog="independenceAgencyModal" @goToNext="openCreationSuccModal" @cancelDialog="cancelIndOfficeModal">
+            </CreateIndeOfficeModal>
+
+            <CreateSuccessfulModal v-if="isCreatedSuccessfully" :dialog="isCreatedSuccessfully" :title="officeTitle" @cancel="cancelSuccessfulModal">
+            </CreateSuccessfulModal>
+
+            <AgencyEditModal v-if="editAgencyNameFlag" :dialog="editAgencyNameFlag" @cancelDialog="cancelEditAgency"  @openSuccessfulModal="saveAgencyName">
+
+            </AgencyEditModal>
+
+        </div>
+    </v-container>
 </template>
 
 
@@ -37,7 +50,9 @@ import Search from "@scripts/components/crm/Search";
 import CreateSuccessfulModal from "@scripts/components/crm/modals/CreateSuccessfulModal";
 import CreateIndeOfficeModal from "@scripts/components/crm/modals/CreateIndeOfficeModal";
 import OfficeService from "@scripts/services/crm/OfficeService";
+import LeadMetrics from "@scripts/components/crm/LeadMetrics";
 import AgencyService from "@scripts/services/crm/AgencyService";
+import AgencyEditModal from "@scripts/components/crm/modals/AgencyEditModal";
 export default {
 name: "CrmOfficeDataTable",
     props: {
@@ -45,9 +60,10 @@ name: "CrmOfficeDataTable",
             required: false,
         }
     },
-    components: {CreateIndeOfficeModal, CreateSuccessfulModal, Search},
+    components: {AgencyEditModal, CreateIndeOfficeModal, CreateSuccessfulModal, Search, LeadMetrics},
     data () {
         return {
+            editAgencyNameFlag: false,
             independenceAgencyModal: false,
             isCreatedSuccessfully: false,
             officeTitle: '',
@@ -161,6 +177,25 @@ name: "CrmOfficeDataTable",
             this.search = search;
             this.loadOffices();
         },
+
+        editAgencyName()
+        {
+            this.editAgencyNameFlag = true;
+        },
+
+        cancelEditAgency() {
+            this.editAgencyNameFlag = false;
+
+        },
+
+        async saveAgencyName(agency) {
+            console.log(agency);
+            let payload = {name: agency}
+           await AgencyService.updateAgency(payload, this.$route.params.id)
+            this.editAgencyNameFlag = false;
+
+        }
+
     },
 
     mounted() {
