@@ -1,34 +1,41 @@
 <template>
-    <div>
-        <v-row class="mt-5">
-            <v-col cols="8" class="search-bg">
-                <Search @updateSearch="updateSearch"></Search>
-            </v-col>
-            <v-col cols="4" class="text-right">
-                <v-btn @click="addOffice" color="primary"><v-icon left>add</v-icon> Add New Office</v-btn>
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-col cols="12" class="crm-table">
-                <v-data-table
-                    :headers="headers"
-                    :items="officesList"
-                    :options.sync="options"
-                    :server-items-length="totalItem"
-                    :loading="loading"
-                    class="elevation-1 row-pointer"
-                    @click:row="openOffice "
-                >
-                </v-data-table>
-            </v-col>
-        </v-row>
 
-        <CreateIndeOfficeModal v-if="independenceAgencyModal" :dialog="independenceAgencyModal" @goToNext="openCreationSuccModal" @cancelDialog="cancelIndOfficeModal">
-        </CreateIndeOfficeModal>
+    <v-container>
+        <v-card class="pa-4">
+            <h2>All Application Metrics</h2>
+            <LeadMetrics></LeadMetrics>
+        </v-card>
+        <div>
+            <v-row class="mt-5">
+                <v-col cols="8" class="search-bg">
+                    <Search @updateSearch="updateSearch"></Search>
+                </v-col>
+                <v-col cols="4" class="text-right">
+                    <v-btn @click="addOffice" color="primary"><v-icon left>add</v-icon> Add New Office</v-btn>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" class="crm-table">
+                    <v-data-table
+                        :headers="headers"
+                        :items="officesList"
+                        :options.sync="options"
+                        :server-items-length="totalItem"
+                        :loading="loading"
+                        class="elevation-1 row-pointer"
+                        @click:row="openOffice "
+                    >
+                    </v-data-table>
+                </v-col>
+            </v-row>
 
-        <CreateSuccessfulModal v-if="isCreatedSuccessfully" :dialog="isCreatedSuccessfully" :title="officeTitle" @cancel="cancelSuccessfulModal">
-        </CreateSuccessfulModal>
-    </div>
+            <CreateIndeOfficeModal v-if="independenceAgencyModal" :dialog="independenceAgencyModal" @goToNext="openCreationSuccModal" @cancelDialog="cancelIndOfficeModal">
+            </CreateIndeOfficeModal>
+
+            <CreateSuccessfulModal v-if="isCreatedSuccessfully" :dialog="isCreatedSuccessfully" :title="officeTitle" @cancel="cancelSuccessfulModal">
+            </CreateSuccessfulModal>
+        </div>
+    </v-container>
 </template>
 
 
@@ -37,6 +44,7 @@ import Search from "@scripts/components/crm/Search";
 import CreateSuccessfulModal from "@scripts/components/crm/modals/CreateSuccessfulModal";
 import CreateIndeOfficeModal from "@scripts/components/crm/modals/CreateIndeOfficeModal";
 import OfficeService from "@scripts/services/crm/OfficeService";
+import LeadMetrics from "@scripts/components/crm/LeadMetrics";
 import AgencyService from "@scripts/services/crm/AgencyService";
 export default {
 name: "CrmOfficeDataTable",
@@ -45,7 +53,7 @@ name: "CrmOfficeDataTable",
             required: false,
         }
     },
-    components: {CreateIndeOfficeModal, CreateSuccessfulModal, Search},
+    components: {CreateIndeOfficeModal, CreateSuccessfulModal, Search, LeadMetrics},
     data () {
         return {
             independenceAgencyModal: false,

@@ -1,6 +1,7 @@
 <template>
     <v-container>
-        <v-card class="pa-4" v-if="isLoaded">
+        <ValidationObserver ref="office_details">
+            <v-card class="pa-4" v-if="isLoaded">
             <v-row>
                 <v-col cols="12 pb-0">
                     <v-btn @click="goToOffice"><v-icon left dark>mdi-arrow-left</v-icon>Back to Sunbury Office Metrics</v-btn>
@@ -9,45 +10,59 @@
                 </v-col>
 
                 <v-col cols="6">
-                    <v-text-field
-                        label="Office Branch Location*"
-                        outlined
-                        dense
-                        v-model="office.name"
-
-                        placeholder="Sunbury"
-                    ></v-text-field>
-                    <v-text-field
-                        label="Office Address*"
-                        v-model="office.address"
-                        outlined
-                        dense
-                        placeholder="398 Bourke Road, Camberwell 3124 VIC"
-                    ></v-text-field>
-                    <v-text-field
-                        label="Phone Number (Optional)"
-                        outlined
-                        dense
-                        v-model="office.phone"
-                        placeholder="+61"
-                    ></v-text-field>
+                    <ValidationProvider name="Office Branch Location" rules="required"  v-slot="{ errors }">
+                        <v-text-field
+                            label="Office Branch Location*"
+                            outlined
+                            dense
+                            v-model="office.name"
+                            :error-messages=" errors[0]"
+                            placeholder="Sunbury"
+                        ></v-text-field>
+                    </ValidationProvider>
+                    <ValidationProvider name="Office Address" rules="required"  v-slot="{ errors }">
+                        <v-text-field
+                            label="Office Address*"
+                            v-model="office.address"
+                            outlined
+                            dense
+                            placeholder="398 Bourke Road, Camberwell 3124 VIC"
+                            :error-messages=" errors[0]"
+                        ></v-text-field>
+                    </ValidationProvider>
+                    <ValidationProvider name="Phone Number" rules="cv-phone|length:10"  v-slot="{ errors }">
+                        <v-text-field
+                            label="Phone Number (Optional)"
+                            outlined
+                            dense
+                            v-model="office.phone"
+                            placeholder="+61"
+                            :error-messages=" errors[0]"
+                        ></v-text-field>
+                    </ValidationProvider>
                 </v-col>
 
                 <v-col cols="6">
-                    <v-text-field
-                        label="Email Address (Optional)"
-                        outlined
-                        v-model="office.email"
-                        dense
-                        placeholder="example@domain.com"
-                    ></v-text-field>
+                    <ValidationProvider name="Email Address" rules="email"  v-slot="{ errors }">
+                        <v-text-field
+                            label="Email Address (Optional)"
+                            outlined
+                            v-model="office.email"
+                            dense
+                            placeholder="example@domain.com"
+                            :error-messages=" errors[0]"
+                        ></v-text-field>
+                    </ValidationProvider>
+                    <ValidationProvider name="ABN" rules="cv-phone"  v-slot="{ errors }">
                     <v-text-field
                         label="ABN (Optional)"
                         outlined
                         dense
                         v-model="office.abn"
                         placeholder="00000000000"
+                        :error-messages=" errors[0]"
                     ></v-text-field>
+                    </ValidationProvider>
                 </v-col>
 
                 <v-col cols="12" class="py-0">
@@ -55,38 +70,62 @@
                 </v-col>
 
                 <v-col cols="6">
-                    <v-text-field
-                        label="Office Branch Location*"
-                        v-model="agent.full_name"
-                        outlined
-                        dense
-                        placeholder="Branch Location"
-                    ></v-text-field>
-                    <v-text-field
-                        label="User ID*"
-                        v-model="agent.email"
-                        outlined
-                        dense
-                        placeholder="firstname.lastname@barryplantcamberwell.com.au"
-                    ></v-text-field>
-                </v-col>
+                    <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
 
-                <v-col cols="6">
+                    <v-text-field
+                        label="First Name*"
+                        v-model="agent.first_name"
+                        outlined
+                        dense
+                        placeholder="First Name"
+                        :error-messages=" errors[0]"
+                    ></v-text-field>
+                    </ValidationProvider>
+
+                    <ValidationProvider name="Email Address" rules="email"  v-slot="{ errors }">
                     <v-text-field
                         label="Email Address*"
                         v-model="agent.email"
                         outlined
                         dense
                         placeholder="example@domain.com"
+                        :error-messages=" errors[0]"
                     ></v-text-field>
+                    </ValidationProvider>
 
+                    <ValidationProvider name="User ID" rules="required"  v-slot="{ errors }">
+                    <v-text-field
+                        label="User ID*"
+                        v-model="agent.f_id_12"
+                        outlined
+                        dense
+                        placeholder="firstname.lastname@barryplantcamberwell.com.au"
+                        :error-messages=" errors[0]"
+                    ></v-text-field>
+                    </ValidationProvider>
+                </v-col>
+
+                <v-col cols="6">
+                    <ValidationProvider name="Last Name" rules="required"  v-slot="{ errors }">
+                    <v-text-field
+                        label="Last Name *"
+                        v-model="agent.last_name"
+                        outlined
+                        dense
+                        placeholder="Last Name"
+                        :error-messages=" errors[0]"
+                    ></v-text-field>
+                    </ValidationProvider>
+                    <ValidationProvider name="Phone Number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
                     <v-text-field
                         label="Phone Number"
                         v-model="agent.phone"
                         outlined
                         dense
                         placeholder="+61"
+                        :error-messages=" errors[0]"
                     ></v-text-field>
+                    </ValidationProvider>
                 </v-col>
 
                 <v-col cols="12">
@@ -100,13 +139,16 @@
                             <div class="leade-icon pb-2">
                                 <v-icon color="yellow">mdi-flash</v-icon>
                                 <span class="mr-4">$</span>
+                                <ValidationProvider name="Power" rules="numeric|max:2|min_value:1|required"  v-slot="{ errors }">
                                 <v-text-field
                                     v-model="commission.power"
                                     outlined
                                     dense
                                     hide-details
                                     placeholder="50"
+                                    :error-messages=" errors[0]"
                                 ></v-text-field>
+                                </ValidationProvider>
                             </div>
                             <p class="leade-text pr-5 mb-0">Per successful connection</p>
                         </div>
@@ -118,13 +160,16 @@
                             <div class="leade-icon pb-2">
                                 <v-icon color="red">mdi-fire</v-icon>
                                 <span class="mr-4">$</span>
+                                <ValidationProvider name="Gas" rules="numeric|max:2|min_value:1|required"  v-slot="{ errors }">
                                 <v-text-field
                                     v-model="commission.gas"
                                     outlined
                                     dense
                                     hide-details
                                     placeholder="50"
+                                    :error-messages=" errors[0]"
                                 ></v-text-field>
+                                </ValidationProvider>
                             </div>
                             <p class="leade-text pr-5">Per successful connection</p>
                         </div>
@@ -136,13 +181,16 @@
                             <div class="leade-icon pb-2">
                                 <v-icon color="grey lighten-1">mdi-wifi</v-icon>
                                 <span class="mr-4">$</span>
+                                <ValidationProvider name="Internet" rules="numeric|max:2|min_value:1|required"  v-slot="{ errors }">
                                 <v-text-field
                                     v-model="commission.internet"
                                     outlined
                                     dense
                                     hide-details
                                     placeholder="50"
+                                    :error-messages=" errors[0]"
                                 ></v-text-field>
+                                </ValidationProvider>
                             </div>
                             <p class="leade-text pr-5">Per successful connection</p>
                         </div>
@@ -154,13 +202,16 @@
                             <div class="leade-icon pb-2">
                                 <v-icon color="grey lighten-1">mdi-water</v-icon>
                                 <span class="mr-4">$</span>
+                                <ValidationProvider name="Water"rules="numeric|max:2|min_value:1|required"  v-slot="{ errors }">
                                 <v-text-field
                                     v-model="commission.water"
                                     outlined
                                     dense
                                     hide-details
                                     placeholder="50"
+                                    :error-messages=" errors[0]"
                                 ></v-text-field>
+                                </ValidationProvider>
                             </div>
                             <p class="leade-text pr-5">Per successful connection</p>
                         </div>
@@ -175,6 +226,7 @@
                 </v-col>
             </v-row>
         </v-card>
+        </ValidationObserver>
         <CreateSuccessfulModal v-if="updateConfirmFlag" :is-update="updateConfirmFlag" :dialog="updateConfirmFlag" :title="office.name" @cancel="cancelSuccessfulModal">
         </CreateSuccessfulModal>
     </v-container>
@@ -216,7 +268,7 @@ export default {
               last_name: null,
               full_name: null,
               email: null,
-              user_id: null,
+              f_id_12: null,
               phone: null,
           }
       }
@@ -237,8 +289,11 @@ export default {
         updateAgent(data) {
             this.agent.id = data.id;
             this.agent.full_name = data.full_name;
+            this.agent.first_name = data.first_name;
+            this.agent.last_name = data.last_name;
             this.agent.phone = data.phone;
             this.agent.email = data.email;
+            this.agent.f_id_12 = data.f_id_12;
         },
 
         updateOffice(data) {
@@ -258,16 +313,16 @@ export default {
               switch (dt.text)
               {
                   case 'gas':
-                      this.commission.gas = dt.rate;
+                      this.commission.gas = parseInt(dt.rate);
                       break;
                   case 'water':
-                      this.commission.water = dt.rate;
+                      this.commission.water = parseInt(dt.rate);
                       break;
                   case 'power':
-                      this.commission.power = dt.rate;
+                      this.commission.power = parseInt(dt.rate);
                       break;
                   case 'internet':
-                      this.commission.internet = dt.rate;
+                      this.commission.internet = parseInt(dt.rate);
                       break;
 
               }
@@ -300,9 +355,8 @@ export default {
         },
 
        async saveChange() {
-            let fullName = this.agent.full_name.split(' ');
-            this.agent.first_name = fullName[0];
-            this.agent.last_name = fullName.slice(1).join(' ', );
+           let v = await this.$refs.office_details.validate();
+           if(!v) return;
             const officeData = {
                 office: this.office,
                 commissions: this.synCommissionbeforeSave(),
