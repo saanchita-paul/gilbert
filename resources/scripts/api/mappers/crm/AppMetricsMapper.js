@@ -3,7 +3,7 @@ import UserLead from "@scripts/models/crm/UserLead";
 
 
 function mapAppMetric(appMetric, data) {
-    console.log('data', data);
+    // console.log('data', data);
     const temAppMetric =  new AppMetric({...appMetric})
     switch (temAppMetric.title)
     {
