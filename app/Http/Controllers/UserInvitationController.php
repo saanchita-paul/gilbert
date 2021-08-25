@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Agency\PasswordChangeRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -26,15 +27,33 @@ class UserInvitationController extends Controller
     }
 
     /**
-     * Creating new Office under Agency.
+     * Password change for invitation user.
      *
      * @param PasswordChangeRequest $request
      *
-     * @return UserInvitationResource|JsonResponse
      */
 
-    public function createAgencyOffice(PasswordChangeRequest $request, int $agencyId): UserInvitationResource | JsonResponse
+    public function passwordChange(Request $request): AnonymousResourceCollection | JsonResponse
     {
+        try {
+            $rules = [
+                'new_password'     => 'required|confirmed|min:6',
+                'confirm_password' => 'required|same:new_password',
+            ];
 
+            $messages = [
+                'new_password.required' => 'Minimum 6 character are needed.',
+                'confirm_password.required' => 'Minimum 6 character are needed.'
+            ];
+
+            $this->validate($request, [
+                'new_password'     => 'required|min:6',
+                'confirm_password' => 'required|same:new_password',
+            ]);
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
     }
 }
