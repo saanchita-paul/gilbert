@@ -1,49 +1,56 @@
 <template>
-    <div>
-        <v-row class="mt-5">
-            <v-col cols="8" class="search-bg">
-                <Search @updateSearch="updateSearch"></Search>
-            </v-col>
-            <v-col cols="4" class="text-right">
-                <v-btn color="primary" @click="addAgency"
-                ><v-icon left>add
-                </v-icon> Add New Agency
-                </v-btn>
-            </v-col>
-        </v-row>
-        <v-card class="pa-4">
-            <v-row>
-                <v-col cols="12" class="crm-table">
-                    <v-data-table
-                        :headers="headers"
-                        :items="agencies"
-                        :options.sync="options"
-                        :server-items-length="totalItem"
-                        :loading="loading"
-                        class="elevation-1 row-pointer"
-                        @click:row="openAgency"
-                    >
-                        <template v-slot:item.action="{ item }">
-                            <v-btn>
-                                <v-icon
-                                    small
-                                    @click.stop="editItem(item)"
-                                >
-                                    mdi-pencil
-                                </v-icon>
-                            </v-btn>
-                        </template>
-                    </v-data-table>
+    <v-container fluid>
+        <v-card class="hood-card">
+            <h2>All Application Metrics</h2>
+            <LeadMetrics></LeadMetrics>
+        </v-card>
+        <div>
+            <v-row class="mt-5">
+                <v-col cols="8" class="search-bg">
+                    <Search @updateSearch="updateSearch"></Search>
+                </v-col>
+                <v-col cols="4" class="text-right">
+                    <v-btn color="primary" @click="addAgency"
+                    ><v-icon left>add
+                    </v-icon> Add New Agency
+                    </v-btn>
                 </v-col>
             </v-row>
-        </v-card>
-        <AgencyDetailsModal v-if="agencyCreateModal" :dialog="agencyCreateModal" @openSuccessfulModal="openSuccessfulModal" @cancelDialog="cancelAgencyModal">
-        </AgencyDetailsModal>
-        <CreateIndeOfficeModal v-if="independenceAgencyModal" :dialog="independenceAgencyModal" @goToNext="openCreationSuccModal" @cancelDialog="cancelIndOfficeModal">
-        </CreateIndeOfficeModal>
-        <CreateSuccessfulModal v-if="agencyCreateSuccessFullModal" :dialog="agencyCreateSuccessFullModal" :title="title" @cancel="cancelSuccessfulModal">
-        </CreateSuccessfulModal>
-    </div>
+            
+            <v-card class="hood-card">
+                <v-row>
+                    <v-col cols="12" class="crm-table">
+                        <v-data-table
+                            :headers="headers"
+                            :items="agencies"
+                            :options.sync="options"
+                            :server-items-length="totalItem"
+                            :loading="loading"
+                            class="elevation-1 row-pointer"
+                            @click:row="openAgency"
+                        >
+                            <template v-slot:item.action="{ item }">
+                                <v-btn>
+                                    <v-icon
+                                        small
+                                        @click.stop="editItem(item)"
+                                    >
+                                        mdi-pencil
+                                    </v-icon>
+                                </v-btn>
+                            </template>
+                        </v-data-table>
+                    </v-col>
+                </v-row>
+            </v-card>
+            <AgencyDetailsModal v-if="agencyCreateModal" :dialog="agencyCreateModal" @openSuccessfulModal="openSuccessfulModal" @cancelDialog="cancelAgencyModal">
+            </AgencyDetailsModal>
+            <CreateIndeOfficeModal v-if="independenceAgencyModal" :dialog="independenceAgencyModal" @goToNext="openCreationSuccModal" @cancelDialog="cancelIndOfficeModal">
+            </CreateIndeOfficeModal>
+            <CreateSuccessfulModal v-if="agencyCreateSuccessFullModal" :dialog="agencyCreateSuccessFullModal" :title="title" @cancel="cancelSuccessfulModal">
+            </CreateSuccessfulModal>
+        </div>
+    </v-container>
 </template>
 
 <script>
@@ -52,6 +59,7 @@ import CreateSuccessfulModal from "@scripts/components/crm/modals/CreateSuccessf
 import AgencyDetailsModal from "@scripts/components/crm/modals/AgencyDetailsModal";
 import Search from "@scripts/components/crm/Search";
 import AgencyService from "@scripts/services/crm/AgencyService";
+import LeadMetrics from "@scripts/components/crm/LeadMetrics";
 
 export default {
 name: "CrmAgencyDataTable",
@@ -59,7 +67,8 @@ name: "CrmAgencyDataTable",
         CreateIndeOfficeModal,
         CreateSuccessfulModal,
         AgencyDetailsModal,
-        Search
+        Search,
+        LeadMetrics
     },
     data(){
         return {

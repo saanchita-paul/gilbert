@@ -33,7 +33,7 @@ class CreateConnectionApplicationsTable extends Migration
             $table->unsignedBigInteger('assigned_to')->nullable();
             $table->foreign('assigned_to')
                 ->references('id')
-                ->on('agent_profiles')
+                ->on('hood_profiles')
                 ->onDelete('cascade');
             $table->string('title', 45)->nullable();
             $table->string('first_name', 45)->nullable();
@@ -47,7 +47,7 @@ class CreateConnectionApplicationsTable extends Migration
             $table->string('street_address', 100)->nullable();
             $table->string('city', 45)->nullable();
             $table->string('postcode', 10)->nullable();
-            $table->string('state', 20)->nullable();
+            $table->string('state', 70)->nullable();
             $table->string('country', 200)->nullable();
             $table->text('additional_instruction')->nullable();
             $table->string('address_text', 150)->nullable();

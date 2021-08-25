@@ -12,6 +12,7 @@ use App\Services\Agency\CreateAgentAndUser;
 use App\Services\Agency\SearchAgentProfileService;
 use App\Services\Agency\SearchOfficeService;
 use App\Services\Agency\UpdateAgentService;
+use App\Services\UpdateUserProfileService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -42,12 +43,12 @@ class AgentProfileController
     {
         try {
             $user = Auth::user();
-            $officeId = $user->profile->office->id;
+            $officeId = $user->profile->office?->id;
             $service = new SearchAgentProfileService($request->toArray());
             return AgentProfileResource::collection($service->get($officeId));
 
         } catch ( \Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return response()->json(['success' => false, 'message' => $exception->getTrace()]);
         }
     }
 
@@ -68,18 +69,18 @@ class AgentProfileController
     {
         try {
             $updateAgentService = new UpdateAgentService();
-            return response()->json(['success' => false, 'message' => $updateAgentService->update($request->toArray(), $id)]);
+            return response()->json(['success' => false, 'message' => $updateAgentService->update($id)]);
 //            return AgencyResource::make();
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
 
-    public function updateAgent(Request $request, int $id)
+    public function updateProfile(Request $request, int $id)
     {
         try {
-            $updateAgentService = new UpdateAgentService();
-            return response()->json(['success' => false, 'message' => $updateAgentService->update($request->toArray(), $id)]);
+            $updateAgentService = new UpdateUserProfileService($id);
+            return response()->json(['success' => false, 'user' => $updateAgentService->updateProfile($request->toArray())]);
 //            return AgencyResource::make();
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Agency\AgencyController;
 use App\Http\Controllers\Agency\AgentProfileController;
+use App\Http\Controllers\Agency\HoodUserController;
 use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ApplicationController;
 use App\Http\Controllers\Auth\AuthController;
@@ -51,8 +52,14 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/offices/{officeId}/users', [AgentProfileController::class, 'createAgent']);
 
     Route::get('/office-agents', [AgentProfileController::class, 'officeAgents']);
-    Route::post('/office-agents/{id}/update', [AgentProfileController::class, 'updateAgent']);
+    Route::post('/office-agents/{id}/update', [AgentProfileController::class, 'updateProfile']);
     Route::post('/office-agents/{id}', [AgentProfileController::class, 'getAgent']);
+
+    /**
+     * Hood User
+     */
+    Route::get('/application-assignees', [HoodUserController::class, 'getAssignee']);
+    Route::post('/hood-users', [HoodUserController::class, 'store']);
 
     /**
      * Applications

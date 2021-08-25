@@ -1,11 +1,11 @@
 <template>
-    <v-container>
-        <v-card class="pa-4">
-            <h2>All Application Metrics</h2>
-            <LeadMetrics></LeadMetrics>
-        </v-card>
+<!--    <v-container>-->
+<!--        <v-card class="pa-4">-->
+<!--            <h2>All Application Metrics</h2>-->
+<!--            <LeadMetrics></LeadMetrics>-->
+<!--        </v-card>-->
         <router-view></router-view>
-    </v-container>
+<!--    </v-container>-->
 </template>
 
 <script>

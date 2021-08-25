@@ -31,14 +31,22 @@
                         contain
                     ></v-img>
                 </template>
-                <ProfileDropdown @onLogout="onLogout"></ProfileDropdown>
+                <ProfileDropdown @onLogout="onLogout" @editProfile="editProfile"></ProfileDropdown>
             </v-menu>
-
         </v-app-bar>
 
+        <EditProfileModal v-if="editProfileFlag" :user="user" dialog="editProfileFlag"
+                          @saveUserSuccess="saveUserSuccess"
+                          @cancleModal="cancleModal"></EditProfileModal>
         <v-main>
+
+            <CreateSuccessfulModal v-if="userProfileUpdateFlag"
+                                   :dialog="userProfileUpdateFlag"  :isUpdate="userProfileUpdateFlag" title="Your profile"  @cancel="cancelSuccessfulModal">
+            </CreateSuccessfulModal>
+
             <router-view></router-view>
         </v-main>
+
     </v-app>
 </template>
 
@@ -46,27 +54,52 @@
 import ProfileDropdown from "@scripts/components/crm/ProfileDropdown";
 import ApplicationService from "../services/ApplicationService";
 import AuthService from "@scripts/services/AuthService";
+import EditProfileModal from "@scripts/components/crm/modals/EditProfileModal";
+import CreateSuccessfulModal from "@scripts/components/crm/modals/CreateSuccessfulModal";
 
 export default {
     name: "NewDashboardLayout",
     components: {
+        EditProfileModal,
         ProfileDropdown,
+        CreateSuccessfulModal
     },
     data() {
         return {
             user: null,
             drawer: null,
+            editProfileFlag: false,
+            userProfileUpdateFlag: false,
             routes: ApplicationService.getMainNavigationRoutes()
         }
     },
     mounted() {
         this.user = AuthService.getAuthUser();
+        console.log(this.user);
         setInterval(AuthService.authUser, 300000)
     },
      methods: {
         async onLogout() {
             await AuthService.logout();
         },
+
+         editProfile() {
+            console.log('hello world');
+            this.editProfileFlag = true;
+         },
+
+         cancleModal() {
+             this.editProfileFlag = false;
+         },
+
+         saveUserSuccess() {
+             this.editProfileFlag = false;
+             this.userProfileUpdateFlag = true;
+         },
+
+         cancelSuccessfulModal() {
+             this.userProfileUpdateFlag = false;
+         }
     },
 }
 </script>
