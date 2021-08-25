@@ -89,9 +89,10 @@ export default {
     },
 
     saveUser: async (crmUser, officeId)=> {
+        console.log(crmUser, "UUUUUSER")
         try {
 
-           const crmUser = CrmUserMapper.mapuserToServer(crmUser, officeId);
+           crmUser = CrmUserMapper.mapuserToServer(crmUser, officeId);
             const data = await axios.post('/api/offices/'+ officeId+ '/users', {...crmUser});
 
 
