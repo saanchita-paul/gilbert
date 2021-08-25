@@ -87,7 +87,8 @@ const router = new VueRouter({
                             name: 'real.state.agency.home',
                             component: CrmAgencyDataTable,
                             meta: {
-                                isProtected: true
+                                isProtected: true,
+                                breadcrumbType: 'AgencyList'
                             }
                         },
                         {
@@ -95,7 +96,8 @@ const router = new VueRouter({
                             component: CrmOfficeDataTable,
                             name: 'real.state.agency.office',
                             meta: {
-                                isProtected: true
+                                isProtected: true,
+                                breadcrumbType: 'AgencyOffices'
                             },
                             props: true
 

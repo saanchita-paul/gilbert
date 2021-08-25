@@ -6,5 +6,5 @@ export default {
     updateAgency: (agency, id) => AgencyAPI.updateAgency(agency,id),
     getAgency: (id) => AgencyAPI.getAgency(id),
     saveIndependentAgency: (agency) => AgencyAPI.saveIndependent(agency),
-
+    loadAgencyById: (id) => AgencyAPI.getAgencyData(id)
 }
