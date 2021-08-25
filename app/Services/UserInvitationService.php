@@ -12,4 +12,8 @@ class UserInvitationService
         dump($userInvite);
         return $userInvite;
     }
+
+    public function updatePassword(){
+
+    }
 }
