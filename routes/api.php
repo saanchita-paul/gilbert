@@ -28,7 +28,7 @@ Route::middleware('auth:sanctum')
     ->get('/user', [AuthController::class, 'authUser']);
 
 Route::get('/logout', [AuthController::class, 'logout']);
-
+Route::get('/testapplication', [ApplicationController::class, 'getApplicationMetricsCount']);
 /**
  * @Module AGENCY CRM
  */
@@ -80,6 +80,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/applications/{id}/notes', [NoteController::class, 'createConnectionNotes']);
 
     Route::get('/applications-metrics', [ApplicationController::class, 'getMetrics']);
+    Route::get('/applications-metrics-count', [ApplicationController::class, 'getApplicationMetricsCount']);
 });
 
 Route::post('/invitation/validation', [UserInvitationController::class, 'validateInvitation']);

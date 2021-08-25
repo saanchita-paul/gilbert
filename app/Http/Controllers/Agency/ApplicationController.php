@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Agency;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Resources\Agency\AgencyResource;
+use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationNoteResourse;
 use App\Http\Resources\Agency\ApplicationResource;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
 use App\Models\Identification;
 use App\Models\User;
 use App\Services\Agency\ApplicationNoteService;
@@ -164,6 +166,26 @@ class ApplicationController extends Controller
 
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
+        }
+    }
+
+    /**
+     * Getting All Aplication Metrics Count
+     *
+     * @param Request $request
+     *
+     */
+    public function getApplicationMetricsCount()
+    {
+        try {
+            $user = auth()->user();
+            $service = new ConnectionService();
+            $service= $service->allApplicationMetricsCount($user->profile->office_id);
+
+            return ApplicationMetricsResource::make($service);
+
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
 }
