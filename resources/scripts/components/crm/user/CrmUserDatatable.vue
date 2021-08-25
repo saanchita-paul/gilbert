@@ -1,10 +1,10 @@
 <template>
     <v-container fluid>
-        
-        <v-card class="hood-card">
-            <h2>All Application Metrics</h2>
-            <LeadMetrics></LeadMetrics>
-        </v-card>
+
+<!--        <v-card class="hood-card">-->
+<!--            <h2>All Application Metrics</h2>-->
+<!--            <LeadMetrics></LeadMetrics>-->
+<!--        </v-card>-->
 
         <div>
             <v-card class="hood-card  mt-4">
@@ -162,8 +162,13 @@ name: "CrmUserDatatable",
             this.loadUserData();
         },
         viewOfficeProfile() {
+            let officeId = this.$route.params?.officeId;
+            let agencyId = this.$route.params?.id;
             this.$router.push(
-                {name:'real.state.office.profile',params: {'id':1,'officeId':1}});
+                {
+                    name:'real.state.office.profile',params: {'id': agencyId, 'officeId': officeId}
+
+                });
         }
     },
     mounted() {
