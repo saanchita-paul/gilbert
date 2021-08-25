@@ -7,9 +7,8 @@ use phpDocumentor\Reflection\Utils;
 
 class UserInvitationService
 {
-    public function getInvitationByToken($token){
-        $userInvite = UserInvitation::where('token_code',$token['token'])->first();
-        dump($userInvite);
-        return $userInvite;
+    public function getInvitationByToken(array $data){
+        $token = $data['token'];
+        return UserInvitation::where('token_code', $token)->first();
     }
 }
