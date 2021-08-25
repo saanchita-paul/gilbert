@@ -42,12 +42,12 @@ class UserInviteNotification extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        \Log::info(json_encode($notifiable));
+        $profile = $notifiable->profile;
         return (new MailMessage)
             ->subject("Hood registration invite")
             ->view('email.invite_user', [
                 'token' => $this->invitation->token,
-                'user' => $notifiable
+                'name' => "$profile?->first_name $profile?->last_name"
             ]);
     }
 
