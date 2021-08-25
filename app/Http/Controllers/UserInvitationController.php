@@ -35,6 +35,12 @@ class UserInvitationController extends Controller
         }
     }
 
+
+    public function createInvitation(){
+
+    }
+
+
     /**
      * Password change for invitation user.
      *
