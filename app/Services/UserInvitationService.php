@@ -12,7 +12,7 @@ class UserInvitationService
     public function getInvitationByToken(array $data)
     {
         $token = $data['token'];
-        return UserInvitation::where('token_code', $token)
+        return UserInvitation::where('token', $token)
             ->where('status', 'pending')
             ->where('valid_till', '>', Carbon::now())
             ->with('user.profile')
@@ -30,7 +30,7 @@ class UserInvitationService
 
     public function updatePassword($updateData)
     {
-        $userInvitation = UserInvitation::where('token_code' , $updateData['token_code'])
+        $userInvitation = UserInvitation::where('token' , $updateData['token'])
             ->first();
         $user = User::find($userInvitation->user_id);
         if($user->first())
@@ -41,7 +41,7 @@ class UserInvitationService
 
     public function updateToken($updateData)
     {
-        $userInvitation = UserInvitation::where('token_code' , $updateData['token_code']);
+        $userInvitation = UserInvitation::where('token' , $updateData['token']);
         if($userInvitation->first())
         {
             return $userInvitation->update(['status'=> 'successful']);

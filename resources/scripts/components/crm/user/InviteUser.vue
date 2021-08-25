@@ -17,7 +17,7 @@
                             label="Password *"
                             outlined
                             dense
-                            v-model="new_user.new_password"
+                            v-model="new_user.password"
                             placeholder="password"
                             :type="'password'"
                             :error-messages=" errors[0]"
@@ -51,19 +51,21 @@
 
 <script>
 import UserInvitationService from "@scripts/services/crm/UserInvitationService";
+import AuthService from "@scripts/services/AuthService";
 
 export default {
 name: "InviteUser",
     data() {
     return {
         new_user: {
-          new_password:'',
+          password:'',
           confirm_password: '',
             id: '',
         },
       user: {
         first_name: '',
-        last_name: ''
+        last_name: '',
+          email: null,
       },
       isLoaded: false,
     }
@@ -73,7 +75,12 @@ name: "InviteUser",
 
          let v = await this.$refs.create_agency.validate();
          if(!v) return;
-          const isValidUser = await UserInvitationService.savePassword(this.new_user, this.new_user.id);
+         try {
+             const isValidUser = await UserInvitationService.savePassword({...this.new_user, ...{token: this.$route.query.token}}, this.new_user.id);
+             await AuthService.login({email: this.user.email, password: this.new_user.password})
+         } catch (err) {
+             console.log(err)
+         }
 
         },
       async validateToken() {
@@ -81,9 +88,10 @@ name: "InviteUser",
         const isValidUser = await UserInvitationService.validateToken(token);
         if(isValidUser?.success)
         {
-          this.user.first_name = isValidUser.data.first_name;
+          this.user.first_name = isValidUser.data.user.profile.first_name;
+          this.user.email = isValidUser.data.user.email;
           this.new_user.id = isValidUser.data.id;
-          this.isLoaded =true;
+          this.isLoaded = true;
         }
       },
 

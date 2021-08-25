@@ -51,7 +51,7 @@ class UserInvitationController extends Controller
 
             $this->validate($request, [
                 'password' => 'required|min:6',
-                'token_code' => 'required',
+                'token' => 'required',
             ]);
 
             $service = new UserInvitationService();
