@@ -7,8 +7,8 @@ function mapUser(user) {
 }
 
 function mapRole(role) {
-    let checkRole = UserRoles.ROLES.find((r) => { return r.value == role });
-    return checkRole.text;
+    const roles = [...UserRoles.HOOD, ...UserRoles.AGENCY]
+    return (roles.find((r) => r.value === role))?.text;
 }
 
 export default {
@@ -30,6 +30,7 @@ export default {
     },
 
     mapuserToServer: (user, officeId) => {
+        console.log(user, "Uyo")
         return  {
             office_id :officeId,
             ...user,
