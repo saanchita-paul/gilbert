@@ -50,7 +50,7 @@ class SearchHoodUser
     }
 
     /**
-     * Creating agency builder
+     * Creating builder
      *
      * @return Builder
      */

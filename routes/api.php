@@ -3,6 +3,7 @@
 use App\Http\Controllers\Agency\AgencyController;
 use App\Http\Controllers\Agency\AgentProfileController;
 use App\Http\Controllers\Agency\HoodUserController;
+use App\Http\Controllers\Agency\NoteController;
 use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ApplicationController;
 use App\Http\Controllers\Auth\AuthController;
@@ -60,6 +61,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::get('/application-assignees', [HoodUserController::class, 'getAssignee']);
     Route::post('/hood-users', [HoodUserController::class, 'store']);
+    Route::get('/hood-users', [HoodUserController::class, 'index']);
 
     /**
      * Applications
@@ -73,8 +75,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/applications/{applicationId}/escalate', [ApplicationController::class, 'escalate']);
 
     //todo: make a  separate controller for notes
-    Route::get('/applications/{id}/notes', [ApplicationController::class, 'getConnectionNotes']);
-    Route::post('/applications/{id}/notes', [ApplicationController::class, 'createConnectionNotes']);
+    Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes']);
+    Route::post('/applications/{id}/notes', [NoteController::class, 'createConnectionNotes']);
 
     Route::get('/applications-metrics', [ApplicationController::class, 'getMetrics']);
 });

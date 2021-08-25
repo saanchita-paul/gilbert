@@ -23,6 +23,7 @@ class DefaultSeeder extends Seeder
 
         $this->createAdmin('admin@hood.ai', 'Hood', 'Admin', RolePermission::ROLE_HOOD_ADMIN);
         $this->createAdmin('nick@hood-agent.com', 'Hood', 'Agent', RolePermission::ROLE_HOOD_AGENT);
+        $this->createAdmin('leader@hood.ai', 'Team', 'Leader', RolePermission::ROLE_HOOD_TEAM_LEAD);
     }
 
     /**
@@ -32,6 +33,7 @@ class DefaultSeeder extends Seeder
     {
         User::query()->where('email', 'admin@hood.ai')->delete();
         User::query()->where('email', 'nick@hood-agent.com')->delete();
+        User::query()->where('email', 'leader@hood.ai   ')->delete();
     }
 
     /**
