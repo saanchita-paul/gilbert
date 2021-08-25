@@ -20,6 +20,24 @@ class HoodUserController extends Controller
      *
      * @return JsonResponse|AnonymousResourceCollection
      */
+    public function index(Request $request): JsonResponse|AnonymousResourceCollection
+    {
+        try {
+            $service = new SearchHoodUser($request->toArray());
+            return HoodProfileResource::collection($service->get());
+
+        } catch ( \Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    /**
+     * Getting assignable hood users
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse|AnonymousResourceCollection
+     */
     public function getAssignee(Request $request): JsonResponse|AnonymousResourceCollection
     {
         try {
