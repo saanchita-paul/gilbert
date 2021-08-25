@@ -143,8 +143,6 @@ export default {
         office.agency_id = office.agency.id;
         let commissions = mapCommissions(data.commissions);
         let agent = mapAgent(data.agent);
-        alert('map done')
-
         return {
             office: office,
             commissions: commissions,
