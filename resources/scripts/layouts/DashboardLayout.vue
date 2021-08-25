@@ -125,7 +125,7 @@ export default {
         },
          getHeaderText() {
             let user = this.user;
-            let userRole = UserRoles.ROLES.find((r) => { return r.value === user.roles[0] });
+            let userRole = [...UserRoles.AGENCY, ...UserRoles.HOOD].find((r) => { return r.value === user.roles[0] });
             return "Hello "+ user.profile.first_name + ' ' +  user.profile.last_name + ' (' + userRole.text + ')';
          }
     },
