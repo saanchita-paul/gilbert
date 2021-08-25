@@ -7,8 +7,8 @@ use App\Http\Controllers\Agency\NoteController;
 use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ApplicationController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\UserInvitationController;
 use Illuminate\Encryption\Encrypter;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
@@ -48,6 +48,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/offices', [OfficeController::class, 'createOffice']);
     Route::get('/offices/{id}', [OfficeController::class, 'getOffice']);
+    Route::get('/offices/office/{id}', [OfficeController::class, 'getOnlyOffice']);
     Route::post('/offices/{id}/update', [OfficeController::class, 'updateOffice']);
     Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index']);
     Route::post('/offices/{officeId}/users', [AgentProfileController::class, 'createAgent']);
@@ -80,6 +81,10 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/applications-metrics', [ApplicationController::class, 'getMetrics']);
 });
+
+Route::post('/invitation/validation', [UserInvitationController::class, 'index']);
+Route::post('/invitation/change-password', [UserInvitationController::class, 'passwordChange']);
+
 
 /**
  * test routes

@@ -135,7 +135,18 @@ class OfficeController extends Controller
 
         try {
             $service = new OfficeService($id);
-            return response()->json(['success' => false, 'data' => $service->getOffice()]);
+            return response()->json(['success' => true, 'data' => $service->getOffice()]);
+
+        } catch ( \Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    public function getOnlyOffice(int $id)
+    {
+        try {
+            $service = new OfficeService($id);
+            return response()->json(['success' => true, 'data' => $service->getOnlyOffice()]);
 
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);

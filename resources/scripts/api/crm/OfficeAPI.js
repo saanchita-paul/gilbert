@@ -68,6 +68,16 @@ export default {
         }
     },
 
+    getOnlyOfficeData: async (id) => {
+        try {
+            const data = await axios.get('/api/offices/office/'+id);
+            return data.data.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
     updateOffice: async (office, id) => {
         console.log('data',{...office});
 

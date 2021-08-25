@@ -72,7 +72,7 @@
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
             <v-toolbar-title>
                 <h4>Dashboard</h4>
-                <v-breadcrumbs v-if="breadcrumbs" :items="breadcrumbs">
+                <v-breadcrumbs v-if="breadcrumbs" :items="breadcrumbs" divider=">">
                     <template v-slot:item="{ item }">
                         <v-breadcrumbs-item
                             :to="{name: item.to}"
