@@ -14,7 +14,7 @@ class UserInvitationService
         $token = $data['token'];
         return UserInvitation::where('token_code', $token)
             ->where('status', 'pending')
-            ->whereDate('valid_till', '>', Carbon::now())
+            ->where('valid_till', '>', Carbon::now())
             ->with('user.profile')
             ->first();
     }
