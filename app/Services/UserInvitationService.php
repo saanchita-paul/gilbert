@@ -29,7 +29,8 @@ class UserInvitationService
 
     public function updatePassword($updateData)
     {
-        $user = User::where('email' , $updateData['email']);
+        $userInvitation = UserInvitation::where('token_code' , $updateData['token_code'])->first();
+        $user = User::find($userInvitation->user_id);
         if($user->first())
         {
             return $user->update(['password'=> Hash::make($updateData['password'])]);
@@ -38,7 +39,7 @@ class UserInvitationService
 
     public function updateToken($updateData)
     {
-        $userInvitation = UserInvitation::where('email' , $updateData['email']);
+        $userInvitation = UserInvitation::where('token_code' , $updateData['token_code']);
         if($userInvitation->first())
         {
             return $userInvitation->update(['status'=> 'successful']);
