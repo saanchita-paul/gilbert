@@ -4,22 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Agency\PasswordChangeRequest;
 use App\Http\Requests\ValidateUserTokenRequest;
-use App\Http\Resources\UserInvitationResource;
 use App\Services\UserInvitationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserInvitationController extends Controller
 {
     /**
      * Getting User Invitation validation
      *
-     * @param Request $request
+     * @param ValidateUserTokenRequest $request
      *
-     * @return AnonymousResourceCollection|JsonResponse
      */
-    public function index(ValidateUserTokenRequest $request)
+    public function validateInvitation(Request $request)
     {
         try {
             $svcUserInvitation = new UserInvitationService();
@@ -35,7 +32,6 @@ class UserInvitationController extends Controller
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
-
 
     public function createInvitation(){
 
@@ -55,6 +51,7 @@ class UserInvitationController extends Controller
 
             $this->validate($request, [
                 'password' => 'required|min:6',
+                'token_code' => 'required',
             ]);
 
             $service = new UserInvitationService();
