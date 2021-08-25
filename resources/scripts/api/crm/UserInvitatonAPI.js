@@ -11,6 +11,16 @@ export default {
             return error.data;
         }
     },
+    savePassword: async (userData,id) => {
+        try {
+            console.log(userData);
+            const data = await axios.post('/api/invitation/change-password',{...userData});
+            return data.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
 
 
 }
