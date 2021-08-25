@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Agency\PasswordChangeRequest;
+use App\Http\Requests\ValidateUserTokenRequest;
 use App\Http\Resources\UserInvitationResource;
 use App\Services\UserInvitationService;
 use Illuminate\Http\JsonResponse;
@@ -18,7 +19,7 @@ class UserInvitationController extends Controller
      *
      * @return AnonymousResourceCollection|JsonResponse
      */
-    public function index(Request $request)
+    public function index(ValidateUserTokenRequest $request)
     {
         try {
             $svcUserInvitation = new UserInvitationService();
