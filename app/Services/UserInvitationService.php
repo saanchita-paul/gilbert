@@ -27,12 +27,21 @@ class UserInvitationService
         return UserInvitation::create($userInvitation);
     }
 
-    public function updatePassword($request)
+    public function updatePassword($updateData)
     {
-        $user = User::where('email' , $request['email']);
+        $user = User::where('email' , $updateData['email']);
         if($user->first())
         {
-            return $user->update(['password'=> Hash::make($request['password'])]);
+            return $user->update(['password'=> Hash::make($updateData['password'])]);
+        }
+    }
+
+    public function updateToken($updateData)
+    {
+        $userInvitation = UserInvitation::where('email' , $updateData['email']);
+        if($userInvitation->first())
+        {
+            return $userInvitation->update(['token_code'=> 'successful']);
         }
     }
 }
