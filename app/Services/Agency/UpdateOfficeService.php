@@ -4,6 +4,7 @@
 namespace App\Services\Agency;
 
 
+use App\Models\Agency;
 use App\Models\AgentProfile;
 use App\Models\Office;
 use App\Models\OfficeCommission;
@@ -22,6 +23,12 @@ class UpdateOfficeService
     {
         $office = Office::findOrFail($this->id);
         $office->update($data['office']);
+
+        if($data['office']['agency_type'] == 0) {
+            $agency = Agency::findOrFail($data['office']['agency_id']);
+            $agency->update(['name'=>$data['office']['agency_name']]);
+        }
+
         $office = $office->refresh()->toArray();
         $office['commissions'] = $this->updateCommissions($data['commissions'], $office);
         $office['agent'] = $this->updateAgent($data['agent']);

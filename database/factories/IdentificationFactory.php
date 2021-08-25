@@ -23,16 +23,10 @@ class IdentificationFactory extends Factory
      */
     public function definition()
     {
-
-        #$applications = ConnectionApplication::all();
         return [
-
-            'connection_application_id' => ConnectionApplication::factory()->create()->id,
+            'type' => Identification::TYPE_PASSPORT,
             'card_number' => $this->faker->creditCardNumber,
-            'state' => $this->faker->streetName,
             'country' => $this->faker->country,
-            'card_color' => $this->faker->colorName,
-            'special_number' => $this->faker->numberBetween(1,9),
             'expire_date' => $this->faker->creditCardExpirationDate
         ];
     }

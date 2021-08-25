@@ -32,7 +32,7 @@ class ConnectionApplicationFactory extends Factory
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'email' => $this->faker->email(),
-            'phone' => $this->faker->phoneNumber(),
+            'phone' => rand(1000000000, 10000000000),
             'tenancy_type' => rand(1, 3),
             'dob' => $this->faker->date(),
             'moving_date' => $this->faker->date(),
@@ -44,6 +44,9 @@ class ConnectionApplicationFactory extends Factory
             'additional_instruction' => $this->faker->sentence(10),
             'address_text' => $this->faker->address(),
             'is_email_billing' => rand(0, 1),
+            'property_type' => rand(0, 1),
+            'has_solar' => rand(0, 1),
+            'has_life_support' => rand(0, 1),
             'status' => ConnectionApplication::STATUS_UNASSIGNED
         ];
     }
