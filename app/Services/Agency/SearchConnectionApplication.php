@@ -2,6 +2,7 @@
 
 namespace App\Services\Agency;
 
+use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Traits\Agency\Searchable;
 use App\Traits\Agency\Sortable;
@@ -18,12 +19,6 @@ class SearchConnectionApplication
     private ?int $perPage;
     private ?string $status;
     private ?string $leadType;
-    private array $statusMap = [
-        'unassigned' => 1,
-        'assigned' => 2,
-        'escalated' => 3,
-        'submitted' => 4,
-    ];
 
 
     public function __construct(array $request)
@@ -37,50 +32,31 @@ class SearchConnectionApplication
     }
 
     /**
+     * @param $user
      * @return LengthAwarePaginator
      */
     public function get($user): LengthAwarePaginator
     {
-        if($this->leadType && $this->leadType !== ConnectionApplication::MY_APPLICATIONS) {
-            $agencyBuilder = ConnectionApplication::query()
-                ->where('office_id', $user->profile->office_id)
-                ->where('status', ConnectionApplication::STATUS_MAPPING[$this->leadType])
-                ->with('connectionServices')
-                ->with('assignedTo');
-        } elseif($this->leadType && $this->leadType === ConnectionApplication::MY_APPLICATIONS) {
-            $agencyBuilder = ConnectionApplication::query()
-                ->where('office_id', $user->profile->office_id)
-                ->where('assigned_to', $user->profile->id)
-                ->with('connectionServices')
-                ->with('assignedTo');
-        }else {
-            $agencyBuilder = ConnectionApplication::query()
-                ->where('office_id', $user->profile->office_id)
-                ->with('connectionServices')
-                ->with('assignedTo');
+        $builder = ConnectionApplication::query()
+            ->with('connectionServices')
+            ->with('assignedTo');
+
+        if($this->leadType) {
+            $builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
+                ? $builder->where('status', ConnectionApplication::STATUS_MAPPING[$this->leadType])
+                :  $builder->where('assigned_to', $user->profile->id);
+
         }
 
-        $agencyBuilder = $this->applySearch($agencyBuilder, ['first_name', 'last_name']);
-
-        $agencyBuilder = $this->applySorting($agencyBuilder);
-
-
-        return  $agencyBuilder->paginate($this->perPage);
-    }
-
-    /**
-     * Apply filters
-     *
-     * @return Builder
-     */
-    private function applyFilter(Builder $builder): Builder
-    {
-        if (!$this->status || !array_key_exists($this->status, $this->statusMap)) {
-            return $builder;
+        if ($user->profile_type === AgentProfile::class) {
+            $builder->where('office_id', $user->profile->office_id);
         }
 
-        $statusValue = ConnectionApplication::STATUS_MAPPING[$this->status];
+        $builder = $this->applySearch($builder, ['first_name', 'last_name']);
 
-        return $builder->where('status', $statusValue);
+        $builder = $this->applySorting($builder);
+
+
+        return  $builder->paginate($this->perPage);
     }
 }

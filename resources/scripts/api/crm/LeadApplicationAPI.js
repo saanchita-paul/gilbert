@@ -301,9 +301,9 @@ export default {
             return error.data;
         }
     },
-    async assignUser(leadId, agentProfileId) {
+    async assignUser(leadId, id) {
         try {
-            const data = await axios.post('/api/applications/'+leadId+'/assign',{agent_profile_id: agentProfileId});
+            const data = await axios.post('/api/applications/'+leadId+'/assign',{hood_user_id: id});
             return ApplicationMapper.mapNote(data);
 
         } catch (error) {

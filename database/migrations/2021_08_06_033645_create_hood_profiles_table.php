@@ -16,6 +16,7 @@ class CreateHoodProfilesTable extends Migration
         Schema::create('hood_profiles', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('first_name', 100)->nullable();
+            $table->string('phone', 20)->nullable();
             $table->string('last_name', 100)->nullable();
             $table->string('profile_photo', 200)->nullable();
             $table->timestamps();

@@ -2,7 +2,8 @@
     <v-row>
       <v-col class="section-dialogs" cols="12">
         <div class="dialogs-title d-flex justify-center">
-          <p>{{title}} has been created!</p>
+          <p v-if="!isUpdate">{{title}} has been created!</p>
+          <p v-if="isUpdate">{{title}} has been Updated!</p>
         </div>
           <div class="d-flex justify-center">
               <v-btn @click="cancel"
@@ -18,7 +19,7 @@
 <script>
 export default {
   name: "Created",
-    props:['title'],
+    props:['title','isUpdate'],
     methods: {
         cancel() {
             this.$emit('cancelDialog');

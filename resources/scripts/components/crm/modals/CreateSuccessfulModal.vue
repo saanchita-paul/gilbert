@@ -7,7 +7,7 @@
         >
             <v-card>
                 <v-container>
-                    <Created  @cancelDialog="cancelDialog" :title="title"></Created>
+                    <Created  @cancelDialog="cancelDialog" :title="title" :isUpdate="isUpdate"></Created>
                 </v-container>
             </v-card>
         </v-dialog>
@@ -19,7 +19,7 @@ import Created from "@scripts/components/crm/Created";
 export default {
     name: "CreateSuccessfulModal",
     components: {Created},
-    props:['dialog','title'],
+    props:['dialog','title','isUpdate'],
     methods: {
         cancelDialog() {
             this.$emit('cancel');

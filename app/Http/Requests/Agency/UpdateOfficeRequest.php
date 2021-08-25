@@ -26,6 +26,7 @@ class UpdateOfficeRequest extends FormRequest
     public function rules()
     {
         return [
+            'office.id'=>'required',
             'office.address'=>'required|string',
             'office.name'=>'required|string',
             'office.phone'=>'required|string',
@@ -33,9 +34,6 @@ class UpdateOfficeRequest extends FormRequest
             'office.abn'=>'nullable|string',
 
             'agent.id'=>'required',
-            'agent.first_name'=>'required|string',
-            'agent.last_name'=>'required|string',
-            'agent.f_id_12'=>'nullable|string',
             'agent.phone'=>'nullable|string',
         ];
     }

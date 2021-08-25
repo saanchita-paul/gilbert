@@ -32,6 +32,6 @@ class OfficeService
 
     public function getAgent()
     {
-        return AgentProfile::query()->where('office_id','=', $this->id)->first();
+        return AgentProfile::query()->where('office_id','=', $this->id)->first()->load('user');
     }
 }

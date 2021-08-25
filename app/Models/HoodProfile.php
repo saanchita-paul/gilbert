@@ -39,7 +39,8 @@ class HoodProfile extends Model
     protected $fillable = [
         'first_name',
         'last_name',
-        'profile_photo'
+        'profile_photo',
+        'phone'
     ];
 
     /**

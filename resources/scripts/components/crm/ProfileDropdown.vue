@@ -16,7 +16,7 @@
                 <v-divider></v-divider>
             </div>
             <div class="pa-4">
-                <v-btn outlined block>
+                <v-btn outlined block @click="editProfile">
                     Edit My Profile
                 </v-btn>
             </div>
@@ -35,6 +35,9 @@ export default {
         onLogout () {
             this.$emit('onLogout');
         },
+        editProfile() {
+            this.$emit('editProfile');
+        }
     },
 };
 </script>

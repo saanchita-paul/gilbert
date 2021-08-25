@@ -23,6 +23,8 @@ import LeadApplications from "@scripts/components/crm/leadmanagement/LeadApplica
 import ApplicationPage from "@scripts/pages/ApplicationPage";
 import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
 import ApplicationDetailsPage from "@scripts/pages/ApplicationDetailsPage";
+import OfficeProfile from "@scripts/components/crm/office/OfficeProfile";
+import InviteUser from "@scripts/components/crm/user/InviteUser";
 
 Vue.use(VueRouter);
 
@@ -75,7 +77,6 @@ const router = new VueRouter({
                         isProtected: true
                     }
                 },
-                ,
                 {
                     path: '/agencies',
                     component: RealStateAgencyPage,
@@ -108,7 +109,18 @@ const router = new VueRouter({
                             },
                             props: true
 
+                        },
+                        {
+                            path: ':id/offices/:officeId/profile',
+                            component: OfficeProfile,
+                            name: 'real.state.office.profile',
+                            meta: {
+                                isProtected: true
+                            },
+                            props: true
+
                         }
+
                     ],
                     meta: {
                         isProtected: true
@@ -171,6 +183,14 @@ const router = new VueRouter({
                     }
                 },
             ]
+        },
+        {
+           path: '/confirm-invitation',
+           component: InviteUser,
+           name:'confirm.user.invite',
+           meta: {
+               isProtected: false
+           }
         }
     ]
 })
