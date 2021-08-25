@@ -38,7 +38,6 @@ name: "AgencyEditModal",
         async loadAgencyData() {
             const agency = await AgencyService.getAgency(this.agencyId);
             this.title = agency.title;
-            console.log('agency tilte',agency.title)
             this.isLoaded = true;
 
         }

@@ -51,7 +51,7 @@ class ApplicationService
         }
         return ApplicationNote::create($note);
     }
-    
+
     public function updateApplication(array $application, int $applicationId) {
         $existingApplication = ConnectionApplication::find($applicationId);
         $existingApplication->assigned_to = $application['agent_profile_id'];
@@ -99,13 +99,9 @@ class ApplicationService
     }
 
 
-    public function reCreateLead(array $applications, $id, $user) {
-
-        $applications['office_id'] = $user->office_id;
-        $applications['agency_id'] = $user->agency_id;
+    public function submit(array $applications, $id)
+    {
         $lead = $applications['lead'];
-        $lead['office_id'] = $user->office_id;
-        $lead['agency_id'] = $user->agency_id;
         $lead['status'] = ConnectionApplication::STATUS_SUBMITTED;
         $existLead = ConnectionApplication::findOrFail($id);
         $existLead->update($lead);

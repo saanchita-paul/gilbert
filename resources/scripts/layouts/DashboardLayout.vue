@@ -70,9 +70,18 @@
 
         <v-app-bar app class="app-app-bar" dark>
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-            <v-toolbar-title v-if="false">
+            <v-toolbar-title>
                 <h4>Dashboard</h4>
-                <h6>Customer / List</h6>
+                <v-breadcrumbs v-if="breadcrumbs" :items="breadcrumbs" divider=">">
+                    <template v-slot:item="{ item }">
+                        <v-breadcrumbs-item
+                            :to="{name: item.to}"
+                            exact
+                        >
+                            {{ item.text }}
+                        </v-breadcrumbs-item>
+                    </template>
+                </v-breadcrumbs>
             </v-toolbar-title>
             <v-spacer/>
             <v-img  src="/assets/images/icons/Search.svg" max-width="24px"/>
@@ -109,7 +118,7 @@ export default {
      methods: {
         async onLogout() {
             await AuthService.logout();
-        },
+        }
     },
     computed: {
         routes() {
@@ -118,6 +127,9 @@ export default {
                     return this.user.permissions.includes(route.permissions)
                 }
             })
+        },
+        breadcrumbs() {
+            return AuthService.getBreadcrumbs();
         }
     }
 }
