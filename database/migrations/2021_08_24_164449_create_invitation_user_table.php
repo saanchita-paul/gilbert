@@ -15,7 +15,7 @@ class CreateInvitationUserTable extends Migration
     {
         Schema::create('user_invitations', function (Blueprint $table){
             $table->BigIncrements('id');
-            $table->string('token_code')->index();
+            $table->string('token', 100)->index();
             $table->string('email');
             $table->BigInteger('user_id')->unsigned();
             $table->enum('status', ['pending', 'successful','canceled','expired'])->default('pending');

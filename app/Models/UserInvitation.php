@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\UserInvitation
  *
  * @property int $id
- * @property int $token_code
+ * @property int $token
  * @property int|null $email
  * @property string|null $user_id
  * @property string|null $status
@@ -45,7 +45,7 @@ class UserInvitation extends Model
      * @var array
      */
     protected $fillable = [
-        'token_code',
+        'token',
         'email',
         'user_id',
         'status',
