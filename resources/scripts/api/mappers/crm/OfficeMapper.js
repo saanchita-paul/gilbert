@@ -44,11 +44,9 @@ function mapCommissions (commissions){
 }
 
    function mapAgent (agent) {
-
     return {
         ...agent,
-        full_name: agent.first_name + ' ' + agent.last_name,
-        email: agent.user.email
+        // full_name: agent.first_name + ' ' + agent.last_name,
     }
 }
 
@@ -138,12 +136,15 @@ export default {
 
 
     mapOfficeCommissionAgent: (data)=> {
+        console.log(data)
         let office = mapOfficeDetails(data);
         office.agency_name = office.agency.name;
         office.agency_type = office.agency.type;
         office.agency_id = office.agency.id;
         let commissions = mapCommissions(data.commissions);
         let agent = mapAgent(data.agent);
+        alert('map done')
+
         return {
             office: office,
             commissions: commissions,
