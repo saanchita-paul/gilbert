@@ -15,6 +15,7 @@ class UserInvitationService
         return UserInvitation::where('token_code', $token)
             ->where('status', 'pending')
             ->whereDate('valid_till', '>', Carbon::now())
+            ->with('user.profile')
             ->first();
     }
 
@@ -27,12 +28,23 @@ class UserInvitationService
         return UserInvitation::create($userInvitation);
     }
 
-    public function updatePassword($request)
+    public function updatePassword($updateData)
     {
-        $user = User::where('email' , $request['email']);
+        $userInvitation = UserInvitation::where('token_code' , $updateData['token_code'])
+            ->first();
+        $user = User::find($userInvitation->user_id);
         if($user->first())
         {
-            return $user->update(['password'=> Hash::make($request['password'])]);
+            return $user->update(['password'=> Hash::make($updateData['password'])]);
+        }
+    }
+
+    public function updateToken($updateData)
+    {
+        $userInvitation = UserInvitation::where('token_code' , $updateData['token_code']);
+        if($userInvitation->first())
+        {
+            return $userInvitation->update(['status'=> 'successful']);
         }
     }
 }

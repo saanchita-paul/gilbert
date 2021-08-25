@@ -40,6 +40,9 @@ class CreateAgentAndUser
         $userInvitation->email = $userData['email'];
         $userInvitation->user_id = $userData['id'];
         $userInvitation->valid_till = Carbon::now()->addHour(72)->format('Y-m-d H:i:s');
+
+        Mail::to($userInvitation->email)->send(new InviteUserMail());
+
         return $userInvitation->save();
     }
 

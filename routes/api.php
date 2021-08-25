@@ -82,7 +82,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/applications-metrics', [ApplicationController::class, 'getMetrics']);
 });
 
-Route::post('/invitation/validation', [UserInvitationController::class, 'index']);
+Route::post('/invitation/validation', [UserInvitationController::class, 'validateInvitation']);
 Route::post('/invitation/change-password', [UserInvitationController::class, 'passwordChange']);
 
 
