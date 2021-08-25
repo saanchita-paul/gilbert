@@ -2,10 +2,31 @@
     <v-container>
         <ValidationObserver ref="office_details">
             <v-card class="pa-4" v-if="isLoaded">
+                <v-row>
+                    <v-col cols="12 pb-0">
+                        <v-btn @click="goToOffice"><v-icon left dark>mdi-arrow-left</v-icon>Back to Sunbury Office Metrics</v-btn>
+                        <h3 class="page-title my-5 pt-5">{{office.name}} Office Profile</h3>
+                        <p v-if="office.agency_name.type == 0" class="sub-title mb-0">Agency</p>
+                    </v-col>
+
+                    <v-col cols="6" v-if="office.agency_type == 0">
+                        <ValidationProvider name="Agency Name" rules="required"  v-slot="{ errors }">
+                            <v-text-field
+                                label="Agency Name*"
+                                outlined
+                                dense
+                                v-model="office.agency_name"
+                                :error-messages=" errors[0]"
+                                placeholder="Agency Name"
+                            ></v-text-field>
+                        </ValidationProvider>
+                    </v-col>
+
+                </v-row>
             <v-row>
                 <v-col cols="12 pb-0">
-                    <v-btn @click="goToOffice"><v-icon left dark>mdi-arrow-left</v-icon>Back to Sunbury Office Metrics</v-btn>
-                    <h3 class="page-title my-5 pt-5">{{office.name}} Office Profile</h3>
+<!--                    <v-btn @click="goToOffice"><v-icon left dark>mdi-arrow-left</v-icon>Back to Sunbury Office Metrics</v-btn>-->
+<!--                    <h3 class="page-title my-5 pt-5">{{office.name}} Office Profile</h3>-->
                     <p class="sub-title mb-0">Branch/Office Details</p>
                 </v-col>
 
@@ -255,6 +276,9 @@ export default {
               phone: null,
               email: null,
               abn: null,
+              agency_name: null,
+              agency_type: null,
+              agency_id: null,
           },
           commission: {
               gas:null,
@@ -276,14 +300,16 @@ export default {
     methods:{
       async loadOffice() {
           this.data = await OfficeService.loadOfficeById(this.activeOffice);
-          this.syncData();
+          // console.log(this.data);
+          await this.syncData();
+          // console.log(this.office);
           this.isLoaded = true;
       },
 
-        syncData() {
-            this.updateOffice(this.data?.office);
-            this.updateCommission(this.data?.commissions);
-            this.updateAgent(this.data?.agent);
+       async syncData() {
+           await this.updateOffice(this.data?.office);
+           await this.updateCommission(this.data?.commissions);
+           await this.updateAgent(this.data?.agent);
         },
 
         updateAgent(data) {
@@ -303,6 +329,9 @@ export default {
             this.office.phone = data.phone;
             this.office.email = data.email;
             this.office.abn = data.abn;
+            this.office.agency_name = data.agency_name;
+            this.office.agency_type = data.agency_type;
+            this.office.agency_id = data.agency_id;
 
         },
 

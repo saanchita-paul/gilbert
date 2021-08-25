@@ -42,6 +42,10 @@ class Identification extends Model
 {
     use HasFactory;
 
+    const TYPE_PASSPORT = 1;
+    const TYPE_MEDICARE = 2;
+    const TYPE_DRIVING_LICENCE = 2;
+
     /**
      * The attributes that are mass assignable.
      *

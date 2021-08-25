@@ -139,6 +139,9 @@ export default {
 
     mapOfficeCommissionAgent: (data)=> {
         let office = mapOfficeDetails(data);
+        office.agency_name = office.agency.name;
+        office.agency_type = office.agency.type;
+        office.agency_id = office.agency.id;
         let commissions = mapCommissions(data.commissions);
         let agent = mapAgent(data.agent);
         return {

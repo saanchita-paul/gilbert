@@ -40,7 +40,7 @@ class ApplicationController extends Controller
             return ApplicationResource::collection($service->get($user));
 
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -62,7 +62,7 @@ class ApplicationController extends Controller
             return ApplicationResource::make($service->createApplication($inputData, $user));
 
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -80,7 +80,7 @@ class ApplicationController extends Controller
             return new ApplicationResource($application);
 
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -98,34 +98,11 @@ class ApplicationController extends Controller
             return response()->json(['data' => $service->toArray()]);
 
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
-    /**
-     * @param Request $request
-     * @param ConnectionApplication $application
-     * @return JsonResponse
-     */
-    public function getConnectionNotes(string $application)
-    {
-        try {
-            $service = new ApplicationService();
-            return ApplicationNoteResourse::collection($service->getNotes($application));
-        } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
-        }
-    }
 
-    public function createConnectionNotes(Request $request, string $id): ApplicationNoteResourse|JsonResponse
-    {
-        try {
-            $service = new ApplicationNoteService(Auth::user());
-            return ApplicationNoteResourse::make($service->createNotes($request->toArray(), $id));
-        } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
-        }
-    }
 
      /**
       * Assigning user to an Application
@@ -145,21 +122,27 @@ class ApplicationController extends Controller
             ));
 
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
 
+    /**
+     * Submitting an Application
+     *
+     * @param Request $request
+     * @param $id
+     *
+     * @return ApplicationResource|JsonResponse
+     */
     public function submit(Request $request, $id)
     {
 
         try {
             $service = new ApplicationService();
-            $user = Auth::user();
-            $profile = $user->profile;
-            return ApplicationResource::make($service->reCreateLead($request->toArray(), $id, $profile));
+            return ApplicationResource::make($service->submit($request->toArray(), $id));
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -180,7 +163,7 @@ class ApplicationController extends Controller
             return ApplicationResource::make($service->updateEscalateApplication($inputData, $applicationId, $user));
 
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 }
