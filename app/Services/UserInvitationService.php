@@ -11,4 +11,8 @@ class UserInvitationService
         $token = $data['token'];
         return UserInvitation::where('token_code', $token)->first();
     }
+
+    public function updatePassword(){
+
+    }
 }
