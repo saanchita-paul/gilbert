@@ -23,7 +23,6 @@ class UserInvitationService
         $userInvitation = new UserInvitation();
         $userInvitation->email = $inputData['email'];
         $userInvitation->user_id = $inputData['user_id'];
-        $userInvitation->user_id = $inputData['user_id'];
         $userInvitation->valid_till = Carbon::now()->addHour(72)->format('Y-m-d H:i:s');
         return UserInvitation::create($userInvitation);
     }
