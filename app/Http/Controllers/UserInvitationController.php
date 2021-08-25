@@ -45,14 +45,13 @@ class UserInvitationController extends Controller
     public function passwordChange(Request $request)
     {
         try {
-            $service = new UserInvitationService();
-            $service->getInvitationByToken($request->toArray());
-
 
             $this->validate($request, [
-                'new_password' => 'required|min:6',
-                'confirm_password' => 'required|same:new_password',
+                'password' => 'required|min:6',
             ]);
+
+            $service = new UserInvitationService();
+            $service->updatePassword($request->toArray());
 
             return response()->json(['success' => true, 'message' => "Password successfully updated."]);
         } catch (\Exception $exception) {
