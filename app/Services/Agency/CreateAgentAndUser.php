@@ -8,6 +8,10 @@ use App\Mail\InviteUserMail;
 use App\Models\AgentProfile;
 use App\Models\Office;
 use App\Models\User;
+use App\Models\UserInvitation;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
+use phpDocumentor\Reflection\DocBlock\Tags\Reference\Url;
 
 class CreateAgentAndUser
 {
@@ -15,7 +19,8 @@ class CreateAgentAndUser
     {
         /** @var AgentProfile $agent */
         $agent = AgentProfile::create($agentData);
-//        \Mail::to($agent->email)->send(new InviteUserMail());
+
+        #Mail::to($agent->email)->send(new InviteUserMail());
         return $agent;
     }
 
@@ -28,6 +33,19 @@ class CreateAgentAndUser
 
     }
 
+    public function createUserInvitation(array $userData)
+    {
+        $userInvitation = new UserInvitation();
+        $userInvitation->token_code = $this->generateToken();
+        $userInvitation->email = $userData['email'];
+        $userInvitation->user_id = $userData['id'];
+        $userInvitation->valid_till = Carbon::now()->addHour(72)->format('Y-m-d H:i:s');
+
+        Mail::to($userInvitation->email)->send(new InviteUserMail());
+
+        return $userInvitation->save();
+    }
+
     public function createAgentAndUser(array $inputData)
     {
         $office =  Office::query()->find($inputData['office_id']);
@@ -35,7 +53,13 @@ class CreateAgentAndUser
         $agent = $this->createAgent($inputData);
         $inputData['profile_id'] = $agent->id;
         $user = $this->createUser($inputData);
+        $userInvitation = $this->createUserInvitation($user->toArray());
         return $agent;
+    }
+
+    protected function generateToken()
+    {
+        return Str::random(30);
     }
 
 }

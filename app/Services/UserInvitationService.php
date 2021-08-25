@@ -23,17 +23,25 @@ class UserInvitationService
         $userInvitation = new UserInvitation();
         $userInvitation->email = $inputData['email'];
         $userInvitation->user_id = $inputData['user_id'];
-        $userInvitation->user_id = $inputData['user_id'];
         $userInvitation->valid_till = Carbon::now()->addHour(72)->format('Y-m-d H:i:s');
         return UserInvitation::create($userInvitation);
     }
 
-    public function updatePassword($request)
+    public function updatePassword($updateData)
     {
-        $user = User::where('email' , $request['email']);
+        $user = User::where('email' , $updateData['email']);
         if($user->first())
         {
-            return $user->update(['password'=> Hash::make($request['password'])]);
+            return $user->update(['password'=> Hash::make($updateData['password'])]);
+        }
+    }
+
+    public function updateToken($updateData)
+    {
+        $userInvitation = UserInvitation::where('email' , $updateData['email']);
+        if($userInvitation->first())
+        {
+            return $userInvitation->update(['status'=> 'successful']);
         }
     }
 }
