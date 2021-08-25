@@ -10,7 +10,7 @@
                     <v-row>
                         <v-col class="section-dialogs" cols="12">
                             <div class="dialogs-area">
-                                <p class="title">{{this.user.first_name +' '+ this.user.last_name }}has been added</p>
+                                <p class="title">{{this.user.first_name +' '+ this.user.last_name }} has been added</p>
                                 <p>An email has been sent to this user. Please inform user to verify the email</p>
                             </div>
 
