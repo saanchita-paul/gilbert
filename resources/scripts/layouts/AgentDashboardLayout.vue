@@ -1,5 +1,5 @@
 <template>
-    <v-app id="inspire" v-if="user" style="position: relative" ref="mainSpinner">
+    <v-app id="inspire" v-if="user && agency" style="position: relative" ref="mainSpinner">
         <v-app-bar app class="app-app-bar" dark>
             <v-img
                 class="mx-2"
@@ -10,14 +10,14 @@
             ></v-img>
 
             <v-toolbar-title class="ml-2">
-                AgencyName Office
+                {{getHeader()}}
             </v-toolbar-title>
 
             <v-spacer/>
 
             <v-toolbar-title class="mx-4">
-                <h6>Dimuthu Sathrasinghe</h6>
-                <h6>dimuthu.sathrasinghe@brccappital.com.au</h6>
+                <h6>{{ user.profile.first_name }} {{ user.profile.last_name }}</h6>
+                <h6>{{ user.email }}</h6>
             </v-toolbar-title>
 
             <v-menu offset-y>
@@ -56,6 +56,7 @@ import ApplicationService from "../services/ApplicationService";
 import AuthService from "@scripts/services/AuthService";
 import EditProfileModal from "@scripts/components/crm/modals/EditProfileModal";
 import CreateSuccessfulModal from "@scripts/components/crm/modals/CreateSuccessfulModal";
+import AgencyService from "@scripts/services/crm/AgencyService";
 
 export default {
     name: "NewDashboardLayout",
@@ -67,24 +68,32 @@ export default {
     data() {
         return {
             user: null,
+            agency: null,
             drawer: null,
             editProfileFlag: false,
             userProfileUpdateFlag: false,
             routes: ApplicationService.getMainNavigationRoutes()
         }
     },
-    mounted() {
+    async mounted() {
         this.user = AuthService.getAuthUser();
-        console.log(this.user);
+        this.agency = await this.getAgency(this.user.profile.agency_id);
         setInterval(AuthService.authUser, 300000)
     },
      methods: {
+         getHeader() {
+             return this.agency.title + ' / ' + this.user.profile.office.name;
+         },
+
+         async getAgency(agencyId) {
+             return await AgencyService.loadAgencyById(agencyId);
+         },
+
         async onLogout() {
             await AuthService.logout();
         },
 
          editProfile() {
-            console.log('hello world');
             this.editProfileFlag = true;
          },
 

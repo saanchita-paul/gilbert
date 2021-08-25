@@ -17,7 +17,7 @@
                             <div class="dialogs-area">
                                 <p class="title">New user details</p>
                                 <ValidationProvider name="Job Title" rules="required"  v-slot="{ errors }">
-                                    <v-select label="Job Title" v-model="user.job_title" :items="jobTitleDD" item-value="value" item-text="text"
+                                    <v-select label="Job Title" v-model="user.job_title" :items="roles" item-value="value" item-text="text"
                                                   placeholder="Property Manager / Admin / Director, etc...."
                                               :error-messages=" errors[0]"
                                               outlined dense>
@@ -84,8 +84,12 @@ export default {
     props:['dialog'],
     data() {
         return {
-            jobTitleDD: [],
             user: {}
+        }
+    },
+    computed: {
+        roles() {
+            return UserRoles.AGENCY
         }
     },
     methods: {
@@ -100,9 +104,6 @@ export default {
          this.$emit('cancelUserDialog');
         }
     },
-    mounted() {
-        this.jobTitleDD = UserRoles.ROLES;
-    }
 }
 </script>
 

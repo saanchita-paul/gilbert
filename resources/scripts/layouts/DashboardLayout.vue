@@ -71,7 +71,10 @@
         <v-app-bar app class="app-app-bar" dark>
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
             <v-toolbar-title>
-                <h4>Dashboard</h4>
+                <h4 v-if="user.permissions.includes('can_manage_application')">
+                    {{ getHeaderText() }}
+                </h4>
+                <h4 v-else-if="$route.meta.header">{{ $route.meta.header }}</h4>
                 <v-breadcrumbs v-if="breadcrumbs" :items="breadcrumbs" divider=">">
                     <template v-slot:item="{ item }">
                         <v-breadcrumbs-item
@@ -101,6 +104,7 @@
 <script>
 import ApplicationService from "../services/ApplicationService";
 import AuthService from "@scripts/services/AuthService";
+import UserRoles from "@scripts/data/UserRoles";
 
 export default {
     name: "NewDashboardLayout",
@@ -118,7 +122,12 @@ export default {
      methods: {
         async onLogout() {
             await AuthService.logout();
-        }
+        },
+         getHeaderText() {
+            let user = this.user;
+            let userRole = UserRoles.ROLES.find((r) => { return r.value === user.roles[0] });
+            return "Hello "+ user.profile.first_name + ' ' +  user.profile.last_name + ' (' + userRole.text + ')';
+         }
     },
     computed: {
         routes() {

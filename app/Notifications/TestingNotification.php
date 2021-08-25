@@ -30,7 +30,7 @@ class TestingNotification extends Notification implements ShouldBroadcast
      */
     public function via($notifiable)
     {
-        return ['broadcast'];
+        return ['broadcast', 'mail'];
     }
 
     /**
@@ -42,9 +42,8 @@ class TestingNotification extends Notification implements ShouldBroadcast
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->subject("Hood registration invite")
+            ->view('email.invite_user');
     }
 
     /**

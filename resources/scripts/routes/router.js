@@ -88,7 +88,8 @@ const router = new VueRouter({
                             component: CrmAgencyDataTable,
                             meta: {
                                 isProtected: true,
-                                breadcrumbType: 'AgencyList'
+                                breadcrumbType: 'AgencyList',
+                                header: 'Real Estate Agencies'
                             }
                         },
                         {
@@ -97,7 +98,8 @@ const router = new VueRouter({
                             name: 'real.state.agency.office',
                             meta: {
                                 isProtected: true,
-                                breadcrumbType: 'AgencyOffices'
+                                breadcrumbType: 'AgencyOffices',
+                                header: 'Real Estate Agencies'
                             },
                             props: true
 
@@ -108,7 +110,8 @@ const router = new VueRouter({
                             name: 'real.state.agency.users',
                             meta: {
                                 isProtected: true,
-                                breadcrumbType: 'AgencyUsers'
+                                breadcrumbType: 'AgencyUsers',
+                                header: 'Real Estate Agencies'
                             },
                             props: true
 
@@ -119,7 +122,8 @@ const router = new VueRouter({
                             name: 'real.state.office.profile',
                             meta: {
                                 isProtected: true,
-                                breadcrumbType: 'OfficeProfile'
+                                breadcrumbType: 'OfficeProfile',
+                                header: 'Real Estate Agencies'
                             },
                             props: true
 
