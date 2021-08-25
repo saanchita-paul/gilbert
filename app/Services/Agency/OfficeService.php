@@ -24,6 +24,13 @@ class OfficeService
         $office['agent'] = $this->getAgent();
         return $office;
     }
+    public function getOnlyOffice()
+    {
+        $office = Office::findOrFail($this->id)->toArray();
+        $office['commissions'] = null;
+        $office['agent'] = null;
+        return $office;
+    }
 
     public function getOfficeCommistion()
     {
