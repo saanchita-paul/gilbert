@@ -44,6 +44,16 @@ export default {
         }
     },
 
+    getAgencyData: async (id) => {
+        try {
+            const data = await axios.get('/api/agencies/'+id);
+            return AgencyMqpper.mapAgency(data.data.data);
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
      saveAgency: async (agency) => {
         try {
             agency = AgencyMqpper.mapAgencytoServer(agency);
