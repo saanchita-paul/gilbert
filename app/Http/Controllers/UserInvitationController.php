@@ -16,11 +16,16 @@ class UserInvitationController extends Controller
      *
      * @return AnonymousResourceCollection|JsonResponse
      */
-    public function index(Request $request): AnonymousResourceCollection | JsonResponse
+    public function index(Request $request): AnonymousResourceCollection|JsonResponse
     {
         try {
-            $data = $request->toArray();
-            return response()->json(['success' => true]);
+            $data = [
+                'email' => 'test@test.com',
+                'first_name' => 'joe',
+                'last_name' => 'biden',
+            ];
+
+            return response()->json(['success' => true, 'data' => $data]);
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
@@ -33,12 +38,12 @@ class UserInvitationController extends Controller
      *
      */
 
-    public function passwordChange(Request $request): AnonymousResourceCollection | JsonResponse
+    public function passwordChange(Request $request): AnonymousResourceCollection|JsonResponse
     {
         try {
 
             $this->validate($request, [
-                'new_password'     => 'required|min:6',
+                'new_password' => 'required|min:6',
                 'confirm_password' => 'required|same:new_password',
             ]);
 
