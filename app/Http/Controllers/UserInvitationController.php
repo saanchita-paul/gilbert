@@ -36,22 +36,13 @@ class UserInvitationController extends Controller
     public function passwordChange(Request $request): AnonymousResourceCollection | JsonResponse
     {
         try {
-            $rules = [
-                'new_password'     => 'required|confirmed|min:6',
-                'confirm_password' => 'required|same:new_password',
-            ];
-
-            $messages = [
-                'new_password.required' => 'Minimum 6 character are needed.',
-                'confirm_password.required' => 'Minimum 6 character are needed.'
-            ];
 
             $this->validate($request, [
                 'new_password'     => 'required|min:6',
                 'confirm_password' => 'required|same:new_password',
             ]);
 
-            return response()->json(['success' => true]);
+            return response()->json(['success' => true, 'message' => "Password successfully updated."]);
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
