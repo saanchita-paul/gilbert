@@ -41,7 +41,7 @@ class UserInvitationService
         $userInvitation = UserInvitation::where('email' , $updateData['email']);
         if($userInvitation->first())
         {
-            return $userInvitation->update(['token_code'=> 'successful']);
+            return $userInvitation->update(['status'=> 'successful']);
         }
     }
 }
