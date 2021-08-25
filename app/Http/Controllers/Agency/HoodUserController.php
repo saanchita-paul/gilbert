@@ -30,7 +30,7 @@ class HoodUserController extends Controller
             return HoodProfileResource::collection($service->get());
 
         } catch ( \Exception $exception) {
-            return $this->sendErrorResponse($exception->getMessage());
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -50,7 +50,7 @@ class HoodUserController extends Controller
             return response()->json(['data' => $user], 201);
 
         } catch (\Exception $exception) {
-            return $this->sendErrorResponse($exception->getMessage());
+            return $this->sendErrorResponse($exception);
         }
     }
 }
