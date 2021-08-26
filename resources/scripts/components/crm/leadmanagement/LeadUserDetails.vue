@@ -1,5 +1,5 @@
 <template>
-    <v-card class="pa-4 mb-5">
+    <v-card class="hood-card mb-5">
        <LeadDetailsHeader :leadSummary="leadSummary" @eacalate="eacalate"></LeadDetailsHeader>
         <InfoField @updateLead="updateLead" :lead="leadSummary" @readMore="readMore"></InfoField>
     </v-card>

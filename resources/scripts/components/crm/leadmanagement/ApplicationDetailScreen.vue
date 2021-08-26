@@ -1,6 +1,6 @@
 <template>
     <v-container>
-       <v-card class="pa-4 mb-5">
+       <v-card class="hood-card mb-5">
           <v-row>
               <v-col cols="12" class="d-flex justify-space-between align-center">
 
@@ -38,7 +38,7 @@
             </v-card>
          </v-col>
          <v-col cols="4" class="mb-8 pb-8">
-           <v-card class="pa-4">
+           <v-card class="hood-card">
              <ApplicationNotes></ApplicationNotes>
             </v-card>
          </v-col>
