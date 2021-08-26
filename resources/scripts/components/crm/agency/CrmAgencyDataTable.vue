@@ -16,7 +16,7 @@
                     </v-btn>
                 </v-col>
             </v-row>
-            
+
             <v-card class="hood-card">
                 <v-row>
                     <v-col cols="12" class="crm-table">
@@ -130,12 +130,12 @@ name: "CrmAgencyDataTable",
     async  openSuccessfulModal(agency) {
             this.agencyCreateModal = false;
             this.agency = agency;
-
+            this.title = agency.title;
             if(agency && agency.type === 0)
             {
                 this.independenceAgencyModal = true;
             } else {
-                this.title = agency.title;
+
                await this.saveAgencyData();
                 this.agencyCreateSuccessFullModal = true;
             }
@@ -161,7 +161,7 @@ name: "CrmAgencyDataTable",
                 ...this.agency,
                 ...agency
             };
-            this.title = this.agency.office.title;
+            // this.title = this.agency.office.title;
             this.independenceAgencyModal = false;
             await this.saveAgencyData();
             this.agencyCreateSuccessFullModal = true;

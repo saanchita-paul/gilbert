@@ -144,7 +144,6 @@ export default {
                 sort_by: '',
             }
             const data = await CrmUserService.loadAllUser(meta);
-            console.log('users', data);
             this.users = data?.users;
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
@@ -198,6 +197,11 @@ export default {
                 this.loadLeadList();
             },
             deep: true,
+        },
+        '$route': {
+            handler() {
+
+            }
         },
     },
 };

@@ -1,8 +1,9 @@
 <template>
     <v-container fluid>
-        <v-card class="hood-card ">
+        <v-btn  class="back-button"  @click="backToAgency"><v-icon>mdi-arrow-left</v-icon> Back to Agencies</v-btn>
+        <v-card class="hood-card  mt-4 ">
             <div class="d-flex justify-space-between pb-4">
-                <h2>All Application Metrics</h2>
+                <h2>{{agency.title}} Offices</h2>
                 <v-btn outlined @click="editAgencyName">Edit Agency Name</v-btn>
             </div>
             <LeadMetrics></LeadMetrics>
@@ -107,6 +108,7 @@ name: "CrmOfficeDataTable",
                 }
             ],
             search: '',
+            agency: null,
 
         }
     },
@@ -196,12 +198,29 @@ name: "CrmOfficeDataTable",
            await AgencyService.updateAgency(payload, this.$route.params.id)
             this.editAgencyNameFlag = false;
 
+        },
+
+        backToAgency() {
+            let agencyId = this.$route.params?.id;
+            this.$router.push(
+                {
+                    name:'real.state.agency.home'
+
+                });
+        },
+
+        async loadAgencyById() {
+
+            let agencyId = this.$route.params?.id;
+            this.agency = await AgencyService.loadAgencyById(agencyId);
+            // console.log(this.agency);
         }
 
     },
 
-    mounted() {
-        this.loadOffices();
+   async mounted() {
+        await this.loadAgencyById();
+        await this.loadOffices();
 
     },
     watch: {
@@ -218,6 +237,9 @@ name: "CrmOfficeDataTable",
 <style scoped>
 .row-pointer >>> tbody tr :hover {
     cursor: pointer;
+}
+.back-button{
+    background: #E0E0E0 !important;
 }
 </style>
 
