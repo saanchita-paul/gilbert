@@ -24,8 +24,10 @@ export default {
       }
     },
     methods: {
-      loadMetrics() {
-          this.appMetrics = LeadApplicationService.loadMetrics();
+      async loadMetrics() {
+          const allMetric = await LeadApplicationService.loadMetrics();
+          this.appMetrics = allMetric.mapData;
+
       }
     },
     mounted() {

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Models\ConnectionService
@@ -46,5 +47,36 @@ class ConnectionService extends Model
     public function connectionApplication()
     {
         return $this->belongsTo(ConnectionApplication::class);
+    }
+
+    public function allApplicationMetricsCount($officeId = null)
+    {
+        $service = DB::table('connection_services AS CS');
+        if($officeId) {
+            $service->where('office_id', $officeId);
+        }
+          $result = $service->leftJoin('connection_applications AS CA', 'CA.id', '=', 'CS.connection_application_id')
+            ->select(
+                DB::raw("SUM(CASE
+            WHEN CA.status = 4 THEN 1 ELSE 0 END) AS applications"),
+
+                DB::raw("SUM(CASE
+            WHEN CA.status = 6 THEN 1 ELSE 0 END) AS nonpayable"),
+
+                DB::raw("SUM(CASE
+            WHEN CS.service_type = 'power' AND CA.status = 5 THEN 1 ELSE 0 END) AS power"),
+
+                DB::raw("SUM(CASE
+            WHEN CS.service_type = 'gas' AND CA.status = 5 THEN 1 ELSE 0 END) AS gas"),
+
+                DB::raw("SUM(CASE
+            WHEN CS.service_type = 'internet' AND CA.status = 5 THEN 1 ELSE 0 END) AS internet"),
+
+                DB::raw("SUM(CASE
+            WHEN CS.service_type = 'water' AND CA.status = 5 THEN 1 ELSE 0 END) AS water")
+            )
+            ->get();
+        $result = $result->toArray()[0];
+        return $result;
     }
 }

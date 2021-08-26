@@ -1,23 +1,21 @@
 <?php
-
-
 namespace App\Http\Controllers\Agency;
 
-
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Agency\CreateAgentProfileRequest;
 use App\Http\Resources\Agency\AgencyResource;
 use App\Http\Resources\Agency\AgentProfileResource;
-use App\Http\Resources\Agency\OfficeResource;
 use App\Services\Agency\CreateAgentAndUser;
 use App\Services\Agency\SearchAgentProfileService;
-use App\Services\Agency\SearchOfficeService;
 use App\Services\Agency\UpdateAgentService;
+use App\Services\SendUserInviteService;
+use App\Services\UpdateUserProfileService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 
-class AgentProfileController
+class AgentProfileController extends Controller
 {
     /**
      * Getting Agency User list an office
@@ -34,7 +32,7 @@ class AgentProfileController
             return AgentProfileResource::collection($service->get($officeId));
 
         } catch ( \Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -47,7 +45,7 @@ class AgentProfileController
             return AgentProfileResource::collection($service->get($officeId));
 
         } catch ( \Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getTrace()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -56,10 +54,14 @@ class AgentProfileController
     {
         try {
             $agentAndUserSvc = new CreateAgentAndUser();
-            return AgencyResource::make($agentAndUserSvc->createAgentAndUser($request->toArray()));
+            $res = $agentAndUserSvc->createAgentAndUser($request->toArray());
+
+            (new SendUserInviteService($res->user))->run();
+
+            return AgencyResource::make($res);
 
         } catch ( \Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
 
     }
@@ -68,21 +70,21 @@ class AgentProfileController
     {
         try {
             $updateAgentService = new UpdateAgentService();
-            return response()->json(['success' => false, 'message' => $updateAgentService->update($request->toArray(), $id)]);
+            return response()->json(['success' => false, 'message' => $updateAgentService->update($id)]);
 //            return AgencyResource::make();
         } catch ( \Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
-    public function updateAgent(Request $request, int $id)
+    public function updateProfile(Request $request, int $id)
     {
         try {
-            $updateAgentService = new UpdateAgentService();
-            return response()->json(['success' => false, 'message' => $updateAgentService->update($request->toArray(), $id)]);
+            $updateAgentService = new UpdateUserProfileService($id);
+            return response()->json(['success' => false, 'user' => $updateAgentService->updateProfile($request->toArray())]);
 //            return AgencyResource::make();
         } catch ( \Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
 
     }

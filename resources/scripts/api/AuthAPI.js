@@ -19,7 +19,8 @@ export default {
             email: res?.user.email,
             permissions: res?.user.permissions,
             roles: res?.user.roles,
-            profile: res?.user.profile
+            profile: res?.user.profile,
+            profile_type: res?.user.profile_type
         });
     },
 

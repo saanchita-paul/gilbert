@@ -87,7 +87,9 @@ const router = new VueRouter({
                             name: 'real.state.agency.home',
                             component: CrmAgencyDataTable,
                             meta: {
-                                isProtected: true
+                                isProtected: true,
+                                breadcrumbType: 'AgencyList',
+                                header: 'Real Estate Agencies'
                             }
                         },
                         {
@@ -95,7 +97,9 @@ const router = new VueRouter({
                             component: CrmOfficeDataTable,
                             name: 'real.state.agency.office',
                             meta: {
-                                isProtected: true
+                                isProtected: true,
+                                breadcrumbType: 'AgencyOffices',
+                                header: 'Real Estate Agencies'
                             },
                             props: true
 
@@ -105,7 +109,9 @@ const router = new VueRouter({
                             component: CrmUserDatatable,
                             name: 'real.state.agency.users',
                             meta: {
-                                isProtected: true
+                                isProtected: true,
+                                breadcrumbType: 'AgencyUsers',
+                                header: 'Real Estate Agencies'
                             },
                             props: true
 
@@ -115,7 +121,9 @@ const router = new VueRouter({
                             component: OfficeProfile,
                             name: 'real.state.office.profile',
                             meta: {
-                                isProtected: true
+                                isProtected: true,
+                                breadcrumbType: 'OfficeProfile',
+                                header: 'Real Estate Agencies'
                             },
                             props: true
 
@@ -139,7 +147,8 @@ const router = new VueRouter({
                     component: ApplicationPage,
                     name: 'applications',
                     meta: {
-                        isProtected: true
+                        isProtected: true,
+                        breadcrumbType: 'LeadApplications'
                     }
                 },
                 {
@@ -147,7 +156,8 @@ const router = new VueRouter({
                     component: ApplicationDetailsPage,
                     name: 'applications.details',
                     meta: {
-                        isProtected: true
+                        isProtected: true,
+                        breadcrumbType: 'ApplicationsDetails'
                     }
                 }
 

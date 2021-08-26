@@ -138,3 +138,12 @@
     max-height: 400px;
     overflow-y:scroll;
 }
+.v-breadcrumbs {
+    padding: 0 0 !important;
+}
+.v-breadcrumbs__item {
+    color: white !important;
+}
+.v-breadcrumbs__item--disabled {
+    color: gray !important;
+}

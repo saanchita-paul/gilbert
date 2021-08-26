@@ -3,11 +3,12 @@
 use App\Http\Controllers\Agency\AgencyController;
 use App\Http\Controllers\Agency\AgentProfileController;
 use App\Http\Controllers\Agency\HoodUserController;
+use App\Http\Controllers\Agency\NoteController;
 use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ApplicationController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\UserInvitationController;
 use Illuminate\Encryption\Encrypter;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
@@ -27,7 +28,7 @@ Route::middleware('auth:sanctum')
     ->get('/user', [AuthController::class, 'authUser']);
 
 Route::get('/logout', [AuthController::class, 'logout']);
-
+Route::get('/testapplication', [ApplicationController::class, 'getApplicationMetricsCount']);
 /**
  * @Module AGENCY CRM
  */
@@ -47,12 +48,13 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/offices', [OfficeController::class, 'createOffice']);
     Route::get('/offices/{id}', [OfficeController::class, 'getOffice']);
+    Route::get('/offices/office/{id}', [OfficeController::class, 'getOnlyOffice']);
     Route::post('/offices/{id}/update', [OfficeController::class, 'updateOffice']);
     Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index']);
     Route::post('/offices/{officeId}/users', [AgentProfileController::class, 'createAgent']);
 
     Route::get('/office-agents', [AgentProfileController::class, 'officeAgents']);
-    Route::post('/office-agents/{id}/update', [AgentProfileController::class, 'updateAgent']);
+    Route::post('/office-agents/{id}/update', [AgentProfileController::class, 'updateProfile']);
     Route::post('/office-agents/{id}', [AgentProfileController::class, 'getAgent']);
 
     /**
@@ -60,6 +62,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::get('/application-assignees', [HoodUserController::class, 'getAssignee']);
     Route::post('/hood-users', [HoodUserController::class, 'store']);
+    Route::get('/hood-users', [HoodUserController::class, 'index']);
 
     /**
      * Applications
@@ -73,11 +76,16 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/applications/{applicationId}/escalate', [ApplicationController::class, 'escalate']);
 
     //todo: make a  separate controller for notes
-    Route::get('/applications/{id}/notes', [ApplicationController::class, 'getConnectionNotes']);
-    Route::post('/applications/{id}/notes', [ApplicationController::class, 'createConnectionNotes']);
+    Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes']);
+    Route::post('/applications/{id}/notes', [NoteController::class, 'createConnectionNotes']);
 
     Route::get('/applications-metrics', [ApplicationController::class, 'getMetrics']);
+    Route::get('/applications-metrics-count', [ApplicationController::class, 'getApplicationMetricsCount']);
 });
+
+Route::post('/invitation/validation', [UserInvitationController::class, 'validateInvitation']);
+Route::post('/invitation/change-password', [UserInvitationController::class, 'passwordChange']);
+
 
 /**
  * test routes

@@ -88,15 +88,22 @@ export default {
         }
     },
 
-    saveUser: async (crmUser, officeId)=> {
+    saveUser: async (crmUserData, officeId)=> {
         try {
 
-            crmUser = CrmUserMapper.mapuserToServer(crmUser, officeId);
-            console.log('crmUser',crmUser)
-
+           const crmUser = CrmUserMapper.mapuserToServer(crmUserData, officeId);
             const data = await axios.post('/api/offices/'+ officeId+ '/users', {...crmUser});
-            console.log(data);
 
+
+        } catch (error) {
+            console.log('user', error);
+            return error.data;
+        }
+    },
+    updateUserProfile: async (profile, id)=> {
+        try {
+            console.log(profile, id);
+            const data = await axios.post('/api/office-agents/'+ id+ '/update', {...profile});
         } catch (error) {
             console.log(error);
             return error.data;

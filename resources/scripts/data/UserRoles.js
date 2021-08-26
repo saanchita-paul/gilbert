@@ -1,7 +1,6 @@
 export default {
-    ROLES: [
+    AGENCY: [
         {
-
             text: 'OFFICE ADMIN',
             value: 'agency_office_admin'
         },
@@ -29,6 +28,8 @@ export default {
             text: 'AGENCY OFFICE ALLOCATOR',
             value: 'agency_office_allocator'
         },
+    ],
+    HOOD: [
 
         //hood
         {

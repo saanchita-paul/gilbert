@@ -4,5 +4,6 @@ import CrmUserAPI from "@scripts/api/crm/CrmUserAPI";
 export default {
     loadUserData: (meta, agencyId, officeId) => CrmUserAPI.getUsersData(meta, agencyId, officeId),
     saveUser: (crmUser, officeId)=> CrmUserAPI.saveUser(crmUser, officeId),
+    updateUserProfile: (profile, id)=> CrmUserAPI.updateUserProfile(profile, id),
     loadAllUser: (meta)=> CrmUserAPI.getUserAllData(meta),
 }

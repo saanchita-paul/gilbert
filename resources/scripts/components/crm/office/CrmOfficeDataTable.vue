@@ -38,7 +38,7 @@
             <CreateSuccessfulModal v-if="isCreatedSuccessfully" :dialog="isCreatedSuccessfully" :title="officeTitle" @cancel="cancelSuccessfulModal">
             </CreateSuccessfulModal>
 
-            <AgencyEditModal v-if="editAgencyNameFlag" :dialog="editAgencyNameFlag" @cancelDialog="cancelEditAgency"  @openSuccessfulModal="saveAgencyName">
+            <AgencyEditModal v-if="editAgencyNameFlag" :agencyId="id" :dialog="editAgencyNameFlag" @cancelDialog="cancelEditAgency"  @openSuccessfulModal="saveAgencyName">
 
             </AgencyEditModal>
 

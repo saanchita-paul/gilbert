@@ -191,10 +191,10 @@ const serviceProvider = [
 
 export default {
 
-    getMetrics() {
+   async getMetrics() {
         try {
-            // const data = await axios.get('/');
-            return AppMetricsMapper.mapAppMetricList(data);
+             const leads = await axios.get('/api/applications-metrics-count');
+            return AppMetricsMapper.mapAppMetricList(data, leads.data.data);
 
         } catch (error) {
             return error.data;

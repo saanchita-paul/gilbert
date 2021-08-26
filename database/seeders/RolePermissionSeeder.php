@@ -43,7 +43,8 @@ class RolePermissionSeeder extends Seeder
         ],
 
         RolePermission::ROLE_HOOD_CUSTOMER_REP => [
-            RolePermission::P_HOOD_CUSTOMER_REP_CORE
+            RolePermission::P_HOOD_CUSTOMER_REP_CORE,
+            RolePermission::P_CAN_MANAGE_APPLICATION
         ],
 
         RolePermission::ROLE_AGENCY_AGENT => [

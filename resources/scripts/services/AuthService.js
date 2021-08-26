@@ -2,6 +2,7 @@ import AuthAPI from "@scripts/api/AuthAPI";
 import Store from '@scripts/store/index'
 import User from "@scripts/models/User";
 import router from '@scripts/routes/router';
+import BreadcrumbService from "@scripts/services/BreadcrumbService";
 
 /**
  * get user auth state
@@ -26,17 +27,17 @@ export const login = async form => {
         /**
          * todo: refactored this dirty code, use constants
          */
+        if (user.profile_type === 'App\\Models\\AgentProfile') {
+            return await router.push({name: 'agent.application.dashboard'})
+        }
         if(user.roles.includes('hood_admin')) {
             return await router.push({name: 'dashboard.utility'})
         }
         if(user.roles.includes('hood_agent')) {
             return await router.push({name: 'real.state.agency.home'})
         }
-        if(user.roles.includes('agency_office_real_estate_agent')) {
-            return await router.push({name: 'agent.application.dashboard'})
-        } else {
-            return await router.push({name: 'applications'})
-        }
+
+        return await router.push({name: 'applications'})
     } catch (e) {
         console.log('LOGIN FAILED', e)
         return false;
@@ -69,6 +70,7 @@ export const authUser = async () => {
 export const checkRouteAuthorization = (to, from, next) => {
     const isLoggedIn = isAuthenticated();
     if (to.meta.isProtected) {
+        to.meta.breadcrumbType ? setBreadcrumbs(to.meta.breadcrumbType, to.params) : setBreadcrumbs('empty', 'empty');
         isLoggedIn ? next() : next({name: 'login'})
     } else {
         next()
@@ -82,6 +84,8 @@ export const checkRouteAuthorization = (to, from, next) => {
  */
 export const getAuthUser = () => Store.getters.user;
 
+export const getBreadcrumbs = () => Store.getters.breadcrumbs;
+
 export const kickOut = () => {
     Store.commit('setUser', null);
     router.push({name: 'login'})
@@ -94,6 +98,14 @@ const hasUserPermissions = allowedPermissions => {
         hasPermission = hasPermission || allowedPermissions.includes(p);
     });
     return hasPermission;
+}
+
+const setBreadcrumbs = (breadcrumbType, params) => {
+    if(breadcrumbType === 'empty') {
+        Store.commit('removeBreadcrumb')
+    } else {
+        BreadcrumbService.setBreadcrumb(breadcrumbType, params);
+    }
 }
 
 const hasUserRoles = allowedRoles => {
@@ -113,7 +125,9 @@ export default {
     checkRouteAuthorization,
     logout,
     hasUserRoles,
-    hasUserPermissions
+    hasUserPermissions,
+    getBreadcrumbs,
+    setBreadcrumbs
 }
 
 
