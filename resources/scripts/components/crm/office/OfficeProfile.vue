@@ -6,7 +6,7 @@
                     <v-col cols="12 pb-0">
                         <v-btn @click="goToOffice"><v-icon left dark>mdi-arrow-left</v-icon>Back to Sunbury Office Metrics</v-btn>
                         <h3 class="page-title my-5 pt-5">{{office.name}} Office Profile</h3>
-                        <p v-if="office.agency_name.type == 0" class="sub-title mb-0">Agency</p>
+                        <p v-if="office.agency_type == 0" class="sub-title mb-0">Agency</p>
                     </v-col>
 
                     <v-col cols="6" v-if="office.agency_type == 0">

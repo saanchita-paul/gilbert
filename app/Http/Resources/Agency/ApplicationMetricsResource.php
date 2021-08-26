@@ -15,12 +15,12 @@ class ApplicationMetricsResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'applications' => $this->applications,
-            'nonpayable' => $this->nonpayable,
-            'power' => $this->power,
-            'gas' => $this->gas,
-            'internet' => $this->internet,
-            'water' => $this->water,
+            'applications' => empty($this->applications) ? 0 : $this->applications,
+            'nonpayable' => empty($this->nonpayable) ? 0 : $this->nonpayable,
+            'power' => empty($this->power) ? 0 : $this->power,
+            'gas' => empty($this->gas) ? 0 : $this->gas,
+            'internet' => empty($this->internet) ? 0 : $this->internet,
+            'water' => empty($this->water) ? 0 : $this->water,
         ];
     }
 }
