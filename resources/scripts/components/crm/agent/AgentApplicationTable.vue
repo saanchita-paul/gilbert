@@ -11,7 +11,7 @@
                 </v-btn>
             </v-col>
         </v-row>
-        <v-card class="pa-4">
+        <v-card class="hood-card">
             <v-row>
                 <v-col cols="12" class="crm-table">
                   <v-data-table

@@ -1,5 +1,5 @@
 <template>
-    <v-card class="pa-4" v-if="application">
+    <v-card class="hood-card" v-if="application">
         <h3 class="page-title">{{ application.first_name + ' ' + application.last_name}}</h3>
         <p class="sub-title mt-4 mb-2">Personal Details</p>
         <table width="100%" class="application-info">

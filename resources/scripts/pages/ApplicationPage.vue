@@ -1,8 +1,8 @@
 <template>
-    <v-container>
+    <v-container fluid>
         <v-row>
             <v-col cols="8">
-                <v-card class="pa-4">
+                <v-card class="hood-card">
                     <p>Your Metrics</p>
                     <h3 class="page-title">Total Applications: {{total_leads}}</h3>
                     <AgentLeadMetrics v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal"></AgentLeadMetrics>

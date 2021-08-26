@@ -10,7 +10,7 @@
                     <Search @updateSearch="updateSearch"></Search>
                 </v-col>
                 <v-col cols="4" class="text-right">
-                    <v-btn color="primary" @click="addAgency"
+                    <v-btn  class="hood-btn" color="primary" @click="addAgency"
                     ><v-icon left>add
                     </v-icon> Add New Agency
                     </v-btn>

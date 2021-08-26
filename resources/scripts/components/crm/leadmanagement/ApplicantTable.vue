@@ -5,7 +5,7 @@
                 <Search @updateSearch="updateLeadSearch"></Search>
             </v-col>
         </v-row>
-        <v-card class="pa-4">
+        <v-card class="hood-card">
             <v-row>
                 <v-col cols="12" class="crm-table">
                     <v-data-table
@@ -106,7 +106,7 @@ export default {
                     value: 'moving_date'
                 },
                 {
-                    text: 'Service Type',
+                    text: 'Preference',
                     align: 'start',
                     sortable: true,
                     value: 'services'

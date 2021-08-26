@@ -2,7 +2,7 @@
     <v-container>
         <v-row>
              <v-col cols="8">
-                <v-card class="pa-4">
+                <v-card class="hood-card">
                     <p>Your Metrics</p>
                     <h3 class="page-title">Total Applications: 500</h3>
                     <AgentLeadMetrics></AgentLeadMetrics>
