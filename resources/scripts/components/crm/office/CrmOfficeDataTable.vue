@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-btn  class="back-button"  @click="backToAgency"><v-icon>mdi-arrow-left</v-icon> Back to Agencies</v-btn>
-        <v-card class="hood-card  mt-4 ">
+        <v-card v-if="isLoaded" class="hood-card  mt-4 ">
             <div class="d-flex justify-space-between pb-4">
                 <h2>{{agency.title}} Offices</h2>
                 <v-btn outlined @click="editAgencyName">Edit Agency Name</v-btn>
@@ -109,6 +109,7 @@ name: "CrmOfficeDataTable",
             ],
             search: '',
             agency: null,
+            isLoaded: false,
 
         }
     },
@@ -213,6 +214,7 @@ name: "CrmOfficeDataTable",
 
             let agencyId = this.$route.params?.id;
             this.agency = await AgencyService.loadAgencyById(agencyId);
+            this.isLoaded = true;
             // console.log(this.agency);
         }
 

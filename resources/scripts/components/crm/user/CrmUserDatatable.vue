@@ -8,7 +8,7 @@
 
         <div v-if="isLoaded">
             <v-btn v-if="agency.type == 0"  class="back-button" @click="backToAgency"><v-icon>mdi-arrow-left</v-icon> Back to Agencies</v-btn>
-            <v-btn  v-else @click="backToOffice" class="back-button"><v-icon>mdi-arrow-left</v-icon> Back to {{agency.title}} Offices</v-btn>
+            <v-btn  v-else @click="backToOffice" class="back-button"><v-icon>mdi-arrow-left</v-icon> Back to {{agency.name}} Offices</v-btn>
             <v-card class="hood-card  mt-4">
                 <v-row>
                     <v-col cols="8">
@@ -205,8 +205,6 @@ name: "CrmUserDatatable",
             this.office = officeData.office;
             this.agency = officeData.office.agency;
             this.isLoaded = true;
-            // console.log('office data', p.office.name);
-            // console.log(this.agency);
         }
 
 
