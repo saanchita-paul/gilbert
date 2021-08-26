@@ -20,7 +20,7 @@
                       :options.sync="options"
                       :server-items-length="totalItem"
                       :loading="loading"
-                      class="elevation-1 row-pointer"
+                      class="row-pointer"
                       @click:row="openApplicationSummary"
                   >
                     <template v-slot:item.first_name="{ item }">

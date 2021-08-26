@@ -26,7 +26,7 @@
                             :options.sync="options"
                             :server-items-length="totalItem"
                             :loading="loading"
-                            class="elevation-1 row-pointer"
+                            class="row-pointer"
                             @click:row="openAgency"
                         >
                             <template v-slot:item.action="{ item }">
@@ -72,6 +72,7 @@ name: "CrmAgencyDataTable",
     },
     data(){
         return {
+            snack: false,
             agencyCreateModal: false,
             agencyCreateSuccessFullModal: false,
             independenceAgencyModal: false,
