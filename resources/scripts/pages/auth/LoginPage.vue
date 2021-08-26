@@ -69,7 +69,7 @@
                                     v-model="form.remember_me"
                                     :error-messages="errors"
                                     value="1"
-                                    label="Remember me?"
+                                    label="Remember me"
                                     type="checkbox"
                                     required
                                 ></v-checkbox>
