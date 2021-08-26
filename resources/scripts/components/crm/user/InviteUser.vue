@@ -1,6 +1,5 @@
 <template>
     <v-app>
-
         <v-container fluid class="loginpage invitation">
                <div class="login-section">
                       <v-card v-if="isLoaded" class="hood-card">
@@ -43,7 +42,7 @@
                       </v-card>
                </div>
         </v-container>
-        </v-app>
+      </v-app>
 </template>
 
 <script>
