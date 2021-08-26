@@ -17,15 +17,3 @@
 .primary-text {
     color: $primary_color;
 }
-.login-header {
-    margin-bottom: 40px;
-    .v-image {
-        display: block;
-        margin: 60px auto 15px auto;
-        max-width: 180px;
-        .v-image__image--cover {
-            width: 100% !important;
-            background-size: contain !important;
-        }
-    }
-}
