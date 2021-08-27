@@ -86,6 +86,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
 Route::post('/invitation/validation', [UserInvitationController::class, 'validateInvitation']);
 Route::post('/invitation/change-password', [UserInvitationController::class, 'passwordChange']);
 
+Route::post('/register/email-validation', [AuthController::class, 'isValidUser']);
+
 
 /**
  * test routes
