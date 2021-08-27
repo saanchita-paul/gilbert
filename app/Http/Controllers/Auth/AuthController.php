@@ -43,7 +43,8 @@ class AuthController extends Controller
     public function isValidUser(Request $request)
     {
         try {
-            $users = User::where('email', $request->email)->get();
+            $authUserSvc = new AuthUserDetails();
+            $users = $authUserSvc->getUserByEmail($request->email);
 
             if(sizeof($users) > 0){
                 return response()->json(['success' => false, 'msg' => 'This email already signed up!']);
