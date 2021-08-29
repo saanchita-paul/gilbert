@@ -1,18 +1,19 @@
 import Vue from 'vue';
-import {
-    ValidationProvider,
-    ValidationObserver,
-    extend, setInteractionMode
-} from 'vee-validate';
+import {ValidationProvider, extend, ValidationObserver} from 'vee-validate';
+import * as rules from 'vee-validate/dist/rules';
 import {email, max, required} from "vee-validate/dist/rules";
 
+Object.keys(rules).forEach(rule => {
+    extend(rule, rules[rule]);
+});
 
-setInteractionMode('eager')
+Vue.component('ValidationProvider', ValidationProvider);
+Vue.component('ValidationObserver', ValidationObserver );
 
 extend('required', {
-    ...required,
-    message: '{_field_} can not be empty',
-})
+    ...rules.required,
+    message: field => `${field} is required`,
+});
 
 extend('max', {
     ...max,
@@ -29,6 +30,26 @@ extend('secret', {
     message: 'This is not the magic word'
 });
 
-// Register it globally
-Vue.component('ValidationObserver', ValidationObserver);
-Vue.component('ValidationProvider', ValidationProvider);
+extend('cv-phone', {
+    message: field => `${field} should contain only number`,
+    validate: value =>  {
+        return new Promise(resolve => {
+            let isValid = value.match('^[+]*[-\\s0-9]*$');
+            resolve({ valid: !!isValid })
+        })
+    }
+});
+
+extend('date-range-check', {
+    validate: (value) => {
+        var startDate = value[0];
+        var endDate = value[1];
+        return (startDate instanceof Date) && (endDate instanceof Date);
+    },
+    message: '{_field_} should contain at least 2 valid datetimes.'
+});
+
+extend('length', {
+    ...length,
+    message: 'Phone should contain 10 numbers',
+})
