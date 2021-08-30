@@ -1,6 +1,7 @@
 .hood-card{
     border-radius: 8px !important;
     padding: 16px !important;
+    box-shadow: 0px 2px 8px 0px #00000033 !important;
 }
 .search-bg {
     .v-input {
@@ -15,16 +16,4 @@
 }
 .primary-text {
     color: $primary_color;
-}
-.login-header {
-    margin-bottom: 40px;
-    .v-image {
-        display: block;
-        margin: 60px auto 15px auto;
-        max-width: 180px;
-        .v-image__image--cover {
-            width: 100% !important;
-            background-size: contain !important;
-        }
-    }
 }

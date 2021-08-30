@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-card class="pa-4 new-application">
+        <v-card  class="hood-card new-application">
             <ValidationObserver ref="create_application">
                 <v-row>
                     <v-col cols="12 pb-0">
