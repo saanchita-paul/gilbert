@@ -11,7 +11,7 @@
                 </v-btn>
             </v-col>
         </v-row>
-        <v-card class="pa-4">
+        <v-card class="hood-card">
             <v-row>
                 <v-col cols="12" class="crm-table">
                   <v-data-table
@@ -20,7 +20,7 @@
                       :options.sync="options"
                       :server-items-length="totalItem"
                       :loading="loading"
-                      class="elevation-1 row-pointer"
+                      class="row-pointer"
                       @click:row="openApplicationSummary"
                   >
                     <template v-slot:item.first_name="{ item }">

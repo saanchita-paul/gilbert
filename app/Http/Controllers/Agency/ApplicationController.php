@@ -175,12 +175,13 @@ class ApplicationController extends Controller
      * @param Request $request
      *
      */
-    public function getApplicationMetricsCount()
+    public function getApplicationMetricsCount(Request $request)
     {
         try {
             $user = auth()->user();
             $service = new ConnectionService();
-            $service= $service->allApplicationMetricsCount($user->profile->office_id);
+            $inputData = $request->toArray();
+            $service= $service->allApplicationMetricsCount($inputData, $user->profile->office_id);
 
             return ApplicationMetricsResource::make($service);
 

@@ -1,40 +1,19 @@
 <template>
-  <div>
-    <EditingProfile></EditingProfile>
-  </div>
+    <EnergyPlanDetailsPage
+        plan="total_plan"
+        postcode="3083"
+        service_type="electricity_and_gas"
+        state="=VIC"
+    />
 </template>
 
 <script>
-import OfficeDetails from "@scripts/components/crm/OfficeDetails";
-import EditingProfile from "@scripts/components/crm/EditingProfile";
-import AgencyDetails from "@scripts/components/crm/AgencyDetails";
-import AllocatorDetails from "@scripts/components/crm/AllocatorDetails";
-import CommissionProfile from "@scripts/components/crm/CommissionProfile";
-import Created from "@scripts/components/crm/Created";
-import LeadMetrics from "@scripts/components/crm/LeadMetrics";
-import OfficeProfile from "@scripts/components/crm/office/OfficeProfile";
-import LeadApplications from "@scripts/components/crm/leadmanagement/LeadApplications";
-import AssignedtoPopUp from "@scripts/components/crm/leadmanagement/AssignedtoPopUp";
-import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
-import ConfirmSubmission from "@scripts/components/crm/leadmanagement/ConfirmSubmission";
-import AgentsAdditionalInstructions from "@scripts/components/crm/leadmanagement/AgentsAdditionalInstructions";
+import EAPlanService from "@scripts/services/ea/EAPlanService";
+import EnergyPlanDetailsPage from "@scripts/components/ea/EnergyPlanDetails";
 export default {
-  name: "Test",
-  components: {
-    AgencyDetails,
-    OfficeDetails,
-    AllocatorDetails,
-    CommissionProfile,
-    Created,
-    LeadMetrics,
-    OfficeProfile,
-    LeadApplications,
-    AssignedtoPopUp,
-    ApplicationDetailScreen,
-    ConfirmSubmission,
-    AgentsAdditionalInstructions,
-    EditingProfile
-  },
+
+    name: "Test",
+    components: {EnergyPlanDetailsPage},
 };
 </script>
 

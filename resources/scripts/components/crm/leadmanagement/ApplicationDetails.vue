@@ -1,5 +1,5 @@
 <template>
-   <v-card class="pa-4" v-if="lead">
+   <v-card class="hood-card" v-if="lead">
         <h3 class="page-title">{{lead.applicant_name}}</h3>
         <p class="sub-title mt-4 mb-2">Personal Details</p>
         <table width="100%" class="application-info">

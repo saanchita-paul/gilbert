@@ -1,12 +1,12 @@
 <template>
     <v-row>
         <v-col cols="8" class="mb-8 pb-8">
-            <v-card class="pa-4">
+            <v-card class="hood-card">
                 <ServiceApplications @updateService="updateService" :leadSummary="leadSummary" @updatePlan="updatePlan"></ServiceApplications>
             </v-card>
         </v-col>
         <v-col cols="4" class="mb-8 pb-8">
-            <v-card class="pa-4">
+            <v-card class="hood-card">
                 <ApplicationNotes :notes="notes" @saveNote="saveNote"></ApplicationNotes>
             </v-card>
         </v-col>

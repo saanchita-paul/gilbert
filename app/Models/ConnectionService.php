@@ -49,12 +49,17 @@ class ConnectionService extends Model
         return $this->belongsTo(ConnectionApplication::class);
     }
 
-    public function allApplicationMetricsCount($officeId = null)
+    public function allApplicationMetricsCount(array $matrixReq, $officeId = null)
     {
         $service = DB::table('connection_services AS CS');
-        if($officeId) {
-            $service->where('office_id', $officeId);
+        if(isset($matrixReq['agency_id'])){
+            $service->where('CA.agency_id', $matrixReq['agency_id']);
+        }else{
+            if($officeId) {
+                $service->where('CA.office_id', $officeId);
+            }
         }
+
           $result = $service->leftJoin('connection_applications AS CA', 'CA.id', '=', 'CS.connection_application_id')
             ->select(
                 DB::raw("SUM(CASE
@@ -76,6 +81,7 @@ class ConnectionService extends Model
             WHEN CS.service_type = 'water' AND CA.status = 5 THEN 1 ELSE 0 END) AS water")
             )
             ->get();
+        echo $service->toSql();
         $result = $result->toArray()[0];
         return $result;
     }

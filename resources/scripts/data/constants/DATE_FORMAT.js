@@ -3,5 +3,6 @@ export default {
     MOVING_DATE_DISPLAY_FORMAT: 'D.MM.YYYY',
     DATE_STRING: 'MMM DD, YYYY',
     TIME_STRING_12: 'h:mm:A',
-    DATETIME_MESSAGE:'MMMM DD YYYY, h:mm:s A'
+    DATETIME_MESSAGE:'MMMM DD YYYY, h:mm:s A',
+    REAL_ESTATE_FORMAT: 'DD/MM/YYYY hh:mm A'
 }
