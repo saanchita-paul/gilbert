@@ -7,6 +7,7 @@ use App\Models\ConnectionService;
 use App\Models\Identification;
 use App\Models\User;
 use App\Services\Agency\CreateOfficeAndAgency;
+use App\Services\Sales\PostSalesService;
 use Illuminate\Console\Application;
 use function PHPUnit\Framework\isNull;
 
@@ -101,12 +102,14 @@ class ApplicationService
 
     public function submit(array $applications, $id)
     {
+        $postSalesService = new PostSalesService($id);
         $lead = $applications['lead'];
         $lead['status'] = ConnectionApplication::STATUS_SUBMITTED;
         $existLead = ConnectionApplication::findOrFail($id);
         $existLead->update($lead);
         $this->createIdentification($lead['identification'], $id);
         $this->updateConnectionService($lead['service_interests'], $id);
+        $postSalesService->postToEa();
         return $existLead;
     }
 

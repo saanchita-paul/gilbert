@@ -129,6 +129,7 @@ class ConnectionApplication extends Model
         'supplier',
         'plan_type',
         'status'
+        'status'
     ];
 
 
