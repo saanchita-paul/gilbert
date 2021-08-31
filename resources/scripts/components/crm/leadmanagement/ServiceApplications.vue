@@ -71,7 +71,7 @@ import LeadApplicationService from "@scripts/services/crm/LeadApplicationService
 import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
 import EnergyApi from "@scripts/api/ea/EnergyApi";
 import EAPlanService from "@scripts/services/ea/EAPlanService";
-import {PLAN_TYPE_TOTAL} from "@scripts/models/ea/EnergyPlan";
+import {EA_PLAN_TYPES, PLAN_TYPE_TOTAL} from "@scripts/models/ea/EnergyPlan";
 import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
 
 
@@ -104,6 +104,7 @@ export default {
     mounted() {
         this.loadServiceProvider();
         this.loadPlan();
+        this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
 
     },
     methods: {
@@ -113,7 +114,7 @@ export default {
         planSelect(plan) {
            this.selectedPlanType = plan?.key
            // console.log(planId);
-            this.$emit('updatePlan', plan?.key);
+            this.$emit('updatePlan', plan);
         },
         isActive(service) {
             return this.leadSummary.service_types.includes(service.toLowerCase())?true:false;
