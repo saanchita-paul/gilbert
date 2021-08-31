@@ -43,7 +43,7 @@
             v-if="viewPlanDialog && planTypeForDetails"
         >
             <v-card>
-                <EnergyPlanDetailsPage
+                <EnergyPlanDetails
                     :plan="planTypeForDetails"
                     :postcode="leadSummary.postcode"
                     :services="leadSummary.service_interests"
@@ -72,12 +72,12 @@ import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
 import EnergyApi from "@scripts/api/ea/EnergyApi";
 import EAPlanService from "@scripts/services/ea/EAPlanService";
 import {PLAN_TYPE_TOTAL} from "@scripts/models/ea/EnergyPlan";
-import EnergyPlanDetailsPage from "@scripts/components/ea/EnergyPlanDetails";
+import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
 
 
 export default {
   name: "ServiceApplications",
-    components: {EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetailsPage},
+    components: {EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetails},
     props:{
         leadSummary: {
             require: true
