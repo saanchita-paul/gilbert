@@ -45,10 +45,9 @@
             <v-card>
                 <EnergyPlanDetailsPage
                     :plan="planTypeForDetails"
-                    postcode="3358"
+                    :postcode="leadSummary.postcode"
                     :services="leadSummary.service_interests"
-                    service_type="electricity_and_gas"
-                    state="VIC"
+                    :state="leadSummary.state"
                 />
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -136,7 +135,11 @@ export default {
             // this.plans = await LeadApplicationService.loadPlan(serviceProvider);
             const services = this.leadSummary.service_interests;
             if (services.includes('gas') || services.includes('power')) {
-                this.plans = await EAPlanService.getAllPlans({service_type: 'electricity', postcode: 3083, state: 'VIC'});
+                this.plans = await EAPlanService.getAllPlans({
+                    service_type: this.leadSummary.service_interests,
+                    postcode: this.leadSummary.postcode,
+                    state: this.leadSummary.state
+                });
                 this.plansFlag = true;
             } else {
                 this.plansFlag = false;

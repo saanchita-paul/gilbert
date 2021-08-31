@@ -1,5 +1,6 @@
 import axios from 'axios';
 import EnergyPlanMapper, {mapAllPlan, mapServices} from "@scripts/api/mappers/ea/EnergyPlanMapper";
+import {mapEAPlanQuery} from "@scripts/api/mappers/ea/EAPlanQueryMapper";
 
 
 export default {
@@ -12,6 +13,7 @@ export default {
      * @return {Promise<*>}
      */
     getAllPlans: async query => {
+        query = mapEAPlanQuery(query)
         const data = (await axios.get(
             `https://hb.leninsheikh.com/hood-dashboard/api/ea-plans`,
             {params: query})
@@ -24,7 +26,7 @@ export default {
      * @param query
      */
     getPlanDetailsByCustomerIdAndPlanType: async (query) => {
-        query.service_type = mapServices(query.service_type);
+        query = mapEAPlanQuery(query);
         const data = (await axios.get(
             `https://hb.leninsheikh.com/hood-dashboard/api/ea-plans/${query.plan_type}`,
             {params: query})
