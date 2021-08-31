@@ -225,7 +225,7 @@
                 <div class="text-field">
                     <ValidationProvider name="Property Type" rules="required"  v-slot="{ errors }">
                        <v-select @input="updateLeads"  :error-messages=" errors[0]"
-                                 v-model="property_details.property_type" :items="propertyTypeDD" outlined placeholder="Residentail / Business" dense hide-details="auto">
+                                 v-model="property_details.property_type" :items="propertyTypeDD" outlined placeholder="Residential" dense hide-details="auto">
                         </v-select>
                     </ValidationProvider>
                 </div>
