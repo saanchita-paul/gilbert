@@ -100,13 +100,13 @@ class PostSalesService
 
         $eaData = [
             "id"=> $id,
-    "vendorCode"=> "HD2",
-    "version"=> "1",
-    "saleDate"=> "2021-08-30T10:45:00Z",
-    "customerType"=> "RES",
-    "transactionType"=> "ENE",
-    "customer"=> $customer,
-    "energisation"=>$energisation
+            "vendorCode"=> "HD2",
+            "version"=> "1",
+            "saleDate"=> "2021-08-30T10:45:00Z",
+            "customerType"=> "RES",
+            "transactionType"=> "ENE",
+            "customer"=> $customer,
+            "energisation"=>$energisation
         ,
     "premise"=>$premise,
 
@@ -117,13 +117,12 @@ class PostSalesService
                 "planId"=> "RSOT-EV",
                 "sourceCode"=> "Basic",
             ]
-    ],
-    "mailingAddressType"=> $mailingAddressType,
-    "postalMailingAddress"=> $postalMailingAddress,
-    "billDeliveryMethod"=> $billDeliveryMethod,
-  	"lifeSupport"=> $lifeSupport,
-
-];
+        ],
+        "mailingAddressType"=> $mailingAddressType,
+        "postalMailingAddress"=> $postalMailingAddress,
+        "billDeliveryMethod"=> $billDeliveryMethod,
+        "lifeSupport"=> $lifeSupport,
+        ];
 
 
         $variables= [
@@ -154,10 +153,13 @@ class PostSalesService
                     ]
                 );
             $results = $client->runQuery($gql, false, $variables );
+            dump($results);
             return $this->processEaData($results->getResponseBody());
         } catch (\Exception $e)
         {
+
             \Log::info($e->getMessage());
+            return $e->getMessage();
         }
 
 
@@ -179,9 +181,9 @@ class PostSalesService
                 $status = ConnectionApplication::STATUS_REJECTED;
             }
 
-            if($quote->status == 'ACCEPTED')
+            if($quote->status == 'PROCESSING')
             {
-                $status = ConnectionApplication::STATUS_ACCEPTED;
+                $status = ConnectionApplication::STATUS_EA_PROCESSINF;
             }
             $this->connection->update(['status'=>$status,'ea_sales_id'=> $salesId]);
         }

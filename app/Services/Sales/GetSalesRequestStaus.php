@@ -14,84 +14,7 @@ class GetSalesRequestStaus
 {
     private $accessToken;
 
-    private  $arr = [
-    id => "HD2323sfs432154567",
-    vendorCode => "HD2",
-    version => "1",
-    saleDate => "2021-08-30T10 =>45 =>00Z",
-    customerType => "RES",
-    transactionType => "ENE",
-    customer => [
-        title => "MR",
-        firstName => "test",
-        lastName => "test",
-        emailAddress => "test@example.com",
-        dateOfBirth => "1980-01-01",
-        phone => [
-            [
-                type => "MOBILE",
-                number => "0412345678"
-            ],
-],
-preferredContactMethod => "EMAIL",
-        identification => [
-    type => "PASSPORT",
-            number => "R0986754",
-            firstName => "abcdefg",
-            lastName => "abcdefg",
-            expiry => "2024-01-01",
-            countryOfIssue => "Australia",
-        ],
-    ],
 
-    energisation => [
-    connectionDate => "2020-03-02",
-        accessDetails => "frfsef",
-        renovationsSinceDeenergisation => false,
-        renovationsInProgressOrPlanned => false,
-        afterHoursServiceOrder => false ,
-    ],
-    premise => [
-    nmi => "1234567890",
-        mirn => "1234567890",
-        address => [
-        unitNumber => "2a",
-            streetNumber => "21",
-            streetName => "test1",
-            streetType => "ST",
-            suburb => "Melbourne",
-            state => "VIC",
-            postcode => "3000",
-        ],
-        solarDetails => [
-        solarPower => false,
-        ],
-    ],
-    offers => [
-        [
-            fuel => 'ELE',
-            planId => "RSOT-EV",
-            sourceCode => "Basic",
-
-        ],
-        [
-            fuel => 'GAS',
-            planId => "RSOT-GV",
-            sourceCode => "Basic",
-        ],
-    ],
-    mailingAddressType => "POSTAL",
-    postalMailingAddress => [
-    postalDeliveryNumber => "1000",
-        postalDeliveryType => "PO_BOX",
-        suburb => "Melbourne",
-        state => "VIC",
-        postcode => "3001",
-
-    ],
-    billDeliveryMethod => "POST",
-  	lifeSupport => false
-];
 
 
     public function __construct()
@@ -110,23 +33,21 @@ preferredContactMethod => "EMAIL",
                 ->first()->format('Y-m-d')
             ;
 
+            //this is for testing purposes
             $fromDate = '2020-10-10';
 
             $todate = Carbon::now()->format('Y-m-d');
 
-            dump($fromDate);
-            dump($todate);
-
-            $variables =[
-                'data'=> [
+               $da = ['data' => [
                     'vendorCode'=> "HD2",
                     'submittedFrom'=> $fromDate,
                     'submittedTo'=> $todate,
                     'pageable'=> [
-                        'size'=>10,
+                        'size'=>50,
                         'page'=>1
                     ],
-                ]
+                   ]
+
             ];
 
             $gql = (new Query('getVendorSaleStatusByDateRange'))
@@ -167,15 +88,43 @@ preferredContactMethod => "EMAIL",
             $client = new Client(
                 'https://apigw-nonprod.energyaustralia.com.au/graphql',
                 ['Authorization' => $this->accessToken]);
-            $results = $client->runQuery($gql, true, $this->arr );
-            dump($this->arr);
-            return $this->manageConnectionList($results->getResults());
+            $results = $client->runQuery($gql, true, $da );
+            return $this->manageConnectionList($results->getResponseBody());
 
 
         }
 
         public function manageConnectionList($results)
         {
-            dump($results?->data?->getVendorSaleStatusByDateRange?->content);
+            $data = (json_decode($results));
+            $quotes = $data->data->getVendorSaleStatusByDateRange->content;
+
+
+
+
+            foreach ($quotes as $item) {
+                foreach ($item->quotes as $quote)
+                {
+                    $status = null;
+                    $status = null;
+                    if($quote->status == 'REJECTED')
+                    {
+                        $status = ConnectionApplication::STATUS_REJECTED;
+                    }
+
+                    if($quote->status == 'PROCESSING')
+                    {
+                        $status = ConnectionApplication::STATUS_EA_PROCESSING;
+                    }
+
+                }
+                $connection = ConnectionApplication::where('ea_sales_id', $item->id)->first();
+                if(!is_null($connection))
+                {
+                    $connection->update(['status'=>$status]);
+                }
+
+            }
+            die();
         }
 }

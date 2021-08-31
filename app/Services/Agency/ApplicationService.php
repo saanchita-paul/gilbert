@@ -102,15 +102,13 @@ class ApplicationService
 
     public function submit(array $applications, $id)
     {
-        $postSalesService = new PostSalesService($id);
         $lead = $applications['lead'];
         $lead['status'] = ConnectionApplication::STATUS_SUBMITTED;
         $lead = array_merge($lead, ['plan_type' => ConnectionApplication::PLAN_TYPE_MAPPER[$lead['plan_type']]]);
         $existLead = ConnectionApplication::findOrFail($id);
         $existLead->update($lead);
         $this->createIdentification($lead['identification'], $id);
-        $this->updateConnectionService($lead['service_interests'], $id);
-        $postSalesService->postToEa();
+        $this->updateConnectionService($lead['service_interests'], $id);;
         return $existLead;
     }
 
