@@ -1,5 +1,5 @@
 <template>
-    <v-container  v-if="planNoteFlag">
+    <v-container fluid  v-if="planNoteFlag">
             <ValidationObserver ref="submit_lead">
                 <LeadUserDetails @eacalate="eacalate"
                                  @updateLead="updateLead"
