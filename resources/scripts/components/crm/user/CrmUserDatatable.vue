@@ -15,7 +15,7 @@
                         <span>{{office.name}} Office</span>
                     </v-col>
                     <v-col cols="4" class="text-right">
-                        <v-btn color="primary" @click="viewOfficeProfile">View Office Profile</v-btn>
+                        <v-btn outlined @click="viewOfficeProfile">View Office Profile</v-btn>
                     </v-col>
                 </v-row>
             </v-card>
