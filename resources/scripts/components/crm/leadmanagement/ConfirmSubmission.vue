@@ -1,5 +1,5 @@
 <template>
-                <v-card>
+                <v-card v-if="data">
                     <v-app-bar height="80px">
                         <span class="py-4 dialogs-title">Confirm Submission</span>
                     </v-app-bar>
@@ -383,7 +383,7 @@
                                         outlined
                                         dense
                                         hide-details="auto"
-                                        :value="data.plan_type.title"
+                                        :value="data.plan_type.value"
                                         readonly
                                     ></v-text-field>
                                     </div>
