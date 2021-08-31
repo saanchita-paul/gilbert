@@ -1,15 +1,16 @@
 <template>
     <v-row>
-            <p class="sub-title">Service Applications</p>
-        <v-col cols="12">
-            <v-row>
-                <v-col v-for="service in services" :key="service">
+        <v-col cols="12" class="pb-0">
+            <p class="sub-title mb-0">Service Applications</p>
+        </v-col>
+        <v-col cols="12" class="service-box-area">
+                <div v-for="service in services" :key="service">
                     <EnergyService @click.native="updateService(service)" :title="service"  :lead-summary="leadSummary"></EnergyService>
-                </v-col>
-            </v-row>
+                </div>
+        </v-col>
+        <v-col cols="12">
             <v-divider></v-divider>
         </v-col>
-
         <v-col cols="12">
             <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
             <div class="d-flex">

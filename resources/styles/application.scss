@@ -68,23 +68,29 @@
         flex-basis: 40%;
         font-weight: 700;
         text-align: right;
-        padding-right: 15px;
+        padding-right: 16px;
     }
     .text-field {
         flex-basis: 60%;
     }
 }
-.service-box {
-    padding: 10px 20px;
-    background-color: #E0E0E0;
-    margin: 5px;
-    border-radius: 10px;
-    min-height: 70px;
-    &.active {
-        background-color:$primary_color !important;
-        color: #fff !important;
+.service-box-area {
+    display: flex;
+    width: 100%;
+   
+    .service-box {
+        padding: 10px 20px;
+        background-color: #E0E0E0;
+        margin: 5px;
+        border-radius: 10px;
+        min-height: 70px;
+        &.active {
+            background-color:$primary_color !important;
+            color: #fff !important;
+        }
     }
 }
+
 .service-box-title
 {
     padding: 5px 20px;
