@@ -149,6 +149,16 @@ class ConnectionApplication extends Model
         'submitted' => self::STATUS_SUBMITTED,
     ];
 
+    const PLAN_TYPE_TOTAL = 'total_plan';
+    const PLAN_TYPE_BASIC = 'basic_plan';
+    const PLAN_TYPE_NO_FRILLS = 'no_frills';
+
+    const PLAN_TYPE_MAPPER = [
+        self::PLAN_TYPE_BASIC => 1,
+        self::PLAN_TYPE_NO_FRILLS => 2,
+        self::PLAN_TYPE_TOTAL => 3
+    ];
+
     /**
      * @return BelongsTo
      */

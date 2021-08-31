@@ -71,7 +71,6 @@
                             <template v-slot:activator="{ on, attrs }">
                                 <ValidationProvider name="Bate Of Birth" rules="required"  v-slot="{ errors }">
                                     <v-text-field
-                                        label="Date of Birth*"
                                         placeholder="DD/MM/YYYY"
                                         outlined
                                         dense
@@ -167,7 +166,6 @@
                             <template v-slot:activator="{ on, attrs }">
                                 <ValidationProvider name="Date Of Birth" rules="required"  v-slot="{ errors }">
                                     <v-text-field
-                                        label="Connection Date*"
                                         placeholder="DD/MM/YYYY"
                                         outlined
                                         dense
@@ -392,7 +390,6 @@
                             <template v-slot:activator="{ on, attrs }">
                                 <ValidationProvider name="Expired Date" rules="required"  v-slot="{ errors }">
                                     <v-text-field
-                                        label="Expired Date*"
                                         placeholder="DD/MM/YYYY"
                                         outlined
                                         dense
@@ -424,7 +421,7 @@
                 </div>
             </div>
             <p class="sub-title mt-5">Agent’s Additional Instructions <v-btn text right class="primary--text" @click="readMore">read more ...</v-btn></p>
-            <ValidationProvider name="DOB" rules="required"  v-slot="{ errors }">
+            <ValidationProvider name="DOB"   v-slot="{ errors }">
                 <v-textarea
                     v-model="person_details.additional_instruction"
                     @input="updateLeads"
