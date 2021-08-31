@@ -10,7 +10,8 @@
             <v-card class="hood-card  mt-4">
                 <v-row>
                     <v-col cols="8">
-                        <span>Sunbury Office</span>
+                        <!--<span>Sunbury Office</span>-->
+                        <span>{{office.name}}</span>
                     </v-col>
                     <v-col cols="4" class="text-right">
                         <v-btn color="primary" @click="viewOfficeProfile">View Office Profile</v-btn>
@@ -66,6 +67,18 @@ name: "CrmUserDatatable",
             creationDoneFlag: false,
             user: null,
             usersList: [],
+            activeOffice: null,
+            office: {
+                id: null,
+                name: null,
+                address: null,
+                phone: null,
+                email: null,
+                abn: null,
+                agency_name: null,
+                agency_type: null,
+                agency_id: null,
+            },
 
             page: 1,
             pageCount: 0,
@@ -152,6 +165,15 @@ name: "CrmUserDatatable",
             this.loading = false;
         },
 
+        async loadOffice() {
+            this.data = await OfficeService.loadOfficeById(this.activeOffice);
+            this.office.name = this.data.office.name;
+            //console.log(this.data.office.name);
+            console.log(this.office.name);
+            //await this.syncData();
+            this.isLoaded = true;
+        },
+
         async saveUser() {
           let officeId = this.$route.params?.officeId;
           await CrmUserService.saveUser(this.user, officeId);
@@ -173,6 +195,8 @@ name: "CrmUserDatatable",
     },
     mounted() {
         this.loadUserData();
+        this.activeOffice = this.$route.params.officeId;
+        this.loadOffice();
     },
     watch: {
         options: {

@@ -6,6 +6,10 @@ import AgentDashboardLayout from "@scripts/layouts/AgentDashboardLayout";
 
 import  LoginPage from "@scripts/pages/auth/LoginPage";
 
+import  ForgotPasswordPage from "@scripts/pages/auth/ForgotPasswordPage";
+
+import  ResetPasswordPage from "@scripts/pages/auth/ResetPasswordPage";
+
 import AuthService, {checkRouteAuthorization} from "@scripts/services/AuthService";
 
 import CustomerDetails from "@scripts/pages/CustomerDetails";
@@ -168,6 +172,22 @@ const router = new VueRouter({
             path: '/auth/login',
             component: LoginPage,
             name: 'login',
+            meta: {
+                isProtected: false
+            }
+        },
+        {
+            path: '/forgot/password',
+            component: ForgotPasswordPage,
+            name: 'forgot.password',
+            meta: {
+                isProtected: false
+            }
+        },
+        {
+            path: '/reset/password/:token',
+            component: ResetPasswordPage,
+            name: 'reset.password',
             meta: {
                 isProtected: false
             }
