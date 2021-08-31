@@ -128,8 +128,8 @@ class ConnectionApplication extends Model
         'is_escalated',
         'supplier',
         'plan_type',
-        'status'
-        'status'
+        'status',
+        'ea_sales_id'
     ];
 
 
