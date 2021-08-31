@@ -28,7 +28,6 @@ Route::middleware('auth:sanctum')
     ->get('/user', [AuthController::class, 'authUser']);
 
 Route::get('/logout', [AuthController::class, 'logout']);
-Route::get('/testapplication', [ApplicationController::class, 'getApplicationMetricsCount']);
 /**
  * @Module AGENCY CRM
  */
@@ -81,6 +80,9 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/applications-metrics', [ApplicationController::class, 'getMetrics']);
     Route::get('/applications-metrics-count', [ApplicationController::class, 'getApplicationMetricsCount']);
+
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
 
 Route::post('/invitation/validation', [UserInvitationController::class, 'validateInvitation']);
