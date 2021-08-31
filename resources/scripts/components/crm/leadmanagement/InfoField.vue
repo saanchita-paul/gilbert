@@ -479,7 +479,7 @@ export default {
 
             propertyTypeDD:[
                 {
-                    text: 'Recidential',
+                    text: 'Residential',
                     value: 1
                 },
                 {
