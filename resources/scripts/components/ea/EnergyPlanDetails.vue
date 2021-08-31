@@ -326,7 +326,7 @@ import {SOLAR_PACK } from "@scripts/models/ea/EnergyPlan";
 
 
 export default {
-    name: "EnergyPlanDetailsPage",
+    name: "EnergyPlanDetails",
     props: ['postcode', 'state', 'plan', 'services'],
 
     components: {

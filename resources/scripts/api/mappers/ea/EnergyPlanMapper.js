@@ -122,7 +122,7 @@ export const mapAllPlan = plans => {
     const res = Object.keys(plans).map(plan => {
         const key = EA_PLAN_TYPES.find(type => type.value === plan)?.key;
         return {
-            active: key === PLAN_TYPE_TOTAL,
+            active: false,
             key: key,
             title: plan
         }
