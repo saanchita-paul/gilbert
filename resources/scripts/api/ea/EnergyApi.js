@@ -2,6 +2,7 @@ import axios from 'axios';
 import EnergyPlanMapper, {mapAllPlan, mapServices} from "@scripts/api/mappers/ea/EnergyPlanMapper";
 import {mapEAPlanQuery} from "@scripts/api/mappers/ea/EAPlanQueryMapper";
 
+const ROOT = `${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api`;
 
 export default {
 
@@ -14,10 +15,7 @@ export default {
      */
     getAllPlans: async query => {
         query = mapEAPlanQuery(query)
-        const data = (await axios.get(
-            `https://hb.leninsheikh.com/hood-dashboard/api/ea-plans`,
-            {params: query})
-        ).data.data
+        const data = (await axios.get(`${ROOT}/ea-plans`, {params: query})).data.data
         return mapAllPlan(data)
     },
     /**
@@ -27,10 +25,7 @@ export default {
      */
     getPlanDetailsByCustomerIdAndPlanType: async (query) => {
         query = mapEAPlanQuery(query);
-        const data = (await axios.get(
-            `https://hb.leninsheikh.com/hood-dashboard/api/ea-plans/${query.plan_type}`,
-            {params: query})
-        ).data.data
+        const data = (await axios.get(`${ROOT}/ea-plans/${query.plan_type}`, {params: query})).data.data
         return EnergyPlanMapper.fromServer(data, query.plan_type);
     },
 
@@ -42,6 +37,6 @@ export default {
      * @returns {Promise<data>}
      */
      getTarrifPlansByPostcode: async (postcode, plan, customerId) => {
-        return (await axios.get(`/api/webview/bdid?postcode=${postcode}&plan=${plan}`)).data.data
+        return (await axios.get(`${ROOT}/api/webview/bdid?postcode=${postcode}&plan=${plan}`)).data.data
     }
 }
