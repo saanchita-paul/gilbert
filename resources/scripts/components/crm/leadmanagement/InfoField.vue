@@ -446,7 +446,7 @@ export default {
     data () {
         return {
             titlesDD:[
-                'Mrs','Mr'
+                'Mrs','Mr','Ms'
             ],
             emailBillingDD: [ {
                 text: 'Yes',
