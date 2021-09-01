@@ -147,6 +147,8 @@ class ConnectionApplication extends Model
         'assigned' => self::STATUS_ASSIGNED,
         'escalated' => self::STATUS_ESCALATED,
         'submitted' => self::STATUS_SUBMITTED,
+        'accepted' => self::STATUS_ACCEPTED,
+        'rejected' => self::STATUS_REJECTED,
     ];
 
     const PLAN_TYPE_TOTAL = 'total_plan';
