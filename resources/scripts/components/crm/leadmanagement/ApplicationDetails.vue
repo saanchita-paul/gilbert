@@ -37,6 +37,10 @@
                 <td class="font-weight-bold">Service Address:</td>
                 <td>{{lead.address_text}}</td>
             </tr>
+            <tr>
+                <td class="font-weight-bold">Status:</td>
+                <td>{{ lead.status }}</td>
+            </tr>
         </table>
 
         <v-divider class="mt-4 mb-2"></v-divider>

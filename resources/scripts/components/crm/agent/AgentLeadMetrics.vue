@@ -82,8 +82,6 @@ export default {
       async loadMetrics() {
           const allMetric = await LeadApplicationService.loadMetrics();
           this.appMetrics = allMetric.data;
-
-          console.log('metricsadfasf ',this.appMetrics);
       }
 
     },
