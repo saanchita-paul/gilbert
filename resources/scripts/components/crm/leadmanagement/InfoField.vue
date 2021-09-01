@@ -434,7 +434,7 @@
 
         <ServiceAddress
             v-if="serviceAddressFlag" :dialog="serviceAddressFlag"
-            :propertyDetails="property_details" @close="closeServiceAddress">
+            :propertyDetails="property_details"  @saveAddress="saveAddress" @close="closeServiceAddress">
         </ServiceAddress>
     </v-row>
 </template>
@@ -599,6 +599,10 @@ export default {
         },
 
         closeServiceAddress() {
+            this.serviceAddressFlag = false;
+        },
+
+        saveAddress() {
             this.serviceAddressFlag = false;
         },
 
