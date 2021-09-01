@@ -7,11 +7,20 @@
     .application-info {
         tr {
              td:first-child  {
-                width: 110px;
+                width: 150px;
                 display: block;
                 text-align: right;
                 margin-right: 15px;
             }
+        }
+    }
+}
+.application-info {
+    tr {
+         td:first-child  {
+            min-width: 150px;
+            display: block;
+            margin-right: 15px;
         }
     }
 }
