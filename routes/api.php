@@ -8,6 +8,7 @@ use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ApplicationController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\UserInvitationController;
+use App\Http\Controllers\UtilityController;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
@@ -85,6 +86,9 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
 
 Route::post('/invitation/validation', [UserInvitationController::class, 'validateInvitation']);
 Route::post('/invitation/change-password', [UserInvitationController::class, 'passwordChange']);
+
+Route::post('/utilities/fc-auth', [UtilityController::class, 'fcAuth']);
+Route::post('/utilities/fc-address', [UtilityController::class, 'fcAddress']);
 
 
 /**
