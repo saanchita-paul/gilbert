@@ -420,7 +420,7 @@
                     </ValidationProvider>
                 </div>
             </div>
-            <p class="sub-title mt-5">Agent’s Additional Instructions <v-btn text right class="primary--text" @click="readMore">read more ...</v-btn></p>
+            <p class="sub-title mt-5">Agent’s Additional Instructions<v-btn text right class="primary--text" @click="readMore">read more ...</v-btn></p>
             <ValidationProvider name="DOB"   v-slot="{ errors }">
                 <v-textarea
                     v-model="person_details.additional_instruction"
@@ -428,6 +428,7 @@
                     outlined
                     hide-details="auto"
                     placeholder="Additional Instructions goes here."
+                    disabled
                 ></v-textarea>
             </ValidationProvider>
         </v-col>
