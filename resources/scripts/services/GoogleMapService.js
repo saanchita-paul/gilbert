@@ -73,6 +73,7 @@ export default {
                     placeId,
                 }, (data, status) => {
                     if (status === 'OK') {
+                        console.log("ADDRESS", data)
                         resolve(GoogleMapMapper.mapGeocoderResultToAddress(data[0]));
                     } else {
                         reject(status);

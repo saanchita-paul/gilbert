@@ -20,7 +20,7 @@
                                     </div>
                                     <v-snackbar v-model="snackbar" :timeout="5000" top color="success">
                                         <span>Your password has been reset successfully!</span>
-                                        <v-btn flat color="red" @click="snackbar = false">Close</v-btn>
+                                        <v-btn flat @click="snackbar = false">Close</v-btn>
                                     </v-snackbar>
                                 </v-fade-transition>
                                 <validation-provider
@@ -95,7 +95,7 @@
                     });
                     this.snackbar = true;
                     console.log(response);
-                    //this.$router.push('/auth/login')
+                    await this.$router.push({name: 'login'})
                 } catch (e){
                     this.errorMessage = true;
                 }
