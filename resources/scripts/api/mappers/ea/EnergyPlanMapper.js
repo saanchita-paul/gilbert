@@ -76,7 +76,9 @@ const mapElectricityRate = data => {
 
 const getGasPromotionalText = (planData, plan) => {
     const rate = planData.rates.gas;
-
+    if (!rate) {
+        return ''
+    }
     if (plan === PLAN_TYPE_NO_FRILLS) {
         let r = rate.session_all_year
             ? rate.usage_rates.peak_usage_per_day.before_discount
