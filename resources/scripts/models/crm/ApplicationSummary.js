@@ -67,7 +67,7 @@ export default class ApplicationSummary {
         this.dob = date_of_birth;
         this.phone = phone;
         this.email = email;
-        this.moving_date = new DayJs(moving_date).format(DATE_FORMAT.DB_DATE);
+        this.moving_date = moving_date? new DayJs(moving_date).format(DATE_FORMAT.DB_DATE):null;
         this.is_email_billing = is_email_billing;
         this.tenancy_type = tenancy_type;
         this.tenancy_type = tenancy_type;
