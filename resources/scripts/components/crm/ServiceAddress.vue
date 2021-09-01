@@ -1,5 +1,12 @@
 <template>
-    <v-container fluid>
+    <v-row justify="center">
+        <v-dialog
+            v-model="dialog"
+            persistent
+            max-width="700px"
+        >
+            <v-card>
+                <v-container fluid>
         <v-row class="section-dialogs">
             <v-col cols="12">
                 <div class="dialogs-title">
@@ -19,6 +26,7 @@
                         </v-col>
                         <v-col cols="6" class="py-0">
                             <v-text-field
+                                v-model="propertyDetails.street_address"
                                 label="Address"
                                 outlined
                                 dense
@@ -47,34 +55,29 @@
                             ></v-text-field>
                         </v-col>
                         <v-col cols="12" >
-                            <span class="title">Is this the same as your billing address?</span>
-                             <v-radio-group row>
-                                <v-radio
-                                    label="Yes"
-                                    value="yes"
-                                ></v-radio>
-                                <v-radio
-                                    label="No"
-                                    value="no"
-                                ></v-radio>
-                            </v-radio-group>
+                            <v-checkbox
+                                v-model="checkbox"
+                                :label="`Is this the same as your billing address?`"
+                            ></v-checkbox>
                         </v-col>
 
                         <v-col cols="6" class="py-0">
-                           <v-btn block>Cancel</v-btn>
+                           <v-btn @click="closeServiceAddress" block>Cancel</v-btn>
                         </v-col>
                         <v-col cols="6" class="py-0">
                            <v-btn block color="primary">Save</v-btn>
                         </v-col>
-                        
-                        
+
+
                     </v-row>
-                   
+
                 </div>
             </v-col>
-    </v-row>
+     </v-row>
     </v-container>
-    
+            </v-card>
+        </v-dialog>
+    </v-row>
 </template>
 
 <script>
@@ -84,9 +87,24 @@ export default {
   components: {
         Search
     },
-    data(){
-      
+    props: {
+        dialog: {
+            required: true
+        },
+        propertyDetails: {
+            required: true
+        }
     },
+    data () {
+        return {
+            checkbox: true
+        }
+    },
+    methods: {
+        closeServiceAddress() {
+            this.$emit('close');
+        }
+    }
 };
 </script>
 
