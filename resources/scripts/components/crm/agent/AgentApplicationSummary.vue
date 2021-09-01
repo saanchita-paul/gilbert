@@ -2,7 +2,7 @@
     <v-card class="hood-card" v-if="application">
         <h3 class="page-title">{{ application.first_name + ' ' + application.last_name}}</h3>
         <p class="sub-title mt-4 mb-2">Personal Details</p>
-        <table width="100%" class="application-info">
+        <table  class="application-info">
             <tr>
                 <td class="font-weight-bold">Date of Birth</td>
                 <td>{{ application.date_of_birth }}</td>
@@ -27,7 +27,7 @@
 
 
         <p class="sub-title mt-4 mb-2">Property  Details</p>
-        <table width="100%" class="application-info">
+        <table  class="application-info">
             <tr>
                 <td class="font-weight-bold">Tenancy Type:</td>
                 <td>{{ application.tenancy_type == 1? 'Renter': 'Owner' }}</td>
