@@ -81,7 +81,13 @@ export default {
             align: 'start',
             sortable: true,
             value: 'services'
-          }
+          },
+            {
+                text: 'Status',
+                align: 'start',
+                sortable: true,
+                value: 'status'
+            }
         ],
         search: '',
       }

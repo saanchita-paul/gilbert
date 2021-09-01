@@ -5,11 +5,24 @@ import Note from "@scripts/models/crm/Note";
 import ServiceProvider from "@scripts/models/crm/ServiceProvider";
 import COMMISSION from "@scripts/data/constants/COMMISSION";
 import PaginationMapper from "@scripts/api/mappers/crm/PaginationMapper";
+import DayJS from "dayjs";
+import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 export default {
     mapApplication(data) {
         let model = Object.assign(new Application(), { ...data });
+        model.status = this.mapStatus(model.status);
+        model.moving_date = new DayJS(model.moving_date).format(DATE_FORMAT.DB_DATE);
         return model;
     },
+
+    mapStatus(status)
+    {
+        status = status - 1;
+        if(status < 0) return  '';
+        const statusList = ['UnAssigned','Assigned', 'Escalated','Submitted', 'Accepted', 'Rejected'];
+        return statusList[status];
+    },
+
     mapApplicationList(data) {
         const models = [];
         data.data.forEach((item) => {
