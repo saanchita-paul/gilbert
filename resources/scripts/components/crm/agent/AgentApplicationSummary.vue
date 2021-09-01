@@ -39,7 +39,7 @@
         </table>
 
         <v-divider class="mt-4 mb-2"></v-divider>
-        <p class="sub-title py-2">Service Interests
+        <p class="sub-title py-2">Service Preference
           <span class="mx-2">
               <v-icon :disabled="isServiceAllowed(application.service_interests, 'power')" color="yellow">mdi-flash</v-icon>
           </span>
