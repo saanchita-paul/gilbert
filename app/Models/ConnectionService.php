@@ -81,7 +81,6 @@ class ConnectionService extends Model
             WHEN CS.service_type = 'water' AND CA.status = 5 THEN 1 ELSE 0 END) AS water")
             )
             ->get();
-        echo $service->toSql();
         $result = $result->toArray()[0];
         return $result;
     }
