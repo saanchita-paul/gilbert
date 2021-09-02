@@ -115,20 +115,7 @@
                                     min-width="290px"
                                 >
                                     <template v-slot:activator="{ on, attrs }">
-<!--                                        <ValidationProvider name="Date of Birth" rules="required"  v-slot="{ errors }">-->
-<!--                                            <v-text-field-->
-<!--                                                label="Date of Birth*"-->
-<!--                                                placeholder="DD/MM/YYYY"-->
-<!--                                                outlined-->
-<!--                                                dense-->
-<!--                                                append-icon="mdi-calendar"-->
-<!--                                                v-model="application.date_of_birth"-->
-<!--                                                readonly-->
-<!--                                                v-bind="attrs"-->
-<!--                                                v-on="on"-->
-<!--                                                :error-messages=" errors[0]"-->
-<!--                                            ></v-text-field>-->
-<!--                                        </ValidationProvider>-->
+
                                         <ValidationProvider name="Moving Date" rules="required"  v-slot="{ errors }">
                                             <v-text-field
                                                 label="Connection Date*"
@@ -144,7 +131,8 @@
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </template>
-                                    <v-date-picker v-model="application.moving_date" @input="showMovingDate = false"></v-date-picker>
+                                    <v-date-picker v-model="application.moving_date" :min="minDate"
+                                                   @input="showMovingDate = false"></v-date-picker>
                                 </v-menu>
                             </v-col>
                         </v-row>
@@ -331,7 +319,12 @@ export default {
                 internet: false,
             },
             showMenu: false,
-            searchResult: []
+            searchResult: [],
+            minDate: null,
+            range: null,
+            disabledDates: [
+              { start: new Date(2021, 0, 2), end: new Date(2021, 9, 19) },
+            ],
         }
     },
     created() {
@@ -347,6 +340,15 @@ export default {
 
     },
     methods: {
+
+      setMinDate()
+      {
+        let result = new Date();
+        result.setDate(result.getDate() + 3);
+
+
+        this.minDate = result.toISOString().slice(0,10);
+      },
         onAddressSelected(place) {
             GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
                 .then((data) => {
@@ -393,7 +395,10 @@ export default {
                 this.service_types[item] = false;
             }
         }
-    }
+    },
+  mounted() {
+      this.setMinDate();
+  }
 };
 </script>
 
