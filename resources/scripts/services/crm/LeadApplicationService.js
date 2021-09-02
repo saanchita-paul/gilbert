@@ -1,7 +1,7 @@
 import LeadApplicationAPI from "@scripts/api/crm/LeadApplicationAPI";
 
 export default {
-    loadMetrics: () => LeadApplicationAPI.getMetrics(),
+    loadMetrics: (data) => LeadApplicationAPI.getMetrics(data),
     loadUserLeadMetrics: () => LeadApplicationAPI.getUserLeadMetrics(),
     loadUserLeads: (sort_search_meta, active_lead_type) => LeadApplicationAPI.getUserLeads(sort_search_meta, active_lead_type),
     loadUserLead: (id) => LeadApplicationAPI.getUserLead(id),
@@ -12,5 +12,6 @@ export default {
     eacalate: (leadId) => LeadApplicationAPI.eacalate(leadId),
     saveEscalateReason: (reason, leadId) => LeadApplicationAPI.saveEscalateReason(reason,leadId),
     saveLead: (lead, leadId) => LeadApplicationAPI.saveLead(lead, leadId),
+    updateAddress: (address, leadId) => LeadApplicationAPI.updateAddress(address, leadId),
     assignUser: (leadId, agentProfileId) => LeadApplicationAPI.assignUser(leadId, agentProfileId),
 }

@@ -194,13 +194,17 @@ const serviceProvider = [
 
 export default {
 
-   async getMetrics() {
+   async getMetrics(arg) {
         try {
-             const leads = await axios.get('/api/applications-metrics-count');
+            let agency_id = '';
+            if(arg.agency_id) {
+                agency_id = arg.agency_id;
+            }
+             const leads = await axios.get('/api/applications-metrics-count?agency_id='+agency_id);
             return AppMetricsMapper.mapAppMetricList(data, leads.data.data);
 
         } catch (error) {
-            return error.data;
+            return error.data;N
         }
     },
 
@@ -287,10 +291,17 @@ export default {
 
    async saveLead(lead, leadId) {
         try {
-            lead.plan_type = lead.plan_type.id;
             const data = await axios.post('/api/applications/'+leadId+'/submit',{lead});
             return data;
 
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    async updateAddress(address, leadId) {
+        try {
+            return await axios.put('/api/applications/'+leadId+'/update-address',{address});
         } catch (error) {
             return error.data;
         }

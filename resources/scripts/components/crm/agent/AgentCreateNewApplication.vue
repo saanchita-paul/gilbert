@@ -20,6 +20,20 @@
                                 :error-messages=" errors[0]"
                             ></v-text-field>
                         </ValidationProvider>
+                    </v-col>
+                    <v-col cols="6">
+                    <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
+                        <v-text-field
+                            label="Lastname*"
+                            outlined
+                            dense
+                            placeholder="Lastname*"
+                            v-model="application.last_name"
+                            :error-messages=" errors[0]"
+                        ></v-text-field>
+                    </ValidationProvider>
+                    </v-col>
+                        <v-col cols="6">
                         <ValidationProvider name="Email" rules="required|email"  v-slot="{ errors }">
                             <v-text-field
                                 label="Email*"
@@ -30,6 +44,21 @@
                                 :error-messages=" errors[0]"
                             ></v-text-field>
                         </ValidationProvider>
+                        </v-col>
+                    <v-col cols="6">
+                    <ValidationProvider name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                        <v-text-field
+                            label="Mobile number*"
+                            :maxlength="10"
+                            outlined
+                            dense
+                            placeholder="+61 410"
+                            v-model="application.phone"
+                            :error-messages=" errors[0]"
+                        ></v-text-field>
+                    </ValidationProvider>
+                    </v-col>
+                            <v-col cols="6">
                         <ValidationProvider name="Tenancy Types" rules="required"  v-slot="{ errors }">
                             <v-select outlined dense
                                       v-model="application.tenancy_type"
@@ -42,27 +71,6 @@
                     </v-col>
 
                     <v-col cols="6">
-                        <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
-                            <v-text-field
-                                label="Lastname*"
-                                outlined
-                                dense
-                                placeholder="Lastname*"
-                                v-model="application.last_name"
-                                :error-messages=" errors[0]"
-                            ></v-text-field>
-                        </ValidationProvider>
-                        <ValidationProvider name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
-                            <v-text-field
-                                label="Mobile number*"
-                                :maxlength="10"
-                                outlined
-                                dense
-                                placeholder="+61 410"
-                                v-model="application.phone"
-                                :error-messages=" errors[0]"
-                            ></v-text-field>
-                        </ValidationProvider>
                             <v-menu
                                 v-model="showDOB"
                                 :close-on-content-click="false"
@@ -107,6 +115,7 @@
                                     min-width="290px"
                                 >
                                     <template v-slot:activator="{ on, attrs }">
+
                                         <ValidationProvider name="Moving Date" rules="required"  v-slot="{ errors }">
                                             <v-text-field
                                                 label="Connection Date*"
@@ -122,15 +131,14 @@
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </template>
-                                    <v-date-picker v-model="application.moving_date" @input="showMovingDate = false"></v-date-picker>
+                                    <v-date-picker v-model="application.moving_date" :min="minDate"
+                                                   @input="showMovingDate = false"></v-date-picker>
                                 </v-menu>
                             </v-col>
                         </v-row>
                     </v-col>
 
                     <v-col cols="12" class="pb-0">
-                        <v-row>
-                            <v-col cols="12" class="py-0">
                                 <v-menu offset-y v-model="showMenu">
                                     <template v-slot:activator="{ on }">
                                         <v-text-field
@@ -154,8 +162,6 @@
                                         </v-list-item>
                                     </v-list>
                                 </v-menu>
-                            </v-col>
-                        </v-row>
                     </v-col>
 
                     <v-col cols="6" class="pt-0">
@@ -166,17 +172,10 @@
                                 dense
                                 placeholder="2/56, Bradman Drive"
                                 v-model="application.street_address"
+                                :error-messages=" errors[0]"
                             ></v-text-field>
                         </ValidationProvider>
-                        <ValidationProvider name="State/Territory" rules="required"  v-slot="{ errors }">
-                            <v-select outlined dense
-                                      v-model="application.state"
-                                      :items="states"
-                                      label="State/Territory*"
-                                      :error-messages=" errors[0]"
-                                      placeholder="Please Select">
-                            </v-select>
-                        </ValidationProvider>
+
                     </v-col>
 
                     <v-col cols="6" class="pt-0">
@@ -190,6 +189,25 @@
                                 :error-messages=" errors[0]"
                             ></v-text-field>
                         </ValidationProvider>
+
+                    </v-col>
+
+                    <v-col cols="6" class="pt-0">
+
+                        <ValidationProvider name="State/Territory" rules="required"  v-slot="{ errors }">
+                            <v-select outlined dense
+                                      v-model="application.state"
+                                      :items="states"
+                                      label="State/Territory*"
+                                      :error-messages=" errors[0]"
+                                      placeholder="Please Select">
+                            </v-select>
+                        </ValidationProvider>
+                    </v-col>
+
+
+                    <v-col cols="6" class="pt-0">
+
                         <ValidationProvider name="Postcode" rules="required"  v-slot="{ errors }">
                             <v-text-field
                                 label="Postcode*"
@@ -301,7 +319,12 @@ export default {
                 internet: false,
             },
             showMenu: false,
-            searchResult: []
+            searchResult: [],
+            minDate: null,
+            range: null,
+            disabledDates: [
+              { start: new Date(2021, 0, 2), end: new Date(2021, 9, 19) },
+            ],
         }
     },
     created() {
@@ -317,17 +340,26 @@ export default {
 
     },
     methods: {
+
+      setMinDate()
+      {
+        let result = new Date();
+        result.setDate(result.getDate() + 3);
+
+
+        this.minDate = result.toISOString().slice(0,10);
+      },
         onAddressSelected(place) {
             GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
                 .then((data) => {
-
-                    console.log('data', data);
 
                     this.application.address_text = data.formatted_address;
                     this.application.street_address = data.street;
                     this.application.city = data.city;
                     this.application.postcode = data.postcode;
                     this.application.state = data.state;
+                    this.application.street_number = data.street_number;
+                    this.application.unit_number = data.unit_number;
                     // this.mapToModel(data)
                 });
         },
@@ -363,7 +395,10 @@ export default {
                 this.service_types[item] = false;
             }
         }
-    }
+    },
+  mounted() {
+      this.setMinDate();
+  }
 };
 </script>
 

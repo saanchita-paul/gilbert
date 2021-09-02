@@ -18,6 +18,11 @@ import LeadApplicationService from "@scripts/services/crm/LeadApplicationService
 
 export default {
   name: "LeadMetrics",
+  props:{
+    agency_id:{
+      require: false,
+    }
+  },
     data(){
       return {
           appMetrics: [],
@@ -25,7 +30,7 @@ export default {
     },
     methods: {
       async loadMetrics() {
-          const allMetric = await LeadApplicationService.loadMetrics();
+          const allMetric = await LeadApplicationService.loadMetrics({agency_id: this.agency_id});
           this.appMetrics = allMetric.mapData;
 
       }

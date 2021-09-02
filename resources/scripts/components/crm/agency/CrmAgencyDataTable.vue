@@ -2,7 +2,7 @@
     <v-container fluid>
         <v-card class="hood-card">
             <h2>All Application Metrics</h2>
-            <LeadMetrics></LeadMetrics>
+            <LeadMetrics ></LeadMetrics>
         </v-card>
         <div>
             <v-row class="mt-5">

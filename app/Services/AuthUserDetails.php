@@ -81,4 +81,8 @@ class AuthUserDetails
     {
         return ['profile' => $user->profile];
     }
+
+    public function getUserByEmail($email){
+        return User::where('email', $email)->first();
+    }
 }

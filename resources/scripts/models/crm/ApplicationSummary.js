@@ -1,3 +1,6 @@
+import DayJs from "dayjs";
+import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
+
 export default class ApplicationSummary {
     id = null;
     first_name = null;
@@ -15,6 +18,8 @@ export default class ApplicationSummary {
     country = 'Australia';
     postcode = null;
     address_text = null;
+    unit_number = null;
+    street_number = null;
     service_interests = [];
     additional_instruction = null;
     applicant_name = null;
@@ -41,6 +46,8 @@ export default class ApplicationSummary {
             street_address = null,
             city = null,
             state = null,
+            unit_number = null,
+            street_number = null,
             country = 'Australia',
             postcode = null,
             address_text = null,
@@ -64,7 +71,7 @@ export default class ApplicationSummary {
         this.dob = date_of_birth;
         this.phone = phone;
         this.email = email;
-        this.moving_date = moving_date;
+        this.moving_date = moving_date? new DayJs(moving_date).format(DATE_FORMAT.DB_DATE):null;
         this.is_email_billing = is_email_billing;
         this.tenancy_type = tenancy_type;
         this.tenancy_type = tenancy_type;
@@ -85,7 +92,17 @@ export default class ApplicationSummary {
         this.has_life_support = has_life_support;
         this.has_solar = has_solar;
         this.property_type = property_type;
-        this.status = status;
+        this.status = this.mapStatus(status);
+        this.street_number = street_number;
+        this.unit_number = unit_number
 
+    }
+
+     mapStatus(status)
+    {
+        status = status - 1;
+        if(status < 0) return  '';
+        const statusList = ['UnAssigned','Assigned', 'Escalated','Submitted', 'Accepted', 'Rejected'];
+        return statusList[status];
     }
 }

@@ -3,28 +3,31 @@
         <v-app-bar height="50px">
             <v-img src="/assets/images/icons/Back.svg" @click="goBack" max-width="24px" class="mb-2" style="cursor: pointer"/>
         </v-app-bar>
-        <v-container :class="{invisible: !isLoaded, 'manual-margin': true}">
-            <v-row align-center class=" header color--text pt-0">
-                <v-col class="avatar-containner pr-0">
-                    <v-avatar>
-                        <v-img v-bind:src="customerinfo.profile_pic"
-                               v-bind:class="{'bad':  sentiment === 'BAD', 'good': sentiment === 'Good', 'neural': sentiment === 'Neutral'}"/>
-                    </v-avatar>
-                </v-col>
-                <v-col cols="10" class="pt-0 pt-5">
-                    <h3 class="mb-0 font-weight-bold profile-title">{{ customerinfo.name }}</h3>
-                    <p class="mb-0 last-interactive profile-subtitle" v-show="customerinfo.last_interaction">Interact
-                        {{ customerinfo.last_interaction }}</p>
-                </v-col>
-                <v-col cols="5">
-                    <p class="mb-0">HOOD UID: {{ customerinfo.hood_uid }}</p>
-                    <p class="mb-0">Messenger ID: {{ customerinfo.messager_id }}</p>
-                </v-col>
-                <v-col cols="5">
-                    <p class="mb-0">Email: {{ customerinfo.email }}</p>
-                    <p class="mb-0">Ph: {{ customerinfo.ph }}</p>
-                </v-col>
-            </v-row>
+        <v-container fluid :class="{invisible: !isLoaded, 'manual-margin': true}">
+            <div align-center class="header color--text">
+                    <v-row class="pa-4">
+                        <v-col class="avatar-containner pr-0">
+                            <v-avatar>
+                                <v-img v-bind:src="customerinfo.profile_pic"
+                                    v-bind:class="{'bad':  sentiment === 'BAD', 'good': sentiment === 'Good', 'neural': sentiment === 'Neutral'}"/>
+                            </v-avatar>
+                        </v-col>
+                        <v-col cols="10" class="pt-0 pt-5">
+                            <h3 class="mb-0 font-weight-bold profile-title">{{ customerinfo.name }}</h3>
+                            <p class="mb-0 last-interactive profile-subtitle" v-show="customerinfo.last_interaction">Interact
+                                {{ customerinfo.last_interaction }}</p>
+                        </v-col>
+                        <v-col cols="5">
+                            <p class="mb-0">HOOD UID: {{ customerinfo.hood_uid }}</p>
+                            <p class="mb-0">Messenger ID: {{ customerinfo.messager_id }}</p>
+                        </v-col>
+                        <v-col cols="5">
+                            <p class="mb-0">Email: {{ customerinfo.email }}</p>
+                            <p class="mb-0">Ph: {{ customerinfo.ph }}</p>
+                        </v-col>
+                    </v-row>
+            </div>
+            
 
             <v-row class="gray-bg">
                 <v-col cols="6">

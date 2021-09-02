@@ -76,7 +76,9 @@ const mapElectricityRate = data => {
 
 const getGasPromotionalText = (planData, plan) => {
     const rate = planData.rates.gas;
-
+    if (!rate) {
+        return ''
+    }
     if (plan === PLAN_TYPE_NO_FRILLS) {
         let r = rate.session_all_year
             ? rate.usage_rates.peak_usage_per_day.before_discount
@@ -122,7 +124,7 @@ export const mapAllPlan = plans => {
     const res = Object.keys(plans).map(plan => {
         const key = EA_PLAN_TYPES.find(type => type.value === plan)?.key;
         return {
-            active: key === PLAN_TYPE_TOTAL,
+            active: false,
             key: key,
             title: plan
         }

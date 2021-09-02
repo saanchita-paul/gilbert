@@ -17,7 +17,7 @@
                         >Login failed! Invalid credentials
                         </div>
                     </v-fade-transition>
-                    
+
                     <v-card-text>
                         <validation-observer
                             ref="observer"
@@ -74,7 +74,7 @@
                                     required
                                 ></v-checkbox>
                             </validation-provider>
-                            <a class="forgot-text" href="">Forgot password?</a>
+                            <router-link class="forgot-text" :to="{name: 'forgot.password'}">Forgot password?</router-link>
                         </div>
                         <div>
                             <v-btn
@@ -86,7 +86,7 @@
                             </v-btn>
                         </div>
                     </div>
-                    
+
                 </v-card>
             </div>
         </v-container>

@@ -1,9 +1,10 @@
 <template>
-    <v-container  v-if="planNoteFlag">
+    <v-container fluid  v-if="planNoteFlag">
             <ValidationObserver ref="submit_lead">
                 <LeadUserDetails @eacalate="eacalate"
                                  @updateLead="updateLead"
-                                 @readMore="readMore" :leadSummary="leadSummary"></LeadUserDetails>
+                                 @readMore="readMore" :leadSummary="leadSummary"
+                                 @updateAddress="updateAddress"></LeadUserDetails>
             </ValidationObserver>
                 <LeadServicesAndNotes
                                    @updateService="updateService"
@@ -122,7 +123,6 @@ export default {
 
         async submitConnection() {
             let v = await this.validateLead();
-
             if(!v) return;
 
             this.payload = { ...this.lead.property_details,
@@ -158,12 +158,17 @@ export default {
                     'service_interests':this.services,
                     'identification':this.lead.indentification,
                     supplier: 1,
-                    plan_type: this.plan
+                    plan_type: this.plan?.key
                 };
             }
 
             let response = await LeadApplicationService.saveLead(payload, this.leadId);
            this.$router.push({name:'applications'});
+        },
+        async updateAddress(address) {
+            console.log("ADD", address)
+            Object.assign(this.leadSummary, address)
+            let response = await LeadApplicationService.updateAddress(address, this.leadId);
         }
 
     },

@@ -1,15 +1,16 @@
 <template>
     <v-row>
-            <p class="sub-title">Service Applications</p>
-        <v-col cols="12">
-            <v-row>
-                <v-col v-for="service in services" :key="service">
+        <v-col cols="12" class="pb-0">
+            <p class="sub-title mb-0">Service Applications</p>
+        </v-col>
+        <v-col cols="12" class="service-box-area">
+                <div v-for="service in services" :key="service">
                     <EnergyService @click.native="updateService(service)" :title="service"  :lead-summary="leadSummary"></EnergyService>
-                </v-col>
-            </v-row>
+                </div>
+        </v-col>
+        <v-col cols="12">
             <v-divider></v-divider>
         </v-col>
-
         <v-col cols="12">
             <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
             <div class="d-flex">
@@ -43,12 +44,11 @@
             v-if="viewPlanDialog && planTypeForDetails"
         >
             <v-card>
-                <EnergyPlanDetailsPage
+                <EnergyPlanDetails
                     :plan="planTypeForDetails"
-                    postcode="3358"
+                    :postcode="leadSummary.postcode"
                     :services="leadSummary.service_interests"
-                    service_type="electricity_and_gas"
-                    state="VIC"
+                    :state="leadSummary.state"
                 />
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -72,13 +72,13 @@ import LeadApplicationService from "@scripts/services/crm/LeadApplicationService
 import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
 import EnergyApi from "@scripts/api/ea/EnergyApi";
 import EAPlanService from "@scripts/services/ea/EAPlanService";
-import {PLAN_TYPE_TOTAL} from "@scripts/models/ea/EnergyPlan";
-import EnergyPlanDetailsPage from "@scripts/components/ea/EnergyPlanDetails";
+import {EA_PLAN_TYPES, PLAN_TYPE_TOTAL} from "@scripts/models/ea/EnergyPlan";
+import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
 
 
 export default {
   name: "ServiceApplications",
-    components: {EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetailsPage},
+    components: {EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetails},
     props:{
         leadSummary: {
             require: true
@@ -105,6 +105,7 @@ export default {
     mounted() {
         this.loadServiceProvider();
         this.loadPlan();
+        this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
 
     },
     methods: {
@@ -114,7 +115,7 @@ export default {
         planSelect(plan) {
            this.selectedPlanType = plan?.key
            // console.log(planId);
-            this.$emit('updatePlan', plan?.key);
+            this.$emit('updatePlan', plan);
         },
         isActive(service) {
             return this.leadSummary.service_types.includes(service.toLowerCase())?true:false;
@@ -136,7 +137,11 @@ export default {
             // this.plans = await LeadApplicationService.loadPlan(serviceProvider);
             const services = this.leadSummary.service_interests;
             if (services.includes('gas') || services.includes('power')) {
-                this.plans = await EAPlanService.getAllPlans({service_type: 'electricity', postcode: 3083, state: 'VIC'});
+                this.plans = await EAPlanService.getAllPlans({
+                    service_type: this.leadSummary.service_interests,
+                    postcode: this.leadSummary.postcode,
+                    state: this.leadSummary.state
+                });
                 this.plansFlag = true;
             } else {
                 this.plansFlag = false;
