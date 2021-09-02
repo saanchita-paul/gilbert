@@ -358,6 +358,8 @@ export default {
                     this.application.city = data.city;
                     this.application.postcode = data.postcode;
                     this.application.state = data.state;
+                    this.application.street_number = data.street_number;
+                    this.application.unit_number = data.unit_number;
                     // this.mapToModel(data)
                 });
         },

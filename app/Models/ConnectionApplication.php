@@ -129,7 +129,9 @@ class ConnectionApplication extends Model
         'supplier',
         'plan_type',
         'status',
-        'ea_sales_id'
+        'ea_sales_id',
+        'unit_number',
+        'street_number',
     ];
 
 
