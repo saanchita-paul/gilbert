@@ -295,6 +295,14 @@ export default {
         }
     },
 
+    async updateAddress(address, leadId) {
+        try {
+            return await axios.put('/api/applications/'+leadId+'/update-address',{address});
+        } catch (error) {
+            return error.data;
+        }
+    },
+
     async saveEscalateReason(reason, leadId) {
         try {
             const data = await axios.post('/api/applications/'+leadId+'/escalate',{reason:reason});
