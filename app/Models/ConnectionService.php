@@ -49,13 +49,15 @@ class ConnectionService extends Model
         return $this->belongsTo(ConnectionApplication::class);
     }
 
-    public function allApplicationMetricsCount(array $matrixReq, $officeId = null)
+    public function allApplicationMetricsCount(array $matrixReq, $user)
     {
+
         $service = DB::table('connection_services AS CS');
-        if(isset($matrixReq['agency_id'])){
+        if(!empty($matrixReq['agency_id'])){
             $service->where('CA.agency_id', $matrixReq['agency_id']);
         }else{
-            if($officeId) {
+            if($user->profile_type === AgentProfile::class) {
+            $officeId = $user->profile->office_id;
                 $service->where('CA.office_id', $officeId);
             }
         }

@@ -80,7 +80,7 @@ export default {
     methods: {
 
       async loadMetrics() {
-          const allMetric = await LeadApplicationService.loadMetrics();
+          const allMetric = await LeadApplicationService.loadMetrics({});
           this.appMetrics = allMetric.data;
       }
 

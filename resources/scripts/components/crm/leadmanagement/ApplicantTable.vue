@@ -152,14 +152,14 @@ export default {
 
         async assignUser(user, lead, assignedText)
         {
-            console.log(user, lead);
             this.selectedLead = lead;
             this.selectedUser = user;
             this.assignedText = assignedText;
             await LeadApplicationService.assignUser(lead.id, user.id)
                 .then(res =>  {
                     console.log('Assigned Successfully');
-                    this.loadLeadList();
+                    // this.loadLeadList();
+                    this.$emit('updateLeadAndatrics',lead.id,user.id);
                     this.reassignFlag = true;
                 })
         },
