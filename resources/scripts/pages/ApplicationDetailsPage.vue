@@ -166,6 +166,8 @@ export default {
            this.$router.push({name:'applications'});
         },
         async updateAddress(address) {
+            console.log("ADD", address)
+            Object.assign(this.leadSummary, address)
             let response = await LeadApplicationService.updateAddress(address, this.leadId);
         }
 
