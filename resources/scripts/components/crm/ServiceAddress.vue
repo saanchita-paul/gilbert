@@ -172,8 +172,8 @@ export default {
                     this.propertyDetails.city = data.city;
                     this.propertyDetails.postcode = data.postcode;
                     this.propertyDetails.state = data.state;
-                    this.application.street_number = data.street_number;
-                    this.application.unit_number = data.unit_number;
+                    this.propertyDetails.street_number = data.street_number;
+                    this.propertyDetails.unit_number = data.unit_number;
                 });
         },
         async onSubmit() {
