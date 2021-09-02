@@ -7,7 +7,7 @@
                 <div class="mx-4 mb-0">
                     <p class="page-title mb-0">{{leadSummary.applicant_name}} </p>
                     <small class="font-weight-bold">
-                       Service Preference
+                       Preference
                         <span class="mx-1 pa-2"  :class="{'mx-1':isActive('Power'), 'pa-2':isActive('Power'),}" ><v-icon :color="getColor('Power')">mdi-flash</v-icon> Power</span>
                         <span class="mx-1 pa-2" :class="{'mx-1':isActive('Gas'), 'pa-2':isActive('Gas'), }"><v-icon :color="getColor('Gas')">mdi-fire</v-icon> Gas</span>
                         <span class="mx-1 pa-2" :class="{'mx-1':isActive('Internet'), 'pa-2':isActive('Internet'), }"><v-icon :color="getColor('Internet')">mdi-wifi</v-icon> Internet</span>

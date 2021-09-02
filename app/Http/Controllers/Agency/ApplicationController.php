@@ -17,11 +17,14 @@ use App\Models\User;
 use App\Services\Agency\ApplicationNoteService;
 use App\Services\Agency\ApplicationService;
 use App\Services\Agency\ApplicationsMetricsService;
+use App\Services\Agency\HubspotContactService;
 use App\Services\Agency\SearchConnectionApplication;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class ApplicationController extends Controller
 {
@@ -43,8 +46,8 @@ class ApplicationController extends Controller
             return ApplicationResource::collection($service->get($user));
 
         } catch (\Exception $exception) {
-            return $this->sendErrorResponse($exception);
-        }
+    return $this->sendErrorResponse($exception);
+}
     }
 
 
@@ -55,19 +58,19 @@ class ApplicationController extends Controller
      *
      */
     public function create(ApplicationRequest $request)
-    {
-        try {
-            /** @var  User $user */
-            $user = Auth::user();
+{
+    try {
+        /** @var  User $user */
+        $user = Auth::user();
 
-            $service = new ApplicationService();
-            $inputData = $request->toArray();
-            return ApplicationResource::make($service->createApplication($inputData, $user));
+        $service = new ApplicationService();
+        $inputData = $request->toArray();
+        return ApplicationResource::make($service->createApplication($inputData, $user));
 
-        } catch (\Exception $exception) {
-            return $this->sendErrorResponse($exception);
-        }
+    } catch (\Exception $exception) {
+        return $this->sendErrorResponse($exception);
     }
+}
 
     /**agencyId
      * Getting Agency list
@@ -93,17 +96,17 @@ class ApplicationController extends Controller
      * @return JsonResponse
      */
     public function getMetrics(): JsonResponse
-    {
-        try {
-            /** @var User $user */
-            $user = auth()->user();
-            $service = new ApplicationsMetricsService($user->profile_id, $user->profile?->office_id);
+{
+    try {
+        /** @var User $user */
+        $user = auth()->user();
+        $service = new ApplicationsMetricsService($user->profile_id, $user->profile?->office_id);
             return response()->json(['data' => $service->toArray()]);
 
         } catch (\Exception $exception) {
-            return $this->sendErrorResponse($exception);
-        }
+        return $this->sendErrorResponse($exception);
     }
+}
 
 
 
@@ -159,19 +162,20 @@ class ApplicationController extends Controller
      * @return ApplicationResource|JsonResponse
      */
     public function submit(Request $request, $id)
-    {
+{
+    try {
+        $service = new ApplicationService();
+        $res = $service->submit($request->toArray(), $id);
+        SubmitApplicationEvent::dispatch($id);
 
-        try {
-            $service = new ApplicationService();
-            $res = $service->submit($request->toArray(), $id);
+        $hubspotContactService = new HubspotContactService();
+        $response = $hubspotContactService->submitContact($id);
 
-            SubmitApplicationEvent::dispatch($id);
-
-            return ApplicationResource::make($res);
-        } catch (\Exception $exception) {
-            return $this->sendErrorResponse($exception);
-        }
+        return ApplicationResource::make($res);
+    } catch (\Exception $exception) {
+        return $this->sendErrorResponse($exception);
     }
+}
 
     /**
      * Updating status to escalate of an application
@@ -214,4 +218,5 @@ class ApplicationController extends Controller
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
+
 }
