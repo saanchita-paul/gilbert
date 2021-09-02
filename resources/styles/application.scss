@@ -163,3 +163,13 @@
 .v-breadcrumbs__item--disabled {
     color: gray !important;
 }
+.user-name-area {
+    text-align: right;
+    margin: 10px 10px 0px 10px;
+    h6 {
+        line-height: 10px;
+    }
+    span {
+        font-size: 0.67em !important;
+    }
+}
