@@ -19,6 +19,7 @@ use App\Services\Agency\ApplicationService;
 use App\Services\Agency\ApplicationsMetricsService;
 use App\Services\Agency\HubspotContactService;
 use App\Services\Agency\SearchConnectionApplication;
+use App\Services\FastConnectService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -145,6 +146,12 @@ class ApplicationController extends Controller
             $service = new ApplicationService();
             $inputData = $request->address;
             $service->updateAddress($inputData, $applicationId);
+
+            $svcUtilities = new FastConnectService();
+            $result = $svcUtilities->authenticate()->searchAddress([
+
+            ])->toArray();
+
             return ApplicationResource::make($service->updateAddress($inputData, $applicationId));
 
         } catch (\Exception $exception) {

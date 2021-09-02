@@ -92,8 +92,7 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 Route::post('/invitation/validation', [UserInvitationController::class, 'validateInvitation']);
 Route::post('/invitation/change-password', [UserInvitationController::class, 'passwordChange']);
 
-Route::post('/utilities/fc-auth', [UtilityController::class, 'fcAuth']);
-Route::post('/utilities/fc-address', [UtilityController::class, 'fcAddress']);
+
 Route::post('/register/email-validation', [AuthController::class, 'isValidUser']);
 
 
