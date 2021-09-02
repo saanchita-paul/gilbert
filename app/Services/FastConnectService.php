@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 
 class FastConnectService
@@ -21,13 +20,14 @@ class FastConnectService
             ->post( \config('fastconnect.root_url') .  \config('fastconnect.get_token_uri'));
 
 
-        return $this->accessToken = json_decode($response->body(), true)['access_token'];
+        $this->accessToken = json_decode($response->body(), true)['access_token'];
         return $this;
 
     }
 
     public function searchAddress($body = [])
     {
+//        #TOdo make payload
         $authorization = "Bearer " . $this->accessToken;
         $response = Http::withHeaders([
                 "content-type" => "application/json",

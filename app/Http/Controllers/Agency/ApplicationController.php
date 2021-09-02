@@ -142,7 +142,7 @@ class ApplicationController extends Controller
             $service->updateAddress($inputData, $applicationId);
 
             $svcUtilities = new FastConnectService();
-            $result = $svcUtilities->authenticate();
+            $result = $svcUtilities->authenticate()->searchAddress($inputData)->toArray();
             return  $result;
             return ApplicationResource::make($service->updateAddress($inputData, $applicationId));
 
