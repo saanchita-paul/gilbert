@@ -12,6 +12,8 @@
                         <span class="mx-1 pa-2" :class="{'mx-1':isActive('Gas'), 'pa-2':isActive('Gas'), }"><v-icon :color="getColor('Gas')">mdi-fire</v-icon> Gas</span>
                         <span class="mx-1 pa-2" :class="{'mx-1':isActive('Internet'), 'pa-2':isActive('Internet'), }"><v-icon :color="getColor('Internet')">mdi-wifi</v-icon> Internet</span>
                         <span class="mx-1 pa-2" :class="{'mx-1':isActive('Water'), 'pa-2':isActive('Water'), }"><v-icon color="grey lighten-1">mdi-water</v-icon> Water</span>
+                        <span class="ml-4 mr-1 py-2 pl-2 font-weight-bold" >Status</span>
+                        <span class="mx-1 font-normal" >{{leadSummary.status}}</span>
                     </small>
                 </div>
             </div>
@@ -94,5 +96,8 @@ name: "LeadDetailsHeader",
 <style scoped>
 .border-warning{
     border-color: #fb8c00 !important;
+}
+.font-normal {
+    font-weight: 400 !important;
 }
 </style>

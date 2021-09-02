@@ -20,6 +20,20 @@
                                 :error-messages=" errors[0]"
                             ></v-text-field>
                         </ValidationProvider>
+                    </v-col>
+                    <v-col cols="6">
+                    <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
+                        <v-text-field
+                            label="Lastname*"
+                            outlined
+                            dense
+                            placeholder="Lastname*"
+                            v-model="application.last_name"
+                            :error-messages=" errors[0]"
+                        ></v-text-field>
+                    </ValidationProvider>
+                    </v-col>
+                        <v-col cols="6">
                         <ValidationProvider name="Email" rules="required|email"  v-slot="{ errors }">
                             <v-text-field
                                 label="Email*"
@@ -30,6 +44,21 @@
                                 :error-messages=" errors[0]"
                             ></v-text-field>
                         </ValidationProvider>
+                        </v-col>
+                    <v-col cols="6">
+                    <ValidationProvider name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                        <v-text-field
+                            label="Mobile number*"
+                            :maxlength="10"
+                            outlined
+                            dense
+                            placeholder="+61 410"
+                            v-model="application.phone"
+                            :error-messages=" errors[0]"
+                        ></v-text-field>
+                    </ValidationProvider>
+                    </v-col>
+                            <v-col cols="6">
                         <ValidationProvider name="Tenancy Types" rules="required"  v-slot="{ errors }">
                             <v-select outlined dense
                                       v-model="application.tenancy_type"
@@ -42,27 +71,6 @@
                     </v-col>
 
                     <v-col cols="6">
-                        <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
-                            <v-text-field
-                                label="Lastname*"
-                                outlined
-                                dense
-                                placeholder="Lastname*"
-                                v-model="application.last_name"
-                                :error-messages=" errors[0]"
-                            ></v-text-field>
-                        </ValidationProvider>
-                        <ValidationProvider name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
-                            <v-text-field
-                                label="Mobile number*"
-                                :maxlength="10"
-                                outlined
-                                dense
-                                placeholder="+61 410"
-                                v-model="application.phone"
-                                :error-messages=" errors[0]"
-                            ></v-text-field>
-                        </ValidationProvider>
                             <v-menu
                                 v-model="showDOB"
                                 :close-on-content-click="false"
@@ -107,6 +115,20 @@
                                     min-width="290px"
                                 >
                                     <template v-slot:activator="{ on, attrs }">
+<!--                                        <ValidationProvider name="Date of Birth" rules="required"  v-slot="{ errors }">-->
+<!--                                            <v-text-field-->
+<!--                                                label="Date of Birth*"-->
+<!--                                                placeholder="DD/MM/YYYY"-->
+<!--                                                outlined-->
+<!--                                                dense-->
+<!--                                                append-icon="mdi-calendar"-->
+<!--                                                v-model="application.date_of_birth"-->
+<!--                                                readonly-->
+<!--                                                v-bind="attrs"-->
+<!--                                                v-on="on"-->
+<!--                                                :error-messages=" errors[0]"-->
+<!--                                            ></v-text-field>-->
+<!--                                        </ValidationProvider>-->
                                         <ValidationProvider name="Moving Date" rules="required"  v-slot="{ errors }">
                                             <v-text-field
                                                 label="Connection Date*"
@@ -129,8 +151,6 @@
                     </v-col>
 
                     <v-col cols="12" class="pb-0">
-                        <v-row>
-                            <v-col cols="12" class="py-0">
                                 <v-menu offset-y v-model="showMenu">
                                     <template v-slot:activator="{ on }">
                                         <v-text-field
@@ -154,8 +174,6 @@
                                         </v-list-item>
                                     </v-list>
                                 </v-menu>
-                            </v-col>
-                        </v-row>
                     </v-col>
 
                     <v-col cols="6" class="pt-0">
@@ -166,17 +184,10 @@
                                 dense
                                 placeholder="2/56, Bradman Drive"
                                 v-model="application.street_address"
+                                :error-messages=" errors[0]"
                             ></v-text-field>
                         </ValidationProvider>
-                        <ValidationProvider name="State/Territory" rules="required"  v-slot="{ errors }">
-                            <v-select outlined dense
-                                      v-model="application.state"
-                                      :items="states"
-                                      label="State/Territory*"
-                                      :error-messages=" errors[0]"
-                                      placeholder="Please Select">
-                            </v-select>
-                        </ValidationProvider>
+
                     </v-col>
 
                     <v-col cols="6" class="pt-0">
@@ -190,6 +201,25 @@
                                 :error-messages=" errors[0]"
                             ></v-text-field>
                         </ValidationProvider>
+
+                    </v-col>
+
+                    <v-col cols="6" class="pt-0">
+
+                        <ValidationProvider name="State/Territory" rules="required"  v-slot="{ errors }">
+                            <v-select outlined dense
+                                      v-model="application.state"
+                                      :items="states"
+                                      label="State/Territory*"
+                                      :error-messages=" errors[0]"
+                                      placeholder="Please Select">
+                            </v-select>
+                        </ValidationProvider>
+                    </v-col>
+
+
+                    <v-col cols="6" class="pt-0">
+
                         <ValidationProvider name="Postcode" rules="required"  v-slot="{ errors }">
                             <v-text-field
                                 label="Postcode*"

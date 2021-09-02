@@ -7,11 +7,21 @@
     .application-info {
         tr {
              td:first-child  {
-                width: 110px;
+                width: 150px;
                 display: block;
                 text-align: right;
                 margin-right: 15px;
             }
+        }
+    }
+}
+.application-info {
+    tr {
+        line-height: 35px;
+         td:first-child  {
+            min-width: 150px;
+            display: block;
+            margin-right: 15px;
         }
     }
 }
@@ -81,7 +91,7 @@
     .service-box {
         padding: 10px 20px;
         background-color: #E0E0E0;
-        margin: 5px;
+        margin: 4px;
         border-radius: 10px;
         min-height: 70px;
         &.active {

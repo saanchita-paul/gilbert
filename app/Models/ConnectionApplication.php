@@ -128,7 +128,8 @@ class ConnectionApplication extends Model
         'is_escalated',
         'supplier',
         'plan_type',
-        'status'
+        'status',
+        'ea_sales_id'
     ];
 
 
@@ -138,6 +139,7 @@ class ConnectionApplication extends Model
     const STATUS_SUBMITTED = 4;
     const STATUS_ACCEPTED = 5;
     const STATUS_REJECTED = 6; //non payable
+    const STATUS_EA_PROCESSINF = 7; //non payable
 
 
     const MY_APPLICATIONS = 'my_applications';
@@ -147,6 +149,8 @@ class ConnectionApplication extends Model
         'assigned' => self::STATUS_ASSIGNED,
         'escalated' => self::STATUS_ESCALATED,
         'submitted' => self::STATUS_SUBMITTED,
+        'accepted' => self::STATUS_ACCEPTED,
+        'rejected' => self::STATUS_REJECTED,
     ];
 
     const PLAN_TYPE_TOTAL = 'total_plan';

@@ -192,8 +192,7 @@
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Service Address" rules="required"  v-slot="{ errors }">
-                        <v-textarea
-                            @input="updateLeads"
+                        <v-textarea @click="openServiceAddress"
                             v-model="property_details.address_text"
                             outlined
                             hide-details="auto"
@@ -420,7 +419,7 @@
                     </ValidationProvider>
                 </div>
             </div>
-            <p class="sub-title mt-5">Agent’s Additional Instructions <v-btn text right class="primary--text" @click="readMore">read more ...</v-btn></p>
+            <p class="sub-title mt-5">Agent’s Additional Instructions<v-btn text right class="primary--text" @click="readMore">read more ...</v-btn></p>
             <ValidationProvider name="DOB"   v-slot="{ errors }">
                 <v-textarea
                     v-model="person_details.additional_instruction"
@@ -428,13 +427,20 @@
                     outlined
                     hide-details="auto"
                     placeholder="Additional Instructions goes here."
+                    disabled
                 ></v-textarea>
             </ValidationProvider>
         </v-col>
+
+        <ServiceAddress
+            v-if="serviceAddressFlag" :dialog="serviceAddressFlag"
+            :propertyDetails="property_details"  @saveAddress="saveAddress" @close="closeServiceAddress">
+        </ServiceAddress>
     </v-row>
 </template>
 
 <script>
+import ServiceAddress from "@scripts/components/crm/ServiceAddress";
 
 export default {
   name: "InfoField",
@@ -443,10 +449,13 @@ export default {
             require: true,
         }
     },
+    components: {
+        ServiceAddress
+    },
     data () {
         return {
             titlesDD:[
-                'Mrs','Mr'
+                'Mrs','Mr','Ms'
             ],
             emailBillingDD: [ {
                 text: 'Yes',
@@ -550,13 +559,19 @@ export default {
             },
             property_details: {
                 moving_date: '',
-                address_text: '',
                 billing_address: '',
                 property_type: '',
                 life_support: '',
                 solor_power: '',
                 nmi: '',
                 mirn: '',
+                address_text: '',
+                street_address: '',
+                city: '',
+                postcode: '',
+                state: '',
+                country: '',
+                is_billing_same: true,
 
             },
             person_details: {
@@ -573,11 +588,25 @@ export default {
             },
             showMovingDate: false,
             connection_date: false,
-            showDateOfBirth: false
+            showDateOfBirth: false,
+            serviceAddressFlag: false
         }
     },
 
     methods: {
+        openServiceAddress() {
+            this.serviceAddressFlag = true;
+        },
+
+        closeServiceAddress() {
+            this.serviceAddressFlag = false;
+        },
+
+        saveAddress(propertyDetails) {
+            this.serviceAddressFlag = false;
+            this.$emit('updateAddress', propertyDetails);
+        },
+
         updateLeads() {
            this.$emit('updateLead',{
                indentification: this.indentification,
@@ -591,9 +620,6 @@ export default {
         },
 
         synFormData () {
-
-            // console.log(this.lead);
-
             this.person_details.title = this.lead.title;
             this.person_details.first_name = this.lead.first_name;
             this.person_details.last_name = this.lead.last_name;
@@ -612,6 +638,11 @@ export default {
             this.property_details.has_solar = this.lead.has_solar;
             this.property_details.nmi = this.lead.nmi;
             this.property_details.mirn = this.lead.mirn;
+            this.property_details.street_address = this.lead.street_address;
+            this.property_details.city = this.lead.city;
+            this.property_details.postcode = this.lead.postcode;
+            this.property_details.state = this.lead.state;
+            this.property_details.country = this.lead.country;
 
             this.indentification.type = this.lead.identification?.type;
             this.indentification.card_number = this.lead.identification?.card_number;
