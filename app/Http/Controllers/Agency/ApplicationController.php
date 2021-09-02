@@ -129,6 +129,26 @@ class ApplicationController extends Controller
         }
     }
 
+    /**
+     * Assigning user to an Application
+     *
+     * @param Request $request
+     * @param int $applicationId
+     *
+     */
+    public function updateAddress(Request $request, int $applicationId)
+    {
+        try {
+            $service = new ApplicationService();
+            $inputData = $request->address;
+            $service->updateAddress($inputData, $applicationId);
+            return ApplicationResource::make($service->updateAddress($inputData, $applicationId));
+
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
 
     /**
      * Submitting an Application

@@ -60,6 +60,18 @@ class ApplicationService
         $existingApplication->save();
     }
 
+    public function updateAddress(array $address, int $applicationId) {
+        $existingApplication = ConnectionApplication::find($applicationId);
+        $existingApplication->address_text = $address['address_text'];
+        $existingApplication->street_address = $address['street_address'];
+        $existingApplication->city = $address['city'];
+        $existingApplication->postcode = $address['postcode'];
+        $existingApplication->state = $address['state'];
+        $existingApplication->country = $address['country'];
+        $existingApplication->save();
+        return $existingApplication;
+    }
+
     public function assignUser(string $agentId, int $applicationId)
     {
         ConnectionApplication::query()

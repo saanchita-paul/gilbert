@@ -559,18 +559,19 @@ export default {
             },
             property_details: {
                 moving_date: '',
-                address_text: '',
                 billing_address: '',
                 property_type: '',
                 life_support: '',
                 solor_power: '',
                 nmi: '',
                 mirn: '',
+                address_text: '',
                 street_address: '',
                 city: '',
                 postcode: '',
                 state: '',
                 country: '',
+                is_billing_same: true,
 
             },
             person_details: {
@@ -594,7 +595,6 @@ export default {
 
     methods: {
         openServiceAddress() {
-            console.log('property Details', this.property_details);
             this.serviceAddressFlag = true;
         },
 
@@ -602,8 +602,9 @@ export default {
             this.serviceAddressFlag = false;
         },
 
-        saveAddress() {
+        saveAddress(propertyDetails) {
             this.serviceAddressFlag = false;
+            this.$emit('updateAddress', propertyDetails);
         },
 
         updateLeads() {

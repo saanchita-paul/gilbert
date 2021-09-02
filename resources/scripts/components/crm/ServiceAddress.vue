@@ -91,7 +91,7 @@
                                         </v-col>
                                         <v-col cols="12" >
                                             <v-checkbox
-                                                v-model="checkbox"
+                                                v-model="propertyDetails.is_billing_same"
                                                 :label="`Is this the same as your billing address?`"
                                             ></v-checkbox>
                                         </v-col>
@@ -177,7 +177,7 @@ export default {
         async onSubmit() {
             let v = await this.$refs.edit_address.validate();
             if (v) {
-                this.$emit('saveAddress');
+                this.$emit('saveAddress', this.propertyDetails);
             }
             return v;
         },
