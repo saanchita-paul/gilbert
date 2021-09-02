@@ -89,6 +89,7 @@ Route::post('/invitation/change-password', [UserInvitationController::class, 'pa
 
 Route::post('/utilities/fc-auth', [UtilityController::class, 'fcAuth']);
 Route::post('/utilities/fc-address', [UtilityController::class, 'fcAddress']);
+Route::post('/register/email-validation', [AuthController::class, 'isValidUser']);
 
 
 /**
