@@ -137,15 +137,12 @@ class ApplicationController extends Controller
     public function updateAddress(Request $request, int $applicationId)
     {
         try {
-            $service = new ApplicationService();
-            $inputData = $request->address;
-            $service->updateAddress($inputData, $applicationId);
-
+            $inputData = $request->toArray();
             $svcUtilities = new FastConnectService();
-            $result = $svcUtilities->authenticate()->searchAddress($inputData)->toArray();
-            return  $result;
-            return ApplicationResource::make($service->updateAddress($inputData, $applicationId));
+            $result = $svcUtilities->authenticate()->searchAddress($inputData);
+            $service = new ApplicationService();
 
+            return ApplicationResource::make($service->updateAddress(array_merge($inputData, $result), $applicationId));
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
