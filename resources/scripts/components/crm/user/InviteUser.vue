@@ -2,7 +2,7 @@
     <v-app>
         <v-container fluid class="loginpage invitation">
                <div class="login-section">
-                      <v-card v-if="isLoaded" class="hood-card">
+                   <v-card v-if="isLoaded == 1" class="pa-4 hood-card">
                         <ValidationObserver ref="create_agency">
                             <div class="login-header">
                                 <v-img  src="/assets/images/logo.png"/>
@@ -35,8 +35,8 @@
                               <v-btn block color="primary" @click="setPassword">Set Password</v-btn>
                               </ValidationObserver>
                       </v-card>
-
-                      <v-card v-else class="hood-card">
+                   
+                      <v-card  v-if="isLoaded == 2" class="pa-4 hood-card">
                         <p>Your token is expired or invalidated</p>
                         <v-btn @click="goToLogin" color="primary">ok</v-btn>
                       </v-card>
@@ -87,7 +87,10 @@ name: "InviteUser",
           this.user.first_name = isValidUser.data.user.profile.first_name;
           this.user.email = isValidUser.data.user.email;
           this.new_user.id = isValidUser.data.id;
-          this.isLoaded = true;
+          this.isLoaded = 1;
+        } else
+        {
+          this.isLoaded = 2;
         }
       },
 

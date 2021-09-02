@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Agency;
 
+use App\Events\Agency\SubmitApplicationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Resources\Agency\AgencyResource;
@@ -142,7 +143,11 @@ class ApplicationController extends Controller
 
         try {
             $service = new ApplicationService();
-            return ApplicationResource::make($service->submit($request->toArray(), $id));
+            $res = $service->submit($request->toArray(), $id);
+
+            SubmitApplicationEvent::dispatch($id);
+
+            return ApplicationResource::make($res);
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
@@ -181,9 +186,9 @@ class ApplicationController extends Controller
             $user = auth()->user();
             $service = new ConnectionService();
             $inputData = $request->toArray();
-            $service= $service->allApplicationMetricsCount($inputData, $user->profile->office_id);
+            $data= $service->allApplicationMetricsCount($inputData, $user->profile->office_id);
 
-            return ApplicationMetricsResource::make($service);
+            return ApplicationMetricsResource::make($data);
 
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);

@@ -1,5 +1,5 @@
 <template>
-    <v-container  v-if="planNoteFlag">
+    <v-container fluid  v-if="planNoteFlag">
             <ValidationObserver ref="submit_lead">
                 <LeadUserDetails @eacalate="eacalate"
                                  @updateLead="updateLead"
@@ -122,7 +122,6 @@ export default {
 
         async submitConnection() {
             let v = await this.validateLead();
-
             if(!v) return;
 
             this.payload = { ...this.lead.property_details,
@@ -158,7 +157,7 @@ export default {
                     'service_interests':this.services,
                     'identification':this.lead.indentification,
                     supplier: 1,
-                    plan_type: this.plan
+                    plan_type: this.plan?.key
                 };
             }
 
