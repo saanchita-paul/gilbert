@@ -40,7 +40,7 @@
 <!--            </ValidationProvider>-->
 
           <v-text-field  v-model="allocator.id_212f" @input="updateAllocator" label="212f ID" outlined dense></v-text-field>
-            <ValidationProvider name="Email" rules="required|email"  v-slot="{ errors }">
+            <ValidationProvider name="Email" rules="required|email|custom-unique-email"  v-slot="{ errors }">
               <v-text-field
                 label="Email Address*"
                 v-model="allocator.email"
