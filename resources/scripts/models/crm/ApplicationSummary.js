@@ -18,6 +18,8 @@ export default class ApplicationSummary {
     country = 'Australia';
     postcode = null;
     address_text = null;
+    unit_number = null;
+    street_number = null;
     service_interests = [];
     additional_instruction = null;
     applicant_name = null;
@@ -44,6 +46,8 @@ export default class ApplicationSummary {
             street_address = null,
             city = null,
             state = null,
+            unit_number = null,
+            street_number = null,
             country = 'Australia',
             postcode = null,
             address_text = null,
@@ -89,6 +93,8 @@ export default class ApplicationSummary {
         this.has_solar = has_solar;
         this.property_type = property_type;
         this.status = this.mapStatus(status);
+        this.street_number = street_number;
+        this.unit_number = unit_number
 
     }
 

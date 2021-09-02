@@ -351,13 +351,13 @@ export default {
             GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
                 .then((data) => {
 
-                    console.log('data', data);
-
                     this.application.address_text = data.formatted_address;
                     this.application.street_address = data.street;
                     this.application.city = data.city;
                     this.application.postcode = data.postcode;
                     this.application.state = data.state;
+                    this.application.street_number = data.street_number;
+                    this.application.unit_number = data.unit_number;
                     // this.mapToModel(data)
                 });
         },

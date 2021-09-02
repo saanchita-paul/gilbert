@@ -37,7 +37,8 @@ export default {
             longitude: data.geometry.location.lng(),
             latitude: data.geometry.location.lat(),
             googleId: data.place_id,
-            formatted_address
+            formatted_address,
+            unit_number: addressValue.subpremise ? addressValue.subpremise : null
         };
     }
 };
