@@ -48,7 +48,7 @@
                                 <ValidationProvider name="Phone" rules="cv-phone|length:10"  v-slot="{ errors }">
                                     <v-text-field   v-model="user.phone" label="Phone Number" :error-messages=" errors[0]" placeholder="Phone Number" outlined dense></v-text-field>
                                 </ValidationProvider>
-                                <ValidationProvider name="Email" rules="required|email"  v-slot="{ errors }">
+                                <ValidationProvider name="Email" rules="required|email|unique-user-email"  v-slot="{ errors }">
                                     <v-text-field  :error-messages=" errors[0]"   v-model="user.email" label="Email Address" placeholder="firstname.lastname@barryplantcamberwell.com.au" outlined dense></v-text-field>
                                 </ValidationProvider>
                             </div>

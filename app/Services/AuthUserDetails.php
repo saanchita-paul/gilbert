@@ -83,6 +83,6 @@ class AuthUserDetails
     }
 
     public function getUserByEmail($email){
-        return User::where('email', $email)->get();
+        return User::where('email', $email)->first();
     }
 }

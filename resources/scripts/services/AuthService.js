@@ -116,10 +116,7 @@ const hasUserRoles = allowedRoles => {
     return hasRoles;
 }
 
-const isUniqueEmail = async email => {
-    const res = await AuthAPI.checkUniqueEmail(email);
-    return res.isUnique;
-};
+const isUniqueEmail = email =>  AuthAPI.checkUniqueEmail(email)
 
 export default {
     getAuthUser,
