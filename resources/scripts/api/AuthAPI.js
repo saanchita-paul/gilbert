@@ -29,7 +29,6 @@ export default {
     },
 
     checkUniqueEmail: async (email) => {
-        // return (await  axios.get('/api/user')).data
-        return await {isUnique:true};
+        return (await  axios.get(`/api/users/is-unique-email?email=${email}`)).data.data?.is_unique_email;
     },
 }

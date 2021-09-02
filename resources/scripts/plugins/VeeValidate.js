@@ -50,8 +50,8 @@ extend('date-range-check', {
     message: '{_field_} should contain at least 2 valid datetimes.'
 });
 
-extend('custom-unique-email', {
-    getMessage: field => `this email is already taken`,
+extend('unique-user-email', {
+    message: field => `this email is already taken`,
     validate: value =>  {
         return new Promise(resolve => {
             AuthService.isUniqueEmail(value)
