@@ -32,7 +32,7 @@ class PostSalesService
         $saleDate =  "2021-08-31T10:45:00Z";
         $customerType =  "RES";
         $transactionType = "ENE";
-        $premiseRelationship= "TENANT";
+        $premiseRelationship= $this->connection->tenancy_type == 1?"TENANT":"OWNER";
         $customer = [
             'title'=> $this->connection->title,
             'firstName'=> $this->connection->first_name,
@@ -60,15 +60,34 @@ class PostSalesService
 
 
         $premise = [
-            'mirn'=> "5321303906",
+            'mirn'=> $this->connection->mirn,
+            'nmi'=> $this->connection->nmi,
+
             'address'=> [
-                'unitNumber'=> "7",
+                'unitNumber'=> $this->connection->address_unit,
                 'streetNumber'=> "61",
-                'streetName'=> "61 MALTRAVERS RD",
+                'streetName'=> $this->connection->street_address,
                 'streetType'=> "ST",
-                'suburb'=> "IVANHOE EAST",
-                'state'=> "VIC",
-                'postcode'=> "3079",
+                'suburb'=> $this->connection->city,
+                'state'=> $this->connection->state,
+                'postcode'=> $this->connection->postcode,
+            ],
+            'solarDetails'=> [
+                'solarPower'=> $this->connection->has_solar?true:false,
+            ]
+        ];
+
+        $premise1 = [
+            'mirn'=> $this->connection->mirn,
+
+            'address'=> [
+                'unitNumber'=> $this->connection->address_unit,
+                'streetNumber'=> "61",
+                'streetName'=> $this->connection->street_address,
+                'streetType'=> "ST",
+                'suburb'=> $this->connection->city,
+                'state'=> $this->connection->state,
+                'postcode'=> $this->connection->postcode,
             ],
             'solarDetails'=> [
                 'solarPower'=> $this->connection->has_solar?true:false,
@@ -84,14 +103,16 @@ class PostSalesService
                 'sourceCode'=> "Basic",
             ]
         ];
-        $mailingAddressType = 'POSTAL';
+        $mailingAddressType = 'STREET';
 
-        $postalMailingAddress = [
-            "postalDeliveryNumber"=> "1000",
-            "postalDeliveryType"=> "PO_BOX",
-            "suburb"=> "Melbourne",
-            "state"=> "VIC",
-            "postcode"=> "3001",
+        $streetMailingAddress = [
+            'unitNumber'=> $this->connection->address_unit,
+            'streetNumber'=> "61",
+            'streetName'=> $this->connection->street_address,
+            'streetType'=> "ST",
+            'suburb'=> $this->connection->city,
+            'state'=> $this->connection->state,
+            'postcode'=> $this->connection->postcode,
         ];
 
 
@@ -102,12 +123,11 @@ class PostSalesService
             "id"=> $id,
             "vendorCode"=> "HD2",
             "version"=> "1",
-            "saleDate"=> "2021-08-30T10:45:00Z",
+            "saleDate"=> "2021-08-31T10:45:00Z",
             "customerType"=> "RES",
             "transactionType"=> "ENE",
             "customer"=> $customer,
-            "energisation"=>$energisation
-        ,
+            "energisation"=>$energisation,
     "premise"=>$premise,
 
     "offers"=>
@@ -119,7 +139,7 @@ class PostSalesService
             ]
         ],
         "mailingAddressType"=> $mailingAddressType,
-        "postalMailingAddress"=> $postalMailingAddress,
+        "streetMailingAddress"=> $streetMailingAddress,
         "billDeliveryMethod"=> $billDeliveryMethod,
         "lifeSupport"=> $lifeSupport,
         ];
@@ -153,6 +173,7 @@ class PostSalesService
                     ]
                 );
             $results = $client->runQuery($gql, false, $variables );
+            dump($variables);
             dump($results);
             return $this->processEaData($results->getResponseBody());
         } catch (\Exception $e)
@@ -200,9 +221,7 @@ class PostSalesService
                 'number'=> $this->identification->card_number,
                 'firstName'=> $this->connection->first_name,
                 'lastName'=> $this->connection->first_name,
-//                'stateOfIssue'=> $this->identification->state,
                 'expiry'=> $this->identification->expire_date,
-//                'countryOfIssue'=> $this->identification->country
                 'countryOfIssue'=> "AUS"
             ];
         }
@@ -213,7 +232,6 @@ class PostSalesService
                 'number'=> $this->identification->card_number,
                 'firstName'=>$this->connection->first_name,
                 'lastName'=> $this->connection->first_name,
-                'stateOfIssue'=> $this->identification->state,
                 'expiry'=> $this->identification->expire_date,
                 'medicareReferenceNumber'=> $this->identification->special_number,
                 'medicareCardColour'=> $this->identification->card_color,

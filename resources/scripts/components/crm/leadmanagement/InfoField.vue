@@ -13,6 +13,8 @@
                             @input="updateLeads"
                             outlined dense hide-details="auto"
                             :items="titlesDD"
+                            item-value="value"
+                            item-text="text"
                             v-model="person_details.title"
                             :error-messages=" errors[0]"
                             placeholder="Mr">
@@ -259,12 +261,14 @@
                     <span>NMI (Power)</span>
                 </div>
                 <div class="text-field">
-                    <ValidationProvider name="DOB" rules="required"  v-slot="{ errors }">
+                    <ValidationProvider name="NMI"  rules="min:10|max:11|numeric"  v-slot="{ errors }">
                         <v-text-field @input="updateLeads"
+
                             v-model="property_details.nmi"
                             outlined
                             dense
                             hide-details="auto"
+                                      :error-messages=" errors[0]"
                         ></v-text-field>
                     </ValidationProvider>
                 </div>
@@ -274,13 +278,14 @@
                     <span>MIRN (Gas)</span>
                 </div>
                 <div class="text-field">
-                    <ValidationProvider name="DOB"  v-slot="{ errors }">
+                    <ValidationProvider name="Mirn"  rules="min:10|max:10|numeric" v-slot="{ errors }">
                         <v-text-field
                             @input="updateLeads"
                             v-model="property_details.mirn"
                             outlined
                             dense
                             hide-details="auto"
+                            :error-messages=" errors[0]"
                         ></v-text-field>
                     </ValidationProvider>
                 </div>
@@ -446,7 +451,24 @@ export default {
     data () {
         return {
             titlesDD:[
-                'Mrs','Mr'
+
+                {
+                    text: 'Mr',
+                    value: 'MR'
+                },
+                {
+                    text: 'Mrs',
+                    value: 'MISS'
+                },
+                {
+                    text: 'Mrs',
+                    value: 'MRS'
+                },
+                {
+                    text: 'Ms',
+                    value: 'MS'
+                },
+
             ],
             emailBillingDD: [ {
                 text: 'Yes',
