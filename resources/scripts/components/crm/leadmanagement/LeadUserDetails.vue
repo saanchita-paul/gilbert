@@ -1,7 +1,7 @@
 <template>
-    <v-card class="pa-4 mb-5">
+    <v-card class="hood-card mb-5">
        <LeadDetailsHeader :leadSummary="leadSummary" @eacalate="eacalate"></LeadDetailsHeader>
-        <InfoField @updateLead="updateLead" :lead="leadSummary" @readMore="readMore"></InfoField>
+        <InfoField @updateLead="updateLead" :lead="leadSummary" @readMore="readMore" @updateAddress="updateAddress"></InfoField>
     </v-card>
 </template>
 
@@ -26,6 +26,9 @@ name: "LeadUserDetails",
         },
         readMore() {
             this.$emit('readMore');
+        },
+        updateAddress(address) {
+            this.$emit('updateAddress', address);
         }
     },
     mounted() {

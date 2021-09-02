@@ -49,12 +49,17 @@ class ConnectionService extends Model
         return $this->belongsTo(ConnectionApplication::class);
     }
 
-    public function allApplicationMetricsCount($officeId = null)
+    public function allApplicationMetricsCount(array $matrixReq, $officeId = null)
     {
         $service = DB::table('connection_services AS CS');
-        if($officeId) {
-            $service->where('office_id', $officeId);
+        if(isset($matrixReq['agency_id'])){
+            $service->where('CA.agency_id', $matrixReq['agency_id']);
+        }else{
+            if($officeId) {
+                $service->where('CA.office_id', $officeId);
+            }
         }
+
           $result = $service->leftJoin('connection_applications AS CA', 'CA.id', '=', 'CS.connection_application_id')
             ->select(
                 DB::raw("SUM(CASE

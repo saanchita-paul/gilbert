@@ -7,6 +7,7 @@
         hide-details="auto"
         v-model="search"
         @input="changeInput"
+        clearable
     ></v-text-field>
 </template>
 
@@ -22,7 +23,15 @@ export default {
         changeInput() {
             this.$emit('updateSearch', this.search);
         }
-    }
+    },
+    watch: {
+        '$route': {
+            handler() {
+                this.search = '';
+                this.changeInput();
+            }
+        },
+    },
 };
 </script>
 

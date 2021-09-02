@@ -7,6 +7,7 @@ use App\Models\ConnectionService;
 use App\Models\Identification;
 use App\Models\User;
 use App\Services\Agency\CreateOfficeAndAgency;
+use App\Services\Sales\PostSalesService;
 use Illuminate\Console\Application;
 use function PHPUnit\Framework\isNull;
 
@@ -59,6 +60,20 @@ class ApplicationService
         $existingApplication->save();
     }
 
+    public function updateAddress(array $address, int $applicationId) {
+        $existingApplication = ConnectionApplication::find($applicationId);
+        $existingApplication->address_text = $address['address_text'];
+        $existingApplication->street_address = $address['street_address'];
+        $existingApplication->street_number = empty($address['street_address']) ? null : $address['street_number'] ;
+        $existingApplication->unit_number = empty($address['street_address']) ? null : $address['unit_number'];
+        $existingApplication->city = $address['city'];
+        $existingApplication->postcode = $address['postcode'];
+        $existingApplication->state = $address['state'];
+        $existingApplication->country = $address['country'];
+        $existingApplication->save();
+        return $existingApplication;
+    }
+
     public function assignUser(string $agentId, int $applicationId)
     {
         ConnectionApplication::query()
@@ -103,10 +118,11 @@ class ApplicationService
     {
         $lead = $applications['lead'];
         $lead['status'] = ConnectionApplication::STATUS_SUBMITTED;
+        $lead = array_merge($lead, ['plan_type' => ConnectionApplication::PLAN_TYPE_MAPPER[$lead['plan_type']]]);
         $existLead = ConnectionApplication::findOrFail($id);
         $existLead->update($lead);
         $this->createIdentification($lead['identification'], $id);
-        $this->updateConnectionService($lead['service_interests'], $id);
+        $this->updateConnectionService($lead['service_interests'], $id);;
         return $existLead;
     }
 

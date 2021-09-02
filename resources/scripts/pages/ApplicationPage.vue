@@ -1,8 +1,8 @@
 <template>
-    <v-container>
+    <v-container fluid>
         <v-row>
             <v-col cols="8">
-                <v-card class="pa-4">
+                <v-card class="hood-card">
                     <p>Your Metrics</p>
                     <h3 class="page-title">Total Applications: {{total_leads}}</h3>
                     <AgentLeadMetrics v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal"></AgentLeadMetrics>
@@ -78,7 +78,7 @@ export default {
             this.totalItem = data.pagination.total;
             this.selected_lead_id = this.leads[0].id;
             this.loadLeadSummary();
-            console.log('lead list', this.leads);
+            // console.log('lead list', this.leads);
         },
 
         async loadLeadSummary() {
@@ -98,7 +98,7 @@ export default {
         refreshDataTable(meta) {
             this.sort_search_meta = meta;
             this.loadLeads();
-            this.loadMetricTypes();
+            // this.loadMetricTypes();
         }
     },
 
@@ -110,6 +110,7 @@ export default {
         '$route': {
             handler() {
                 this.activeLeadType = this.$route.query?.type;
+                console.log('search_sort_meat', this.sort_search_meta);
                 this.loadLeads();
             }
         },

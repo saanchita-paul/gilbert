@@ -14,7 +14,7 @@
             <ValidationProvider name="Title" rules="required"  v-slot="{ errors }">
               <v-text-field v-model="agency.title"
                 label="Company Name"
-                placeholder="Barry Plant"
+                placeholder="Agency Name"
                 outlined
                 dense
                 :error-messages=" errors[0]"

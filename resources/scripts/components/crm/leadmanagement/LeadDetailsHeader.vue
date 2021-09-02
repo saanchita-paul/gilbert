@@ -1,17 +1,19 @@
 <template>
     <v-row>
-        <v-col cols="12" class="d-flex justify-space-between align-center">
+        <v-col cols="12" class="d-flex justify-space-between">
 
-            <div class="d-flex align-center">
+            <div class="d-flex">
                 <v-btn  outlined @click="goToBack()"><v-icon left  dark>mdi-arrow-left</v-icon>Back</v-btn>
-                <p class="page-title mx-4 mb-0 ">{{leadSummary.applicant_name}} </p>
-                <div>
-                    <small class="font-weight-thin">
-                        Service Interests
-                        <span  :class="{'mx-1':isActive('Power'), 'pa-2':isActive('Power'),}" ><v-icon :color="getColor('Power')">mdi-flash</v-icon> Power</span>
-                        <span  :class="{'mx-1':isActive('Gas'), 'pa-2':isActive('Gas'), }"><v-icon :color="getColor('Gas')">mdi-fire</v-icon> Gas</span>
-                        <span :class="{'mx-1':isActive('Internet'), 'pa-2':isActive('Internet'), }"><v-icon :color="getColor('Internet')">mdi-wifi</v-icon> Internet</span>
-                        <span :class="{'mx-1':isActive('Water'), 'pa-2':isActive('Water'), }"><v-icon color="grey lighten-1">mdi-water</v-icon> Water</span>
+                <div class="mx-4 mb-0">
+                    <p class="page-title mb-0">{{leadSummary.applicant_name}} </p>
+                    <small class="font-weight-bold">
+                       Preference
+                        <span class="mx-1 pa-2"  :class="{'mx-1':isActive('Power'), 'pa-2':isActive('Power'),}" ><v-icon :color="getColor('Power')">mdi-flash</v-icon> Power</span>
+                        <span class="mx-1 pa-2" :class="{'mx-1':isActive('Gas'), 'pa-2':isActive('Gas'), }"><v-icon :color="getColor('Gas')">mdi-fire</v-icon> Gas</span>
+                        <span class="mx-1 pa-2" :class="{'mx-1':isActive('Internet'), 'pa-2':isActive('Internet'), }"><v-icon :color="getColor('Internet')">mdi-wifi</v-icon> Internet</span>
+                        <span class="mx-1 pa-2" :class="{'mx-1':isActive('Water'), 'pa-2':isActive('Water'), }"><v-icon color="grey lighten-1">mdi-water</v-icon> Water</span>
+                        <span class="ml-4 mr-1 py-2 pl-2 font-weight-bold" >Status</span>
+                        <span class="mx-1 font-normal" >{{leadSummary.status}}</span>
                     </small>
                 </div>
             </div>
@@ -94,5 +96,8 @@ name: "LeadDetailsHeader",
 <style scoped>
 .border-warning{
     border-color: #fb8c00 !important;
+}
+.font-normal {
+    font-weight: 400 !important;
 }
 </style>

@@ -5,8 +5,10 @@ $shade_one_color: #00355E;
 $shade_two_color: white;
 
 @import "overridevuetify";
+@import "mediaquery";
 @import "typography";
 @import "themes";
+@import "loginpage";
 @import "dialogs";
 @import "leadebadge";
 @import "progressbar";
@@ -18,26 +20,22 @@ body {
     font-family: 'Roboto', sans-serif !important;
     font-weight: 400;
     font-size: 16px !important;
-    background-color: #D6D6D6 !important;
     .v-application {
         font-family: 'Roboto', sans-serif !important;
         font-weight: 400;
         font-size: 16px !important;
-        background-color: #D6D6D6 !important;
+        background-color: #F1F3F4 !important;
     }
 }
 
 
 
 .body-bg {
-    background-color: #D6D6D6 !important;
+    background-color: #F1F3F4 !important;
 }
 
 .hood-gradiant {
     background: linear-gradient(to right bottom, #56CCF2 -75.93%, #542E89 42.76%, #9C27B0 118.83%) !important;
-}
-.analytic-bg {
-    //height: 320px;
 }
 
 .section-title {

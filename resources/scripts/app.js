@@ -9,7 +9,10 @@ import store from '@scripts/store';
 import { authUser } from "@scripts/services/AuthService";
 import GoogleMapService from "@scripts/services/GoogleMapService";
 import '@scripts/directives';
+import '@scripts/filters'
+import {EventBusPlugin} from "@scripts/plugins/EventBus";
 
+Vue.use(EventBusPlugin);
 /**
  * initializing GoogleMapService
  */

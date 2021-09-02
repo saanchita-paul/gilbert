@@ -1,11 +1,7 @@
 <template>
-    <div>
-        <div class="d-flex">
-            <div class="service-box" :class="{active: isActive(title)}">
-                <p class="mb-0"><v-icon :color="getColor(title)">{{icon}}</v-icon> {{title}}</p>
-            </div>
+        <div class="service-box" :class="{active: isActive(title)}">
+            <p class="mb-0 font-weight-bold"><v-icon :color="getColor(title)">{{icon}}</v-icon> {{title}}</p>
         </div>
-    </div>
 </template>
 
 <script>

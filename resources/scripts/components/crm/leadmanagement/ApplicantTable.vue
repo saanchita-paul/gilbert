@@ -5,7 +5,7 @@
                 <Search @updateSearch="updateLeadSearch"></Search>
             </v-col>
         </v-row>
-        <v-card class="pa-4">
+        <v-card class="hood-card">
             <v-row>
                 <v-col cols="12" class="crm-table">
                     <v-data-table
@@ -15,7 +15,7 @@
                         :options.sync="options"
                         :server-items-length="totalItem"
                         :loading="loading"
-                        class="elevation-1 row-pointer"
+                        class="row-pointer"
                         @click:row="openLeadSummary"
                     >
                         <template v-slot:item.first_name="{ item }">
@@ -106,7 +106,7 @@ export default {
                     value: 'moving_date'
                 },
                 {
-                    text: 'Service Type',
+                    text: 'Preference',
                     align: 'start',
                     sortable: true,
                     value: 'services'
@@ -144,7 +144,6 @@ export default {
                 sort_by: '',
             }
             const data = await CrmUserService.loadAllUser(meta);
-            console.log('users', data);
             this.users = data?.users;
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
@@ -198,6 +197,11 @@ export default {
                 this.loadLeadList();
             },
             deep: true,
+        },
+        '$route': {
+            handler() {
+
+            }
         },
     },
 };

@@ -1,9 +1,14 @@
 <template>
     <v-app>
-        <v-container style="height: 100%">
-            <div style="height: 100%; display: flex; justify-content: center; align-items: center">
-                <v-card width="400px">
-                    <v-card-title class="primary white--text">LOGIN</v-card-title>
+        <v-container fluid class="loginpage">
+            <div class="login-section">
+                <v-card class="hood-card">
+                    <div class="login-header">
+                        <v-img  src="/assets/images/logo.png"/>
+                        <p class="dialogs-title">Welcome!</p>
+                        <p class="primary-text">Login and start managing your leades</p>
+                    </div>
+
                     <v-fade-transition>
                         <div
                             v-if="isLoginFailed"
@@ -12,6 +17,7 @@
                         >Login failed! Invalid credentials
                         </div>
                     </v-fade-transition>
+
                     <v-card-text>
                         <validation-observer
                             ref="observer"
@@ -28,6 +34,8 @@
                                         :error-messages="errors"
                                         label="Email"
                                         required
+                                        outlined
+                                        dense
                                         @keyup.enter="onSubmit"
                                     ></v-text-field>
                                 </validation-provider>
@@ -42,14 +50,16 @@
                                         label="Password"
                                         type="password"
                                         required
+                                        outlined
+                                        dense
                                         @keyup.enter="onSubmit"
                                     ></v-text-field>
                                 </validation-provider>
                             </form>
                         </validation-observer>
                     </v-card-text>
-                    <v-card-actions>
-                        <div class="d-flex justify-space-between" style="width: 100%">
+                    <div class="card-actions">
+                        <div class="actions-link">
                             <validation-provider
                                 v-slot=""
                                 rules="required"
@@ -59,20 +69,24 @@
                                     v-model="form.remember_me"
                                     :error-messages="errors"
                                     value="1"
-                                    label="Remember me?"
+                                    label="Remember me"
                                     type="checkbox"
                                     required
                                 ></v-checkbox>
                             </validation-provider>
+                            <router-link class="forgot-text" :to="{name: 'forgot.password'}">Forgot password?</router-link>
+                        </div>
+                        <div>
                             <v-btn
                                 :loading="loginLoading"
-                                rounded
-                                class="primary white--text mt-2"
+                                block
+                                class="primary white--text mt-2 mb-3"
                                 @click="onLogin"
                             >LOGIN
                             </v-btn>
                         </div>
-                    </v-card-actions>
+                    </div>
+
                 </v-card>
             </div>
         </v-container>

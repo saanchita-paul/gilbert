@@ -1,15 +1,16 @@
 <template>
     <v-row>
-            <p class="sub-title">Service Applications</p>
-        <v-col cols="12">
-            <v-row>
-                <v-col v-for="service in services" :key="service">
+        <v-col cols="12" class="pb-0">
+            <p class="sub-title mb-0">Service Applications</p>
+        </v-col>
+        <v-col cols="12" class="service-box-area">
+                <div v-for="service in services" :key="service">
                     <EnergyService @click.native="updateService(service)" :title="service"  :lead-summary="leadSummary"></EnergyService>
-                </v-col>
-            </v-row>
+                </div>
+        </v-col>
+        <v-col cols="12">
             <v-divider></v-divider>
         </v-col>
-
         <v-col cols="12">
             <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
             <div class="d-flex">
@@ -26,11 +27,41 @@
             <p class="sub-title">Select a plan for [POWER1] and [GAS2]</p>
 
             <div class="d-flex" v-if="plansFlag">
-                <EnergyPlan v-for="plan in plans"  :key="plan.id" :plan="plan" :selectedPlan="selectedPlan" @selectPlan="planSelect">
-                </EnergyPlan>
+                <EnergyPlan
+                    v-for="plan in plans"
+                    :key="plan.key"
+                    :plan="plan"
+                    :selectedPlan="selectedPlanType"
+                    @selectPlan="planSelect"
+                    @view="view"
+                ></EnergyPlan>
             </div>
         </v-col>
 
+        <v-dialog
+            v-model="viewPlanDialog"
+            max-width="500"
+            v-if="viewPlanDialog && planTypeForDetails"
+        >
+            <v-card>
+                <EnergyPlanDetails
+                    :plan="planTypeForDetails"
+                    :postcode="leadSummary.postcode"
+                    :services="leadSummary.service_interests"
+                    :state="leadSummary.state"
+                />
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="green darken-1"
+                        text
+                        @click="viewPlanDialog = false"
+                    >
+                        Close
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-row>
 </template>
 
@@ -39,9 +70,15 @@ import EnergyService from "@scripts/components/crm/leadmanagement/EnergyService"
 import ServiceProvider from "@scripts/components/crm/leadmanagement/ServiceProvider";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
+import EnergyApi from "@scripts/api/ea/EnergyApi";
+import EAPlanService from "@scripts/services/ea/EAPlanService";
+import {EA_PLAN_TYPES, PLAN_TYPE_TOTAL} from "@scripts/models/ea/EnergyPlan";
+import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
+
+
 export default {
   name: "ServiceApplications",
-    components: {EnergyPlan, ServiceProvider, EnergyService},
+    components: {EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetails},
     props:{
         leadSummary: {
             require: true
@@ -55,18 +92,30 @@ export default {
             serviceProvider: [],
             plans: [],
             plansFlag : false,
-            selectedPlan: 1
+            selectedPlanType: PLAN_TYPE_TOTAL,
+            viewPlanDialog: false,
+            planTypeForDetails: null
         }
     },
+    watch: {
+      'leadSummary.service_interests'() {
+          this.loadPlan();
+      }
+    },
+    mounted() {
+        this.loadServiceProvider();
+        this.loadPlan();
+        this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
 
+    },
     methods: {
         reviewPlan() {
             //todo
         },
-        planSelect(planId) {
-           this.selectedPlan = planId.id;
+        planSelect(plan) {
+           this.selectedPlanType = plan?.key
            // console.log(planId);
-            this.$emit('updatePlan', planId);
+            this.$emit('updatePlan', plan);
         },
         isActive(service) {
             return this.leadSummary.service_types.includes(service.toLowerCase())?true:false;
@@ -84,23 +133,30 @@ export default {
             });
             this.serviceProviderFlag = true;
         },
-        async loadPlan(serviceProvider) {
-            this.plans = await LeadApplicationService.loadPlan(serviceProvider);
-            // console.log('plan', this.plans);
-            this.plansFlag = true;
+        async loadPlan() {
+            // this.plans = await LeadApplicationService.loadPlan(serviceProvider);
+            const services = this.leadSummary.service_interests;
+            if (services.includes('gas') || services.includes('power')) {
+                this.plans = await EAPlanService.getAllPlans({
+                    service_type: this.leadSummary.service_interests,
+                    postcode: this.leadSummary.postcode,
+                    state: this.leadSummary.state
+                });
+                this.plansFlag = true;
+            } else {
+                this.plansFlag = false;
+            }
         },
 
         updateService(service) {
             this.$emit('updateService', service);
-            // console.log('service', service);
+        },
+
+        view(plan) {
+            this.planTypeForDetails = plan.key;
+            this.viewPlanDialog = true;
         }
     },
-
-    mounted() {
-      this.loadServiceProvider();
-      this.loadPlan(1);
-
-    }
 };
 </script>
 

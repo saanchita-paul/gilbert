@@ -125,16 +125,19 @@ const plans = [
     {
         id: 1,
         title: 'Total Plan (Home)',
+        key: 'total_plan',
         active: true,
     },
     {
         id: 2,
         title: 'No Frills (Home)',
+        key: 'basic_plan',
         active: false,
     },
     {
         id: 3,
         title: 'Basic Home',
+        key: 'no_frills',
         active: false,
     },
 
@@ -284,10 +287,17 @@ export default {
 
    async saveLead(lead, leadId) {
         try {
-            lead.plan_type = lead.plan_type.id;
             const data = await axios.post('/api/applications/'+leadId+'/submit',{lead});
             return data;
 
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    async updateAddress(address, leadId) {
+        try {
+            return await axios.put('/api/applications/'+leadId+'/update-address',{address});
         } catch (error) {
             return error.data;
         }
