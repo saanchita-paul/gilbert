@@ -209,7 +209,7 @@ class ApplicationController extends Controller
             $user = auth()->user();
             $service = new ConnectionService();
             $inputData = $request->toArray();
-            $data= $service->allApplicationMetricsCount($inputData, $user->profile->office_id);
+            $data= $service->allApplicationMetricsCount($inputData, $user);
 
             return ApplicationMetricsResource::make($data);
 
