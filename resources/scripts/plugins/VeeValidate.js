@@ -62,6 +62,22 @@ extend('unique-user-email', {
     }
 });
 
+extend('not-holiday', {
+    message: field => `Date must not be holiday`,
+    params: ['target'],
+    validate: (value, {target}) =>  {
+        console.log("TARGET", target, value)
+        return true;
+        //todo: finish the validation
+        return new Promise(resolve => {
+            AuthService.isUniqueEmail(value)
+                .then( valid => {
+                    resolve({ valid })
+                })
+        })
+    }
+});
+
 extend('length', {
     ...length,
     message: 'Phone should contain 10 numbers',

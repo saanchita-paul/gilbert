@@ -116,7 +116,7 @@
                                 >
                                     <template v-slot:activator="{ on, attrs }">
 
-                                        <ValidationProvider name="Moving Date" rules="required"  v-slot="{ errors }">
+                                        <ValidationProvider name="Moving Date" rules="required|not-holiday:@State/Territory"  v-slot="{ errors }">
                                             <v-text-field
                                                 label="Connection Date*"
                                                 placeholder="DD/MM/YYYY"
