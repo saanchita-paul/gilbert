@@ -45,7 +45,9 @@ class ApplicationResource extends JsonResource
             'created_by' => $this->created_by,
             'assigned_to' => $this->assigned_to,
             'agent_profile' => $this->assignedTo,
-            'status' => $this->status
+            'status' => $this->status,
+            'street_number' => $this->street_number,
+            'unit_number' => $this->unit_number,
         ];
     }
 

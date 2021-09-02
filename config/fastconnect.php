@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'root_url' => env('FC_BASE_URL', 'https://sandbox.fastconnect.net.au'),
+    'root_url' => env('FC_BASE_URL','https://sandbox.fastconnect.net.au'),
     'get_token_uri' => env('FC_TOKEN_URI','/oauth/token?grant_type=client_credentials&scope=datafind'),
     'search_nmi_mirn_uri' => env('FC_NMI_MIR_NURI', '/api/datafind/address'),
     'base64_key' => env('FC_BASE64_KEY','Basic c2FuZGJveF9HcWxNejlaR3d0OE03dzdZNzdGUzV5elI6bndJQXM5WTJKR3NmVEVNVU1CU25JWWFKam4wMW9vT1hkNjZrMFhWY2E3S016SGI4')

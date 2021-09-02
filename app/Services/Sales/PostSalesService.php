@@ -18,7 +18,7 @@ class PostSalesService
     private $accessToken;
     public function __construct(int $id)
     {
-        $this->connection = ConnectionApplication::find(23);
+        $this->connection = ConnectionApplication::find($id);
         $this->identification = $this->connection->identification;
         $this->accessToken = (new GetAccessToken())->getAccessToken();
     }
@@ -29,7 +29,7 @@ class PostSalesService
         $id = $this->getId();
         $vendorCode= "HD2";
         $version = "1";
-        $saleDate =  "2021-08-31T10:45:00Z";
+        $saleDate =  "2021-09-07T10:45:00Z";
         $customerType =  "RES";
         $transactionType = "ENE";
         $premiseRelationship= $this->connection->tenancy_type == 1?"TENANT":"OWNER";
@@ -69,7 +69,7 @@ class PostSalesService
                 'streetName'=> $this->connection->street_address,
                 'streetType'=> "ST",
                 'suburb'=> $this->connection->city,
-                'state'=> $this->connection->state,
+                'state'=> $this->stateMap($this->connection->state),
                 'postcode'=> $this->connection->postcode,
             ],
             'solarDetails'=> [
@@ -173,9 +173,10 @@ class PostSalesService
                     ]
                 );
             $results = $client->runQuery($gql, false, $variables );
-            dump($variables);
-            dump($results);
+//            dump($results);
+//            dump($variables);
             return $this->processEaData($results->getResponseBody());
+
         } catch (\Exception $e)
         {
 
@@ -253,6 +254,13 @@ class PostSalesService
     private function getId()
     {
         return 'HD2'.$this->connection->id.time();
+    }
+
+    private function stateMap($state)
+    {
+        $stateList = ['New South Wales'=>'NSW','Victoria'=>'VIC','Queensland'=>'QLD',
+            'South Australia'=>'SA','Northern Territory'=>'NT','TAS'=>'Tasmania','ACT'=>'Australian Capital Territory'];
+        return $stateList[$state];
     }
 
 }

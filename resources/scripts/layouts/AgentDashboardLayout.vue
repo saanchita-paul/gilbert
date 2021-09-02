@@ -15,9 +15,9 @@
 
             <v-spacer/>
 
-            <v-toolbar-title class="mx-4">
+            <v-toolbar-title class="user-name-area">
                 <h6>{{ user.profile.first_name }} {{ user.profile.last_name }}</h6>
-                <h6>{{ user.email }}</h6>
+                <span>{{ user.email }}</span>
             </v-toolbar-title>
 
             <v-menu offset-y>

@@ -54,16 +54,15 @@ class AuthController extends Controller
     }
 
 
-    public function isValidUser(Request $request)
+    public function isEmailValid(Request $request)
     {
         try {
             $authUserSvc = new AuthUserDetails();
-            $users = $authUserSvc->getUserByEmail($request->email);
+            $user = $authUserSvc->getUserByEmail($request->email);
 
-            if (sizeof($users) > 0) {
-                return response()->json(['success' => false, 'msg' => 'This email already signed up!']);
-            }
-            return response()->json(['success' => true, 'msg' => 'Valid user!']);
+            $res = ['success' => true, 'data' => ['is_unique_email' => !$user]];
+
+            return response()->json($res);
 
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);

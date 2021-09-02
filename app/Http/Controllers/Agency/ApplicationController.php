@@ -5,16 +5,11 @@ namespace App\Http\Controllers\Agency;
 use App\Events\Agency\SubmitApplicationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Agency\ApplicationRequest;
-use App\Http\Resources\Agency\AgencyResource;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
-use App\Http\Resources\Agency\ApplicationNoteResourse;
 use App\Http\Resources\Agency\ApplicationResource;
-use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
-use App\Models\Identification;
 use App\Models\User;
-use App\Services\Agency\ApplicationNoteService;
 use App\Services\Agency\ApplicationService;
 use App\Services\Agency\ApplicationsMetricsService;
 use App\Services\Agency\HubspotContactService;
@@ -24,8 +19,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Config;
 
 class ApplicationController extends Controller
 {
@@ -148,10 +142,8 @@ class ApplicationController extends Controller
             $service->updateAddress($inputData, $applicationId);
 
             $svcUtilities = new FastConnectService();
-            $result = $svcUtilities->authenticate()->searchAddress([
-
-            ])->toArray();
-
+            $result = $svcUtilities->authenticate();
+            return  $result;
             return ApplicationResource::make($service->updateAddress($inputData, $applicationId));
 
         } catch (\Exception $exception) {

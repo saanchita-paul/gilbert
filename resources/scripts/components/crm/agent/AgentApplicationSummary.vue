@@ -25,7 +25,11 @@
             </tr>
         </table>
 
-
+        <div class="pt-5">
+            <v-divider></v-divider>
+        </div>
+            
+        
         <p class="sub-title mt-4 mb-2">Property  Details</p>
         <table  class="application-info">
             <tr>

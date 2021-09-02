@@ -2,6 +2,7 @@ import Vue from 'vue';
 import {ValidationProvider, extend, ValidationObserver} from 'vee-validate';
 import * as rules from 'vee-validate/dist/rules';
 import {email, max, required} from "vee-validate/dist/rules";
+import AuthService from "@scripts/services/AuthService";
 
 Object.keys(rules).forEach(rule => {
     extend(rule, rules[rule]);
@@ -47,6 +48,18 @@ extend('date-range-check', {
         return (startDate instanceof Date) && (endDate instanceof Date);
     },
     message: '{_field_} should contain at least 2 valid datetimes.'
+});
+
+extend('unique-user-email', {
+    message: field => `this email is already taken`,
+    validate: value =>  {
+        return new Promise(resolve => {
+            AuthService.isUniqueEmail(value)
+                .then( valid => {
+                    resolve({ valid })
+                })
+        })
+    }
 });
 
 extend('length', {
