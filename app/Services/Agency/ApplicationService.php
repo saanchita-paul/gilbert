@@ -7,6 +7,7 @@ use App\Models\ConnectionService;
 use App\Models\Identification;
 use App\Models\User;
 use App\Services\Agency\CreateOfficeAndAgency;
+use App\Services\Sales\PostSalesService;
 use Illuminate\Console\Application;
 use function PHPUnit\Framework\isNull;
 
@@ -107,7 +108,7 @@ class ApplicationService
         $existLead = ConnectionApplication::findOrFail($id);
         $existLead->update($lead);
         $this->createIdentification($lead['identification'], $id);
-        $this->updateConnectionService($lead['service_interests'], $id);
+        $this->updateConnectionService($lead['service_interests'], $id);;
         return $existLead;
     }
 
