@@ -174,6 +174,7 @@ export default {
                     this.propertyDetails.state = data.state;
                     this.propertyDetails.street_number = data.street_number;
                     this.propertyDetails.unit_number = data.unit_number;
+                    this.propertyDetails.street_name = data.street_name;
                 });
         },
         async onSubmit() {

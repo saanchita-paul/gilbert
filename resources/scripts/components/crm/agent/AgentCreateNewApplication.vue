@@ -363,6 +363,7 @@ export default {
                     this.application.state = data.state;
                     this.application.street_number = data.street_number;
                     this.application.unit_number = data.unit_number;
+                    this.application.street_name = data.street_name;
                     // this.mapToModel(data)
                 });
         },

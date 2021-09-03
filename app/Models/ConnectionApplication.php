@@ -132,6 +132,7 @@ class ConnectionApplication extends Model
         'ea_sales_id',
         'unit_number',
         'street_number',
+        'street_name',
     ];
 
 

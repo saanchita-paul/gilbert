@@ -28,6 +28,7 @@ export default {
         }
 
         return {
+            street_name: addressValue.route,
             street_number: addressValue.street_number,
             street,
             city,

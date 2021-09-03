@@ -573,6 +573,7 @@ export default {
                 country: '',
                 unit_number: '',
                 street_number: '',
+                street_name: '',
                 is_billing_same: true,
 
             },
@@ -642,6 +643,7 @@ export default {
             this.property_details.street_address = this.lead.street_address;
             this.property_details.city = this.lead.city;
             this.property_details.street_number = this.lead.street_number;
+            this.property_details.street_name = this.lead.street_name;
             this.property_details.unit_number = this.lead.unit_number;
             this.property_details.postcode = this.lead.postcode;
             this.property_details.state = this.lead.state;
