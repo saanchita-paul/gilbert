@@ -71,7 +71,10 @@ class ApplicationService
         $existingApplication->postcode = $address['postcode'];
         $existingApplication->state = $address['state'];
         $existingApplication->country = $address['country'];
+        $existingApplication->mirn = $address['mirn'] ?? $existingApplication->mirn;
+        $existingApplication->nmi = $address['nmi'] ?? $existingApplication->nmi;
         $existingApplication->save();
+
         return $existingApplication;
     }
 
