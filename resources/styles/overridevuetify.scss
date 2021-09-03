@@ -4,3 +4,9 @@
 .hood-btn.v-btn {
     height: 40px !important;
 }
+
+@media only screen and (min-width: 1400px) {
+    .container--fluid {
+        max-width: 1400px !important;
+    }
+}
