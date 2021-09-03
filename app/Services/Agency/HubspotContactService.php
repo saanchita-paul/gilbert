@@ -149,10 +149,25 @@ class HubspotContactService
                 array(
                     "property" => "hood_updated_at",
                     "value" => $application->updated_at
+                ),
+                array(
+                    "property" => "hood_unit_number",
+                    "value" => $application->unit_number
+                ),
+                array(
+                    "property" => "hood_street_number",
+                    "value" => $application->street_number
+                ),
+                array(
+                    "property" => "hood_ea_sales_id",
+                    "value" => $application->ea_sales_id
                 )
             )
         ));
-        dd($response->body());
+        //$response = json_decode($response);
+        dd($response->json());
+        //var_dump($response->json());
+        echo ($response->json());
         return $response->json();
     }
 }
