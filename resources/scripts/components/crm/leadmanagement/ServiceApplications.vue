@@ -4,9 +4,10 @@
             <p class="sub-title mb-0">Service Applications</p>
         </v-col>
         <v-col cols="12" class="service-box-area">
-                <div v-for="service in services" :key="service">
-                    <EnergyService @click.native="updateService(service)" :title="service"  :lead-summary="leadSummary"></EnergyService>
-                </div>
+            <div v-for="service in services" :key="service">
+                <EnergyService @click.native="updateService(service)" :title="service"
+                               :lead-summary="leadSummary"></EnergyService>
+            </div>
         </v-col>
         <v-col cols="12">
             <v-divider></v-divider>
@@ -15,7 +16,7 @@
             <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
             <div class="d-flex">
                 <ServiceProvider v-if="serviceProviderFlag" v-for="provider in serviceProvider"
-                                 :key="provider.id" :provider="provider" ></ServiceProvider>
+                                 :key="provider.id" :provider="provider"></ServiceProvider>
             </div>
         </v-col>
 
@@ -24,7 +25,7 @@
         </v-col>
 
         <v-col cols="12">
-            <p class="sub-title">Select a plan for [POWER1] and [GAS2]</p>
+            <p class="sub-title" v-if="selectPlanTitle.length > 0">Select a plan for {{selectPlanTitle}}</p>
 
             <div class="d-flex" v-if="plansFlag">
                 <EnergyPlan
@@ -77,9 +78,9 @@ import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
 
 
 export default {
-  name: "ServiceApplications",
+    name: "ServiceApplications",
     components: {EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetails},
-    props:{
+    props: {
         leadSummary: {
             require: true
         }
@@ -87,20 +88,31 @@ export default {
 
     data() {
         return {
-            services:['Power', 'Gas', 'Water', 'Internet'],
+            services: ['Power', 'Gas', 'Water', 'Internet'],
             serviceProviderFlag: false,
             serviceProvider: [],
             plans: [],
-            plansFlag : false,
+            plansFlag: false,
             selectedPlanType: PLAN_TYPE_TOTAL,
             viewPlanDialog: false,
             planTypeForDetails: null
         }
     },
+    computed: {
+        selectPlanTitle() {
+            const services = this.leadSummary.service_interests;
+            if (services && services.includes('gas') && services.includes('power')) {
+                return 'Power & GAS';
+            }
+            return services && services.includes('gas')
+                ? 'GAS'
+                : (services && services.includes('power') ? 'Power' : '')
+        }
+    },
     watch: {
-      'leadSummary.service_interests'() {
-          this.loadPlan();
-      }
+        'leadSummary.service_interests'() {
+            this.loadPlan();
+        }
     },
     mounted() {
         this.loadServiceProvider();
@@ -113,18 +125,17 @@ export default {
             //todo
         },
         planSelect(plan) {
-           this.selectedPlanType = plan?.key
-           // console.log(planId);
+            this.selectedPlanType = plan?.key
+            // console.log(planId);
             this.$emit('updatePlan', plan);
         },
         isActive(service) {
-            return this.leadSummary.service_types.includes(service.toLowerCase())?true:false;
+            return this.leadSummary.service_types.includes(service.toLowerCase()) ? true : false;
 
         },
-      async  loadServiceProvider()
-        {
+        async loadServiceProvider() {
             this.serviceProvider = await LeadApplicationService.loadServiceProvider({
-                service:{
+                service: {
                     'power': this.activePower,
                     'gas': this.activeGas,
                     'internet': this.activeInternet,

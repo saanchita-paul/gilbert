@@ -1,5 +1,5 @@
 <template>
-    <v-row>
+    <v-row v-if="appMetrics">
       <v-col cols="4" class="pb-0">
         <p class="mb-0">Leads Data</p>
       </v-col>
