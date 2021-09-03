@@ -66,6 +66,7 @@
           <p class="sub-title mb-1">Agent’s Additional Instructions</p>
           <v-textarea
             outlined
+            disabled
             placeholder="Additional Instructions goes here."
             v-model="application.additional_instruction"
         ></v-textarea>

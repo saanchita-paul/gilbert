@@ -69,10 +69,12 @@
 }
 .agent-leade-section {
     display: flex;
+    width: 100%;
+    padding: 0px 10px;
     .agent-leade {
         padding: 8px;
         margin: 5px;
-        flex-basis: 16.66%;
+        flex-basis: 15.66%;
         border: 2px solid #E0E0E0;
         background: #fff;
         border-radius: 10px;

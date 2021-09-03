@@ -4,7 +4,7 @@
         <p class="mb-0">Leads Data</p>
       </v-col>
       <v-col cols="8" class="pb-0">
-        <p class="mb-0 ">Successful Connections</p>
+        <p class="mb-0 pl-2">Successful Connections</p>
       </v-col>
 
       <div class="agent-leade-section">
@@ -26,7 +26,7 @@
               <p class="leade-text">Non Connected</p>
           </div>
 
-          <div class="agent-leade">
+          <div class="agent-leade ml-5">
             <h3>Power</h3>
             <div class="leade-icon">
                 <v-icon :color="appMetrics.power>0?'yellow':'grey lighten-1'">mdi-flash</v-icon>
