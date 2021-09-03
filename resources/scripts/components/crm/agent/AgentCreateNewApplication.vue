@@ -100,45 +100,11 @@
 
                     </v-col>
 
-                    <v-col cols="12" class="py-0">
+                    <v-col cols="12" class="">
                         <p class="sub-title mb-0">Moving Details <small class="font-weight-thin">Information about your lead’s move.</small></p>
                     </v-col>
-                    <v-col cols="12" class="pb-0">
-                        <v-row>
-                            <v-col cols="6" class="py-0">
-                                <v-menu
-                                    v-model="showMovingDate"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    transition="scale-transition"
-                                    offset-y
-                                    min-width="290px"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
 
-                                        <ValidationProvider name="Moving Date" rules="required|not-holiday:@State/Territory"  v-slot="{ errors }">
-                                            <v-text-field
-                                                label="Connection Date*"
-                                                placeholder="DD/MM/YYYY"
-                                                outlined
-                                                dense
-                                                append-icon="mdi-calendar"
-                                                v-model="application.moving_date"
-                                                readonly
-                                                v-bind="attrs"
-                                                v-on="on"
-                                                :error-messages=" errors[0]"
-                                            ></v-text-field>
-                                        </ValidationProvider>
-                                    </template>
-                                    <v-date-picker v-model="application.moving_date" :min="minDate"
-                                                   @input="showMovingDate = false"></v-date-picker>
-                                </v-menu>
-                            </v-col>
-                        </v-row>
-                    </v-col>
-
-                    <v-col cols="12" class="pb-0">
+                    <v-col cols="12" class="pb-0 mt-2">
                                 <v-menu offset-y v-model="showMenu">
                                     <template v-slot:activator="{ on }">
                                         <v-text-field
@@ -192,7 +158,7 @@
 
                     </v-col>
 
-                    <v-col cols="6" class="pt-0">
+                    <v-col cols="6" class="pt-0 pb-0">
 
                         <ValidationProvider name="State/Territory" rules="required"  v-slot="{ errors }">
                             <v-select outlined dense
@@ -206,7 +172,7 @@
                     </v-col>
 
 
-                    <v-col cols="6" class="pt-0">
+                    <v-col cols="6" class="pt-0 pb-0">
 
                         <ValidationProvider name="Postcode" rules="required"  v-slot="{ errors }">
                             <v-text-field
@@ -219,6 +185,43 @@
                             ></v-text-field>
                         </ValidationProvider>
                     </v-col>
+
+
+                    <v-col v-if="application.state" cols="12" class="pb-0">
+                        <v-row>
+                            <v-col cols="6" class="py-0">
+                                <v-menu
+                                    v-model="showMovingDate"
+                                    :close-on-content-click="false"
+                                    :nudge-right="40"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+
+                                        <ValidationProvider name="Moving Date" rules="required|not-holiday:@State/Territory"  v-slot="{ errors }">
+                                            <v-text-field
+                                                label="Connection Date*"
+                                                placeholder="DD/MM/YYYY"
+                                                outlined
+                                                dense
+                                                append-icon="mdi-calendar"
+                                                v-model="application.moving_date"
+                                                readonly
+                                                v-bind="attrs"
+                                                v-on="on"
+                                                :error-messages=" errors[0]"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </template>
+                                    <v-date-picker v-model="application.moving_date" :min="minDate"
+                                                   @input="showMovingDate = false"></v-date-picker>
+                                </v-menu>
+                            </v-col>
+                        </v-row>
+                    </v-col>
+
 
                     <v-col cols="12" class="pb-0">
                         <p class="sub-title mb-0">Service Interests</p>
