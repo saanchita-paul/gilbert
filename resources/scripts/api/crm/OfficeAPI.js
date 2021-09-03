@@ -79,7 +79,6 @@ export default {
     },
 
     updateOffice: async (office, id) => {
-        console.log('data',{...office});
 
         try {
             const data = await axios.post('/api/offices/'+id+'/update',{...office});

@@ -235,7 +235,6 @@ export default {
             return response;
 
         } catch (error) {
-            console.log('response2', error);
             return error.data;
         }
     },

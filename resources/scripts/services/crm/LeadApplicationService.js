@@ -14,4 +14,15 @@ export default {
     saveLead: (lead, leadId) => LeadApplicationAPI.saveLead(lead, leadId),
     updateAddress: (address, leadId) => LeadApplicationAPI.updateAddress(address, leadId),
     assignUser: (leadId, agentProfileId) => LeadApplicationAPI.assignUser(leadId, agentProfileId),
+
+    /**
+     * Getting minimum valid Connection date
+     *
+     * @return {string}
+     */
+    getMinConnectionDate: () => {
+        const date = new Date()
+        date.setDate(date.getDate() + 3);
+        return date.toISOString()
+    }
 }

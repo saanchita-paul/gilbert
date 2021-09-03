@@ -26,7 +26,6 @@ name: "EditProfileModal",
         }
     },
     mounted() {
-        console.log('users', this.user);
     }
 
 }

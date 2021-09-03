@@ -290,6 +290,7 @@ import AgentConfirmApplicationModal from "@scripts/components/crm/modals/agent/A
 import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
 import debounce from 'lodash-es/debounce';
 import GoogleMapService from "@scripts/services/GoogleMapService";
+import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 
 export default {
     name: "AgentCreateNewApplication",
@@ -323,7 +324,7 @@ export default {
             },
             showMenu: false,
             searchResult: [],
-            minDate: null,
+            minDate: LeadApplicationService.getMinConnectionDate(),
             range: null,
             disabledDates: [
               { start: new Date(2021, 0, 2), end: new Date(2021, 9, 19) },
@@ -343,15 +344,6 @@ export default {
 
     },
     methods: {
-
-      setMinDate()
-      {
-        let result = new Date();
-        result.setDate(result.getDate() + 3);
-
-
-        this.minDate = result.toISOString().slice(0,10);
-      },
         onAddressSelected(place) {
             GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
                 .then((data) => {
@@ -384,7 +376,6 @@ export default {
             this.confirmApplicationModal = false;
             AgentApplicationService.createApplication(this.application)
                 .then(res =>  {
-                    console.log('Application Saved Successfully');
                     this.$router.push({name: 'agent.application.dashboard'});
                 })
         },
@@ -400,9 +391,6 @@ export default {
             }
         }
     },
-  mounted() {
-      this.setMinDate();
-  }
 };
 </script>
 

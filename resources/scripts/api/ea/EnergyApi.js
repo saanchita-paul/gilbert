@@ -43,7 +43,7 @@ export default {
 
     checkIfDateIsHoliday: async query => {
         query.state = getStateKey(query.state)
-        let u = 'https://hb.leninsheikh.com/hood-dashboard/api'
-        return (await axios.get(`${u}/is-holiday`, {params: query})).data.data?.is_holiday
+        // let u = 'https://hb.leninsheikh.com/hood-dashboard/api'
+        return (await axios.get(`${ROOT}/is-holiday`, {params: query})).data.data?.is_holiday
     }
 }
