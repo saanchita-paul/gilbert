@@ -20,6 +20,7 @@
                       :options.sync="options"
                       :server-items-length="totalItem"
                       :loading="loading"
+                      :item-class="isSelectedClass"
                       class="row-pointer"
                       @click:row="openApplicationSummary"
                   >
@@ -44,7 +45,7 @@ import Search from "@scripts/components/crm/Search";
 
 export default {
     name: "AgentApplicationTable",
-    props: ["applications","totalItem"],
+    props: ["applications","totalItem", 'selectedAppId'],
     components: {
         Search
     },
@@ -92,8 +93,16 @@ export default {
         search: '',
       }
     },
+    computed: {
+
+    },
 
     methods: {
+        isSelectedClass(item) {
+            if(item.id === this.selectedAppId) {
+                return 'selectedRow';
+            }
+        },
         addNewApplication() {
             this.$router.push({name: 'agent.create.application'});
         },
