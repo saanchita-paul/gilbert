@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container fluid>
         <ValidationObserver ref="office_details">
             <v-card class="pa-4" v-if="isLoaded">
                 <v-row>
