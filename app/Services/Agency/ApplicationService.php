@@ -64,13 +64,17 @@ class ApplicationService
         $existingApplication = ConnectionApplication::find($applicationId);
         $existingApplication->address_text = $address['address_text'];
         $existingApplication->street_address = $address['street_address'];
+        $existingApplication->street_name = $address['street_name'];
         $existingApplication->street_number = empty($address['street_address']) ? null : $address['street_number'] ;
         $existingApplication->unit_number = empty($address['street_address']) ? null : $address['unit_number'];
         $existingApplication->city = $address['city'];
         $existingApplication->postcode = $address['postcode'];
         $existingApplication->state = $address['state'];
         $existingApplication->country = $address['country'];
+        $existingApplication->mirn = $address['mirn'] ?? $existingApplication->mirn;
+        $existingApplication->nmi = $address['nmi'] ?? $existingApplication->nmi;
         $existingApplication->save();
+
         return $existingApplication;
     }
 

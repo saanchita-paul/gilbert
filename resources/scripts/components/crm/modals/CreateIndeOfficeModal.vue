@@ -154,7 +154,6 @@ name: "CreateIndeOfficeModal",
         },
 
         checkNumberProfileValidity() {
-          console.log( this.agency.profile);
           let gas =  this.agency.profile?.gas
           let power =  this.agency.profile?.power
           let water =  this.agency.profile?.water

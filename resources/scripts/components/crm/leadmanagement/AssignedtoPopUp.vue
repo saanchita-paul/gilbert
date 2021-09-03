@@ -1,5 +1,5 @@
 <template>
-            
+
                  <v-card class="hood-card">
                         <h2 v-if="user.proerty_manager_name" class="page-title my-5 primary--text">
                             {{lead.first_name}} {{lead.last_name}} has been {{ assignedText }} to {{user.proerty_manager_name}}.
@@ -9,9 +9,9 @@
                         </h2>
                         <p>It will now show on the his/her “My Leads”</p>
                         <v-btn color="primary" class="mx-auto" @click="cancelModal">Done</v-btn>
-                   
+
                  </v-card>
-            
+
 </template>
 
 <script>
@@ -25,7 +25,6 @@ export default {
         }
     },
     mounted() {
-      console.log(this.user);
     }
 };
 </script>

@@ -5,7 +5,6 @@ import SentimentSummary from "@scripts/models/SentimentSummary";
 
 export default {
     toClientList(data) {
-        console.log('gf', data);
         const customerSummary = new CustomerSummary();
         const conversationSummary = new ConversationSummary();
         const infoChart = new InfoChart();

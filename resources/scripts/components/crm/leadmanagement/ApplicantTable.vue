@@ -157,7 +157,6 @@ export default {
             this.assignedText = assignedText;
             await LeadApplicationService.assignUser(lead.id, user.id)
                 .then(res =>  {
-                    console.log('Assigned Successfully');
                     // this.loadLeadList();
                     this.$emit('updateLeadAndatrics',lead.id,user.id);
                     this.reassignFlag = true;

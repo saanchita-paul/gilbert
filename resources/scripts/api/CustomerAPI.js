@@ -19,7 +19,6 @@ export default {
     getAllCustomerData: async () => {
         try {
             const data = await axios.get(`${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api/customers/all`);
-            console.log("RECEIVED ALL CUSTOMER DATA ", data);
             return data.data.data;
         } catch (error) {
             return error.data;
@@ -33,7 +32,6 @@ export default {
     getCustomerProfileData: async (customerId) => {
         try {
             const data = await axios.get(`${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api/customers/${customerId}`);
-            console.log(`RECEIVED CUSTOMER ${customerId} DATA `, data);
             return CustomerMapper.toClientDetail(data.data.data);
         } catch (error) {
             return error.data;

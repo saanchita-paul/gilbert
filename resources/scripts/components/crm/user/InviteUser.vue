@@ -1,7 +1,8 @@
 <template>
     <v-app>
-        <v-container fluid class="loginpage invitation">
-               <div class="login-section">
+        <div fluid class="loginpage invitation">
+            <v-container>
+                <div class="login-section">
                    <v-card v-if="isLoaded == 1" class="pa-4 hood-card">
                         <ValidationObserver ref="create_agency">
                             <div class="login-header">
@@ -41,7 +42,8 @@
                         <v-btn @click="goToLogin" color="primary">ok</v-btn>
                       </v-card>
                </div>
-        </v-container>
+            </v-container>
+        </div>
       </v-app>
 </template>
 

@@ -3,6 +3,7 @@ import {ValidationProvider, extend, ValidationObserver} from 'vee-validate';
 import * as rules from 'vee-validate/dist/rules';
 import {email, max, required} from "vee-validate/dist/rules";
 import AuthService from "@scripts/services/AuthService";
+import EAPlanService from "@scripts/services/ea/EAPlanService";
 
 Object.keys(rules).forEach(rule => {
     extend(rule, rules[rule]);
@@ -59,6 +60,14 @@ extend('unique-user-email', {
                     resolve({ valid })
                 })
         })
+    }
+});
+
+extend('not-holiday', {
+    message: field => `Date must not be a holiday`,
+    params: ['target'],
+    validate: async (value, {target}) =>  {
+        return !(await EAPlanService.checkIfDateIsHoliday({state: target, date: value}))
     }
 });
 

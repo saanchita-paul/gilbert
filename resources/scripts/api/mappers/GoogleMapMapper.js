@@ -2,7 +2,6 @@ export default {
     mapGeocoderResultToAddress(data) {
         const { formatted_address = '' } = data || {};
         const addressValue = getAddressComponent(data.address_components);
-        console.log("data", addressValue)
 
         let street = '';
         if (addressValue.street_number) {
@@ -28,6 +27,7 @@ export default {
         }
 
         return {
+            street_name: addressValue.route,
             street_number: addressValue.street_number,
             street,
             city,

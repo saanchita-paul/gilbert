@@ -13,6 +13,7 @@ export default class ApplicationSummary {
     tenancy_type = null;
     address_unit = null;
     street_address = null;
+    street_name = null;
     city = null;
     state = null;
     country = 'Australia';
@@ -48,6 +49,7 @@ export default class ApplicationSummary {
             state = null,
             unit_number = null,
             street_number = null,
+            street_name = null,
             country = 'Australia',
             postcode = null,
             address_text = null,
@@ -94,7 +96,8 @@ export default class ApplicationSummary {
         this.property_type = property_type;
         this.status = this.mapStatus(status);
         this.street_number = street_number;
-        this.unit_number = unit_number
+        this.unit_number = unit_number;
+        this.street_name = street_name;
 
     }
 

@@ -100,45 +100,11 @@
 
                     </v-col>
 
-                    <v-col cols="12" class="py-0">
+                    <v-col cols="12" class="">
                         <p class="sub-title mb-0">Moving Details <small class="font-weight-thin">Information about your lead’s move.</small></p>
                     </v-col>
-                    <v-col cols="12" class="pb-0">
-                        <v-row>
-                            <v-col cols="6" class="py-0">
-                                <v-menu
-                                    v-model="showMovingDate"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    transition="scale-transition"
-                                    offset-y
-                                    min-width="290px"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
 
-                                        <ValidationProvider name="Moving Date" rules="required"  v-slot="{ errors }">
-                                            <v-text-field
-                                                label="Connection Date*"
-                                                placeholder="DD/MM/YYYY"
-                                                outlined
-                                                dense
-                                                append-icon="mdi-calendar"
-                                                v-model="application.moving_date"
-                                                readonly
-                                                v-bind="attrs"
-                                                v-on="on"
-                                                :error-messages=" errors[0]"
-                                            ></v-text-field>
-                                        </ValidationProvider>
-                                    </template>
-                                    <v-date-picker v-model="application.moving_date" :min="minDate"
-                                                   @input="showMovingDate = false"></v-date-picker>
-                                </v-menu>
-                            </v-col>
-                        </v-row>
-                    </v-col>
-
-                    <v-col cols="12" class="pb-0">
+                    <v-col cols="12" class="pb-0 mt-2">
                                 <v-menu offset-y v-model="showMenu">
                                     <template v-slot:activator="{ on }">
                                         <v-text-field
@@ -192,7 +158,7 @@
 
                     </v-col>
 
-                    <v-col cols="6" class="pt-0">
+                    <v-col cols="6" class="pt-0 pb-0">
 
                         <ValidationProvider name="State/Territory" rules="required"  v-slot="{ errors }">
                             <v-select outlined dense
@@ -206,7 +172,7 @@
                     </v-col>
 
 
-                    <v-col cols="6" class="pt-0">
+                    <v-col cols="6" class="pt-0 pb-0">
 
                         <ValidationProvider name="Postcode" rules="required"  v-slot="{ errors }">
                             <v-text-field
@@ -219,6 +185,43 @@
                             ></v-text-field>
                         </ValidationProvider>
                     </v-col>
+
+
+                    <v-col v-if="application.state" cols="12" class="pb-0">
+                        <v-row>
+                            <v-col cols="6" class="py-0">
+                                <v-menu
+                                    v-model="showMovingDate"
+                                    :close-on-content-click="false"
+                                    :nudge-right="40"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+
+                                        <ValidationProvider name="Moving Date" rules="required|not-holiday:@State/Territory"  v-slot="{ errors }">
+                                            <v-text-field
+                                                label="Connection Date*"
+                                                placeholder="DD/MM/YYYY"
+                                                outlined
+                                                dense
+                                                append-icon="mdi-calendar"
+                                                v-model="application.moving_date"
+                                                readonly
+                                                v-bind="attrs"
+                                                v-on="on"
+                                                :error-messages=" errors[0]"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </template>
+                                    <v-date-picker v-model="application.moving_date" :min="minDate"
+                                                   @input="showMovingDate = false"></v-date-picker>
+                                </v-menu>
+                            </v-col>
+                        </v-row>
+                    </v-col>
+
 
                     <v-col cols="12" class="pb-0">
                         <p class="sub-title mb-0">Service Interests</p>
@@ -287,6 +290,7 @@ import AgentConfirmApplicationModal from "@scripts/components/crm/modals/agent/A
 import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
 import debounce from 'lodash-es/debounce';
 import GoogleMapService from "@scripts/services/GoogleMapService";
+import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 
 export default {
     name: "AgentCreateNewApplication",
@@ -320,7 +324,7 @@ export default {
             },
             showMenu: false,
             searchResult: [],
-            minDate: null,
+            minDate: LeadApplicationService.getMinConnectionDate(),
             range: null,
             disabledDates: [
               { start: new Date(2021, 0, 2), end: new Date(2021, 9, 19) },
@@ -340,15 +344,6 @@ export default {
 
     },
     methods: {
-
-      setMinDate()
-      {
-        let result = new Date();
-        result.setDate(result.getDate() + 3);
-
-
-        this.minDate = result.toISOString().slice(0,10);
-      },
         onAddressSelected(place) {
             GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
                 .then((data) => {
@@ -360,6 +355,7 @@ export default {
                     this.application.state = data.state;
                     this.application.street_number = data.street_number;
                     this.application.unit_number = data.unit_number;
+                    this.application.street_name = data.street_name;
                     // this.mapToModel(data)
                 });
         },
@@ -380,7 +376,6 @@ export default {
             this.confirmApplicationModal = false;
             AgentApplicationService.createApplication(this.application)
                 .then(res =>  {
-                    console.log('Application Saved Successfully');
                     this.$router.push({name: 'agent.application.dashboard'});
                 })
         },
@@ -396,9 +391,6 @@ export default {
             }
         }
     },
-  mounted() {
-      this.setMinDate();
-  }
 };
 </script>
 
