@@ -9,7 +9,7 @@
                         <p class="sub-title mb-0">Contact Details  <small class="font-weight-thin">Personal details or your applicant.</small>  <small class="font-weight-thin float-right">All fields are mandatory*</small></p>
                     </v-col>
 
-                    <v-col cols="6">
+                    <v-col cols="6" class="pb-0">
                         <ValidationProvider name="Firstname" rules="required"  v-slot="{ errors }">
                             <v-text-field
                                 label="Firstname*"
@@ -21,7 +21,7 @@
                             ></v-text-field>
                         </ValidationProvider>
                     </v-col>
-                    <v-col cols="6">
+                    <v-col cols="6" class="pb-0">
                     <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
                         <v-text-field
                             label="Lastname*"
@@ -33,19 +33,19 @@
                         ></v-text-field>
                     </ValidationProvider>
                     </v-col>
-                        <v-col cols="6">
-                        <ValidationProvider name="Email" rules="required|email"  v-slot="{ errors }">
-                            <v-text-field
-                                label="Email*"
-                                outlined
-                                dense
-                                placeholder="example@domain.com"
-                                v-model="application.email"
-                                :error-messages=" errors[0]"
-                            ></v-text-field>
-                        </ValidationProvider>
-                        </v-col>
-                    <v-col cols="6">
+                    <v-col cols="6" class="py-0">
+                    <ValidationProvider name="Email" rules="required|email"  v-slot="{ errors }">
+                        <v-text-field
+                            label="Email*"
+                            outlined
+                            dense
+                            placeholder="example@domain.com"
+                            v-model="application.email"
+                            :error-messages=" errors[0]"
+                        ></v-text-field>
+                    </ValidationProvider>
+                    </v-col>
+                    <v-col cols="6" class="py-0">
                     <ValidationProvider name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
                         <v-text-field
                             label="Mobile number*"
@@ -58,7 +58,7 @@
                         ></v-text-field>
                     </ValidationProvider>
                     </v-col>
-                            <v-col cols="6">
+                    <v-col cols="6" class="py-0">
                         <ValidationProvider name="Tenancy Types" rules="required"  v-slot="{ errors }">
                             <v-select outlined dense
                                       v-model="application.tenancy_type"
@@ -70,7 +70,7 @@
                         </ValidationProvider>
                     </v-col>
 
-                    <v-col cols="6">
+                    <v-col cols="6" class="py-0">
                             <v-menu
                                 v-model="showDOB"
                                 :close-on-content-click="false"
@@ -100,7 +100,7 @@
 
                     </v-col>
 
-                    <v-col cols="12" class="">
+                    <v-col cols="12" class="pb-0">
                         <p class="sub-title mb-0">Moving Details <small class="font-weight-thin">Information about your lead’s move.</small></p>
                     </v-col>
 
@@ -130,7 +130,7 @@
                                 </v-menu>
                     </v-col>
 
-                    <v-col cols="6" class="pt-0">
+                    <v-col cols="6" class="py-0">
                         <ValidationProvider name="Address" rules="required"  v-slot="{ errors }">
                             <v-text-field
                                 label="Address*"
@@ -144,7 +144,7 @@
 
                     </v-col>
 
-                    <v-col cols="6" class="pt-0">
+                    <v-col cols="6" class="py-0">
                         <ValidationProvider name="City/Suburb" rules="required"  v-slot="{ errors }">
                             <v-text-field
                                 label="City/Suburb*"
@@ -158,7 +158,7 @@
 
                     </v-col>
 
-                    <v-col cols="6" class="pt-0 pb-0">
+                    <v-col cols="6" class="py-0">
 
                         <ValidationProvider name="State/Territory" rules="required"  v-slot="{ errors }">
                             <v-select outlined dense
@@ -172,7 +172,7 @@
                     </v-col>
 
 
-                    <v-col cols="6" class="pt-0 pb-0">
+                    <v-col cols="6" class="py-0">
 
                         <ValidationProvider name="Postcode" rules="required"  v-slot="{ errors }">
                             <v-text-field
@@ -255,7 +255,7 @@
                         </div>
                     </v-col>
 
-                    <v-col cols="12">
+                    <v-col cols="12" class="pb-0">
                         <p class="sub-title  mt-5">Additional Instructions</p>
                         <v-textarea
                             outlined

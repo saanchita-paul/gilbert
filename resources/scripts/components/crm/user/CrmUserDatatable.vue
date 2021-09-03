@@ -96,7 +96,7 @@
                         value: 'proerty_manager_name'
                     },
                     {
-                        text: 'Submitted Lead',
+                        text: 'Applications',
                         align: 'start',
                         sortable: true,
                         value: 'submitted_lead'
