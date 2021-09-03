@@ -7,12 +7,13 @@
         <!--        </v-card>-->
 
         <div v-if="isLoaded">
-            <v-btn v-if="agency.type == 0"  class="back-button" @click="backToAgency"><v-icon>mdi-arrow-left</v-icon> Back to Agencies</v-btn>
+            <v-btn v-if="agency.type === 0"  class="back-button" @click="backToAgency"><v-icon>mdi-arrow-left</v-icon> Back to Agencies</v-btn>
             <v-btn  v-else @click="backToOffice" class="back-button"><v-icon>mdi-arrow-left</v-icon> Back to {{agency.name}} Offices</v-btn>
             <v-card class="hood-card  mt-4">
                 <v-row>
                     <v-col cols="8">
-                        <span>{{office.name}} Office</span>
+                        <span v-if="agency.type === 0">{{`${agency.name}, ${office.name}`}}</span>
+                        <span v-else>{{office.name}} Office</span>
                     </v-col>
                     <v-col cols="4" class="text-right">
                         <v-btn outlined @click="viewOfficeProfile">View Office Profile</v-btn>
@@ -222,7 +223,7 @@
                 let agencyId = this.$route.params?.id;
                 let officeId = this.$route.params?.officeId;
                 this.agency = await AgencyService.loadAgencyById(agencyId);
-                const officeData  = await OfficeService.loadOfficeById(agencyId);
+                const officeData  = await OfficeService.loadOfficeById(officeId);
                 this.office = officeData.office;
                 this.agency = officeData.office.agency;
                 this.isLoaded = true;
