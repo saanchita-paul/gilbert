@@ -16,7 +16,8 @@ class HubspotContactService
             ->where('id', $id)
             ->first();
 
-        $response = Http::post('https://api.hubapi.com/contacts/v1/contact?hapikey=721bd41e-2f81-4279-9ebc-ccf1822f740d', array(
+        $url = config('hub_spot.create_contact').config('hub_spot.api_key');
+        $response = Http::post($url, array(
             "properties" => array(
                 array(
                     "property" => "hood_id",
