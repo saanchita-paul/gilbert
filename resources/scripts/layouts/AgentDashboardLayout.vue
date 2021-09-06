@@ -22,14 +22,17 @@
 
             <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-img v-bind="attrs"
+                    <v-avatar size="50" class="mr-3">
+                           <v-img v-bind="attrs"
                     v-on="on"
                         class="mx-2"
-                        src="/assets/images/logo/hood_logo_while.png"
+                        src="https://cdn.vuetifyjs.com/images/john.jpg"
                         max-height="40"
                         max-width="40"
                         contain
                     ></v-img>
+                    </v-avatar>
+                    
                 </template>
                 <ProfileDropdown @onLogout="onLogout" @editProfile="editProfile"></ProfileDropdown>
             </v-menu>

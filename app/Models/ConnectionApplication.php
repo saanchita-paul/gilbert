@@ -132,6 +132,7 @@ class ConnectionApplication extends Model
         'ea_sales_id',
         'unit_number',
         'street_number',
+        'hubspot_contact_id',
     ];
 
 

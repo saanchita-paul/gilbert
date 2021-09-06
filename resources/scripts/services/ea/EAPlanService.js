@@ -23,5 +23,7 @@ export default {
             postcode,
             plan
         )
-    }
+    },
+
+    checkIfDateIsHoliday: query => EnergyApi.checkIfDateIsHoliday(query)
 }

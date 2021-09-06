@@ -5,26 +5,21 @@ namespace App\Http\Controllers\Agency;
 use App\Events\Agency\SubmitApplicationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Agency\ApplicationRequest;
-use App\Http\Resources\Agency\AgencyResource;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
-use App\Http\Resources\Agency\ApplicationNoteResourse;
 use App\Http\Resources\Agency\ApplicationResource;
-use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
-use App\Models\Identification;
 use App\Models\User;
-use App\Services\Agency\ApplicationNoteService;
 use App\Services\Agency\ApplicationService;
 use App\Services\Agency\ApplicationsMetricsService;
 use App\Services\Agency\HubspotContactService;
 use App\Services\Agency\SearchConnectionApplication;
+use App\Services\FastConnectService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Config;
 
 class ApplicationController extends Controller
 {
@@ -142,11 +137,12 @@ class ApplicationController extends Controller
     public function updateAddress(Request $request, int $applicationId)
     {
         try {
+            $inputData = $request->get('address');
+            $svcUtilities = new FastConnectService();
+            $result = $svcUtilities->authenticate()->searchAddress($inputData);
             $service = new ApplicationService();
-            $inputData = $request->address;
-            $service->updateAddress($inputData, $applicationId);
-            return ApplicationResource::make($service->updateAddress($inputData, $applicationId));
 
+            return ApplicationResource::make($service->updateAddress(array_merge($inputData, $result), $applicationId));
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
@@ -170,7 +166,6 @@ class ApplicationController extends Controller
 
         $hubspotContactService = new HubspotContactService();
         $response = $hubspotContactService->submitContact($id);
-
         return ApplicationResource::make($res);
     } catch (\Exception $exception) {
         return $this->sendErrorResponse($exception);
@@ -210,7 +205,7 @@ class ApplicationController extends Controller
             $user = auth()->user();
             $service = new ConnectionService();
             $inputData = $request->toArray();
-            $data= $service->allApplicationMetricsCount($inputData, $user->profile->office_id);
+            $data= $service->allApplicationMetricsCount($inputData, $user);
 
             return ApplicationMetricsResource::make($data);
 

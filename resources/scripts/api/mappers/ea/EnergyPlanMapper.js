@@ -129,7 +129,6 @@ export const mapAllPlan = plans => {
             title: plan
         }
     })
-    console.log('plans', res);
     return res
 }
 

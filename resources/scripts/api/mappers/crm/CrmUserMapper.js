@@ -30,7 +30,6 @@ export default {
     },
 
     mapuserToServer: (user, officeId) => {
-        console.log(user, "Uyo")
         return  {
             office_id :officeId,
             ...user,

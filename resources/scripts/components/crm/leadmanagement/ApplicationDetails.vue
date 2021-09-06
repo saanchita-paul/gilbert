@@ -63,7 +63,7 @@
           <p class="sub-title mb-1">Agent’s Additional Instructions</p>
           <v-textarea v-model="lead.additional_instruction"
             outlined
-            placeholder="Additional Instructions goes here."
+            placeholder="Additional Instructions goes here"
           ></v-textarea>
         </div>
 

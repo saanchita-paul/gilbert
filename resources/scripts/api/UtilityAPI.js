@@ -10,7 +10,6 @@ import LeadToConnectionMapper from "@scripts/api/mappers/LeadToConnectionMapper"
 export default {
     getUtilityDashboardData: async () => {
         const data = (await axios.get(`${BOT_API}/utility/home`)).data;
-        console.log('DashboardUtilityData', data);
         return {
             lead_overview : LeadOverviewMapper.mapLeadOverview(data.leadOverview),
             connection_summary: ConnectionSummary.getSummaryData(data),

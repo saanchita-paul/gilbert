@@ -35,8 +35,8 @@ class Agency extends Model
 {
     use HasFactory;
 
-    const TYPE_INDEPENDENT = 1;
-    const TYPE_FRANCHISED = 2;
+    const TYPE_INDEPENDENT = 0;
+    const TYPE_FRANCHISED = 1;
 
     /**
      * The attributes that are mass assignable.

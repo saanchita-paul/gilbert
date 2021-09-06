@@ -86,7 +86,6 @@
                 }
             },
             saveAddress(address) {
-                console.log('Save address with ', address);
                 this.$emit('saveAddress', address);
             }
         }

@@ -27,7 +27,7 @@
 }
 .applications-badge {
     margin: 5px;
-    padding: 10px;
+    padding: 12px 8px;
     border: 2px solid #E0E0E0;
     border-radius: 16px;
     flex-basis: 20%;
@@ -87,7 +87,7 @@
 .service-box-area {
     display: flex;
     width: 100%;
-   
+
     .service-box {
         padding: 10px 20px;
         background-color: #E0E0E0;
@@ -172,4 +172,8 @@
     span {
         font-size: 0.67em !important;
     }
+}
+
+.selectedRow {
+    background-color: lightgray !important;
 }

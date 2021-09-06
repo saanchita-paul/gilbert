@@ -35,7 +35,6 @@ export default {
         };
     },
     mapApplicationSummary(data) {
-        // console.log(data);
         // let model = Object.assign(new ApplicationSummary(), { ...data });
         let model = new ApplicationSummary({...data});
         return model;

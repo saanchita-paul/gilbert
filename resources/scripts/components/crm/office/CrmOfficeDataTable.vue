@@ -6,7 +6,7 @@
                 <h2>{{agency.title}} Offices</h2>
                 <v-btn outlined @click="editAgencyName">Edit Agency Name</v-btn>
             </div>
-            <LeadMetrics></LeadMetrics>
+            <LeadMetrics :agency_id="id"></LeadMetrics>
         </v-card>
 
         <div>
@@ -89,7 +89,7 @@ name: "CrmOfficeDataTable",
                     value: 'title'
                 },
                 {
-                    text: 'Total leads',
+                    text: 'Applications',
                     align: 'start',
                     sortable: true,
                     value: 'total_leads'

@@ -164,7 +164,7 @@
                             min-width="290px"
                         >
                             <template v-slot:activator="{ on, attrs }">
-                                <ValidationProvider name="Date Of Birth" rules="required"  v-slot="{ errors }">
+                                <ValidationProvider name="Connection Date" rules="required|not-holiday:@h_state"  v-slot="{ errors }">
                                     <v-text-field
                                         placeholder="DD/MM/YYYY"
                                         outlined
@@ -180,12 +180,16 @@
                                     ></v-text-field>
                                 </ValidationProvider>
                             </template>
-                            <v-date-picker v-model="property_details.moving_date" @input="connection_date = false"></v-date-picker>
+                            <v-date-picker v-model="property_details.moving_date" :min="minConnectionDate" @input="connection_date = false"></v-date-picker>
                         </v-menu>
 
                     </ValidationProvider>
                 </div>
             </div>
+
+            <ValidationProvider name="h_state" >
+                <v-text-field v-model="property_details.state" v-show="false"/>
+            </ValidationProvider>
             <div class="crm-text-field">
                 <div class="field-label">
                     <span>Service Address</span>
@@ -441,6 +445,7 @@
 
 <script>
 import ServiceAddress from "@scripts/components/crm/ServiceAddress";
+import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 
 export default {
   name: "InfoField",
@@ -457,6 +462,7 @@ export default {
             titlesDD:[
                 'Mrs','Mr','Ms'
             ],
+            minConnectionDate: LeadApplicationService.getMinConnectionDate(),
             emailBillingDD: [ {
                 text: 'Yes',
                 value: 1
@@ -573,6 +579,7 @@ export default {
                 country: '',
                 unit_number: '',
                 street_number: '',
+                street_name: '',
                 is_billing_same: true,
 
             },
@@ -642,6 +649,7 @@ export default {
             this.property_details.street_address = this.lead.street_address;
             this.property_details.city = this.lead.city;
             this.property_details.street_number = this.lead.street_number;
+            this.property_details.street_name = this.lead.street_name;
             this.property_details.unit_number = this.lead.unit_number;
             this.property_details.postcode = this.lead.postcode;
             this.property_details.state = this.lead.state;

@@ -136,7 +136,7 @@ export default {
 
 
     mapOfficeCommissionAgent: (data)=> {
-        console.log(data)
+        console.log("yobo", data)
         let office = mapOfficeDetails(data);
         office.agency_name = office.agency.name;
         office.agency_type = office.agency.type;

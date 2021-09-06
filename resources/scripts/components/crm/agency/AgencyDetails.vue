@@ -47,11 +47,9 @@ export default {
     },
     methods: {
         cancel() {
-            console.log('agen',this.agency);
             this.$emit('cancelDialog');
         },
         saveAgency() {
-            console.log('agen',this.agency);
             this.$emit('saveAgency',this.agency);
 
         }

@@ -2,7 +2,7 @@
     <v-container fluid>
         <v-card class="hood-card">
             <h2>All Application Metrics</h2>
-            <LeadMetrics></LeadMetrics>
+            <LeadMetrics ></LeadMetrics>
         </v-card>
         <div>
             <v-row class="mt-5">
@@ -96,7 +96,7 @@ name: "CrmAgencyDataTable",
                 value: 'title'
                 },
                 {
-                    text: 'Total leads',
+                    text: 'Applications',
                     align: 'start',
                     sortable: true,
                     value: 'total_leads'

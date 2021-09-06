@@ -20,7 +20,7 @@ export default {
      * @param country
      * @returns {Object[] || Promise<unknown>}
      */
-    getStreetAddressesByKeyword(keyWord, country = '') {
+    getStreetAddressesByKeyword(keyWord, country = 'au') {
         // keyWord = country === '*' ? keyWord : `${keyWord} ${country}`;
         return new Promise((resolve, reject) => {
             try {

@@ -194,13 +194,17 @@ const serviceProvider = [
 
 export default {
 
-   async getMetrics() {
+   async getMetrics(arg) {
         try {
-             const leads = await axios.get('/api/applications-metrics-count');
+            let agency_id = '';
+            if(arg.agency_id) {
+                agency_id = arg.agency_id;
+            }
+             const leads = await axios.get('/api/applications-metrics-count?agency_id='+agency_id);
             return AppMetricsMapper.mapAppMetricList(data, leads.data.data);
 
         } catch (error) {
-            return error.data;
+            return error.data;N
         }
     },
 
@@ -231,7 +235,6 @@ export default {
             return response;
 
         } catch (error) {
-            console.log('response2', error);
             return error.data;
         }
     },

@@ -13,7 +13,9 @@
                     :totalItem="totalItem"
                     :currentLead="leadDetails"
                     @refreshDataTable="refreshDataTable"
-                    @openLeadSummary="openLeadSummary">
+                    @openLeadSummary="openLeadSummary"
+                    @updateLeadAndatrics="updateLeadAndatrics"
+                >
                 </ApplicantTable>
             </v-col>
             <v-col cols="4">
@@ -61,7 +63,7 @@ export default {
 
     methods: {
         async loadMetricTypes() {
-            this.leadTypesFlag = false;
+          this.leadTypesFlag = false;
             this.leadTypes = await LeadApplicationService.loadUserLeadMetrics();
             if(this.$route.query?.type) {
                 this.activeLeadType = this.$route.query?.type
@@ -99,6 +101,10 @@ export default {
             this.sort_search_meta = meta;
             this.loadLeads();
             // this.loadMetricTypes();
+        },
+      updateLeadAndatrics(leadId,userId) {
+        this.leads.find(ld=>ld.id==leadId).assigned_to = userId;
+        this.loadMetricTypes();
         }
     },
 

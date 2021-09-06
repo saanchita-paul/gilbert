@@ -116,6 +116,8 @@ const hasUserRoles = allowedRoles => {
     return hasRoles;
 }
 
+const isUniqueEmail = email =>  AuthAPI.checkUniqueEmail(email)
+
 export default {
     getAuthUser,
     login,
@@ -127,7 +129,8 @@ export default {
     hasUserRoles,
     hasUserPermissions,
     getBreadcrumbs,
-    setBreadcrumbs
+    setBreadcrumbs,
+    isUniqueEmail
 }
 
 
