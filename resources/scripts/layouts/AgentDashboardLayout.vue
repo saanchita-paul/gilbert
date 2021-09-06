@@ -33,7 +33,7 @@
                     ></v-img>
                     </v-avatar>
                   <v-avatar v-if="!profileImageFlag" size="40" class="mr-3" color="white">
-                    <span class="black--text">{{profile_display_name}}</span>
+                    <span  v-bind="attrs" v-on="on" class="black--text">{{profile_display_name}}</span>
                   </v-avatar>
 
                 </template>
