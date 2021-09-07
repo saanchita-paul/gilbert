@@ -3,6 +3,7 @@ import AppMetricsMapper from "@scripts/api/mappers/crm/AppMetricsMapper";
 import AppLeadMapper from "@scripts/api/mappers/crm/AppLeadMapper";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
+import DayJs from "dayjs";
 
 const data = [
     {
@@ -290,6 +291,9 @@ export default {
 
    async saveLead(lead, leadId) {
         try {
+            console.log(lead);
+            lead.moving_date = (new DayJs(lead.moving_date)).format('YYYY-MM-DD');
+            console.log(lead.moving_date);
             const data = await axios.post('/api/applications/'+leadId+'/submit',{lead});
             return data;
 
