@@ -44,7 +44,9 @@ class ApplicationNote extends Model
         'connection_application_id',
         'created_by',
         'text',
-        'title'
+        'title',
+        'type',
+        'user_role'
     ];
 
     /**

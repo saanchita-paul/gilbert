@@ -23,6 +23,10 @@
                 <td class="font-weight-bold">Email billing</td>
                 <td>{{ lead.is_email_billing == 1?'Email':'Paper' }}</td>
             </tr>
+            <tr>
+                <td class="font-weight-bold">Status:</td>
+                <td>{{ lead.status }}</td>
+            </tr>
         </table>
 
         <v-btn block class="my-4" color="primary" @click="goToLeadDetails(lead.id)">View Application Details</v-btn>
@@ -37,10 +41,7 @@
                 <td class="font-weight-bold">Service Address:</td>
                 <td>{{lead.address_text}}</td>
             </tr>
-            <tr>
-                <td class="font-weight-bold">Status:</td>
-                <td>{{ lead.status }}</td>
-            </tr>
+
         </table>
 
         <v-divider class="mt-4 mb-2"></v-divider>

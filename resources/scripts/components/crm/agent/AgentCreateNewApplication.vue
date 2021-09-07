@@ -237,7 +237,7 @@
                     <v-col cols="3">
                         <div class="leade-badge text-center" :class="service_types.gas ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('gas')">
                             <h4 :class="service_types.gas ? 'enabled' : 'disabled'">Gas</h4>
-                            <v-icon :disabled="!service_types.gas" color="red">mdi-fire</v-icon>
+                            <v-icon :disabled="!service_types.gas" color="orange">mdi-fire</v-icon>
                         </div>
                     </v-col>
 
@@ -251,7 +251,7 @@
                     <v-col cols="3">
                         <div class="leade-badge text-center" :class="service_types.internet ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('internet')">
                             <h4 :class="service_types.internet ? 'enabled' : 'disabled'">Internet</h4>
-                            <v-icon :disabled="!service_types.internet" color="green">mdi-wifi</v-icon>
+                            <v-icon :disabled="!service_types.internet" color="#9C27B0">mdi-wifi</v-icon>
                         </div>
                     </v-col>
 
@@ -267,9 +267,9 @@
 
 
                     <v-col cols="12">
-                        <div class="d-flex justify-end">
-                            <v-btn @click="onCancel" class="mx-4">Cancel</v-btn>
+                        <div class="d-flex  flex-row-reverse">
                             <v-btn @click="onSubmit" color="primary">Submit</v-btn>
+                            <v-btn @click="onCancel" class="mx-4">Cancel</v-btn>
                         </div>
                     </v-col>
                 </v-row>
@@ -404,6 +404,7 @@ export default {
     .div_enabled {
         border-color: black;
         cursor: pointer;
+        background: #5C229A ;
     }
     .div_disabled {
         border-color: gray;

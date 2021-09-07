@@ -1,7 +1,7 @@
 <template>
     <v-row v-if="appMetrics">
       <v-col cols="4" class="pb-0">
-        <p class="mb-0">Leads Data</p>
+        <p class="mb-0">Applications Data</p>
       </v-col>
       <v-col cols="8" class="pb-0">
         <p class="mb-0 pl-2">Successful Connections</p>

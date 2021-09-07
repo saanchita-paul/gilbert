@@ -47,9 +47,11 @@ export default {
     },
 
     mapNotes(data) {
-
+        console.log(data);
         return data.map(dt=> {
-            return Object.assign(new Note(), { ...dt });
+              return  new Note({...dt});
+
+
         });
     },
     mapNote(data) {
