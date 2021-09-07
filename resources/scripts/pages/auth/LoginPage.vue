@@ -5,7 +5,6 @@
                 <div class="login-section">
 
                     <v-card class="hood-card py-5">
-                        <v-container>
                             <div class="login-header">
                                 <v-img  src="/assets/images/logo.png"/>
                                 <p class="dialogs-title">Welcome!</p>
@@ -89,9 +88,6 @@
                                     </v-btn>
                                 </div>
                             </div>
-                        </v-container>
-
-
                     </v-card>
                 </div>
             </v-container>
