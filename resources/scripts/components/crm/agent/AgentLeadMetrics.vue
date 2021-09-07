@@ -25,8 +25,8 @@
               </div>
               <p class="leade-text">Non Connected</p>
           </div>
-
-          <div class="agent-leade ml-5">
+          <div class="leade-border"></div>
+          <div class="agent-leade">
             <h3>Power</h3>
             <div class="leade-icon">
                 <v-icon :color="appMetrics.power>0?'yellow':'grey lighten-1'">mdi-flash</v-icon>
