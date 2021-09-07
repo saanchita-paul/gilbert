@@ -1,7 +1,7 @@
 <template>
     <v-row>
         <v-col cols="4">
-            <p class="sub-title title-align">Personal Details</p>
+            <p class="sub-title title-align pl-6 property_width">Personal Details</p>
             <div class="crm-text-field">
                 <div class="field-label">
                     <span>Title</span>
@@ -417,19 +417,31 @@
                     <span>Card Colour</span>
                 </div>
                 <div class="text-field">
-                    <ValidationProvider name="DOB" rules="required"  v-slot="{ errors }">
+                    <ValidationProvider name="Card Color" rules="required"  v-slot="{ errors }">
                     <v-select v-model="indentification.card_color"  item-text="text" item-value="value" @input="updateLeads" :items="colorDD" outlined dense hide-details="auto" >
                     </v-select>
                     </ValidationProvider>
                 </div>
             </div>
-            <p class="sub-title mt-5">Agent’s Additional Instructions<v-btn text right class="primary--text" @click="readMore">read more ...</v-btn></p>
-            <ValidationProvider name="DOB"   v-slot="{ errors }">
+
+            <v-row>
+                <v-col cols="8">
+                    <p class="sub-title mt-5">Agent’s Additional Instructions</p>
+                </v-col>
+                <v-col cols="4">
+                    <v-btn text right class="primary--text float-right mt-5" @click="readMore">read more ...</v-btn>
+                </v-col>
+            </v-row>
+<!--            <p class="sub-title mt-5">Agent’s Additional Instructions<v-btn text right class="primary&#45;&#45;text float-right" @click="readMore">read more ...</v-btn></p>-->
+            <ValidationProvider name="Additional Instructions"   v-slot="{ errors }">
                 <v-textarea
                     v-model="person_details.additional_instruction"
                     @input="updateLeads"
-                    outlined
                     hide-details="auto"
+                    auto-grow
+                    filled
+                    class="pa-2"
+                    background-color="#FAFAFA"
                     placeholder="Additional Instructions goes here."
                     disabled
                 ></v-textarea>
@@ -695,4 +707,7 @@ export default {
 </script>
 
 <style scoped>
+    .property_width{
+        width: 60% !important;
+    }
 </style>

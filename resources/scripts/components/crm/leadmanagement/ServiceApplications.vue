@@ -102,10 +102,10 @@ export default {
         selectPlanTitle() {
             const services = this.leadSummary.service_interests;
             if (services && services.includes('gas') && services.includes('power')) {
-                return 'Power & GAS';
+                return 'Power & Gas';
             }
             return services && services.includes('gas')
-                ? 'GAS'
+                ? 'Gas'
                 : (services && services.includes('power') ? 'Power' : '')
         }
     },

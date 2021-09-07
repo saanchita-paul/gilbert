@@ -12,8 +12,8 @@
             <v-card class="hood-card  mt-4">
                 <v-row>
                     <v-col cols="8">
-                        <span v-if="agency.type === 0">{{`${agency.name}, ${office.name}`}}</span>
-                        <span v-else>{{office.name}} Office</span>
+                        <span v-if="agency.type === 0" class="office-title">{{`${agency.name}, ${office.name}`}}</span>
+                        <span v-else class="office-title">{{office.name}} Office</span>
                     </v-col>
                     <v-col cols="4" class="text-right">
                         <v-btn outlined @click="viewOfficeProfile">View Office Profile</v-btn>
@@ -256,5 +256,10 @@
     }
     .back-button{
         background: #E0E0E0 !important;
+    }
+    .office-title{
+        font-size: 18px;
+    font-weight: 700;
+    font-family: 'Roboto';
     }
 </style>

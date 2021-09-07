@@ -22,8 +22,8 @@
 
             <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-avatar size="50" class="mr-3">
-                           <v-img v-bind="attrs"
+                    <v-avatar v-if="profileImageFlag" size="50" class="mr-3">
+                           <v-img  v-bind="attrs"
                     v-on="on"
                         class="mx-2"
                         src="https://cdn.vuetifyjs.com/images/john.jpg"
@@ -32,7 +32,10 @@
                         contain
                     ></v-img>
                     </v-avatar>
-                    
+                  <v-avatar v-if="!profileImageFlag" size="40" class="mr-3" color="white">
+                    <span  v-bind="attrs" v-on="on" class="black--text">{{profile_display_name}}</span>
+                  </v-avatar>
+
                 </template>
                 <ProfileDropdown @onLogout="onLogout" @editProfile="editProfile"></ProfileDropdown>
             </v-menu>
@@ -71,6 +74,7 @@ export default {
     data() {
         return {
             user: null,
+            profile_display_name: '',
             agency: null,
             drawer: null,
             editProfileFlag: false,
@@ -78,10 +82,14 @@ export default {
             routes: ApplicationService.getMainNavigationRoutes()
         }
     },
-    async mounted() {
-        this.user = AuthService.getAuthUser();
-        this.agency = await this.getAgency(this.user.profile.agency_id);
-        setInterval(AuthService.authUser, 300000)
+    computed:{
+        profileImageFlag()
+        {
+          const flag = Boolean(this.user?.profile?.profile_photo);
+          this.profile_display_name = this.user?.profile?.first_name.charAt(0) + this.user?.profile?.last_name.charAt(0)
+          return flag;
+        }
+
     },
      methods: {
          getHeader() {
@@ -112,6 +120,11 @@ export default {
          cancelSuccessfulModal() {
              this.userProfileUpdateFlag = false;
          }
+    },
+    async mounted() {
+      this.user = AuthService.getAuthUser();
+      this.agency = await this.getAgency(this.user.profile.agency_id);
+      setInterval(AuthService.authUser, 300000)
     },
 }
 </script>

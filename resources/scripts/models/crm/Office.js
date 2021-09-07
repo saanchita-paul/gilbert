@@ -6,7 +6,7 @@ export default class Office {
         this.id = id;
         this.title = name;
         this.total_leads = applications_count;
-        this.last_updated = updated_at? new DayJs(updated_at).format(DATE_FORMAT.REAL_ESTATE_FORMAT) : null;
+        this.last_updated = updated_at? new DayJs(updated_at).format(DATE_FORMAT.DEFAULT_DATETIME_SLASH) : null;
         this.user_count = agents_count;
         this.agency = agency
 
