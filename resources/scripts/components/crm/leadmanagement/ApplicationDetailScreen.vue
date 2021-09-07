@@ -33,7 +33,7 @@
 
        <v-row>
          <v-col cols="8" class="mb-8 pb-8">
-            <v-card class="pa-4">
+            <v-card class="hood-card">
               <ServiceApplications></ServiceApplications>
             </v-card>
          </v-col>
