@@ -428,8 +428,11 @@
                 <v-textarea
                     v-model="person_details.additional_instruction"
                     @input="updateLeads"
-                    outlined
                     hide-details="auto"
+                    auto-grow
+                    filled
+                    class="pa-2"
+                    background-color="#FAFAFA"
                     placeholder="Additional Instructions goes here."
                     disabled
                 ></v-textarea>
