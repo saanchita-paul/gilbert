@@ -69,7 +69,7 @@
                             min-width="290px"
                         >
                             <template v-slot:activator="{ on, attrs }">
-                                <ValidationProvider name="Bate Of Birth" rules="required"  v-slot="{ errors }">
+                                <ValidationProvider name="Bate Of Birth" rules="required|adult"  v-slot="{ errors }">
                                     <v-text-field
                                         placeholder="DD/MM/YYYY"
                                         outlined
