@@ -71,6 +71,20 @@
 .list-tile:hover {
     background: lightcyan;
 }
+.personal-details-row {
+    .col-4 {
+        border-right: 1px solid #eee;
+        padding: 0px 24px;
+
+        &:last-child{
+            border-right: none;
+        }
+    }
+
+    .crm-text-field {
+        margin-bottom: 18px;
+    }
+}
 .crm-text-field {
     display: flex;
     margin-bottom: 10px;;
@@ -146,8 +160,6 @@
     }
 }
 .title-align {
-    width: 40%;
-    text-align: right;
     padding-right: 15px;
 }
 .submission-section {
