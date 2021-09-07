@@ -228,28 +228,28 @@
                     </v-col>
 
                     <v-col cols="3">
-                        <div class="leade-badge text-center" :class="service_types.power ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('power')">
+                        <div class="leade-badge text-center service-radius" :class="service_types.power ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('power')">
                             <h4 :class="service_types.power ? 'enabled' : 'disabled'">Power</h4>
                             <v-icon :disabled="!service_types.power" color="yellow">mdi-flash</v-icon>
                         </div>
                     </v-col>
 
                     <v-col cols="3">
-                        <div class="leade-badge text-center" :class="service_types.gas ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('gas')">
+                        <div class="leade-badge text-center service-radius" :class="service_types.gas ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('gas')">
                             <h4 :class="service_types.gas ? 'enabled' : 'disabled'">Gas</h4>
                             <v-icon :disabled="!service_types.gas" color="orange">mdi-fire</v-icon>
                         </div>
                     </v-col>
 
                     <v-col cols="3">
-                        <div class="leade-badge text-center" :class="service_types.water ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('water')">
+                        <div class="leade-badge text-center service-radius" :class="service_types.water ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('water')">
                             <h4 :class="service_types.water ? 'enabled' : 'disabled'">Water</h4>
                             <v-icon :disabled="!service_types.water" color="blue">mdi-water</v-icon>
                         </div>
                     </v-col>
 
                     <v-col cols="3">
-                        <div class="leade-badge text-center" :class="service_types.internet ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('internet')">
+                        <div class="leade-badge text-center service-radius" :class="service_types.internet ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('internet')">
                             <h4 :class="service_types.internet ? 'enabled' : 'disabled'">Internet</h4>
                             <v-icon :disabled="!service_types.internet" color="#9C27B0">mdi-wifi</v-icon>
                         </div>
@@ -396,13 +396,23 @@ export default {
 
 <style scoped>
     .enabled {
-        color: black;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 400;
+      letter-spacing: 0.03em;
+      text-align: center;
+      color: #FFFFFF;
     }
     .disabled {
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 400;
+      letter-spacing: 0.03em;
+      text-align: center;
         color: gray;
     }
     .div_enabled {
-        border-color: black;
+        border-color: transparent;
         cursor: pointer;
         background: #5C229A ;
     }
@@ -410,4 +420,8 @@ export default {
         border-color: gray;
         cursor: pointer;
     }
+    .service-radius{
+      border-radius: 8px !important;
+    }
+
 </style>
