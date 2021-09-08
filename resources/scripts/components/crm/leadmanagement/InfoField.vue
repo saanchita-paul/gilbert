@@ -172,7 +172,7 @@
                             min-width="290px"
                         >
                             <template v-slot:activator="{ on, attrs }">
-                                <ValidationProvider name="Connection Date" rules="required|not-holiday:@h_state"  v-slot="{ errors }">
+                                <ValidationProvider name="Connection Date" rules="required"  v-slot="{ errors }">
                                     <v-text-field
                                         placeholder="DD/MM/YYYY"
                                         outlined

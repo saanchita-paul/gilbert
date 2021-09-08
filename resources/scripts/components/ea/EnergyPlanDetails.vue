@@ -128,32 +128,38 @@
                                     <p class="mt-3 mb-1">Usage rates
                                         <v-icon small> mdi mdi-alert-circle</v-icon>
                                     </p>
-                                    <div class="outlined pa-3">
+                                    <div
+                                        v-for="(value, key) in planDetails.rates.electricity.usage_rates"
+                                        :key="key"
+                                        class="outlined pa-3"
+                                    >
                                         <p class="font-weight-bold">
-                                            {{ planDetails.rates.electricity.usage_rates.peak_usage_per_day.title }}</p>
+                                            {{ value.title }}</p>
                                         <div v-if="plan === 'total_plan'">
                                             <p><small>Before discount</small></p>
                                             <p>
                                                 {{
-                                                    planDetails.rates.electricity.usage_rates.peak_usage_per_day.before_discount
+                                                    value.before_discount
                                                         | price_with_4_decimal
                                                 }}</p>
                                             <p><small>After discount</small></p>
                                             <p>
                                                 {{
-                                                    planDetails.rates.electricity.usage_rates.peak_usage_per_day.after_discount
+                                                    value.after_discount
                                                         | price_with_4_decimal
                                                 }}</p>
                                         </div>
                                         <div v-else>
+                                            <p>Flat rate</p>
                                             <p>
                                                 {{
-                                                    planDetails.rates.electricity.usage_rates.peak_usage_per_day.before_discount
+                                                    value.before_discount
                                                         | price_with_4_decimal
                                                 }}</p>
                                         </div>
 
                                     </div>
+
 
                                     <p class="mt-5 pt-5">
                                         All prices listed above included GST.

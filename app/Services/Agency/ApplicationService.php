@@ -122,6 +122,7 @@ class ApplicationService
     {
         $lead = $applications['lead'];
         $lead['status'] = ConnectionApplication::STATUS_SUBMITTED;
+        $lead['moving_date'] = "2021-09-08";
         $lead = array_merge($lead, ['plan_type' => ConnectionApplication::PLAN_TYPE_MAPPER[$lead['plan_type']]]);
         $existLead = ConnectionApplication::findOrFail($id);
         $existLead->update($lead);

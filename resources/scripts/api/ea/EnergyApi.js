@@ -4,6 +4,7 @@ import {mapEAPlanQuery} from "@scripts/api/mappers/ea/EAPlanQueryMapper";
 import {getStateKey} from "@scripts/data/constants/STATES";
 
 const ROOT = `${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api`;
+// const ROOT = `https://hb.leninsheikh.com/hood-dashboard/api`;
 
 export default {
 
