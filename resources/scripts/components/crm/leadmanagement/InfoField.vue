@@ -323,6 +323,7 @@
                         <v-select v-model="indentification.type"
                                   :error-messages=" errors[0]"
                                   @input="updateLeads" item-text="text"
+                                  @change="changeIdentity"
                                   @blur="saveDraft('type', indentification.type, false, true)"
                                   item-value="value" :items="idenficationTypeDD" outlined dense hide-details="auto" >
                         </v-select>
@@ -580,7 +581,7 @@ export default {
                     value: 2
                 },
                 {
-                    text: 'Medical Card',
+                    text: 'Medicare Card',
                     value: 3
                 }
             ],
@@ -715,6 +716,16 @@ export default {
         saveDraft(field, value, isDate = false, identification = false)
         {
             LeadApplicationService.saveSoleField(field, value, this.lead.id, isDate, identification)
+        },
+
+        changeIdentity()
+        {
+            this.indentification.card_number = '';
+            this.indentification.state = '';
+            this.indentification.country = '';
+            this.indentification.special_number = '';
+            this.indentification.expire_date = '';
+            this.indentification.card_color = '';
         }
     },
 
