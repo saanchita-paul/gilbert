@@ -1,7 +1,7 @@
 <template>
-    <v-row>
+    <v-row class="personal-details-row">
         <v-col cols="4">
-            <p class="sub-title title-align pl-6 property_width">Personal Details</p>
+            <p class="sub-title title-align">Personal Details</p>
             <div class="crm-text-field">
                 <div class="field-label">
                     <span>Title</span>
@@ -69,7 +69,7 @@
                             min-width="290px"
                         >
                             <template v-slot:activator="{ on, attrs }">
-                                <ValidationProvider name="Bate Of Birth" rules="required"  v-slot="{ errors }">
+                                <ValidationProvider name="Bate Of Birth" rules="required|adult"  v-slot="{ errors }">
                                     <v-text-field
                                         placeholder="DD/MM/YYYY"
                                         outlined
@@ -707,7 +707,5 @@ export default {
 </script>
 
 <style scoped>
-    .property_width{
-        width: 60% !important;
-    }
+   
 </style>

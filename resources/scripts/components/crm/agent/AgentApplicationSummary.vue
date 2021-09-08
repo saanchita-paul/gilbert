@@ -23,13 +23,17 @@
                 <td class="font-weight-bold">Email billing</td>
                 <td>{{ application.is_email_billing == 1 ? 'Email' : 'Paper' }}</td>
             </tr>
+            <tr>
+                <td class="font-weight-bold">Status:</td>
+                <td>{{ application.status }}</td>
+            </tr>
         </table>
 
         <div class="pt-5">
             <v-divider></v-divider>
         </div>
-            
-        
+
+
         <p class="sub-title mt-4 mb-2">Property  Details</p>
         <table  class="application-info">
             <tr>
@@ -40,10 +44,7 @@
                 <td class="font-weight-bold">Service Address:</td>
                 <td>{{ application.address_text }}</td>
             </tr>
-          <tr>
-            <td class="font-weight-bold">Status:</td>
-            <td>{{ application.status }}</td>
-          </tr>
+
         </table>
 
         <v-divider class="mt-4 mb-2"></v-divider>
