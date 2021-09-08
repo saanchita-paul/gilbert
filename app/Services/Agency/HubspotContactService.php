@@ -166,9 +166,9 @@ class HubspotContactService
             )
         ));
         //$response = json_decode($response);
-        dd($response->json());
+//        dd($response->json());
         //var_dump($response->json());
-        echo ($response->json());
+//        echo ($response->json());
         return $response->json();
     }
 }

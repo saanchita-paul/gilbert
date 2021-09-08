@@ -14,6 +14,8 @@ export default {
     saveLead: (lead, leadId) => LeadApplicationAPI.saveLead(lead, leadId),
     updateAddress: (address, leadId) => LeadApplicationAPI.updateAddress(address, leadId),
     assignUser: (leadId, agentProfileId) => LeadApplicationAPI.assignUser(leadId, agentProfileId),
+    saveSoleField:(field, value, leadId, isDate,identification=false, isService=false) => LeadApplicationAPI.saveSoleField(field, value, leadId, isDate,identification,isService),
+
 
     /**
      * Getting minimum valid Connection date
@@ -24,5 +26,6 @@ export default {
         const date = new Date()
         date.setDate(date.getDate() + 3);
         return date.toISOString()
-    }
+    },
+
 }
