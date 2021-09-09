@@ -16,7 +16,7 @@ use function PHPUnit\Framework\isNull;
 
 class HubspotContactService
 {
-    public array|Collection|ConnectionApplication|Model $application;
+    private array|Collection|ConnectionApplication|Model $application;
 
     public function __construct(int $id)
     {
@@ -35,7 +35,7 @@ class HubspotContactService
         $response = Http::post($url, [
             "properties" => $this->getProperties()
         ]);
-
+        info($response->body());
         $body = json_decode($response->body(), true);
         if (empty($body['vid'])) {
             Log::error($response->body());
@@ -101,7 +101,7 @@ class HubspotContactService
                 "value" => $this->application->last_name
             ],
             [
-                "property" => "hood_email",
+                "property" => "email",
                 "value" => $this->application->email
             ],
             [
@@ -260,6 +260,10 @@ class HubspotContactService
                 "property" => "hood_services",
                 "value" => join(',', $this->application->connectionServices->pluck('service_type')->toArray()),
             ],
+            [
+                "property" => "hs_lead_status",
+                "value" => $this->getStatus(),
+            ],
 
         ];
     }
@@ -298,5 +302,16 @@ class HubspotContactService
     private function checkIDType($type, $value)
     {
         return $this->application->identification?->type === $type ? $value : null;
+    }
+
+    /**
+     * @return string
+     */
+    private function getStatus(): string
+    {
+        return match ($this->application->status) {
+          ConnectionApplication::STATUS_UNASSIGNED => 'NEW',
+          ConnectionApplication::STATUS_SUBMITTED => 'IN_PROGRESS'
+        };
     }
 }
