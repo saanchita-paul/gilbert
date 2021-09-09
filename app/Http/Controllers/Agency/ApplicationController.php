@@ -217,4 +217,16 @@ class ApplicationController extends Controller
         }
     }
 
+    public function saveDraft(Request $request, $id)
+    {
+        try {
+            $service = new ApplicationService();
+            $res = $service->updateSoleField($request->toArray(), $id);
+            return response()->json(['success' => true, 'data' => $res]);
+
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
 }

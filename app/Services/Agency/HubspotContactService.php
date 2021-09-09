@@ -21,7 +21,7 @@ class HubspotContactService
     public function __construct(int $id)
     {
         $this->application = ConnectionApplication::findOrFail($id);
-        $this->application->load(['identification']);
+        $this->application->load(['identification', 'connectionServices']);
     }
 
     /**

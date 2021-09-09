@@ -291,9 +291,8 @@ export default {
 
    async saveLead(lead, leadId) {
         try {
-            console.log(lead);
+
             lead.moving_date = (new DayJs(lead.moving_date)).format('YYYY-MM-DD');
-            console.log(lead.moving_date);
             const data = await axios.post('/api/applications/'+leadId+'/submit',{lead});
             return data;
 
@@ -326,6 +325,20 @@ export default {
         } catch (error) {
             return error.data;
         }
+    },
+
+    async saveSoleField(field, value, leadId, isDate, identification, isService)
+    {
+        if(isDate)
+            value = (new DayJs(value)).format('YYYY-MM-DD');
+
+        const payload ={
+            [field]: value,
+            identification: identification,
+            isService: isService
+        }
+
+        const response = await axios.post('/api/applications/'+leadId+'/draft',payload);
     }
 
 }

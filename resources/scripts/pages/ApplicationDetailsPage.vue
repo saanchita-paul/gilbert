@@ -31,6 +31,7 @@ import EscalateReasonModal from "@scripts/components/crm/modals/EscalateReasonMo
 import EscalationConfirmModal from "@scripts/components/crm/modals/EscalationConfirmModal";
 import LeadReadMoreModal from "@scripts/components/crm/modals/LeadReadMoreModal";
 import LeadSubmitConfirmationModal from "@scripts/components/crm/modals/LeadSubmitConfirmationModal";
+import LeadApplicationAPI from "@scripts/api/crm/LeadApplicationAPI";
 export default {
     name: "ApplicationDetailsPage",
     data() {
@@ -77,6 +78,7 @@ export default {
         updatePlan(plan)
         {
             this.plan = plan;
+            LeadApplicationService.saveSoleField('plan_type', this.plan, this.leadId);
         },
 
         updateNote() {
@@ -114,10 +116,15 @@ export default {
             let index = this.services.findIndex(svc => svc === service.toLowerCase());
             if(index == -1) {
                 this.services.push(service.toLowerCase());
+                LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
+
                 return;
             }
             this.services.splice(index,1);
+            LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
             this.leadSummary.service_types = this.services;
+
+
 
         },
 
