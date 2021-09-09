@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\Agency\CreateApplicationEvent;
 use App\Events\Agency\SubmitApplicationEvent;
+use App\Listeners\Agency\CreateHubSpotContact;
+use App\Listeners\Agency\UpdateHubSpotContact;
 use App\Listeners\Agency\SendApplicationToEA;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -21,7 +24,11 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         SubmitApplicationEvent::class => [
-            SendApplicationToEA::class
+            SendApplicationToEA::class,
+            UpdateHubSpotContact::class
+        ],
+        CreateApplicationEvent::class => [
+            CreateHubSpotContact::class,
         ]
     ];
 
