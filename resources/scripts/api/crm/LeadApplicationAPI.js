@@ -292,11 +292,14 @@ export default {
    async saveLead(lead, leadId) {
         try {
 
-            lead.moving_date = (new DayJs(lead.moving_date)).format('YYYY-MM-DD');
+            lead.moving_date = ApplicationMapper.mapDateToServer(lead.moving_date);
+            lead.dob = ApplicationMapper.mapDateToServer(lead.dob);
+            lead.identification.expire_date = ApplicationMapper.mapDateToServer(lead.identification.expire_date);
             const data = await axios.post('/api/applications/'+leadId+'/submit',{lead});
             return data;
 
         } catch (error) {
+            console.log(error);
             return error.data;
         }
     },
@@ -329,15 +332,26 @@ export default {
 
     async saveSoleField(field, value, leadId, isDate, identification, isService)
     {
+        let day = '';
+        let month = '';
+        let year = '';
         if(isDate)
-            value = (new DayJs(value)).format('YYYY-MM-DD');
+        {
+            let fullDate = value.split('/');
+             day = fullDate[0];
+             month = fullDate[1];
+             year = fullDate[2];
+
+            value = year + '-'+ month + '-'+ day;
+        }
+
 
         const payload ={
             [field]: value,
             identification: identification,
             isService: isService
         }
-
+        
         const response = await axios.post('/api/applications/'+leadId+'/draft',payload);
     }
 

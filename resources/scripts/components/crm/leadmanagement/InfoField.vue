@@ -47,7 +47,7 @@
                 <div class="text-field">
                     <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
                         <v-text-field
-                            @blur="saveDraft('last_name',person_details.first_name)"
+                            @blur="saveDraft('last_name',person_details.last_name)"
                             v-model="person_details.last_name"  @input="updateLeads"
                         outlined
                         dense :error-messages=" errors[0]"
@@ -84,11 +84,11 @@
                                         v-on="on"
                                         :error-messages=" errors[0]"
                                         hide-details="auto"
-                                        @blur="saveDraft('dob',person_details.dob,true)"
+
                                     ></v-text-field>
                                 </ValidationProvider>
                             </template>
-                            <v-date-picker v-model="person_details.dob"  @input="showDateOfBirth = false"></v-date-picker>
+                            <v-date-picker v-model="dob"  @input="showDateOfBirth = false"></v-date-picker>
                         </v-menu>
 
                     </ValidationProvider>
@@ -184,12 +184,11 @@
                                         v-on="on"
                                         :error-messages=" errors[0]"
                                         hide-details="auto"
-                                        @blur="saveDraft('moving_date',person_details.moving_date,true)"
                                         @input="updateLeads"
                                     ></v-text-field>
                                 </ValidationProvider>
                             </template>
-                            <v-date-picker v-model="property_details.moving_date" :min="minConnectionDate"
+                            <v-date-picker v-model="moving_date" :min="minConnectionDate"
                                            @input="connection_date = false"></v-date-picker>
                         </v-menu>
 
@@ -212,7 +211,7 @@
                             hide-details="auto"
                             :error-messages=" errors[0]"
                             placeholder="This is an extra long address, 398 Bourke Road, Camberwell 3124 VIC"
-                                    @blur="saveDraft('address_text',property_details.address_text)"
+
                         ></v-textarea>
                     </ValidationProvider>
                 </div>
@@ -434,11 +433,10 @@
                                         v-on="on"
                                         :error-messages=" errors[0]"
                                         hide-details="auto"
-                                        @blur="saveDraft('expire_date',indentification.expire_date,true, true)"
                                     ></v-text-field>
                                 </ValidationProvider>
                             </template>
-                            <v-date-picker v-model="indentification.expire_date"
+                            <v-date-picker v-model="expire_date"
                                            @input="showMovingDate = false"></v-date-picker>
                         </v-menu>
 
@@ -495,6 +493,7 @@
 <script>
 import ServiceAddress from "@scripts/components/crm/ServiceAddress";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import DayJs from "dayjs";
 
 export default {
   name: "InfoField",
@@ -630,6 +629,15 @@ export default {
                 street_number: '',
                 street_name: '',
                 is_billing_same: true,
+                billing_address_text: '',
+                billing_street_address: '',
+                billing_city: '',
+                billing_postcode: '',
+                billing_state: '',
+                billing_country: '',
+                billing_unit_number: '',
+                billing_street_number: '',
+                billing_street_name: '',
 
             },
             person_details: {
@@ -644,6 +652,9 @@ export default {
                 additional_instruction: '',
 
             },
+            dob: null,
+            moving_date: null,
+            expire_date: null,
             showMovingDate: false,
             connection_date: false,
             showDateOfBirth: false,
@@ -680,14 +691,18 @@ export default {
             this.person_details.title = this.lead.title;
             this.person_details.first_name = this.lead.first_name;
             this.person_details.last_name = this.lead.last_name;
-            this.person_details.dob = this.lead.dob;
+            // this.person_details.dob = this.lead.dob;
             this.person_details.email = this.lead.email;
             this.person_details.phone = this.lead.phone;
             this.person_details.tenancy_type = this.lead.tenancy_type;
             this.person_details.is_email_billing = this.lead.is_email_billing;
             this.person_details.additional_instruction = this.lead.additional_instruction;
 
-            this.property_details.moving_date = this.lead.moving_date;
+            this.dob = this.lead.dob;
+            this.moving_date = this.lead.moving_date;
+            this.expire_date = this.lead.identification?.expire_date;
+            // this.property_details.moving_date = this.lead.moving_date;
+            this.property_details.is_billing_same = this.lead.is_billing_same;
             this.property_details.address_text = this.lead.address_text;
             // this.property_details.billing_address = this.lead.billing_address;
             this.property_details.property_type = this.lead.property_type;
@@ -703,19 +718,34 @@ export default {
             this.property_details.postcode = this.lead.postcode;
             this.property_details.state = this.lead.state;
             this.property_details.country = this.lead.country;
+            this.property_details.billing_address_text = this.lead.billing_address_text;
+            this.property_details.billing_street_address = this.lead.billing_street_address;
+            this.property_details.billing_city = this.lead.billing_city;
+            this.property_details.billing_postcode = this.lead.billing_postcode;
+            this.property_details.billing_state = this.lead.billing_state;
+            this.property_details.billing_unit_number = this.lead.billing_unit_number;
+            this.property_details.billing_street_number = this.lead.billing_street_number;
+            this.property_details.billing_street_name = this.lead.billing_street_name;
 
             this.indentification.type = this.lead.identification?.type;
             this.indentification.card_number = this.lead.identification?.card_number;
             this.indentification.state = this.lead.identification?.state;
             this.indentification.country = this.lead.identification?.country;
             this.indentification.special_number = this.lead.identification?.special_number;
-            this.indentification.expire_date = this.lead.identification?.expire_date;
+            // this.indentification.expire_date = this.lead.identification?.expire_date;
             this.indentification.card_color = this.lead.identification?.card_color;
+
+
+
+
+
+
         },
 
         saveDraft(field, value, isDate = false, identification = false)
         {
-            LeadApplicationService.saveSoleField(field, value, this.lead.id, isDate, identification)
+            this.$emit('updateDraft', field, value, isDate, identification);
+
         },
 
         changeIdentity()
@@ -726,7 +756,15 @@ export default {
             this.indentification.special_number = '';
             this.indentification.expire_date = '';
             this.indentification.card_color = '';
-        }
+        },
+
+        formatDate()
+        {
+
+            this.property_details.moving_date = new DayJs(this.moving_date).format('DD/MM/YYYY');
+            this.person_details.dob = new DayJs(this.dob).format('DD/MM/YYYY');
+            this.indentification.expire_date = new DayJs(this.expire_date).format('DD/MM/YYYY');
+        },
     },
 
     watch: {
@@ -736,24 +774,36 @@ export default {
           },
           deep: true
       },
-        indentification()
+
+        dob()
         {
-            // console.log('I am changed')
+            this.person_details.dob = new DayJs(this.dob).format('DD/MM/YYYY');
+            this.$emit('updateDraft', 'dob',  this.person_details.dob, true, false);
+
         },
 
-        property_details() {
-            // console.log('I am changed')
+        moving_date()
+        {
+            this.property_details.moving_date = new DayJs(this.moving_date).format('DD/MM/YYYY');
+            this.$emit('updateDraft', 'moving_date',  this.property_details.moving_date, true, false);
         },
 
-        person_details() {
-            // console.log('I am changed')
+        expire_date()
+        {
+            this.indentification.expire_date = new DayJs(this.expire_date).format('DD/MM/YYYY');
+            this.$emit('updateDraft', 'expire_date',  this.indentification.expire_date, true, true);
         }
+
+
+
 
     },
 
-    mounted() {
-      this.synFormData();
-      this. updateLeads();
+   async mounted() {
+       await this.synFormData();
+       await this.formatDate();
+       await this.updateLeads();
+
     }
 };
 </script>

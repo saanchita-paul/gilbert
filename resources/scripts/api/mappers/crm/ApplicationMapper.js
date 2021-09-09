@@ -35,7 +35,7 @@ export default {
         };
     },
     mapApplicationSummary(data) {
-        // let model = Object.assign(new ApplicationSummary(), { ...data });
+
         let model = new ApplicationSummary({...data});
         return model;
     },
@@ -47,7 +47,6 @@ export default {
     },
 
     mapNotes(data) {
-        console.log(data);
         return data.map(dt=> {
               return  new Note({...dt});
 
@@ -98,5 +97,13 @@ export default {
            dob: data.date_of_birth,
            is_email_billing: data.email_billing?data.email_billing:0
        }
+    },
+    mapDateToServer(value)
+    {
+          const  [day, month, year] = value.split('/');
+          return year + '-' + month + '-' + day;
+
+
     }
+
 };

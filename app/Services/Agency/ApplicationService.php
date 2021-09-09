@@ -73,6 +73,20 @@ class ApplicationService
         $existingApplication->country = $address['country'];
         $existingApplication->mirn = $address['mirn'] ?? $existingApplication->mirn;
         $existingApplication->nmi = $address['nmi'] ?? $existingApplication->nmi;
+        $existingApplication->is_billing_same = $address['is_billing_same'];
+
+
+        if(!$address['is_billing_same'])
+        {
+            $existingApplication->billing_address_text = $address['billing_address_text'];
+            $existingApplication->billing_street_address = $address['billing_street_address'];
+            $existingApplication->billing_street_name = $address['billing_street_name'];
+            $existingApplication->billing_street_number = empty($address['billing_street_address']) ? null : $address['billing_street_number'] ;
+            $existingApplication->billing_city = empty($address['billing_city']) ? null : $address['billing_city'] ;
+            $existingApplication->billing_postcode = empty($address['billing_postcode']) ? null : $address['billing_postcode'] ;
+////            $existingApplication->billing_state = empty($address['billing_state']) ? null : $address['billing_state'] ;
+//            $existingApplication->billing_country = empty($address['billing_country']) ? null : $address['billing_country'] ;
+        }
         $existingApplication->save();
 
         return $existingApplication;

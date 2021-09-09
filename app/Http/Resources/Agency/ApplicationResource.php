@@ -48,6 +48,16 @@ class ApplicationResource extends JsonResource
             'status' => $this->status,
             'street_number' => $this->street_number,
             'unit_number' => $this->unit_number,
+            'billing_unit_number' => $this->billing_unit_number,
+            'billing_street_number' => $this->billing_street_number,
+            'billing_street_name' => $this->billing_street_name,
+            'billing_address_text' => $this->billing_address_text,
+            'billing_address_unit' => $this->billing_address_unit,
+            'billing_street_address' => $this->billing_street_address,
+            'billing_city' => $this->billing_city,
+            'billing_state' => $this->billing_state,
+            'billing_postcode' => $this->billing_postcode,
+            'is_billing_same' => $this->is_billing_same,
         ];
     }
 
