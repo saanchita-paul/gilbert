@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Agency;
 
+use App\Events\Agency\CreateApplicationEvent;
 use App\Events\Agency\SubmitApplicationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Agency\ApplicationRequest;
@@ -59,8 +60,11 @@ class ApplicationController extends Controller
         $user = Auth::user();
 
         $service = new ApplicationService();
-        $inputData = $request->toArray();
-        return ApplicationResource::make($service->createApplication($inputData, $user));
+        $application = $service->createApplication($request->toArray(), $user);
+
+        CreateApplicationEvent::dispatch($application->id);
+
+        return ApplicationResource::make($application);
 
     } catch (\Exception $exception) {
         return $this->sendErrorResponse($exception);
@@ -162,10 +166,9 @@ class ApplicationController extends Controller
     try {
         $service = new ApplicationService();
         $res = $service->submit($request->toArray(), $id);
+
         SubmitApplicationEvent::dispatch($id);
 
-        $hubspotContactService = new HubspotContactService();
-        $response = $hubspotContactService->submitContact($id);
         return ApplicationResource::make($res);
     } catch (\Exception $exception) {
         return $this->sendErrorResponse($exception);

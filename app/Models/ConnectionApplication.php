@@ -142,7 +142,7 @@ class ConnectionApplication extends Model
     const STATUS_SUBMITTED = 4;
     const STATUS_ACCEPTED = 5;
     const STATUS_REJECTED = 6; //non payable
-    const STATUS_EA_PROCESSINF = 7; //non payable
+    const STATUS_EA_PROCESSINF = 7;
 
 
     const MY_APPLICATIONS = 'my_applications';

@@ -13,6 +13,11 @@ use function PHPUnit\Framework\isNull;
 
 class ApplicationService
 {
+    /**
+     * @param array $application
+     * @param User $user
+     * @return ConnectionApplication
+     */
     public function createApplication(array $application, User $user){
 
         $agentProfile = $user->profile;
