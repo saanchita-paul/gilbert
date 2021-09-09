@@ -1,7 +1,7 @@
 <template>
-    <v-row>
+    <v-row class="personal-details-row">
         <v-col cols="4">
-            <p class="sub-title title-align pl-6 property_width">Personal Details</p>
+            <p class="sub-title title-align">Personal Details</p>
             <div class="crm-text-field">
                 <div class="field-label">
                     <span>Title</span>
@@ -11,6 +11,7 @@
                     <ValidationProvider name="Title" rules="required"  v-slot="{ errors }">
                         <v-select
                             @input="updateLeads"
+                            @blur="saveDraft('title',person_details.title)"
                             outlined dense hide-details="auto"
                             :items="titlesDD"
                             v-model="person_details.title"
@@ -29,6 +30,7 @@
                         <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
                         <v-text-field
                             v-model="person_details.first_name"  @input="updateLeads"
+                            @blur="saveDraft('first_name',person_details.first_name)"
                             outlined
                             dense
                             hide-details="auto"
@@ -45,6 +47,7 @@
                 <div class="text-field">
                     <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
                         <v-text-field
+                            @blur="saveDraft('last_name',person_details.first_name)"
                             v-model="person_details.last_name"  @input="updateLeads"
                         outlined
                         dense :error-messages=" errors[0]"
@@ -69,7 +72,7 @@
                             min-width="290px"
                         >
                             <template v-slot:activator="{ on, attrs }">
-                                <ValidationProvider name="Bate Of Birth" rules="required"  v-slot="{ errors }">
+                                <ValidationProvider name="Bate Of Birth" rules="required|adult"  v-slot="{ errors }">
                                     <v-text-field
                                         placeholder="DD/MM/YYYY"
                                         outlined
@@ -81,10 +84,11 @@
                                         v-on="on"
                                         :error-messages=" errors[0]"
                                         hide-details="auto"
+                                        @blur="saveDraft('dob',person_details.dob,true)"
                                     ></v-text-field>
                                 </ValidationProvider>
                             </template>
-                            <v-date-picker v-model="person_details.dob" @input="showDateOfBirth = false"></v-date-picker>
+                            <v-date-picker v-model="person_details.dob"  @input="showDateOfBirth = false"></v-date-picker>
                         </v-menu>
 
                     </ValidationProvider>
@@ -103,6 +107,7 @@
                         dense
                             :error-messages=" errors[0]"
                         hide-details="auto"
+                            @blur="saveDraft('phone',person_details.phone)"
                     ></v-text-field>
                     </ValidationProvider>
                 </div>
@@ -117,6 +122,7 @@
                             outlined
                             dense
                             hide-details="auto" :error-messages=" errors[0]"
+                                          @blur="saveDraft('email',person_details.email)"
                         ></v-text-field>
                     </ValidationProvider>
                 </div>
@@ -127,7 +133,7 @@
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Email Billing" rules="required"  v-slot="{ errors }">
-                        <v-select v-model="person_details.is_email_billing" :items="emailBillingDD" item-text="text" item-value="value"  @input="updateLeads" :error-messages=" errors[0]" outlined dense hide-details="auto">
+                        <v-select v-model="person_details.is_email_billing"  @blur="saveDraft('is_email_billing',person_details.is_email_billing)" :items="emailBillingDD" item-text="text" item-value="value"  @input="updateLeads" :error-messages=" errors[0]" outlined dense hide-details="auto">
                     </v-select>
                     </ValidationProvider>
                 </div>
@@ -139,7 +145,9 @@
                 <div class="text-field">
                     <ValidationProvider name="Tenant Type" rules="required"  v-slot="{ errors }">
                         <v-select v-model="person_details.tenancy_type" :items="tenantTypeDD" item-text="text" item-value="value" :error-messages=" errors[0]"
-                                  @input="updateLeads" outlined dense hide-details="auto" >
+                                  @input="updateLeads" outlined dense hide-details="auto"
+                                  @blur="saveDraft('tenancy_type',person_details.tenancy_type)"
+                        >
                         </v-select>
                     </ValidationProvider>
                 </div>
@@ -176,11 +184,13 @@
                                         v-on="on"
                                         :error-messages=" errors[0]"
                                         hide-details="auto"
+                                        @blur="saveDraft('moving_date',person_details.moving_date,true)"
                                         @input="updateLeads"
                                     ></v-text-field>
                                 </ValidationProvider>
                             </template>
-                            <v-date-picker v-model="property_details.moving_date" :min="minConnectionDate" @input="connection_date = false"></v-date-picker>
+                            <v-date-picker v-model="property_details.moving_date" :min="minConnectionDate"
+                                           @input="connection_date = false"></v-date-picker>
                         </v-menu>
 
                     </ValidationProvider>
@@ -202,6 +212,7 @@
                             hide-details="auto"
                             :error-messages=" errors[0]"
                             placeholder="This is an extra long address, 398 Bourke Road, Camberwell 3124 VIC"
+                                    @blur="saveDraft('address_text',property_details.address_text)"
                         ></v-textarea>
                     </ValidationProvider>
                 </div>
@@ -228,7 +239,10 @@
                 <div class="text-field">
                     <ValidationProvider name="Property Type" rules="required"  v-slot="{ errors }">
                        <v-select @input="updateLeads"  :error-messages=" errors[0]"
-                                 v-model="property_details.property_type" :items="propertyTypeDD" outlined placeholder="Residential" dense hide-details="auto">
+                                 v-model="property_details.property_type"
+                                 :items="propertyTypeDD" outlined placeholder="Residential"
+                                 @blur="saveDraft('property_type',property_details.property_type)"
+                                 dense hide-details="auto">
                         </v-select>
                     </ValidationProvider>
                 </div>
@@ -240,7 +254,10 @@
                 <div class="text-field">
                     <ValidationProvider name="Life Support" rules="required"  v-slot="{ errors }">
                         <v-select @input="updateLeads"  :error-messages=" errors[0]"
-                                  v-model="property_details.has_life_support" :items="lifeSupportDD" outlined  placeholder="Yes or No" dense hide-details="auto">
+                                  v-model="property_details.has_life_support"
+                                  :items="lifeSupportDD" outlined
+                                  @blur="saveDraft('has_life_support',property_details.has_life_support)"
+                                  placeholder="Yes or No" dense hide-details="auto">
                         </v-select>
                     </ValidationProvider>
                 </div>
@@ -252,7 +269,10 @@
                 <div class="text-field">
                     <ValidationProvider name="Solar Power" rules="required"  v-slot="{ errors }">
                         <v-select @input="updateLeads" :error-messages=" errors[0]"
-                                  v-model="property_details.has_solar" :items="solarPowerDD" outlined placeholder="Yes or No" dense hide-details="auto">
+                                  v-model="property_details.has_solar"
+                                  :items="solarPowerDD" outlined
+                                  @blur="saveDraft('has_solar',property_details.has_solar)"
+                                  placeholder="Yes or No" dense hide-details="auto">
                         </v-select>
                     </ValidationProvider>
                 </div>
@@ -262,9 +282,10 @@
                     <span>NMI (Power)</span>
                 </div>
                 <div class="text-field">
-                    <ValidationProvider name="DOB" rules="required"  v-slot="{ errors }">
+                    <ValidationProvider name="NMI" rules="required"  v-slot="{ errors }">
                         <v-text-field @input="updateLeads"
                             v-model="property_details.nmi"
+                                      @blur="saveDraft('nmi',property_details.nmi)"
                             outlined
                             dense
                             hide-details="auto"
@@ -277,10 +298,11 @@
                     <span>MIRN (Gas)</span>
                 </div>
                 <div class="text-field">
-                    <ValidationProvider name="DOB"  v-slot="{ errors }">
+                    <ValidationProvider name="MIRN"  v-slot="{ errors }">
                         <v-text-field
                             @input="updateLeads"
                             v-model="property_details.mirn"
+                            @blur="saveDraft('mirn',property_details.mirn)"
                             outlined
                             dense
                             hide-details="auto"
@@ -298,7 +320,12 @@
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Identification Number" rules="required"  v-slot="{ errors }">
-                        <v-select v-model="indentification.type"  :error-messages=" errors[0]"  @input="updateLeads" item-text="text" item-value="value" :items="idenficationTypeDD" outlined dense hide-details="auto" >
+                        <v-select v-model="indentification.type"
+                                  :error-messages=" errors[0]"
+                                  @input="updateLeads" item-text="text"
+                                  @change="changeIdentity"
+                                  @blur="saveDraft('type', indentification.type, false, true)"
+                                  item-value="value" :items="idenficationTypeDD" outlined dense hide-details="auto" >
                         </v-select>
                     </ValidationProvider>
                 </div>
@@ -312,6 +339,7 @@
                         <v-text-field
                             :error-messages=" errors[0]"
                             v-model="indentification.card_number"
+                            @blur="saveDraft('card_number',indentification.card_number, false, true)"
                             @input="updateLeads"
                             indentification
                         outlined
@@ -330,6 +358,7 @@
                         <v-text-field
                             v-model="indentification.country"
                             @input="updateLeads"
+                            @blur="saveDraft('country',indentification.country, false, true)"
                             indentification
                             :error-messages=" errors[0]"
                             outlined
@@ -348,6 +377,7 @@
                     <ValidationProvider name="State" rules="required"  v-slot="{ errors }">
                         <v-select
                             v-model="indentification.state"
+                            @blur="saveDraft('state',indentification.state, false, true)"
                             :items="statesDD"
                             item-text="text"
                             item-value="value"
@@ -367,8 +397,9 @@
                     <span>Special Number</span>
                 </div>
                 <div class="text-field">
-                    <ValidationProvider name="DOB" rules="required"  v-slot="{ errors }">
+                    <ValidationProvider name="Special Number" rules="required"  v-slot="{ errors }">
                     <v-select v-model="indentification.special_number"
+                              @blur="saveDraft('special_number', indentification.special_number, false, true)"
                               :error-messages=" errors[0]"
                               @input="updateLeads" :items="specialNumberDD" outlined dense hide-details="auto" >
                     </v-select>
@@ -403,10 +434,12 @@
                                         v-on="on"
                                         :error-messages=" errors[0]"
                                         hide-details="auto"
+                                        @blur="saveDraft('expire_date',indentification.expire_date,true, true)"
                                     ></v-text-field>
                                 </ValidationProvider>
                             </template>
-                            <v-date-picker v-model="indentification.expire_date" @input="showMovingDate = false"></v-date-picker>
+                            <v-date-picker v-model="indentification.expire_date"
+                                           @input="showMovingDate = false"></v-date-picker>
                         </v-menu>
 
                     </ValidationProvider>
@@ -418,7 +451,10 @@
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Card Color" rules="required"  v-slot="{ errors }">
-                    <v-select v-model="indentification.card_color"  item-text="text" item-value="value" @input="updateLeads" :items="colorDD" outlined dense hide-details="auto" >
+                    <v-select v-model="indentification.card_color"
+                              item-text="text" item-value="value"
+                              @blur="saveDraft('card_color',indentification.card_color, false, true)"
+                              @input="updateLeads" :items="colorDD" outlined dense hide-details="auto" >
                     </v-select>
                     </ValidationProvider>
                 </div>
@@ -438,6 +474,7 @@
                     v-model="person_details.additional_instruction"
                     @input="updateLeads"
                     hide-details="auto"
+                    @blur="saveDraft('additional_instruction',person_details.additional_instruction)"
                     auto-grow
                     filled
                     class="pa-2"
@@ -544,7 +581,7 @@ export default {
                     value: 2
                 },
                 {
-                    text: 'Medical Card',
+                    text: 'Medicare Card',
                     value: 3
                 }
             ],
@@ -674,6 +711,21 @@ export default {
             this.indentification.special_number = this.lead.identification?.special_number;
             this.indentification.expire_date = this.lead.identification?.expire_date;
             this.indentification.card_color = this.lead.identification?.card_color;
+        },
+
+        saveDraft(field, value, isDate = false, identification = false)
+        {
+            LeadApplicationService.saveSoleField(field, value, this.lead.id, isDate, identification)
+        },
+
+        changeIdentity()
+        {
+            this.indentification.card_number = '';
+            this.indentification.state = '';
+            this.indentification.country = '';
+            this.indentification.special_number = '';
+            this.indentification.expire_date = '';
+            this.indentification.card_color = '';
         }
     },
 
@@ -707,7 +759,5 @@ export default {
 </script>
 
 <style scoped>
-    .property_width{
-        width: 60% !important;
-    }
+
 </style>

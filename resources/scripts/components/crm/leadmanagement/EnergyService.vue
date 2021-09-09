@@ -32,13 +32,13 @@ name: "EnergyService",
                     return 'yellow';
                 }
                 if(service.toLowerCase() === 'gas') {
-                    return 'red';
+                    return 'orange';
                 }
                 if(service.toLowerCase() === 'internet') {
-                    return 'red';
+                    return '#9C27B0';
                 }
                 if(service.toLowerCase() === 'water') {
-                    return 'red';
+                    return 'blue';
                 }
             }
             return 'grey lighten-1';

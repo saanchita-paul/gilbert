@@ -4,9 +4,6 @@ export default class ElectricityRate {
         'after_discount': '',
     };
     'usage_rates' = {
-        'peak_usage_per_day': {
-            'before_discount': '',
-            'after_discount': '',
-        },
+        'peak_usage_per_day': {},
     };
 }

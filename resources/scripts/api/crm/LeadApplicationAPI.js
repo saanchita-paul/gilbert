@@ -3,6 +3,7 @@ import AppMetricsMapper from "@scripts/api/mappers/crm/AppMetricsMapper";
 import AppLeadMapper from "@scripts/api/mappers/crm/AppLeadMapper";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
+import DayJs from "dayjs";
 
 const data = [
     {
@@ -290,6 +291,8 @@ export default {
 
    async saveLead(lead, leadId) {
         try {
+
+            lead.moving_date = (new DayJs(lead.moving_date)).format('YYYY-MM-DD');
             const data = await axios.post('/api/applications/'+leadId+'/submit',{lead});
             return data;
 
@@ -322,6 +325,20 @@ export default {
         } catch (error) {
             return error.data;
         }
+    },
+
+    async saveSoleField(field, value, leadId, isDate, identification, isService)
+    {
+        if(isDate)
+            value = (new DayJs(value)).format('YYYY-MM-DD');
+
+        const payload ={
+            [field]: value,
+            identification: identification,
+            isService: isService
+        }
+
+        const response = await axios.post('/api/applications/'+leadId+'/draft',payload);
     }
 
 }

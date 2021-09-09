@@ -149,4 +149,29 @@ class ApplicationService
 
         return $existingApplication;
     }
+
+    public function updateSoleField(array $application, $id)
+    {
+        $existLead = ConnectionApplication::findOrFail($id);
+        $isIdentification = $application['identification'];
+        $isService = $application['isService'];
+
+        unset($application['identification']);
+        unset($application['isService']);
+
+        if($isIdentification)
+        {
+            $this->createIdentification($application, $id);
+        }
+        else if($isService)
+        {
+            $this->updateConnectionService($application['service_types'], $id);
+        }
+        else
+        {
+            $existLead->update($application);
+        }
+
+        return $existLead->refresh();
+    }
 }

@@ -174,7 +174,7 @@ name: "CrmOfficeDataTable",
         },
 
         openOffice(office) {
-            console.log('agency', this.id, 'office', office);
+            // console.log('agency', this.id, 'office', office);
              this.$router.push({name: 'real.state.agency.users', params: { id : this.id, officeId: office.id}});
         },
 
@@ -194,7 +194,7 @@ name: "CrmOfficeDataTable",
         },
 
         async saveAgencyName(agency) {
-            console.log(agency);
+            // console.log(agency);
             let payload = {name: agency}
            await AgencyService.updateAgency(payload, this.$route.params.id)
             this.editAgencyNameFlag = false;

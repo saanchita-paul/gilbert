@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <ValidationObserver ref="office_details">
-            <v-card class="pa-4" v-if="isLoaded">
+            <v-card class="hood-card" v-if="isLoaded">
                 <v-row>
                     <v-col cols="12 pb-0">
                         <v-btn @click="goToOffice"><v-icon left dark>mdi-arrow-left</v-icon>Back to Sunbury Office Metrics</v-btn>

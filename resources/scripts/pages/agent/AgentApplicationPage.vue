@@ -2,7 +2,7 @@
     <v-container fluid>
         <v-row class="mt-0">
             <v-col cols="8">
-                <v-card class="pa-4">
+                <v-card  class="hood-card">
                     <h3 v-if="user" class="page-title">Hi {{ user.profile.first_name }}, <small class="font-weight-thin">heres a
                         summary of your applications.</small></h3>
                     <AgentLeadMetrics></AgentLeadMetrics>

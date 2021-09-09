@@ -258,8 +258,8 @@
         background: #E0E0E0 !important;
     }
     .office-title{
-        font-size: 18px;
-    font-weight: 700;
-    font-family: 'Roboto';
+        font-size: 18px !important;
+    font-weight: 700 !important;
+    font-family: 'Roboto' !important;
     }
 </style>
