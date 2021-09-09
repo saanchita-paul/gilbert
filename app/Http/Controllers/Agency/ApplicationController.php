@@ -206,7 +206,6 @@ class ApplicationController extends Controller
             $service = new ConnectionService();
             $inputData = $request->toArray();
             $data= $service->allApplicationMetricsCount($inputData, $user);
-
             return ApplicationMetricsResource::make($data);
 
         } catch (\Exception $exception) {

@@ -14,7 +14,7 @@
                   <v-icon :color="appMetrics.applications>0?'success':'grey lighten-1'">mdi-home</v-icon>
                   <span>{{appMetrics.applications}}</span>
               </div>
-              <p class="leade-text">Total submitted</p>
+              <p class="leade-text">Total Added</p>
           </div>
 
           <div class="agent-leade">
