@@ -92,6 +92,8 @@ export default {
 
         });
         data.service_interests = commsission;
+        data.moving_date = this.mapDateToServer(data.moving_date);
+        data.date_of_birth = this.mapDateToServer(data.date_of_birth);
        return {
            ...data,
            dob: data.date_of_birth,
