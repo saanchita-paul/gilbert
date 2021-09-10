@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\Agency;
 
+use App\Models\APILog;
 use App\Models\ConnectionApplication;
 use App\Models\Identification;
 use Illuminate\Database\Eloquent\Collection;
@@ -27,11 +28,13 @@ class HubspotContactService
     public function create()
     {
         $url = config('hub_spot.create_contact').config('hub_spot.api_key');
+        $url = APILog::setLoggerQuery($url, APILog::API_HB_CREATE_CONTACT);
+
         $response = Http::post($url, [
             "properties" => $this->getProperties()
         ]);
-        info($response->body());
         $body = json_decode($response->body(), true);
+
         if (empty($body['vid'])) {
             Log::error($response->body());
             throw new \Exception("[HubspotContactService] failed to create contact");
@@ -50,9 +53,12 @@ class HubspotContactService
         $vid = $this->application->hubspot_contact_id;
 
         $url = str_replace('${id}', $vid, config('hub_spot.update_contact')) . config('hub_spot.api_key');
+        $url = APILog::setLoggerQuery($url, APILog::API_HB_UPDATE_CONTACT);
+
         $response = Http::post($url, [
             "properties" => $this->getProperties()
         ]);
+
         if (!$response->successful()) {
             Log::info('[HubspotContactService]: response body');
             Log::info($response->body());
