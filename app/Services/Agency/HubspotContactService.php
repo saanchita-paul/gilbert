@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\Agency;
 
 use App\Models\APILog;
@@ -27,7 +28,7 @@ class HubspotContactService
      */
     public function create()
     {
-        $url = config('hub_spot.create_contact').config('hub_spot.api_key');
+        $url = config('hub_spot.create_contact') . config('hub_spot.api_key');
         $url = APILog::setLoggerQuery($url, APILog::API_HB_CREATE_CONTACT);
 
         $response = Http::post($url, [
@@ -282,7 +283,7 @@ class HubspotContactService
         } catch (\Exception $exception) {
             Log::error("[HubspotContactService] Failed parsing expire date for type: $type, value: $value");
             Log::error($exception->getTraceAsString());
-            return  null;
+            return null;
         }
     }
 
@@ -311,8 +312,8 @@ class HubspotContactService
     private function getStatus(): string
     {
         return match ($this->application->status) {
-          ConnectionApplication::STATUS_UNASSIGNED => 'NEW',
-          ConnectionApplication::STATUS_SUBMITTED => 'IN_PROGRESS'
+            ConnectionApplication::STATUS_UNASSIGNED => 'NEW',
+            ConnectionApplication::STATUS_SUBMITTED, 'default' => 'IN_PROGRESS', //todo: handle default correctly
         };
     }
 }
