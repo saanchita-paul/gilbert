@@ -8,6 +8,7 @@
         v-model="search"
         @input="changeInput"
         clearable
+        class="app-search"
     ></v-text-field>
 </template>
 
@@ -36,4 +37,7 @@ export default {
 </script>
 
 <style scoped>
+.app-search{
+    border-radius: 8px !important;
+}
 </style>

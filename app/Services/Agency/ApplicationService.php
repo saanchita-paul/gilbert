@@ -129,6 +129,20 @@ class ApplicationService
 
         if($identification->first())
         {
+            if(!empty($identificationData['type']))
+            {
+                $identificationData = array_merge($identificationData,
+                    ['expire_date'=>null,
+                        'card_number'=>null,
+                        'state'=>null,
+                        'country'=>null,
+                        'card_color'=>null,
+                        'special_number'=>null,
+                        'expire_date'=> null,
+                    ]
+                );
+            }
+
            return $identification->update($identificationData);
         }
         $identificationData['connection_application_id'] = $id;
@@ -141,7 +155,6 @@ class ApplicationService
     {
         $lead = $applications['lead'];
         $lead['status'] = ConnectionApplication::STATUS_SUBMITTED;
-        $lead['moving_date'] = "2021-09-08";
         $lead = array_merge($lead, ['plan_type' => ConnectionApplication::PLAN_TYPE_MAPPER[$lead['plan_type']]]);
         $existLead = ConnectionApplication::findOrFail($id);
         $existLead->update($lead);

@@ -185,12 +185,11 @@ class PostSalesService
 
     public function processEaData($results)
     {
-        \Log::info($results);
-
         $data = json_decode($results);
         $submitSallData = $data?->data?->submitSale;
         $quotes = $submitSallData?->quotes;
         $salesId = $submitSallData?->id;
+
 
         foreach ($quotes as $quote)
         {
@@ -204,7 +203,7 @@ class PostSalesService
             {
                 $status = ConnectionApplication::STATUS_EA_PROCESSINF;
             }
-            $this->connection->update(['status'=>$status,'ea_sales_id'=> $salesId]);
+            $this->connection->update(['status'=>$status,'ea_sales_id'=> $salesId,'assigned_to'=> null]);
         }
 
     }

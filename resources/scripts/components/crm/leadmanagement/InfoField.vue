@@ -288,6 +288,7 @@
                             outlined
                             dense
                             hide-details="auto"
+                                      :error-messages=" errors[0]"
                         ></v-text-field>
                     </ValidationProvider>
                 </div>
@@ -297,7 +298,7 @@
                     <span>MIRN (Gas)</span>
                 </div>
                 <div class="text-field">
-                    <ValidationProvider name="MIRN"  v-slot="{ errors }">
+                    <ValidationProvider name="MIRN" rules="required"  v-slot="{ errors }">
                         <v-text-field
                             @input="updateLeads"
                             v-model="property_details.mirn"
@@ -305,6 +306,7 @@
                             outlined
                             dense
                             hide-details="auto"
+                            :error-messages=" errors[0]"
                         ></v-text-field>
                     </ValidationProvider>
                 </div>
@@ -334,7 +336,7 @@
                     <span>{{indentification.type == 1?'Passport ':indentification.type == 2?'Driver’s License':indentification.type == 3?'Medicare Card ':'Card'}} Number</span>
                 </div>
                 <div class="text-field">
-                    <ValidationProvider name="Card Number" rules="required"  v-slot="{ errors }">
+                    <ValidationProvider :name="indentification.type == 1?'Passport Number':indentification.type == 2?'Driver’s License':indentification.type == 3?'Medicare Card ':''" rules="required"  v-slot="{ errors }">
                         <v-text-field
                             :error-messages=" errors[0]"
                             v-model="indentification.card_number"
@@ -420,6 +422,8 @@
                             offset-y
                             min-width="290px"
                         >
+
+
                             <template v-slot:activator="{ on, attrs }">
                                 <ValidationProvider name="Expired Date" rules="required"  v-slot="{ errors }">
                                     <v-text-field
@@ -436,7 +440,7 @@
                                     ></v-text-field>
                                 </ValidationProvider>
                             </template>
-                            <v-date-picker v-model="expire_date"
+                            <v-date-picker v-model="expire_date" :min="minExpiredate"
                                            @input="showMovingDate = false"></v-date-picker>
                         </v-menu>
 
@@ -511,6 +515,7 @@ export default {
                 'Mrs','Mr','Ms'
             ],
             minConnectionDate: LeadApplicationService.getMinConnectionDate(),
+            minExpiredate: (new Date()).toISOString(),
             emailBillingDD: [ {
                 text: 'Yes',
                 value: 1
@@ -702,7 +707,7 @@ export default {
             this.moving_date = this.lead.moving_date;
             this.expire_date = this.lead.identification?.expire_date;
             // this.property_details.moving_date = this.lead.moving_date;
-            this.property_details.is_billing_same = this.lead.is_billing_same;
+            this.property_details.is_billing_same = true;
             this.property_details.address_text = this.lead.address_text;
             // this.property_details.billing_address = this.lead.billing_address;
             this.property_details.property_type = this.lead.property_type;
@@ -760,10 +765,11 @@ export default {
 
         formatDate()
         {
-
             this.property_details.moving_date = new DayJs(this.moving_date).format('DD/MM/YYYY');
             this.person_details.dob = new DayJs(this.dob).format('DD/MM/YYYY');
-            this.indentification.expire_date = new DayJs(this.expire_date).format('DD/MM/YYYY');
+
+            let expire = (new DayJs(this.expire_date)).isValid();
+            this.indentification.expire_date =expire? new DayJs(this.expire_date).format('DD/MM/YYYY'):'';
         },
     },
 

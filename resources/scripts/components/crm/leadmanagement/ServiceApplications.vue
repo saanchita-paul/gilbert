@@ -35,6 +35,7 @@
                     :selectedPlan="selectedPlanType"
                     @selectPlan="planSelect"
                     @view="view"
+                    @click.native="planSelect(plan)"
                 ></EnergyPlan>
             </div>
         </v-col>
@@ -124,9 +125,9 @@ export default {
         reviewPlan() {
             //todo
         },
+
         planSelect(plan) {
             this.selectedPlanType = plan?.key
-            // console.log(planId);
             this.$emit('updatePlan', plan);
         },
         isActive(service) {

@@ -33,11 +33,15 @@
                     ></v-img>
                     </v-avatar>
                   <v-avatar v-if="!profileImageFlag" size="40" class="mr-3" color="white">
-                    <span  v-bind="attrs" v-on="on" class="black--text">{{profile_display_name}}</span>
+                    <span  v-bind="attrs" v-on="on" class="display-name-purple">{{profile_display_name}}</span>
                   </v-avatar>
 
                 </template>
-                <ProfileDropdown @onLogout="onLogout" @editProfile="editProfile"></ProfileDropdown>
+                <ProfileDropdown  @onLogout="onLogout"
+                                  :user ="user"
+                                  :profile_display_name="profile_display_name"
+                                  :profileImageFlag="profileImageFlag"
+                                  @editProfile="editProfile"></ProfileDropdown>
             </v-menu>
         </v-app-bar>
 
@@ -141,6 +145,11 @@ export default {
     line-height: 20px !important;
     letter-spacing: .2px;
     margin-top: 15px;
-    color: rgb(223, 224, 235, 1);
+    color: rgb(223, 224, 235,1);
 }
+.display-name-purple{
+    color: #542E89 !important;
+}
+
+
 </style>

@@ -12,7 +12,7 @@
                                    @updateNote= "updateNote"
                                    :leadSummary="leadSummary" :notes="notes"></LeadServicesAndNotes>
 
-            <LeadsDetailsFotter v-if="leadSummary.status != 1" @submitConnection="submitConnection"></LeadsDetailsFotter>
+            <LeadsDetailsFotter v-if="leadSummary.status != 1" :login-loading="this.submittedLoader" @submitConnection="submitConnection"></LeadsDetailsFotter>
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
             <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" :title="fullName"></EscalationConfirmModal>
             <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag"
@@ -51,6 +51,7 @@ export default {
           showSubmitModal: false,
           payload: null,
           fullName: null,
+          submittedLoader: false,
       }
     },
     components: {
@@ -166,6 +167,8 @@ export default {
                 };
             }
 
+            this.submittedLoader = true;
+
             let response = await LeadApplicationService.saveLead(payload, this.leadId);
            this.$router.push({name:'applications'});
         },
@@ -187,6 +190,14 @@ export default {
             }
             if(identification) {
 
+                if(field == 'type') {
+                    this.leadSummary.identification.card_number = '';
+                    this.leadSummary.identification.special_number = '';
+                    this.leadSummary.identification.expire_date = null;
+                    this.leadSummary.identification.card_color = '';
+                    this.leadSummary.identification.state = '';
+                    this.leadSummary.identification.country = '';
+                }
                 this.leadSummary.identification[field] = value;
                 return;
             }
