@@ -14,9 +14,9 @@ class AddBillingAddressToConnectionApplication extends Migration
     public function up()
     {
         Schema::table('connection_applications', function (Blueprint $table) {
-            $table->string('billing_unit_number',45);
-            $table->string('billing_street_number',45);
-            $table->string('billing_street_name', 70);
+            $table->string('billing_unit_number',45)->nullable();
+            $table->string('billing_street_number',45)->nullable();
+            $table->string('billing_street_name', 70)->nullable();
             $table->string('billing_address_text', 150)->nullable();
             $table->string('billing_address_unit', 45)->nullable();
             $table->string('billing_street_address', 100)->nullable();
