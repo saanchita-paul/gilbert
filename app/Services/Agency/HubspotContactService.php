@@ -2,17 +2,12 @@
 namespace App\Services\Agency;
 
 use App\Models\ConnectionApplication;
-use App\Models\ConnectionService;
 use App\Models\Identification;
-use Couchbase\Exception;
-use DateTime;
-use Illuminate\Console\Application;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use function PHPUnit\Framework\isNull;
 
 class HubspotContactService
 {
