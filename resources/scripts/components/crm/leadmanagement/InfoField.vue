@@ -590,15 +590,15 @@ export default {
             colorDD:[
                 {
                     text: 'Green',
-                    value: 'green'
+                    value: 'GREEN'
                 },
                 {
                     text: 'Blue',
-                    value: 'blue'
+                    value: 'BLUE'
                 },
                 {
                     text: 'Yellow',
-                    value: 'yellow'
+                    value: 'YELLOW'
                 }
             ],
             indentification: {

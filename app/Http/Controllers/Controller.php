@@ -20,7 +20,7 @@ class Controller extends BaseController
     protected function sendErrorResponse(Exception $err): JsonResponse
     {
         \Log::error($err->getMessage());
-        \Log::error($err->getTrace());
+        \Log::error($err->getTraceAsString());
 
         return response()->json(['success' => false, 'message' => $err->getMessage()]);
     }
