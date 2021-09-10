@@ -62,10 +62,12 @@ class ConnectionService extends Model
             }
         }
 
+        $copyService = $service;
+
           $result = $service->leftJoin('connection_applications AS CA', 'CA.id', '=', 'CS.connection_application_id')
             ->select(
                 DB::raw("SUM(CASE
-            WHEN CA.status = 4 THEN 1 ELSE 0 END) AS applications"),
+            WHEN CA.status = 4 OR CA.status = 2 THEN 1 ELSE 0 END) AS applications"),
 
                 DB::raw("SUM(CASE
             WHEN CA.status = 6 THEN 1 ELSE 0 END) AS nonpayable"),
@@ -83,7 +85,19 @@ class ConnectionService extends Model
             WHEN CS.service_type = 'water' AND CA.status = 5 THEN 1 ELSE 0 END) AS water")
             )
             ->get();
+
+          $appCount = DB::table('connection_applications')->whereIn('status',[
+              ConnectionApplication::STATUS_ACCEPTED,
+              ConnectionApplication::STATUS_SUBMITTED,
+              ConnectionApplication::STATUS_ASSIGNED,
+              ])->count();
+        $nopayCount = DB::table('connection_applications')->where('status','=',ConnectionApplication::STATUS_REJECTED)->count();
+
+
+
         $result = $result->toArray()[0];
+        $result->applications = $appCount;
+        $result->nonpayable = $nopayCount;
         return $result;
     }
 }

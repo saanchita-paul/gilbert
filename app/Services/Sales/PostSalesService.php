@@ -34,7 +34,7 @@ class PostSalesService
         $transactionType = "ENE";
         $premiseRelationship= $this->connection->tenancy_type == 1?"TENANT":"OWNER";
         $customer = [
-            'title'=> $this->connection->title,
+            'title'=> strtoupper($this->connection->title),
             'firstName'=> $this->connection->first_name,
             'lastName'=> $this->connection->last_name,
             'emailAddress'=> $this->connection->email,
@@ -65,7 +65,7 @@ class PostSalesService
 
             'address'=> [
                 'unitNumber'=> $this->connection->address_unit,
-                'streetNumber'=> "61",
+                'streetNumber'=> $this->connection->street_number,
                 'streetName'=> $this->connection->street_address,
                 'streetType'=> "ST",
                 'suburb'=> $this->connection->city,
@@ -111,7 +111,7 @@ class PostSalesService
             'streetName'=> $this->connection->street_address,
             'streetType'=> "ST",
             'suburb'=> $this->connection->city,
-            'state'=> $this->connection->state,
+            'state'=> $this->stateMap($this->connection->state),
             'postcode'=> $this->connection->postcode,
         ];
 
@@ -173,14 +173,10 @@ class PostSalesService
                     ]
                 );
             $results = $client->runQuery($gql, false, $variables );
-//            dump($results);
-//            dump($variables);
             return $this->processEaData($results->getResponseBody());
 
         } catch (\Exception $e)
         {
-
-            \Log::info($e->getMessage());
             return $e->getMessage();
         }
 
@@ -189,6 +185,7 @@ class PostSalesService
 
     public function processEaData($results)
     {
+        \Log::info($results);
 
         $data = json_decode($results);
         $submitSallData = $data?->data?->submitSale;
@@ -235,7 +232,7 @@ class PostSalesService
                 'lastName'=> $this->connection->first_name,
                 'expiry'=> $this->identification->expire_date,
                 'medicareReferenceNumber'=> $this->identification->special_number,
-                'medicareCardColour'=> $this->identification->card_color,
+                'medicareCardColour'=> strtoupper($this->identification->card_color),
             ];
         }
         else if($this->identification->type ==3)
@@ -245,7 +242,7 @@ class PostSalesService
                 'number'=> $this->identification->card_number,
                 'firstName'=>$this->connection->first_name,
                 'lastName'=> $this->connection->first_name,
-                'stateOfIssue'=> $this->identification->state,
+                'stateOfIssue'=> $this->stateMap($this->identification->state),
                 'expiry'=> $this->identification->expire_date,
             ];
         }

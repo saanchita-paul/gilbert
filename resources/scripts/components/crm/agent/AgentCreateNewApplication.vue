@@ -80,7 +80,7 @@
                                 min-width="290px"
                             >
                                 <template v-slot:activator="{ on, attrs }">
-                                    <ValidationProvider name="Date of Birth" rules="required"  v-slot="{ errors }">
+                                    <ValidationProvider name="Date of Birth" rules="required|adult"  v-slot="{ errors }">
                                         <v-text-field
                                             label="Date of Birth*"
                                             placeholder="DD/MM/YYYY"
@@ -95,7 +95,7 @@
                                         ></v-text-field>
                                     </ValidationProvider>
                                 </template>
-                                <v-date-picker v-model="application.date_of_birth" @input="showDOB = false"></v-date-picker>
+                                <v-date-picker v-model="dob" @input="showDOB = false"></v-date-picker>
                             </v-menu>
 
                     </v-col>
@@ -215,7 +215,7 @@
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </template>
-                                    <v-date-picker v-model="application.moving_date" :min="minDate"
+                                    <v-date-picker v-model="moving_date" :min="minDate"
                                                    @input="showMovingDate = false"></v-date-picker>
                                 </v-menu>
                             </v-col>
@@ -291,6 +291,7 @@ import AgentApplicationService from "@scripts/services/crm/AgentApplicationServi
 import debounce from 'lodash-es/debounce';
 import GoogleMapService from "@scripts/services/GoogleMapService";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import DayJs from "dayjs";
 
 export default {
     name: "AgentCreateNewApplication",
@@ -329,6 +330,8 @@ export default {
             disabledDates: [
               { start: new Date(2021, 0, 2), end: new Date(2021, 9, 19) },
             ],
+            dob: null,
+            moving_date: null
         }
     },
     created() {
@@ -391,6 +394,15 @@ export default {
             }
         }
     },
+    watch: {
+        dob() {
+            this.application.date_of_birth = (new DayJs(this.dob).format('DD/MM/YYYY'));
+        },
+
+        moving_date() {
+            this.application.moving_date = (new DayJs(this.moving_date).format('DD/MM/YYYY'));
+        }
+    }
 };
 </script>
 

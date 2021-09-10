@@ -68,13 +68,15 @@ extend('not-holiday', {
     message: field => `Date must not be a holiday`,
     params: ['target'],
     validate: async (value, {target}) =>  {
+        const [day, month, year] = value.split('/');
+        value = year + '-' + month + '-' + day;
         return !(await EAPlanService.checkIfDateIsHoliday({state: target, date: value}))
     }
 });
 
 
 extend('adult', {
-    message: field => `must be 18year old`,
+    message: field => `must be 18 years old`,
     validate: value =>  {
         const timeDiff = (new DayJs()).diff(value,'year');
         return timeDiff>=18?true:false;

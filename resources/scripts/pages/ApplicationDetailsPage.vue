@@ -4,7 +4,7 @@
                 <LeadUserDetails @eacalate="eacalate"
                                  @updateLead="updateLead"
                                  @readMore="readMore" :leadSummary="leadSummary"
-                                 @updateAddress="updateAddress"></LeadUserDetails>
+                                 @updateAddress="updateAddress" @updateDraft="updateDraft"></LeadUserDetails>
             </ValidationObserver>
                 <LeadServicesAndNotes
                                    @updateService="updateService"
@@ -116,16 +116,13 @@ export default {
             let index = this.services.findIndex(svc => svc === service.toLowerCase());
             if(index == -1) {
                 this.services.push(service.toLowerCase());
-                LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
+                 LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
 
                 return;
             }
             this.services.splice(index,1);
             LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
             this.leadSummary.service_types = this.services;
-
-
-
         },
 
         async submitConnection() {
@@ -172,10 +169,29 @@ export default {
             let response = await LeadApplicationService.saveLead(payload, this.leadId);
            this.$router.push({name:'applications'});
         },
+
         async updateAddress(address) {
             console.log("ADD", address)
             Object.assign(this.leadSummary, address)
             let response = await LeadApplicationService.updateAddress(address, this.leadId);
+        },
+
+       async updateDraft(field, value, isDate, identification) {
+            await LeadApplicationService.saveSoleField(field, value,this.leadId, isDate, identification);
+
+           let [day, month, year] = [];
+            if(isDate)
+            {
+                [day, month, year] = value.split('/');
+                value = year + '-' + month + '-' + day;
+            }
+            if(identification) {
+
+                this.leadSummary.identification[field] = value;
+                return;
+            }
+            this.leadSummary[field] = value;
+
         }
 
     },
