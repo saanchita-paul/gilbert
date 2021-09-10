@@ -25,6 +25,10 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+
+        /**
+         *
+         */
         SubmitApplicationEvent::class => [
             SendApplicationToEA::class,
             UpdateHubSpotContact::class
@@ -32,12 +36,17 @@ class EventServiceProvider extends ServiceProvider
         CreateApplicationEvent::class => [
             CreateHubSpotContact::class,
         ],
+
+        /**
+         * API Logging
+         */
         'Illuminate\Http\Client\Events\RequestSending' => [
             LogRequestSending::class,
         ],
         'Illuminate\Http\Client\Events\ResponseReceived' => [
             LogRequestReceiving::class,
         ],
+        #todo
 //        'Illuminate\Http\Client\Events\ConnectionFailed' => [
 //            'App\Listeners\LogConnectionFailed',
 //        ],
