@@ -25,7 +25,7 @@
             </tr>
             <tr>
                 <td class="font-weight-bold">Status:</td>
-                <td>{{ application.status }}</td>
+                <td>{{['Unassigned','Assigned', 'Escalated'].includes(application.status)?'In Progress': application.status }}</td>
             </tr>
         </table>
 
