@@ -4,7 +4,7 @@ import * as rules from 'vee-validate/dist/rules';
 import {email, max, required} from "vee-validate/dist/rules";
 import AuthService from "@scripts/services/AuthService";
 import EAPlanService from "@scripts/services/ea/EAPlanService";
-import DayJs from "dayjs";
+import dayJs from "dayjs";
 
 Object.keys(rules).forEach(rule => {
     extend(rule, rules[rule]);
@@ -78,7 +78,7 @@ extend('not-holiday', {
 extend('adult', {
     message: field => `must be 18 years old`,
     validate: value =>  {
-        const timeDiff = (new DayJs()).diff(value,'year');
+        const timeDiff = dayJs().diff(dayJs(value, 'DD/MM/YYYY'),'year');
         return timeDiff>=18?true:false;
     }
 });
