@@ -44,7 +44,7 @@
                 </v-col>
             </v-row>
 
-            <CreateUserModal :dialog="isCreatingUser" @goToNext="goToNextConfirmationModal" @cancelUserDialog="cancleUserDialog"></CreateUserModal>
+            <CreateUserModal v-if="isCreateStart" :dialog="isCreatingUser" @goToNext="goToNextConfirmationModal" @cancelUserDialog="cancleUserDialog"></CreateUserModal>
             <UserCreationConfirmationModal v-if="dataVerificationFlag" :dialog="dataVerificationFlag" :user="user" @backToEdit="backToEdit" @confirmData="confirmedData"></UserCreationConfirmationModal>
             <UserCreatedSuccessfulModal v-if="creationDoneFlag" :dialog="creationDoneFlag" :user="user" @done="done"></UserCreatedSuccessfulModal>
         </div>
@@ -65,6 +65,7 @@
         components: {UserCreatedSuccessfulModal, UserCreationConfirmationModal, CreateUserModal, Search, LeadMetrics},
         data () {
             return {
+                isCreateStart: false,
                 isCreatingUser: false,
                 dataVerificationFlag: false,
                 creationDoneFlag: false,
@@ -128,6 +129,7 @@
         methods: {
             addNewUser() {
                 this.isCreatingUser= true;
+                this.isCreateStart = true;
             },
 
             cancleUserDialog() {
@@ -153,6 +155,7 @@
 
             done() {
                 this.creationDoneFlag = false
+                this.isCreateStart = false;
             },
 
             async loadUserData() {
