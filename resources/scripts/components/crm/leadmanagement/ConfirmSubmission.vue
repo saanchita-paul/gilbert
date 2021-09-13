@@ -93,7 +93,7 @@
                                     <span>Email Billing</span>
                                 </div>
                                 <div class="text-field">
-                                    <v-select  :items="emailBillingDD" item-text="text" item-value="value" :value="data.is_email_billing" outlined  dense hide-details="auto">
+                                    <v-select  :items="emailBillingDD" readonly item-text="text" item-value="value" :value="data.is_email_billing" outlined  dense hide-details="auto">
                                 </v-select>
                                 </div>
                             </div>
@@ -102,7 +102,7 @@
                                     <span>Tenancy Type</span>
                                 </div>
                                 <div class="text-field">
-                                <v-select :items="tenantTypeDD" item-text="text" item-value="value" :value="data.tenancy_type" outlined dense hide-details="auto" >
+                                <v-select :items="tenantTypeDD" item-text="text" readonly item-value="value" :value="data.tenancy_type" outlined dense hide-details="auto" >
                                 </v-select>
                                 </div>
                             </div>
@@ -153,7 +153,7 @@
                                     <span>Property Type</span>
                                 </div>
                                 <div class="text-field">
-                                <v-select outlined placeholder="Residentail / Business" dense hide-details="auto"
+                                <v-select outlined readonly placeholder="Residentail / Business" dense hide-details="auto"
                                             :value="data.property_type"
                                             item-value="value"
                                             item-text="text"
@@ -166,7 +166,7 @@
                                     <span>Life Support</span>
                                 </div>
                                 <div class="text-field">
-                                    <v-select outlined placeholder="Yes / No"
+                                    <v-select readonly outlined placeholder="Yes / No"
                                                 :value="data.has_life_support"
                                                 item-value="value"
                                                 item-text="text"
@@ -181,7 +181,7 @@
                                     <span>Solar Power</span>
                                 </div>
                                 <div class="text-field">
-                                    <v-select outlined placeholder="Yes / No"
+                                    <v-select readonly outlined placeholder="Yes / No"
 
                                                 :value="data.has_solar"
                                                 item-value="value"
@@ -233,7 +233,7 @@
                                 <span>Identification</span>
                             </div>
                             <div class="text-field">
-                                <v-select outlined dense hide-details="auto"
+                                <v-select readonly outlined dense hide-details="auto"
                                             :value="data.identification.type"
                                             item-value="value"
                                             item-text="text"
@@ -281,7 +281,7 @@
                                 <span>Special Number</span>
                             </div>
                             <div class="text-field">
-                                <v-select outlined dense hide-details="auto"
+                                <v-select readonly outlined dense hide-details="auto"
                                             :value="data.identification.special_number"
                                             :items="specialNumberDD"
                                 >
@@ -293,7 +293,7 @@
                                 <span>State</span>
                             </div>
                             <div class="text-field">
-                                <v-select outlined dense hide-details="auto"
+                                <v-select readonly outlined dense hide-details="auto"
                                             :value="data.identification.state"
                                             :items="statesDD"
                                             item-value="value"
@@ -321,7 +321,7 @@
                                 <span>Card Colour</span>
                             </div>
                             <div class="text-field">
-                                <v-select outlined dense hide-details="auto"
+                                <v-select readonly outlined dense hide-details="auto"
                                             :value="data.identification.card_color"
                                             item-value="value"
                                             item-text="text"
