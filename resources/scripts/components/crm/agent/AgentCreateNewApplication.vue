@@ -52,7 +52,7 @@
                             :maxlength="10"
                             outlined
                             dense
-                            placeholder="+61 410"
+                            placeholder="04XX XXX XXX"
                             v-model="application.phone"
                             :error-messages=" errors[0]"
                         ></v-text-field>
@@ -330,7 +330,7 @@ export default {
             disabledDates: [
               { start: new Date(2021, 0, 2), end: new Date(2021, 9, 19) },
             ],
-            dob: null,
+            dob: (new DayJs((new Date()).setFullYear(2000))).format('YYYY-MM-DD'),
             moving_date: null
         }
     },

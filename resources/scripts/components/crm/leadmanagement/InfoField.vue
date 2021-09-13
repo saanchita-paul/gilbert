@@ -333,7 +333,7 @@
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>{{indentification.type == 1?'Passport ':indentification.type == 2?'Driver’s License':indentification.type == 3?'Medicare Card ':'Card'}} Number</span>
+                    <span>{{indentification.type == 1?'Passport Number':indentification.type == 2?'Driver’s License':indentification.type == 3?'Medicare Card':'Card'}} </span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider :name="indentification.type == 1?'Passport Number':indentification.type == 2?'Driver’s License':indentification.type == 3?'Medicare Card ':''" rules="required"  v-slot="{ errors }">
