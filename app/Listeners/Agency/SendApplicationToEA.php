@@ -29,7 +29,6 @@ class SendApplicationToEA implements ShouldQueue
     {
         $postEaService = new PostSalesService($event->applicationId);
         $postEaService->postToEa();
-        \Log::info($event->applicationId);
-        \Log::info("APPLICATION_ID");
+
     }
 }

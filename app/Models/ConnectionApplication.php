@@ -25,12 +25,24 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $moving_date
  * @property string|null $address_unit
  * @property string|null $street_address
+ * @property string|null $street_name
+ * @property string|null $billing_street_name
+ * @property string|null $billing_street_number
+ * @property string|null $address_text
+ * @property string|null $unit_number
+ * @property string|null $street_number
  * @property string|null $city
  * @property string|null $postcode
  * @property string|null $state
  * @property string|null $country
+ * @property string|null $billing_address_unit
+ * @property string|null $billing_street_address
+ * @property string|null $billing_city
+ * @property string|null $billing_postcode
+ * @property string|null $billing_state
+ * @property string|null $billing_country
  * @property string|null $additional_instruction
- * @property string|null $address_text
+ * @property string|null $billing_address_text
  * @property string|null $reason
  * @property int|null $is_email_billing
  * @property int|null $property_type
@@ -133,6 +145,14 @@ class ConnectionApplication extends Model
         'unit_number',
         'street_number',
         'hubspot_contact_id',
+        'billing_unit_number',
+        'billing_street_number',
+        'billing_street_name',
+        'billing_address_text',
+        'billing_address_unit',
+        'billing_street_address',
+        'billing_city',
+        'billing_postcode',
     ];
 
 

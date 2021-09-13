@@ -4,7 +4,7 @@
                 <LeadUserDetails @eacalate="eacalate"
                                  @updateLead="updateLead"
                                  @readMore="readMore" :leadSummary="leadSummary"
-                                 @updateAddress="updateAddress"></LeadUserDetails>
+                                 @updateAddress="updateAddress" @updateDraft="updateDraft"></LeadUserDetails>
             </ValidationObserver>
                 <LeadServicesAndNotes
                                    @updateService="updateService"
@@ -12,7 +12,7 @@
                                    @updateNote= "updateNote"
                                    :leadSummary="leadSummary" :notes="notes"></LeadServicesAndNotes>
 
-            <LeadsDetailsFotter v-if="leadSummary.status != 1" @submitConnection="submitConnection"></LeadsDetailsFotter>
+            <LeadsDetailsFotter v-if="leadSummary.status != 1" :login-loading="this.submittedLoader" @submitConnection="submitConnection"></LeadsDetailsFotter>
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
             <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" :title="fullName"></EscalationConfirmModal>
             <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag"
@@ -51,6 +51,7 @@ export default {
           showSubmitModal: false,
           payload: null,
           fullName: null,
+          submittedLoader: false,
       }
     },
     components: {
@@ -116,16 +117,13 @@ export default {
             let index = this.services.findIndex(svc => svc === service.toLowerCase());
             if(index == -1) {
                 this.services.push(service.toLowerCase());
-                LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
+                 LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
 
                 return;
             }
             this.services.splice(index,1);
             LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
             this.leadSummary.service_types = this.services;
-
-
-
         },
 
         async submitConnection() {
@@ -169,13 +167,42 @@ export default {
                 };
             }
 
+            this.submittedLoader = true;
+
             let response = await LeadApplicationService.saveLead(payload, this.leadId);
            this.$router.push({name:'applications'});
         },
+
         async updateAddress(address) {
             console.log("ADD", address)
             Object.assign(this.leadSummary, address)
             let response = await LeadApplicationService.updateAddress(address, this.leadId);
+        },
+
+       async updateDraft(field, value, isDate, identification) {
+            await LeadApplicationService.saveSoleField(field, value,this.leadId, isDate, identification);
+
+           let [day, month, year] = [];
+            if(isDate)
+            {
+                [day, month, year] = value.split('/');
+                value = year + '-' + month + '-' + day;
+            }
+            if(identification) {
+
+                if(field == 'type') {
+                    this.leadSummary.identification.card_number = '';
+                    this.leadSummary.identification.special_number = '';
+                    this.leadSummary.identification.expire_date = null;
+                    this.leadSummary.identification.card_color = '';
+                    this.leadSummary.identification.state = '';
+                    this.leadSummary.identification.country = '';
+                }
+                this.leadSummary.identification[field] = value;
+                return;
+            }
+            this.leadSummary[field] = value;
+
         }
 
     },

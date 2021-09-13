@@ -31,6 +31,15 @@ export default class ApplicationSummary {
     has_life_support = null;
     has_solar = null;
     status = null;
+    billing_unit_number = null;
+    billing_street_number = null;
+    billing_street_name = null;
+    billing_address_text = null;
+    billing_address_unit = null;
+    billing_street_address = null;
+    billing_city = null;
+    billing_postcode = null;
+    is_billing_same = null;
     constructor(
         {
             id = null,
@@ -62,6 +71,15 @@ export default class ApplicationSummary {
             has_solar = null,
             property_type = null,
             status = null,
+            billing_unit_number = null,
+            billing_street_number = null,
+            billing_street_name = null,
+            billing_address_text = null,
+            billing_address_unit = null,
+            billing_street_address = null,
+            billing_city = null,
+            billing_postcode = null,
+            is_billing_same = null
         }
     ) {
 
@@ -99,13 +117,23 @@ export default class ApplicationSummary {
         this.unit_number = unit_number;
         this.street_name = street_name;
 
+        this.billing_unit_number = billing_unit_number,
+            this.billing_street_number = billing_street_number,
+            this.billing_street_name = billing_street_name,
+            this.billing_address_text = billing_address_text,
+            this.billing_address_unit = billing_address_unit,
+            this.billing_street_address = billing_street_address,
+            this.billing_city = billing_city,
+            this.billing_postcode = billing_postcode,
+            this.is_billing_same = is_billing_same
+
     }
 
      mapStatus(status)
     {
         status = status - 1;
         if(status < 0) return  '';
-        const statusList = ['UnAssigned','Assigned', 'Escalated','Submitted', 'Accepted', 'Rejected'];
+        const statusList = ['unassigned','assigned', 'escalated','submitted', 'accepted', 'rejected'];
         return statusList[status];
     }
 }

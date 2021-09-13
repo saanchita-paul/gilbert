@@ -78,6 +78,20 @@ class ApplicationService
         $existingApplication->country = $address['country'];
         $existingApplication->mirn = $address['mirn'] ?? $existingApplication->mirn;
         $existingApplication->nmi = $address['nmi'] ?? $existingApplication->nmi;
+        $existingApplication->is_billing_same = $address['is_billing_same'];
+
+
+        if(!$address['is_billing_same'])
+        {
+            $existingApplication->billing_address_text = $address['billing_address_text'];
+            $existingApplication->billing_street_address = $address['billing_street_address'];
+            $existingApplication->billing_street_name = $address['billing_street_name'];
+            $existingApplication->billing_street_number = empty($address['billing_street_address']) ? null : $address['billing_street_number'] ;
+            $existingApplication->billing_city = empty($address['billing_city']) ? null : $address['billing_city'] ;
+            $existingApplication->billing_postcode = empty($address['billing_postcode']) ? null : $address['billing_postcode'] ;
+////            $existingApplication->billing_state = empty($address['billing_state']) ? null : $address['billing_state'] ;
+//            $existingApplication->billing_country = empty($address['billing_country']) ? null : $address['billing_country'] ;
+        }
         $existingApplication->save();
 
         return $existingApplication;
@@ -115,6 +129,20 @@ class ApplicationService
 
         if($identification->first())
         {
+            if(!empty($identificationData['type']))
+            {
+                $identificationData = array_merge($identificationData,
+                    ['expire_date'=>null,
+                        'card_number'=>null,
+                        'state'=>null,
+                        'country'=>null,
+                        'card_color'=>null,
+                        'special_number'=>null,
+                        'expire_date'=> null,
+                    ]
+                );
+            }
+
            return $identification->update($identificationData);
         }
         $identificationData['connection_application_id'] = $id;
@@ -127,7 +155,6 @@ class ApplicationService
     {
         $lead = $applications['lead'];
         $lead['status'] = ConnectionApplication::STATUS_SUBMITTED;
-        $lead['moving_date'] = "2021-09-08";
         $lead = array_merge($lead, ['plan_type' => ConnectionApplication::PLAN_TYPE_MAPPER[$lead['plan_type']]]);
         $existLead = ConnectionApplication::findOrFail($id);
         $existLead->update($lead);

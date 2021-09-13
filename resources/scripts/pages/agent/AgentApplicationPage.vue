@@ -3,7 +3,7 @@
         <v-row class="mt-0">
             <v-col cols="8">
                 <v-card  class="hood-card">
-                    <h3 v-if="user" class="page-title">Hi {{ user.profile.first_name }}, <small class="font-weight-thin">heres a
+                    <h3 v-if="user" class="page-title">Hi {{ user.profile.first_name }}, <small class="font-weight-thin font-weight">heres a
                         summary of your applications.</small></h3>
                     <AgentLeadMetrics></AgentLeadMetrics>
                 </v-card>
@@ -95,5 +95,9 @@ export default {
 <style scoped>
 .row-pointer >>> tbody tr :hover {
     cursor: pointer;
+}
+
+.intro-message {
+    font-weight: 400 !important;
 }
 </style>

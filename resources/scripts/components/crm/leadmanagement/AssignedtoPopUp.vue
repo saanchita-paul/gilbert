@@ -8,8 +8,7 @@
                             {{lead.first_name}} {{lead.last_name}} has been {{ assignedText }} to {{user.first_name + ' ' + user.last_name}}.
                         </h2>
                         <p>It will now show on the his/her “My Leads”</p>
-                        <v-btn color="primary" class="mx-auto" @click="cancelModal">Done</v-btn>
-
+                        <v-btn block color="primary"  @click="cancelModal">Done</v-btn>
                  </v-card>
 
 </template>

@@ -1,18 +1,15 @@
 <?php
+
 namespace App\Services\Agency;
 
+use App\Models\APILog;
 use App\Models\ConnectionApplication;
-use App\Models\ConnectionService;
 use App\Models\Identification;
-use Couchbase\Exception;
-use DateTime;
-use Illuminate\Console\Application;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use function PHPUnit\Framework\isNull;
 
 class HubspotContactService
 {
@@ -31,12 +28,14 @@ class HubspotContactService
      */
     public function create()
     {
-        $url = config('hub_spot.create_contact').config('hub_spot.api_key');
+        $url = config('hub_spot.create_contact') . config('hub_spot.api_key');
+        $url = APILog::setLoggerQuery($url, APILog::API_HB_CREATE_CONTACT);
+
         $response = Http::post($url, [
             "properties" => $this->getProperties()
         ]);
-        info($response->body());
         $body = json_decode($response->body(), true);
+
         if (empty($body['vid'])) {
             Log::error($response->body());
             throw new \Exception("[HubspotContactService] failed to create contact");
@@ -55,9 +54,12 @@ class HubspotContactService
         $vid = $this->application->hubspot_contact_id;
 
         $url = str_replace('${id}', $vid, config('hub_spot.update_contact')) . config('hub_spot.api_key');
+        $url = APILog::setLoggerQuery($url, APILog::API_HB_UPDATE_CONTACT);
+
         $response = Http::post($url, [
             "properties" => $this->getProperties()
         ]);
+
         if (!$response->successful()) {
             Log::info('[HubspotContactService]: response body');
             Log::info($response->body());
@@ -281,7 +283,7 @@ class HubspotContactService
         } catch (\Exception $exception) {
             Log::error("[HubspotContactService] Failed parsing expire date for type: $type, value: $value");
             Log::error($exception->getTraceAsString());
-            return  null;
+            return null;
         }
     }
 
@@ -310,8 +312,8 @@ class HubspotContactService
     private function getStatus(): string
     {
         return match ($this->application->status) {
-          ConnectionApplication::STATUS_UNASSIGNED => 'NEW',
-          ConnectionApplication::STATUS_SUBMITTED => 'IN_PROGRESS'
+            ConnectionApplication::STATUS_UNASSIGNED => 'NEW',
+            ConnectionApplication::STATUS_SUBMITTED, 'default' => 'IN_PROGRESS', //todo: handle default correctly
         };
     }
 }
