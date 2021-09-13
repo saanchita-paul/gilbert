@@ -12,7 +12,7 @@
                                    @updateNote= "updateNote"
                                    :leadSummary="leadSummary" :notes="notes"></LeadServicesAndNotes>
 
-            <LeadsDetailsFotter v-if="leadSummary.status != 1" :login-loading="this.submittedLoader" @submitConnection="submitConnection"></LeadsDetailsFotter>
+            <LeadsDetailsFotter v-if="leadSummary.status != 1" :login-loading="this.submittedLoader" :isManualChangeFlag="isManualChangeFlag" @submitConnection="submitConnection"></LeadsDetailsFotter>
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
             <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" :title="fullName"></EscalationConfirmModal>
             <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag"
@@ -34,26 +34,7 @@ import LeadSubmitConfirmationModal from "@scripts/components/crm/modals/LeadSubm
 import LeadApplicationAPI from "@scripts/api/crm/LeadApplicationAPI";
 export default {
     name: "ApplicationDetailsPage",
-    data() {
-      return {
-          leadId: null,
-          leadSummary: null,
-          notes: null,
-          planNoteFlag: false,
-          escalateLead: false,
-          escalateLeadConfirm: false,
-          readMoreFlag: false,
-          additionalInstruction:null,
-          lead: null,
-          plan: null,
-          supplier: 'ea',
-          services: [],
-          showSubmitModal: false,
-          payload: null,
-          fullName: null,
-          submittedLoader: false,
-      }
-    },
+
     components: {
         LeadReadMoreModal,
         EscalationConfirmModal,
@@ -65,6 +46,31 @@ export default {
 
     },
 
+    data() {
+        return {
+            leadId: null,
+            leadSummary: null,
+            notes: null,
+            planNoteFlag: false,
+            escalateLead: false,
+            escalateLeadConfirm: false,
+            readMoreFlag: false,
+            additionalInstruction:null,
+            lead: null,
+            plan: null,
+            supplier: 'ea',
+            services: [],
+            showSubmitModal: false,
+            payload: null,
+            fullName: null,
+            submittedLoader: false,
+            isManualChangeFlag: false,
+        }
+    },
+
+    computed: {
+
+    },
     methods: {
         async loadPlanNoteAndLead()
         {
@@ -179,14 +185,16 @@ export default {
             let response = await LeadApplicationService.updateAddress(address, this.leadId);
         },
 
-       async updateDraft(field, value, isDate, identification) {
-            await LeadApplicationService.saveSoleField(field, value,this.leadId, isDate, identification);
+       async updateDraft(field, value, isDate, identification, isManualChangeFlag) {
+            await LeadApplicationService.saveSoleField(field, value,this.leadId, isDate, identification, isManualChangeFlag);
+            this.isManualChangeFlag = isManualChangeFlag;
 
            let [day, month, year] = [];
             if(isDate)
             {
                 [day, month, year] = value.split('/');
                 value = year + '-' + month + '-' + day;
+                console.log('field', field, value)
             }
             if(identification) {
 
