@@ -52,7 +52,7 @@
                             :maxlength="10"
                             outlined
                             dense
-                            placeholder="+61 410"
+                            placeholder="04XX XXX XXX"
                             v-model="application.phone"
                             :error-messages=" errors[0]"
                         ></v-text-field>
