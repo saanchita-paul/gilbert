@@ -42,9 +42,9 @@ class AddBillingAddressToConnectionApplication extends Migration
             $table->dropColumn('billing_address_unit');
             $table->dropColumn('billing_street_address');
             $table->dropColumn('billing_city');
-            $table->dropColumn('billing_state', 45);
+            $table->dropColumn('billing_state');
             $table->dropColumn('billing_postcode');
-            $table->boolean('is_billing_same')->nullable();
+            $table->dropColumn('is_billing_same');
         });
     }
 }
