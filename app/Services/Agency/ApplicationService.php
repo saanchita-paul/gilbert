@@ -131,7 +131,7 @@ class ApplicationService
         $identification = Identification::where('connection_application_id', $id);
 
         if ($identification->first()) {
-            if (!empty($identificationData['type'])) {
+//            if (!empty($identificationData['type'])) {
                 $identificationData = array_merge(
                     ['expire_date' => null,
                         'card_number' => null,
@@ -141,7 +141,7 @@ class ApplicationService
                         'special_number' => null,
                     ], $identificationData
                 );
-            }
+//            }
 
             return $identification->update($identificationData);
         }
