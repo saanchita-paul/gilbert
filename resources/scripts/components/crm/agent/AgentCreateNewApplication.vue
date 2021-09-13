@@ -281,6 +281,9 @@
             @cancelApplicationModal="cancelApplicationModal"
             @saveApplication="saveApplication">
         </AgentConfirmApplicationModal>
+        <LeadCreateSuccessfulModal  v-if="createSuccessfulModal" :dialog="createSuccessfulModal" @done="done" :title="title">
+
+        </LeadCreateSuccessfulModal>
     </v-container>
 </template>
 
@@ -292,10 +295,12 @@ import debounce from 'lodash-es/debounce';
 import GoogleMapService from "@scripts/services/GoogleMapService";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import DayJs from "dayjs";
+import LeadCreateSuccessfulModal from "@scripts/components/crm/modals/LeadCreateSuccessfulModal";
 
 export default {
     name: "AgentCreateNewApplication",
     components: {
+        LeadCreateSuccessfulModal,
         AgentConfirmApplicationModal,
     },
     data() {
@@ -331,7 +336,9 @@ export default {
               { start: new Date(2021, 0, 2), end: new Date(2021, 9, 19) },
             ],
             dob: (new DayJs((new Date()).setFullYear(2000))).format('YYYY-MM-DD'),
-            moving_date: null
+            moving_date: null,
+            createSuccessfulModal: false,
+            title: '',
         }
     },
     created() {
@@ -379,7 +386,9 @@ export default {
             this.confirmApplicationModal = false;
             AgentApplicationService.createApplication(this.application)
                 .then(res =>  {
-                    this.$router.push({name: 'agent.application.dashboard'});
+                    this.title = res.data.data.first_name + ' ' + res.data.data.last_name;
+                    this.createSuccessfulModal = true;
+                    // this.$router.push({name: 'agent.application.dashboard'});
                 })
         },
         serviceInsert(item) {
@@ -392,6 +401,10 @@ export default {
                 this.application.service_interests.splice(this.application.service_interests.indexOf(item), 1);
                 this.service_types[item] = false;
             }
+        },
+
+        done() {
+            this.$router.push({name: 'agent.application.dashboard'});
         }
     },
     watch: {
