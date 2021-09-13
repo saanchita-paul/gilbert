@@ -32,6 +32,8 @@ import EscalationConfirmModal from "@scripts/components/crm/modals/EscalationCon
 import LeadReadMoreModal from "@scripts/components/crm/modals/LeadReadMoreModal";
 import LeadSubmitConfirmationModal from "@scripts/components/crm/modals/LeadSubmitConfirmationModal";
 import LeadApplicationAPI from "@scripts/api/crm/LeadApplicationAPI";
+import * as dayjs from "dayjs";
+import {isNull} from "lodash-es";
 export default {
     name: "ApplicationDetailsPage",
 
@@ -186,15 +188,37 @@ export default {
         },
 
        async updateDraft(field, value, isDate, identification, isManualChangeFlag) {
+
+            if(isNull(value)) return;
+
+            if(isDate)
+            {
+                if(field == 'dob'&& dayjs(value,'DD/MM/YYYY').isSame(this.leadSummary.dob))
+                {
+                    return;
+                }
+
+                if(field == 'moving_date' &&dayjs(value,'DD/MM/YYYY').isSame(this.leadSummary.moving_date))
+                {
+                    return;
+                }
+
+                if(field == 'expire_date' &&dayjs(value,'DD/MM/YYYY').isSame(this.leadSummary.identification.expire_date))
+                {
+                   return;
+                }
+            }
+
             await LeadApplicationService.saveSoleField(field, value,this.leadId, isDate, identification, isManualChangeFlag);
-            this.isManualChangeFlag = isManualChangeFlag;
+
+                this.isManualChangeFlag = true;
+
 
            let [day, month, year] = [];
             if(isDate)
             {
                 [day, month, year] = value.split('/');
                 value = year + '-' + month + '-' + day;
-                console.log('field', field, value)
             }
             if(identification) {
 
@@ -206,6 +230,7 @@ export default {
                     this.leadSummary.identification.state = '';
                     this.leadSummary.identification.country = '';
                 }
+
                 this.leadSummary.identification[field] = value;
                 return;
             }

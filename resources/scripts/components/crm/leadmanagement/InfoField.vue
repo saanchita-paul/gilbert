@@ -498,6 +498,7 @@
 import ServiceAddress from "@scripts/components/crm/ServiceAddress";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import DayJs from "dayjs";
+import {isNull} from "lodash-es";
 
 export default {
   name: "InfoField",
@@ -693,6 +694,7 @@ export default {
         },
 
         synFormData () {
+            // console.log(this.lead.identification?.expire_date);
             this.person_details.title = this.lead.title;
             this.person_details.first_name = this.lead.first_name;
             this.person_details.last_name = this.lead.last_name;
@@ -796,8 +798,9 @@ export default {
 
         expire_date()
         {
+            if(isNull(this.expire_date)) return;
             this.indentification.expire_date = new DayJs(this.expire_date).format('DD/MM/YYYY');
-            this.$emit('updateDraft', 'expire_date',  this.indentification.expire_date, true, true);
+             this.$emit('updateDraft', 'expire_date',  this.indentification.expire_date, true, true);
         }
 
 
