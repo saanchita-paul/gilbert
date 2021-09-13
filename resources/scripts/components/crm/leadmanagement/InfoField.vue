@@ -4,7 +4,7 @@
             <p class="sub-title title-align">Personal Details</p>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>Title</span>
+                    <span>Title *</span>
                 </div>
 
                 <div class="text-field">
@@ -24,7 +24,7 @@
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>Firstname</span>
+                    <span>Firstname *</span>
                 </div>
                 <div class="text-field">
                         <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
@@ -42,7 +42,7 @@
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>Lastname</span>
+                    <span>Lastname *</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
@@ -58,7 +58,7 @@
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>Date of Birth</span>
+                    <span>Date of Birth *</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Date of Birth" rules="required"  v-slot="{ errors }">
@@ -97,7 +97,7 @@
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>Mobile</span>
+                    <span>Mobile *</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Mobile Number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
@@ -114,7 +114,7 @@
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>Email</span>
+                    <span>Email *</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Email" rules="required|email"  v-slot="{ errors }">
@@ -129,7 +129,7 @@
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>Email Billing</span>
+                    <span>Email Billing *</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Email Billing" rules="required"  v-slot="{ errors }">
@@ -140,7 +140,7 @@
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>Tenancy Type</span>
+                    <span>Tenancy Type *</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Tenant Type" rules="required"  v-slot="{ errors }">
@@ -159,7 +159,7 @@
             <p class="sub-title title-align">Property Details</p>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>Connection Date</span>
+                    <span>Connection Date *</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Connection Date" rules="required"  v-slot="{ errors }">
@@ -201,7 +201,7 @@
             </ValidationProvider>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>Service Address</span>
+                    <span>Service Address *</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Service Address" rules="required"  v-slot="{ errors }">
@@ -233,7 +233,7 @@
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>Property Type</span>
+                    <span>Property Type *</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Property Type" rules="required"  v-slot="{ errors }">
@@ -248,7 +248,7 @@
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>Life Support</span>
+                    <span>Life Support *</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Life Support" rules="required"  v-slot="{ errors }">
@@ -263,7 +263,7 @@
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>Solar Power</span>
+                    <span>Solar Power *</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Solar Power" rules="required"  v-slot="{ errors }">
@@ -278,7 +278,7 @@
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>NMI (Power)</span>
+                    <span>NMI (Power) *</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="NMI" rules="required"  v-slot="{ errors }">
@@ -295,7 +295,7 @@
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>MIRN (Gas)</span>
+                    <span>MIRN (Gas) *</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="MIRN" rules="required"  v-slot="{ errors }">
@@ -317,7 +317,7 @@
             <p class="sub-title title-align">Identification</p>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>Identification</span>
+                    <span>Identification *</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Identification Number" rules="required"  v-slot="{ errors }">
@@ -333,7 +333,7 @@
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>{{indentification.type == 1?'Passport Number':indentification.type == 2?'Driver’s License':indentification.type == 3?'Medicare Card':'Card'}} </span>
+                    <span>{{indentification.type == 1?'Passport Number':indentification.type == 2?'Driver’s License':indentification.type == 3?'Medicare Card':'Card'}} * </span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider :name="indentification.type == 1?'Passport Number':indentification.type == 2?'Driver’s License':indentification.type == 3?'Medicare Card ':''" rules="required"  v-slot="{ errors }">
@@ -352,7 +352,7 @@
             </div>
             <div class="crm-text-field" v-if="indentification.type == 1">
                 <div class="field-label">
-                    <span>Country</span>
+                    <span>Country *</span>
                 </div>
                 <div class="text-field" >
                     <ValidationProvider name="Country" rules="required"  v-slot="{ errors }">
@@ -372,7 +372,7 @@
 
             <div class="crm-text-field" v-if="indentification.type == 2">
                 <div class="field-label">
-                    <span>State</span>
+                    <span>State *</span>
                 </div>
                 <div class="text-field" >
                     <ValidationProvider name="State" rules="required"  v-slot="{ errors }">
@@ -395,7 +395,7 @@
 
             <div class="crm-text-field" v-if="indentification.type == 3">
                 <div class="field-label">
-                    <span>Special Number</span>
+                    <span>Special Number *</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Special Number" rules="required"  v-slot="{ errors }">
@@ -409,7 +409,7 @@
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>Expiry Date</span>
+                    <span>Expiry Date *</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Expired Date" rules="required"  v-slot="{ errors }">
@@ -449,7 +449,7 @@
             </div>
             <div class="crm-text-field" v-if="indentification.type == 3">
                 <div class="field-label">
-                    <span>Card Colour</span>
+                    <span>Card Colour *</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="Card Color" rules="required"  v-slot="{ errors }">
