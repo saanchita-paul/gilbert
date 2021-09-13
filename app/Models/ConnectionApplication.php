@@ -153,6 +153,7 @@ class ConnectionApplication extends Model
         'billing_street_address',
         'billing_city',
         'billing_postcode',
+        'submitted_by'
     ];
 
 

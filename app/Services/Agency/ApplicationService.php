@@ -154,12 +154,21 @@ class ApplicationService
     public function submit(array $applications, $id)
     {
         $lead = $applications['lead'];
-        $lead['status'] = ConnectionApplication::STATUS_SUBMITTED;
-        $lead = array_merge($lead, ['plan_type' => ConnectionApplication::PLAN_TYPE_MAPPER[$lead['plan_type']]]);
+        $lead = array_merge($lead, [
+            'plan_type' => ConnectionApplication::PLAN_TYPE_MAPPER[$lead['plan_type']],
+            'assigned_to' => null,
+            'status' => ConnectionApplication::STATUS_SUBMITTED,
+            'submitted_by' => auth()->id(),
+        ]);
+
         $existLead = ConnectionApplication::findOrFail($id);
+
         $existLead->update($lead);
+
         $this->createIdentification($lead['identification'], $id);
+
         $this->updateConnectionService($lead['service_interests'], $id);;
+
         return $existLead;
     }
 
