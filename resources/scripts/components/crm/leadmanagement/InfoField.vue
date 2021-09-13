@@ -246,7 +246,7 @@
                     </ValidationProvider>
                 </div>
             </div>
-            <div class="crm-text-field">
+            <div class="crm-text-field" v-if="false">
                 <div class="field-label">
                     <span>Life Support *</span>
                 </div>
