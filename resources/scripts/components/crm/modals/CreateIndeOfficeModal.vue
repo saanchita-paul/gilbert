@@ -17,11 +17,11 @@
                     <ProgressBar :total-step="totalStep" :current-index="currentCompIndex" ></ProgressBar>
                     <v-row>
                         <v-col cols="12">
-                            <div class="d-flex justify-space-between">
-                                <v-btn @click="cancel"
+                            <div class="d-flex justify-center">
+                                <v-btn class="mr-2" @click="cancel"
                                 >{{backOrCancel}}
                                 </v-btn>
-                                <v-btn @click="goNextOrSave"
+                                <v-btn class="ml-2" @click="goNextOrSave"
                                        color="primary"
                                        :disabled="isDisable"
                                 >
