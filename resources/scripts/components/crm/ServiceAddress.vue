@@ -11,11 +11,11 @@
                         <v-row class="section-dialogs">
                             <v-col cols="12">
                                 <div class="dialogs-title">
-                                    <p>Service Address</p>
+                                    <p>Address</p>
                                 </div>
 
                                 <div class="dialogs-area pt-5">
-                                    <p class="title">Address</p>
+                                    <p class="title">Service Address</p>
                                     <v-row>
                                         <v-col cols="12" class="py-0">
                                             <v-row>
@@ -93,13 +93,14 @@
                                             <v-checkbox
                                                 v-model="propertyDetails.is_billing_same"
                                                 @change="changeIsBillingSame"
-                                                :label="`Is this the same as your billing address?`"
+                                                :label="`I have a different billing address.`"
                                             ></v-checkbox>
                                         </v-col>
                                     </v-row>
 
 
                                   <v-row v-if="!propertyDetails.is_billing_same">
+                                    <p class="title pl-3" >Billing Address</p>
                                     <v-col cols="12" class="py-0">
                                       <v-row>
                                         <v-col cols="12" class="py-0">
