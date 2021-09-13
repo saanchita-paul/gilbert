@@ -749,7 +749,7 @@ export default {
 
         saveDraft(field, value, isDate = false, identification = false)
         {
-            this.$emit('updateDraft', field, value, isDate, identification);
+            this.$emit('updateDraft', field, value, isDate, identification,true);
 
         },
 
