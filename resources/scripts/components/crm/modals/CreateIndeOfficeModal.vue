@@ -165,8 +165,8 @@ name: "CreateIndeOfficeModal",
                 return false;
             }
 
-            if((gas.length >2 || (Number(gas)<1 || Number(gas)> 99) ) ||
-                (power.length >2 || (Number(power)<1 || Number(power)> 99) )
+            if((gas.length >5 || (Number(gas)<1 || Number(gas)> 99) ) ||
+                (power.length >5 || (Number(power)<1 || Number(power)> 99) )
                 // (water.length >2 || (Number(water)<1 || Number(water)> 99) ) ||
                 // (internet.length >2 || (Number(internet)<1 || Number(internet)> 99) )
 
