@@ -1,3 +1,6 @@
+import DayJs from "dayjs";
+import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
+
 export default class ApplicationSummary {
     id = null;
     first_name = null;
@@ -10,11 +13,14 @@ export default class ApplicationSummary {
     tenancy_type = null;
     address_unit = null;
     street_address = null;
+    street_name = null;
     city = null;
     state = null;
     country = 'Australia';
     postcode = null;
     address_text = null;
+    unit_number = null;
+    street_number = null;
     service_interests = [];
     additional_instruction = null;
     applicant_name = null;
@@ -25,6 +31,15 @@ export default class ApplicationSummary {
     has_life_support = null;
     has_solar = null;
     status = null;
+    billing_unit_number = null;
+    billing_street_number = null;
+    billing_street_name = null;
+    billing_address_text = null;
+    billing_address_unit = null;
+    billing_street_address = null;
+    billing_city = null;
+    billing_postcode = null;
+    is_billing_same = null;
     constructor(
         {
             id = null,
@@ -41,6 +56,9 @@ export default class ApplicationSummary {
             street_address = null,
             city = null,
             state = null,
+            unit_number = null,
+            street_number = null,
+            street_name = null,
             country = 'Australia',
             postcode = null,
             address_text = null,
@@ -53,6 +71,15 @@ export default class ApplicationSummary {
             has_solar = null,
             property_type = null,
             status = null,
+            billing_unit_number = null,
+            billing_street_number = null,
+            billing_street_name = null,
+            billing_address_text = null,
+            billing_address_unit = null,
+            billing_street_address = null,
+            billing_city = null,
+            billing_postcode = null,
+            is_billing_same = null
         }
     ) {
 
@@ -64,7 +91,7 @@ export default class ApplicationSummary {
         this.dob = date_of_birth;
         this.phone = phone;
         this.email = email;
-        this.moving_date = moving_date;
+        this.moving_date = moving_date? new DayJs(moving_date).format('YYYY-MM-DD'):null;
         this.is_email_billing = is_email_billing;
         this.tenancy_type = tenancy_type;
         this.tenancy_type = tenancy_type;
@@ -85,7 +112,28 @@ export default class ApplicationSummary {
         this.has_life_support = has_life_support;
         this.has_solar = has_solar;
         this.property_type = property_type;
-        this.status = status;
+        this.status = this.mapStatus(status);
+        this.street_number = street_number;
+        this.unit_number = unit_number;
+        this.street_name = street_name;
 
+        this.billing_unit_number = billing_unit_number,
+            this.billing_street_number = billing_street_number,
+            this.billing_street_name = billing_street_name,
+            this.billing_address_text = billing_address_text,
+            this.billing_address_unit = billing_address_unit,
+            this.billing_street_address = billing_street_address,
+            this.billing_city = billing_city,
+            this.billing_postcode = billing_postcode,
+            this.is_billing_same = is_billing_same
+
+    }
+
+     mapStatus(status)
+    {
+        status = status - 1;
+        if(status < 0) return  '';
+        const statusList = ['Unassigned','Assigned', 'Escalated','Submitted', 'Accepted', 'Rejected','Inprogress'];
+        return statusList[status];
     }
 }

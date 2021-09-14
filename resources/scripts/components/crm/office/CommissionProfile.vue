@@ -7,7 +7,7 @@
 
         <div class="dialogs-area">
           <p class="title">Per successful connection</p>
-            <ValidationProvider name="Power" rules="numeric|max:2|min_value:1|required"  v-slot="{ errors }">
+            <ValidationProvider name="Power" rules="required|between:1,99|max:5|min:2"  v-slot="{ errors }">
               <v-text-field
                 label="Power"
                 v-model="profile.power"
@@ -19,7 +19,7 @@
                 :error-messages=" errors[0]"
               ></v-text-field>
             </ValidationProvider>
-            <ValidationProvider name="Gas" rules="numeric|max:2|min_value:1|required"  v-slot="{ errors }">
+            <ValidationProvider name="Gas" rules="required|between:1,99|max:5|min:2"  v-slot="{ errors }">
               <v-text-field
                 label="Gas"
                 placeholder="$ 0.00"
@@ -38,6 +38,7 @@
                 v-model="profile.water"
                 @input="updateProfile"
                 outlined
+                disabled
                 dense
                 prepend-inner-icon="mdi-water blue-grey--text"
                 :error-messages=" errors[0]"
@@ -50,6 +51,7 @@
                 v-model="profile.internet"
                 @input="updateProfile"
                 outlined
+                disabled
                 dense
                 prepend-inner-icon="mdi-wifi black--text"
                 :error-messages=" errors[0]"
@@ -84,7 +86,6 @@ export default {
 
         updateWithProps()
         {
-            console.log(this.data);
            this.profile = this.data?.profile;
         }
     },

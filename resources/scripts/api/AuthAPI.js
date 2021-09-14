@@ -26,5 +26,9 @@ export default {
 
     checkBotAuth: () => {
         axios.get(`${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api/test`)
-    }
+    },
+
+    checkUniqueEmail: async (email) => {
+        return (await  axios.get(`/api/users/is-unique-email?email=${email}`)).data.data?.is_unique_email;
+    },
 }

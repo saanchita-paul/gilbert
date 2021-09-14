@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers\Agency;
 
+use App\Events\Agency\CreateApplicationEvent;
+use App\Events\Agency\SubmitApplicationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Agency\ApplicationRequest;
-use App\Http\Resources\Agency\AgencyResource;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
-use App\Http\Resources\Agency\ApplicationNoteResourse;
 use App\Http\Resources\Agency\ApplicationResource;
-use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
-use App\Models\Identification;
 use App\Models\User;
-use App\Services\Agency\ApplicationNoteService;
 use App\Services\Agency\ApplicationService;
 use App\Services\Agency\ApplicationsMetricsService;
+use App\Services\Agency\HubspotContactService;
 use App\Services\Agency\SearchConnectionApplication;
+use App\Services\FastConnectService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 
 class ApplicationController extends Controller
 {
@@ -42,8 +42,8 @@ class ApplicationController extends Controller
             return ApplicationResource::collection($service->get($user));
 
         } catch (\Exception $exception) {
-            return $this->sendErrorResponse($exception);
-        }
+    return $this->sendErrorResponse($exception);
+}
     }
 
 
@@ -54,19 +54,22 @@ class ApplicationController extends Controller
      *
      */
     public function create(ApplicationRequest $request)
-    {
-        try {
-            /** @var  User $user */
-            $user = Auth::user();
+{
+    try {
+        /** @var  User $user */
+        $user = Auth::user();
 
-            $service = new ApplicationService();
-            $inputData = $request->toArray();
-            return ApplicationResource::make($service->createApplication($inputData, $user));
+        $service = new ApplicationService();
+        $application = $service->createApplication($request->toArray(), $user);
 
-        } catch (\Exception $exception) {
-            return $this->sendErrorResponse($exception);
-        }
+        CreateApplicationEvent::dispatch($application->id);
+
+        return ApplicationResource::make($application);
+
+    } catch (\Exception $exception) {
+        return $this->sendErrorResponse($exception);
     }
+}
 
     /**agencyId
      * Getting Agency list
@@ -92,17 +95,17 @@ class ApplicationController extends Controller
      * @return JsonResponse
      */
     public function getMetrics(): JsonResponse
-    {
-        try {
-            /** @var User $user */
-            $user = auth()->user();
-            $service = new ApplicationsMetricsService($user->profile_id, $user->profile?->office_id);
+{
+    try {
+        /** @var User $user */
+        $user = auth()->user();
+        $service = new ApplicationsMetricsService($user->profile_id, $user->profile?->office_id);
             return response()->json(['data' => $service->toArray()]);
 
         } catch (\Exception $exception) {
-            return $this->sendErrorResponse($exception);
-        }
+        return $this->sendErrorResponse($exception);
     }
+}
 
 
 
@@ -128,6 +131,27 @@ class ApplicationController extends Controller
         }
     }
 
+    /**
+     * Assigning user to an Application
+     *
+     * @param Request $request
+     * @param int $applicationId
+     *
+     */
+    public function updateAddress(Request $request, int $applicationId)
+    {
+        try {
+            $inputData = $request->get('address');
+            $svcUtilities = new FastConnectService();
+            $result = $svcUtilities->authenticate()->searchAddress($inputData);
+            $service = new ApplicationService();
+
+            return ApplicationResource::make($service->updateAddress(array_merge($inputData, $result), $applicationId));
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
 
     /**
      * Submitting an Application
@@ -138,15 +162,18 @@ class ApplicationController extends Controller
      * @return ApplicationResource|JsonResponse
      */
     public function submit(Request $request, $id)
-    {
+{
+    try {
+        $service = new ApplicationService();
+        $res = $service->submit($request->toArray(), $id);
 
-        try {
-            $service = new ApplicationService();
-            return ApplicationResource::make($service->submit($request->toArray(), $id));
-        } catch (\Exception $exception) {
-            return $this->sendErrorResponse($exception);
-        }
+        SubmitApplicationEvent::dispatch($id);
+
+        return ApplicationResource::make($res);
+    } catch (\Exception $exception) {
+        return $this->sendErrorResponse($exception);
     }
+}
 
     /**
      * Updating status to escalate of an application
@@ -175,17 +202,30 @@ class ApplicationController extends Controller
      * @param Request $request
      *
      */
-    public function getApplicationMetricsCount()
+    public function getApplicationMetricsCount(Request $request)
     {
         try {
             $user = auth()->user();
             $service = new ConnectionService();
-            $service= $service->allApplicationMetricsCount($user->profile->office_id);
-
-            return ApplicationMetricsResource::make($service);
+            $inputData = $request->toArray();
+            $data= $service->allApplicationMetricsCount($inputData, $user);
+            return ApplicationMetricsResource::make($data);
 
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
+
+    public function saveDraft(Request $request, $id)
+    {
+        try {
+            $service = new ApplicationService();
+            $res = $service->updateSoleField($request->toArray(), $id);
+            return response()->json(['success' => true, 'data' => $res]);
+
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
 }

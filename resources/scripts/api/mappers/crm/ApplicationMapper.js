@@ -5,11 +5,24 @@ import Note from "@scripts/models/crm/Note";
 import ServiceProvider from "@scripts/models/crm/ServiceProvider";
 import COMMISSION from "@scripts/data/constants/COMMISSION";
 import PaginationMapper from "@scripts/api/mappers/crm/PaginationMapper";
+import DayJS from "dayjs";
+import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 export default {
     mapApplication(data) {
         let model = Object.assign(new Application(), { ...data });
+        model.status = this.mapStatus(model.status);
+        model.moving_date = new DayJS(model.moving_date).format(DATE_FORMAT.DB_DATE);
         return model;
     },
+
+    mapStatus(status)
+    {
+        status = status - 1;
+        if(status < 0) return  '';
+        const statusList = ['UnAssigned','Assigned', 'Escalated','Submitted', 'Accepted', 'Rejected'];
+        return statusList[status];
+    },
+
     mapApplicationList(data) {
         const models = [];
         data.data.forEach((item) => {
@@ -22,8 +35,7 @@ export default {
         };
     },
     mapApplicationSummary(data) {
-        // console.log(data);
-        // let model = Object.assign(new ApplicationSummary(), { ...data });
+
         let model = new ApplicationSummary({...data});
         return model;
     },
@@ -35,9 +47,10 @@ export default {
     },
 
     mapNotes(data) {
-
         return data.map(dt=> {
-            return Object.assign(new Note(), { ...dt });
+              return  new Note({...dt});
+
+
         });
     },
     mapNote(data) {
@@ -79,10 +92,20 @@ export default {
 
         });
         data.service_interests = commsission;
+        data.moving_date = this.mapDateToServer(data.moving_date);
+        data.date_of_birth = this.mapDateToServer(data.date_of_birth);
        return {
            ...data,
            dob: data.date_of_birth,
            is_email_billing: data.email_billing?data.email_billing:0
        }
+    },
+    mapDateToServer(value)
+    {
+          const  [day, month, year] = value.split('/');
+          return year + '-' + month + '-' + day;
+
+
     }
+
 };

@@ -3,6 +3,8 @@ import Store from '@scripts/store/index'
 import User from "@scripts/models/User";
 import router from '@scripts/routes/router';
 import BreadcrumbService from "@scripts/services/BreadcrumbService";
+import Application from "@scripts/models/crm/Application";
+import ApplicationService from "@scripts/services/ApplicationService";
 
 /**
  * get user auth state
@@ -14,7 +16,7 @@ const isAuthenticated = () => Store.getters.isAuthenticated;
 /**
  * Login
  * @param form
- * @return {Promise<boolean>}
+ * @return {Promise<Route>}
  */
 export const login = async form => {
     try {
@@ -22,22 +24,9 @@ export const login = async form => {
         await authUser();
         console.log('LOGIN SUCCESS');
 
-        const user = await AuthAPI.getAuthUser();
+        const user = getAuthUser();
 
-        /**
-         * todo: refactored this dirty code, use constants
-         */
-        if (user.profile_type === 'App\\Models\\AgentProfile') {
-            return await router.push({name: 'agent.application.dashboard'})
-        }
-        if(user.roles.includes('hood_admin')) {
-            return await router.push({name: 'dashboard.utility'})
-        }
-        if(user.roles.includes('hood_agent')) {
-            return await router.push({name: 'real.state.agency.home'})
-        }
-
-        return await router.push({name: 'applications'})
+        return ApplicationService.redirectToUserHome(user.roles[0])
     } catch (e) {
         console.log('LOGIN FAILED', e)
         return false;
@@ -71,6 +60,7 @@ export const checkRouteAuthorization = (to, from, next) => {
     const isLoggedIn = isAuthenticated();
     if (to.meta.isProtected) {
         to.meta.breadcrumbType ? setBreadcrumbs(to.meta.breadcrumbType, to.params) : setBreadcrumbs('empty', 'empty');
+        console.log('logged_in', isLoggedIn)
         isLoggedIn ? next() : next({name: 'login'})
     } else {
         next()
@@ -116,6 +106,8 @@ const hasUserRoles = allowedRoles => {
     return hasRoles;
 }
 
+const isUniqueEmail = email =>  AuthAPI.checkUniqueEmail(email)
+
 export default {
     getAuthUser,
     login,
@@ -127,7 +119,8 @@ export default {
     hasUserRoles,
     hasUserPermissions,
     getBreadcrumbs,
-    setBreadcrumbs
+    setBreadcrumbs,
+    isUniqueEmail
 }
 
 

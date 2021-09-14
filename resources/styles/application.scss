@@ -7,7 +7,7 @@
     .application-info {
         tr {
              td:first-child  {
-                width: 110px;
+                width: 150px;
                 display: block;
                 text-align: right;
                 margin-right: 15px;
@@ -15,20 +15,30 @@
         }
     }
 }
+.application-info {
+    tr {
+        line-height: 35px;
+         td:first-child  {
+            min-width: 150px;
+            display: block;
+            margin-right: 15px;
+        }
+    }
+}
 .applications-badge {
     margin: 5px;
-    padding: 10px;
+    padding: 12px 8px;
     border: 2px solid #E0E0E0;
-    border-radius: 10px;
+    border-radius: 16px;
     flex-basis: 20%;
     .title {
-        font-size: 18px !important;
+        font-size: 18px;
         font-weight: 700;
         margin-bottom: 0px;
         min-height: 70px;
     }
     .number {
-        font-size: 24px;
+        font-size: 32px;
         font-weight: 700;
         margin-bottom: 0px;
     }
@@ -61,6 +71,20 @@
 .list-tile:hover {
     background: lightcyan;
 }
+.personal-details-row {
+    .col-4 {
+        border-right: 1px solid #eee;
+        padding: 0px 24px;
+
+        &:last-child{
+            border-right: none;
+        }
+    }
+
+    .crm-text-field {
+        margin-bottom: 18px;
+    }
+}
 .crm-text-field {
     display: flex;
     margin-bottom: 10px;;
@@ -68,23 +92,29 @@
         flex-basis: 40%;
         font-weight: 700;
         text-align: right;
-        padding-right: 15px;
+        padding-right: 16px;
     }
     .text-field {
         flex-basis: 60%;
     }
 }
-.service-box {
-    padding: 10px 20px;
-    background-color: #E0E0E0;
-    margin: 5px;
-    border-radius: 10px;
-    min-height: 70px;
-    &.active {
-        background-color:$primary_color !important;
-        color: #fff !important;
+.service-box-area {
+    display: flex;
+    width: 100%;
+
+    .service-box {
+        padding: 10px 20px;
+        background-color: #E0E0E0;
+        margin-right: 8px;
+        border-radius: 10px;
+        min-height: 70px;
+        &.active {
+            background-color:$primary_color !important;
+            color: #fff !important;
+        }
     }
 }
+
 .service-box-title
 {
     padding: 5px 20px;
@@ -130,8 +160,6 @@
     }
 }
 .title-align {
-    width: 40%;
-    text-align: right;
     padding-right: 15px;
 }
 .submission-section {
@@ -146,4 +174,18 @@
 }
 .v-breadcrumbs__item--disabled {
     color: gray !important;
+}
+.user-name-area {
+    text-align: right;
+    margin: 10px 10px 0px 10px;
+    h6 {
+        line-height: 10px;
+    }
+    span {
+        font-size: 0.67em !important;
+    }
+}
+
+.selectedRow {
+    background-color: lightgray !important;
 }

@@ -1,0 +1,75 @@
+.loginpage {
+    padding: 0px;
+    height: 100%;
+    background-image: url(/assets/images/loginbg_new.png)  !important;
+    background-position: center;
+    background-size: cover;
+    .container  {
+        height: 100%;
+    }
+    .login-section {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .hood-card {
+            width:450px;
+            padding: 48px !important;
+        }
+    }
+    .login-header {
+        margin-bottom:0px;
+        .dialogs-title {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .v-image {
+            display: block;
+            margin: 20px auto;
+            max-width: 180px;
+            .v-image__image--cover {
+                width: 100% !important;
+                background-size: contain !important;
+            }
+        }
+
+    }
+    .v-card__text {
+        padding: 0px !important;
+    }
+    .actions-link {
+        display: flex;
+        justify-content:space-between ;
+        .v-input--selection-controls {
+            margin-top: 0px !important;
+            padding-top: 0px !important;
+        }
+    }
+    .forgot-text {
+        color: #C0C0C0;
+        text-decoration: none;
+    }
+}
+
+.loginpage.invitation{
+    background-image:url(/assets/images/loginbg_new.png)  !important;
+    .hood-card {
+        padding: 40px 16px !important;
+        .dialogs-title {
+            text-align: left;
+        }
+    }
+    .login-header {
+        margin-bottom: 40px;
+        .v-image {
+            display: block;
+            margin: 20px auto;
+            max-width: 180px;
+            .v-image__image--cover {
+                width: 100% !important;
+                background-size: contain !important;
+            }
+        }
+    }
+
+}

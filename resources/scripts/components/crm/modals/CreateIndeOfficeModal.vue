@@ -17,11 +17,11 @@
                     <ProgressBar :total-step="totalStep" :current-index="currentCompIndex" ></ProgressBar>
                     <v-row>
                         <v-col cols="12">
-                            <div class="d-flex justify-space-between">
-                                <v-btn @click="cancel"
+                            <div class="d-flex justify-center">
+                                <v-btn class="mr-2" @click="cancel"
                                 >{{backOrCancel}}
                                 </v-btn>
-                                <v-btn @click="goNextOrSave"
+                                <v-btn class="ml-2" @click="goNextOrSave"
                                        color="primary"
                                        :disabled="isDisable"
                                 >
@@ -154,24 +154,23 @@ name: "CreateIndeOfficeModal",
         },
 
         checkNumberProfileValidity() {
-          console.log( this.agency.profile);
           let gas =  this.agency.profile?.gas
           let power =  this.agency.profile?.power
           let water =  this.agency.profile?.water
           let internet =  this.agency.profile?.internet
 
             if(isNaN(gas) ||
-                isNaN(power) ||
-                isNaN(water) ||
-                isNaN(internet)
+                isNaN(power)
             ) {
                 return false;
             }
 
-            if((gas.length >2 || (Number(gas)<1 || Number(gas)> 99) ) ||
-                (power.length >2 || (Number(power)<1 || Number(power)> 99) ) ||
-                (water.length >2 || (Number(water)<1 || Number(water)> 99) ) ||
-                (internet.length >2 || (Number(internet)<1 || Number(internet)> 99) )) return  false;
+            if((gas.length >5 || (Number(gas)<1 || Number(gas)> 99) ) ||
+                (power.length >5 || (Number(power)<1 || Number(power)> 99) )
+                // (water.length >2 || (Number(water)<1 || Number(water)> 99) ) ||
+                // (internet.length >2 || (Number(internet)<1 || Number(internet)> 99) )
+
+            ) return  false;
 
             return true;
         }

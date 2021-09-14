@@ -2,7 +2,7 @@
     <v-container fluid>
         <v-card class="hood-card">
             <h2>All Application Metrics</h2>
-            <LeadMetrics></LeadMetrics>
+            <LeadMetrics ></LeadMetrics>
         </v-card>
         <div>
             <v-row class="mt-5">
@@ -10,13 +10,13 @@
                     <Search @updateSearch="updateSearch"></Search>
                 </v-col>
                 <v-col cols="4" class="text-right">
-                    <v-btn color="primary" @click="addAgency"
+                    <v-btn  class="hood-btn" color="primary" @click="addAgency"
                     ><v-icon left>add
                     </v-icon> Add New Agency
                     </v-btn>
                 </v-col>
             </v-row>
-            
+
             <v-card class="hood-card">
                 <v-row>
                     <v-col cols="12" class="crm-table">
@@ -26,7 +26,7 @@
                             :options.sync="options"
                             :server-items-length="totalItem"
                             :loading="loading"
-                            class="elevation-1 row-pointer"
+                            class="row-pointer"
                             @click:row="openAgency"
                         >
                             <template v-slot:item.action="{ item }">
@@ -72,6 +72,7 @@ name: "CrmAgencyDataTable",
     },
     data(){
         return {
+            snack: false,
             agencyCreateModal: false,
             agencyCreateSuccessFullModal: false,
             independenceAgencyModal: false,
@@ -95,7 +96,7 @@ name: "CrmAgencyDataTable",
                 value: 'title'
                 },
                 {
-                    text: 'Total leads',
+                    text: 'Applications',
                     align: 'start',
                     sortable: true,
                     value: 'total_leads'
@@ -130,12 +131,12 @@ name: "CrmAgencyDataTable",
     async  openSuccessfulModal(agency) {
             this.agencyCreateModal = false;
             this.agency = agency;
-
+            this.title = agency.title;
             if(agency && agency.type === 0)
             {
                 this.independenceAgencyModal = true;
             } else {
-                this.title = agency.title;
+
                await this.saveAgencyData();
                 this.agencyCreateSuccessFullModal = true;
             }
@@ -161,7 +162,7 @@ name: "CrmAgencyDataTable",
                 ...this.agency,
                 ...agency
             };
-            this.title = this.agency.office.title;
+            // this.title = this.agency.office.title;
             this.independenceAgencyModal = false;
             await this.saveAgencyData();
             this.agencyCreateSuccessFullModal = true;

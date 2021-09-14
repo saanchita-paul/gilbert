@@ -15,23 +15,33 @@
 
             <v-spacer/>
 
-            <v-toolbar-title class="mx-4">
+            <v-toolbar-title class="user-name-area">
                 <h6>{{ user.profile.first_name }} {{ user.profile.last_name }}</h6>
-                <h6>{{ user.email }}</h6>
+                <span>{{ user.email }}</span>
             </v-toolbar-title>
 
             <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-img v-bind="attrs"
+                    <v-avatar v-if="profileImageFlag" size="50" class="mr-3">
+                           <v-img  v-bind="attrs"
                     v-on="on"
                         class="mx-2"
-                        src="/assets/images/logo/hood_logo_while.png"
+                        src="https://cdn.vuetifyjs.com/images/john.jpg"
                         max-height="40"
                         max-width="40"
                         contain
                     ></v-img>
+                    </v-avatar>
+                  <v-avatar v-if="!profileImageFlag" size="40" class="mr-3" color="white">
+                    <span  v-bind="attrs" v-on="on" class="display-name-purple">{{profile_display_name}}</span>
+                  </v-avatar>
+
                 </template>
-                <ProfileDropdown @onLogout="onLogout" @editProfile="editProfile"></ProfileDropdown>
+                <ProfileDropdown  @onLogout="onLogout"
+                                  :user ="user"
+                                  :profile_display_name="profile_display_name"
+                                  :profileImageFlag="profileImageFlag"
+                                  @editProfile="editProfile"></ProfileDropdown>
             </v-menu>
         </v-app-bar>
 
@@ -68,6 +78,7 @@ export default {
     data() {
         return {
             user: null,
+            profile_display_name: '',
             agency: null,
             drawer: null,
             editProfileFlag: false,
@@ -75,10 +86,14 @@ export default {
             routes: ApplicationService.getMainNavigationRoutes()
         }
     },
-    async mounted() {
-        this.user = AuthService.getAuthUser();
-        this.agency = await this.getAgency(this.user.profile.agency_id);
-        setInterval(AuthService.authUser, 300000)
+    computed:{
+        profileImageFlag()
+        {
+          const flag = Boolean(this.user?.profile?.profile_photo);
+          this.profile_display_name = this.user?.profile?.first_name.charAt(0) + this.user?.profile?.last_name.charAt(0)
+          return flag;
+        }
+
     },
      methods: {
          getHeader() {
@@ -110,6 +125,11 @@ export default {
              this.userProfileUpdateFlag = false;
          }
     },
+    async mounted() {
+      this.user = AuthService.getAuthUser();
+      this.agency = await this.getAgency(this.user.profile.agency_id);
+      setInterval(AuthService.authUser, 300000)
+    },
 }
 </script>
 
@@ -125,6 +145,11 @@ export default {
     line-height: 20px !important;
     letter-spacing: .2px;
     margin-top: 15px;
-    color: rgb(223, 224, 235, 1);
+    color: rgb(223, 224, 235,1);
 }
+.display-name-purple{
+    color: #542E89 !important;
+}
+
+
 </style>

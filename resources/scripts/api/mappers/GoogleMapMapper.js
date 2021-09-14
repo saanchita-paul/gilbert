@@ -27,6 +27,8 @@ export default {
         }
 
         return {
+            street_name: addressValue.route,
+            street_number: addressValue.street_number,
             street,
             city,
             state,
@@ -35,7 +37,8 @@ export default {
             longitude: data.geometry.location.lng(),
             latitude: data.geometry.location.lat(),
             googleId: data.place_id,
-            formatted_address
+            formatted_address,
+            unit_number: addressValue.subpremise ? addressValue.subpremise : null
         };
     }
 };

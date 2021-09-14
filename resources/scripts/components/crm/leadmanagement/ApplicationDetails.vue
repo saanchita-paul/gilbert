@@ -1,8 +1,8 @@
 <template>
-   <v-card class="pa-4" v-if="lead">
+   <v-card class="hood-card" v-if="lead">
         <h3 class="page-title">{{lead.applicant_name}}</h3>
         <p class="sub-title mt-4 mb-2">Personal Details</p>
-        <table width="100%" class="application-info">
+        <table  class="application-info">
             <tr>
                 <td class="font-weight-bold">Date of Birth</td>
                 <td>{{lead.date_of_birth}}</td>
@@ -23,12 +23,16 @@
                 <td class="font-weight-bold">Email billing</td>
                 <td>{{ lead.is_email_billing == 1?'Email':'Paper' }}</td>
             </tr>
+            <tr>
+                <td class="font-weight-bold">Status:</td>
+                <td>{{ lead.status }}</td>
+            </tr>
         </table>
 
         <v-btn block class="my-4" color="primary" @click="goToLeadDetails(lead.id)">View Application Details</v-btn>
 
         <p class="sub-title mt-4 mb-2">Property  Details</p>
-        <table width="100%" class="application-info">
+        <table  class="application-info">
             <tr>
                 <td class="font-weight-bold">Tenancy Type:</td>
                 <td>{{lead.tenancy_type == 1? 'Renter': 'Owner'}}</td>
@@ -37,6 +41,7 @@
                 <td class="font-weight-bold">Service Address:</td>
                 <td>{{lead.address_text}}</td>
             </tr>
+
         </table>
 
         <v-divider class="mt-4 mb-2"></v-divider>
@@ -59,7 +64,7 @@
           <p class="sub-title mb-1">Agent’s Additional Instructions</p>
           <v-textarea v-model="lead.additional_instruction"
             outlined
-            placeholder="Additional Instructions goes here."
+            placeholder="Additional Instructions goes here"
           ></v-textarea>
         </div>
 

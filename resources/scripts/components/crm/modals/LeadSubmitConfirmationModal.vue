@@ -5,7 +5,7 @@
             persistent
             max-width="70%"
         >
-                <div class="section-dialogs">
+                <div>
                   <ConfirmSubmission @backToEdit="backToEdit"  :data="data" @saveData="saveData"></ConfirmSubmission>
                 </div>
         </v-dialog>

@@ -1,0 +1,71 @@
+array(12)
+{
+["vid"]=> int(1601)
+["canonical-vid"]=> int(1601)
+["merged-vids"]=> array(0) {
+
+}
+["portal-id"]=> int(20252758)
+["is-contact"]=> bool(true)
+["properties"]=> array(14) {
+["hs_is_unworked"]=> array(2) {
+["value"]=> string(4) "true"
+["versions"]=> array(1) {
+[0]=> array(7) {
+["value"]=> string(4) "true"
+["source-type"]=> string(10) "CALCULATED" ["source-id"]=> string(26) "CalculatedPropertyComputer" ["source-label"]=> NULL
+["updated-by-user-id"]=> NULL ["timestamp"]=> int(1630645423463) ["selected"]=> bool(false) } } }
+["hood_id"]=> array(2) { ["value"]=> string(1) "7" ["versions"]=> array(1) { [0]=> array(7) {
+["value"]=> string(1) "7"
+["source-type"]=> string(3) "API"
+["source-id"]=> NULL ["source-label"]=> NULL
+["updated-by-user-id"]=> NULL ["timestamp"]=> int(1630645423458)
+["selected"]=> bool(false) } } }
+["lastmodifieddate"]=> array(2) { ["value"]=> string(13) "1630645423463"
+["versions"]=> array(1) { [0]=> array(7) { ["value"]=> string(13) "1630645423463"
+["source-type"]=> string(10) "CALCULATED"
+["source-id"]=> NULL ["source-label"]=> NULL
+["updated-by-user-id"]=> NULL
+["timestamp"]=> int(1630645423463)
+["selected"]=> bool(false) } } }
+["num_unique_conversion_events"]=> array(2) {
+["value"]=> string(1) "0" ["versions"]=> array(1) { [0]=> array(7) {
+["value"]=> string(1) "0" ["source-type"]=> string(10) "CALCULATED"
+["source-id"]=> NULL ["source-label"]=> NULL ["updated-by-user-id"]=> NULL ["timestamp"]=> int(0)
+["selected"]=> bool(false) } } } ["hs_pipeline"]=> array(2) {
+["value"]=> string(27) "contacts-lifecycle-pipeline"
+["versions"]=> array(1) { [0]=> array(7) {
+["value"]=> string(27) "contacts-lifecycle-pipeline"
+["source-type"]=> string(3) "API" ["source-id"]=> NULL
+["source-label"]=> NULL ["updated-by-user-id"]=> NULL
+["timestamp"]=> int(1630645423463) ["selected"]=> bool(false) } } }
+["createdate"]=> array(2) { ["value"]=> string(13) "1630645423463"
+["versions"]=> array(1) { [0]=> array(7) { ["value"]=> string(13) "1630645423463"
+["source-type"]=> string(3) "API" ["source-id"]=> NULL ["source-label"]=> NULL
+["updated-by-user-id"]=> NULL ["timestamp"]=> int(1630645423463) ["selected"]=> bool(false) } } }
+["hs_lifecyclestage_subscriber_date"]=> array(2) { ["value"]=> string(13) "1630645423463"
+["versions"]=> array(1) { [0]=> array(7) { ["value"]=> string(13) "1630645423463" ["source-type"]=> string(3) "API"
+["source-id"]=> NULL ["source-label"]=> NULL ["updated-by-user-id"]=> NULL
+["timestamp"]=> int(1630645423463) ["selected"]=> bool(false) } } }
+["hood_office_id"]=> array(2) { ["value"]=> string(1) "1" ["versions"]=> array(1) { [0]=> array(7) {
+["value"]=> string(1) "1" ["source-type"]=> string(3) "API" ["source-id"]=> NULL ["source-label"]=> NULL
+["updated-by-user-id"]=> NULL ["timestamp"]=> int(1630645423458) ["selected"]=> bool(false) } } }
+["hs_all_contact_vids"]=> array(2) { ["value"]=> string(4) "1601" ["versions"]=> array(1) { [0]=> array(7) {
+["value"]=> string(4) "1601" ["source-type"]=> string(10) "CALCULATED" ["source-id"]=> NULL
+["source-label"]=> NULL ["updated-by-user-id"]=> NULL ["timestamp"]=> int(1630645423504)
+["selected"]=> bool(false) } } } ["hs_is_contact"]=> array(2) { ["value"]=> string(4) "true"
+["versions"]=> array(1) { [0]=> array(7) { ["value"]=> string(4) "true"
+["source-type"]=> string(10) "CALCULATED" ["source-id"]=> NULL ["source-label"]=> NULL
+["updated-by-user-id"]=> NULL ["timestamp"]=> int(1630645423508) ["selected"]=> bool(false) } } }
+["num_conversion_events"]=> array(2) { ["value"]=> string(1) "0" ["versions"]=> array(1) { [0]=> array(7) {
+["value"]=> string(1) "0" ["source-type"]=> string(10) "CALCULATED" ["source-id"]=> NULL
+["source-label"]=> NULL ["updated-by-user-id"]=> NULL ["timestamp"]=> int(1630645423463)
+["selected"]=> bool(false) } } } ["hood_agency_id"]=> array(2) { ["value"]=> string(1) "1"
+["versions"]=> array(1) { [0]=> array(7) { ["value"]=> string(1) "1" ["source-type"]=> string(3) "API"
+["source-id"]=> NULL ["source-label"]=> NULL ["updated-by-user-id"]=> NULL ["timestamp"]=> int(1630645423458)
+["selected"]=> bool(false) } } } ["hs_object_id"]=> array(2) { ["value"]=> string(4) "1601"
+["versions"]=> array(1) { [0]=> array(7) { ["value"]=> string(4) "1601"
+["source-type"]=> string(10) "CALCULATED" ["source-id"]=> NULL ["source-label"]=> NULL
+["updated-by-user-id"]=> NULL ["timestamp"]=> int(1630645423463) ["selected"]=> bool(false) } } }
+["lifecyclestage"]=> array(2) { ["value"]=> string(10) "subscriber" ["versions"]=> array(1) { [0]=> array(7) {
+["value"]=> string(10) "subscriber" ["source-type"]=> string(3) "API" ["source-id"]=> NULL ["source-label"]=> NULL ["updated-by-user-id"]=> NULL ["timestamp"]=> int(1630645423463) ["selected"]=> bool(false) } } } } ["form-submissions"]=> array(0) { } ["list-memberships"]=> array(0) { } ["identity-profiles"]=> array(1) { [0]=> array(10) { ["vid"]=> int(1601) ["created-without-email"]=> bool(true) ["is-deleted"]=> bool(false) ["is-contact"]=> bool(true) ["pointer-vid"]=> int(0) ["previous-vid"]=> int(0) ["linked-vids"]=> array(0) { } ["saved-at-timestamp"]=> int(1630645423508) ["deleted-changed-timestamp"]=> int(0) ["identities"]=> array(1) { [0]=> array(4) { ["type"]=> string(9) "LEAD_GUID" ["value"]=> string(36) "42fdafe1-ce7f-483e-a6be-b871e1902795" ["timestamp"]=> int(1630645423504) ["source"]=> string(11) "UNSPECIFIED" } } } } ["merge-audits"]=> array(0) { } ["version"]=> int(4) ["versionTimestamp"]=> int(1630645423656) } {"data":{"id":7,"title":"Mr","first_name":"Rachael","last_name":"Hauck","email":"angel31@legros.com","phone":"7286541517","tenancy_type":1,"date_of_birth":"1975-07-03","moving_date":"1985-06-13","address_unit":null,"street_address":"267 Aurelia Trace Apt. 984","city":"North Terrillfort","postcode":"24908-4432","state":"East Angeline","country":"Algeria","additional_instruction":"Aperiam sit porro similique aut sed et eius sed quos iure.","address_text":"626 Brock Mall Apt. 613\nMarvinport, KY 56352-4183","services":["internet"],"identification":{"id":7,"connection_application_id":7,"type":1,"card_number":"4485351214242391","state":null,"country":"Kyrgyz Republic","card_color":null,"special_number":null,"expire_date":"2024-05-07","created_at":"2021-08-25T11:36:55.000000Z","updated_at":"2021-09-03T05:03:41.000000Z"},"is_email_billing":1,"nmi":null,"mirn":null,"property_type":0,"has_life_support":1,"has_solar":1,"office_id":1,"agency_id":1,"created_by":1,"assigned_to":3,"agent_profile":null,"status":4,"street_number":null,"unit_number":null}}

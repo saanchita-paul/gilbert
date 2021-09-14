@@ -1,3 +1,15 @@
+.container--fluid {
+    padding: 24px 24px 12px 24px !important;
+}
 .v-btn__content {
     text-transform: capitalize !important;
+}
+.hood-btn.v-btn {
+    height: 40px !important;
+}
+
+@media only screen and (min-width: 1400px) {
+    .container--fluid {
+        max-width: 1600px !important;
+    }
 }

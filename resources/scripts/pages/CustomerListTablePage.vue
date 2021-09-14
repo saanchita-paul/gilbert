@@ -10,7 +10,7 @@
                 </div>
             </v-col>
         </v-row>
-        <v-container class="pt-9">
+        <v-container fluid class="pt-9">
             <CustomersNewTable v-if="isLoaded"/>
         </v-container>
     </div>

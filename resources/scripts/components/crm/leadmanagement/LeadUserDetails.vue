@@ -1,13 +1,14 @@
 <template>
-    <v-card class="pa-4 mb-5">
+    <v-card class="hood-card mb-5">
        <LeadDetailsHeader :leadSummary="leadSummary" @eacalate="eacalate"></LeadDetailsHeader>
-        <InfoField @updateLead="updateLead" :lead="leadSummary" @readMore="readMore"></InfoField>
+        <InfoField @updateLead="updateLead" :lead="leadSummary" @updateDraft="updateDraft" @readMore="readMore" @updateAddress="updateAddress"></InfoField>
     </v-card>
 </template>
 
 <script>
 import LeadDetailsHeader from "@scripts/components/crm/leadmanagement/LeadDetailsHeader";
 import InfoField from "@scripts/components/crm/leadmanagement/InfoField";
+import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 export default {
 name: "LeadUserDetails",
     components: {LeadDetailsHeader, InfoField},
@@ -19,18 +20,22 @@ name: "LeadUserDetails",
     methods: {
         updateLead(lead) {
             this.$emit('updateLead',lead);
-            // console.log('lead', lead);
         },
         eacalate(){
             this.$emit('eacalate');
         },
         readMore() {
             this.$emit('readMore');
+        },
+        updateAddress(address) {
+            this.$emit('updateAddress', address);
+        },
+        updateDraft(field, value, isDate, identification,isManualChangeFlag = false) {
+            this.$emit('updateDraft', field, value, isDate, identification, isManualChangeFlag);
+
         }
     },
-    mounted() {
-        // console.log('load summary header',this.leadSummary);
-    }
+
 }
 </script>
 

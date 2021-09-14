@@ -11,7 +11,7 @@
                 </v-btn>
             </v-col>
         </v-row>
-        <v-card class="pa-4">
+        <v-card class="hood-card">
             <v-row>
                 <v-col cols="12" class="crm-table">
                   <v-data-table
@@ -20,7 +20,8 @@
                       :options.sync="options"
                       :server-items-length="totalItem"
                       :loading="loading"
-                      class="elevation-1 row-pointer"
+                      :item-class="isSelectedClass"
+                      class="row-pointer"
                       @click:row="openApplicationSummary"
                   >
                     <template v-slot:item.first_name="{ item }">
@@ -44,7 +45,7 @@ import Search from "@scripts/components/crm/Search";
 
 export default {
     name: "AgentApplicationTable",
-    props: ["applications","totalItem"],
+    props: ["applications","totalItem", 'selectedAppId'],
     components: {
         Search
     },
@@ -81,13 +82,27 @@ export default {
             align: 'start',
             sortable: true,
             value: 'services'
-          }
+          },
+            {
+                text: 'Status',
+                align: 'start',
+                sortable: true,
+                value: 'status'
+            }
         ],
         search: '',
       }
     },
+    computed: {
+
+    },
 
     methods: {
+        isSelectedClass(item) {
+            if(item.id === this.selectedAppId) {
+                return 'selectedRow';
+            }
+        },
         addNewApplication() {
             this.$router.push({name: 'agent.create.application'});
         },

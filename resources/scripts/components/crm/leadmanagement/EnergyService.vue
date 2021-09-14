@@ -1,11 +1,7 @@
 <template>
-    <div>
-        <div class="d-flex">
-            <div class="service-box" :class="{active: isActive(title)}">
-                <p class="mb-0"><v-icon :color="getColor(title)">{{icon}}</v-icon> {{title}}</p>
-            </div>
+        <div class="service-box" :class="{active: isActive(title)}">
+            <p class="mb-0 font-weight-bold"><v-icon :color="getColor(title)">{{icon}}</v-icon> {{title}}</p>
         </div>
-    </div>
 </template>
 
 <script>
@@ -36,13 +32,13 @@ name: "EnergyService",
                     return 'yellow';
                 }
                 if(service.toLowerCase() === 'gas') {
-                    return 'red';
+                    return 'orange';
                 }
                 if(service.toLowerCase() === 'internet') {
-                    return 'red';
+                    return '#9C27B0';
                 }
                 if(service.toLowerCase() === 'water') {
-                    return 'red';
+                    return 'blue';
                 }
             }
             return 'grey lighten-1';

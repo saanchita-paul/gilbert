@@ -3,13 +3,12 @@ import UserLead from "@scripts/models/crm/UserLead";
 
 
 function mapAppMetric(appMetric, data) {
-    console.log('data', data);
     const temAppMetric =  new AppMetric({...appMetric})
     switch (temAppMetric.title)
     {
         case 'Applications':
-            temAppMetric.color = 'yellow';
-            temAppMetric.icon = 'mdi-flash';
+            temAppMetric.color = 'success';
+            temAppMetric.icon = 'mdi-home';
             temAppMetric.lead_count = data.applications;
             break;
 
@@ -47,6 +46,10 @@ function mapAppMetric(appMetric, data) {
             temAppMetric.icon = 'mdi-water';
             temAppMetric.lead_count = data.water;
             break;
+    }
+
+    if(temAppMetric.lead_count == 0) {
+        temAppMetric.color = 'grey lighten-1';
     }
     return temAppMetric;
 }

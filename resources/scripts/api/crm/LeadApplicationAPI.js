@@ -3,6 +3,7 @@ import AppMetricsMapper from "@scripts/api/mappers/crm/AppMetricsMapper";
 import AppLeadMapper from "@scripts/api/mappers/crm/AppLeadMapper";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
+import DayJs from "dayjs";
 
 const data = [
     {
@@ -125,16 +126,19 @@ const plans = [
     {
         id: 1,
         title: 'Total Plan (Home)',
+        key: 'total_plan',
         active: true,
     },
     {
         id: 2,
         title: 'No Frills (Home)',
+        key: 'basic_plan',
         active: false,
     },
     {
         id: 3,
         title: 'Basic Home',
+        key: 'no_frills',
         active: false,
     },
 
@@ -191,13 +195,17 @@ const serviceProvider = [
 
 export default {
 
-   async getMetrics() {
+   async getMetrics(arg) {
         try {
-             const leads = await axios.get('/api/applications-metrics-count');
+            let agency_id = '';
+            if(arg.agency_id) {
+                agency_id = arg.agency_id;
+            }
+             const leads = await axios.get('/api/applications-metrics-count?agency_id='+agency_id);
             return AppMetricsMapper.mapAppMetricList(data, leads.data.data);
 
         } catch (error) {
-            return error.data;
+            return error.data;N
         }
     },
 
@@ -228,7 +236,6 @@ export default {
             return response;
 
         } catch (error) {
-            console.log('response2', error);
             return error.data;
         }
     },
@@ -284,10 +291,22 @@ export default {
 
    async saveLead(lead, leadId) {
         try {
-            lead.plan_type = lead.plan_type.id;
+
+            lead.moving_date = ApplicationMapper.mapDateToServer(lead.moving_date);
+            lead.dob = ApplicationMapper.mapDateToServer(lead.dob);
+            lead.identification.expire_date = ApplicationMapper.mapDateToServer(lead.identification.expire_date);
             const data = await axios.post('/api/applications/'+leadId+'/submit',{lead});
             return data;
 
+        } catch (error) {
+            console.log(error);
+            return error.data;
+        }
+    },
+
+    async updateAddress(address, leadId) {
+        try {
+            return await axios.put('/api/applications/'+leadId+'/update-address',{address});
         } catch (error) {
             return error.data;
         }
@@ -309,6 +328,31 @@ export default {
         } catch (error) {
             return error.data;
         }
+    },
+
+    async saveSoleField(field, value, leadId, isDate, identification, isService)
+    {
+        let day = '';
+        let month = '';
+        let year = '';
+        if(isDate)
+        {
+            let fullDate = value.split('/');
+             day = fullDate[0];
+             month = fullDate[1];
+             year = fullDate[2];
+
+            value = year + '-'+ month + '-'+ day;
+        }
+
+
+        const payload ={
+            [field]: value,
+            identification: identification,
+            isService: isService
+        }
+        
+        const response = await axios.post('/api/applications/'+leadId+'/draft',payload);
     }
 
 }

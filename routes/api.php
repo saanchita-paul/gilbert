@@ -8,6 +8,7 @@ use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ApplicationController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\UserInvitationController;
+use App\Http\Controllers\UtilityController;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +29,6 @@ Route::middleware('auth:sanctum')
     ->get('/user', [AuthController::class, 'authUser']);
 
 Route::get('/logout', [AuthController::class, 'logout']);
-Route::get('/testapplication', [ApplicationController::class, 'getApplicationMetricsCount']);
 /**
  * @Module AGENCY CRM
  */
@@ -74,6 +74,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/applications/{id}/submit', [ApplicationController::class, 'submit']);
     Route::post('/applications/{applicationId}/assign', [ApplicationController::class, 'assignUser']);
     Route::post('/applications/{applicationId}/escalate', [ApplicationController::class, 'escalate']);
+    Route::put('/applications/{applicationId}/update-address', [ApplicationController::class, 'updateAddress']);
+    Route::post('/applications/{applicationId}/draft', [ApplicationController::class, 'saveDraft']);
 
     //todo: make a  separate controller for notes
     Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes']);
@@ -81,10 +83,19 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/applications-metrics', [ApplicationController::class, 'getMetrics']);
     Route::get('/applications-metrics-count', [ApplicationController::class, 'getApplicationMetricsCount']);
+
+
 });
+
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 Route::post('/invitation/validation', [UserInvitationController::class, 'validateInvitation']);
 Route::post('/invitation/change-password', [UserInvitationController::class, 'passwordChange']);
+
+
+Route::post('/register/email-validation', [AuthController::class, 'isValidUser']);
+Route::get('/users/is-unique-email', [AuthController::class, 'isEmailValid']);
 
 
 /**

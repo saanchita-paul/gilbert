@@ -1,61 +1,61 @@
 <template>
     <ValidationObserver ref="create_agency">
-     <v-row class="edit-profile-modal">
-        <v-col class="section-dialogs" cols="12">
-          <div class="dialogs-title">
-            <p>Editing your profile.</p>
-          </div>
+     <div class="edit-profile-modal">
+            <div class="section-dialogs pa-5">
+                <div class="dialogs-title">
+                    <p>Editing your profile.</p>
+                </div>
 
-          <div class="dialogs-area">
-                <p class="sub-title">Your Details</p>
-              <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
-                <v-text-field
-                    label="First Name*"
-                    v-model="profile.first_name"
-                    outlined
-                    dense
-                    :error-messages=" errors[0]"
-                    placeholder="First Name"
-                ></v-text-field>
-              </ValidationProvider>
-                  <ValidationProvider name="Last Name" rules="required"  v-slot="{ errors }">
-              <v-text-field
-                  label="Last Name*"
-                  v-model="profile.last_name"
-                  outlined
-                  dense
-                  placeholder="Last Name"
-                  :error-messages=" errors[0]"
-              ></v-text-field>
-                  </ValidationProvider>
-                      <ValidationProvider name="Phone Number" rules="cv-phone|length:10"  v-slot="{ errors }">
-                <v-text-field
-                    label="Phone Number (Optional)"
-                    v-model="profile.phone"
-                    outlined
-                    dense
-                    placeholder="+16"
-                    :error-messages=" errors[0]"
-                ></v-text-field>
-                      </ValidationProvider>
-                          <ValidationProvider name="Email Address" rules="email"  v-slot="{ errors }">
-                <v-text-field
-                    v-model="profile.email"
-                    label="Email Address (Optional)"
-                    outlined
-                    dense
-                    placeholder="examples@domim.com"
-                    :error-messages=" errors[0]"
-                ></v-text-field>
-                          </ValidationProvider>
-          </div>
+                <div class="dialogs-area">
+                        <p class="sub-title">Your Details</p>
+                    <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
+                        <v-text-field
+                            label="First Name*"
+                            v-model="profile.first_name"
+                            outlined
+                            dense
+                            :error-messages=" errors[0]"
+                            placeholder="First Name"
+                        ></v-text-field>
+                    </ValidationProvider>
+                        <ValidationProvider name="Last Name" rules="required"  v-slot="{ errors }">
+                    <v-text-field
+                        label="Last Name*"
+                        v-model="profile.last_name"
+                        outlined
+                        dense
+                        placeholder="Last Name"
+                        :error-messages=" errors[0]"
+                    ></v-text-field>
+                        </ValidationProvider>
+                            <ValidationProvider name="Phone Number" rules="cv-phone|length:10"  v-slot="{ errors }">
+                        <v-text-field
+                            label="Phone Number (Optional)"
+                            v-model="profile.phone"
+                            outlined
+                            dense
+                            placeholder="+16"
+                            :error-messages=" errors[0]"
+                        ></v-text-field>
+                            </ValidationProvider>
+                                <ValidationProvider name="Email Address" rules="email"  v-slot="{ errors }">
+                        <v-text-field
+                            v-model="profile.email"
+                            label="Email Address (Optional)"
+                            outlined
+                            dense
+                            placeholder="examples@domim.com"
+                            :error-messages=" errors[0]"
+                        ></v-text-field>
+                                </ValidationProvider>
+                </div>
 
-          <div>
-              <v-btn @click="cancleModal">Cancel</v-btn>
-              <v-btn @click="saveUser" color="primary">Save</v-btn>
-          </div>
-        </v-col>
-      </v-row>
+                <div class="text-right">
+                    <v-btn @click="cancleModal">Cancel</v-btn>
+                    <v-btn @click="saveUser" color="primary">Save</v-btn>
+                </div>
+            </div>
+      </div>
     </ValidationObserver>
 </template>
 

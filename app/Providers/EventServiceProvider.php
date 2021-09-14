@@ -2,6 +2,13 @@
 
 namespace App\Providers;
 
+use App\Events\Agency\CreateApplicationEvent;
+use App\Events\Agency\SubmitApplicationEvent;
+use App\Listeners\Agency\CreateHubSpotContact;
+use App\Listeners\Agency\UpdateHubSpotContact;
+use App\Listeners\Agency\SendApplicationToEA;
+use App\Listeners\HTTP\LogRequestReceiving;
+use App\Listeners\HTTP\LogRequestSending;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -18,6 +25,31 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+
+        /**
+         *
+         */
+        SubmitApplicationEvent::class => [
+            SendApplicationToEA::class,
+            UpdateHubSpotContact::class
+        ],
+        CreateApplicationEvent::class => [
+            CreateHubSpotContact::class,
+        ],
+
+        /**
+         * API Logging
+         */
+        'Illuminate\Http\Client\Events\RequestSending' => [
+            LogRequestSending::class,
+        ],
+        'Illuminate\Http\Client\Events\ResponseReceived' => [
+            LogRequestReceiving::class,
+        ],
+        #todo
+//        'Illuminate\Http\Client\Events\ConnectionFailed' => [
+//            'App\Listeners\LogConnectionFailed',
+//        ],
     ];
 
     /**
@@ -27,6 +59,5 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
     }
 }
