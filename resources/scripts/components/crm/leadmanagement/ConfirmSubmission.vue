@@ -395,32 +395,20 @@
                         <v-divider></v-divider>
                     </v-col>
 
-                    <v-col cols="12">
-                        <p class="sub-title">Have you read and accepted the Terms and Conditions to the Lead? TBA by Tomy</p>
-                            <v-checkbox v-model="is_temp_condition"></v-checkbox>
-                    </v-col>
+
 
                     <v-col cols="12">
-                        <p class="sub-title">Consent to us verifying your identity information with the document issuer or official record holder? TBA by Tomy</p>
 
-                        <v-checkbox v-model="is_discount_condition">
+
+                        <p class="sub-title">I have asked the applicant "Does anyone in the household require the use of medical equipment for life support?”</p>
+                        <v-checkbox v-model="is_life_support">
                         </v-checkbox>
                     </v-col>
-
                     <v-col cols="12">
-                        <p class="sub-title">Acknowledge we will perform a credit check before transferring you (we will let you know if there is a problem) TBA by Tomy</p>
-                        <v-checkbox v-model="is_credit_condition">
-                        </v-checkbox>
-
+                        <p class="sub-title">I have asked the applicant "Do you understand and agree with everything we have discussed today"?</p>
+                        <v-checkbox v-model="is_temp_condition"></v-checkbox>
                     </v-col>
 
-                    <v-col cols="12">
-
-
-                        <p class="sub-title">Acknowledge we will perform a credit check before transferring you (we will let you know if there is a problem) TBA by Tomy</p>
-                        <v-checkbox v-model="is_credit2_condition">
-                        </v-checkbox>
-                    </v-col>
 
                 </v-row>
             </section>
@@ -448,6 +436,7 @@ export default {
           is_discount_condition:null,
           is_credit_condition:null,
           is_credit2_condition:null,
+          is_life_support: null,
           row:null,
           titlesDD:[
               'Mrs','Mr'
@@ -548,9 +537,7 @@ export default {
       allOk()
       {
           return this.is_temp_condition  &&
-              this.is_discount_condition &&
-              this.is_credit_condition  &&
-              this.is_credit2_condition;
+              this.is_life_support && false;
       }
     },
     methods: {

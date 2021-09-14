@@ -30,8 +30,8 @@ name: "LeadUserDetails",
         updateAddress(address) {
             this.$emit('updateAddress', address);
         },
-        updateDraft(field, value, isDate, identification) {
-            this.$emit('updateDraft', field, value, isDate, identification);
+        updateDraft(field, value, isDate, identification,isManualChangeFlag = false) {
+            this.$emit('updateDraft', field, value, isDate, identification, isManualChangeFlag);
 
         }
     },

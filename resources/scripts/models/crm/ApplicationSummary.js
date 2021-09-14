@@ -133,7 +133,7 @@ export default class ApplicationSummary {
     {
         status = status - 1;
         if(status < 0) return  '';
-        const statusList = ['unassigned','assigned', 'escalated','submitted', 'accepted', 'rejected'];
+        const statusList = ['Unassigned','Assigned', 'Escalated','Submitted', 'Accepted', 'Rejected','Inprogress'];
         return statusList[status];
     }
 }
