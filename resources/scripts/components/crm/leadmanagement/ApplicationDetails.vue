@@ -65,6 +65,7 @@
           <v-textarea v-model="lead.additional_instruction"
             outlined
             placeholder="Additional Instructions goes here"
+                      readonly
           ></v-textarea>
         </div>
 
