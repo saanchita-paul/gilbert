@@ -221,8 +221,8 @@ export default {
                 value = year + '-' + month + '-' + day;
             }
             if(identification) {
-
-                if(field == 'type') {
+                this.leadSummary.identification = this.leadSummary.identification ? this.leadSummary.identification : {};
+                if(field === 'type') {
                     this.leadSummary.identification.card_number = '';
                     this.leadSummary.identification.special_number = '';
                     this.leadSummary.identification.expire_date = null;
