@@ -21,9 +21,9 @@ class APILog extends Model
     public static function setLoggerQuery(string $url, string $type, bool $extend = true): string
     {
         $type = "&hd_logger_type=$type";
-
+        $key = Str::uuid()->toString();
         return $extend
-            ? $url ."&hd_logger_key=" . Str::uuid() . $type
-            : $url . "?hd_logger_key=" . Str::uuid() . $type;
+            ? $url ."&hd_logger_key=" . $key . $type
+            : $url . "?hd_logger_key=" . $key . $type;
     }
 }

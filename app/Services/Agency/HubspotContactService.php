@@ -75,6 +75,14 @@ class HubspotContactService
                 "value" => $this->application->id
             ],
             [
+                "property" => "phone",
+                "value" => $this->application->phone
+            ],
+            [
+                "property" => "lifecyclestage",
+                "value" => 'salesqualifiedlead'
+            ],
+            [
                 "property" => "hood_office_id",
                 "value" => $this->application->office_id
             ],
