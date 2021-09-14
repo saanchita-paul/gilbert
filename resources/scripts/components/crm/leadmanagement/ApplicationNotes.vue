@@ -16,13 +16,12 @@
             <v-btn class="ma-2 float-right" @click="saveNote">Submit Note</v-btn>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" class="notes-containser" >
                 <v-timeline
-                    :reverse="reverse"
                     dense
             >
                     <v-timeline-item color="primary" small v-for="nt in notes" :color="getColor(nt.active)" :key="nt.id">
-                            <v-card class="elevation-2 timeline-card" :class="{active:false}">
+                            <v-card class="elevation-2 timeline-card" color="gray" :class="{active:false}">
                                 <p class="title">{{nt.title}}</p>
                                 <p>{{nt.created_at}}</p>
                                 <p>{{nt.text}}</p>
@@ -69,4 +68,8 @@ export default {
 </script>
 
 <style scoped>
+.notes-containser{
+  max-height: 500px;
+  overflow-y: auto;
+}
 </style>
