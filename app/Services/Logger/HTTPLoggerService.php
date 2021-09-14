@@ -30,6 +30,7 @@ class HTTPLoggerService
         $key = $this->getQuery($request->url(), self::QUERY_LOGGER_KEY);
         if ($key) {
             $data =  [
+                'created_at' => now()->toDateTimeString(),
                 'type' => $this->getQuery($request->url(), self::QUERY_LOGGER_TYPE),
                 'key' => $key,
                 'url' => $request->url(),
@@ -51,10 +52,10 @@ class HTTPLoggerService
         $key = $this->getQuery($received->request->url(), self::QUERY_LOGGER_KEY);
 
         if ($key) {
-            $body = empty($received->response->body()) ? null : $received->response->body();
+            $body = json_decode($received->response->body(), true);
             $data =  [
                 'response_header' => json_encode($received->response->headers()),
-                'response_body' => $body,
+                'response_body' => $body ? $received->response->body() : json_encode($received->response->body()),
                 'response_status' => $received->response->status(),
             ];
 
