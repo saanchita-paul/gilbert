@@ -537,7 +537,7 @@ export default {
       allOk()
       {
           return this.is_temp_condition  &&
-              this.is_life_support && false;
+              this.is_life_support;
       }
     },
     methods: {
