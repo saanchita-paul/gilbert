@@ -55,7 +55,7 @@ class HTTPLoggerService
             $body = json_decode($received->response->body(), true);
             $data =  [
                 'response_header' => json_encode($received->response->headers()),
-                'response_body' => $body ?: json_encode($received->response->body()),
+                'response_body' => $body ? $received->response->body() : json_encode($received->response->body()),
                 'response_status' => $received->response->status(),
             ];
 
