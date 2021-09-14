@@ -161,21 +161,21 @@
                                     </v-select>
                                 </div>
                             </div>
-                            <div class="crm-text-field">
-                                <div class="field-label">
-                                    <span>Life Support</span>
-                                </div>
-                                <div class="text-field">
-                                    <v-select readonly outlined placeholder="Yes / No"
-                                                :value="data.has_life_support"
-                                                item-value="value"
-                                                item-text="text"
-                                                :items="lifeSupportDD"
+<!--                            <div class="crm-text-field">-->
+<!--                                <div class="field-label">-->
+<!--                                    <span>Life Support</span>-->
+<!--                                </div>-->
+<!--                                <div class="text-field">-->
+<!--                                    <v-select readonly outlined placeholder="Yes / No"-->
+<!--                                                :value="data.has_life_support"-->
+<!--                                                item-value="value"-->
+<!--                                                item-text="text"-->
+<!--                                                :items="lifeSupportDD"-->
 
-                                                dense hide-details="auto">
-                                    </v-select>
-                                </div>
-                            </div>
+<!--                                                dense hide-details="auto">-->
+<!--                                    </v-select>-->
+<!--                                </div>-->
+<!--                            </div>-->
                             <div class="crm-text-field">
                                 <div class="field-label">
                                     <span>Solar Power</span>
