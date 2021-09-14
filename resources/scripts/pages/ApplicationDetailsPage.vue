@@ -209,7 +209,7 @@ export default {
                 }
             }
 
-            await LeadApplicationService.saveSoleField(field, value,this.leadId, isDate, identification, isManualChangeFlag);
+            await LeadApplicationService.saveSoleField(field, value,this.leadId, isDate, identification, false);
 
                 this.isManualChangeFlag = true;
 
