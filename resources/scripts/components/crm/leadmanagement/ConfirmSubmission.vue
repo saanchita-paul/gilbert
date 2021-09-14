@@ -536,6 +536,7 @@ export default {
     computed:{
       allOk()
       {
+          return false;
           return this.is_temp_condition  &&
               this.is_life_support;
       }
