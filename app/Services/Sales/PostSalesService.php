@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use GraphQL\Client;
 use GraphQL\Mutation;
 use GraphQL\Variable;
+use Illuminate\Support\Facades\Log;
 
 class PostSalesService
 {
@@ -29,7 +30,9 @@ class PostSalesService
         $id = $this->getId();
         $vendorCode= "HD2";
         $version = "1";
-        $saleDate =  "2021-09-07T10:45:00Z";
+        $saleDate =  "2021-21-07T10:45:00Z";
+        Log::info($saleDate);
+        $saleDate = (new Carbon($this->connection->updated_at))->toIso8601String();
         $customerType =  "RES";
         $transactionType = "ENE";
         $premiseRelationship= $this->connection->tenancy_type == 1?"TENANT":"OWNER";
@@ -222,7 +225,7 @@ class PostSalesService
                 'countryOfIssue'=> "AUS"
             ];
         }
-        else if($this->identification->type ==2)
+        else if($this->identification->type ==3)
         {
             return [
                 'type'=> "MEDICARE",
@@ -234,8 +237,9 @@ class PostSalesService
                 'medicareCardColour'=> strtoupper($this->identification->card_color),
             ];
         }
-        else if($this->identification->type ==3)
+        else if($this->identification->type ==2)
         {
+            Log::info($this->identification);
             return [
                 'type'=> "DL",
                 'number'=> $this->identification->card_number,
@@ -256,7 +260,12 @@ class PostSalesService
     {
         $stateList = ['New South Wales'=>'NSW','Victoria'=>'VIC','Queensland'=>'QLD',
             'South Australia'=>'SA','Northern Territory'=>'NT','TAS'=>'Tasmania','ACT'=>'Australian Capital Territory'];
-        return $stateList[$state];
+        if(array_key_exists($state, $stateList))
+        {
+            return $stateList[$state];
+        }
+        return $state;
+
     }
 
 }
