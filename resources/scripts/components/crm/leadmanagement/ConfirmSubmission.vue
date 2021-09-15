@@ -520,15 +520,15 @@ export default {
           colorDD:[
               {
                   text: 'Green',
-                  value: 'green'
+                  value: 'GREEN'
               },
               {
                   text: 'Blue',
-                  value: 'blue'
+                  value: 'BLUE'
               },
               {
                   text: 'Yellow',
-                  value: 'yellow'
+                  value: 'YELLOW'
               }
           ],
       }
@@ -552,7 +552,12 @@ export default {
             return this.data.service_interests.includes(service);
         }
 
-        }
+        },
+
+    mounted() {
+      console.log(this.data);
+    }
+
 };
 </script>
 

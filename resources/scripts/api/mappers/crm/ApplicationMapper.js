@@ -47,11 +47,17 @@ export default {
     },
 
     mapNotes(data) {
-        return data.map(dt=> {
+        let notes;
+
+        notes =  data.map(dt=> {
               return  new Note({...dt});
-
-
         });
+
+        if(notes.length > 0) {
+            notes[0].active = true;
+        }
+
+        return notes;
     },
     mapNote(data) {
         return Object.assign(new Note(), { ...data });

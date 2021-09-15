@@ -64,6 +64,19 @@ extend('unique-user-email', {
     }
 });
 
+extend('email-exist', {
+    message: field => `Email not found`,
+    validate: value =>  {
+        return new Promise(resolve => {
+            AuthService.isUniqueEmail(value)
+                .then( valid => {
+                   valid = !valid;
+                    resolve({ valid })
+                })
+        })
+    }
+});
+
 extend('not-holiday', {
     message: field => `Date must not be a holiday`,
     params: ['target'],

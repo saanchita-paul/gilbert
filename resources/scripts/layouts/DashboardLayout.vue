@@ -22,11 +22,15 @@
             </v-list>
 
             <v-list class="navigation-menu" dense>
-                <v-img
+                <v-img v-if="hasProfilePhoto"
                     class="center-element rounded-circle nav-avatar"
                     src="/assets/images/user_logo.png"
                     max-width="96px"
                 ></v-img>
+                <div v-if="!hasProfilePhoto" class="center-element rounded-circle nav-avatar avater-fullname-container" style="">
+                    <span class="full-name-text" >{{profile_display_name}}</span>
+                </div>
+
                 <span v-for="route in routes" :key="route.title">
                         <v-list-group
                             color="white"
@@ -112,11 +116,14 @@ export default {
         return {
             user: null,
             drawer: null,
+            profile_display_name: null,
+            hasProfilePhoto: false,
             all_routes: ApplicationService.getMainNavigationRoutes()
         }
     },
-    mounted() {
-        this.user = AuthService.getAuthUser();
+   async mounted() {
+        this.user = await AuthService.getAuthUser();
+        this.getNameText();
         setInterval(AuthService.authUser, 300000)
     },
      methods: {
@@ -127,6 +134,13 @@ export default {
             let user = this.user;
             let userRole = [...UserRoles.AGENCY, ...UserRoles.HOOD].find((r) => { return r.value === user.roles[0] });
             return "Hello "+ user.profile.first_name + ' ' +  user.profile.last_name + ' (' + userRole.text + ')';
+
+         },
+
+         getNameText()
+         {
+             this.hasProfilePhoto = Boolean(this.user?.profile?.profile_photo);
+             this.profile_display_name = this.user?.profile?.first_name.charAt(0) + this.user?.profile?.last_name.charAt(0);
          }
     },
     computed: {
@@ -139,7 +153,8 @@ export default {
         },
         breadcrumbs() {
             return AuthService.getBreadcrumbs();
-        }
+        },
+
     }
 }
 </script>
@@ -238,5 +253,20 @@ export default {
 .nav-group .v-list-group-active {
     background-color: #542E89 !important;
     color: white !important;
+}
+
+
+.avater-fullname-container{
+    text-align:center;
+    background: #5C229A;
+    background: linear-gradient(to right bottom, #56CCF2 -75.93%, #542E89 42.76%, #9C27B0 118.83%) !important;
+    width: 96px; height: 96px
+}
+
+.full-name-text{
+    position: relative;
+    top: 25%;
+    font-size: 28px;
+    font-weight: bold;
 }
 </style>

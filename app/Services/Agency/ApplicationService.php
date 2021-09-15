@@ -46,7 +46,10 @@ class ApplicationService
 
     public function getNotes($application_id)
     {
-        return ApplicationNote::query()->where('connection_application_id', '=', $application_id)->get();
+        return ApplicationNote::query()
+            ->where('connection_application_id', '=', $application_id)
+            ->orderBy('created_at','desc')
+            ->get();
     }
 
     public function createNotes(array $note, User $user, $applicationId)
