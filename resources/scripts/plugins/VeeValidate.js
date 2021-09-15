@@ -83,6 +83,13 @@ extend('adult', {
     }
 });
 
+extend('valid-date', {
+    message: field => `DD/MM/YYYY is valid formate`,
+    validate: value =>  {
+        return dayJs(value, 'DD/MM/YYYY').isValid();
+    }
+});
+
 extend('length', {
     ...length,
     message: 'Phone should contain 10 numbers',
