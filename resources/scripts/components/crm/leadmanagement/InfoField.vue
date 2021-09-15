@@ -72,20 +72,24 @@
                             min-width="290px"
                         >
                             <template v-slot:activator="{ on, attrs }">
-                                <ValidationProvider name="Bate Of Birth" rules="required|adult"  v-slot="{ errors }">
+                                <ValidationProvider name="Bate Of Birth" rules="required|valid-date|adult"  v-slot="{ errors }">
                                     <v-text-field
                                         placeholder="DD/MM/YYYY"
                                         outlined
                                         dense
                                         append-icon="mdi-calendar"
                                         v-model="person_details.dob"
-                                        readonly
                                         v-bind="attrs"
-                                        v-on="on"
                                         :error-messages=" errors[0]"
                                         hide-details="auto"
+                                        @change="updateDobPicker"
 
-                                    ></v-text-field>
+                                    >
+                                        <template slot="append">
+                                            <v-icon  v-on="on">mdi-calendar</v-icon>
+                                        </template>
+
+                                    </v-text-field>
                                 </ValidationProvider>
                             </template>
                             <v-date-picker v-model="dob"  @input="showDateOfBirth = false"></v-date-picker>
@@ -172,20 +176,24 @@
                             min-width="290px"
                         >
                             <template v-slot:activator="{ on, attrs }">
-                                <ValidationProvider name="Connection Date" rules="required|not-holiday:@h_state"  v-slot="{ errors }">
+                                <ValidationProvider name="Connection Date" rules="required|valid-date|not-holiday:@h_state"  v-slot="{ errors }">
                                     <v-text-field
                                         placeholder="DD/MM/YYYY"
                                         outlined
                                         dense
                                         append-icon="mdi-calendar"
                                         v-model="property_details.moving_date"
-                                        readonly
                                         v-bind="attrs"
-                                        v-on="on"
                                         :error-messages=" errors[0]"
                                         hide-details="auto"
                                         @input="updateLeads"
-                                    ></v-text-field>
+                                        @change="updateConDatePicker"
+                                    >
+                                        <template slot="append">
+                                            <v-icon  v-on="on">mdi-calendar</v-icon>
+                                        </template>
+
+                                    </v-text-field>
                                 </ValidationProvider>
                             </template>
                             <v-date-picker v-model="moving_date" :min="minConnectionDate"
@@ -430,14 +438,17 @@
                                         placeholder="DD/MM/YYYY"
                                         outlined
                                         dense
-                                        append-icon="mdi-calendar"
                                         v-model="indentification.expire_date"
-                                        readonly
                                         v-bind="attrs"
-                                        v-on="on"
                                         :error-messages=" errors[0]"
                                         hide-details="auto"
-                                    ></v-text-field>
+                                        @change="updateExpireDatePicker"
+                                    >
+                                        <template slot="append">
+                                            <v-icon  v-on="on">mdi-calendar</v-icon>
+                                        </template>
+
+                                    </v-text-field>
                                 </ValidationProvider>
                             </template>
                             <v-date-picker v-model="expire_date" :min="minExpiredate"
@@ -773,6 +784,30 @@ export default {
             let expire = (new DayJs(this.expire_date)).isValid();
             this.indentification.expire_date =expire? new DayJs(this.expire_date).format('DD/MM/YYYY'):'';
         },
+
+        updateDobPicker()
+        {
+            if(DayJs(this.person_details.dob,'DD/MM/YYYY').isValid())
+            {
+                this.dob = (DayJs(this.person_details.dob,'DD/MM/YYYY')).format('YYYY-MM-DD');
+            }
+        },
+
+        updateConDatePicker()
+        {
+            if(DayJs(this.property_details.moving_date,'DD/MM/YYYY').isValid())
+            {
+                this.moving_date = (DayJs(this.property_details.moving_date,'DD/MM/YYYY')).format('YYYY-MM-DD');
+            }
+        },
+
+        updateExpireDatePicker()
+        {
+            if(DayJs(this.indentification.expire_date,'DD/MM/YYYY').isValid())
+            {
+                this.expire_date = (DayJs(this.indentification.expire_date,'DD/MM/YYYY')).format('YYYY-MM-DD');
+            }
+        }
     },
 
     watch: {

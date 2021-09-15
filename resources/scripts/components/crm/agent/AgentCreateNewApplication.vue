@@ -80,19 +80,21 @@
                                 min-width="290px"
                             >
                                 <template v-slot:activator="{ on, attrs }">
-                                    <ValidationProvider name="Date of Birth" rules="required|adult"  v-slot="{ errors }">
+                                    <ValidationProvider name="Date of Birth" rules="required|valid-date|adult"  v-slot="{ errors }">
                                         <v-text-field
                                             label="Date of Birth*"
                                             placeholder="DD/MM/YYYY"
                                             outlined
                                             dense
-                                            append-icon="mdi-calendar"
                                             v-model="application.date_of_birth"
-                                            readonly
                                             v-bind="attrs"
-                                            v-on="on"
                                             :error-messages=" errors[0]"
-                                        ></v-text-field>
+                                            @blur="syncDob"
+                                        >
+                                            <template slot="append">
+                                                <v-icon  v-on="on">mdi-calendar</v-icon>
+                                            </template>
+                                        </v-text-field>
                                     </ValidationProvider>
                                 </template>
                                 <v-date-picker v-model="dob" @input="showDOB = false"></v-date-picker>
@@ -200,19 +202,23 @@
                                 >
                                     <template v-slot:activator="{ on, attrs }">
 
-                                        <ValidationProvider name="Moving Date" rules="required|not-holiday:@State/Territory"  v-slot="{ errors }">
+                                        <ValidationProvider name="Moving Date" rules="required|valid-date|not-holiday:@State/Territory"  v-slot="{ errors }">
                                             <v-text-field
                                                 label="Connection Date*"
                                                 placeholder="DD/MM/YYYY"
                                                 outlined
                                                 dense
-                                                append-icon="mdi-calendar"
                                                 v-model="application.moving_date"
-                                                readonly
                                                 v-bind="attrs"
-                                                v-on="on"
                                                 :error-messages=" errors[0]"
-                                            ></v-text-field>
+                                                @blur="syncMovingDate"
+                                            >
+
+                                                <template slot="append">
+                                                    <v-icon  v-on="on">mdi-calendar</v-icon>
+                                                </template>
+
+                                            </v-text-field>
                                         </ValidationProvider>
                                     </template>
                                     <v-date-picker v-model="moving_date" :min="minDate"
@@ -405,6 +411,19 @@ export default {
 
         done() {
             this.$router.push({name: 'agent.application.dashboard'});
+        },
+        syncDob()
+        {
+            if(DayJs(this.application.date_of_birth,'DD/MM/YYYY').isValid())
+            {
+                this.dob = (DayJs(this.application.date_of_birth,'DD/MM/YYYY')).format('YYYY-MM-DD');
+            }
+        },
+        syncMovingDate() {
+            if(DayJs(this.application.moving_date,'DD/MM/YYYY').isValid())
+            {
+                this.moving_date = (DayJs(this.application.moving_date,'DD/MM/YYYY')).format('YYYY-MM-DD');
+            }
         }
     },
     watch: {
@@ -414,7 +433,8 @@ export default {
 
         moving_date() {
             this.application.moving_date = (new DayJs(this.moving_date).format('DD/MM/YYYY'));
-        }
+        },
+
     }
 };
 </script>
