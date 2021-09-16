@@ -228,4 +228,16 @@ class ApplicationController extends Controller
         }
     }
 
+    public function getNmiMern(Request $request, $id)
+    {
+        try {
+            $service = new FastConnectService();
+            $res = $service->authenticate()->searchAddress([], true, $id);
+            return response()->json(['success' => true, 'data' => $res]);
+
+        } catch (\Exception $exception) {
+    return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+}
+    }
+
 }

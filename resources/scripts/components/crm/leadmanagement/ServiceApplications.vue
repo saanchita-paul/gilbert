@@ -35,7 +35,7 @@
                     :selectedPlan="selectedPlanType"
                     @selectPlan="planSelect"
                     @view="view"
-                    @click.native="planSelect(plan)"
+                    @click.native="planSelect(plan,true)"
                 ></EnergyPlan>
             </div>
         </v-col>
@@ -126,9 +126,9 @@ export default {
             //todo
         },
 
-        planSelect(plan) {
+        planSelect(plan, isManual = false) {
             this.selectedPlanType = plan?.key
-            this.$emit('updatePlan', plan);
+            this.$emit('updatePlan', plan, isManual);
         },
         isActive(service) {
             return this.leadSummary.service_types.includes(service.toLowerCase()) ? true : false;

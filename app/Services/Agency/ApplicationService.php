@@ -83,8 +83,8 @@ class ApplicationService
         $existingApplication->postcode = $address['postcode'];
         $existingApplication->state = $address['state'];
         $existingApplication->country = $address['country'];
-        $existingApplication->mirn = $address['mirn'] ?? $existingApplication->mirn;
-        $existingApplication->nmi = $address['nmi'] ?? $existingApplication->nmi;
+        $existingApplication->mirn = $address['mirn'];
+        $existingApplication->nmi = $address['nmi'] ;
         $existingApplication->is_billing_same = $address['is_billing_same'];
 
 

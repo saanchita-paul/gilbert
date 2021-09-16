@@ -256,12 +256,13 @@ export default {
         onAddressSelected(place) {
             GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
                 .then((data) => {
+                    console.log('data api response', data.street_number?data.street_number:null);
                     this.propertyDetails.address_text = data.formatted_address;
                     this.propertyDetails.street_address = data.street;
                     this.propertyDetails.city = data.city;
                     this.propertyDetails.postcode = data.postcode;
                     this.propertyDetails.state = data.state;
-                    this.propertyDetails.street_number = data.street_number;
+                    this.propertyDetails.street_number = data.street_number?data.street_number:null;
                     this.propertyDetails.unit_number = data.unit_number;
                     this.propertyDetails.street_name = data.street_name;
                 });
@@ -297,13 +298,12 @@ export default {
         async onSubmit() {
             let v = await this.$refs.edit_address.validate();
             if (v) {
+
                 this.$emit('saveAddress', this.propertyDetails);
             }
             return v;
         },
     },
-    mounted() {
-    }
 };
 </script>
 

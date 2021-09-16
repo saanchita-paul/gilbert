@@ -306,7 +306,9 @@ export default {
 
     async updateAddress(address, leadId) {
         try {
-            return await axios.put('/api/applications/'+leadId+'/update-address',{address});
+            console.log(address);
+            const response = await axios.put('/api/applications/'+leadId+'/update-address',{address});
+            return ApplicationMapper.mapApplication(response.data.data);
         } catch (error) {
             return error.data;
         }
@@ -351,8 +353,17 @@ export default {
             identification: identification,
             isService: isService
         }
-        
+
         const response = await axios.post('/api/applications/'+leadId+'/draft',payload);
-    }
+    },
+    async getNmiMern(id) {
+        try {
+            const data = await axios.get('/api/applications/'+id+'/nmi-mern');
+            return data.data.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
 
 }
