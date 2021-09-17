@@ -68,8 +68,11 @@
           <v-textarea
             outlined
             disabled
+            background-color="#FAFAFA"
+            class="agent-addition-instuction"
             placeholder="Additional Instructions goes here."
             v-model="application.additional_instruction"
+            readonly
         ></v-textarea>
         </div>
 
