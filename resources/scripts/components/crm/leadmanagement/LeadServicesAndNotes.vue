@@ -33,9 +33,9 @@ name: "LeadServicesAndNotes",
         ApplicationNotes
     },
     methods: {
-        updatePlan(plan)
+        updatePlan(plan, isManual)
         {
-            this.$emit('updatePlan', plan);
+            this.$emit('updatePlan', plan, isManual);
         },
 
         async saveNote(note) {

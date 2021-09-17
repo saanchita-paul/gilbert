@@ -1,7 +1,7 @@
 <template>
     <v-card class="hood-card mb-5">
        <LeadDetailsHeader :leadSummary="leadSummary" @eacalate="eacalate"></LeadDetailsHeader>
-        <InfoField @updateLead="updateLead" :lead="leadSummary" @updateDraft="updateDraft" @readMore="readMore" @updateAddress="updateAddress"></InfoField>
+        <InfoField @updateLead="updateLead" :nmiMernFlag="nmiMernFlag" :lead="leadSummary" @updateDraft="updateDraft" @readMore="readMore" @updateAddress="updateAddress"></InfoField>
     </v-card>
 </template>
 
@@ -16,6 +16,9 @@ name: "LeadUserDetails",
         leadSummary: {
           require: true
         },
+        nmiMernFlag: {
+            require: false
+        }
     },
     methods: {
         updateLead(lead) {

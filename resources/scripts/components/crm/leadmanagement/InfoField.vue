@@ -297,7 +297,15 @@
                             dense
                             hide-details="auto"
                                       :error-messages=" errors[0]"
-                        ></v-text-field>
+                        >
+                            <template slot="append">
+                                <v-progress-circular v-if="nmiMernFlag"
+                                    indeterminate
+                                    size="25"
+                                    color="primary"
+                                ></v-progress-circular>
+                            </template>
+                        </v-text-field>
                     </ValidationProvider>
                 </div>
             </div>
@@ -315,7 +323,17 @@
                             dense
                             hide-details="auto"
                             :error-messages=" errors[0]"
-                        ></v-text-field>
+                        >
+                            <template slot="append">
+                                <v-progress-circular
+                                    v-if="nmiMernFlag"
+                                    indeterminate
+                                    size="25"
+                                    color="primary"
+                                ></v-progress-circular>
+                            </template>
+
+                        </v-text-field>
                     </ValidationProvider>
                 </div>
             </div>
@@ -516,6 +534,9 @@ export default {
     props: {
         lead:{
             require: true,
+        },
+        nmiMernFlag:{
+            require: false,
         }
     },
     components: {
@@ -523,6 +544,7 @@ export default {
     },
     data () {
         return {
+            loadNmi: false,
             titlesDD:[
                 'Mrs','Mr','Ms'
             ],
@@ -847,6 +869,7 @@ export default {
        await this.synFormData();
        await this.formatDate();
        await this.updateLeads();
+       console.log('phobia', this.nmiMernFlag)
 
     }
 };

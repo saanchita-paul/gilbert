@@ -1,7 +1,9 @@
 <template>
     <v-container fluid  v-if="planNoteFlag">
             <ValidationObserver ref="submit_lead">
-                <LeadUserDetails @eacalate="eacalate"
+                <LeadUserDetails
+                                :nmiMernFlag="nmiMernFlag"
+                                @eacalate="eacalate"
                                  @updateLead="updateLead"
                                  @readMore="readMore" :leadSummary="leadSummary"
                                  @updateAddress="updateAddress" @updateDraft="updateDraft"></LeadUserDetails>
@@ -50,6 +52,7 @@ export default {
 
     data() {
         return {
+            nmiMernFlag: true,
             leadId: null,
             leadSummary: null,
             notes: null,
@@ -70,9 +73,7 @@ export default {
         }
     },
 
-    computed: {
 
-    },
     methods: {
         async loadPlanNoteAndLead()
         {
@@ -84,8 +85,10 @@ export default {
             this.planNoteFlag = true;
         },
 
-        updatePlan(plan)
+        updatePlan(plan, isManual)
         {
+            //manual click activation plan
+            if(isManual) this.isManualChangeFlag = true;
             this.plan = plan;
             LeadApplicationService.saveSoleField('plan_type', this.plan, this.leadId);
         },
@@ -122,6 +125,7 @@ export default {
             this.lead = lead;
         },
         updateService(service) {
+            this.isManualChangeFlag = true;
             let index = this.services.findIndex(svc => svc === service.toLowerCase());
             if(index == -1) {
                 this.services.push(service.toLowerCase());
@@ -152,11 +156,11 @@ export default {
             this.showSubmitModal = false;
         },
 
-      async validateLead() {
+        async validateLead() {
           return await this.$refs.submit_lead.validate();
         },
 
-       async saveData() {
+        async saveData() {
 
             this.showSubmitModal = false;
             let payload = null;
@@ -182,12 +186,27 @@ export default {
         },
 
         async updateAddress(address) {
-            console.log("ADD", address)
-            Object.assign(this.leadSummary, address)
+             if(this.leadSummary.address_text == address.address_text) return;
+            this.leadSummary.address_text = address.address_text
+            this.leadSummary.street_address = address.street_address
+            this.leadSummary.city = address.city
+            this.leadSummary.postcode = address.postcode
+            this.leadSummary.state = address.state
+            this.leadSummary.street_number = address.street_number
+            this.leadSummary.unit_number = address.unit_number
+            this.leadSummary.street_name = address.street_name
+            this.nmiMernFlag = true;
+            this.leadSummary.nmi = '';
+            this.leadSummary.mirn = '';
+            this.isManualChangeFlag = false;
             let response = await LeadApplicationService.updateAddress(address, this.leadId);
+            this.leadSummary.nmi = response.nmi;
+            this.leadSummary.mirn = response.mirn;
+            this.nmiMernFlag = false;
+            this.isManualChangeFlag = true;
         },
 
-       async updateDraft(field, value, isDate, identification, isManualChangeFlag) {
+        async updateDraft(field, value, isDate, identification, isManualChangeFlag) {
 
             if(isNull(value)) return;
 
@@ -236,14 +255,29 @@ export default {
             }
             this.leadSummary[field] = value;
 
+        },
+
+        async updateMernNmi()
+        {
+
+            if(this.leadSummary.nmi == null && this.leadSummary.mirn == null)
+            {
+                const nmiMern = await LeadApplicationService.getNmiMern(this.leadId);
+                this.leadSummary.nmi = nmiMern.nmi;
+                this.leadSummary.mirn = nmiMern.mirn;
+            }
+
+
         }
 
     },
 
-    mounted() {
-       this.leadId = this.$route.params.id;
-       this.loadPlanNoteAndLead();
-        // this.loadLead();
+  async  mounted() {
+      this.leadId = this.$route.params.id;
+      await this.loadPlanNoteAndLead();
+      await this.updateMernNmi();
+      this.nmiMernFlag = false;
+
 
     }
 };
