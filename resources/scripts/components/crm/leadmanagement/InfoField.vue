@@ -229,7 +229,7 @@
                     <span>Billing Address</span>
                 </div>
                 <div class="text-field">
-                    <span>Same as service address</span>
+                    <span>Same as my billing address</span>
 <!--                    <ValidationProvider name="Billing Address" rules="required"  v-slot="{ errors }">-->
 <!--                        <v-text-field v-model="property_details.billing_address" @input="updateLeads"-->
 <!--                        outlined-->
