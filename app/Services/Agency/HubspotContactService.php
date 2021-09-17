@@ -321,7 +321,7 @@ class HubspotContactService
     {
         return match ($this->application->status) {
             ConnectionApplication::STATUS_UNASSIGNED => 'NEW',
-            ConnectionApplication::STATUS_SUBMITTED, 'default' => 'IN_PROGRESS', //todo: handle default correctly
+            default => 'IN_PROGRESS' //todo: handle default correctly
         };
     }
 }
