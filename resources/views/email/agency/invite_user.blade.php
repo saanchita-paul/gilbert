@@ -37,7 +37,7 @@
     ​
 
     <section class="main-content" style="display: flex">
-        <div style="width: 35%;color:black; padding:0px 20px">
+        <div style="width: 35%;color:black; padding:0px 20px; font-size: 16px">
             <p >Hi {{$profile->first_name}}!</p>
             <br/>
             <h2 style="margin-top:10px;font-weight: bold; font-size: 18px">Welcome to HOOD!</h2>
@@ -58,10 +58,10 @@
             </div>
             <br/>
             <br/>
-            @include('email.agency.layout.footer');
+            @include('email.agency.layout.footer')
         </div>
         <div style="width: 60%">
-            <img src="https://d32f-103-143-255-12.ngrok.io/hood-crm-dashboard/public/assets/images/agent.png" width="100%;">
+            <img src="https://db2b-103-143-255-12.ngrok.io/hood-crm-dashboard/public/assets/images/invite_email.png" width="100%;">
         </div>
 
     </section>
