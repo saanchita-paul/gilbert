@@ -147,7 +147,9 @@ class PostSalesService
         "lifeSupport"=> $lifeSupport,
         ];
 
-
+        info("EA Data");
+        info(json_encode($eaData));
+        info("EA Data");
         $variables= [
             'data'=>$eaData
         ];
