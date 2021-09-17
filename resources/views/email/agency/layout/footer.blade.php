@@ -1,3 +1,3 @@
 
-<p><small>Thank you,</small></p>
+<p>Thank you,</p>
 <p>HOOD Support Team</p>
