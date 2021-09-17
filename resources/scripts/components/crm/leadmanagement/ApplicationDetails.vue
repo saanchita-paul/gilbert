@@ -63,6 +63,8 @@
         <div class="mt-3">
           <p class="sub-title mb-1">Agent’s Additional Instructions</p>
           <v-textarea v-model="lead.additional_instruction"
+                      background-color="#FAFAFA"
+                      color="#7E8A8F"
             outlined
             placeholder="Additional Instructions goes here"
                       readonly
