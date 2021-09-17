@@ -34,6 +34,8 @@ class FastConnectService
 
            $payload = FastConnectService::makeAddressPayload($body);
 
+           Log::info('fast connect payload', $payload);
+
            $authorization = 'Bearer ' . $this->accessToken;
            $response = Http::withHeaders([
                'content-type' => 'application/json',
@@ -84,6 +86,7 @@ class FastConnectService
 
     public static function makeAddressPayload($address = [])
     {
+        $streetType = self::getStreetType($address['street_name']);
 
         return [
             'search_lookup_types' => [
@@ -97,8 +100,8 @@ class FastConnectService
             ],
 
             'address' => [
-                'street_name' => $address['street_name'] ?? '',
-                'street_type' => $address['street_type'] ?? '',
+                'street_name' => self::getStreetName($address['street_name'], $streetType),
+                'street_type' => $streetType,
                 'suburb' => $address['city'] ?? '',
                 'post_code' => $address['postcode'] ?? '',
                 'state' => $address['state'] ? self::stateMap($address['state']): '',
@@ -118,6 +121,17 @@ class FastConnectService
         }
         return $state;
 
+    }
+
+    private static function getStreetName(string $fullStreetAddress, string $type): string
+    {
+        return  trim(str_replace($type, '', $fullStreetAddress));
+    }
+
+    private static function getStreetType(string $streetAddress): string
+    {
+        $data = explode(' ', $streetAddress);
+        return $data[sizeof($data) - 1];
     }
 
 }
