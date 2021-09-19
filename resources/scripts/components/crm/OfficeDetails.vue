@@ -16,11 +16,28 @@
                     ></v-text-field>
                   </ValidationProvider>
                   <ValidationProvider name="address" rules="required"  v-slot="{ errors }">
+                      <v-menu offset-y v-model="showMenu">
+                          <template v-slot:activator="{ on }">
                         <v-text-field label="Office Address*"
                                       @input="updateOffice"
                                       v-model = "office.address"
                                       :error-messages=" errors[0]"
-                                      outlined dense></v-text-field>
+                                      outlined dense
+                                      @keyup.native="onStreetChanged"
+
+                        ></v-text-field>
+                          </template>
+                          <v-list>
+                              <v-list-item
+                                  v-for="place in searchResult"
+                                  :key="place.place_id"
+                                  @click="onAddressSelected(place)"
+                              >
+                                  <v-list-item-title v-text="place.description">
+                                  </v-list-item-title>
+                              </v-list-item>
+                          </v-list>
+                      </v-menu>
                   </ValidationProvider>
                   <ValidationProvider name="Contact" rules="required|cv-phone|length:10"  v-slot="{ errors }">
                       <v-text-field
@@ -55,6 +72,9 @@
 </template>
 
 <script>
+import debounce from "lodash-es/debounce";
+import GoogleMapService from "@scripts/services/GoogleMapService";
+
 export default {
   name: "OfficeDetails",
     props:['data'],
@@ -67,8 +87,23 @@ export default {
               email: '',
               abn: '',
               address: ''
-          }
+          },
+          showMenu: false,
+          searchResult: [],
       }
+    },
+
+    created() {
+        this.onStreetChanged = debounce(() => {
+            if (this.office.address.length > 0) {
+                GoogleMapService.getStreetAddressesByKeyword(this.office.address)
+                    .then((data) => {
+                        this.searchResult = data;
+                        this.showMenu = this.searchResult.length > 0
+                    });
+            }
+        }, 250);
+
     },
 
     methods: {
@@ -79,6 +114,13 @@ export default {
         updateWithProps()
         {
             this.office = this.data?.office;
+        },
+        onAddressSelected(place)
+        {
+            GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
+                .then((data) => {
+                    this.office.address = data.formatted_address;
+                });
         }
 
 
@@ -100,4 +142,7 @@ export default {
 </script>
 
 <style scoped>
+.v-menu__content{
+    top:307px !important;
+}
 </style>

@@ -15,20 +15,34 @@
                            > </component>
                     </ValidationObserver>
                     <ProgressBar :total-step="totalStep" :current-index="currentCompIndex" ></ProgressBar>
-                    <v-row>
-                        <v-col cols="12">
-                            <div class="d-flex justify-center">
-                                <v-btn class="mr-2" @click="cancel"
-                                >{{backOrCancel}}
-                                </v-btn>
-                                <v-btn class="ml-2" @click="goNextOrSave"
-                                       color="primary"
-                                       :disabled="isDisable"
-                                >
-                                   {{nextOrSave}}
-                                </v-btn>
-                            </div>
+                    <v-row class="d-flex justify-center">
+<!--                        <v-col cols="12">-->
+<!--                            <div class="d-flex justify-center">-->
+<!--                                <v-btn class="mr-2" @click="cancel"-->
+<!--                                >{{backOrCancel}}-->
+<!--                                </v-btn>-->
+<!--                                <v-btn class="ml-2" @click="goNextOrSave"-->
+<!--                                       color="primary"-->
+<!--                                       :disabled="isDisable"-->
+<!--                                >-->
+<!--                                   {{nextOrSave}}-->
+<!--                                </v-btn>-->
+<!--                            </div>-->
+<!--                        </v-col>-->
+                        <v-col cols="5">
+                            <v-btn block class="mr-2" @click="cancel"
+                            >{{backOrCancel}}
+                            </v-btn>
                         </v-col>
+                        <v-col cols="5">
+                            <v-btn block class="ml-2" @click="goNextOrSave"
+                                   color="primary"
+                                   :disabled="isDisable"
+                            >
+                                {{nextOrSave}}
+                            </v-btn>
+                        </v-col>
+
                     </v-row>
                 </v-container>
             </v-card>
