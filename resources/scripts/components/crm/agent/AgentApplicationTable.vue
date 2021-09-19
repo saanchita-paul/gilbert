@@ -27,6 +27,9 @@
                     <template v-slot:item.first_name="{ item }">
                       {{ item.first_name + ' ' + item.last_name }}
                     </template>
+                      <template v-slot:item.status="{ item }">
+                          {{['UnAssigned','Assigned', 'Escalated'].includes(item.status)?'In Progress': item.status }}
+                      </template>
                     <template v-slot:item.services="{ item }">
                       <v-icon small  :disabled="isServiceAllowed(item.services, 'power')" color="yellow">mdi-flash</v-icon>
                       <v-icon small :disabled="isServiceAllowed(item.services, 'gas')" color="red">mdi-fire</v-icon>
@@ -136,6 +139,9 @@ export default {
       deep: true,
     },
   },
+    mounted() {
+        console.log(this.applications);
+    }
 }
 </script>
 

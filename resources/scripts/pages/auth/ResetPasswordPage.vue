@@ -1,5 +1,5 @@
 <template>
-    <v-app>
+    <v-app class="reset-password">
         <v-container style="height: 100%">
             <div style="height: 100%; display: flex; justify-content: center; align-items: center">
                 <v-card width="400px">
@@ -107,5 +107,11 @@
 </script>
 
 <style scoped>
-
+.reset-password{
+    padding: 0px;
+    height: 100%;
+    background-image: url(/assets/images/loginbg_new.png)  !important;
+    background-position: center !important;
+    background-size: cover !important;
+}
 </style>

@@ -2,7 +2,7 @@
     <v-card class="hood-card" v-if="application">
         <h3 class="page-title">{{ application.first_name + ' ' + application.last_name}}</h3>
         <p class="sub-title mt-4 mb-2">Personal Details</p>
-        <table  class="application-info">
+        <table  class="application-info layout-fixed-table">
             <tr>
                 <td class="font-weight-bold">Date of Birth</td>
                 <td>{{ application.date_of_birth }}</td>
@@ -103,4 +103,8 @@ export default {
 </script>
 
 <style scoped>
+.layout-fixed-table{
+    table-layout: fixed;
+    width: 100%
+}
 </style>
