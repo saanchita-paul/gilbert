@@ -20,7 +20,7 @@ class CreateAgentAndUser
         /** @var AgentProfile $agent */
         $agent = AgentProfile::create($agentData);
 
-        #Mail::to($agent->email)->send(new InviteUserMail());
+        Mail::to($agent->email)->send(new InviteUserMail($agent));
         return $agent;
     }
 
