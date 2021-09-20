@@ -24,7 +24,7 @@ export default {
      */
     getMinConnectionDate: () => {
         const date = new Date()
-        date.setDate(date.getDate() + 3);
+        date.setDate(date.getDate() + 1);
         return date.toISOString()
     },
 

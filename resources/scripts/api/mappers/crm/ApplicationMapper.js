@@ -7,6 +7,7 @@ import COMMISSION from "@scripts/data/constants/COMMISSION";
 import PaginationMapper from "@scripts/api/mappers/crm/PaginationMapper";
 import DayJS from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
+import dayjs from "dayjs";
 export default {
     mapApplication(data) {
         let model = Object.assign(new Application(), { ...data });
@@ -98,20 +99,16 @@ export default {
 
         });
         data.service_interests = commsission;
-        data.moving_date = this.mapDateToServer(data.moving_date);
-        data.date_of_birth = this.mapDateToServer(data.date_of_birth);
        return {
            ...data,
-           dob: data.date_of_birth,
+           dob: this.mapDateToServer(data.date_of_birth),
+           moving_date: this.mapDateToServer(data.moving_date),
            is_email_billing: data.email_billing?data.email_billing:0
        }
     },
-    mapDateToServer(value)
+    mapDateToServer(dt)
     {
-          const  [day, month, year] = value.split('/');
-          return year + '-' + month + '-' + day;
-
-
+        return dayjs(dt,'DD/MM/YYYY').format('YYYY-MM-DD');
     }
 
 };

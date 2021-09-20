@@ -3,7 +3,7 @@
         <v-dialog
             v-model="dialog"
             persistent
-            max-width="400px"
+            max-width="500px"
         >
             <AssignedtoPopUp :lead="lead" :user="user" :assignedText="assignedText" @cancelModal="cancelModal"></AssignedtoPopUp>
         </v-dialog>
