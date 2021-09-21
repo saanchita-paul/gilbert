@@ -6,6 +6,7 @@
             class="app-nav-bar"
             dark
             :width="252"
+            mobile-breakpoint="1350"
         >
             <v-list class="nav-user-card hood-gradiant">
                 <v-list-item-avatar class="center-element nav-logo" size="59">
