@@ -10,6 +10,7 @@ use App\Models\Office;
 use App\Models\User;
 use App\Models\UserInvitation;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use phpDocumentor\Reflection\DocBlock\Tags\Reference\Url;
 
@@ -20,7 +21,7 @@ class CreateAgentAndUser
         /** @var AgentProfile $agent */
         $agent = AgentProfile::create($agentData);
 
-        Mail::to($agent->email)->send(new InviteUserMail($agent));
+//        Mail::to($agentData['email'])->send(new InviteUserMail($agent));
         return $agent;
     }
 

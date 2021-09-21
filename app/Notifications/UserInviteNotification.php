@@ -45,7 +45,7 @@ class UserInviteNotification extends Notification implements ShouldQueue
         $profile = $notifiable->profile;
         return (new MailMessage)
             ->subject("Hood registration invite")
-            ->view('email.invite_user', [
+            ->view('email.agency.invite_user', [
                 'token' => $this->invitation->token,
                 'name' => "$profile?->first_name $profile?->last_name"
             ]);
