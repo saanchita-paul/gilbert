@@ -93,7 +93,7 @@
                                             <v-checkbox
                                                 v-model="propertyDetails.is_billing_same"
                                                 @change="changeIsBillingSame"
-                                                :label="`I have a different billing address.`"
+                                                :label="`This is same as my billing address.`"
                                             ></v-checkbox>
                                         </v-col>
                                     </v-row>
