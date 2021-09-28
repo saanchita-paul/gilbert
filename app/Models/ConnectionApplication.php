@@ -166,6 +166,9 @@ class ConnectionApplication extends Model
     const STATUS_REJECTED = 6; //non payable
     const STATUS_EA_PROCESSINF = 7;
 
+    const HAS_SOLAR = 1;
+    const NO_SOLAR = 2;
+
 
     const MY_APPLICATIONS = 'my_applications';
 
@@ -181,11 +184,20 @@ class ConnectionApplication extends Model
     const PLAN_TYPE_TOTAL = 'total_plan';
     const PLAN_TYPE_BASIC = 'basic_plan';
     const PLAN_TYPE_NO_FRILLS = 'no_frills';
+    const PLAN_TYPE_TOTAL_INDEX = 1;
+    const PLAN_TYPE_BASIC_INDEX = 2;
+    const PLAN_TYPE_NO_FRILLS_INDEX = 3;
 
     const PLAN_TYPE_MAPPER = [
         self::PLAN_TYPE_BASIC => 1,
         self::PLAN_TYPE_NO_FRILLS => 2,
         self::PLAN_TYPE_TOTAL => 3
+    ];
+
+    const PLAN_TYPE_REVERSE_MAPPER = [
+        self::PLAN_TYPE_TOTAL_INDEX => self::PLAN_TYPE_TOTAL,
+        self::PLAN_TYPE_BASIC_INDEX => self::PLAN_TYPE_BASIC,
+        self::PLAN_TYPE_NO_FRILLS_INDEX => self::PLAN_TYPE_NO_FRILLS
     ];
 
     /**
@@ -243,4 +255,21 @@ class ConnectionApplication extends Model
     {
         return $this->hasMany(ApplicationNote::class);
     }
+
+    public function getElectricitySourceCode()
+    {
+        return 'AA';
+    }
+
+    public function getGasSourceCode()
+    {
+        return 'AA';
+    }
+
+    public function getRoadType()
+    {
+        $data = explode(' ', $this->street_name);
+        return $data[sizeof($data) - 1];
+    }
+
 }

@@ -1,0 +1,320 @@
+<?php
+
+namespace App\Services\Agency\CafFile;
+
+//use App\MovingUtilityData;
+//use App\Plan;
+use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
+use App\Models\Identification;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+
+class CAFDataMappingService implements FromCollection, WithHeadings
+{
+
+    /**
+     * @var \Illuminate\Database\Eloquent\Collection
+     */
+    private $collection;
+
+    private $chatbotUri = 'http://127.0.0.1:8000/';
+
+    public function __construct(Collection $collection)
+    {
+        $this->collection = $collection;
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function collection()
+    {
+        return $this->collection->map(
+            function (ConnectionApplication $utilityData) {
+                $idExpireDate = Carbon::parse($utilityData->identification->expire_date)->format("d/m/Y");
+                return [
+                    'vendor_id' => 'HD2',
+                    'sale_date' => $this->getAgreeAt($utilityData),
+                    'elec_source_code' => $this->getElectricitySourceCode($utilityData->plan_type, $utilityData->state),
+                    'gas_source_code' => $this->getGasSourceCode($utilityData->plan_type, $utilityData->state),
+                    'customer_type' => $utilityData->tenancy_type == 1? 'RES':'BUS',
+                    'offer_type' => 'ENE',
+                    'connection_date' => Carbon::parse($utilityData->moving_date)->format("d/m/Y"),
+                    'visual_inspection' => '',
+                    'electricity_already_on' => 'Yes',
+                    'inspection_timeframe' => '',
+                    'qld_vis_inspection_date' => $utilityData->qld_vis_inspection_date,
+                    'qld_vis_inspection_time' => $utilityData->qld_vis_inspection_time,
+
+                    //Personal Details
+                    'first_account_holder_title' => $utilityData->title,
+                    'first_account_holder_firstname' => $utilityData->first_name,
+                    'first_account_holder_surname' => $utilityData->last_name,
+                    'first_account_holder_dob' =>Carbon::parse($utilityData->dob)->format("d/m/Y"),
+                    'phone_type' => 'mobile',
+                    'phone_number' => $utilityData->phone,
+                    'email_welcome_consent' => 'N',
+                    'email_billing' => $utilityData->is_email_billing == 1 ? 'Y' : '',
+                    'email_address' => $utilityData->email,
+
+                    // Identification Passport/Driving License etc
+                    'id_firstname' => $utilityData->identification->first_name,
+                    'id_middle_name' => '',
+                    'id_surname' => $utilityData->identification->last_name,
+                    'id_type' => $utilityData->identification->type == Identification::TYPE_PASSPORT ? 'Passport' : ($utilityData->identification->type == Identification::TYPE_DRIVING_LICENCE ? 'Driving License' : ($utilityData->identification->type == Identification::TYPE_MEDICARE ? 'Medicare' : '')),
+                    'id_number' => $utilityData->identification->card_number,
+                    'medicare_expiry_date' => $utilityData->identification->type == 1 ?$utilityData->identification->expire_date: '',
+                    'passport_expiry_date' => $utilityData->identification->type == 2 ?$utilityData->identification->expire_date: '',
+                    'driver_license_expiry_date' => $utilityData->identification->type == 3 ?$utilityData->identification->expire_date: '',
+                    'state_colour_country' => $this->getStateColourOrCountry($utilityData->identification),
+                    'medicare_card_reference_number' => $utilityData->identification->special_number,
+                    'primary_id_flag' => 'Yes',
+
+                    // Supply Address
+                    'supply_unit_or_flat_number' => $utilityData->unit_number,
+                    'supply_street_number' => $utilityData->street_number,
+                    'supply_street_name' => $utilityData->street_name,
+                    'supply_street_type' => $utilityData->getRoadType(),
+                    'supply_suburb' => $utilityData->city,
+                    'supply_state' => $utilityData->state,
+                    'supply_postcode' => $utilityData->postcode,
+
+                    // Mailing Address.
+                    'mailing_unit_or_flat_number' => $utilityData->unit_number,
+                    'mailing_street_number' => $utilityData->street_number,
+                    'mailing_street_name' => $utilityData->street_name,
+                    'mailing_street_type' => $utilityData->getRoadType(),
+                    'mailing_suburb' => $utilityData->city,
+                    'mailing_state' => $utilityData->state,
+                    'mailing_postcode' => $utilityData->postcode,
+
+                    // EnergyAustralia Stuff
+                    'nmi' => $utilityData->nmi,
+                    'mirn' => $utilityData->mirn,
+                    'fuel_elec' => $this->isServiceType('power', $utilityData->id)?'Y':'N',
+                    'fuel_gas' =>  $this->isServiceType('gas', $utilityData->id)?'Y':'N',
+//                    'elec_plan' => is_object($utilityData->electricityPlan) ? $utilityData->electricityPlan->plan_name : '',
+                    'elec_plan' =>  $this->getElectricitySourceCode($utilityData->plan_type, $utilityData->state),
+//                    'gas_plan' => is_object($utilityData->gasPlan) ? $utilityData->gasPlan->plan : '',
+                    'gas_plan' => $this->getGasSourceCode($utilityData->plan_type, $utilityData->state),
+                    'additional_comments' => $utilityData->additional_instruction,
+                    'elec_status' => '',
+                    'gas_status' => '',
+                    'elec_reason' => '',
+                    'gas_reason' => '',
+                    'quote_id_elec' => '',
+                    'quote_id_gas' => '',
+                    'solar' => $utilityData->has_solar == 1 ? 'Y' : '',
+                    'tariff_code' =>  '',
+                    'buyback_rate' =>  $this->getBuyBackRate($utilityData->has_solar, $utilityData->state),
+                ];
+            }
+        );
+    }
+
+    /**
+     * @return string[]
+     */
+    public function headings(): array
+    {
+        return [
+            'Vendor ID',
+            'Sale Date',
+            'Elec Source Code',
+            'Gas Source Code',
+            'Customer Type',
+            'Offer Type',
+            'Connection Date',
+            'Visual Inspection',
+            'Electricity Already On? (Y/N)',
+            'Inspection Timeframe',
+            'QLD Visual Inspection Date',
+            'QLD Visual Inspection Time',
+
+            //Personal Details
+            'First Account Holder Title',
+            'First Account Holder Firstname',
+            'First Account Holder Surname',
+            'First Account Holder DOB',
+            'Phone Type',
+            'Phone Number',
+            'Email Welcome Consent Y/N',
+            'Email Billing Y/N',
+            'Email Address',
+
+            // Identification Passport/Driving License etc
+            'ID Firstname',
+            'ID Middle name',
+            'ID Surname',
+            'ID Type',
+            'ID Number',
+            'Medicare Expiry date',
+            'Passport Expiry date',
+            'Driver license Expiry date',
+            'DRV State/Medicare Card Colour/Country of Issue',
+            'Medicare Card Reference Number',
+            'Primary Id Flag',
+
+            // Supply Address
+            'Supply Unit/Flat Number',
+            'Supply Street Number',
+            'Supply Street Name',
+            'Supply  Street Type',
+            'Supply Suburb',
+            'Supply State',
+            'Supply Postcode',
+
+            // Mailing Address.
+            'Mailing Unit/Flat Number',
+            'Mailing Street Number',
+            'Mailing Street Name',
+            'Mailing Street Type',
+            'Mailing Suburb',
+            'Mailing State',
+            'Mailing Postcode',
+
+            // EnergyAustralia Stuff
+            'NMI',
+            'MIRN',
+            'Fuel elec',
+            'Fuel gas',
+            'Elec Plan',
+            'Gas Plan',
+            'Additional Comments',
+            'Elec Status',
+            'Gas Status',
+            'Elec  Reason',
+            'Gas  Reason',
+            'Quote ID - Elec',
+            'Quote ID - Gas',
+            'Solar Y/N',
+            'Tariff Code',
+            'Buyback Rate',
+        ];
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasData(): bool
+    {
+        return $this->collection->count() > 0;
+    }
+
+    /**
+     * @return $this
+     */
+    public function updateRecords(): self
+    {
+        ConnectionApplication::query()->whereIn('id', $this->collection->pluck('id')->toArray())->update([
+            'status' => ConnectionApplication::STATUS_EA_PROCESSINF,
+        ]);
+        return $this;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    private function getAgreeAt(ConnectionApplication $caData)
+    {
+        if (!empty($caData->updated_at)) {
+            return Carbon::parse($caData->updated_at)->format('"d/m/Y" h:i A');
+        }
+        return $caData->created_at->format('"d/m/Y" h:i A');
+    }
+
+
+    /**
+     * @param Identification $identification
+     * @return string
+     */
+    private function getStateColourOrCountry(Identification $identification)
+    {
+        if(empty($identification)) return '';
+        if($identification->type == Identification::TYPE_PASSPORT)
+        {
+            return $identification->country;
+        }
+        if($identification->type == Identification::TYPE_DRIVING_LICENCE)
+        {
+            return $identification->state;
+        }
+        if($identification->type == Identification::TYPE_MEDICARE)
+        {
+            return $identification->color;
+        }
+        return '';
+    }
+
+    private function isServiceType($service, $id)
+    {
+        /**
+         * @var Collection $services
+         */
+        $services = ConnectionService::where('connection_application_id','=',$id)->pluck('service_type');
+        return $services->contains($service);
+
+    }
+    private function getElectricitySourceCode($plan, $state)
+    {
+        $plan = ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
+        $state = $this->stateMap($state);
+        $response = Http::post($this->chatbotUri.'api/ele-source-code',['plan'=>$plan,'state'=>$state]);
+//        Log::info('p',$response->status());
+        if($response->status() == 200)
+        {
+            return json_decode($response->body())->source_code;
+        }
+        return  '';
+
+    }
+
+    private function getGasSourceCode($plan, $state)
+    {
+//        Log::info($plan, [$plan]);
+        $plan = ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
+        $state = $this->stateMap($state);
+        $response = Http::post($this->chatbotUri.'api/gas-source-code',['plan'=>$plan,'state'=>$state]);
+        if($response->status() == 200)
+        {
+            return json_decode($response->body())->source_code;
+
+        }
+        return  '';
+
+    }
+
+    private function getBuyBackRate($solar, $state)
+    {
+        $state = $this->stateMap($state);
+        $response = Http::post($this->chatbotUri.'api/tariff-code',['solar'=>$solar == ConnectionApplication::HAS_SOLAR?'solar':'','state'=>$state]);
+        if($response->status() == 200)
+        {
+            return json_decode($response->body())->buypack_rate;
+
+        }
+        return  '';
+
+    }
+    private function stateMap($state)
+    {
+        $stateList = ['New South Wales'=>'NSW','Victoria'=>'VIC','Queensland'=>'QLD',
+            'South Australia'=>'SA','Northern Territory'=>'NT','TAS'=>'Tasmania','ACT'=>'Australian Capital Territory'];
+        if(array_key_exists($state, $stateList))
+        {
+            return $stateList[$state];
+        }
+        return $state;
+
+    }
+
+
+
+
+}
