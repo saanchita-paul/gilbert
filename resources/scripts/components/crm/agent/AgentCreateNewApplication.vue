@@ -102,6 +102,156 @@
 
                     </v-col>
 
+
+
+                    <v-col cols="12" class="pb-0">
+                        <v-row class="my-0 py-0">
+                            <v-col class="my-0 py-0">
+                                <v-checkbox
+                                    v-model="has_authorized"
+                                    :label="`Add an authorised person on the account`"
+                                ></v-checkbox>
+                            </v-col>
+                        </v-row>
+                        <v-row  v-if="has_authorized">
+                            <v-col cols="6">
+                                <p class="sub-title mb-0">Authorised Person’s Details <small class="font-weight-thin">Personal details</small></p>
+                            </v-col>
+                            <v-col cols="6">
+                                <p class="sub-title mb-0"><small class="font-weight-thin">All fields marked with * are mandatory</small></p>
+                            </v-col>
+                        </v-row>
+                        <v-row  v-if="has_authorized">
+                            <v-col cols="6">
+                                <v-row>
+                                    <v-col cols="12" class="py-0">
+                                        <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
+                                            <v-text-field
+                                                indentification
+                                                :error-messages=" errors[0]"
+                                                outlined
+                                                label="First Name*"
+                                                v-model="authorized_person.first_name"
+                                                dense
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="12" class="py-0">
+                                        <ValidationProvider name="Last Name" rules="required"  v-slot="{ errors }">
+                                            <v-text-field
+                                                indentification
+                                                :error-messages=" errors[0]"
+                                                outlined
+                                                label="Last Name*"
+                                                v-model="authorized_person.last_name"
+                                                dense
+
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="12" class="py-0">
+                                        <ValidationProvider name="Mobile Number"  v-slot="{ errors }">
+                                            <v-text-field
+                                                indentification
+                                                :error-messages=" errors[0]"
+                                                outlined
+                                                label="Mobile Number (Optional)"
+                                                v-model="authorized_person.contact"
+                                                dense
+                                                placeholder="+61"
+
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="12" class="py-0">
+                                        <ValidationProvider name="Date Of Birth" rules="required"  v-slot="{ errors }">
+                                            <v-menu
+                                                v-model="showAuthoritydob"
+                                                :close-on-content-click="false"
+                                                :nudge-right="40"
+                                                transition="scale-transition"
+                                                offset-y
+                                                min-width="290px"
+                                            >
+                                                <template v-slot:activator="{ on, attrs }">
+
+                                                    <ValidationProvider name="Date Of Birth" rules="required|valid-date"  v-slot="{ errors }">
+                                                        <v-text-field
+                                                            label="Date Of Birth*"
+                                                            placeholder="DD/MM/YYYY"
+                                                            outlined
+                                                            dense
+                                                            v-model="authorized_person.dob"
+                                                            v-bind="attrs"
+                                                            :error-messages=" errors[0]"
+                                                            @blur="syncMovingDate"
+                                                        >
+
+                                                            <template slot="append">
+                                                                <v-icon  v-on="on">mdi-calendar</v-icon>
+                                                            </template>
+
+                                                        </v-text-field>
+                                                    </ValidationProvider>
+                                                </template>
+                                                <v-date-picker v-model="authorized_person_dob"
+                                                               @input="showAuthoritydob = false"></v-date-picker>
+                                            </v-menu>
+                                        </ValidationProvider>
+                                    </v-col>
+                                </v-row>
+                            </v-col>
+                            <v-col cols="6">
+                                <v-row>
+                                    <v-col cols="12" class="py-0">
+                                        <ValidationProvider name="Middle Name*" rules="required"  v-slot="{ errors }">
+                                            <v-text-field
+                                                indentification
+                                                :error-messages=" errors[0]"
+                                                outlined
+                                                label="Middle Name*"
+                                                v-model="authorized_person.middle_name"
+                                                dense
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="12" class="py-0">
+                                        <ValidationProvider name="Email address" rules="required"  v-slot="{ errors }">
+                                            <v-text-field
+                                                indentification
+                                                :error-messages=" errors[0]"
+                                                outlined
+                                                label="Email address*"
+                                                v-model="authorized_person.email"
+                                                dense
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="12" class="py-0">
+                                        <ValidationProvider name="Authorised Person's role" rules="required"  v-slot="{ errors }">
+                                            <v-select
+                                                outlined dense hide-details="auto"
+                                                :items="roles"
+                                                item-text="text"
+                                                item-value="value"
+                                                v-model="authorized_person.role"
+                                                :error-messages=" errors[0]"
+                                                placeholder="Role">
+                                            </v-select>
+                                        </ValidationProvider>
+                                    </v-col>
+                                </v-row>
+                            </v-col>
+                        </v-row>
+
+                    </v-col>
+
+
+
+
+
+
+
                     <v-col cols="12" class="pb-0">
                         <p class="sub-title mb-0">Moving Details <small class="font-weight-thin">Information about your lead’s move.</small></p>
                     </v-col>
@@ -343,8 +493,37 @@ export default {
             ],
             dob: (new DayJs((new Date()).setFullYear(2000))).format('YYYY-MM-DD'),
             moving_date: null,
+            showAuthoritydob: false,
             createSuccessfulModal: false,
             title: '',
+            authorized_person_dob: null,
+            authorized_person:{
+                first_name :'',
+                middle_name :'',
+                last_name:'',
+                email:'',
+                role: '',
+                contact: '',
+                dob: null,
+
+            },
+            roles:[
+                {
+                    value: 'enquiry_only',
+                    text:'Enquiry Only',
+
+
+                },
+                {
+                    value:'fully_authoried',
+                    text:'Fully Authorised',
+                },
+                {
+                    value:'financially_responsible',
+                    text:'Financially Responsible'
+                }
+            ],
+            has_authorized: false
         }
     },
     created() {
@@ -417,6 +596,7 @@ export default {
             if(DayJs(this.application.date_of_birth,'DD/MM/YYYY').isValid())
             {
                 this.dob = (DayJs(this.application.date_of_birth,'DD/MM/YYYY')).format('YYYY-MM-DD');
+                this.authorized_person_dob = (DayJs(this.application.date_of_birth,'DD/MM/YYYY')).format('YYYY-MM-DD');
             }
         },
         syncMovingDate() {
@@ -424,7 +604,7 @@ export default {
             {
                 this.moving_date = (DayJs(this.application.moving_date,'DD/MM/YYYY')).format('YYYY-MM-DD');
             }
-        }
+        },
     },
     watch: {
         dob() {
@@ -433,6 +613,9 @@ export default {
 
         moving_date() {
             this.application.moving_date = (new DayJs(this.moving_date).format('DD/MM/YYYY'));
+        },
+        authorized_person_dob() {
+            this.authorized_person.dob = (new DayJs(this.authorized_person_dob).format('DD/MM/YYYY'));
         },
 
     }
