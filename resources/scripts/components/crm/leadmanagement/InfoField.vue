@@ -179,7 +179,7 @@
                     <span>Family Violance </span>
                 </div>
                 <div class="text-field">
-                    <ValidationProvider name="Family Violance" rules="nullable"  v-slot="{ errors }">
+                    <ValidationProvider name="Family Violance"  v-slot="{ errors }">
                         <v-select v-model="person_details.family_violance" :items="familyViolanceTypeDD" item-text="text" item-value="value" :error-messages=" errors[0]"
                                   @input="updateLeads" outlined dense hide-details="auto"
                                   @blur="saveDraft('family_violance',person_details.family_violance)"

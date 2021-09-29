@@ -29,6 +29,7 @@ export default class ApplicationSummary {
     mirn = null;
     nmi = null;
     property_type = null;
+    family_violance = null;
     has_life_support = null;
     has_solar = null;
     status = null;
@@ -52,6 +53,7 @@ export default class ApplicationSummary {
             phone = null,
             email = null,
             moving_date = null,
+            family_violance = null,
             is_email_billing = null, //is_email_billing
             tenancy_type = null,
             address_unit = null,
@@ -94,6 +96,7 @@ export default class ApplicationSummary {
         this.dob = date_of_birth;
         this.phone = phone;
         this.email = email;
+        this.family_violance = family_violance;
         this.moving_date = moving_date ? new DayJs(moving_date).format('YYYY-MM-DD') : null;
         this.is_email_billing = is_email_billing;
         this.tenancy_type = tenancy_type;

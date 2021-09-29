@@ -51,6 +51,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int|null $has_solar
  * @property string|null $nmi
  * @property string|null $mirn
+ * @property string|null $family_violance
  * @property int|null $supplier
  * @property int|null $plan_type
  * @property int|null $status
@@ -119,6 +120,7 @@ class ConnectionApplication extends Model
         'assigned_to',
         'first_name',
         'middle_name',
+        'family_violance',
         'last_name',
         'email',
         'phone',
