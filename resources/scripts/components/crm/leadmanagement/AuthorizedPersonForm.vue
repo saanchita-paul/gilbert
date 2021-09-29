@@ -15,7 +15,12 @@
                 ></v-text-field>
             </ValidationProvider>
         </div>
-        <AuthorizedPersonProfileForm @closeModal="closeModal" v-if="dialog" dialog="dialog">
+        <AuthorizedPersonProfileForm @closeModal="closeModal"
+                                     @saveAuthroizedPerson = "saveAuthroizedPerson"
+                                     v-if="dialog"
+                                     dialog="dialog"
+                                     :authorized_person_data="authorized_person_data"
+        >
 
         </AuthorizedPersonProfileForm>
     </div>
@@ -24,13 +29,15 @@
 
 <script>
 import AuthorizedPersonProfileForm from "@scripts/components/crm/leadmanagement/AuthorizedPersonProfileForm";
+import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 export default {
 name: "AuthorizedPersonForm",
     components: {AuthorizedPersonProfileForm},
-    props:['authorizedPersonName'],
+    props:['authorizedPersonName','leadId'],
     data(){
         return {
-            dialog: false
+            dialog: false,
+            authorized_person_data: null,
         };
     },
 
@@ -41,20 +48,30 @@ name: "AuthorizedPersonForm",
     },
 
     methods: {
-        openProfileForm() {
+        async openProfileForm() {
+            await this.loadAuthoriedPerson();
             this.dialog = true;
         },
-        synData() {
 
-        },
         closeModal()
         {
             this.dialog = false;
-        }
+        },
+
+        async loadAuthoriedPerson()
+        {
+            this.authorized_person_data = await LeadApplicationService.loadAuthorizedPerson(this.leadId);
+        },
+         async saveAuthroizedPerson(data)
+         {
+             console.log(data);
+             await LeadApplicationService.saveAuthorizedPerson(data);
+         }
+
     },
 
-    mounted() {
-        this.synData();
+    async mounted() {
+        await this.loadAuthoriedPerson()
     }
 }
 </script>

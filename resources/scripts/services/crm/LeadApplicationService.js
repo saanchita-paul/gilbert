@@ -16,6 +16,8 @@ export default {
     assignUser: (leadId, agentProfileId) => LeadApplicationAPI.assignUser(leadId, agentProfileId),
     saveSoleField:(field, value, leadId, isDate,identification=false, isService=false) => LeadApplicationAPI.saveSoleField(field, value, leadId, isDate,identification,isService),
     getNmiMern:(id) => LeadApplicationAPI.getNmiMern(id),
+    loadAuthorizedPerson:(leadId) => LeadApplicationAPI.loadAuthorizedPerson(leadId),
+    saveAuthorizedPerson:(data) => LeadApplicationAPI.saveAuthorizedPerson(data),
 
     /**
      * Getting minimum valid Connection date

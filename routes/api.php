@@ -84,8 +84,10 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/applications-metrics', [ApplicationController::class, 'getMetrics']);
     Route::get('/applications-metrics-count', [ApplicationController::class, 'getApplicationMetricsCount']);
     Route::get('/applications/{id}/nmi-mern', [ApplicationController::class, 'getNmiMern']);
+    Route::get('/authoized-person/{id}', [ApplicationController::class, 'getAuthorizedPerson']);
+    Route::post('/authoized-person/{id}', [ApplicationController::class, 'updateAuthorizedPerson']);
 
-
+    //'+id
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);

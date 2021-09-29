@@ -523,17 +523,17 @@ export default {
             },
             roles:[
                 {
-                    value: 'enquiry_only',
+                    value: 1,
                     text:'Enquiry Only',
 
 
                 },
                 {
-                    value:'fully_authoried',
+                    value: 2,
                     text:'Fully Authorised',
                 },
                 {
-                    value:'financially_responsible',
+                    value: 3,
                     text:'Financially Responsible'
                 }
             ],
@@ -583,7 +583,10 @@ export default {
         },
         saveApplication() {
             this.confirmApplicationModal = false;
-            AgentApplicationService.createApplication(this.application)
+            AgentApplicationService.createApplication({
+                'application': this.application,
+                'authorized_person': this.authorized_person
+            })
                 .then(res =>  {
                     this.title = res.data.data.first_name + ' ' + res.data.data.last_name;
                     this.createSuccessfulModal = true;

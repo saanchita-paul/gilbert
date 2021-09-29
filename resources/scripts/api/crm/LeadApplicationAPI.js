@@ -366,4 +366,29 @@ export default {
         }
     },
 
+    async loadAuthorizedPerson(id) {
+        try {
+
+            const data = await axios.get('/api/authoized-person/'+id);
+            return data.data.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    async saveAuthorizedPerson(audata) {
+        try {
+            console.log('data', audata);
+            const data = await axios.post('/api/authoized-person/'+audata.id,{...audata});
+            return data.data.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+
+
+
 }

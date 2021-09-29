@@ -22,11 +22,6 @@ class AlterConnectionApplicationsTable extends Migration
             $table->string('inspection_time' , 100)->nullable();
             $table->tinyInteger('family_violance')->nullable();
 
-            $table->unsignedBigInteger('application_secondary_acc_id');
-            $table->foreign('application_secondary_acc_id')
-            ->references('id')
-            ->on('application_secondary_acc')
-            ->onDelete('cascade');
         });
     }
 

@@ -156,7 +156,7 @@
                     </ValidationProvider>
                 </div>
             </div>
-            <AuthorizedPersonForm :authorized-person-name="'sazzad ahmed'"></AuthorizedPersonForm>
+            <AuthorizedPersonForm :lead-id="lead.id" :authorized-person-name="'sazzad ahmed'"></AuthorizedPersonForm>
 
         </v-col>
 
@@ -872,7 +872,7 @@ export default {
        await this.synFormData();
        await this.formatDate();
        await this.updateLeads();
-       console.log('phobia', this.nmiMernFlag)
+       // console.log('phobia', this.nmiMernFlag)
 
     }
 };

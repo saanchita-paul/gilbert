@@ -18,9 +18,15 @@ class CreateApplicationSecondaryAccTable extends Migration
             $table->string('first_name', 100)->nullable();
             $table->string('last_name', 100)->nullable();
             $table->string('middle_name', 100)->nullable();
-            $table->string('email_name', 100)->nullable();
+            $table->string('email', 100)->nullable();
             $table->string('phone', 20)->nullable();
             $table->tinyInteger('role')->nullable();
+            $table->timestamps();
+            $table->unsignedBigInteger('connection_application_id');
+            $table->foreign('connection_application_id')
+                ->references('id')
+                ->on('connection_applications')
+                ->onDelete('cascade');
         });
     }
 

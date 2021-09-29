@@ -18,7 +18,7 @@
                                     <p class="title">Secondary Account Holder</p>
                                 </div>
                             </v-col>
-                            <v-col cols="10">
+                            <v-col cols="12">
                                 <v-row >
                                     <v-col cols="12">
                                         <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
@@ -78,7 +78,7 @@
                                                 indentification
                                                 :error-messages=" errors[0]"
                                                 outlined
-                                                v-model="authorized_person.contact"
+                                                v-model="authorized_person.phone"
                                                 label="Contact Number(optional)"
                                                 dense
                                                 hide-details="auto"
@@ -125,7 +125,7 @@
 <script>
 export default {
 name: "AuthorizedPersonProfileForm",
-    props:['dialog'],
+    props:['dialog','authorized_person_data'],
     data()
     {
       return {
@@ -135,21 +135,21 @@ name: "AuthorizedPersonProfileForm",
               last_name:'',
               email:'',
               role: '',
-              contact: ''
+              phone: ''
           },
           roles:[
               {
-                  value: 'enquiry_only',
+                  value: 1,
                   text:'Enquiry Only',
 
 
               },
               {
-                  value:'fully_authoried',
+                  value: 2,
                   text:'Fully Authorised',
               },
               {
-                  value:'financially_responsible',
+                  value: 3,
                   text:'Financially Responsible'
               }
           ]
@@ -158,10 +158,26 @@ name: "AuthorizedPersonProfileForm",
     methods:{
         submitForm() {
 
+            this.$emit('saveAuthroizedPerson', this.authorized_person);
         },
+
         closeModal() {
             this.$emit('closeModal');
+        },
+
+        syncData() {
+            this.authorized_person.first_name = this.authorized_person_data.first_name
+            this.authorized_person.last_name = this.authorized_person_data.last_name
+            this.authorized_person.email = this.authorized_person_data.email
+            this.authorized_person.middle_name = this.authorized_person_data.middle_name
+            this.authorized_person.phone = this.authorized_person_data.phone
+            this.authorized_person.role = this.authorized_person_data.role
+            this.authorized_person.id = this.authorized_person_data.id
+
         }
+    },
+    mounted() {
+        this.syncData();
     }
 }
 </script>

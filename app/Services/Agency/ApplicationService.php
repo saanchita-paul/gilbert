@@ -4,6 +4,7 @@ namespace App\Services\Agency;
 
 use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use App\Models\Identification;
 use App\Models\User;
@@ -27,6 +28,8 @@ class ApplicationService
         $application['agency_id'] = $agentProfile->agency_id;
         $application['created_by'] = $agentProfile->id;
         $application['status'] = ConnectionApplication::STATUS_UNASSIGNED;
+        $authizedPerson = $application['authorized_person'];
+
 
         /** @var $newApplication ConnectionApplication */
         $newApplication = ConnectionApplication::create($application);
@@ -38,6 +41,12 @@ class ApplicationService
                     'connection_application_id' => $newApplication->id]
             );
         }
+
+        if(!empty($authizedPerson))
+        {
+            $authizedPerson['connection_application_id'] = $newApplication->id;
+        }
+        ConnectionApplicationSecondaryACC::create($authizedPerson);
 
         return $newApplication;
 
@@ -202,4 +211,21 @@ class ApplicationService
 
         return $existLead->refresh();
     }
+
+    public function getAuthrisedInfo($id)
+    {
+        return ConnectionApplicationSecondaryACC::query()
+            ->where('connection_application_id','=', $id)
+            ->first();
+    }
+
+    public function updateAuthrisedInfo($data, $id)
+    {
+
+        $authorizedPerson =  ConnectionApplicationSecondaryACC::find($id);
+        $authorizedPerson->update($data);
+        return $authorizedPerson->refresh();
+
+    }
+
 }
