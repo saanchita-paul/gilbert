@@ -174,6 +174,20 @@
                     </ValidationProvider>
                 </div>
             </div>
+            <div class="crm-text-field">
+                <div class="field-label">
+                    <span>Family Violance </span>
+                </div>
+                <div class="text-field">
+                    <ValidationProvider name="Family Violance" rules="nullable"  v-slot="{ errors }">
+                        <v-select v-model="person_details.family_violance" :items="familyViolanceTypeDD" item-text="text" item-value="value" :error-messages=" errors[0]"
+                                  @input="updateLeads" outlined dense hide-details="auto"
+                                  @blur="saveDraft('family_violance',person_details.family_violance)"
+                        >
+                        </v-select>
+                    </ValidationProvider>
+                </div>
+            </div>
 
         </v-col>
 
@@ -596,6 +610,20 @@ export default {
                     value: 2
                 }
             ],
+            familyViolanceTypeDD: [
+                {
+                    text: 'Yes',
+                    value: 1
+                },
+                {
+                    text: 'No',
+                    value: 2
+                },
+                {
+                    text: 'Not Applicable',
+                    value: 3
+                },
+            ],
 
             propertyTypeDD:[
                 {
@@ -707,6 +735,7 @@ export default {
                 email: '',
                 is_email_billing: '',
                 tenancy_type: '',
+                family_violance: '',
                 additional_instruction: '',
 
             },
@@ -755,6 +784,7 @@ export default {
             this.person_details.email = this.lead.email;
             this.person_details.phone = this.lead.phone;
             this.person_details.tenancy_type = this.lead.tenancy_type;
+            this.person_details.family_violance = this.lead.family_violance;
             this.person_details.is_email_billing = this.lead.is_email_billing;
             this.person_details.additional_instruction = this.lead.additional_instruction;
 
