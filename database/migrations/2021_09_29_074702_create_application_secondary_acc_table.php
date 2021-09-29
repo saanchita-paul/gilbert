@@ -22,11 +22,6 @@ class CreateApplicationSecondaryAccTable extends Migration
             $table->string('phone', 20)->nullable();
             $table->tinyInteger('role')->nullable();
         });
-
-        
-
-
-
     }
 
     /**
