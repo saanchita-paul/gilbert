@@ -42,6 +42,24 @@
             </div>
             <div class="crm-text-field">
                 <div class="field-label">
+                    <span>Middlename *</span>
+                </div>
+                <div class="text-field">
+                        <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
+                        <v-text-field
+                            v-model="person_details.middle_name"  @input="updateLeads"
+                            @blur="saveDraft('middle_name',person_details.middle_name)"
+                            outlined
+                            dense
+                            hide-details="auto"
+                            placeholder="Middlename"
+                            :error-messages=" errors[0]"
+                    ></v-text-field>
+                    </ValidationProvider>
+                </div>
+            </div>
+            <div class="crm-text-field">
+                <div class="field-label">
                     <span>Lastname *</span>
                 </div>
                 <div class="text-field">
@@ -682,6 +700,7 @@ export default {
             person_details: {
                 title: '',
                 first_name: '',
+                middle_name: '',
                 last_name: '',
                 dob: '',
                 phone: '',
@@ -731,6 +750,7 @@ export default {
             this.person_details.title = this.lead.title;
             this.person_details.first_name = this.lead.first_name;
             this.person_details.last_name = this.lead.last_name;
+            this.person_details.middle_name = this.lead.middle_name;
             // this.person_details.dob = this.lead.dob;
             this.person_details.email = this.lead.email;
             this.person_details.phone = this.lead.phone;
