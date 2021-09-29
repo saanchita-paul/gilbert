@@ -8,7 +8,7 @@
                 <td>{{lead.date_of_birth}}</td>
             </tr>
             <tr>
-                <td class="font-weight-bold">Mobile</td>
+                <td class="font-weight-bold">{{ lead.phone_type == 1 ? 'Mobile' : 'Homephone' }}</td>
                 <td>{{lead.phone}}</td>
             </tr>
             <tr>

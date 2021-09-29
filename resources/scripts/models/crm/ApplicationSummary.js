@@ -8,6 +8,7 @@ export default class ApplicationSummary {
     last_name = null;
     dob = null; //dob
     phone = null;
+    phone_type = null;
     email = null;
     moving_date = null;
     email_billing = null; //is_email_billing
@@ -51,6 +52,7 @@ export default class ApplicationSummary {
             last_name = null,
             date_of_birth = null, //dob
             phone = null,
+            phone_type = null,
             email = null,
             moving_date = null,
             family_violance = null,
@@ -95,6 +97,7 @@ export default class ApplicationSummary {
         this.date_of_birth = date_of_birth;
         this.dob = date_of_birth;
         this.phone = phone;
+        this.phone_type = phone_type;
         this.email = email;
         this.family_violance = family_violance;
         this.moving_date = moving_date ? new DayJs(moving_date).format('YYYY-MM-DD') : null;

@@ -18,8 +18,8 @@ class AlterConnectionApplicationsTable extends Migration
             //
             $table->string('middle_name', 45)->nullable()->after('first_name');
             $table->boolean('has_electricity')->default('1')->nullable();
-            $table->string('home_phone_number' , 20)->nullable();
             $table->string('inspection_time' , 100)->nullable();
+            $table->tinyInteger('phone_type')->default('1')->nullable()->after('phone');
             $table->tinyInteger('family_violance')->default('3')->nullable();
             $table->unsignedBigInteger('application_secondary_acc_id')->nullable();
             $table->foreign('application_secondary_acc_id')

@@ -117,12 +117,29 @@
 
                 </div>
             </div>
+
             <div class="crm-text-field">
                 <div class="field-label">
-                    <span>Mobile *</span>
+                    <span>Phone Type *</span>
                 </div>
                 <div class="text-field">
-                    <ValidationProvider name="Mobile Number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                    <ValidationProvider name="Family Violance"  v-slot="{ errors }">
+                        <v-select v-model="person_details.phone_type" :items="phoneTypeDD" item-text="text" item-value="value" :error-messages=" errors[0]"
+                                  @input="updateLeads" outlined dense hide-details="auto"
+                                  @blur="saveDraft('phone_type',person_details.phone_type)"
+                        >
+                        </v-select>
+                    </ValidationProvider>
+                </div>
+            </div>
+
+
+            <div class="crm-text-field" >
+                <div class="field-label">
+                    <span>{{ person_details.phone_type == 1 ? 'Mobile' : 'Homephone' }} *</span>
+                </div>
+                <div class="text-field">
+                    <ValidationProvider name="Phone Number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
                         <v-text-field
                             v-model="person_details.phone"  @input="updateLeads"
                         outlined
@@ -134,6 +151,8 @@
                     </ValidationProvider>
                 </div>
             </div>
+
+
             <div class="crm-text-field">
                 <div class="field-label">
                     <span>Email *</span>
@@ -610,6 +629,16 @@ export default {
                     value: 2
                 }
             ],
+            phoneTypeDD: [
+                {
+                    text: 'Mobile',
+                    value: 1
+                },
+                {
+                    text: 'Homephone',
+                    value: 2
+                }
+            ],
             familyViolanceTypeDD: [
                 {
                     text: 'Yes',
@@ -732,6 +761,7 @@ export default {
                 last_name: '',
                 dob: '',
                 phone: '',
+                phone_type: '',
                 email: '',
                 is_email_billing: '',
                 tenancy_type: '',
@@ -784,6 +814,7 @@ export default {
             this.person_details.email = this.lead.email;
             this.person_details.phone = this.lead.phone;
             this.person_details.tenancy_type = this.lead.tenancy_type;
+            this.person_details.phone_type = this.lead.phone_type;
             this.person_details.family_violance = this.lead.family_violance;
             this.person_details.is_email_billing = this.lead.is_email_billing;
             this.person_details.additional_instruction = this.lead.additional_instruction;

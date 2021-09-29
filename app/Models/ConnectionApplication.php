@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $email
  * @property string|null $phone
  * @property int|null $tenancy_type
+ * @property int|null $phone_type
  * @property string|null $dob
  * @property string|null $moving_date
  * @property string|null $address_unit
@@ -124,6 +125,7 @@ class ConnectionApplication extends Model
         'last_name',
         'email',
         'phone',
+        'phone_type',
         'tenancy_type',
         'dob',
         'moving_date',
