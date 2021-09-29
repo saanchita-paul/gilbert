@@ -21,6 +21,20 @@
                             ></v-text-field>
                         </ValidationProvider>
                     </v-col>
+
+                    <v-col cols="6" class="pb-0">
+                        <ValidationProvider name="Middlename" rules="required"  v-slot="{ errors }">
+                            <v-text-field
+                                label="Middlename*"
+                                outlined
+                                dense
+                                placeholder="Middlename"
+                                v-model="application.middle_name"
+                                :error-messages=" errors[0]"
+                            ></v-text-field>
+                        </ValidationProvider>
+                    </v-col>
+
                     <v-col cols="6" class="pb-0">
                     <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
                         <v-text-field
@@ -33,7 +47,7 @@
                         ></v-text-field>
                     </ValidationProvider>
                     </v-col>
-                    <v-col cols="6" class="py-0">
+                    <v-col cols="6" class="py-0 mt-3">
                     <ValidationProvider name="Email" rules="required|email"  v-slot="{ errors }">
                         <v-text-field
                             label="Email*"

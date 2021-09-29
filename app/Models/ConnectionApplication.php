@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $created_by
  * @property int|null $assigned_to
  * @property string|null $first_name
+ * @property string|null $middle_name
  * @property string|null $last_name
  * @property string|null $email
  * @property string|null $phone
@@ -117,6 +118,7 @@ class ConnectionApplication extends Model
         'created_by',
         'assigned_to',
         'first_name',
+        'middle_name',
         'last_name',
         'email',
         'phone',
@@ -193,7 +195,7 @@ class ConnectionApplication extends Model
      */
     public function office()
     {
-        return $this->belongsTo(Office::class,'office_id','id');
+        return $this->belongsTo(Office::class, 'office_id', 'id');
     }
 
     /**

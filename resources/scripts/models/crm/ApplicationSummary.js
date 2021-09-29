@@ -4,6 +4,7 @@ import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 export default class ApplicationSummary {
     id = null;
     first_name = null;
+    middle_name = null;
     last_name = null;
     dob = null; //dob
     phone = null;
@@ -45,6 +46,7 @@ export default class ApplicationSummary {
             id = null,
             title = 'Mr',
             first_name = null,
+            middle_name = null,
             last_name = null,
             date_of_birth = null, //dob
             phone = null,
@@ -64,7 +66,7 @@ export default class ApplicationSummary {
             address_text = null,
             services = [],
             additional_instruction = null,
-            identification= null,
+            identification = null,
             mirn = null,
             nmi = null,
             has_life_support = null,
@@ -86,12 +88,13 @@ export default class ApplicationSummary {
         this.id = id;
         this.applicant_name = first_name + ' ' + last_name;
         this.first_name = first_name;
+        this.middle_name = middle_name;
         this.last_name = last_name;
         this.date_of_birth = date_of_birth;
         this.dob = date_of_birth;
         this.phone = phone;
         this.email = email;
-        this.moving_date = moving_date? new DayJs(moving_date).format('YYYY-MM-DD'):null;
+        this.moving_date = moving_date ? new DayJs(moving_date).format('YYYY-MM-DD') : null;
         this.is_email_billing = is_email_billing;
         this.tenancy_type = tenancy_type;
         this.tenancy_type = tenancy_type;
@@ -129,11 +132,10 @@ export default class ApplicationSummary {
 
     }
 
-     mapStatus(status)
-    {
+    mapStatus(status) {
         status = status - 1;
-        if(status < 0) return  '';
-        const statusList = ['Unassigned','Assigned', 'Escalated','Submitted', 'Accepted', 'Rejected','Inprogress'];
+        if (status < 0) return '';
+        const statusList = ['Unassigned', 'Assigned', 'Escalated', 'Submitted', 'Accepted', 'Rejected', 'Inprogress'];
         return statusList[status];
     }
 }
