@@ -20,7 +20,7 @@ class AlterConnectionApplicationsTable extends Migration
             $table->boolean('has_electricity')->default(1)->nullable();
             $table->string('land_number' , 20)->nullable();
             $table->string('inspection_time' , 100)->nullable();
-            $table->tinyInteger('family_violance')->nullable();
+            $table->tinyInteger('family_violance')->default(3)->nullable();
             $table->unsignedBigInteger('application_secondary_acc_id')->nullable();
             $table->foreign('application_secondary_acc_id')
             ->references('id')
