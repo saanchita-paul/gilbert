@@ -1,6 +1,6 @@
 <template>
     <v-card class="hood-card" v-if="application">
-        <h3 class="page-title">{{ application.first_name + ' ' + application.last_name}}</h3>
+        <h3 class="page-title">{{ application.first_name + ' ' + application.middle_name  + ' ' + application.last_name}}</h3>
         <p class="sub-title mt-4 mb-2">Personal Details</p>
         <table  class="application-info layout-fixed-table">
             <tr>
