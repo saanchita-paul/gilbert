@@ -20,7 +20,7 @@ class AlterConnectionApplicationsTable extends Migration
             $table->boolean('has_electricity')->nullable();
             $table->string('land_number' , 20)->nullable();
             $table->string('inspection_time' , 100)->nullable();
-            $table->tinyInteger('family_violation')->nullable();
+            $table->tinyInteger('family_violance')->nullable();
 
             $table->unsignedBigInteger('application_secondary_acc_id');
             $table->foreign('application_secondary_acc_id')
@@ -38,5 +38,8 @@ class AlterConnectionApplicationsTable extends Migration
     public function down()
     {
         //
+        Schema::table('connection_applications', function (Blueprint $table) {
+            $table->dropColumn(['middle_name' , 'has_electricity' , 'land_number' , 'inspection_time' , 'family_violance' , 'application_secondary_acc_id' , 'application_secondary_acc_id']);
+        });
     }
 }
