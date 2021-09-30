@@ -5,6 +5,7 @@ namespace App\Services\Agency\CafFile;
 //use App\MovingUtilityData;
 //use App\Plan;
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use App\Models\Identification;
 use Carbon\Carbon;
@@ -22,11 +23,15 @@ class CAFDataMappingService implements FromCollection, WithHeadings
      */
     private $collection;
 
-    private $chatbotUri = 'http://127.0.0.1:8000/';
+    private $chatbotUri;
+
+
 
     public function __construct(Collection $collection)
     {
         $this->collection = $collection;
+        $this->chatbotUri = env('BOT_ROOT_URL','https://devbot.hood.ai');
+//        $this->chatbotUri = 'http://127.0.0.1:8000';
     }
 
     /**
@@ -34,20 +39,33 @@ class CAFDataMappingService implements FromCollection, WithHeadings
      */
     public function collection()
     {
-        return $this->collection->map(
+        $p = $this->collection->map(
             function (ConnectionApplication $utilityData) {
+
+                /** @var ConnectionApplicationSecondaryACC $second_account_holder*/
+                $second_account_holder = ConnectionApplicationSecondaryACC::query()
+                    ->where('connection_application_id','=', $utilityData->id)
+                    ->first();
+
                 $idExpireDate = Carbon::parse($utilityData->identification->expire_date)->format("d/m/Y");
                 return [
-                    'vendor_id' => 'HD2',
+                    'vendor_id' => $utilityData->vendor_id,
                     'sale_date' => $this->getAgreeAt($utilityData),
                     'elec_source_code' => $this->getElectricitySourceCode($utilityData->plan_type, $utilityData->state),
                     'gas_source_code' => $this->getGasSourceCode($utilityData->plan_type, $utilityData->state),
                     'customer_type' => $utilityData->tenancy_type == 1? 'RESI':'SME',
                     'offer_type' => 'ENE',
                     'connection_date' => Carbon::parse($utilityData->moving_date)->format("d/m/Y"),
-                    'visual_inspection' => '',
-                    'electricity_already_on' => 'Yes',
-                    'inspection_timeframe' => $utilityData->inspection_time,
+                    'visual_inspection' => !empty($utilityData->inspection_timeframe)?'Y':'N',
+                    'electricity_already_on' => !empty($utilityData->inspection_timeframe)?'Y':'N',
+                    'inspection_timeframe' => $utilityData->has_electricity == 1? 'Y': 'N',
+
+                    'special_instruction_for_access' => ($utilityData->state === 'Victoria')?($utilityData->is_renovation_on?'Y':'N'):'',
+                    'renovation_current' => ($utilityData->state === 'Victoria')?($utilityData->is_renovation_on?'Y':'N'):'',
+                    'renovation_privious' => ($utilityData->state === 'Victoria')?($utilityData->is_renovation_on?'Y':'N'):'',
+                    'main_swith_off' => ($utilityData->state === 'Victoria')?($utilityData->is_renovation_on?'Y':'N'):'',
+
+
 
 
                     //Personal Details
@@ -55,8 +73,8 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'first_account_holder_firstname' => $utilityData->first_name,
                     'first_account_holder_surname' => $utilityData->last_name,
                     'first_account_holder_dob' =>Carbon::parse($utilityData->dob)->format("d/m/Y"),
-                    'phone_type' => 'MOBILE',
-                    'phone_number' => $utilityData->phone,
+                    'phone_type' => $utilityData->phone_type == 1? 'Mobile,': 'Home',
+                    'phone_number' => $utilityData->phone_type == 1?$utilityData->phone:$utilityData->homephone,
                     'email_welcome_consent' => 'N',
                     'email_billing' => $utilityData->is_email_billing == 1 ? 'Y' : '',
                     'email_address' => $utilityData->email,
@@ -68,17 +86,15 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'id_type' => $utilityData->identification->type == Identification::TYPE_PASSPORT ? 'Passport' : ($utilityData->identification->type == Identification::TYPE_DRIVING_LICENCE ? 'Driving License' : ($utilityData->identification->type == Identification::TYPE_MEDICARE ? 'Medicare' : '')),
                     'id_number' => $utilityData->identification->card_number,
                     'medicare_expiry_date' => $utilityData->identification->type == 1 ?$utilityData->identification->expire_date: '',
-//                    'passport_expiry_date' => $utilityData->identification->type == 2 ?$utilityData->identification->expire_date: '',
-//                    'driver_license_expiry_date' => $utilityData->identification->type == 3 ?$utilityData->identification->expire_date: '',
                     'state_colour_country' => $this->getStateColourOrCountry($utilityData->identification),
                     'medicare_card_reference_number' => $utilityData->identification->special_number,
                     'primary_id_flag' => 'Yes',
 
                     //Secondary Profile Info
-                    'second_account_holder_title'=> '',
-                    'second_account_holder_first_name'=> '',
-                    'second_account_holder_surname'=> '',
-                    'second_account_holder_dob' => '',
+                    'second_account_holder_title'=> $second_account_holder->title,
+                    'second_account_holder_first_name'=> $second_account_holder->first_name,
+                    'second_account_holder_surname'=>$second_account_holder->first_name,
+                    'second_account_holder_dob' =>Carbon::parse($second_account_holder->dob)->format("d/m/Y"),
 
                     // Supply Address
                     'supply_unit_or_flat_number' => $utilityData->unit_number,
@@ -105,12 +121,10 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'dpid' => '',
                     'fuel_elec' => $this->isServiceType('power', $utilityData->id)?'Y':'N',
                     'fuel_gas' =>  $this->isServiceType('gas', $utilityData->id)?'Y':'N',
-//                    'elec_plan' => is_object($utilityData->electricityPlan) ? $utilityData->electricityPlan->plan_name : '',
                     'elec_plan' =>  $this->getElectricitySourceCode($utilityData->plan_type, $utilityData->state),
-//                    'gas_plan' => is_object($utilityData->gasPlan) ? $utilityData->gasPlan->plan : '',
                     'gas_plan' => $this->getGasSourceCode($utilityData->plan_type, $utilityData->state),
                     'green_energy'=> 'N',
-                    'window_power' => '',
+                    'window_power' => 'N',
                     'payment_method' =>'',
                     'additional_comments' => $utilityData->additional_instruction,
                     'elec_status' => '',
@@ -120,12 +134,13 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'quote_id_elec' => '',
                     'quote_id_gas' => '',
                     'go_neutral' => 'N',
-                    'solar' => $utilityData->has_solar == 1 ? 'Y' : '',
+                    'solar' => $utilityData->has_solar == 1 ? 'Y' : 'N',
                     'tariff_code' =>  '',
                     'buyback_rate' =>  $this->getBuyBackRate($utilityData->has_solar, $utilityData->state),
                 ];
             }
         );
+        return $p;
     }
 
     /**
@@ -292,7 +307,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
     {
         $plan = ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
         $state = $this->stateMap($state);
-        $response = Http::post($this->chatbotUri.'api/ele-source-code',['plan'=>$plan,'state'=>$state]);
+        $response = Http::post($this->chatbotUri.'/api/ele-source-code',['plan'=>$plan,'state'=>$state]);
 //        Log::info('p',$response->status());
         if($response->status() == 200)
         {
@@ -307,7 +322,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
 //        Log::info($plan, [$plan]);
         $plan = ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
         $state = $this->stateMap($state);
-        $response = Http::post($this->chatbotUri.'api/gas-source-code',['plan'=>$plan,'state'=>$state]);
+        $response = Http::post($this->chatbotUri.'/api/gas-source-code',['plan'=>$plan,'state'=>$state]);
         if($response->status() == 200)
         {
             return json_decode($response->body())->source_code;
@@ -320,7 +335,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
     private function getBuyBackRate($solar, $state)
     {
         $state = $this->stateMap($state);
-        $response = Http::post($this->chatbotUri.'api/tariff-code',['solar'=>$solar == ConnectionApplication::HAS_SOLAR?'solar':'','state'=>$state]);
+        $response = Http::post($this->chatbotUri.'/api/tariff-code',['solar'=>$solar == ConnectionApplication::HAS_SOLAR?'solar':'','state'=>$state]);
         if($response->status() == 200)
         {
             return json_decode($response->body())->buypack_rate;

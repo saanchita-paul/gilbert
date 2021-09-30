@@ -4,6 +4,7 @@ import AppLeadMapper from "@scripts/api/mappers/crm/AppLeadMapper";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
 import DayJs from "dayjs";
+import dayjs from "dayjs";
 
 const data = [
     {
@@ -365,5 +366,30 @@ export default {
             return error.data;
         }
     },
+
+    async loadAuthorizedPerson(id) {
+        try {
+
+            const data = await axios.get('/api/authoized-person/'+id);
+            return data.data.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    async saveAuthorizedPerson(audata) {
+        try {
+            audata.dob =  dayjs(audata.dob,'DD/MM/YYYY').format('YYYY-MM-DD');
+            const data = await axios.post('/api/authoized-person',{...audata});
+            return data.data.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+
+
 
 }

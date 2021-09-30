@@ -12,7 +12,7 @@
                         <table width="100%" class="application-info">
                             <tr>
                                 <td class="font-weight-bold">Lead Name:</td>
-                                <td>{{ application.first_name + ' ' + application.last_name}}</td>
+                                <td>{{ application.first_name + ' ' + application.middle_name + ' ' + application.last_name}}</td>
                             </tr>
                             <tr>
                                 <td class="font-weight-bold">Tenancy Type:</td>

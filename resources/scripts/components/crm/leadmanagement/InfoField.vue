@@ -156,6 +156,7 @@
                     </ValidationProvider>
                 </div>
             </div>
+            <AuthorizedPersonForm :lead-id="lead.id" :authorized-person-name="'sazzad ahmed'"></AuthorizedPersonForm>
 
         </v-col>
 
@@ -528,6 +529,7 @@ import ServiceAddress from "@scripts/components/crm/ServiceAddress";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import DayJs from "dayjs";
 import {isNull} from "lodash-es";
+import AuthorizedPersonForm from "@scripts/components/crm/leadmanagement/AuthorizedPersonForm";
 
 export default {
   name: "InfoField",
@@ -540,6 +542,7 @@ export default {
         }
     },
     components: {
+        AuthorizedPersonForm,
         ServiceAddress
     },
     data () {
@@ -869,7 +872,7 @@ export default {
        await this.synFormData();
        await this.formatDate();
        await this.updateLeads();
-       console.log('phobia', this.nmiMernFlag)
+       // console.log('phobia', this.nmiMernFlag)
 
     }
 };
