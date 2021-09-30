@@ -48,6 +48,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $billing_address_text
  * @property string|null $reason
  * @property int|null $is_email_billing
+ * @property int|null $is_renovation_on
  * @property int|null $property_type
  * @property int|null $has_life_support
  * @property int|null $has_solar
@@ -143,6 +144,7 @@ class ConnectionApplication extends Model
         'property_type',
         'has_life_support',
         'has_solar',
+        'is_renovation_on',
         'nmi',
         'mirn',
         'is_escalated',

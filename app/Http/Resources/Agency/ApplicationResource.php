@@ -38,6 +38,7 @@ class ApplicationResource extends JsonResource
             'services' => $this->getConnectionServices($this->connectionServices),
             'identification' => $this->identification,
             'family_violance' => $this->family_violance,
+            'is_renovation_on' => $this->is_renovation_on,
             'is_email_billing' => $this->is_email_billing,
             'nmi' => $this->nmi,
             'mirn' => $this->mirn,

@@ -80,6 +80,7 @@ class ApplicationService
         $existingApplication->street_number = empty($address['street_address']) ? null : $address['street_number'];
         $existingApplication->unit_number = empty($address['street_address']) ? null : $address['unit_number'];
         $existingApplication->city = $address['city'];
+        $existingApplication->is_renovation_on = $address['is_renovation_on'];
         $existingApplication->postcode = $address['postcode'];
         $existingApplication->state = $address['state'];
         $existingApplication->country = $address['country'];

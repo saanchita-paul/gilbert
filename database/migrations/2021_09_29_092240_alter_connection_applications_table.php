@@ -20,6 +20,7 @@ class AlterConnectionApplicationsTable extends Migration
             $table->boolean('has_electricity')->default('1')->nullable();
             $table->string('inspection_time' , 100)->nullable();
             $table->string('homephone', 45)->nullable();
+            $table->boolean('is_renovation_on')->default('1')->nullable();
             $table->tinyInteger('phone_type')->default('1')->nullable()->after('phone');
             $table->tinyInteger('family_violance')->default('3')->nullable();
             $table->unsignedBigInteger('application_secondary_acc_id')->nullable();

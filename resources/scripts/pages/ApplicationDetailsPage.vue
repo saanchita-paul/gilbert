@@ -190,6 +190,7 @@ export default {
             this.leadSummary.address_text = address.address_text
             this.leadSummary.street_address = address.street_address
             this.leadSummary.city = address.city
+            this.leadSummary.is_renovation_on = address.is_renovation_on
             this.leadSummary.postcode = address.postcode
             this.leadSummary.state = address.state
             this.leadSummary.street_number = address.street_number

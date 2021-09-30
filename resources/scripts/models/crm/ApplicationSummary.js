@@ -22,6 +22,7 @@ export default class ApplicationSummary {
     country = 'Australia';
     postcode = null;
     address_text = null;
+    is_renovation_on = null;
     unit_number = null;
     street_number = null;
     service_interests = [];
@@ -61,6 +62,7 @@ export default class ApplicationSummary {
             is_email_billing = null, //is_email_billing
             tenancy_type = null,
             address_unit = null,
+            is_renovation_on = null,
             street_address = null,
             city = null,
             state = null,
@@ -106,6 +108,7 @@ export default class ApplicationSummary {
         this.moving_date = moving_date ? new DayJs(moving_date).format('YYYY-MM-DD') : null;
         this.is_email_billing = is_email_billing;
         this.tenancy_type = tenancy_type;
+        this.is_renovation_on = is_renovation_on;
         this.tenancy_type = tenancy_type;
         this.address_unit = address_unit;
         this.street_address = street_address;

@@ -89,13 +89,24 @@
                                                 ></v-text-field>
                                             </ValidationProvider>
                                         </v-col>
-                                        <v-col cols="12" >
+                                        
+                                        <v-col cols="12" class="mt-n12" v-if="propertyDetails.state == 'Victoria'">
+                                            <v-checkbox
+                                                v-model="propertyDetails.is_renovation_on"
+                                                @change="changeIsBillingSame"
+                                                :label="`Is renovation going on?`"
+                                            ></v-checkbox>
+                                        </v-col>
+
+                                        <v-col cols="12" class="mt-n12">
                                             <v-checkbox
                                                 v-model="propertyDetails.is_billing_same"
                                                 @change="changeIsBillingSame"
                                                 :label="`This is same as my billing address.`"
                                             ></v-checkbox>
                                         </v-col>
+
+
                                     </v-row>
 
 
@@ -256,7 +267,6 @@ export default {
         onAddressSelected(place) {
             GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
                 .then((data) => {
-                    console.log('data api response', data.street_number?data.street_number:null);
                     this.propertyDetails.address_text = data.formatted_address;
                     this.propertyDetails.street_address = data.street;
                     this.propertyDetails.city = data.city;
@@ -295,14 +305,17 @@ export default {
       },
 
 
-        async onSubmit() {
-            let v = await this.$refs.edit_address.validate();
-            if (v) {
+      async onSubmit() {
 
-                this.$emit('saveAddress', this.propertyDetails);
-            }
-            return v;
-        },
+          console.log(this.propertyDetails)
+          // return;
+          let v = await this.$refs.edit_address.validate();
+          if (v) {
+              // console.log()
+              this.$emit('saveAddress', this.propertyDetails);
+          }
+          return v;
+      },
     },
 };
 </script>
