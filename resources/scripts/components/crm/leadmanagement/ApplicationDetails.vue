@@ -7,9 +7,13 @@
                 <td class="font-weight-bold">Date of Birth</td>
                 <td>{{lead.date_of_birth}}</td>
             </tr>
-            <tr>
-                <td class="font-weight-bold">{{ lead.phone_type == 1 ? 'Mobile' : 'Homephone' }}</td>
+            <tr v-if="lead.phone_type == 1">
+                <td class="font-weight-bold"> Mobile </td>
                 <td>{{lead.phone}}</td>
+            </tr>
+            <tr v-else>
+                <td class="font-weight-bold"> Homephone </td>
+                <td>{{lead.homephone}}</td>
             </tr>
             <tr>
                 <td class="font-weight-bold">Email</td>
