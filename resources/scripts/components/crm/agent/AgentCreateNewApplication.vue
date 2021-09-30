@@ -146,19 +146,19 @@
                                 <v-row>
 
 
-                                    <v-col cols="12" class="py-0">
+<!--                                    <v-col cols="12" class="py-0">-->
 
-                                                <ValidationProvider name="Title" rules="required"  v-slot="{ errors }">
-                                                    <v-select
-                                                        outlined dense hide-details="auto"
-                                                        :items="titlesDD"
-                                                        v-model="authorized_person.title"
-                                                        :error-messages=" errors[0]"
-                                                        label="Title"
-                                                        placeholder="Mr">
-                                                    </v-select>
-                                                </ValidationProvider>
-                                            </v-col>
+<!--                                                <ValidationProvider name="Title" rules="required"  v-slot="{ errors }">-->
+<!--                                                    <v-select-->
+<!--                                                        outlined dense hide-details="auto"-->
+<!--                                                        :items="titlesDD"-->
+<!--                                                        v-model="authorized_person.title"-->
+<!--                                                        :error-messages=" errors[0]"-->
+<!--                                                        label="Title"-->
+<!--                                                        placeholder="Mr">-->
+<!--                                                    </v-select>-->
+<!--                                                </ValidationProvider>-->
+<!--                                            </v-col>-->
 
                                     <v-col cols="12" class="py-0">
                                         <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
@@ -245,7 +245,7 @@
                                                 indentification
                                                 :error-messages=" errors[0]"
                                                 outlined
-                                                label="Middle Name*"
+                                                label="Middle Name"
                                                 v-model="authorized_person.middle_name"
                                                 dense
                                             ></v-text-field>

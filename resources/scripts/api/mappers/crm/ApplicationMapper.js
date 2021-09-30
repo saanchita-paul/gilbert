@@ -100,14 +100,18 @@ export default {
 
 
         });
-        data.authorized_person.dob =  this.mapDateToServer(data.authorized_person.dob);
+
         data.application.service_interests = commsission;
        return {
            ...data.application,
            dob: this.mapDateToServer(data.application.date_of_birth),
            moving_date: this.mapDateToServer(data.application.moving_date),
            is_email_billing: data.application.email_billing?data.application.email_billing:0,
-           authorized_person: data.authorized_person
+           authorized_person: {
+               ...data.authorized_person,
+               dob: this.mapDateToServer(data.authorized_person.dob)
+           }
+
        }
     },
     mapDateToServer(dt)

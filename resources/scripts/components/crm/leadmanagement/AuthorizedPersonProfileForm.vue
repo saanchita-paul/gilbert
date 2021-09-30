@@ -21,18 +21,18 @@
                             <v-col cols="12">
                                 <v-row >
 
-
-                                    <ValidationProvider name="Title" rules="required"  v-slot="{ errors }">
-                                        <v-select
-                                            outlined dense hide-details="auto"
-                                            :items="titlesDD"
-                                            v-model="authorized_person.title"
-                                            :error-messages=" errors[0]"
-                                            label="Title"
-                                            placeholder="Mr">
-                                        </v-select>
-                                    </ValidationProvider>
-
+<!--                                    <v-col cols="12">-->
+<!--                                    <ValidationProvider name="Title" rules="required"  v-slot="{ errors }">-->
+<!--                                        <v-select-->
+<!--                                            outlined dense hide-details="auto"-->
+<!--                                            :items="titlesDD"-->
+<!--                                            v-model="authorized_person.title"-->
+<!--                                            :error-messages=" errors[0]"-->
+<!--                                            label="Title"-->
+<!--                                            placeholder="Mr">-->
+<!--                                        </v-select>-->
+<!--                                    </ValidationProvider>-->
+<!--                                    </v-col>-->
 
 
                                     <v-col cols="12">
@@ -55,7 +55,7 @@
                                                 :error-messages=" errors[0]"
                                                 outlined
                                                 v-model="authorized_person.middle_name"
-                                                label="Middle Name*"
+                                                label="Middle Name"
                                                 dense
                                                 hide-details="auto"
                                             ></v-text-field>
@@ -75,7 +75,7 @@
                                         </ValidationProvider>
                                     </v-col>
                                     <v-col cols="12">
-                                        <ValidationProvider name="Email address" rules="required"  v-slot="{ errors }">
+                                        <ValidationProvider name="Email address" rules="required|email"  v-slot="{ errors }">
                                             <v-text-field
                                                 indentification
                                                 :error-messages=" errors[0]"
@@ -144,6 +144,8 @@
                                                 outlined dense hide-details="auto"
                                                 :items="roles"
                                                 item-text="text"
+                                                label="Authorised Person's role"
+                                                placeholder="Authorised Person's role"
                                                 item-value="value"
                                                 v-model="authorized_person.role"
                                                 :error-messages=" errors[0]"
