@@ -154,11 +154,13 @@ class ApplicationService
     public function submit(array $applications, $id)
     {
         $lead = $applications['lead'];
+        $vendorId = $this->calculateVendorId($id);
         $lead = array_merge($lead, [
             'plan_type' => ConnectionApplication::PLAN_TYPE_MAPPER[$lead['plan_type']],
             'assigned_to' => null,
             'status' => ConnectionApplication::STATUS_SUBMITTED,
             'submitted_by' => auth()->id(),
+            'vendor_id' => $vendorId
         ]);
 
         $existLead = ConnectionApplication::findOrFail($id);
@@ -234,6 +236,12 @@ class ApplicationService
         }
 
 
+    }
+
+
+    private function calculateVendorId($id)
+    {
+        return 'HD2'.$id.time();
     }
 
 }
