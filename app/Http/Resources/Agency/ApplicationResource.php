@@ -22,6 +22,7 @@ class ApplicationResource extends JsonResource
             'last_name' => $this->last_name,
             'email' => $this->email,
             'phone' => $this->phone,
+            'homephone' => $this->homephone,
             'phone_type' => $this->phone_type,
             'tenancy_type' => $this->tenancy_type,
             'date_of_birth' => $this->dob,

@@ -8,6 +8,7 @@ export default class ApplicationSummary {
     last_name = null;
     dob = null; //dob
     phone = null;
+    homephone = null;
     phone_type = null;
     email = null;
     moving_date = null;
@@ -52,6 +53,7 @@ export default class ApplicationSummary {
             last_name = null,
             date_of_birth = null, //dob
             phone = null,
+            homephone = null,
             phone_type = null,
             email = null,
             moving_date = null,
@@ -97,6 +99,7 @@ export default class ApplicationSummary {
         this.date_of_birth = date_of_birth;
         this.dob = date_of_birth;
         this.phone = phone;
+        this.homephone = homephone;
         this.phone_type = phone_type;
         this.email = email;
         this.family_violance = family_violance;

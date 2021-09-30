@@ -126,7 +126,7 @@
                     <ValidationProvider name="Family Violance"  v-slot="{ errors }">
                         <v-select v-model="person_details.phone_type" :items="phoneTypeDD" item-text="text" item-value="value" :error-messages=" errors[0]"
                                   @input="updateLeads" outlined dense hide-details="auto"
-                                  @blur="saveDraft('phone_type',person_details.phone_type)"
+                                  @change="saveDraft('phone_type',person_details.phone_type)"
                         >
                         </v-select>
                     </ValidationProvider>
@@ -134,12 +134,12 @@
             </div>
 
 
-            <div class="crm-text-field" >
+            <div class="crm-text-field" v-if="person_details.phone_type == 1">
                 <div class="field-label">
-                    <span>{{ person_details.phone_type == 1 ? 'Mobile' : 'Homephone' }} *</span>
+                    <span>Mobile *</span>
                 </div>
                 <div class="text-field">
-                    <ValidationProvider name="Phone Number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                    <ValidationProvider name="Mobile Number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
                         <v-text-field
                             v-model="person_details.phone"  @input="updateLeads"
                         outlined
@@ -148,6 +148,25 @@
                         hide-details="auto"
                             @blur="saveDraft('phone',person_details.phone)"
                     ></v-text-field>
+                    </ValidationProvider>
+                </div>
+            </div>
+
+            <div class="crm-text-field" v-else>
+                <div class="field-label">
+                    <span>Homephone *</span>
+                </div>
+                <div class="text-field">
+                    <ValidationProvider name="Homephone Number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                        <v-text-field
+                            v-model="person_details.homephone"  @input="updateLeads"
+                        outlined
+                        dense
+                            :error-messages=" errors[0]"
+                        hide-details="auto"
+                            @blur="saveDraft('homephone',person_details.homephone)" 
+                    ></v-text-field> 
+                    <!-- TODO check save draft -->
                     </ValidationProvider>
                 </div>
             </div>
@@ -761,6 +780,7 @@ export default {
                 last_name: '',
                 dob: '',
                 phone: '',
+                homephone: '',
                 phone_type: '',
                 email: '',
                 is_email_billing: '',
@@ -815,6 +835,7 @@ export default {
             this.person_details.phone = this.lead.phone;
             this.person_details.tenancy_type = this.lead.tenancy_type;
             this.person_details.phone_type = this.lead.phone_type;
+            this.person_details.homephone = this.lead.homephone;
             this.person_details.family_violance = this.lead.family_violance;
             this.person_details.is_email_billing = this.lead.is_email_billing;
             this.person_details.additional_instruction = this.lead.additional_instruction;
@@ -855,11 +876,6 @@ export default {
             this.indentification.special_number = this.lead.identification?.special_number;
             // this.indentification.expire_date = this.lead.identification?.expire_date;
             this.indentification.card_color = this.lead.identification?.card_color;
-
-
-
-
-
 
         },
 
@@ -940,18 +956,12 @@ export default {
             this.indentification.expire_date = new DayJs(this.expire_date).format('DD/MM/YYYY');
              this.$emit('updateDraft', 'expire_date',  this.indentification.expire_date, true, true);
         }
-
-
-
-
     },
-
    async mounted() {
        await this.synFormData();
        await this.formatDate();
        await this.updateLeads();
        console.log('phobia', this.nmiMernFlag)
-
     }
 };
 </script>
