@@ -186,11 +186,13 @@ export default {
         },
 
         async updateAddress(address) {
-             if(this.leadSummary.address_text == address.address_text) return;
+            if(this.leadSummary.address_text == address.address_text && this.leadSummary.has_electricity == address.has_electricity &&  this.leadSummary.inspection_time == address.inspection_time &&  this.leadSummary.is_renovation_on == address.is_renovation_on  ) return;
             this.leadSummary.address_text = address.address_text
             this.leadSummary.street_address = address.street_address
             this.leadSummary.city = address.city
             this.leadSummary.is_renovation_on = address.is_renovation_on
+            this.leadSummary.has_electricity = address.has_electricity
+            this.leadSummary.inspection_time = address.inspection_time
             this.leadSummary.postcode = address.postcode
             this.leadSummary.state = address.state
             this.leadSummary.street_number = address.street_number

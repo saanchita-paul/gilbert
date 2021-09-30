@@ -17,7 +17,7 @@
                                 <div class="dialogs-area pt-5">
                                     <p class="title">Service Address</p>
                                     <v-row>
-                                        <v-col cols="12" class="py-0">
+                                        <v-col cols="12" class="py-0 mt-4">
                                             <v-row>
                                                 <v-col cols="12" class="py-0">
                                                     <v-menu offset-y v-model="showMenu">
@@ -96,6 +96,25 @@
                                                 @change="changeIsBillingSame"
                                                 :label="`Is renovation going on?`"
                                             ></v-checkbox>
+                                        </v-col>
+                                        
+                                        <v-col cols="12" class="mt-n12" v-if="propertyDetails.state == 'Queensland'">
+                                            <v-checkbox
+                                                v-model="propertyDetails.has_electricity"
+                                                :label="`Is the electricity on at the property?`"
+                                            ></v-checkbox>
+                                        </v-col>
+
+                                        <v-col cols="6" class="py-0 mt-n4" v-if="propertyDetails.state == 'Queensland' && propertyDetails.has_electricity == false">
+                                          <ValidationProvider name="Inspection Time" rules="required"  v-slot="{ errors }">
+                                            <v-select outlined dense
+                                                      v-model="propertyDetails.inspection_time"
+                                                      :items="inspectionTimes"
+                                                      placeholder="Please select"
+                                                      label="Inspection Time*"
+                                                      :error-messages=" errors[0]">
+                                            </v-select>
+                                          </ValidationProvider>
                                         </v-col>
 
                                         <v-col cols="12" class="mt-n12">
@@ -237,6 +256,14 @@ export default {
                 {text: 'TAS', value: 'Tasmania'},
                 {text: 'ACT', value: 'Australian Capital Territory'},
             ],
+          inspectionTimes:[
+            '8AM - 1PM',
+            '9AM - 2PM',
+            '10AM - 3PM',
+            '11AM - 4PM',
+            '12AM - 5PM',
+            '1AM - 6PM',
+          ]
         }
     },
     created() {

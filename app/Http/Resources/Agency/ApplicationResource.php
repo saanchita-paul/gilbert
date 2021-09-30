@@ -39,6 +39,8 @@ class ApplicationResource extends JsonResource
             'identification' => $this->identification,
             'family_violance' => $this->family_violance,
             'is_renovation_on' => $this->is_renovation_on,
+            'has_electricity' => $this->has_electricity,
+            'inspection_time' => $this->inspection_time,
             'is_email_billing' => $this->is_email_billing,
             'nmi' => $this->nmi,
             'mirn' => $this->mirn,

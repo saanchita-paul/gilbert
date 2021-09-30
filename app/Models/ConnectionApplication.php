@@ -37,6 +37,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $city
  * @property string|null $postcode
  * @property string|null $state
+ * @property string|null $inspection_time
  * @property string|null $country
  * @property string|null $billing_address_unit
  * @property string|null $billing_street_address
@@ -48,6 +49,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $billing_address_text
  * @property string|null $reason
  * @property int|null $is_email_billing
+ * @property int|null $has_electricity
  * @property int|null $is_renovation_on
  * @property int|null $property_type
  * @property int|null $has_life_support
@@ -124,6 +126,8 @@ class ConnectionApplication extends Model
         'first_name',
         'middle_name',
         'family_violance',
+        'has_electricity',
+        'inspection_time',
         'last_name',
         'email',
         'phone',

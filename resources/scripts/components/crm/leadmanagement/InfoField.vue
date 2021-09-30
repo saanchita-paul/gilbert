@@ -983,6 +983,8 @@ export default {
         state: "",
         country: "",
         is_renovation_on: "",
+        has_electricity: "",
+        inspection_time: "",
         unit_number: "",
         street_number: "",
         street_name: "",
@@ -1060,6 +1062,8 @@ export default {
       this.person_details.phone_type = this.lead.phone_type;
       this.person_details.homephone = this.lead.homephone;
       this.person_details.family_violance = this.lead.family_violance;
+      this.person_details.has_electricity = this.lead.has_electricity;
+      this.person_details.inspection_time = this.lead.inspection_time;
       this.person_details.is_email_billing = this.lead.is_email_billing;
       this.person_details.additional_instruction =
         this.lead.additional_instruction;
@@ -1073,6 +1077,8 @@ export default {
       // this.property_details.billing_address = this.lead.billing_address;
       this.property_details.property_type = this.lead.property_type;
       this.property_details.is_renovation_on = this.lead.is_renovation_on;
+      this.property_details.has_electricity = this.lead.has_electricity;
+      this.property_details.inspection_time = this.lead.inspection_time;
       this.property_details.has_life_support = this.lead.has_life_support;
       this.property_details.has_solar = this.lead.has_solar;
       this.property_details.nmi = this.lead.nmi;
