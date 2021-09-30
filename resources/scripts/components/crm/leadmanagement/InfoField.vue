@@ -511,6 +511,8 @@
           </ValidationProvider>
         </div>
       </div>
+      
+      
       <div class="crm-text-field">
         <div class="field-label">
           <span>MIRN (Gas) *</span>
@@ -538,6 +540,76 @@
           </ValidationProvider>
         </div>
       </div>
+      
+   
+     
+      <div class="crm-text-field" v-if="property_details.state == 'Victoria'">
+        <div class="field-label">
+          <span>Is renovation going on? *</span>
+        </div>
+        <div class="text-field">
+          <ValidationProvider name="is_renovation_on" v-slot="{ errors }">
+            <v-select
+              v-model="property_details.is_renovation_on"
+              :items="homeRenovationDD"
+              :error-messages="errors[0]"
+              @input="updateLeads"
+              outlined
+              dense
+              hide-details="auto"
+              @change="saveDraft('is_renovation_on', property_details.is_renovation_on)"
+            >
+            </v-select>
+          </ValidationProvider>
+        </div>
+      </div>
+     
+      <div class="crm-text-field" v-if="property_details.state == 'Queensland'">
+        <div class="field-label">
+          <span>Is the electricity on at the property? *</span>
+        </div>
+        <div class="text-field">
+          <ValidationProvider name="has_electricity" v-slot="{ errors }">
+            <v-select
+              v-model="property_details.has_electricity"
+              :items="electricityDD"
+              :error-messages="errors[0]"
+              @input="updateLeads"
+              outlined
+              dense
+              hide-details="auto"
+              @change="saveDraft('has_electricity', property_details.has_electricity)"
+            >
+            </v-select>
+          </ValidationProvider>
+        </div>
+      </div>
+
+
+
+      
+      <div class="crm-text-field" v-if="property_details.state == 'Queensland' && property_details.has_electricity == false">
+        <div class="field-label">
+          <span>Inspection Time *</span>
+        </div>
+        <div class="text-field">
+          <ValidationProvider name="Family Violance" v-slot="{ errors }">
+            <v-select
+              v-model="property_details.inspection_time"
+              :items="inspectionTimes"
+              :error-messages="errors[0]"
+              @input="updateLeads"
+              outlined
+              dense
+              hide-details="auto"
+              @change="saveDraft('inspection_time', property_details.inspection_time)"
+            >
+            </v-select>
+          </ValidationProvider>
+        </div>
+      </div>
+
+
     </v-col>
 
     <v-col cols="4">
@@ -855,7 +927,14 @@ export default {
           value: 2,
         },
       ],
-
+      inspectionTimes:[
+        '8AM - 1PM',
+        '9AM - 2PM',
+        '10AM - 3PM',
+        '11AM - 4PM',
+        '12AM - 5PM',
+        '1AM - 6PM',
+      ],
       statesDD: [
         { text: "NSW", value: "New South Wales" },
         { text: "VIC", value: "Victoria" },
@@ -873,6 +952,26 @@ export default {
         {
           text: "Owner",
           value: 2,
+        },
+      ],
+      homeRenovationDD: [
+        {
+          text: "No",
+          value: 0,
+        },
+        {
+          text: "Yes",
+          value: 1,
+        },
+      ],
+      electricityDD: [
+        {
+          text: "No",
+          value: 0,
+        },
+        {
+          text: "Yes",
+          value: 1,
         },
       ],
       phoneTypeDD: [
@@ -982,9 +1081,11 @@ export default {
         postcode: "",
         state: "",
         country: "",
-        is_renovation_on: "",
-        has_electricity: "",
+
+        is_renovation_on: true,
+        has_electricity: true,
         inspection_time: "",
+        
         unit_number: "",
         street_number: "",
         street_name: "",
@@ -1038,6 +1139,10 @@ export default {
     },
 
     updateLeads() {
+      console.log('updated leads')
+      console.log(this.property_details);
+      console.log(this.lead);
+
       this.$emit("updateLead", {
         indentification: this.indentification,
         property_details: this.property_details,
@@ -1050,6 +1155,8 @@ export default {
     },
 
     synFormData() {
+      console.log('lead sycn' , this.lead);
+
       // console.log(this.lead.identification?.expire_date);
       this.person_details.title = this.lead.title;
       this.person_details.first_name = this.lead.first_name;
@@ -1062,8 +1169,6 @@ export default {
       this.person_details.phone_type = this.lead.phone_type;
       this.person_details.homephone = this.lead.homephone;
       this.person_details.family_violance = this.lead.family_violance;
-      this.person_details.has_electricity = this.lead.has_electricity;
-      this.person_details.inspection_time = this.lead.inspection_time;
       this.person_details.is_email_billing = this.lead.is_email_billing;
       this.person_details.additional_instruction =
         this.lead.additional_instruction;
@@ -1076,9 +1181,12 @@ export default {
       this.property_details.address_text = this.lead.address_text;
       // this.property_details.billing_address = this.lead.billing_address;
       this.property_details.property_type = this.lead.property_type;
+      
       this.property_details.is_renovation_on = this.lead.is_renovation_on;
       this.property_details.has_electricity = this.lead.has_electricity;
       this.property_details.inspection_time = this.lead.inspection_time;
+      
+      
       this.property_details.has_life_support = this.lead.has_life_support;
       this.property_details.has_solar = this.lead.has_solar;
       this.property_details.nmi = this.lead.nmi;
@@ -1108,7 +1216,7 @@ export default {
       this.indentification.state = this.lead.identification?.state;
       this.indentification.country = this.lead.identification?.country;
       this.indentification.special_number =
-        this.lead.identification?.special_number;
+      this.lead.identification?.special_number;
       // this.indentification.expire_date = this.lead.identification?.expire_date;
       this.indentification.card_color = this.lead.identification?.card_color;
     },
@@ -1168,10 +1276,12 @@ export default {
   watch: {
     lead: {
       handler() {
+        console.log('calling...')
         this.synFormData();
       },
       deep: true,
     },
+
 
     dob() {
       this.person_details.dob = new DayJs(this.dob).format("DD/MM/YYYY");
