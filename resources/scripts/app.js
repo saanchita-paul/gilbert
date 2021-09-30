@@ -19,7 +19,7 @@ Vue.use(EventBusPlugin);
  */
 GoogleMapService.initialize();
 
-authUser().catch(e => kickOut()).finally(() => {
+authUser().finally(() => {
     new Vue( {
         vuetify: Vuetify,
         router: Router,
