@@ -26,7 +26,7 @@ export const login = async form => {
 
         const user = getAuthUser();
 
-        return ApplicationService.redirectToUserHome(user.roles[0])
+        return ApplicationService.redirectToUserHome(user.roles)
     } catch (e) {
         console.log('LOGIN FAILED', e)
         return false;
@@ -50,20 +50,43 @@ export const authUser = async () => {
 }
 
 /**
- * route authorization middleware
+ * route authentication middleware
  *
  * @param to
  * @param from
  * @param next
  */
-export const checkRouteAuthorization = (to, from, next) => {
+export const checkRouteAuthentication = (to, from, next) => {
     const isLoggedIn = isAuthenticated();
     if (to.meta.isProtected) {
         to.meta.breadcrumbType ? setBreadcrumbs(to.meta.breadcrumbType, to.params) : setBreadcrumbs('empty', 'empty');
-        console.log('logged_in', isLoggedIn)
-        isLoggedIn ? next() : next({name: 'login'})
+        isLoggedIn ? checkRouteAuthorization(to, from, next) : next({name: 'login'})
     } else {
-        next()
+        isLoggedIn ? ApplicationService.redirectToUserHome(getAuthUser().roles) : next()
+    }
+}
+
+/**
+ * route Authorization middleware
+ *
+ * @param to
+ * @param from
+ * @param next
+ */
+const checkRouteAuthorization = (to, from, next) => {
+    const user = getAuthUser();
+    const authorizedRoles = to.meta.roles;
+
+    //checking if any roles set in that route
+    if (!Array.isArray(authorizedRoles) || authorizedRoles?.length === 0) {
+        return next()
+    }
+
+    //checking if user roles has any match with authorized roles
+    if (user.roles.some(r => authorizedRoles.includes(r))) {
+        next();
+    } else {
+        ApplicationService.redirectToUserHome(user.roles)
     }
 }
 
@@ -114,7 +137,7 @@ export default {
     authUser,
     isAuthenticated,
     kickOut,
-    checkRouteAuthorization,
+    checkRouteAuthentication,
     logout,
     hasUserRoles,
     hasUserPermissions,
