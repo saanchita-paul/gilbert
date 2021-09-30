@@ -100,6 +100,7 @@ export default {
 
 
         });
+        data.authorized_person.dob =  this.mapDateToServer(data.authorized_person.dob);
         data.application.service_interests = commsission;
        return {
            ...data.application,

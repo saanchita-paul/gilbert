@@ -251,12 +251,12 @@ class ApplicationController extends Controller
         }
     }
 
-    public function updateAuthorizedPerson(Request $request, $id)
+    public function updateAuthorizedPerson(Request $request)
     {
         try {
             $service = new ApplicationService();
             $inputData = $request->toArray();
-            $res = $service->updateAuthrisedInfo($inputData, $id);
+            $res = $service->updateAuthrisedInfo($inputData);
             return response()->json(['success' => true, 'data' => $res]);
 
         } catch (\Exception $exception) {

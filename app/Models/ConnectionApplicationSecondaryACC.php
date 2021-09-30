@@ -24,6 +24,7 @@ class ConnectionApplicationSecondaryACC extends Model
         'email',
         'phone',
         'role',
+        'dob',
         'connection_application_id',
     ];
 

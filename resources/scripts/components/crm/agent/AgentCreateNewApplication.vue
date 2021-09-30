@@ -23,9 +23,9 @@
                     </v-col>
 
                     <v-col cols="6" class="pb-0">
-                        <ValidationProvider name="Middlename" rules="required"  v-slot="{ errors }">
+                        <ValidationProvider name="Middlename"  v-slot="{ errors }">
                             <v-text-field
-                                label="Middlename*"
+                                label="Middlename"
                                 outlined
                                 dense
                                 placeholder="Middlename"
@@ -164,13 +164,13 @@
                                         </ValidationProvider>
                                     </v-col>
                                     <v-col cols="12" class="py-0">
-                                        <ValidationProvider name="Mobile Number"  v-slot="{ errors }">
+                                        <ValidationProvider name="Mobile Number" rules="cv-phone|length:10" v-slot="{ errors }">
                                             <v-text-field
                                                 indentification
                                                 :error-messages=" errors[0]"
                                                 outlined
                                                 label="Mobile Number (Optional)"
-                                                v-model="authorized_person.contact"
+                                                v-model="authorized_person.phone"
                                                 dense
                                                 placeholder="+61"
 
@@ -218,7 +218,7 @@
                             <v-col cols="6">
                                 <v-row>
                                     <v-col cols="12" class="py-0">
-                                        <ValidationProvider name="Middle Name*" rules="required"  v-slot="{ errors }">
+                                        <ValidationProvider name="Middle Name"  v-slot="{ errors }">
                                             <v-text-field
                                                 indentification
                                                 :error-messages=" errors[0]"
@@ -230,7 +230,7 @@
                                         </ValidationProvider>
                                     </v-col>
                                     <v-col cols="12" class="py-0">
-                                        <ValidationProvider name="Email address" rules="required"  v-slot="{ errors }">
+                                        <ValidationProvider name="Email address" rules="required|email"  v-slot="{ errors }">
                                             <v-text-field
                                                 indentification
                                                 :error-messages=" errors[0]"
@@ -510,14 +510,14 @@ export default {
             showAuthoritydob: false,
             createSuccessfulModal: false,
             title: '',
-            authorized_person_dob: null,
+            authorized_person_dob:  (new DayJs((new Date()).setFullYear(2000))).format('YYYY-MM-DD'),
             authorized_person:{
                 first_name :'',
                 middle_name :'',
                 last_name:'',
                 email:'',
                 role: '',
-                contact: '',
+                phone: '',
                 dob: null,
 
             },

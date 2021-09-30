@@ -219,12 +219,20 @@ class ApplicationService
             ->first();
     }
 
-    public function updateAuthrisedInfo($data, $id)
+    public function updateAuthrisedInfo($data)
     {
+        $id = $data['id'];
+        if(!empty($id))
+        {
+            $authorizedPerson =  ConnectionApplicationSecondaryACC::find($id);
+            $authorizedPerson->update($data);
+            return $authorizedPerson->refresh();
+        } else
+        {
+            $authorizedPerson =  ConnectionApplicationSecondaryACC::create($data);
+            return $authorizedPerson;
+        }
 
-        $authorizedPerson =  ConnectionApplicationSecondaryACC::find($id);
-        $authorizedPerson->update($data);
-        return $authorizedPerson->refresh();
 
     }
 
