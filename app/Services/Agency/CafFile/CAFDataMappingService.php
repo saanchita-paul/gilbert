@@ -96,10 +96,13 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'primary_id_flag' => 'Yes',
 
                     //Secondary Profile Info
-                    'second_account_holder_title'=> $second_account_holder->title,
-                    'second_account_holder_first_name'=> $second_account_holder->first_name,
-                    'second_account_holder_surname'=>$second_account_holder->first_name,
-                    'second_account_holder_dob' =>Carbon::parse($second_account_holder->dob)->format("d/m/Y"),
+                    'second_account_holder_title'=> is_object($second_account_holder)? $second_account_holder->title: '',
+                    'second_account_holder_first_name'=> is_object($second_account_holder)
+                        ? $second_account_holder->first_name: '',
+                    'second_account_holder_surname'=>is_object($second_account_holder)?
+                        $second_account_holder->last_name: '',
+                    'second_account_holder_dob' =>is_object($second_account_holder)?
+                        Carbon::parse($second_account_holder->dob)->format("d/m/Y"): '',
 
                     // Supply Address
                     'supply_unit_or_flat_number' => $utilityData->unit_number,
