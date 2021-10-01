@@ -86,9 +86,11 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'id_surname' => $utilityData->identification->last_name,
                     'id_type' => $utilityData->identification->type == Identification::TYPE_PASSPORT ? 'Passport' : ($utilityData->identification->type == Identification::TYPE_DRIVING_LICENCE ? 'Driving License' : ($utilityData->identification->type == Identification::TYPE_MEDICARE ? 'Medicare' : '')),
                     'id_number' => $utilityData->identification->card_number,
-                    'dl_expiry_date' => $utilityData->identification->expire_date,
-                    'passport_expiry_date' => $utilityData->identification->expire_date,
-                    'medicare_expiry_date' => $utilityData->identification->type == 1 ?$utilityData->identification->expire_date: '',
+                    'dl_expiry_date' => $utilityData->identification->type == Identification::TYPE_DRIVING_LICENCE?
+                        $utilityData->identification->expire_date: '',
+                    'passport_expiry_date' => $utilityData->identification->type == Identification::TYPE_PASSPORT?
+                        $utilityData->identification->expire_date: '',
+                    'medicare_expiry_date' => $utilityData->identification->type == Identification::TYPE_MEDICARE? $utilityData->identification->expire_date: '',
                     'state_colour_country' => $this->getStateColourOrCountry($utilityData->identification),
                     'medicare_card_reference_number' => $utilityData->identification->special_number,
                     'primary_id_flag' => 'Yes',
