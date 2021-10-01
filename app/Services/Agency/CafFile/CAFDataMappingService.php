@@ -30,7 +30,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
     public function __construct(Collection $collection)
     {
         $this->collection = $collection;
-        $this->chatbotUri = env('BOT_ROOT_URL','https://devbot.hood.ai');
+        $this->chatbotUri = config('root_url');
 //        $this->chatbotUri = 'http://127.0.0.1:8000';
     }
 
@@ -46,6 +46,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                 $second_account_holder = ConnectionApplicationSecondaryACC::query()
                     ->where('connection_application_id','=', $utilityData->id)
                     ->first();
+                Log::info('second-holder', $second_account_holder->toArray());
 
                 $idExpireDate = Carbon::parse($utilityData->identification->expire_date)->format("d/m/Y");
                 return [
@@ -85,6 +86,8 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'id_surname' => $utilityData->identification->last_name,
                     'id_type' => $utilityData->identification->type == Identification::TYPE_PASSPORT ? 'Passport' : ($utilityData->identification->type == Identification::TYPE_DRIVING_LICENCE ? 'Driving License' : ($utilityData->identification->type == Identification::TYPE_MEDICARE ? 'Medicare' : '')),
                     'id_number' => $utilityData->identification->card_number,
+                    'dl_expiry_date' => $utilityData->identification->expire_date,
+                    'passport_expiry_date' => $utilityData->identification->expire_date,
                     'medicare_expiry_date' => $utilityData->identification->type == 1 ?$utilityData->identification->expire_date: '',
                     'state_colour_country' => $this->getStateColourOrCountry($utilityData->identification),
                     'medicare_card_reference_number' => $utilityData->identification->special_number,
@@ -185,6 +188,8 @@ class CAFDataMappingService implements FromCollection, WithHeadings
 //            'Passport Expiry date',
 //            'Driver license Expiry date',
             'ID Number',
+            'DL Expiry date',
+            'Passport Expiry date',
             'Medicare Expiry date',
             'DRV State/Medicare Card Colour/Country of Issue',
             'Medicare Card Reference Number',
