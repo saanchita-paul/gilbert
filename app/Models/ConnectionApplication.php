@@ -264,6 +264,14 @@ class ConnectionApplication extends Model
     }
 
     /**
+     * @return HasOne
+     */
+    public function authorizedPerson()
+    {
+        return $this->hasOne(ConnectionApplicationSecondaryACC::class , 'connection_application_id' , 'id');
+    }
+
+    /**
      * @return HasMany
      */
     public function applicationNotes()

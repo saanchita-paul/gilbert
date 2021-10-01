@@ -28,6 +28,10 @@
                 <td>{{ lead.is_email_billing == 1?'Email':'Paper' }}</td>
             </tr>
             <tr>
+                <td class="font-weight-bold">Authorized Person</td>
+                <td>{{ lead.authorizedPersonName == null ? 'Unassigned' : lead.authorizedPersonName }}</td>
+            </tr>
+            <tr>
                 <td class="font-weight-bold">Status:</td>
                 <td>{{ lead.status }}</td>
             </tr>
@@ -93,6 +97,9 @@ export default {
         isServiceAllowed(services, type) {
             return !services.includes(type);
         }
+    },
+    mounted(){
+        console.log('leads' ,  this.lead);
     }
 };
 </script>
