@@ -1,11 +1,12 @@
 import DayJs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
+import {isNull} from "lodash-es";
 
 export default class ApplicationSummary {
     id = null;
-    first_name = null;
-    middle_name = null;
-    last_name = null;
+    first_name = '';
+    middle_name = '';
+    last_name = '';
     dob = null; //dob
     phone = null;
     inspection_time = null;
@@ -51,9 +52,9 @@ export default class ApplicationSummary {
         {
             id = null,
             title = 'Mr',
-            first_name = null,
-            middle_name = null,
-            last_name = null,
+            first_name = '',
+            middle_name = '',
+            last_name = '',
             date_of_birth = null, //dob
             phone = null,
             homephone = null,
@@ -98,7 +99,7 @@ export default class ApplicationSummary {
     ) {
 
         this.id = id;
-        this.applicant_name = first_name + ' ' + last_name;
+        this.applicant_name = first_name + ' '+ ( isNull(middle_name)?'': middle_name) + ' ' + last_name;
         this.first_name = first_name;
         this.middle_name = middle_name;
         this.last_name = last_name;
