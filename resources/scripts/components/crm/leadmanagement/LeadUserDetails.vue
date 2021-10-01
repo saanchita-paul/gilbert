@@ -22,6 +22,7 @@ name: "LeadUserDetails",
     },
     methods: {
         updateLead(lead) {
+            console.log('this is lead1 ' , lead);
             this.$emit('updateLead',lead);
         },
         eacalate(){

@@ -59,7 +59,20 @@
                         ></v-text-field>
                     </ValidationProvider>
                     </v-col>
+
                     <v-col cols="6" class="py-0">
+                        <ValidationProvider name="Phone Types" rules="required"  v-slot="{ errors }">
+                            <v-select outlined dense
+                                      v-model="application.phone_type"
+                                      :items="phone_types"
+                                      label="Phone Type*"
+                                      :error-messages=" errors[0]"
+                                      placeholder="Please Select">
+                            </v-select>
+                        </ValidationProvider>
+                    </v-col>
+
+                    <v-col cols="6" class="py-0" v-if="application.phone_type == 1">
                     <ValidationProvider name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
                         <v-text-field
                             label="Mobile number*"
@@ -72,6 +85,21 @@
                         ></v-text-field>
                     </ValidationProvider>
                     </v-col>
+
+                    <v-col cols="6" class="py-0" v-else>
+                    <ValidationProvider name="Homephone number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                        <v-text-field
+                            label="Homephone number*"
+                            :maxlength="10"
+                            outlined
+                            dense
+                            placeholder="04XX XXX XXX"
+                            v-model="application.homephone"
+                            :error-messages=" errors[0]"
+                        ></v-text-field>
+                    </ValidationProvider>
+                    </v-col>
+
                     <v-col cols="6" class="py-0">
                         <ValidationProvider name="Tenancy Types" rules="required"  v-slot="{ errors }">
                             <v-select outlined dense
@@ -83,6 +111,7 @@
                             </v-select>
                         </ValidationProvider>
                     </v-col>
+                    
 
                     <v-col cols="6" class="py-0">
                             <v-menu
@@ -502,6 +531,10 @@ export default {
             tenancy_types:  [
                 {text: 'Renter', value: 1},
                 {text: 'Home Owner', value: 2},
+            ],
+            phone_types:  [
+                {text: 'Mobile', value: 1},
+                {text: 'Homephone', value: 2},
             ],
             states: [
                 {text: 'NSW', value: 'New South Wales'},

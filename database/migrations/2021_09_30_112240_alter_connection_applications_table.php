@@ -17,14 +17,14 @@ class AlterConnectionApplicationsTable extends Migration
         Schema::table('connection_applications', function (Blueprint $table) {
             //
             $table->string('middle_name', 45)->nullable()->after('first_name');
-            $table->boolean('has_electricity')->nullable();
-            $table->boolean('is_renovation_on')->nullable();
+            $table->boolean('has_electricity')->default(1)->nullable();
+            $table->boolean('is_renovation_on')->default(1)->nullable();
             $table->string('land_number' , 20)->nullable();
             $table->string('vendor_id' , 50)->nullable();
             $table->string('homephone', 45)->nullable();
             $table->tinyInteger('phone_type')->default('1')->nullable()->after('phone');
             $table->string('inspection_time' , 100)->nullable();
-            $table->tinyInteger('family_violance')->nullable();
+            $table->tinyInteger('family_violance')->default(3)->nullable();
 
         });
     }

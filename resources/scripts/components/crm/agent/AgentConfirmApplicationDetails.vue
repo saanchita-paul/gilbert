@@ -22,9 +22,13 @@
                                 <td class="font-weight-bold">Date of Birth:</td>
                                 <td>{{ application.date_of_birth }}</td>
                             </tr>
-                            <tr>
+                            <tr v-if="application.phone_type == 1">
                                 <td class="font-weight-bold">Mobile No:</td>
                                 <td>{{ application.phone }}</td>
+                            </tr>
+                            <tr v-else>
+                                <td class="font-weight-bold">Homephone No:</td>
+                                <td>{{ application.homephone }}</td>
                             </tr>
                             <tr>
                                 <td class="font-weight-bold">Email:</td>
