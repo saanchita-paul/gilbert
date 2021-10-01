@@ -37,9 +37,9 @@ class ApplicationResource extends JsonResource
             'address_text' => $this->address_text,
             'services' => $this->getConnectionServices($this->connectionServices),
             'identification' => $this->identification,
-            'family_violance' => $this->family_violance,
-            'is_renovation_on' => $this->is_renovation_on,
-            'has_electricity' => $this->has_electricity,
+            'family_violance' => isset($this->family_violance) ? $this->family_violance : 3,
+            'is_renovation_on' => isset($this->is_renovation_on) ? $this->is_renovation_on : 1,
+            'has_electricity' => isset($this->has_electricity) ? $this->has_electricity : 1,
             'inspection_time' => $this->inspection_time,
             'is_email_billing' => $this->is_email_billing,
             'nmi' => $this->nmi,
@@ -73,7 +73,7 @@ class ApplicationResource extends JsonResource
         $service_array = [];
         $count = sizeof($services);
         for ($i = 0; $i < $count; $i++) {
-            array_push($service_array,$services[$i]['service_type']);
+            array_push($service_array, $services[$i]['service_type']);
         }
         return $service_array;
     }
