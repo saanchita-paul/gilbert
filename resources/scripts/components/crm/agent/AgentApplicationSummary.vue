@@ -7,9 +7,13 @@
                 <td class="font-weight-bold">Date of Birth</td>
                 <td>{{ application.date_of_birth }}</td>
             </tr>
-            <tr>
-                <td class="font-weight-bold">Mobile</td>
-                <td>{{ application.phone }}</td>
+            <tr v-if="application.phone_type == 1">
+                <td class="font-weight-bold"> Mobile </td>
+                <td>{{application.phone}}</td>
+            </tr>
+            <tr v-else>
+                <td class="font-weight-bold"> Homephone </td>
+                <td>{{application.homephone}}</td>
             </tr>
             <tr>
                 <td class="font-weight-bold">Email</td>
@@ -22,6 +26,10 @@
             <tr>
                 <td class="font-weight-bold">Email billing</td>
                 <td>{{ application.is_email_billing == 1 ? 'Email' : 'Paper' }}</td>
+            </tr>
+             <tr>
+                <td class="font-weight-bold">Authorized Person</td>
+                <td>{{ application.authorizedPersonName == null ? 'Unassigned' : application.authorizedPersonName }}</td>
             </tr>
             <tr>
                 <td class="font-weight-bold">Status:</td>

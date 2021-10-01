@@ -48,6 +48,7 @@ export default class ApplicationSummary {
     billing_city = null;
     billing_postcode = null;
     is_billing_same = null;
+    authorizedPersonName = null;
     constructor(
         {
             id = null,
@@ -94,7 +95,8 @@ export default class ApplicationSummary {
             billing_street_address = null,
             billing_city = null,
             billing_postcode = null,
-            is_billing_same = null
+            is_billing_same = null,
+            authorizedPersonName = null,
         }
     ) {
 
@@ -138,6 +140,7 @@ export default class ApplicationSummary {
         this.street_number = street_number;
         this.unit_number = unit_number;
         this.street_name = street_name;
+        this.authorizedPersonName = authorizedPersonName;
 
         this.billing_unit_number = billing_unit_number,
             this.billing_street_number = billing_street_number,
