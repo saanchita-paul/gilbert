@@ -1,15 +1,19 @@
 <template>
     <v-card class="hood-card" v-if="application">
-        <h3 class="page-title">{{ application.first_name + ' ' + application.last_name}}</h3>
+        <h3 class="page-title">{{application.applicant_name }}</h3>
         <p class="sub-title mt-4 mb-2">Personal Details</p>
         <table  class="application-info layout-fixed-table">
             <tr>
                 <td class="font-weight-bold">Date of Birth</td>
                 <td>{{ application.date_of_birth }}</td>
             </tr>
-            <tr>
-                <td class="font-weight-bold">Mobile</td>
-                <td>{{ application.phone }}</td>
+            <tr v-if="application.phone_type == 1">
+                <td class="font-weight-bold"> Mobile </td>
+                <td>{{application.phone}}</td>
+            </tr>
+            <tr v-else>
+                <td class="font-weight-bold"> Homephone </td>
+                <td>{{application.homephone}}</td>
             </tr>
             <tr>
                 <td class="font-weight-bold">Email</td>
@@ -22,6 +26,10 @@
             <tr>
                 <td class="font-weight-bold">Email billing</td>
                 <td>{{ application.is_email_billing == 1 ? 'Email' : 'Paper' }}</td>
+            </tr>
+             <tr>
+                <td class="font-weight-bold">Authorized Person</td>
+                <td>{{ application.authorizedPersonName == null ? 'Unassigned' : application.authorizedPersonName }}</td>
             </tr>
             <tr>
                 <td class="font-weight-bold">Status:</td>
@@ -89,13 +97,21 @@ export default {
         }
     },
     computed: {
+        full_name()
+        {
+            if(this.application.middle_name === '') {
+                    return this.application.first_name + ' ' + this.application.middle_name + ' ' + this.application.last_name
+                }
+            return this.application.first_name + ' ' + this.application.last_name
 
+        }
     },
     methods: {
         isServiceAllowed(services, type) {
             return !services.includes(type);
         }
     },
+
     mounted() {
 
     }

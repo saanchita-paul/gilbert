@@ -71,8 +71,10 @@ export default {
     },
 
     mapToServer(data) {
+
+
         let commsission = [];
-        data.service_interests.forEach(service => {
+        data.application.service_interests.forEach(service => {
             if(service === COMMISSION.GAS.text)
             {
                 commsission.push({
@@ -98,12 +100,18 @@ export default {
 
 
         });
-        data.service_interests = commsission;
+
+        data.application.service_interests = commsission;
        return {
-           ...data,
-           dob: this.mapDateToServer(data.date_of_birth),
-           moving_date: this.mapDateToServer(data.moving_date),
-           is_email_billing: data.email_billing?data.email_billing:0
+           ...data.application,
+           dob: this.mapDateToServer(data.application.date_of_birth),
+           moving_date: this.mapDateToServer(data.application.moving_date),
+           is_email_billing: data.application.email_billing?data.application.email_billing:0,
+           authorized_person: {
+               ...data.authorized_person,
+               dob: this.mapDateToServer(data.authorized_person.dob)
+           }
+
        }
     },
     mapDateToServer(dt)

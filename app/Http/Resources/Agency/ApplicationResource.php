@@ -18,9 +18,12 @@ class ApplicationResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'first_name' => $this->first_name,
+            'middle_name' => $this->middle_name,
             'last_name' => $this->last_name,
             'email' => $this->email,
             'phone' => $this->phone,
+            'homephone' => $this->homephone,
+            'phone_type' => $this->phone_type,
             'tenancy_type' => $this->tenancy_type,
             'date_of_birth' => $this->dob,
             'moving_date' => $this->moving_date,
@@ -34,6 +37,10 @@ class ApplicationResource extends JsonResource
             'address_text' => $this->address_text,
             'services' => $this->getConnectionServices($this->connectionServices),
             'identification' => $this->identification,
+            'family_violance' => isset($this->family_violance) ? $this->family_violance : 3,
+            'is_renovation_on' => isset($this->is_renovation_on) ? $this->is_renovation_on : 1,
+            'has_electricity' => isset($this->has_electricity) ? $this->has_electricity : 1,
+            'inspection_time' => $this->inspection_time,
             'is_email_billing' => $this->is_email_billing,
             'nmi' => $this->nmi,
             'mirn' => $this->mirn,
@@ -58,6 +65,7 @@ class ApplicationResource extends JsonResource
             'billing_state' => $this->billing_state,
             'billing_postcode' => $this->billing_postcode,
             'is_billing_same' => $this->is_billing_same,
+            'authorizedPersonName' => isset($this->authorizedPerson) ? "{$this->authorizedPerson->first_name} {$this->authorizedPerson->middle_name} {$this->authorizedPerson->last_name}" : null ,
         ];
     }
 
@@ -66,7 +74,7 @@ class ApplicationResource extends JsonResource
         $service_array = [];
         $count = sizeof($services);
         for ($i = 0; $i < $count; $i++) {
-            array_push($service_array,$services[$i]['service_type']);
+            array_push($service_array, $services[$i]['service_type']);
         }
         return $service_array;
     }

@@ -17,10 +17,13 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $created_by
  * @property int|null $assigned_to
  * @property string|null $first_name
+ * @property string|null $middle_name
  * @property string|null $last_name
  * @property string|null $email
  * @property string|null $phone
+ * @property string|null $homephone
  * @property int|null $tenancy_type
+ * @property int|null $phone_type
  * @property string|null $dob
  * @property string|null $moving_date
  * @property string|null $address_unit
@@ -34,6 +37,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $city
  * @property string|null $postcode
  * @property string|null $state
+ * @property string|null $inspection_time
  * @property string|null $country
  * @property string|null $billing_address_unit
  * @property string|null $billing_street_address
@@ -45,11 +49,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $billing_address_text
  * @property string|null $reason
  * @property int|null $is_email_billing
+ * @property int|null $has_electricity
+ * @property int|null $is_renovation_on
  * @property int|null $property_type
  * @property int|null $has_life_support
  * @property int|null $has_solar
  * @property string|null $nmi
  * @property string|null $mirn
+ * @property string|null $family_violance
  * @property int|null $supplier
  * @property int|null $plan_type
  * @property int|null $status
@@ -117,9 +124,15 @@ class ConnectionApplication extends Model
         'created_by',
         'assigned_to',
         'first_name',
+        'middle_name',
+        'family_violance',
+        'has_electricity',
+        'inspection_time',
         'last_name',
         'email',
         'phone',
+        'homephone',
+        'phone_type',
         'tenancy_type',
         'dob',
         'moving_date',
@@ -135,6 +148,7 @@ class ConnectionApplication extends Model
         'property_type',
         'has_life_support',
         'has_solar',
+        'is_renovation_on',
         'nmi',
         'mirn',
         'is_escalated',
@@ -154,7 +168,8 @@ class ConnectionApplication extends Model
         'billing_street_address',
         'billing_city',
         'billing_postcode',
-        'submitted_by'
+        'submitted_by',
+        'vendor_id',
     ];
 
 
@@ -165,6 +180,9 @@ class ConnectionApplication extends Model
     const STATUS_ACCEPTED = 5;
     const STATUS_REJECTED = 6; //non payable
     const STATUS_EA_PROCESSINF = 7;
+
+    const HAS_SOLAR = 1;
+    const NO_SOLAR = 2;
 
 
     const MY_APPLICATIONS = 'my_applications';
@@ -181,6 +199,9 @@ class ConnectionApplication extends Model
     const PLAN_TYPE_TOTAL = 'total_plan';
     const PLAN_TYPE_BASIC = 'basic_plan';
     const PLAN_TYPE_NO_FRILLS = 'no_frills';
+    const PLAN_TYPE_TOTAL_INDEX = 1;
+    const PLAN_TYPE_BASIC_INDEX = 2;
+    const PLAN_TYPE_NO_FRILLS_INDEX = 3;
 
     const PLAN_TYPE_MAPPER = [
         self::PLAN_TYPE_BASIC => 1,
@@ -188,12 +209,18 @@ class ConnectionApplication extends Model
         self::PLAN_TYPE_TOTAL => 3
     ];
 
+    const PLAN_TYPE_REVERSE_MAPPER = [
+        self::PLAN_TYPE_TOTAL_INDEX => self::PLAN_TYPE_TOTAL,
+        self::PLAN_TYPE_BASIC_INDEX => self::PLAN_TYPE_BASIC,
+        self::PLAN_TYPE_NO_FRILLS_INDEX => self::PLAN_TYPE_NO_FRILLS
+    ];
+
     /**
      * @return BelongsTo
      */
     public function office()
     {
-        return $this->belongsTo(Office::class,'office_id','id');
+        return $this->belongsTo(Office::class, 'office_id', 'id');
     }
 
     /**
@@ -237,10 +264,35 @@ class ConnectionApplication extends Model
     }
 
     /**
+     * @return HasOne
+     */
+    public function authorizedPerson()
+    {
+        return $this->hasOne(ConnectionApplicationSecondaryACC::class , 'connection_application_id' , 'id');
+    }
+
+    /**
      * @return HasMany
      */
     public function applicationNotes()
     {
         return $this->hasMany(ApplicationNote::class);
     }
+
+    public function getElectricitySourceCode()
+    {
+        return 'AA';
+    }
+
+    public function getGasSourceCode()
+    {
+        return 'AA';
+    }
+
+    public function getRoadType()
+    {
+        $data = explode(' ', $this->street_name);
+        return $data[sizeof($data) - 1];
+    }
+
 }
