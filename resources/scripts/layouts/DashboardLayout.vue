@@ -163,6 +163,7 @@ export default {
 <style scoped>
 .app-nav-bar {
     background-color: rgb(37, 40, 48, 1) !important;
+    box-shadow: 0px 10px 40px 0px #000052;
 }
 
 .app-app-bar {
