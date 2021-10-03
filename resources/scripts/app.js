@@ -6,7 +6,7 @@ import '@scripts/plugins/VeeValidate';
 import '@scripts/plugins/Axios';
 import '@scripts/plugins/GoogleMap';
 import store from '@scripts/store';
-import { authUser } from "@scripts/services/AuthService";
+import {authUser, kickOut} from "@scripts/services/AuthService";
 import GoogleMapService from "@scripts/services/GoogleMapService";
 import '@scripts/directives';
 import '@scripts/filters';
