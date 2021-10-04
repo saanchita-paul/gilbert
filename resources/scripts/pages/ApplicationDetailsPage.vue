@@ -2,11 +2,13 @@
     <v-container fluid  v-if="planNoteFlag">
             <ValidationObserver ref="submit_lead">
                 <LeadUserDetails
+                                v-model="infoToPass"
                                 :nmiMernFlag="nmiMernFlag"
                                 @eacalate="eacalate"
                                  @updateLead="updateLead"
                                  @readMore="readMore" :leadSummary="leadSummary"
-                                 @updateAddress="updateAddress" @updateDraft="updateDraft"></LeadUserDetails>
+                                 @updateAddress="updateAddress" @updateDraft="updateDraft"
+                        ></LeadUserDetails>
             </ValidationObserver>
                 <LeadServicesAndNotes
                                    @updateService="updateService"
@@ -14,7 +16,7 @@
                                    @updateNote= "updateNote"
                                    :leadSummary="leadSummary" :notes="notes"></LeadServicesAndNotes>
 
-            <LeadsDetailsFotter v-if="leadSummary.status != 1" :login-loading="this.submittedLoader" :isManualChangeFlag="isManualChangeFlag" @submitConnection="submitConnection"></LeadsDetailsFotter>
+            <LeadsDetailsFotter :lifeSupportInfo="infoToPass.lifeSupportInfo"  v-if="leadSummary.status != 1" :login-loading="this.submittedLoader" :isManualChangeFlag="isManualChangeFlag" @submitConnection="submitConnection"></LeadsDetailsFotter>
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
             <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" :title="fullName"></EscalationConfirmModal>
             <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag"
@@ -70,6 +72,14 @@ export default {
             fullName: null,
             submittedLoader: false,
             isManualChangeFlag: false,
+            
+            //$attrs
+            infoToPass:{
+                lifeSupportInfo: {
+                    value: false,
+                    errorMsg: false,
+                }
+            }
         }
     },
 

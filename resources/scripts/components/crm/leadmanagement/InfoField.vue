@@ -49,12 +49,11 @@
       </div>
       <div class="crm-text-field">
         <div class="field-label">
-          <span>Middlename *</span>
+          <span>Middlename</span>
         </div>
         <div class="text-field">
           <ValidationProvider
             name="First Name"
-            rules="required"
             v-slot="{ errors }"
           >
             <v-text-field
@@ -611,6 +610,20 @@
       </div>
 
 
+     <div class="crm-text-field mt-n6">
+        <div class="field-label">
+          <!-- <span>Inspection Time *</span> -->
+        </div>
+        <div class="text-field">
+          <v-checkbox
+              :rules="[v=>{ if(v) return `Sorry, We don't have medical equipment for life support`; else return true }]"
+              v-model="$attrs.value.lifeSupportInfo.value"
+              :label="`Does anyone in the household require the use of medical equipment for life support? `">
+          </v-checkbox>
+        </div>
+      </div>
+
+
     </v-col>
 
     <v-col cols="4">
@@ -917,6 +930,7 @@ export default {
   },
   data() {
     return {
+      needLifeSupprt: false,
       loadNmi: false,
       titlesDD: ["Mrs", "Mr", "Ms"],
       minConnectionDate: LeadApplicationService.getMinConnectionDate(),

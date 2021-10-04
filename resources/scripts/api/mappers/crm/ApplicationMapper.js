@@ -109,7 +109,7 @@ export default {
            is_email_billing: data.application.email_billing?data.application.email_billing:0,
            authorized_person: {
                ...data.authorized_person,
-               dob: this.mapDateToServer(data.authorized_person.dob)
+               dob: this.mapDateToServer(data.authorized_person.dob) == "Invalid Date" ? null : this.mapDateToServer(data.authorized_person.dob)
            }
 
        }
