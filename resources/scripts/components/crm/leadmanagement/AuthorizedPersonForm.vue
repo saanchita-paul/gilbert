@@ -4,10 +4,8 @@
             <span>Authorised Person</span>
         </div>
         <div class="text-field" >
-            <ValidationProvider name="Authorised Person"  v-slot="{ errors }">
                 <v-text-field
                     indentification
-                    :error-messages=" errors[0]"
                     @click="openProfileForm"
                     outlined
                     v-model="authrity_full_name"
@@ -15,7 +13,6 @@
                     hide-details="auto"
                     placeholder="Authorised Person Name"
                 ></v-text-field>
-            </ValidationProvider>
         </div>
         <AuthorizedPersonProfileForm @closeModal="closeModal"
                                      @saveAuthroizedPerson = "saveAuthroizedPerson"

@@ -610,6 +610,20 @@
       </div>
 
 
+      <div class="crm-text-field mt-n6">
+        <div class="field-label">
+          <!-- <span>Inspection Time *</span> -->
+        </div>
+        <div class="text-field">
+          <v-checkbox
+              :rules="[v=>{ if(v) return `We don't have life support equipment`; else return true }]"
+              v-model="$attrs.value.lifeSupportInfo.value"
+              :label="`Does anyone need life support ?`">
+          </v-checkbox>
+        </div>
+      </div>
+
+
     </v-col>
 
     <v-col cols="4">
@@ -916,6 +930,7 @@ export default {
   },
   data() {
     return {
+      needLifeSupprt: false,
       loadNmi: false,
       titlesDD: ["Mrs", "Mr", "Ms"],
       minConnectionDate: LeadApplicationService.getMinConnectionDate(),
