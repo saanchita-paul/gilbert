@@ -616,9 +616,9 @@
         </div>
         <div class="text-field">
           <v-checkbox
-              :rules="[v=>{ if(v) return `Sorry, We don't have medical equipment for life support`; else return true }]"
+              :rules="[v=>{ if(v) return `We don't have life support equipment`; else return true }]"
               v-model="$attrs.value.lifeSupportInfo.value"
-              :label="`Does anyone in the household require the use of medical equipment for life support? `">
+              :label="`Does anyone need life support ?`">
           </v-checkbox>
         </div>
       </div>
