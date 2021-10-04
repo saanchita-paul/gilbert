@@ -49,12 +49,11 @@
       </div>
       <div class="crm-text-field">
         <div class="field-label">
-          <span>Middlename *</span>
+          <span>Middlename</span>
         </div>
         <div class="text-field">
           <ValidationProvider
             name="First Name"
-            rules="required"
             v-slot="{ errors }"
           >
             <v-text-field
