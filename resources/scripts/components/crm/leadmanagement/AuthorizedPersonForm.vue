@@ -11,7 +11,7 @@
                     v-model="authrity_full_name"
                     dense
                     hide-details="auto"
-                    placeholder="Authorised Person Name"
+                    placeholder="Add authorised person"
                 ></v-text-field>
         </div>
         <AuthorizedPersonProfileForm @closeModal="closeModal"
@@ -39,7 +39,7 @@ name: "AuthorizedPersonForm",
         return {
             dialog: false,
             authorized_person_data: null,
-            authrity_full_name : '',
+            authrity_full_name : null,
         };
     },
 
@@ -63,7 +63,7 @@ name: "AuthorizedPersonForm",
         async loadAuthoriedPerson()
         {
             this.authorized_person_data = await LeadApplicationService.loadAuthorizedPerson(this.leadId);
-            if(!isNull(this.authorized_person_data)) {
+            if(!isNull(this.authorized_person_data.first_name) && !isNull(this.authorized_person_data.last_name) ) {
                 this.authrity_full_name = this.authorized_person_data.first_name +' '+ this.authorized_person_data.last_name;
             }
         },
