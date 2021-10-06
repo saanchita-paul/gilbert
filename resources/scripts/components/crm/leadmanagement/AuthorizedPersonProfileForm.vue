@@ -238,15 +238,12 @@ name: "AuthorizedPersonProfileForm",
             this.authorized_person.first_name = this.authorized_person_data.first_name;
             this.authorized_person.last_name = this.authorized_person_data.last_name;
             this.authorized_person.email = this.authorized_person_data.email;
-            this.authorized_person.dob = dayjs(this.authorized_person_data.dob).format('DD/MM/YYYY');
+            this.authorized_person.dob = !this.authorized_person_data.dob ? '' : dayjs(this.authorized_person_data.dob).format('DD/MM/YYYY');
             this.authorized_person.middle_name = this.authorized_person_data.middle_name;
             this.authorized_person.phone = this.authorized_person_data.phone;
             this.authorized_person.role = this.authorized_person_data.role;
             this.authorized_person.id = this.authorized_person_data.id
             this.authorized_person.connection_application_id = this.authorized_person_data.connection_application_id
-
-            console.log(this.authorized_person_data);
-
         }
     },
 

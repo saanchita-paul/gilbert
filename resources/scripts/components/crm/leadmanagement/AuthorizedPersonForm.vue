@@ -63,7 +63,7 @@ name: "AuthorizedPersonForm",
         async loadAuthoriedPerson()
         {
             this.authorized_person_data = await LeadApplicationService.loadAuthorizedPerson(this.leadId);
-            if(!isNull(this.authorized_person_data.first_name) && !isNull(this.authorized_person_data.last_name) ) {
+            if(this.authorized_person_data?.first_name && this.authorized_person_data?.last_name ) {
                 this.authrity_full_name = this.authorized_person_data.first_name +' '+ this.authorized_person_data.last_name;
             }
         },
