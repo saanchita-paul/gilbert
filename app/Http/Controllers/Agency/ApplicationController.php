@@ -264,6 +264,15 @@ class ApplicationController extends Controller
         }
     }
 
-
+    public function closeApplication($id)
+    {
+        try {
+            $service = new ApplicationService();
+            $res = $service->closeApplication($id);
+            return response()->json(['success' => true, 'data' => $res]);
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
 
 }

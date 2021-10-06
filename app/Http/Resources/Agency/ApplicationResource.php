@@ -41,7 +41,7 @@ class ApplicationResource extends JsonResource
             'is_renovation_on' => isset($this->is_renovation_on) ? $this->is_renovation_on : 1,
             'has_electricity' => isset($this->has_electricity) ? $this->has_electricity : 1,
             'inspection_time' => $this->inspection_time,
-            'is_email_billing' => $this->is_email_billing,
+            'is_email_billing' => $this->is_email_billing == 0 ? null : $this->is_email_billing,
             'nmi' => $this->nmi,
             'mirn' => $this->mirn,
             'property_type' => $this->property_type,
