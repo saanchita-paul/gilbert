@@ -4,10 +4,11 @@
                 <LeadUserDetails
                                 v-model="infoToPass"
                                 :nmiMernFlag="nmiMernFlag"
+                                @closeApplication="closeApplication"
                                 @eacalate="eacalate"
-                                 @updateLead="updateLead"
-                                 @readMore="readMore" :leadSummary="leadSummary"
-                                 @updateAddress="updateAddress" @updateDraft="updateDraft"
+                                @updateLead="updateLead"
+                                @readMore="readMore" :leadSummary="leadSummary"
+                                @updateAddress="updateAddress" @updateDraft="updateDraft"
                         ></LeadUserDetails>
             </ValidationObserver>
                 <LeadServicesAndNotes
@@ -119,6 +120,16 @@ export default {
 
         cancelEscal() {
             this.escalateLead = false;
+        },
+
+        async closeApplication(lead) {
+            
+            try {
+                await LeadApplicationService.closeApplication(lead.id);
+                this.$router.push({name:'applications'});
+            } catch (error) {
+                console.log('closeApplication error' , erro);
+            }
         },
 
         readMore() {

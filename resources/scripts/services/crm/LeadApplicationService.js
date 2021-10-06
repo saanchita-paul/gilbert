@@ -5,6 +5,7 @@ export default {
     loadUserLeadMetrics: () => LeadApplicationAPI.getUserLeadMetrics(),
     loadUserLeads: (sort_search_meta, active_lead_type) => LeadApplicationAPI.getUserLeads(sort_search_meta, active_lead_type),
     loadUserLead: (id) => LeadApplicationAPI.getUserLead(id),
+    closeApplication: (id) => LeadApplicationAPI.closeApplication(id),
     loadPlan: (serviceProvider) => LeadApplicationAPI.getPlan(serviceProvider),
     loadNote: (leadUser)=> LeadApplicationAPI.getNote(leadUser),
     loadServiceProvider: (services)=> LeadApplicationAPI.getServiceProvider(services),

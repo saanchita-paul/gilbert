@@ -1,6 +1,6 @@
 <template>
     <v-card class="hood-card mb-5 pt-0">
-       <LeadDetailsHeader :leadSummary="leadSummary" @eacalate="eacalate"></LeadDetailsHeader>
+       <LeadDetailsHeader :leadSummary="leadSummary" @closeApplication="closeApplication" @eacalate="eacalate"></LeadDetailsHeader>
         <InfoField v-bind="$attrs" @updateLead="updateLead" :nmiMernFlag="nmiMernFlag" :lead="leadSummary" @updateDraft="updateDraft" @readMore="readMore" @updateAddress="updateAddress"></InfoField>
     </v-card>
 </template>
@@ -21,8 +21,10 @@ name: "LeadUserDetails",
         }
     },
     methods: {
+        closeApplication(lead) {
+            this.$emit('closeApplication',lead);
+        },
         updateLead(lead) {
-            console.log('this is lead1 ' , lead);
             this.$emit('updateLead',lead);
         },
         eacalate(){

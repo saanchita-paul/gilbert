@@ -238,13 +238,18 @@ class ApplicationService
             return $authorizedPerson;
         }
 
-
     }
-
 
     private function calculateVendorId($id)
     {
         return 'HD2'.$id.time();
+    }
+
+    public function closeApplication($id)
+    {
+        $connectionApplication =  ConnectionApplication::find($id);
+        $connectionApplication->update(['status' => 8]);
+        return $connectionApplication->refresh();
     }
 
 }

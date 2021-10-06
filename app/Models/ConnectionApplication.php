@@ -180,6 +180,7 @@ class ConnectionApplication extends Model
     const STATUS_ACCEPTED = 5;
     const STATUS_REJECTED = 6; //non payable
     const STATUS_EA_PROCESSINF = 7;
+    const STATUS_CLOSED = 8;
 
     const HAS_SOLAR = 1;
     const NO_SOLAR = 2;
@@ -194,6 +195,7 @@ class ConnectionApplication extends Model
         'submitted' => self::STATUS_SUBMITTED,
         'accepted' => self::STATUS_ACCEPTED,
         'rejected' => self::STATUS_REJECTED,
+        // 'closed' => self::STATUS_CLOSED,
     ];
 
     const PLAN_TYPE_TOTAL = 'total_plan';

@@ -241,6 +241,15 @@ export default {
         }
     },
 
+  async closeApplication (id) {
+        try {
+            const data = await axios.put(`/api/applications/${id}/close`);
+            return data;
+        } catch (error) {
+            return error.data;
+        }
+    },
+
     getPlan(serviceProvider) {
         try {
             // const data = await axios.get('/');
