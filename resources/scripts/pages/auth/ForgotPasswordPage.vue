@@ -1,6 +1,7 @@
 <template>
     <v-app>
-        <v-container style="height: 100%">
+        <div class="loginpage">
+            <v-container style="height: 100%" fluid>
             <div style="height: 100%; display: flex; justify-content: center; align-items: center">
                 <v-card width="400px">
                     <v-card-title class="primary white--text">Forgot Password</v-card-title>
@@ -75,6 +76,7 @@
                 </v-card>
             </div>
         </v-container>
+        </div>
     </v-app>
 </template>
 
