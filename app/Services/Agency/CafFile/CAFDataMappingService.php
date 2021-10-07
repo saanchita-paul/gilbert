@@ -46,7 +46,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                 $second_account_holder = ConnectionApplicationSecondaryACC::query()
                     ->where('connection_application_id','=', $utilityData->id)
                     ->first();
-                Log::info('second-holder', $second_account_holder->toArray());
+//                Log::info('second-holder', $second_account_holder->toArray());
 
                 $idExpireDate = Carbon::parse($utilityData->identification->expire_date)->format("d/m/Y");
                 return [
@@ -317,12 +317,19 @@ class CAFDataMappingService implements FromCollection, WithHeadings
     {
         $plan = ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
         $state = $this->stateMap($state);
-        $response = Http::post($this->chatbotUri.'/api/ele-source-code',['plan'=>$plan,'state'=>$state]);
+
+        try{
+            $response = Http::post($this->chatbotUri.'/api/ele-source-code',['plan'=>$plan,'state'=>$state]);
 //        Log::info('p',$response->status());
-        if($response->status() == 200)
+            if($response->status() == 200)
+            {
+                return json_decode($response->body())->source_code;
+            }
+        } catch (\Exception)
         {
-            return json_decode($response->body())->source_code;
+            return  '';
         }
+
         return  '';
 
     }
@@ -332,26 +339,40 @@ class CAFDataMappingService implements FromCollection, WithHeadings
 //        Log::info($plan, [$plan]);
         $plan = ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
         $state = $this->stateMap($state);
-        $response = Http::post($this->chatbotUri.'/api/gas-source-code',['plan'=>$plan,'state'=>$state]);
-        if($response->status() == 200)
-        {
-            return json_decode($response->body())->source_code;
+        try {
+            $response = Http::post($this->chatbotUri.'/api/gas-source-code',['plan'=>$plan,'state'=>$state]);
+            if($response->status() == 200)
+            {
+                return json_decode($response->body())->source_code;
 
+            }
+
+        } catch (\Exception $e)
+        {
+            return  '';
         }
         return  '';
+
 
     }
 
     private function getBuyBackRate($solar, $state)
     {
         $state = $this->stateMap($state);
-        $response = Http::post($this->chatbotUri.'/api/tariff-code',['solar'=>$solar == ConnectionApplication::HAS_SOLAR?'solar':'','state'=>$state]);
-        if($response->status() == 200)
-        {
-            return json_decode($response->body())->buypack_rate;
+        try{
+            $response = Http::post($this->chatbotUri.'/api/tariff-code',['solar'=>$solar == ConnectionApplication::HAS_SOLAR?'solar':'','state'=>$state]);
+            if($response->status() == 200)
+            {
+                return json_decode($response->body())->buypack_rate;
 
+            }
+        } catch (\Exception $e)
+        {
+            return  '';
         }
         return  '';
+
+
 
     }
     private function stateMap($state)
