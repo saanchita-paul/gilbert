@@ -517,6 +517,7 @@ import GoogleMapService from "@scripts/services/GoogleMapService";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import DayJs from "dayjs";
 import LeadCreateSuccessfulModal from "@scripts/components/crm/modals/LeadCreateSuccessfulModal";
+import {isNull} from "lodash-es";
 
 export default {
     name: "AgentCreateNewApplication",
@@ -624,7 +625,11 @@ export default {
                     this.application.street_number = data.street_number;
                     this.application.unit_number = data.unit_number;
                     this.application.street_name = data.street_name;
-                    // this.mapToModel(data)
+
+                    if(!isNull( data.unit_number)) {
+                        this.application.street_address = data.unit_number +'/'+ data.street;
+                    }
+
                 });
         },
         onCancel() {
