@@ -574,6 +574,97 @@
         "options": [
 
         ]
-    }
+    },
+    {
+        "name": "hood_move_date",
+        "label": "Move date Text",
+        "description": "Text of Moving date",
+        "groupName": "contactinformation",
+        "type": "string",
+        "fieldType": "text",
+        "formField": true,
+        "displayOrder": 6,
+        "options": [
 
+        ]
+    },
+    {
+        "name": "hood_identification_type",
+        "label": "Identification Type",
+        "description": "Type of Identification like Passport Medicare DL",
+        "groupName": "contactinformation",
+        "type": "string",
+        "fieldType": "text",
+        "formField": true,
+        "displayOrder": 6,
+        "options": [
+
+        ]
+    },
+
+    {
+        "name": "hood_utility_plan",
+        "label": "Plan Text",
+        "description": "Plan Details",
+        "groupName": "contactinformation",
+        "type": "string",
+        "fieldType": "text",
+        "formField": true,
+        "displayOrder": 6,
+        "options": [
+
+        ]
+    },
+    {
+        "name": "full_name",
+        "label": "Full Name",
+        "description": "Full Name",
+        "groupName": "contactinformation",
+        "type": "string",
+        "fieldType": "text",
+        "formField": true,
+        "displayOrder": 6,
+        "options": [
+
+        ]
+    },
+    {
+        "name": "hood_move_date_text",
+        "label": "Hood move date text",
+        "description": "Plan Details",
+        "groupName": "contactinformation",
+        "type": "string",
+        "fieldType": "text",
+        "formField": true,
+        "displayOrder": 6,
+        "options": [
+
+        ]
+    },
+    {
+        "name": "hood_utility_plan",
+        "label": "Hood Utility Plan",
+        "description": "Plan Details",
+        "groupName": "contactinformation",
+        "type": "string",
+        "fieldType": "text",
+        "formField": true,
+        "displayOrder": 6,
+        "options": [
+
+        ]
+    },
+    {
+        "name": "hood_identification_type",
+        "label": "Hood Identification Type",
+        "description": "Hood Identification Type",
+        "groupName": "contactinformation",
+        "type": "string",
+        "fieldType": "text",
+        "formField": true,
+        "displayOrder": 6,
+        "options": [
+
+        ]
+    }
 ]
