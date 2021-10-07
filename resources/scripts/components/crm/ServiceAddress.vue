@@ -89,7 +89,7 @@
                                                 ></v-text-field>
                                             </ValidationProvider>
                                         </v-col>
-                                        
+
                                         <!-- <v-col cols="12" class="mt-n12" v-if="propertyDetails.state == 'Victoria'">
                                             <v-checkbox
                                                 v-model="propertyDetails.is_renovation_on"
@@ -97,7 +97,7 @@
                                                 :label="`Is renovation going on?`"
                                             ></v-checkbox>
                                         </v-col>
-                                        
+
                                         <v-col cols="12" class="mt-n12" v-if="propertyDetails.state == 'Queensland'">
                                             <v-checkbox
                                                 v-model="propertyDetails.has_electricity"
@@ -228,6 +228,7 @@
 import Search from "@scripts/components/crm/Search";
 import debounce from "lodash-es/debounce";
 import GoogleMapService from "@scripts/services/GoogleMapService";
+import {isNull} from "lodash-es";
 export default {
   name: "ServiceAddress",
   components: {
@@ -302,6 +303,10 @@ export default {
                     this.propertyDetails.street_number = data.street_number?data.street_number:null;
                     this.propertyDetails.unit_number = data.unit_number;
                     this.propertyDetails.street_name = data.street_name;
+
+                    if(!isNull( data.unit_number)) {
+                        this.propertyDetails.street_address = data.unit_number +'/'+ data.street;
+                    }
                 });
         },
 
@@ -316,6 +321,11 @@ export default {
               this.propertyDetails.billing_street_number = data.street_number;
               this.propertyDetails.billing_unit_number = data.unit_number;
               this.propertyDetails.billing_street_name = data.street_name;
+
+                if(!isNull( data.unit_number)) {
+                    this.propertyDetails.billing_street_address = data.unit_number +'/'+ data.street;
+                }
+
             });
       },
 
