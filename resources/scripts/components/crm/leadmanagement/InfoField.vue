@@ -946,12 +946,12 @@ export default {
         },
       ],
       inspectionTimes:[
-        '8AM - 1PM',
-        '9AM - 2PM',
-        '10AM - 3PM',
-        '11AM - 4PM',
-        '12AM - 5PM',
-        '1AM - 6PM',
+        '8:00am - 1:00pm',
+        '9:00am - 2:00pm',
+        '10:00am - 3:00pm',
+        '11:00am - 4:00pm',
+        '12:00pm - 5:00pm',
+        '1:00pm - 6:00PM',
       ],
       statesDD: [
         { text: "NSW", value: "New South Wales" },
