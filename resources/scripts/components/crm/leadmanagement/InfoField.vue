@@ -951,7 +951,7 @@ export default {
         '10:00am - 3:00pm',
         '11:00am - 4:00pm',
         '12:00pm - 5:00pm',
-        '1:00pm - 6:00PM',
+        '1:00pm - 6:00pm',
       ],
       statesDD: [
         { text: "NSW", value: "New South Wales" },
