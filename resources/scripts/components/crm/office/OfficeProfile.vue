@@ -150,7 +150,7 @@
                 </v-col>
 
                 <v-col cols="12">
-                    <p class="sub-title mb-0">Comission Orofiles for this Office.</p>
+                    <p class="sub-title mb-0">Comission Profiles for this Office.</p>
                 </v-col>
 
                <v-row  class="section-leademetriics pa-4">
