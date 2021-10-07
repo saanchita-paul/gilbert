@@ -93,7 +93,7 @@
                             :maxlength="10"
                             outlined
                             dense
-                            placeholder="04XX XXX XXX"
+                            placeholder="XXXX XXX XXX"
                             v-model="application.homephone"
                             :error-messages=" errors[0]"
                         ></v-text-field>
@@ -111,7 +111,7 @@
                             </v-select>
                         </ValidationProvider>
                     </v-col>
-                    
+
 
                     <v-col cols="6" class="py-0">
                             <v-menu
