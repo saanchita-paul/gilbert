@@ -54,7 +54,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'sale_date' => $this->getAgreeAt($utilityData),
                     'elec_source_code' => $this->getElectricitySourceCode($utilityData->plan_type, $utilityData->state),
                     'gas_source_code' => $this->getGasSourceCode($utilityData->plan_type, $utilityData->state),
-                    'customer_type' => $utilityData->tenancy_type == 1? 'RESI':'SME',
+                    'customer_type' => $utilityData->property_type == 1? 'RESI':'SME',
                     'offer_type' => 'ENE',
                     'connection_date' => Carbon::parse($utilityData->moving_date)->format("d/m/Y"),
                     'visual_inspection' => !empty($utilityData->inspection_timeframe)?'Y':'N',
@@ -278,9 +278,9 @@ class CAFDataMappingService implements FromCollection, WithHeadings
     private function getAgreeAt(ConnectionApplication $caData)
     {
         if (!empty($caData->updated_at)) {
-            return Carbon::parse($caData->updated_at)->format('"d/m/Y" h:i A');
+            return Carbon::parse($caData->updated_at)->format('d/m/Y');
         }
-        return $caData->created_at->format('"d/m/Y" h:i A');
+        return $caData->created_at->format('d/m/Y');
     }
 
 
