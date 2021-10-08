@@ -28,7 +28,7 @@
                     src="/assets/images/user_logo.png"
                     max-width="96px"
                 ></v-img>
-                <div v-if="!hasProfilePhoto" class="center-element rounded-circle nav-avatar avater-fullname-container" style="">
+                <div v-if="!hasProfilePhoto" class="center-element rounded-circle nav-avatar avater-fullname-container">
                     <span class="full-name-text" >{{profile_display_name}}</span>
                 </div>
 
@@ -92,7 +92,7 @@
                 </v-breadcrumbs>
             </v-toolbar-title>
             <v-spacer/>
-            <v-img  src="/assets/images/icons/Search.svg" max-width="24px"/>
+<!--            <v-img  src="/assets/images/icons/Search.svg" max-width="24px"/>-->
             <div class="vertical-divider"></div>
 
             <p class="app-bar-user-name">{{user.name}}</p>
@@ -260,8 +260,8 @@ export default {
 
 .avater-fullname-container{
     text-align:center;
-    background: #5C229A;
-    background: linear-gradient(to right bottom, #56CCF2 -75.93%, #542E89 42.76%, #9C27B0 118.83%) !important;
+    background: #C4C4C4;
+    /*background: linear-gradient(to right bottom, #56CCF2 -75.93%, #542E89 42.76%, #9C27B0 118.83%) !important;*/
     width: 96px; height: 96px
 }
 
@@ -270,5 +270,6 @@ export default {
     top: 25%;
     font-size: 28px;
     font-weight: bold;
+    color: #542E89;
 }
 </style>

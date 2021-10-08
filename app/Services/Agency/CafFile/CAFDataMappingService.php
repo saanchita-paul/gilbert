@@ -59,7 +59,9 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'connection_date' => Carbon::parse($utilityData->moving_date)->format("d/m/Y"),
                     'visual_inspection' => !empty($utilityData->inspection_timeframe)?'Y':'N',
                     'electricity_already_on' => !empty($utilityData->inspection_timeframe)?'Y':'N',
-                    'inspection_timeframe' => $utilityData->has_electricity == 1? 'Y': 'N',
+                    'inspection_timeframe' => $utilityData->has_electricity  != 1?
+                        $this->timeFrame($utilityData->inspection_time)
+                        : '',
 
                     'special_instruction_for_access' => ($utilityData->state === 'Victoria')?($utilityData->is_renovation_on?'Y':'N'):'',
                     'renovation_current' => ($utilityData->state === 'Victoria')?($utilityData->is_renovation_on?'Y':'N'):'',
@@ -385,6 +387,15 @@ class CAFDataMappingService implements FromCollection, WithHeadings
         }
         return $state;
 
+    }
+
+    private function timeFrame(?string $str): string
+    {
+        if (!$str) {
+            return '';
+        }
+        $res = preg_replace('/[^0-9.]+/', '', explode(':', $str)[0]);
+        return strlen($res) > 1 ? '#' . $res . '00#' : '#0' . $res . '00#';
     }
 
 
