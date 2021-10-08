@@ -31,7 +31,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
     {
         $this->collection = $collection;
         $this->chatbotUri = config('root_url');
-        $this->chatbotUri = 'http://127.0.0.1:8000';
+//        $this->chatbotUri = 'http://127.0.0.1:8000';
     }
 
     /**
