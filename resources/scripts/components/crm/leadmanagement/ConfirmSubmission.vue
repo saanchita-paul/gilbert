@@ -400,13 +400,14 @@
                     <v-col cols="12">
 
 
-                        <p class="sub-title">I have asked the applicant "Does anyone in the household require the use of medical equipment for life support?”</p>
-                        <v-checkbox v-model="is_life_support">
+<!--                        <p class="sub-title">I have asked the applicant "Does anyone in the household require the use of medical equipment for life support?”</p>-->
+                        <v-checkbox v-model="is_life_support" label='I have asked the applicant "Does anyone in the household require the use of medical equipment for life support?”'>
+
                         </v-checkbox>
                     </v-col>
                     <v-col cols="12">
-                        <p class="sub-title">I have asked the applicant "Do you understand and agree with everything we have discussed today"?</p>
-                        <v-checkbox v-model="is_temp_condition"></v-checkbox>
+<!--                        <p class="sub-title">I have asked the applicant "Do you understand and agree with everything we have discussed today"?</p>-->
+                        <v-checkbox v-model="is_temp_condition" label='I have asked the applicant "Do you understand and agree with everything we have discussed today"?'></v-checkbox>
                     </v-col>
 
 

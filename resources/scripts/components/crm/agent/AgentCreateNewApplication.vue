@@ -404,7 +404,7 @@
                     </v-col>
 
 
-                    <v-col v-if="application.state" cols="12" class="pb-0">
+                    <v-col cols="12" class="pb-0">
                         <v-row>
                             <v-col cols="6" class="py-0">
                                 <v-menu

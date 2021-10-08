@@ -384,6 +384,7 @@
             <v-textarea
               @click="openServiceAddress"
               v-model="property_details.address_text"
+              class="min-height-56"
               outlined
               hide-details="auto"
               :error-messages="errors[0]"
@@ -1342,4 +1343,9 @@ export default {
 </script>
 
 <style scoped>
+.v-text-field__slot textarea{
+min-height: 56px !important;
+}
+
+
 </style>

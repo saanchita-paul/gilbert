@@ -5,7 +5,7 @@
         <table  class="application-info layout-fixed-table">
             <tr>
                 <td class="font-weight-bold">Date of Birth</td>
-                <td>{{ application.date_of_birth }}</td>
+                <td>{{ date_of_birth }}</td>
             </tr>
             <tr v-if="application.phone_type == 1">
                 <td class="font-weight-bold"> Mobile </td>
@@ -21,7 +21,7 @@
             </tr>
             <tr>
                 <td class="font-weight-bold">Moving Date</td>
-                <td>{{ application.moving_date }}</td>
+                <td>{{ moving_date }}</td>
             </tr>
             <tr>
                 <td class="font-weight-bold">Email billing</td>
@@ -88,6 +88,9 @@
 </template>
 
 <script>
+import dayJs from "dayjs";
+import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
+
 export default {
     name: "AgentApplicationSummary",
     props: ["application"],
@@ -104,6 +107,15 @@ export default {
                 }
             return this.application.first_name + ' ' + this.application.last_name
 
+        },
+        date_of_birth()
+        {
+            return dayJs(this.application.date_of_birth,'yyyy-dd-mm').format(DATE_FORMAT.DB_DATE);
+        },
+
+        moving_date()
+        {
+            return dayJs(this.application.moving_date,'yyyy-dd-mm').format(DATE_FORMAT.DB_DATE);
         }
     },
     methods: {
