@@ -97,7 +97,7 @@ class ApplicationService
         $existingApplication->country = $address['country'];
         $existingApplication->mirn = $address['mirn'];
         $existingApplication->nmi = $address['nmi'] ;
-        $existingApplication->is_billing_same = $address['is_billing_same'];
+//        $existingApplication->is_billing_same = $address['is_billing_same'];
 
 
         if (!$address['is_billing_same']) {
