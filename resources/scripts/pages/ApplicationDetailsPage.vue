@@ -4,6 +4,7 @@
                 <LeadUserDetails
                                 v-model="infoToPass"
                                 :nmiMernFlag="nmiMernFlag"
+                                :services="services"
                                 @closeApplication="closeApplication"
                                 @eacalate="eacalate"
                                 @updateLead="updateLead"
@@ -73,7 +74,7 @@ export default {
             fullName: null,
             submittedLoader: false,
             isManualChangeFlag: false,
-            
+
             //$attrs
             infoToPass:{
                 lifeSupportInfo: {
@@ -123,12 +124,12 @@ export default {
         },
 
         async closeApplication(lead) {
-            
+
             try {
                 await LeadApplicationService.closeApplication(lead.id);
                 this.$router.push({name:'applications'});
             } catch (error) {
-                console.log('closeApplication error' , erro);
+                // console.log('closeApplication error' , erro);
             }
         },
 

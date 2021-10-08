@@ -99,7 +99,7 @@ export default {
         }
     },
     mounted(){
-        console.log('leads' ,  this.lead);
+        // console.log('leads' ,  this.lead);
     }
 };
 </script>

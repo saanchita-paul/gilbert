@@ -1,7 +1,7 @@
 <template>
     <v-card class="hood-card mb-5 pt-0">
        <LeadDetailsHeader :leadSummary="leadSummary" @closeApplication="closeApplication" @eacalate="eacalate"></LeadDetailsHeader>
-        <InfoField v-bind="$attrs" @updateLead="updateLead" :nmiMernFlag="nmiMernFlag" :lead="leadSummary" @updateDraft="updateDraft" @readMore="readMore" @updateAddress="updateAddress"></InfoField>
+        <InfoField v-bind="$attrs" :services="services" @updateLead="updateLead" :nmiMernFlag="nmiMernFlag" :lead="leadSummary" @updateDraft="updateDraft" @readMore="readMore" @updateAddress="updateAddress"></InfoField>
     </v-card>
 </template>
 
@@ -18,7 +18,11 @@ name: "LeadUserDetails",
         },
         nmiMernFlag: {
             require: false
+        },
+        services: {
+            require: false
         }
+
     },
     methods: {
         closeApplication(lead) {
@@ -41,6 +45,9 @@ name: "LeadUserDetails",
 
         }
     },
+    mounted() {
+        console.log('LeadUserDetails', this.services);
+    }
 
 }
 </script>
