@@ -57,8 +57,13 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'customer_type' => $utilityData->property_type == 1? 'RESI':'SME',
                     'offer_type' => 'ENE',
                     'connection_date' => Carbon::parse($utilityData->moving_date)->format("d/m/Y"),
-                    'visual_inspection' => !empty($utilityData->inspection_timeframe)?'Y':'N',
-                    'electricity_already_on' => !empty($utilityData->inspection_timeframe)?'Y':'N',
+                    'visual_inspection' => $utilityData->state === 'Queensland'?
+                        $utilityData->has_electricity  != 1?'Y': 'N'
+                        :'',
+                    'electricity_already_on' => $utilityData->state === 'Queensland'?
+                        (!empty($utilityData->has_electricity) &&
+                    $utilityData->has_electricity)?'Y':'N'
+                    :'',
                     'inspection_timeframe' => $utilityData->has_electricity  != 1?
                         $this->timeFrame($utilityData->inspection_time)
                         : '',
