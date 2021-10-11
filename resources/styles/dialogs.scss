@@ -19,4 +19,7 @@
 .v-dialog
 {
     border-radius: 8px !important;
+    .v-btn{
+        border-radius: 2px !important;
+    }
 }
