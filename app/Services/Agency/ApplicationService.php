@@ -242,7 +242,7 @@ class ApplicationService
 
     private function calculateVendorId($id)
     {
-        return 'HD2'.$id.time();
+        return 'HD2_CRM'.str_pad($id, 10, "0", STR_PAD_LEFT);;
     }
 
     public function closeApplication($id)

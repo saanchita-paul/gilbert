@@ -186,7 +186,7 @@ export default {
 }
 
 .nav-avatar {
-    border: 10px solid rgb(37, 40, 48, 1);
+    border: 3px solid rgb(37, 40, 48, 1);
     margin-top: -50px !important;
     margin-bottom: 20px !important;
 }
