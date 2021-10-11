@@ -94,7 +94,7 @@
                         token: this.$route.params.token
                     });
                     this.snackbar = true;
-                    console.log(response);
+                    // console.log(response);
                     await this.$router.push({name: 'login'})
                 } catch (e){
                     this.errorMessage = true;
