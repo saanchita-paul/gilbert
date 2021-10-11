@@ -384,8 +384,10 @@
             <v-textarea
               @click="openServiceAddress"
               v-model="property_details.address_text"
-              class="min-height-56"
+              style="min-height: 56px !important;"
               outlined
+              auto-grow
+              rows="5"
               hide-details="auto"
               :error-messages="errors[0]"
               placeholder="This is an extra long address, 398 Bourke Road, Camberwell 3124 VIC"
