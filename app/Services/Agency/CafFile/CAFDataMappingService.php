@@ -30,8 +30,8 @@ class CAFDataMappingService implements FromCollection, WithHeadings
     public function __construct(Collection $collection)
     {
         $this->collection = $collection;
-//        $this->chatbotUri = 'http://127.0.0.1:8000';
         $this->chatbotUri = config('bot.root_url');
+//        $this->chatbotUri = 'http://127.0.0.1:8000';
     }
 
     /**
@@ -39,21 +39,25 @@ class CAFDataMappingService implements FromCollection, WithHeadings
      */
     public function collection()
     {
-        $p = $this->collection->map(
+        return $this->collection->map(
             function (ConnectionApplication $utilityData) {
 
                 /** @var ConnectionApplicationSecondaryACC $second_account_holder*/
                 $second_account_holder = ConnectionApplicationSecondaryACC::query()
                     ->where('connection_application_id','=', $utilityData->id)
                     ->first();
+
+                $services = ConnectionService::query()
+                    ->where('connection_application_id','=',$utilityData->id)
+                    ->pluck('service_type');
 //                Log::info('second-holder', $second_account_holder->toArray());
 
                 $idExpireDate = Carbon::parse($utilityData->identification->expire_date)->format("d/m/Y");
                 return [
                     'vendor_id' => $utilityData->vendor_id,
                     'sale_date' => $this->getAgreeAt($utilityData),
-                    'elec_source_code' => $this->getElectricitySourceCode($utilityData->plan_type, $utilityData->state),
-                    'gas_source_code' => $this->getGasSourceCode($utilityData->plan_type, $utilityData->state),
+                    'elec_source_code' =>$services->contains('power')? $this->getElectricitySourceCode($utilityData->plan_type, $utilityData->state): '',
+                    'gas_source_code' => $services->contains('gas')? $this->getGasSourceCode($utilityData->plan_type, $utilityData->state): '',
                     'customer_type' => $utilityData->property_type == 1? 'RESI':'SME',
                     'offer_type' => 'ENE',
                     'connection_date' => Carbon::parse($utilityData->moving_date)->format("d/m/Y"),
@@ -138,8 +142,8 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'dpid' => '',
                     'fuel_elec' => $this->isServiceType('power', $utilityData->id)?'Y':'N',
                     'fuel_gas' =>  $this->isServiceType('gas', $utilityData->id)?'Y':'N',
-                    'elec_plan' =>  $this->getElectricitySourceCode($utilityData->plan_type, $utilityData->state),
-                    'gas_plan' => $this->getGasSourceCode($utilityData->plan_type, $utilityData->state),
+                    'elec_plan' => $services->contains('power')? $this->getElectricitySourceCode($utilityData->plan_type, $utilityData->state):'',
+                    'gas_plan' => $services->contains('gas')?$this->getGasSourceCode($utilityData->plan_type, $utilityData->state):'',
                     'green_energy'=> 'N',
                     'window_power' => 'N',
                     'payment_method' =>'',
@@ -157,7 +161,6 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                 ];
             }
         );
-        return $p;
     }
 
     /**
