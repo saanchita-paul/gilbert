@@ -30,8 +30,8 @@ class CAFDataMappingService implements FromCollection, WithHeadings
     public function __construct(Collection $collection)
     {
         $this->collection = $collection;
-        $this->chatbotUri = config('root_url');
 //        $this->chatbotUri = 'http://127.0.0.1:8000';
+        $this->chatbotUri = config('bot.root_url');
     }
 
     /**
@@ -91,13 +91,15 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'id_firstname' => $utilityData->first_name,
                     'id_middle_name' => $utilityData->middle_name,
                     'id_surname' => $utilityData->last_name,
-                    'id_type' => $utilityData->identification->type == Identification::TYPE_PASSPORT ? 'Passport' : ($utilityData->identification->type == Identification::TYPE_DRIVING_LICENCE ? 'Driving License' : ($utilityData->identification->type == Identification::TYPE_MEDICARE ? 'Medicare' : '')),
+                    'id_type' => $utilityData->identification->type == Identification::TYPE_PASSPORT ?
+                        'Passport' : ($utilityData->identification->type == 2 ?
+                            'Driving License' : ($utilityData->identification->type == 3 ? 'Medicare' : '')),
                     'id_number' => $utilityData->identification->card_number,
-                    'dl_expiry_date' => $utilityData->identification->type == Identification::TYPE_DRIVING_LICENCE?
+                    'dl_expiry_date' => $utilityData->identification->type == 2?
                         $utilityData->identification->expire_date: '',
                     'passport_expiry_date' => $utilityData->identification->type == Identification::TYPE_PASSPORT?
                         $utilityData->identification->expire_date: '',
-                    'medicare_expiry_date' => $utilityData->identification->type == Identification::TYPE_MEDICARE? $utilityData->identification->expire_date: '',
+                    'medicare_expiry_date' => $utilityData->identification->type == 3? $utilityData->identification->expire_date: '',
                     'state_colour_country' => $this->getStateColourOrCountry($utilityData->identification),
                     'medicare_card_reference_number' => $utilityData->identification->special_number,
                     'primary_id_flag' => 'Yes',
@@ -295,16 +297,16 @@ class CAFDataMappingService implements FromCollection, WithHeadings
      */
     private function getStateColourOrCountry(Identification $identification)
     {
-        if(empty($identification)) return '';
+
         if($identification->type == Identification::TYPE_PASSPORT)
         {
             return $identification->country;
         }
-        if($identification->type == Identification::TYPE_DRIVING_LICENCE)
+        if($identification->type == 2)
         {
             return $identification->state;
         }
-        if($identification->type == Identification::TYPE_MEDICARE)
+        if($identification->type == 3)
         {
             return $identification->card_color;
         }
@@ -326,14 +328,16 @@ class CAFDataMappingService implements FromCollection, WithHeadings
         $state = $this->stateMap($state);
 
         try{
+            Log::info('url', [$this->chatbotUri.'/api/ele-source-code']);
             $response = Http::post($this->chatbotUri.'/api/ele-source-code',['plan'=>$plan,'state'=>$state]);
-//        Log::info('p',$response->status());
+        Log::info('gas_source_code',[$response->status()]);
             if($response->status() == 200)
             {
                 return json_decode($response->body())->source_code;
             }
-        } catch (\Exception)
+        } catch (\Exception $e)
         {
+            Log::info($e->getMessage(),[]);
             return  '';
         }
 
@@ -347,7 +351,10 @@ class CAFDataMappingService implements FromCollection, WithHeadings
         $plan = ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
         $state = $this->stateMap($state);
         try {
+            Log::info('url', [$this->chatbotUri.'/api/gas-source-code']);
             $response = Http::post($this->chatbotUri.'/api/gas-source-code',['plan'=>$plan,'state'=>$state]);
+            Log::info('ele_source_code',[$response->status()]);
+
             if($response->status() == 200)
             {
                 return json_decode($response->body())->source_code;
@@ -356,6 +363,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
 
         } catch (\Exception $e)
         {
+            Log::info($e->getMessage(),[]);
             return  '';
         }
         return  '';
@@ -368,6 +376,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
         $state = $this->stateMap($state);
         try{
             $response = Http::post($this->chatbotUri.'/api/tariff-code',['solar'=>$solar == ConnectionApplication::HAS_SOLAR?'solar':'','state'=>$state]);
+            Log::info('get_buy_pack_url',[$response->status()]);
             if($response->status() == 200)
             {
                 return json_decode($response->body())->buypack_rate;
