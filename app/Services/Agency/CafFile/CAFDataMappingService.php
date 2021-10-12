@@ -77,7 +77,9 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'renovation_privious' => ($utilityData->state === 'Victoria')?($utilityData->is_renovation_on?'Y':'N'):'',
                     'main_swith_off' => ($utilityData->state === 'Victoria')?($utilityData->is_renovation_on?'Y':'N'):'',
 
-
+                    'business_name' => '', //todo
+                    'business_abn' => '', //todo
+                    'business_type' => '', //todo
 
 
                     //Personal Details
@@ -185,6 +187,10 @@ class CAFDataMappingService implements FromCollection, WithHeadings
             'VIC Only - Renovation/Alterations at the property currently?',
             'VIC Only - Renovation/Alterations at the property (previously)?',
             'VIC ONLY - Mains Switch OFF',
+
+            'Business Name',
+            'ABN/ACN',
+            'Business Type',
 
             //Personal Details
             'First Account Holder Title',
