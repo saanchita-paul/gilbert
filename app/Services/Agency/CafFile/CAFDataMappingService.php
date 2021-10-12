@@ -39,11 +39,8 @@ class CAFDataMappingService implements FromCollection, WithHeadings
      */
     public function collection()
     {
-        $p = $this->collection->map(
+        return $this->collection->map(
             function (ConnectionApplication $utilityData) {
-
-
-
 
                 /** @var ConnectionApplicationSecondaryACC $second_account_holder*/
                 $second_account_holder = ConnectionApplicationSecondaryACC::query()
@@ -164,7 +161,6 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                 ];
             }
         );
-        return $p;
     }
 
     /**
