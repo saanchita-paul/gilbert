@@ -384,7 +384,10 @@
             <v-textarea
               @click="openServiceAddress"
               v-model="property_details.address_text"
+              style="min-height: 56px !important;"
               outlined
+              auto-grow
+              rows="5"
               hide-details="auto"
               :error-messages="errors[0]"
               placeholder="This is an extra long address, 398 Bourke Road, Camberwell 3124 VIC"
@@ -484,12 +487,12 @@
           </ValidationProvider>
         </div>
       </div>
-      <div class="crm-text-field">
+      <div v-if="isNMIOptional" class="crm-text-field">
         <div class="field-label">
-          <span>NMI (Power) *</span>
+          <span>NMI (Power)</span>
         </div>
         <div class="text-field">
-          <ValidationProvider name="NMI" rules="required" v-slot="{ errors }">
+          <ValidationProvider name="NMI" v-slot="{ errors }">
             <v-text-field
               @input="updateLeads"
               v-model="property_details.nmi"
@@ -513,12 +516,41 @@
       </div>
 
 
-      <div class="crm-text-field">
+        <div v-if="!isNMIOptional" class="crm-text-field">
+            <div class="field-label">
+                <span>NMI (Power) *</span>
+            </div>
+            <div class="text-field">
+                <ValidationProvider name="NMI" rules="required" v-slot="{ errors }">
+                    <v-text-field
+                        @input="updateLeads"
+                        v-model="property_details.nmi"
+                        @blur="saveDraft('nmi', property_details.nmi)"
+                        outlined
+                        dense
+                        hide-details="auto"
+                        :error-messages="errors[0]"
+                    >
+                        <template slot="append">
+                            <v-progress-circular
+                                v-if="nmiMernFlag"
+                                indeterminate
+                                size="25"
+                                color="primary"
+                            ></v-progress-circular>
+                        </template>
+                    </v-text-field>
+                </ValidationProvider>
+            </div>
+        </div>
+
+
+      <div v-if="isMERNOptional" class="crm-text-field">
         <div class="field-label">
-          <span>MIRN (Gas) *</span>
+          <span>MIRN (Gas)</span>
         </div>
         <div class="text-field">
-          <ValidationProvider name="MIRN" rules="required" v-slot="{ errors }">
+          <ValidationProvider name="MIRN" rules="" v-slot="{ errors }">
             <v-text-field
               @input="updateLeads"
               v-model="property_details.mirn"
@@ -540,6 +572,34 @@
           </ValidationProvider>
         </div>
       </div>
+
+        <div  v-if="!isMERNOptional" class="crm-text-field">
+            <div class="field-label">
+                <span>MIRN (Gas) *</span>
+            </div>
+            <div class="text-field">
+                <ValidationProvider name="MIRN" rules="required" v-slot="{ errors }">
+                    <v-text-field
+                        @input="updateLeads"
+                        v-model="property_details.mirn"
+                        @blur="saveDraft('mirn', property_details.mirn)"
+                        outlined
+                        dense
+                        hide-details="auto"
+                        :error-messages="errors[0]"
+                    >
+                        <template slot="append">
+                            <v-progress-circular
+                                v-if="nmiMernFlag"
+                                indeterminate
+                                size="25"
+                                color="primary"
+                            ></v-progress-circular>
+                        </template>
+                    </v-text-field>
+                </ValidationProvider>
+            </div>
+        </div>
 
 
 
@@ -923,6 +983,9 @@ export default {
     nmiMernFlag: {
       require: false,
     },
+    services: {
+      require: false,
+    },
   },
   components: {
     ServiceAddress,
@@ -946,12 +1009,12 @@ export default {
         },
       ],
       inspectionTimes:[
-        '8AM - 1PM',
-        '9AM - 2PM',
-        '10AM - 3PM',
-        '11AM - 4PM',
-        '12AM - 5PM',
-        '1AM - 6PM',
+        '8:00am - 1:00pm',
+        '9:00am - 2:00pm',
+        '10:00am - 3:00pm',
+        '11:00am - 4:00pm',
+        '12:00pm - 5:00pm',
+        '1:00pm - 6:00pm',
       ],
       statesDD: [
         { text: "NSW", value: "New South Wales" },
@@ -1157,9 +1220,9 @@ export default {
     },
 
     updateLeads() {
-      console.log('updated leads')
-      console.log(this.property_details);
-      console.log(this.lead);
+      // console.log('updated leads')
+      // console.log(this.property_details);
+      // console.log(this.lead);
 
       this.$emit("updateLead", {
         indentification: this.indentification,
@@ -1291,10 +1354,23 @@ export default {
     },
   },
 
+    computed: {
+      isNMIOptional() {
+         return  (this.services.length == 1 &&
+             this.services.findIndex((service)=> service === 'gas') != -1)? true: false;
+      },
+        isMERNOptional() {
+            return ((this.services.length == 1 &&
+                this.services.findIndex((service)=> service === 'power') != -1) || this.lead.state === 'Queensland'
+            )? true: false;
+
+          }
+    },
+
   watch: {
     lead: {
       handler() {
-        console.log('calling...')
+        // console.log('calling...')
         this.synFormData();
       },
       deep: true,
@@ -1334,6 +1410,7 @@ export default {
     },
   },
   async mounted() {
+      // console.log('services', this.services);
     await this.synFormData();
     await this.formatDate();
     await this.updateLeads();
@@ -1342,4 +1419,7 @@ export default {
 </script>
 
 <style scoped>
+.min-height-56 textarea {
+    min-height: 132px !important;
+}
 </style>

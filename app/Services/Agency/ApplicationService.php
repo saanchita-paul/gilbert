@@ -97,7 +97,7 @@ class ApplicationService
         $existingApplication->country = $address['country'];
         $existingApplication->mirn = $address['mirn'];
         $existingApplication->nmi = $address['nmi'] ;
-        $existingApplication->is_billing_same = $address['is_billing_same'];
+//        $existingApplication->is_billing_same = $address['is_billing_same'];
 
 
         if (!$address['is_billing_same']) {
@@ -242,7 +242,7 @@ class ApplicationService
 
     private function calculateVendorId($id)
     {
-        return 'HD2'.$id.time();
+        return 'HD2_CRM'.str_pad($id, 10, "0", STR_PAD_LEFT);;
     }
 
     public function closeApplication($id)

@@ -140,7 +140,7 @@ export default {
     },
   },
     mounted() {
-        console.log(this.applications);
+        // console.log(this.applications);
     }
 }
 </script>

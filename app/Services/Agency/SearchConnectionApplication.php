@@ -44,9 +44,17 @@ class SearchConnectionApplication
         info('info', [$this->leadType]);
 
         if($this->leadType) {
-            $builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
-                ? $builder->where('status', ConnectionApplication::STATUS_MAPPING[$this->leadType])
-                :  $builder->where('assigned_to', $user->profile->id);
+            if($this->leadType === 'submitted')
+            {
+                $builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
+                    ? $builder->whereIn('status', [4, 5, 6, 7])
+                    :  $builder->where('assigned_to', $user->profile->id);
+            }
+            else{
+                $builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
+                    ? $builder->where('status', ConnectionApplication::STATUS_MAPPING[$this->leadType])
+                    :  $builder->where('assigned_to', $user->profile->id);
+            }
 
         }
 
