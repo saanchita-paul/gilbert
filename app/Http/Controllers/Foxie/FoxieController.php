@@ -37,8 +37,6 @@ class FoxieController extends Controller
     public function store(Request $request)
     {
         //
-        // return "foxite lead testing";
-        // return json_encode($request->all());
         $sugerLeads =  SugerLeads::create(["all_fields_dump" => json_encode($request->all())]);
         return response([ "status" => "success" , "lead_id" => $sugerLeads->id , "message" =>  "lead has been added successfully" ] , 200);
     }
