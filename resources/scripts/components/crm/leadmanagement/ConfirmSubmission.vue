@@ -383,7 +383,7 @@
                                 outlined
                                 dense
                                 hide-details="auto"
-                                :value="data.plan_type.value"
+                                :value="selectedPlan"
                                 readonly
                             ></v-text-field>
                             </div>
@@ -534,15 +534,20 @@ export default {
           ],
       }
     },
-    computed:{
-      allOk()
-      {
-          // return false;
-          return this.is_temp_condition  &&
-              this.is_life_support;
-      }
+    computed: {
+
+          allOk() {
+              // return false;
+              return this.is_temp_condition  &&
+                  this.is_life_support;
+          },
+
+        selectedPlan() {
+            return Boolean(this.data.plan_type.title)?this.data.plan_type.title: this.data.plan_type.value;
+        }
     },
     methods: {
+
         backToEdit() {
             this.$emit('backToEdit');
         },
