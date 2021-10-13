@@ -11,7 +11,7 @@ const data = [
         id: 1,
         title: 'Applications',
         lead_count: 500,
-        status: 'Total submitted',
+        status: 'Total Added',
     },
     {
         id: 2,

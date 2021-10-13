@@ -41,6 +41,8 @@ class SearchConnectionApplication
             ->with('connectionServices')
             ->with('assignedTo');
 
+        info('info', [$this->leadType]);
+
         if($this->leadType) {
             $builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
                 ? $builder->where('status', ConnectionApplication::STATUS_MAPPING[$this->leadType])
@@ -50,6 +52,7 @@ class SearchConnectionApplication
 
         if ($user->profile_type === AgentProfile::class) {
             $builder->where('office_id', $user->profile->office_id);
+            $builder->where('agency_id', $user->profile->agency_id);
         }
 
         $builder = $this->applySearch($builder, ['first_name', 'last_name']);

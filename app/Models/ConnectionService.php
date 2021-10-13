@@ -59,12 +59,15 @@ class ConnectionService extends Model
         } else {
             if($user->profile_type === AgentProfile::class) {
             $profileId = $user->profile->id;
-                $service->where('CA.created_by', $profileId);
+            $agency_id = $user->profile->agency_id;
+                $service->where('CA.created_by', $profileId)
+                ->where('agency_id', '=', $agency_id );
             }
 
         }
 
         $copyService = $service;
+        $nopayCount = 0;
 
           $result = $service->leftJoin('connection_applications AS CA', 'CA.id', '=',
               'CS.connection_application_id')
@@ -90,32 +93,62 @@ class ConnectionService extends Model
             ->get();
 
         if(!empty($matrixReq['agency_id'])){
-            $appCount = DB::table('connection_applications')->whereIn('status',[
-                ConnectionApplication::STATUS_ACCEPTED,
-                ConnectionApplication::STATUS_EA_PROCESSINF,
-                ConnectionApplication::STATUS_REJECTED,
-            ])->where('agency_id', $matrixReq['agency_id'])
+            $appCount = DB::table('connection_applications')
+//                ->whereIn('status',[
+//                ConnectionApplication::STATUS_ACCEPTED,
+//                ConnectionApplication::STATUS_EA_PROCESSINF,
+//                ConnectionApplication::STATUS_REJECTED,
+//            ])
+                ->where('agency_id', $matrixReq['agency_id'])
                 ->count();
+
+            $nopayCount = DB::table('connection_applications')
+                ->where('agency_id', $matrixReq['agency_id'])
+                ->whereIn('status',[
+                ConnectionApplication::STATUS_REJECTED,
+                ConnectionApplication::STATUS_CLOSED,
+            ]) ->count();
+
+
         }
         else {
             if($user->profile_type === AgentProfile::class) {
                 $agency_id = $user->profile->agency_id;
-                $appCount = DB::table('connection_applications')->where('agency_id', $agency_id)
+                $profile_id = $user->profile->id;
+                $appCount = DB::table('connection_applications')
+                    ->where('created_by','=', $profile_id)
+                    ->where('agency_id', '=', $agency_id )
                     ->count();
+
+                $nopayCount = DB::table('connection_applications')->whereIn('status',[
+                    ConnectionApplication::STATUS_REJECTED,
+                    ConnectionApplication::STATUS_CLOSED,
+                ])
+                    ->where('created_by','=', $profile_id)
+                    ->where('agency_id', '=', $agency_id )
+                    ->count();
+
             }
             else {
-                $appCount = DB::table('connection_applications')->whereIn('status',[
-                    ConnectionApplication::STATUS_ACCEPTED,
-                    ConnectionApplication::STATUS_EA_PROCESSINF,
-                    ConnectionApplication::STATUS_REJECTED,
-                ])
+                $appCount = DB::table('connection_applications')
+//                    ->whereIn('status',[
+//                    ConnectionApplication::STATUS_ACCEPTED,
+//                    ConnectionApplication::STATUS_EA_PROCESSINF,
+//                    ConnectionApplication::STATUS_REJECTED,
+//                ])
                     ->count();
+
+                $nopayCount = DB::table('connection_applications')->whereIn('status',[
+                    ConnectionApplication::STATUS_REJECTED,
+                    ConnectionApplication::STATUS_CLOSED,
+                ]) ->count();
+
             }
 
         }
 
-        $nopayCount = DB::table('connection_applications')->where('status','=',
-            ConnectionApplication::STATUS_CLOSED)->count();
+//        $nopayCount = DB::table('connection_applications')->where('status','=',
+//            ConnectionApplication::STATUS_CLOSED)->count();
 
 
 
