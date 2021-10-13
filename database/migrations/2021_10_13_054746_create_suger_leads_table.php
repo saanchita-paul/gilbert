@@ -16,8 +16,7 @@ class CreateSugerLeadsTable extends Migration
         Schema::create('suger_leads', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->json("all_fields_dump");
-
+            $table->json("all_fields_dump")->nullable();
             
             $table->dateTime("date_modified")->nullable();
             $table->boolean("deleted")->nullable();
