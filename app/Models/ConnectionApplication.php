@@ -207,9 +207,9 @@ class ConnectionApplication extends Model
     const PLAN_TYPE_NO_FRILLS_INDEX = 3;
 
     const PLAN_TYPE_MAPPER = [
-        self::PLAN_TYPE_BASIC => 1,
-        self::PLAN_TYPE_NO_FRILLS => 2,
-        self::PLAN_TYPE_TOTAL => 3
+        self::PLAN_TYPE_BASIC => 2,
+        self::PLAN_TYPE_NO_FRILLS => 3,
+        self::PLAN_TYPE_TOTAL => 1
     ];
 
     const PLAN_TYPE_REVERSE_MAPPER = [
