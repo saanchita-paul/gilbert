@@ -10,7 +10,7 @@ import  ForgotPasswordPage from "@scripts/pages/auth/ForgotPasswordPage";
 
 import  ResetPasswordPage from "@scripts/pages/auth/ResetPasswordPage";
 
-import AuthService, {checkRouteAuthorization} from "@scripts/services/AuthService";
+import {checkRouteAuthentication} from "@scripts/services/AuthService";
 
 import CustomerDetails from "@scripts/pages/CustomerDetails";
 import CustomerListPage from "@scripts/pages/CustomerListTablePage";
@@ -45,7 +45,8 @@ const router = new VueRouter({
                     component: UtilityAnalyticPage,
                     name: 'dashboard.utility',
                     meta: {
-                        isProtected: true
+                        isProtected: true,
+                        roles: ['hood_admin'],
                     }
                 },
                 {
@@ -53,7 +54,9 @@ const router = new VueRouter({
                     component: UtilityAnalyticPage,
                     name: 'chatbot',
                     meta: {
-                        isProtected: true
+                        isProtected: true,
+                        roles: ['hood_admin'],
+
                     }
                 },
                 {
@@ -61,7 +64,8 @@ const router = new VueRouter({
                     component: CustomerListPage,
                     name: 'customer.list',
                     meta: {
-                        isProtected: true
+                        isProtected: true,
+                        roles: ['hood_admin'],
                     }
                 },
                 {
@@ -69,7 +73,8 @@ const router = new VueRouter({
                     component: CustomerDetails,
                     name: 'customer.details',
                     meta: {
-                        isProtected: true
+                        isProtected: true,
+                        roles: ['hood_admin'],
                     },
                     props: true
                 },
@@ -78,7 +83,8 @@ const router = new VueRouter({
                     component: CustomerList,
                     name: 'helpdesk',
                     meta: {
-                        isProtected: true
+                        isProtected: true,
+                        roles: ['hood_admin'],
                     }
                 },
                 {
@@ -93,7 +99,9 @@ const router = new VueRouter({
                             meta: {
                                 isProtected: true,
                                 breadcrumbType: 'AgencyList',
-                                header: 'Real Estate Agencies'
+                                header: 'Real Estate Agencies',
+                                roles: ['hood_admin', 'hood_agent'],
+
                             }
                         },
                         {
@@ -103,7 +111,8 @@ const router = new VueRouter({
                             meta: {
                                 isProtected: true,
                                 breadcrumbType: 'AgencyOffices',
-                                header: 'Real Estate Agencies'
+                                header: 'Real Estate Agencies',
+                                roles: ['hood_admin', 'hood_agent'],
                             },
                             props: true
 
@@ -115,7 +124,8 @@ const router = new VueRouter({
                             meta: {
                                 isProtected: true,
                                 breadcrumbType: 'AgencyUsers',
-                                header: 'Real Estate Agencies'
+                                header: 'Real Estate Agencies',
+                                roles: ['hood_admin', 'hood_agent'],
                             },
                             props: true
 
@@ -127,7 +137,8 @@ const router = new VueRouter({
                             meta: {
                                 isProtected: true,
                                 breadcrumbType: 'OfficeProfile',
-                                header: 'Real Estate Agencies'
+                                header: 'Real Estate Agencies',
+                                roles: ['hood_admin', 'hood_agent'],
                             },
                             props: true
 
@@ -135,7 +146,8 @@ const router = new VueRouter({
 
                     ],
                     meta: {
-                        isProtected: true
+                        isProtected: true,
+                        roles: ['hood_admin', 'hood_agent'],
                     }
                 },
                 {
@@ -152,7 +164,8 @@ const router = new VueRouter({
                     name: 'applications',
                     meta: {
                         isProtected: true,
-                        breadcrumbType: 'LeadApplications'
+                        breadcrumbType: 'LeadApplications',
+                        roles: ['hood_admin', 'hood_team_lead', 'hood_customer_rep'],
                     }
                 },
                 {
@@ -161,13 +174,37 @@ const router = new VueRouter({
                     name: 'applications.details',
                     meta: {
                         isProtected: true,
-                        breadcrumbType: 'ApplicationsDetails'
+                        breadcrumbType: 'ApplicationsDetails',
+                        roles: ['hood_admin', 'hood_team_lead', 'hood_customer_rep'],
                     }
                 }
 
             ]
         },
-
+        {
+            path: '/agent',
+            component: AgentDashboardLayout,
+            children: [
+                {
+                    path: '',
+                    component: AgentApplicationPage,
+                    name: 'agent.application.dashboard',
+                    meta: {
+                        isProtected: true,
+                        roles: ['agency_office_admin', 'agency_office_director', 'agency_office_property_manager', 'agency_office_senior_property_manager', 'agency_office_real_estate_agent', 'agency_office_allocator'],
+                    }
+                },
+                {
+                    path: '/create-application',
+                    component: AgentCreateNewApplication,
+                    name: 'agent.create.application',
+                    meta: {
+                        isProtected: true,
+                        roles: ['agency_office_admin', 'agency_office_director', 'agency_office_property_manager', 'agency_office_senior_property_manager', 'agency_office_real_estate_agent', 'agency_office_allocator'],
+                    }
+                },
+            ]
+        },
         {
             path: '/auth/login',
             component: LoginPage,
@@ -193,28 +230,6 @@ const router = new VueRouter({
             }
         },
         {
-            path: '/agent',
-            component: AgentDashboardLayout,
-            children: [
-                {
-                    path: '',
-                    component: AgentApplicationPage,
-                    name: 'agent.application.dashboard',
-                    meta: {
-                        isProtected: true
-                    }
-                },
-                {
-                    path: '/create-application',
-                    component: AgentCreateNewApplication,
-                    name: 'agent.create.application',
-                    meta: {
-                        isProtected: true
-                    }
-                },
-            ]
-        },
-        {
            path: '/confirm-invitation',
            component: InviteUser,
            name:'confirm.user.invite',
@@ -225,6 +240,6 @@ const router = new VueRouter({
     ]
 })
 
-router.beforeEach(AuthService.checkRouteAuthorization);
+router.beforeEach(checkRouteAuthentication);
 
 export default router;

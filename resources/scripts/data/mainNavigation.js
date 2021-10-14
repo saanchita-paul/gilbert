@@ -48,7 +48,7 @@ export default [
     {
         type: 'route',
         title: 'Application',
-        icon: '/assets/images/icons/Helpdesk.svg',
+        icon: '/assets/images/icons/map_home.svg',
         route_name: 'applications',
         permissions: permissions.P_CAN_MANAGE_APPLICATION
     },

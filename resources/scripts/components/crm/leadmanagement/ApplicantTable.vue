@@ -154,7 +154,7 @@ export default {
         {
             this.selectedLead = lead;
             this.selectedUser = user;
-            this.assignedText = assignedText;
+            this.assignedText = assignedText =='Reassign'?'reassigned':'assigned';
             await LeadApplicationService.assignUser(lead.id, user.id)
                 .then(res =>  {
                     // this.loadLeadList();

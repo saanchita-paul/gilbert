@@ -64,6 +64,19 @@ extend('unique-user-email', {
     }
 });
 
+extend('email-exist', {
+    message: field => `Email not found`,
+    validate: value =>  {
+        return new Promise(resolve => {
+            AuthService.isUniqueEmail(value)
+                .then( valid => {
+                   valid = !valid;
+                    resolve({ valid })
+                })
+        })
+    }
+});
+
 extend('not-holiday', {
     message: field => `Date must not be a holiday`,
     params: ['target'],
@@ -80,6 +93,13 @@ extend('adult', {
     validate: value =>  {
         const timeDiff = dayJs().diff(dayJs(value, 'DD/MM/YYYY'),'year');
         return timeDiff>=18?true:false;
+    }
+});
+
+extend('valid-date', {
+    message: field => `DD/MM/YYYY is valid formate`,
+    validate: value =>  {
+        return dayJs(value, 'DD/MM/YYYY').isValid();
     }
 });
 

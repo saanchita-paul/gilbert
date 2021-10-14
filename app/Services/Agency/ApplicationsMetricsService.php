@@ -90,6 +90,11 @@ class ApplicationsMetricsService
             if ($status) {
                 $va = array_search($status, array_column($this->metrics, 'type'));
                 $this->metrics[$va]['count'] += $datum->total;
+
+                if($status === 'processing' || $status === 'accepted' || $status === 'rejected')
+                {
+                    $this->metrics[3]['count'] += $datum->total;
+                }
             }
         }
     }

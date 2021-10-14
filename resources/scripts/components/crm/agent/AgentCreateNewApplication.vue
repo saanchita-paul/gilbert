@@ -21,6 +21,20 @@
                             ></v-text-field>
                         </ValidationProvider>
                     </v-col>
+
+                    <v-col cols="6" class="pb-0">
+                        <ValidationProvider name="Middlename"  v-slot="{ errors }">
+                            <v-text-field
+                                label="Middlename"
+                                outlined
+                                dense
+                                placeholder="Middlename"
+                                v-model="application.middle_name"
+                                :error-messages=" errors[0]"
+                            ></v-text-field>
+                        </ValidationProvider>
+                    </v-col>
+
                     <v-col cols="6" class="pb-0">
                     <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
                         <v-text-field
@@ -33,7 +47,7 @@
                         ></v-text-field>
                     </ValidationProvider>
                     </v-col>
-                    <v-col cols="6" class="py-0">
+                    <v-col cols="6" class="py-0 mt-3">
                     <ValidationProvider name="Email" rules="required|email"  v-slot="{ errors }">
                         <v-text-field
                             label="Email*"
@@ -45,7 +59,20 @@
                         ></v-text-field>
                     </ValidationProvider>
                     </v-col>
+
                     <v-col cols="6" class="py-0">
+                        <ValidationProvider name="Phone Types" rules="required"  v-slot="{ errors }">
+                            <v-select outlined dense
+                                      v-model="application.phone_type"
+                                      :items="phone_types"
+                                      label="Phone Type*"
+                                      :error-messages=" errors[0]"
+                                      placeholder="Please Select">
+                            </v-select>
+                        </ValidationProvider>
+                    </v-col>
+
+                    <v-col cols="6" class="py-0" v-if="application.phone_type == 1">
                     <ValidationProvider name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
                         <v-text-field
                             label="Mobile number*"
@@ -58,6 +85,21 @@
                         ></v-text-field>
                     </ValidationProvider>
                     </v-col>
+
+                    <v-col cols="6" class="py-0" v-else>
+                    <ValidationProvider name="Homephone number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                        <v-text-field
+                            label="Homephone number*"
+                            :maxlength="10"
+                            outlined
+                            dense
+                            placeholder="XXXX XXX XXX"
+                            v-model="application.homephone"
+                            :error-messages=" errors[0]"
+                        ></v-text-field>
+                    </ValidationProvider>
+                    </v-col>
+
                     <v-col cols="6" class="py-0">
                         <ValidationProvider name="Tenancy Types" rules="required"  v-slot="{ errors }">
                             <v-select outlined dense
@@ -70,6 +112,7 @@
                         </ValidationProvider>
                     </v-col>
 
+
                     <v-col cols="6" class="py-0">
                             <v-menu
                                 v-model="showDOB"
@@ -80,25 +123,199 @@
                                 min-width="290px"
                             >
                                 <template v-slot:activator="{ on, attrs }">
-                                    <ValidationProvider name="Date of Birth" rules="required|adult"  v-slot="{ errors }">
+                                    <ValidationProvider name="Date of Birth" rules="required|valid-date|adult"  v-slot="{ errors }">
                                         <v-text-field
                                             label="Date of Birth*"
                                             placeholder="DD/MM/YYYY"
                                             outlined
                                             dense
-                                            append-icon="mdi-calendar"
                                             v-model="application.date_of_birth"
-                                            readonly
                                             v-bind="attrs"
-                                            v-on="on"
                                             :error-messages=" errors[0]"
-                                        ></v-text-field>
+                                            @blur="syncDob"
+                                        >
+                                            <template slot="append">
+                                                <v-icon  v-on="on">mdi-calendar</v-icon>
+                                            </template>
+                                        </v-text-field>
                                     </ValidationProvider>
                                 </template>
                                 <v-date-picker v-model="dob" @input="showDOB = false"></v-date-picker>
                             </v-menu>
 
                     </v-col>
+
+
+
+                    <v-col cols="12" class="pb-0">
+                        <v-row class="my-0 py-0">
+                            <v-col class="my-0 py-0">
+                                <v-checkbox
+                                    v-model="has_authorized"
+                                    :label="`Add an authorised person on the account`"
+                                ></v-checkbox>
+                            </v-col>
+                        </v-row>
+                        <v-row  v-if="has_authorized">
+                            <v-col cols="6">
+                                <p class="sub-title mb-0">Authorised Person’s Details <small class="font-weight-thin">Personal details</small></p>
+                            </v-col>
+                            <v-col cols="6">
+                                <p class="sub-title mb-0"><small class="font-weight-thin">All fields marked with * are mandatory</small></p>
+                            </v-col>
+                        </v-row>
+                        <v-row  v-if="has_authorized">
+
+
+
+
+
+
+                            <v-col cols="6">
+                                <v-row>
+
+
+<!--                                    <v-col cols="12" class="py-0">-->
+
+<!--                                                <ValidationProvider name="Title" rules="required"  v-slot="{ errors }">-->
+<!--                                                    <v-select-->
+<!--                                                        outlined dense hide-details="auto"-->
+<!--                                                        :items="titlesDD"-->
+<!--                                                        v-model="authorized_person.title"-->
+<!--                                                        :error-messages=" errors[0]"-->
+<!--                                                        label="Title"-->
+<!--                                                        placeholder="Mr">-->
+<!--                                                    </v-select>-->
+<!--                                                </ValidationProvider>-->
+<!--                                            </v-col>-->
+
+                                    <v-col cols="12" class="py-0">
+                                        <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
+                                            <v-text-field
+                                                indentification
+                                                :error-messages=" errors[0]"
+                                                outlined
+                                                label="First Name*"
+                                                v-model="authorized_person.first_name"
+                                                dense
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="12" class="py-0">
+                                        <ValidationProvider name="Last Name" rules="required"  v-slot="{ errors }">
+                                            <v-text-field
+                                                indentification
+                                                :error-messages=" errors[0]"
+                                                outlined
+                                                label="Last Name*"
+                                                v-model="authorized_person.last_name"
+                                                dense
+
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="12" class="py-0">
+                                        <ValidationProvider name="Mobile Number" rules="cv-phone|length:10" v-slot="{ errors }">
+                                            <v-text-field
+                                                indentification
+                                                :error-messages=" errors[0]"
+                                                outlined
+                                                label="Mobile Number (Optional)"
+                                                v-model="authorized_person.phone"
+                                                dense
+                                                placeholder="+61"
+
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="12" class="py-0">
+                                        <ValidationProvider name="Date Of Birth" rules="required"  v-slot="{ errors }">
+                                            <v-menu
+                                                v-model="showAuthoritydob"
+                                                :close-on-content-click="false"
+                                                :nudge-right="40"
+                                                transition="scale-transition"
+                                                offset-y
+                                                min-width="290px"
+                                            >
+                                                <template v-slot:activator="{ on, attrs }">
+
+                                                    <ValidationProvider name="Date Of Birth" rules="required|valid-date"  v-slot="{ errors }">
+                                                        <v-text-field
+                                                            label="Date Of Birth*"
+                                                            placeholder="DD/MM/YYYY"
+                                                            outlined
+                                                            dense
+                                                            v-model="authorized_person.dob"
+                                                            v-bind="attrs"
+                                                            :error-messages=" errors[0]"
+                                                            @blur="syncMovingDate"
+                                                        >
+
+                                                            <template slot="append">
+                                                                <v-icon  v-on="on">mdi-calendar</v-icon>
+                                                            </template>
+
+                                                        </v-text-field>
+                                                    </ValidationProvider>
+                                                </template>
+                                                <v-date-picker v-model="authorized_person_dob"
+                                                               @input="showAuthoritydob = false"></v-date-picker>
+                                            </v-menu>
+                                        </ValidationProvider>
+                                    </v-col>
+                                </v-row>
+                            </v-col>
+                            <v-col cols="6">
+                                <v-row>
+                                    <v-col cols="12" class="py-0">
+                                        <ValidationProvider name="Middle Name"  v-slot="{ errors }">
+                                            <v-text-field
+                                                indentification
+                                                :error-messages=" errors[0]"
+                                                outlined
+                                                label="Middle Name"
+                                                v-model="authorized_person.middle_name"
+                                                dense
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="12" class="py-0">
+                                        <ValidationProvider name="Email address" rules="required|email"  v-slot="{ errors }">
+                                            <v-text-field
+                                                indentification
+                                                :error-messages=" errors[0]"
+                                                outlined
+                                                label="Email address*"
+                                                v-model="authorized_person.email"
+                                                dense
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="12" class="py-0">
+                                        <ValidationProvider name="Authorised Person's role" rules="required"  v-slot="{ errors }">
+                                            <v-select
+                                                outlined dense hide-details="auto"
+                                                :items="roles"
+                                                item-text="text"
+                                                item-value="value"
+                                                v-model="authorized_person.role"
+                                                :error-messages=" errors[0]"
+                                                placeholder="Role">
+                                            </v-select>
+                                        </ValidationProvider>
+                                    </v-col>
+                                </v-row>
+                            </v-col>
+                        </v-row>
+
+                    </v-col>
+
+
+
+
+
+
 
                     <v-col cols="12" class="pb-0">
                         <p class="sub-title mb-0">Moving Details <small class="font-weight-thin">Information about your lead’s move.</small></p>
@@ -187,7 +404,7 @@
                     </v-col>
 
 
-                    <v-col v-if="application.state" cols="12" class="pb-0">
+                    <v-col cols="12" class="pb-0">
                         <v-row>
                             <v-col cols="6" class="py-0">
                                 <v-menu
@@ -200,19 +417,23 @@
                                 >
                                     <template v-slot:activator="{ on, attrs }">
 
-                                        <ValidationProvider name="Moving Date" rules="required|not-holiday:@State/Territory"  v-slot="{ errors }">
+                                        <ValidationProvider name="Connection date" rules="required|valid-date|not-holiday:@State/Territory"  v-slot="{ errors }">
                                             <v-text-field
                                                 label="Connection Date*"
                                                 placeholder="DD/MM/YYYY"
                                                 outlined
                                                 dense
-                                                append-icon="mdi-calendar"
                                                 v-model="application.moving_date"
-                                                readonly
                                                 v-bind="attrs"
-                                                v-on="on"
                                                 :error-messages=" errors[0]"
-                                            ></v-text-field>
+                                                @blur="syncMovingDate"
+                                            >
+
+                                                <template slot="append">
+                                                    <v-icon  v-on="on">mdi-calendar</v-icon>
+                                                </template>
+
+                                            </v-text-field>
                                         </ValidationProvider>
                                     </template>
                                     <v-date-picker v-model="moving_date" :min="minDate"
@@ -296,6 +517,7 @@ import GoogleMapService from "@scripts/services/GoogleMapService";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import DayJs from "dayjs";
 import LeadCreateSuccessfulModal from "@scripts/components/crm/modals/LeadCreateSuccessfulModal";
+import {isNull} from "lodash-es";
 
 export default {
     name: "AgentCreateNewApplication",
@@ -310,6 +532,10 @@ export default {
             tenancy_types:  [
                 {text: 'Renter', value: 1},
                 {text: 'Home Owner', value: 2},
+            ],
+            phone_types:  [
+                {text: 'Mobile', value: 1},
+                {text: 'Homephone', value: 2},
             ],
             states: [
                 {text: 'NSW', value: 'New South Wales'},
@@ -337,8 +563,41 @@ export default {
             ],
             dob: (new DayJs((new Date()).setFullYear(2000))).format('YYYY-MM-DD'),
             moving_date: null,
+            showAuthoritydob: false,
             createSuccessfulModal: false,
             title: '',
+            authorized_person_dob:  (new DayJs((new Date()).setFullYear(2000))).format('YYYY-MM-DD'),
+            authorized_person:{
+                title :'',
+                first_name :'',
+                middle_name :'',
+                last_name:'',
+                email:'',
+                role: '',
+                phone: '',
+                dob: null,
+
+            },
+            roles:[
+                {
+                    value: 1,
+                    text:'Enquiry Only',
+
+
+                },
+                {
+                    value: 2,
+                    text:'Fully Authorised',
+                },
+                {
+                    value: 3,
+                    text:'Financially Responsible'
+                }
+            ],
+            has_authorized: false,
+            titlesDD:[
+                'Mrs','Mr','Ms'
+            ],
         }
     },
     created() {
@@ -366,7 +625,11 @@ export default {
                     this.application.street_number = data.street_number;
                     this.application.unit_number = data.unit_number;
                     this.application.street_name = data.street_name;
-                    // this.mapToModel(data)
+
+                    if(!isNull( data.unit_number)) {
+                        this.application.street_address = data.unit_number +'/'+ data.street;
+                    }
+
                 });
         },
         onCancel() {
@@ -384,7 +647,10 @@ export default {
         },
         saveApplication() {
             this.confirmApplicationModal = false;
-            AgentApplicationService.createApplication(this.application)
+            AgentApplicationService.createApplication({
+                'application': this.application,
+                'authorized_person': this.authorized_person
+            })
                 .then(res =>  {
                     this.title = res.data.data.first_name + ' ' + res.data.data.last_name;
                     this.createSuccessfulModal = true;
@@ -405,7 +671,21 @@ export default {
 
         done() {
             this.$router.push({name: 'agent.application.dashboard'});
-        }
+        },
+        syncDob()
+        {
+            if(DayJs(this.application.date_of_birth,'DD/MM/YYYY').isValid())
+            {
+                this.dob = (DayJs(this.application.date_of_birth,'DD/MM/YYYY')).format('YYYY-MM-DD');
+                this.authorized_person_dob = (DayJs(this.application.date_of_birth,'DD/MM/YYYY')).format('YYYY-MM-DD');
+            }
+        },
+        syncMovingDate() {
+            if(DayJs(this.application.moving_date,'DD/MM/YYYY').isValid())
+            {
+                this.moving_date = (DayJs(this.application.moving_date,'DD/MM/YYYY')).format('YYYY-MM-DD');
+            }
+        },
     },
     watch: {
         dob() {
@@ -414,7 +694,11 @@ export default {
 
         moving_date() {
             this.application.moving_date = (new DayJs(this.moving_date).format('DD/MM/YYYY'));
-        }
+        },
+        authorized_person_dob() {
+            this.authorized_person.dob = (new DayJs(this.authorized_person_dob).format('DD/MM/YYYY'));
+        },
+
     }
 };
 </script>

@@ -7,6 +7,7 @@ import COMMISSION from "@scripts/data/constants/COMMISSION";
 import PaginationMapper from "@scripts/api/mappers/crm/PaginationMapper";
 import DayJS from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
+import dayjs from "dayjs";
 export default {
     mapApplication(data) {
         let model = Object.assign(new Application(), { ...data });
@@ -47,11 +48,17 @@ export default {
     },
 
     mapNotes(data) {
-        return data.map(dt=> {
+        let notes;
+
+        notes =  data.map(dt=> {
               return  new Note({...dt});
-
-
         });
+
+        if(notes.length > 0) {
+            notes[0].active = true;
+        }
+
+        return notes;
     },
     mapNote(data) {
         return Object.assign(new Note(), { ...data });
@@ -64,8 +71,10 @@ export default {
     },
 
     mapToServer(data) {
+
+
         let commsission = [];
-        data.service_interests.forEach(service => {
+        data.application.service_interests.forEach(service => {
             if(service === COMMISSION.GAS.text)
             {
                 commsission.push({
@@ -91,21 +100,23 @@ export default {
 
 
         });
-        data.service_interests = commsission;
-        data.moving_date = this.mapDateToServer(data.moving_date);
-        data.date_of_birth = this.mapDateToServer(data.date_of_birth);
+
+        data.application.service_interests = commsission;
        return {
-           ...data,
-           dob: data.date_of_birth,
-           is_email_billing: data.email_billing?data.email_billing:0
+           ...data.application,
+           dob: this.mapDateToServer(data.application.date_of_birth),
+           moving_date: this.mapDateToServer(data.application.moving_date),
+           is_email_billing: data.application.email_billing?data.application.email_billing:0,
+           authorized_person: {
+               ...data.authorized_person,
+               dob: this.mapDateToServer(data.authorized_person.dob) == "Invalid Date" ? null : this.mapDateToServer(data.authorized_person.dob)
+           }
+
        }
     },
-    mapDateToServer(value)
+    mapDateToServer(dt)
     {
-          const  [day, month, year] = value.split('/');
-          return year + '-' + month + '-' + day;
-
-
+        return dayjs(dt,'DD/MM/YYYY').format('YYYY-MM-DD');
     }
 
 };

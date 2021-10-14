@@ -383,7 +383,7 @@
                                 outlined
                                 dense
                                 hide-details="auto"
-                                :value="data.plan_type.value"
+                                :value="selectedPlan"
                                 readonly
                             ></v-text-field>
                             </div>
@@ -400,13 +400,14 @@
                     <v-col cols="12">
 
 
-                        <p class="sub-title">I have asked the applicant "Does anyone in the household require the use of medical equipment for life support?”</p>
-                        <v-checkbox v-model="is_life_support">
+<!--                        <p class="sub-title">I have asked the applicant "Does anyone in the household require the use of medical equipment for life support?”</p>-->
+                        <v-checkbox v-model="is_life_support" label='I have asked the applicant "Does anyone in the household require the use of medical equipment for life support?”'>
+
                         </v-checkbox>
                     </v-col>
                     <v-col cols="12">
-                        <p class="sub-title">I have asked the applicant "Do you understand and agree with everything we have discussed today"?</p>
-                        <v-checkbox v-model="is_temp_condition"></v-checkbox>
+<!--                        <p class="sub-title">I have asked the applicant "Do you understand and agree with everything we have discussed today"?</p>-->
+                        <v-checkbox v-model="is_temp_condition" label='I have asked the applicant "Do you understand and agree with everything we have discussed today"?'></v-checkbox>
                     </v-col>
 
 
@@ -520,28 +521,33 @@ export default {
           colorDD:[
               {
                   text: 'Green',
-                  value: 'green'
+                  value: 'GREEN'
               },
               {
                   text: 'Blue',
-                  value: 'blue'
+                  value: 'BLUE'
               },
               {
                   text: 'Yellow',
-                  value: 'yellow'
+                  value: 'YELLOW'
               }
           ],
       }
     },
-    computed:{
-      allOk()
-      {
-          return false;
-          return this.is_temp_condition  &&
-              this.is_life_support;
-      }
+    computed: {
+
+          allOk() {
+              // return false;
+              return this.is_temp_condition  &&
+                  this.is_life_support;
+          },
+
+        selectedPlan() {
+            return Boolean(this.data.plan_type.title)?this.data.plan_type.title: this.data.plan_type.value;
+        }
     },
     methods: {
+
         backToEdit() {
             this.$emit('backToEdit');
         },
@@ -552,7 +558,12 @@ export default {
             return this.data.service_interests.includes(service);
         }
 
-        }
+        },
+
+    mounted() {
+      // console.log(this.data);
+    }
+
 };
 </script>
 

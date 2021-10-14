@@ -5,6 +5,7 @@ export default {
     loadUserLeadMetrics: () => LeadApplicationAPI.getUserLeadMetrics(),
     loadUserLeads: (sort_search_meta, active_lead_type) => LeadApplicationAPI.getUserLeads(sort_search_meta, active_lead_type),
     loadUserLead: (id) => LeadApplicationAPI.getUserLead(id),
+    closeApplication: (id) => LeadApplicationAPI.closeApplication(id),
     loadPlan: (serviceProvider) => LeadApplicationAPI.getPlan(serviceProvider),
     loadNote: (leadUser)=> LeadApplicationAPI.getNote(leadUser),
     loadServiceProvider: (services)=> LeadApplicationAPI.getServiceProvider(services),
@@ -15,7 +16,9 @@ export default {
     updateAddress: (address, leadId) => LeadApplicationAPI.updateAddress(address, leadId),
     assignUser: (leadId, agentProfileId) => LeadApplicationAPI.assignUser(leadId, agentProfileId),
     saveSoleField:(field, value, leadId, isDate,identification=false, isService=false) => LeadApplicationAPI.saveSoleField(field, value, leadId, isDate,identification,isService),
-
+    getNmiMern:(id) => LeadApplicationAPI.getNmiMern(id),
+    loadAuthorizedPerson:(leadId) => LeadApplicationAPI.loadAuthorizedPerson(leadId),
+    saveAuthorizedPerson:(data) => LeadApplicationAPI.saveAuthorizedPerson(data),
 
     /**
      * Getting minimum valid Connection date
@@ -24,7 +27,7 @@ export default {
      */
     getMinConnectionDate: () => {
         const date = new Date()
-        date.setDate(date.getDate() + 3);
+        date.setDate(date.getDate() + 1);
         return date.toISOString()
     },
 

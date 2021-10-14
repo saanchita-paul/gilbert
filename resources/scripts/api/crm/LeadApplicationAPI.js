@@ -4,13 +4,14 @@ import AppLeadMapper from "@scripts/api/mappers/crm/AppLeadMapper";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
 import DayJs from "dayjs";
+import dayjs from "dayjs";
 
 const data = [
     {
         id: 1,
         title: 'Applications',
         lead_count: 500,
-        status: 'Total submitted',
+        status: 'Total Added',
     },
     {
         id: 2,
@@ -240,6 +241,15 @@ export default {
         }
     },
 
+  async closeApplication (id) {
+        try {
+            const data = await axios.put(`/api/applications/${id}/close`);
+            return data;
+        } catch (error) {
+            return error.data;
+        }
+    },
+
     getPlan(serviceProvider) {
         try {
             // const data = await axios.get('/');
@@ -306,7 +316,9 @@ export default {
 
     async updateAddress(address, leadId) {
         try {
-            return await axios.put('/api/applications/'+leadId+'/update-address',{address});
+            console.log(address);
+            const response = await axios.put('/api/applications/'+leadId+'/update-address',{address});
+            return ApplicationMapper.mapApplication(response.data.data);
         } catch (error) {
             return error.data;
         }
@@ -351,8 +363,42 @@ export default {
             identification: identification,
             isService: isService
         }
-        
+
         const response = await axios.post('/api/applications/'+leadId+'/draft',payload);
-    }
+    },
+    async getNmiMern(id) {
+        try {
+            const data = await axios.get('/api/applications/'+id+'/nmi-mern');
+            return data.data.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    async loadAuthorizedPerson(id) {
+        try {
+
+            const data = await axios.get('/api/authoized-person/'+id);
+            return data.data.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    async saveAuthorizedPerson(audata) {
+        try {
+            audata.dob =  dayjs(audata.dob,'DD/MM/YYYY').format('YYYY-MM-DD');
+            const data = await axios.post('/api/authoized-person',{...audata});
+            return data.data.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+
+
 
 }

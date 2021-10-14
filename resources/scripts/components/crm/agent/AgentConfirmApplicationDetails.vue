@@ -12,7 +12,7 @@
                         <table width="100%" class="application-info">
                             <tr>
                                 <td class="font-weight-bold">Lead Name:</td>
-                                <td>{{ application.first_name + ' ' + application.last_name}}</td>
+                                <td>{{ application.first_name + ' ' + application.middle_name + ' ' + application.last_name}}</td>
                             </tr>
                             <tr>
                                 <td class="font-weight-bold">Tenancy Type:</td>
@@ -22,9 +22,13 @@
                                 <td class="font-weight-bold">Date of Birth:</td>
                                 <td>{{ application.date_of_birth }}</td>
                             </tr>
-                            <tr>
+                            <tr v-if="application.phone_type == 1">
                                 <td class="font-weight-bold">Mobile No:</td>
                                 <td>{{ application.phone }}</td>
+                            </tr>
+                            <tr v-else>
+                                <td class="font-weight-bold">Homephone No:</td>
+                                <td>{{ application.homephone }}</td>
                             </tr>
                             <tr>
                                 <td class="font-weight-bold">Email:</td>

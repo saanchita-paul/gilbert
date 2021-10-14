@@ -61,7 +61,6 @@ class ApplicationController extends Controller
 
         $service = new ApplicationService();
         $application = $service->createApplication($request->toArray(), $user);
-
         CreateApplicationEvent::dispatch($application->id);
 
         return ApplicationResource::make($application);
@@ -223,6 +222,54 @@ class ApplicationController extends Controller
             $res = $service->updateSoleField($request->toArray(), $id);
             return response()->json(['success' => true, 'data' => $res]);
 
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    public function getNmiMern(Request $request, $id)
+    {
+        try {
+            $service = new FastConnectService();
+            $res = $service->authenticate()->searchAddress([], true, $id);
+            return response()->json(['success' => true, 'data' => $res]);
+
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    public function getAuthorizedPerson($id)
+    {
+        try {
+            $service = new ApplicationService();
+            $res = $service->getAuthrisedInfo($id);
+            return response()->json(['success' => true, 'data' => $res]);
+
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    public function updateAuthorizedPerson(Request $request)
+    {
+        try {
+            $service = new ApplicationService();
+            $inputData = $request->toArray();
+            $res = $service->updateAuthrisedInfo($inputData);
+            return response()->json(['success' => true, 'data' => $res]);
+
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    public function closeApplication($id)
+    {
+        try {
+            $service = new ApplicationService();
+            $res = $service->closeApplication($id);
+            return response()->json(['success' => true, 'data' => $res]);
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }

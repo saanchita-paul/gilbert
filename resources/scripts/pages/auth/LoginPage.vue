@@ -8,7 +8,7 @@
                             <div class="login-header">
                                 <v-img  src="/assets/images/logo.png"/>
                                 <p class="dialogs-title">Welcome!</p>
-                                <p class="primary-text">Login and start managing your leades</p>
+                                <p class="primary-text">Login and start managing your applications</p>
                             </div>
 
                             <v-fade-transition>

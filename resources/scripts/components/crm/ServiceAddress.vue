@@ -17,7 +17,7 @@
                                 <div class="dialogs-area pt-5">
                                     <p class="title">Service Address</p>
                                     <v-row>
-                                        <v-col cols="12" class="py-0">
+                                        <v-col cols="12" class="py-0 mt-4">
                                             <v-row>
                                                 <v-col cols="12" class="py-0">
                                                     <v-menu offset-y v-model="showMenu">
@@ -89,13 +89,43 @@
                                                 ></v-text-field>
                                             </ValidationProvider>
                                         </v-col>
-                                        <v-col cols="12" >
+
+                                        <!-- <v-col cols="12" class="mt-n12" v-if="propertyDetails.state == 'Victoria'">
+                                            <v-checkbox
+                                                v-model="propertyDetails.is_renovation_on"
+                                                @change="changeIsBillingSame"
+                                                :label="`Is renovation going on?`"
+                                            ></v-checkbox>
+                                        </v-col>
+
+                                        <v-col cols="12" class="mt-n12" v-if="propertyDetails.state == 'Queensland'">
+                                            <v-checkbox
+                                                v-model="propertyDetails.has_electricity"
+                                                :label="`Is the electricity on at the property?`"
+                                            ></v-checkbox>
+                                        </v-col> -->
+
+                                        <!-- <v-col cols="6" class="py-0 mt-n4" v-if="propertyDetails.state == 'Queensland' && propertyDetails.has_electricity == false">
+                                          <ValidationProvider name="Inspection Time" rules="required"  v-slot="{ errors }">
+                                            <v-select outlined dense
+                                                      v-model="propertyDetails.inspection_time"
+                                                      :items="inspectionTimes"
+                                                      placeholder="Please select"
+                                                      label="Inspection Time*"
+                                                      :error-messages=" errors[0]">
+                                            </v-select>
+                                          </ValidationProvider>
+                                        </v-col> -->
+
+                                        <v-col cols="12" class="mt-n12">
                                             <v-checkbox
                                                 v-model="propertyDetails.is_billing_same"
                                                 @change="changeIsBillingSame"
-                                                :label="`I have a different billing address.`"
+                                                :label="`This is same as my billing address.`"
                                             ></v-checkbox>
                                         </v-col>
+
+
                                     </v-row>
 
 
@@ -198,6 +228,7 @@
 import Search from "@scripts/components/crm/Search";
 import debounce from "lodash-es/debounce";
 import GoogleMapService from "@scripts/services/GoogleMapService";
+import {isNull} from "lodash-es";
 export default {
   name: "ServiceAddress",
   components: {
@@ -226,6 +257,14 @@ export default {
                 {text: 'TAS', value: 'Tasmania'},
                 {text: 'ACT', value: 'Australian Capital Territory'},
             ],
+          // inspectionTimes:[
+          //   '8AM - 1PM',
+          //   '9AM - 2PM',
+          //   '10AM - 3PM',
+          //   '11AM - 4PM',
+          //   '12AM - 5PM',
+          //   '1AM - 6PM',
+          // ]
         }
     },
     created() {
@@ -261,9 +300,13 @@ export default {
                     this.propertyDetails.city = data.city;
                     this.propertyDetails.postcode = data.postcode;
                     this.propertyDetails.state = data.state;
-                    this.propertyDetails.street_number = data.street_number;
+                    this.propertyDetails.street_number = data.street_number?data.street_number:null;
                     this.propertyDetails.unit_number = data.unit_number;
                     this.propertyDetails.street_name = data.street_name;
+
+                    if(!isNull( data.unit_number)) {
+                        this.propertyDetails.street_address = data.unit_number +'/'+ data.street;
+                    }
                 });
         },
 
@@ -278,6 +321,11 @@ export default {
               this.propertyDetails.billing_street_number = data.street_number;
               this.propertyDetails.billing_unit_number = data.unit_number;
               this.propertyDetails.billing_street_name = data.street_name;
+
+                if(!isNull( data.unit_number)) {
+                    this.propertyDetails.billing_street_address = data.unit_number +'/'+ data.street;
+                }
+
             });
       },
 
@@ -294,16 +342,18 @@ export default {
       },
 
 
-        async onSubmit() {
-            let v = await this.$refs.edit_address.validate();
-            if (v) {
-                this.$emit('saveAddress', this.propertyDetails);
-            }
-            return v;
-        },
+      async onSubmit() {
+
+          console.log(this.propertyDetails)
+          // return;
+          let v = await this.$refs.edit_address.validate();
+          if (v) {
+              // console.log()
+              this.$emit('saveAddress', this.propertyDetails);
+          }
+          return v;
+      },
     },
-    mounted() {
-    }
 };
 </script>
 

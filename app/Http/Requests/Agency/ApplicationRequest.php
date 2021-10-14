@@ -27,7 +27,7 @@ class ApplicationRequest extends FormRequest
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|string|email',
-            'phone' => 'required|string',
+            'phone' => 'nullable|string',
             'tenancy_type' => 'required|integer',
             'dob' => 'required|date|', #before_or_equal:-18 years
             'moving_date' => 'required|date', #|after_or_equal:3 days

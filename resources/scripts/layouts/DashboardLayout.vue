@@ -6,6 +6,7 @@
             class="app-nav-bar"
             dark
             :width="252"
+            mobile-breakpoint="1350"
         >
             <v-list class="nav-user-card hood-gradiant">
                 <v-list-item-avatar class="center-element nav-logo" size="59">
@@ -22,11 +23,15 @@
             </v-list>
 
             <v-list class="navigation-menu" dense>
-                <v-img
+                <v-img v-if="hasProfilePhoto"
                     class="center-element rounded-circle nav-avatar"
                     src="/assets/images/user_logo.png"
                     max-width="96px"
                 ></v-img>
+                <div v-if="!hasProfilePhoto" class="center-element rounded-circle nav-avatar avater-fullname-container">
+                    <span class="full-name-text" >{{profile_display_name}}</span>
+                </div>
+
                 <span v-for="route in routes" :key="route.title">
                         <v-list-group
                             color="white"
@@ -87,7 +92,7 @@
                 </v-breadcrumbs>
             </v-toolbar-title>
             <v-spacer/>
-            <v-img  src="/assets/images/icons/Search.svg" max-width="24px"/>
+<!--            <v-img  src="/assets/images/icons/Search.svg" max-width="24px"/>-->
             <div class="vertical-divider"></div>
 
             <p class="app-bar-user-name">{{user.name}}</p>
@@ -112,11 +117,14 @@ export default {
         return {
             user: null,
             drawer: null,
+            profile_display_name: null,
+            hasProfilePhoto: false,
             all_routes: ApplicationService.getMainNavigationRoutes()
         }
     },
-    mounted() {
-        this.user = AuthService.getAuthUser();
+   async mounted() {
+        this.user = await AuthService.getAuthUser();
+        this.getNameText();
         setInterval(AuthService.authUser, 300000)
     },
      methods: {
@@ -127,6 +135,13 @@ export default {
             let user = this.user;
             let userRole = [...UserRoles.AGENCY, ...UserRoles.HOOD].find((r) => { return r.value === user.roles[0] });
             return "Hello "+ user.profile.first_name + ' ' +  user.profile.last_name + ' (' + userRole.text + ')';
+
+         },
+
+         getNameText()
+         {
+             this.hasProfilePhoto = Boolean(this.user?.profile?.profile_photo);
+             this.profile_display_name = this.user?.profile?.first_name.charAt(0) + this.user?.profile?.last_name.charAt(0);
          }
     },
     computed: {
@@ -139,7 +154,8 @@ export default {
         },
         breadcrumbs() {
             return AuthService.getBreadcrumbs();
-        }
+        },
+
     }
 }
 </script>
@@ -147,6 +163,7 @@ export default {
 <style scoped>
 .app-nav-bar {
     background-color: rgb(37, 40, 48, 1) !important;
+    box-shadow: 0px 10px 40px 0px #000052;
 }
 
 .app-app-bar {
@@ -169,7 +186,7 @@ export default {
 }
 
 .nav-avatar {
-    border: 10px solid rgb(37, 40, 48, 1);
+    border: 3px solid rgb(37, 40, 48, 1);
     margin-top: -50px !important;
     margin-bottom: 20px !important;
 }
@@ -238,5 +255,21 @@ export default {
 .nav-group .v-list-group-active {
     background-color: #542E89 !important;
     color: white !important;
+}
+
+
+.avater-fullname-container{
+    text-align:center;
+    background: #C4C4C4;
+    /*background: linear-gradient(to right bottom, #56CCF2 -75.93%, #542E89 42.76%, #9C27B0 118.83%) !important;*/
+    width: 96px; height: 96px
+}
+
+.full-name-text{
+    position: relative;
+    top: 25%;
+    font-size: 28px;
+    font-weight: bold;
+    color: #542E89;
 }
 </style>

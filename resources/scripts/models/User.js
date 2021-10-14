@@ -1,4 +1,14 @@
 export default class User {
+    /**
+     *
+     * @param {number} id
+     * @param {string} email
+     * @param {string} name
+     * @param {Array} roles
+     * @param {Array} permissions
+     * @param {Object} profile
+     * @param {string} profile_type
+     */
     constructor({id, email, name, roles, permissions, profile, profile_type}) {
         this.name = name
         this.id = id

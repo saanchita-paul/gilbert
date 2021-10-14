@@ -14,15 +14,15 @@ export default {
     /**
      * redirect base on role
      *
-     * @param role
+     * @param {Array} roles
      *
      * @return {Promise<Route>}
      */
-    redirectToUserHome: role => {
-        const res = UserHome.find(item => item.roles.includes(role))
+    redirectToUserHome: roles => {
+        const res = UserHome.find(item => item.roles.includes(roles[0]))
         if (res) {
             return router.push({name: res.route_name})
         }
-        throw new Error(`Unhandled role (${role}) at [redirectToUserHome]`)
+        throw new Error(`Unhandled role (${roles[0]}) at [redirectToUserHome]`)
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\GetSellStatusCommand;
+use App\Console\Commands\UploadConnectionDataToSFTPCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -14,7 +15,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        GetSellStatusCommand::class
+        GetSellStatusCommand::class,
+        UploadConnectionDataToSFTPCommand::class
     ];
 
     /**
@@ -26,6 +28,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
          $schedule->command('get:sales:status')->daily();
+         $schedule->command('ea:upload:lead')->daily();
     }
 
     /**

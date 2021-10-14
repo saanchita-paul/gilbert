@@ -16,3 +16,5 @@ yarn-error.log
 /.idea
 /public/mix-manifest.json
 queue-worker-pm2.yml
+jsconfig.json
+.vscode
