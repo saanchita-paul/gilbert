@@ -105,8 +105,10 @@ Route::get('/users/is-unique-email', [AuthController::class, 'isEmailValid']);
 
 
 Route::group(['middleware' => ['foxie.suger.leads']], function () {
-    Route::post('/lead', [FoxieController::class, 'store']);
-    Route::put('/lead/{id}', [FoxieController::class, 'update']);
+    Route::prefix('foxie')->group(function () {
+        Route::post('/lead', [FoxieController::class, 'store']);
+        Route::patch('/lead/{id}', [FoxieController::class, 'update']);
+    });
 });
 
 /**
