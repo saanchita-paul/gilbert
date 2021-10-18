@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Foxie;
 
 use App\Http\Controllers\Controller;
-use App\Models\Foxie\SugerLeads;
+use App\Models\Foxie\SugerLead;
 use Illuminate\Http\Request;
 
 class FoxieController extends Controller
@@ -37,8 +37,8 @@ class FoxieController extends Controller
     public function store(Request $request)
     {
         //
-        $sugerLeads =  SugerLeads::create(["all_fields_dump" => json_encode($request->all())]);
-        return response([ "status" => "success" , "lead_id" => $sugerLeads->id , "message" =>  "lead has been added successfully" ] , 200);
+        $sugerLeads =  SugerLead::create(["all_fields_dump" => json_encode($request->all())]);
+        return response([ "status" => "success" , "hood_lead_id" => $sugerLeads->id , "message" =>  "Hood lead has been added successfully" ] , 200);
     }
 
     /**
@@ -73,15 +73,15 @@ class FoxieController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $lead = SugerLeads::find($id);
+        $lead = SugerLead::find($id);
 
         if ($lead) {
             $all_fields_dump =  json_decode($lead->all_fields_dump);
             $mergedUpdatedData =  collect($all_fields_dump)->merge($request->all());
             $lead->update(["all_fields_dump" => json_encode($mergedUpdatedData)]);
-            return response(["status" => "success", "message" =>  "Your lead has been updated"], 202);
+            return response(["status" => "success", "message" =>  "Your hood lead has been updated"], 202);
         } else {
-            return response(["status" => "failed", "message" =>  "Lead Id: $id is not found"], 404);
+            return response(["status" => "failed", "message" =>  "Hood Lead Id: $id is not found"], 404);
         }
     }
 
