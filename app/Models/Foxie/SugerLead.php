@@ -12,4 +12,6 @@ class SugerLead extends Model
 
     protected $guarded = ["id"];
 
+    public $timestamps;
+
 }
