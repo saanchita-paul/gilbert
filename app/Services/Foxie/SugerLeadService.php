@@ -37,9 +37,10 @@ class SugerLeadService
         $this->connectionApplication->mirn = $request->gas_mirn_c ?? '';
         $this->connectionApplication->unit_number = $request->primary_address_unit_c ?? '';
         $this->connectionApplication->plan_type = $request->meter_plan_type_c ?? '3';
-        $this->connectionApplication->created_at = $request->date_entered ?? '2021/10/02';
-        $this->connectionApplication->updated_at = $request->date_modified ?? '2021/10/02';
-        $this->connectionApplication->title = $request->salutation ?? 'Mr.';
+        $this->connectionApplication->created_at = now();
+        $this->connectionApplication->updated_at = now();
+        // $this->connectionApplication->title = $request->salutation ?? 'Mr';
+        $this->connectionApplication->title = 'Mr';
         
         if( isset($this->lead)){
             $this->lead->created = $request->date_entered ?? '2021/10/02';
