@@ -8,6 +8,7 @@
                     <AgentLeadMetrics v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal"></AgentLeadMetrics>
                 </v-card>
                 <ApplicantTable
+                    :leadSrc="selectedSrc"
                     v-if="isLoaded"
                     :applications="leads"
                     :totalItem="totalItem"
@@ -44,6 +45,7 @@ export default {
     data() {
         return {
             leadTypes:[],
+            selectedSrc: this.$route.query.source || 'hood',
             activeLeadType: 'my_applications',
             leadTypesFlag: false,
             total_leads: 0,
@@ -72,7 +74,7 @@ export default {
         },
 
         async loadLeads () {
-            let data = await LeadApplicationService.loadUserLeads(this.sort_search_meta, this.activeLeadType);
+            let data = await LeadApplicationService.loadUserLeads(this.sort_search_meta, this.activeLeadType, this.selectedSrc);
             this.leads = data.applications;
             this.isLoaded = true;
             this.page = data.pagination.current_page;
@@ -115,9 +117,15 @@ export default {
     watch: {
         '$route': {
             handler() {
+                let reload = this.activeLeadType !== this.$route.query?.type
+                    || this.selectedSrc !== this.$route.query?.source;
+
                 this.activeLeadType = this.$route.query?.type;
-                console.log('search_sort_meat', this.sort_search_meta);
-                this.loadLeads();
+                this.selectedSrc = this.$route.query?.source
+                console.log("watch", reload)
+                if (reload) {
+                    this.loadLeads();
+                }
             }
         },
     },

@@ -1,8 +1,35 @@
 <template>
     <div>
         <v-row class="mt-5">
-            <v-col cols="8" class="search-bg">
+            <v-col cols="12" md="4" class="search-bg">
                 <Search @updateSearch="updateLeadSearch"></Search>
+            </v-col>
+            <v-col cols="12" md="4">
+                    <v-select
+                        placeholder="Select a lead source"
+                        v-model="leadSrc"
+                        item-text="text"
+                        item-value="value"
+                        :items="srcOptions"
+                        outlined
+                        dense
+                    >
+                        <template v-slot:item="{ item, attrs, on }">
+                            <v-list-item
+                                link
+                                @change="onSrcChange(item.value)"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                <v-list-item-avatar>
+                                    <v-icon>home</v-icon>
+                                </v-list-item-avatar>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{item.text}}</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                    </v-select>
             </v-col>
         </v-row>
         <v-card class="hood-card">
@@ -63,6 +90,7 @@ export default {
     },
 
     props: {
+      leadSrc: {default: 'hood'},
       applications: {
           required: true
       },
@@ -92,6 +120,13 @@ export default {
             pageCount: 0,
             itemsPerPage: 10,
             totalUserItem: null,
+            selectedSrc: this.$route.query.source || 'hood',
+            srcOptions: [
+                // {text: 'Select a lead', value: '', disabled: true},
+                {text: 'Hood Agent Portal', value: 'hood'},
+                {text: 'Foxie CRM', value: 'foxie'},
+                {text: 'Ignite ', value: 'ignite'},
+            ],
             headers:  [
                 {
                     text: 'Name',
@@ -184,6 +219,9 @@ export default {
                 sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: '',
             }
             this.$emit('refreshDataTable',meta);
+        },
+        onSrcChange(value) {
+            this.$router.push({name: 'applications', query: {...this.$route.query, ...{source: value}}})
         }
     },
     mounted() {
@@ -196,11 +234,6 @@ export default {
                 this.loadLeadList();
             },
             deep: true,
-        },
-        '$route': {
-            handler() {
-
-            }
         },
     },
 };
