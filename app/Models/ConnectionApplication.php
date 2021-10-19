@@ -207,6 +207,7 @@ class ConnectionApplication extends Model
     const PLAN_TYPE_BASIC_INDEX = 2;
     const PLAN_TYPE_NO_FRILLS_INDEX = 3;
     
+    const SOURCE_HOOD = 0;
     const SOURCE_FOXIE = 1;
 
     const PLAN_TYPE_MAPPER = [

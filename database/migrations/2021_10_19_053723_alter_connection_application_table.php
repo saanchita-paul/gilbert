@@ -15,9 +15,8 @@ class AlterConnectionApplicationTable extends Migration
     {
         Schema::table('connection_applications', function (Blueprint $table) {
             //
-            $table->tinyInteger('source')->nullable();
+            $table->tinyInteger('source')->default('0')->nullable();
             $table->unsignedBigInteger('created_by')->nullable()->change();
-            
         });
     }
 
