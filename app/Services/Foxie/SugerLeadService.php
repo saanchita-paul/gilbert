@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Foxie\SugerLead;
 use Illuminate\Support\Facades\Log;
 use App\Models\ConnectionApplication;
+use Exception;
 
 class SugerLeadService
 {
@@ -50,14 +51,12 @@ class SugerLeadService
 
         try {
             $agency = Agency::where('name' , "Foxie-Hood-Agent")->first();
-
             $this->connectionApplication->agency_id = $agency?->id ?? 1;
             $this->connectionApplication->office_id = $agency?->offices[0]?->id ?? 1;
+            if(!$agency) throw new Exception('Please run FoxieSeeder');
         } catch (\Throwable $th) {
             Log::error("Please run FoxieSeeder");
         }
-
-
     }
 
 
