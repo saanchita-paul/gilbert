@@ -24,6 +24,7 @@ class SugerLeadService
 
         $this->connectionApplication->first_name = $request->first_name ?? 'Iron';
         $this->connectionApplication->last_name = $request->last_name ?? 'Man' ;
+        $this->connectionApplication->source = ConnectionApplication::SOURCE_FOXIE ;
         $this->connectionApplication->email = $request->email1 ?? 'abc@hood.ai';
         $this->connectionApplication->dob = $request->birthdate  ?? '1991/08/09' ;
         $this->connectionApplication->moving_date = $request->move_in_date_c ?? '2021/10/02';
@@ -41,10 +42,10 @@ class SugerLeadService
         $this->connectionApplication->updated_at = now();
         // $this->connectionApplication->title = $request->salutation ?? 'Mr';
         $this->connectionApplication->title = 'Mr';
-        
+
         if( isset($this->lead)){
-            $this->lead->created = $request->date_entered ?? '2021/10/02';
-            $this->lead->updated = $request->date_modified ??  '2021/10/02';
+            $this->lead->created = now();
+            $this->lead->updated = now();
         }
     }
 
@@ -64,12 +65,13 @@ class SugerLeadService
     private function setApplicationLead($id = null){
         if($id == null){
             $this->connectionApplication = new ConnectionApplication;
-            $this->lead = new SugerLead;
+            $this->lead = new SugerLead();
         }else{
             try {
                 $this->connectionApplication = ConnectionApplication::findOrFail($id);
                 $this->lead = $this->connectionApplication->SugerLead;
             } catch (\Throwable $th) {
+                //todo:: remove this from here. service shouldn't handle the http response format;
                 return [ "response" =>  ["status" => "failed", "message" =>  "Hood Lead Id: $id is not found"] , "status" => 404 ];
             }
         }
@@ -88,7 +90,7 @@ class SugerLeadService
         return [
                     "status" => "success" ,
                     "hood_lead_id" => $this->connectionApplication->id ,
-                    "message" =>  "Hood lead has been added successfully" 
+                    "message" =>  "Hood lead has been added successfully"
                ];
     }
 
@@ -102,12 +104,12 @@ class SugerLeadService
             $all_fields_dump =  json_decode($this->lead->all_fields_dump);
             $mergedUpdatedData =  collect($all_fields_dump)->merge($request->all());
             $this->lead->update(["all_fields_dump" => json_encode($mergedUpdatedData)]);
-            return  [ 
+            return  [
                     "response" => [
-                        "status"  => "success", 
-                        "message" =>  "Your hood lead has been updated" 
-                                  ], 
-                        "status" => 200 
+                        "status"  => "success",
+                        "message" =>  "Your hood lead has been updated"
+                                  ],
+                        "status" => 200
                                   ];
 
         } catch (\Throwable $th) {

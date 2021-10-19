@@ -17,6 +17,7 @@ class AlterConnectionApplicationTable extends Migration
             //
             $table->tinyInteger('source')->default('0')->nullable();
             $table->unsignedBigInteger('created_by')->nullable()->change();
+            $table->string('email', 200)->nullable()->change();
         });
     }
 

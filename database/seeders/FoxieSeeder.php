@@ -17,17 +17,17 @@ class FoxieSeeder extends Seeder
         //
         $count =  Agency::where('name' , "Foxie-Hood-Agent" )->count();
         if($count < 1){
-            $agency =  Agency::create(["name" => "Foxie-Hood-Agent" , "type" => Agency::TYPE_FRANCHISED]);
-            $agency->offices()->create([ 
-                'name' => "Enkaizen",
-                'street_address' => "Baridhara",
-                'city' => "Dhaka",
-                'state' => "Mahakhali",
-                'postcode' => "4000",
-                'country' => "Bangladesh",
+            $agency =  Agency::create(["name" => "Foxie-Hood-Agent" , "type" => Agency::TYPE_INDEPENDENT]);
+            $agency->offices()->create([
+                'name' => "Foxie Office",
+                'street_address' => "100 plenty road",
+                'city' => "a",
+                'state' => "VIC",
+                'postcode' => "3083",
+                'country' => "Australia",
                 'abn' => "2",
-                'phone' => "01714556987",
-                'email' => "admin@enkaizen.com"
+                'phone' => "041714556987",
+                'email' => "foxie@hood.ai"
             ]);
         }
     }
