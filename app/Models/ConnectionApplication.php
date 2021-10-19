@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Foxie\SugerLead;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -205,6 +206,8 @@ class ConnectionApplication extends Model
     const PLAN_TYPE_TOTAL_INDEX = 1;
     const PLAN_TYPE_BASIC_INDEX = 2;
     const PLAN_TYPE_NO_FRILLS_INDEX = 3;
+    
+    const SOURCE_FOXIE = 1;
 
     const PLAN_TYPE_MAPPER = [
         self::PLAN_TYPE_BASIC => 1,
@@ -264,6 +267,14 @@ class ConnectionApplication extends Model
     public function identification()
     {
         return $this->hasOne(Identification::class);
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function SugerLead()
+    {
+        return $this->hasOne(SugerLead::class , 'connection_application_id');
     }
 
     /**
