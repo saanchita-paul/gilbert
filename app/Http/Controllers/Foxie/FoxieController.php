@@ -3,32 +3,11 @@
 namespace App\Http\Controllers\Foxie;
 
 use App\Http\Controllers\Controller;
-use App\Models\Foxie\SugerLead;
 use App\Services\Foxie\SugerLeadService;
 use Illuminate\Http\Request;
 
 class FoxieController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -37,33 +16,18 @@ class FoxieController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        // $sugerLead =  SugerLead::create(["all_fields_dump" => json_encode($request->all())]);
-        $sugerLead = new SugerLeadService($request);
-        $response = $sugerLead->create();
-        return response( $response , 200); 
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        try {
+            $sugerLead = new SugerLeadService();
+            $connectionApplication = $sugerLead->create($request);
+            $response = [
+                "status" => "success" ,
+                "hood_lead_id" => $connectionApplication->id ,
+                "message" =>  "Hood lead has been added successfully"
+            ];
+            return response( $response , 200 );
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 
     /**
@@ -75,19 +39,20 @@ class FoxieController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $sugerLead = new SugerLeadService($request , $id);
-        $msg =  $sugerLead->update($request , $id);
-        return response($msg["response"] , $msg["status"]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        try {
+            $sugerLead = new SugerLeadService();
+            $sugerLead->update($request , $id);
+            $response = [
+                "status"  => "success",
+                "message" =>  "Your hood lead has been updated"
+            ];
+            return response( $response , 200 );
+        } catch (\Throwable $th) {
+            $response = [
+                "status"  => "failed",
+                "message" =>  "Hood Lead Id: $id is not found"
+            ];
+            return response( $response , 404 );
+        }
     }
 }
