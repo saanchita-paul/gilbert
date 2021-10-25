@@ -115,11 +115,12 @@ class SugerLeadService
     public function show(String $from = null , String $to = null , int $id = null) : Object
     {   
         try {
-            $leads = '';
+            $leads = null;
             if($id == null){
-                $leads =  ConnectionApplication::where('moving_date', '>=', $from)->where('moving_date', '<=', $to)->get();
+                $leads =  ConnectionApplication::where('created_at', '>=', $from)->where('created_at', '<=', $to)->where('source' , ConnectionApplication::SOURCE_FOXIE )->get();
             }else{
-                $leads  = ConnectionApplication::findOrFail($id);
+                $leads  = ConnectionApplication::where( 'source' , ConnectionApplication::SOURCE_FOXIE )->where('id' , $id)->first();
+                $leads ?? throw new Exception("Error Processing Request", 1);
             }
             return $leads;
         } catch (\Throwable $th) {

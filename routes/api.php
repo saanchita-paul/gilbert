@@ -99,10 +99,8 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 Route::post('/invitation/validation', [UserInvitationController::class, 'validateInvitation']);
 Route::post('/invitation/change-password', [UserInvitationController::class, 'passwordChange']);
 
-
 Route::post('/register/email-validation', [AuthController::class, 'isValidUser']);
 Route::get('/users/is-unique-email', [AuthController::class, 'isEmailValid']);
-
 
 Route::group(['middleware' => ['foxie.suger.leads']], function () {
     Route::prefix('foxie')->group(function () {
