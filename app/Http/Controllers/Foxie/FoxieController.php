@@ -41,7 +41,7 @@ class FoxieController extends Controller
     {   
         try {
             $sugerLead = new SugerLeadService();
-            $connectionApplication = $sugerLead->show($request->from , $request->to , $request->id );
+            $connectionApplication = $sugerLead->show($request->from , $request->to , $request->lead_id );
             $response = [
                 "status" => "success" ,
                 "data" => $connectionApplication
@@ -51,7 +51,7 @@ class FoxieController extends Controller
             //throw $th;
             $response = [
                 "status" => "failed" ,
-                "data" => "Your lead id $request->id is not found"
+                "data" => "Your lead id $request->lead_id is not found"
             ];
             return response( $response , 404 );
         }

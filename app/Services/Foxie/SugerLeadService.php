@@ -112,14 +112,14 @@ class SugerLeadService
      * @param  int  $id
      * @return Ojbect $leads
      */
-    public function show(String $from = null , String $to = null , int $id = null) : Object
+    public function show(String $from = null , String $to = null , $id = null) : Object
     {   
         try {
             $leads = null;
             if($id == null){
                 $leads =  ConnectionApplication::where('created_at', '>=', $from)->where('created_at', '<=', $to)->where('source' , ConnectionApplication::SOURCE_FOXIE )->get();
             }else{
-                $leads  = ConnectionApplication::where( 'source' , ConnectionApplication::SOURCE_FOXIE )->where('id' , $id)->first();
+                $leads  = ConnectionApplication::where( 'source' , ConnectionApplication::SOURCE_FOXIE )->where('id' , $id)->get()[0];
                 $leads ?? throw new Exception("Error Processing Request", 1);
             }
             return $leads;

@@ -26,7 +26,7 @@ class FoxieRequest extends FormRequest
         return [
             'from' => 'nullable|date',
             'to' => 'nullable|date',
-            'id' => 'nullable|integer',
+            'lead_id' => 'nullable|integer',
         ];
     }
 
