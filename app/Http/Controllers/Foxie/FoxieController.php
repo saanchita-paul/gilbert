@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Foxie;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Foxie\FoxieRequest;
 use App\Services\Foxie\SugerLeadService;
 use Illuminate\Http\Request;
 
@@ -27,6 +28,32 @@ class FoxieController extends Controller
             return response( $response , 200 );
         } catch (\Throwable $th) {
             //throw $th;
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function show(FoxieRequest $request)
+    {   
+        try {
+            $sugerLead = new SugerLeadService();
+            $connectionApplication = $sugerLead->show($request->from , $request->to , $request->id );
+            $response = [
+                "status" => "success" ,
+                "data" => $connectionApplication
+            ];
+            return response( $response , 200 );
+        } catch (\Exception $th) {
+            //throw $th;
+            $response = [
+                "status" => "failed" ,
+                "data" => "Your lead id $request->id is not found"
+            ];
+            return response( $response , 404 );
         }
     }
 

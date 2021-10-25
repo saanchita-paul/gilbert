@@ -104,4 +104,27 @@ class SugerLeadService
         }
     }
 
+    /**
+     * Show the specified resource in storage.
+     *
+     * @param  String $fromDate
+     * @param  String $toDate
+     * @param  int  $id
+     * @return Ojbect $leads
+     */
+    public function show(String $from = null , String $to = null , int $id = null) : Object
+    {   
+        try {
+            $leads = '';
+            if($id == null){
+                $leads =  ConnectionApplication::where('moving_date', '>=', $from)->where('moving_date', '<=', $to)->get();
+            }else{
+                $leads  = ConnectionApplication::findOrFail($id);
+            }
+            return $leads;
+        } catch (\Throwable $th) {
+            throw new Exception("Lead not found", 1);
+        }
+    }
+
 }
