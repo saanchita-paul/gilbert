@@ -104,6 +104,15 @@
                 <p>{{['Unassigned','Assigned', 'Escalated'].includes(application.status)?'In Progress': application.status }}</p>
             </v-col>
 
+            <v-col cols="5" class="my-0 py-0">
+                <p class="font-weight-bold  pl-2">Identification</p>
+            </v-col>
+            <v-col cols="7" class="my-0 py-0">
+                <p>Passport</p>
+                <p>12343566467</p>
+                <p>Expire on 10/23</p>
+            </v-col>
+
 
 
 
@@ -128,7 +137,7 @@
 
         <v-row>
             <v-col cols="5" class="my-0 py-0 ">
-                <p class="font-weight-bold  pl-2">Tenancy Type:</p>
+                <p class="font-weight-bold  pl-2">Occupancy Type:</p>
             </v-col>
             <v-col cols="6" class="my-0 py-0">
                 <p>
@@ -147,20 +156,69 @@
 
 
         <v-divider class="mt-4 mb-2"></v-divider>
-        <p class="sub-title py-2">Service Preference
-          <span class="mx-2">
-              <v-icon :disabled="isServiceAllowed(application.service_interests, 'power')" color="yellow">mdi-flash</v-icon>
-          </span>
-          <span class="mx-2">
-              <v-icon :disabled="isServiceAllowed(application.service_interests, 'gas')" color="red">mdi-fire</v-icon>
-          </span>
-          <span class="mx-2">
-              <v-icon :disabled="isServiceAllowed(application.service_interests, 'internet')" color="green">mdi-wifi</v-icon>
-          </span>
-          <span class="mx-2">
-              <v-icon :disabled="isServiceAllowed(application.service_interests, 'water')" color="blue" >mdi-water</v-icon>
-          </span>
-        </p>
+
+        <p class="sub-title mt-4 mb-2">Service Preference</p>
+        <v-row>
+
+            <v-col  class="my-0 py-0 mx-0">
+                <p class="py-2 mb-0">
+                  <span class="ml-2">
+                      <v-icon :disabled="isServiceAllowed(application.service_interests, 'power')" color="yellow">mdi-flash</v-icon>Power
+                  </span>
+                </p>
+                <p class="py-0 my-0 pl-6 service-status">
+                    Connected
+                </p>
+            </v-col>
+
+            <v-col  class="my-0 py-0 mx-0">
+                <p class="py-2 mb-0">
+                  <span class="ml-2">
+                      <v-icon :disabled="isServiceAllowed(application.service_interests, 'gas')" color="red">mdi-fire</v-icon>Gas
+                  </span>
+                </p>
+                <p class="py-0 my-0 pl-6 service-status">
+                    Connected
+                </p>
+            </v-col>
+            <v-col  class="my-0 py-0 mx-0">
+                <p class="py-2 mb-0">
+                  <span class="ml-2">
+                       <v-icon :disabled="isServiceAllowed(application.service_interests, 'internet')" color="green">mdi-wifi</v-icon>Internet
+                  </span>
+                </p>
+                <p class="py-0 my-0 pl-6 service-status">
+                    Connected
+                </p>
+            </v-col>
+            <v-col  class="my-0 py-0 mx-0">
+                <p class="py-2 mb-0">
+                  <span class="ml-2">
+                      <v-icon :disabled="isServiceAllowed(application.service_interests, 'water')" color="blue" >mdi-water</v-icon>Water
+                  </span>
+                </p>
+                <p class="py-0 my-0 pl-6 service-status">
+                    Connected
+                </p>
+            </v-col>
+
+
+
+        </v-row>
+<!--        <p class="sub-title py-2">-->
+<!--          <span class="mx-2">-->
+<!--              <v-icon :disabled="isServiceAllowed(application.service_interests, 'power')" color="yellow">mdi-flash</v-icon>-->
+<!--          </span>-->
+<!--          <span class="mx-2">-->
+<!--              <v-icon :disabled="isServiceAllowed(application.service_interests, 'gas')" color="red">mdi-fire</v-icon>-->
+<!--          </span>-->
+<!--          <span class="mx-2">-->
+<!--              <v-icon :disabled="isServiceAllowed(application.service_interests, 'internet')" color="green">mdi-wifi</v-icon>-->
+<!--          </span>-->
+<!--          <span class="mx-2">-->
+<!--              <v-icon :disabled="isServiceAllowed(application.service_interests, 'water')" color="blue" >mdi-water</v-icon>-->
+<!--          </span>-->
+<!--        </p>-->
 
         <div>
           <p class="sub-title mb-1">Agent’s Additional Instructions</p>
@@ -225,5 +283,8 @@ export default {
 .layout-fixed-table{
     table-layout: fixed;
     width: 100%
+}
+.service-status{
+    font-size: 10px;
 }
 </style>

@@ -28,7 +28,7 @@ class SearchConnectionApplication
         $this->perPage = empty($request['per_page']) ? null : (int)$request['per_page'];
         $this->status = optional($request)['status'];
         $this->leadType = optional($request)['active_lead_type'];
-        $this->source = ConnectionApplication::SOURCE_MAPPING[$request['source']] ?? 'hood';
+        $this->source = ConnectionApplication::SOURCE_MAPPING[$request['source']??''] ?? 'hood';
 
         $this->setSearch(optional($request)['search']);
         $this->setSortBy(optional($request)['sort_by'], optional($request)['is_descending']);

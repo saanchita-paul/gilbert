@@ -49,6 +49,7 @@ export default class ApplicationSummary {
     billing_postcode = null;
     is_billing_same = null;
     authorizedPersonName = null;
+    is_contacted = false;
     constructor(
         {
             id = null,
@@ -97,6 +98,7 @@ export default class ApplicationSummary {
             billing_postcode = null,
             is_billing_same = null,
             authorizedPersonName = null,
+            is_contacted = false
         }
     ) {
 
@@ -150,7 +152,8 @@ export default class ApplicationSummary {
             this.billing_street_address = billing_street_address,
             this.billing_city = billing_city,
             this.billing_postcode = billing_postcode,
-            this.is_billing_same = is_billing_same
+            this.is_billing_same = is_billing_same,
+            this.is_contacted = is_contacted;
 
     }
 

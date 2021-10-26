@@ -8,6 +8,7 @@ import PaginationMapper from "@scripts/api/mappers/crm/PaginationMapper";
 import DayJS from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import dayjs from "dayjs";
+import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 export default {
     mapApplication(data) {
         let model = Object.assign(new Application(), { ...data });
@@ -25,6 +26,7 @@ export default {
     },
 
     mapApplicationList(data) {
+        console.log('data',data);
         const models = [];
         data.data.forEach((item) => {
             models.push(this.mapApplication(item));
@@ -72,7 +74,7 @@ export default {
 
     mapToServer(data) {
 
-
+        console.log(data);
         let commsission = [];
         data.application.service_interests.forEach(service => {
             if(service === COMMISSION.GAS.text)
@@ -104,6 +106,7 @@ export default {
         data.application.service_interests = commsission;
        return {
            ...data.application,
+           identification: this.mapIdentification(data.identification),
            dob: this.mapDateToServer(data.application.date_of_birth),
            moving_date: this.mapDateToServer(data.application.moving_date),
            is_email_billing: data.application.email_billing?data.application.email_billing:0,
@@ -114,8 +117,40 @@ export default {
 
        }
     },
-    mapDateToServer(dt)
-    {
+
+    mapIdentification(identification) {
+        if(identification.type === IDENTIFICATION.PASSPORT)
+        {
+            return {
+                type: identification.type,
+                card_number: identification.card_number,
+                expire_date: this.mapDateToServer(identification.expire_date),
+                country: identification.country,
+            };
+        }
+        if(identification.type === IDENTIFICATION.MEDICARE)
+        {
+            return {
+                type: identification.type,
+                card_number: identification.card_number,
+                expire_date: this.mapDateToServer(identification.expire_date),
+                special_number: identification.special_number,
+                card_color: identification.card_color,
+            };
+        }
+        if(identification.type === IDENTIFICATION.DL)
+        {
+            return {
+                type: identification.type,
+                card_number: identification.card_number,
+                expire_date: this.mapDateToServer(identification.expire_date),
+                state: identification.state,
+            };
+        }
+        return '';
+    },
+
+    mapDateToServer(dt) {
         return dayjs(dt,'DD/MM/YYYY').format('YYYY-MM-DD');
     }
 
