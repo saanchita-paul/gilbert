@@ -33,6 +33,7 @@
             <v-row>
                 <v-col cols="12" class="crm-table">
                     <v-data-table
+                            dense
                             :headers="headers"
                             :items="usersList"
                             :options.sync="options"
@@ -40,6 +41,76 @@
                             :loading="loading"
                             class="elevation-1 row-pointer"
                     >
+
+                        <template v-slot:item.first_name="{ item }">
+                            <ValidationProvider name="Firstname" rules="required"  v-slot="{ errors }">
+                                <v-text-field
+                                    class="mt-6"
+                                    outlined
+                                    dense
+                                    placeholder="Firstname"
+                                    v-model="item.first_name"
+                                    :error-messages=" errors[0]"
+                                ></v-text-field>
+                            </ValidationProvider>
+                        </template>
+                        <template v-slot:item.last_name="{ item }">
+                            <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
+                                <v-text-field
+                                    class="mt-6"
+                                    outlined
+                                    dense
+                                    placeholder="Lastname"
+                                    v-model="item.last_name"
+                                    :error-messages=" errors[0]"
+                                ></v-text-field>
+                            </ValidationProvider>
+                        </template>
+
+                        <template v-slot:item.role="{ item }">
+                                <!-- <v-text-field class="mt-6" outlined dense v-model="item.role"></v-text-field> -->
+                                <ValidationProvider name="Role" rules="required"  v-slot="{ errors }">
+                                    <v-select outlined dense
+                                            class="mt-6"
+                                            v-model="item.role"
+                                            :items="roles.AGENCY"
+                                            :error-messages=" errors[0]"
+                                            placeholder="Please Select">
+                                    </v-select>
+                                </ValidationProvider>
+                        
+                        </template>
+
+                        <template v-slot:item.phone="{ item }">
+                                <ValidationProvider name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                                    <v-text-field
+                                        class="mt-6"
+                                        :maxlength="10"
+                                        outlined
+                                        dense
+                                        placeholder="04XX XXX XXX"
+                                        v-model="item.phone"
+                                        :error-messages=" errors[0]"
+                                    ></v-text-field>
+                                </ValidationProvider>
+
+                        </template>
+                        <template v-slot:item.email="{ item }">
+                                <ValidationProvider name="Email address" rules="required|email"  v-slot="{ errors }">
+                                            <v-text-field
+                                                class="mt-6"
+                                                indentification
+                                                :error-messages=" errors[0]"
+                                                outlined
+                                                v-model="item.email"
+                                                dense
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                        </template>
+                        <template v-slot:item.action="{ item }">
+                               <v-icon>mdi-send</v-icon>
+                        </template>
+
                     </v-data-table>
                 </v-col>
             </v-row>
@@ -60,6 +131,7 @@
     import LeadMetrics from "@scripts/components/crm/LeadMetrics";
     import OfficeService from "@scripts/services/crm/OfficeService";
     import AgencyService from "@scripts/services/crm/AgencyService";
+    import Roles from '@scripts/data/UserRoles'
     export default {
         name: "CrmUserDatatable",
         components: {UserCreatedSuccessfulModal, UserCreationConfirmationModal, CreateUserModal, Search, LeadMetrics},
@@ -72,6 +144,7 @@
                 user: null,
                 usersList: [],
                 activeOffice: null,
+                roles: Roles,
                 /*office: {
                     id: null,
                     name: null,
@@ -91,33 +164,53 @@
                 loading: true,
                 options: {},
                 headers:  [
+                    // {
+                    //     text: 'Property Manager Name',
+                    //     align: 'start',
+                    //     sortable: true,
+                    //     value: 'proerty_manager_name'
+                    // },
                     {
-                        text: 'Property Manager Name',
+                        text: 'First Name',
                         align: 'start',
                         sortable: true,
-                        value: 'proerty_manager_name'
+                        value: 'first_name'
+                    },
+                    {
+                        text: 'Last Name',
+                        align: 'start',
+                        value: 'last_name',
+                        sortable: true,
                     },
                     {
                         text: 'Applications',
                         align: 'start',
+                        value: 'submitted_lead',
                         sortable: true,
-                        value: 'submitted_lead'
                     },
                     {
                         text: 'Role',
                         align: 'start',
+                        value: 'role',
                         sortable: true,
-                        value: 'role'
                     },
                     {
                         text: 'Mobile',
                         align: 'start',
-                        value: 'phone'
+                        value: 'phone',
+                        sortable: false,
                     },
                     {
                         text: 'Email',
                         align: 'start',
-                        value: 'email'
+                        value: 'email',
+                        sortable: false,
+                    },
+                    {
+                        text: 'Action',
+                        align: 'start',
+                        value: 'action',
+                        sortable: false,
                     }
                 ],
                 search: '',
@@ -168,6 +261,7 @@
                 }
                 const data = await CrmUserService.loadUserData(meta, this.$route.params.id, this.$route.params.officeId);
                 this.usersList = data?.users;
+                console.log(this.usersList)
                 this.page = data.pagination.current_page;
                 this.itemsPerPage = data.pagination.per_page;
                 this.totalItem = data.pagination.total;
