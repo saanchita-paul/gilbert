@@ -15,8 +15,8 @@ export default {
     mapUserList: (userList)=> {
 
         const users =  userList?.data.map(user=> {
-            // user.role = mapRole(user.user.roles[0]);
-            user.role = user.user.roles[0];
+            user.role = mapRole(user.user.roles[0]);
+            user.role_value = user.user.roles[0];
             return mapUser(user);
         });
         const pagination =  PaginationMapper.mapPagination(userList?.meta);

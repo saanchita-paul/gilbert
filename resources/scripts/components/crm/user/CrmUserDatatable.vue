@@ -67,12 +67,12 @@
                             </ValidationProvider>
                         </template>
 
-                        <template v-slot:item.role="{ item }">
+                        <template v-slot:item.role_value="{ item }">
                                 <!-- <v-text-field class="mt-6" outlined dense v-model="item.role"></v-text-field> -->
                                 <ValidationProvider name="Role" rules="required"  v-slot="{ errors }">
                                     <v-select outlined dense
                                             class="mt-6"
-                                            v-model="item.role"
+                                            v-model="item.role_value"
                                             :items="roles.AGENCY"
                                             :error-messages=" errors[0]"
                                             placeholder="Please Select">
@@ -191,7 +191,7 @@
                     {
                         text: 'Role',
                         align: 'start',
-                        value: 'role',
+                        value: 'role_value',
                         sortable: true,
                     },
                     {
