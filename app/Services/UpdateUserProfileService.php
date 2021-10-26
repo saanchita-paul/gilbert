@@ -21,7 +21,6 @@ class UpdateUserProfileService
         $user->update(['email'=>$profileData['email']]);
         return $user->refresh();
 
-
     }
 
 }
