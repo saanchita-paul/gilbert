@@ -65,10 +65,21 @@ export default {
         }
     },
 
+    updateUserData: async (agency,id) => {
+        try {
+
+            const data = await axios.post('/api/office-agents/' + id +'/update-user-data',{...agency});
+            return AgencyMqpper.mapAgency( data.data.data);
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
     updateAgency: async (agency,id) => {
         try {
 
-            const data = await axios.post('/api/agencies/'+id+'/update',{...agency});
+            const data = await axios.post('/api/agencies/'+ id +'/update',{...agency});
             return AgencyMqpper.mapAgency( data.data.data);
 
         } catch (error) {
