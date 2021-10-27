@@ -7,7 +7,6 @@ use App\Http\Controllers\Agency\NoteController;
 use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ApplicationController;
 use App\Http\Controllers\Auth\AuthController;
-use Foxie\Http\Controllers\FoxieController;
 use App\Http\Controllers\UserInvitationController;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Broadcast;
@@ -100,16 +99,6 @@ Route::post('/invitation/change-password', [UserInvitationController::class, 'pa
 
 Route::post('/register/email-validation', [AuthController::class, 'isValidUser']);
 Route::get('/users/is-unique-email', [AuthController::class, 'isEmailValid']);
-
-// Route::namespace('Foxie')->group(function () {
-//     Route::group(['middleware' => ['foxie.suger.leads']], function () {
-//         Route::prefix('foxie')->group(function () {
-//             Route::post('/lead', [FoxieController::class, 'store']);
-//             Route::get('/lead', [FoxieController::class, 'show']);
-//             Route::patch('/lead/{id}', [FoxieController::class, 'update']);
-//         });
-//     });
-// });
 
 /**
  * test routes
