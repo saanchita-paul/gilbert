@@ -22,11 +22,11 @@ class UpdateUserProfileService
         return $user->refresh();
     }
     
-    public function updateUserData($profileData){
-        $user = User::findOrFail($this->id);
-        $user->profile->update($profileData);
-        $user->update(['email'=>$profileData['email']]);
-        
-        return $user->refresh();
-    }
+    // public function updateUserData($profileData){
+    //     $user = User::findOrFail($this->id);
+    //     $user->profile->update($profileData);
+    //     $user->update(['email'=>$profileData['email']]);
+    //     $user->
+    //     return $user->refresh();
+    // }
 }

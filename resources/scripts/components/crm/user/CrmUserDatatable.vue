@@ -69,12 +69,12 @@
                             </ValidationProvider>
                         </template>
 
-                        <template v-slot:item.role_value="{ item }">
+                        <template v-slot:item.role="{ item }">
                                 <!-- <v-text-field class="mt-6" outlined dense v-model="item.role"></v-text-field> -->
                                 <ValidationProvider name="Role" rules="required"  v-slot="{ errors }">
                                     <v-select outlined dense
                                             class="mt-6"
-                                            v-model="item.role_value"
+                                            v-model="item.role"
                                             :items="roles.AGENCY"
                                             :error-messages=" errors[0]"
                                             @blur="()=>updateUserData(item)"
@@ -190,7 +190,7 @@
                     {
                         text: 'Role',
                         align: 'start',
-                        value: 'role_value',
+                        value: 'role',
                         sortable: true,
                     },
                     {
@@ -246,7 +246,7 @@
             },
 
             async updateUserData(agency){
-                let agency = await AgencyService.updateUserData(agency, agency.id);
+                await AgencyService.updateUserData(agency, agency.id);
             },
 
             done() {
@@ -263,7 +263,8 @@
                     sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: '',
                 }
                 const data = await CrmUserService.loadUserData(meta, this.$route.params.id, this.$route.params.officeId);
-                this.usersList = data?.users;
+                console.log(data)
+                this.usersList = data?.usersAgency;
                 console.log(this.usersList)
                 this.page = data.pagination.current_page;
                 this.itemsPerPage = data.pagination.per_page;
