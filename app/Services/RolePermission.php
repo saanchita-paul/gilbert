@@ -14,7 +14,12 @@ class RolePermission {
     const ROLE_AGENCY_OFFICE_DIRECTOR = 'agency_office_director';
     const ROLE_AGENCY_OFFICE_PROPERTY_MANAGER = 'agency_office_property_manager';
     const ROLE_AGENCY_OFFICE_SENIOR_PROPERTY_MANAGER = 'agency_office_senior_property_manager';
+    const ROLE_AGENCY_OFFICE_ASSISTANT_PROPERTY_MANAGER = 'agency_assistant_property_manager';
     const ROLE_AGENCY_OFFICE_REAL_ESTATE_AGENT = 'agency_office_real_estate_agent';
+    const ROLE_AGENCY_BUSINESS_DEVELOPMENT_MANAGER = 'agency_office_business_development_manager';
+    const ROLE_AGENCY_SALES_PA = 'agency_sales_pa';
+    const ROLE_AGENCY_RECEPTIONIST = 'agency_receptionist';
+    
 
     //permissions
     const P_HOOD_ADMIN_CORE = 'hood_admin_core';
