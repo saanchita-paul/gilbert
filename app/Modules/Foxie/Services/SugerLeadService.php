@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Services\Foxie;
+namespace Foxie\Services;
 
 use App\Models\Agency;
 use Illuminate\Http\Request;
-use App\Models\Foxie\SugerLead;
+use Foxie\Models\SugerLead;
 use Illuminate\Support\Facades\Log;
 use App\Models\ConnectionApplication;
 use Exception;
