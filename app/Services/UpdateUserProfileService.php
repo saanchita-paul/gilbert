@@ -3,7 +3,8 @@
 
 namespace App\Services;
 
-
+use App\Models\AgentProfile;
+use Exception;
 use App\Models\User;
 
 class UpdateUserProfileService
@@ -16,19 +17,31 @@ class UpdateUserProfileService
 
     public function updateProfile($profileData)
     {
-        $user = User::findOrFail($this->id);
-        $user->profile->update($profileData);
-        $user->update(['email'=>$profileData['email']]);
-        return $user->refresh();
+        try {
+            $user = User::findOrFail($this->id);
+            $user->profile->update($profileData);
+            $user->update(['email'=>$profileData['email']]);
+            return $user->refresh();
+        } catch (\Throwable $th) {
+            throw new Exception("Error Processing Request", 1);
+        }
     }
     
     public function updateUserData($profileData){
-        $user = $this->updateProfile($profileData);
-        $this->updateRole($profileData['role'],  $user);
-        return $user->refresh();
+        try {
+            $agent = AgentProfile::findOrFail($this->id);
+            $user = $agent->user;
+            $agent->update( $profileData );
+            $user->update( ['email' => $profileData['email']] );
+            $roles = [ $profileData['role'] ];
+            $this->updateRole($roles,  $user);
+            return $user->refresh();
+        } catch (\Throwable $th) {
+            throw new Exception("Error Processing Request", 1);
+        }
     }
     
     private function updateRole($roles, $user){
-        $user->syncPermissions($roles);
+            $user->syncRoles($roles);
     }
 }

@@ -113,7 +113,7 @@ export default {
 
     updateUserData: async (profile, id) =>{
         try {
-            const data = await axios.post('/api/office-agents/'+ id+ '/updateUserData', {...profile});
+            const data = await axios.post('/api/office-agents/'+ id+ '/update-user-data', {...profile});
         } catch (error) {
             console.log(error);
             return error.data;
