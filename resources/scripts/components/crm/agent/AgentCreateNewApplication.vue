@@ -515,7 +515,7 @@
 
                     <v-col cols="12">
                         <div class="d-flex  flex-row-reverse">
-                            <v-btn @click="onSubmit" color="primary">Submit</v-btn>
+                            <v-btn @click="onSubmit" :loading="loadSubmit" color="primary">Submit</v-btn>
                             <v-btn @click="onCancel" class="mx-4">Cancel</v-btn>
                         </div>
                     </v-col>
@@ -525,6 +525,9 @@
         <AgentConfirmApplicationModal
             v-if="confirmApplicationModal" :dialog="confirmApplicationModal"
             :application="application"
+            :authorisedPerson="authorized_person"
+            :identification="indentification"
+            :has_authorized="has_authorized"
             @cancelApplicationModal="cancelApplicationModal"
             @saveApplication="saveApplication">
         </AgentConfirmApplicationModal>
@@ -545,6 +548,7 @@ import DayJs from "dayjs";
 import LeadCreateSuccessfulModal from "@scripts/components/crm/modals/LeadCreateSuccessfulModal";
 import {isNull} from "lodash-es";
 import IdentificationDetail from "@scripts/components/crm/agent/IdentificationDetail";
+import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 
 export default {
     name: "AgentCreateNewApplication",
@@ -577,10 +581,10 @@ export default {
             showMovingDate: false,
             showDOB: false,
             service_types: {
-                power: false,
-                gas: false,
-                water: false,
-                internet: false,
+                power: true,
+                gas: true,
+                water: true,
+                internet: true,
             },
             showMenu: false,
             searchResult: [],
@@ -641,7 +645,7 @@ export default {
                 },
             ],
             indentification: {
-                type: "",
+                type: IDENTIFICATION.PASSPORT,
                 card_number: "",
                 special_number: "",
                 expire_date: "",
@@ -649,7 +653,9 @@ export default {
                 state: "",
                 country: "",
             },
+            loadSubmit: false
         }
+
     },
     created() {
         this.onStreetChanged = debounce(() => {
@@ -698,6 +704,7 @@ export default {
         },
         saveApplication() {
             this.confirmApplicationModal = false;
+            this.loadSubmit = true;
             AgentApplicationService.createApplication({
                 'application': this.application,
                 'authorized_person': this.authorized_person,

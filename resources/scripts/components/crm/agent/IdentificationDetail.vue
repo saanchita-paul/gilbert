@@ -1,5 +1,5 @@
 <template>
-    <div  cols="12" class="py-0 pl-3">
+    <div  cols="12" class="py-0 pl-3" v-if="isLoaded">
        <template v-if="isMedicare()">
            <v-row>
                <v-col cols="6" class="pb-0">
@@ -11,7 +11,6 @@
                            dense
                            placeholder="Medicare Card Number"
                            label="Medicare Card Number"
-                           hide-details="auto"
                            @change="updateIdentification"
                        ></v-text-field>
                    </ValidationProvider>
@@ -30,7 +29,6 @@
                                :items="specialNumberDD"
                                outlined
                                dense
-                               hide-details="auto"
                                @change="updateIdentification"
                            >
                            </v-select>
@@ -63,7 +61,6 @@
                                    v-model="identification.expire_date"
                                    v-bind="attrs"
                                    :error-messages="errors[0]"
-                                   hide-details="auto"
                                    @change="updateExpireDatePicker"
                                >
                                    <template slot="append">
@@ -94,7 +91,6 @@
                            :items="colorDD"
                            outlined
                            dense
-                           hide-details="auto"
                            @change="updateIdentification"
                        >
                        </v-select>
@@ -116,7 +112,6 @@
                             dense
                             placeholder="Passport Number"
                             label="Passport Number *"
-                            hide-details="auto"
                             @change="updateIdentification"
                         ></v-text-field>
                     </ValidationProvider>
@@ -130,7 +125,6 @@
                             dense
                             placeholder="AUS"
                             label="Issuing Country *"
-                            hide-details="auto"
                             @change="updateIdentification"
                         ></v-text-field>
                     </ValidationProvider>
@@ -162,7 +156,6 @@
                                         v-model="identification.expire_date"
                                         v-bind="attrs"
                                         :error-messages="errors[0]"
-                                        hide-details="auto"
                                         @change="updateExpireDatePicker"
                                     >
                                         <template slot="append">
@@ -191,7 +184,6 @@
                             dense
                             placeholder="License Number"
                             label="Driver’s License*"
-                            hide-details="auto"
                             @change="updateIdentification"
                         ></v-text-field>
                     </ValidationProvider>
@@ -211,7 +203,6 @@
                             :items="statesDD"
                             outlined
                             dense
-                            hide-details="auto"
                             @change="updateIdentification"
                         >
                         </v-select>
@@ -244,7 +235,6 @@
                                         v-model="identification.expire_date"
                                         v-bind="attrs"
                                         :error-messages="errors[0]"
-                                        hide-details="auto"
                                         @change="updateExpireDatePicker"
                                     >
                                         <template slot="append">
@@ -303,12 +293,13 @@ name: "IdentificationDetail",
             ],
             expire_date: null,
             showMovingDate: false,
+            isLoaded : false,
         }
     },
     methods:{
         syncProps() {
             this.identification = this.indentification;
-            console.log('this.identification', this.identification);
+            this.isLoaded = true;
         },
         isMedicare()
         {
@@ -364,5 +355,13 @@ name: "IdentificationDetail",
 </script>
 
 <style scoped>
-
+  .div_enabled {
+    border-color: transparent;
+    cursor: pointer;
+    background: #5C229A ;
+  }
+  .div_disabled {
+    border-color: gray;
+    cursor: pointer;
+  }
 </style>
