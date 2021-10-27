@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Foxie\SugerLead;
+use Foxie\Models\SugerLead;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
