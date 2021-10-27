@@ -27,7 +27,14 @@ class UpdateUserProfileService
         }
     }
     
-    public function updateUserData($profileData){
+    /**
+     * Update Agency User
+     *
+     * @param array $profileData
+     *
+     * @return User
+     */
+    public function updateUserData($profileData) : User {
         try {
             $agent = AgentProfile::findOrFail($this->id);
             $user = $agent->user;
@@ -36,12 +43,24 @@ class UpdateUserProfileService
             $roles = [ $profileData['role'] ];
             $this->updateRole($roles,  $user);
             return $user->refresh();
-        } catch (\Throwable $th) {
-            throw new Exception("Error Processing Request", 1);
+        } catch (\Exception $ex) {
+            throw new Exception($ex->getMessage(), 1);
         }
     }
-    
-    private function updateRole($roles, $user){
+
+    /**
+     * Update User roles
+     *
+     * @param array $roles
+     *
+     * @return bool
+     */
+    private function updateRole($roles, $user) : bool {
+        try {
             $user->syncRoles($roles);
+            return true;
+        } catch (\Throwable $th) {
+                throw new Exception("Problem in assigning role", 1);
+        }
     }
 }

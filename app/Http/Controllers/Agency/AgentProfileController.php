@@ -83,13 +83,19 @@ class AgentProfileController extends Controller
         try {
             $updateAgentService = new UpdateUserProfileService($id);
             return response()->json(['success' => false, 'user' => $updateAgentService->updateProfile($request->toArray())]);
-//            return AgencyResource::make();
         } catch ( \Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
-
     }
 
+    /**
+     * Update Agency User
+     *
+     * @param Request $request
+     * @param int $agenProfileId
+     *
+     * @return JsonResponse
+     */
     public function updateUserData(Request $request , $id){
         try {
             $updateAgentService = new UpdateUserProfileService($id);
