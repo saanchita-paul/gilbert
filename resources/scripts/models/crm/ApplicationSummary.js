@@ -28,7 +28,7 @@ export default class ApplicationSummary {
     is_renovation_on = 1;
     unit_number = null;
     street_number = null;
-    service_interests = [];
+    service_interests = ['gas', 'power', 'water', 'internet'];
     additional_instruction = null;
     applicant_name = null;
     identification = null;
@@ -49,7 +49,7 @@ export default class ApplicationSummary {
     billing_postcode = null;
     is_billing_same = null;
     authorizedPersonName = null;
-    is_contacted = false;
+    is_contacted = true;
     constructor(
         {
             id = null,
@@ -79,7 +79,7 @@ export default class ApplicationSummary {
             country = 'Australia',
             postcode = null,
             address_text = null,
-            services = [],
+            services = ['gas', 'power', 'water', 'internet'],
             additional_instruction = null,
             identification = null,
             mirn = null,
@@ -98,7 +98,7 @@ export default class ApplicationSummary {
             billing_postcode = null,
             is_billing_same = null,
             authorizedPersonName = null,
-            is_contacted = false
+            is_contacted = true
         }
     ) {
 

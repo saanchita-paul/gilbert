@@ -3,12 +3,15 @@
         <v-dialog
             v-model="dialog"
             persistent
-            max-width="800px"
+            max-width="580px"
         >
             <v-card>
                 <v-container>
                     <AgentConfirmApplicationDetails
                         :application="application"
+                        :identification="identification"
+                        :authorisedPerson="authorisedPerson"
+                        :has_authorized="has_authorized"
                         @cancelDialog="cancelApplicationModal"
                         @saveApplication="saveApplication">
                     </AgentConfirmApplicationDetails>
@@ -23,7 +26,7 @@ import AgentConfirmApplicationDetails from "@scripts/components/crm/agent/AgentC
 export default {
 name: "AgentConfirmApplicationModal",
     components: {AgentConfirmApplicationDetails},
-    props:['dialog', 'application'],
+    props:['dialog', 'application','identification','authorisedPerson', 'has_authorized'],
     methods: {
         cancelApplicationModal() {
             this.$emit('cancelApplicationModal');

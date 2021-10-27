@@ -74,7 +74,7 @@ export default {
 
     mapToServer(data) {
 
-        console.log(data);
+        // console.log(data);
         let commsission = [];
         data.application.service_interests.forEach(service => {
             if(service === COMMISSION.GAS.text)
