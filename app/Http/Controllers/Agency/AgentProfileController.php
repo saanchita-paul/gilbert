@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Agency;
 
 use App\Models\AgentProfile;
+use App\Services\Agency\AgencyUserService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
@@ -90,10 +91,21 @@ class AgentProfileController extends Controller
 
     }
 
-    public function updateUserData(Request $request , $id){
+    public function updateUserData(Request $request , $id)
+    {
         try {
             $updateAgentService = new UpdateUserProfileService($id);
             return response()->json(['success' => false, 'user' => $updateAgentService->updateUserData($request->toArray())]);
+        } catch ( \Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function sendConfirmMail($id)
+    {
+        try {
+            $userService = new AgencyUserService();
+            (new SendUserInviteService($userService->getUserByProfile($id)))->run();
         } catch ( \Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

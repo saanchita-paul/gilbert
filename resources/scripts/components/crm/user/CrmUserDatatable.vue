@@ -117,6 +117,7 @@
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-btn
                                             v-bind="attrs"
+                                            @click="()=>sendMailToUser(item)"
                                             v-on="on"
                                                 icon
                                                 >
