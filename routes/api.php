@@ -101,15 +101,15 @@ Route::post('/invitation/change-password', [UserInvitationController::class, 'pa
 Route::post('/register/email-validation', [AuthController::class, 'isValidUser']);
 Route::get('/users/is-unique-email', [AuthController::class, 'isEmailValid']);
 
-Route::namespace('Foxie')->group(function () {
-    Route::group(['middleware' => ['foxie.suger.leads']], function () {
-        Route::prefix('foxie')->group(function () {
-            Route::post('/lead', [FoxieController::class, 'store']);
-            Route::get('/lead', [FoxieController::class, 'show']);
-            Route::patch('/lead/{id}', [FoxieController::class, 'update']);
-        });
-    });
-});
+// Route::namespace('Foxie')->group(function () {
+//     Route::group(['middleware' => ['foxie.suger.leads']], function () {
+//         Route::prefix('foxie')->group(function () {
+//             Route::post('/lead', [FoxieController::class, 'store']);
+//             Route::get('/lead', [FoxieController::class, 'show']);
+//             Route::patch('/lead/{id}', [FoxieController::class, 'update']);
+//         });
+//     });
+// });
 
 /**
  * test routes
