@@ -50,6 +50,7 @@
                                     dense
                                     placeholder="Firstname"
                                     v-model="item.first_name"
+                                    @blur="()=>updateUserData(item)"
                                     :error-messages=" errors[0]"
                                 ></v-text-field>
                             </ValidationProvider>
@@ -62,6 +63,7 @@
                                     dense
                                     placeholder="Lastname"
                                     v-model="item.last_name"
+                                    @blur="()=>updateUserData(item)"
                                     :error-messages=" errors[0]"
                                 ></v-text-field>
                             </ValidationProvider>
@@ -75,6 +77,7 @@
                                             v-model="item.role_value"
                                             :items="roles.AGENCY"
                                             :error-messages=" errors[0]"
+                                            @blur="()=>updateUserData(item)"
                                             placeholder="Please Select">
                                     </v-select>
                                 </ValidationProvider>
@@ -90,6 +93,7 @@
                                         dense
                                         placeholder="04XX XXX XXX"
                                         v-model="item.phone"
+                                        @blur="()=>updateUserData(item)"
                                         :error-messages=" errors[0]"
                                     ></v-text-field>
                                 </ValidationProvider>
@@ -104,6 +108,7 @@
                                                 outlined
                                                 v-model="item.email"
                                                 dense
+                                                @blur="()=>updateUserData(item)"
                                             ></v-text-field>
                                         </ValidationProvider>
                         </template>
@@ -240,8 +245,8 @@
                 this.creationDoneFlag = true;
             },
 
-            async updateUserData(item){
-                this.agency = await AgencyService.updateUserData(agencyId);
+            async updateUserData(agency){
+                let agency = await AgencyService.updateUserData(agency, agency.id);
             },
 
             done() {
