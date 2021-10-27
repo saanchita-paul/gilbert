@@ -23,7 +23,12 @@ class RolePermissionSeeder extends Seeder
         RolePermission::ROLE_AGENCY_OFFICE_DIRECTOR,
         RolePermission::ROLE_AGENCY_OFFICE_PROPERTY_MANAGER,
         RolePermission::ROLE_AGENCY_OFFICE_SENIOR_PROPERTY_MANAGER,
-        RolePermission::ROLE_AGENCY_OFFICE_REAL_ESTATE_AGENT
+        RolePermission::ROLE_AGENCY_OFFICE_REAL_ESTATE_AGENT,
+        RolePermission::ROLE_AGENCY_AGENT,
+        RolePermission::ROLE_AGENCY_OFFICE_ASSISTANT_PROPERTY_MANAGER,
+        RolePermission::ROLE_AGENCY_BUSINESS_DEVELOPMENT_MANAGER,
+        RolePermission::ROLE_AGENCY_SALES_PA,
+        RolePermission::ROLE_AGENCY_RECEPTIONIST,
     ];
 
     protected array $permissions = [

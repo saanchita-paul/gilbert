@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Foxie;
+namespace Foxie\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Foxie\FoxieRequest;
-use App\Services\Foxie\SugerLeadService;
+use Foxie\Http\Requests\FoxieRequest;
+use Foxie\Services\SugerLeadService;
 use Illuminate\Http\Request;
 
 class FoxieController extends Controller

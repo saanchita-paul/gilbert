@@ -84,15 +84,20 @@ class AgentProfileController extends Controller
         try {
             $updateAgentService = new UpdateUserProfileService($id);
             return response()->json(['success' => false, 'user' => $updateAgentService->updateProfile($request->toArray())]);
-//            return AgencyResource::make();
         } catch ( \Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
-
     }
 
-    public function updateUserData(Request $request , $id)
-    {
+    /**
+     * Update Agency User
+     *
+     * @param Request $request
+     * @param int $agenProfileId
+     *
+     * @return JsonResponse
+     */
+    public function updateUserData(Request $request , $id){
         try {
             $updateAgentService = new UpdateUserProfileService($id);
             return response()->json(['success' => false, 'user' => $updateAgentService->updateUserData($request->toArray())]);
@@ -106,6 +111,7 @@ class AgentProfileController extends Controller
         try {
             $userService = new AgencyUserService();
             (new SendUserInviteService($userService->getUserByProfile($id)))->run();
+            return response()->json(['success' => true, ]);
         } catch ( \Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

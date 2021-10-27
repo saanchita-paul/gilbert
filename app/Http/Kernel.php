@@ -64,6 +64,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         //foxie
-        'foxie.suger.leads' => \App\Http\Middleware\FoxieSugerLeads::class,
+        'foxie.suger.leads' => \Foxie\Http\Middleware\FoxieSugerLeads::class,
     ];
 }

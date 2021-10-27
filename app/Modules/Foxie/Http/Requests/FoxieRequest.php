@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Foxie;
+namespace Foxie\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
