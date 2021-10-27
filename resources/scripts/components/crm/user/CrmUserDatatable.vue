@@ -108,7 +108,18 @@
                                         </ValidationProvider>
                         </template>
                         <template v-slot:item.action="{ item }">
-                               <v-icon>mdi-send</v-icon>
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn
+                                            v-bind="attrs"
+                                            v-on="on"
+                                                icon
+                                                >
+                                            <v-icon>mdi-send</v-icon>
+                                        </v-btn>
+                                </template>
+                                <span>Invite</span>
+                                </v-tooltip>
                         </template>
 
                     </v-data-table>
@@ -145,17 +156,6 @@
                 usersList: [],
                 activeOffice: null,
                 roles: Roles,
-                /*office: {
-                    id: null,
-                    name: null,
-                    address: null,
-                    phone: null,
-                    email: null,
-                    abn: null,
-                    agency_name: null,
-                    agency_type: null,
-                    agency_id: null,
-                },*/
 
                 page: 1,
                 pageCount: 0,
@@ -164,12 +164,6 @@
                 loading: true,
                 options: {},
                 headers:  [
-                    // {
-                    //     text: 'Property Manager Name',
-                    //     align: 'start',
-                    //     sortable: true,
-                    //     value: 'proerty_manager_name'
-                    // },
                     {
                         text: 'First Name',
                         align: 'start',
@@ -244,6 +238,10 @@
                 await this.saveUser();
                 this.dataVerificationFlag = false;
                 this.creationDoneFlag = true;
+            },
+
+            async updateUserData(item){
+                this.agency = await AgencyService.updateUserData(agencyId);
             },
 
             done() {
@@ -325,8 +323,6 @@
                 this.agency = officeData.office.agency;
                 this.isLoaded = true;
             }
-
-
 
         },
         async mounted() {
