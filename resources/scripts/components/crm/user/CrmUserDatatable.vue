@@ -291,7 +291,7 @@
             },
 
             async updateUserData(agency , type){
-                if(!this.$refs[`inputRef`+type+agency.id]?.hasError) return;
+                if(this.$refs[`inputRef`+type+agency.id]?.hasError) return;
                 await AgencyService.updateUserData(agency, agency.id);
             },
 
