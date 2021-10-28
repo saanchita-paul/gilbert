@@ -81,7 +81,7 @@
                                             placeholder="Please Select">
                                     </v-select>
                                 </ValidationProvider>
-                        
+
                         </template>
 
                         <template v-slot:item.phone="{ item }">
@@ -118,6 +118,7 @@
                                         <v-btn
                                             v-bind="attrs"
                                             @click="()=>sendMailToUser(item)"
+                                            :loading="isLoading(item)"
                                             v-on="on"
                                                 icon
                                                 >
@@ -216,7 +217,8 @@
                 search: '',
                 agency: '',
                 office: '',
-                isLoaded: false
+                isLoaded: false,
+                loadingEmail: [],
             }
         },
         methods: {
@@ -329,6 +331,19 @@
                 this.office = officeData.office;
                 this.agency = officeData.office.agency;
                 this.isLoaded = true;
+            },
+
+          async sendMailToUser(item) {
+                this.loadingEmail.push(item.id);
+                const index = this.loadingEmail.indexOf(item.id);
+                const response = await  AgencyService.sendMail(item);
+                this.loadingEmail.splice(index,1);
+            },
+
+            isLoading(item) {
+                if(this.loadingEmail.includes(item.id))
+                    return true;
+                return false;
             }
 
         },
