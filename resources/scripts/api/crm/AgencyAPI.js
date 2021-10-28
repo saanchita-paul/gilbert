@@ -65,10 +65,21 @@ export default {
         }
     },
 
+    updateUserData: async (agency,id) => {
+        try {
+
+            const data = await axios.post('/api/office-agents/' + id +'/update-user-data',{...agency});
+            return AgencyMqpper.mapAgency( data.data.data);
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
     updateAgency: async (agency,id) => {
         try {
 
-            const data = await axios.post('/api/agencies/'+id+'/update',{...agency});
+            const data = await axios.post('/api/agencies/'+ id +'/update',{...agency});
             return AgencyMqpper.mapAgency( data.data.data);
 
         } catch (error) {
@@ -91,6 +102,16 @@ export default {
         try {
             const agency = await axios.get('/api/agencies/'+ id);
             return AgencyMqpper.mapAgency( agency.data.data);
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    sendMail: async (item) => {
+        try {
+            console.log()
+            const agency = await axios.post('/api/office-agents/' + item.id + '/sendConfirmMail') ;
+            // return AgencyMqpper.mapAgency( agency.data.data);
         } catch (error) {
             return error.data;
         }

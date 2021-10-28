@@ -1,4 +1,3 @@
-import DayJS from "dayjs";
 import DayJs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 

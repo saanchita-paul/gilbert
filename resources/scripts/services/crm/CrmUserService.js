@@ -5,5 +5,6 @@ export default {
     loadUserData: (meta, agencyId, officeId) => CrmUserAPI.getUsersData(meta, agencyId, officeId),
     saveUser: (crmUser, officeId)=> CrmUserAPI.saveUser(crmUser, officeId),
     updateUserProfile: (profile, id)=> CrmUserAPI.updateUserProfile(profile, id),
+    updateUserData: (profile, id)=> CrmUserAPI.updateUserData(profile, id),
     loadAllUser: (meta)=> CrmUserAPI.getUserAllData(meta),
 }

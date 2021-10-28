@@ -47,6 +47,7 @@ class ApplicationService
             $authizedPerson['connection_application_id'] = $newApplication->id;
         }
         ConnectionApplicationSecondaryACC::create($authizedPerson);
+        $this->createIdentification($application['identification'], $newApplication->id);
 
         return $newApplication;
 

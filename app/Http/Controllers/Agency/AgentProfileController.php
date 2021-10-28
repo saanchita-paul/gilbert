@@ -1,19 +1,21 @@
 <?php
 namespace App\Http\Controllers\Agency;
 
+use App\Models\AgentProfile;
+use App\Services\Agency\AgencyUserService;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Agency\CreateAgentProfileRequest;
-use App\Http\Resources\Agency\AgencyResource;
-use App\Http\Resources\Agency\AgentProfileResource;
-use App\Services\Agency\CreateAgentAndUser;
-use App\Services\Agency\SearchAgentProfileService;
-use App\Services\Agency\UpdateAgentService;
+use Illuminate\Support\Facades\Auth;
 use App\Services\SendUserInviteService;
 use App\Services\UpdateUserProfileService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use App\Services\Agency\CreateAgentAndUser;
+use App\Services\Agency\UpdateAgentService;
+use App\Http\Resources\Agency\AgencyResource;
+use App\Services\Agency\SearchAgentProfileService;
+use App\Http\Resources\Agency\AgentProfileResource;
+use App\Http\Requests\Agency\CreateAgentProfileRequest;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Auth;
 
 class AgentProfileController extends Controller
 {
@@ -82,12 +84,37 @@ class AgentProfileController extends Controller
         try {
             $updateAgentService = new UpdateUserProfileService($id);
             return response()->json(['success' => false, 'user' => $updateAgentService->updateProfile($request->toArray())]);
-//            return AgencyResource::make();
         } catch ( \Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
-
     }
 
+    /**
+     * Update Agency User
+     *
+     * @param Request $request
+     * @param int $agenProfileId
+     *
+     * @return JsonResponse
+     */
+    public function updateUserData(Request $request , $id){
+        try {
+            $updateAgentService = new UpdateUserProfileService($id);
+            return response()->json(['success' => false, 'user' => $updateAgentService->updateUserData($request->toArray())]);
+        } catch ( \Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function sendConfirmMail($id)
+    {
+        try {
+            $userService = new AgencyUserService();
+            (new SendUserInviteService($userService->getUserByProfile($id)))->run();
+            return response()->json(['success' => true, ]);
+        } catch ( \Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
 
 }

@@ -78,6 +78,7 @@ export default {
         }
     },
 
+
     getUserAllData: async (meta)=> {
         try {
             const data = await axios.get('/api/application-assignees',{params: {...meta}});
@@ -100,6 +101,7 @@ export default {
             return error.data;
         }
     },
+
     updateUserProfile: async (profile, id)=> {
         try {
             const data = await axios.post('/api/office-agents/'+ id+ '/update', {...profile});
@@ -107,5 +109,14 @@ export default {
             console.log(error);
             return error.data;
         }
-    }
+    },
+
+    updateUserData: async (profile, id) =>{
+        try {
+            const data = await axios.post('/api/office-agents/'+ id+ '/update-user-data', {...profile});
+        } catch (error) {
+            console.log(error);
+            return error.data;
+        }
+    },
 }
