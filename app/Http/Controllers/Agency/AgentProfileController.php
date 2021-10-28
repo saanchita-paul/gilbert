@@ -102,7 +102,7 @@ class AgentProfileController extends Controller
             $updateAgentService = new UpdateUserProfileService($id);
             return response()->json(['success' => false, 'user' => $updateAgentService->updateUserData($request->toArray())]);
         } catch ( \Exception $exception) {
-            return $this->sendErrorResponse($exception);
+            return response( $exception->getMessage() , 409);
         }
     }
 

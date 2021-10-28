@@ -5,6 +5,7 @@ import {email, max, required} from "vee-validate/dist/rules";
 import AuthService from "@scripts/services/AuthService";
 import EAPlanService from "@scripts/services/ea/EAPlanService";
 import dayJs from "dayjs";
+import AgencyService from '@scripts/services/crm/AgencyService';
 
 Object.keys(rules).forEach(rule => {
     extend(rule, rules[rule]);
@@ -77,6 +78,20 @@ extend('email-exist', {
     }
 });
 
+extend('email-exist-update', {
+    message: field => `Email not found`,
+    params: ['userId'],
+    validate: async (value, {userId}) =>  {
+        return new Promise(resolve => {
+            AuthService.checkUniqueEmailUpdate(value , userId)
+                .then( valid => {
+                   valid = !valid;
+                    resolve({ valid })
+                })
+        })
+    }
+});
+
 extend('not-holiday', {
     message: field => `Date must not be a holiday`,
     params: ['target'],
@@ -84,6 +99,15 @@ extend('not-holiday', {
         const [day, month, year] = value.split('/');
         value = year + '-' + month + '-' + day;
         return !(await EAPlanService.checkIfDateIsHoliday({state: target, date: value}))
+    }
+});
+
+extend('unique-email-update', {
+    message: field => `Email already taken!`,
+    params: ['target'],
+    validate: async (value, {target}) =>  {
+        console.log('printing email' , value ,target)
+        return !(await AgencyService.emailUpdateValidationRule(value, target))
     }
 });
 

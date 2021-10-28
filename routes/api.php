@@ -103,6 +103,7 @@ Route::post('/invitation/change-password', [UserInvitationController::class, 'pa
 
 Route::post('/register/email-validation', [AuthController::class, 'isValidUser']);
 Route::get('/users/is-unique-email', [AuthController::class, 'isEmailValid']);
+Route::get('/users/is-unique-email-update', [AuthController::class, 'isEmailTaken']);
 
 /**
  * test routes

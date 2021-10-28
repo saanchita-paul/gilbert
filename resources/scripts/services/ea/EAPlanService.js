@@ -25,5 +25,5 @@ export default {
         )
     },
 
-    checkIfDateIsHoliday: query => EnergyApi.checkIfDateIsHoliday(query)
+    checkIfDateIsHoliday: query => EnergyApi.checkIfDateIsHoliday(query),
 }

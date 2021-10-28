@@ -83,7 +83,18 @@ export default {
             return AgencyMqpper.mapAgency( data.data.data);
 
         } catch (error) {
-            return error.data;
+            throw new Error(error.data)
+        }
+    },
+
+    emailUpdateValidationRule: async (email, userId) => {
+        try {
+
+            return (await axios.get('/api/users/is-unique-email-update',{ params: { email, userId } })).data?.status;
+
+        } catch (error) {
+            // throw new Exception();
+            return false;
         }
     },
 
