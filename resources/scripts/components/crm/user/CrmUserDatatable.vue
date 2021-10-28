@@ -136,6 +136,24 @@
             <CreateUserModal v-if="isCreateStart" :dialog="isCreatingUser" @goToNext="goToNextConfirmationModal" @cancelUserDialog="cancleUserDialog"></CreateUserModal>
             <UserCreationConfirmationModal v-if="dataVerificationFlag" :dialog="dataVerificationFlag" :user="user" @backToEdit="backToEdit" @confirmData="confirmedData"></UserCreationConfirmationModal>
             <UserCreatedSuccessfulModal v-if="creationDoneFlag" :dialog="creationDoneFlag" :user="user" @done="done"></UserCreatedSuccessfulModal>
+            <v-snackbar
+                v-model="snackbar"
+                :timeout="timeout"
+                right
+            >
+                {{ 'Invitation Mail Sent' }}
+
+                <template v-slot:action="{ attrs }">
+                    <v-btn
+                        color="red"
+                        text
+                        v-bind="attrs"
+                        @click="snackbar = false"
+                    >
+                        Close
+                    </v-btn>
+                </template>
+            </v-snackbar>
         </div>
     </v-container>
 
@@ -219,6 +237,8 @@
                 office: '',
                 isLoaded: false,
                 loadingEmail: [],
+                snackbar: false,
+                timeout: 2000
             }
         },
         methods: {
@@ -338,6 +358,7 @@
                 const index = this.loadingEmail.indexOf(item.id);
                 const response = await  AgencyService.sendMail(item);
                 this.loadingEmail.splice(index,1);
+                this.snackbar = true;
             },
 
             isLoading(item) {

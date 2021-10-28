@@ -39,78 +39,78 @@
 
         <v-row>
             <v-col cols="5" class="my-0 py-0">
-                <p class="font-weight-bold pl-2">Date of Birth</p>
+                <p class="font-weight-bold pl-2 mb-2">Date of Birth</p>
             </v-col>
             <v-col cols="7" class="my-0 py-0">
-                <p>
+                <p class="mb-2">
                     {{ date_of_birth }}
                 </p>
             </v-col>
 
             <v-col cols="5" class="my-0 py-0" v-if="application.phone_type == 1">
-                <p class="font-weight-bold pl-2"> Mobile </p>
+                <p class="font-weight-bold pl-2 m-2"> Mobile </p>
             </v-col>
             <v-col cols="7" class="my-0 py-0" v-if="application.phone_type == 1">
-                <p>{{application.phone}}</p>
+                <p class="mb-2">{{application.phone}}</p>
             </v-col>
 
             <v-col v-if="application.phone_type != 1" cols="5"  class="my-0 py-0">
-                <p class="font-weight-bold  pl-2"> Homephone </p>
+                <p class="font-weight-bold  pl-2 mb-2"> Homephone </p>
             </v-col>
             <v-col v-if="application.phone_type != 1" cols="6" class="my-0 py-0">
-                <p>{{application.homephone}}</p>
+                <p class="mb-2">{{application.homephone}}</p>
             </v-col>
 
             <v-col cols="5" class="my-0 py-0">
-                <p class="font-weight-bold  pl-2">Email</p>
+                <p class="font-weight-bold  pl-2 mb-2">Email</p>
             </v-col>
             <v-col cols="7"class="my-0 py-0">
-                <p>{{ application.email }}</p>
+                <p class="mb-2">{{ application.email }}</p>
             </v-col>
 
             <v-col cols="5"  class="my-0 py-0">
-                <p class="font-weight-bold  pl-2">Moving Date</p>
+                <p class="font-weight-bold  pl-2 mb-2">Moving Date</p>
             </v-col>
             <v-col cols="7" class="my-0 py-1">
-                <p>{{ moving_date }}</p>
+                <p class="mb-2">{{ moving_date }}</p>
             </v-col>
 
 
 
 
             <v-col cols="5" class="my-0 py-0">
-                <p class="font-weight-bold  pl-2">Email billing</p>
+                <p class="font-weight-bold  pl-2 mb-2">Email billing</p>
 <!--                <p>{{ application.is_email_billing == 1 ? 'Email' : 'Paper' }}</p>-->
             </v-col>
             <v-col cols="7" class="my-0 py-0">
 <!--                <p class="font-weight-bold">Email billing</p>-->
-                <p>{{ application.is_email_billing == 1 ? 'Email' : 'Paper' }}</p>
+                <p class="mb-2">{{ application.is_email_billing == 1 ? 'Email' : 'Paper' }}</p>
             </v-col>
             <v-col cols="5" class="my-0 py-0">
-                <p class="font-weight-bold  pl-2" >Authorized Person</p>
+                <p class="font-weight-bold  pl-2 mb-2" >Authorized Person</p>
 <!--                <p>{{ application.authorizedPersonName == null ? 'Unassigned' : application.authorizedPersonName }}</p>-->
             </v-col>
             <v-col cols="7" class="my-0 py-0">
 <!--                <p class="font-weight-bold">Authorized Person</p>-->
-                <p>{{ application.authorizedPersonName == null ? 'Unassigned' : application.authorizedPersonName }}</p>
+                <p class="mb-2">{{ application.authorizedPersonName == null ? 'Unassigned' : application.authorizedPersonName }}</p>
             </v-col>
 
             <v-col cols="5" class="my-0 py-0">
-                <p class="font-weight-bold  pl-2">Status</p>
+                <p class="font-weight-bold  pl-2 mb-2">Status</p>
 <!--                <p>{{['Unassigned','Assigned', 'Escalated'].includes(application.status)?'In Progress': application.status }}</p>-->
             </v-col>
             <v-col cols="7" class="my-0 py-0">
 <!--                <p class="font-weight-bold">Status:</p>-->
-                <p>{{['Unassigned','Assigned', 'Escalated'].includes(application.status)?'In Progress': application.status }}</p>
+                <p class="mb-2">{{['Unassigned','Assigned', 'Escalated'].includes(application.status)?'In Progress': application.status }}</p>
             </v-col>
 
             <v-col cols="5" class="my-0 py-0">
-                <p class="font-weight-bold  pl-2">Identification</p>
+                <p class="font-weight-bold  pl-2 mb-2">Identification</p>
             </v-col>
             <v-col cols="7" class="my-0 py-0">
-                <p>Passport</p>
-                <p>12343566467</p>
-                <p>Expire on 10/23</p>
+                <p class="mb-2">{{identification_type}}</p>
+                <p class="mb-2">{{identification_number}}</p>
+                <p class="mb-2">Expires on {{identification_expire_data}}</p>
             </v-col>
 
 
@@ -137,18 +137,18 @@
 
         <v-row>
             <v-col cols="5" class="my-0 py-0 ">
-                <p class="font-weight-bold  pl-2">Occupancy Type:</p>
+                <p class="font-weight-bold  pl-2 mb-2">Occupancy Type:</p>
             </v-col>
             <v-col cols="6" class="my-0 py-0">
-                <p>
+                <p class="mb-2">
                     {{ application.tenancy_type == 1? 'Renter': 'Owner' }}
                 </p>
             </v-col>
-            <v-col cols="5" class="my-0 py-0">
-                <p class="font-weight-bold  pl-2">Service Address:</p>
+            <v-col cols="5" class="my-0 py-0 mb-2">
+                <p class="font-weight-bold  pl-2">Service  Address:</p>
             </v-col>
             <v-col cols="6" class="my-0 py-0">
-                <p>
+                <p class="mb-2">
                     {{ application.address_text }}
                 </p>
             </v-col>
@@ -161,43 +161,47 @@
         <v-row>
 
             <v-col  class="my-0 py-0 mx-0">
-                <p class="py-2 mb-0">
-                  <span class="ml-2">
+                <p class="pt-2 pb-1 mb-0 services">
+                  <span class="ml-1">
                       <v-icon :disabled="isServiceAllowed(application.service_interests, 'power')" color="yellow">mdi-flash</v-icon>Power
                   </span>
                 </p>
-                <p class="py-0 my-0 pl-6 service-status">
+                <p class="py-0 my-0 pl-6 service-status active-power-subtitle"
+                   :class="{ 'active-power-subtitle': !isServiceAllowed(application.service_interests, 'power') }" >
                     Connected
                 </p>
             </v-col>
 
             <v-col  class="my-0 py-0 mx-0">
-                <p class="py-2 mb-0">
-                  <span class="ml-2">
+                <p class="pt-2 pb-1 mb-0 services">
+                  <span class="ml-1">
                       <v-icon :disabled="isServiceAllowed(application.service_interests, 'gas')" color="red">mdi-fire</v-icon>Gas
                   </span>
                 </p>
-                <p class="py-0 my-0 pl-6 service-status">
+                <p class="py-0 my-0 pl-6 service-status active-power-subtitle"
+                   :class="{ 'active-gas-subtitle': !isServiceAllowed(application.service_interests, 'gas') }">
                     Connected
                 </p>
             </v-col>
             <v-col  class="my-0 py-0 mx-0">
-                <p class="py-2 mb-0">
-                  <span class="ml-2">
+                <p class="pt-2 pb-1 mb-0 services">
+                  <span class="ml-1">
                        <v-icon :disabled="isServiceAllowed(application.service_interests, 'internet')" color="green">mdi-wifi</v-icon>Internet
                   </span>
                 </p>
-                <p class="py-0 my-0 pl-6 service-status">
+                <p class="py-0 my-0 pl-6 service-status active-power-subtitle"
+                   :class="{ 'active-internet-subtitle': !isServiceAllowed(application.service_interests, 'internet') }">
                     Connected
                 </p>
             </v-col>
             <v-col  class="my-0 py-0 mx-0">
-                <p class="py-2 mb-0">
-                  <span class="ml-2">
+                <p class="pt-2 pb-1 mb-0 services">
+                  <span class="ml-1">
                       <v-icon :disabled="isServiceAllowed(application.service_interests, 'water')" color="blue" >mdi-water</v-icon>Water
                   </span>
                 </p>
-                <p class="py-0 my-0 pl-6 service-status">
+                <p class="py-0 my-0 pl-6 service-status "
+                   :class="{ 'active-water-subtitle': !isServiceAllowed(application.service_interests, 'water') }">
                     Connected
                 </p>
             </v-col>
@@ -220,7 +224,7 @@
 <!--          </span>-->
 <!--        </p>-->
 
-        <div>
+        <div class="mt-4">
           <p class="sub-title mb-1">Agent’s Additional Instructions</p>
           <v-textarea
             outlined
@@ -239,6 +243,7 @@
 <script>
 import dayJs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
+import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 
 export default {
     name: "AgentApplicationSummary",
@@ -249,28 +254,43 @@ export default {
         }
     },
     computed: {
-        full_name()
-        {
+        full_name() {
             if(this.application.middle_name === '') {
                     return this.application.first_name + ' ' + this.application.middle_name + ' ' + this.application.last_name
                 }
             return this.application.first_name + ' ' + this.application.last_name
 
         },
-        date_of_birth()
-        {
+        date_of_birth() {
             return dayJs(this.application.date_of_birth,'yyyy-dd-mm').format(DATE_FORMAT.DB_DATE);
         },
 
-        moving_date()
-        {
+        moving_date() {
             return dayJs(this.application.moving_date,'yyyy-dd-mm').format(DATE_FORMAT.DB_DATE);
-        }
+        },
+
+        identification_type() {
+            return this.application?.identification?.type === IDENTIFICATION.PASSPORT? 'Passport':
+                this.application?.identification?.type === IDENTIFICATION.DL? 'DL':
+                this.application?.identification?.type === IDENTIFICATION.MEDICARE? 'Medicare':'';
+        },
+
+        identification_number() {
+            return this.application?.identification?.card_number;
+        },
+        identification_expire_data() {
+            return dayJs(this.application?.identification?.expire_date, 'yyyy-mm-dd').format('MM/DD');
+        },
+
+
     },
     methods: {
         isServiceAllowed(services, type) {
             return !services.includes(type);
         }
+
+
+
     },
 
     mounted() {
@@ -287,4 +307,23 @@ export default {
 .service-status{
     font-size: 10px;
 }
+.services{
+    font-size: 14px !important;
+}
+
+.active-power-subtitle {
+    color: #15DB64;
+}
+.active-gas-subtitle {
+    color: #263238;
+}
+.active-water-subtitle {
+    color: #263238;
+}
+.active-internet-subtitle {
+    color: #E91E63;
+ }
+
+
+
 </style>
