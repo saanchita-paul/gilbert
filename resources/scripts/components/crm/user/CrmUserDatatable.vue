@@ -83,7 +83,7 @@
                                             placeholder="Please Select">
                                     </v-select>
                                 </ValidationProvider>
-                        
+
                         </template>
 
                         <template v-slot:item.phone="{ item }">
@@ -128,6 +128,7 @@
                                         <v-btn
                                             v-bind="attrs"
                                             @click="sendMailToUser(item)"
+                                            :loading="isLoading(item)"
                                             v-on="on"
                                                 icon
                                                 >
@@ -145,6 +146,24 @@
             <CreateUserModal v-if="isCreateStart" :dialog="isCreatingUser" @goToNext="goToNextConfirmationModal" @cancelUserDialog="cancleUserDialog"></CreateUserModal>
             <UserCreationConfirmationModal v-if="dataVerificationFlag" :dialog="dataVerificationFlag" :user="user" @backToEdit="backToEdit" @confirmData="confirmedData"></UserCreationConfirmationModal>
             <UserCreatedSuccessfulModal v-if="creationDoneFlag" :dialog="creationDoneFlag" :user="user" @done="done"></UserCreatedSuccessfulModal>
+            <v-snackbar
+                v-model="snackbar"
+                :timeout="timeout"
+                right
+            >
+                {{ 'Invitation Mail Sent' }}
+
+                <template v-slot:action="{ attrs }">
+                    <v-btn
+                        color="red"
+                        text
+                        v-bind="attrs"
+                        @click="snackbar = false"
+                    >
+                        Close
+                    </v-btn>
+                </template>
+            </v-snackbar>
         </div>
     </v-container>
 
@@ -226,7 +245,10 @@
                 search: '',
                 agency: '',
                 office: '',
-                isLoaded: false
+                isLoaded: false,
+                loadingEmail: [],
+                snackbar: false,
+                timeout: 2000
             }
         },
         methods: {
@@ -352,6 +374,20 @@
                 this.office = officeData.office;
                 this.agency = officeData.office.agency;
                 this.isLoaded = true;
+            },
+
+          async sendMailToUser(item) {
+                this.loadingEmail.push(item.id);
+                const index = this.loadingEmail.indexOf(item.id);
+                const response = await  AgencyService.sendMail(item);
+                this.loadingEmail.splice(index,1);
+                this.snackbar = true;
+            },
+
+            isLoading(item) {
+                if(this.loadingEmail.includes(item.id))
+                    return true;
+                return false;
             }
 
         },

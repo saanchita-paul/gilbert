@@ -106,11 +106,11 @@ class AgentProfileController extends Controller
         }
     }
 
-    public function sendConfirmMail($id)
+    public function sendConfirmMail(Request $request, $id)
     {
         try {
             $userService = new AgencyUserService();
-            (new SendUserInviteService($userService->getUserByProfile($id)))->run();
+            (new SendUserInviteService($userService->getUserByProfile($request->toArray(), $id)))->run();
             return response()->json(['success' => true, ]);
         } catch ( \Exception $exception) {
             return $this->sendErrorResponse($exception);

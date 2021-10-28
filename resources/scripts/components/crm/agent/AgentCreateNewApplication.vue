@@ -157,6 +157,11 @@
                         </v-row>
                     </v-col>
 
+
+                    <v-col cols="12 pb-0">
+                        <p class="sub-title mb-3">Identification <small class="font-weight-thin">Applicant’s ID.</small>  </p>
+                    </v-col>
+
                     <v-col cols="6" class="py-0">
                         <ValidationProvider name="Identification Types" rules="required"  v-slot="{ errors }">
                             <v-select outlined dense

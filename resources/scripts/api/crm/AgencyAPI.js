@@ -120,10 +120,11 @@ export default {
 
     sendMail: async (item) => {
         try {
-            console.log()
-            const agency = await axios.post('/api/office-agents/' + item.id + '/sendConfirmMail') ;
-            // return AgencyMqpper.mapAgency( agency.data.data);
+            const response = await axios.post('/api/office-agents/' + item.id + '/send-confirm-mail',{...item}) ;
+
+            return response.status === 200?true : false;
         } catch (error) {
+            console.log(error)
             return error.data;
         }
     },

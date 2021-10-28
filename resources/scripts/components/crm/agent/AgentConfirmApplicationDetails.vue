@@ -311,7 +311,7 @@
                                                 <p class="mb-0">
                                                     <small :class="application.service_interests.includes('internet') ? 'enabled' : 'disabled'">Internet</small>
                                                 </p>
-                                                <v-icon :disabled="!application.service_interests.includes('internet')" color="green">mdi-wifi</v-icon>
+                                                <v-icon :disabled="!application.service_interests.includes('internet')" color="#9C27B0">mdi-wifi</v-icon>
                                             </div>
                                         </v-col>
                                     </v-row>
