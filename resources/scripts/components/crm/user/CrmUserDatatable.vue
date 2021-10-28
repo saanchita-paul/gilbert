@@ -72,7 +72,6 @@
                         </template>
 
                         <template v-slot:item.role="{ item }">
-                                <!-- <v-text-field class="mt-6" outlined dense v-model="item.role"></v-text-field> -->
                                 <ValidationProvider name="Role" rules="required"  v-slot="{ errors }">
                                     <v-select outlined dense
                                             class="mt-6"
@@ -232,23 +231,6 @@
         },
         methods: {
             async emailUpdateValidationRule(item){
-                // let
-                console.log(item)
-                console.log(this.$refs[`inputRef`+item.id]?.valid)
-                // console.log(inputRef+);
-                // return v => { 
-                //               if(!v) return 'Email is required'
-                //               else if( !( /.+@.+\..+/.test(v) ) ) return 'E-mail must be valid'
-                //               else {
-                //                 //   try {
-                //                 //       await AgencyService.emailUpdateValidationRule(v, item.id);
-                //                 //       return true;
-                //                 //   } catch (error) {
-                //                 //       return 'Email already used';
-                //                 //   }
-                //                 return true;
-                //               }
-                //         }
                 if(!item.email) item.errorMsg = 'Email is required'
                 else if( !( /.+@.+\..+/.test(item.email) ) ) item.errorMsg = 'E-mail must be valid'
                 else item.errorMsg = [];
@@ -284,56 +266,11 @@
                 if(!this.$refs[`inputRef`+type+agency.id]?.hasError){
                     await AgencyService.updateUserData(agency, agency.id);
                 }
-                // let index =  this.usersList.findIndex(n=>n.id==agency.id);
-                // this.usersList[index].errorMsg = "error email"
-                // console.log('checking email');
-                // if( type == 'Email' ) {
-                //     try {
-                //         agency.errorMsg = "Email already used1"
-                //         await AgencyService.emailUpdateValidationRule(agency.email, item.id);
-                //           console.log('inside true checking email');
-                //             return true;
-                //         } catch (error) {
-                //             console.log('inside false checking email');
-                //             agency.errorMsg = "Email already used"
-                //             return false;
-                //         }
-                // } else return true;
-            },
-
-            displayCustomErrorMsg(){
-
             },
 
             async updateUserData(agency , type){
-                // console.log(`inputRef`+type+agency.id);
-                console.log(this.$refs[`inputRef`+type+agency.id])
-                console.log(this.$refs[`inputRef`+type+agency.id]?.hasError)
-                console.log(this.$refs[`inputRef`+type+agency.id]?.errorMessages)
-                agency.errorMsg = "error from custom"
-                // this.$refs[`inputRef`+type+agency.id]?.errorMessages
-                // this.$refs[`inputRef`+type+agency.id].valid = false;
-                // this.$refs[`inputRef`+type+agency.id].error = true;
-                // this.$refs[`inputRef`+type+agency.id].$data;
-                
-
                 if(!this.$refs[`inputRef`+type+agency.id]?.hasError) return;
-
-                try {
-                    await AgencyService.updateUserData(agency, agency.id);
-                } catch (error) {
-                    this.displayCustomErrorMsg(agency, type)      
-                }
-
-                // this.$refs[`inputRef`+type+agency.id].errorMessages = "error"
-                // this.$refs[`inputRef`+type+agency.id].messagesToDisplay.push("error")
-
-                // errorMessages
-                // this.$refs[`inputRef`+type+agency.id]?.errorMessages = 'okay';
-                // this.$refs[`inputRef`+type+agency.id]?.hasError = 'okay';
-                // if(this.$refs[`inputRef`+type+agency.id]?.hasError) return;
-                // let isValid =  await this.checkDataValidation(agency , type);
-                // if(isValid) await AgencyService.updateUserData(agency, agency.id);
+                await AgencyService.updateUserData(agency, agency.id);
             },
 
             done() {
