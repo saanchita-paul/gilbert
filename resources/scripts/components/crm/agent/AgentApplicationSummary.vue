@@ -168,6 +168,7 @@
                 </p>
                 <p class="py-0 my-0 pl-6 service-status active-power-subtitle"
                    :class="{ 'active-power-subtitle': !isServiceAllowed(application.service_interests, 'power') }" >
+                    {{getServiceStatus('power')}}
                     Connected
                 </p>
             </v-col>
@@ -180,6 +181,7 @@
                 </p>
                 <p class="py-0 my-0 pl-6 service-status active-power-subtitle"
                    :class="{ 'active-gas-subtitle': !isServiceAllowed(application.service_interests, 'gas') }">
+                    {{getServiceStatus('gas')}}
                     Connected
                 </p>
             </v-col>
@@ -191,6 +193,7 @@
                 </p>
                 <p class="py-0 my-0 pl-6 service-status active-power-subtitle"
                    :class="{ 'active-internet-subtitle': !isServiceAllowed(application.service_interests, 'internet') }">
+                    {{getServiceStatus('internet')}}
                     Connected
                 </p>
             </v-col>
@@ -202,6 +205,7 @@
                 </p>
                 <p class="py-0 my-0 pl-6 service-status "
                    :class="{ 'active-water-subtitle': !isServiceAllowed(application.service_interests, 'water') }">
+                    {{getServiceStatus('water')}}
                     Connected
                 </p>
             </v-col>
@@ -250,7 +254,10 @@ export default {
     props: ["application"],
     data() {
         return {
-
+            powerText: '',
+            gasText: '',
+            internetText: '',
+            waterText: '',
         }
     },
     computed: {
@@ -287,9 +294,13 @@ export default {
     methods: {
         isServiceAllowed(services, type) {
             return !services.includes(type);
+        },
+
+        getServiceStatus(conn_ser) {
+            let service = this.application.connection_services.find((svc)=>{
+                return svc.service_type === conn_ser;
+            })
         }
-
-
 
     },
 

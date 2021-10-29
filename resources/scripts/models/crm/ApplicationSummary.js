@@ -29,6 +29,7 @@ export default class ApplicationSummary {
     unit_number = null;
     street_number = null;
     service_interests = ['gas', 'power', 'water', 'internet'];
+    connection_services = null;
     additional_instruction = null;
     applicant_name = null;
     identification = null;
@@ -80,6 +81,7 @@ export default class ApplicationSummary {
             postcode = null,
             address_text = null,
             services = ['gas', 'power', 'water', 'internet'],
+            connection_services = null,
             additional_instruction = null,
             identification = null,
             mirn = null,
@@ -130,6 +132,7 @@ export default class ApplicationSummary {
         this.postcode = postcode;
         this.address_text = address_text;
         this.service_interests = services;
+        this.connection_services = connection_services;
         this.additional_instruction = additional_instruction;
         this.title = title;
         this.identification = identification;

@@ -35,12 +35,15 @@ class ApplicationService
         $newApplication = ConnectionApplication::create($application);
         $connectionService = [];
 
-        foreach ($application['service_interests'] as $service) {
-            $connectionService[] = ConnectionService::create(
-                ['service_type' => $service['service_type'],
-                    'connection_application_id' => $newApplication->id]
-            );
-        }
+
+        $this->createApplicationSerive($newApplication->id, $application['service_interests']);
+
+//        foreach ($application['service_interests'] as $service) {
+//            $connectionService[] = ConnectionService::create(
+//                ['service_type' => $service['service_type'],
+//                    'connection_application_id' => $newApplication->id]
+//            );
+//        }
 
         if(!empty($authizedPerson))
         {
@@ -138,7 +141,13 @@ class ApplicationService
     {
         ConnectionService::query()->where('connection_application_id', '=', $id)->delete();
         foreach ($serviceList as $service) {
-            ConnectionService::create(['service_type' => $service, 'connection_application_id' => $id]);
+            ConnectionService::create(
+                [
+                    'service_type' => $service,
+                    'connection_application_id' => $id,
+                    'status' => ConnectionService::STATUS_SUBMITTED
+                ]
+            );
         }
     }
 
@@ -251,6 +260,19 @@ class ApplicationService
         $connectionApplication =  ConnectionApplication::find($id);
         $connectionApplication->update(['status' => 8]);
         return $connectionApplication->refresh();
+    }
+
+    public function createApplicationSerive($id, $services):void
+    {
+        foreach ($services as $service) {
+            $connectionService[] = ConnectionService::create(
+                [
+                    'service_type' => $service['service_type'],
+                    'connection_application_id' => $id,
+                    'status'=> ConnectionService::STATUS_UNASSIGNED
+                ]
+            );
+        }
     }
 
 }
