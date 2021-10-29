@@ -8,5 +8,6 @@ export default {
     getAgency: (id) => AgencyAPI.getAgency(id),
     saveIndependentAgency: (agency) => AgencyAPI.saveIndependent(agency),
     loadAgencyById: (id) => AgencyAPI.getAgencyData(id),
-    sendMail: (item) => AgencyAPI.sendMail(item)
+    sendMail: (item) => AgencyAPI.sendMail(item),
+    emailUpdateValidationRule: (email, userId) => AgencyAPI.emailUpdateValidationRule(email, userId)
 }

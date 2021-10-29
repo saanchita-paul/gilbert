@@ -57,7 +57,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/office-agents/{id}/update', [AgentProfileController::class, 'updateProfile']);
 
     Route::post('/office-agents/{id}/update-user-data', [AgentProfileController::class, 'updateUserData']);
-    Route::post('/office-agents/{id}/sendConfirmMail', [AgentProfileController::class, 'sendConfirmMail']);
+    Route::post('/office-agents/{id}/send-confirm-mail', [AgentProfileController::class, 'sendConfirmMail']);
 
     Route::post('/office-agents/{id}', [AgentProfileController::class, 'getAgent']);
 
@@ -103,6 +103,7 @@ Route::post('/invitation/change-password', [UserInvitationController::class, 'pa
 
 Route::post('/register/email-validation', [AuthController::class, 'isValidUser']);
 Route::get('/users/is-unique-email', [AuthController::class, 'isEmailValid']);
+Route::get('/users/is-unique-email-update', [AuthController::class, 'isEmailTaken']);
 
 /**
  * test routes

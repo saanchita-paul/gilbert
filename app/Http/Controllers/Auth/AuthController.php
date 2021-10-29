@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -63,31 +64,38 @@ class AuthController extends Controller
             $res = ['success' => true, 'data' => ['is_unique_email' => !$user]];
 
             return response()->json($res);
-
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
+    }
 
+    public function isEmailTaken(Request $request)
+    {
+        try {
+            $user =  User::where('email', $request->email)->where('id', '!=', $request->id)->first();
+            return $user;
+            
+            return response(["status" => !!$user], 200);
+        } catch (\Exception $exception) {
+            return response('Email already used', 409);
+        }
     }
 
     public function forgotPassword(ForgotRequest $request)
     {
         try {
             $service = new ForgotPasswordService();
-            return $service= $service->forgot($request);
-
+            return $service = $service->forgot($request);
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
-
     }
 
     public function resetPassword(ResetRequest $request)
     {
         try {
             $service = new ResetPasswordService();
-            return $service= $service->reset($request);
-
+            return $service = $service->reset($request);
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }

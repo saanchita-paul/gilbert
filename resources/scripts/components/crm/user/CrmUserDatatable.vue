@@ -50,7 +50,8 @@
                                     dense
                                     placeholder="Firstname"
                                     v-model="item.first_name"
-                                    @blur="()=>updateUserData(item)"
+                                    :ref="'inputRefFirstname'+item.id"
+                                    @blur="updateUserData(item , 'Firstname')"
                                     :error-messages=" errors[0]"
                                 ></v-text-field>
                             </ValidationProvider>
@@ -63,21 +64,22 @@
                                     dense
                                     placeholder="Lastname"
                                     v-model="item.last_name"
-                                    @blur="()=>updateUserData(item)"
+                                    :ref="'inputRefLastname'+item.id"
+                                    @blur="updateUserData(item , 'Lastname')"
                                     :error-messages=" errors[0]"
                                 ></v-text-field>
                             </ValidationProvider>
                         </template>
 
                         <template v-slot:item.role="{ item }">
-                                <!-- <v-text-field class="mt-6" outlined dense v-model="item.role"></v-text-field> -->
                                 <ValidationProvider name="Role" rules="required"  v-slot="{ errors }">
                                     <v-select outlined dense
                                             class="mt-6"
                                             v-model="item.role"
                                             :items="roles.AGENCY"
                                             :error-messages=" errors[0]"
-                                            @blur="()=>updateUserData(item)"
+                                            :ref="'inputRefRole'+item.id"
+                                            @blur="updateUserData(item , 'Role')"
                                             placeholder="Please Select">
                                     </v-select>
                                 </ValidationProvider>
@@ -93,31 +95,39 @@
                                         dense
                                         placeholder="04XX XXX XXX"
                                         v-model="item.phone"
-                                        @blur="()=>updateUserData(item)"
+                                        :ref="'inputRefPhone'+item.id"
+                                        @blur="updateUserData(item, 'Phone')"
                                         :error-messages=" errors[0]"
                                     ></v-text-field>
                                 </ValidationProvider>
 
                         </template>
                         <template v-slot:item.email="{ item }">
-                                <ValidationProvider name="Email address" rules="required|email"  v-slot="{ errors }">
-                                            <v-text-field
-                                                class="mt-6"
-                                                indentification
-                                                :error-messages=" errors[0]"
-                                                outlined
-                                                v-model="item.email"
-                                                dense
-                                                @blur="()=>updateUserData(item)"
-                                            ></v-text-field>
-                                        </ValidationProvider>
+                                <ValidationProvider
+                                    name="Email"
+                                    rules="required|email|unique-email-update:@h_id"
+                                    v-slot="{ errors }"
+                                >
+                                    <v-text-field
+                                        class="mt-6"
+                                        outlined
+                                        v-model="item.email"
+                                        dense
+                                        :error-messages=" errors[0]"
+                                        :ref="'inputRefEmail'+item.id"
+                                        @blur="updateUserData(item, 'Email')"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                        <ValidationProvider name="h_id">
+                            <v-text-field v-model="item.id" v-show="false" />
+                        </ValidationProvider>
                         </template>
                         <template v-slot:item.action="{ item }">
                                 <v-tooltip bottom>
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-btn
                                             v-bind="attrs"
-                                            @click="()=>sendMailToUser(item)"
+                                            @click="sendMailToUser(item)"
                                             :loading="isLoading(item)"
                                             v-on="on"
                                                 icon
@@ -136,6 +146,24 @@
             <CreateUserModal v-if="isCreateStart" :dialog="isCreatingUser" @goToNext="goToNextConfirmationModal" @cancelUserDialog="cancleUserDialog"></CreateUserModal>
             <UserCreationConfirmationModal v-if="dataVerificationFlag" :dialog="dataVerificationFlag" :user="user" @backToEdit="backToEdit" @confirmData="confirmedData"></UserCreationConfirmationModal>
             <UserCreatedSuccessfulModal v-if="creationDoneFlag" :dialog="creationDoneFlag" :user="user" @done="done"></UserCreatedSuccessfulModal>
+            <v-snackbar
+                v-model="snackbar"
+                :timeout="timeout"
+                right
+            >
+                {{ 'Invitation Mail Sent' }}
+
+                <template v-slot:action="{ attrs }">
+                    <v-btn
+                        color="red"
+                        text
+                        v-bind="attrs"
+                        @click="snackbar = false"
+                    >
+                        Close
+                    </v-btn>
+                </template>
+            </v-snackbar>
         </div>
     </v-container>
 
@@ -163,7 +191,7 @@
                 usersList: [],
                 activeOffice: null,
                 roles: Roles,
-
+                
                 page: 1,
                 pageCount: 0,
                 itemsPerPage: 10,
@@ -219,9 +247,16 @@
                 office: '',
                 isLoaded: false,
                 loadingEmail: [],
+                snackbar: false,
+                timeout: 2000
             }
         },
         methods: {
+            async emailUpdateValidationRule(item){
+                if(!item.email) item.errorMsg = 'Email is required'
+                else if( !( /.+@.+\..+/.test(item.email) ) ) item.errorMsg = 'E-mail must be valid'
+                else item.errorMsg = [];
+            },
             addNewUser() {
                 this.isCreatingUser= true;
                 this.isCreateStart = true;
@@ -248,7 +283,15 @@
                 this.creationDoneFlag = true;
             },
 
-            async updateUserData(agency){
+            async checkDataValidation(agency , type){
+                
+                if(!this.$refs[`inputRef`+type+agency.id]?.hasError){
+                    await AgencyService.updateUserData(agency, agency.id);
+                }
+            },
+
+            async updateUserData(agency , type){
+                if(this.$refs[`inputRef`+type+agency.id]?.hasError) return;
                 await AgencyService.updateUserData(agency, agency.id);
             },
 
@@ -338,6 +381,7 @@
                 const index = this.loadingEmail.indexOf(item.id);
                 const response = await  AgencyService.sendMail(item);
                 this.loadingEmail.splice(index,1);
+                this.snackbar = true;
             },
 
             isLoading(item) {

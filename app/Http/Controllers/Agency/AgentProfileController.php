@@ -102,15 +102,15 @@ class AgentProfileController extends Controller
             $updateAgentService = new UpdateUserProfileService($id);
             return response()->json(['success' => false, 'user' => $updateAgentService->updateUserData($request->toArray())]);
         } catch ( \Exception $exception) {
-            return $this->sendErrorResponse($exception);
+            return response( $exception->getMessage() , 409);
         }
     }
 
-    public function sendConfirmMail($id)
+    public function sendConfirmMail(Request $request, $id)
     {
         try {
             $userService = new AgencyUserService();
-            (new SendUserInviteService($userService->getUserByProfile($id)))->run();
+            (new SendUserInviteService($userService->getUserByProfile($request->toArray(), $id)))->run();
             return response()->json(['success' => true, ]);
         } catch ( \Exception $exception) {
             return $this->sendErrorResponse($exception);

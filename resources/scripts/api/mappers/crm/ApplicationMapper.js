@@ -86,7 +86,7 @@ export default {
             if(service === COMMISSION.INTERNET.text)
             {
                 commsission.push({
-                    service_type: COMMISSION.GAS.text
+                    service_type: COMMISSION.INTERNET.text
                 })
             } if(service === COMMISSION.WATER.text)
             {
