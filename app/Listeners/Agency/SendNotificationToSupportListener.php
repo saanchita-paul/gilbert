@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Notification;
 
 class SendNotificationToSupportListener
 {
+    private String $defaultEmail = 'dimuthu.satharasinghe@brc.technology';
     /**
      * Create the event listener.
      *
@@ -29,9 +30,8 @@ class SendNotificationToSupportListener
     public function handle($event)
     {
         //
-        // SUBMIT_EMAIL
-        $connectionApplication =  ConnectionApplication::find( $event->applicationId );
-        $emails =  explode( ',', env('SUBMIT_EMAIL') );
+        $connectionApplication = ConnectionApplication::find( $event->applicationId );
+        $emails =  explode( ',', env('SUBMIT_EMAIL') ?? $this->defaultEmail );
         Notification::route( 'mail', $emails )
         ->notify( new NotifyToSupport( $connectionApplication ) );
     }

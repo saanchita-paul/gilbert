@@ -45,29 +45,16 @@ class NotifyToSupport extends Notification
      */
     public function toMail($notifiable)
     {
-        
-        // return (new MailMessage)
-        //             ->line('The introduction to the notification.')
-        //             ->action('Notification Action', url('/'))
-        //             ->line('Thank you for using our application!');
-        $lead_info = $this->connectionApplication
-        ->only(['id', 'first_name',  'middle_name' , 'last_name' , 'mirn' , 'mni' ]);
-        // $lead_info['submitted_at'] = DateTime::createFromFormat('F d, Y', now())->format('Y-m-d');
-        $lead_info['submitted_at'] = now();
-        info($this->connectionApplication);
-        info($lead_info);
-        $lead_info = $this->prepareLeadData();
         return (new MailMessage)
             ->subject("Hood registration invite")
             ->view('email.submit_application', [
-                'lead_info' => $lead_info,
+                'lead_info' => $this->prepareLeadData(),
             ]);
     }
 
     public function prepareLeadData(){
         $lead_info = $this->connectionApplication
         ->only(['id', 'first_name',  'middle_name' , 'last_name' , 'mirn' , 'mni' ]);
-        // $lead_info['submitted_at'] = DateTime::createFromFormat('F d, Y', now())->format('Y-m-d');
         $lead_info['submitted_at'] = now();
         info($this->connectionApplication);
         info($lead_info);

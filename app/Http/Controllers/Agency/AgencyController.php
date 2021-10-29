@@ -94,12 +94,4 @@ class AgencyController extends Controller
         }
     }
 
-
-    public function testMail(){
-        // Notification::route('mail', 'riyad298@gmail.com')
-        //     ->notify(new NotifyToSupport());
-        SubmitApplicationEvent::dispatch(1);
-        return 'ok';
-    }
-
 }

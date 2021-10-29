@@ -113,5 +113,3 @@ Route::get('lnn/bot_token', function () {
 });
 
 
-
-Route::get('/testMail', [AgencyController::class, 'testMail']);
