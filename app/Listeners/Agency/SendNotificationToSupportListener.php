@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Notification;
 
-class SendNotificationToSupportListener
+class SendNotificationToSupportListener implements ShouldQueue
 {
     private String $defaultEmail = 'dimuthu.satharasinghe@brc.technology';
     /**
