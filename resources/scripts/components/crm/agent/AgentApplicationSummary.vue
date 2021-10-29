@@ -279,7 +279,7 @@ export default {
             return this.application?.identification?.card_number;
         },
         identification_expire_data() {
-            return dayJs(this.application?.identification?.expire_date, 'yyyy-mm-dd').format('MM/DD');
+            return dayJs(this.application?.identification?.expire_date, 'YYYY-MM-DD').format('MM/YY');
         },
 
 
