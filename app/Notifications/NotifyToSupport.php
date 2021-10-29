@@ -46,7 +46,7 @@ class NotifyToSupport extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject("Hood registration invite")
+            ->subject("New Lead Submitted")
             ->view('email.submit_application', [
                 'lead_info' => $this->prepareLeadData(),
             ]);
