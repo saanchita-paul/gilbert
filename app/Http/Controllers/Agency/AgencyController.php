@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers\Agency;
 
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Agency\CreateAgencyRequest;
-use App\Http\Requests\Agency\CreateOfficeRequest;
-use App\Http\Requests\Agency\CreateIndependentAgencyRequest;
-use App\Http\Requests\Agency\UpdateAgencyRequest;
-use App\Http\Resources\Agency\AgencyResource;
-use App\Http\Resources\Agency\IndependentAgencyResource;
+use App\Notifications\NotifyToSupport;
 use App\Services\Agency\AgencyService;
 use App\Services\Agency\CreateAgentAndUser;
+use App\Services\Agency\SearchAgencyService;
+use Illuminate\Support\Facades\Notification;
+use App\Events\Agency\SubmitApplicationEvent;
+use App\Http\Resources\Agency\AgencyResource;
 use App\Services\Agency\CreateOfficeAndAgency;
 use App\Services\Agency\IndepentAgencyService;
-use App\Services\Agency\SearchAgencyService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use App\Http\Requests\Agency\CreateAgencyRequest;
+use App\Http\Requests\Agency\CreateOfficeRequest;
+use App\Http\Requests\Agency\UpdateAgencyRequest;
+use App\Http\Resources\Agency\IndependentAgencyResource;
+use App\Http\Requests\Agency\CreateIndependentAgencyRequest;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AgencyController extends Controller
@@ -89,6 +92,14 @@ class AgencyController extends Controller
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
+    }
+
+
+    public function testMail(){
+        // Notification::route('mail', 'riyad298@gmail.com')
+        //     ->notify(new NotifyToSupport());
+        SubmitApplicationEvent::dispatch(1);
+        return 'ok';
     }
 
 }
