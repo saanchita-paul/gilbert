@@ -92,7 +92,7 @@
             </v-col>
             <v-col cols="7" class="my-0 py-0">
 <!--                <p class="font-weight-bold">Authorized Person</p>-->
-                <p class="mb-2">{{ application.authorizedPersonName == null ? 'Unassigned' : application.authorizedPersonName }}</p>
+                <p class="mb-2">{{ application.authorizedPersonName == null ? '--' : application.authorizedPersonName }}</p>
             </v-col>
 
             <v-col cols="5" class="my-0 py-0">
@@ -168,7 +168,8 @@
                 </p>
                 <p class="py-0 my-0 pl-6 service-status active-power-subtitle"
                    :class="{ 'active-power-subtitle': !isServiceAllowed(application.service_interests, 'power') }" >
-                    Connected
+                    {{getServiceStatus('power')}}
+<!--                    Connected-->
                 </p>
             </v-col>
 
@@ -180,7 +181,8 @@
                 </p>
                 <p class="py-0 my-0 pl-6 service-status active-power-subtitle"
                    :class="{ 'active-gas-subtitle': !isServiceAllowed(application.service_interests, 'gas') }">
-                    Connected
+                    {{getServiceStatus('gas')}}
+<!--                    Connected-->
                 </p>
             </v-col>
             <v-col  class="my-0 py-0 mx-0">
@@ -191,7 +193,8 @@
                 </p>
                 <p class="py-0 my-0 pl-6 service-status active-power-subtitle"
                    :class="{ 'active-internet-subtitle': !isServiceAllowed(application.service_interests, 'internet') }">
-                    Connected
+                    {{getServiceStatus('internet')}}
+<!--                    Connected-->
                 </p>
             </v-col>
             <v-col  class="my-0 py-0 mx-0">
@@ -202,7 +205,8 @@
                 </p>
                 <p class="py-0 my-0 pl-6 service-status "
                    :class="{ 'active-water-subtitle': !isServiceAllowed(application.service_interests, 'water') }">
-                    Connected
+                    {{getServiceStatus('water')}}
+<!--                    Connected-->
                 </p>
             </v-col>
 
@@ -250,7 +254,10 @@ export default {
     props: ["application"],
     data() {
         return {
-
+            powerText: '',
+            gasText: '',
+            internetText: '',
+            waterText: '',
         }
     },
     computed: {
@@ -287,9 +294,22 @@ export default {
     methods: {
         isServiceAllowed(services, type) {
             return !services.includes(type);
+        },
+
+        getServiceStatus(conn_ser) {
+            let service = this.application.connection_services.find((svc)=>{
+                return svc.service_type === conn_ser;
+            })
+            if(service) {
+                return this.mapConnectionStatus(service.statusText);
+            }
+            return '';
+        },
+
+        mapConnectionStatus(status) {
+            return ['unassigned','assigned', 'escalated'].includes(status)?'In Progress':
+                status[0].capitalize() + status.slice(1);
         }
-
-
 
     },
 
