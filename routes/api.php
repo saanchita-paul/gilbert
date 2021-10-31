@@ -111,3 +111,5 @@ Route::get('/users/is-unique-email-update', [AuthController::class, 'isEmailTake
 Route::get('lnn/bot_token', function () {
     return (new Encrypter(config('bot.encryption_key')))->decrypt(\request()->get('bot_token'), true);
 });
+
+
