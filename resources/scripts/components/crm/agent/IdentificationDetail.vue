@@ -1,5 +1,5 @@
 <template>
-    <div  cols="12" class="py-0 pl-3" v-if="isLoaded">
+    <v-col  cols="12" class="py-0 pl-3" v-if="isLoaded">
        <template v-if="isMedicare()">
            <v-row>
                <v-col cols="6" class="pb-0">
@@ -96,8 +96,6 @@
                        </v-select>
                    </ValidationProvider>
                </v-col>
-
-
            </v-row>
 
        </template>
@@ -252,7 +250,7 @@
                 </v-col>
             </v-row>
         </template>
-    </div>
+    </v-col>
 </template>
 
 <script>
