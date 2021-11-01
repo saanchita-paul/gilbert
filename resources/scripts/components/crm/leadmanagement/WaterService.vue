@@ -2,70 +2,80 @@
     <v-card class="hood-card">
         <v-row class="pl-5 pt-5">
         <h4>Connection Details</h4>
-        <v-col cols="11">
+        <v-col cols="12">
             <h4>Status</h4>
-            <p>What is the status of this application?</p>
+            <p class="status-subtitle">What is the status of this application?</p>
 
             <div>
-                <v-btn>In Progress</v-btn>
-                <v-btn>Needs more info</v-btn>
-                <v-btn>Submitted</v-btn>
-                <v-btn >Connected</v-btn>
-                <v-btn >Can’t Connect</v-btn>
+                <v-btn class="ma-1 service-status" @click="changeStatus(7)" :class="{'active-status':getServicestatus(7)}">In Progress</v-btn>
+                <v-btn class="ma-1 service-status"  @click="changeStatus(10)" :class="{'active-status':getServicestatus(10)}">Needs more info</v-btn>
+                <v-btn class="ma-1 service-status"  @click="changeStatus(4)" :class="{'active-status':getServicestatus(4)}">Submitted</v-btn>
+                <v-btn class="ma-1 service-status"  @click="changeStatus(5)" :class="{'active-status':getServicestatus(5)}">Connected</v-btn>
+                <v-btn class="ma-1 service-status"  @click="changeStatus(9)" :class="{'active-status':getServicestatus(9)}">Can’t Connect</v-btn>
             </div>
 
         </v-col>
         <v-col cols="8">
-            <div class="text-field">
-                <ValidationProvider
-                    name="Connection Date"
-                    rules="required"
-                    v-slot="{ errors }"
-                >
-                    <v-menu
-                        v-model="connection_date"
-                        :close-on-content-click="false"
-                        :nudge-right="40"
-                        transition="scale-transition"
-                        offset-y
-                        min-width="290px"
-                    >
-                        <template v-slot:activator="{ on, attrs }">
-                            <ValidationProvider
-                                name="Connection Date"
-                                rules="required|valid-date|not-holiday:@h_state"
-                                v-slot="{ errors }"
+            <v-row>
+                <v-col cols="4">
+                    <h4>Connection Date</h4>
+                </v-col>
+                <v-col cols="8">
+                    <div class="text-field">
+                        <ValidationProvider
+                            name="Connection Date"
+                            rules="required"
+                            v-slot="{ errors }"
+                        >
+                            <v-menu
+                                v-model="connection_date"
+                                :close-on-content-click="false"
+                                :nudge-right="40"
+                                transition="scale-transition"
+                                offset-y
+                                min-width="290px"
                             >
-                                <v-text-field
-                                    placeholder="DD/MM/YYYY"
-                                    outlined
-                                    dense
-                                    append-icon="mdi-calendar"
-                                    v-model="moving_date_text"
-                                    v-bind="attrs"
-                                    :error-messages="errors[0]"
-                                    hide-details="auto"
+                                <template v-slot:activator="{ on, attrs }">
+                                    <ValidationProvider
+                                        name="Connection Date"
+                                        rules="required|valid-date|not-holiday:@h_state"
+                                        v-slot="{ errors }"
+                                    >
+                                        <v-text-field
+                                            placeholder="DD/MM/YYYY"
+                                            outlined
+                                            dense
+                                            append-icon="mdi-calendar"
+                                            v-model="water.connection_date"
+                                            v-bind="attrs"
+                                            :error-messages="errors[0]"
+                                            hide-details="auto"
 
-                                >
-                                    <template slot="append">
-                                        <v-icon v-on="on">mdi-calendar</v-icon>
-                                    </template>
-                                </v-text-field>
-                            </ValidationProvider>
-                        </template>
-                        <v-date-picker
-                            v-model="moving_date"
-                            @input="connection_date = false"
-                        ></v-date-picker>
-                    </v-menu>
-                </ValidationProvider>
-            </div>
-            <v-divider></v-divider>
+                                        >
+                                            <template slot="append">
+                                                <v-icon v-on="on">mdi-calendar</v-icon>
+                                            </template>
+                                        </v-text-field>
+                                    </ValidationProvider>
+                                </template>
+                                <v-date-picker
+                                    v-model="moving_date"
+                                    @input="connection_date = false"
+                                ></v-date-picker>
+                            </v-menu>
+                        </ValidationProvider>
+                    </div>
+                </v-col>
+            </v-row>
+
         </v-col>
+            <v-col cols="8">
+                <v-divider></v-divider>
+            </v-col>
         <v-col cols="8">
             <h4>Service Providers</h4>
-            <h5>Select a provider for 54 Haughton Road, Oakleigh</h5>
-            <v-select :items="waterServiceDD" item-value="source" item-text="text">
+            <p class="status-subtitle">Select a provider for <span class="p-bold">{{leadSummary.address_text}}</span></p>
+            <v-select v-model="water.provider_name" :items="waterServiceDD" dense item-value="source" outlined placeholder="select provider" item-text="text">
             </v-select>
         </v-col>
     </v-row>
@@ -73,13 +83,18 @@
 </template>
 
 <script>
+import DayJs from "dayjs";
+import WaterService from "@scripts/services/crm/WaterService";
+
 export default {
 name: "WaterService",
-    props:[],
-    data(){
+    props:['connection_id', 'leadSummary'],
+    data() {
     return {
         moving_date_text: '',
         moving_date: '',
+        connection_date: '',
+        active_status: '',
         waterServiceDD: [
             {
                 text: 'Greater Western Water',
@@ -93,12 +108,66 @@ name: "WaterService",
                 text: 'Yarra Valley Water',
                 source: 'yarra_valley_water'
             },
-        ]
+        ],
+        water: {
+            id:'',
+            provider_name: '',
+            status: '',
+            connection_date: '',
+
+        }
     }
+    },
+    methods: {
+
+        changeStatus(status) {
+            this.active_status = status;
+            this.water.status = status;
+        },
+
+        getServicestatus(status) {
+            if(this.active_status === status) return true;
+            return false;
+        },
+
+        async saveWater() {
+            const responseData = await WaterService.saveWater(this.water, this.leadSummary.id);
+            this.water.id = responseData.id;
+        }
+
+    },
+    watch: {
+        moving_date() {
+            this.water.connection_date = DayJs(this.moving_date, 'YYYY-MM-DD').format('DD/MM/YYYY');
+        },
+        water: {
+            handler(water) {
+                this.saveWater();
+            },
+            deep: true
+        }
     }
 }
 </script>
 
 <style scoped>
+
+.active-status {
+    color:green;
+    border: 1px solid green !important;
+}
+
+.service-status{
+    border: 1px solid transparent;
+}
+.status-subtitle{
+    font-size: 14px;
+    color: #7E8A8F;
+}
+.p-bold
+{
+    font-weight: bold;
+}
+
 
 </style>

@@ -199,7 +199,9 @@ const serviceProvider = [
         id: 3,
         logo: '/assets/images/SupplierLogo.png',
         title: 'SUMO'
-    },
+    }
+
+
 
 ];
 

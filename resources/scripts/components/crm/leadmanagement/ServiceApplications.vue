@@ -120,7 +120,7 @@
             </v-tab-item>
 
             <v-tab-item>
-                <WaterService></WaterService>
+                <WaterService :leadSummary="leadSummary"></WaterService>
             </v-tab-item>
             <v-tab-item>
                 <InternetService></InternetService>

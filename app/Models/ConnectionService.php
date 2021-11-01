@@ -53,7 +53,7 @@ class ConnectionService extends Model
         self::STATUS_EA_PROCESSINF => 'processing',
         self::STATUS_CLOSED => 'closed',
         self::STATUS_CANT_CONNECT => 'can\'t_connect',
-        self::STATUS_NEEDS_MORE_INFO => 'can\'t_connect',
+        self::STATUS_NEEDS_MORE_INFO => 'need_more_info',
     ];
 
 

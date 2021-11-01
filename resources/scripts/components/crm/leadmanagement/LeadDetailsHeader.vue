@@ -23,7 +23,7 @@
             <div>
                 <v-btn outlined @click="escalate"  v-if="leadSummary.status != 3">Escalate</v-btn>
                 <v-btn v-if="leadSummary.status == 3"  outlined @click="escalate" :disabled="leadSummary.status == 3" class="border-warning">Escalated</v-btn>
-                <v-btn outlined @click="closeApplication">Close Application</v-btn>
+<!--                <v-btn outlined @click="closeApplication">Close Application</v-btn>-->
             </div>
         </v-col>
 
