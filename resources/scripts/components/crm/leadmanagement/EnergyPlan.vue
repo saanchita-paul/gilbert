@@ -1,6 +1,6 @@
 <template>
         <div class="d-flex">
-            <div class="your-plan" :class="{active: plan.key === selectedPlan}">
+            <div class="your-plan bg" :class="{active: plan.key === selectedPlan}">
                 <p>{{plan.title}}</p>
                 <div class="pa-4">
                     <v-btn @click="reviewPlan" block outlined class="mb-3">Review Plan Details</v-btn>
@@ -39,6 +39,10 @@ name: "EnergyPlan",
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.bg {
+    p {
+        background-color:#025A2A;
+    }
+}
 </style>
