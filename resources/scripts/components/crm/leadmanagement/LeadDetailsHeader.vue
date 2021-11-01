@@ -21,9 +21,12 @@
 
 
             <div>
-                <v-btn outlined @click="escalate"  v-if="leadSummary.status != 3">Escalate</v-btn>
-                <v-btn v-if="leadSummary.status == 3"  outlined @click="escalate" :disabled="leadSummary.status == 3" class="border-warning">Escalated</v-btn>
-<!--                <v-btn outlined @click="closeApplication">Close Application</v-btn>-->
+                <div class="d-flex justify-end">
+                    <v-btn outlined @click="escalate" right v-if="leadSummary.status != 3">Escalate</v-btn>
+                    <v-btn v-if="leadSummary.status == 3"  outlined @click="escalate" right :disabled="leadSummary.status == 3" class="border-warning">Escalated</v-btn>
+    <!--                <v-btn outlined @click="closeApplication">Close Application</v-btn>-->
+                </div>
+                <p v-if="leadSummary.is_contacted" class="application-consent mt-5"><v-icon size="14px" color="success" class="mx-2">call</v-icon>Applicant consents to be contacted by HOOD</p>
             </div>
         </v-col>
 
@@ -103,5 +106,9 @@ name: "LeadDetailsHeader",
 }
 .font-normal {
     font-weight: 400 !important;
+}
+.application-consent{
+    color:green !important;
+    font-size: 14px !important;
 }
 </style>

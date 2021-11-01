@@ -69,6 +69,7 @@ class ApplicationResource extends JsonResource
             'billing_state' => $this->billing_state,
             'billing_postcode' => $this->billing_postcode,
             'is_billing_same' => $this->is_billing_same,
+            'is_contacted' => $this->is_contacted,
             'authorizedPersonName' => isset($this->authorizedPerson) ? "{$this->authorizedPerson->first_name} {$this->authorizedPerson->middle_name} {$this->authorizedPerson->last_name}" : null ,
         ];
     }

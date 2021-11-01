@@ -7,11 +7,11 @@
             <p class="status-subtitle">What is the status of this application?</p>
 
             <div>
-                <v-btn class="ma-1 service-status" @click="changeStatus(7)" :class="{'active-status':getServicestatus(7)}">In Progress</v-btn>
-                <v-btn class="ma-1 service-status"  @click="changeStatus(10)" :class="{'active-status':getServicestatus(10)}">Needs more info</v-btn>
-                <v-btn class="ma-1 service-status"  @click="changeStatus(4)" :class="{'active-status':getServicestatus(4)}">Submitted</v-btn>
-                <v-btn class="ma-1 service-status"  @click="changeStatus(5)" :class="{'active-status':getServicestatus(5)}">Connected</v-btn>
-                <v-btn class="ma-1 service-status"  @click="changeStatus(9)" :class="{'active-status':getServicestatus(9)}">Can’t Connect</v-btn>
+                <v-btn class="ma-1 service-status" @click="changeStatus(7, 'In Progress')" :class="{'active-status':getServicestatus(7, )}">In Progress</v-btn>
+                <v-btn class="ma-1 service-status"  @click="changeStatus(10, 'Needs more info')" :class="{'active-status':getServicestatus(10)}">Needs more info</v-btn>
+                <v-btn class="ma-1 service-status"  @click="changeStatus(4, 'Submitted')" :class="{'active-status':getServicestatus(4)}">Submitted</v-btn>
+                <v-btn class="ma-1 service-status"  @click="changeStatus(5, 'Connected')" :class="{'active-status':getServicestatus(5)}">Connected</v-btn>
+                <v-btn class="ma-1 service-status"  @click="changeStatus(9, 'Can’t Connect')" :class="{'active-status':getServicestatus(9)}">Can’t Connect</v-btn>
             </div>
 
         </v-col>
@@ -114,15 +114,18 @@ name: "WaterService",
             provider_name: '',
             status: '',
             connection_date: '',
+            service_type: 'water'
 
         }
     }
     },
     methods: {
 
-        changeStatus(status) {
+        changeStatus(status, text) {
+            this.$emit('updateStatus',text);
             this.active_status = status;
             this.water.status = status;
+            this.water.service_type = 'water';
         },
 
         getServicestatus(status) {
@@ -133,6 +136,48 @@ name: "WaterService",
         async saveWater() {
             const responseData = await WaterService.saveWater(this.water, this.leadSummary.id);
             this.water.id = responseData.id;
+        },
+         updateStatus() {
+             const newServices = this.leadSummary?.connection_services?.find(svc=>{
+                 return svc.service_type === 'water';
+             });
+
+             if(newServices)
+             {
+                 this.active_status = newServices.status;
+                 this.water.id = newServices.id;
+                 this.water.status = newServices.status;
+                 this.$emit('updateStatus',this.mapStatus(newServices.status));
+                 return ;
+             }
+             this.active_status = 9;
+             this.$emit('updateStatus','cann\'t connect');
+             return ;
+         },
+
+        mapStatus(statusCode) {
+
+            let statustext = '';
+                switch (statusCode){
+                    case 4:
+                        statustext = 'Submitted';
+                        break;
+                    case  5:
+                        statustext = 'Connected';
+                        break;
+                    case  7:
+                        statustext = 'In Progress';
+                        break;
+                    case  9:
+                        statustext = 'Can’t Connect';
+                        break;
+                    case  10:
+                        statustext = 'Needs more info';
+                        break;
+                    default:
+                        break;
+                }
+                return statustext;
         }
 
     },
@@ -141,11 +186,14 @@ name: "WaterService",
             this.water.connection_date = DayJs(this.moving_date, 'YYYY-MM-DD').format('DD/MM/YYYY');
         },
         water: {
-            handler(water) {
+            handler(water, oldWater) {
                 this.saveWater();
             },
             deep: true
         }
+    },
+    async mounted() {
+        await this.updateStatus();
     }
 }
 </script>
@@ -154,7 +202,7 @@ name: "WaterService",
 
 .active-status {
     color:green;
-    border: 1px solid green !important;
+    border: 1px solid #03A9F4 !important;
 }
 
 .service-status{
