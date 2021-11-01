@@ -280,7 +280,7 @@ class ApplicationController extends Controller
             $service = new ApplicationService();
             $data = $request->all();
             $data['connection_application_id'] = $application_id;
-            
+
             $new_service = $service->updateService($data);
 
             if($new_service->wasRecentlyCreated) return response(['status' => true ,
@@ -289,5 +289,8 @@ class ApplicationController extends Controller
             else return response(['status' => true ,
                 "message" => "Service id: {$data['id']} updated successfully", 'service'=> $new_service] , 200);
 
+        } catch (\Throwable $th) {
+            return response(['status' => false] , 409);
+        }
     }
 }
