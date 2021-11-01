@@ -1,5 +1,6 @@
 <template>
-    <v-row class="pa-2">
+    <v-card class="hood-card">
+        <v-row class="pl-5 pt-5">
         <h4>Connection Details</h4>
         <v-col cols="11">
             <h4>Status</h4>
@@ -40,12 +41,11 @@
                                     outlined
                                     dense
                                     append-icon="mdi-calendar"
-                                    v-model="property_details.moving_date"
+                                    v-model="moving_date_text"
                                     v-bind="attrs"
                                     :error-messages="errors[0]"
                                     hide-details="auto"
-                                    @input="updateLeads"
-                                    @change="updateConDatePicker"
+
                                 >
                                     <template slot="append">
                                         <v-icon v-on="on">mdi-calendar</v-icon>
@@ -55,7 +55,6 @@
                         </template>
                         <v-date-picker
                             v-model="moving_date"
-                            :min="minConnectionDate"
                             @input="connection_date = false"
                         ></v-date-picker>
                     </v-menu>
@@ -70,6 +69,7 @@
             </v-select>
         </v-col>
     </v-row>
+    </v-card>
 </template>
 
 <script>
@@ -78,6 +78,8 @@ name: "WaterService",
     props:[],
     data(){
     return {
+        moving_date_text: '',
+        moving_date: '',
         waterServiceDD: [
             {
                 text: 'Greater Western Water',

@@ -3,31 +3,35 @@
         <v-tabs
             v-model="tab"
         >
-            <v-tab>
-                        <p class="pt-2 pb-1 mb-0 services">
+            <v-tab class="pa-0">
+                <v-card class="hood-card">
+                    <p class="pt-2 pb-1 mb-0 services">
                               <span class="ml-1">
                                   <v-icon color="yellow">mdi-flash</v-icon>Energy
                               </span>
                         </p>
                         <p class="py-0 my-0 pl-6 service-status active-power-subtitle"
                         >
-                            {{getServiceStatus('enegry')}}
-
-                        </p>
+                            {{getServiceStatus('enegry')}}</p>
+                </v-card>
             </v-tab>
-            <v-tab>
+            <v-tab  class="pa-0">
+                <v-card >
                         <p class="pt-2 pb-1 mb-0 services">
                               <span class="ml-1">
                                   <v-icon  color="blue" >mdi-water</v-icon>Water
                               </span>
                         </p>
-                        <p class="py-0 my-0 pl-6 service-status active-water-subtitle">
+                        <p class="py-0 my-0 pl-6 service-status active-power-subtitle">
                             {{getServiceStatus('water')}}
                             <!--                    Connected-->
                         </p>
+                </v-card>
             </v-tab>
 
-                  <v-tab>
+                  <v-tab  class="pa-0">
+                      <v-card >
+                      <div>
                     <p class="pt-2 pb-1 mb-0 services">
                           <span class="ml-1">
                                <v-icon  color="red">mdi-wifi</v-icon>Internet
@@ -37,10 +41,12 @@
                     >
                         {{getServiceStatus('internet')}}
                     </p>
+                      </div>
+                      </v-card>
                   </v-tab>
 
             <v-tab-item>
-
+                <v-card >
                 <v-col cols="12" class="service-box-area">
                     <div v-for="service in services" :key="service">
                         <EnergyService @click.native="updateService(service)" :title="service"
@@ -99,7 +105,7 @@
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
-
+                </v-card>
 
             </v-tab-item>
 
@@ -107,13 +113,8 @@
                 <WaterService></WaterService>
             </v-tab-item>
             <v-tab-item>
-                <p>hello bangladesh</p>
+                <InternetService></InternetService>
             </v-tab-item>
-
-
-
-
-
         </v-tabs>
 
 
@@ -257,11 +258,12 @@ import EAPlanService from "@scripts/services/ea/EAPlanService";
 import {EA_PLAN_TYPES, PLAN_TYPE_TOTAL} from "@scripts/models/ea/EnergyPlan";
 import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
 import WaterService from "@scripts/components/crm/leadmanagement/WaterService";
+import InternetService from "@scripts/components/crm/leadmanagement/InternetService";
 
 
 export default {
     name: "ServiceApplications",
-    components: {WaterService, EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetails},
+    components: {InternetService, WaterService, EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetails},
     props: {
         leadSummary: {
             require: true
@@ -372,7 +374,7 @@ export default {
 <style scoped>
 
 .active-power-subtitle{
-    font-size: 12px !important;
+    font-size: 10px !important;
 }
 
 </style>
