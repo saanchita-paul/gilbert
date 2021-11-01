@@ -1,5 +1,7 @@
 <template>
-    <img class="my-3" v-bind:src="provider.logo" width="150px">
+    <v-card class="mx-2" style="cursor: pointer" @click="$emit('onSelectProvider')">
+        <img class="my-3" v-bind:src="provider.logo" width="150px">
+    </v-card>
 </template>
 
 <script>
