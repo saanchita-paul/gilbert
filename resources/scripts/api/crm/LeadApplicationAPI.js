@@ -191,7 +191,6 @@ const serviceProvider = [
         title: 'EA'
     }
 
-
 ];
 
 export default {
