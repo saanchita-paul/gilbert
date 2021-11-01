@@ -40,6 +40,8 @@ class ConnectionService extends Model
     const STATUS_REJECTED = 6;
     const STATUS_EA_PROCESSINF = 7;
     const STATUS_CLOSED = 8;
+    const STATUS_CANT_CONNECT = 9;
+    const STATUS_NEEDS_MORE_INFO = 10;
 
     const STATUS_MAPPING = [
         self::STATUS_UNASSIGNED => 'unassigned',
@@ -50,6 +52,8 @@ class ConnectionService extends Model
         self::STATUS_REJECTED => 'rejected',
         self::STATUS_EA_PROCESSINF => 'processing',
         self::STATUS_CLOSED => 'closed',
+        self::STATUS_CANT_CONNECT => 'can\'t_connect',
+        self::STATUS_NEEDS_MORE_INFO => 'can\'t_connect',
     ];
 
 
@@ -62,7 +66,9 @@ class ConnectionService extends Model
         'connection_application_id',
         'service_type',
         'status',
-        'reason'
+        'reason',
+        'connection_date',
+        'provider_name',
     ];
 
     /**

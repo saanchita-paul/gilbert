@@ -275,4 +275,19 @@ class ApplicationController extends Controller
         }
     }
 
+    public function updateService(Request $request , $application_id){
+        try {
+            $service = new ApplicationService();
+            $data = $request->all();
+            $data['connection_application_id'] = $application_id;
+            
+            $new_service = $service->updateService($data);
+            
+            if($new_service->wasRecentlyCreated) return response(['status' => true , "message" => "Service created successfully"] , 201);
+            else return response(['status' => true , "message" => "Service id: {$data['id']} updated successfully"] , 200);
+
+        } catch (\Throwable $th) {
+            return response(['status' => false] , 409);
+        }
+    }
 }
