@@ -119,7 +119,7 @@ class SugerLeadService
     public function update(Request $request, $id): bool
     {
         try {
-            $this->connectionApplication = ConnectionApplication::findOrFail($id);
+            $this->connectionApplication = ConnectionApplication::where('id' , $id)->where('source' , ConnectionApplication::SOURCE_FOXIE)->first();
             $this->lead = $this->connectionApplication->SugerLead;
             
             $this->setAttributeUpdate($request);
