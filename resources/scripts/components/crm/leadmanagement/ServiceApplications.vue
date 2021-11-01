@@ -1,69 +1,249 @@
 <template>
     <v-row>
-        <v-col cols="12" class="pb-0">
-            <p class="sub-title mb-0">Service Applications</p>
-        </v-col>
-        <v-col cols="12" class="service-box-area">
-            <div v-for="service in services" :key="service">
-                <EnergyService @click.native="updateService(service)" :title="service"
-                               :lead-summary="leadSummary"></EnergyService>
-            </div>
-        </v-col>
-        <v-col cols="12">
-            <v-divider></v-divider>
-        </v-col>
-        <v-col cols="12">
-            <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
-            <div class="d-flex">
-                <ServiceProvider v-if="serviceProviderFlag" v-for="provider in serviceProvider"
-                                 :key="provider.id" :provider="provider"></ServiceProvider>
-            </div>
-        </v-col>
-
-        <v-col cols="12">
-            <v-divider></v-divider>
-        </v-col>
-
-        <v-col cols="12">
-            <p class="sub-title" v-if="selectPlanTitle.length > 0">Select a plan for {{selectPlanTitle}}</p>
-
-            <div class="d-flex" v-if="plansFlag">
-                <EnergyPlan
-                    v-for="plan in plans"
-                    :key="plan.key"
-                    :plan="plan"
-                    :selectedPlan="selectedPlanType"
-                    @selectPlan="planSelect"
-                    @view="view"
-                    @click.native="planSelect(plan,true)"
-                ></EnergyPlan>
-            </div>
-        </v-col>
-
-        <v-dialog
-            v-model="viewPlanDialog"
-            max-width="500"
-            v-if="viewPlanDialog && planTypeForDetails"
+        <v-tabs
+            v-model="tab"
         >
-            <v-card>
-                <EnergyPlanDetails
-                    :plan="planTypeForDetails"
-                    :postcode="leadSummary.postcode"
-                    :services="leadSummary.service_interests"
-                    :state="leadSummary.state"
-                />
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                        color="green darken-1"
-                        text
-                        @click="viewPlanDialog = false"
+            <v-tab>
+                        <p class="pt-2 pb-1 mb-0 services">
+                              <span class="ml-1">
+                                  <v-icon color="yellow">mdi-flash</v-icon>Energy
+                              </span>
+                        </p>
+                        <p class="py-0 my-0 pl-6 service-status active-power-subtitle"
+                        >
+                            {{getServiceStatus('enegry')}}
+
+                        </p>
+            </v-tab>
+            <v-tab>
+                        <p class="pt-2 pb-1 mb-0 services">
+                              <span class="ml-1">
+                                  <v-icon  color="blue" >mdi-water</v-icon>Water
+                              </span>
+                        </p>
+                        <p class="py-0 my-0 pl-6 service-status active-water-subtitle">
+                            {{getServiceStatus('water')}}
+                            <!--                    Connected-->
+                        </p>
+            </v-tab>
+
+                  <v-tab>
+                    <p class="pt-2 pb-1 mb-0 services">
+                          <span class="ml-1">
+                               <v-icon  color="red">mdi-wifi</v-icon>Internet
+                          </span>
+                    </p>
+                    <p class="py-0 my-0 pl-6 service-status active-power-subtitle active-power-subtitle"
                     >
-                        Close
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
+                        {{getServiceStatus('internet')}}
+                    </p>
+                  </v-tab>
+
+            <v-tab-item>
+
+                <v-col cols="12" class="service-box-area">
+                    <div v-for="service in services" :key="service">
+                        <EnergyService @click.native="updateService(service)" :title="service"
+                                       :lead-summary="leadSummary"></EnergyService>
+                    </div>
+                </v-col>
+                <v-col cols="12">
+                    <v-divider></v-divider>
+                </v-col>
+                <v-col cols="12">
+                    <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
+                    <div class="d-flex">
+                        <ServiceProvider v-if="serviceProviderFlag" v-for="provider in serviceProvider"
+                                         :key="provider.id" :provider="provider"></ServiceProvider>
+                    </div>
+                </v-col>
+                <v-col cols="12">
+                    <v-divider></v-divider>
+                </v-col>
+                <v-col cols="12">
+                    <p class="sub-title" v-if="selectPlanTitle.length > 0">Select a plan for {{selectPlanTitle}}</p>
+
+                    <div class="d-flex" v-if="plansFlag">
+                        <EnergyPlan
+                            v-for="plan in plans"
+                            :key="plan.key"
+                            :plan="plan"
+                            :selectedPlan="selectedPlanType"
+                            @selectPlan="planSelect"
+                            @view="view"
+                            @click.native="planSelect(plan,true)"
+                        ></EnergyPlan>
+                    </div>
+                </v-col>
+                <v-dialog
+                    v-model="viewPlanDialog"
+                    max-width="500"
+                    v-if="viewPlanDialog && planTypeForDetails"
+                >
+                    <v-card>
+                        <EnergyPlanDetails
+                            :plan="planTypeForDetails"
+                            :postcode="leadSummary.postcode"
+                            :services="leadSummary.service_interests"
+                            :state="leadSummary.state"
+                        />
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="green darken-1"
+                                text
+                                @click="viewPlanDialog = false"
+                            >
+                                Close
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+
+
+            </v-tab-item>
+
+            <v-tab-item>
+                <WaterService></WaterService>
+            </v-tab-item>
+            <v-tab-item>
+                <p>hello bangladesh</p>
+            </v-tab-item>
+
+
+
+
+
+        </v-tabs>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--        &lt;!&ndash;start working today&ndash;&gt;-->
+<!--        <v-col cols="12" >-->
+<!--            <v-row class="service-box-area">-->
+<!--                <v-col @click="updateService1('energy')" cols="3"-->
+<!--                       class="my-0 py-0 mx-2 service-box" :class="{'active':isServiceActive('energy')}">-->
+<!--                    <p class="pt-2 pb-1 mb-0 services">-->
+<!--                          <span class="ml-1">-->
+<!--                              <v-icon color="yellow">mdi-flash</v-icon>Energy-->
+<!--                          </span>-->
+<!--                    </p>-->
+<!--                    <p class="py-0 my-0 pl-6 service-status active-power-subtitle"-->
+<!--                    >-->
+<!--                        {{getServiceStatus('enegry')}}-->
+
+<!--                    </p>-->
+<!--                </v-col>-->
+<!--                <v-col @click="updateService1('water')" cols="3"-->
+<!--                       class="my-0 py-0 mx-2 service-box"-->
+<!--                       :class="{'active':isServiceActive('water')}"-->
+<!--                >-->
+<!--                    <p class="pt-2 pb-1 mb-0 services">-->
+<!--                          <span class="ml-1">-->
+<!--                              <v-icon  color="blue" >mdi-water</v-icon>Water-->
+<!--                          </span>-->
+<!--                    </p>-->
+<!--                    <p class="py-0 my-0 pl-6 service-status active-water-subtitle">-->
+<!--                        {{getServiceStatus('water')}}-->
+<!--                        &lt;!&ndash;                    Connected&ndash;&gt;-->
+<!--                    </p>-->
+<!--                </v-col>-->
+<!--                <v-col @click="updateService1('internet')" cols="3"-->
+<!--                       class="my-0 py-0 mx-2 service-box"-->
+<!--                       :class="{'active':isServiceActive('internet')}"-->
+<!--                >-->
+<!--                    <p class="pt-2 pb-1 mb-0 services">-->
+<!--                          <span class="ml-1">-->
+<!--                               <v-icon  color="red">mdi-wifi</v-icon>Internet-->
+<!--                          </span>-->
+<!--                    </p>-->
+<!--                    <p class="py-0 my-0 pl-6 service-status active-power-subtitle active-power-subtitle"-->
+<!--                    >-->
+<!--                        {{getServiceStatus('internet')}}-->
+<!--                    </p>-->
+<!--                </v-col>-->
+<!--            </v-row>-->
+<!--        </v-col>-->
+
+<!--        &lt;!&ndash;end working today&ndash;&gt;-->
+
+
+<!--        <template v-if="isServiceActive('energy')">-->
+<!--            <v-col cols="12" class="service-box-area">-->
+<!--                    <div v-for="service in services" :key="service">-->
+<!--                        <EnergyService @click.native="updateService(service)" :title="service"-->
+<!--                                       :lead-summary="leadSummary"></EnergyService>-->
+<!--                    </div>-->
+<!--                </v-col>-->
+<!--            <v-col cols="12">-->
+<!--                    <v-divider></v-divider>-->
+<!--                </v-col>-->
+<!--            <v-col cols="12">-->
+<!--                    <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>-->
+<!--                    <div class="d-flex">-->
+<!--                        <ServiceProvider v-if="serviceProviderFlag" v-for="provider in serviceProvider"-->
+<!--                                         :key="provider.id" :provider="provider"></ServiceProvider>-->
+<!--                    </div>-->
+<!--                </v-col>-->
+<!--            <v-col cols="12">-->
+<!--                    <v-divider></v-divider>-->
+<!--                </v-col>-->
+<!--            <v-col cols="12">-->
+<!--                    <p class="sub-title" v-if="selectPlanTitle.length > 0">Select a plan for {{selectPlanTitle}}</p>-->
+
+<!--                    <div class="d-flex" v-if="plansFlag">-->
+<!--                        <EnergyPlan-->
+<!--                            v-for="plan in plans"-->
+<!--                            :key="plan.key"-->
+<!--                            :plan="plan"-->
+<!--                            :selectedPlan="selectedPlanType"-->
+<!--                            @selectPlan="planSelect"-->
+<!--                            @view="view"-->
+<!--                            @click.native="planSelect(plan,true)"-->
+<!--                        ></EnergyPlan>-->
+<!--                    </div>-->
+<!--                </v-col>-->
+<!--            <v-dialog-->
+<!--                    v-model="viewPlanDialog"-->
+<!--                    max-width="500"-->
+<!--                    v-if="viewPlanDialog && planTypeForDetails"-->
+<!--                >-->
+<!--                    <v-card>-->
+<!--                        <EnergyPlanDetails-->
+<!--                            :plan="planTypeForDetails"-->
+<!--                            :postcode="leadSummary.postcode"-->
+<!--                            :services="leadSummary.service_interests"-->
+<!--                            :state="leadSummary.state"-->
+<!--                        />-->
+<!--                        <v-card-actions>-->
+<!--                            <v-spacer></v-spacer>-->
+<!--                            <v-btn-->
+<!--                                color="green darken-1"-->
+<!--                                text-->
+<!--                                @click="viewPlanDialog = false"-->
+<!--                            >-->
+<!--                                Close-->
+<!--                            </v-btn>-->
+<!--                        </v-card-actions>-->
+<!--                    </v-card>-->
+<!--                </v-dialog>-->
+<!--        </template>-->
+
+<!--        <template v-if="isServiceActive('water')">-->
+<!--            <WaterService></WaterService>-->
+<!--        </template>-->
+
+
     </v-row>
 </template>
 
@@ -76,11 +256,12 @@ import EnergyApi from "@scripts/api/ea/EnergyApi";
 import EAPlanService from "@scripts/services/ea/EAPlanService";
 import {EA_PLAN_TYPES, PLAN_TYPE_TOTAL} from "@scripts/models/ea/EnergyPlan";
 import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
+import WaterService from "@scripts/components/crm/leadmanagement/WaterService";
 
 
 export default {
     name: "ServiceApplications",
-    components: {EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetails},
+    components: {WaterService, EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetails},
     props: {
         leadSummary: {
             require: true
@@ -89,14 +270,17 @@ export default {
 
     data() {
         return {
-            services: ['Power', 'Gas', 'Water', 'Internet'],
+            services: ['Power', 'Gas'],
             serviceProviderFlag: false,
             serviceProvider: [],
             plans: [],
             plansFlag: false,
             selectedPlanType: PLAN_TYPE_TOTAL,
             viewPlanDialog: false,
-            planTypeForDetails: null
+            planTypeForDetails: null,
+            activeService: 'energy',
+            tab: null,
+            servicesNew: ['Energy', 'Water', 'NVN']
         }
     },
     computed: {
@@ -167,10 +351,28 @@ export default {
         view(plan) {
             this.planTypeForDetails = plan.key;
             this.viewPlanDialog = true;
+        },
+
+        getServiceStatus() {
+            return 'Connected';
+        },
+
+        updateService1(service) {
+            this.activeService = service;
+        },
+
+        isServiceActive(service) {
+            if(this.activeService === service) return true;
+            return  false;
         }
     },
 };
 </script>
 
 <style scoped>
+
+.active-power-subtitle{
+    font-size: 12px !important;
+}
+
 </style>

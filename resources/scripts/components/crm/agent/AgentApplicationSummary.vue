@@ -92,7 +92,7 @@
             </v-col>
             <v-col cols="7" class="my-0 py-0">
 <!--                <p class="font-weight-bold">Authorized Person</p>-->
-                <p class="mb-2">{{ application.authorizedPersonName == null ? '--' : application.authorizedPersonName }}</p>
+                <p class="mb-2">{{ application.authorizedPersonName == null ? 'No Authorised Person' : application.authorizedPersonName }}</p>
             </v-col>
 
             <v-col cols="5" class="my-0 py-0">
