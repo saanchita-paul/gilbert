@@ -336,7 +336,7 @@ export default {
     width:180px !important;
 }
 .service-title {
- font-size: 18px;
+ font-size: 16px;
     font-weight: bold;
 }
 
