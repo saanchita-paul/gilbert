@@ -275,4 +275,17 @@ class ApplicationService
         }
     }
 
+    public function updateService(array $data){
+        
+        try {
+            return ConnectionService::updateOrCreate(
+                [ 'id' => $data['id'] ?? null ],
+                $data
+            );
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+        
+    }
+
 }
