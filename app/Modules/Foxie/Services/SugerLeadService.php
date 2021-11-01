@@ -17,6 +17,13 @@ class SugerLeadService
     private SugerLead $lead;
     private ConnectionApplication $connectionApplication;
 
+
+    /**
+     * Set attribute for create.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
     private function setAttribute(Request $request){
         $this->connectionApplication->first_name = $request->first_name ?? 'Iron';
         $this->connectionApplication->last_name = $request->last_name ?? 'Man' ;
@@ -35,14 +42,38 @@ class SugerLeadService
         $this->connectionApplication->unit_number = $request->primary_address_unit_c ?? '';
         $this->connectionApplication->plan_type = $request->meter_plan_type_c ?? '3';
         $this->connectionApplication->created_at = now();
-        $this->connectionApplication->updated_at = now();
         // $this->connectionApplication->title = $request->salutation ?? 'Mr';
         $this->connectionApplication->title = 'Mr';
 
         $this->lead->created = now();
-        $this->lead->updated = now();
     }
 
+    /**
+     * Set attribute for update.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
+    private function setAttributeUpdate(Request $request) : void {
+
+        $request->first_name ? $this->connectionApplication->first_name = $request->first_name : '';
+        $request->last_name ? $this->connectionApplication->last_name = $request->last_name : '';
+        $request->email1 ? $this->connectionApplication->email = $request->email1 : '';
+        $request->birthdate ? $this->connectionApplication->dob = date("Y-m-d", strtotime($request->birthdate)) : '';
+        $request->move_in_date_c ? $this->connectionApplication->moving_date = date("Y-m-d", strtotime($request->move_in_date_c)) : '';
+        $request->primary_address_unit_c ? $this->connectionApplication->address_unit = $request->primary_address_unit_c : '';
+        $request->primary_address_street ? $this->connectionApplication->street_address = $request->primary_address_street : '';
+        $request->primary_address_city ? $this->connectionApplication->city = $request->primary_address_city : '';
+        $request->alt_address_postcode ? $this->connectionApplication->postcode = $request->alt_address_postcode : '';
+        $request->primary_address_state ? $this->connectionApplication->state = $request->primary_address_state : '';
+        $request->primary_address_country ? $this->connectionApplication->country = $request->primary_address_country : '';
+        $request->electricity_nmi_c ? $this->connectionApplication->nmi = $request->electricity_nmi_c : '';
+        $request->gas_mirn_c ? $this->connectionApplication->mirn = $request->gas_mirn_c : '';
+        $request->primary_address_unit_c ? $this->connectionApplication->unit_number = $request->primary_address_unit_c : '';
+        $request->meter_plan_type_c ? $this->connectionApplication->plan_type = $request->meter_plan_type_c : '';
+        $this->connectionApplication->updated_at = now();
+        $this->lead->updated = now();
+    }
 
     private function setOfficeAndAgencyId(){
         try {
@@ -88,10 +119,10 @@ class SugerLeadService
     public function update(Request $request, $id): bool
     {
         try {
-            $this->connectionApplication = ConnectionApplication::findOrFail($id);
+            $this->connectionApplication = ConnectionApplication::where('id' , $id)->where('source' , ConnectionApplication::SOURCE_FOXIE)->first();
             $this->lead = $this->connectionApplication->SugerLead;
             
-            $this->setAttribute($request);
+            $this->setAttributeUpdate($request);
             
             $this->connectionApplication->save();
             $all_fields_dump =  json_decode($this->lead->all_fields_dump);
