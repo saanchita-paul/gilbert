@@ -189,8 +189,17 @@ const serviceProvider = [
         id: 1,
         logo: '/assets/images/SupplierLogo.png',
         title: 'EA'
-    }
-
+    },
+    {
+        id: 2,
+        logo: '/assets/images/SupplierLogo.png',
+        title: 'ORIGIN'
+    },
+    {
+        id: 3,
+        logo: '/assets/images/SupplierLogo.png',
+        title: 'SUMO'
+    },
 
 ];
 

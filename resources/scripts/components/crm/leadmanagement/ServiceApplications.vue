@@ -58,8 +58,8 @@
                 </v-col>
                 <v-col cols="12">
                     <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
-                    <div class="d-flex">
-                        <ServiceProvider v-if="serviceProviderFlag" v-for="provider in serviceProvider"
+                    <div class="d-flex align-content-lg-space-around">
+                        <ServiceProvider @onSelectProvider="onSelectProvider(provider.id)" v-if="serviceProviderFlag" v-for="provider in serviceProvider"
                                          :key="provider.id" :provider="provider"></ServiceProvider>
                     </div>
                 </v-col>
@@ -69,16 +69,26 @@
                 <v-col cols="12">
                     <p class="sub-title" v-if="selectPlanTitle.length > 0">Select a plan for {{selectPlanTitle}}</p>
 
+                    <div class="d-flex" v-if="plansFlag && selectedProviderId === 1">
+                            <EnergyPlan
+                                v-for="plan in plans"
+                                :key="plan.key"
+                                :plan="plan"
+                                :selectedPlan="selectedPlanType"
+                                @selectPlan="planSelect"
+                                @view="view"
+                                @click.native="planSelect(plan,true)"
+                            ></EnergyPlan>
+                    </div>
                     <div class="d-flex" v-if="plansFlag">
-                        <EnergyPlan
-                            v-for="plan in plans"
-                            :key="plan.key"
-                            :plan="plan"
-                            :selectedPlan="selectedPlanType"
-                            @selectPlan="planSelect"
-                            @view="view"
-                            @click.native="planSelect(plan,true)"
-                        ></EnergyPlan>
+                        <div class="d-flex" v-for="plan in otherPlans" :key="plan.text">
+                            <div class="your-plan active">
+                                <p :style="{background: plan.bg}">{{plan.text}}</p>
+                                <div class="pa-4">
+                                    <v-btn @click="reviewPlan" block outlined class="mb-3">Review Plan Details</v-btn>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </v-col>
                 <v-dialog
@@ -282,7 +292,10 @@ export default {
             planTypeForDetails: null,
             activeService: 'energy',
             tab: null,
-            servicesNew: ['Energy', 'Water', 'NVN']
+            origin: [ {text: 'Origin Go', bg: 'red' }, { text: 'Origin Go Variable', bg: 'blue'}, {text: 'Origin Basic', bg: 'orange'}],
+            sumo: [ {text: 'Sumo Saver', bg: 'purple' }, { text: 'Sumo ASSURE', bg: 'blue'}, {text: 'Sumo SELECT', bg: 'green'}],
+            servicesNew: ['Energy', 'Water', 'NVN'],
+            selectedProviderId: 1
         }
     },
     computed: {
@@ -294,6 +307,11 @@ export default {
             return services && services.includes('gas')
                 ? 'Gas'
                 : (services && services.includes('power') ? 'Power' : '')
+        },
+        otherPlans() {
+            return this.selectedProviderId === 2
+                ? this.origin
+                : (this.selectedProviderId === 3 ? this.sumo : [])
         }
     },
     watch: {
@@ -366,6 +384,9 @@ export default {
         isServiceActive(service) {
             if(this.activeService === service) return true;
             return  false;
+        },
+        onSelectProvider(providerId) {
+            this.selectedProviderId = providerId
         }
     },
 };
