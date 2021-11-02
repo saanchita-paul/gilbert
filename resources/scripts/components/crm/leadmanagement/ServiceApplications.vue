@@ -53,7 +53,8 @@
                 <v-col cols="12" class="service-box-area">
                     <div v-for="service in services" :key="service">
                         <EnergyService @click.native="updateService(service)" :title="service"
-                                       :lead-summary="leadSummary"></EnergyService>
+                                       :lead-summary="leadSummary">
+                        </EnergyService>
                     </div>
                 </v-col>
                 <v-col cols="12">
@@ -125,7 +126,79 @@
                 <WaterService :leadSummary="leadSummary" @updateStatus="updateStatus"></WaterService>
             </v-tab-item>
             <v-tab-item>
-                <InternetService></InternetService>
+                <!-- <InternetService></InternetService> -->
+                <v-card>
+                <!-- <v-col cols="12" class="service-box-area">
+                    <div v-for="service in services" :key="service">
+                        <EnergyService @click.native="updateService(service)" :title="service"
+                                       :lead-summary="leadSummary">
+                        </EnergyService>
+                    </div>
+                </v-col> -->
+                <v-col cols="12">
+                    <v-divider></v-divider>
+                </v-col>
+                <v-col cols="12">
+                    <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
+                    <div class="d-flex align-content-lg-space-around">
+                        <ServiceProvider @onSelectProvider="onSelectProvider(provider.id)"  v-for="provider in serviceProvider"
+                                         :key="provider.id" :provider="provider"></ServiceProvider>
+                    </div>
+                </v-col>
+                <v-col cols="12">
+                    <v-divider></v-divider>
+                </v-col>
+                <v-col cols="12">
+                    <p class="sub-title" v-if="selectPlanTitle.length > 0">Select a plan for {{selectPlanTitle}}</p>
+
+                    <div class="d-flex" v-if="plansFlag && selectedProviderId === 1">
+                            <InternetPlan
+                                v-for="plan in plans"
+                                :key="plan.key"
+                                :plan="plan"
+                                :selectedPlan="selectedPlanType"
+                                @selectPlan="planSelect"
+                                @view="view"
+                                @click.native="planSelect(plan,true)"
+                            ></InternetPlan>
+                    </div>
+                    <div class="d-flex" v-if="plansFlag">
+                        <div class="d-flex" v-for="plan in otherPlans" :key="plan.text">
+                            <div class="your-plan active">
+                                <p :style="{background: plan.bg}">{{plan.text}}</p>
+                                <div class="pa-4">
+                                    <v-btn @click="reviewPlan" block outlined class="mb-3">Review Plan Details</v-btn>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </v-col>
+                <v-dialog
+                    v-model="viewPlanDialog"
+                    max-width="500"
+                    v-if="viewPlanDialog && planTypeForDetails"
+                >
+                    <v-card>
+                        <EnergyPlanDetails
+                            :plan="planTypeForDetails"
+                            :postcode="leadSummary.postcode"
+                            :services="leadSummary.service_interests"
+                            :state="leadSummary.state"
+                        />
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="green darken-1"
+                                text
+                                @click="viewPlanDialog = false"
+                            >
+                                Close
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                </v-card>
+
             </v-tab-item>
         </v-tabs>
 
@@ -137,10 +210,12 @@ import EnergyService from "@scripts/components/crm/leadmanagement/EnergyService"
 import ServiceProvider from "@scripts/components/crm/leadmanagement/ServiceProvider";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
+import InternetPlan from "@scripts/components/crm/leadmanagement/InternetPlan";
 import EnergyApi from "@scripts/api/ea/EnergyApi";
 import EAPlanService from "@scripts/services/ea/EAPlanService";
 import {EA_PLAN_TYPES, PLAN_TYPE_TOTAL} from "@scripts/models/ea/EnergyPlan";
 import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
+import InternetPlanDetails from "@scripts/components/ea/InternetPlanDetails";
 import WaterService from "@scripts/components/crm/leadmanagement/WaterService";
 import InternetService from "@scripts/components/crm/leadmanagement/InternetService";
 import {isNull} from "lodash-es";
@@ -148,7 +223,7 @@ import {isNull} from "lodash-es";
 
 export default {
     name: "ServiceApplications",
-    components: {InternetService, WaterService, EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetails},
+    components: {InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails},
     props: {
         leadSummary: {
             require: true
