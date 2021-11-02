@@ -25,7 +25,7 @@
 
                     <div class="d-flex" >
                         <div class="d-flex" v-for="plan in otherPlans1" :key="plan.text">
-                            <SolePlan :plan="plan" @click.native="selectPlan(plan)"></SolePlan>
+                            <SolePlan :isActive="isActivePlan" :plan="plan" @click.native="selectPlan(plan)"></SolePlan>
                         </div>
                     </div>
                     <!-- <div class="d-flex" v-if="plansFlag">
@@ -110,7 +110,7 @@ props: {
                     id: 3,
                     logo: '/assets/images/SupplierLogo.png',
                     title: 'EA3',
-                   
+
                 },
 
             ],
@@ -129,6 +129,7 @@ props: {
             selectedPlanTitle: '',
             selectedProviderId: 1,
             otherPlans1: null,
+            isActivePlan: null
         }
     },
         methods: {
@@ -137,9 +138,14 @@ props: {
         },
         onSelectProvider(providerId) {
             this.selectedProviderId = providerId
-            this.otherPlans1 = this.providers.plans;
+
+            const selectedProvider = this.providers.find(dt=> {
+                return dt.name === this.selectedProviderId
+            })
+
+            this.otherPlans1 = selectedProvider.plans;
             this.isActivePlan = this.providers.default_plan;
-        
+
         },
         planSelect(plan, isManual = false) {
             this.selectedPlanType = plan?.key
