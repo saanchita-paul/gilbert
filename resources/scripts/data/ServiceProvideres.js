@@ -23,7 +23,7 @@ export default [
                 bgColor: 'red',
             }),
         ],
-        logo: '/assets/images/SupplierLogo.png'
+        logo: '/assets/images/logo/providers/origin.png'
     },
     {
         name: 'sumo',
@@ -47,7 +47,7 @@ export default [
                 bgColor: 'red',
             }),
         ],
-        logo: '/assets/images/SupplierLogo.png'
+        logo: '/assets/images/logo/providers/origin.png'
     },
     {
         name: 'Telstra',
@@ -70,7 +70,7 @@ export default [
                 bgColor: 'red',
             }),
         ],
-        logo: '/assets/images/SupplierLogo.png'
+        logo: '/assets/images/logo/providers/telstra.png'
     },
     {
         name: 'Belong',
@@ -93,7 +93,7 @@ export default [
                 bgColor: 'red',
             }),
         ],
-        logo: '/assets/images/SupplierLogo.png'
+        logo: '/assets/images/logo/providers/belong.png'
     },
     {
         name: 'Goodtel',
@@ -116,7 +116,7 @@ export default [
                 bgColor: 'red',
             }),
         ],
-        logo: '/assets/images/SupplierLogo.png'
+        logo: '/assets/images/logo/providers/goodtel.png'
     },
 
 ]
