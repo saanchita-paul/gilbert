@@ -136,6 +136,14 @@ props: {
         setPlanTitle(item) {
             this.selectedPlanTitle = item.title;
         },
+        updateApplicationProviders(data){
+            let payload = {
+                service_type: ['internet'],
+                provider_name: '',
+                plan_type: ''
+            }
+        LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
+        },
         onSelectProvider(providerId) {
             this.selectedProviderId = providerId
 
@@ -145,7 +153,6 @@ props: {
 
             this.otherPlans1 = selectedProvider.plans;
             this.isActivePlan = this.providers.default_plan;
-
         },
         planSelect(plan, isManual = false) {
             this.selectedPlanType = plan?.key

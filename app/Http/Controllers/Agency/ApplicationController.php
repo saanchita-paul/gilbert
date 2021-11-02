@@ -6,6 +6,7 @@ use App\Events\Agency\CreateApplicationEvent;
 use App\Events\Agency\SubmitApplicationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Agency\ApplicationRequest;
+use App\Http\Requests\Agency\ProviderRequest;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationResource;
 use App\Models\ConnectionApplication;
@@ -294,7 +295,7 @@ class ApplicationController extends Controller
         }
     }
 
-    public function providers(Request $request , $applicationId){
+    public function providers(ProviderRequest $request , $applicationId){
         try {
             $service = new ApplicationService();
             $inputData = $request->toArray();
