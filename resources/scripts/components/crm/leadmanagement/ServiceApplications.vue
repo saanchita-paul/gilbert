@@ -63,8 +63,12 @@
                 <v-col cols="12">
                     <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
                     <div class="d-flex align-content-lg-space-around">
-                        <ServiceProvider @onSelectProvider="onSelectProvider(provider.id)" v-if="serviceProviderFlag" v-for="provider in serviceProvider"
+                        <ServiceProvider @onSelectProvider="onSelectProvider(provider.name)" v-if="serviceProviderFlag" v-for="provider in serviceProvider"
                                          :key="provider.id" :provider="provider"></ServiceProvider>
+
+                        <ServiceProvider @onSelectProvider="onSelectProvider1(provider.name)" v-if="serviceProviderFlag" v-for="provider in providers"
+                                         :key="provider.name" :provider="provider"></ServiceProvider>
+
                     </div>
                 </v-col>
                 <v-col cols="12">
@@ -84,9 +88,9 @@
                                 @click.native="planSelect(plan,true)"
                             ></EnergyPlan>
                     </div>
-                    <div class="d-flex" v-if="plansFlag">
-                        <div class="d-flex" v-for="plan in otherPlans" :key="plan.text">
-                            <SolePlan :plan="plan" @click.native="selectPlan(plan)"></SolePlan>
+                    <div class="d-flex" v-if="plansFlag &&  selectedProviderId !== 1">
+                        <div class="d-flex" v-for="plan in origin2" :key="plan.name">
+                            <SolePlan :plan="plan" @click.native="selectPlan(plan)" :isActive="isActivePlan"></SolePlan>
                         </div>
                     </div>
                 </v-col>
@@ -143,6 +147,7 @@ import WaterService from "@scripts/components/crm/leadmanagement/WaterService";
 import InternetService from "@scripts/components/crm/leadmanagement/InternetService";
 import { isNull } from "lodash-es";
 import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
+import ServiceProvideres from "@scripts/data/ServiceProvideres";
 
 
 export default {
@@ -175,6 +180,8 @@ export default {
             servicesNew: ['Energy', 'Water', 'NVN'],
             selectedProviderId: 1,
             waterStatus: null,
+            origin2: null,
+            isActivePlan: null,
         }
     },
     computed: {
@@ -203,6 +210,11 @@ export default {
         },
         getinternetServiceStatus() {
             return this.getServiceStatus('internet');
+        },
+        providers() {
+            return ServiceProvideres.filter((dt)=> {
+               return dt.service_type === 'energy';
+            });
         }
     },
     watch: {
@@ -211,6 +223,8 @@ export default {
         }
     },
     mounted() {
+
+        console.log('origin1', this.providers);
         this.loadServiceProvider();
         this.loadPlan();
         this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
@@ -305,7 +319,6 @@ export default {
                     break;
             }
 
-            console.log('statustext' , statustext);
             return statustext;
         },
 
@@ -322,27 +335,37 @@ export default {
             this.selectedProviderId = providerId
         },
 
+        onSelectProvider1(name) {
+            const providerData  = this.providers.find((pl)=>{
+                return pl.name === name;
+            })
+            this.origin2 = providerData.plans;
+            this.isActivePlan = providerData.default_plan;
+            this.selectedProviderId = name
+        },
+
         updateStatus(text) {
             this.waterStatus = text;
         },
 
         selectPlan(plan){
-
-            if(plan.type === 'origin') {
-
-                this.origin.forEach(dt=>{
-                    dt.active = false;
-                })
-
-            }
-
-            if(plan.type === 'sumo')
-            {
-                this.sumo.forEach(dt=>{
-                    dt.active = false;
-                })
-            }
-            plan.active = true;
+            this.isActivePlan = plan.name;
+            //
+            // if(plan.type === 'origin') {
+            //
+            //     this.origin.forEach(dt=>{
+            //         dt.active = false;
+            //     })
+            //
+            // }
+            //
+            // if(plan.type === 'sumo')
+            // {
+            //     this.sumo.forEach(dt=>{
+            //         dt.active = false;
+            //     })
+            // }
+            // plan.active = true;
         }
     },
 };
