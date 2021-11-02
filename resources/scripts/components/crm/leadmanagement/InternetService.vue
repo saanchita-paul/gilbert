@@ -13,8 +13,8 @@
                 <v-col cols="12">
                     <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
                     <div class="d-flex align-content-lg-space-around">
-                        <ServiceProvider @onSelectProvider="onSelectProvider(provider.id)"  v-for="provider in serviceProvider"
-                                         :key="provider.id" :provider="provider"></ServiceProvider>
+                        <ServiceProvider @onSelectProvider="onSelectProvider(provider.name)"  v-for="provider in providers"
+                                         :key="provider.name" :provider="provider"></ServiceProvider>
                     </div>
                 </v-col>
                 <v-col cols="12">
@@ -23,19 +23,8 @@
                 <v-col cols="12">
                     <p class="sub-title" v-if="selectPlanTitle.length > 0">Select a plan for {{selectPlanTitle}}</p>
 
-                    <div class="d-flex" v-if="plansFlag && selectedProviderId === 1">
-                            <InternetPlan
-                                v-for="plan in plans"
-                                :key="plan.key"
-                                :plan="plan"
-                                :selectedPlan="selectedPlanType"
-                                @selectPlan="planSelect"
-                                @view="view"
-                                @click.native="planSelect(plan,true)"
-                            ></InternetPlan>
-                    </div>
                     <div class="d-flex" >
-                        <div class="d-flex" v-for="plan in otherPlans" :key="plan.text">
+                        <div class="d-flex" v-for="plan in otherPlans1" :key="plan.text">
                             <SolePlan :plan="plan" @click.native="selectPlan(plan)"></SolePlan>
                         </div>
                     </div>
@@ -91,6 +80,7 @@ import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
 import WaterService from "@scripts/components/crm/leadmanagement/WaterService";
 import InternetService from "@scripts/components/crm/leadmanagement/InternetService";
 import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
+import ServiceProvideres from "@scripts/data/ServiceProvideres"
 export default {
 name: "InternetService.",
 components: {SolePlan, InternetService, WaterService, EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetails},
@@ -138,6 +128,7 @@ props: {
             servicesNew: ['Energy', 'Water', 'NVN'],
             selectedPlanTitle: '',
             selectedProviderId: 1,
+            otherPlans1: null,
         }
     },
         methods: {
@@ -146,6 +137,9 @@ props: {
         },
         onSelectProvider(providerId) {
             this.selectedProviderId = providerId
+            this.otherPlans1 = this.providers.plans;
+            this.isActivePlan = this.providers.default_plan;
+        
         },
         planSelect(plan, isManual = false) {
             this.selectedPlanType = plan?.key
@@ -171,6 +165,11 @@ props: {
         }
     },
     computed:{
+        providers() {
+            return ServiceProvideres.filter((dt)=> {
+                return dt.service_type === 'internet';
+        });
+        },
         otherPlans() {
             return this.selectedProviderId === 2
                 ? this.origin
@@ -186,6 +185,9 @@ props: {
                 ? 'Gas'
                 : (services && services.includes('power') ? 'Power' : '')
         },
+    },
+    mounted() {
+        console.log('providers', this.providers);
     }
 
 }
