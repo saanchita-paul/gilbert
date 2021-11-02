@@ -3,7 +3,7 @@
         class="mx-2"
         style="cursor: pointer;"
         @click="$emit('onSelectProvider')"
-        :class="{'not-selected': provider.name === selectedProvider}"
+        :class="{'not-selected': provider.name !== selectedProvider}"
     >
         <img class="my-3 img" v-bind:src="provider.logo" width="150px" />
     </v-card>
