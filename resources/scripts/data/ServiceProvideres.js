@@ -118,11 +118,6 @@ export default [
                 bgColor: '#42B5E8',
                 name: 'premium',
             }),
-            new ProviderPlan({
-                title:'A',
-                bgColor: 'red',
-                name: 'premium_speed',
-            }),
         ],
         logo: '/assets/images/logo/providers/goodtel.png'
     },
