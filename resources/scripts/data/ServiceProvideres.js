@@ -15,12 +15,12 @@ export default [
             new ProviderPlan({
                 title:'Origin Go Variable',
                 name: 'origin_go_variable',
-                bgColor: 'red',
+                bgColor: 'blue',
             }),
             new ProviderPlan({
                 title:'Origin Basic',
                 name: 'origin_basic',
-                bgColor: 'red',
+                bgColor: 'orange',
             }),
         ],
         logo: '/assets/images/logo/providers/origin.png'
@@ -34,20 +34,20 @@ export default [
             new ProviderPlan({
                 title:'Sumo Saver',
                 name: 'sumo_saver',
-                bgColor: '#B18AFF',
+                bgColor: 'purple',
             }),
             new ProviderPlan({
                 title:'Sumo ASSURE',
                 name: 'sumo_assure',
-                bgColor: '#B18AFF',
+                bgColor: 'blue',
             }),
             new ProviderPlan({
                 title:'Sumo SELECT',
                 name: 'sumo_select',
-                bgColor: '#B18AFF',
+                bgColor: 'green',
             }),
         ],
-        logo: '/assets/images/logo/providers/origin.png'
+        logo: '/assets/images/logo/providers/sumo.png'
     },
     {
         name: 'telstra',
