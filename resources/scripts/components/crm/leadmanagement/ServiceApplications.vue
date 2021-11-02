@@ -62,7 +62,7 @@
                 </v-col>
                 <v-col cols="12">
                     <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
-                    <div class="d-flex align-content-lg-space-around">
+                    <div class="d-flex align-content-lg-space-around mt-2">
                         <ServiceProvider @onSelectProvider="onSelectProvider(provider.name)" v-if="serviceProviderFlag" v-for="provider in serviceProvider"
                                          :key="provider.id" :selectedProvider="selectedProviderId" :provider="provider"></ServiceProvider>
 
