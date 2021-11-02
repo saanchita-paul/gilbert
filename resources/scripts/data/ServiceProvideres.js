@@ -5,7 +5,7 @@ export default [
         name: 'origin',
         formatted_name: 'Origin',
         service_type: 'energy',
-        default_plant: 'origin_go',
+        default_plan: 'origin_go',
         plans: [
             new ProviderPlan({
                 title:'Origin Go',
@@ -23,100 +23,108 @@ export default [
                 bgColor: 'red',
             }),
         ],
-        logo: '/bla/bla'
+        logo: '/assets/images/logo/providers/origin.png'
     },
     {
         name: 'sumo',
         formatted_name: 'Sumo',
         service_type: 'energy',
-        default_plant: 'sumo_saver',
+        default_plan: 'sumo_saver',
         plans: [
             new ProviderPlan({
                 title:'Sumo Saver',
                 name: 'sumo_saver',
-                bgColor: 'red',
+                bgColor: '#B18AFF',
             }),
             new ProviderPlan({
                 title:'Sumo ASSURE',
                 name: 'sumo_assure',
-                bgColor: 'red',
+                bgColor: '#B18AFF',
             }),
             new ProviderPlan({
                 title:'Sumo SELECT',
-                name: 'sumo_assure',
-                bgColor: 'red',
+                name: 'sumo_select',
+                bgColor: '#B18AFF',
             }),
         ],
-        logo: '/bla/bla'
+        logo: '/assets/images/logo/providers/origin.png'
     },
     {
         name: 'Telstra',
         service_type: 'internet',
+        default_plan: 'starter_speed',
+        formatted_name: 'telstra',
         plans: [
             new ProviderPlan({
-                title:'Starter',
-                bgColor: 'red',
+                title:'Starter Speed',
+                name: 'starter_speed',
+                bgColor: '#932988',
             }),
             new ProviderPlan({
-                title:'Standard Plus',
-                bgColor: 'red',
+                title:'Standard Plus Speed',
+                name: 'standard_plus_speed',
+                bgColor: '#932988',
             }),
             new ProviderPlan({
-                title:'Premium',
-                bgColor: 'red',
-            }),
-            new ProviderPlan({
-                title:'A',
-                bgColor: 'red',
+                title:'Premium Speed',
+                name: 'premium_speed',
+                bgColor: '#932988',
             }),
         ],
-        logo: '/bla/bla'
+        logo: '/assets/images/logo/providers/telstra.png'
     },
     {
         name: 'Belong',
         service_type: 'internet',
+        default_plan: 'sumo_saver',
+        formatted_name: 'telstra',
         plans: [
             new ProviderPlan({
                 title:'Starter',
-                bgColor: 'red',
+                bgColor: '#932988',
+                name: 'starter',
             }),
             new ProviderPlan({
                 title:'Standard Plus',
-                bgColor: 'red',
+                bgColor: '#932988',
+                name: 'standard_plus',
             }),
             new ProviderPlan({
                 title:'Premium',
-                bgColor: 'red',
-            }),
-            new ProviderPlan({
-                title:'A',
-                bgColor: 'red',
+                bgColor: '#932988',
+                name: 'premium',
             }),
         ],
-        logo: '/bla/bla'
+        logo: '/assets/images/logo/providers/belong.png'
     },
     {
         name: 'Goodtel',
         service_type: 'internet',
+        default_plan: 'sumo_saver',
+        formatted_name: 'telstra',
         plans: [
             new ProviderPlan({
                 title:'Starter',
-                bgColor: 'red',
+                bgColor: '#42B5E8',
+                name: 'starter',
             }),
             new ProviderPlan({
                 title:'Standard Plus',
-                bgColor: 'red',
+                bgColor: '#42B5E8',
+                name: 'standard_plus',
             }),
             new ProviderPlan({
                 title:'Premium',
-                bgColor: 'red',
+                bgColor: '#42B5E8',
+                name: 'premium',
             }),
             new ProviderPlan({
                 title:'A',
                 bgColor: 'red',
+                name: 'premium_speed',
             }),
         ],
-        logo: '/bla/bla'
+        logo: '/assets/images/logo/providers/goodtel.png'
     },
 
 ]

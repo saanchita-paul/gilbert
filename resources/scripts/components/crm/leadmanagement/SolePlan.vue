@@ -1,6 +1,6 @@
 <template>
-    <div class="your-plan" :class="{'active':plan.active}">
-        <p :style="{background: plan.bg}">{{plan.text}}</p>
+    <div class="your-plan" :class="{'active':isActive === plan.name}">
+        <p :style="{background: plan.bgColor}">{{plan.title}}</p>
         <div class="pa-4">
             <v-btn @click="reviewPlan" block outlined class="mb-3">Review Plan Details</v-btn>
         </div>
@@ -10,7 +10,7 @@
 <script>
 export default {
 name: "SolePlan",
-    props: ['plan'],
+    props: ['plan', 'isActive'],
     methods:{
         reviewPlan()
         {
