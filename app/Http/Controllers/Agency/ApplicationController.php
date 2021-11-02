@@ -293,4 +293,16 @@ class ApplicationController extends Controller
             return response(['status' => false] , 409);
         }
     }
+
+    public function providers(Request $request , $applicationId){
+        try {
+            $service = new ApplicationService();
+            $inputData = $request->toArray();
+            $service->providers($inputData, $applicationId);
+            return response()->json(['success' => true, 'message' => 'providers updated successfully']);
+
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
 }
