@@ -353,9 +353,9 @@ export default {
         }
     },
 
-    async updateApplicationProviders(data){
+    async updateApplicationProviders( payload , application_id){
         try {
-            const data = await axios.patch('/api/applications/'+data.id+'/providers',payload);
+            const data = await axios.patch('/api/applications/'+application_id+'/providers',payload);
             return data.data.data;
         } catch (error) {
             return error.data;
