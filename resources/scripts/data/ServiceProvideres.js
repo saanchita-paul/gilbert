@@ -5,7 +5,7 @@ export default [
         name: 'origin',
         formatted_name: 'Origin',
         service_type: 'energy',
-        default_plant: 'origin_go',
+        default_plan: 'origin_go',
         plans: [
             new ProviderPlan({
                 title:'Origin Go',
@@ -23,13 +23,13 @@ export default [
                 bgColor: 'red',
             }),
         ],
-        logo: '/bla/bla'
+        logo: '/assets/images/SupplierLogo.png'
     },
     {
         name: 'sumo',
         formatted_name: 'Sumo',
         service_type: 'energy',
-        default_plant: 'sumo_saver',
+        default_plan: 'sumo_saver',
         plans: [
             new ProviderPlan({
                 title:'Sumo Saver',
@@ -47,7 +47,7 @@ export default [
                 bgColor: 'red',
             }),
         ],
-        logo: '/bla/bla'
+        logo: '/assets/images/SupplierLogo.png'
     },
     {
         name: 'Telstra',
@@ -70,7 +70,7 @@ export default [
                 bgColor: 'red',
             }),
         ],
-        logo: '/bla/bla'
+        logo: '/assets/images/SupplierLogo.png'
     },
     {
         name: 'Belong',
@@ -93,7 +93,7 @@ export default [
                 bgColor: 'red',
             }),
         ],
-        logo: '/bla/bla'
+        logo: '/assets/images/SupplierLogo.png'
     },
     {
         name: 'Goodtel',
@@ -116,7 +116,7 @@ export default [
                 bgColor: 'red',
             }),
         ],
-        logo: '/bla/bla'
+        logo: '/assets/images/SupplierLogo.png'
     },
 
 ]
