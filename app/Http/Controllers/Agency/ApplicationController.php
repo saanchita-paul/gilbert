@@ -6,6 +6,7 @@ use App\Events\Agency\CreateApplicationEvent;
 use App\Events\Agency\SubmitApplicationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Agency\ApplicationRequest;
+use App\Http\Requests\Agency\ProviderRequest;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationResource;
 use App\Models\ConnectionApplication;
@@ -275,4 +276,34 @@ class ApplicationController extends Controller
         }
     }
 
+    public function updateService(Request $request , $application_id){
+        try {
+            $service = new ApplicationService();
+            $data = $request->all();
+            $data['connection_application_id'] = $application_id;
+
+            $new_service = $service->updateService($data);
+
+            if($new_service->wasRecentlyCreated) return response(['status' => true ,
+                "message" => "Service created successfully",
+                'service'=> $new_service] , 201);
+            else return response(['status' => true ,
+                "message" => "Service id: {$data['id']} updated successfully", 'service'=> $new_service] , 200);
+
+        } catch (\Throwable $th) {
+            return response(['status' => false] , 409);
+        }
+    }
+
+    public function providers(ProviderRequest $request , $applicationId){
+        try {
+            $service = new ApplicationService();
+            $inputData = $request->toArray();
+            $service->providers($inputData, $applicationId);
+            return response()->json(['success' => true, 'message' => 'providers updated successfully']);
+
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
 }

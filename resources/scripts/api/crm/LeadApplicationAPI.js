@@ -186,10 +186,21 @@ const newNote = {
 
 const serviceProvider = [
     {
-        id: 1,
+        name: 1,
         logo: '/assets/images/SupplierLogo.png',
         title: 'EA'
-    }
+    },
+    // {
+    //     id: 2,
+    //     logo: '/assets/images/SupplierLogo.png',
+    //     title: 'ORIGIN'
+    // },
+    // {
+    //     id: 3,
+    //     logo: '/assets/images/SupplierLogo.png',
+    //     title: 'SUMO'
+    // }
+
 
 
 ];
@@ -337,6 +348,15 @@ export default {
             const data = await axios.post('/api/applications/'+leadId+'/assign',{hood_user_id: id});
             return ApplicationMapper.mapNote(data);
 
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    async updateApplicationProviders( payload , application_id){
+        try {
+            const data = await axios.patch('/api/applications/'+application_id+'/providers',payload);
+            return data.data.data;
         } catch (error) {
             return error.data;
         }

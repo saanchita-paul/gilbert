@@ -12,7 +12,7 @@
 
 <script>
 export default {
-name: "EnergyPlan",
+name: "InternetPlan",
     props:['selectedPlan','plan'],
 
 

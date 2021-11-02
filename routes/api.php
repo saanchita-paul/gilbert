@@ -33,7 +33,7 @@ Route::get('/logout', [AuthController::class, 'logout']);
  * @Module AGENCY CRM
  */
 Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
-    //Route::namespace('agency')->middleware([])->group(function () {
+    // Route::namespace('agency')->middleware([])->group(function () {
     /**
      * Agency, Office Users
      */
@@ -81,17 +81,20 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::put('/applications/{applicationId}/update-address', [ApplicationController::class, 'updateAddress']);
     Route::post('/applications/{applicationId}/draft', [ApplicationController::class, 'saveDraft']);
     Route::put('/applications/{id}/close', [ApplicationController::class, 'closeApplication']);
-
+    Route::patch('/applications/{applicationId}/providers', [ApplicationController::class, 'providers']);
+    
     //todo: make a  separate controller for notes
     Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes']);
     Route::post('/applications/{id}/notes', [NoteController::class, 'createConnectionNotes']);
-
+    
     Route::get('/applications-metrics', [ApplicationController::class, 'getMetrics']);
     Route::get('/applications-metrics-count', [ApplicationController::class, 'getApplicationMetricsCount']);
     Route::get('/applications/{id}/nmi-mern', [ApplicationController::class, 'getNmiMern']);
     Route::get('/authoized-person/{id}', [ApplicationController::class, 'getAuthorizedPerson']);
     Route::post('/authoized-person', [ApplicationController::class, 'updateAuthorizedPerson']);
-
+    
+    Route::post('/applications/{application_id}/service/update', [ApplicationController::class, 'updateService']);
+    
     //'+id
 });
 
