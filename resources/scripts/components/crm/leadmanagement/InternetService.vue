@@ -12,8 +12,8 @@
                 </v-col>
                 <v-col cols="12">
                     <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
-                    <div class="d-flex align-content-lg-space-around">
-                        <ServiceProvider @onSelectProvider="onSelectProvider(provider.name)" :selectedProviderId="selectedProviderId" v-for="provider in providers"
+                    <div class="d-flex align-content-lg-space-around mt-2">
+                        <ServiceProvider @onSelectProvider="onSelectProvider(provider.name)" :selectedProvider="selectedProviderId" v-for="provider in providers"
                                          :key="provider.name" :provider="provider"></ServiceProvider>
                     </div>
                 </v-col>
@@ -147,6 +147,7 @@ props: {
         },
 
         onSelectProvider(providerId) {
+            console.log(providerId)
             this.selectedProviderId = providerId
 
             const selectedProvider = this.providers.find(dt=> {
