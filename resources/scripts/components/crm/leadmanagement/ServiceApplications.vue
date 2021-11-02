@@ -350,22 +350,13 @@ export default {
 
         selectPlan(plan){
             this.isActivePlan = plan.name;
-            //
-            // if(plan.type === 'origin') {
-            //
-            //     this.origin.forEach(dt=>{
-            //         dt.active = false;
-            //     })
-            //
-            // }
-            //
-            // if(plan.type === 'sumo')
-            // {
-            //     this.sumo.forEach(dt=>{
-            //         dt.active = false;
-            //     })
-            // }
-            // plan.active = true;
+
+                let payload = {
+                    service_type: this.leadSummary?.service_interests,
+                    provider_name: this.selectedProviderId,
+                    plan_type: plan.name
+                }
+                LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
         }
     },
 };

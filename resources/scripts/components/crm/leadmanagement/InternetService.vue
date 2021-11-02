@@ -136,7 +136,8 @@ props: {
         setPlanTitle(item) {
             this.selectedPlanTitle = item.title;
         },
-        updateApplicationProviders(data){
+
+        updateApplicationProviders(data) {
             let payload = {
                 service_type: ['internet'],
                 provider_name: '',
@@ -144,6 +145,7 @@ props: {
             }
         LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
         },
+
         onSelectProvider(providerId) {
             this.selectedProviderId = providerId
 
