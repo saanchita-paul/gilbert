@@ -64,10 +64,10 @@
                     <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
                     <div class="d-flex align-content-lg-space-around">
                         <ServiceProvider @onSelectProvider="onSelectProvider(provider.name)" v-if="serviceProviderFlag" v-for="provider in serviceProvider"
-                                         :key="provider.id" :provider="provider"></ServiceProvider>
+                                         :key="provider.id" :selectedProvider="selectedProviderId" :provider="provider"></ServiceProvider>
 
                         <ServiceProvider @onSelectProvider="onSelectProvider1(provider.name)" v-if="serviceProviderFlag" v-for="provider in providers"
-                                         :key="provider.name" :provider="provider"></ServiceProvider>
+                                         :key="provider.name" :selectedProvider="selectedProviderId" :provider="provider"></ServiceProvider>
 
                     </div>
                 </v-col>
