@@ -353,6 +353,15 @@ export default {
         }
     },
 
+    async updateApplicationProviders(data){
+        try {
+            const data = await axios.patch('/api/applications/'+data.id+'/providers',payload);
+            return data.data.data;
+        } catch (error) {
+            return error.data;
+        }
+    },
+
     async saveSoleField(field, value, leadId, isDate, identification, isService)
     {
         let day = '';

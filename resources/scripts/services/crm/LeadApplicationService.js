@@ -19,7 +19,8 @@ export default {
     getNmiMern:(id) => LeadApplicationAPI.getNmiMern(id),
     loadAuthorizedPerson:(leadId) => LeadApplicationAPI.loadAuthorizedPerson(leadId),
     saveAuthorizedPerson:(data) => LeadApplicationAPI.saveAuthorizedPerson(data),
-
+    updateApplicationProviders:(data) => LeadApplicationAPI.updateApplicationProviders(data),
+    
     /**
      * Getting minimum valid Connection date
      *
