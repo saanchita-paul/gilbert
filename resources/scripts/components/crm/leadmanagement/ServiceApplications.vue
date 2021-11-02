@@ -85,12 +85,7 @@
                     </div>
                     <div class="d-flex" v-if="plansFlag">
                         <div class="d-flex" v-for="plan in otherPlans" :key="plan.text">
-                            <div class="your-plan active">
-                                <p :style="{background: plan.bg}">{{plan.text}}</p>
-                                <div class="pa-4">
-                                    <v-btn @click="reviewPlan" block outlined class="mb-3">Review Plan Details</v-btn>
-                                </div>
-                            </div>
+                            <SolePlan :plan="plan" @click.native="selectPlan(plan)"></SolePlan>
                         </div>
                     </div>
                 </v-col>
@@ -144,11 +139,12 @@ import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
 import WaterService from "@scripts/components/crm/leadmanagement/WaterService";
 import InternetService from "@scripts/components/crm/leadmanagement/InternetService";
 import {isNull} from "lodash-es";
+import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
 
 
 export default {
     name: "ServiceApplications",
-    components: {InternetService, WaterService, EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetails},
+    components: {SolePlan, InternetService, WaterService, EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetails},
     props: {
         leadSummary: {
             require: true
@@ -320,6 +316,9 @@ export default {
 
         updateStatus(text) {
             this.waterStatus = text;
+        },
+        selectPlan(plan){
+            console.log('plan is ', plan);
         }
     },
 };
