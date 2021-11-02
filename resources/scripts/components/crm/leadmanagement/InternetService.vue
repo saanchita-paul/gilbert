@@ -13,7 +13,7 @@
                 <v-col cols="12">
                     <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
                     <div class="d-flex align-content-lg-space-around">
-                        <ServiceProvider @onSelectProvider="onSelectProvider(provider.name)"  v-for="provider in providers"
+                        <ServiceProvider @onSelectProvider="onSelectProvider(provider.name)" :selectedProviderId="selectedProviderId" v-for="provider in providers"
                                          :key="provider.name" :provider="provider"></ServiceProvider>
                     </div>
                 </v-col>
@@ -21,7 +21,7 @@
                     <v-divider></v-divider>
                 </v-col>
                 <v-col cols="12">
-                    <p class="sub-title" v-if="selectPlanTitle.length > 0">Select a plan for {{selectPlanTitle}}</p>
+                    <p class="sub-title">Select an internet Plan.</p>
 
                     <div class="d-flex" >
                         <div class="d-flex" v-for="plan in otherPlans1" :key="plan.text">
@@ -127,7 +127,7 @@ props: {
             sumo: [ {text: 'Sumo Saver', bg: 'purple' , active: false, type: 'sumo' }, { text: 'Sumo ASSURE', bg: 'blue' , active: false, type: 'sumo' }, {text: 'Sumo SELECT', bg: 'green' , active: false, type: 'sumo'}],
             servicesNew: ['Energy', 'Water', 'NVN'],
             selectedPlanTitle: '',
-            selectedProviderId: 1,
+            selectedProviderId: 'starter_speed',
             otherPlans1: null,
             isActivePlan: null
         }
@@ -189,7 +189,7 @@ props: {
         },
     },
     mounted() {
-        console.log('providers', this.providers);
+        this.onSelectProvider('telstra');
     }
 
 }

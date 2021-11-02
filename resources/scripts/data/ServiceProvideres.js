@@ -50,10 +50,10 @@ export default [
         logo: '/assets/images/logo/providers/origin.png'
     },
     {
-        name: 'Telstra',
+        name: 'telstra',
         service_type: 'internet',
         default_plan: 'starter_speed',
-        formatted_name: 'telstra',
+        formatted_name: 'Telstra',
         plans: [
             new ProviderPlan({
                 title:'Starter Speed',
