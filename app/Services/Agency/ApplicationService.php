@@ -288,4 +288,20 @@ class ApplicationService
         
     }
 
+    public function providers(array $data, $applicationId)
+    {
+        $connectionApplication =  ConnectionApplication::find($applicationId);
+        foreach ($data['service_type'] as $service) {
+            $connectionService = ConnectionService::where('connection_application_id', $applicationId)
+                ->where('service_type', $service)
+                ->first();
+            if( $connectionService ) {
+                $connectionService->provider_name = $data['provider_name'];
+                $connectionService->plan_type = $data['plan_type'];
+                $connectionService->save();
+            }
+        }
+    }
+
+
 }
