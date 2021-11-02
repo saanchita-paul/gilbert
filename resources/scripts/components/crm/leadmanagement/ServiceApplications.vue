@@ -88,7 +88,7 @@
                                 @click.native="planSelect(plan,true)"
                             ></EnergyPlan>
                     </div>
-                    <div class="d-flex" v-if="plansFlag">
+                    <div class="d-flex" v-if="plansFlag &&  selectedProviderId !== 1">
                         <div class="d-flex" v-for="plan in origin2" :key="plan.name">
                             <SolePlan :plan="plan" @click.native="selectPlan(plan)" :isActive="isActivePlan"></SolePlan>
                         </div>
@@ -319,7 +319,6 @@ export default {
                     break;
             }
 
-            console.log('statustext' , statustext);
             return statustext;
         },
 
@@ -343,7 +342,6 @@ export default {
             this.origin2 = providerData.plans;
             this.isActivePlan = providerData.default_plan;
             this.selectedProviderId = name
-            console.log('origin 2', this.origin2);
         },
 
         updateStatus(text) {
