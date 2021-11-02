@@ -1,5 +1,12 @@
 <template>
   <v-card>
+                <!-- <v-col cols="12" class="service-box-area">
+                    <div v-for="service in services" :key="service">
+                        <EnergyService @click.native="updateService(service)" :title="service"
+                                       :lead-summary="leadSummary">
+                        </EnergyService>
+                    </div>
+                </v-col> -->
                 <v-col cols="12">
                     <v-divider></v-divider>
                 </v-col>
@@ -14,11 +21,11 @@
                     <v-divider></v-divider>
                 </v-col>
                 <v-col cols="12">
-                    <p class="sub-title" v-if="selectPlanTitle.length > 0">{{selectPlanTitle}}</p>
+                    <p class="sub-title" v-if="selectPlanTitle.length > 0">Select a plan for {{selectPlanTitle}}</p>
 
                     <div class="d-flex" >
                         <div class="d-flex" v-for="plan in otherPlans1" :key="plan.text">
-                            <SolePlan :isActive="isActivePlan"  :plan="plan" @click.native="selectPlan(plan)"></SolePlan>
+                            <SolePlan :isActive="isActivePlan" :plan="plan" @click.native="selectPlan(plan)"></SolePlan>
                         </div>
                     </div>
                     <!-- <div class="d-flex" v-if="plansFlag">
@@ -129,11 +136,12 @@ props: {
         setPlanTitle(item) {
             this.selectedPlanTitle = item.title;
         },
-        updateApplicationProviders(name = null){
+
+        updateApplicationProviders(data) {
             let payload = {
                 service_type: ['internet'],
-                provider_name: this.selectedProviderId,
-                plan_type: name ?? this.otherPlans1[0].name
+                provider_name: '',
+                plan_type: ''
             }
         LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
         },
@@ -146,8 +154,7 @@ props: {
             })
 
             this.otherPlans1 = selectedProvider.plans;
-            this.isActivePlan = this.providers.default_plan;
-            this.updateApplicationProviders();
+            this.isActivePlan = selectedProvider.default_plan;
         },
         planSelect(plan, isManual = false) {
             this.selectedPlanType = plan?.key
@@ -156,7 +163,7 @@ props: {
         selectPlan(plan){
 
            this.isActivePlan = plan.name;
-            this.updateApplicationProviders(plan.name)
+
         }
     },
     computed:{
@@ -172,7 +179,13 @@ props: {
             // return this.origin;
         },
         selectPlanTitle() {
-            return "Select an internet plan."
+            const services = this.leadSummary.service_interests;
+            if (services && services.includes('gas') && services.includes('power')) {
+                return 'Power & Gas';
+            }
+            return services && services.includes('gas')
+                ? 'Gas'
+                : (services && services.includes('power') ? 'Power' : '')
         },
     },
     mounted() {

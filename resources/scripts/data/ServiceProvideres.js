@@ -74,10 +74,10 @@ export default [
         logo: '/assets/images/logo/providers/telstra.png'
     },
     {
-        name: 'Belong',
+        name: 'belong',
         service_type: 'internet',
-        default_plan: 'sumo_saver',
-        formatted_name: 'telstra',
+        default_plan: 'starter',
+        formatted_name: 'Belong',
         plans: [
             new ProviderPlan({
                 title:'Starter',
@@ -98,10 +98,10 @@ export default [
         logo: '/assets/images/logo/providers/belong.png'
     },
     {
-        name: 'Goodtel',
+        name: 'goodtel',
         service_type: 'internet',
-        default_plan: 'sumo_saver',
-        formatted_name: 'telstra',
+        default_plan: 'starter',
+        formatted_name: 'Goodtel',
         plans: [
             new ProviderPlan({
                 title:'Starter',

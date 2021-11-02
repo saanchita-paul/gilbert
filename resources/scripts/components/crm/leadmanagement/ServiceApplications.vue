@@ -240,6 +240,9 @@ export default {
             this.$emit('updatePlan', plan, isManual);
         },
         isActive(service) {
+
+
+
             return this.leadSummary.service_types.includes(service.toLowerCase()) ? true : false;
 
         },
