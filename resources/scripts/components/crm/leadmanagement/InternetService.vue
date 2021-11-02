@@ -137,6 +137,7 @@ props: {
             }
         LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
         },
+
         onSelectProvider(providerId) {
             this.selectedProviderId = providerId
 
