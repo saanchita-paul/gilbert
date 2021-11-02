@@ -144,7 +144,7 @@ props: {
             })
 
             this.otherPlans1 = selectedProvider.plans;
-            this.isActivePlan = this.providers.default_plan;
+            this.isActivePlan = selectedProvider.default_plan;
 
         },
         planSelect(plan, isManual = false) {
