@@ -34,17 +34,17 @@ export default [
             new ProviderPlan({
                 title:'Sumo Saver',
                 name: 'sumo_saver',
-                bgColor: 'red',
+                bgColor: '#B18AFF',
             }),
             new ProviderPlan({
                 title:'Sumo ASSURE',
                 name: 'sumo_assure',
-                bgColor: 'red',
+                bgColor: '#B18AFF',
             }),
             new ProviderPlan({
                 title:'Sumo SELECT',
-                name: 'sumo_assure',
-                bgColor: 'red',
+                name: 'sumo_select',
+                bgColor: '#B18AFF',
             }),
         ],
         logo: '/assets/images/SupplierLogo.png'
@@ -52,22 +52,23 @@ export default [
     {
         name: 'Telstra',
         service_type: 'internet',
+        default_plan: 'starter_speed',
+        formatted_name: 'telstra',
         plans: [
             new ProviderPlan({
-                title:'Starter',
-                bgColor: 'red',
+                title:'Starter Speed',
+                name: 'starter_speed',
+                bgColor: '#932988',
             }),
             new ProviderPlan({
-                title:'Standard Plus',
-                bgColor: 'red',
+                title:'Standard Plus Speed',
+                name: 'standard_plus_speed',
+                bgColor: '#932988',
             }),
             new ProviderPlan({
-                title:'Premium',
-                bgColor: 'red',
-            }),
-            new ProviderPlan({
-                title:'A',
-                bgColor: 'red',
+                title:'Premium Speed',
+                name: 'premium_speed',
+                bgColor: '#932988',
             }),
         ],
         logo: '/assets/images/SupplierLogo.png'
@@ -75,22 +76,23 @@ export default [
     {
         name: 'Belong',
         service_type: 'internet',
+        default_plan: 'sumo_saver',
+        formatted_name: 'telstra',
         plans: [
             new ProviderPlan({
                 title:'Starter',
-                bgColor: 'red',
+                bgColor: '#932988',
+                name: 'starter',
             }),
             new ProviderPlan({
                 title:'Standard Plus',
-                bgColor: 'red',
+                bgColor: '#932988',
+                name: 'standard_plus',
             }),
             new ProviderPlan({
                 title:'Premium',
-                bgColor: 'red',
-            }),
-            new ProviderPlan({
-                title:'A',
-                bgColor: 'red',
+                bgColor: '#932988',
+                name: 'premium',
             }),
         ],
         logo: '/assets/images/SupplierLogo.png'
@@ -98,22 +100,28 @@ export default [
     {
         name: 'Goodtel',
         service_type: 'internet',
+        default_plan: 'sumo_saver',
+        formatted_name: 'telstra',
         plans: [
             new ProviderPlan({
                 title:'Starter',
-                bgColor: 'red',
+                bgColor: '#42B5E8',
+                name: 'starter',
             }),
             new ProviderPlan({
                 title:'Standard Plus',
-                bgColor: 'red',
+                bgColor: '#42B5E8',
+                name: 'standard_plus',
             }),
             new ProviderPlan({
                 title:'Premium',
-                bgColor: 'red',
+                bgColor: '#42B5E8',
+                name: 'premium',
             }),
             new ProviderPlan({
                 title:'A',
                 bgColor: 'red',
+                name: 'premium_speed',
             }),
         ],
         logo: '/assets/images/SupplierLogo.png'

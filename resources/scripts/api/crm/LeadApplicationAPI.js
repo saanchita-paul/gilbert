@@ -186,20 +186,20 @@ const newNote = {
 
 const serviceProvider = [
     {
-        id: 1,
+        name: 1,
         logo: '/assets/images/SupplierLogo.png',
         title: 'EA'
     },
-    {
-        id: 2,
-        logo: '/assets/images/SupplierLogo.png',
-        title: 'ORIGIN'
-    },
-    {
-        id: 3,
-        logo: '/assets/images/SupplierLogo.png',
-        title: 'SUMO'
-    }
+    // {
+    //     id: 2,
+    //     logo: '/assets/images/SupplierLogo.png',
+    //     title: 'ORIGIN'
+    // },
+    // {
+    //     id: 3,
+    //     logo: '/assets/images/SupplierLogo.png',
+    //     title: 'SUMO'
+    // }
 
 
 
