@@ -166,8 +166,12 @@ export default {
             planTypeForDetails: null,
             activeService: 'energy',
             tab: null,
-            origin: [ {text: 'Origin Go', bg: 'red' }, { text: 'Origin Go Variable', bg: 'blue'}, {text: 'Origin Basic', bg: 'orange'}],
-            sumo: [ {text: 'Sumo Saver', bg: 'purple' }, { text: 'Sumo ASSURE', bg: 'blue'}, {text: 'Sumo SELECT', bg: 'green'}],
+            origin: [ {text: 'Origin Go', bg: 'red', active: true, type: 'origin' },
+                { text: 'Origin Go Variable', bg: 'blue', active: false, type: 'origin' },
+                {text: 'Origin Basic', bg: 'orange', active: false , type: 'origin'}],
+            sumo: [ {text: 'Sumo Saver', bg: 'purple', active: true, type: 'sumo' },
+                { text: 'Sumo ASSURE', bg: 'blue', active: false, type: 'sumo'},
+                {text: 'Sumo SELECT', bg: 'green', active: false, type: 'sumo'}],
             servicesNew: ['Energy', 'Water', 'NVN'],
             selectedProviderId: 1,
             waterStatus: null,
@@ -313,6 +317,7 @@ export default {
             if(this.activeService === service) return true;
             return  false;
         },
+
         onSelectProvider(providerId) {
             this.selectedProviderId = providerId
         },
@@ -320,8 +325,24 @@ export default {
         updateStatus(text) {
             this.waterStatus = text;
         },
+
         selectPlan(plan){
-            console.log('plan is ', plan);
+
+            if(plan.type === 'origin') {
+
+                this.origin.forEach(dt=>{
+                    dt.active = false;
+                })
+
+            }
+
+            if(plan.type === 'sumo')
+            {
+                this.sumo.forEach(dt=>{
+                    dt.active = false;
+                })
+            }
+            plan.active = true;
         }
     },
 };
