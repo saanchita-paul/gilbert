@@ -107,17 +107,20 @@ props: {
                 {
                     id: 1,
                     logo: '/assets/images/SupplierLogo.png',
-                    title: 'EA1'
+                    title: 'EA1',
+                    active: true,
                 },
                 {
                     id: 2,
                     logo: '/assets/images/SupplierLogo.png',
-                    title: 'EA2'
+                    title: 'EA2',
+                    active: false,
                 },
                 {
                     id: 3,
                     logo: '/assets/images/SupplierLogo.png',
-                    title: 'EA3'
+                    title: 'EA3',
+                   
                 },
 
             ],
@@ -128,8 +131,10 @@ props: {
             planTypeForDetails: null,
             activeService: 'energy',
             tab: null,
-            origin: [ {text: 'Origin Go', bg: 'red' }, { text: 'Origin Go Variable', bg: 'blue'}, {text: 'Origin Basic', bg: 'orange'}],
-            sumo: [ {text: 'Sumo Saver', bg: 'purple' }, { text: 'Sumo ASSURE', bg: 'blue'}, {text: 'Sumo SELECT', bg: 'green'}],
+            origin: [ {text: 'Origin Go', bg: 'red', active: true, type: 'origin' },
+             { text: 'Origin Go Variable', bg: 'blue'  , active: false, type: 'origin' },
+              {text: 'Origin Basic', bg: 'orange', active: false, type: 'origin' }],
+            sumo: [ {text: 'Sumo Saver', bg: 'purple' , active: false, type: 'sumo' }, { text: 'Sumo ASSURE', bg: 'blue' , active: false, type: 'sumo' }, {text: 'Sumo SELECT', bg: 'green' , active: false, type: 'sumo'}],
             servicesNew: ['Energy', 'Water', 'NVN'],
             selectedPlanTitle: '',
             selectedProviderId: 1,
@@ -146,6 +151,24 @@ props: {
             this.selectedPlanType = plan?.key
             this.$emit('updatePlan', plan, isManual);
         },
+        selectPlan(plan){
+
+            if(plan.type === 'origin') {
+
+                this.origin.forEach(dt=>{
+                    dt.active = false;
+                })
+
+            }
+
+            if(plan.type === 'sumo')
+            {
+                this.sumo.forEach(dt=>{
+                    dt.active = false;
+                })
+            }
+            plan.active = true;
+        }
     },
     computed:{
         otherPlans() {
