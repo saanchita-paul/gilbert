@@ -142,7 +142,7 @@ props: {
                 provider_name: '',
                 plan_type: ''
             }
-            LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
+        LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
         },
         onSelectProvider(providerId) {
             this.selectedProviderId = providerId
