@@ -53,7 +53,8 @@
                 <v-col cols="12" class="service-box-area">
                     <div v-for="service in services" :key="service">
                         <EnergyService @click.native="updateService(service)" :title="service"
-                                       :lead-summary="leadSummary"></EnergyService>
+                                       :lead-summary="leadSummary">
+                        </EnergyService>
                     </div>
                 </v-col>
                 <v-col cols="12">
@@ -120,7 +121,7 @@
                 <WaterService :leadSummary="leadSummary" @updateStatus="updateStatus"></WaterService>
             </v-tab-item>
             <v-tab-item>
-                <InternetService></InternetService>
+                <InternetService :leadSummary="leadSummary" @updateStatus="updateStatus"></InternetService>
             </v-tab-item>
         </v-tabs>
 
@@ -132,19 +133,21 @@ import EnergyService from "@scripts/components/crm/leadmanagement/EnergyService"
 import ServiceProvider from "@scripts/components/crm/leadmanagement/ServiceProvider";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
+import InternetPlan from "@scripts/components/crm/leadmanagement/InternetPlan";
 import EnergyApi from "@scripts/api/ea/EnergyApi";
 import EAPlanService from "@scripts/services/ea/EAPlanService";
 import {EA_PLAN_TYPES, PLAN_TYPE_TOTAL} from "@scripts/models/ea/EnergyPlan";
 import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
+import InternetPlanDetails from "@scripts/components/ea/InternetPlanDetails";
 import WaterService from "@scripts/components/crm/leadmanagement/WaterService";
 import InternetService from "@scripts/components/crm/leadmanagement/InternetService";
-import {isNull} from "lodash-es";
+import { isNull } from "lodash-es";
 import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
 
 
 export default {
     name: "ServiceApplications",
-    components: {SolePlan, InternetService, WaterService, EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetails},
+    components: {SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails},
     props: {
         leadSummary: {
             require: true
