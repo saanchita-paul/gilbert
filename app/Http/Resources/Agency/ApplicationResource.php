@@ -132,7 +132,7 @@ class ApplicationResource extends JsonResource
     {
         if($this->source === ConnectionApplication::SOURCE_HOOD)
         {
-            return $this->agency->name;
+            return $this->office->name;
         }
         if($this->source === ConnectionApplication::SOURCE_FOXIE)
         {
