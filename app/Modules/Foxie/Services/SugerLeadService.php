@@ -123,7 +123,7 @@ class SugerLeadService
         $request->foxie_agents_id_c ? $this->lead->agency_id = $request->foxie_agents_id_c : '';
         $request->agent_c ? $this->lead->agent_name = $request->agent_c : '';
         $request->id_c ? $this->lead->lead_id = $request->id_c : '';
-        $request->office_C ? $this->lead->agency_name = $request->office_C : '';
+        $request->office_C ? $this->lead->agency_name = $request->office_c : '';
         $this->lead->updated = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s") ?? null;
 
 
