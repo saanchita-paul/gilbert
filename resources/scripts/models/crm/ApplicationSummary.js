@@ -51,6 +51,8 @@ export default class ApplicationSummary {
     is_billing_same = null;
     authorizedPersonName = null;
     is_contacted = true;
+    agent_name = '';
+    agency_office = '';
     constructor(
         {
             id = null,
@@ -100,7 +102,9 @@ export default class ApplicationSummary {
             billing_postcode = null,
             is_billing_same = null,
             authorizedPersonName = null,
-            is_contacted = true
+            is_contacted = true,
+            agent_name = '',
+            agency_office = '',
         }
     ) {
 
@@ -146,9 +150,7 @@ export default class ApplicationSummary {
         this.unit_number = unit_number;
         this.street_name = street_name;
         this.authorizedPersonName = authorizedPersonName;
-
-        this.billing_unit_number = billing_unit_number,
-            this.billing_street_number = billing_street_number,
+        this.billing_unit_number = billing_unit_number, this.billing_street_number = billing_street_number,
             this.billing_street_name = billing_street_name,
             this.billing_address_text = billing_address_text,
             this.billing_address_unit = billing_address_unit,
@@ -156,7 +158,9 @@ export default class ApplicationSummary {
             this.billing_city = billing_city,
             this.billing_postcode = billing_postcode,
             this.is_billing_same = is_billing_same,
-            this.is_contacted = is_contacted;
+            this.is_contacted = is_contacted,
+        this.agent_name =    agent_name
+        this.agency_office =    agency_office
 
     }
 

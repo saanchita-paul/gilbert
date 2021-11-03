@@ -122,7 +122,7 @@ export default {
 
                 this.activeLeadType = this.$route.query?.type;
                 this.selectedSrc = this.$route.query?.source
-                console.log("watch", reload)
+                // console.log("watch", reload)
                 if (reload) {
                     this.loadLeads();
                 }
