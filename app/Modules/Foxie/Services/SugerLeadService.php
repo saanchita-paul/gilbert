@@ -3,6 +3,7 @@
 namespace Foxie\Services;
 
 use Exception;
+use Carbon\Carbon;
 use App\Models\Agency;
 use Foxie\Models\SugerLead;
 use Illuminate\Http\Request;
@@ -56,10 +57,10 @@ class SugerLeadService
         $this->lead->office_branch = $request->office_c ?? '';
         $this->lead->agent_name = $request->agent_c ?? '';
         $this->lead->agency_id = $request->foxie_agents_id_c ?? '';
-        $this->lead->agency_name = $request->office_C ?? '';
+        $this->lead->agency_name = $request->office_c ?? '';
         $this->lead->lead_id = $request->id_c ?? '';
-        $this->lead->created = $request->date_entered ?? null;
-        $this->lead->updated = $request->date_modified ?? null;
+        $this->lead->created =  Carbon::parse($request->date_entered)->format("Y-m-d H:i:s")  ?? null;
+        $this->lead->updated = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s")  ?? null;
 
         //set identification table
         $this->setIdentificationTable($request , new Identification , self::TYPE_CREATE);
@@ -123,7 +124,7 @@ class SugerLeadService
         $request->agent_c ? $this->lead->agent_name = $request->agent_c : '';
         $request->id_c ? $this->lead->lead_id = $request->id_c : '';
         $request->office_C ? $this->lead->agency_name = $request->office_C : '';
-        $this->lead->updated = $request->date_modified ?? null;
+        $this->lead->updated = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s") ?? null;
 
 
         //set connetion application
