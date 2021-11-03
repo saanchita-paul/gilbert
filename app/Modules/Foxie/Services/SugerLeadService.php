@@ -21,7 +21,6 @@ class SugerLeadService
     const TYPE_CREATE = 1;
     const TYPE_UPDATE = 2;
 
-
     /**
      * Set attribute for create.
      *
@@ -70,12 +69,6 @@ class SugerLeadService
     private function setIdentificationTable(Request $request , $identification , $type){
         //IDENTIFICATION TABLE
         try {
-            // if($request->id_expiry_c){
-            //     $identification->expire_date = $request->id_expiry_c;
-            //     $identification->connection_application_id = $this->connectionApplication->id;
-            //     $identification->save();
-            // }
-
             if($type == self::TYPE_CREATE){
                 $identification->expire_date = $request->id_expiry_c ?? null;
                 $identification->type = Identification::TYPE_MAP[$request->id_type_c] ?? null ;
