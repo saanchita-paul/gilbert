@@ -163,6 +163,24 @@
           ></v-textarea>
         </div>
 
+       <v-row>
+           <v-col cols="12">
+               <p class="sub-title mt-4 mb-2">Agent Details</p>
+           </v-col>
+           <v-col cols="5" class="py-0 my-0">
+               <p class="font-weight-bold">Agent Name:</p>
+           </v-col>
+           <v-col cols="7" class="py-0 my-0">
+               <p>{{lead.agent_name}}</p>
+           </v-col>
+           <v-col cols="5" class="py-0 my-0">
+               <p class="font-weight-bold">Agency Office:</p>
+           </v-col>
+           <v-col cols="7" class="py-0 my-0">
+               <p>{{lead.agency_office}}</p>
+           </v-col>
+       </v-row>
+
     </v-card>
 </template>
 

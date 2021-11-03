@@ -52,6 +52,12 @@ class Identification extends Model
         self::TYPE_DRIVING_LICENCE => 'driving licence',
     ];
 
+    const TYPE_MAP = [
+        'passport' => self::TYPE_PASSPORT ,
+        'medicare' => self::TYPE_MEDICARE ,
+        'driving_licence' => self::TYPE_DRIVING_LICENCE ,
+    ];
+
     /**
      * The attributes that are mass assignable.
      *

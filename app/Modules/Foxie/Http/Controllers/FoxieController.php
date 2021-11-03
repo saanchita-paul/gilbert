@@ -26,8 +26,15 @@ class FoxieController extends Controller
                 "message" =>  "Hood lead has been added successfully"
             ];
             return response( $response , 200 );
-        } catch (\Throwable $th) {
+        } catch (\Exception $ex) {
             //throw $th;
+            \Log::error("Problem in Storing data");
+            \Log::error($ex->getMessage());
+            $response = [
+                "status" => "failed" ,
+                "message" =>  "Hood lead can not be stored"
+            ];
+            return response( $response , 400 );
         }
     }
 

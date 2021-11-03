@@ -26,7 +26,7 @@ export default {
     },
 
     mapApplicationList(data) {
-        console.log('data',data);
+        // console.log('data',data);
         const models = [];
         data.data.forEach((item) => {
             models.push(this.mapApplication(item));
