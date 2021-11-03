@@ -171,7 +171,7 @@ name: "WaterService",
                  return ;
              }
              this.active_status = 9;
-             this.$emit('updateStatus','cann\'t connect');
+             this.$emit('updateStatus','can n\'t connect');
              return ;
          },
 

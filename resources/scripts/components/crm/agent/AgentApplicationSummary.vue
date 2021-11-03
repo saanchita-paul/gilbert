@@ -308,7 +308,7 @@ export default {
 
         mapConnectionStatus(status) {
             return ['unassigned','assigned', 'escalated'].includes(status)?'In Progress':
-                status[0].capitalize() + status.slice(1);
+                status[0].toUpperCase() + status.slice(1);
         }
 
     },
