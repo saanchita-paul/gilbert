@@ -263,7 +263,7 @@
       </div>
       <div class="crm-text-field">
         <div class="field-label">
-          <span>Tenancy Type *</span>
+          <span>Occupancy Type *</span>
         </div>
         <div class="text-field">
           <ValidationProvider

@@ -18,9 +18,15 @@ export default {
             user.role = mapRole(user.user.roles[0]);
             return mapUser(user);
         });
+        const usersAgency =  userList?.data.map(user=> {
+            user.role = user.user.roles[0];
+            user.errorMsg = [];
+            return mapUser(user);
+        });
         const pagination =  PaginationMapper.mapPagination(userList?.meta);
         return {
             users: users,
+            usersAgency: usersAgency,
             pagination: pagination,
         };
     },

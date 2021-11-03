@@ -1,69 +1,134 @@
 <template>
     <v-row>
-        <v-col cols="12" class="pb-0">
-            <p class="sub-title mb-0">Service Applications</p>
-        </v-col>
-        <v-col cols="12" class="service-box-area">
-            <div v-for="service in services" :key="service">
-                <EnergyService @click.native="updateService(service)" :title="service"
-                               :lead-summary="leadSummary"></EnergyService>
-            </div>
-        </v-col>
-        <v-col cols="12">
-            <v-divider></v-divider>
-        </v-col>
-        <v-col cols="12">
-            <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
-            <div class="d-flex">
-                <ServiceProvider v-if="serviceProviderFlag" v-for="provider in serviceProvider"
-                                 :key="provider.id" :provider="provider"></ServiceProvider>
-            </div>
-        </v-col>
-
-        <v-col cols="12">
-            <v-divider></v-divider>
-        </v-col>
-
-        <v-col cols="12">
-            <p class="sub-title" v-if="selectPlanTitle.length > 0">Select a plan for {{selectPlanTitle}}</p>
-
-            <div class="d-flex" v-if="plansFlag">
-                <EnergyPlan
-                    v-for="plan in plans"
-                    :key="plan.key"
-                    :plan="plan"
-                    :selectedPlan="selectedPlanType"
-                    @selectPlan="planSelect"
-                    @view="view"
-                    @click.native="planSelect(plan,true)"
-                ></EnergyPlan>
-            </div>
-        </v-col>
-
-        <v-dialog
-            v-model="viewPlanDialog"
-            max-width="500"
-            v-if="viewPlanDialog && planTypeForDetails"
+        <v-tabs
+            v-model="tab"
+            height="75px"
+            style="min-width: 200px !important;"
         >
-            <v-card>
-                <EnergyPlanDetails
-                    :plan="planTypeForDetails"
-                    :postcode="leadSummary.postcode"
-                    :services="leadSummary.service_interests"
-                    :state="leadSummary.state"
-                />
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                        color="green darken-1"
-                        text
-                        @click="viewPlanDialog = false"
+
+            <v-tab class="px-0 py-3 tab-capital-case">
+                <v-card class="hood-card" width="100%">
+                    <p class="pt-2 pb-1 mb-0 services service-title">
+                              <span class="ml-1">
+                                  <v-icon color="yellow">mdi-flash</v-icon>Energy
+                              </span>
+                        </p>
+                        <p class="py-0 my-0 pl-4 service-status active-power-subtitle"
+                        >
+                            {{getenegryServiceStatus}}</p>
+                </v-card>
+            </v-tab>
+            <v-tab  class="px-0 py-3 tab-capital-case" >
+                <v-card  class="hood-card" width="100%">
+                        <p class="pt-2 pb-1 mb-0 services service-title">
+                              <span class="ml-1">
+                                  <v-icon  color="blue" >mdi-water</v-icon>Water
+                              </span>
+                        </p>
+                        <p class="py-0 my-0 pl-4 service-status active-power-subtitle">
+                            {{getwaterServiceStatus}}
+                            <!--                    Connected-->
+                        </p>
+                </v-card>
+            </v-tab>
+            <v-tab  class="py-3 px-0 tab-capital-case"  >
+                      <v-card  class="hood-card" width="100%">
+                      <div>
+                    <p class="pt-2 pb-1 mb-0 services service-title">
+                          <span class="ml-1">
+                               <v-icon  color="red">mdi-wifi</v-icon>Internet
+                          </span>
+                    </p>
+                    <p class="py-0 my-0 pl-4 service-status active-power-subtitle active-power-subtitle"
                     >
-                        Close
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
+                        {{getinternetServiceStatus}}
+                    </p>
+                      </div>
+                      </v-card>
+                  </v-tab>
+
+
+            <v-tab-item>
+                <v-card >
+                <v-col cols="12" class="service-box-area">
+                    <div v-for="service in services" :key="service">
+                        <EnergyService @click.native="updateService(service)" :title="service"
+                                       :lead-summary="leadSummary">
+                        </EnergyService>
+                    </div>
+                </v-col>
+                <v-col cols="12">
+                    <v-divider></v-divider>
+                </v-col>
+                <v-col cols="12">
+                    <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
+                    <div class="d-flex align-content-lg-space-around mt-2">
+                        <ServiceProvider @onSelectProvider="onSelectProvider(provider.name)" v-if="serviceProviderFlag" v-for="provider in serviceProvider"
+                                         :key="provider.id" :selectedProvider="selectedProviderId" :provider="provider"></ServiceProvider>
+
+                        <ServiceProvider @onSelectProvider="onSelectProvider1(provider.name)" v-if="serviceProviderFlag" v-for="provider in providers"
+                                         :key="provider.name" :selectedProvider="selectedProviderId" :provider="provider"></ServiceProvider>
+
+                    </div>
+                </v-col>
+                <v-col cols="12">
+                    <v-divider></v-divider>
+                </v-col>
+                <v-col cols="12">
+                    <p class="sub-title" v-if="selectPlanTitle.length > 0">Select a plan for {{selectPlanTitle}}</p>
+
+                    <div class="d-flex" v-if="plansFlag && selectedProviderId === 1">
+                            <EnergyPlan
+                                v-for="plan in plans"
+                                :key="plan.key"
+                                :plan="plan"
+                                :selectedPlan="selectedPlanType"
+                                @selectPlan="planSelect"
+                                @view="view"
+                                @click.native="planSelect(plan,true)"
+                            ></EnergyPlan>
+                    </div>
+                    <div class="d-flex" v-if="plansFlag &&  selectedProviderId !== 1">
+                        <div class="d-flex" v-for="plan in origin2" :key="plan.name">
+                            <SolePlan :plan="plan" @click.native="selectPlan(plan)" :isActive="isActivePlan"></SolePlan>
+                        </div>
+                    </div>
+                </v-col>
+                <v-dialog
+                    v-model="viewPlanDialog"
+                    max-width="500"
+                    v-if="viewPlanDialog && planTypeForDetails"
+                >
+                    <v-card>
+                        <EnergyPlanDetails
+                            :plan="planTypeForDetails"
+                            :postcode="leadSummary.postcode"
+                            :services="leadSummary.service_interests"
+                            :state="leadSummary.state"
+                        />
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="green darken-1"
+                                text
+                                @click="viewPlanDialog = false"
+                            >
+                                Close
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                </v-card>
+
+            </v-tab-item>
+            <v-tab-item>
+                <WaterService :leadSummary="leadSummary" @updateStatus="updateStatus"></WaterService>
+            </v-tab-item>
+            <v-tab-item>
+                <InternetService :leadSummary="leadSummary" @updateStatus="updateStatus"></InternetService>
+            </v-tab-item>
+        </v-tabs>
+
     </v-row>
 </template>
 
@@ -72,15 +137,22 @@ import EnergyService from "@scripts/components/crm/leadmanagement/EnergyService"
 import ServiceProvider from "@scripts/components/crm/leadmanagement/ServiceProvider";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
+import InternetPlan from "@scripts/components/crm/leadmanagement/InternetPlan";
 import EnergyApi from "@scripts/api/ea/EnergyApi";
 import EAPlanService from "@scripts/services/ea/EAPlanService";
 import {EA_PLAN_TYPES, PLAN_TYPE_TOTAL} from "@scripts/models/ea/EnergyPlan";
 import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
+import InternetPlanDetails from "@scripts/components/ea/InternetPlanDetails";
+import WaterService from "@scripts/components/crm/leadmanagement/WaterService";
+import InternetService from "@scripts/components/crm/leadmanagement/InternetService";
+import { isNull } from "lodash-es";
+import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
+import ServiceProvideres from "@scripts/data/ServiceProvideres";
 
 
 export default {
     name: "ServiceApplications",
-    components: {EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetails},
+    components: {SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails},
     props: {
         leadSummary: {
             require: true
@@ -89,14 +161,27 @@ export default {
 
     data() {
         return {
-            services: ['Power', 'Gas', 'Water', 'Internet'],
+            services: ['Power', 'Gas'],
             serviceProviderFlag: false,
             serviceProvider: [],
             plans: [],
             plansFlag: false,
             selectedPlanType: PLAN_TYPE_TOTAL,
             viewPlanDialog: false,
-            planTypeForDetails: null
+            planTypeForDetails: null,
+            activeService: 'energy',
+            tab: null,
+            origin: [ {text: 'Origin Go', bg: 'red', active: true, type: 'origin' },
+                { text: 'Origin Go Variable', bg: 'blue', active: false, type: 'origin' },
+                {text: 'Origin Basic', bg: 'orange', active: false , type: 'origin'}],
+            sumo: [ {text: 'Sumo Saver', bg: 'purple', active: true, type: 'sumo' },
+                { text: 'Sumo ASSURE', bg: 'blue', active: false, type: 'sumo'},
+                {text: 'Sumo SELECT', bg: 'green', active: false, type: 'sumo'}],
+            servicesNew: ['Energy', 'Water', 'NVN'],
+            selectedProviderId: 1,
+            waterStatus: null,
+            origin2: null,
+            isActivePlan: null,
         }
     },
     computed: {
@@ -108,6 +193,28 @@ export default {
             return services && services.includes('gas')
                 ? 'Gas'
                 : (services && services.includes('power') ? 'Power' : '')
+        },
+        otherPlans() {
+            return this.selectedProviderId === 2
+                ? this.origin
+                : (this.selectedProviderId === 3 ? this.sumo : [])
+        },
+        getwaterServiceStatus() {
+            if(isNull(this.waterStatus)) {
+                this.waterStatus =  this.getServiceStatus('water');
+            }
+            return this.waterStatus;
+        },
+        getenegryServiceStatus() {
+            return this.getServiceStatus('energy');
+        },
+        getinternetServiceStatus() {
+            return this.getServiceStatus('internet');
+        },
+        providers() {
+            return ServiceProvideres.filter((dt)=> {
+               return dt.service_type === 'energy';
+            });
         }
     },
     watch: {
@@ -116,6 +223,8 @@ export default {
         }
     },
     mounted() {
+
+        console.log('origin1', this.providers);
         this.loadServiceProvider();
         this.loadPlan();
         this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
@@ -131,6 +240,9 @@ export default {
             this.$emit('updatePlan', plan, isManual);
         },
         isActive(service) {
+
+
+
             return this.leadSummary.service_types.includes(service.toLowerCase()) ? true : false;
 
         },
@@ -167,10 +279,105 @@ export default {
         view(plan) {
             this.planTypeForDetails = plan.key;
             this.viewPlanDialog = true;
+        },
+
+        getServiceStatus(status) {
+
+            if(status === 'water') {
+                const newServices = this.leadSummary?.connection_services?.find(svc=>{
+                return svc.service_type === 'water';
+                });
+
+                if(newServices)
+                {
+                    return this.mapStatus(newServices.status);
+                }
+                return 'cann\'t connect';
+
+            }
+
+            return 'Connected';
+        },
+
+        mapStatus(statusCode) {
+
+            let statustext = '';
+            switch (statusCode){
+                case 4:
+                    statustext = 'Submitted';
+                    break;
+                case  5:
+                    statustext = 'Connected';
+                    break;
+                case  7:
+                    statustext = 'In Progress';
+                    break;
+                case  9:
+                    statustext = 'Can’t Connect';
+                    break;
+                case  10:
+                    statustext = 'Needs more info';
+                    break;
+                default:
+                    break;
+            }
+
+            return statustext;
+        },
+
+        updateService1(service) {
+            this.activeService = service;
+        },
+
+        isServiceActive(service) {
+            if(this.activeService === service) return true;
+            return  false;
+        },
+
+        onSelectProvider(providerId) {
+            this.selectedProviderId = providerId
+        },
+
+        onSelectProvider1(name) {
+            const providerData  = this.providers.find((pl)=>{
+                return pl.name === name;
+            })
+            this.origin2 = providerData.plans;
+            this.isActivePlan = providerData.default_plan;
+            this.selectedProviderId = name
+        },
+
+        updateStatus(text) {
+            this.waterStatus = text;
+        },
+
+        selectPlan(plan){
+            this.isActivePlan = plan.name;
+
+                let payload = {
+                    service_type: this.leadSummary?.service_interests,
+                    provider_name: this.selectedProviderId,
+                    plan_type: plan.name
+                }
+                LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
         }
     },
 };
 </script>
 
 <style scoped>
+
+.active-power-subtitle{
+    font-size: 12px !important;
+}
+
+.tab-capital-case {
+    text-transform: capitalize !important;
+    width:180px !important;
+}
+.service-title {
+ font-size: 16px;
+    font-weight: bold;
+}
+
 </style>

@@ -19,15 +19,30 @@ export default {
             value: 'agency_office_senior_property_manager'
         },
         {
-
+            text: 'ASSISTANT PROPERTY MANAGER',
+            value: 'agency_assistant_property_manager'
+        },
+        {
             text: 'REAL ESTATE AGENT',
             value: 'agency_office_real_estate_agent'
         },
         {
-
             text: 'AGENCY OFFICE ALLOCATOR',
             value: 'agency_office_allocator'
         },
+        {
+            text: 'AGENCY OFFICE BUSSINESS DEVELOPMENT MANAGER',
+            value: 'agency_office_business_development_manager'
+        },
+        {
+            text: 'AGENCY SALES PA',
+            value: 'agency_sales_pa'
+        },
+        {
+            text: 'AGENCY RECEPTIONIST',
+            value: 'agency_receptionist'
+        },
+        
     ],
     HOOD: [
 

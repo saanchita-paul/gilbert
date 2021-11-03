@@ -33,6 +33,7 @@
             <v-row>
                 <v-col cols="12" class="crm-table">
                     <v-data-table
+                            dense
                             :headers="headers"
                             :items="usersList"
                             :options.sync="options"
@@ -40,6 +41,104 @@
                             :loading="loading"
                             class="elevation-1 row-pointer"
                     >
+
+                        <template v-slot:item.first_name="{ item }">
+                            <ValidationProvider name="Firstname" rules="required"  v-slot="{ errors }">
+                                <v-text-field
+                                    class="mt-6"
+                                    outlined
+                                    dense
+                                    placeholder="Firstname"
+                                    v-model="item.first_name"
+                                    :ref="'inputRefFirstname'+item.id"
+                                    @blur="updateUserData(item , 'Firstname')"
+                                    :error-messages=" errors[0]"
+                                ></v-text-field>
+                            </ValidationProvider>
+                        </template>
+                        <template v-slot:item.last_name="{ item }">
+                            <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
+                                <v-text-field
+                                    class="mt-6"
+                                    outlined
+                                    dense
+                                    placeholder="Lastname"
+                                    v-model="item.last_name"
+                                    :ref="'inputRefLastname'+item.id"
+                                    @blur="updateUserData(item , 'Lastname')"
+                                    :error-messages=" errors[0]"
+                                ></v-text-field>
+                            </ValidationProvider>
+                        </template>
+
+                        <template v-slot:item.role="{ item }">
+                                <ValidationProvider name="Role" rules="required"  v-slot="{ errors }">
+                                    <v-select outlined dense
+                                            class="mt-6"
+                                            v-model="item.role"
+                                            :items="roles.AGENCY"
+                                            :error-messages=" errors[0]"
+                                            :ref="'inputRefRole'+item.id"
+                                            @blur="updateUserData(item , 'Role')"
+                                            placeholder="Please Select">
+                                    </v-select>
+                                </ValidationProvider>
+
+                        </template>
+
+                        <template v-slot:item.phone="{ item }">
+                                <ValidationProvider name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                                    <v-text-field
+                                        class="mt-6"
+                                        :maxlength="10"
+                                        outlined
+                                        dense
+                                        placeholder="04XX XXX XXX"
+                                        v-model="item.phone"
+                                        :ref="'inputRefPhone'+item.id"
+                                        @blur="updateUserData(item, 'Phone')"
+                                        :error-messages=" errors[0]"
+                                    ></v-text-field>
+                                </ValidationProvider>
+
+                        </template>
+                        <template v-slot:item.email="{ item }">
+                                <ValidationProvider
+                                    name="Email"
+                                    rules="required|email|unique-email-update:@h_id"
+                                    v-slot="{ errors }"
+                                >
+                                    <v-text-field
+                                        class="mt-6"
+                                        outlined
+                                        v-model="item.email"
+                                        dense
+                                        :error-messages=" errors[0]"
+                                        :ref="'inputRefEmail'+item.id"
+                                        @blur="updateUserData(item, 'Email')"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                        <ValidationProvider name="h_id">
+                            <v-text-field v-model="item.id" v-show="false" />
+                        </ValidationProvider>
+                        </template>
+                        <template v-slot:item.action="{ item }">
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn
+                                            v-bind="attrs"
+                                            @click="sendMailToUser(item)"
+                                            :loading="isLoading(item)"
+                                            v-on="on"
+                                                icon
+                                                >
+                                            <v-icon>mdi-send</v-icon>
+                                        </v-btn>
+                                </template>
+                                <span>Invite</span>
+                                </v-tooltip>
+                        </template>
+
                     </v-data-table>
                 </v-col>
             </v-row>
@@ -47,6 +146,24 @@
             <CreateUserModal v-if="isCreateStart" :dialog="isCreatingUser" @goToNext="goToNextConfirmationModal" @cancelUserDialog="cancleUserDialog"></CreateUserModal>
             <UserCreationConfirmationModal v-if="dataVerificationFlag" :dialog="dataVerificationFlag" :user="user" @backToEdit="backToEdit" @confirmData="confirmedData"></UserCreationConfirmationModal>
             <UserCreatedSuccessfulModal v-if="creationDoneFlag" :dialog="creationDoneFlag" :user="user" @done="done"></UserCreatedSuccessfulModal>
+            <v-snackbar
+                v-model="snackbar"
+                :timeout="timeout"
+                right
+            >
+                {{ 'Invitation Mail Sent' }}
+
+                <template v-slot:action="{ attrs }">
+                    <v-btn
+                        color="red"
+                        text
+                        v-bind="attrs"
+                        @click="snackbar = false"
+                    >
+                        Close
+                    </v-btn>
+                </template>
+            </v-snackbar>
         </div>
     </v-container>
 
@@ -60,6 +177,7 @@
     import LeadMetrics from "@scripts/components/crm/LeadMetrics";
     import OfficeService from "@scripts/services/crm/OfficeService";
     import AgencyService from "@scripts/services/crm/AgencyService";
+    import Roles from '@scripts/data/UserRoles'
     export default {
         name: "CrmUserDatatable",
         components: {UserCreatedSuccessfulModal, UserCreationConfirmationModal, CreateUserModal, Search, LeadMetrics},
@@ -72,18 +190,8 @@
                 user: null,
                 usersList: [],
                 activeOffice: null,
-                /*office: {
-                    id: null,
-                    name: null,
-                    address: null,
-                    phone: null,
-                    email: null,
-                    abn: null,
-                    agency_name: null,
-                    agency_type: null,
-                    agency_id: null,
-                },*/
-
+                roles: Roles,
+                
                 page: 1,
                 pageCount: 0,
                 itemsPerPage: 10,
@@ -92,41 +200,63 @@
                 options: {},
                 headers:  [
                     {
-                        text: 'Property Manager Name',
+                        text: 'First Name',
                         align: 'start',
                         sortable: true,
-                        value: 'proerty_manager_name'
+                        value: 'first_name'
+                    },
+                    {
+                        text: 'Last Name',
+                        align: 'start',
+                        value: 'last_name',
+                        sortable: true,
                     },
                     {
                         text: 'Applications',
                         align: 'start',
+                        value: 'submitted_lead',
                         sortable: true,
-                        value: 'submitted_lead'
                     },
                     {
                         text: 'Role',
                         align: 'start',
+                        value: 'role',
                         sortable: true,
-                        value: 'role'
                     },
                     {
                         text: 'Mobile',
                         align: 'start',
-                        value: 'phone'
+                        value: 'phone',
+                        sortable: false,
                     },
                     {
                         text: 'Email',
                         align: 'start',
-                        value: 'email'
+                        value: 'email',
+                        sortable: false,
+                    },
+                    {
+                        text: 'Action',
+                        align: 'start',
+                        value: 'action',
+                        sortable: false,
                     }
                 ],
                 search: '',
                 agency: '',
                 office: '',
-                isLoaded: false
+                isLoaded: false,
+                loadingEmail: [],
+                snackbar: false,
+                timeout: 2000
             }
         },
         methods: {
+            async emailUpdateValidationRule(item){
+                if(!item.email) item.errorMsg = 'Email is required'
+                else if( !( /.+@.+\..+/.test(item.email) ) ) item.errorMsg = 'E-mail must be valid'
+                else item.errorMsg = [];
+            },
             addNewUser() {
                 this.isCreatingUser= true;
                 this.isCreateStart = true;
@@ -153,6 +283,18 @@
                 this.creationDoneFlag = true;
             },
 
+            async checkDataValidation(agency , type){
+                
+                if(!this.$refs[`inputRef`+type+agency.id]?.hasError){
+                    await AgencyService.updateUserData(agency, agency.id);
+                }
+            },
+
+            async updateUserData(agency , type){
+                if(this.$refs[`inputRef`+type+agency.id]?.hasError) return;
+                await AgencyService.updateUserData(agency, agency.id);
+            },
+
             done() {
                 this.creationDoneFlag = false
                 this.isCreateStart = false;
@@ -167,7 +309,9 @@
                     sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: '',
                 }
                 const data = await CrmUserService.loadUserData(meta, this.$route.params.id, this.$route.params.officeId);
-                this.usersList = data?.users;
+                console.log(data)
+                this.usersList = data?.usersAgency;
+                console.log(this.usersList)
                 this.page = data.pagination.current_page;
                 this.itemsPerPage = data.pagination.per_page;
                 this.totalItem = data.pagination.total;
@@ -230,9 +374,21 @@
                 this.office = officeData.office;
                 this.agency = officeData.office.agency;
                 this.isLoaded = true;
+            },
+
+          async sendMailToUser(item) {
+                this.loadingEmail.push(item.id);
+                const index = this.loadingEmail.indexOf(item.id);
+                const response = await  AgencyService.sendMail(item);
+                this.loadingEmail.splice(index,1);
+                this.snackbar = true;
+            },
+
+            isLoading(item) {
+                if(this.loadingEmail.includes(item.id))
+                    return true;
+                return false;
             }
-
-
 
         },
         async mounted() {

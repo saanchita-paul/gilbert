@@ -31,6 +31,32 @@ class ConnectionService extends Model
 {
     use HasFactory;
 
+
+    const STATUS_UNASSIGNED = 1;
+    const STATUS_ASSIGNED = 2;
+    const STATUS_ESCALATED = 3;
+    const STATUS_SUBMITTED = 4;
+    const STATUS_ACCEPTED = 5;
+    const STATUS_REJECTED = 6;
+    const STATUS_EA_PROCESSINF = 7;
+    const STATUS_CLOSED = 8;
+    const STATUS_CANT_CONNECT = 9;
+    const STATUS_NEEDS_MORE_INFO = 10;
+
+    const STATUS_MAPPING = [
+        self::STATUS_UNASSIGNED => 'unassigned',
+        self::STATUS_ASSIGNED=>'assigned',
+        self::STATUS_ESCALATED => 'escalated',
+        self::STATUS_SUBMITTED => 'submitted',
+        self::STATUS_ACCEPTED =>'accepted',
+        self::STATUS_REJECTED => 'rejected',
+        self::STATUS_EA_PROCESSINF => 'processing',
+        self::STATUS_CLOSED => 'closed',
+        self::STATUS_CANT_CONNECT => 'can\'t_connect',
+        self::STATUS_NEEDS_MORE_INFO => 'need_more_info',
+    ];
+
+
     /**
      * The attributes that are mass assignable.
      *
@@ -38,7 +64,12 @@ class ConnectionService extends Model
      */
     protected $fillable = [
         'connection_application_id',
-        'service_type'
+        'service_type',
+        'status',
+        'reason',
+        'connection_date',
+        'provider_name',
+        'plan_type'
     ];
 
     /**

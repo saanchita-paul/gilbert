@@ -20,7 +20,7 @@ trait Searchable
      * applying search
      *
      * @param Builder $builder
-     * @param string $searchFrom
+     * @param array $searchFrom
      *
      * @return Builder
      */

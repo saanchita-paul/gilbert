@@ -101,11 +101,11 @@
                     </v-col>
 
                     <v-col cols="6" class="py-0">
-                        <ValidationProvider name="Tenancy Types" rules="required"  v-slot="{ errors }">
+                        <ValidationProvider name="Occupancy Type" rules="required"  v-slot="{ errors }">
                             <v-select outlined dense
                                       v-model="application.tenancy_type"
                                       :items="tenancy_types"
-                                      label="Tenancy Type*"
+                                      label="Occupancy Type*"
                                       :error-messages=" errors[0]"
                                       placeholder="Please Select">
                             </v-select>
@@ -146,6 +146,38 @@
                     </v-col>
 
 
+                    <v-col cols="12" class="pb-0">
+                        <v-row class="my-0 py-0">
+                            <v-col class="my-0 py-0">
+                                <v-checkbox
+                                    v-model="application.is_contacted"
+                                    :label="`Applicant consents to be contacted by HOOD`"
+                                ></v-checkbox>
+                            </v-col>
+                        </v-row>
+                    </v-col>
+
+
+                    <v-col cols="12 pb-0">
+                        <p class="sub-title mb-3">Identification <small class="font-weight-thin">Applicant’s ID.</small>  </p>
+                    </v-col>
+
+                    <v-col cols="6" class="py-0">
+                        <ValidationProvider name="Identification Types" rules="required"  v-slot="{ errors }">
+                            <v-select outlined dense
+                                      v-model="indentification.type"
+                                      :items="idenficationTypeDD"
+                                      item-text="text"
+                                      item-value="value"
+                                      label="Id Type*"
+                                      :error-messages=" errors[0]"
+                                      placeholder="Please select one">
+                            </v-select>
+                        </ValidationProvider>
+                    </v-col>
+                    <IdentificationDetail :indentification="indentification"
+                                          @updateIdentification="updateIdentification">
+                    </IdentificationDetail>
 
                     <v-col cols="12" class="pb-0">
                         <v-row class="my-0 py-0">
@@ -228,6 +260,10 @@
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </v-col>
+
+
+
+
                                     <v-col cols="12" class="py-0">
                                         <ValidationProvider name="Date Of Birth" rules="required"  v-slot="{ errors }">
                                             <v-menu
@@ -310,11 +346,6 @@
                         </v-row>
 
                     </v-col>
-
-
-
-
-
 
 
                     <v-col cols="12" class="pb-0">
@@ -489,7 +520,7 @@
 
                     <v-col cols="12">
                         <div class="d-flex  flex-row-reverse">
-                            <v-btn @click="onSubmit" color="primary">Submit</v-btn>
+                            <v-btn @click="onSubmit" :loading="loadSubmit" color="primary">Submit</v-btn>
                             <v-btn @click="onCancel" class="mx-4">Cancel</v-btn>
                         </div>
                     </v-col>
@@ -499,6 +530,9 @@
         <AgentConfirmApplicationModal
             v-if="confirmApplicationModal" :dialog="confirmApplicationModal"
             :application="application"
+            :authorisedPerson="authorized_person"
+            :identification="indentification"
+            :has_authorized="has_authorized"
             @cancelApplicationModal="cancelApplicationModal"
             @saveApplication="saveApplication">
         </AgentConfirmApplicationModal>
@@ -518,10 +552,13 @@ import LeadApplicationService from "@scripts/services/crm/LeadApplicationService
 import DayJs from "dayjs";
 import LeadCreateSuccessfulModal from "@scripts/components/crm/modals/LeadCreateSuccessfulModal";
 import {isNull} from "lodash-es";
+import IdentificationDetail from "@scripts/components/crm/agent/IdentificationDetail";
+import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 
 export default {
     name: "AgentCreateNewApplication",
     components: {
+        IdentificationDetail,
         LeadCreateSuccessfulModal,
         AgentConfirmApplicationModal,
     },
@@ -549,10 +586,10 @@ export default {
             showMovingDate: false,
             showDOB: false,
             service_types: {
-                power: false,
-                gas: false,
-                water: false,
-                internet: false,
+                power: true,
+                gas: true,
+                water: true,
+                internet: true,
             },
             showMenu: false,
             searchResult: [],
@@ -598,7 +635,32 @@ export default {
             titlesDD:[
                 'Mrs','Mr','Ms'
             ],
+            idenficationTypeDD: [
+                {
+                    text: "Passport",
+                    value: 1,
+                },
+                {
+                    text: "Driver's License",
+                    value: 2,
+                },
+                {
+                    text: "Medicare Card",
+                    value: 3,
+                },
+            ],
+            indentification: {
+                type: IDENTIFICATION.PASSPORT,
+                card_number: "",
+                special_number: "",
+                expire_date: "",
+                card_color: "",
+                state: "",
+                country: "",
+            },
+            loadSubmit: false
         }
+
     },
     created() {
         this.onStreetChanged = debounce(() => {
@@ -647,9 +709,11 @@ export default {
         },
         saveApplication() {
             this.confirmApplicationModal = false;
+            this.loadSubmit = true;
             AgentApplicationService.createApplication({
                 'application': this.application,
-                'authorized_person': this.authorized_person
+                'authorized_person': this.authorized_person,
+                'identification': this.indentification
             })
                 .then(res =>  {
                     this.title = res.data.data.first_name + ' ' + res.data.data.last_name;
@@ -672,8 +736,7 @@ export default {
         done() {
             this.$router.push({name: 'agent.application.dashboard'});
         },
-        syncDob()
-        {
+        syncDob() {
             if(DayJs(this.application.date_of_birth,'DD/MM/YYYY').isValid())
             {
                 this.dob = (DayJs(this.application.date_of_birth,'DD/MM/YYYY')).format('YYYY-MM-DD');
@@ -686,6 +749,9 @@ export default {
                 this.moving_date = (DayJs(this.application.moving_date,'DD/MM/YYYY')).format('YYYY-MM-DD');
             }
         },
+        updateIdentification(identification) {
+            this.indentification = identification;
+        }
     },
     watch: {
         dob() {

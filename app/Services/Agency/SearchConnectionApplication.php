@@ -13,19 +13,22 @@ class SearchConnectionApplication
 {
 
     use Searchable, Sortable;
+
     /**
      * @var mixed|null
      */
     private ?int $perPage;
     private ?string $status;
     private ?string $leadType;
+    private mixed $source;
 
 
     public function __construct(array $request)
     {
-        $this->perPage = empty($request['per_page']) ? null : (int) $request['per_page'];
+        $this->perPage = empty($request['per_page']) ? null : (int)$request['per_page'];
         $this->status = optional($request)['status'];
         $this->leadType = optional($request)['active_lead_type'];
+        $this->source = ConnectionApplication::SOURCE_MAPPING[$request['source']??''] ?? 'hood';
 
         $this->setSearch(optional($request)['search']);
         $this->setSortBy(optional($request)['sort_by'], optional($request)['is_descending']);
@@ -41,19 +44,17 @@ class SearchConnectionApplication
             ->with('connectionServices')
             ->with('assignedTo');
 
-        info('info', [$this->leadType]);
+        $builder->where('source', $this->source);
 
-        if($this->leadType) {
-            if($this->leadType === 'submitted')
-            {
+        if ($this->leadType) {
+            if ($this->leadType === 'submitted') {
                 $builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
                     ? $builder->whereIn('status', [4, 5, 6, 7])
-                    :  $builder->where('assigned_to', $user->profile->id);
-            }
-            else{
+                    : $builder->where('assigned_to', $user->profile->id);
+            } else {
                 $builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
                     ? $builder->where('status', ConnectionApplication::STATUS_MAPPING[$this->leadType])
-                    :  $builder->where('assigned_to', $user->profile->id);
+                    : $builder->where('assigned_to', $user->profile->id);
             }
 
         }
@@ -68,6 +69,6 @@ class SearchConnectionApplication
         $builder = $this->applySorting($builder);
 
 
-        return  $builder->paginate($this->perPage);
+        return $builder->paginate($this->perPage);
     }
 }

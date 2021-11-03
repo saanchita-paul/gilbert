@@ -65,14 +65,36 @@ export default {
         }
     },
 
-    updateAgency: async (agency,id) => {
+    updateUserData: async (agency,id) => {
         try {
 
-            const data = await axios.post('/api/agencies/'+id+'/update',{...agency});
+            const data = await axios.post('/api/office-agents/' + id +'/update-user-data',{...agency});
             return AgencyMqpper.mapAgency( data.data.data);
 
         } catch (error) {
             return error.data;
+        }
+    },
+
+    updateAgency: async (agency,id) => {
+        try {
+
+            const data = await axios.post('/api/agencies/'+ id +'/update',{...agency});
+            return AgencyMqpper.mapAgency( data.data.data);
+
+        } catch (error) {
+            throw new Error(error.data)
+        }
+    },
+
+    emailUpdateValidationRule: async (email, userId) => {
+        try {
+
+            return (await axios.get('/api/users/is-unique-email-update',{ params: { email, userId } })).data?.status;
+
+        } catch (error) {
+            // throw new Exception();
+            return false;
         }
     },
 
@@ -92,6 +114,17 @@ export default {
             const agency = await axios.get('/api/agencies/'+ id);
             return AgencyMqpper.mapAgency( agency.data.data);
         } catch (error) {
+            return error.data;
+        }
+    },
+
+    sendMail: async (item) => {
+        try {
+            const response = await axios.post('/api/office-agents/' + item.id + '/send-confirm-mail',{...item}) ;
+
+            return response.status === 200?true : false;
+        } catch (error) {
+            console.log(error)
             return error.data;
         }
     },

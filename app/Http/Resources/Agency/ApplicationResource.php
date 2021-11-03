@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Agency;
 
+use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ApplicationResource extends JsonResource
@@ -36,6 +38,7 @@ class ApplicationResource extends JsonResource
             'additional_instruction' => $this->additional_instruction,
             'address_text' => $this->address_text,
             'services' => $this->getConnectionServices($this->connectionServices),
+            'connection_services' => $this->mapService($this->connectionServices),
             'identification' => $this->identification,
             'family_violance' => isset($this->family_violance) ? $this->family_violance : 3,
             'is_renovation_on' => isset($this->is_renovation_on) ? $this->is_renovation_on : 1,
@@ -66,6 +69,7 @@ class ApplicationResource extends JsonResource
             'billing_state' => $this->billing_state,
             'billing_postcode' => $this->billing_postcode,
             'is_billing_same' => $this->is_billing_same,
+            'is_contacted' => $this->is_contacted,
             'authorizedPersonName' => isset($this->authorizedPerson) ? "{$this->authorizedPerson->first_name} {$this->authorizedPerson->middle_name} {$this->authorizedPerson->last_name}" : null ,
         ];
     }
@@ -78,5 +82,33 @@ class ApplicationResource extends JsonResource
             array_push($service_array, $services[$i]['service_type']);
         }
         return $service_array;
+    }
+
+    public function mapService($service)
+    {
+
+        try {
+
+
+            if ($service) {
+                $newService = [];
+
+                foreach ($service as $svc) {
+                    if(empty($svc->status)) {
+                        $svc->status = ConnectionService::STATUS_UNASSIGNED;
+                    }
+                    $svc->statusText = ConnectionService::STATUS_MAPPING[$svc->status];
+                    $newService[] = $svc;
+
+                }
+                return $newService;
+            }
+            return [];
+        } catch (\Exception $e)
+        {
+            \Log::info($e->getMessage() );
+            return [];
+        }
+
     }
 }

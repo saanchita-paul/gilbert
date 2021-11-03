@@ -35,18 +35,22 @@ class ApplicationService
         $newApplication = ConnectionApplication::create($application);
         $connectionService = [];
 
-        foreach ($application['service_interests'] as $service) {
-            $connectionService[] = ConnectionService::create(
-                ['service_type' => $service['service_type'],
-                    'connection_application_id' => $newApplication->id]
-            );
-        }
+
+        $this->createApplicationSerive($newApplication->id, $application['service_interests']);
+
+//        foreach ($application['service_interests'] as $service) {
+//            $connectionService[] = ConnectionService::create(
+//                ['service_type' => $service['service_type'],
+//                    'connection_application_id' => $newApplication->id]
+//            );
+//        }
 
         if(!empty($authizedPerson))
         {
             $authizedPerson['connection_application_id'] = $newApplication->id;
         }
         ConnectionApplicationSecondaryACC::create($authizedPerson);
+        $this->createIdentification($application['identification'], $newApplication->id);
 
         return $newApplication;
 
@@ -137,7 +141,13 @@ class ApplicationService
     {
         ConnectionService::query()->where('connection_application_id', '=', $id)->delete();
         foreach ($serviceList as $service) {
-            ConnectionService::create(['service_type' => $service, 'connection_application_id' => $id]);
+            ConnectionService::create(
+                [
+                    'service_type' => $service,
+                    'connection_application_id' => $id,
+                    'status' => ConnectionService::STATUS_SUBMITTED
+                ]
+            );
         }
     }
 
@@ -251,5 +261,47 @@ class ApplicationService
         $connectionApplication->update(['status' => 8]);
         return $connectionApplication->refresh();
     }
+
+    public function createApplicationSerive($id, $services):void
+    {
+        foreach ($services as $service) {
+            $connectionService[] = ConnectionService::create(
+                [
+                    'service_type' => $service['service_type'],
+                    'connection_application_id' => $id,
+                    'status'=> ConnectionService::STATUS_UNASSIGNED
+                ]
+            );
+        }
+    }
+
+    public function updateService(array $data){
+        
+        try {
+            return ConnectionService::updateOrCreate(
+                [ 'id' => $data['id'] ?? null ],
+                $data
+            );
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+        
+    }
+
+    public function providers(array $data, $applicationId)
+    {
+        $connectionApplication =  ConnectionApplication::find($applicationId);
+        foreach ($data['service_type'] as $service) {
+            $connectionService = ConnectionService::where('connection_application_id', $applicationId)
+                ->where('service_type', $service)
+                ->first();
+            if( $connectionService ) {
+                $connectionService->provider_name = $data['provider_name'];
+                $connectionService->plan_type = $data['plan_type'];
+                $connectionService->save();
+            }
+        }
+    }
+
 
 }
