@@ -71,9 +71,8 @@ class ApplicationResource extends JsonResource
             'is_billing_same' => $this->is_billing_same,
             'is_contacted' => $this->is_contacted,
             'authorizedPersonName' => isset($this->authorizedPerson) ? "{$this->authorizedPerson->first_name} {$this->authorizedPerson->middle_name} {$this->authorizedPerson->last_name}" : null ,
-            'agency' => 'ABCDEF',
-            'agent_name' => $this->getAgentName($this->createdBy),
-            'agency_office' => $this->getAgencyName($this->office),
+            'agent_name' => $this->getAgentName(),
+            'agency_office' => $this->getAgencyName(),
         ];
     }
 
@@ -115,19 +114,32 @@ class ApplicationResource extends JsonResource
 
     }
 
-    private function getAgentName($agent)
+    private function getAgentName()
     {
-        if(is_object($agent)){
-            return $agent->first_name.' '. $agent->last_name;
+        if($this->source === ConnectionApplication::SOURCE_HOOD)
+        {
+            return $this->createdBy->first_name.' '. $this->createdBy->last_name;
         }
+        if($this->source === ConnectionApplication::SOURCE_FOXIE)
+        {
+            return $this->SugerLead->agent_name;
+        }
+
         return '';
     }
 
-    private function getAgencyName($office)
+    private function getAgencyName()
     {
-        if(is_object($office)){
-            return $office->name;
+        if($this->source === ConnectionApplication::SOURCE_HOOD)
+        {
+            return $this->agency->name;
         }
+        if($this->source === ConnectionApplication::SOURCE_FOXIE)
+        {
+            return $this->SugerLead->agency_name;
+        }
+
         return '';
+
     }
 }
