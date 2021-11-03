@@ -51,6 +51,7 @@
                                             :error-messages="errors[0]"
                                             hide-details="auto"
 
+
                                         >
                                             <template slot="append">
                                                 <v-icon v-on="on">mdi-calendar</v-icon>
@@ -85,6 +86,8 @@
 <script>
 import DayJs from "dayjs";
 import WaterService from "@scripts/services/crm/WaterService";
+import {isNull} from "lodash-es";
+import dayJs from "dayjs";
 
 export default {
 name: "WaterService",
@@ -93,6 +96,7 @@ name: "WaterService",
     return {
         moving_date_text: '',
         moving_date: '',
+        old_date: '',
         connection_date: '',
         active_status: '',
         waterServiceDD: [
@@ -134,19 +138,35 @@ name: "WaterService",
         },
 
         async saveWater() {
+
+            if(this.old_date != this.water.connection_date && !dayJs(this.water.connection_date, 'DD/MM/YYYY').isValid()) {
+                return;
+            }
             const responseData = await WaterService.saveWater(this.water, this.leadSummary.id);
             this.water.id = responseData.id;
+            this.water.connection_date = dayJs(responseData.connection_date, 'YYYY-MM-DD').isValid()?
+            dayJs(responseData.connection_date, 'YYYY-MM-DD').format('DD/MM/YYYY'):'';
+            this.water.provider_name = responseData.provider_name;
+            this.old_date = this.water.connection_date;
         },
          updateStatus() {
              const newServices = this.leadSummary?.connection_services?.find(svc=>{
                  return svc.service_type === 'water';
              });
 
+             // console.log('newServices', newServices);
+
              if(newServices)
              {
                  this.active_status = newServices.status;
                  this.water.id = newServices.id;
                  this.water.status = newServices.status;
+                 this.water.connection_date = dayJs(newServices.connection_date, 'YYYY-MM-DD').isValid()?
+                     dayJs(newServices.connection_date, 'YYYY-MM-DD')
+                     .format('DD/MM/YYYY'): '';
+                 this.water.provider_name = newServices.provider_name;
+                 // console.log('water', newServices);
+                 // console.log('water', this.water);
                  this.$emit('updateStatus',this.mapStatus(newServices.status));
                  return ;
              }
