@@ -71,6 +71,9 @@ class ApplicationResource extends JsonResource
             'is_billing_same' => $this->is_billing_same,
             'is_contacted' => $this->is_contacted,
             'authorizedPersonName' => isset($this->authorizedPerson) ? "{$this->authorizedPerson->first_name} {$this->authorizedPerson->middle_name} {$this->authorizedPerson->last_name}" : null ,
+            'agency' => 'ABCDEF',
+            'agent_name' => $this->getAgentName($this->createdBy),
+            'agency_office' => $this->getAgencyName($this->office),
         ];
     }
 
@@ -110,5 +113,21 @@ class ApplicationResource extends JsonResource
             return [];
         }
 
+    }
+
+    private function getAgentName($agent)
+    {
+        if(is_object($agent)){
+            return $agent->first_name.' '. $agent->last_name;
+        }
+        return '';
+    }
+
+    private function getAgencyName($office)
+    {
+        if(is_object($office)){
+            return $office->name;
+        }
+        return '';
     }
 }
