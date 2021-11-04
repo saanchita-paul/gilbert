@@ -28,7 +28,9 @@ class SearchConnectionApplication
         $this->perPage = empty($request['per_page']) ? null : (int)$request['per_page'];
         $this->status = optional($request)['status'];
         $this->leadType = optional($request)['active_lead_type'];
-        $this->source = ConnectionApplication::SOURCE_MAPPING[$request['source']??''] ?? 'hood';
+        $this->source = ConnectionApplication::SOURCE_MAPPING[$request['source']??''] ??  ConnectionApplication::SOURCE_ALL;
+
+
 
         $this->setSearch(optional($request)['search']);
         $this->setSortBy(optional($request)['sort_by'], optional($request)['is_descending']);
@@ -44,7 +46,13 @@ class SearchConnectionApplication
             ->with('connectionServices')
             ->with('assignedTo');
 
-        $builder->where('source', $this->source);
+        if($this->source !== ConnectionApplication::SOURCE_ALL) {
+            info('sazzad1', [$this->source]);
+
+            $builder->where('source', $this->source);
+        }
+        info('sazzad', [$this->source]);
+
 
         if ($this->leadType) {
             if ($this->leadType === 'submitted') {
