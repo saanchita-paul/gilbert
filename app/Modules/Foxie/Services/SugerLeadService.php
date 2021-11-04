@@ -76,7 +76,7 @@ class SugerLeadService
         $this->connectionApplication->mirn = $request->gas_mirn_c ?? '';
         $this->connectionApplication->unit_number = $request->primary_address_unit_c ?? '';
         $this->connectionApplication->plan_type = $request->meter_plan_type_c ?? '3';
-        $this->connectionApplication->created_at = now();
+        // $this->connectionApplication->created_at = now();
         // $this->connectionApplication->title = $request->salutation ?? 'Mr';
         $this->connectionApplication->title = 'Mr';
 
@@ -89,7 +89,7 @@ class SugerLeadService
         $this->lead->lead_id = $request->id_c ?? '';
         $this->lead->foxie_date_entered =  Carbon::parse($request->date_entered)->format("Y-m-d H:i:s")  ?? null;
         $this->lead->foxie_date_modified = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s")  ?? null;
-
+        $this->lead->created_at = now(); 
     }
     
     private function setIdentificationTable(Request $request , $type){
@@ -172,7 +172,7 @@ class SugerLeadService
         $request->gas_mirn_c ? $this->connectionApplication->mirn = $request->gas_mirn_c : '';
         $request->primary_address_unit_c ? $this->connectionApplication->unit_number = $request->primary_address_unit_c : '';
         $request->meter_plan_type_c ? $this->connectionApplication->plan_type = $request->meter_plan_type_c : '';
-        $this->connectionApplication->updated_at = now();
+        // $this->connectionApplication->updated_at = now();
         
         
         //SUGER LEADS TABLE
@@ -183,7 +183,7 @@ class SugerLeadService
         $request->id_c ? $this->lead->lead_id = $request->id_c : '';
         $request->office_C ? $this->lead->agency_name = $request->office_c : '';
         $this->lead->foxie_date_modified = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s") ?? null;
-
+        $this->lead->updated_at = now(); 
 
     }
 
