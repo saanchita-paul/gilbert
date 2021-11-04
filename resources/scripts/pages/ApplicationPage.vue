@@ -45,7 +45,7 @@ export default {
     data() {
         return {
             leadTypes:[],
-            selectedSrc: this.$route.query.source || 'hood',
+            selectedSrc: this.$route.query.source || 'all',
             activeLeadType: 'my_applications',
             leadTypesFlag: false,
             total_leads: 0,
