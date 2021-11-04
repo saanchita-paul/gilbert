@@ -22,6 +22,14 @@ class SugerLeadService
     const TYPE_CREATE = 1;
     const TYPE_UPDATE = 2;
 
+    const SERVICE_TYPE_POWER = 'power';
+    const SERVICE_TYPE_GAS = 'gas';
+
+    const TYPE_SERVICE = [
+        'gas' => 'gas',
+        'electricity' => 'power',
+    ];
+
     /**
      * Set attribute for create.
      *
@@ -33,6 +41,7 @@ class SugerLeadService
         $this->connectionApplication->last_name = $request->last_name ?? 'Man' ;
         $this->connectionApplication->source = ConnectionApplication::SOURCE_FOXIE ;
         $this->connectionApplication->email = $request->email1 ?? 'abc@hood.ai';
+        $this->connectionApplication->address_text = $request->full_address_c ?? '';
         $this->connectionApplication->dob = date("Y-m-d", strtotime($request->birthdate)) ?? '1991/08/09';
         $this->connectionApplication->moving_date = date("Y-m-d", strtotime($request->move_in_date_c))  ?? '2021/10/02';
         $this->connectionApplication->address_unit = $request->primary_address_unit_c ?? '';
@@ -62,26 +71,55 @@ class SugerLeadService
         $this->lead->created =  Carbon::parse($request->date_entered)->format("Y-m-d H:i:s")  ?? null;
         $this->lead->updated = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s")  ?? null;
 
-        //set identification table
-        $this->setIdentificationTable($request , new Identification , self::TYPE_CREATE);
-        
     }
     
-    private function setIdentificationTable(Request $request , $identification , $type){
+    private function setIdentificationTable(Request $request , $type){
         //IDENTIFICATION TABLE
+        $identification = '';
+        isset($this->connectionApplication->identification ) ? 
+        $identification = $this->connectionApplication->identification :
+        $identification = new Identification; 
+
         try {
+            $formattedDate = Carbon::parse($request->id_expiry_c)->format("Y-m-d");
+            $mappedType = Identification::TYPE_MAP[$request->id_type_c];
+
             if($type == self::TYPE_CREATE){
-                $identification->expire_date = $request->id_expiry_c ?? null;
-                $identification->type = Identification::TYPE_MAP[$request->id_type_c] ?? null ;
+                $identification->expire_date = $formattedDate ?? null;
+                $identification->type = $mappedType ?? null ;
             }else{
-                $request->customer_type_c ? $identification->type = Identification::TYPE_MAP[$request->id_type_c]: '';
-                $request->id_expiry_c ? $identification->type = $request->id_type_c : '';
+                $request->id_type_c ? $identification->type = $mappedType ?? null : '';
+                $request->id_expiry_c ? $identification->expire_date = $formattedDate : '';
             }
             $identification->connection_application_id = $this->connectionApplication->id;
             $identification->save();
 
         } catch (\Exception $ex) {
                 \Log::error('problem in identification table');
+                \Log::error($ex->getMessage());
+        }
+    }
+    
+    private function setServiceTypeTable(Request $request , $type){
+        // SERVICETYPE TABLE
+        info('checking service_c1');
+        if(!isset($request->service_c)) return;
+        info('checking service_c');
+        // expected format example Electricity_Gas
+        $services = explode("_", strtolower($request->service_c));
+
+        try {
+            if($type == self::TYPE_UPDATE) $this->connectionApplication->connectionServices()->delete();
+            foreach ($services as $value) {
+                $this->connectionApplication->connectionServices()->create(
+                    [
+                        'service_type' => self::TYPE_SERVICE[ $value ] ,
+                        'status' => ConnectionApplication::STATUS_UNASSIGNED ,
+                    ]
+                );
+            }
+        } catch (\Exception $ex) {
+                \Log::error('problem in service type table');
                 \Log::error($ex->getMessage());
         }
     }
@@ -100,6 +138,7 @@ class SugerLeadService
         $request->birthdate ? $this->connectionApplication->dob = date("Y-m-d", strtotime($request->birthdate)) : '';
         $request->move_in_date_c ? $this->connectionApplication->moving_date = date("Y-m-d", strtotime($request->move_in_date_c)) : '';
         $request->primary_address_unit_c ? $this->connectionApplication->address_unit = $request->primary_address_unit_c : '';
+        $request->full_address_c ? $this->connectionApplication->address_text = $request->full_address_c : '';
         $request->primary_address_street ? $this->connectionApplication->street_address = $request->primary_address_street : '';
         $request->primary_address_city ? $this->connectionApplication->city = $request->primary_address_city : '';
         $request->alt_address_postcode ? $this->connectionApplication->postcode = $request->alt_address_postcode : '';
@@ -127,10 +166,6 @@ class SugerLeadService
         $this->lead->updated = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s") ?? null;
 
 
-        //set connetion application
-        $this->connectionApplication->identification ? 
-        $this->setIdentificationTable($request , $this->connectionApplication->identification , self::TYPE_UPDATE ) : 
-        $this->setIdentificationTable($request , new Identification , self::TYPE_CREATE ) ; 
     }
 
     private function setOfficeAndAgencyId(){
@@ -164,7 +199,11 @@ class SugerLeadService
         $this->lead->connection_application_id = $this->connectionApplication->id;
         $this->lead->save();
 
-        $this->setIdentificationTable($request , new Identification , self::TYPE_CREATE ) ; 
+        //set identification table
+        $this->setIdentificationTable($request , self::TYPE_CREATE);
+
+        //set service type table
+        $this->setServiceTypeTable($request , self::TYPE_CREATE ) ; 
 
         return $this->connectionApplication;
     }
@@ -188,7 +227,13 @@ class SugerLeadService
             $all_fields_dump =  json_decode($this->lead->all_fields_dump);
             $mergedUpdatedData =  collect($all_fields_dump)->merge($request->all());
             $this->lead->update(["all_fields_dump" => json_encode($mergedUpdatedData)]);
-            
+                
+            //set connetion application
+            $this->setIdentificationTable($request , self::TYPE_UPDATE );
+
+            //set service type table
+            $this->setServiceTypeTable($request , self::TYPE_UPDATE ) ; 
+
             return true;
         } catch (\Exception $ex) {
             Log::error("Problem in updating");
@@ -209,10 +254,12 @@ class SugerLeadService
     {   
         try {
             $leads = null;
+            $identificationColumns = 'identification:id,connection_application_id,expire_date,type';
+            $connectionServiceColumns = 'connectionServices:id,connection_application_id,service_type,status';
             if($id == null){
-                $leads =  ConnectionApplication::with(['identification'])->where('created_at', '>=', $from)->where('created_at', '<=', $to)->where('source' , ConnectionApplication::SOURCE_FOXIE )->get();
+                $leads =  ConnectionApplication::with([$identificationColumns , $connectionServiceColumns])->where('created_at', '>=', $from)->where('created_at', '<=', $to)->where('source' , ConnectionApplication::SOURCE_FOXIE )->get();
             }else{
-                $leads  = ConnectionApplication::with(['identification'])->where( 'source' , ConnectionApplication::SOURCE_FOXIE )->where('id' , $id)->get()[0];
+                $leads  = ConnectionApplication::with([$identificationColumns , $connectionServiceColumns])->where( 'source' , ConnectionApplication::SOURCE_FOXIE )->where('id' , $id)->get()[0];
                 $leads ?? throw new Exception("Error Processing Request", 1);
             }
             return $leads;

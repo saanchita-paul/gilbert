@@ -56,6 +56,8 @@ class Identification extends Model
         'passport' => self::TYPE_PASSPORT ,
         'medicare' => self::TYPE_MEDICARE ,
         'driving_licence' => self::TYPE_DRIVING_LICENCE ,
+        //different because data comming from api is different
+        'drivers' => self::TYPE_DRIVING_LICENCE ,
     ];
 
     /**
