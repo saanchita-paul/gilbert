@@ -47,11 +47,9 @@ class SearchConnectionApplication
             ->with('assignedTo');
 
         if($this->source !== ConnectionApplication::SOURCE_ALL) {
-            info('sazzad1', [$this->source]);
-
             $builder->where('source', $this->source);
         }
-        info('sazzad', [$this->source]);
+
 
 
         if ($this->leadType) {
