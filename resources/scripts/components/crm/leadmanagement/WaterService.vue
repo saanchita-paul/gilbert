@@ -17,8 +17,8 @@
         </v-col>
         <v-col cols="8">
             <v-row>
-                <v-col cols="4">
-                    <h4>Connection Date</h4>
+                <v-col class="connection-date">
+                    <h4 class="mt-2">Connection Date</h4>
                 </v-col>
                 <v-col cols="8">
                     <div class="text-field">
@@ -235,6 +235,10 @@ name: "WaterService",
 .p-bold
 {
     font-weight: bold;
+}
+
+.connection-date{
+    max-width: 150px !important;
 }
 
 

@@ -50,6 +50,8 @@
 
             <v-tab-item>
                 <v-card >
+                    <p class="sub-title ml-4 pt-5 mb-2" >Service Applications</p>
+                    <p class="ml-4 mb-0">Energy</p>
                 <v-col cols="12" class="service-box-area">
                     <div v-for="service in services" :key="service">
                         <EnergyService @click.native="updateService(service)" :title="service"
