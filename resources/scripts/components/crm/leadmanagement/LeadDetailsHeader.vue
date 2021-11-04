@@ -3,9 +3,9 @@
         <v-col cols="12" class="d-flex justify-space-between">
 
             <div class="d-flex">
-                <v-btn  outlined @click="goToBack()"><v-icon left  dark>mdi-arrow-left</v-icon>Back</v-btn>
+<!--                <v-btn color="transperent"  small class="back-btn mt-2"><v-img @click="goToBack()" src="/assets/images/icons/back_btn.png"/></v-btn>-->
                 <div class="mx-4 mb-0">
-                    <p class="page-title mb-0">{{leadSummary.applicant_name}} </p>
+                    <p class="page-title mb-0"><span><v-img @click="goToBack()" src="/assets/images/icons/back_btn.png" max-height="40px" max-width="40px" class="back-btn mt-1"> </v-img></span>{{leadSummary.applicant_name}} </p>
                     <small class="font-weight-bold">
                        Preference
                         <span class="mx-1 pa-2"  :class="{'mx-1':isActive('Power'), 'pa-2':isActive('Power'),}" ><v-icon size="16" :color="getColor('Power')">mdi-flash</v-icon> Power</span>
@@ -111,4 +111,10 @@ name: "LeadDetailsHeader",
     color:green !important;
     font-size: 14px !important;
 }
+.back-btn{
+    float: left;
+    cursor: pointer;
+
+}
+
 </style>

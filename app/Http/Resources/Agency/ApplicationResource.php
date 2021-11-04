@@ -122,7 +122,7 @@ class ApplicationResource extends JsonResource
         }
         if($this->source === ConnectionApplication::SOURCE_FOXIE)
         {
-            return $this->SugerLead->agent_name;
+            return $this->SugerLead?->agent_name;
         }
 
         return '';
@@ -132,11 +132,11 @@ class ApplicationResource extends JsonResource
     {
         if($this->source === ConnectionApplication::SOURCE_HOOD)
         {
-            return $this->office->name;
+            return $this->office?->name;
         }
         if($this->source === ConnectionApplication::SOURCE_FOXIE)
         {
-            return $this->SugerLead->agency_name;
+            return $this->SugerLead?->agency_name;
         }
 
         return '';

@@ -24,11 +24,30 @@ class SugerLeadService
 
     const SERVICE_TYPE_POWER = 'power';
     const SERVICE_TYPE_GAS = 'gas';
-
+    
     const TYPE_SERVICE = [
         'gas' => 'gas',
         'electricity' => 'power',
     ];
+    
+    const MAP_STATE_NSW = 'New South Wales';
+    const MAP_STATE_VIC = 'Victoria';
+    const MAP_STATE_QLD = 'Queensland';
+    const MAP_STATE_SA = 'South Australia';
+    const MAP_STATE_NT = 'Northern Territory';
+    const MAP_STATE_TAS = 'Tasmania';
+    const MAP_STATE_ACT = 'Australian Capital Territory';
+
+    const MAP_STATE = [
+        'nsw' => self::MAP_STATE_NSW,
+        'vic' => self::MAP_STATE_VIC,
+        'qld' => self::MAP_STATE_QLD,
+        'sa' => self::MAP_STATE_SA,
+        'nt' => self::MAP_STATE_NT,
+        'tas' => self::MAP_STATE_TAS,
+        'act' => self::MAP_STATE_ACT,
+    ];
+
 
     /**
      * Set attribute for create.
@@ -51,26 +70,28 @@ class SugerLeadService
         $this->connectionApplication->phone = $request->phone_mobile ?? '';
         $this->connectionApplication->tenancy_type = ConnectionApplication::TENANCY_MAPPING[$request->property_relationship_c] ?? null ;
         $this->connectionApplication->property_type = ConnectionApplication::PROPERTY_TYPE_MAPPING[$request->customer_type_c] ?? null ;
-        $this->connectionApplication->state = $request->primary_address_state ?? 'Queensland';
+        $this->connectionApplication->state = self::MAP_STATE[strtolower( $request->primary_address_state )] ?? '';
         $this->connectionApplication->country = $request->primary_address_country ?? 'Australia';
         $this->connectionApplication->nmi = $request->electricity_nmi_c ?? '';
         $this->connectionApplication->mirn = $request->gas_mirn_c ?? '';
         $this->connectionApplication->unit_number = $request->primary_address_unit_c ?? '';
         $this->connectionApplication->plan_type = $request->meter_plan_type_c ?? '3';
-        $this->connectionApplication->created_at = now();
+        // $this->connectionApplication->created_at = now();
         // $this->connectionApplication->title = $request->salutation ?? 'Mr';
         $this->connectionApplication->title = 'Mr';
 
         //SUGER LEADS TABLE
         $this->lead->service_address = $request->full_address_c ?? '';
+        $this->lead->foxie_lead_source = $request->lead_source ?? '';
+        $this->lead->foxie_lead_source_description = $request->lead_source_description ?? '';
         $this->lead->office_branch = $request->office_c ?? '';
         $this->lead->agent_name = $request->agent_c ?? '';
         $this->lead->agency_id = $request->foxie_agents_id_c ?? '';
         $this->lead->agency_name = $request->office_c ?? '';
         $this->lead->lead_id = $request->id_c ?? '';
-        $this->lead->created =  Carbon::parse($request->date_entered)->format("Y-m-d H:i:s")  ?? null;
-        $this->lead->updated = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s")  ?? null;
-
+        $this->lead->foxie_date_entered =  Carbon::parse($request->date_entered)->format("Y-m-d H:i:s")  ?? null;
+        $this->lead->foxie_date_modified = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s")  ?? null;
+        $this->lead->created_at = now(); 
     }
     
     private function setIdentificationTable(Request $request , $type){
@@ -142,7 +163,7 @@ class SugerLeadService
         $request->primary_address_street ? $this->connectionApplication->street_address = $request->primary_address_street : '';
         $request->primary_address_city ? $this->connectionApplication->city = $request->primary_address_city : '';
         $request->alt_address_postcode ? $this->connectionApplication->postcode = $request->alt_address_postcode : '';
-        $request->primary_address_state ? $this->connectionApplication->state = $request->primary_address_state : '';
+        $request->primary_address_state ? $this->connectionApplication->state = self::MAP_STATE[ strtolower( $request->primary_address_state ) ] : '';
         $request->primary_address_country ? $this->connectionApplication->country = $request->primary_address_country : '';
         $request->phone_mobile ? $this->connectionApplication->phone = $request->phone_mobile : '';
         $request->property_relationship_c ? $this->connectionApplication->tenancy_type = ConnectionApplication::TENANCY_MAPPING[$request->property_relationship_c] ?? $this->connectionApplication->tenancy_type : '';
@@ -153,7 +174,7 @@ class SugerLeadService
         $request->gas_mirn_c ? $this->connectionApplication->mirn = $request->gas_mirn_c : '';
         $request->primary_address_unit_c ? $this->connectionApplication->unit_number = $request->primary_address_unit_c : '';
         $request->meter_plan_type_c ? $this->connectionApplication->plan_type = $request->meter_plan_type_c : '';
-        $this->connectionApplication->updated_at = now();
+        // $this->connectionApplication->updated_at = now();
         
         
         //SUGER LEADS TABLE
@@ -162,9 +183,11 @@ class SugerLeadService
         $request->foxie_agents_id_c ? $this->lead->agency_id = $request->foxie_agents_id_c : '';
         $request->agent_c ? $this->lead->agent_name = $request->agent_c : '';
         $request->id_c ? $this->lead->lead_id = $request->id_c : '';
-        $request->office_C ? $this->lead->agency_name = $request->office_c : '';
-        $this->lead->updated = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s") ?? null;
-
+        $request->office_c ? $this->lead->agency_name = $request->office_c : '';
+        $request->lead_source_description ? $this->lead->foxie_lead_source_description = $request->lead_source_description : '';
+        $request->lead_source ? $this->lead->foxie_lead_source = $request->lead_source : '';
+        $this->lead->foxie_date_modified = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s") ?? null;
+        $this->lead->updated_at = now(); 
 
     }
 
