@@ -212,6 +212,22 @@ class ConnectionApplication extends Model
     const SOURCE_FOXIE = 1;
     const SOURCE_IGNITE = 2;
 
+    const TENANCY_TYPE_RENTER = 1;
+    const TENANCY_TYPE_HOME_OWNER = 2;
+
+    const PROPERTY_TYPE_RESIDENTIAL = 1;
+    const PROPERTY_TYPE_BUSINESS = 2;
+    
+    const PROPERTY_TYPE_MAPPING = [
+        'residential' => self::TENANCY_TYPE_RENTER,
+        'business' => self::TENANCY_TYPE_HOME_OWNER
+    ];
+    
+    const TENANCY_MAPPING = [
+        'renter' => self::TENANCY_TYPE_RENTER,
+        'home_owner' => self::TENANCY_TYPE_HOME_OWNER
+    ];
+
     const SOURCE_MAPPING = [
         'hood' => self::SOURCE_HOOD,
         'foxie' => self::SOURCE_FOXIE,

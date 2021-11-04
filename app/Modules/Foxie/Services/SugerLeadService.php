@@ -2,12 +2,14 @@
 
 namespace Foxie\Services;
 
+use Exception;
+use Carbon\Carbon;
 use App\Models\Agency;
-use Illuminate\Http\Request;
 use Foxie\Models\SugerLead;
+use Illuminate\Http\Request;
+use App\Models\Identification;
 use Illuminate\Support\Facades\Log;
 use App\Models\ConnectionApplication;
-use Exception;
 
 class SugerLeadService
 {
@@ -17,6 +19,8 @@ class SugerLeadService
     private SugerLead $lead;
     private ConnectionApplication $connectionApplication;
 
+    const TYPE_CREATE = 1;
+    const TYPE_UPDATE = 2;
 
     /**
      * Set attribute for create.
@@ -35,6 +39,9 @@ class SugerLeadService
         $this->connectionApplication->street_address = $request->primary_address_street ?? 'Queen Street';
         $this->connectionApplication->city = $request->primary_address_city ?? 'Brisbane City';
         $this->connectionApplication->postcode = $request->alt_address_postcode ?? '4000';
+        $this->connectionApplication->phone = $request->phone_mobile ?? '';
+        $this->connectionApplication->tenancy_type = ConnectionApplication::TENANCY_MAPPING[$request->property_relationship_c] ?? null ;
+        $this->connectionApplication->property_type = ConnectionApplication::PROPERTY_TYPE_MAPPING[$request->customer_type_c] ?? null ;
         $this->connectionApplication->state = $request->primary_address_state ?? 'Queensland';
         $this->connectionApplication->country = $request->primary_address_country ?? 'Australia';
         $this->connectionApplication->nmi = $request->electricity_nmi_c ?? '';
@@ -45,7 +52,38 @@ class SugerLeadService
         // $this->connectionApplication->title = $request->salutation ?? 'Mr';
         $this->connectionApplication->title = 'Mr';
 
-        $this->lead->created = now();
+        //SUGER LEADS TABLE
+        $this->lead->service_address = $request->full_address_c ?? '';
+        $this->lead->office_branch = $request->office_c ?? '';
+        $this->lead->agent_name = $request->agent_c ?? '';
+        $this->lead->agency_id = $request->foxie_agents_id_c ?? '';
+        $this->lead->agency_name = $request->office_c ?? '';
+        $this->lead->lead_id = $request->id_c ?? '';
+        $this->lead->created =  Carbon::parse($request->date_entered)->format("Y-m-d H:i:s")  ?? null;
+        $this->lead->updated = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s")  ?? null;
+
+        //set identification table
+        $this->setIdentificationTable($request , new Identification , self::TYPE_CREATE);
+        
+    }
+    
+    private function setIdentificationTable(Request $request , $identification , $type){
+        //IDENTIFICATION TABLE
+        try {
+            if($type == self::TYPE_CREATE){
+                $identification->expire_date = $request->id_expiry_c ?? null;
+                $identification->type = Identification::TYPE_MAP[$request->id_type_c] ?? null ;
+            }else{
+                $request->customer_type_c ? $identification->type = Identification::TYPE_MAP[$request->id_type_c]: '';
+                $request->id_expiry_c ? $identification->type = $request->id_type_c : '';
+            }
+            $identification->connection_application_id = $this->connectionApplication->id;
+            $identification->save();
+
+        } catch (\Exception $ex) {
+                \Log::error('problem in identification table');
+                \Log::error($ex->getMessage());
+        }
     }
 
     /**
@@ -67,12 +105,32 @@ class SugerLeadService
         $request->alt_address_postcode ? $this->connectionApplication->postcode = $request->alt_address_postcode : '';
         $request->primary_address_state ? $this->connectionApplication->state = $request->primary_address_state : '';
         $request->primary_address_country ? $this->connectionApplication->country = $request->primary_address_country : '';
+        $request->phone_mobile ? $this->connectionApplication->phone = $request->phone_mobile : '';
+        $request->property_relationship_c ? $this->connectionApplication->tenancy_type = ConnectionApplication::TENANCY_MAPPING[$request->property_relationship_c] ?? $this->connectionApplication->tenancy_type : '';
+        
+        $request->customer_type_c ? $this->connectionApplication->property_type = ConnectionApplication::PROPERTY_TYPE_MAPPING[$request->customer_type_c] ?? $this->connectionApplication->property_type : '';
+        
         $request->electricity_nmi_c ? $this->connectionApplication->nmi = $request->electricity_nmi_c : '';
         $request->gas_mirn_c ? $this->connectionApplication->mirn = $request->gas_mirn_c : '';
         $request->primary_address_unit_c ? $this->connectionApplication->unit_number = $request->primary_address_unit_c : '';
         $request->meter_plan_type_c ? $this->connectionApplication->plan_type = $request->meter_plan_type_c : '';
         $this->connectionApplication->updated_at = now();
-        $this->lead->updated = now();
+        
+        
+        //SUGER LEADS TABLE
+        $request->full_address_c ? $this->lead->service_address = $request->full_address_c : '';
+        $request->office_c ? $this->lead->office_branch = $request->office_c : '';
+        $request->foxie_agents_id_c ? $this->lead->agency_id = $request->foxie_agents_id_c : '';
+        $request->agent_c ? $this->lead->agent_name = $request->agent_c : '';
+        $request->id_c ? $this->lead->lead_id = $request->id_c : '';
+        $request->office_C ? $this->lead->agency_name = $request->office_c : '';
+        $this->lead->updated = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s") ?? null;
+
+
+        //set connetion application
+        $this->connectionApplication->identification ? 
+        $this->setIdentificationTable($request , $this->connectionApplication->identification , self::TYPE_UPDATE ) : 
+        $this->setIdentificationTable($request , new Identification , self::TYPE_CREATE ) ; 
     }
 
     private function setOfficeAndAgencyId(){
@@ -82,7 +140,7 @@ class SugerLeadService
             $this->connectionApplication->office_id = $agency?->offices[0]?->id ?? 1;
             if(!$agency) throw new Exception('Please run FoxieSeeder');
         } catch (\Throwable $th) {
-            Log::error("Please run FoxieSeeder");
+            Log::error("Please run FoxieSeeder , php artisan db:seed --class=FoxieSeeder");
         }
     }
 
@@ -105,6 +163,8 @@ class SugerLeadService
         $this->lead->all_fields_dump = json_encode(request()->all());
         $this->lead->connection_application_id = $this->connectionApplication->id;
         $this->lead->save();
+
+        $this->setIdentificationTable($request , new Identification , self::TYPE_CREATE ) ; 
 
         return $this->connectionApplication;
     }
@@ -130,7 +190,9 @@ class SugerLeadService
             $this->lead->update(["all_fields_dump" => json_encode($mergedUpdatedData)]);
             
             return true;
-        } catch (\Throwable $th) {
+        } catch (\Exception $ex) {
+            Log::error("Problem in updating");
+            Log::error($ex->getMessage());
             throw new Exception("Error Processing Request", 1);
         }
     }
@@ -148,14 +210,16 @@ class SugerLeadService
         try {
             $leads = null;
             if($id == null){
-                $leads =  ConnectionApplication::where('created_at', '>=', $from)->where('created_at', '<=', $to)->where('source' , ConnectionApplication::SOURCE_FOXIE )->get();
+                $leads =  ConnectionApplication::with(['identification'])->where('created_at', '>=', $from)->where('created_at', '<=', $to)->where('source' , ConnectionApplication::SOURCE_FOXIE )->get();
             }else{
-                $leads  = ConnectionApplication::where( 'source' , ConnectionApplication::SOURCE_FOXIE )->where('id' , $id)->get()[0];
+                $leads  = ConnectionApplication::with(['identification'])->where( 'source' , ConnectionApplication::SOURCE_FOXIE )->where('id' , $id)->get()[0];
                 $leads ?? throw new Exception("Error Processing Request", 1);
             }
             return $leads;
-        } catch (\Throwable $th) {
-            throw new Exception("Lead not found", 1);
+        } catch (\Exception $ex) {
+                Log::error("Problem in retrieving data");
+                Log::error($ex->getMessage());
+                throw new Exception("Lead not found", 1);
         }
     }
 

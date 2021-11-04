@@ -22,7 +22,7 @@
                                 v-on="on"
                             >
                                 <v-list-item-avatar>
-                                    <v-icon>home</v-icon>
+                                     <v-img :src='item.icon' width="20px"/>
                                 </v-list-item-avatar>
                                 <v-list-item-content>
                                     <v-list-item-title>{{item.text}}</v-list-item-title>
@@ -123,9 +123,9 @@ export default {
             selectedSrc: this.$route.query.source || 'hood',
             srcOptions: [
                 // {text: 'Select a lead', value: '', disabled: true},
-                {text: 'Hood Agent Portal', value: 'hood'},
-                {text: 'Foxie CRM', value: 'foxie'},
-                {text: 'Ignite ', value: 'ignite'},
+                {text: 'Hood Agent Portal', value: 'hood', icon: '/assets/images/icons/company/hood.png'},
+                {text: 'Foxie CRM', value: 'foxie', icon: '/assets/images/icons/company/foxie.png'},
+                {text: 'Ignite ', value: 'ignite', icon: '/assets/images/icons/company/ignite.png'},
             ],
             headers:  [
                 {

@@ -13,7 +13,7 @@ export default {
                         .format('YYYY-MM-DD'): ''
             }
             const data = await axios.post('/api/applications/' + id +'/service/update',{...mapWaterData});
-            console.log('data', data);
+            // console.log('data', data);
             return data.data.service;
 
         } catch (error) {
