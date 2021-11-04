@@ -82,6 +82,8 @@ class SugerLeadService
 
         //SUGER LEADS TABLE
         $this->lead->service_address = $request->full_address_c ?? '';
+        $this->lead->foxie_lead_source = $request->lead_source ?? '';
+        $this->lead->foxie_lead_source_description = $request->lead_source_description ?? '';
         $this->lead->office_branch = $request->office_c ?? '';
         $this->lead->agent_name = $request->agent_c ?? '';
         $this->lead->agency_id = $request->foxie_agents_id_c ?? '';
@@ -181,7 +183,9 @@ class SugerLeadService
         $request->foxie_agents_id_c ? $this->lead->agency_id = $request->foxie_agents_id_c : '';
         $request->agent_c ? $this->lead->agent_name = $request->agent_c : '';
         $request->id_c ? $this->lead->lead_id = $request->id_c : '';
-        $request->office_C ? $this->lead->agency_name = $request->office_c : '';
+        $request->office_c ? $this->lead->agency_name = $request->office_c : '';
+        $request->lead_source_description ? $this->lead->foxie_lead_source_description = $request->lead_source_description : '';
+        $request->lead_source ? $this->lead->foxie_lead_source = $request->lead_source : '';
         $this->lead->foxie_date_modified = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s") ?? null;
         $this->lead->updated_at = now(); 
 
