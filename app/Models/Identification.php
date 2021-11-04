@@ -43,8 +43,8 @@ class Identification extends Model
     use HasFactory;
 
     const TYPE_PASSPORT = 1;
-    const TYPE_MEDICARE = 2;
-    const TYPE_DRIVING_LICENCE = 3;
+    const TYPE_DRIVING_LICENCE = 2;
+    const TYPE_MEDICARE = 3;
 
     const MAP_TYPE = [
         self::TYPE_PASSPORT => 'passport',
@@ -56,6 +56,8 @@ class Identification extends Model
         'passport' => self::TYPE_PASSPORT ,
         'medicare' => self::TYPE_MEDICARE ,
         'driving_licence' => self::TYPE_DRIVING_LICENCE ,
+        //different because data comming from api is different
+        'drivers' => self::TYPE_DRIVING_LICENCE ,
     ];
 
     /**
