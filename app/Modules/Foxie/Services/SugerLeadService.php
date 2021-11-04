@@ -24,11 +24,30 @@ class SugerLeadService
 
     const SERVICE_TYPE_POWER = 'power';
     const SERVICE_TYPE_GAS = 'gas';
-
+    
     const TYPE_SERVICE = [
         'gas' => 'gas',
         'electricity' => 'power',
     ];
+    
+    const MAP_STATE_NSW = 'New South Wales';
+    const MAP_STATE_VIC = 'Victoria';
+    const MAP_STATE_QLD = 'Queensland';
+    const MAP_STATE_SA = 'South Australia';
+    const MAP_STATE_NT = 'Northern Territory';
+    const MAP_STATE_TAS = 'Tasmania';
+    const MAP_STATE_ACT = 'Australian Capital Territory';
+
+    const MAP_STATE = [
+        'nsw' => self::MAP_STATE_NSW,
+        'vic' => self::MAP_STATE_VIC,
+        'qld' => self::MAP_STATE_QLD,
+        'sa' => self::MAP_STATE_SA,
+        'nt' => self::MAP_STATE_NT,
+        'tas' => self::MAP_STATE_TAS,
+        'act' => self::MAP_STATE_ACT,
+    ];
+
 
     /**
      * Set attribute for create.
@@ -51,7 +70,7 @@ class SugerLeadService
         $this->connectionApplication->phone = $request->phone_mobile ?? '';
         $this->connectionApplication->tenancy_type = ConnectionApplication::TENANCY_MAPPING[$request->property_relationship_c] ?? null ;
         $this->connectionApplication->property_type = ConnectionApplication::PROPERTY_TYPE_MAPPING[$request->customer_type_c] ?? null ;
-        $this->connectionApplication->state = $request->primary_address_state ?? 'Queensland';
+        $this->connectionApplication->state = self::MAP_STATE[strtolower( $request->primary_address_state )] ?? '';
         $this->connectionApplication->country = $request->primary_address_country ?? 'Australia';
         $this->connectionApplication->nmi = $request->electricity_nmi_c ?? '';
         $this->connectionApplication->mirn = $request->gas_mirn_c ?? '';
@@ -68,8 +87,8 @@ class SugerLeadService
         $this->lead->agency_id = $request->foxie_agents_id_c ?? '';
         $this->lead->agency_name = $request->office_c ?? '';
         $this->lead->lead_id = $request->id_c ?? '';
-        $this->lead->created =  Carbon::parse($request->date_entered)->format("Y-m-d H:i:s")  ?? null;
-        $this->lead->updated = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s")  ?? null;
+        $this->lead->foxie_date_entered =  Carbon::parse($request->date_entered)->format("Y-m-d H:i:s")  ?? null;
+        $this->lead->foxie_date_modified = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s")  ?? null;
 
     }
     
@@ -142,7 +161,7 @@ class SugerLeadService
         $request->primary_address_street ? $this->connectionApplication->street_address = $request->primary_address_street : '';
         $request->primary_address_city ? $this->connectionApplication->city = $request->primary_address_city : '';
         $request->alt_address_postcode ? $this->connectionApplication->postcode = $request->alt_address_postcode : '';
-        $request->primary_address_state ? $this->connectionApplication->state = $request->primary_address_state : '';
+        $request->primary_address_state ? $this->connectionApplication->state = self::MAP_STATE[ strtolower( $request->primary_address_state ) ] : '';
         $request->primary_address_country ? $this->connectionApplication->country = $request->primary_address_country : '';
         $request->phone_mobile ? $this->connectionApplication->phone = $request->phone_mobile : '';
         $request->property_relationship_c ? $this->connectionApplication->tenancy_type = ConnectionApplication::TENANCY_MAPPING[$request->property_relationship_c] ?? $this->connectionApplication->tenancy_type : '';
@@ -163,7 +182,7 @@ class SugerLeadService
         $request->agent_c ? $this->lead->agent_name = $request->agent_c : '';
         $request->id_c ? $this->lead->lead_id = $request->id_c : '';
         $request->office_C ? $this->lead->agency_name = $request->office_c : '';
-        $this->lead->updated = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s") ?? null;
+        $this->lead->foxie_date_modified = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s") ?? null;
 
 
     }
