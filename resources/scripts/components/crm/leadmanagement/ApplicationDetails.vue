@@ -92,7 +92,7 @@
                <p class="font-weight-bold">Authorized person</p>
            </v-col>
            <v-col cols="7" class="py-0 my-0">
-               <p>{{ lead.authorizedPersonName == null ? 'Unassigned' : lead.authorizedPersonName }}</p>
+               <p>{{ lead.authorizedPersonName == null ? 'No Authorised Person' : lead.authorizedPersonName }}</p>
            </v-col>
 
            <v-col cols="5" class="py-0 my-0">
@@ -121,7 +121,7 @@
 
        <v-row>
            <v-col cols="5" class="py-0 my-0">
-               <p class="font-weight-bold">Tenancy Type:</p>
+               <p class="font-weight-bold">Occupancy Type:</p>
            </v-col>
            <v-col cols="7" class="py-0 my-0">
                <p>{{lead.tenancy_type == 1? 'Renter': 'Owner'}}</p>
@@ -152,16 +152,16 @@
           </span>
        </p>
 
-        <div class="mt-3">
-          <p class="sub-title mb-1">Agent’s Additional Instructions</p>
-          <v-textarea v-model="lead.additional_instruction"
-                      background-color="#FAFAFA"
-                      color="#7E8A8F"
-            outlined
-            placeholder="Additional Instructions goes here"
-                      readonly
-          ></v-textarea>
-        </div>
+<!--        <div class="mt-3">-->
+<!--          <p class="sub-title mb-1">Agent’s Additional Instructions</p>-->
+<!--          <v-textarea v-model="lead.additional_instruction"-->
+<!--                      background-color="#FAFAFA"-->
+<!--                      color="#7E8A8F"-->
+<!--            outlined-->
+<!--            placeholder="Additional Instructions goes here"-->
+<!--                      readonly-->
+<!--          ></v-textarea>-->
+<!--        </div>-->
 
        <v-row>
            <v-col cols="12">
