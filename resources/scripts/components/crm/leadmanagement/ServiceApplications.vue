@@ -1,5 +1,5 @@
 <template>
-    <v-row>
+    <v-row class="ml-0">
         <v-tabs
             v-model="tab"
             height="75px"

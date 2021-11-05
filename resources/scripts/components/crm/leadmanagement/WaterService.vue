@@ -7,11 +7,11 @@
             <p class="status-subtitle">What is the status of this application?</p>
 
             <div>
-                <v-btn class="ma-1 service-status" @click="changeStatus(7, 'In Progress')" :class="{'active-status':getServicestatus(7, )}">In Progress</v-btn>
-                <v-btn class="ma-1 service-status"  @click="changeStatus(10, 'Needs more info')" :class="{'active-status':getServicestatus(10)}">Needs more info</v-btn>
-                <v-btn class="ma-1 service-status"  @click="changeStatus(4, 'Submitted')" :class="{'active-status':getServicestatus(4)}">Submitted</v-btn>
-                <v-btn class="ma-1 service-status"  @click="changeStatus(5, 'Connected')" :class="{'active-status':getServicestatus(5)}">Connected</v-btn>
-                <v-btn class="ma-1 service-status"  @click="changeStatus(9, 'Can’t Connect')" :class="{'active-status':getServicestatus(9)}">Can’t Connect</v-btn>
+                <v-btn class="ma-1 service-status" @click="changeStatus(7, 'In Progress')" :class="{'active-status-progress':getServicestatus(7, )}">In Progress</v-btn>
+                <v-btn class="ma-1 service-status"  @click="changeStatus(10, 'Needs more info')" :class="{'active-status-more':getServicestatus(10)}">Needs more info</v-btn>
+                <v-btn class="ma-1 service-status"  @click="changeStatus(4, 'Submitted')" :class="{'active-status-submitted':getServicestatus(4)}">Submitted</v-btn>
+                <v-btn class="ma-1 service-status"  @click="changeStatus(5, 'Connected')" :class="{'active-status-connected':getServicestatus(5)}">Connected</v-btn>
+                <v-btn class="ma-1 service-status"  @click="changeStatus(9, 'Can’t Connect')" :class="{'active-status-cn-connect':getServicestatus(9)}">Can’t Connect</v-btn>
             </div>
 
         </v-col>
@@ -239,6 +239,29 @@ name: "WaterService",
 
 .connection-date{
     max-width: 150px !important;
+}
+
+.active-status-progress {
+    color:#263238;
+    border: 1px solid #263238 !important;
+}
+.active-status-more {
+    color:#FF5722;
+    border: 1px solid #FF5722 !important;
+}
+
+.active-status-submitted {
+    color:#03A9F4;
+    border: 1px solid #03A9F4 !important;
+}
+
+.active-status-connected {
+    color:#16A948;
+    border: 1px solid #16A948 !important;
+}
+.active-status-cn-connect {
+    color:#E91E63;
+    border: 1px solid #E91E63 !important;
 }
 
 
