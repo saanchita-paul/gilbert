@@ -18,8 +18,6 @@
                 </div>
             </div>
 
-
-
             <div>
                 <div class="d-flex justify-end">
                     <v-btn outlined @click="escalate" right v-if="leadSummary.status != 3">Escalate</v-btn>
@@ -28,11 +26,29 @@
                 </div>
                 <p v-if="leadSummary.is_contacted" class="application-consent mt-5"><v-icon size="14px" color="success" class="mx-2">call</v-icon>Applicant consents to be contacted by HOOD</p>
             </div>
+            
         </v-col>
 
+        <v-col cols="12" class="mt-n6">
+             <div class="d-flex justify-space-between ">
+                <div class="d-flex">
+                    <div class="ml-4"><span class="font-weight-bold text-sm">Agent Name:</span> <span>{{ this.leadSummary.agent_name }}</span></div>
+                    <p class="ml-4"><span class="font-weight-bold">Agency:</span> <span>{{ this.leadSummary.agency_office }}</span></p>
+                </div>
+                <!-- ? TODO map source from integer value  -->
+                <div class="d-flex" v-if="this.leadSummary.source == 3"> 
+                    <p class="ml-4"><span class="font-weight-bold">Lead Source:</span> <span>{{ this.leadSummary.lead_source }}</span></p>
+                    <p class="ml-4"><span class="font-weight-bold">LS Description:</span> <span>{{ this.leadSummary.lead_source_description }}</span></p>
+                </div>
+            </div>
+        </v-col>
         <v-col cols="12">
             <v-divider></v-divider>
         </v-col>
+
+
+
+        
     </v-row>
 </template>
 

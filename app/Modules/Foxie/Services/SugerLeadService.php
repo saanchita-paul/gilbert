@@ -91,7 +91,7 @@ class SugerLeadService
         $this->lead->lead_id = $request->id_c ?? '';
         $this->lead->foxie_date_entered =  Carbon::parse($request->date_entered)->format("Y-m-d H:i:s")  ?? null;
         $this->lead->foxie_date_modified = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s")  ?? null;
-        $this->lead->created_at = now(); 
+        $this->lead->created_at = now();
     }
     
     private function setIdentificationTable(Request $request , $type){
@@ -108,9 +108,11 @@ class SugerLeadService
             if($type == self::TYPE_CREATE){
                 $identification->expire_date = $formattedDate ?? null;
                 $identification->type = $mappedType ?? null ;
+                $identification->card_number = $request->id_number_c ?? null ;
             }else{
                 $request->id_type_c ? $identification->type = $mappedType ?? null : '';
                 $request->id_expiry_c ? $identification->expire_date = $formattedDate : '';
+                $request->id_number_c ? $identification->card_number = $request->id_number_c : '';
             }
             $identification->connection_application_id = $this->connectionApplication->id;
             $identification->save();

@@ -73,6 +73,9 @@ class ApplicationResource extends JsonResource
             'authorizedPersonName' => isset($this->authorizedPerson) ? "{$this->authorizedPerson->first_name} {$this->authorizedPerson->middle_name} {$this->authorizedPerson->last_name}" : null ,
             'agent_name' => $this->getAgentName(),
             'agency_office' => $this->getAgencyName(),
+            'lead_source' => $this->SugerLead?->foxie_lead_source,
+            'lead_source_description' => $this->SugerLead?->foxie_lead_source_description,
+            'source' => $this->source,
         ];
     }
 

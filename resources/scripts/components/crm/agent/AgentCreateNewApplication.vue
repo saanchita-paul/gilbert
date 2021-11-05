@@ -157,6 +157,29 @@
                         </v-row>
                     </v-col>
 
+                    <v-col cols="12" class="pb-0">
+                        <v-row class="my-0 py-0">
+                            <v-col class="my-0 py-0">
+                                <v-checkbox
+                                    v-model="application.is_contacted"
+                                    :label="`Applicant consents to be contacted by HOOD`"
+                                ></v-checkbox>
+                            </v-col>
+                        </v-row>
+                    </v-col>
+
+                    <!-- <v-col cols="12" class="mt-n6">
+             <div class="d-flex justify-space-between ">
+                <div class="d-flex">
+                    <div class="ml-4"><span class="font-weight-bold text-sm">Agent Name:</span> <span>{{ this.leadSummary.agent_name }}</span></div>
+                    <p class="ml-4"><span class="font-weight-bold">Agency:</span> <span>{{ this.leadSummary.agency_office }}</span></p>
+                </div>
+                <div class="d-flex">
+                    <p class="ml-4"><span class="font-weight-bold">Lead Source:</span> <span>{{ this.leadSummary.lead_source }}</span></p>
+                    <p class="ml-4"><span class="font-weight-bold">LS Description:</span> <span>{{ this.leadSummary.lead_source_summary }}</span></p>
+                </div>
+            </div>
+        </v-col> -->
 
                     <v-col cols="12 pb-0">
                         <p class="sub-title mb-3">Identification <small class="font-weight-thin">Applicant’s ID.</small>  </p>
@@ -613,14 +636,11 @@ export default {
                 role: '',
                 phone: '',
                 dob: null,
-
             },
             roles:[
                 {
                     value: 1,
                     text:'Enquiry Only',
-
-
                 },
                 {
                     value: 2,
