@@ -35,8 +35,7 @@
                     <div class="ml-4"><span class="font-weight-bold text-sm">Agent Name:</span> <span>{{ this.leadSummary.agent_name }}</span></div>
                     <p class="ml-4"><span class="font-weight-bold">Agency:</span> <span>{{ this.leadSummary.agency_office }}</span></p>
                 </div>
-                <!-- ? TODO map source from integer value  -->
-                <div class="d-flex" v-if="this.leadSummary.source == 3"> 
+                <div class="d-flex" v-if="this.leadSummary.source == this.leadSourceMap['SOURCE_FOXIE']"> 
                     <p class="ml-4"><span class="font-weight-bold">Lead Source:</span> <span>{{ this.leadSummary.lead_source }}</span></p>
                     <p class="ml-4"><span class="font-weight-bold">LS Description:</span> <span>{{ this.leadSummary.lead_source_description }}</span></p>
                 </div>
@@ -53,6 +52,7 @@
 </template>
 
 <script>
+import { leadSourceMap } from '@scripts/data/LeadSourceMap'
 export default {
 name: "LeadDetailsHeader",
     props: {
@@ -66,7 +66,11 @@ name: "LeadDetailsHeader",
            id:10
         };
     },
-
+    computed:{
+        leadSourceMap(){
+            return leadSourceMap;
+        }
+    },
     methods: {
         goToBack()
         {
