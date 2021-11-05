@@ -32,6 +32,11 @@ class ConnectionService extends Model
     use HasFactory;
 
 
+    const TYPE_ELECTRICITY = 'power';
+    const TYPE_GAS = 'gas';
+    const TYPE_WATER = 'water';
+    const TYPE_INTERNET = 'internet';
+
     const STATUS_UNASSIGNED = 1;
     const STATUS_ASSIGNED = 2;
     const STATUS_ESCALATED = 3;
@@ -42,6 +47,13 @@ class ConnectionService extends Model
     const STATUS_CLOSED = 8;
     const STATUS_CANT_CONNECT = 9;
     const STATUS_NEEDS_MORE_INFO = 10;
+
+    const WATER_STATUS_IN_PROGRESS = 7;
+    const WATER_STATUS_NEED_INFO = 10;
+    const WATER_STATUS_SUBMITTED = 4;
+    const WATER_STATUS_CONNECTED = 5;
+    const WATER_STATUS_CANT_CONNECT = 9;
+
 
     const STATUS_MAPPING = [
         self::STATUS_UNASSIGNED => 'unassigned',

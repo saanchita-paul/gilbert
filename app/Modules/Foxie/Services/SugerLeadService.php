@@ -2,6 +2,7 @@
 
 namespace Foxie\Services;
 
+use App\Modules\Foxie\Services\LeadStatusMapper;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Agency;
@@ -24,12 +25,12 @@ class SugerLeadService
 
     const SERVICE_TYPE_POWER = 'power';
     const SERVICE_TYPE_GAS = 'gas';
-    
+
     const TYPE_SERVICE = [
         'gas' => 'gas',
         'electricity' => 'power',
     ];
-    
+
     const MAP_STATE_NSW = 'New South Wales';
     const MAP_STATE_VIC = 'Victoria';
     const MAP_STATE_QLD = 'Queensland';
@@ -93,13 +94,13 @@ class SugerLeadService
         $this->lead->foxie_date_modified = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s")  ?? null;
         $this->lead->created_at = now();
     }
-    
+
     private function setIdentificationTable(Request $request , $type){
         //IDENTIFICATION TABLE
         $identification = '';
-        isset($this->connectionApplication->identification ) ? 
+        isset($this->connectionApplication->identification ) ?
         $identification = $this->connectionApplication->identification :
-        $identification = new Identification; 
+        $identification = new Identification;
 
         try {
             $formattedDate = Carbon::parse($request->id_expiry_c)->format("Y-m-d");
@@ -122,7 +123,7 @@ class SugerLeadService
                 \Log::error($ex->getMessage());
         }
     }
-    
+
     private function setServiceTypeTable(Request $request , $type){
         // SERVICETYPE TABLE
         info('checking service_c1');
@@ -169,16 +170,16 @@ class SugerLeadService
         $request->primary_address_country ? $this->connectionApplication->country = $request->primary_address_country : '';
         $request->phone_mobile ? $this->connectionApplication->phone = $request->phone_mobile : '';
         $request->property_relationship_c ? $this->connectionApplication->tenancy_type = ConnectionApplication::TENANCY_MAPPING[$request->property_relationship_c] ?? $this->connectionApplication->tenancy_type : '';
-        
+
         $request->customer_type_c ? $this->connectionApplication->property_type = ConnectionApplication::PROPERTY_TYPE_MAPPING[$request->customer_type_c] ?? $this->connectionApplication->property_type : '';
-        
+
         $request->electricity_nmi_c ? $this->connectionApplication->nmi = $request->electricity_nmi_c : '';
         $request->gas_mirn_c ? $this->connectionApplication->mirn = $request->gas_mirn_c : '';
         $request->primary_address_unit_c ? $this->connectionApplication->unit_number = $request->primary_address_unit_c : '';
         $request->meter_plan_type_c ? $this->connectionApplication->plan_type = $request->meter_plan_type_c : '';
         // $this->connectionApplication->updated_at = now();
-        
-        
+
+
         //SUGER LEADS TABLE
         $request->full_address_c ? $this->lead->service_address = $request->full_address_c : '';
         $request->office_c ? $this->lead->office_branch = $request->office_c : '';
@@ -189,7 +190,7 @@ class SugerLeadService
         $request->lead_source_description ? $this->lead->foxie_lead_source_description = $request->lead_source_description : '';
         $request->lead_source ? $this->lead->foxie_lead_source = $request->lead_source : '';
         $this->lead->foxie_date_modified = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s") ?? null;
-        $this->lead->updated_at = now(); 
+        $this->lead->updated_at = now();
 
     }
 
@@ -211,13 +212,13 @@ class SugerLeadService
      * @return ConnectionApplication $newApplication
      */
     public function create(Request $request): ConnectionApplication
-    {   
+    {
         $this->connectionApplication = new ConnectionApplication;
         $this->lead = new SugerLead();
-        
+
         $this->setOfficeAndAgencyId();
         $this->setAttribute($request);
-        
+
         $this->connectionApplication->status = ConnectionApplication::STATUS_UNASSIGNED;
         $this->connectionApplication->save();
         $this->lead->all_fields_dump = json_encode(request()->all());
@@ -228,7 +229,7 @@ class SugerLeadService
         $this->setIdentificationTable($request , self::TYPE_CREATE);
 
         //set service type table
-        $this->setServiceTypeTable($request , self::TYPE_CREATE ) ; 
+        $this->setServiceTypeTable($request , self::TYPE_CREATE ) ;
 
         return $this->connectionApplication;
     }
@@ -245,19 +246,19 @@ class SugerLeadService
         try {
             $this->connectionApplication = ConnectionApplication::where('id' , $id)->where('source' , ConnectionApplication::SOURCE_FOXIE)->first();
             $this->lead = $this->connectionApplication->SugerLead;
-            
+
             $this->setAttributeUpdate($request);
-            
+
             $this->connectionApplication->save();
             $all_fields_dump =  json_decode($this->lead->all_fields_dump);
             $mergedUpdatedData =  collect($all_fields_dump)->merge($request->all());
             $this->lead->update(["all_fields_dump" => json_encode($mergedUpdatedData)]);
-                
+
             //set connetion application
             $this->setIdentificationTable($request , self::TYPE_UPDATE );
 
             //set service type table
-            $this->setServiceTypeTable($request , self::TYPE_UPDATE ) ; 
+            $this->setServiceTypeTable($request , self::TYPE_UPDATE ) ;
 
             return true;
         } catch (\Exception $ex) {
@@ -270,24 +271,39 @@ class SugerLeadService
     /**
      * Show the specified resource in storage.
      *
-     * @param  String $fromDate
-     * @param  String $toDate
-     * @param  int  $id
-     * @return Ojbect $leads
+     * @param String|null $from
+     * @param String|null $to
+     * @param null $id
+     * @return array $leads
+     * @throws Exception
      */
-    public function show(String $from = null , String $to = null , $id = null) : Object
-    {   
+    public function show(String $from = null , String $to = null , $id = null) : array
+    {
         try {
             $leads = null;
             $identificationColumns = 'identification:id,connection_application_id,expire_date,type';
             $connectionServiceColumns = 'connectionServices:id,connection_application_id,service_type,status';
+
             if($id == null){
-                $leads =  ConnectionApplication::with([$identificationColumns , $connectionServiceColumns])->where('created_at', '>=', $from)->where('created_at', '<=', $to)->where('source' , ConnectionApplication::SOURCE_FOXIE )->get();
+                $lead =  ConnectionApplication::with([$identificationColumns])
+                    ->where('created_at', '>=', $from)
+                    ->where('created_at', '<=', $to)
+                    ->where('source' , ConnectionApplication::SOURCE_FOXIE )
+                    ->get();
             }else{
-                $leads  = ConnectionApplication::with([$identificationColumns , $connectionServiceColumns])->where( 'source' , ConnectionApplication::SOURCE_FOXIE )->where('id' , $id)->get()[0];
-                $leads ?? throw new Exception("Error Processing Request", 1);
+                $lead  = ConnectionApplication::with([$identificationColumns])
+                    ->where( 'source' , ConnectionApplication::SOURCE_FOXIE )
+                    ->where('id' , $id)
+                    ->first();
             }
-            return $leads;
+
+
+
+            return !$lead ? throw new Exception("Error Processing Request", 1) : array_merge(
+                $lead->toArray(),
+                (new LeadStatusMapper($id))->toArray()
+            );
+
         } catch (\Exception $ex) {
                 Log::error("Problem in retrieving data");
                 Log::error($ex->getMessage());
