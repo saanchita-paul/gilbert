@@ -172,7 +172,7 @@ name: "WaterService",
                  return ;
              }
              this.active_status = 9;
-             this.$emit('updateStatus','can n\'t connect');
+             this.$emit('updateStatus','can not connect');
              return ;
          },
 
@@ -190,7 +190,7 @@ name: "WaterService",
                         statustext = 'In Progress';
                         break;
                     case  9:
-                        statustext = 'Can’t Connect';
+                        statustext = 'Can not Connect';
                         break;
                     case  10:
                         statustext = 'Needs more info';
