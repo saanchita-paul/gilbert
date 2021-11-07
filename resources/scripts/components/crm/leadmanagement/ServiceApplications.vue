@@ -1,5 +1,5 @@
 <template>
-    <v-row>
+    <v-row class="ml-0">
         <v-tabs
             v-model="tab"
             height="75px"
@@ -50,6 +50,8 @@
 
             <v-tab-item>
                 <v-card >
+                    <p class="sub-title ml-4 pt-5 mb-2" >Service Applications</p>
+                    <p class="ml-4 mb-0">Energy</p>
                 <v-col cols="12" class="service-box-area">
                     <div v-for="service in services" :key="service">
                         <EnergyService @click.native="updateService(service)" :title="service"
@@ -292,7 +294,7 @@ export default {
                 {
                     return this.mapStatus(newServices.status);
                 }
-                return 'cann\'t connect';
+                return 'can not connect';
 
             }
 
@@ -313,7 +315,7 @@ export default {
                     statustext = 'In Progress';
                     break;
                 case  9:
-                    statustext = 'Can’t Connect';
+                    statustext = 'Can not Connect';
                     break;
                 case  10:
                     statustext = 'Needs more info';
