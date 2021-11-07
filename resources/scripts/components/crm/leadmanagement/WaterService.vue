@@ -7,6 +7,7 @@
             <p class="status-subtitle">What is the status of this application?</p>
 
             <div>
+<!--               todo:  @Sazzad please refactor this code, use constant for status-->
                 <v-btn class="ma-1 service-status" @click="changeStatus(7, 'In Progress')" :class="{'active-status-progress':getServicestatus(7, )}">In Progress</v-btn>
                 <v-btn class="ma-1 service-status"  @click="changeStatus(10, 'Needs more info')" :class="{'active-status-more':getServicestatus(10)}">Needs more info</v-btn>
                 <v-btn class="ma-1 service-status"  @click="changeStatus(4, 'Submitted')" :class="{'active-status-submitted':getServicestatus(4)}">Submitted</v-btn>
