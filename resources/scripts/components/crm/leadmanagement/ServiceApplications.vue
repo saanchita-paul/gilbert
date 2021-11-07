@@ -294,7 +294,7 @@ export default {
                 {
                     return this.mapStatus(newServices.status);
                 }
-                return 'cann\'t connect';
+                return 'cannot connect';
 
             }
 
