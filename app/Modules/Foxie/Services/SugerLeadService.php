@@ -268,7 +268,14 @@ class SugerLeadService
         }
     }
 
+
     /**
+     * fetching lead by ID
+     *
+     * @param $id
+     *
+     * @return array|mixed
+     *
      * @throws Exception
      */
     public function findById($id)
@@ -286,15 +293,23 @@ class SugerLeadService
         );
     }
 
+
     /**
+     * Fetching leads using date range
+     *
+     * @param $from
+     * @param $to
+     *
+     * @return array
+     *
      * @throws Exception
      */
     public function get($from, $to): array
     {
         $identificationColumns = 'identification:id,connection_application_id,expire_date,type';
         $leads =  ConnectionApplication::with([$identificationColumns])
-            ->where('created_at', '>=', $from)
-            ->where('created_at', '<=', $to)
+            ->where('updated_at', '>=', $from)
+            ->where('updated_at', '<=', $to)
             ->where('source' , ConnectionApplication::SOURCE_FOXIE )
             ->get();
         $data = [];
@@ -306,48 +321,6 @@ class SugerLeadService
         }
 
         return $data;
-    }
-
-    /**
-     * Show the specified resource in storage.
-     *
-     * @param String|null $from
-     * @param String|null $to
-     * @param null $id
-     * @return array $leads
-     * @throws Exception
-     */
-    public function show(String $from = null , String $to = null , $id = null) : array
-    {
-        try {
-            $leads = null;
-            $connectionServiceColumns = 'connectionServices:id,connection_application_id,service_type,status';
-
-            if($id == null){
-                $lead =  ConnectionApplication::with([$identificationColumns])
-                    ->where('created_at', '>=', $from)
-                    ->where('created_at', '<=', $to)
-                    ->where('source' , ConnectionApplication::SOURCE_FOXIE )
-                    ->get();
-            }else{
-                $lead  = ConnectionApplication::with([$identificationColumns])
-                    ->where( 'source' , ConnectionApplication::SOURCE_FOXIE )
-                    ->where('id' , $id)
-                    ->first();
-            }
-
-
-
-            return !$lead ? throw new Exception("Error Processing Request", 1) : array_merge(
-                $lead->toArray(),
-                (new LeadStatusMapper($id))->toArray()
-            );
-
-        } catch (\Exception $ex) {
-                Log::error("Problem in retrieving data");
-                Log::error($ex->getMessage());
-                throw new Exception("Lead not found", 1);
-        }
     }
 
 }
