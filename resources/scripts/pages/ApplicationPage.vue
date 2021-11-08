@@ -45,7 +45,7 @@ export default {
     data() {
         return {
             leadTypes:[],
-            selectedSrc: this.$route.query.source || 'hood',
+            selectedSrc: this.$route.query.source || 'all',
             activeLeadType: 'my_applications',
             leadTypesFlag: false,
             total_leads: 0,
@@ -122,7 +122,7 @@ export default {
 
                 this.activeLeadType = this.$route.query?.type;
                 this.selectedSrc = this.$route.query?.source
-                console.log("watch", reload)
+                // console.log("watch", reload)
                 if (reload) {
                     this.loadLeads();
                 }

@@ -48,6 +48,7 @@
         "psr-4": {
             "App\\": "app/",
             "Foxie\\": "app/Modules/Foxie",
+            "Ignite\\": "app/Modules/Ignite",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }

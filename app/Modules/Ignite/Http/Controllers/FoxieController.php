@@ -1,13 +1,13 @@
 <?php
 
-namespace Foxie\Http\Controllers;
+namespace Ignite\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Foxie\Http\Requests\FoxieRequest;
-use Foxie\Services\SugerLeadService;
+use Ignite\Http\Requests\IgniteRequest;
+use Ignite\Services\SugerLeadService;
 use Illuminate\Http\Request;
 
-class FoxieController extends Controller
+class IgniteController extends Controller
 {
     /**
      * Store a newly created resource in storage.
@@ -44,7 +44,7 @@ class FoxieController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function show(FoxieRequest $request)
+    public function show(IgniteRequest $request)
     {   
         try {
             $sugerLead = new SugerLeadService();

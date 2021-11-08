@@ -69,6 +69,20 @@
 
 
 
+                        <v-col cols="12" class="pb-0">
+                            <v-row class="my-0 py-0">
+                                <v-col class="my-0 py-0">
+                                    <v-checkbox
+                                        v-model="application.is_contacted"
+                                        readonly
+                                        :label="`Applicant consents to be contacted by HOOD`"
+                                    ></v-checkbox>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+
+
+
                         <v-col cols="12">
                             <h4 class="mt-5 primary--text">
                                 Identification
@@ -337,7 +351,6 @@
                         <v-btn @click="saveApplication" color="primary">Confirm</v-btn>
                     </div>
                 </v-col>
-
 
             </v-row>
         </section>
