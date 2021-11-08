@@ -269,6 +269,46 @@ class SugerLeadService
     }
 
     /**
+     * @throws Exception
+     */
+    public function findById($id)
+    {
+        $identificationColumns = 'identification:id,connection_application_id,expire_date,type';
+
+        $lead  = ConnectionApplication::with([$identificationColumns])
+            ->where( 'source' , ConnectionApplication::SOURCE_FOXIE )
+            ->where('id' , $id)
+            ->first();
+
+        return !$lead ? throw new Exception("Error Processing Request", 1) : array_merge(
+            $lead->toArray(),
+            (new LeadStatusMapper($id))->toArray()
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function get($from, $to): array
+    {
+        $identificationColumns = 'identification:id,connection_application_id,expire_date,type';
+        $leads =  ConnectionApplication::with([$identificationColumns])
+            ->where('created_at', '>=', $from)
+            ->where('created_at', '<=', $to)
+            ->where('source' , ConnectionApplication::SOURCE_FOXIE )
+            ->get();
+        $data = [];
+        foreach ($leads as $lead) {
+            $data[] = array_merge(
+                $lead->toArray(),
+                (new LeadStatusMapper($lead->id))->toArray()
+            );
+        }
+
+        return $data;
+    }
+
+    /**
      * Show the specified resource in storage.
      *
      * @param String|null $from
@@ -281,7 +321,6 @@ class SugerLeadService
     {
         try {
             $leads = null;
-            $identificationColumns = 'identification:id,connection_application_id,expire_date,type';
             $connectionServiceColumns = 'connectionServices:id,connection_application_id,service_type,status';
 
             if($id == null){
