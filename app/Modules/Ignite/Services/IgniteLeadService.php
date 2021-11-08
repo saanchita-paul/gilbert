@@ -148,8 +148,6 @@ class IgniteLeadService
         foreach ($allLead  as $leadInfo) {
             try {
                 $igniteLead =  IgniteLead::where('lead_id' ,  $leadInfo['application']['id'])->first();
-                \Log::info('checking query result');
-                \Log::info($igniteLead);
                 if(!$igniteLead){
                     $this->insertLead($leadInfo);
                 }
