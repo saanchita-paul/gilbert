@@ -12,6 +12,7 @@ class IgniteConnectionLeadService
     private $connection_lead_url;
     private $authorization_header;
     private $nextPageUrl;
+    private $token;
 
     private $mockData = '{
         "_embedded": {
@@ -204,21 +205,34 @@ class IgniteConnectionLeadService
     }
     ';
 
-    private function setNextPageUrl(String $nextPageUrl){
-        $this->nextPageUrl = $nextPageUrl;
+    private function setNextPageUrl(String $nextPageUrl = ''){
+        $this->nextPageUrl = $nextPageUrl != '' ? 
+                             $this->base_url . "/applications/v1/rental" . $nextPageUrl : '';
+        info('in the next link seturl');
+        info($this->nextPageUrl);
     }
 
     public function getNextPageUrl(){
         return $this->nextPageUrl;
     }
 
+    private function setToken($token){
+        $this->token = $token;
+    }
+
+    public function getToken(){
+        return $this->token;
+    }
+
+
     private function setConnctionLeadUrl(){
         \Log::info(date('c',strtotime("-1 days")) );
         $isoDateYesterday = date('Y-m-d',strtotime("-1 days"));
         $this->base_url = env('IGNITE_BASE_URL');
         $this->auth_url = $this->base_url . "/oauth/token?grant_type=client_credentials";
-        $this->connection_lead_url = $this->base_url . "/applications/v1/rental/connection-leads" . "?happenedSince={$isoDateYesterday}T22%3A47%3A01.604Z" ;
-        // $this->connection_lead_url = $this->base_url . "/applications/v1/rental/connection-leads" . "?happenedSince=2021-10-05T22%3A47%3A01.604Z" ;
+        // $this->connection_lead_url = $this->base_url . "/applications/v1/rental/connection-leads" . "?happenedSince={$isoDateYesterday}T22%3A47%3A01.604Z" ;
+        $this->connection_lead_url = $this->base_url . "/applications/v1/rental/connection-leads" . "?happenedSince=2021-10-05T22%3A47%3A01.604Z" ;
+        // $this->connection_lead_url = $this->base_url . "/applications/v1/rental/connection-leads" . "?happenedSince=2021-11-08T22%3A42%3A48.041092Z" ;
         \Log::info($this->connection_lead_url);
     }
 
@@ -232,6 +246,8 @@ class IgniteConnectionLeadService
         // $this->connection_lead_url = $this->base_url . "/applications/v1/rental/connection-leads";
         
         $this->setConnctionLeadUrl();
+        
+        $this->nextPageUrl = '';
 
         $client_id = env('IGNITE_CLIENT_ID');
         $client_secret = env('IGNITE_CLIENT_SECRET');
@@ -261,7 +277,13 @@ class IgniteConnectionLeadService
             // }
 
             // isset($result['errors']) ? throw new Exception("access token is invalid", 1) : $this->getIgniteLeads($result['access_token']);
-            return isset($result['errors']) ? throw new Exception("access token is invalid", 1) : $result['access_token'];
+            // return isset($result['errors']) ? throw new Exception("access token is invalid", 1) :  $result['access_token'];
+            if(isset($result['errors'])){
+                throw new Exception("access token is invalid", 1);
+            }else{
+                $this->setToken($result['access_token']);
+                return $this->token;
+            }
             // \Log::info($result['errors'][0]['status']);
             // $u = $result['errors'][0]['status'];
             // return $result['access_token'];
@@ -279,10 +301,12 @@ class IgniteConnectionLeadService
     {
         // $url  = $this->connection_lead_url . '?happenedSince=2021-10-05T22%3A47%3A01.604Z';
         // $url  = $this->connection_lead_url . '?happenedSince=2021-10-05T22%3A47%3A01.604Z';
+        info('inside connection leads start');
         info($url);
+        info('inside connection leads end');
         try {
             info('in the getLeads');
-            \Log::info($this->connection_lead_url);
+            \Log::info($url);
             info('in the getLeads1');
             $authorization_header = "Bearer " . $token;
             $response = Http::withHeaders([
@@ -290,7 +314,7 @@ class IgniteConnectionLeadService
                 "Accept" => "application/json",
                 "Authorization" => $authorization_header,
             ])
-            ->get($this->connection_lead_url);
+            ->get($url);
 
             $result = json_decode($response->body(), true);
             // $result = json_decode( $this->mockData , true );
@@ -302,9 +326,13 @@ class IgniteConnectionLeadService
             //     throw new Exception("access token is invalid", 1);
             // }else{}
             \Log::info($result['_links']);
+            info('next link');
             \Log::info($result['_links']['next']['href'] ?? 'no next');
+            info('self link');
+            \Log::info($result['_links']['self']['href'] ?? 'no self');
             // isset($result['errors']) ? throw new Exception("access token is invalid", 1) : '' ;
-            $this->setNextPageUrl( $result['_links']['next']['href'] ?? null );
+            // $nextPageUrl = $result['_links']['next']['href'] ?? '';
+            $this->setNextPageUrl( $result['_links']['next']['href'] ?? '' );
 
             return isset($result['errors']) ? throw new Exception("access token is invalid", 1) : $result['_embedded']['connectionLeads'] ;
             // return isset($result['errors']) ? throw new Exception("access token is invalid", 1) : $this->mockData ;

@@ -148,8 +148,11 @@ class IgniteLeadService
         try {
             $service = new IgniteConnectionLeadService();
             $token =  $service->authenticate();
-            $leads =  $service->getIgniteLeads($token);
-            $this->verifyData($leads);
+            $leads =  $service->getIgniteLeads($token , $service->getConnctionLeadUrl());
+
+            // info($service->getNextPageUrl());
+
+            $this->verifyData($leads , $service);
             return true;
         } catch (\Exception $exception) {
             \Log::info($exception->getMessage());
@@ -164,8 +167,13 @@ class IgniteLeadService
      * @return bool
      * @throws Exception
      */
-    private function verifyData($allLead){
+    private function verifyData($allLead , IgniteConnectionLeadService $service) : int{
+
+        info('array count');
+        \Log::info(count($allLead));
+        info('array count end');
         foreach ($allLead  as $leadInfo) {
+            info('inside loop of verifylead');
             try {
                 $igniteLead =  IgniteLead::where('lead_id' ,  $leadInfo['application']['id'])->first();
                 if(!$igniteLead){
@@ -177,7 +185,14 @@ class IgniteLeadService
                 \Log::info( $leadInfo['application']['id'] . ' lead id already exists');
             }
         };
-        return true;
+
+        if(count($allLead) < 25) {
+            return 0;
+        }else{
+            $allLead =  $service->getIgniteLeads( $service->getToken() , $service->getNextPageUrl() );
+            return $this->verifyData($allLead , $service);
+        }
+
     }
 
 }
