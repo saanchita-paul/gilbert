@@ -290,7 +290,7 @@
         <AuthorizedPersonForm :lead-id="lead.id" :authorized-person-name="''"></AuthorizedPersonForm>
       <div class="crm-text-field">
         <div class="field-label">
-          <span>Family Violance </span>
+          <span>Family Violence </span>
         </div>
         <div class="text-field">
           <ValidationProvider name="Family Violance" v-slot="{ errors }">

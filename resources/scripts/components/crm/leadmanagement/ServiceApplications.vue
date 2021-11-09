@@ -294,7 +294,7 @@ export default {
                 {
                     return this.mapStatus(newServices.status);
                 }
-                return 'cann\'t connect';
+                return 'can not connect';
 
             }
 
@@ -315,7 +315,7 @@ export default {
                     statustext = 'In Progress';
                     break;
                 case  9:
-                    statustext = 'Can’t Connect';
+                    statustext = 'Can not Connect';
                     break;
                 case  10:
                     statustext = 'Needs more info';
