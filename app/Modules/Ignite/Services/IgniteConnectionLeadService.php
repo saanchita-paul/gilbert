@@ -230,8 +230,8 @@ class IgniteConnectionLeadService
         $isoDateYesterday = date('Y-m-d',strtotime("-1 days"));
         $this->base_url = env('IGNITE_BASE_URL');
         $this->auth_url = $this->base_url . "/oauth/token?grant_type=client_credentials";
-        // $this->connection_lead_url = $this->base_url . "/applications/v1/rental/connection-leads" . "?happenedSince={$isoDateYesterday}T22%3A47%3A01.604Z" ;
-        $this->connection_lead_url = $this->base_url . "/applications/v1/rental/connection-leads" . "?happenedSince=2021-10-05T22%3A47%3A01.604Z" ;
+        $this->connection_lead_url = $this->base_url . "/applications/v1/rental/connection-leads" . "?happenedSince={$isoDateYesterday}T00%3A00%3A01.604Z" ;
+        // $this->connection_lead_url = $this->base_url . "/applications/v1/rental/connection-leads" . "?happenedSince=2021-10-05T22%3A47%3A01.604Z" ;
         // $this->connection_lead_url = $this->base_url . "/applications/v1/rental/connection-leads" . "?happenedSince=2021-11-08T22%3A42%3A48.041092Z" ;
         \Log::info($this->connection_lead_url);
     }

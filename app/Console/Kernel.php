@@ -2,10 +2,12 @@
 
 namespace App\Console;
 
-use App\Console\Commands\GetSellStatusCommand;
-use App\Console\Commands\UploadConnectionDataToSFTPCommand;
 use Illuminate\Console\Scheduling\Schedule;
+use App\Console\Commands\IgniteFetchCommand;
+use App\Console\Commands\GetSellStatusCommand;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Console\Commands\UploadConnectionDataToSFTPCommand;
+use App\Jobs\IgniteFetchJob;
 
 class Kernel extends ConsoleKernel
 {
@@ -16,7 +18,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         GetSellStatusCommand::class,
-        UploadConnectionDataToSFTPCommand::class
+        UploadConnectionDataToSFTPCommand::class,
+        IgniteFetchCommand::class,
     ];
 
     /**
@@ -29,6 +32,7 @@ class Kernel extends ConsoleKernel
     {
          $schedule->command('get:sales:status')->daily();
          $schedule->command('ea:upload:lead')->daily();
+         $schedule->job(new IgniteFetchJob)->daily();
     }
 
     /**

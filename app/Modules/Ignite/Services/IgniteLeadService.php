@@ -40,8 +40,8 @@ class IgniteLeadService
         'nsw' => self::MAP_STATE_NSW,
         'vic' => self::MAP_STATE_VIC,
         'qld' => self::MAP_STATE_QLD,
-        'sa' => self::MAP_STATE_SA,
-        'nt' => self::MAP_STATE_NT,
+        'sa'  => self::MAP_STATE_SA,
+        'nt'  => self::MAP_STATE_NT,
         'tas' => self::MAP_STATE_TAS,
         'act' => self::MAP_STATE_ACT,
     ];
@@ -175,7 +175,7 @@ class IgniteLeadService
         foreach ($allLead  as $leadInfo) {
             info('inside loop of verifylead');
             try {
-                $igniteLead =  IgniteLead::where('lead_id' ,  $leadInfo['application']['id'])->first();
+                $igniteLead = IgniteLead::where('lead_id' ,  $leadInfo['application']['id'])->first();
                 if(!$igniteLead){
                     $this->insertLead($leadInfo);
                 }
