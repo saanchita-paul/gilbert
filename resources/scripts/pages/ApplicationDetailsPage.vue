@@ -192,6 +192,10 @@ export default {
 
             } else
             {
+                if(this.lead?.indentification?.medicare_expire_date) {
+                    delete this.lead.indentification.medicare_expire_date;
+                }
+
                 payload=  { ...this.lead.property_details,
                     ...this.lead.person_details,
                     'service_interests':this.services,
@@ -242,12 +246,12 @@ export default {
                     return;
                 }
 
-                if(field == 'moving_date' &&dayjs(value,'DD/MM/YYYY').isSame(this.leadSummary.moving_date))
+                if(field == 'moving_date' && dayjs(value,'DD/MM/YYYY').isSame(this.leadSummary.moving_date))
                 {
                     return;
                 }
 
-                if(field == 'expire_date' &&dayjs(value,'DD/MM/YYYY').isSame(this.leadSummary.identification.expire_date))
+                if(field == 'expire_date' && dayjs(value,'DD/MM/YYYY').isSame(this.leadSummary.identification.expire_date))
                 {
                    return;
                 }

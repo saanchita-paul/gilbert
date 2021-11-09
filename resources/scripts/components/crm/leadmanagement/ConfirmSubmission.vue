@@ -312,7 +312,7 @@
                                 outlined
                                 dense
                                 hide-details="auto"
-                                :value="data.identification.expire_date"
+                                :value="expire_date"
                             ></v-text-field>
                             </div>
                         </div>
@@ -424,6 +424,10 @@
 </template>
 
 <script>
+import SPECIAL_NUMBER from "@scripts/data/constants/SPECIAL_NUMBER";
+import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
+import dayJs from "dayjs";
+
 export default {
   name: "ConfirmSubmission",
     props:{
@@ -515,9 +519,7 @@ export default {
                   value: 3
               }
           ],
-          specialNumberDD:[
-              "1","2"
-          ],
+          specialNumberDD:SPECIAL_NUMBER,
           colorDD:[
               {
                   text: 'Green',
@@ -535,16 +537,23 @@ export default {
       }
     },
     computed: {
-
-          allOk() {
-              // return false;
-              return this.is_temp_condition  &&
-                  this.is_life_support;
+      allOk() {
+          // return false;
+           return this.is_temp_condition  && this.is_life_support;
           },
 
         selectedPlan() {
             return Boolean(this.data.plan_type.title)?this.data.plan_type.title: this.data.plan_type.value;
+        },
+
+        expire_date() {
+            if(this.data.identification.type === IDENTIFICATION.MEDICARE) {
+                return dayJs(this.data.identification.expire_date,'DD/MM/YYYY').format('MM/YY');
+            } else {
+                return this.data.identification.expire_date;
+            }
         }
+
     },
     methods: {
 

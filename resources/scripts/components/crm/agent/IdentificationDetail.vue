@@ -80,7 +80,7 @@
                <v-col cols="6" class="pb-0">
                    <ValidationProvider
                        name="Card Colour"
-                       rules="required"
+                       rules="required|valid-date"
                        v-slot="{ errors }"
                    >
                        <v-select
@@ -144,7 +144,7 @@
                             <template v-slot:activator="{ on, attrs }">
                                 <ValidationProvider
                                     name="Expiry Date"
-                                    rules="required"
+                                    rules="required|valid-date"
                                     v-slot="{ errors }"
                                 >
                                     <v-text-field
@@ -223,7 +223,7 @@
                             <template v-slot:activator="{ on, attrs }">
                                 <ValidationProvider
                                     name="Expiry Date"
-                                    rules="required"
+                                    rules="required|valid-date"
                                     v-slot="{ errors }"
                                 >
                                     <v-text-field

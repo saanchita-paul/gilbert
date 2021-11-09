@@ -154,14 +154,12 @@ export default {
         return dayjs(dt,'DD/MM/YYYY').format('YYYY-MM-DD');
     },
 
-    mapMadecareDateToServer(dt) {
-        console.log('dt', dt);
-
+    mapMadecareDateToServer(dt, isDatabaseFormat = true) {
         let spilitedData = dt.split('/');
         let fullMonthYear = spilitedData[0] + '/' + '20' + spilitedData[1];
         let fullDateMonthYear = dayjs(fullMonthYear, 'MM/YYYY').daysInMonth() + '/' + fullMonthYear;
-        console.log('dt', fullDateMonthYear);
-        return dayjs(fullDateMonthYear,'DD/MM/YYYY').format('YYYY-MM-DD');
+        if(isDatabaseFormat) return dayjs(fullDateMonthYear,'DD/MM/YYYY').format('YYYY-MM-DD');
+        return fullDateMonthYear;
     }
 
 };
