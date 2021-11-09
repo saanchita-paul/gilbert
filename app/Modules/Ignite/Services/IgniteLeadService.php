@@ -140,11 +140,31 @@ class IgniteLeadService
     /**
      * Create new ConnectionApplication, run a loop.
      *
+     * @param  void
+     * @return bool
+     * @throws Exception
+     */
+    public function create() : bool{
+        try {
+            $service = new IgniteConnectionLeadService();
+            $token =  $service->authenticate();
+            $leads =  $service->getIgniteLeads($token);
+            $this->verifyData($leads);
+            return true;
+        } catch (\Exception $exception) {
+            \Log::info($exception->getMessage());
+            throw $exception;
+        }
+    }
+
+    /**
+     * Create new ConnectionApplication, run a loop.
+     *
      * @param  array  $allLead
      * @return bool
      * @throws Exception
      */
-    public function create($allLead){
+    private function verifyData($allLead){
         foreach ($allLead  as $leadInfo) {
             try {
                 $igniteLead =  IgniteLead::where('lead_id' ,  $leadInfo['application']['id'])->first();
@@ -158,6 +178,6 @@ class IgniteLeadService
             }
         };
         return true;
-    
     }
+
 }

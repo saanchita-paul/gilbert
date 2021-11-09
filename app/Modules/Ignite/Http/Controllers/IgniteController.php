@@ -16,14 +16,11 @@ class IgniteController extends Controller
      * @return \Illuminate\Http\Response
      * @throws Exception
      */
-    public function show(Request $request)
+    public function insertLead()
     {   
         try {
-            $service = new IgniteConnectionLeadService();
-            $token =  $service->authenticate();
-            $leads =  $service->getIgniteLeads($token);
             $createLeadService = new IgniteLeadService();
-            $createLeadService->create($leads);
+            $createLeadService->create();
             $response = [
                 "status"  => "success" ,
                 "message" => "All ignite leads have been created successfully"
