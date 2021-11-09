@@ -54,7 +54,7 @@
                                v-slot="{ errors }"
                            >
                                <v-text-field
-                                   placeholder="DD/MM/YYYY"
+                                   placeholder="MM/YY"
                                    label="Expiry Date"
                                    outlined
                                    dense
@@ -72,6 +72,7 @@
                        <v-date-picker
                            v-model="expire_date"
                            @input="showMovingDate = false"
+                           type="month"
                        ></v-date-picker>
                    </v-menu>
                </ValidationProvider>
@@ -258,6 +259,7 @@ import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import DayJs from "dayjs";
 import {isNull} from "lodash-es";
 import dayJs from "dayjs";
+import SPECIAL_NUMBER from "@scripts/data/constants/SPECIAL_NUMBER";
 
 export default {
 name: "IdentificationDetail",
@@ -265,7 +267,7 @@ name: "IdentificationDetail",
     data() {
         return {
             identification: null,
-            specialNumberDD: ["1", "2"],
+            specialNumberDD: SPECIAL_NUMBER,
             colorDD: [
                 {
                     text: "Green",
@@ -326,6 +328,7 @@ name: "IdentificationDetail",
 
         updateIdentification()
         {
+            console.log('identification', this.identification);
             this.$emit('updateIdentification', this.identification);
         }
 
@@ -334,9 +337,18 @@ name: "IdentificationDetail",
     watch: {
         expire_date() {
             if (isNull(this.expire_date)) return;
-            this.identification.expire_date = dayJs(this.expire_date).format(
-                "DD/MM/YYYY"
-            );
+            if(this.isMedicare())
+            {
+                this.identification.expire_date = dayJs(this.expire_date).format(
+                    "MM/YY"
+                );
+            } else
+            {
+                this.identification.expire_date = dayJs(this.expire_date).format(
+                    "DD/MM/YYYY"
+                );
+            }
+
             this.updateIdentification();
         },
 

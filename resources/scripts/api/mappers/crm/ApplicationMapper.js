@@ -133,7 +133,7 @@ export default {
             return {
                 type: identification.type,
                 card_number: identification.card_number,
-                expire_date: this.mapDateToServer(identification.expire_date),
+                expire_date: this.mapMadecareDateToServer(identification.expire_date),
                 special_number: identification.special_number,
                 card_color: identification.card_color,
             };
@@ -152,6 +152,16 @@ export default {
 
     mapDateToServer(dt) {
         return dayjs(dt,'DD/MM/YYYY').format('YYYY-MM-DD');
+    },
+
+    mapMadecareDateToServer(dt) {
+        console.log('dt', dt);
+
+        let spilitedData = dt.split('/');
+        let fullMonthYear = spilitedData[0] + '/' + '20' + spilitedData[1];
+        let fullDateMonthYear = dayjs(fullMonthYear, 'MM/YYYY').daysInMonth() + '/' + fullMonthYear;
+        console.log('dt', fullDateMonthYear);
+        return dayjs(fullDateMonthYear,'DD/MM/YYYY').format('YYYY-MM-DD');
     }
 
 };
