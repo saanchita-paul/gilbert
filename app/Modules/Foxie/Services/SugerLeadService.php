@@ -34,8 +34,8 @@ class SugerLeadService
     const MAP_STATE_NSW = 'New South Wales';
     const MAP_STATE_VIC = 'Victoria';
     const MAP_STATE_QLD = 'Queensland';
-    const MAP_STATE_SA = 'South Australia';
-    const MAP_STATE_NT = 'Northern Territory';
+    const MAP_STATE_SA  = 'South Australia';
+    const MAP_STATE_NT  = 'Northern Territory';
     const MAP_STATE_TAS = 'Tasmania';
     const MAP_STATE_ACT = 'Australian Capital Territory';
 
@@ -43,8 +43,8 @@ class SugerLeadService
         'nsw' => self::MAP_STATE_NSW,
         'vic' => self::MAP_STATE_VIC,
         'qld' => self::MAP_STATE_QLD,
-        'sa' => self::MAP_STATE_SA,
-        'nt' => self::MAP_STATE_NT,
+        'sa'  => self::MAP_STATE_SA,
+        'nt'  => self::MAP_STATE_NT,
         'tas' => self::MAP_STATE_TAS,
         'act' => self::MAP_STATE_ACT,
     ];

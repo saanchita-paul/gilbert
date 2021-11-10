@@ -127,6 +127,10 @@ class ApplicationResource extends JsonResource
         {
             return $this->SugerLead?->agent_name;
         }
+        if($this->source === ConnectionApplication::SOURCE_IGNITE)
+        {
+            return $this->igniteLead?->agent_name;
+        }
 
         return '';
     }
@@ -140,6 +144,10 @@ class ApplicationResource extends JsonResource
         if($this->source === ConnectionApplication::SOURCE_FOXIE)
         {
             return $this->SugerLead?->agency_name;
+        }
+        if($this->source === ConnectionApplication::SOURCE_IGNITE)
+        {
+            return $this->igniteLead?->agency_name;
         }
 
         return '';
