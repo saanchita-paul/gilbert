@@ -39,6 +39,17 @@ class LeadStatusMapper
 
     ];
 
+    const PROVIDER_NAME_WESTERN_WATER = "Western Water";
+    const PROVIDER_NAME_SOUTHEAST_WATER = "South East Water";
+    const PROVIDER_NAME_YARRA_VALLEY_WATER = "Yarra Valley Water";
+          
+    
+    const PROVIDER_NAME_MAPPER =[
+        'greater_western_water' => self::PROVIDER_NAME_WESTERN_WATER,
+        'south_east_water' => self::PROVIDER_NAME_SOUTHEAST_WATER,
+        'yarra_valley_water' => self::PROVIDER_NAME_YARRA_VALLEY_WATER,
+    ];
+
     /**
      * hood and foxie energy-status mapper
      */
@@ -148,10 +159,14 @@ class LeadStatusMapper
 
         if ($status === self::STATUS_ACCEPTED) {
             $this->statuses[$statusKey . 'Retailer'] = !empty($service->provider_name)
-                ? join(' ', explode('_', $service->provider_name))
+                ? $this->waterProviderNameMapper($service->provider_name)
                 : 'South East Water';
         }
 
         $this->statuses[$statusKey . 'Status'] = $status;
+    }
+
+    private function waterProviderNameMapper($name){
+        return self::PROVIDER_NAME_MAPPER[$name] ?? '';
     }
 }

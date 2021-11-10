@@ -120,14 +120,14 @@ class IgniteLeadService
             $this->setOfficeAndAgencyId();
 
             $this->setAttribute($leadInfo);
-    
+            
             $this->connectionApplication->status = ConnectionApplication::STATUS_UNASSIGNED;
             $this->connectionApplication->save();
-    
+            
             $this->lead->all_fields_dump = json_encode($leadInfo);
             $this->lead->connection_application_id = $this->connectionApplication->id;
             $this->lead->save();
-    
+            
             return true;
         } catch (\Exception $exception) {
             \Log::error($exception->getMessage());

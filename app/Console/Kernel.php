@@ -3,11 +3,11 @@
 namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
-use App\Console\Commands\IgniteFetchCommand;
+use Ignite\Commands\IgniteFetchCommand;
 use App\Console\Commands\GetSellStatusCommand;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Console\Commands\UploadConnectionDataToSFTPCommand;
-use App\Jobs\IgniteFetchJob;
+use Ignite\Jobs\IgniteFetchJob;
 
 class Kernel extends ConsoleKernel
 {
