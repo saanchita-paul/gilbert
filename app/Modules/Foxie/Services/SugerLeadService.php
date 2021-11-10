@@ -104,7 +104,7 @@ class SugerLeadService
 
         try {
             $formattedDate = Carbon::parse($request->id_expiry_c)->format("Y-m-d");
-            $mappedType = Identification::TYPE_MAP[$request->id_type_c];
+            $mappedType = Identification::TYPE_MAP[$request->id_type_c] ?? null;
 
             if($type == self::TYPE_CREATE){
                 $identification->expire_date = $formattedDate ?? null;
