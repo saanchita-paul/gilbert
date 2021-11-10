@@ -21,18 +21,18 @@ class IgniteLeadService
     const TYPE_UPDATE = 2;
 
     const SERVICE_TYPE_POWER = 'power';
-    const SERVICE_TYPE_GAS = 'gas';
+    const SERVICE_TYPE_GAS   = 'gas';
 
     const TYPE_SERVICE = [
-        'gas' => 'gas',
+        'gas'         => 'gas',
         'electricity' => 'power',
     ];
 
     const MAP_STATE_NSW = 'New South Wales';
     const MAP_STATE_VIC = 'Victoria';
     const MAP_STATE_QLD = 'Queensland';
-    const MAP_STATE_SA = 'South Australia';
-    const MAP_STATE_NT = 'Northern Territory';
+    const MAP_STATE_SA  = 'South Australia';
+    const MAP_STATE_NT  = 'Northern Territory';
     const MAP_STATE_TAS = 'Tasmania';
     const MAP_STATE_ACT = 'Australian Capital Territory';
 
@@ -56,18 +56,25 @@ class IgniteLeadService
 
         //tenant
         $this->connectionApplication->first_name = $leadInfo['tenant']['firstName'] ?? 'Iron';
-        $this->connectionApplication->last_name = $leadInfo['tenant']['lastName'] ?? 'Man' ;
-        $this->connectionApplication->source = ConnectionApplication::SOURCE_IGNITE ;
-        $this->connectionApplication->email = $leadInfo['tenant']['email'] ?? 'abc@hood.ai';
-        $this->connectionApplication->phone = $leadInfo['tenant']['mobilePhoneNumber'] ?? '';
-        $this->connectionApplication->dob = date("Y-m-d", strtotime($leadInfo['tenant']['birthDate'])) ?? '1991/08/09';
+        $this->connectionApplication->last_name  = $leadInfo['tenant']['lastName'] ?? 'Man' ;
+        $this->connectionApplication->source     = ConnectionApplication::SOURCE_IGNITE ;
+        $this->connectionApplication->email      = $leadInfo['tenant']['email'] ?? 'abc@hood.ai';
+        $this->connectionApplication->phone      = $leadInfo['tenant']['mobilePhoneNumber'] ?? '';
+        $this->connectionApplication->dob        = date("Y-m-d", strtotime($leadInfo['tenant']['birthDate'])) ?? '1991/08/09';
         
         //property
-        $this->connectionApplication->street_address = $leadInfo['property']['street'] ?? 'Queen Street';
-        $this->connectionApplication->state = self::MAP_STATE[strtolower( $leadInfo['property']['state'] )] ?? '';
-        $this->connectionApplication->postcode = $leadInfo['property']['postCode'] ?? '4000';
+        $street =  $leadInfo['property']['street'] ?? '';
+        $state = self::MAP_STATE[strtolower( $leadInfo['property']['state'] )] ?? '';
+        $postCode = $leadInfo['property']['postCode'] ?? '';
+        $city = $leadInfo['property']['suburb'] ?? '';
+
+        $this->connectionApplication->street_address = $street;
+        $this->connectionApplication->state = $state;
+        $this->connectionApplication->postcode = $postCode;
+        $this->connectionApplication->city = $city;
         $this->connectionApplication->moving_date = date("Y-m-d", strtotime(  $leadInfo['property']['moveInDate'] ))  ?? '2021/10/02';
-        $this->connectionApplication->city = $leadInfo['property']['suburb'] ?? 'Brisbane City';
+        
+        $this->connectionApplication->address_text = $street . ' ' . $city . ' ' . $state ; 
 
         //InginteLeads Table
         $this->lead->lead_id = $leadInfo['application']['id'] ?? '';
@@ -98,8 +105,9 @@ class IgniteLeadService
             $this->connectionApplication->agency_id = $agency?->id ?? 1;
             $this->connectionApplication->office_id = $agency?->offices[0]?->id ?? 1;
             if(!$agency) throw new Exception('Please run FoxieSeeder');
-        } catch (\Throwable $th) {
+        } catch (\Exception $exception) {
             Log::error("Please run IgniteSeeder , php artisan db:seed --class=IgniteSeeder");
+            \Log::error($exception->getMessage());
             \Log::error($exception->getTraceAsString());
         }
     }

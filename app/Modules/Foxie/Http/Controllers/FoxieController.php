@@ -30,6 +30,7 @@ class FoxieController extends Controller
             //throw $th;
             \Log::error("Problem in Storing data");
             \Log::error($ex->getMessage());
+            \Log::error($ex->getTraceAsString());
             $response = [
                 "status" => "failed",
                 "message" => "Hood lead can not be stored"

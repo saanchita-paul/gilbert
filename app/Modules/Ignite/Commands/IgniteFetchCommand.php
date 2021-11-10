@@ -4,7 +4,6 @@ namespace Ignite\Commands;
 
 use Ignite\Jobs\IgniteFetchJob;
 use Illuminate\Console\Command;
-use Ignite\Services\IgniteLeadService;
 class IgniteFetchCommand extends Command
 {
     /**
@@ -38,12 +37,8 @@ class IgniteFetchCommand extends Command
      */
     public function handle()
     {   
-        // \Log::info('command handle');
         $this->line('Ignite fetch lead command started successfully!');
-        // $createLeadService = new IgniteLeadService();
-        // $createLeadService->create();
         IgniteFetchJob::dispatch();
         $this->line('Ignite fetch lead command finished successfully!');
-        // return 'success';
     }
 }
