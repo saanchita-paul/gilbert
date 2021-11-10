@@ -84,8 +84,6 @@ class IgniteConnectionLeadService
         return $this->token;
     }
 
-
-
     /**
      * it will set connection lead url
      *
@@ -93,10 +91,10 @@ class IgniteConnectionLeadService
      */
     private function setConnctionLeadUrl() : void{
         
-        $noOfDays = env('NO_OF_DAY_IGNITE_LEAD') ?? 1;
+        $noOfDays = config('ignite.NO_OF_DAY_IGNITE_LEAD') ?? 1;
 
         $isoDateYesterday = date('Y-m-d',strtotime("-{$noOfDays} days"));
-        $this->base_url = env('IGNITE_BASE_URL');
+        $this->base_url = config('ignite.IGNITE_BASE_URL');
         $this->auth_url = $this->base_url . "/oauth/token?grant_type=client_credentials";
         $this->connection_lead_url = $this->base_url . "/applications/v1/rental/connection-leads" . "?happenedSince={$isoDateYesterday}T00%3A00%3A01.604Z" ;
     }
@@ -115,8 +113,8 @@ class IgniteConnectionLeadService
         
         $this->nextPageUrl = '';
 
-        $client_id = env('IGNITE_CLIENT_ID');
-        $client_secret = env('IGNITE_CLIENT_SECRET');
+        $client_id = config('ignite.IGNITE_CLIENT_ID');
+        $client_secret = config('ignite.IGNITE_CLIENT_SECRET');
         $code = $client_id . ':' . $client_secret;
 
         $this->authorization_header = "Basic " . base64_encode($code);
@@ -149,6 +147,7 @@ class IgniteConnectionLeadService
         }
         catch (\Exception $exception) {
             \Log::error($exception->getMessage());
+            \Log::error($exception->getTraceAsString());
             throw $exception;
         }
     }
@@ -180,6 +179,7 @@ class IgniteConnectionLeadService
         catch (\Exception $exception)
         {
             \Log::error($exception->getMessage());
+            \Log::error($exception->getTraceAsString());
             throw $exception;
         }
     }
