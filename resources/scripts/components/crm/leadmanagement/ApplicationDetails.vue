@@ -137,7 +137,7 @@
 
 
         <v-divider class="mt-4 mb-2"></v-divider>
-       <p class="sub-title py-2">Service Interests
+       <!-- <p class="sub-title py-2">Service Interests
            <span class="mx-2">
               <v-icon :disabled="isServiceAllowed(lead.service_interests, 'power')" color="yellow">mdi-flash</v-icon>
           </span>
@@ -150,18 +150,51 @@
            <span class="mx-2">
               <v-icon :disabled="isServiceAllowed(lead.service_interests, 'water')" color="blue" >mdi-water</v-icon>
           </span>
-       </p>
+       </p> -->
+       <p class="sub-title mt-4 mb-2">Service Preference</p>
+        <v-row>
+            <v-col  class="my-0 py-0 mx-0">
+                <p class="pt-2 pb-1 mb-0 services">
+                  <span class="ml-0">
+                      <v-icon :disabled="isServiceAllowed(lead.service_interests, 'power')" color="yellow">mdi-flash</v-icon>Power
+                  </span>
+                </p>
+                <p class="py-0 my-0 pl-3 service-status" :class="getServiceClass('power')">
+                    {{getServiceStatus('power')}}
+                </p>
+            </v-col>
 
-<!--        <div class="mt-3">-->
-<!--          <p class="sub-title mb-1">Agent’s Additional Instructions</p>-->
-<!--          <v-textarea v-model="lead.additional_instruction"-->
-<!--                      background-color="#FAFAFA"-->
-<!--                      color="#7E8A8F"-->
-<!--            outlined-->
-<!--            placeholder="Additional Instructions goes here"-->
-<!--                      readonly-->
-<!--          ></v-textarea>-->
-<!--        </div>-->
+            <v-col  class="my-0 py-0 mx-0">
+                <p class="pt-2 pb-1 mb-0 services">
+                  <span class="ml-0">
+                      <v-icon :disabled="isServiceAllowed(lead.service_interests, 'gas')" color="red">mdi-fire</v-icon>Gas
+                  </span>
+                </p>
+                <p class="py-0 my-0 pl-3 service-status" :class="getServiceClass('gas')">
+                    {{getServiceStatus('gas')}}
+                </p>
+            </v-col>
+            <v-col  class="my-0 py-0 mx-0">
+                <p class="pt-2 pb-1 mb-0 services">
+                  <span class="ml-0">
+                       <v-icon :disabled="isServiceAllowed(lead.service_interests, 'internet')" color="green">mdi-wifi</v-icon>Internet
+                  </span>
+                </p>
+                <p class="py-0 my-0 pl-3 service-status" :class="getServiceClass('internet')">
+                    {{getServiceStatus('internet')}}
+                </p>
+            </v-col>
+            <v-col  class="my-0 py-0 mx-0">
+                <p class="pt-2 pb-1 mb-0 services">
+                  <span class="ml-0">
+                      <v-icon :disabled="isServiceAllowed(lead.service_interests, 'water')" color="blue">mdi-water</v-icon>Water
+                  </span>
+                </p>
+                <p class="py-0 my-0 pl-3 service-status" :class="getServiceClass('water')">
+                    {{getServiceStatus('water')}}
+                </p>
+            </v-col>
+        </v-row>
 
        <v-row>
            <v-col cols="12">
@@ -195,6 +228,35 @@ export default {
       }
     },
     methods: {
+        getServiceStatus(conn_ser) {
+            let service = this.lead.connection_services.find((svc)=>{
+                return svc.service_type === conn_ser;
+            })
+            if(service) {
+                return this.mapConnectionStatus(service.statusText);
+            }
+            return '';
+        },
+        getServiceClass(conn_ser) {
+            let service = this.lead.connection_services.find((svc)=>{
+                return svc.service_type === conn_ser;
+            })
+            if(service) {
+                return service.statusText;
+            }
+            return 'common_color';
+        },
+        mapConnectionStatus(status) {
+            // return ['unassigned','assigned', 'escalated'].includes(status)?'In Progress':
+            //     status[0].toUpperCase() + status.slice(1);
+            if(['unassigned', 'assigned', 'escalated', 'processing'].includes(status)) {
+                return 'In Progress';
+            } else if(status === 'accepted') {
+                return 'Connected';
+            } else {
+                return (status[0].toUpperCase() + status.slice(1)).replace(/_/g, " ");;
+            }
+        },
         goToLeadDetails(id) {
             this.$router.push({name:'applications.details', params:{id:id}});
         },
@@ -221,4 +283,27 @@ export default {
     table-layout: fixed;
     width: 100%
 }
+.service-status{
+    font-size: 14px !important;
+}
+.services{
+    font-size: 17px !important;
+    font-weight: 700;
+}
+.unassigned, .assigned, .escalated, .processing, .common_color, .closed, .can\'t_connect{
+    color: black !important;
+}
+.submitted{
+    color: #0CC4ED !important;
+}
+.accepted{
+    color: #15DB64 !important;
+}
+.rejected{
+    color: #E91E63 !important;
+}
+.need_more_info{
+    color: #FF5722 !important;
+}
+
 </style>

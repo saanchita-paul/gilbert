@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Models\Identification;
 use Illuminate\Support\Facades\Log;
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
 
 class SugerLeadService
 {
@@ -138,7 +139,7 @@ class SugerLeadService
                 $this->connectionApplication->connectionServices()->create(
                     [
                         'service_type' => self::TYPE_SERVICE[ $value ] ,
-                        'status' => ConnectionApplication::STATUS_UNASSIGNED ,
+                        'status' => ConnectionService::WATER_STATUS_IN_PROGRESS ,
                     ]
                 );
             }

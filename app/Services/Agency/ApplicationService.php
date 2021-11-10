@@ -269,7 +269,7 @@ class ApplicationService
                 [
                     'service_type' => $service['service_type'],
                     'connection_application_id' => $id,
-                    'status'=> ConnectionService::STATUS_UNASSIGNED
+                    'status'=> ConnectionService::WATER_STATUS_IN_PROGRESS
                 ]
             );
         }
