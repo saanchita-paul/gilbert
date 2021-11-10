@@ -12,12 +12,12 @@ class IgniteConnectionLeadService
     private $authorization_header;
    
     public function __construct() {
-        $this->base_url = env('IGNITE_BASE_URL');
+        $this->base_url = config('ignite.IGNITE_BASE_URL');
         $this->auth_url = $this->base_url . "/oauth/token?grant_type=client_credentials";
         $this->connection_lead_url = $this->base_url . "/applications/v1/rental/connection-leads";
         
-        $client_id = env('IGNITE_CLIENT_ID');
-        $client_secret = env('IGNITE_CLIENT_SECRET');
+        $client_id = config('ignite.IGNITE_CLIENT_ID');
+        $client_secret = config('ignite.IGNITE_CLIENT_SECRET');
         $code = $client_id . ':' . $client_secret;
 
         $this->authorization_header = "Basic " . base64_encode($code);

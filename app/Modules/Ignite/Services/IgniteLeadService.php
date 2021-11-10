@@ -86,7 +86,6 @@ class IgniteLeadService
         $this->lead->connectionProviderName = $leadInfo['connectionProviderName'] ?? '';
     }
 
-
     /**
      * Set office and agency id for connection_application table.
      *
@@ -101,6 +100,7 @@ class IgniteLeadService
             if(!$agency) throw new Exception('Please run FoxieSeeder');
         } catch (\Throwable $th) {
             Log::error("Please run IgniteSeeder , php artisan db:seed --class=IgniteSeeder");
+            \Log::error($exception->getTraceAsString());
         }
     }
 
@@ -131,10 +131,10 @@ class IgniteLeadService
             return true;
         } catch (\Exception $exception) {
             \Log::error($exception->getMessage());
+            \Log::error($exception->getTraceAsString());
             \Log::error('inside create application block');
         }
         return true;
-
     }
 
     /**
@@ -152,6 +152,7 @@ class IgniteLeadService
             return true;
         } catch (\Exception $exception) {
             \Log::info($exception->getMessage());
+            \Log::error($exception->getTraceAsString());
             throw $exception;
         }
     }
@@ -173,6 +174,7 @@ class IgniteLeadService
                 }
             } catch (\Exception $exception) {
                 \Log::error($exception->getMessage());
+                \Log::error($exception->getTraceAsString());
             }
         };
 

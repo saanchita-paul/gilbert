@@ -1,7 +1,9 @@
 <?php
 
 return [
-    'create_contact' => env('HUB_SPOT_CREATE_CONTACT_URL', 'https://api.hubapi.com/contacts/v1/contact?hapikey='),
-    'update_contact' => env('HUB_SPOT_UPDATE_CONTACT_URL', 'https://api.hubapi.com/contacts/v1/contact/vid/${id}/profile?hapikey='),
-    'api_key' => env('HUB_SPOT_API_KEY', '1c0e91c4-2dbc-4f31-992c-e1341e5144c7')
+    'NO_OF_DAY_IGNITE_LEAD'  => env('NO_OF_DAY_IGNITE_LEAD', 2),
+    'IGNITE_BASE_URL'        => env('IGNITE_BASE_URL', 'https://api.realestate.com.au'),
+    'IGNITE_CLIENT_ID'       => env('IGNITE_CLIENT_ID', '50a8c820-8a43-4725-a523-30fcac75c80b'),
+    'IGNITE_CLIENT_SECRET'   => env('IGNITE_CLIENT_SECRET', '40b36527-3377-4719-a02f-e5fdda76e429'),
+    'IGNITE_IS_ACTIVE'       => env('IGNITE_IS_ACTIVE', false),
 ];

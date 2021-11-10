@@ -32,7 +32,15 @@ class Kernel extends ConsoleKernel
     {
          $schedule->command('get:sales:status')->daily();
          $schedule->command('ea:upload:lead')->daily();
-         $schedule->job(new IgniteFetchJob)->everyFiveMinutes();
+         
+         if($this->shouldIgniteRun()){
+            $schedule->command('ignite:fetch')->everyTenMinutes();
+         }
+    }
+
+    private function shouldIgniteRun(){
+        $igniteStart = config('ignite.IGNITE_IS_ACTIVE') ?? false;
+        return $igniteStart;
     }
 
     /**
