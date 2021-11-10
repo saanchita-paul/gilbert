@@ -910,7 +910,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <ValidationProvider
                   name="Expired Date"
-                  rules="required|medicare-date"
+                  rules="required|medicare-date|medi-expire"
                   v-slot="{ errors }"
                 >
                   <v-text-field
@@ -1480,7 +1480,6 @@ export default {
       medicare_expire_date() {
           this.indentification.medicare_expire_date = dayJs(this.medicare_expire_date).format("MM/YY");
           const formatedDate = ApplicationMapper.mapMadecareDateToServer( this.indentification.medicare_expire_date, false);
-          console.log(formatedDate);
           this.$emit(
               "updateDraft",
               "expire_date",

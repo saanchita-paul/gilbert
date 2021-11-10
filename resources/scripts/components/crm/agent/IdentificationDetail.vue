@@ -50,7 +50,7 @@
                        <template v-slot:activator="{ on, attrs }">
                            <ValidationProvider
                                name="Expiry Date"
-                               rules="required"
+                               rules="required|medicare-date|medi-expire"
                                v-slot="{ errors }"
                            >
                                <v-text-field
@@ -73,6 +73,7 @@
                            v-model="expire_date"
                            @input="showMovingDate = false"
                            type="month"
+                           :min="minExpiredate"
                        ></v-date-picker>
                    </v-menu>
                </ValidationProvider>
@@ -80,7 +81,7 @@
                <v-col cols="6" class="pb-0">
                    <ValidationProvider
                        name="Card Colour"
-                       rules="required|valid-date"
+                       rules="required"
                        v-slot="{ errors }"
                    >
                        <v-select
@@ -294,6 +295,7 @@ name: "IdentificationDetail",
             expire_date: null,
             showMovingDate: false,
             isLoaded : false,
+            minExpiredate: new Date().toISOString(),
         }
     },
     methods:{

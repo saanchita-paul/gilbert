@@ -146,14 +146,8 @@ extend('medi-expire', {
     validate(value) {
         let spilitedData = value.split('/');
         let fullMonthYear = spilitedData[0] + '/' + '20' + spilitedData[1];
-        let fullDateMonthYear =   '01/' + fullMonthYear;
-
-        // console.log(dayjs().format('DD/MM/YYYY'), dayjs(fullDateMonthYear, 'DD/MM/YYYY').format('DD/MM/YYYY'), )
-
-        return  (dayjs().isBefore(fullDateMonthYear, 'DD/MM/YYYY'));
-
-
-
+        let fullDateMonthYear =   dayjs().daysInMonth() + '/' + fullMonthYear;
+        return !(dayjs(fullDateMonthYear,'DD/MM/YYYY').isBefore());
     }
 })
 
