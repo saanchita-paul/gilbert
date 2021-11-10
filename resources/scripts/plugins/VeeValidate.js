@@ -142,7 +142,7 @@ extend('medicare-date', {
 })
 
 extend('medi-expire', {
-    message: field => `Select a future date`,
+    message: field => `Expired card. Please enter valid date`,
     validate(value) {
         let spilitedData = value.split('/');
         let fullMonthYear = spilitedData[0] + '/' + '20' + spilitedData[1];
