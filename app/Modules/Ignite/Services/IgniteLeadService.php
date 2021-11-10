@@ -49,10 +49,10 @@ class IgniteLeadService
     /**
      * Set attribute for create.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  array  $leadInfo
      * @return void
      */
-    private function setAttribute($leadInfo){
+    private function setAttribute(array $leadInfo) : void{
 
         //tenant
         $this->connectionApplication->first_name = $leadInfo['tenant']['firstName'] ?? 'Iron';
@@ -78,9 +78,9 @@ class IgniteLeadService
         $this->lead->agency_name = $leadInfo['agency']['name'] ?? '';
         
         //agent
-        $this->lead->agent_id = $leadInfo['agent']['id'] ?? '';
-        $this->lead->agent_name = $leadInfo['agent']['name'] ?? '';
-        $this->lead->agent_email = $leadInfo['agent']['email'] ?? '';
+        $this->lead->agent_id = $leadInfo['agents'][0]['id'] ?? '';
+        $this->lead->agent_name = $leadInfo['agents'][0]['name'] ?? '';
+        $this->lead->agent_email = $leadInfo['agents'][0]['email'] ?? '';
         
         //
         $this->lead->connectionProviderName = $leadInfo['connectionProviderName'] ?? '';
@@ -93,7 +93,7 @@ class IgniteLeadService
      * @return void
      * @throws Exception
      */
-    private function setOfficeAndAgencyId(){
+    private function setOfficeAndAgencyId() : void{
         try {
             $agency = Agency::where('name' , "Ignite-Hood-Agency")->first();
             $this->connectionApplication->agency_id = $agency?->id ?? 1;
@@ -107,11 +107,11 @@ class IgniteLeadService
     /**
      * Create new ConnectionApplication one by one.
      *
-     * @param  object  $leadInfo
+     * @param  array  $leadInfo
      * @return bool
      * @throws Exception
      */
-    private function insertLead($leadInfo): bool
+    private function insertLead(array $leadInfo): bool
     {
         try {
             $this->connectionApplication = new ConnectionApplication;
@@ -140,7 +140,6 @@ class IgniteLeadService
     /**
      * Create new ConnectionApplication, run a loop.
      *
-     * @param  void
      * @return bool
      * @throws Exception
      */
@@ -149,9 +148,6 @@ class IgniteLeadService
             $service = new IgniteConnectionLeadService();
             $token =  $service->authenticate();
             $leads =  $service->getIgniteLeads($token , $service->getConnctionLeadUrl());
-
-            // info($service->getNextPageUrl());
-
             $this->verifyData($leads , $service);
             return true;
         } catch (\Exception $exception) {
@@ -167,13 +163,9 @@ class IgniteLeadService
      * @return bool
      * @throws Exception
      */
-    private function verifyData($allLead , IgniteConnectionLeadService $service) : int{
+    private function verifyData(array $allLead , IgniteConnectionLeadService $service) : int{
 
-        info('array count');
-        \Log::info(count($allLead));
-        info('array count end');
         foreach ($allLead  as $leadInfo) {
-            info('inside loop of verifylead');
             try {
                 $igniteLead = IgniteLead::where('lead_id' ,  $leadInfo['application']['id'])->first();
                 if(!$igniteLead){
@@ -181,11 +173,11 @@ class IgniteLeadService
                 }
             } catch (\Exception $exception) {
                 \Log::error($exception->getMessage());
-                \Log::error('inside create application loop');
-                \Log::info( $leadInfo['application']['id'] . ' lead id already exists');
             }
         };
 
+        //TODO logic might be changed according to requirementes
+        // if($service->getNextPageUrl() == '') {
         if(count($allLead) < 25) {
             return 0;
         }else{

@@ -2,9 +2,7 @@
 
 namespace Ignite\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Ignite\Services\IgniteConnectionLeadService;
 use Ignite\Services\IgniteLeadService;
 
 class IgniteController extends Controller

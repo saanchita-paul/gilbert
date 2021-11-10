@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
     {
          $schedule->command('get:sales:status')->daily();
          $schedule->command('ea:upload:lead')->daily();
-         $schedule->job(new IgniteFetchJob)->daily();
+         $schedule->job(new IgniteFetchJob)->everyFiveMinutes();
     }
 
     /**
