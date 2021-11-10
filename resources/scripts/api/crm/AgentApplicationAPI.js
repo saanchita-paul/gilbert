@@ -87,7 +87,7 @@ export default {
     async createApplication(application) {
 
         application = ApplicationMapper.mapToServer(application);
-         return await axios.post(`/api/applications`, {...application});
+        return await axios.post(`/api/applications`, {...application});
 
     },
 }

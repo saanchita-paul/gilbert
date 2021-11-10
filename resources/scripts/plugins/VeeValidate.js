@@ -6,6 +6,8 @@ import AuthService from "@scripts/services/AuthService";
 import EAPlanService from "@scripts/services/ea/EAPlanService";
 import dayJs from "dayjs";
 import AgencyService from '@scripts/services/crm/AgencyService';
+import dayjs from "dayjs";
+import {now} from "lodash-es";
 
 Object.keys(rules).forEach(rule => {
     extend(rule, rules[rule]);
@@ -121,8 +123,8 @@ extend('adult', {
 });
 
 extend('valid-date', {
-    message: field => `DD/MM/YYYY is valid formate`,
-    validate: value =>  {
+    message: field => `DD/MM/YYYY is valid format`,
+    validate(value) {
         return dayJs(value, 'DD/MM/YYYY').isValid();
     }
 });
@@ -131,3 +133,23 @@ extend('length', {
     ...length,
     message: 'Phone should contain 10 numbers',
 })
+
+extend('medicare-date', {
+    message: field => `MM/YY is valid format`,
+    validate(value) {
+        return dayJs(value, 'MM/YY').isValid();
+    }
+})
+
+extend('medi-expire', {
+    message: field => `Expired card. Please enter valid date`,
+    validate(value) {
+        let spilitedData = value.split('/');
+        let fullMonthYear = spilitedData[0] + '/' + '20' + spilitedData[1];
+        let fullDateMonthYear =   dayjs().daysInMonth() + '/' + fullMonthYear;
+        return !(dayjs(fullDateMonthYear,'DD/MM/YYYY').isBefore());
+    }
+})
+
+
+
