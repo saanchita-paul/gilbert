@@ -65,16 +65,16 @@ class IgniteLeadService
         //property
         $street   =  $leadInfo['property']['street'] ?? '';
         $state    = self::MAP_STATE[strtolower( $leadInfo['property']['state'] )] ?? '';
-        $postCode = $leadInfo['property']['postCode'] ?? '';
+        $postcode = $leadInfo['property']['postcode'] ?? '';
         $city     = $leadInfo['property']['suburb'] ?? '';
 
         $this->connectionApplication->street_address = $street;
         $this->connectionApplication->state          = $state;
-        $this->connectionApplication->postcode       = $postCode;
+        $this->connectionApplication->postcode       = $postcode;
         $this->connectionApplication->city           = $city;
         $this->connectionApplication->moving_date    = date("Y-m-d", strtotime(  $leadInfo['property']['moveInDate'] ))  ?? '2021/10/02';
         
-        $this->connectionApplication->address_text = $street . ' ' . $city . ' ' . $state  . ' ' . $postCode; 
+        $this->connectionApplication->address_text   = $street . ' ' . $city . ' ' . $state  . ' ' . $postcode; 
 
         //InginteLeads Table
         $this->lead->lead_id     = $leadInfo['application']['id'] ?? '';
@@ -94,27 +94,41 @@ class IgniteLeadService
     }
 
 
-    private function setServiceTypeTable($type = null){
+    /**
+     * Set service types.
+     * 
+     * @param array $serviceTypes
+     * @return void
+     * @throws Exception
+     */
+    private function setServiceTypeTable($serviceTypes = []) : void{
         // SERVICETYPE TABLE
-        info('checking service type');
-        if(!isset($type)) return;
-        info('checking service_c');
-        // expected format example Electricity_Gas
-        $services = in_array( 'all' ,  $type) ? [ 'gas' , 'power' , 'internet' ] : [];
+        /**
+         * follow docs for details implementation.
+         * 
+         * ? https://partner.realestate.com.au/documentation/api/connection-leads-api/usage/
+         */
+        $services     = [] ;
+        if(in_array( 'all' ,  $serviceTypes )){
+            $services = [ 'gas' , 'power' , 'internet' , 'water' ] ;
+        }else if($this->connectionApplication->state == 'vic' && !in_array( 'all' ,  $serviceTypes )){
+            $services = ['water'];
+        }
 
         try {
-            if($type == self::TYPE_UPDATE) $this->connectionApplication->connectionServices()->delete();
             foreach ($services as $value) {
+                info($value);
                 $this->connectionApplication->connectionServices()->create(
                     [
-                        'service_type' => self::TYPE_SERVICE[ $value ] ,
-                        'status' => ConnectionApplication::STATUS_UNASSIGNED ,
+                        'service_type' => $value ,
+                        'status'       => ConnectionApplication::STATUS_UNASSIGNED ,
                     ]
                 );
             }
         } catch (\Exception $ex) {
                 \Log::error('problem in service type table');
                 \Log::error($ex->getMessage());
+                \Log::error($ex->getTraceAsString());
         }
     }
 
@@ -155,8 +169,11 @@ class IgniteLeadService
 
             $this->setAttribute($leadInfo);
             
+            
             $this->connectionApplication->status = ConnectionApplication::STATUS_UNASSIGNED;
             $this->connectionApplication->save();
+            
+            $this->setServiceTypeTable($leadInfo['utilityConnectionsAllowed'] ?? []);
             
             $this->lead->all_fields_dump = json_encode($leadInfo);
             $this->lead->connection_application_id = $this->connectionApplication->id;
