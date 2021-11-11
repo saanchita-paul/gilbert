@@ -330,7 +330,6 @@ name: "IdentificationDetail",
 
         updateIdentification()
         {
-            console.log('identification', this.identification);
             this.$emit('updateIdentification', this.identification);
         }
 

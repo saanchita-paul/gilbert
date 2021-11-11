@@ -307,10 +307,9 @@ export default {
         },
 
         mapConnectionStatus(status) {
-            return ['unassigned','assigned', 'escalated'].includes(status)?'In Progress':
+            return ['unassigned','assigned', 'escalated','processing'].includes(status)?'In Progress':
                 status[0].toUpperCase() + status.slice(1);
         }
-
     },
 
     mounted() {

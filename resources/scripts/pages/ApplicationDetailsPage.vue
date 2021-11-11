@@ -144,7 +144,7 @@ export default {
         updateLead(lead) {
             this.fullName = lead.person_details.first_name +' '+ lead.person_details.last_name;
             this.lead = lead;
-            console.log('lead3' , this.lead);
+            // console.log('lead3' , this.lead);
         },
         updateService(service) {
             this.isManualChangeFlag = true;

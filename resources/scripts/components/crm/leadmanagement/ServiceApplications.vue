@@ -226,7 +226,6 @@ export default {
     },
     mounted() {
 
-        console.log('origin1', this.providers);
         this.loadServiceProvider();
         this.loadPlan();
         this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
