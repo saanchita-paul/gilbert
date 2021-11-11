@@ -102,7 +102,6 @@ class IgniteLeadService
      * @throws Exception
      */
     private function setServiceTypeTable($serviceTypes = []) : void{
-        // SERVICETYPE TABLE
         /**
          * follow docs for details implementation.
          * 
