@@ -63,35 +63,61 @@ class IgniteLeadService
         $this->connectionApplication->dob        = date("Y-m-d", strtotime($leadInfo['tenant']['birthDate'])) ?? '1991/08/09';
         
         //property
-        $street =  $leadInfo['property']['street'] ?? '';
-        $state = self::MAP_STATE[strtolower( $leadInfo['property']['state'] )] ?? '';
+        $street   =  $leadInfo['property']['street'] ?? '';
+        $state    = self::MAP_STATE[strtolower( $leadInfo['property']['state'] )] ?? '';
         $postCode = $leadInfo['property']['postCode'] ?? '';
-        $city = $leadInfo['property']['suburb'] ?? '';
+        $city     = $leadInfo['property']['suburb'] ?? '';
 
         $this->connectionApplication->street_address = $street;
-        $this->connectionApplication->state = $state;
-        $this->connectionApplication->postcode = $postCode;
-        $this->connectionApplication->city = $city;
-        $this->connectionApplication->moving_date = date("Y-m-d", strtotime(  $leadInfo['property']['moveInDate'] ))  ?? '2021/10/02';
+        $this->connectionApplication->state          = $state;
+        $this->connectionApplication->postcode       = $postCode;
+        $this->connectionApplication->city           = $city;
+        $this->connectionApplication->moving_date    = date("Y-m-d", strtotime(  $leadInfo['property']['moveInDate'] ))  ?? '2021/10/02';
         
-        $this->connectionApplication->address_text = $street . ' ' . $city . ' ' . $state ; 
+        $this->connectionApplication->address_text = $street . ' ' . $city . ' ' . $state  . ' ' . $postCode; 
 
         //InginteLeads Table
-        $this->lead->lead_id = $leadInfo['application']['id'] ?? '';
-        $this->lead->approvedAt = Carbon::parse($leadInfo['application']['approvedAt'])->format("Y-m-d H:i:s") ?? '';
+        $this->lead->lead_id     = $leadInfo['application']['id'] ?? '';
+        $this->lead->approvedAt  = Carbon::parse($leadInfo['application']['approvedAt'])->format("Y-m-d H:i:s") ?? '';
 
         //agency
-        $this->lead->agency_id = $leadInfo['agency']['reaId'] ?? '';
+        $this->lead->agency_id   = $leadInfo['agency']['reaId'] ?? '';
         $this->lead->agency_name = $leadInfo['agency']['name'] ?? '';
         
         //agent
-        $this->lead->agent_id = $leadInfo['agents'][0]['id'] ?? '';
-        $this->lead->agent_name = $leadInfo['agents'][0]['name'] ?? '';
+        $this->lead->agent_id    = $leadInfo['agents'][0]['id'] ?? '';
+        $this->lead->agent_name  = $leadInfo['agents'][0]['name'] ?? '';
         $this->lead->agent_email = $leadInfo['agents'][0]['email'] ?? '';
         
         //
         $this->lead->connectionProviderName = $leadInfo['connectionProviderName'] ?? '';
     }
+
+
+    private function setServiceTypeTable($type = null){
+        // SERVICETYPE TABLE
+        info('checking service type');
+        if(!isset($type)) return;
+        info('checking service_c');
+        // expected format example Electricity_Gas
+        $services = in_array( 'all' ,  $type) ? [ 'gas' , 'power' , 'internet' ] : [];
+
+        try {
+            if($type == self::TYPE_UPDATE) $this->connectionApplication->connectionServices()->delete();
+            foreach ($services as $value) {
+                $this->connectionApplication->connectionServices()->create(
+                    [
+                        'service_type' => self::TYPE_SERVICE[ $value ] ,
+                        'status' => ConnectionApplication::STATUS_UNASSIGNED ,
+                    ]
+                );
+            }
+        } catch (\Exception $ex) {
+                \Log::error('problem in service type table');
+                \Log::error($ex->getMessage());
+        }
+    }
+
 
     /**
      * Set office and agency id for connection_application table.

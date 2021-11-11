@@ -645,9 +645,6 @@
         </div>
       </div>
 
-
-
-
       <div class="crm-text-field" v-if="property_details.state == 'Queensland' && property_details.has_electricity == false">
         <div class="field-label">
           <span>Inspection Time *</span>
@@ -1252,10 +1249,12 @@ export default {
       this.person_details.family_violance = this.lead.family_violance;
       this.person_details.is_email_billing = this.lead.is_email_billing;
       this.person_details.additional_instruction =
-        this.lead.additional_instruction;
+      this.lead.additional_instruction;
 
       this.dob = this.lead.dob;
       this.moving_date = this.lead.moving_date;
+      // console.log('identifcation' , this.lead.identification)
+      // this.expire_date = undefined;
       this.expire_date = this.lead.identification?.expire_date;
       // this.property_details.moving_date = this.lead.moving_date;
       this.property_details.is_billing_same = true;
@@ -1321,7 +1320,8 @@ export default {
       );
       this.person_details.dob = new DayJs(this.dob).format("DD/MM/YYYY");
 
-      let expire = new DayJs(this.expire_date).isValid();
+
+      let expire = this.expire_date == '' || this.expire_date == undefined || this.expire_date == null ? '' :  new DayJs(this.expire_date).isValid();
       this.indentification.expire_date = expire
         ? new DayJs(this.expire_date).format("DD/MM/YYYY")
         : "";
@@ -1396,14 +1396,14 @@ export default {
     },
 
     expire_date() {
-      if (isNull(this.expire_date)) return;
+      if (isNull(this.expire_date) || this.expire_date == '' || this.expire_date == undefined ) return;
       this.indentification.expire_date = new DayJs(this.expire_date).format(
         "DD/MM/YYYY"
       );
       this.$emit(
         "updateDraft",
         "expire_date",
-        this.indentification.expire_date,
+        this.indentification?.expire_date,
         true,
         true
       );

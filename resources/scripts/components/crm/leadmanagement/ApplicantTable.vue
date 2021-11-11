@@ -12,7 +12,7 @@
                         item-value="value"
                         :items="srcOptions"
                         outlined
-                        dense
+                        dense 
                     >
                         <template v-slot:item="{ item, attrs, on }">
                             <v-list-item
