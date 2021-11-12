@@ -25,7 +25,7 @@
 
                     <div class="d-flex" >
                         <div class="d-flex" v-for="plan in otherPlans1" :key="plan.text">
-                            <SolePlan :isActive="isActivePlan" :plan="plan" @click.native="selectPlan(plan)"></SolePlan>
+                            <SolePlan @soleDialog="soleDialog" :isActive="isActivePlan" :plan="plan" @click.native="selectPlan(plan)"></SolePlan>
                         </div>
                     </div>
                     <!-- <div class="d-flex" v-if="plansFlag">
@@ -41,7 +41,7 @@
                 </v-col>
                 <v-dialog
                     v-model="viewPlanDialog"
-                    max-width="500"
+                    max-width="926"
                     v-if="viewPlanDialog && planTypeForDetails"
                 >
                     <v-card>
@@ -63,6 +63,18 @@
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
+
+                <v-dialog
+                    v-model="solePlanDialog"
+                    max-width="700"
+                >
+                    <v-card>
+                        <SoleDetails 
+                            @soleDialog="soleDialog" 
+                        />
+                    </v-card>
+                </v-dialog>
+
                 </v-card>
 
 </template>
@@ -73,17 +85,17 @@ import EnergyService from "@scripts/components/crm/leadmanagement/EnergyService"
 import ServiceProvider from "@scripts/components/crm/leadmanagement/ServiceProvider";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
-import EnergyApi from "@scripts/api/ea/EnergyApi";
-import EAPlanService from "@scripts/services/ea/EAPlanService";
 import {EA_PLAN_TYPES, PLAN_TYPE_TOTAL} from "@scripts/models/ea/EnergyPlan";
 import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
 import WaterService from "@scripts/components/crm/leadmanagement/WaterService";
 import InternetService from "@scripts/components/crm/leadmanagement/InternetService";
 import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
 import ServiceProvideres from "@scripts/data/ServiceProvideres"
+import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails"
+
 export default {
 name: "InternetService.",
-components: {SolePlan, InternetService, WaterService, EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetails},
+components: {SolePlan, SoleDetails, InternetService, WaterService, EnergyPlan, ServiceProvider, EnergyService, EnergyPlanDetails},
 props: {
     leadSummary: {
         require: true
@@ -129,10 +141,14 @@ props: {
             selectedPlanTitle: '',
             selectedProviderId: 'starter_speed',
             otherPlans1: null,
-            isActivePlan: null
+            isActivePlan: null,
+            solePlanDialog: true,
         }
     },
         methods: {
+        soleDialog(){
+            this.solePlanDialog = !this.solePlanDialog;
+        },
         setPlanTitle(item) {
             this.selectedPlanTitle = item.title;
         },
