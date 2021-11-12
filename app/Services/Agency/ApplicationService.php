@@ -139,13 +139,15 @@ class ApplicationService
 
     public function updateConnectionService(array $serviceList, $id)
     {
-        ConnectionService::query()->where('connection_application_id', '=', $id)->delete();
+        ConnectionService::query()->where('connection_application_id', '=', $id)
+            ->whereIn('service_type',[ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
+            ->delete();
         foreach ($serviceList as $service) {
             ConnectionService::create(
                 [
                     'service_type' => $service,
                     'connection_application_id' => $id,
-                    'status' => ConnectionService::STATUS_SUBMITTED
+                    'status' => ConnectionService::WATER_STATUS_IN_PROGRESS
                 ]
             );
         }
@@ -269,7 +271,7 @@ class ApplicationService
                 [
                     'service_type' => $service['service_type'],
                     'connection_application_id' => $id,
-                    'status'=> ConnectionService::STATUS_UNASSIGNED
+                    'status'=> ConnectionService::WATER_STATUS_IN_PROGRESS
                 ]
             );
         }

@@ -41,7 +41,7 @@ export default {
         }
     },
   mounted() {
-      console.log('data get from ', this.data);
+
   }
 }
 </script>
