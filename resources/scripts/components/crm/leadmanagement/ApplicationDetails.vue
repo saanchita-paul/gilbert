@@ -84,7 +84,7 @@
                <p class="font-weight-bold">Email billing</p>
            </v-col>
            <v-col cols ="7" class="py-0 my-0">
-               <p>{{ lead.is_email_billing == 1?'Email':'Paper' }}</p>
+               <p>{{ lead.source == leadSourceMap.SOURCE_IGNITE ? '' :  lead.is_email_billing == 1 ?'Email':'Paper' }}</p>
            </v-col>
 
 
@@ -220,6 +220,7 @@
 
 <script>
 import dayJs from "dayjs";
+import { leadSourceMap } from '@scripts/data/LeadSourceMap';
 
 export default {
   name: "ApplicationDetails",
@@ -266,6 +267,9 @@ export default {
         }
     },
     computed: {
+      leadSourceMap(){
+          return leadSourceMap;
+      },
       date_of_birth() {
           return dayJs(this.lead.date_of_birth,'YYYY-MM-DD').format('DD/MM/YYYY');
       },

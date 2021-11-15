@@ -55,13 +55,14 @@ class IgniteLeadService
     private function setAttribute(array $leadInfo) : void{
 
         //tenant
-        $this->connectionApplication->first_name = $leadInfo['tenant']['firstName'] ?? 'Iron';
-        $this->connectionApplication->last_name  = $leadInfo['tenant']['lastName'] ?? 'Man' ;
-        $this->connectionApplication->source     = ConnectionApplication::SOURCE_IGNITE ;
-        $this->connectionApplication->email      = $leadInfo['tenant']['email'] ?? 'abc@hood.ai';
-        $this->connectionApplication->phone      = $leadInfo['tenant']['mobilePhoneNumber'] ?? '';
-        $this->connectionApplication->dob        = date("Y-m-d", strtotime($leadInfo['tenant']['birthDate'])) ?? '1991/08/09';
-        
+        $this->connectionApplication->first_name   = $leadInfo['tenant']['firstName'] ?? 'Iron';
+        $this->connectionApplication->last_name    = $leadInfo['tenant']['lastName'] ?? 'Man' ;
+        $this->connectionApplication->source       = ConnectionApplication::SOURCE_IGNITE ;
+        $this->connectionApplication->email        = $leadInfo['tenant']['email'] ?? 'abc@hood.ai';
+        $this->connectionApplication->phone        = $leadInfo['tenant']['mobilePhoneNumber'] ?? '';
+        $this->connectionApplication->dob          = date("Y-m-d", strtotime($leadInfo['tenant']['birthDate'])) ?? '1991/08/09';
+        $this->connectionApplication->tenancy_type = ConnectionApplication::TENANCY_TYPE_RENTER;
+
         //property
         $street   =  $leadInfo['property']['street'] ?? '';
         $state    = self::MAP_STATE[strtolower( $leadInfo['property']['state'] )] ?? '';
@@ -229,8 +230,8 @@ class IgniteLeadService
         };
 
         //TODO logic might be changed according to requirementes
-        // if($service->getNextPageUrl() == '') {
-        if(count($allLead) < 25) {
+        if($service->getNextPageUrl() == '') {
+        // if(count($allLead) < 25) {
             return 0;
         }else{
             $allLead =  $service->getIgniteLeads( $service->getToken() , $service->getNextPageUrl() );
