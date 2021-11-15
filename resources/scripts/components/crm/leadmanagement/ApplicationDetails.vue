@@ -84,7 +84,7 @@
                <p class="font-weight-bold">Email billing</p>
            </v-col>
            <v-col cols ="7" class="py-0 my-0">
-               <p>{{ lead.source == leadSourceMap.SOURCE_IGNITE ? '' :  lead.is_email_billing == 1 ?'Email':'Paper' }}</p>
+               <p>{{ lead.is_email_billing == 1 ?'Email': lead.is_email_billing == 2 ? 'Paper' : '' }}</p>
            </v-col>
 
 
