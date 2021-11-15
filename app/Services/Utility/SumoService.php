@@ -9,15 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
+
+
 class SumoService
 {
     private array|Collection|ConnectionApplication|Model $application;
-
-    public function __construct(int $id)
-    {
-        $this->application = ConnectionApplication::findOrFail($id);
-        $this->application->load(['identification', 'connectionServices']);
-    }
 
     /**
      * Store customer data in Sumo
@@ -41,4 +37,58 @@ class SumoService
 
         ];
     }
+
+
+    public function validateEmail(String $email){
+        $baseUrl              = config('sumo.base_url');
+        $url                  = $baseUrl . "/validation/email";
+        $emailTobeChecked     = $email;
+
+        try {
+            
+            $response = Http::withHeaders([
+                "content-type"    => "application/json",
+                "Accept"          => "*/*",
+            ])
+            ->get($url, [ 'email' => $emailTobeChecked ]);
+            
+            $result = json_decode($response->body(), true);
+            info('Result fetching from ignite');
+            \Log::info($result);
+            \Log::info($result['valid']);
+            return $result['valid'];
+        } catch (\Exception $exception) {
+            \Log::error($exception->getMessage());
+            \Log::error($exception->getTraceAsString());
+            throw $exception;
+        }
+        
+    }
+
+    public function validateMobile(String $phone){
+        $baseUrl              = config('sumo.base_url');
+        $url                  = $baseUrl . "/validation/phone";
+        $phoneTobeChecked     = $phone;
+
+        try {
+            
+            $response = Http::withHeaders([
+                "content-type"    => "application/json",
+                "Accept"          => "*/*",
+            ])
+            ->get($url, [ 'phone' => $phoneTobeChecked ]);
+            
+            $result = json_decode($response->body(), true);
+            info('Result fetching from ignite');
+            \Log::info($result);
+            \Log::info($result['valid']);
+            return $result['valid'];
+        } catch (\Exception $exception) {
+            \Log::error($exception->getMessage());
+            \Log::error($exception->getTraceAsString());
+            throw $exception;
+        }
+        
+    }
+
 }

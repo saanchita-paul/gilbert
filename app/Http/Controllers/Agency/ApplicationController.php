@@ -22,6 +22,7 @@ use App\Services\Agency\ApplicationsMetricsService;
 use App\Services\Agency\SearchConnectionApplication;
 use App\Services\Utility\IgniteConnectionLeadService;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
+use App\Services\Utility\SumoService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ApplicationController extends Controller
@@ -309,8 +310,11 @@ class ApplicationController extends Controller
     }
 
     public function fastTest(Request $request){
-       $igninte =  new IgniteConnectionLeadService();
-       $igninte->authenticate();
+    //    $igninte =  new IgniteConnectionLeadService();
+    //    $igninte->authenticate();
+          $s = new SumoService();
+          $s->validateEmail("riyad298");
+          return 'validate email';
     }
 
     
