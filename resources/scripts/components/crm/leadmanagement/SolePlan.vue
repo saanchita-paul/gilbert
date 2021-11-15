@@ -14,7 +14,9 @@ name: "SolePlan",
     methods:{
         reviewPlan()
         {
-
+            console.log('detail clicked')
+            this.$emit('soleDialog');
+            console.log(this.$attrs)
         }
     }
 }
