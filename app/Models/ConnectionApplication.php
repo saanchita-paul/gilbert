@@ -214,6 +214,8 @@ class ConnectionApplication extends Model
     const SOURCE_FOXIE = 1;
     const SOURCE_IGNITE = 2;
 
+    const EMAIL_BILLING_EMAIL = 1;
+    const EMAIL_BILLING_PAPER = 2;
 
     
     const TENANCY_TYPE_RENTER = 1;

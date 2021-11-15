@@ -84,7 +84,7 @@
                <p class="font-weight-bold">Email billing</p>
            </v-col>
            <v-col cols ="7" class="py-0 my-0">
-               <p>{{ lead.is_email_billing == 1 ?'Email': lead.is_email_billing == 2 ? 'Paper' : '' }}</p>
+               <p>{{ lead.is_email_billing == emailBillingMapper.EMAIL_BILLING_EMAIL ?'Email': lead.is_email_billing == emailBillingMapper.EMAIL_BILLING_PAPER  ? 'Paper' : '' }}</p>
            </v-col>
 
 
@@ -221,6 +221,7 @@
 <script>
 import dayJs from "dayjs";
 import { leadSourceMap } from '@scripts/data/LeadSourceMap';
+import { emailBillingMapper } from '@scripts/data/ConnectionApplicationMapper';
 
 export default {
   name: "ApplicationDetails",
@@ -267,6 +268,9 @@ export default {
         }
     },
     computed: {
+      emailBillingMapper(){
+          return emailBillingMapper;
+      },
       leadSourceMap(){
           return leadSourceMap;
       },
