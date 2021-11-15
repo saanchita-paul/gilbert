@@ -142,7 +142,7 @@ props: {
             selectedProviderId: 'starter_speed',
             otherPlans1: null,
             isActivePlan: null,
-            solePlanDialog: true,
+            solePlanDialog: false,
         }
     },
         methods: {
