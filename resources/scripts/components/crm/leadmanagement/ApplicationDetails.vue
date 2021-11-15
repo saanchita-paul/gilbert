@@ -153,49 +153,49 @@
           </span>
        </p> -->
        <p class="sub-title mt-4 mb-2">Service Preference</p>
-        <v-row>
-            <v-col  class="my-0 py-0 mx-0">
+        <div class="d-flex flex-wrap-100" >
+            <div  class="my-0 py-0 mx-0 border-all">
                 <p class="pt-2 pb-1 mb-0 services">
                   <span class="ml-0">
-                      <v-icon :disabled="isServiceAllowed(lead.service_interests, 'power')" color="yellow">mdi-flash</v-icon>Power
+                      <v-icon :disabled="isServiceAllowed(lead.service_interests, 'power')" color="yellow" size="17">mdi-flash</v-icon> Power
                   </span>
                 </p>
-                <p class="py-0 my-0 pl-3 service-status" :class="getServiceClass('power')">
+                <p class="py-0 my-0 service-status" :class="getServiceClass('power')">
                     {{getServiceStatus('power')}}
                 </p>
-            </v-col>
+            </div>
 
-            <v-col  class="my-0 py-0 mx-0">
+            <div  class="my-0 py-0 mx-0 border-all">
                 <p class="pt-2 pb-1 mb-0 services">
                   <span class="ml-0">
-                      <v-icon :disabled="isServiceAllowed(lead.service_interests, 'gas')" color="red">mdi-fire</v-icon>Gas
+                      <v-icon :disabled="isServiceAllowed(lead.service_interests, 'gas')" color="red" size="17">mdi-fire</v-icon> Gas
                   </span>
                 </p>
-                <p class="py-0 my-0 pl-3 service-status" :class="getServiceClass('gas')">
+                <p class="py-0 my-0 service-status" :class="getServiceClass('gas')">
                     {{getServiceStatus('gas')}}
                 </p>
-            </v-col>
-            <v-col  class="my-0 py-0 mx-0">
+            </div>
+            <div  class="my-0 py-0 mx-0 border-all">
                 <p class="pt-2 pb-1 mb-0 services">
                   <span class="ml-0">
-                       <v-icon :disabled="isServiceAllowed(lead.service_interests, 'internet')" color="green">mdi-wifi</v-icon>Internet
+                       <v-icon  :disabled="isServiceAllowed(lead.service_interests, 'internet')" color="green" size="17">mdi-wifi</v-icon> Internet
                   </span>
                 </p>
-                <p class="py-0 my-0 pl-3 service-status" :class="getServiceClass('internet')">
+                <p class="py-0 my-0 service-status" :class="getServiceClass('internet')">
                     {{getServiceStatus('internet')}}
                 </p>
-            </v-col>
-            <v-col  class="my-0 py-0 mx-0">
+            </div>
+            <div  class="my-0 py-0 mx-0 border-all">
                 <p class="pt-2 pb-1 mb-0 services">
                   <span class="ml-0">
-                      <v-icon :disabled="isServiceAllowed(lead.service_interests, 'water')" color="blue">mdi-water</v-icon>Water
+                      <v-icon :disabled="isServiceAllowed(lead.service_interests, 'water')" color="blue" size="17">mdi-water</v-icon> Water
                   </span>
                 </p>
-                <p class="py-0 my-0 pl-3 service-status" :class="getServiceClass('water')">
+                <p class="py-0 my-0 service-status" :class="getServiceClass('water')">
                     {{getServiceStatus('water')}}
                 </p>
-            </v-col>
-        </v-row>
+            </div>
+        </div>
 
        <v-row>
            <v-col cols="12">
@@ -288,7 +288,7 @@ export default {
     font-size: 14px !important;
 }
 .services{
-    font-size: 17px !important;
+    font-size: 15px !important;
     font-weight: 700;
 }
 .unassigned, .assigned, .escalated, .processing, .common_color, .closed, .can\'t_connect{
@@ -307,4 +307,13 @@ export default {
     color: #FF5722 !important;
 }
 
+.border-all{
+    /* border: 1px solid black; */
+    flex-basis: 31%;
+}
+
+.flex-wrap-100{
+    flex-wrap: wrap; 
+    width: 100%;
+}
 </style>

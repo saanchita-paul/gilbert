@@ -187,7 +187,7 @@ const newNote = {
 const serviceProvider = [
     {
         name: 1,
-        logo: '/assets/images/SupplierLogo.png',
+        logo: '/assets/images/EA.png',
         title: 'EA'
     },
     // {
