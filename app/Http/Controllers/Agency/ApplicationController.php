@@ -313,7 +313,7 @@ class ApplicationController extends Controller
     //    $igninte =  new IgniteConnectionLeadService();
     //    $igninte->authenticate();
           $s = new SumoService();
-          $s->validateEmail("riyad298");
+          $s->validateData("riyad298@gmail.com" , "email");
           return 'validate email';
     }
 

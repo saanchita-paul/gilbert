@@ -4,6 +4,7 @@ namespace App\Services\Utility;
 
 use App\Models\APILog;
 use App\Models\ConnectionApplication;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
@@ -14,6 +15,11 @@ use Illuminate\Support\Facades\Log;
 class SumoService
 {
     private array|Collection|ConnectionApplication|Model $application;
+
+    const TYPE_MOBILE = 1;
+    const TYPE_EMAIL  = 2;
+
+
 
     /**
      * Store customer data in Sumo
@@ -71,11 +77,18 @@ class SumoService
         ];
     }
 
-
-    public function validateEmail(String $email){
+    /**
+     * Validate email and phone using sumo API.
+     *
+     * @param  String $mobileOrEmail [ ex. riyad298@gmail.com / 01919448787 ]
+     * @param  String $type [ ex. mobile / email ]
+     * @return ConnectionApplication $newApplication
+     * @throws Exception $exception
+     */
+    public function validateData(String $data , String $type){
         $baseUrl              = config('sumo.base_url');
-        $url                  = $baseUrl . "/validation/email";
-        $emailTobeChecked     = $email;
+        $url                  = $baseUrl . "/validation" . '/' .  strtolower(  $type );
+        $dataTobeChecked      = $data;
 
         try {
             
@@ -83,36 +96,10 @@ class SumoService
                 "content-type"    => "application/json",
                 "Accept"          => "*/*",
             ])
-            ->get($url, [ 'email' => $emailTobeChecked ]);
+            ->get($url, [ $type => $dataTobeChecked ]);
             
             $result = json_decode($response->body(), true);
-            info('Result fetching from ignite');
-            \Log::info($result);
-            \Log::info($result['valid']);
-            return $result['valid'];
-        } catch (\Exception $exception) {
-            \Log::error($exception->getMessage());
-            \Log::error($exception->getTraceAsString());
-            throw $exception;
-        }
-        
-    }
-
-    public function validateMobile(String $phone){
-        $baseUrl              = config('sumo.base_url');
-        $url                  = $baseUrl . "/validation/phone";
-        $phoneTobeChecked     = $phone;
-
-        try {
-            
-            $response = Http::withHeaders([
-                "content-type"    => "application/json",
-                "Accept"          => "*/*",
-            ])
-            ->get($url, [ 'phone' => $phoneTobeChecked ]);
-            
-            $result = json_decode($response->body(), true);
-            info('Result fetching from ignite');
+            info('Result fetching from sumo server');
             \Log::info($result);
             \Log::info($result['valid']);
             return $result['valid'];
