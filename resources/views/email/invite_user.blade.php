@@ -38,7 +38,7 @@
     font-size: 14px;">
         <header>
             {{-- <img src="{{ asset('assets/images/email/headerFrame.png' )}}" width="100%"> --}}
-            <img src="https://4e5c-45-124-169-170.ngrok.io/assets/images/email/headerFrame.png" width="100%">
+            <img src="https://devcrmagency.hood.ai/assets/images/email/headerFrame.png" width="100%">
         </header>
 
         <section class="main-content" style="padding: 10px 5px;">
@@ -75,7 +75,7 @@
             <div class="email-footer" style="background-color: #532D86;
         padding: 5px 15px;">
                 {{-- <img src="{{ asset('assets/images/email/HOODlogo.png')}}" style="max-width: 150px;"> --}}
-                <img src="https://4e5c-45-124-169-170.ngrok.io/assets/images/email/HOODlogo.png" style="max-width: 150px;">
+                <img src="https://devcrmagency.hood.ai/assets/images/email/HOODlogo.png" style="max-width: 150px;">
             </div>
         </section>
     </div>
