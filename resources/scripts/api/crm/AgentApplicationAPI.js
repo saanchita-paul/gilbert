@@ -78,7 +78,6 @@ export default {
         try {
             // get application summary by application id
             let response = (await axios.get(`/api/applications/${id}`)).data;
-            console.log('response', response);
             return ApplicationMapper.mapApplicationSummary(response.data);
         } catch (error) {
             return error.data;
@@ -87,7 +86,7 @@ export default {
     async createApplication(application) {
 
         application = ApplicationMapper.mapToServer(application);
-         return await axios.post(`/api/applications`, {...application});
+        return await axios.post(`/api/applications`, {...application});
 
     },
 }

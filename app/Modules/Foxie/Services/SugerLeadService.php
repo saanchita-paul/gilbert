@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Models\Identification;
 use Illuminate\Support\Facades\Log;
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
 
 class SugerLeadService
 {
@@ -34,8 +35,8 @@ class SugerLeadService
     const MAP_STATE_NSW = 'New South Wales';
     const MAP_STATE_VIC = 'Victoria';
     const MAP_STATE_QLD = 'Queensland';
-    const MAP_STATE_SA = 'South Australia';
-    const MAP_STATE_NT = 'Northern Territory';
+    const MAP_STATE_SA  = 'South Australia';
+    const MAP_STATE_NT  = 'Northern Territory';
     const MAP_STATE_TAS = 'Tasmania';
     const MAP_STATE_ACT = 'Australian Capital Territory';
 
@@ -43,8 +44,8 @@ class SugerLeadService
         'nsw' => self::MAP_STATE_NSW,
         'vic' => self::MAP_STATE_VIC,
         'qld' => self::MAP_STATE_QLD,
-        'sa' => self::MAP_STATE_SA,
-        'nt' => self::MAP_STATE_NT,
+        'sa'  => self::MAP_STATE_SA,
+        'nt'  => self::MAP_STATE_NT,
         'tas' => self::MAP_STATE_TAS,
         'act' => self::MAP_STATE_ACT,
     ];
@@ -104,7 +105,7 @@ class SugerLeadService
 
         try {
             $formattedDate = Carbon::parse($request->id_expiry_c)->format("Y-m-d");
-            $mappedType = Identification::TYPE_MAP[$request->id_type_c];
+            $mappedType = Identification::TYPE_MAP[$request->id_type_c] ?? null;
 
             if($type == self::TYPE_CREATE){
                 $identification->expire_date = $formattedDate ?? null;
@@ -138,7 +139,7 @@ class SugerLeadService
                 $this->connectionApplication->connectionServices()->create(
                     [
                         'service_type' => self::TYPE_SERVICE[ $value ] ,
-                        'status' => ConnectionApplication::STATUS_UNASSIGNED ,
+                        'status' => ConnectionService::WATER_STATUS_IN_PROGRESS ,
                     ]
                 );
             }
@@ -268,47 +269,59 @@ class SugerLeadService
         }
     }
 
+
     /**
-     * Show the specified resource in storage.
+     * fetching lead by ID
      *
-     * @param String|null $from
-     * @param String|null $to
-     * @param null $id
-     * @return array $leads
+     * @param $id
+     *
+     * @return array|mixed
+     *
      * @throws Exception
      */
-    public function show(String $from = null , String $to = null , $id = null) : array
+    public function findById($id)
     {
-        try {
-            $leads = null;
-            $identificationColumns = 'identification:id,connection_application_id,expire_date,type';
-            $connectionServiceColumns = 'connectionServices:id,connection_application_id,service_type,status';
+        $identificationColumns = 'identification:id,connection_application_id,expire_date,type';
 
-            if($id == null){
-                $lead =  ConnectionApplication::with([$identificationColumns])
-                    ->where('created_at', '>=', $from)
-                    ->where('created_at', '<=', $to)
-                    ->where('source' , ConnectionApplication::SOURCE_FOXIE )
-                    ->get();
-            }else{
-                $lead  = ConnectionApplication::with([$identificationColumns])
-                    ->where( 'source' , ConnectionApplication::SOURCE_FOXIE )
-                    ->where('id' , $id)
-                    ->first();
-            }
+        $lead  = ConnectionApplication::with([$identificationColumns])
+            ->where( 'source' , ConnectionApplication::SOURCE_FOXIE )
+            ->where('id' , $id)
+            ->first();
+
+        return !$lead ? throw new Exception("Error Processing Request", 1) : array_merge(
+            $lead->toArray(),
+            (new LeadStatusMapper($id))->toArray()
+        );
+    }
 
 
-
-            return !$lead ? throw new Exception("Error Processing Request", 1) : array_merge(
+    /**
+     * Fetching leads using date range
+     *
+     * @param $from
+     * @param $to
+     *
+     * @return array
+     *
+     * @throws Exception
+     */
+    public function get($from, $to): array
+    {
+        $identificationColumns = 'identification:id,connection_application_id,expire_date,type';
+        $leads =  ConnectionApplication::with([$identificationColumns])
+            ->where('updated_at', '>=', $from)
+            ->where('updated_at', '<=', $to)
+            ->where('source' , ConnectionApplication::SOURCE_FOXIE )
+            ->get();
+        $data = [];
+        foreach ($leads as $lead) {
+            $data[] = array_merge(
                 $lead->toArray(),
-                (new LeadStatusMapper($id))->toArray()
+                (new LeadStatusMapper($lead->id))->toArray()
             );
-
-        } catch (\Exception $ex) {
-                Log::error("Problem in retrieving data");
-                Log::error($ex->getMessage());
-                throw new Exception("Lead not found", 1);
         }
+
+        return $data;
     }
 
 }

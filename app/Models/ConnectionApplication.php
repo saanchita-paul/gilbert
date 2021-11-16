@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Foxie\Models\SugerLead;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Ignite\Models\IgniteLead;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * App\Models\ConnectionApplication
@@ -213,6 +214,8 @@ class ConnectionApplication extends Model
     const SOURCE_FOXIE = 1;
     const SOURCE_IGNITE = 2;
 
+    const EMAIL_BILLING_EMAIL = 1;
+    const EMAIL_BILLING_PAPER = 2;
 
     
     const TENANCY_TYPE_RENTER = 1;
@@ -304,6 +307,14 @@ class ConnectionApplication extends Model
     public function SugerLead()
     {
         return $this->hasOne(SugerLead::class , 'connection_application_id');
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function igniteLead()
+    {
+        return $this->hasOne(IgniteLead::class , 'connection_application_id');
     }
 
     /**

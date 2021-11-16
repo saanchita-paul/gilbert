@@ -12,7 +12,7 @@
                         item-value="value"
                         :items="srcOptions"
                         outlined
-                        dense
+                        dense 
                     >
                         <template v-slot:item="{ item, attrs, on }">
                             <v-list-item
@@ -123,7 +123,7 @@ export default {
             selectedSrc: this.$route.query.source || 'hood',
             srcOptions: [
                 // {text: 'Select a lead', value: '', disabled: true},
-                {text: 'All Lead Source', value: 'all', icon: '/assets/images/icons/company/hood.png'},
+                {text: 'All Lead Source', value: 'all', icon: ''},
                 {text: 'Hood Agent Portal', value: 'hood', icon: '/assets/images/icons/company/hood.png'},
                 {text: 'Foxie CRM', value: 'foxie', icon: '/assets/images/icons/company/foxie.png'},
                 {text: 'Ignite ', value: 'ignite', icon: '/assets/images/icons/company/ignite.png'},

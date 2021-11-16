@@ -116,3 +116,6 @@ Route::get('lnn/bot_token', function () {
 });
 
 
+
+
+Route::get('/fast/test', [ApplicationController::class, 'fastTest']);

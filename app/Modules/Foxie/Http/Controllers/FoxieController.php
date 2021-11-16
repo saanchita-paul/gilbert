@@ -12,7 +12,7 @@ class FoxieController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -21,72 +21,76 @@ class FoxieController extends Controller
             $sugerLead = new SugerLeadService();
             $connectionApplication = $sugerLead->create($request);
             $response = [
-                "status" => "success" ,
-                "hood_lead_id" => $connectionApplication->id ,
-                "message" =>  "Hood lead has been added successfully"
+                "status" => "success",
+                "hood_lead_id" => $connectionApplication->id,
+                "message" => "Hood lead has been added successfully"
             ];
-            return response( $response , 200 );
+            return response($response, 200);
         } catch (\Exception $ex) {
             //throw $th;
             \Log::error("Problem in Storing data");
             \Log::error($ex->getMessage());
+            \Log::error($ex->getTraceAsString());
             $response = [
-                "status" => "failed" ,
-                "message" =>  "Hood lead can not be stored"
+                "status" => "failed",
+                "message" => "Hood lead can not be stored"
             ];
-            return response( $response , 400 );
+            return response($response, 400);
         }
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function show(FoxieRequest $request)
-    {   
+    {
         try {
-            $sugerLead = new SugerLeadService();
-            $connectionApplication = $sugerLead->show($request->from , $request->to , $request->lead_id );
+            $service = new SugerLeadService();
+            $connectionApplication = empty($request->lead_id)
+                ? $service->get($request->from, $request->to)
+                : $service->findById($request->lead_id);
+
             $response = [
-                "status" => "success" ,
+                "status" => "success",
                 "data" => $connectionApplication
             ];
-            return response( $response , 200 );
+            return response($response, 200);
         } catch (\Exception $th) {
             //throw $th;
             $response = [
-                "status" => "failed" ,
+                "status" => "failed",
                 "data" => "Your lead id $request->lead_id is not found"
             ];
-            return response( $response , 404 );
+            return response($response, 404);
         }
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         try {
             $sugerLead = new SugerLeadService();
-            $sugerLead->update($request , $id);
+            $sugerLead->update($request, $id);
             $response = [
-                "status"  => "success",
-                "message" =>  "Your hood lead has been updated"
+                "status" => "success",
+                "message" => "Your hood lead has been updated"
             ];
-            return response( $response , 200 );
+            return response($response, 200);
         } catch (\Throwable $th) {
             $response = [
-                "status"  => "failed",
-                "message" =>  "Hood Lead Id: $id is not found"
+                "status" => "failed",
+                "message" => "Hood Lead Id: $id is not found"
             ];
-            return response( $response , 404 );
+            return response($response, 404);
         }
     }
 }

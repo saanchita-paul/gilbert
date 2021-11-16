@@ -645,9 +645,6 @@
         </div>
       </div>
 
-
-
-
       <div class="crm-text-field" v-if="property_details.state == 'Queensland' && property_details.has_electricity == false">
         <div class="field-label">
           <span>Inspection Time *</span>
@@ -846,7 +843,10 @@
         <div class="field-label">
           <span>Expiry Date *</span>
         </div>
-        <div class="text-field">
+
+
+
+        <div class="text-field"  v-if="indentification.type !== 3">
           <ValidationProvider
             name="Expired Date"
             rules="required"
@@ -890,6 +890,54 @@
             </v-menu>
           </ValidationProvider>
         </div>
+        <div class="text-field"  v-if="indentification.type === 3">
+          <ValidationProvider
+            name="Expired Date"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <v-menu
+              v-model="showMovingDate"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <ValidationProvider
+                  name="Expired Date"
+                  rules="required|medicare-date|medi-expire"
+                  v-slot="{ errors }"
+                >
+                  <v-text-field
+                    placeholder="MM/YY"
+                    outlined
+                    dense
+                    v-model="indentification.medicare_expire_date"
+                    v-bind="attrs"
+                    :error-messages="errors[0]"
+                    hide-details="auto"
+                    @change="updateExpireDatePicker"
+                  >
+                    <template slot="append">
+                      <v-icon v-on="on">mdi-calendar</v-icon>
+                    </template>
+                  </v-text-field>
+                </ValidationProvider>
+              </template>
+              <v-date-picker
+                v-model="medicare_expire_date"
+                :min="minExpiredate"
+                type="month"
+                @input="showMovingDate = false"
+              ></v-date-picker>
+            </v-menu>
+          </ValidationProvider>
+        </div>
+
+
+
       </div>
       <div class="crm-text-field" v-if="indentification.type == 3">
         <div class="field-label">
@@ -918,6 +966,12 @@
           </ValidationProvider>
         </div>
       </div>
+
+
+
+
+
+
 
       <v-row>
         <v-col cols="8">
@@ -972,6 +1026,10 @@ import LeadApplicationService from "@scripts/services/crm/LeadApplicationService
 import DayJs from "dayjs";
 import { isNull } from "lodash-es";
 import AuthorizedPersonForm from "@scripts/components/crm/leadmanagement/AuthorizedPersonForm";
+import SPECIAL_NUMBER from "@scripts/data/constants/SPECIAL_NUMBER";
+import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
+import dayJs from "dayjs";
+import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 
 
 export default {
@@ -1124,7 +1182,7 @@ export default {
           value: 3,
         },
       ],
-      specialNumberDD: ["1", "2"],
+      specialNumberDD: SPECIAL_NUMBER,
       colorDD: [
         {
           text: "Green",
@@ -1140,13 +1198,14 @@ export default {
         },
       ],
       indentification: {
-        type: "",
-        card_number: "",
-        special_number: "",
-        expire_date: "",
-        card_color: "",
-        state: "",
-        country: "",
+          type: "",
+          card_number: "",
+          special_number: "",
+          expire_date: "",
+          card_color: "",
+          state: "",
+          country: "",
+          medicare_expire_date: ""
       },
       property_details: {
         moving_date: "",
@@ -1196,13 +1255,14 @@ export default {
         family_violance: "",
         additional_instruction: "",
       },
-      dob: null,
-      moving_date: null,
-      expire_date: null,
-      showMovingDate: false,
-      connection_date: false,
-      showDateOfBirth: false,
-      serviceAddressFlag: false,
+        dob: null,
+        moving_date: null,
+        expire_date: null,
+        medicare_expire_date: null,
+        showMovingDate: false,
+        connection_date: false,
+        showDateOfBirth: false,
+        serviceAddressFlag: false,
     };
   },
   methods: {
@@ -1236,8 +1296,6 @@ export default {
     },
 
     synFormData() {
-      console.log('lead sycn' , this.lead);
-
       // console.log(this.lead.identification?.expire_date);
       this.person_details.title = this.lead.title;
       this.person_details.first_name = this.lead.first_name;
@@ -1252,10 +1310,12 @@ export default {
       this.person_details.family_violance = this.lead.family_violance;
       this.person_details.is_email_billing = this.lead.is_email_billing;
       this.person_details.additional_instruction =
-        this.lead.additional_instruction;
+      this.lead.additional_instruction;
 
       this.dob = this.lead.dob;
       this.moving_date = this.lead.moving_date;
+      // console.log('identifcation' , this.lead.identification)
+      // this.expire_date = undefined;
       this.expire_date = this.lead.identification?.expire_date;
       // this.property_details.moving_date = this.lead.moving_date;
       this.property_details.is_billing_same = true;
@@ -1316,12 +1376,24 @@ export default {
     },
 
     formatDate() {
-      this.property_details.moving_date = new DayJs(this.moving_date).format(
+      this.property_details.moving_date = dayJs(this.moving_date).format(
         "DD/MM/YYYY"
       );
-      this.person_details.dob = new DayJs(this.dob).format("DD/MM/YYYY");
+      this.person_details.dob = dayJs(this.dob).format("DD/MM/YYYY");
 
-      let expire = new DayJs(this.expire_date).isValid();
+      if(this.indentification.type === IDENTIFICATION.MEDICARE) {
+          this.indentification.medicare_expire_date = (dayJs(this.expire_date).isValid())
+              ?  dayJs(this.expire_date).format("MM/YY")
+              : "";
+      } else {
+          this.indentification.expire_date = (dayJs(this.expire_date).isValid())
+              ? dayJs(this.expire_date).format("DD/MM/YYYY")
+              : "";
+
+      }
+
+
+      let expire = this.expire_date == '' || this.expire_date == undefined || this.expire_date == null ? '' :  new DayJs(this.expire_date).isValid();
       this.indentification.expire_date = expire
         ? new DayJs(this.expire_date).format("DD/MM/YYYY")
         : "";
@@ -1396,18 +1468,34 @@ export default {
     },
 
     expire_date() {
-      if (isNull(this.expire_date)) return;
+      if (isNull(this.expire_date) || this.expire_date == '' || this.expire_date == undefined ) return;
       this.indentification.expire_date = new DayJs(this.expire_date).format(
         "DD/MM/YYYY"
       );
       this.$emit(
         "updateDraft",
         "expire_date",
-        this.indentification.expire_date,
+        this.indentification?.expire_date,
         true,
         true
       );
     },
+
+      medicare_expire_date() {
+          this.indentification.medicare_expire_date = dayJs(this.medicare_expire_date).format("MM/YY");
+          const formatedDate = ApplicationMapper.mapMadecareDateToServer( this.indentification.medicare_expire_date, false);
+          this.$emit(
+              "updateDraft",
+              "expire_date",
+              formatedDate,
+              true,
+              true
+          );
+
+
+
+      }
+
   },
   async mounted() {
       // console.log('services', this.services);

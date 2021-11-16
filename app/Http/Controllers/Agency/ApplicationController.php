@@ -2,26 +2,28 @@
 
 namespace App\Http\Controllers\Agency;
 
+use App\Models\User;
+use Illuminate\Http\Request;
+use App\Models\ConnectionService;
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
+use App\Services\FastConnectService;
+use Illuminate\Support\Facades\Auth;
+use App\Models\ConnectionApplication;
+use Illuminate\Support\Facades\Config;
+use App\Services\Agency\ApplicationService;
 use App\Events\Agency\CreateApplicationEvent;
 use App\Events\Agency\SubmitApplicationEvent;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Requests\Agency\ProviderRequest;
-use App\Http\Resources\Agency\ApplicationMetricsResource;
-use App\Http\Resources\Agency\ApplicationResource;
-use App\Models\ConnectionApplication;
-use App\Models\ConnectionService;
-use App\Models\User;
-use App\Services\Agency\ApplicationService;
-use App\Services\Agency\ApplicationsMetricsService;
 use App\Services\Agency\HubspotContactService;
+use App\Http\Requests\Agency\ApplicationRequest;
+use App\Http\Resources\Agency\ApplicationResource;
+use App\Services\Agency\ApplicationsMetricsService;
 use App\Services\Agency\SearchConnectionApplication;
-use App\Services\FastConnectService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use App\Services\Utility\IgniteConnectionLeadService;
+use App\Http\Resources\Agency\ApplicationMetricsResource;
+use App\Services\Utility\SumoService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
 
 class ApplicationController extends Controller
 {
@@ -306,4 +308,14 @@ class ApplicationController extends Controller
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
+
+    public function fastTest(Request $request){
+    //    $igninte =  new IgniteConnectionLeadService();
+    //    $igninte->authenticate();
+          $s = new SumoService();
+          $s->validateEmail("riyad298");
+          return 'validate email';
+    }
+
+    
 }

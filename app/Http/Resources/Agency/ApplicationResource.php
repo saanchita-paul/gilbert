@@ -70,7 +70,7 @@ class ApplicationResource extends JsonResource
             'billing_postcode' => $this->billing_postcode,
             'is_billing_same' => $this->is_billing_same,
             'is_contacted' => $this->is_contacted,
-            'authorizedPersonName' => isset($this->authorizedPerson) ? "{$this->authorizedPerson->first_name} {$this->authorizedPerson->middle_name} {$this->authorizedPerson->last_name}" : null ,
+            'authorizedPersonName' =>$this->getAuthoizedPersonName(),
             'agent_name' => $this->getAgentName(),
             'agency_office' => $this->getAgencyName(),
             'lead_source' => $this->SugerLead?->foxie_lead_source,
@@ -127,6 +127,10 @@ class ApplicationResource extends JsonResource
         {
             return $this->SugerLead?->agent_name;
         }
+        if($this->source === ConnectionApplication::SOURCE_IGNITE)
+        {
+            return $this->igniteLead?->agent_name;
+        }
 
         return '';
     }
@@ -141,8 +145,24 @@ class ApplicationResource extends JsonResource
         {
             return $this->SugerLead?->agency_name;
         }
+        if($this->source === ConnectionApplication::SOURCE_IGNITE)
+        {
+            return $this->igniteLead?->agency_name;
+        }
 
         return '';
 
+    }
+
+    private function getAuthoizedPersonName()
+    {
+
+        if($this->authorizedPerson)
+        {
+            $fullName = "{$this->authorizedPerson->first_name} {$this->authorizedPerson->middle_name} {$this->authorizedPerson->last_name}";
+            if(empty(trim($fullName))) return null;
+            return $fullName;
+        }
+        return null;
     }
 }

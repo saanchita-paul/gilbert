@@ -46,7 +46,7 @@ name: "LeadUserDetails",
         }
     },
     mounted() {
-        console.log('LeadUserDetails', this.services);
+        // console.log('LeadUserDetails', this.services);
     }
 
 }
