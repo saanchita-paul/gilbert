@@ -155,17 +155,14 @@ class ApplicationService
 
     public function createIdentification($identificationData, $id)
     {
-        \Log::info('identification', $identificationData);
 
-        $identification = Identification::where('connection_application_id', $id);
+
+        $identificationBuilder = Identification::where('connection_application_id', $id);
         if(isset($identificationData['medicare_expire_date'])) {
-            \Log::info('sazzad1', $identificationData['medicare_expire_date']);
             unset($identificationData['medicare_expire_date']);
         }
-        \Log::info('identification', $identificationData);
-//        \Log::info('sazzad2', $identificationData['medicare_expire_date']);
-
-        if ($identification->first()) {
+        $identification = $identificationBuilder->first();
+        if ($identification) {
             $identification->type = isset($identificationData['type'])?$identificationData['type']: null;
             $identification->card_number =  isset($identificationData['card_number'])?$identificationData['card_number']: null;
             $identification->special_number =  isset($identificationData['special_number'])?$identificationData['special_number']: null; $identificationData['special_number'];
