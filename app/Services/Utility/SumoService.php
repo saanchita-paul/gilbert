@@ -85,7 +85,7 @@ class SumoService
             'authenticationNo' => $this->application->identification?->card_number,
             'authenticationState' => $this->getMappedState($this->application->identification?->state),
             'authenticationType' => $this->getAuthenticationType($this->application->identification?->type),
-            'billDelivery' => true, // todo: will get actual data type from Taige
+            'billDelivery' => $this->application->is_email_billing, // todo: will get actual data type from Taige
             'concentCC' => $this->application->is_contacted, // todo: will get actual data type from Taige
             'customerDateOfBirth' => $this->application->dob,
             'customerEmail' => $this->application->email,
