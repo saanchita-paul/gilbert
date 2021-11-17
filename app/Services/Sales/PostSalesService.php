@@ -31,7 +31,6 @@ class PostSalesService
         $vendorCode= "HD2";
         $version = "1";
         $saleDate =  "2021-21-07T10:45:00Z";
-        Log::info($saleDate);
         $saleDate = (new Carbon($this->connection->updated_at))->toIso8601String();
         $customerType =  "RES";
         $transactionType = "ENE";
@@ -198,9 +197,9 @@ class PostSalesService
         $salesId = $submitSallData?->id;
 
 
-        info("START EA Data");
+        info("START EA Data Response");
         info(json_encode($data));
-        info("END EA Data");
+        info("END EA Data Response");
 
 
         foreach ($quotes as $quote)
