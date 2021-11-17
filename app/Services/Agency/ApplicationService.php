@@ -156,6 +156,9 @@ class ApplicationService
     public function createIdentification($identificationData, $id)
     {
         $identification = Identification::where('connection_application_id', $id);
+        if(isset($identificationData['medicare_expire_date'])) {
+            unset($identificationData['medicare_expire_date']);
+        }
 
         if ($identification->first()) {
             return $identification->update($identificationData);
@@ -168,9 +171,7 @@ class ApplicationService
 
     public function submit(array $applications, $id)
     {
-        if(isset($applications['medicare_expire_date'])) {
-            unset($applications['medicare_expire_date']);
-        }
+
         $lead = $applications['lead'];
         $vendorId = $this->calculateVendorId($id);
         $lead = array_merge($lead, [
