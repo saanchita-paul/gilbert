@@ -1,4 +1,4 @@
-export default class {
+export default class SumoPlanMapper {
     /**
      *
      * @param {boolean} is_elec_available
@@ -20,12 +20,16 @@ export default class {
      * @param {string} gas_monthly_cost
      * @param {string} gas_yearly_cost
      */
-
     constructor({
                     is_elec_available,
                     elec_plan_name,
                     elec_distributor_name,
                     elec_charge_name,
+                    elec_rate_name,
+                    elec_charge_usage,
+                    elec_charge_supply,
+
+
                     elec_price_reference,
                     elec_charges,
                     elec_disclaimer_text,
@@ -38,13 +42,21 @@ export default class {
                     gas_price_reference,
                     gas_distributor_name,
                     gas_charge_name,
+                    
+                    gas_rate_name,
+                    gas_charge_usage,
+                    gas_charge_supply,
+
                     gas_charges,
                     gas_disclaimer_text,
                     gas_monthly_cost,
                     gas_yearly_cost,
 
-                }) {
+                } = {} ) {
 
+        this.elec_rate_name = elec_rate_name;
+        this.elec_charge_usage = elec_charge_usage;
+        this.elec_charge_supply = elec_charge_supply;
         this.is_elec_available = is_elec_available;
         this.elec_plan_name = elec_plan_name;
         this.elec_distributor_name = elec_distributor_name;
@@ -63,6 +75,9 @@ export default class {
         this.gas_disclaimer_text = gas_disclaimer_text;
         this.gas_monthly_cost = gas_monthly_cost;
         this.gas_yearly_cost = gas_yearly_cost;
+        this.gas_rate_name = gas_rate_name;
+        this.gas_charge_usage = gas_charge_usage;
+        this.gas_charge_supply = gas_charge_supply;
 
     }
 }

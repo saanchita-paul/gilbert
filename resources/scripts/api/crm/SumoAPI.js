@@ -1,5 +1,6 @@
 import axios from "axios";
-import SumoMapper from "../mappers/crm/SumoMapper";
+import SumoMapper from "@scripts/api/mappers/crm/SumoMapper";
+
 const baseURL = 'https://stageapi.sumo.com.au/hood/v1.0';
 
 const sumoAxios = axios.create({
@@ -25,12 +26,14 @@ export default {
     products: async (location) => {
         try {
             console.log('calling sumo api')
-            let meta = SumoMapper.mapProduct(location);
+            let meta   = SumoMapper.mapProduct(location);
             console.log(meta)
             const data = await sumoAxios.get('/products',{params: meta});
             console.log('calling sumo api')
             console.log('sumo' , data);
-            return data.data;
+            let a = SumoMapper.planMapper(data.data);
+            console.log('mapper data' , a)
+            return SumoMapper.planMapper(data.data);
         } catch (error) {
             console.log('in the error')
             console.log(error)

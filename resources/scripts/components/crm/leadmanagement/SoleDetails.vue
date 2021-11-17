@@ -2,7 +2,7 @@
     <div>
         <div
             class="header d-flex justify-space-between align-center"
->
+        >
                 <div class=" text-h5 font-weight-bold">Sumo Plan - ASSURE</div>
                 <div @click="closeDialog">
                     <v-icon aria-hidden="false" color="white">
