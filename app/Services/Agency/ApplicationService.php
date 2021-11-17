@@ -156,16 +156,22 @@ class ApplicationService
     public function createIdentification($identificationData, $id)
     {
         \Log::info('identification', $identificationData);
+
         $identification = Identification::where('connection_application_id', $id);
         if(isset($identificationData['medicare_expire_date'])) {
+            \Log::info('sazzad1', $identificationData['medicare_expire_date']);
             unset($identificationData['medicare_expire_date']);
         }
+//        \Log::info('sazzad2', $identificationData['medicare_expire_date']);
 
         if ($identification->first()) {
+
             return $identification->update($identificationData);
+        } else{
+            $identificationData['connection_application_id'] = $id;
+            return Identification::create($identificationData);
         }
-        $identificationData['connection_application_id'] = $id;
-        return Identification::create($identificationData);
+
 
     }
 
