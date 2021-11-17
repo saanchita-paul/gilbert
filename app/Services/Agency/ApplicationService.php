@@ -155,7 +155,6 @@ class ApplicationService
 
     public function createIdentification($identificationData, $id)
     {
-        if()
         $identification = Identification::where('connection_application_id', $id);
 
         if ($identification->first()) {
@@ -170,7 +169,7 @@ class ApplicationService
     public function submit(array $applications, $id)
     {
         if(isset($applications['medicare_expire_date'])) {
-            unset($applications['medicare_expire_date']);
+            unset($applications['medicare_expire_date'])
         }
         $lead = $applications['lead'];
         $vendorId = $this->calculateVendorId($id);
