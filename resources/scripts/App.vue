@@ -4,7 +4,13 @@
 
 <script>
 export default {
-    name: "App.vue"
+    name: "App.vue",
+
+    mounted() {
+        this.$eventBus.$on("address_updated", address => {
+            console.log("EventBus: ", address)
+        });
+    }
 }
 </script>
 

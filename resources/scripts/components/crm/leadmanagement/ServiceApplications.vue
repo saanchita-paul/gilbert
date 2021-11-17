@@ -134,11 +134,11 @@
 
         <v-dialog
             v-model="solePlanDialog"
-            max-width="700"
+            max-width="1200"
         >
             <v-card>
-                <SoleDetails 
-                    @soleDialog="soleDialog" 
+                <SoleDetails
+                    @soleDialog="soleDialog"
                 />
             </v-card>
         </v-dialog>

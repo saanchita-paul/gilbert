@@ -2,51 +2,50 @@
     <div>
         <div
             class="header d-flex justify-space-between align-center"
-        >
-                <div class=" text-h5 font-weight-bold">Sumo Plan - ASSURE</div>
+>
+                <div class=" text-h5 font-weight-bold">Sumo Plan - {{planDetails.elec_plan_name || planDetails.gas_plan_name}}</div>
                 <div @click="closeDialog">
                     <v-icon aria-hidden="false" color="white">
                         mdi-close
-                    </v-icon>    
+                    </v-icon>
                     close
                 </div>
         </div>
-        
+
         <div class="d-flex justify-space-between px-4 py-6">
-            <div class="flex-basis-33">
-                <div class="px-2"> 
-                    <p class="titleFontSize font-weight-bold primaryFontColor">SUMO ASSURE</p>
+            <div class="flex-basis-30">
+                <div class="px-2">
+                    <p class="titleFontSize font-weight-bold primaryFontColor">{{planDetails.elec_plan_name || planDetails.gas_plan_name}}</p>
                     <p class="textFontSize font-weight-bold">Features:</p>
-                    <p class="textFontSize">Missing input put here</p>
                 </div>
             </div>
-            <div class="flex-basis-33">
+            <div class="flex-basis-45">
                 <div class="border-left-right px-2">
-                    <p class="textFontSize font-weight-bold"> <v-icon class="textFontSize" color="yellow">mdi-flash</v-icon> Electricity changes <span class="subTitleFontSize font-weight-regular">(incl. GST)</span></p>
+                    <p class="textFontSize font-weight-bold"> <v-icon class="textFontSize" color="yellow">mdi-flash</v-icon> Electricity charges <span class="subTitleFontSize font-weight-regular">(incl. GST)</span></p>
 
                     <div class="d-flex justify-space-between ">
                         <div class="font-weight-bold textFontSize">Meter Type</div>
-                        <div class="textFontSize">Single Rate</div>
+                        <div class="textFontSize">{{planDetails.elec_charge_name}}</div>
                     </div>
 
-                    <div class="d-flex justify-space-between ">
-                        <div class="font-weight-bold textFontSize">Daily supply charge <span class="subTitleFontSize font-weight-regular" >(c/day)</span> </div>
-                        <div class="textFontSize">77.00</div>
+                    <div class="d-flex justify-space-between " v-for="charge in planDetails.elec_charges" :key="charge.name">
+                        <div class="font-weight-bold textFontSize">{{charge.name}} <span class="subTitleFontSize font-weight-regular" >(c/day)</span> </div>
+                        <div class="textFontSize">{{charge.value_with_gst}}</div>
                     </div>
 
-                    <div class="d-flex justify-space-between ">
-                        <div class="font-weight-bold textFontSize">Peak Usage <span class="subTitleFontSize font-weight-regular" >(c/day)</span> </div>
-                        <div class="textFontSize">77.00</div>
-                    </div>
+<!--                    <div class="d-flex justify-space-between ">-->
+<!--                        <div class="font-weight-bold textFontSize">Peak Usage <span class="subTitleFontSize font-weight-regular" >(c/day)</span> </div>-->
+<!--                        <div class="textFontSize">77.00</div>-->
+<!--                    </div>-->
 
                     <div class="my-4">
                         <a href="#" class="textFontSize linkColor">Electricty Fact Sheet</a>
                     </div>
-                    
+
                     <div class="border-bottom"></div>
 
-                    <p class="textFontSize font-weight-bold mt-4"> <v-icon class="textFontSize pb-1"  color="error">mdi-fire</v-icon> Gas changes <span class="subTitleFontSize font-weight-regular">(incl. GST)</span></p>
-                
+                    <p class="textFontSize font-weight-bold mt-4"> <v-icon class="textFontSize pb-1"  color="error">mdi-fire</v-icon> Gas charges <span class="subTitleFontSize font-weight-regular">(incl. GST)</span></p>
+
                     <div class="d-flex justify-space-between ">
                         <div class="font-weight-bold textFontSize">Daily supply charge <span class="subTitleFontSize font-weight-regular" >(c/day)</span> </div>
                         <div class="textFontSize">77.00</div>
@@ -110,22 +109,22 @@
 
 
             </div>
-            <div class="flex-basis-33 ">
-                <div class=" px-2 "> 
-                    <p class="text-center primaryFontColor largeFontSize font-weight-bold">23% less than current victorian default offer electricity price</p>
+            <div class="flex-basis-35">
+                <div class=" px-2 ">
+                    <p class="text-center primaryFontColor largeFontSize font-weight-bold">{{planDetails.elec_price_reference}}</p>
                 </div>
-                <div class=" px-2 "> 
+                <div class=" px-2 ">
                     <p class="text-center textFontSize">
                         GST incl. Estimated Price based on a family using 4000kWh per year on a single rate tariff in the Jemena distribution area.
                     </p>
                 </div>
 
-                <div class="px-2"> 
+                <div class="px-2">
                     <p class="text-center titleFontSize font-weight-bold">
                         Estimated Cost
                     </p>
                 </div>
-                
+
                 <div class="d-flex">
                     <div class="flex-grow-1 d-flex justify-center border-right">
                         <div class="">
@@ -133,12 +132,12 @@
                                 <v-icon class="pb-1" size="33"  color="yellow">mdi-flash</v-icon>
                             </div>
                             <div class="d-flex justify-center align-center">
-                                <span class="subTitleFontSize">$</span> 
-                                <span class="font-weight-bold" style="font-size: 32px;">90</span> 
-                                <span class="subTitleFontSize">mo</span> 
+                                <span class="subTitleFontSize">$</span>
+                                <span class="font-weight-bold" style="font-size: 32px;">{{planDetails.elec_monthly_cost}}</span>
+                                <span class="subTitleFontSize">mo</span>
                             </div>
                             <div class="d-flex justify-center">
-                                <div class="subTitleFontSize">$1,074 yr</div>
+                                <div class="subTitleFontSize">${{planDetails.elec_yearly_cost}} yr</div>
                             </div>
                         </div>
                     </div>
@@ -148,12 +147,12 @@
                                 <v-icon class="pb-1" size="33"  color="error">mdi-fire</v-icon>
                             </div>
                             <div class="d-flex justify-center align-center">
-                                <span class="subTitleFontSize">$</span> 
-                                <span class="font-weight-bold" style="font-size: 32px;"> 108 </span> 
-                                <span class="subTitleFontSize">mo</span> 
+                                <span class="subTitleFontSize">$</span>
+                                <span class="font-weight-bold" style="font-size: 32px;"> {{planDetails.gas_monthly_cost}} </span>
+                                <span class="subTitleFontSize">mo</span>
                             </div>
                             <div class="d-flex justify-center">
-                                <div class="subTitleFontSize">$1,074 yr</div>
+                                <div class="subTitleFontSize">{{planDetails.gas_yearly_cost}} yr</div>
                             </div>
                         </div>
                     </div>
@@ -161,7 +160,7 @@
 
                 <div class="d-flex mt-4">
                     <v-btn block color="#2989F4" class="white--text">
-                        Select Plan 
+                        Select Plan
                         <v-icon dark>
                             mdi-arrow-right
                         </v-icon>
@@ -175,8 +174,15 @@
 </template>
 
 <script>
+    import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
+
     export default {
         name: "SoleDetails",
+        data() {
+            return {
+                planDetails: new SumoPlanDetails({})
+            }
+        },
         methods:{
             closeDialog(){
                 this.$emit('soleDialog')
@@ -212,9 +218,16 @@ $errorColor: #FF5722;
     height: 100%;
 }
 
-.flex-basis-33{
-    flex-basis: 33%;
+.flex-basis-30{
+    flex-basis: 30%;
 }
+.flex-basis-45{
+    flex-basis: 43%;
+}
+.flex-basis-35{
+    flex-basis: 35%;
+}
+
 
 .largeFontSize{
     font-size: $largeFontSize;
