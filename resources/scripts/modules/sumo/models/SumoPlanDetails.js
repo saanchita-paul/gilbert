@@ -45,5 +45,24 @@ export default class {
 
                 }) {
 
+        this.is_elec_available = is_elec_available;
+        this.elec_plan_name = elec_plan_name;
+        this.elec_distributor_name = elec_distributor_name;
+        this.elec_charge_name = elec_charge_name;
+        this.elec_price_reference = elec_price_reference;
+        this.elec_charges = elec_charges;
+        this.elec_disclaimer_text = elec_disclaimer_text;
+        this.elec_monthly_cost = elec_monthly_cost;
+        this.elec_yearly_cost = elec_yearly_cost;
+        this.is_gas_available = is_gas_available;
+        this.gas_plan_name = gas_plan_name;
+        this.gas_price_reference = gas_price_reference;
+        this.gas_distributor_name = gas_distributor_name;
+        this.gas_charge_name = gas_charge_name;
+        this.gas_charges = gas_charges;
+        this.gas_disclaimer_text = gas_disclaimer_text;
+        this.gas_monthly_cost = gas_monthly_cost;
+        this.gas_yearly_cost = gas_yearly_cost;
+
     }
 }
