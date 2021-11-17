@@ -162,6 +162,7 @@ class ApplicationService
             \Log::info('sazzad1', $identificationData['medicare_expire_date']);
             unset($identificationData['medicare_expire_date']);
         }
+        \Log::info('identification', $identificationData);
 //        \Log::info('sazzad2', $identificationData['medicare_expire_date']);
 
         if ($identification->first()) {
