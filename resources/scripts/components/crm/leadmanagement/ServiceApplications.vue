@@ -339,6 +339,8 @@ export default {
         },
 
         onSelectProvider1(name) {
+            //TODO need to decide if provider is sumo
+            console.log('sumo' ,  name)
             const providerData  = this.providers.find((pl)=>{
                 return pl.name === name;
             })
