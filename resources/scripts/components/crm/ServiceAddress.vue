@@ -350,6 +350,7 @@ export default {
           if (v) {
               // console.log()
               this.$emit('saveAddress', this.propertyDetails);
+              this.$eventBus.$emit("address_updated", this.propertyDetails)
           }
           return v;
       },
