@@ -155,6 +155,7 @@ class ApplicationService
 
     public function createIdentification($identificationData, $id)
     {
+        \Log::info('identification', $identificationData);
         $identification = Identification::where('connection_application_id', $id);
         if(isset($identificationData['medicare_expire_date'])) {
             unset($identificationData['medicare_expire_date']);
