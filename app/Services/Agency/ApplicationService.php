@@ -166,8 +166,15 @@ class ApplicationService
 //        \Log::info('sazzad2', $identificationData['medicare_expire_date']);
 
         if ($identification->first()) {
+            $identification->type = isset($identificationData['type'])?$identificationData['type']: null;
+            $identification->card_number =  isset($identificationData['card_number'])?$identificationData['card_number']: null;
+            $identification->special_number =  isset($identificationData['special_number'])?$identificationData['special_number']: null; $identificationData['special_number'];
+            $identification->expire_date = isset($identificationData['expire_date'])?$identificationData['expire_date']: null;
+            $identification->card_color =  isset($identificationData['card_color'])?$identificationData['card_color']: null;
+            $identification->state = isset($identificationData['state'])?$identificationData['state']: null;
+            $identification->country =  isset($identificationData['country'])?$identificationData['country']: null;
+            $identification->save();
 
-            return $identification->update($identificationData);
         } else{
             $identificationData['connection_application_id'] = $id;
             return Identification::create($identificationData);
