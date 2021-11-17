@@ -1,5 +1,10 @@
-import sumoAPI from "@scripts/api/crm/sumoAPI";
+import SumoAPI from "@scripts/api/crm/SumoAPI"
+
 
 export default {
-    loadAgencyData: (meta)=> sumoAPI.qualifyAddress(),
+    getPlans: async (address) => {
+        let distributorData =  await SumoAPI.qualifyAddress('');
+        let plans =  await SumoAPI.products(distributorData[0]);
+        return plans;
+    },
 }
