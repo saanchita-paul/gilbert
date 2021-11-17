@@ -169,7 +169,7 @@ class ApplicationService
     public function submit(array $applications, $id)
     {
         if(isset($applications['medicare_expire_date'])) {
-            unset($applications['medicare_expire_date'])
+            unset($applications['medicare_expire_date']);
         }
         $lead = $applications['lead'];
         $vendorId = $this->calculateVendorId($id);
