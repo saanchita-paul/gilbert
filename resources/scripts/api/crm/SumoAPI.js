@@ -1,5 +1,5 @@
-import SumoMapper from "@scripts/mappers/crm/SumoMapper";
 import axios from "axios";
+import SumoMapper from "../mappers/crm/SumoMapper";
 const baseURL = 'https://stageapi.sumo.com.au/hood/v1.0';
 
 const sumoAxios = axios.create({
@@ -9,12 +9,32 @@ const sumoAxios = axios.create({
 export default {
     qualifyAddress: async (address) => {
         try {
-            meta = SumoMapper.mapAddress(address);
-            const data = await sumoAxios.get('/qualification/address',{params: {address}});
+            console.log('calling sumo api')
+            let meta = SumoMapper.mapAddress(address);
+            console.log(meta)
+            const data = await sumoAxios.get('/qualification/address',{params: meta});
+            console.log('calling sumo api')
             console.log('sumo' , data);
             return data.data;
         } catch (error) {
+            console.log('in the error')
+            console.log(error)
             return error.data;
         }
     },
+    products: async (location) => {
+        try {
+            console.log('calling sumo api')
+            let meta = SumoMapper.mapProduct(location);
+            console.log(meta)
+            const data = await sumoAxios.get('/products',{params: meta});
+            console.log('calling sumo api')
+            console.log('sumo' , data);
+            return data.data;
+        } catch (error) {
+            console.log('in the error')
+            console.log(error)
+            return error.data;
+        }
+    }
 }

@@ -92,7 +92,7 @@
                     </div>
                     <div class="d-flex" v-if="plansFlag &&  selectedProviderId !== 1">
                         <div class="d-flex" v-for="plan in origin2" :key="plan.name">
-                            <SolePlan :plan="plan" @click.native="selectPlan(plan)" :isActive="isActivePlan"></SolePlan>
+                            <SolePlan :plan="plan" @soleDialog="soleDialog" @click.native="selectPlan(plan)" :isActive="isActivePlan"></SolePlan>
                         </div>
                     </div>
                 </v-col>
@@ -131,6 +131,18 @@
             </v-tab-item>
         </v-tabs>
 
+
+        <v-dialog
+            v-model="solePlanDialog"
+            max-width="700"
+        >
+            <v-card>
+                <SoleDetails 
+                    @soleDialog="soleDialog" 
+                />
+            </v-card>
+        </v-dialog>
+
     </v-row>
 </template>
 
@@ -149,11 +161,12 @@ import InternetService from "@scripts/components/crm/leadmanagement/InternetServ
 import { isNull } from "lodash-es";
 import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
 import ServiceProvideres from "@scripts/data/ServiceProvideres";
-
+import SumoService from '@scripts/services/crm/SumoService';
+import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails"
 
 export default {
     name: "ServiceApplications",
-    components: {SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails},
+    components: {SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails, SoleDetails},
     props: {
         leadSummary: {
             require: true
@@ -183,6 +196,7 @@ export default {
             waterStatus: null,
             origin2: null,
             isActivePlan: null,
+            solePlanDialog: false,
         }
     },
     computed: {
@@ -231,6 +245,9 @@ export default {
 
     },
     methods: {
+        soleDialog(){
+            this.solePlanDialog = !this.solePlanDialog;
+        },
         reviewPlan() {
             //todo
         },
@@ -338,8 +355,13 @@ export default {
             this.selectedProviderId = providerId
         },
 
-        onSelectProvider1(name) {
-            //TODO need to decide if provider is sumo
+        async onSelectProvider1(name) {
+            // TODO need to decide if provider is
+            if(name == 'sumo'){
+               console.log('inside sumo')
+               let sumoPlanData =  await SumoService.getPlans('');
+               console.log('sumo plan data ' , sumoPlanData)
+            }
             console.log('sumo' ,  name)
             const providerData  = this.providers.find((pl)=>{
                 return pl.name === name;

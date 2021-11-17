@@ -50,6 +50,16 @@ class SumoService
         2 => 'Business',
     ];
 
+    const MAP_PHONE = [
+        "New South Wales" => '02',
+        "Victoria" => '03',
+        "Queensland" => '07',
+        "South Australia" => '08',
+        "Northern Territory" => '08',
+        "Tasmania" => '03',
+        "Australian Capital Territory" => '02',
+    ];
+
     /**
      * Store customer data in Sumo
      *
@@ -61,37 +71,37 @@ class SumoService
         $this->application->load(['identification', 'connectionServices', 'authorizedPerson']);
 
         $url = config('sumo.base_url').config('sumo.store_customer_data_url');
-
+        
         $response = Http::put($url, $this->getCustomerData());
 
-       dd(json_decode($response->body(), true));
+        return json_decode($response->body(), true);
     }
 
     private function getCustomerData()
     {
         return [
-            'acceptTerms' => true, // need to ask
+            'acceptTerms' => true, // todo: Will be in UI, will get feedback from Taige
             'authenticationExpiry' => $this->application->identification?->expire_date,
             'authenticationNo' => $this->application->identification?->card_number,
             'authenticationState' => $this->getMappedState($this->application->identification?->state),
             'authenticationType' => $this->getAuthenticationType($this->application->identification?->type),
-            'billDelivery' => true, // need to ask, in document string
-            'concentCC' => "string", // need to ask, in document boolean
+            'billDelivery' => true, // todo: will get actual data type from Taige
+            'concentCC' => $this->application->is_contacted, // todo: will get actual data type from Taige
             'customerDateOfBirth' => $this->application->dob,
             'customerEmail' => $this->application->email,
             'customerFirstName' => $this->application->first_name,
             'customerLastName' => $this->application->last_name,
-            'customerPhone' => $this->application->phone, // need to ask, we do not save state code
+            'customerPhone' => $this->getMappedPhone($this->application->state, $this->application->phone_type, $this->application->phone),
             'customerTitle' => $this->application->title,
             'interestedIn' => $this->getMappedService($this->application->connectionServices?->pluck('service_type')->toArray()),
-            'lifeSupport' => true, // need to ask
-            'lifeSupportFuel' => "string", // need to ask
-            'marketingConcent' => true, // need to ask
+            'lifeSupport' => false,
+            // 'lifeSupportFuel' => "string",
+            'marketingConcent' => true, // todo: will get feedback from Taige
             'mirn' => $this->application->mirn,
             'nmi' => $this->application->nmi,
             'proposedMovingDate' => $this->getMappedDate($this->application->moving_date),
             'prospectType' => $this->getMappedPropertyType($this->application->property_type),
-            'quoteNumber' => "string", // need to ask, which mobile number
+            'quoteNumber' => "unique_identifier", // todo: we have to generate this and store in database
             'secondaryCustomerEmail' =>  $this->application->authorizedPerson?->email,
             'secondaryCustomerFirstName' => $this->application->authorizedPerson?->first_name,
             'secondaryCustomerLastName' => $this->application->authorizedPerson?->last_name,
@@ -127,6 +137,11 @@ class SumoService
     private function getMappedPropertyType(?int $type): string
     {
         return $type ? SumoService::MAP_PROPERTY_TYPE[$type] : '';
+    }
+
+    private function getMappedPhone($state, $type, $phone): string
+    {
+        return $type === 1 ? $phone : SumoService::MAP_PHONE[$state].$phone;
     }
 
     public function validateEmail(String $email){
