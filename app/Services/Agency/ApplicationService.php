@@ -155,7 +155,6 @@ class ApplicationService
 
     public function createIdentification($identificationData, $id)
     {
-        if()
         $identification = Identification::where('connection_application_id', $id);
 
         if ($identification->first()) {
