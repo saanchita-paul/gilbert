@@ -126,7 +126,7 @@ class PostSalesService
             "id"=> $id,
             "vendorCode"=> "HD2",
             "version"=> "1",
-            "saleDate"=> "2021-08-31T10:45:00Z",
+            "saleDate"=> "2021-11-29T10:45:00Z",
             "customerType"=> "RES",
             "transactionType"=> "ENE",
             "customer"=> $customer,
@@ -147,16 +147,17 @@ class PostSalesService
         "lifeSupport"=> $lifeSupport,
         ];
 
-        info("EA Data");
+        info("START EA Data");
         info(json_encode($eaData));
-        info("EA Data");
+        info("END EA Data");
         $variables= [
             'data'=>$eaData
         ];
 
         try{
+            $url = env('EA_SALES_URL','https://apigw-nonprod.energyaustralia.com.au/graphql');
             $client = new Client(
-                'https://apigw-nonprod.energyaustralia.com.au/graphql',
+                $url,
                 ['Authorization' => $this->accessToken]);
                 $gql = (new Mutation('submitSale'))
                 ->setVariables([new Variable('data', 'VendorSaleRequest!')])
@@ -191,9 +192,15 @@ class PostSalesService
     public function processEaData($results)
     {
         $data = json_decode($results);
+
         $submitSallData = $data?->data?->submitSale;
         $quotes = $submitSallData?->quotes;
         $salesId = $submitSallData?->id;
+
+
+        info("START EA Data");
+        info(json_encode($data));
+        info("END EA Data");
 
 
         foreach ($quotes as $quote)
