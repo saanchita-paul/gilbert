@@ -90,9 +90,11 @@
                                 @click.native="planSelect(plan,true)"
                             ></EnergyPlan>
                     </div>
+                    
                     <div class="d-flex" v-if="plansFlag &&  selectedProviderId !== 1">
                         <div class="d-flex" v-for="plan in origin2" :key="plan.name">
-                            <SolePlan :plan="plan" @soleDialog="soleDialog" @click.native="selectPlan(plan)" :isActive="isActivePlan"></SolePlan>
+                            <SumoPlan :sumoPlanDetails="sumoPlanDetails" v-if="plan.name == 'sumo_saver'" :plan="plan" @soleDialog="soleDialog" @click.native="selectPlan(plan)" :isActive="isActivePlan"></SumoPlan>
+                            <SolePlan v-else :plan="plan" @soleDialog="soleDialog" @click.native="selectPlan(plan)" :isActive="isActivePlan"></SolePlan>
                         </div>
                     </div>
                 </v-col>
@@ -161,6 +163,7 @@ import WaterService from "@scripts/components/crm/leadmanagement/WaterService";
 import InternetService from "@scripts/components/crm/leadmanagement/InternetService";
 import { isNull } from "lodash-es";
 import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
+import SumoPlan from "@scripts/components/crm/leadmanagement/SumoPlan";
 import ServiceProvideres from "@scripts/data/ServiceProvideres";
 import SumoService from '@scripts/services/crm/SumoService';
 import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails"
@@ -168,7 +171,7 @@ import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
 
 export default {
     name: "ServiceApplications",
-    components: { SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails, SoleDetails},
+    components: { SumoPlan, SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails, SoleDetails},
     props: {
         leadSummary: {
             require: true

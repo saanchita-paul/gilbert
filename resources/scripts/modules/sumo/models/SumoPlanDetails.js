@@ -55,6 +55,8 @@ export default class SumoPlanMapper {
                     gas_monthly_cost,
                     gas_yearly_cost,
 
+                    plan_name,
+
                 } = {} ) {
 
         this.elec_rate_name = elec_rate_name;
@@ -88,5 +90,11 @@ export default class SumoPlanMapper {
         this.gas_charge_usage = gas_charge_usage;
         this.gas_charge_supply = gas_charge_supply;
 
+        this.plan_name = plan_name;
+    }
+
+    getPlanName (plansList){
+        let planName =  plansList?.electricityProducts[0]?.electricityPlanName ??  plansList?.gasProducts[0]?.gasPlanName ?? '';
+        return planName;
     }
 }
