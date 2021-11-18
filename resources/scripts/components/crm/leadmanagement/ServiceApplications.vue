@@ -167,7 +167,7 @@ export default {
             serviceProvider: [],
             plans: [],
             plansFlag: false,
-            selectedPlanType: PLAN_TYPE_TOTAL,
+            selectedPlanType: '',
             viewPlanDialog: false,
             planTypeForDetails: null,
             activeService: 'energy',
@@ -216,7 +216,7 @@ export default {
             return ServiceProvideres.filter((dt)=> {
                return dt.service_type === 'energy';
             });
-        }
+        },
     },
     watch: {
         'leadSummary.service_interests'() {
@@ -224,13 +224,18 @@ export default {
         }
     },
     mounted() {
-
+        this.updateselectedPlan();
         this.loadServiceProvider();
         this.loadPlan();
-        this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
+        // this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
 
     },
     methods: {
+
+        updateselectedPlan() {
+          this.selectedPlanType = this.leadSummary.plan_type;
+        },
+
         reviewPlan() {
             //todo
         },
