@@ -369,7 +369,7 @@ export default {
                 try {
                     let address =  this.leadSummary.street_address + ' ' + this.leadSummary.city + ' ' + this.leadSummary.state + ' ' + this.leadSummary.postcode  ;
                     this.sumoPlanDetails =  
-                    await SumoService.getPlans(address , this.leadSummary.service_interests);
+                    await SumoService.getPlans(address , this.leadSummary.service_interests , this.leadSummary?.created_by_agent );
                     console.log('sumo plan data ' , this.sumoPlanDetails)
                     console.log('printing address ' , address)
                     this.actionOnSelectProvider(name)

@@ -23,7 +23,7 @@ export default {
             return error.data;
         }
     },
-    products: async (location , service_type) => {
+    products: async (location , service_type , agent_name) => {
         try {
             console.log('calling sumo api')
             let meta   = SumoMapper.mapProduct(location , service_type);
