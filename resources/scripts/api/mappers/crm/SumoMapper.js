@@ -13,7 +13,7 @@ export default {
             campaign: 'hood',
             channel: 'crm',
             consultantID: 'OurAgentName',
-            electricityDistributor: location.electricityDistributors.distributor,
+            electricityDistributor: location?.electricityDistributors?.distributor,
             fuelType: service_type,
             nmi: location.nmi,
             postcode: location.postcode,

@@ -12,11 +12,18 @@ export default {
                 } else if(service_interests.some(n=>n=='gas') && service_interests.some(n=>n=='gas') ){
                     service_type = 'D'
                 }
-                console.log('service type ' , service_type);
+                console.log('service type' , service_type);
                 let distributorData =  await SumoAPI.qualifyAddress(address);
                 console.log('printing address ' , address)
+
+                // let plans;
+                console.log(distributorData[0])
+                // if(distributorData[0].electricityDistributors.distributor){
                 let plans =  await SumoAPI.products(distributorData[0] , service_type);
                 return plans;
+                // }
+                // throw 'No plans found'
+
             } catch (error) {
                 throw error;
             }

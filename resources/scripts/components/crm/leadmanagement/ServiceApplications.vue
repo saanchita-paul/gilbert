@@ -250,7 +250,7 @@ export default {
 
         this.$eventBus.$on("address_updated", address => {
             console.log("EventBus: ", address)
-            this.setSumoDetailsData();
+            this.onSelectProvider1('sumo');
         });
 
     },
@@ -363,12 +363,15 @@ export default {
             this.selectedProviderId = providerId
         },
         async setSumoDetailsData(name){
+               this.sumoPlanDetails = new SumoPlanDetails({})
                console.log('inside sumo')
                console.log('this is lead summary' ,  this.leadSummary)
                 try {
+                    let address =  this.leadSummary.street_address + ' ' + this.leadSummary.city + ' ' + this.leadSummary.state + ' ' + this.leadSummary.postcode  ;
                     this.sumoPlanDetails =  
-                    await SumoService.getPlans(this.leadSummary.address_text , this.leadSummary.service_interests);
+                    await SumoService.getPlans(address , this.leadSummary.service_interests);
                     console.log('sumo plan data ' , this.sumoPlanDetails)
+                    console.log('printing address ' , address)
                     this.actionOnSelectProvider(name)
                     return 0;
                 } catch (error) {
