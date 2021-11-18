@@ -33,7 +33,7 @@ class EventServiceProvider extends ServiceProvider
          */
         SubmitApplicationEvent::class => [
 //Fox Automatic rejection steps to replicate issue
-//            SendApplicationToEA::class,
+            SendApplicationToEA::class,
             UpdateHubSpotContact::class,
             SendNotificationToSupportListener::class,
             SumoSubmitListener::class,
