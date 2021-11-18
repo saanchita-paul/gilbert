@@ -15,7 +15,7 @@ export default {
             console.log(meta)
             const data = await sumoAxios.get('/qualification/address',{params: meta});
             console.log('calling sumo api')
-            console.log('sumo' , data);
+            console.log('sumo api location data' , data);
             return data.data;
         } catch (error) {
             console.log('in the error')
