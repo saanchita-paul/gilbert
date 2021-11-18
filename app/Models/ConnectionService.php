@@ -54,6 +54,8 @@ class ConnectionService extends Model
     const WATER_STATUS_CONNECTED = 5;
     const WATER_STATUS_CANT_CONNECT = 9;
 
+    const PROVIDER_SUMO = 'sumo';
+
 
     const STATUS_MAPPING = [
         self::STATUS_UNASSIGNED => 'unassigned',

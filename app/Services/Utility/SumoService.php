@@ -71,7 +71,7 @@ class SumoService
         $this->application->load(['identification', 'connectionServices', 'authorizedPerson']);
 
         $url = config('sumo.base_url').config('sumo.store_customer_data_url');
-        
+
         $response = Http::put($url, $this->getCustomerData());
 
         return json_decode($response->body(), true);
@@ -150,13 +150,13 @@ class SumoService
         $emailTobeChecked     = $email;
 
         try {
-            
+
             $response = Http::withHeaders([
                 "content-type"    => "application/json",
                 "Accept"          => "*/*",
             ])
             ->get($url, [ 'email' => $emailTobeChecked ]);
-            
+
             $result = json_decode($response->body(), true);
             info('Result fetching from ignite');
             \Log::info($result);
@@ -167,14 +167,14 @@ class SumoService
             \Log::error($exception->getTraceAsString());
             throw $exception;
         }
-        
+
     }
 
     /**
      * Validate email and phone using sumo API.
      *
-     * @param  String $mobileOrEmail [ ex. riyad298@gmail.com / 01919448787 ]
-     * @param  String $type [ ex. mobile / email ]
+     * @param String $data
+     * @param String $type [ ex. mobile / email ]
      * @return ConnectionApplication $newApplication
      * @throws Exception $exception
      */
@@ -184,13 +184,13 @@ class SumoService
         $dataTobeChecked      = $data;
 
         try {
-            
+
             $response = Http::withHeaders([
                 "content-type"    => "application/json",
                 "Accept"          => "*/*",
             ])
             ->get($url, [ $type => $dataTobeChecked ]);
-            
+
             $result = json_decode($response->body(), true);
             info('Result fetching from sumo server');
             \Log::info($result);
@@ -201,7 +201,7 @@ class SumoService
             \Log::error($exception->getTraceAsString());
             throw $exception;
         }
-        
+
     }
 
 }

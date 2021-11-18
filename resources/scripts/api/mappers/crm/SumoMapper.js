@@ -26,6 +26,7 @@ export default {
         let plans = new SumoDataPlanMapper();
         console.log('plan list')
         console.log(plansList)
+        plans.is_elec_available = Array.isArray(plansList?.electricityProducts) && plansList?.electricityProducts.length > 0
         plans.elec_plan_name = plansList?.electricityProducts[0]?.electricityPlanName;
         plans.elec_distributor_name = plansList?.electricityProducts[0]?.distributor;
         plans.elec_charge_name = plansList?.electricityProducts[0]?.tariffs[0]?.name;
@@ -35,14 +36,14 @@ export default {
         plans.elec_disclaimer_text = plansList?.electricityProducts[0]?.disclaimer;
         plans.elec_monthly_cost = 0;
         plans.elec_yearly_cost = 0;
-        
 
+        plans.is_gas_available = Array.isArray(plansList?.gasProducts) && plansList?.gasProducts.length > 0
         plans.gas_plan_name = plansList?.gasProducts[0]?.gasPlanName;
         plans.gas_distributor_name = plansList?.gasProducts[0]?.distributor;
         plans.gas_charge_name = plansList?.gasProducts[0]?.tariffs[0]?.name;
         plans.gas_price_reference = plansList?.gasProducts[0]?.electricReferencePrice;
         plans.gas_charge_usage = plansList?.gasProducts[0]?.tariffs[0]?.charges.usage;
-        
+
         plans.gas_peak_usage    = plansList?.gasProducts[0]?.tariffs[0]?.charges.usage[0];
         plans.gas_offpeak_usage = plansList?.gasProducts[0]?.tariffs[0]?.charges.usage[1];
 
