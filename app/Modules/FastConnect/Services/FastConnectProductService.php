@@ -13,7 +13,8 @@ class FastConnectProductService
     private string $accessToken;
     private array|Collection|ConnectionApplication|Model $application;
     private array $productConnectionGroups;
-    private array $waterConnection;
+    private $waterConnection;
+    private array $productDetails;
 
     const MAP_STATE = [
         "New South Wales" => 'NSW',
@@ -65,14 +66,10 @@ class FastConnectProductService
 
     public function getProductDetails()
     {
-        $this->waterConnection = array_filter(
-            $this->productConnectionGroups,
-            function ($item) {
-                return $item->name== 'Water';
-            }
-        );
-
-        dd(json_encode($this->getProductDetailsData()));
+        $waterConnectionIndex = collect($this->productConnectionGroups)->search(function ($item) {
+            return $item->name == 'Water';
+        });
+        $this->waterConnection = $this->productConnectionGroups[$waterConnectionIndex];
 
         $authorization = 'Bearer ' . $this->accessToken;
         $response = Http::withHeaders([
@@ -83,7 +80,8 @@ class FastConnectProductService
             ->withBody(json_encode($this->getProductDetailsData()), 'application/json')
             ->post(\config('fastconnect.root_url') . \config('fastconnect.get_product_details_uri'));
         
-        dd(json_decode($response->body(), true));
+        $this->productDetails = json_decode($response->body(), true);
+        return $this;
     }
 
     private function getProductGroupData()
@@ -131,8 +129,8 @@ class FastConnectProductService
             'agent_code' => "3954V",
             "selected_groups" => [
                 [
-                    "connection_type" => $this->waterConnection['connection_type'],
-                    "id" => $this->waterConnection['id']
+                    "connection_type" => $this->waterConnection->connection_type,
+                    "id" => $this->waterConnection->id
                 ]
             ],
             "selected_products" => [
