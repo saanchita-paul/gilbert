@@ -24,7 +24,7 @@ use App\Services\Utility\IgniteConnectionLeadService;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Services\Utility\SumoService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use FastConnect\Services\FastConnectWaterService;
+use FastConnect\Services\SubmitWaterLeadToFastConnect;
 
 class ApplicationController extends Controller
 {
@@ -318,10 +318,10 @@ class ApplicationController extends Controller
           return 'validate email';
     }
 
-    public function fastWaterGroup(Request $request)
+    public function submitWaterLead(Request $request, $applicationId)
     {
         try {
-            $service = new FastConnectWaterService(67);
+            $service = new SubmitWaterLeadToFastConnect($applicationId);
             $response = $service->submitWaterLead();
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);

@@ -13,8 +13,8 @@ class FastConnectProductService
     private string $accessToken;
     private array|Collection|ConnectionApplication|Model $application;
     private array $productConnectionGroups;
-    private $waterConnection;
-    private array $productDetails;
+    public $waterConnection;
+    public array $productDetails;
 
     const MAP_STATE = [
         "New South Wales" => 'NSW',

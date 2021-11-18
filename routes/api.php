@@ -119,4 +119,4 @@ Route::get('lnn/bot_token', function () {
 
 
 
-Route::get('/fc/water/group', [ApplicationController::class, 'fastWaterGroup']);
+Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
