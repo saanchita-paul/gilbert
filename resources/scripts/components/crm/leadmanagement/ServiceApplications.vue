@@ -139,6 +139,7 @@
             <v-card>
                 <SoleDetails
                     @soleDialog="soleDialog"
+                    :sumoPlanDetails="sumoPlanDetails"
                 />
             </v-card>
         </v-dialog>
@@ -163,6 +164,7 @@ import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
 import ServiceProvideres from "@scripts/data/ServiceProvideres";
 import SumoService from '@scripts/services/crm/SumoService';
 import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails"
+import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
 
 export default {
     name: "ServiceApplications",
@@ -186,7 +188,7 @@ export default {
             activeService: 'energy',
             tab: null,
             origin: [ {text: 'Origin Go', bg: 'red', active: true, type: 'origin' },
-                { text: 'Origin Go Variable', bg: 'blue', active: false, type: 'origin' },
+                { text: 'Origin Go Variable', bg: 'blue', actSumoPlanDetailsive: false, type: 'origin' },
                 {text: 'Origin Basic', bg: 'orange', active: false , type: 'origin'}],
             sumo: [ {text: 'Sumo Saver', bg: 'purple', active: true, type: 'sumo' },
                 { text: 'Sumo ASSURE', bg: 'blue', active: false, type: 'sumo'},
@@ -197,6 +199,7 @@ export default {
             origin2: null,
             isActivePlan: null,
             solePlanDialog: false,
+            sumoPlanDetails: new SumoPlanDetails({})
         }
     },
     computed: {
@@ -242,6 +245,13 @@ export default {
         this.loadServiceProvider();
         this.loadPlan();
         this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
+        
+        console.log('lead summary' , this.leadSummary)
+
+        this.$eventBus.$on("address_updated", address => {
+            console.log("EventBus: ", address)
+            this.setSumoDetailsData();
+        });
 
     },
     methods: {
@@ -257,8 +267,6 @@ export default {
             this.$emit('updatePlan', plan, isManual);
         },
         isActive(service) {
-
-
 
             return this.leadSummary.service_types.includes(service.toLowerCase()) ? true : false;
 
@@ -354,13 +362,18 @@ export default {
         onSelectProvider(providerId) {
             this.selectedProviderId = providerId
         },
-
+        async setSumoDetailsData(){
+               console.log('inside sumo')
+               console.log('this is lead summary' ,  this.leadSummary)
+               this.sumoPlanDetails =  
+               await SumoService.getPlans(this.leadSummary.address_text , this.leadSummary.service_interests);
+               console.log('sumo plan data ' , this.sumoPlanDetails)
+               return 0;
+        },
         async onSelectProvider1(name) {
             // TODO need to decide if provider is
             if(name == 'sumo'){
-               console.log('inside sumo')
-               let sumoPlanData =  await SumoService.getPlans('');
-               console.log('sumo plan data ' , sumoPlanData)
+                await this.setSumoDetailsData();
             }
             console.log('sumo' ,  name)
             const providerData  = this.providers.find((pl)=>{

@@ -3,7 +3,7 @@
         <div
             class="header d-flex justify-space-between align-center"
 >
-                <div class=" text-h5 font-weight-bold">Sumo Plan - {{planDetails.elec_plan_name || planDetails.gas_plan_name}}</div>
+                <div class=" text-h5 font-weight-bold">Sumo Plan - {{sumoPlanDetails.elec_plan_name || sumoPlanDetails.gas_plan_name}}</div>
                 <div @click="closeDialog">
                     <v-icon aria-hidden="false" color="white">
                         mdi-close
@@ -15,7 +15,7 @@
         <div class="d-flex justify-space-between px-4 py-6">
             <div class="flex-basis-30">
                 <div class="px-2">
-                    <p class="titleFontSize font-weight-bold primaryFontColor">{{planDetails.elec_plan_name || planDetails.gas_plan_name}}</p>
+                    <p class="titleFontSize font-weight-bold primaryFontColor">{{sumoPlanDetails.elec_plan_name || sumoPlanDetails.gas_plan_name}}</p>
                     <p class="textFontSize font-weight-bold">Features:</p>
                 </div>
             </div>
@@ -25,12 +25,17 @@
 
                     <div class="d-flex justify-space-between ">
                         <div class="font-weight-bold textFontSize">Meter Type</div>
-                        <div class="textFontSize">{{planDetails.elec_charge_name}}</div>
+                        <div class="textFontSize">{{sumoPlanDetails.elec_charge_name}}</div>
                     </div>
 
-                    <div class="d-flex justify-space-between " v-for="charge in planDetails.elec_charges" :key="charge.name">
-                        <div class="font-weight-bold textFontSize">{{charge.name}} <span class="subTitleFontSize font-weight-regular" >(c/day)</span> </div>
-                        <div class="textFontSize">{{charge.value_with_gst}}</div>
+                    <div class="d-flex justify-space-between " v-for="(charge , i) in sumoPlanDetails.elec_charge_supply" :key="i">
+                        <div class="font-weight-bold textFontSize">{{charge.name}} <span class="subTitleFontSize font-weight-regular" >{{ charge.unit }}</span> </div>
+                        <div class="textFontSize">{{charge.incGST}}</div>
+                    </div>
+
+                    <div class="d-flex justify-space-between " v-for="(charge , i) in sumoPlanDetails.elec_charge_usage" :key="i+'s'">
+                        <div class="font-weight-bold textFontSize">{{charge.name}} <span class="subTitleFontSize font-weight-regular" >{{ charge.unit }}</span> </div>
+                        <div class="textFontSize">{{charge.incGST}}</div>
                     </div>
 
 <!--                    <div class="d-flex justify-space-between ">-->
@@ -46,21 +51,30 @@
 
                     <p class="textFontSize font-weight-bold mt-4"> <v-icon class="textFontSize pb-1"  color="error">mdi-fire</v-icon> Gas charges <span class="subTitleFontSize font-weight-regular">(incl. GST)</span></p>
 
-                    <div class="d-flex justify-space-between ">
-                        <div class="font-weight-bold textFontSize">Daily supply charge <span class="subTitleFontSize font-weight-regular" >(c/day)</span> </div>
-                        <div class="textFontSize">77.00</div>
+                     <div class="d-flex justify-space-between " v-for="(charge , i) in sumoPlanDetails.gas_charge_supply" :key="i+'p'">
+                        <div class="font-weight-bold textFontSize">{{charge.name}} <span class="subTitleFontSize font-weight-regular" >{{ charge.unit }}</span> </div>
+                        <div class="textFontSize">{{charge.incGST}}</div>
                     </div>
 
                     <p class="infoTextSize infoColor my-2">
-                        Disclaimer:  Winter is 1 May to 31 October (inclusive).  Non-winter is 1 November to 30 April (inclusive).
+                        {{ sumoPlanDetails.gas_disclaimer_text }}
                     </p>
 
-                    <div class="d-flex justify-space-between ">
-                        <div class="font-weight-bold textFontSize">Peak Usage <span class="subTitleFontSize font-weight-regular" >(c/MJ)</span> </div>
-                        <div class="textFontSize">Winter</div>
+                    <div v-for="(charge , i) in sumoPlanDetails.gas_charge_usage" :key="i+'k'" >
+
+                        <div class="d-flex justify-space-between ">
+                            <div class="font-weight-bold textFontSize">{{ charge.name }} <span class="subTitleFontSize font-weight-regular" >{{ charge.unit }}</span> </div>
+                            <div class="textFontSize">{{ charge.period }}</div>
+                        </div>
+
+                    <div class="d-flex justify-space-between " v-for="(rate , i) in charge.rates"  :key="i+'ch'">
+                        <div class="textFontSize">{{ rate.name }} 
+                            <!-- <span class="subTitleFontSize font-weight-regular" >(per day)</span>  -->
+                        </div>
+                        <div class="textFontSize">{{ rate.incGST }}</div>
                     </div>
 
-                    <div class="d-flex justify-space-between ">
+                    <!-- <div class="d-flex justify-space-between ">
                         <div class="textFontSize">0-100 MJ <span class="subTitleFontSize font-weight-regular" >(per day)</span> </div>
                         <div class="textFontSize">2.09</div>
                     </div>
@@ -73,15 +87,14 @@
                     <div class="d-flex justify-space-between ">
                         <div class="textFontSize">0-100 MJ <span class="subTitleFontSize font-weight-regular" >(per day)</span> </div>
                         <div class="textFontSize">2.09</div>
+                    </div> -->
+
                     </div>
 
-                    <div class="d-flex justify-space-between ">
-                        <div class="textFontSize">0-100 MJ <span class="subTitleFontSize font-weight-regular" >(per day)</span> </div>
-                        <div class="textFontSize">2.09</div>
-                    </div>
+                  
 
 
-                    <div class="d-flex justify-space-between ">
+                    <!-- <div class="d-flex justify-space-between ">
                         <div class="font-weight-bold textFontSize">Off-Peak Usage <span class="subTitleFontSize font-weight-regular" >(c/MJ)</span> </div>
                         <div class="textFontSize">Summar</div>
                     </div>
@@ -99,7 +112,7 @@
                     <div class="d-flex justify-space-between ">
                         <div class="textFontSize">0-100 MJ <span class="subTitleFontSize font-weight-regular" >(per day)</span> </div>
                         <div class="textFontSize">2.09</div>
-                    </div>
+                    </div> -->
 
                     <div class="my-4">
                         <a href="#" class="textFontSize linkColor">Electricty Fact Sheet</a>
@@ -111,7 +124,7 @@
             </div>
             <div class="flex-basis-35">
                 <div class=" px-2 ">
-                    <p class="text-center primaryFontColor largeFontSize font-weight-bold">{{planDetails.elec_price_reference}}</p>
+                    <p class="text-center primaryFontColor largeFontSize font-weight-bold">{{sumoPlanDetails.elec_price_reference}}</p>
                 </div>
                 <div class=" px-2 ">
                     <p class="text-center textFontSize">
@@ -133,11 +146,11 @@
                             </div>
                             <div class="d-flex justify-center align-center">
                                 <span class="subTitleFontSize">$</span>
-                                <span class="font-weight-bold" style="font-size: 32px;">{{planDetails.elec_monthly_cost}}</span>
+                                <span class="font-weight-bold" style="font-size: 32px;">{{sumoPlanDetails.elec_monthly_cost}}</span>
                                 <span class="subTitleFontSize">mo</span>
                             </div>
                             <div class="d-flex justify-center">
-                                <div class="subTitleFontSize">${{planDetails.elec_yearly_cost}} yr</div>
+                                <div class="subTitleFontSize">${{sumoPlanDetails.elec_yearly_cost}} yr</div>
                             </div>
                         </div>
                     </div>
@@ -148,17 +161,17 @@
                             </div>
                             <div class="d-flex justify-center align-center">
                                 <span class="subTitleFontSize">$</span>
-                                <span class="font-weight-bold" style="font-size: 32px;"> {{planDetails.gas_monthly_cost}} </span>
+                                <span class="font-weight-bold" style="font-size: 32px;"> {{sumoPlanDetails.gas_monthly_cost}} </span>
                                 <span class="subTitleFontSize">mo</span>
                             </div>
                             <div class="d-flex justify-center">
-                                <div class="subTitleFontSize">{{planDetails.gas_yearly_cost}} yr</div>
+                                <div class="subTitleFontSize">{{sumoPlanDetails.gas_yearly_cost}} yr</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="d-flex mt-4">
+                <div class="d-flex mt-4 ml-2">
                     <v-btn block color="#2989F4" class="white--text">
                         Select Plan
                         <v-icon dark>
@@ -178,6 +191,7 @@
 
     export default {
         name: "SoleDetails",
+        props:['sumoPlanDetails'],
         data() {
             return {
                 planDetails: new SumoPlanDetails({})
@@ -187,8 +201,12 @@
             closeDialog(){
                 this.$emit('soleDialog')
             }
-        }
-
+        },
+        mounted() {
+        this.$eventBus.$on("address_updated", address => {
+            console.log("EventBus: ", address)
+        });
+    }
     }
 </script>
 

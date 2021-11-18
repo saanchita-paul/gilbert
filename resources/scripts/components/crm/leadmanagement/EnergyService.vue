@@ -26,7 +26,6 @@ name: "EnergyService",
 
         },
 
-
         getColor(service) {
             if(this.isActive(service)) {
                 if(service.toLowerCase() === 'power') {

@@ -47,6 +47,9 @@ export default class SumoPlanMapper {
                     gas_charge_usage,
                     gas_charge_supply,
 
+                    gas_peak_usage,
+                    gas_offpeak_usage,
+
                     gas_charges,
                     gas_disclaimer_text,
                     gas_monthly_cost,
@@ -66,12 +69,18 @@ export default class SumoPlanMapper {
         this.elec_disclaimer_text = elec_disclaimer_text;
         this.elec_monthly_cost = elec_monthly_cost;
         this.elec_yearly_cost = elec_yearly_cost;
+        
+        
         this.is_gas_available = is_gas_available;
         this.gas_plan_name = gas_plan_name;
         this.gas_price_reference = gas_price_reference;
         this.gas_distributor_name = gas_distributor_name;
         this.gas_charge_name = gas_charge_name;
         this.gas_charges = gas_charges;
+
+        this.gas_peak_usage = gas_peak_usage;
+        this.gas_offpeak_usage = gas_offpeak_usage;
+
         this.gas_disclaimer_text = gas_disclaimer_text;
         this.gas_monthly_cost = gas_monthly_cost;
         this.gas_yearly_cost = gas_yearly_cost;

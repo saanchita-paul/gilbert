@@ -1,19 +1,20 @@
 import SumoDataPlanMapper from '@scripts/modules/sumo/models/SumoPlanDetails'
 
 export default {
-    mapAddress :(data)=>{
+    mapAddress :(address)=>{
         return {
-            address: '1/309 Cumberland Rd, Pascoe Vale VIC 3044',
+            // address: '1/309 Cumberland Rd, Pascoe Vale VIC 3044',
+            address,
             quoteNumber: 'randomQuoteNumberFromOurServer',
         }
     },
-    mapProduct :(location)=>{
+    mapProduct :(location , service_type)=>{
         return {
             campaign: 'hood',
             channel: 'crm',
             consultantID: 'OurAgentName',
             electricityDistributor: location.electricityDistributors.distributor,
-            fuelType: 'D',
+            fuelType: service_type,
             nmi: location.nmi,
             postcode: location.postcode,
             prospectType: 'Residential',
@@ -41,6 +42,10 @@ export default {
         plans.gas_charge_name = plansList?.gasProducts[0]?.tariffs[0]?.name;
         plans.gas_price_reference = plansList?.gasProducts[0]?.electricReferencePrice;
         plans.gas_charge_usage = plansList?.gasProducts[0]?.tariffs[0]?.charges.usage;
+        
+        plans.gas_peak_usage    = plansList?.gasProducts[0]?.tariffs[0]?.charges.usage[0];
+        plans.gas_offpeak_usage = plansList?.gasProducts[0]?.tariffs[0]?.charges.usage[1];
+
         plans.gas_charge_supply = plansList?.gasProducts[0]?.tariffs[0]?.charges.supply;
         plans.gas_disclaimer_text = plansList?.gasProducts[0]?.disclaimer;
         plans.gas_monthly_cost = 0;
