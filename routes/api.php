@@ -119,3 +119,5 @@ Route::get('lnn/bot_token', function () {
 
 
 Route::get('/fast/test', [ApplicationController::class, 'fastTest']);
+
+Route::get('/fc/water/group', [ApplicationController::class, 'fastWaterGroup']);
