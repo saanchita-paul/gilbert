@@ -168,7 +168,7 @@ import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
 
 export default {
     name: "ServiceApplications",
-    components: {SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails, SoleDetails},
+    components: { SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails, SoleDetails},
     props: {
         leadSummary: {
             require: true
@@ -362,19 +362,32 @@ export default {
         onSelectProvider(providerId) {
             this.selectedProviderId = providerId
         },
-        async setSumoDetailsData(){
+        async setSumoDetailsData(name){
                console.log('inside sumo')
                console.log('this is lead summary' ,  this.leadSummary)
-               this.sumoPlanDetails =  
-               await SumoService.getPlans(this.leadSummary.address_text , this.leadSummary.service_interests);
-               console.log('sumo plan data ' , this.sumoPlanDetails)
-               return 0;
+                try {
+                    this.sumoPlanDetails =  
+                    await SumoService.getPlans(this.leadSummary.address_text , this.leadSummary.service_interests);
+                    console.log('sumo plan data ' , this.sumoPlanDetails)
+                    this.actionOnSelectProvider(name)
+                    return 0;
+                } catch (error) {
+                    this.sumoPlanDetails = new SumoPlanDetails();
+                }
+
         },
         async onSelectProvider1(name) {
             // TODO need to decide if provider is
             if(name == 'sumo'){
-                await this.setSumoDetailsData();
+                //listening on ApplicationDetailsPage component
+                this.$eventBus.$emit("validate", this.setSumoDetailsData)
+                // await this.setSumoDetailsData(name);
+            }else{
+                this.actionOnSelectProvider(name)
             }
+            
+        },
+        actionOnSelectProvider(name){
             console.log('sumo' ,  name)
             const providerData  = this.providers.find((pl)=>{
                 return pl.name === name;
@@ -383,7 +396,6 @@ export default {
             this.isActivePlan = providerData.default_plan;
             this.selectedProviderId = name
         },
-
         updateStatus(text) {
             this.waterStatus = text;
         },

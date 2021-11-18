@@ -13,13 +13,13 @@ export default {
                     service_type = 'D'
                 }
                 console.log('service type ' , service_type);
-                let distributorData =  await SumoAPI.qualifyAddress('1/309 Cumberland Rd, Pascoe Vale VIC 3044');
+                let distributorData =  await SumoAPI.qualifyAddress(address);
+                console.log('printing address ' , address)
                 let plans =  await SumoAPI.products(distributorData[0] , service_type);
                 return plans;
             } catch (error) {
-                return error;    
+                throw error;
             }
 
-        return plans;
     },
 }

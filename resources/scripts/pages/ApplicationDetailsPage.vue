@@ -302,6 +302,11 @@ export default {
     },
 
   async  mounted() {
+        this.$eventBus.$on("validate", async (callback) => {
+              let v = await this.validateLead();
+              if(!v) return;
+              callback('sumo');
+          });
       this.leadId = this.$route.params.id;
       await this.loadPlanNoteAndLead();
       await this.updateMernNmi();
