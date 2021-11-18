@@ -24,7 +24,7 @@ use App\Services\Utility\IgniteConnectionLeadService;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Services\Utility\SumoService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use FastConnect\Services\FastConnectProductService;
+use FastConnect\Services\FastConnectWaterService;
 
 class ApplicationController extends Controller
 {
@@ -321,8 +321,8 @@ class ApplicationController extends Controller
     public function fastWaterGroup(Request $request)
     {
         try {
-            $service = new FastConnectProductService(67);
-            $res = $service->getProductGroup()->getProductDetails();
+            $service = new FastConnectWaterService(67);
+            $response = $service->submitWaterLead();
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
