@@ -52,7 +52,9 @@ export default {
         plans.gas_monthly_cost = 0;
         plans.gas_yearly_cost = 0;
 
+        plans.plan_name = plans.getPlanName(plansList);
+
         return plans;
     }
-
 };
+
