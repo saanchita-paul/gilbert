@@ -200,7 +200,7 @@ class ApplicationService
 
         $this->createIdentification($lead['identification'], $id);
 
-        $this->updateConnectionService($lead['service_interests'], $id);;
+//        $this->updateConnectionService($lead['service_interests'], $id);
 
         return $existLead;
     }

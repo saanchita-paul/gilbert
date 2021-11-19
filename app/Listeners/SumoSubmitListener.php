@@ -35,6 +35,8 @@ class SumoSubmitListener implements ShouldQueue
         \Log::info($event->applicationId);
         try {
             $application = ConnectionApplication::whereId($event->applicationId)->with("connectionServices")->firstOrFail();
+            info("**********LIST");
+            info($this->isProviderSumo($application));
             if ($this->isProviderSumo($application)) {
                 $res = (new SumoService())->storeCustomerData($event->applicationId);
                 info(json_encode($res));
@@ -50,7 +52,7 @@ class SumoSubmitListener implements ShouldQueue
      * @param $application
      * @return bool
      */
-    private function isProviderSumo($application)
+    private function isProviderSumo($application): bool
     {
         foreach ($application->connectionServices as $service) {
             if ($service->provider_name === 'sumo') {
