@@ -5,7 +5,7 @@ export default {
     getPlans: async (address , service_interests , agent) => {
             try {
                 let service_type = '';
-                if( service_interests.some(n=>n=='gas') && service_interests.some(n=>n=='gas') ){
+                if( service_interests.some(n=>n=='power') && service_interests.some(n=>n=='gas') ){
                     service_type = 'D'
                 } else if(service_interests.some(n=>n=='power')){
                     service_type = 'E'

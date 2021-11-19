@@ -29,7 +29,6 @@ export default class SumoPlanMapper {
                     elec_charge_usage,
                     elec_charge_supply,
 
-
                     elec_price_reference,
                     elec_charges,
                     elec_disclaimer_text,
@@ -95,13 +94,24 @@ export default class SumoPlanMapper {
     }
 
     getPlanName (plansList){
-        let planName =  plansList?.electricityProducts[0]?.electricityPlanName ??  plansList?.gasProducts[0]?.gasPlanName ?? '';
+        let planName = '';
+        if(Array.isArray(plansList?.gasProducts) && plansList?.gasProducts.length > 0){
+            planName = plansList?.gasProducts[0]?.gasPlanName;
+        } else if(Array.isArray(plansList?.electricityProducts) && plansList?.electricityProducts.length > 0){
+            planName = plansList?.electricityProducts[0]?.electricityPlanName
+        }
         return planName;
     }
 
     getMonthlyGasCost(){
         console.log('gas charge' , this.gas_charge_supply)
-        return this.gas_charge_supply[0]?.incGST * 30;
+        
+        if(this.is_gas_available)
+        {
+            return this.gas_charge_supply[0]?.incGST * 30;
+        }else {
+            return 0;
+        }
     }
 
     getYearlyGasCost(){
@@ -110,8 +120,14 @@ export default class SumoPlanMapper {
 
     getMonthlyElectricityCost(){
         // elec_charge_supply
-        console.log('gas charge' , this.gas_charge_supply)
-        return this.elec_charge_supply[0]?.incGST * 30;
+        console.log('gas charge' , this.elec_charge_supply)
+
+        if(this.is_elec_available){
+            return this.elec_charge_supply[0]?.incGST * 30;
+        } else{
+            return 0;
+        }
+
     }
 
     getYearlyElectricityCost(){
