@@ -263,13 +263,14 @@ export default {
 
         planSelect(plan, isManual = false) {
 
+            console.log('console plan', plan);
             let newPlan = {
                 name: plan.key
             }
             this.selectedProviderId = 'ea';
             this.selectPlan(newPlan);
             this.selectedPlanType = plan?.key
-            this.$emit('updatePlan', plan, isManual);
+            this.$emit('updatePlan', {...plan,  provider: this.selectedProviderId,}, isManual);
         },
         isActive(service) {
 
@@ -370,7 +371,7 @@ export default {
             this.selectedProviderId = providerId;
             if(this.selectedProviderId === 'ea') {
                 if( !(this.selectedPlanType === 'total_plan' || this.selectedPlanType === 'no_frills'|| this.selectedPlanType === 'basic_plan')) {
-                    this.selectedPlanType = "total_plan";
+                    // this.selectedPlanType = "total_plan";
                 }
 
             }
@@ -389,13 +390,15 @@ export default {
 
             if(this.selectedProviderId === 'sumo') {
                 if( !(this.isActivePlan === 'sumo_saver' || this.isActivePlan === 'sumo_assure'|| this.isActivePlan === 'sumo_select')) {
-                    this.isActivePlan = "sumo_saver";
+                    // this.isActivePlan = "sumo_saver";
+
                 }
             }
 
             if(this.selectedProviderId === 'origin') {
                 if( !(this.isActivePlan === 'origin_go' || this.isActivePlan === 'origin_go_variable'|| this.isActivePlan === 'origin_basic')) {
-                    this.isActivePlan = "origin_go";
+                    // this.isActivePlan = "origin_go";
+
                 }
             }
 
@@ -406,6 +409,7 @@ export default {
         },
 
         selectPlan(plan){
+            console.log('plan plna', plan);
             this.isActivePlan = plan.name;
 
 
@@ -414,7 +418,21 @@ export default {
                     provider_name: this.selectedProviderId,
                     plan_type: plan.name
                 }
+
                 LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
+
+            if(this.selectedProviderId === 'ea') {
+                this.isActivePlan = '';
+            } else {
+                this.selectedPlanType = '';
+                this.$emit('updatePlan', {
+                    active: false,
+                    key:  plan.name,
+                    title: plan.title,
+                    provider: this.selectedProviderId,
+                }, true);
+            }
+
         }
     },
 };
