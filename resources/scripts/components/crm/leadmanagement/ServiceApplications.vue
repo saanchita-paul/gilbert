@@ -262,8 +262,9 @@ export default {
 
 
         this.$eventBus.$on("address_updated", address => {
-            console.log("EventBus: ", address)
-            this.onSelectProvider1('sumo');
+            if (this.selectedPowerProvider === 'sumo') {
+                this.$eventBus.$emit("validate", this.setSumoDetailsData)
+            }
         });
 
     },
