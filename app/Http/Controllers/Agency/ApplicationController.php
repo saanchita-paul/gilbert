@@ -328,6 +328,5 @@ class ApplicationController extends Controller
             return $this->sendErrorResponse($exception);
         }
     }
-
     
 }
