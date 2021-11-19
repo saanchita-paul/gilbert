@@ -3,10 +3,9 @@
         <v-col cols="12" class="d-flex justify-space-between">
 
             <div class="d-flex">
-<!--                <v-btn color="transperent"  small class="back-btn mt-2"><v-img @click="goToBack()" src="/assets/images/icons/back_btn.png"/></v-btn>-->
                 <div class="mx-4 mb-0">
                     <p class="page-title mb-0"><span><v-img @click="goToBack()" src="/assets/images/icons/back_btn.png" max-height="40px" max-width="40px" class="back-btn mt-1"> </v-img></span>{{leadSummary.applicant_name}} </p>
-                    <small class="font-weight-bold">
+                    <!-- <small class="font-weight-bold">
                        Preference
                         <span class="mx-1 pa-2"  :class="{'mx-1':isActive('Power'), 'pa-2':isActive('Power'),}" ><v-icon size="16" :color="getColor('Power')">mdi-flash</v-icon> Power</span>
                         <span class="mx-1 pa-2" :class="{'mx-1':isActive('Gas'), 'pa-2':isActive('Gas'), }"><v-icon size="16" :color="getColor('Gas')">mdi-fire</v-icon> Gas</span>
@@ -14,7 +13,43 @@
                         <span class="mx-1 pa-2" :class="{'mx-1':isActive('Water'), 'pa-2':isActive('Water'), }"><v-icon  size="16" :color="getColor('Water')">mdi-water</v-icon> Water</span>
                         <span class="ml-4 mr-1 py-2 pl-2 font-weight-bold" >Status</span>
                         <span class="mx-1 font-normal" >{{leadSummary.status}}</span>
+                    </small> -->
+
+                    <small>
+                        <div class="d-flex">
+                            <div>Preference</div>
+
+                            <div class="d-flex justify-center" style="flex-wrap: wrap;">
+                                <div style="flex-basis: 100%; text-align: center;">
+                                    <div class="font-weight-bold" :class="{'mx-1':isActive('Power')}" ><v-icon size="16" :color="getColor('Power')">mdi-flash</v-icon> Power</div>
+                                </div>
+                                <div style="text-align: center;" :class="getStatusColor('power')" >   {{getServiceStatus('power')}} </div>
+                            </div>
+                        
+                            <div class="d-flex justify-center" style="flex-wrap: wrap;">
+                                <div style="flex-basis: 100%; text-align: center;">
+                                    <div class="font-weight-bold" :class="{'mx-1':isActive('Gas')}" ><v-icon size="16" :color="getColor('Gas')">mdi-fire</v-icon> Gas</div>
+                                </div>
+                                <div style="text-align: center;" :class="getStatusColor('gas')" >  {{getServiceStatus('gas')}}  </div>
+                            </div>
+                        
+                            <div class="d-flex justify-center" style="flex-wrap: wrap;">
+                                <div style="flex-basis: 100%; text-align: center;">
+                                    <div class="font-weight-bold" :class="{'mx-1':isActive('Water')}" ><v-icon size="16" :color="getColor('Water')">mdi-water</v-icon> Water</div>
+                                </div>
+                                <div style="text-align: center;" :class="getStatusColor('water')" >  {{getServiceStatus('water')}} </div>
+                            </div>
+                        
+                            <div class="d-flex justify-center" style="flex-wrap: wrap;">
+                                <div style="flex-basis: 100%; text-align: center;">
+                                    <div class="font-weight-bold"  :class="{'mx-1':isActive('Internet')}" ><v-icon size="16" :color="getColor('Internet')">mdi-wifi</v-icon> Internet</div>
+                                </div>
+                                <div style="text-align: center;" :class="getStatusColor('internet')"  >  {{getServiceStatus('internet')}} </div>
+                            </div>
+                        
+                        </div>
                     </small>
+
                 </div>
             </div>
 
@@ -109,10 +144,31 @@ name: "LeadDetailsHeader",
                 }
             }
             return 'grey lighten-1';
+        },
+        getServiceStatus(conn_ser) {
+            let service = this.leadSummary.connection_services.find((svc)=>{
+                return svc.service_type === conn_ser;
+            })
+            if(service) {
+                return this.mapConnectionStatus(service.statusText);
+            }
+            return '';
+        },
+        mapConnectionStatus(status) {
+            // return ['unassigned','assigned', 'escalated'].includes(status)?'In Progress':
+            //     status[0].toUpperCase() + status.slice(1);
+            if(['unassigned', 'assigned', 'escalated', 'processing'].includes(status)) {
+                return 'In Progress';
+            } else if(status === 'accepted') {
+                return 'Connected';
+            } else {
+                return (status[0].toUpperCase() + status.slice(1)).replace(/_/g, " ");;
+            }
+        },
+        getStatusColor(name){
+            // TODO this function needs to be implemented for color
+            return '';
         }
-
-
-
     },
     mounted() {
          // console.log('load_summary_he', this.leadSummary);
@@ -120,7 +176,7 @@ name: "LeadDetailsHeader",
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .border-warning{
     border-color: #fb8c00 !important;
 }
@@ -136,5 +192,33 @@ name: "LeadDetailsHeader",
     cursor: pointer;
 
 }
+
+    $titleFontSize: 18px;
+    $subtitleFontSize: 16px;
+    $regularFontSize: 16px;
+    $errorColor : #E91E63;
+    $normalColor: black;
+    $successColor: #16A948;
+    $buttonBackgroundColor : #542E89;
+
+    .titleFontSize{
+        font-size: $titleFontSize;
+    }
+    .regularFontSize{
+        font-size: $regularFontSize;
+    }
+    .subtitleFontSize{
+        font-size: $subtitleFontSize;
+    }
+    .errorColor{
+        color: $errorColor;
+    }
+    .successColor{
+        color: $successColor;
+    }
+    .buttonBackgroundColor{
+        background-color: $buttonBackgroundColor;
+    }
+
 
 </style>
