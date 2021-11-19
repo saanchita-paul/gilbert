@@ -74,6 +74,7 @@ export default {
             fullName: null,
             submittedLoader: false,
             isManualChangeFlag: false,
+            submitType: null,
 
             //$attrs
             infoToPass:{
@@ -160,9 +161,10 @@ export default {
             this.leadSummary.service_types = this.services;
         },
 
-        async submitConnection() {
+        async submitConnection(submitType) {
             let v = await this.validateLead();
             if(!v) return;
+            this.submitType = submitType;
 
             this.payload = { ...this.lead.property_details,
                 ...this.lead.person_details,
@@ -201,7 +203,9 @@ export default {
                     'service_interests':this.services,
                     'identification':this.lead.indentification,
                     supplier: 1,
-                    plan_type: this.plan?.key
+                    plan_type: this.plan?.key,
+                    submit_type: this.submitType
+                    
                 };
             }
 
@@ -306,6 +310,9 @@ export default {
               let v = await this.validateLead();
               if(!v) return;
               callback('sumo');
+          });
+        this.$eventBus.$on("busWaterSubmit", async (type) => {
+              await this.submitConnection(type);
           });
       this.leadId = this.$route.params.id;
       await this.loadPlanNoteAndLead();

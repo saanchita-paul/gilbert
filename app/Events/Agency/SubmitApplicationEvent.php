@@ -19,7 +19,7 @@ class SubmitApplicationEvent
      *
      * @return void
      */
-    public function __construct(public int $applicationId , string $submitType = null )
+    public function __construct(public int $applicationId , public ?string $submitType = null )
     {
         //
     }

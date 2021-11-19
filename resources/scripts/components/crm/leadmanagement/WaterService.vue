@@ -17,7 +17,7 @@
         </div>
         <div class="d-flex justify-end mt-4">
             <div>
-                <v-btn color="#542E89" class="white--text">
+                <v-btn color="#542E89" @click="submit" class="white--text">
                     Submit For Connection
                 </v-btn>
             </div>
@@ -32,9 +32,17 @@ import {isNull} from "lodash-es";
 import dayJs from "dayjs";
 
 export default {
-name: "WaterService",
+    name: "WaterService",
     props:['connection_id', 'leadSummary'],
+    methods:{
+        submit(){
+            // * this will ber fired on ApplicationDetailsPage
+            this.$eventBus.$emit("busWaterSubmit", 'water')
+            console.log('clicking submit')
+        }
+    }
 }
+
 </script>
 
 <style lang="scss" scoped>

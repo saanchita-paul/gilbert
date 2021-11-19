@@ -2,6 +2,7 @@
 
 namespace FastConnect\Services;
 
+use App\Models\APILog;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Identification;
@@ -88,6 +89,8 @@ class SubmitWaterLeadToFastConnect
         $mappedAllData = $this-> addExtraData($this->application, $mappedData);
         
         $authorization = 'Bearer ' . $this->accessToken;
+        $url = \config('fastconnect.root_url') . \config('fastconnect.submit_water_lead_url');
+        $url = APILog::setLoggerQuery($url, APILog::API_FAST_CONNECT_WATER_SUBMIT );
         $response = Http::withHeaders([
             'content-type' => 'application/json',
             'accept' => 'application/json',
@@ -96,6 +99,8 @@ class SubmitWaterLeadToFastConnect
             ->withBody(json_encode($mappedAllData), 'application/json')
             ->post(\config('fastconnect.root_url') . \config('fastconnect.submit_water_lead_url'));
         
+
+
         return json_decode($response->body());
     }
 
@@ -133,7 +138,7 @@ class SubmitWaterLeadToFastConnect
                 "primary" => [
                     "title" => $this->getMappedTitle($lead->title),
                     "first_name" => $lead->first_name,
-                    "middle_name" => $lead->middle_name,
+                    "middle_name" => $lead->middle_name ?? '',
                     "last_name" => $lead->last_name,
                     "date_of_birth" => $lead->dob,
                     "email" => $lead->email,

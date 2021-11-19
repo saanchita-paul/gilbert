@@ -2,10 +2,11 @@
 
 namespace App\Listeners;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use FastConnect\Services\SubmitWaterLeadToFastConnect;
 
-class WaterServiceListener
+class WaterServiceListener implements ShouldQueue
 {
     /**
      * Create the event listener.
@@ -26,5 +27,18 @@ class WaterServiceListener
     public function handle($event)
     {
         //
+        info('inside water service listerne');
+        if( isset( $event->submitType ) && $event->submitType == 'water' ){
+            try {
+                $service = new SubmitWaterLeadToFastConnect($event->applicationId);
+                $result = $service->submitWaterLead();
+                info( json_encode( $result ));
+                
+            } catch (\Exception $exception) {
+                \Log::error('Problem in Water Service Lister ');
+                \Log::error($exception->getMessage());
+                \Log::error($exception->getTraceAsString());
+            }
+        }
     }
 }
