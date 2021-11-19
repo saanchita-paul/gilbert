@@ -76,7 +76,7 @@
                 <v-col cols="12">
                     <v-divider></v-divider>
                 </v-col>
-                <v-col cols="12">
+                <v-col cols="12" ref="provider">
                     <p class="sub-title" v-if="selectPlanTitle.length > 0">Select a plan for {{selectPlanTitle}}</p>
 
                     <div class="d-flex" v-if="plansFlag && selectedPowerProvider === 'ea'">
@@ -93,7 +93,12 @@
 
                     <div class="d-flex" v-if="plansFlag &&  selectedPowerProvider !== 'ea'">
                         <div class="d-flex" v-for="plan in origin2" :key="plan.name">
-                            <SumoPlan :sumoPlanDetails="sumoPlanDetails" v-if="plan.name == 'sumo_saver'" :plan="plan" @soleDialog="soleDialog" @click.native="selectPlan(plan)" :isActive="activeOriginPlan"></SumoPlan>
+                            <SumoPlan
+                                :sumoPlanDetails="sumoPlanDetails"
+                                v-if="plan.name === 'sumo_saver'"
+                                :plan="plan" @soleDialog="soleDialog"
+                                @click.native="selectPlan({...plan, ...{name: sumoPlanDetails.plan_name}}, 'sumo')" :isActive="activeOriginPlan">
+                            </SumoPlan>
                             <SolePlan v-else :plan="plan" @soleDialog="soleDialog" @click.native="selectPlan(plan)" :isActive="activeOriginPlan"></SolePlan>
                         </div>
                     </div>
@@ -168,6 +173,7 @@ import ServiceProvideres from "@scripts/data/ServiceProvideres";
 import SumoService from '@scripts/services/crm/SumoService';
 import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails"
 import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
+import Spinner from "@scripts/plugins/Spinner";
 
 export default {
     name: "ServiceApplications",
@@ -180,6 +186,7 @@ export default {
 
     data() {
         return {
+            providerSpinner: null,
             services: ['Power', 'Gas'],
             serviceProviderFlag: false,
             serviceProvider: [],
@@ -247,7 +254,7 @@ export default {
         }
     },
     mounted() {
-
+        this.providerSpinner = new Spinner(this.$refs.provider, {autoStart: true})
         this.loadServiceProvider();
         this.loadPlan();
         this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
@@ -381,21 +388,19 @@ export default {
         onSelectProvider(providerId) {
             this.selectedPowerProvider = providerId;
         },
-        async setSumoDetailsData(name){
-               this.sumoPlanDetails = new SumoPlanDetails({})
-               console.log('inside sumo')
-               console.log('this is lead summary' ,  this.leadSummary)
-                try {
-                    let address =  this.leadSummary.street_address + ' ' + this.leadSummary.city + ' ' + this.leadSummary.state + ' ' + this.leadSummary.postcode  ;
-                    this.sumoPlanDetails =
-                    await SumoService.getPlans(address , this.leadSummary.service_interests , this.leadSummary?.created_by_agent );
-                    console.log('sumo plan data ' , this.sumoPlanDetails)
-                    console.log('printing address ' , address)
-                    this.actionOnSelectProvider(name)
-                    return 0;
-                } catch (error) {
-                    this.sumoPlanDetails = new SumoPlanDetails();
-                }
+        async setSumoDetailsData(name) {
+            this.sumoPlanDetails = new SumoPlanDetails({})
+            this.providerSpinner.start()
+            try {
+                let address = this.leadSummary.street_address + ' ' + this.leadSummary.city + ' ' + this.leadSummary.state + ' ' + this.leadSummary.postcode;
+                this.sumoPlanDetails =
+                    await SumoService.getPlans(address, this.leadSummary.service_interests, this.leadSummary?.created_by_agent);
+                this.actionOnSelectProvider(name)
+                this.providerSpinner.stop()
+                return 0;
+            } catch (error) {
+                this.sumoPlanDetails = new SumoPlanDetails();
+            }
 
         },
         async onSelectProvider1(name) {
@@ -423,7 +428,8 @@ export default {
             this.waterStatus = text;
         },
 
-        selectPlan(plan) {
+        selectPlan(plan, provider = null) {
+            console.log("PAPAPA", plan)
             this.isActivePlan = plan.name;
             this.activeOriginPlan = plan.name;
                 //todo update provider array for sumo plan
@@ -451,17 +457,17 @@ export default {
 
             if(this.selectedPowerProvider === 'origin') {
                 this.activeOriginPlan = connectionService?.plan_type;
-                this.actionOnSelectProvider('origin');
+                // this.actionOnSelectProvider('origin');
             }
 
-            if(!this.activeEaPlan) {
-                this.activeEaPlan = 'total_plan';
-            }
-
-
-            if( this.activeOriginPlan === 'total_plan') {
-                this.activeOriginPlan = 'origin_go';
-            }
+            // if(!this.activeEaPlan) {
+            //     this.activeEaPlan = 'total_plan';
+            // }
+            //
+            //
+            // if( this.activeOriginPlan === 'total_plan') {
+            //     this.activeOriginPlan = 'origin_go';
+            // }
 
 
 
