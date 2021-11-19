@@ -260,7 +260,6 @@ export default {
         this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
         this.loadSelectedPowerProvider();
 
-        console.log('lead summary' , this.leadSummary)
 
         this.$eventBus.$on("address_updated", address => {
             console.log("EventBus: ", address)
@@ -451,6 +450,10 @@ export default {
             if(!this.selectedPowerProvider) {
                 // this.selectedPowerProvider = 'ea';
                 // this.activeEaPlan = 'total_plan';
+            }
+
+            if(this.selectedPowerProvider === 'sumo') {
+                setTimeout(() => this.$eventBus.$emit("validate", this.setSumoDetailsData), 600)
             }
 
             if(this.selectedPowerProvider === 'ea') {
