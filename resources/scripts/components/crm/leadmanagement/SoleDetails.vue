@@ -141,7 +141,7 @@
                 </div>
 
                 <div class="d-flex mt-4 ml-2">
-                    <v-btn block color="#2989F4" class="white--text">
+                    <v-btn block color="#2989F4" class="white--text" @click="closeDialog">
                         Select Plan
                         <v-icon dark>
                             mdi-arrow-right
