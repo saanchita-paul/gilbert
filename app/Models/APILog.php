@@ -12,6 +12,7 @@ class APILog extends Model
 
     const API_HB_CREATE_CONTACT = 'hs_create_contact';
     const API_HB_UPDATE_CONTACT = 'hs_update_contact';
+    const API_SUMO_SUBMIT_LEAD = 'sumo_submit_lead';
 
     protected $table = 'api_logs';
 

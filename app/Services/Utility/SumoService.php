@@ -71,6 +71,7 @@ class SumoService
         $this->application->load(['identification', 'connectionServices', 'authorizedPerson']);
 
         $url = config('sumo.base_url').config('sumo.store_customer_data_url');
+        $url = APILog::setLoggerQuery($url, APILog::API_SUMO_SUBMIT_LEAD, extend: false);
 
         $response = Http::put($url, $this->getCustomerData());
 
