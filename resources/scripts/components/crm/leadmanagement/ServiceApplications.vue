@@ -279,10 +279,13 @@ export default {
         planSelect(plan, isManual = false) {
             this.selectedPlanType = plan?.key;
             this.activeEaPlan = plan?.key;
-            this.selectPlan({
-                name: plan.key,
-            });
-            this.$emit('updatePlan', plan, isManual);
+            let newPlan = {
+                name: plan.key
+            }
+            this.selectedProviderId = 'ea';
+            this.selectPlan(newPlan);
+            this.selectedPlanType = plan?.key
+            this.$emit('updatePlan', {...plan,  provider: this.selectedProviderId,}, isManual);
         },
         isActive(service) {
 
@@ -426,12 +429,31 @@ export default {
             this.origin2 = providerData.plans;
             this.isActivePlan = providerData.default_plan;
             this.selectedProviderId = name
+
+            console.log('this.selectedProviderId', this.selectedProviderId);
+
+            if(this.selectedProviderId === 'sumo') {
+                if( !(this.isActivePlan === 'sumo_saver' || this.isActivePlan === 'sumo_assure'|| this.isActivePlan === 'sumo_select')) {
+                    // this.isActivePlan = "sumo_saver";
+
+                }
+            }
+
+            if(this.selectedProviderId === 'origin') {
+                if( !(this.isActivePlan === 'origin_go' || this.isActivePlan === 'origin_go_variable'|| this.isActivePlan === 'origin_basic')) {
+                    // this.isActivePlan = "origin_go";
+
+                }
+            }
+
         },
         updateStatus(text) {
             this.waterStatus = text;
         },
 
+
         selectPlan(plan, provider = null) {
+            console.log('plan plna', plan);
             this.isActivePlan = plan.name;
             this.activeOriginPlan = plan.name;
                 //todo update provider array for sumo plan
@@ -441,7 +463,15 @@ export default {
                     provider_name: this.selectedPowerProvider,
                     plan_type: plan.name
                 }
+
                 LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
+            this.$emit('updatePlan', {
+                active: false,
+                key: plan.name,
+                title: plan.title,
+                provider: this.selectedProviderId
+            }, true);
+
         },
 
         loadSelectedPowerProvider() {
@@ -465,17 +495,6 @@ export default {
                 this.activeOriginPlan = connectionService?.plan_type;
                 this.actionOnSelectProvider('origin');
             }
-
-            // if(!this.activeEaPlan) {
-            //     this.activeEaPlan = 'total_plan';
-            // }
-            //
-            //
-            // if( this.activeOriginPlan === 'total_plan') {
-            //     this.activeOriginPlan = 'origin_go';
-            // }
-
-
 
         }
     },
