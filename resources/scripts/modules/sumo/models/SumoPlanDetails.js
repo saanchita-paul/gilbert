@@ -61,7 +61,7 @@ export default class SumoPlanMapper {
 
         this.elec_rate_name = elec_rate_name;
         this.elec_charge_usage = elec_charge_usage;
-        this.elec_charge_supply = elec_charge_supply;
+        this.elec_charge_supply = elec_charge_supply ?? 0;
         this.is_elec_available = is_elec_available;
         this.elec_plan_name = elec_plan_name;
         this.elec_distributor_name = elec_distributor_name;
@@ -88,13 +88,34 @@ export default class SumoPlanMapper {
         this.gas_yearly_cost = gas_yearly_cost;
         this.gas_rate_name = gas_rate_name;
         this.gas_charge_usage = gas_charge_usage;
-        this.gas_charge_supply = gas_charge_supply;
+        this.gas_charge_supply = gas_charge_supply ?? 0 ; 
 
         this.plan_name = plan_name;
+
     }
 
     getPlanName (plansList){
         let planName =  plansList?.electricityProducts[0]?.electricityPlanName ??  plansList?.gasProducts[0]?.gasPlanName ?? '';
         return planName;
     }
+
+    getMonthlyGasCost(){
+        console.log('gas charge' , this.gas_charge_supply)
+        return this.gas_charge_supply[0]?.incGST * 30;
+    }
+
+    getYearlyGasCost(){
+        return this.getMonthlyGasCost() * 12;
+    }
+
+    getMonthlyElectricityCost(){
+        // elec_charge_supply
+        console.log('gas charge' , this.gas_charge_supply)
+        return this.elec_charge_supply[0]?.incGST * 30;
+    }
+
+    getYearlyElectricityCost(){
+        return this.getMonthlyElectricityCost() * 12;
+    }
+
 }

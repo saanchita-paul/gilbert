@@ -34,8 +34,8 @@ export default {
         plans.elec_charge_usage = plansList?.electricityProducts[0]?.tariffs[0]?.charges.usage;
         plans.elec_charge_supply = plansList?.electricityProducts[0]?.tariffs[0]?.charges.supply;
         plans.elec_disclaimer_text = plansList?.electricityProducts[0]?.disclaimer;
-        plans.elec_monthly_cost = 0;
-        plans.elec_yearly_cost = 0;
+        plans.elec_monthly_cost = plans.getMonthlyElectricityCost();
+        plans.elec_yearly_cost = plans.getYearlyElectricityCost();
 
         plans.is_gas_available = Array.isArray(plansList?.gasProducts) && plansList?.gasProducts.length > 0
         plans.gas_plan_name = plansList?.gasProducts[0]?.gasPlanName;
@@ -49,8 +49,8 @@ export default {
 
         plans.gas_charge_supply = plansList?.gasProducts[0]?.tariffs[0]?.charges.supply;
         plans.gas_disclaimer_text = plansList?.gasProducts[0]?.disclaimer;
-        plans.gas_monthly_cost = 0;
-        plans.gas_yearly_cost = 0;
+        plans.gas_monthly_cost = plans.getMonthlyGasCost();
+        plans.gas_yearly_cost = plans.getYearlyGasCost();
 
         plans.plan_name = plans.getPlanName(plansList);
 

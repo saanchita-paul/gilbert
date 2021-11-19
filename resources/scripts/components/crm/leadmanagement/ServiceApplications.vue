@@ -309,6 +309,14 @@ export default {
         },
 
         updateService(service) {
+            //todo add update sumo event emit
+            console.log(service)
+
+
+            if(service == 'Gas' || service == 'Power'){
+                this.onSelectProvider1('sumo');
+            }
+
             this.$emit('updateService', service);
         },
 
@@ -418,7 +426,8 @@ export default {
         selectPlan(plan) {
             this.isActivePlan = plan.name;
             this.activeOriginPlan = plan.name;
-
+                //todo update provider array for sumo plan
+                console.log('plan provider click' , plan);
                 let payload = {
                     service_type: this.leadSummary?.service_interests,
                     provider_name: this.selectedPowerProvider,
