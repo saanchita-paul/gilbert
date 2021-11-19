@@ -239,6 +239,12 @@ class ApplicationService
         } else if ($isService) {
             $this->updateConnectionService($application['service_types'], $id);
         } else {
+
+            if(isset($application['plan_type']) && isset($application['plan_type']['key']))
+            {
+                $application['plan_type'] = ConnectionApplication::PLAN_TYPE_MAPPER[$application['plan_type']['key']];
+            }
+
             $existLead->update($application);
         }
 

@@ -66,10 +66,10 @@
                     <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
                     <div class="d-flex align-content-lg-space-around mt-2">
                         <ServiceProvider @onSelectProvider="onSelectProvider(provider.name)" v-if="serviceProviderFlag" v-for="provider in serviceProvider"
-                                         :key="provider.id" :selectedProvider="selectedProviderId" :provider="provider"></ServiceProvider>
+                                         :key="provider.id" :selectedProvider="selectedPowerProvider" :provider="provider"></ServiceProvider>
 
                         <ServiceProvider @onSelectProvider="onSelectProvider1(provider.name)" v-if="serviceProviderFlag" v-for="provider in providers"
-                                         :key="provider.name" :selectedProvider="selectedProviderId" :provider="provider"></ServiceProvider>
+                                         :key="provider.name" :selectedProvider="selectedPowerProvider" :provider="provider"></ServiceProvider>
 
                     </div>
                 </v-col>
@@ -79,22 +79,22 @@
                 <v-col cols="12">
                     <p class="sub-title" v-if="selectPlanTitle.length > 0">Select a plan for {{selectPlanTitle}}</p>
 
-                    <div class="d-flex" v-if="plansFlag && selectedProviderId === 1">
+                    <div class="d-flex" v-if="plansFlag && selectedPowerProvider === 'ea'">
                             <EnergyPlan
                                 v-for="plan in plans"
                                 :key="plan.key"
                                 :plan="plan"
-                                :selectedPlan="selectedPlanType"
+                                :selectedPlan="activeEaPlan"
                                 @selectPlan="planSelect"
                                 @view="view"
                                 @click.native="planSelect(plan,true)"
                             ></EnergyPlan>
                     </div>
-                    
-                    <div class="d-flex" v-if="plansFlag &&  selectedProviderId !== 1">
+
+                    <div class="d-flex" v-if="plansFlag &&  selectedPowerProvider !== 'ea'">
                         <div class="d-flex" v-for="plan in origin2" :key="plan.name">
-                            <SumoPlan :sumoPlanDetails="sumoPlanDetails" v-if="plan.name == 'sumo_saver'" :plan="plan" @soleDialog="soleDialog" @click.native="selectPlan(plan)" :isActive="isActivePlan"></SumoPlan>
-                            <SolePlan v-else :plan="plan" @soleDialog="soleDialog" @click.native="selectPlan(plan)" :isActive="isActivePlan"></SolePlan>
+                            <SumoPlan :sumoPlanDetails="sumoPlanDetails" v-if="plan.name == 'sumo_saver'" :plan="plan" @soleDialog="soleDialog" @click.native="selectPlan(plan)" :isActive="activeOriginPlan"></SumoPlan>
+                            <SolePlan v-else :plan="plan" @soleDialog="soleDialog" @click.native="selectPlan(plan)" :isActive="activeOriginPlan"></SolePlan>
                         </div>
                     </div>
                 </v-col>
@@ -198,6 +198,9 @@ export default {
                 {text: 'Sumo SELECT', bg: 'green', active: false, type: 'sumo'}],
             servicesNew: ['Energy', 'Water', 'NVN'],
             selectedProviderId: 1,
+            selectedPowerProvider: '',
+            activeOriginPlan: '',
+            activeEaPlan: '',
             waterStatus: null,
             origin2: null,
             isActivePlan: null,
@@ -248,7 +251,8 @@ export default {
         this.loadServiceProvider();
         this.loadPlan();
         this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
-        
+        this.loadSelectedPowerProvider();
+
         console.log('lead summary' , this.leadSummary)
 
         this.$eventBus.$on("address_updated", address => {
@@ -266,7 +270,11 @@ export default {
         },
 
         planSelect(plan, isManual = false) {
-            this.selectedPlanType = plan?.key
+            this.selectedPlanType = plan?.key;
+            this.activeEaPlan = plan?.key;
+            this.selectPlan({
+                name: plan.key,
+            });
             this.$emit('updatePlan', plan, isManual);
         },
         isActive(service) {
@@ -363,7 +371,7 @@ export default {
         },
 
         onSelectProvider(providerId) {
-            this.selectedProviderId = providerId
+            this.selectedPowerProvider = providerId;
         },
         async setSumoDetailsData(name){
                this.sumoPlanDetails = new SumoPlanDetails({})
@@ -371,7 +379,7 @@ export default {
                console.log('this is lead summary' ,  this.leadSummary)
                 try {
                     let address =  this.leadSummary.street_address + ' ' + this.leadSummary.city + ' ' + this.leadSummary.state + ' ' + this.leadSummary.postcode  ;
-                    this.sumoPlanDetails =  
+                    this.sumoPlanDetails =
                     await SumoService.getPlans(address , this.leadSummary.service_interests , this.leadSummary?.created_by_agent );
                     console.log('sumo plan data ' , this.sumoPlanDetails)
                     console.log('printing address ' , address)
@@ -383,6 +391,7 @@ export default {
 
         },
         async onSelectProvider1(name) {
+            this.selectedPowerProvider = name;
             // TODO need to decide if provider is
             if(name == 'sumo'){
                 //listening on ApplicationDetailsPage component
@@ -391,7 +400,7 @@ export default {
             }else{
                 this.actionOnSelectProvider(name)
             }
-            
+
         },
         actionOnSelectProvider(name){
             console.log('sumo' ,  name)
@@ -406,15 +415,47 @@ export default {
             this.waterStatus = text;
         },
 
-        selectPlan(plan){
+        selectPlan(plan) {
             this.isActivePlan = plan.name;
+            this.activeOriginPlan = plan.name;
 
                 let payload = {
                     service_type: this.leadSummary?.service_interests,
-                    provider_name: this.selectedProviderId,
+                    provider_name: this.selectedPowerProvider,
                     plan_type: plan.name
                 }
                 LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
+        },
+
+        loadSelectedPowerProvider() {
+            const connectionService = this.leadSummary.connection_services.find(data => data.service_type === 'power');
+
+            this.selectedPowerProvider = connectionService?.provider_name;
+            if(!this.selectedPowerProvider) {
+                this.selectedPowerProvider = 'ea';
+                // this.activeEaPlan = 'total_plan';
+            }
+
+            if(this.selectedPowerProvider === 'ea') {
+                this.activeEaPlan = connectionService?.plan_type;
+            }
+
+            if(this.selectedPowerProvider === 'origin') {
+                this.activeOriginPlan = connectionService?.plan_type;
+                this.actionOnSelectProvider('origin');
+            }
+
+            if(!this.activeEaPlan) {
+                this.activeEaPlan = 'total_plan';
+            }
+
+
+            if( this.activeOriginPlan === 'total_plan') {
+                this.activeOriginPlan = 'origin_go';
+            }
+
+
+
         }
     },
 };
