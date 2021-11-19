@@ -325,6 +325,9 @@ export default {
             }
 
             this.$emit('updateService', service);
+            if (this.selectedPowerProvider === 'sumo') {
+                this.$eventBus.$emit("validate", this.setSumoDetailsData)
+            }
         },
 
         view(plan) {
@@ -429,7 +432,6 @@ export default {
         },
 
         selectPlan(plan, provider = null) {
-            console.log("PAPAPA", plan)
             this.isActivePlan = plan.name;
             this.activeOriginPlan = plan.name;
                 //todo update provider array for sumo plan
@@ -457,7 +459,7 @@ export default {
 
             if(this.selectedPowerProvider === 'origin') {
                 this.activeOriginPlan = connectionService?.plan_type;
-                // this.actionOnSelectProvider('origin');
+                this.actionOnSelectProvider('origin');
             }
 
             // if(!this.activeEaPlan) {
