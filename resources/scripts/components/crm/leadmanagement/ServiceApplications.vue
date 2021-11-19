@@ -448,7 +448,7 @@ export default {
 
             if(this.selectedPowerProvider === 'origin') {
                 this.activeOriginPlan = connectionService?.plan_type;
-                // this.actionOnSelectProvider('origin');
+                this.actionOnSelectProvider('origin');
             }
 
             // if(!this.activeEaPlan) {
