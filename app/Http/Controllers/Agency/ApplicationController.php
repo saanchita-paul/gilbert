@@ -322,7 +322,7 @@ class ApplicationController extends Controller
     {
         try {
             $service = new SubmitWaterLeadToFastConnect($applicationId);
-            $response = $service->submitWaterLead();
+            return $service->submitWaterLead();
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
