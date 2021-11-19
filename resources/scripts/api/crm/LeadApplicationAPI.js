@@ -186,9 +186,9 @@ const newNote = {
 
 const serviceProvider = [
     {
-        name: 1,
+        name: 'ea',
         logo: '/assets/images/EA.png',
-        title: 'EA'
+        title: 'EA',
     },
     // {
     //     id: 2,
@@ -377,6 +377,10 @@ export default {
             value = year + '-'+ month + '-'+ day;
         }
 
+
+        if(field === 'plan_type') {
+
+        }
 
         const payload ={
             [field]: value,
