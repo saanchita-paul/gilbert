@@ -436,11 +436,11 @@ export default {
         },
 
         loadSelectedPowerProvider() {
-            const connectionService = this.leadSummary.connection_services.find(data => data.service_type === 'power');
+            const connectionService = this.leadSummary.connection_services.find(data => data.service_type === 'power' || data.service_type === 'gas');
 
             this.selectedPowerProvider = connectionService?.provider_name;
             if(!this.selectedPowerProvider) {
-                this.selectedPowerProvider = 'ea';
+                // this.selectedPowerProvider = 'ea';
                 // this.activeEaPlan = 'total_plan';
             }
 
