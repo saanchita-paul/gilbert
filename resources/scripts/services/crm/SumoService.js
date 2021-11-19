@@ -4,14 +4,19 @@ import SumoAPI from "@scripts/api/crm/SumoAPI"
 export default {
     getPlans: async (address , service_interests , agent) => {
             try {
-                let service_type = 'D';
+                let service_type = '';
                 if( service_interests.some(n=>n=='gas') && service_interests.some(n=>n=='gas') ){
                     service_type = 'D'
                 } else if(service_interests.some(n=>n=='power')){
                     service_type = 'E'
                 } else if(service_interests.some(n=>n=='gas') ){
                     service_type = 'G'
+                }else {
+                    throw 'plan not selected';
                 }
+
+                
+
                 console.log('service type' , service_type);
                 let distributorData =  await SumoAPI.qualifyAddress(address);
                 console.log('printing address ' , address)
@@ -30,6 +35,7 @@ export default {
                 // throw 'No plans found'
 
             } catch (error) {
+                console.log('in the error of sumo service service , getPlans method')
                 throw error;
             }
 
