@@ -20,7 +20,7 @@ export default {
     loadAuthorizedPerson:(leadId) => LeadApplicationAPI.loadAuthorizedPerson(leadId),
     saveAuthorizedPerson:(data) => LeadApplicationAPI.saveAuthorizedPerson(data),
     updateApplicationProviders:(payload, application_id) => LeadApplicationAPI.updateApplicationProviders(payload , application_id),
-    
+
     /**
      * Getting minimum valid Connection date
      *
@@ -28,7 +28,7 @@ export default {
      */
     getMinConnectionDate: () => {
         const date = new Date()
-        date.setDate(date.getDate() + 1);
+        date.setDate(date.getDate());
         return date.toISOString()
     },
 

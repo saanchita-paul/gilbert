@@ -76,6 +76,7 @@ class ApplicationResource extends JsonResource
             'lead_source' => $this->SugerLead?->foxie_lead_source,
             'lead_source_description' => $this->SugerLead?->foxie_lead_source_description,
             'source' => $this->source,
+            'plan_type' => $this->mapPlan($this->plan_type)
         ];
     }
 
@@ -164,5 +165,13 @@ class ApplicationResource extends JsonResource
             return $fullName;
         }
         return null;
+    }
+
+    private function mapPlan($plan) {
+        if(!empty($plan)) {
+            return ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
+        }
+        return 'total_plan';
+
     }
 }

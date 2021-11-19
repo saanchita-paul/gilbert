@@ -79,7 +79,7 @@
                 <v-col cols="12">
                     <p class="sub-title" v-if="selectPlanTitle.length > 0">Select a plan for {{selectPlanTitle}}</p>
 
-                    <div class="d-flex" v-if="plansFlag && selectedProviderId === 1">
+                    <div class="d-flex" v-if="plansFlag && selectedProviderId === 'ea'">
                             <EnergyPlan
                                 v-for="plan in plans"
                                 :key="plan.key"
@@ -90,7 +90,7 @@
                                 @click.native="planSelect(plan,true)"
                             ></EnergyPlan>
                     </div>
-                    <div class="d-flex" v-if="plansFlag &&  selectedProviderId !== 1">
+                    <div class="d-flex" v-if="plansFlag &&  selectedProviderId !== 'ea'">
                         <div class="d-flex" v-for="plan in origin2" :key="plan.name">
                             <SolePlan :plan="plan" @click.native="selectPlan(plan)" :isActive="isActivePlan"></SolePlan>
                         </div>
@@ -167,7 +167,7 @@ export default {
             serviceProvider: [],
             plans: [],
             plansFlag: false,
-            selectedPlanType: PLAN_TYPE_TOTAL,
+            selectedPlanType: '',
             viewPlanDialog: false,
             planTypeForDetails: null,
             activeService: 'energy',
@@ -179,7 +179,7 @@ export default {
                 { text: 'Sumo ASSURE', bg: 'blue', active: false, type: 'sumo'},
                 {text: 'Sumo SELECT', bg: 'green', active: false, type: 'sumo'}],
             servicesNew: ['Energy', 'Water', 'NVN'],
-            selectedProviderId: 1,
+            selectedProviderId: 'ea',
             waterStatus: null,
             origin2: null,
             isActivePlan: null,
@@ -216,7 +216,7 @@ export default {
             return ServiceProvideres.filter((dt)=> {
                return dt.service_type === 'energy';
             });
-        }
+        },
     },
     watch: {
         'leadSummary.service_interests'() {
@@ -224,18 +224,50 @@ export default {
         }
     },
     mounted() {
-
+        this.updateselectedPlan();
         this.loadServiceProvider();
         this.loadPlan();
-        this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
+        this.getPowerProvider();
+        // this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
 
     },
     methods: {
+
+
+
+        getPowerProvider() {
+            let service = this.leadSummary.connection_services.find(dt => {
+                return dt.service_type === 'power';
+            });
+
+            console.log('service', service);
+
+            if (service) {
+                this.selectedProviderId = service.provider_name;
+                this.selectedPlanType = service.plan_type;
+                this.isActivePlan = service.plan_type;
+                this.onSelectProvider1(this.selectedProviderId);
+                console.log(this.selectedProviderId,  this.selectedPlanType, service);
+                return;
+            }
+            this.selectedProviderId = 'ea';
+        },
+
+        updateselectedPlan() {
+          this.selectedPlanType = this.leadSummary.plan_type;
+        },
+
         reviewPlan() {
             //todo
         },
 
         planSelect(plan, isManual = false) {
+
+            let newPlan = {
+                name: plan.key
+            }
+            this.selectedProviderId = 'ea';
+            this.selectPlan(newPlan);
             this.selectedPlanType = plan?.key
             this.$emit('updatePlan', plan, isManual);
         },
@@ -335,16 +367,38 @@ export default {
         },
 
         onSelectProvider(providerId) {
-            this.selectedProviderId = providerId
+            this.selectedProviderId = providerId;
+            if(this.selectedProviderId === 'ea') {
+                if( !(this.selectedPlanType === 'total_plan' || this.selectedPlanType === 'no_frills'|| this.selectedPlanType === 'basic_plan')) {
+                    this.selectedPlanType = "total_plan";
+                }
+
+            }
+
         },
 
         onSelectProvider1(name) {
+
             const providerData  = this.providers.find((pl)=>{
                 return pl.name === name;
             })
+
             this.origin2 = providerData.plans;
-            this.isActivePlan = providerData.default_plan;
             this.selectedProviderId = name
+            console.log('this.selectedProviderId', this.selectedProviderId);
+
+            if(this.selectedProviderId === 'sumo') {
+                if( !(this.isActivePlan === 'sumo_saver' || this.isActivePlan === 'sumo_assure'|| this.isActivePlan === 'sumo_select')) {
+                    this.isActivePlan = "sumo_saver";
+                }
+            }
+
+            if(this.selectedProviderId === 'origin') {
+                if( !(this.isActivePlan === 'origin_go' || this.isActivePlan === 'origin_go_variable'|| this.isActivePlan === 'origin_basic')) {
+                    this.isActivePlan = "origin_go";
+                }
+            }
+
         },
 
         updateStatus(text) {
@@ -353,6 +407,7 @@ export default {
 
         selectPlan(plan){
             this.isActivePlan = plan.name;
+
 
                 let payload = {
                     service_type: this.leadSummary?.service_interests,
