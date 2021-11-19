@@ -53,6 +53,7 @@ class ApplicationResource extends JsonResource
             'office_id' => $this->office_id,
             'agency_id' => $this->agency_id,
             'created_by' => $this->created_by,
+            'created_by_agent' => $this->createdBy,
             'assigned_to' => $this->assigned_to,
             'agent_profile' => $this->assignedTo,
             'status' => $this->status,

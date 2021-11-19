@@ -53,8 +53,8 @@ export default class ApplicationSummary {
     is_contacted = true;
     agent_name = '';
     agency_office = '';
-    source = '';
-    plan_type = '';
+    source='';
+    created_by_agent = null
     constructor(
         {
             id = null,
@@ -110,7 +110,7 @@ export default class ApplicationSummary {
             lead_source = '',
             lead_source_description = '',
             source = '',
-            plan_type = '',
+            created_by_agent = null
         }
     ) {
 
@@ -171,7 +171,7 @@ export default class ApplicationSummary {
         this.lead_source = lead_source
         this.lead_source_description = lead_source_description
         this.source = source
-        this.plan_type = plan_type;
+        this.created_by_agent = created_by_agent
 
     }
 

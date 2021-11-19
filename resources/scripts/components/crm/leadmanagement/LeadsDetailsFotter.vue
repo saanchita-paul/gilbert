@@ -15,7 +15,8 @@ export default {
       submitConnection() {
         this.$emit('submitConnection');
       }
-  }
+  },
+ 
 }
 </script>
 

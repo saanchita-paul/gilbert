@@ -66,10 +66,10 @@
                     <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
                     <div class="d-flex align-content-lg-space-around mt-2">
                         <ServiceProvider @onSelectProvider="onSelectProvider(provider.name)" v-if="serviceProviderFlag" v-for="provider in serviceProvider"
-                                         :key="provider.id" :selectedProvider="selectedProviderId" :provider="provider"></ServiceProvider>
+                                         :key="provider.id" :selectedProvider="selectedPowerProvider" :provider="provider"></ServiceProvider>
 
                         <ServiceProvider @onSelectProvider="onSelectProvider1(provider.name)" v-if="serviceProviderFlag" v-for="provider in providers"
-                                         :key="provider.name" :selectedProvider="selectedProviderId" :provider="provider"></ServiceProvider>
+                                         :key="provider.name" :selectedProvider="selectedPowerProvider" :provider="provider"></ServiceProvider>
 
                     </div>
                 </v-col>
@@ -79,20 +79,22 @@
                 <v-col cols="12">
                     <p class="sub-title" v-if="selectPlanTitle.length > 0">Select a plan for {{selectPlanTitle}}</p>
 
-                    <div class="d-flex" v-if="plansFlag && selectedProviderId === 'ea'">
+                    <div class="d-flex" v-if="plansFlag && selectedPowerProvider === 'ea'">
                             <EnergyPlan
                                 v-for="plan in plans"
                                 :key="plan.key"
                                 :plan="plan"
-                                :selectedPlan="selectedPlanType"
+                                :selectedPlan="activeEaPlan"
                                 @selectPlan="planSelect"
                                 @view="view"
                                 @click.native="planSelect(plan,true)"
                             ></EnergyPlan>
                     </div>
-                    <div class="d-flex" v-if="plansFlag &&  selectedProviderId !== 'ea'">
+
+                    <div class="d-flex" v-if="plansFlag &&  selectedPowerProvider !== 'ea'">
                         <div class="d-flex" v-for="plan in origin2" :key="plan.name">
-                            <SolePlan :plan="plan" @click.native="selectPlan(plan)" :isActive="isActivePlan"></SolePlan>
+                            <SumoPlan :sumoPlanDetails="sumoPlanDetails" v-if="plan.name == 'sumo_saver'" :plan="plan" @soleDialog="soleDialog" @click.native="selectPlan(plan)" :isActive="activeOriginPlan"></SumoPlan>
+                            <SolePlan v-else :plan="plan" @soleDialog="soleDialog" @click.native="selectPlan(plan)" :isActive="activeOriginPlan"></SolePlan>
                         </div>
                     </div>
                 </v-col>
@@ -131,6 +133,19 @@
             </v-tab-item>
         </v-tabs>
 
+
+        <v-dialog
+            v-model="solePlanDialog"
+            max-width="1200"
+        >
+            <v-card>
+                <SoleDetails
+                    @soleDialog="soleDialog"
+                    :sumoPlanDetails="sumoPlanDetails"
+                />
+            </v-card>
+        </v-dialog>
+
     </v-row>
 </template>
 
@@ -148,12 +163,15 @@ import WaterService from "@scripts/components/crm/leadmanagement/WaterService";
 import InternetService from "@scripts/components/crm/leadmanagement/InternetService";
 import { isNull } from "lodash-es";
 import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
+import SumoPlan from "@scripts/components/crm/leadmanagement/SumoPlan";
 import ServiceProvideres from "@scripts/data/ServiceProvideres";
-
+import SumoService from '@scripts/services/crm/SumoService';
+import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails"
+import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
 
 export default {
     name: "ServiceApplications",
-    components: {SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails},
+    components: { SumoPlan, SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails, SoleDetails},
     props: {
         leadSummary: {
             require: true
@@ -167,22 +185,27 @@ export default {
             serviceProvider: [],
             plans: [],
             plansFlag: false,
-            selectedPlanType: '',
+            selectedPlanType: PLAN_TYPE_TOTAL,
             viewPlanDialog: false,
             planTypeForDetails: null,
             activeService: 'energy',
             tab: null,
             origin: [ {text: 'Origin Go', bg: 'red', active: true, type: 'origin' },
-                { text: 'Origin Go Variable', bg: 'blue', active: false, type: 'origin' },
+                { text: 'Origin Go Variable', bg: 'blue', actSumoPlanDetailsive: false, type: 'origin' },
                 {text: 'Origin Basic', bg: 'orange', active: false , type: 'origin'}],
             sumo: [ {text: 'Sumo Saver', bg: 'purple', active: true, type: 'sumo' },
                 { text: 'Sumo ASSURE', bg: 'blue', active: false, type: 'sumo'},
                 {text: 'Sumo SELECT', bg: 'green', active: false, type: 'sumo'}],
             servicesNew: ['Energy', 'Water', 'NVN'],
-            selectedProviderId: 'ea',
+            selectedProviderId: 1,
+            selectedPowerProvider: '',
+            activeOriginPlan: '',
+            activeEaPlan: '',
             waterStatus: null,
             origin2: null,
             isActivePlan: null,
+            solePlanDialog: false,
+            sumoPlanDetails: new SumoPlanDetails({})
         }
     },
     computed: {
@@ -216,7 +239,7 @@ export default {
             return ServiceProvideres.filter((dt)=> {
                return dt.service_type === 'energy';
             });
-        },
+        }
     },
     watch: {
         'leadSummary.service_interests'() {
@@ -224,56 +247,37 @@ export default {
         }
     },
     mounted() {
-        this.updateselectedPlan();
+
         this.loadServiceProvider();
         this.loadPlan();
-        this.getPowerProvider();
-        // this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
+        this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
+        this.loadSelectedPowerProvider();
+
+        console.log('lead summary' , this.leadSummary)
+
+        this.$eventBus.$on("address_updated", address => {
+            console.log("EventBus: ", address)
+            this.onSelectProvider1('sumo');
+        });
 
     },
     methods: {
-
-
-
-        getPowerProvider() {
-            let service = this.leadSummary.connection_services.find(dt => {
-                return dt.service_type === 'power';
-            });
-
-            console.log('service', service);
-
-            if (service) {
-                this.selectedProviderId = service.provider_name;
-                this.selectedPlanType = service.plan_type;
-                this.isActivePlan = service.plan_type;
-                this.onSelectProvider1(this.selectedProviderId);
-                console.log(this.selectedProviderId,  this.selectedPlanType, service);
-                return;
-            }
-            this.selectedProviderId = 'ea';
+        soleDialog(){
+            this.solePlanDialog = !this.solePlanDialog;
         },
-
-        updateselectedPlan() {
-          this.selectedPlanType = this.leadSummary.plan_type;
-        },
-
         reviewPlan() {
             //todo
         },
 
         planSelect(plan, isManual = false) {
-
-            let newPlan = {
-                name: plan.key
-            }
-            this.selectedProviderId = 'ea';
-            this.selectPlan(newPlan);
-            this.selectedPlanType = plan?.key
+            this.selectedPlanType = plan?.key;
+            this.activeEaPlan = plan?.key;
+            this.selectPlan({
+                name: plan.key,
+            });
             this.$emit('updatePlan', plan, isManual);
         },
         isActive(service) {
-
-
 
             return this.leadSummary.service_types.includes(service.toLowerCase()) ? true : false;
 
@@ -367,54 +371,91 @@ export default {
         },
 
         onSelectProvider(providerId) {
-            this.selectedProviderId = providerId;
-            if(this.selectedProviderId === 'ea') {
-                if( !(this.selectedPlanType === 'total_plan' || this.selectedPlanType === 'no_frills'|| this.selectedPlanType === 'basic_plan')) {
-                    this.selectedPlanType = "total_plan";
+            this.selectedPowerProvider = providerId;
+        },
+        async setSumoDetailsData(name){
+               this.sumoPlanDetails = new SumoPlanDetails({})
+               console.log('inside sumo')
+               console.log('this is lead summary' ,  this.leadSummary)
+                try {
+                    let address =  this.leadSummary.street_address + ' ' + this.leadSummary.city + ' ' + this.leadSummary.state + ' ' + this.leadSummary.postcode  ;
+                    this.sumoPlanDetails =
+                    await SumoService.getPlans(address , this.leadSummary.service_interests , this.leadSummary?.created_by_agent );
+                    console.log('sumo plan data ' , this.sumoPlanDetails)
+                    console.log('printing address ' , address)
+                    this.actionOnSelectProvider(name)
+                    return 0;
+                } catch (error) {
+                    this.sumoPlanDetails = new SumoPlanDetails();
                 }
 
+        },
+        async onSelectProvider1(name) {
+            this.selectedPowerProvider = name;
+            // TODO need to decide if provider is
+            if(name == 'sumo'){
+                //listening on ApplicationDetailsPage component
+                this.$eventBus.$emit("validate", this.setSumoDetailsData)
+                // await this.setSumoDetailsData(name);
+            }else{
+                this.actionOnSelectProvider(name)
             }
 
         },
-
-        onSelectProvider1(name) {
-
+        actionOnSelectProvider(name){
+            console.log('sumo' ,  name)
             const providerData  = this.providers.find((pl)=>{
                 return pl.name === name;
             })
-
             this.origin2 = providerData.plans;
+            this.isActivePlan = providerData.default_plan;
             this.selectedProviderId = name
-            console.log('this.selectedProviderId', this.selectedProviderId);
-
-            if(this.selectedProviderId === 'sumo') {
-                if( !(this.isActivePlan === 'sumo_saver' || this.isActivePlan === 'sumo_assure'|| this.isActivePlan === 'sumo_select')) {
-                    this.isActivePlan = "sumo_saver";
-                }
-            }
-
-            if(this.selectedProviderId === 'origin') {
-                if( !(this.isActivePlan === 'origin_go' || this.isActivePlan === 'origin_go_variable'|| this.isActivePlan === 'origin_basic')) {
-                    this.isActivePlan = "origin_go";
-                }
-            }
-
         },
-
         updateStatus(text) {
             this.waterStatus = text;
         },
 
-        selectPlan(plan){
+        selectPlan(plan) {
             this.isActivePlan = plan.name;
-
+            this.activeOriginPlan = plan.name;
 
                 let payload = {
                     service_type: this.leadSummary?.service_interests,
-                    provider_name: this.selectedProviderId,
+                    provider_name: this.selectedPowerProvider,
                     plan_type: plan.name
                 }
                 LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
+        },
+
+        loadSelectedPowerProvider() {
+            const connectionService = this.leadSummary.connection_services.find(data => data.service_type === 'power');
+
+            this.selectedPowerProvider = connectionService?.provider_name;
+            if(!this.selectedPowerProvider) {
+                this.selectedPowerProvider = 'ea';
+                // this.activeEaPlan = 'total_plan';
+            }
+
+            if(this.selectedPowerProvider === 'ea') {
+                this.activeEaPlan = connectionService?.plan_type;
+            }
+
+            if(this.selectedPowerProvider === 'origin') {
+                this.activeOriginPlan = connectionService?.plan_type;
+                this.actionOnSelectProvider('origin');
+            }
+
+            if(!this.activeEaPlan) {
+                this.activeEaPlan = 'total_plan';
+            }
+
+
+            if( this.activeOriginPlan === 'total_plan') {
+                this.activeOriginPlan = 'origin_go';
+            }
+
+
+
         }
     },
 };

@@ -73,7 +73,8 @@ class ApplicationController extends Controller
     }
 }
 
-    /**agencyId
+    /**
+     * agencyId
      * Getting Agency list
      *
      * @param Request $request
@@ -83,7 +84,7 @@ class ApplicationController extends Controller
     public function view(Request $request, ConnectionApplication $application): ApplicationResource|JsonResponse
     {
         try {
-            $application->load(['connectionServices']);
+            $application->load(['connectionServices', 'createdBy']);
             return new ApplicationResource($application);
 
         } catch (\Exception $exception) {
@@ -313,9 +314,9 @@ class ApplicationController extends Controller
     //    $igninte =  new IgniteConnectionLeadService();
     //    $igninte->authenticate();
           $s = new SumoService();
-          $s->validateEmail("riyad298");
+          $s->validateData("riyad298@gmail.com" , "email");
           return 'validate email';
     }
 
-    
+
 }

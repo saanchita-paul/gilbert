@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Listeners\SumoSubmitListener;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use App\Listeners\HTTP\LogRequestSending;
@@ -35,6 +36,7 @@ class EventServiceProvider extends ServiceProvider
             SendApplicationToEA::class,
             UpdateHubSpotContact::class,
             SendNotificationToSupportListener::class,
+            SumoSubmitListener::class,
         ],
         CreateApplicationEvent::class => [
             CreateHubSpotContact::class,
