@@ -85,10 +85,7 @@ class SubmitWaterLeadToFastConnect
         $this->productServiceData = $productService->getProductGroup()->getProductDetails();
 
         $mappedData = $this->getData($this->application);
-        $mappedAllData = $this-> addExtraData($mappedData);
-
-        // dd($this->productServiceData);
-        // dd($mappedAllData);
+        $mappedAllData = $this-> addExtraData($this->application, $mappedData);
         
         $authorization = 'Bearer ' . $this->accessToken;
         $response = Http::withHeaders([
@@ -99,7 +96,7 @@ class SubmitWaterLeadToFastConnect
             ->withBody(json_encode($mappedAllData), 'application/json')
             ->post(\config('fastconnect.root_url') . \config('fastconnect.submit_water_lead_url'));
         
-        dd(($response));
+        return json_decode($response->body());
     }
 
     public function getData($lead)
@@ -150,45 +147,23 @@ class SubmitWaterLeadToFastConnect
                         ]
                     ]
                 ],
-                // "secondary" => [
-                //     "title" => "MR",
-                //     "first_name" => "Test",
-                //     "middle_name" => "Test",
-                //     "last_name" => "Test",
-                //     "date_of_birth" => "1990-10-18",
-                //     "email" => "email@example.com",
-                //     "phone_preference" => "0491570006",
-                //     "phone_alternate" => "0491570006",
-                //     "identification" => [
-                //         [
-                //             "identification_profile_item_id" => 2,
-                //             "number" => "EG123456",
-                //             "issuer_state_id" => 1,
-                //             "issuer_country_id" => 13,
-                //             "medicare_color" => "GREEN",
-                //             "medicare_irn" => 1,
-                //             "expiry" => "2023-01-01"
-                //         ]
-                //     ]
-                // ]
             ],
             "billing_location" => [
                 "connection" => [
                   "location_type" => "ADDRESS",
                   "address" => [
-                    "unit_number" => "1",
-                    "lot_number" => "1",
-                    "street_number" => "10",
-                    "street_name" => "Main",
-                    "street_type" => "St",
-                    "suburb" => "Melbourne",
-                    "state" => "VIC",
-                    "post_code" => "3000",
-                    "care_of" => "Bill Smith"
+                    // "unit_number" => "1",
+                    // "lot_number" => "1",
+                    "street_number" => $lead->street_number,
+                    "street_name" => $lead->street_name,
+                    "street_type" => $lead->getRoadType(),
+                    "suburb" => $lead->city,
+                    "state" => $this->getMappedState($lead->state),
+                    "post_code" => $lead->postcode,
+                    // "care_of" => "Bill Smith"
                   ]
                 ]
             ]
-
         ];
     }
 
@@ -228,25 +203,62 @@ class SubmitWaterLeadToFastConnect
         return SubmitWaterLeadToFastConnect::MAP_IDENTIFICATION_COUNTRY[strtoupper($country)];
     }
 
-    private function addExtraData($data)
+    private function addExtraData($lead, $data)
     {
-        !is_null($this->application->unit_number) ? $data['address']['move_in_address']['unit_number'] = $this->application->unit_number : null;
-        switch ($this->application->identification->type) {
+        !is_null($lead->unit_number) ? $data['address']['move_in_address']['unit_number'] = $lead->unit_number : null;
+        !is_null($lead->unit_number) ? $data['billing_location']['connection']['address']['unit_number'] = $lead->unit_number : null;
+        switch ($lead->identification->type) {
             case 1: //TYPE_PASSPORT
               $data['contact']['primary']['identification'][0]['issuer_country_id'] =
-                $this->getMappedIdentificationCountry($this->application->identification->country);
+                $this->getMappedIdentificationCountry($lead->identification->country);
               break;
             case 2: //TYPE_DRIVING_LICENCE
               $data['contact']['primary']['identification'][0]['issuer_state_id'] =
-                $this->getMappedIdentificationState($this->application->identification->state);
+                $this->getMappedIdentificationState($lead->identification->state);
               break;
             case 3: //TYPE_MEDICARE
               $data['contact']['primary']['identification'][0]['medicare_color'] =
-                $this->application->identification->card_color;
+                $lead->identification->card_color;
               $data['contact']['primary']['identification'][0]['medicare_irn'] =
-                (int)$this->application->identification->special_number;
+                (int)$lead->identification->special_number;
+              $data['contact']['primary']['identification'][0]['issuer_country_id'] = 13;
               break;
-          }
+        }
+        if($lead->billing_street_address !== null) {
+            !is_null($lead->billing_unit_number) ?
+                $data['billing_location']['connection']['address']['unit_number']
+                = $lead->billing_unit_number : null;
+            !is_null($lead->billing_street_number) ?
+                $data['billing_location']['connection']['address']['street_number']
+                = $lead->billing_street_number : null;
+            !is_null($lead->billing_street_name) ?
+                $data['billing_location']['connection']['address']['street_name']
+                = $lead->billing_street_name : null;
+            !is_null($lead->billing_city) ?
+                $data['billing_location']['connection']['address']['suburb']
+                = $lead->billing_city : null;
+            !is_null($lead->billing_state) ?
+                $data['billing_location']['connection']['address']['state']
+                = $this->getMappedState($lead->billing_state) : null;
+            !is_null($lead->billing_postcode) ?
+                $data['billing_location']['connection']['address']['post_code']
+                = $lead->billing_postcode : null;
+            !is_null($lead->billing_street_name) ?
+                $data['billing_location']['connection']['address']['street_type']
+                = $lead->getbillingRoadType() : null;
+        }
+
+        if($lead->authorizedPerson) {
+            $data['contact']['secondary']['title'] = $this->getMappedTitle($lead->authorizedPerson->title);
+            $data['contact']['secondary']['first_name'] = $lead->authorizedPerson->first_name;
+            $data['contact']['secondary']['middle_name'] = $lead->authorizedPerson->middle_name;
+            $data['contact']['secondary']['last_name'] = $lead->authorizedPerson->last_name;
+            $data['contact']['secondary']['date_of_birth'] = $this->getMappedDate($lead->authorizedPerson->dob);
+            $data['contact']['secondary']['email'] = $lead->authorizedPerson->email;
+            $data['contact']['secondary']['phone_preference'] = $lead->authorizedPerson->phone;
+            $data['contact']['secondary']['identification'] = [];
+        }
+
         return $data;
-    }
+    }      
 }
