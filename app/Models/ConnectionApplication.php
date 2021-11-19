@@ -349,4 +349,10 @@ class ConnectionApplication extends Model
         return $data[sizeof($data) - 1];
     }
 
+    public function getbillingRoadType()
+    {
+        $data = explode(' ', $this->billing_street_name);
+        return $data[sizeof($data) - 1];
+    }
+
 }
