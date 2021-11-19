@@ -205,9 +205,31 @@ class ConnectionApplication extends Model
     const PLAN_TYPE_TOTAL = 'total_plan';
     const PLAN_TYPE_BASIC = 'basic_plan';
     const PLAN_TYPE_NO_FRILLS = 'no_frills';
+
+    const PLAN_TYPE_ORIGIN_GO = 'origin_go';
+    const PLAN_TYPE_ORIGIN_VARIABLE = 'origin_go_variable';
+    const PLAN_TYPE_ORIGIN_BASIC = 'origin_basic';
+
+    const PLAN_TYPE_SUMO_SAVER = 'sumo_saver';
+    const PLAN_TYPE_SUMO_ASSURE = 'sumo_assure';
+    const PLAN_TYPE_SUMO_SELECT = 'sumo_select';
+
+
+
     const PLAN_TYPE_TOTAL_INDEX = 1;
     const PLAN_TYPE_BASIC_INDEX = 2;
     const PLAN_TYPE_NO_FRILLS_INDEX = 3;
+
+    const PLAN_TYPE_ORIGIN_GO_INDEX = 4;
+    const PLAN_TYPE_ORIGIN_VARIABLE_INDEX = 5;
+    const PLAN_TYPE_ORIGIN_BASIC_INDEX = 6;
+
+
+    const PLAN_TYPE_SUMO_SAVER_INDEX = 7;
+    const PLAN_TYPE_SUMO_ASSURE_INDEX = 8;
+    const PLAN_TYPE_SUMO_SELECT_INDEX = 9;
+
+
 
     const SOURCE_ALL = 3;
     const SOURCE_HOOD = 0;
@@ -217,7 +239,7 @@ class ConnectionApplication extends Model
     const EMAIL_BILLING_EMAIL = 1;
     const EMAIL_BILLING_PAPER = 2;
 
-    
+
     const TENANCY_TYPE_RENTER = 1;
     const TENANCY_TYPE_HOME_OWNER = 2;
 
@@ -244,13 +266,26 @@ class ConnectionApplication extends Model
     const PLAN_TYPE_MAPPER = [
         self::PLAN_TYPE_BASIC => 2,
         self::PLAN_TYPE_NO_FRILLS => 3,
-        self::PLAN_TYPE_TOTAL => 1
+        self::PLAN_TYPE_TOTAL => 1,
+        self::PLAN_TYPE_ORIGIN_GO => 4,
+        self::PLAN_TYPE_ORIGIN_VARIABLE => 5,
+        self::PLAN_TYPE_ORIGIN_BASIC => 6,
+        self::PLAN_TYPE_SUMO_SAVER => 7,
+        self::PLAN_TYPE_SUMO_ASSURE => 8,
+        self::PLAN_TYPE_SUMO_SELECT => 9
     ];
 
     const PLAN_TYPE_REVERSE_MAPPER = [
         self::PLAN_TYPE_TOTAL_INDEX => self::PLAN_TYPE_TOTAL,
         self::PLAN_TYPE_BASIC_INDEX => self::PLAN_TYPE_BASIC,
-        self::PLAN_TYPE_NO_FRILLS_INDEX => self::PLAN_TYPE_NO_FRILLS
+        self::PLAN_TYPE_NO_FRILLS_INDEX => self::PLAN_TYPE_NO_FRILLS,
+        self::PLAN_TYPE_ORIGIN_GO_INDEX => self::PLAN_TYPE_ORIGIN_GO,
+        self::PLAN_TYPE_ORIGIN_VARIABLE_INDEX =>  self::PLAN_TYPE_ORIGIN_VARIABLE,
+        self::PLAN_TYPE_ORIGIN_BASIC_INDEX => self::PLAN_TYPE_ORIGIN_BASIC,
+        self::PLAN_TYPE_SUMO_SAVER_INDEX => self::PLAN_TYPE_SUMO_SAVER,
+        self::PLAN_TYPE_SUMO_ASSURE_INDEX => self::PLAN_TYPE_SUMO_ASSURE,
+        self::PLAN_TYPE_SUMO_SELECT_INDEX =>  self::PLAN_TYPE_SUMO_SELECT
+
     ];
 
     /**
