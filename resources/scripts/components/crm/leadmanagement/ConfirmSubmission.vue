@@ -369,7 +369,7 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    value="EA"
+                                    v-model="provider"
 
                                 ></v-text-field>
                             </div>
@@ -534,6 +534,7 @@ export default {
                   value: 'YELLOW'
               }
           ],
+          provider: 'ea'
       }
     },
     computed: {
@@ -543,6 +544,7 @@ export default {
           },
 
         selectedPlan() {
+            this.provider = this.data.plan_type.provider;
             return Boolean(this.data.plan_type.title)?this.data.plan_type.title: this.data.plan_type.value;
         },
 
