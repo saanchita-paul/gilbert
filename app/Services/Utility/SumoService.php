@@ -81,13 +81,14 @@ class SumoService
     private function getCustomerData()
     {
         return [
-            'acceptTerms' => true, // todo: Will be in UI, will get feedback from Taige
+            'acceptTerms' => true,
             'authenticationExpiry' => $this->application->identification?->expire_date,
             'authenticationNo' => $this->application->identification?->card_number,
             'authenticationState' => $this->getMappedState($this->application->identification?->state),
             'authenticationType' => $this->getAuthenticationType($this->application->identification?->type),
-            'billDelivery' => $this->application->is_email_billing, // todo: will get actual data type from Taige
-            'concentCC' => $this->application->is_contacted, // todo: will get actual data type from Taige
+//            'billDelivery' => $this->application->is_email_billing,
+            'billDelivery' => true,
+            'concentCC' => $this->application->is_contacted,
             'customerDateOfBirth' => $this->application->dob,
             'customerEmail' => $this->application->email,
             'customerFirstName' => $this->application->first_name,
@@ -97,12 +98,12 @@ class SumoService
             'interestedIn' => $this->getMappedService($this->application->connectionServices?->pluck('service_type')->toArray()),
             'lifeSupport' => false,
             // 'lifeSupportFuel' => "string",
-            'marketingConcent' => true, // todo: will get feedback from Taige
+            'marketingConcent' => false,
             'mirn' => $this->application->mirn,
             'nmi' => $this->application->nmi,
             'proposedMovingDate' => $this->getMappedDate($this->application->moving_date),
             'prospectType' => $this->getMappedPropertyType($this->application->property_type),
-            'quoteNumber' => "unique_identifier", // todo: we have to generate this and store in database
+            'quoteNumber' => $this->application->id,
             'secondaryCustomerEmail' =>  $this->application->authorizedPerson?->email,
             'secondaryCustomerFirstName' => $this->application->authorizedPerson?->first_name,
             'secondaryCustomerLastName' => $this->application->authorizedPerson?->last_name,

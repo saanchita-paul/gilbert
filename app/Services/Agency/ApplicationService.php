@@ -187,7 +187,7 @@ class ApplicationService
         $lead = $applications['lead'];
         $vendorId = $this->calculateVendorId($id);
         $lead = array_merge($lead, [
-            'plan_type' => ConnectionApplication::PLAN_TYPE_MAPPER[$lead['plan_type']],
+            'plan_type' => null,
             'assigned_to' => null,
             'status' => ConnectionApplication::STATUS_SUBMITTED,
             'submitted_by' => auth()->id(),
