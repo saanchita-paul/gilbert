@@ -68,6 +68,18 @@ class ConnectionService extends Model
         self::STATUS_NEEDS_MORE_INFO => 'need_more_info',
     ];
 
+    public const ENERGY_AUSTRALIA_BASIC_PLAN = 'Basic - Home';
+    public const ENERGY_AUSTRALIA_NO_FRILLS = 'No Frills (Home)';
+    public const ENERGY_AUSTRALIA_TOTAL_PLAN = 'Total Plan (Home)';
+    public const ENERGY_AUSTRALIA_TOTAL_PLUS_12_PLAN = 'Total Plan Plus 12 (Home)';
+
+    public const ENERGY_PLAN_MAPPER = [
+        'basic_plan' => self::ENERGY_AUSTRALIA_BASIC_PLAN,
+        'no_frills' => self::ENERGY_AUSTRALIA_NO_FRILLS,
+        'total_plan' => self::ENERGY_AUSTRALIA_TOTAL_PLAN,
+        'total_plan_plus_12' => self::ENERGY_AUSTRALIA_TOTAL_PLUS_12_PLAN,
+    ];
+
 
     /**
      * The attributes that are mass assignable.

@@ -169,7 +169,7 @@ class ApplicationController extends Controller
         $service = new ApplicationService();
         $res = $service->submit($request->toArray(), $id);
 
-        SubmitApplicationEvent::dispatch($id);
+        SubmitApplicationEvent::dispatch($id, $res->pro);
 
         return ApplicationResource::make($res);
     } catch (\Exception $exception) {
@@ -317,5 +317,5 @@ class ApplicationController extends Controller
           return 'validate email';
     }
 
-    
+
 }
