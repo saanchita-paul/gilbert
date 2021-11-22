@@ -189,12 +189,12 @@ class SubmitWaterLeadToFastConnect
 
     private function getMappedTitle($title): string
     {
-        return $title ? SubmitWaterLeadToFastConnect::MAP_TITLE[$title] : $title;
+        return $title ? SubmitWaterLeadToFastConnect::MAP_TITLE[$title] : "";
     }
 
     private function getMappedState($state): string
     {
-        return $state ? SubmitWaterLeadToFastConnect::MAP_STATE[$state] : $state;
+        return $state ? SubmitWaterLeadToFastConnect::MAP_STATE[$state] : "";
     }
 
     private function getMappedIdentificationType($type): int
@@ -204,7 +204,7 @@ class SubmitWaterLeadToFastConnect
 
     private function getMappedIdentificationState($state)
     {
-        return SubmitWaterLeadToFastConnect::MAP_IDENTIFICATION_STATE[$state];
+        return $state ?  SubmitWaterLeadToFastConnect::MAP_IDENTIFICATION_STATE[$state] : "";
     }
 
     private function getMappedIdentificationCountry($country)
