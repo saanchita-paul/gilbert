@@ -4,7 +4,9 @@
 namespace App\Services\Sales;
 
 
+use App\Jobs\CheckSaleApiLeadData;
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
 use Carbon\Carbon;
 use GraphQL\Client;
 use GraphQL\Query;
@@ -112,12 +114,12 @@ class GetSalesRequestStaus
         }
     }
 
-    public function getSalesStatus($salesId)
+    public function getSalesStatus($salesId, $leadId)
     {
         $da = ['data' =>
             [
                 'vendorCode'=>  "HD2",
-                'id'=> "HD2751637564116"
+                'id'=> $salesId
             ]
 
         ];
@@ -147,11 +149,11 @@ class GetSalesRequestStaus
             ['Authorization' => $this->accessToken]);
         $results = $client->runQuery($gql, true, $da );
 
-        $this->processEaData($results->getResponseBody());
+        $this->processEaData($results->getResponseBody(), $leadId);
 
     }
 
-    public function processEaData($results)
+    public function processEaData($results, $leadId)
     {
         Log::info(json_encode($results));
 
@@ -175,11 +177,44 @@ class GetSalesRequestStaus
                 $status = ConnectionApplication::STATUS_EA_PROCESSINF;
             }
             Log::info($status);
-//            $this->connection->update(['status'=>$status,'ea_sales_id'=> $salesId,'assigned_to'=> null]);
+
+            $lead = ConnectionApplication::find($leadId);
+            $lead->update(['status'=>$status]);
+
+            if($quote->fuel === 'GAS') {
+                $this->updateService( $lead->id, 'gas', $status);
+            }
+            if($quote->fuel === 'ELE') {
+                $this->updateService($lead->id, 'power', $status);
+            }
 
         }
 
 
+
+    }
+
+    public function updateService($id, $power, $status = null) {
+        $service = ConnectionService::query()
+            ->where('connection_application_id', $id)
+            ->where('service_type', $power)
+            ->first();
+        $service->status = $status;
+        $service->update();
+    }
+
+    public function fetchAllSubmittedLead() {
+        $leads = ConnectionApplication::query()
+            ->where([['status', '=', ConnectionApplication::STATUS_EA_PROCESSINF]])
+            ->get();
+
+        foreach ($leads as $lead) {
+
+            if(!is_null($lead->ea_sales_id)) {
+                CheckSaleApiLeadData::dispatch($lead->id, $lead->ea_sales_id);
+            }
+
+        }
 
     }
 }

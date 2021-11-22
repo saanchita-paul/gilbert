@@ -20,7 +20,7 @@ class SubmitWaterLeadToFastConnect
 
     const MAP_PROPERTY_TYPE = [
         1 => 'rented',
-        2 => 'owning '
+        2 => 'owning'
     ];
 
     const MAP_TITLE = [

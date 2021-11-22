@@ -2,26 +2,24 @@
 
 namespace App\Console\Commands;
 
-use App\Models\ConnectionApplication;
-use App\Services\Agency\HubspotContactService;
-use App\Services\Sales\GetSalesRequestStaus;
+use App\Modules\FastConnect\Services\GetWaterService;
 use Illuminate\Console\Command;
 
-class GetSellStatusCommand extends Command
+class FetchSubmitterWaterLeads extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'fetch:submitted-leads';
+    protected $signature = 'fetch:submitted-water-leads';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'fetch submitted lead from ea';
+    protected $description = 'Fetching submitted water list';
 
     /**
      * Create a new command instance.
@@ -40,13 +38,9 @@ class GetSellStatusCommand extends Command
      */
     public function handle()
     {
-        $this->checkStatus();
-        return 0;
-    }
+        $service = new GetWaterService();
+        $service->getAllSubmittedWaterLead();
 
-    private function checkStatus()
-    {
-        $service = new GetSalesRequestStaus();
-        $service->fetchAllSubmittedLead();
+        return 0;
     }
 }

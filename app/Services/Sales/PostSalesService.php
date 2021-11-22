@@ -26,7 +26,7 @@ class PostSalesService
     private $planType;
     public function __construct(int $id)
     {
-        $this->chatbotUri = config('bot.root_url');
+        $this->chatbotUri = config('bot.root_url1');
         $this->connection = ConnectionApplication::with('connectionServices')->where('id', $id)->firstOrFail();
         $this->identification = $this->connection->identification;
         $this->accessToken = (new GetAccessToken())->getAccessToken();
@@ -186,7 +186,7 @@ class PostSalesService
 
 
                 Log::info('End Sale API Payload');
-                Log::info(json_encode($variables));
+                Log::info($variables);
                 Log::info('Start Sale API Payload');
             $results = $client->runQuery($gql, false, $variables );
             return $this->processEaData($results->getResponseBody());
@@ -224,6 +224,14 @@ class PostSalesService
             {
                 $status = ConnectionApplication::STATUS_EA_PROCESSINF;
             }
+
+            if($quote->fuel === 'GAS') {
+                $this->updateService(  'gas', $status);
+            }
+            if($quote->fuel === 'ELE') {
+                $this->updateService('power', $status);
+            }
+
             $this->connection->update(['status'=>$status,'ea_sales_id'=> $salesId,'assigned_to'=> null]);
 
         }
@@ -390,6 +398,16 @@ class PostSalesService
     private function mapPlan($plan):string
     {
         return ConnectionService::ENERGY_PLAN_MAPPER[$plan];
+    }
+
+    public function updateService( $serviceType, $status = null) {
+        info('service updated');
+        $service = ConnectionService::query()
+            ->where('connection_application_id', $this->connection->id)
+            ->where('service_type', $serviceType)
+            ->first();
+        $service->status = $status;
+        $service->update();
     }
 
 }
