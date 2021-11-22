@@ -381,4 +381,18 @@ class ConnectionApplication extends Model
         return $data[sizeof($data) - 1];
     }
 
+
+    /**
+     * saving fast connect customer ref
+     *
+     * @param $ref
+     * @param $applicationId
+     */
+    public static function saveFasConnectRef($applicationId, $ref)
+    {
+        self::query()
+            ->where('id', $applicationId)
+            ->update(['fast_connect_customer_reference' => $ref]);
+    }
+
 }
