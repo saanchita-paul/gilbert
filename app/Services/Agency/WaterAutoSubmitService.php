@@ -53,18 +53,28 @@ class WaterAutoSubmitService
                     isset($connectionApplcation->dob) &&
                     isset($connectionApplcation->email) &&
                     isset($connectionApplcation->phone)  && 
+                    isset($connectionApplcation->state)  && 
+                    isset($connectionApplcation->title)  && 
+                    isset($connectionApplcation->tenancy_type)  && 
                     isset($connectionApplcation->identification) 
               ){
-                info('lead passed');
-                throw new Exception('invalid field found in connection application table');
-            } else if(
+                    info('lead passed');
+                    // throw new Exception('invalid field found in connection application table');
+                } else{
+                    throw new Exception('invalid field found in connection application table');
+                }
+
+
+                if(
                     isset($connectionApplcation->identification['card_number']) &&
                     isset($connectionApplcation->identification['expire_date']) 
                 ){
-                throw new Exception('invalid data in identifcation table');
-            }else{
-                return true;
-            }
+                    return true;
+                }else{
+                    throw new Exception('invalid data in identifcation table');
+                }
+
+            
 
         } catch (\Exception $exception) {
             \Log::error($exception->getMessage());
