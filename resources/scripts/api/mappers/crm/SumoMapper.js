@@ -18,7 +18,7 @@ export default {
             nmi: location.nmi,
             postcode: location.postcode,
             prospectType: 'Residential',
-            quoteNumber: 'hood-'+lead_id,
+            quoteNumber: 'hood_'+lead_id,
             suburb: location.suburbOrPlaceOrLocality,
         }
     },
