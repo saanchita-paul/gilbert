@@ -10,7 +10,11 @@ export default {
         this.$eventBus.$on("address_updated", address => {
             console.log("EventBus: ", address)
         });
-    }
+    },
+//     beforeDestroy(){
+//     EventBus.$off('content-type-saving', this.listener)
+//   }
+    
 }
 </script>
 

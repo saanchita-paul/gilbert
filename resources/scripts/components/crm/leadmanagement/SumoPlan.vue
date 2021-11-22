@@ -1,6 +1,6 @@
 <template>
     <div class="your-plan" :class="{'active':isActive === sumoPlanDetails.plan_name}">
-        <p :style="{background: plan.bgColor}">{{sumoPlanDetails.plan_name}}</p>
+        <p :style="{background: plan.bgColor}">{{ sumoPlanDetails !== undefined || sumoPlanDetails !== null ? sumoPlanDetails.plan_name : ''}}</p>
         <div class="pa-4">
             <v-btn @click="reviewPlan" block outlined class="mb-3">Review Plan Details</v-btn>
         </div>

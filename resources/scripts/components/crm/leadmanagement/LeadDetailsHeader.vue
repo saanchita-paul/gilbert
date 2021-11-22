@@ -2,8 +2,8 @@
     <v-row>
         <v-col cols="12" class="d-flex justify-space-between">
 
-            <div class="d-flex">
-                <div class="mx-4 mb-0">
+            <div class="d-flex" >
+                <div class="mx-4 mb-0" >
                     <p class="page-title mb-0"><span><v-img @click="goToBack()" src="/assets/images/icons/back_btn.png" max-height="40px" max-width="40px" class="back-btn mt-1"> </v-img></span>{{leadSummary.applicant_name}} </p>
                     <!-- <small class="font-weight-bold">
                        Preference
@@ -15,40 +15,7 @@
                         <span class="mx-1 font-normal" >{{leadSummary.status}}</span>
                     </small> -->
 
-                    <small>
-                        <div class="d-flex">
-                            <div>Preference</div>
-
-                            <div class="d-flex justify-center" style="flex-wrap: wrap;">
-                                <div style="flex-basis: 100%; text-align: center;">
-                                    <div class="font-weight-bold" :class="{'mx-1':isActive('Power')}" ><v-icon size="16" :color="getColor('Power')">mdi-flash</v-icon> Power</div>
-                                </div>
-                                <div style="text-align: center;" :class="getStatusColor('power')" >   {{getServiceStatus('power')}} </div>
-                            </div>
-                        
-                            <div class="d-flex justify-center" style="flex-wrap: wrap;">
-                                <div style="flex-basis: 100%; text-align: center;">
-                                    <div class="font-weight-bold" :class="{'mx-1':isActive('Gas')}" ><v-icon size="16" :color="getColor('Gas')">mdi-fire</v-icon> Gas</div>
-                                </div>
-                                <div style="text-align: center;" :class="getStatusColor('gas')" >  {{getServiceStatus('gas')}}  </div>
-                            </div>
-                        
-                            <div class="d-flex justify-center" style="flex-wrap: wrap;">
-                                <div style="flex-basis: 100%; text-align: center;">
-                                    <div class="font-weight-bold" :class="{'mx-1':isActive('Water')}" ><v-icon size="16" :color="getColor('Water')">mdi-water</v-icon> Water</div>
-                                </div>
-                                <div style="text-align: center;" :class="getStatusColor('water')" >  {{getServiceStatus('water')}} </div>
-                            </div>
-                        
-                            <div class="d-flex justify-center" style="flex-wrap: wrap;">
-                                <div style="flex-basis: 100%; text-align: center;">
-                                    <div class="font-weight-bold"  :class="{'mx-1':isActive('Internet')}" ><v-icon size="16" :color="getColor('Internet')">mdi-wifi</v-icon> Internet</div>
-                                </div>
-                                <div style="text-align: center;" :class="getStatusColor('internet')"  >  {{getServiceStatus('internet')}} </div>
-                            </div>
-                        
-                        </div>
-                    </small>
+         
 
                 </div>
             </div>
@@ -63,6 +30,47 @@
             </div>
             
         </v-col>
+
+                    <div style="width: 100%;" class="mb-4 ml-6 mr-4 pl-2">
+                        <div class="d-flex justify-space-between" style="width: 100%;">
+                            <div class="d-flex">
+                                <div class="font-weight-bold">Service overview:</div>
+                                <div class="d-flex justify-center" style="flex-wrap: wrap;">
+                                    <div style="flex-basis: 100%; text-align: center;">
+                                        <div class="font-weight-bold" :class="{'mx-1':isActive('Power')}" ><v-icon size="16" :color="getColor('Power')">mdi-flash</v-icon> Power</div>
+                                    </div>
+                                    <div :style="{ 'text-align': 'center', color: getServiceStatus('power').color }"  >   {{getServiceStatus('power').text}} </div>
+                                </div>
+                            
+                                <div class="d-flex justify-center" style="flex-wrap: wrap;">
+                                    <div style="flex-basis: 100%; text-align: center;">
+                                        <div class="font-weight-bold" :class="{'mx-1':isActive('Gas')}" ><v-icon size="16" :color="getColor('Gas')">mdi-fire</v-icon> Gas</div>
+                                    </div>
+                                    <div :style="{ 'text-align': 'center', color: getServiceStatus('gas').color }" :class="getStatusColor('gas')" >  {{getServiceStatus('gas').text}}  </div>
+                                </div>
+                            
+                            
+                                <div class="d-flex justify-center" style="flex-wrap: wrap;">
+                                    <div style="flex-basis: 100%; text-align: center;">
+                                        <div class="font-weight-bold" :class="{'mx-1':isActive('Water')}" ><v-icon size="16" :color="getColor('Water')">mdi-water</v-icon> Water</div>
+                                    </div>
+                                    <div :style="{ 'text-align': 'center', color: getServiceStatus('water').color }" :class="getStatusColor('water')" >  {{getServiceStatus('water').text}} </div>
+                                </div>
+                            
+                                <div class="d-flex justify-center" style="flex-wrap: wrap;">
+                                    <div style="flex-basis: 100%; text-align: center;">
+                                        <div class="font-weight-bold"  :class="{'mx-1':isActive('Internet')}" ><v-icon size="16" :color="getColor('Internet')">mdi-wifi</v-icon> Internet</div>
+                                    </div>
+                                    <div :style="{ 'text-align': 'center', color: getServiceStatus('internet').color }" :class="getStatusColor('internet')"  >  {{getServiceStatus('internet').text}} </div>
+                                </div>
+                            
+                            </div>
+
+                            <div class="d-flex align-end">
+                                <span class="font-weight-bold">Application Status: </span> <span class="grey--text pl-2"> {{ leadSummary.status }} </span>
+                            </div>
+                        </div>
+                    </div>
 
         <v-col cols="12" class="mt-n6">
              <div class="d-flex justify-space-between ">
@@ -79,15 +87,13 @@
         <v-col cols="12">
             <v-divider></v-divider>
         </v-col>
-
-
-
         
     </v-row>
 </template>
 
 <script>
 import { leadSourceMap } from '@scripts/data/LeadSourceMap'
+import { connectionApplicationMapper } from '@scripts/data/ConnectionApplicationMapper';
 export default {
 name: "LeadDetailsHeader",
     props: {
@@ -102,6 +108,9 @@ name: "LeadDetailsHeader",
         };
     },
     computed:{
+        connectionApplicationMapper(){
+            return connectionApplicationMapper;
+        },
         leadSourceMap(){
             return leadSourceMap;
         }
@@ -152,17 +161,35 @@ name: "LeadDetailsHeader",
             if(service) {
                 return this.mapConnectionStatus(service.statusText);
             }
-            return '';
+            return {
+                text: 'Not Selected',
+                color: 'black',
+            };
         },
         mapConnectionStatus(status) {
             // return ['unassigned','assigned', 'escalated'].includes(status)?'In Progress':
             //     status[0].toUpperCase() + status.slice(1);
             if(['unassigned', 'assigned', 'escalated', 'processing'].includes(status)) {
-                return 'In Progress';
+                return {
+                    text: 'In Progress',
+                    color: 'blue',
+                };
             } else if(status === 'accepted') {
-                return 'Connected';
-            } else {
-                return (status[0].toUpperCase() + status.slice(1)).replace(/_/g, " ");;
+                return {
+                    text: 'Accepted',
+                    color: 'green',
+                };
+            } else if(status === "can\'t_connect") {
+                return {
+                    text: "Can't Connect",
+                    color: 'red',
+                };
+            } 
+            else {
+                return {
+                    text: (status[0].toUpperCase() + status.slice(1)).replace(/_/g, " "),
+                    color: 'black',
+                };
             }
         },
         getStatusColor(name){
@@ -171,7 +198,7 @@ name: "LeadDetailsHeader",
         }
     },
     mounted() {
-         // console.log('load_summary_he', this.leadSummary);
+         console.log('load_summary_he', this.leadSummary);
     }
 }
 </script>

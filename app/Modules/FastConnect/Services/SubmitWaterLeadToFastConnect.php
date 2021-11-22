@@ -24,9 +24,9 @@ class SubmitWaterLeadToFastConnect
     ];
 
     const MAP_TITLE = [
-        'Mr' => 'MR',
-        'Mrs' => 'MRS',
-        'Ms' => 'MS'
+        'mr' => 'MR',
+        'mrs' => 'MRS',
+        'ms' => 'MS'
     ];
 
     const MAP_IDENTIFICATION_PROFILE_ID = [
@@ -47,7 +47,7 @@ class SubmitWaterLeadToFastConnect
 
     const MAP_IDENTIFICATION_COUNTRY = [
         "AUS" => 13,
-        "Australia" => 13
+        "AUSTRALIA" => 13
     ];
 
     const MAP_STATE = [
@@ -189,7 +189,7 @@ class SubmitWaterLeadToFastConnect
 
     private function getMappedTitle($title): string
     {
-        return $title ? SubmitWaterLeadToFastConnect::MAP_TITLE[$title] : "";
+        return $title ? SubmitWaterLeadToFastConnect::MAP_TITLE[strtolower($title)] : "MR";
     }
 
     private function getMappedState($state): string
@@ -258,7 +258,7 @@ class SubmitWaterLeadToFastConnect
         }
 
         if($lead->authorizedPerson) {
-            $data['contact']['secondary']['title'] = $this->getMappedTitle($lead->authorizedPerson->title);
+            $data['contact']['secondary']['title'] = "MR";
             $data['contact']['secondary']['first_name'] = $lead->authorizedPerson->first_name;
             $data['contact']['secondary']['middle_name'] = $lead->authorizedPerson->middle_name;
             $data['contact']['secondary']['last_name'] = $lead->authorizedPerson->last_name;

@@ -136,8 +136,16 @@
             <v-tab-item>
                 <InternetService :leadSummary="leadSummary" @updateStatus="updateStatus"></InternetService>
             </v-tab-item>
-        </v-tabs>
 
+
+        </v-tabs>
+        <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
+
+            <v-btn color="#542E89" @click="submit" class="white--text">
+                    Submit for connection
+            </v-btn>
+
+        </div>
 
         <v-dialog
             v-model="solePlanDialog"
@@ -246,6 +254,13 @@ export default {
             return ServiceProvideres.filter((dt)=> {
                return dt.service_type === 'energy';
             });
+        },
+        tabMapper(){
+            return {
+                'Energy'   : 0,
+                'Water'    : 1,
+                'Internet' : 2,
+            }
         }
     },
     watch: {
@@ -260,11 +275,16 @@ export default {
         this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
         this.loadSelectedPowerProvider();
 
-
-        this.$eventBus.$on("address_updated", address => {
+        const updateAddress = address => {
             if (this.selectedPowerProvider === 'sumo') {
                 this.$eventBus.$emit("validate", this.setSumoDetailsData)
             }
+        }
+
+        this.$eventBus.$on("address_updated", updateAddress );
+
+        this.$once("hook:beforeDestroy", () => {
+            this.$eventBus.$off("address_updated", updateAddress );
         });
 
     },
@@ -400,7 +420,7 @@ export default {
             try {
                 let address = this.leadSummary.street_address + ' ' + this.leadSummary.city + ' ' + this.leadSummary.state + ' ' + this.leadSummary.postcode;
                 this.sumoPlanDetails =
-                    await SumoService.getPlans(address, this.leadSummary.service_interests, this.leadSummary?.created_by_agent);
+                    await SumoService.getPlans(address, this.leadSummary.service_interests, this.leadSummary?.created_by_agent, this.leadSummary);
                 this.actionOnSelectProvider(name)
                 this.providerSpinner.stop()
                 return 0;
@@ -451,7 +471,6 @@ export default {
             this.waterStatus = text;
         },
 
-
         selectPlan(plan, provider = null) {
             console.log('plan plna', plan);
             this.isActivePlan = plan.name;
@@ -496,8 +515,21 @@ export default {
                 this.actionOnSelectProvider('origin');
             }
 
+        },
+        submit(){
+            // * this will ber fired on ApplicationDetailsPage
+            let subType = 'energy';
+            if(this.tabMapper.Energy == this.tab){
+                subType = 'energy';
+            } else if(this.tabMapper.Water == this.tab){
+                subType = 'water';
+            } else {
+                subType = 'internet';
+            }
+            this.$eventBus.$emit("busWaterSubmit", subType)
+            console.log('clicking submit')
         }
-    },
+    }
 };
 </script>
 

@@ -199,7 +199,7 @@ class ConnectionApplication extends Model
         'accepted' => self::STATUS_ACCEPTED,
         'rejected' => self::STATUS_REJECTED,
         'processing' => self::STATUS_EA_PROCESSINF,
-         'closed' => self::STATUS_CLOSED,
+        'closed' => self::STATUS_CLOSED,
     ];
 
     const PLAN_TYPE_TOTAL = 'total_plan';
@@ -368,15 +368,6 @@ class ConnectionApplication extends Model
         return $this->hasMany(ApplicationNote::class);
     }
 
-    public function getElectricitySourceCode()
-    {
-        return 'AA';
-    }
-
-    public function getGasSourceCode()
-    {
-        return 'AA';
-    }
 
     public function getRoadType()
     {

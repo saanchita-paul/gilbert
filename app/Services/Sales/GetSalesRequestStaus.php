@@ -9,61 +9,57 @@ use Carbon\Carbon;
 use GraphQL\Client;
 use GraphQL\Query;
 use GraphQL\Variable;
+use Illuminate\Support\Facades\Log;
 
 class GetSalesRequestStaus
 {
     private $accessToken;
-
-
-
 
     public function __construct()
     {
         $this->accessToken = (new GetAccessToken())->getAccessToken();
     }
 
-
     public function getSalesStatusByDateRange()
-        {
-
-            $fromDate = ConnectionApplication::query()
-                ->where('status','=',ConnectionApplication::STATUS_SUBMITTED)
-                ->orderBy('created_at',)
-                ->pluck('created_at')
-                ->first()->format('Y-m-d')
-            ;
+    {
+        $fromDate = ConnectionApplication::query()
+            ->where('status','=',ConnectionApplication::STATUS_SUBMITTED)
+            ->orderBy('created_at',)
+            ->pluck('created_at')
+            ->first()->format('Y-m-d');
 
             //this is for testing purposes
-            $fromDate = '2020-10-10';
+        $fromDate = '2020-10-10';
 
-            $todate = Carbon::now()->format('Y-m-d');
+        $todate = Carbon::now()->format('Y-m-d');
 
-               $da = ['data' => [
-                    'vendorCode'=> "HD2",
-                    'submittedFrom'=> $fromDate,
-                    'submittedTo'=> $todate,
-                    'pageable'=> [
-                        'size'=>50,
-                        'page'=>1
-                    ],
-                   ]
+        $da = ['data' =>
+            [
+                'vendorCode'=> "HD2",
+                'submittedFrom'=> $fromDate,
+                'submittedTo'=> $todate,
+                'pageable'=> [
+                'size'=>50,
+                'page'=>1
+                ],
+            ]
 
-            ];
+        ];
 
-            $gql = (new Query('getVendorSaleStatusByDateRange'))
-                ->setVariables([new Variable('data', 'StatusByDateRangeInput!')])
-                ->setArguments(['input' => '$data'])
-                ->setSelectionSet(
-                    [
-                        'totalPages
-                        totalElements
-                        numberOfElements
-                        pageable {
-                            paged
-                            }
-                        first
-                        last
-                        size
+        $gql = (new Query('getVendorSaleStatusByDateRange'))
+            ->setVariables([new Variable('data', 'StatusByDateRangeInput!')])
+            ->setArguments(['input' => '$data'])
+            ->setSelectionSet(
+                [
+                    'totalPages
+                    totalElements
+                    numberOfElements
+                    pageable {
+                           paged
+                           }
+                    first
+                    last
+                    size
                     content {
                         id
                         version
@@ -85,46 +81,105 @@ class GetSalesRequestStaus
                 );
 
 
-            $client = new Client(
-                'https://apigw-nonprod.energyaustralia.com.au/graphql',
-                ['Authorization' => $this->accessToken]);
-            $results = $client->runQuery($gql, true, $da );
-            return $this->manageConnectionList($results->getResponseBody());
+        $client = new Client(
+            'https://apigw-nonprod.energyaustralia.com.au/graphql',
+            ['Authorization' => $this->accessToken]);
+        $results = $client->runQuery($gql, true, $da );
+        return $this->manageConnectionList($results->getResponseBody());
+    }
 
-
-        }
-
-        public function manageConnectionList($results)
-        {
-            $data = (json_decode($results));
-            $quotes = $data->data->getVendorSaleStatusByDateRange->content;
-
-
-
-
-            foreach ($quotes as $item) {
-                foreach ($item->quotes as $quote)
-                {
-                    $status = null;
-                    $status = null;
-                    if($quote->status == 'REJECTED')
-                    {
-                        $status = ConnectionApplication::STATUS_REJECTED;
-                    }
-
-                    if($quote->status == 'PROCESSING')
-                    {
-                        $status = ConnectionApplication::STATUS_EA_PROCESSING;
-                    }
-
+    public function manageConnectionList($results)
+    {
+        $data = (json_decode($results));
+        $quotes = $data->data->getVendorSaleStatusByDateRange->content;
+        foreach ($quotes as $item) {
+            foreach ($item->quotes as $quote) {
+                $status = null;
+                $status = null;
+                if($quote->status == 'REJECTED') {
+                    $status = ConnectionApplication::STATUS_REJECTED;
                 }
-                $connection = ConnectionApplication::where('ea_sales_id', $item->id)->first();
-                if(!is_null($connection))
-                {
-                    $connection->update(['status'=>$status]);
+
+                if($quote->status == 'PROCESSING') {
+                    $status = ConnectionApplication::STATUS_EA_PROCESSING;
                 }
 
             }
-            die();
+            $connection = ConnectionApplication::where('ea_sales_id', $item->id)->first();
+            if(!is_null($connection)) {
+                $connection->update(['status'=>$status]);
+            }
         }
+    }
+
+    public function getSalesStatus($salesId)
+    {
+        $da = ['data' =>
+            [
+                'vendorCode'=>  "HD2",
+                'id'=> "HD2751637564116"
+            ]
+
+        ];
+
+        $gql = (new Query('getVendorSaleStatusById'))
+            ->setVariables([new Variable('data', 'StatusByIdInput!')])
+            ->setArguments(['input' => '$data'])
+            ->setSelectionSet(
+                [
+                    'version
+                    quotes {
+                    id
+    status
+    fuel
+    lastUpdated
+    rejectionReasons {
+      code
+      detail
+    }
+  }'
+                ]
+            );
+
+
+        $client = new Client(
+            'https://apigw-nonprod.energyaustralia.com.au/graphql',
+            ['Authorization' => $this->accessToken]);
+        $results = $client->runQuery($gql, true, $da );
+
+        $this->processEaData($results->getResponseBody());
+
+    }
+
+    public function processEaData($results)
+    {
+        Log::info(json_encode($results));
+
+        $data = json_decode($results);
+
+        $submitSallData = $data?->data?->getVendorSaleStatusById;
+
+        Log::info(json_encode($submitSallData));
+        $quotes = $submitSallData?->quotes;
+
+        foreach ($quotes as $quote)
+        {
+            $status = null;
+            if($quote->status == 'REJECTED')
+            {
+                $status = ConnectionApplication::STATUS_REJECTED;
+            }
+
+            if($quote->status == 'PROCESSING')
+            {
+                $status = ConnectionApplication::STATUS_EA_PROCESSINF;
+            }
+            Log::info($status);
+//            $this->connection->update(['status'=>$status,'ea_sales_id'=> $salesId,'assigned_to'=> null]);
+
+        }
+
+
+
+    }
 }
