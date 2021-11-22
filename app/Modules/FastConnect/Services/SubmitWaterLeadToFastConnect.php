@@ -87,7 +87,10 @@ class SubmitWaterLeadToFastConnect
 
         $mappedData = $this->getData($this->application);
         $mappedAllData = $this-> addExtraData($this->application, $mappedData);
-        info("Water Submit Data", $mappedData);
+
+        info("Water Submit request body");
+        info(json_encode($mappedData));
+        info("Water Submit request body");
 
         $authorization = 'Bearer ' . $this->accessToken;
 

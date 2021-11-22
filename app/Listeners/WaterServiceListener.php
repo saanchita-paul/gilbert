@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Models\ConnectionApplication;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use FastConnect\Services\SubmitWaterLeadToFastConnect;
@@ -32,8 +33,11 @@ class WaterServiceListener implements ShouldQueue
                 $service = new SubmitWaterLeadToFastConnect($event->applicationId);
                 $result = $service->submitWaterLead();
 
-                info( json_encode( $result ));
+                $this->saveRef(data_get($result, "info.customer_reference"), $event->applicationId);
 
+                info("Water submit response body");
+                info( json_encode( $result ));
+                info("Water submit response body");
             } catch (\Exception $exception) {
                 \Log::error('Problem in Water Service Lister ');
                 \Log::error($exception->getMessage());
@@ -41,4 +45,18 @@ class WaterServiceListener implements ShouldQueue
             }
         }
     }
+
+    /**
+     * saving fast connect customer ref
+     *
+     * @param $ref
+     * @param $applicationId
+     */
+    private function saveRef($ref, $applicationId)
+    {
+        ConnectionApplication::query()
+            ->where('id', $applicationId)
+            ->update(['fast_connect_customer_reference' => $ref]);
+    }
 }
+
