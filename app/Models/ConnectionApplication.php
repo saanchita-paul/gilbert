@@ -172,7 +172,8 @@ class ConnectionApplication extends Model
         'billing_postcode',
         'submitted_by',
         'vendor_id',
-        'is_contacted'
+        'is_contacted',
+        'is_auto_water_submit'
     ];
 
 
