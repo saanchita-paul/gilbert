@@ -41,8 +41,6 @@ class SumoService
     const MAP_SERVICE = [
         'gas' => 'Gas',
         'power' => 'Electricity',
-        'water' => 'Water',
-        'internet' => 'Internet',
     ];
 
     const MAP_PROPERTY_TYPE = [
@@ -123,11 +121,15 @@ class SumoService
         return $type ? SumoService::MAP_TYPE[$type] : '';
     }
 
-    private function getMappedService($services)
+    private function getMappedService($services): array
     {
-        return $services ? (array_map(function ($service) {
-            return SumoService::MAP_SERVICE[$service];
-        }, $services)) : null;
+        $data = [];
+        foreach ( $services as $service) {
+            if (isset(SumoService::MAP_SERVICE[$service])) {
+                $data[] =  SumoService::MAP_SERVICE[$service];
+            }
+        }
+        return $data;
     }
 
     private function getMappedDate($date)
