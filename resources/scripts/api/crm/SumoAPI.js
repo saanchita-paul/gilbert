@@ -8,10 +8,10 @@ const sumoAxios = axios.create({
 })
 
 export default {
-    qualifyAddress: async (address) => {
+    qualifyAddress: async (address , leadId) => {
         try {
             console.log('calling sumo api')
-            let meta = SumoMapper.mapAddress(address);
+            let meta = SumoMapper.mapAddress(address , leadId);
             console.log(meta)
             const data = await sumoAxios.get('/qualification/address',{params: meta});
             console.log('calling sumo api')
