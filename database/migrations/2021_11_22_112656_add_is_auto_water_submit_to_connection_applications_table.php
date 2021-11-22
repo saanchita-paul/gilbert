@@ -14,7 +14,7 @@ class AddIsAutoWaterSubmitToConnectionApplicationsTable extends Migration
     public function up()
     {
         Schema::table('connection_applications', function (Blueprint $table) {
-            $table->tinyInteger('is_auto_water_submit')->default('0')->nullable();
+            $table->tinyInteger('is_auto_water_submit')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddIsAutoWaterSubmitToConnectionApplicationsTable extends Migration
     public function down()
     {
         Schema::table('connection_applications', function (Blueprint $table) {
-            $table->dropColum('is_auto_water_submit');
+            $table->dropColumn('is_auto_water_submit');
         });
     }
 }

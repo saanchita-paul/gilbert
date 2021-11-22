@@ -172,7 +172,8 @@ class ConnectionApplication extends Model
         'billing_postcode',
         'submitted_by',
         'vendor_id',
-        'is_contacted'
+        'is_contacted',
+        'is_auto_water_submit'
     ];
 
 
@@ -379,6 +380,20 @@ class ConnectionApplication extends Model
     {
         $data = explode(' ', $this->billing_street_name);
         return $data[sizeof($data) - 1];
+    }
+
+
+    /**
+     * saving fast connect customer ref
+     *
+     * @param $ref
+     * @param $applicationId
+     */
+    public static function saveFasConnectRef($applicationId, $ref)
+    {
+        self::query()
+            ->where('id', $applicationId)
+            ->update(['fast_connect_customer_reference' => $ref]);
     }
 
 }

@@ -107,7 +107,9 @@ class SubmitWaterLeadToFastConnect
             ->post($url);
 
 
-
+        info("Water submit response body");
+        info($response->body());
+        info("Water submit response body");
         return json_decode($response->body());
     }
 

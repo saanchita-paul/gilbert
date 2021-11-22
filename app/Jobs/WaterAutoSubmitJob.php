@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\ConnectionApplication;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -14,25 +15,16 @@ class WaterAutoSubmitJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    private int $applicationId;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($applicationId)
+    public function __construct(int $applicationId)
     {
-        //
-            try {
-                $service = new SubmitWaterLeadToFastConnect($applicationId);
-                $result = $service->submitWaterLead();
-
-                info( json_encode( $result ));
-
-            } catch (\Exception $exception) {
-                \Log::error('Problem in Water auto submit Job ');
-                \Log::error($exception->getMessage());
-                \Log::error($exception->getTraceAsString());
-            }
+        $this->applicationId = $applicationId;
     }
 
     /**
@@ -42,6 +34,9 @@ class WaterAutoSubmitJob implements ShouldQueue
      */
     public function handle()
     {
-        //
+        $service = new SubmitWaterLeadToFastConnect($this->applicationId);
+        $result = $service->submitWaterLead();
+        ConnectionApplication::saveFasConnectRef($this->applicationId, data_get($result, "info.customer_reference"));
     }
 }
+
