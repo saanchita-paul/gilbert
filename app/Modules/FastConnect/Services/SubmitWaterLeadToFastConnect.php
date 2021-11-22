@@ -87,7 +87,10 @@ class SubmitWaterLeadToFastConnect
 
         $mappedData = $this->getData($this->application);
         $mappedAllData = $this-> addExtraData($this->application, $mappedData);
-        info("Water Submit Data", $mappedData);
+
+        info("Water Submit request body");
+        info(json_encode($mappedData));
+        info("Water Submit request body");
 
         $authorization = 'Bearer ' . $this->accessToken;
 
@@ -257,14 +260,14 @@ class SubmitWaterLeadToFastConnect
                 = $lead->getbillingRoadType() : null;
         }
 
-        if($lead->authorizedPerson) {
+        if($lead->authorizedPerson?->first_name && $lead->authorizedPerson?->email) {
             $data['contact']['secondary']['title'] = "MR";
-            $data['contact']['secondary']['first_name'] = $lead->authorizedPerson->first_name;
-            $data['contact']['secondary']['middle_name'] = $lead->authorizedPerson->middle_name;
-            $data['contact']['secondary']['last_name'] = $lead->authorizedPerson->last_name;
+            $data['contact']['secondary']['first_name'] = $lead->authorizedPerson->first_name ?? "";
+            $data['contact']['secondary']['middle_name'] = $lead->authorizedPerson->middle_name ?? "";
+            $data['contact']['secondary']['last_name'] = $lead->authorizedPerson->last_name ?? "";
             $data['contact']['secondary']['date_of_birth'] = $this->getMappedDate($lead->authorizedPerson->dob);
-            $data['contact']['secondary']['email'] = $lead->authorizedPerson->email;
-            $data['contact']['secondary']['phone_preference'] = $lead->authorizedPerson->phone;
+            $data['contact']['secondary']['email'] = $lead->authorizedPerson->email ?? "";
+            $data['contact']['secondary']['phone_preference'] = $lead->authorizedPerson->phone ?? "";
             $data['contact']['secondary']['identification'] = [];
         }
 
