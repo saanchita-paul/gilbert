@@ -1,3 +1,8 @@
+export const emailBillingMapper = {
+    EMAIL_BILLING_EMAIL  : 1,
+    EMAIL_BILLING_PAPER  : 2,  
+}
+
 export const connectionApplicationMapper = {
     STATUS_UNASSIGNED    : 1,
     STATUS_ASSIGNED      : 2,
@@ -8,5 +13,4 @@ export const connectionApplicationMapper = {
     STATUS_EA_PROCESSINF : 7,
     STATUS_CLOSED        : 8,
 }
-
 
