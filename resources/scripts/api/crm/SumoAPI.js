@@ -23,11 +23,14 @@ export default {
             return error.data;
         }
     },
-    products: async (location , service_type , agent_name) => {
+    products: async (location , service_type , agent_name, lead_id) => {
         try {
-            console.log('calling sumo api')
-            let meta   = SumoMapper.mapProduct(location , service_type);
-            console.log(meta)
+
+            
+
+            console.log('calling sumo api' , location);
+            let meta   = SumoMapper.mapProduct(location , service_type, agent_name, lead_id);
+            console.log('printing meta of sumo' , meta)
             const data = await sumoAxios.get('/products',{params: meta});
             console.log('calling sumo api')
             console.log('sumo' , data);

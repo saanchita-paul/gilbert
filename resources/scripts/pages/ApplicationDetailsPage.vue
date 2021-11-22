@@ -18,7 +18,7 @@
                                    @updateNote= "updateNote"
                                    :leadSummary="leadSummary" :notes="notes"></LeadServicesAndNotes>
 
-            <LeadsDetailsFotter :lifeSupportInfo="infoToPass.lifeSupportInfo"  v-if="leadSummary.status != 1" :login-loading="this.submittedLoader" :isManualChangeFlag="isManualChangeFlag" @submitConnection="submitConnection"></LeadsDetailsFotter>
+            <!-- <LeadsDetailsFotter :lifeSupportInfo="infoToPass.lifeSupportInfo"  v-if="leadSummary.status != 1" :login-loading="this.submittedLoader" :isManualChangeFlag="isManualChangeFlag" @submitConnection="submitConnection"></LeadsDetailsFotter> -->
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
             <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" :title="fullName"></EscalationConfirmModal>
             <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag"
@@ -171,7 +171,8 @@ export default {
                 'service_interests':this.services,
                 'identification':this.lead.indentification,
                 supplier: 1,
-                plan_type: this.plan
+                plan_type: this.plan,
+                submitType,
             };
             this.showSubmitModal = true;
         },
@@ -306,14 +307,28 @@ export default {
     },
 
   async  mounted() {
-        this.$eventBus.$on("validate", async (callback) => {
+        const validateEvent = async (callback) => {
               let v = await this.validateLead();
               if(!v) return;
               callback('sumo');
-          });
-        this.$eventBus.$on("busWaterSubmit", async (type) => {
+          };
+        const busWaterSubmitEvent = async (type) => {
               await this.submitConnection(type);
-          });
+          }
+
+
+        this.$eventBus.$on("validate", validateEvent);
+        this.$eventBus.$on("busWaterSubmit", busWaterSubmitEvent);
+
+        this.$once("hook:beforeDestroy", () => {
+            this.$eventBus.$off("validate", validateEvent );
+        });
+
+        this.$once("hook:beforeDestroy", () => {
+            this.$eventBus.$off("busWaterSubmit", busWaterSubmitEvent);
+        });
+
+    
       this.leadId = this.$route.params.id;
       await this.loadPlanNoteAndLead();
       await this.updateMernNmi();

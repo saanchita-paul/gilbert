@@ -8,17 +8,17 @@ export default {
             quoteNumber: 'randomQuoteNumberFromOurServer',
         }
     },
-    mapProduct :(location , service_type , agent_name)=>{
+    mapProduct :(location , service_type , agent_name, lead_id)=>{
         return {
             campaign: 'hood',
             channel: 'crm',
-            consultantID: 'OurAgentName',
+            consultantID: location?.distributor ? location.distributor : "electricDistributorNotFound" ,
             electricityDistributor: agent_name,
             fuelType: service_type,
             nmi: location.nmi,
             postcode: location.postcode,
             prospectType: 'Residential',
-            quoteNumber: 'randomQuoteNumberFromOurServer',
+            quoteNumber: 'hood-'+lead_id,
             suburb: location.suburbOrPlaceOrLocality,
         }
     },

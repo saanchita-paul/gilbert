@@ -2,7 +2,7 @@ import SumoAPI from "@scripts/api/crm/SumoAPI"
 
 
 export default {
-    getPlans: async (address , service_interests , agent) => {
+    getPlans: async (address , service_interests , agent , lead) => {
             try {
                 let service_type = '';
                 if( service_interests.some(n=>n=='power') && service_interests.some(n=>n=='gas') ){
@@ -15,8 +15,6 @@ export default {
                     throw 'plan not selected';
                 }
 
-                
-
                 console.log('service type' , service_type);
                 let distributorData =  await SumoAPI.qualifyAddress(address);
                 console.log('printing address ' , address)
@@ -27,9 +25,9 @@ export default {
                 }
 
                 // let plans;
-                console.log(distributorData[0])
+                console.log('frontend distributor' ,  distributorData[0])
                 // if(distributorData[0].electricityDistributors.distributor){
-                let plans =  await SumoAPI.products(distributorData[0] , service_type , agent_name);
+                let plans =  await SumoAPI.products(distributorData[0] , service_type , agent_name , lead.id);
                 return plans;
                 // }
                 // throw 'No plans found'

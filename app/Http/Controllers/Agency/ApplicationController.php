@@ -111,8 +111,6 @@ class ApplicationController extends Controller
     }
 }
 
-
-
      /**
       * Assigning user to an Application
       *

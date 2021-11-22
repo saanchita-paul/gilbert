@@ -200,9 +200,38 @@ class ApplicationService
 
         $this->createIdentification($lead['identification'], $id);
 
-//        $this->updateConnectionService($lead['service_interests'], $id);
+//      $this->updateConnectionService($lead['service_interests'], $id);
+
+        $this->checkAndAddWaterService($applications , $existLead);
 
         return $existLead;
+    }
+
+    private function checkAndAddWaterService(array $applications , $application){
+        info("printing application data"); 
+        \Log::info($applications);
+        \Log::info($applications['lead']['service_interests']);
+        // if( array_search("water",$applications['lead']['service_interests'])){
+        //     info("water found");
+        // };
+        if( $applications['lead']['submit_type'] == 'water'){
+            info("water found");
+
+            $waterService =  ConnectionService::where("connection_application_id" , $application->id)->where( "service_type" ,  "water")->first();
+            if(!$waterService){
+                info('creating water...');
+                $application->connectionServices()->create(['service_type' => 'water']);
+            }else{
+                info('water found inside');
+                \Log::info($waterService);
+            }
+
+        };
+
+
+
+
+
     }
 
 

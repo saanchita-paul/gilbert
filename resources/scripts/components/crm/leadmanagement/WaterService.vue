@@ -15,13 +15,13 @@
                 This application have missing information. To proceed, please review above fields and manually submit the application by clicking the submit button below.
             </div>
         </div>
-        <div class="d-flex justify-end mt-4">
+        <!-- <div class="d-flex justify-end mt-4">
             <div>
                 <v-btn color="#542E89" @click="submit" class="white--text">
-                    Submit For Connection
+                    Submit for connection
                 </v-btn>
             </div>
-        </div>
+        </div> -->
     </v-card>
 </template>
 
