@@ -24,7 +24,6 @@ use App\Services\Utility\IgniteConnectionLeadService;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Services\Utility\SumoService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use FastConnect\Services\SubmitWaterLeadToFastConnect;
 
 class ApplicationController extends Controller
 {
@@ -74,8 +73,7 @@ class ApplicationController extends Controller
     }
 }
 
-    /**
-     * agencyId
+    /**agencyId
      * Getting Agency list
      *
      * @param Request $request
@@ -85,7 +83,7 @@ class ApplicationController extends Controller
     public function view(Request $request, ConnectionApplication $application): ApplicationResource|JsonResponse
     {
         try {
-            $application->load(['connectionServices', 'createdBy']);
+            $application->load(['connectionServices']);
             return new ApplicationResource($application);
 
         } catch (\Exception $exception) {
@@ -172,6 +170,7 @@ class ApplicationController extends Controller
         $res = $service->submit($requestArray, $id);
 
         SubmitApplicationEvent::dispatch($id, data_get($requestArray, 'lead.submit_type'));
+
 
         return ApplicationResource::make($res);
     } catch (\Exception $exception) {
@@ -315,18 +314,9 @@ class ApplicationController extends Controller
     //    $igninte =  new IgniteConnectionLeadService();
     //    $igninte->authenticate();
           $s = new SumoService();
-          $s->validateData("riyad298@gmail.com" , "email");
+          $s->validateEmail("riyad298");
           return 'validate email';
     }
 
-    public function submitWaterLead(Request $request, $applicationId)
-    {
-        try {
-            $service = new SubmitWaterLeadToFastConnect($applicationId);
-            return $service->submitWaterLead();
-        } catch (\Exception $exception) {
-            return $this->sendErrorResponse($exception);
-        }
-    }
-    
+
 }

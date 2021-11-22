@@ -87,18 +87,22 @@ class SubmitWaterLeadToFastConnect
 
         $mappedData = $this->getData($this->application);
         $mappedAllData = $this-> addExtraData($this->application, $mappedData);
-        
+        info("Water Submit Data", $mappedData);
+
         $authorization = 'Bearer ' . $this->accessToken;
-        $url = \config('fastconnect.root_url') . \config('fastconnect.submit_water_lead_url');
-        $url = APILog::setLoggerQuery($url, APILog::API_FAST_CONNECT_WATER_SUBMIT );
+
+        $url = config('fastconnect.root_url') . config('fastconnect.submit_water_lead_url');
+        $url = APILog::setLoggerQuery($url, APILog::API_FAST_CONNECT_WATER_SUBMIT, false);
+
+        info($url);
         $response = Http::withHeaders([
             'content-type' => 'application/json',
             'accept' => 'application/json',
             'authorization' => $authorization
         ])
             ->withBody(json_encode($mappedAllData), 'application/json')
-            ->post(\config('fastconnect.root_url') . \config('fastconnect.submit_water_lead_url'));
-        
+            ->post($url);
+
 
 
         return json_decode($response->body());
@@ -185,12 +189,12 @@ class SubmitWaterLeadToFastConnect
 
     private function getMappedTitle($title): string
     {
-        return $title ? SubmitWaterLeadToFastConnect::MAP_TITLE[$title] : $title;
+        return $title ? SubmitWaterLeadToFastConnect::MAP_TITLE[$title] : "";
     }
 
     private function getMappedState($state): string
     {
-        return $state ? SubmitWaterLeadToFastConnect::MAP_STATE[$state] : $state;
+        return $state ? SubmitWaterLeadToFastConnect::MAP_STATE[$state] : "";
     }
 
     private function getMappedIdentificationType($type): int
@@ -200,7 +204,7 @@ class SubmitWaterLeadToFastConnect
 
     private function getMappedIdentificationState($state)
     {
-        return SubmitWaterLeadToFastConnect::MAP_IDENTIFICATION_STATE[$state];
+        return $state ?  SubmitWaterLeadToFastConnect::MAP_IDENTIFICATION_STATE[$state] : "";
     }
 
     private function getMappedIdentificationCountry($country)
@@ -265,5 +269,5 @@ class SubmitWaterLeadToFastConnect
         }
 
         return $data;
-    }      
+    }
 }

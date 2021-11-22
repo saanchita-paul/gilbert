@@ -2,10 +2,11 @@
 
 namespace App\Listeners\Agency;
 
+use App\Events\Agency\SubmitApplicationEvent;
+use App\Services\Agency\HubspotContactService;
 use App\Services\Sales\PostSalesService;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Events\Agency\SubmitApplicationEvent;
 use FastConnect\Services\SubmitWaterLeadToFastConnect;
 
 class SendApplicationToEA implements ShouldQueue
@@ -28,8 +29,13 @@ class SendApplicationToEA implements ShouldQueue
      */
     public function handle(SubmitApplicationEvent $event)
     {
+        $submitType = $event->submitType;
+        if($submitType === 'ea') {
         $postEaService = new PostSalesService($event->applicationId);
         $postEaService->postToEa();
+        $hubspotService = new HubspotContactService($event->applicationId);
+        $hubspotService->update();
+        }
 
         //
         info('inside EA service listener');
