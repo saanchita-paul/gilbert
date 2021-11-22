@@ -137,14 +137,11 @@ class ApplicationService
             ->first();
     }
 
-    public function updateConnectionService(array $serviceList, $id, $isDeleted = true)
+    public function updateConnectionService(array $serviceList, $id)
     {
-        if($isDeleted) {
-            ConnectionService::query()->where('connection_application_id', '=', $id)
-                ->whereIn('service_type',[ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
-                ->delete();
-        }
-
+        ConnectionService::query()->where('connection_application_id', '=', $id)
+            ->whereIn('service_type',[ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
+            ->delete();
         foreach ($serviceList as $service) {
             ConnectionService::create(
                 [
@@ -203,7 +200,7 @@ class ApplicationService
 
         $this->createIdentification($lead['identification'], $id);
 
-//        $this->updateConnectionService($lead['service_interests'], $id, false);
+//        $this->updateConnectionService($lead['service_interests'], $id);
 
         return $existLead;
     }
@@ -240,7 +237,7 @@ class ApplicationService
         if ($isIdentification) {
             $this->createIdentification($application, $id);
         } else if ($isService) {
-            $this->updateConnectionService($application['service_types'], $id, true);
+            $this->updateConnectionService($application['service_types'], $id);
         } else {
 
             if(isset($application['plan_type']) && isset($application['plan_type']['key']))

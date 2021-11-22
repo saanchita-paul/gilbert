@@ -24,6 +24,7 @@ use App\Services\Utility\IgniteConnectionLeadService;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Services\Utility\SumoService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use FastConnect\Services\SubmitWaterLeadToFastConnect;
 
 class ApplicationController extends Controller
 {
@@ -73,7 +74,8 @@ class ApplicationController extends Controller
     }
 }
 
-    /**agencyId
+    /**
+     * agencyId
      * Getting Agency list
      *
      * @param Request $request
@@ -83,7 +85,7 @@ class ApplicationController extends Controller
     public function view(Request $request, ConnectionApplication $application): ApplicationResource|JsonResponse
     {
         try {
-            $application->load(['connectionServices']);
+            $application->load(['connectionServices', 'createdBy']);
             return new ApplicationResource($application);
 
         } catch (\Exception $exception) {
@@ -167,9 +169,11 @@ class ApplicationController extends Controller
 {
     try {
         $service = new ApplicationService();
-        $res = $service->submit($request->toArray(), $id);
+        $requestArray = $request->toArray();
 
-        SubmitApplicationEvent::dispatch($id);
+        $res = $service->submit($requestArray, $id);
+
+        SubmitApplicationEvent::dispatch($id, data_get($requestArray, 'lead.submit_type'));
 
         return ApplicationResource::make($res);
     } catch (\Exception $exception) {
@@ -313,9 +317,18 @@ class ApplicationController extends Controller
     //    $igninte =  new IgniteConnectionLeadService();
     //    $igninte->authenticate();
           $s = new SumoService();
-          $s->validateEmail("riyad298");
+          $s->validateData("riyad298@gmail.com" , "email");
           return 'validate email';
     }
 
+    public function submitWaterLead(Request $request, $applicationId)
+    {
+        try {
+            $service = new SubmitWaterLeadToFastConnect($applicationId);
+            return $service->submitWaterLead();
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
     
 }

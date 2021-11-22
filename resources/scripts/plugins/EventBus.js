@@ -1,12 +1,12 @@
 
 import Vue from 'vue';
 
-export default class EventHub {
+export default class EventBus {
     static get instance() {
-        if (!EventHub.eventHubInstance) {
-            EventHub.eventHubInstance = new Vue();
+        if (!EventBus.eventHubInstance) {
+            EventBus.eventHubInstance = new Vue();
         }
-        return EventHub.eventHubInstance;
+        return EventBus.eventHubInstance;
     }
     static eventHubInstance;
 }
@@ -14,6 +14,6 @@ export default class EventHub {
 export const EventBusPlugin = {
     install(vue) {
         this.VueTemp = vue;
-        this.VueTemp.prototype.$eventHub = EventHub.instance;
+        this.VueTemp.prototype.$eventBus = EventBus.instance;
     },
 };
