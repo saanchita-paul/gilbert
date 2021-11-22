@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\ConnectionApplication;
+use App\Services\Agency\HubspotContactService;
 use App\Services\Sales\GetSalesRequestStaus;
 use Illuminate\Console\Command;
 
@@ -19,7 +21,7 @@ class GetSellStatusCommand extends Command
      *
      * @var string
      */
-    protected $description = 'get every sales status between 2 dates';
+    protected $description = 'get every sales status by id';
 
     /**
      * Create a new command instance.
@@ -38,8 +40,21 @@ class GetSellStatusCommand extends Command
      */
     public function handle()
     {
-        $service = new GetSalesRequestStaus();
-        $service->getSalesStatusByDateRange();
+        $this->checkStatus();
         return 0;
+    }
+
+    private function checkStatus()
+    {
+        $service = new GetSalesRequestStaus();
+
+        $leads = ConnectionApplication::query()->where([['status', '=', ConnectionApplication::STATUS_EA_PROCESSINF]])->get();
+
+
+        foreach ($leads as $lead) {
+            $service->getSalesStatus($lead->ea_sales_id);
+            $hubspotService = new HubspotContactService($lead->id);
+            $hubspotService->update();
+        }
     }
 }
