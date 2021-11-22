@@ -31,6 +31,7 @@ class WaterServiceListener implements ShouldQueue
             try {
                 $service = new SubmitWaterLeadToFastConnect($event->applicationId);
                 $result = $service->submitWaterLead();
+
                 info( json_encode( $result ));
 
             } catch (\Exception $exception) {
