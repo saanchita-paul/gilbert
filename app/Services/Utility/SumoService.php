@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Identification;
 use App\Models\ConnectionApplicationSecondaryACC;
 
+use JetBrains\PhpStorm\ArrayShape;
 use function PHPSTORM_META\map;
 
 class SumoService
@@ -41,8 +42,6 @@ class SumoService
     const MAP_SERVICE = [
         'gas' => 'Gas',
         'power' => 'Electricity',
-        'water' => 'Water',
-        'internet' => 'Internet',
     ];
 
     const MAP_PROPERTY_TYPE = [
@@ -78,14 +77,10 @@ class SumoService
         return json_decode($response->body(), true);
     }
 
-    private function getCustomerData()
+    private function getCustomerData(): array
     {
-        return [
+        return array_merge($this->getIdDetails(), [
             'acceptTerms' => true,
-            'authenticationExpiry' => $this->application->identification?->expire_date,
-            'authenticationNo' => $this->application->identification?->card_number,
-            'authenticationState' => $this->getMappedState($this->application->identification?->state),
-            'authenticationType' => $this->getAuthenticationType($this->application->identification?->type),
 //            'billDelivery' => $this->application->is_email_billing,
             'billDelivery' => true,
             'concentCC' => $this->application->is_contacted,
@@ -109,7 +104,30 @@ class SumoService
             'secondaryCustomerLastName' => $this->application->authorizedPerson?->last_name,
             'secondaryCustomerPhone' => $this->application->authorizedPerson?->phone,
             'secondaryCustomerTitle' => $this->application->authorizedPerson?->title,
+        ]);
+    }
+
+    private function getIdDetails(): array
+    {
+
+        $id = [
+            'authenticationExpiry' => $this->application->identification?->expire_date,
+            'authenticationNo' => $this->application->identification?->card_number,
+            'authenticationType' => $this->getAuthenticationType($this->application->identification?->type)
         ];
+
+        /**
+         * TODO:
+         * we do not need State for driver license but sumo throwing error if we don't send "authenticationState"
+         * property or send its value as null. So for now we are sending  static state value.
+         */
+        $id['authenticationState'] = $this->application->identification?->state ?  $this->getMappedState($this->application->identification?->state) : "VIC";
+//
+//        if ($this->application->identification?->state === Identification::TYPE_DRIVING_LICENCE) {
+//            $id['authenticationState'] = $this->getMappedState($this->application->identification?->state);
+//        }
+
+        return $id;
     }
 
 
@@ -123,11 +141,15 @@ class SumoService
         return $type ? SumoService::MAP_TYPE[$type] : '';
     }
 
-    private function getMappedService($services)
+    private function getMappedService($services): array
     {
-        return $services ? (array_map(function ($service) {
-            return SumoService::MAP_SERVICE[$service];
-        }, $services)) : null;
+        $data = [];
+        foreach ( $services as $service) {
+            if (isset(SumoService::MAP_SERVICE[$service])) {
+                $data[] =  SumoService::MAP_SERVICE[$service];
+            }
+        }
+        return $data;
     }
 
     private function getMappedDate($date)
