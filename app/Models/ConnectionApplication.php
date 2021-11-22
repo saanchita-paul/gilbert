@@ -368,15 +368,6 @@ class ConnectionApplication extends Model
         return $this->hasMany(ApplicationNote::class);
     }
 
-    public function getElectricitySourceCode()
-    {
-        return 'AA';
-    }
-
-    public function getGasSourceCode()
-    {
-        return 'AA';
-    }
 
     public function getRoadType()
     {
