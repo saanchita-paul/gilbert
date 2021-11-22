@@ -167,9 +167,12 @@ class ApplicationController extends Controller
 {
     try {
         $service = new ApplicationService();
-        $res = $service->submit($request->toArray(), $id);
+        $requestArray = $request->toArray();
 
-        SubmitApplicationEvent::dispatch($id, $res->pro);
+        $res = $service->submit($requestArray, $id);
+
+        SubmitApplicationEvent::dispatch($id, data_get($requestArray, 'lead.submit_type'));
+
 
         return ApplicationResource::make($res);
     } catch (\Exception $exception) {

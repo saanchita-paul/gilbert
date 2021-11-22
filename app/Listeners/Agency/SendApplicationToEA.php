@@ -28,7 +28,7 @@ class SendApplicationToEA implements ShouldQueue
      */
     public function handle(SubmitApplicationEvent $event)
     {
-        $submitType = 'ea';
+        $submitType = $event->submitType;
         if($submitType === 'ea') {
         $postEaService = new PostSalesService($event->applicationId);
         $postEaService->postToEa();
