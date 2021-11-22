@@ -27,13 +27,12 @@ class WaterServiceListener implements ShouldQueue
     public function handle($event)
     {
         //
-        info('inside water service listerne');
         if( isset( $event->submitType ) && $event->submitType == 'water' ){
             try {
                 $service = new SubmitWaterLeadToFastConnect($event->applicationId);
                 $result = $service->submitWaterLead();
                 info( json_encode( $result ));
-                
+
             } catch (\Exception $exception) {
                 \Log::error('Problem in Water Service Lister ');
                 \Log::error($exception->getMessage());

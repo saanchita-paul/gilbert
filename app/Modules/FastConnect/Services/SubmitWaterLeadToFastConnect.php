@@ -87,18 +87,22 @@ class SubmitWaterLeadToFastConnect
 
         $mappedData = $this->getData($this->application);
         $mappedAllData = $this-> addExtraData($this->application, $mappedData);
-        
+        info("Water Submit Data", $mappedData);
+
         $authorization = 'Bearer ' . $this->accessToken;
-        $url = \config('fastconnect.root_url') . \config('fastconnect.submit_water_lead_url');
-        $url = APILog::setLoggerQuery($url, APILog::API_FAST_CONNECT_WATER_SUBMIT );
+
+        $url = config('fastconnect.root_url') . config('fastconnect.submit_water_lead_url');
+        $url = APILog::setLoggerQuery($url, APILog::API_FAST_CONNECT_WATER_SUBMIT, false);
+
+        info($url);
         $response = Http::withHeaders([
             'content-type' => 'application/json',
             'accept' => 'application/json',
             'authorization' => $authorization
         ])
             ->withBody(json_encode($mappedAllData), 'application/json')
-            ->post(\config('fastconnect.root_url') . \config('fastconnect.submit_water_lead_url'));
-        
+            ->post($url);
+
 
 
         return json_decode($response->body());
@@ -265,5 +269,5 @@ class SubmitWaterLeadToFastConnect
         }
 
         return $data;
-    }      
+    }
 }
