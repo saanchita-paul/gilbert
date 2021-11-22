@@ -23,15 +23,28 @@ class PostSalesService
     private $chatbotUri;
     private $gasSourceCode;
     private $eleSourceCode;
+    private $planType;
     public function __construct(int $id)
     {
-        $this->chatbotUri = config('bot.root_url1');
-        $this->connection = ConnectionApplication::find($id);
+        $this->chatbotUri = config('bot.root_url');
+        $this->connection = ConnectionApplication::with('connectionServices')->where('id', $id)->firstOrFail();
         $this->identification = $this->connection->identification;
         $this->accessToken = (new GetAccessToken())->getAccessToken();
-        $this->eleSourceCode = $this->getElectricitySourceCode($this->connection->plan_type, $this->connection->state);
-        $this->gasSourceCode = $this->getGasSourceCode($this->connection->plan_type, $this->connection->state);
+        $planType = $this->getPlanType();
+        $this->eleSourceCode = $this->getElectricitySourceCode($planType, $this->connection->state);
+        $this->gasSourceCode = $this->getGasSourceCode($planType, $this->connection->state);
 
+    }
+
+    public function getPlanType()
+    {
+        foreach ($this->connection->connectionServices as $service)
+        {
+            if($service->provider_name === 'ea') {
+                return $service->plan_type;
+            }
+        }
+        return throw new \Exception('[PostSalesService:getPlanType] plan type not found');
     }
 
     public function postToEa()
@@ -171,7 +184,10 @@ class PostSalesService
                     ]
                 );
 
+
+                Log::info('End Sale API Payload');
                 Log::info(json_encode($variables));
+                Log::info('Start Sale API Payload');
             $results = $client->runQuery($gql, false, $variables );
             return $this->processEaData($results->getResponseBody());
 
@@ -186,13 +202,15 @@ class PostSalesService
 
     public function processEaData($results)
     {
+        Log::info('End Sale API Response');
         Log::info(json_encode($results));
+        Log::info('Start Sale API Response');
 
         $data = json_decode($results);
         $submitSallData = $data?->data?->submitSale;
         $quotes = $submitSallData?->quotes;
         $salesId = $submitSallData?->id;
-        info(json_encode($data));
+
 
         foreach ($quotes as $quote)
         {
@@ -240,7 +258,7 @@ class PostSalesService
         }
         else if($this->identification->type === Identification::TYPE_DRIVING_LICENCE )
         {
-            Log::info($this->identification);
+//            Log::info($this->identification);
             return [
                 'type'=> "DL",
                 'number'=> $this->identification->card_number,
@@ -277,7 +295,7 @@ class PostSalesService
 
     private function getElectricitySourceCode($plan, $state)
     {
-        $plan = ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
+//        $plan = ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
         $state = $this->stateMap($state);
 
         try{
@@ -296,7 +314,7 @@ class PostSalesService
 
     private function getGasSourceCode($plan, $state)
     {
-        $plan = ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
+//        $plan = ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
         $state = $this->stateMap($state);
 
         try {
@@ -314,8 +332,8 @@ class PostSalesService
     private function prepareOffer()
     {
 
-        Log::info('show Prepare call is called');
-        $plan = ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$this->connection->plan_type];
+//        Log::info('show Prepare call is called');
+        $plan = $this->getPlanType();
         $state = $this->stateMap( $this->connection->state);
         $gasPlanSourceCode = '';
         $elePlanSourceCode = '';
@@ -323,7 +341,7 @@ class PostSalesService
 
         try {
             $response = Http::post($this->chatbotUri.'/api/get-plan-details',['plan'=>$plan,'state'=>$state]);
-            Log::info($response->status());
+//            Log::info($response->status());
 
             if($response->status() == 200) {
                 $response = json_decode($response->body());
