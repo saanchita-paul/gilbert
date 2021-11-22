@@ -1,11 +1,11 @@
 import SumoDataPlanMapper from '@scripts/modules/sumo/models/SumoPlanDetails'
 
 export default {
-    mapAddress :(address)=>{
+    mapAddress :(address , applicationId)=>{
         return {
             // address: '1/309 Cumberland Rd, Pascoe Vale VIC 3044',
             address,
-            quoteNumber: 'randomQuoteNumberFromOurServer',
+            quoteNumber: 'hood_'+applicationId,
         }
     },
     mapProduct :(location , service_type , agent_name, lead_id)=>{
@@ -18,7 +18,7 @@ export default {
             nmi: location.nmi,
             postcode: location.postcode,
             prospectType: 'Residential',
-            quoteNumber: 'hood-'+lead_id,
+            quoteNumber: 'hood_'+lead_id,
             suburb: location.suburbOrPlaceOrLocality,
         }
     },

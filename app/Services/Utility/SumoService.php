@@ -98,7 +98,7 @@ class SumoService
             'nmi' => $this->application->nmi,
             'proposedMovingDate' => $this->getMappedDate($this->application->moving_date),
             'prospectType' => $this->getMappedPropertyType($this->application->property_type),
-            'quoteNumber' => $this->application->id,
+            'quoteNumber' => 'hood_'.$this->application->id,
             'secondaryCustomerEmail' =>  $this->application->authorizedPerson?->email,
             'secondaryCustomerFirstName' => $this->application->authorizedPerson?->first_name,
             'secondaryCustomerLastName' => $this->application->authorizedPerson?->last_name,

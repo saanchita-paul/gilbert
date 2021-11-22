@@ -25,27 +25,19 @@ class SumoSubmitListener implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param object $event
      * @return void
      */
     public function handle($event)
     {
-        //
-        \Log::info('calling sumo listener');
-        \Log::info($event->applicationId);
-        try {
-            $application = ConnectionApplication::whereId($event->applicationId)->with("connectionServices")->firstOrFail();
-            info("**********LIST");
-            info($this->isProviderSumo($application));
-            if ($this->isProviderSumo($application)) {
-                $res = (new SumoService())->storeCustomerData($event->applicationId);
-                info(json_encode($res));
-            }
-        } catch (\Exception $exception) {
-            \Log::error('problem in app/Listeners/SumoSubmitListener.php , in handle method');
-            \Log::error($exception->getMessage());
-            \Log::error($exception->getTraceAsString());
+        $application = ConnectionApplication::whereId($event->applicationId)->with("connectionServices")->firstOrFail();
+        if ($this->isProviderSumo($application) && $event->submitType === "energy") {
+            $res = (new SumoService())->storeCustomerData($event->applicationId);
+            info("Sumo response body");
+            info(json_encode($res));
+            info("Sumo response body");
         }
+
     }
 
     /**
@@ -60,6 +52,6 @@ class SumoSubmitListener implements ShouldQueue
             }
         }
 
-        return  false;
+        return false;
     }
 }

@@ -16,14 +16,18 @@ class CheckSaleApiLeadData implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    private $id;
+    private $ea_sales_id;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($id,  $ea_sales_id)
     {
-        //
+        $this->id = $id;
+        $this->ea_sales_id = $ea_sales_id;
     }
 
     /**
@@ -39,14 +43,9 @@ class CheckSaleApiLeadData implements ShouldQueue
     private function checkStatus()
     {
         $service = new GetSalesRequestStaus();
-
-        $leads = ConnectionApplication::query()->where([['status', '=', ConnectionApplication::STATUS_EA_PROCESSINF]])->get();
-
-
-        foreach ($leads as $lead) {
-            $service->getSalesStatus($lead->ea_sales_id);
-            $hubspotService = new HubspotContactService($lead->id);
+            $service->getSalesStatus( $this->ea_sales_id, $this->id);
+            $hubspotService = new HubspotContactService($this->id);
             $hubspotService->update();
-        }
+
     }
 }

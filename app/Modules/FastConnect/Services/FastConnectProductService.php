@@ -28,7 +28,7 @@ class FastConnectProductService
 
     const MAP_PROPERTY_TYPE = [
         1 => 'rented',
-        2 => 'owning '
+        2 => 'owning'
     ];
 
     public function __construct(int $id) {
@@ -59,7 +59,10 @@ class FastConnectProductService
         ])
             ->withBody(json_encode($this->getProductGroupData()), 'application/json')
             ->post(\config('fastconnect.root_url') . \config('fastconnect.get_product_group_uri'));
-        
+        info('Water Log',$this->getProductGroupData());
+        info('Water Log',json_decode($response->body(), true));
+
+
         $this->productConnectionGroups = json_decode($response->body())->connection_groups;
         return $this;
     }
@@ -79,7 +82,7 @@ class FastConnectProductService
         ])
             ->withBody(json_encode($this->getProductDetailsData()), 'application/json')
             ->post(\config('fastconnect.root_url') . \config('fastconnect.get_product_details_uri'));
-        
+
         $this->productDetails = json_decode($response->body(), true);
         return $this;
     }
@@ -113,7 +116,7 @@ class FastConnectProductService
                     // "property_type" => "old",
                     "street_name" => $this->application->street_name,
                     "street_number" => $this->application->street_number,
-                    // "street_type" => "St"   
+                    // "street_type" => "St"
                 ],
                 // "move_out_address" => [
                 //     "suburb" => "Melbourne",
@@ -134,7 +137,7 @@ class FastConnectProductService
                 ]
             ],
             "selected_products" => [
-                
+
             ]
         ];
     }

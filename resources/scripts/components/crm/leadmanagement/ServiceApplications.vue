@@ -517,7 +517,6 @@ export default {
 
         },
         submit(){
-            // * this will ber fired on ApplicationDetailsPage
             let subType = 'energy';
             if(this.tabMapper.Energy == this.tab){
                 subType = 'energy';
@@ -527,7 +526,6 @@ export default {
                 subType = 'internet';
             }
             this.$eventBus.$emit("busWaterSubmit", subType)
-            console.log('clicking submit')
         }
     }
 };
