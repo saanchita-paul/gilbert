@@ -99,7 +99,7 @@
                             ></v-progress-circular>
                         </div>
                         <div v-else-if="sumoOptions.isError" class="d-flex justify-center" style="width: 100%">
-                            <div class="text-center font-weight-bold red--text"> Something went wrong! </div>
+                            <div class="text-center font-weight-bold red--text"> Something went wrong, Please retry. </div>
                             <!-- <v-btn color="error">Retry</v-btn> -->
                         </div>
                         <div v-else class="d-flex" v-for="plan in origin2" :key="plan.name">
@@ -463,7 +463,7 @@ export default {
                 return 0;
             } catch (error) {
                 this.sumoOptions.isError = true;
-                this.sumoOptions.errorMsg = "Something weng wrong";
+                this.sumoOptions.errorMsg = "Something weng wrong, retry";
                 this.sumoPlanDetails = new SumoPlanDetails();
             } finally {
                 this.isSumoLoading = false;
