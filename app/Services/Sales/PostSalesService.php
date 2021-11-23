@@ -77,7 +77,6 @@ class PostSalesService
 
         $energisation = [
             'connectionDate'=>(new Carbon( $this->connection->moving_date))->format('Y-m-d'),
-            'accessDetails'=> "frfsef",
             'renovationsSinceDeenergisation'=> false,
             'renovationsInProgressOrPlanned'=> false,
             'afterHoursServiceOrder'=> false,
@@ -89,7 +88,7 @@ class PostSalesService
             'nmi'=> $this->connection->nmi,
 
             'address'=> [
-                'unitNumber'=> $this->connection->address_unit,
+                'unitNumber'=> $this->connection->unit_number,
                 'streetNumber'=> $this->connection->street_number,
                 'streetName'=> $this->connection->street_address,
                 'streetType'=> $streetType,
