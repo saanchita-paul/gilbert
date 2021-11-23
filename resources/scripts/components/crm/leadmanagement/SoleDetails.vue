@@ -51,7 +51,7 @@
                         <!--                    </div>-->
 
                         <div class="my-4">
-                            <a href="#" class="textFontSize linkColor">Electricity Fact Sheet</a>
+                            <a target=”_blank” href="https://www.sumo.com.au/energy-price-fact-sheets/" class="textFontSize linkColor">Electricity Fact Sheet</a>
                         </div>
                     </template>
 
@@ -92,7 +92,7 @@
                         </div>
 
                         <div class="my-4">
-                            <a href="#" class="textFontSize linkColor">Gas Fact Sheet</a>
+                            <a target=”_blank” href="https://www.sumo.com.au/energy-price-fact-sheets/" class="textFontSize linkColor">Gas Fact Sheet</a>
                         </div>
                     </template>
                 </div>
@@ -103,7 +103,7 @@
                 <div class=" px-2 ">
                     <p class="text-center primaryFontColor largeFontSize font-weight-bold">{{sumoPlanDetails.elec_price_reference}}</p>
                 </div>
-                <div class=" px-2 ">
+                <div class=" px-2 " v-if="selectedPowerProvider!=='sumo'">
                     <p class="text-center textFontSize">
                         GST incl. Estimated Price based on a family using 4000kWh per year on a single rate tariff in the Jemena distribution area.
                     </p>
@@ -168,7 +168,7 @@
 
     export default {
         name: "SoleDetails",
-        props:['sumoPlanDetails'],
+        props:['sumoPlanDetails' , 'selectedPowerProvider'],
         data() {
             return {
                 planDetails: new SumoPlanDetails({})
