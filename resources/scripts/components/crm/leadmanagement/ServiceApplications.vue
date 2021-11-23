@@ -147,7 +147,7 @@
         </v-tabs>
         <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
 
-            <v-btn color="#542E89" @click="submit" class="white--text">
+            <v-btn :disabled="is_submit_disabled" color="#542E89" @click="submit" class="white--text">
                     Submit for connection
             </v-btn>
 
@@ -269,6 +269,13 @@ export default {
             return ServiceProvideres.filter((dt)=> {
                return dt.service_type === 'energy';
             });
+        },
+        is_submit_disabled(){
+            if( this.tab == this.tabMapper.Water && this.getwaterServiceStatus !== 'In Progress' ){
+                return true;
+            }else{
+                return false;
+            }
         },
         tabMapper(){
             return {
