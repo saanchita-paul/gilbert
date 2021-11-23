@@ -155,6 +155,7 @@
                 <SoleDetails
                     @soleDialog="soleDialog"
                     :sumoPlanDetails="sumoPlanDetails"
+                    :selectedPowerProvider="selectedPowerProvider"
                 />
             </v-card>
         </v-dialog>
