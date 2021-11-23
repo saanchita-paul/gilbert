@@ -92,7 +92,13 @@
                     </div>
 
                     <div class="d-flex" v-if="plansFlag &&  selectedPowerProvider !== 'ea'">
-                        <div class="d-flex" v-for="plan in origin2" :key="plan.name">
+                        <div v-if='isSumoLoading' class="sumo-loading-container">
+                            <v-progress-circular
+                                indeterminate
+                                color="primary"
+                            ></v-progress-circular>
+                        </div>
+                        <div v-else class="d-flex" v-for="plan in origin2" :key="plan.name">
                             <SumoPlan
                                 :sumoPlanDetails="sumoPlanDetails"
                                 v-if="plan.name === 'sumo_saver'"
@@ -221,7 +227,8 @@ export default {
             origin2: null,
             isActivePlan: null,
             solePlanDialog: false,
-            sumoPlanDetails: new SumoPlanDetails({})
+            sumoPlanDetails: new SumoPlanDetails({}),
+            isSumoLoading: false,
         }
     },
     computed: {
@@ -426,13 +433,16 @@ export default {
             this.sumoPlanDetails = new SumoPlanDetails({})
             this.providerSpinner.start()
             try {
+                // this.isSumoLoading = true;
                 let address = this.leadSummary.street_address + ' ' + this.leadSummary.city + ' ' + this.leadSummary.state + ' ' + this.leadSummary.postcode;
                 this.sumoPlanDetails =
                     await SumoService.getPlans(address, this.leadSummary.service_interests, this.leadSummary?.created_by_agent, this.leadSummary);
                 this.actionOnSelectProvider(name)
+                this.isSumoLoading = false;
                 this.providerSpinner.stop()
                 return 0;
             } catch (error) {
+                this.isSumoLoading = false;
                 this.sumoPlanDetails = new SumoPlanDetails();
             }
 
@@ -441,10 +451,12 @@ export default {
             this.selectedPowerProvider = name;
             // TODO need to decide if provider is
             if(name == 'sumo'){
+                this.isSumoLoading = true;
                 //listening on ApplicationDetailsPage component
                 this.$eventBus.$emit("validate", this.setSumoDetailsData)
                 // await this.setSumoDetailsData(name);
             }else{
+                this.isSumoLoading = false;
                 this.actionOnSelectProvider(name)
             }
 
@@ -554,6 +566,10 @@ export default {
 .service-title {
  font-size: 16px;
     font-weight: bold;
+}
+.sumo-loading-container {
+    flex: 1;
+    text-align: center;
 }
 
 </style>
