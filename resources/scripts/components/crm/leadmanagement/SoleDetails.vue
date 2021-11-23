@@ -24,6 +24,12 @@
                     <template v-if="sumoPlanDetails.is_elec_available">
                         <p class="textFontSize font-weight-bold"> <v-icon class="textFontSize" color="yellow">mdi-flash</v-icon> Electricity charges <span class="subTitleFontSize font-weight-regular">(incl. GST)</span></p>
 
+                        <!-- TODO distributor name -->
+                        <div class="d-flex justify-space-between ">
+                            <div class="font-weight-bold textFontSize">Distributor</div>
+                            <div class="textFontSize">{{sumoPlanDetails.elec_distributor_name}}</div>
+                        </div>
+
                         <div class="d-flex justify-space-between ">
                             <div class="font-weight-bold textFontSize">Meter Type</div>
                             <div class="textFontSize">{{sumoPlanDetails.elec_charge_name}}</div>
@@ -45,7 +51,7 @@
                         <!--                    </div>-->
 
                         <div class="my-4">
-                            <a href="#" class="textFontSize linkColor">Electricty Fact Sheet</a>
+                            <a href="#" class="textFontSize linkColor">Electricity Fact Sheet</a>
                         </div>
                     </template>
 
@@ -54,6 +60,11 @@
                     <div class="border-bottom"></div>
                     <template v-if="sumoPlanDetails.is_gas_available">
                         <p class="textFontSize font-weight-bold mt-4"> <v-icon class="textFontSize pb-1"  color="error">mdi-fire</v-icon> Gas charges <span class="subTitleFontSize font-weight-regular">(incl. GST)</span></p>
+
+                        <div class="d-flex justify-space-between ">
+                            <div class="font-weight-bold textFontSize">Distributor</div>
+                            <div class="textFontSize">{{sumoPlanDetails.gas_distributor_name}}</div>
+                        </div>
 
                         <div class="d-flex justify-space-between " v-for="(charge , i) in sumoPlanDetails.gas_charge_supply" :key="i+'p'">
                             <div class="font-weight-bold textFontSize">{{charge.name}} <span class="subTitleFontSize font-weight-regular" >{{ charge.unit }}</span> </div>
@@ -81,12 +92,9 @@
                         </div>
 
                         <div class="my-4">
-                            <a href="#" class="textFontSize linkColor">Electricty Fact Sheet</a>
+                            <a href="#" class="textFontSize linkColor">Gas Fact Sheet</a>
                         </div>
                     </template>
-
-
-
                 </div>
 
 
@@ -172,9 +180,10 @@
             }
         },
         mounted() {
-        this.$eventBus.$on("address_updated", address => {
-            console.log("EventBus: ", address)
-        });
+            console.log('sumo plan details in modal' , this.sumoPlanDetails)
+        // this.$eventBus.$on("address_updated", address => {
+        //     console.log("EventBus: ", address)
+        // });
     }
     }
 </script>
