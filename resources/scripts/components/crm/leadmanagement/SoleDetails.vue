@@ -51,7 +51,7 @@
                         <!--                    </div>-->
 
                         <div class="my-4">
-                            <a href="#" class="textFontSize linkColor">Electricty Fact Sheet</a>
+                            <a href="#" class="textFontSize linkColor">Electricity Fact Sheet</a>
                         </div>
                     </template>
 
@@ -92,7 +92,7 @@
                         </div>
 
                         <div class="my-4">
-                            <a href="#" class="textFontSize linkColor">Electricty Fact Sheet</a>
+                            <a href="#" class="textFontSize linkColor">Gas Fact Sheet</a>
                         </div>
                     </template>
                 </div>
