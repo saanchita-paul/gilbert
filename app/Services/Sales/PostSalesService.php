@@ -97,7 +97,7 @@ class PostSalesService
                 'postcode'=> $this->connection->postcode,
             ],
             'solarDetails'=> [
-                'solarPower'=> $this->connection->has_solar?true:false,
+                'solarPower'=> $this->connection->has_solar == 1?true:false,
             ]
         ];
 
