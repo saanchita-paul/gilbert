@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Modules\FastConnect\Services\GetWaterService;
+use App\Modules\FastConnect\Services\UpdateWaterLeadsStatusCommand;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -35,7 +35,7 @@ class GetWaterProcessingJob implements ShouldQueue
      */
     public function handle()
     {
-        $service = new GetWaterService();
+        $service = new UpdateWaterLeadsStatusCommand();
         $service->getSubmittedDetails($this->id, $this->fast_connect_customer_reference);
     }
 }

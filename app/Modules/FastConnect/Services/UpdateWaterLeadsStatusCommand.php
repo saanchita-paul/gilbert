@@ -7,10 +7,12 @@ namespace App\Modules\FastConnect\Services;
 use App\Jobs\GetWaterProcessingJob;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use App\Services\Agency\UpdatedWaterStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
-class GetWaterService
+class UpdateWaterLeadsStatusCommand
 {
     private $accessToken;
     public function __construct() {
@@ -30,11 +32,12 @@ class GetWaterService
     }
 
     public function getAllSubmittedWaterLead() {
-
-
         $leads = ConnectionService::query()
             ->with('connectionApplication')
             ->where('service_type', 'water')
+            ->whereHas('connectionApplication', function (Builder $lead) {
+                $lead->whereNotNull('fast_connect_customer_reference');
+            })
 //            ->where('CS.status','=', ConnectionService::WATER_STATUS_IN_PROGRESS)
             ->get();
 
@@ -75,32 +78,9 @@ class GetWaterService
 
     public function updateWaterStatus($id, $status)
     {
-        $connectioService = ConnectionService::query()->where('connection_application_id', $id)->first();
-
-        switch ($status) {
-            case 'CANCELLED':
-                $connectioService->status = ConnectionService::WATER_STATUS_CANT_CONNECT;
-                break;
-            case 'COMPLETE':
-                $connectioService->status = ConnectionService::WATER_STATUS_CONNECTED;
-                break;
-
-            case 'CONFIRMED':
-                $connectioService->status = ConnectionService::WATER_STATUS_CONNECTED;
-                break;
-
-            case 'DECLINED':
-                $connectioService->status = ConnectionService::WATER_STATUS_CANT_CONNECT;
-                break;
-
-            default:
-                break;
-
+        $statusAssoc = UpdatedWaterStatus::mapFromFCStatus($status);
+        if ($statusAssoc) {
+            UpdatedWaterStatus::updateStatus($id, $statusAssoc['status'], $statusAssoc['reason']);
         }
-        $connectioService->update();
-
-
     }
-
-
 }
