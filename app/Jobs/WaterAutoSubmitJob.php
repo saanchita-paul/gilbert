@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\ConnectionApplication;
+use App\Services\Agency\UpdatedWaterStatus;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -37,6 +38,11 @@ class WaterAutoSubmitJob implements ShouldQueue
         $service = new SubmitWaterLeadToFastConnect($this->applicationId);
         $result = $service->submitWaterLead();
         ConnectionApplication::saveFasConnectRef($this->applicationId, data_get($result, "info.customer_reference"));
+
+        $statusAssoc = UpdatedWaterStatus::mapFromFCStatus(data_get($result, "products.0.status"));
+        if ($statusAssoc) {
+            UpdatedWaterStatus::updateStatus($this->applicationId, $statusAssoc['status'], $statusAssoc['reason']);
+        }
     }
 }
 
