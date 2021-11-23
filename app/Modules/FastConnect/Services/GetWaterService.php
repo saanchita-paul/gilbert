@@ -32,20 +32,20 @@ class GetWaterService
     public function getAllSubmittedWaterLead() {
 
 
-        $processingLeads = DB::table('connection_services AS CS')
-            ->join('connection_applications AS CA','CA.id', '=', 'CS.connection_application_id')
-            ->where('CS.service_type','=', 'water')
-            ->where('CS.status','=', ConnectionService::WATER_STATUS_IN_PROGRESS)
-            ->get(['CA.id', 'CA.fast_connect_customer_reference']);
+        $leads = ConnectionService::query()
+            ->with('connectionApplication')
+            ->where('service_type', 'water')
+//            ->where('CS.status','=', ConnectionService::WATER_STATUS_IN_PROGRESS)
+            ->get();
 
-        info('data', $processingLeads->toArray());
+        info("[GetWaterService:getAllSubmittedWaterLead] Water leads", $leads->pluck('connection_application_id')->toArray());
 
 
 
-        foreach ($processingLeads as $lead) {
+        foreach ($leads as $lead) {
 
-            if(!is_null($lead->fast_connect_customer_reference)) {
-                GetWaterProcessingJob::dispatch($lead->id, $lead->fast_connect_customer_reference);
+            if(!is_null($lead->connectionApplication?->fast_connect_customer_reference)) {
+                GetWaterProcessingJob::dispatch($lead->connection_application_id, $lead->connectionApplication->fast_connect_customer_reference);
             }
 
         }
@@ -62,11 +62,12 @@ class GetWaterService
         ])->get($url);
 
 
-        $products = (json_decode($response->body()))->products;
 
         info(json_encode($response->body()));
+
+        $products = (json_decode($response->body()))->products;
         $status = ($products[0])->status;
-        info($status);
+
 
         $this->updateWaterStatus($id, $status);
 
