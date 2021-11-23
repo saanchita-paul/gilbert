@@ -110,6 +110,9 @@ class SubmitWaterLeadToFastConnect
         info("Water submit response body");
         info($response->body());
         info("Water submit response body");
+
+        $this->application->update(['water_submit_response' => empty($response->body()) ? null : $response->body()]);
+
         return json_decode($response->body());
     }
 
