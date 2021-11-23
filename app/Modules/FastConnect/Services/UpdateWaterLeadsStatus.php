@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
-class UpdateWaterLeadsStatusCommand
+class UpdateWaterLeadsStatus
 {
     private $accessToken;
     public function __construct() {
@@ -66,13 +66,21 @@ class UpdateWaterLeadsStatusCommand
 
 
 
-        info(json_encode($response->body()));
+        $body = json_decode($response->body(), true);
 
-        $products = (json_decode($response->body()))->products;
-        $status = ($products[0])->status;
+        \Log::debug("Water Status response data", [
+            'response_body' => $body,
+            'success' => $response->successful(),
+            'application_id' => $id,
+            'status' => $response->status(),
+        ]);
 
-
-        $this->updateWaterStatus($id, $status);
+        $status = data_get($body, 'products.0.status');
+        if ($status) {
+            $this->updateWaterStatus($id, $status);
+        } else {
+            throw new \Exception("Water Status fetching failed");
+        }
 
     }
 

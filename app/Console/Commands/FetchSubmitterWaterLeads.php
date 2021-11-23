@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Modules\FastConnect\Services\UpdateWaterLeadsStatusCommand;
+use App\Modules\FastConnect\Services\UpdateWaterLeadsStatus;
 use Illuminate\Console\Command;
 
 class FetchSubmitterWaterLeads extends Command
@@ -38,7 +38,7 @@ class FetchSubmitterWaterLeads extends Command
      */
     public function handle()
     {
-        $service = new UpdateWaterLeadsStatusCommand();
+        $service = new UpdateWaterLeadsStatus();
         $service->getAllSubmittedWaterLead();
 
         return 0;
