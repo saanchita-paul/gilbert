@@ -92,12 +92,22 @@
                     </div>
 
                     <div class="d-flex" v-if="plansFlag &&  selectedPowerProvider !== 'ea'">
-                        <div class="d-flex" v-for="plan in origin2" :key="plan.name">
+                        <div v-if='isSumoLoading' class="sumo-loading-container">
+                            <v-progress-circular
+                                indeterminate
+                                color="primary"
+                            ></v-progress-circular>
+                        </div>
+                        <div v-else-if="sumoOptions.isError" class="d-flex justify-center" style="width: 100%">
+                            <div class="text-center font-weight-bold red--text"> Something went wrong, Please retry. </div>
+                            <!-- <v-btn color="error">Retry</v-btn> -->
+                        </div>
+                        <div v-else class="d-flex" v-for="plan in origin2" :key="plan.name">
                             <SumoPlan
                                 :sumoPlanDetails="sumoPlanDetails"
                                 v-if="plan.name === 'sumo_saver'"
                                 :plan="plan" @soleDialog="soleDialog"
-                                @click.native="selectPlan({...plan, ...{name: sumoPlanDetails.plan_name}}, 'sumo')" :isActive="activeOriginPlan">
+                                @click.native="selectPlan({...plan, ...{name: sumoPlanName}}, 'sumo')" :isActive="activeOriginPlan">
                             </SumoPlan>
                             <SolePlan v-else :plan="plan" @soleDialog="soleDialog" @click.native="selectPlan(plan)" :isActive="activeOriginPlan"></SolePlan>
                         </div>
@@ -141,7 +151,7 @@
         </v-tabs>
         <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
 
-            <v-btn color="#542E89" @click="submit" class="white--text">
+            <v-btn :disabled="is_submit_disabled" color="#542E89" @click="submit" class="white--text">
                     Submit for connection
             </v-btn>
 
@@ -221,10 +231,22 @@ export default {
             origin2: null,
             isActivePlan: null,
             solePlanDialog: false,
-            sumoPlanDetails: new SumoPlanDetails({})
+            sumoPlanDetails: new SumoPlanDetails({}),
+            isSumoLoading: false,
+            sumoOptions: {
+                isError: false,
+                errorMsg: "",
+            }
         }
     },
     computed: {
+        sumoPlanName(){
+            if(this.sumoPlanDetails){
+                return this.sumoPlanDetails?.plan_name ?? "";
+            } else{
+                return '';
+            }
+        },
         selectPlanTitle() {
             const services = this.leadSummary.service_interests;
             if (services && services.includes('gas') && services.includes('power')) {
@@ -255,6 +277,13 @@ export default {
             return ServiceProvideres.filter((dt)=> {
                return dt.service_type === 'energy';
             });
+        },
+        is_submit_disabled(){
+            if( this.tab == this.tabMapper.Water && this.getwaterServiceStatus !== 'In Progress' ){
+                return true;
+            }else{
+                return false;
+            }
         },
         tabMapper(){
             return {
@@ -416,17 +445,28 @@ export default {
             this.selectedPowerProvider = providerId;
         },
         async setSumoDetailsData(name) {
+            this.isSumoLoading = true;
             this.sumoPlanDetails = new SumoPlanDetails({})
+            this.sumoOptions.isError = false;
+            // this.sumoOptions.isError = true;
+            this.sumoOptions.errorMsg = "";
             this.providerSpinner.start()
             try {
+                // this.isSumoLoading = true;
                 let address = this.leadSummary.street_address + ' ' + this.leadSummary.city + ' ' + this.leadSummary.state + ' ' + this.leadSummary.postcode;
                 this.sumoPlanDetails =
                     await SumoService.getPlans(address, this.leadSummary.service_interests, this.leadSummary?.created_by_agent, this.leadSummary);
                 this.actionOnSelectProvider(name)
+                this.isSumoLoading = false;
+                // this.isSumoLoading = false;
                 this.providerSpinner.stop()
                 return 0;
             } catch (error) {
+                this.sumoOptions.isError = true;
+                this.sumoOptions.errorMsg = "Something weng wrong, retry";
                 this.sumoPlanDetails = new SumoPlanDetails();
+            } finally {
+                this.isSumoLoading = false;
             }
 
         },
@@ -434,10 +474,12 @@ export default {
             this.selectedPowerProvider = name;
             // TODO need to decide if provider is
             if(name == 'sumo'){
+                
                 //listening on ApplicationDetailsPage component
                 this.$eventBus.$emit("validate", this.setSumoDetailsData)
                 // await this.setSumoDetailsData(name);
             }else{
+                this.isSumoLoading = false;
                 this.actionOnSelectProvider(name)
             }
 
@@ -484,7 +526,9 @@ export default {
                     plan_type: plan.name
                 }
 
-                LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
+                if(this.selectedPowerProvider !== ''){
+                    LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
+                }
             this.$emit('updatePlan', {
                 active: false,
                 key: plan.name,
@@ -545,6 +589,10 @@ export default {
 .service-title {
  font-size: 16px;
     font-weight: bold;
+}
+.sumo-loading-container {
+    flex: 1;
+    text-align: center;
 }
 
 </style>

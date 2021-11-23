@@ -57,7 +57,7 @@
 
 
 
-                    <div class="border-bottom"></div>
+                    <div class="border-bottom" v-if="sumoPlanDetails.is_elec_available"></div>
                     <template v-if="sumoPlanDetails.is_gas_available">
                         <p class="textFontSize font-weight-bold mt-4"> <v-icon class="textFontSize pb-1"  color="error">mdi-fire</v-icon> Gas charges <span class="subTitleFontSize font-weight-regular">(incl. GST)</span></p>
 
@@ -115,8 +115,8 @@
                     </p>
                 </div>
 
-                <div class="d-flex">
-                    <div class="flex-grow-1 d-flex justify-center border-right">
+                <div class="d-flex" >
+                    <div class="flex-grow-1 d-flex justify-center " :class="{'border-right' : sumoPlanDetails.is_gas_available }"  v-if="sumoPlanDetails.is_elec_available"> 
                         <div class="">
                             <div class="d-flex justify-center">
                                 <v-icon class="pb-1" size="33"  color="yellow">mdi-flash</v-icon>
@@ -131,7 +131,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex-grow-1 d-flex justify-center">
+                    <div class="flex-grow-1 d-flex justify-center" v-if="sumoPlanDetails.is_gas_available">
                         <div class="">
                             <div class="d-flex justify-center">
                                 <v-icon class="pb-1" size="33"  color="error">mdi-fire</v-icon>
