@@ -4,73 +4,169 @@ namespace App\Services\Utility;
 
 use App\Models\APILog;
 use App\Models\ConnectionApplication;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Models\Identification;
+use App\Models\ConnectionApplicationSecondaryACC;
 
-
+use JetBrains\PhpStorm\ArrayShape;
+use function PHPSTORM_META\map;
 
 class SumoService
 {
     private array|Collection|ConnectionApplication|Model $application;
+
+    const TYPE_MOBILE = 1;
+    const TYPE_EMAIL  = 2;
+
+
+    const MAP_STATE = [
+        "New South Wales" => 'NSW',
+        "Victoria" => 'VIC',
+        "Queensland" => 'QLD',
+        "South Australia" => 'SA',
+        "Northern Territory" => 'NT',
+        "Tasmania" => 'TAS',
+        "Australian Capital Territory" => 'ACT',
+    ];
+
+    const MAP_TYPE = [
+        1 => 'Passport',
+        2 => 'DriversLicence',
+        3 => 'Medicare',
+    ];
+
+    const MAP_SERVICE = [
+        'gas' => 'Gas',
+        'power' => 'Electricity',
+    ];
+
+    const MAP_PROPERTY_TYPE = [
+        1 => 'Residential',
+        2 => 'Business',
+    ];
+
+    const MAP_PHONE = [
+        "New South Wales" => '02',
+        "Victoria" => '03',
+        "Queensland" => '07',
+        "South Australia" => '08',
+        "Northern Territory" => '08',
+        "Tasmania" => '03',
+        "Australian Capital Territory" => '02',
+    ];
 
     /**
      * Store customer data in Sumo
      *
      * @throws \Exception
      */
-    public function storeCustomerData()
+    public function storeCustomerData(int $id)
     {
+        $this->application = ConnectionApplication::findOrFail($id);
+        $this->application->load(['identification', 'connectionServices', 'authorizedPerson']);
+
         $url = config('sumo.base_url').config('sumo.store_customer_data_url');
+        $url = APILog::setLoggerQuery($url, APILog::API_SUMO_SUBMIT_LEAD, extend: false);
 
-        $response = Http::withHeaders([
-            'content-type' => 'application/json',
-            'accept' => '*/*',
-        ])
-            ->withBody(json_encode($this->getCustomerData()), 'application/json')
-            ->put($url);
+        $response = Http::put($url, $this->getCustomerData());
 
-        dd(json_decode($response->body(), true));
+        return json_decode($response->body(), true);
     }
 
-    private function getCustomerData()
+    private function getCustomerData(): array
     {
-        return [
-            'customerDataDto' => [
-                'acceptTerms' => true,
-                'authenticationExpiry' => "string",
-                'authenticationNo' => "string",
-                'authenticationState' => "ACT",
-                'authenticationType' => "string",
-                'billDelivery' => true,
-                'concentCC' => "string",
-                'customerDateOfBirth' => "2021-11-15",
-                'customerEmail' => "test@mail.com",
-                'customerFirstName' => "string",
-                'customerLastName' => "string",
-                'customerPhone' => "string",
-                'customerTitle' => "string",
-                'interestedIn' => [
-                    "Electricity"
-                ],
-                'lifeSupport' => true,
-                'lifeSupportFuel' => "string",
-                'marketingConcent' => true,
-                'mirn' => "string",
-                'nmi' => "string",
-                'proposedMovingDate' => "2021-11-15",
-                'prospectType' => "Business",
-                'quoteNumber' => "string",
-                'secondaryCustomerEmail' => "string",
-                'secondaryCustomerFirstName' => "string",
-                'secondaryCustomerLastName' => "string",
-                'secondaryCustomerPhone' => "string",
-                'secondaryCustomerTitle' => "string",
-            ],
-        ];
+        return array_merge($this->getIdDetails(), [
+            'acceptTerms' => true,
+//            'billDelivery' => $this->application->is_email_billing,
+            'billDelivery' => true,
+            'concentCC' => $this->application->is_contacted,
+            'customerDateOfBirth' => $this->application->dob,
+            'customerEmail' => $this->application->email,
+            'customerFirstName' => $this->application->first_name,
+            'customerLastName' => $this->application->last_name,
+            'customerPhone' => $this->getMappedPhone($this->application->state, $this->application->phone_type, $this->application->phone),
+            'customerTitle' => $this->application->title,
+            'interestedIn' => $this->getMappedService($this->application->connectionServices?->pluck('service_type')->toArray()),
+            'lifeSupport' => false,
+            // 'lifeSupportFuel' => "string",
+            'marketingConcent' => $this->application->is_contacted == 1 ? true : false,
+            'mirn' => $this->application->mirn,
+            'nmi' => $this->application->nmi,
+            'proposedMovingDate' => $this->getMappedDate($this->application->moving_date),
+            'prospectType' => $this->getMappedPropertyType($this->application->property_type),
+            'quoteNumber' => 'hood_'.$this->application->id,
+            'secondaryCustomerEmail' =>  $this->application->authorizedPerson?->email,
+            'secondaryCustomerFirstName' => $this->application->authorizedPerson?->first_name,
+            'secondaryCustomerLastName' => $this->application->authorizedPerson?->last_name,
+            'secondaryCustomerPhone' => $this->application->authorizedPerson?->phone,
+            'secondaryCustomerTitle' => $this->application->authorizedPerson?->title,
+        ]);
     }
 
+    private function getIdDetails(): array
+    {
+
+        $id = [
+            'authenticationExpiry' => $this->application->identification?->expire_date,
+            'authenticationNo' => $this->application->identification?->card_number,
+            'authenticationType' => $this->getAuthenticationType($this->application->identification?->type)
+        ];
+
+        /**
+         * TODO:
+         * we do not need State for driver license but sumo throwing error if we don't send "authenticationState"
+         * property or send its value as null. So for now we are sending  static state value.
+         */
+        $id['authenticationState'] = $this->application->identification?->state ?  $this->getMappedState($this->application->identification?->state) : "VIC";
+//
+//        if ($this->application->identification?->state === Identification::TYPE_DRIVING_LICENCE) {
+//            $id['authenticationState'] = $this->getMappedState($this->application->identification?->state);
+//        }
+
+        return $id;
+    }
+
+
+    private function getMappedState($state): string
+    {
+        return $state ? SumoService::MAP_STATE[$state] : '';
+    }
+
+    private function getAuthenticationType(?int $type): string
+    {
+        return $type ? SumoService::MAP_TYPE[$type] : '';
+    }
+
+    private function getMappedService($services): array
+    {
+        $data = [];
+        foreach ( $services as $service) {
+            if (isset(SumoService::MAP_SERVICE[$service])) {
+                $data[] =  SumoService::MAP_SERVICE[$service];
+            }
+        }
+        return $data;
+    }
+
+    private function getMappedDate($date)
+    {
+        $oDate = new \DateTime($date);
+        return $oDate->format("Y-m-d");
+    }
+
+    private function getMappedPropertyType(?int $type): string
+    {
+        return $type ? SumoService::MAP_PROPERTY_TYPE[$type] : '';
+    }
+
+    private function getMappedPhone($state, $type, $phone): string
+    {
+        return $type === 1 ? $phone : SumoService::MAP_PHONE[$state].$phone;
+    }
 
     public function validateEmail(String $email){
         $baseUrl              = config('sumo.base_url');
@@ -78,13 +174,13 @@ class SumoService
         $emailTobeChecked     = $email;
 
         try {
-            
+
             $response = Http::withHeaders([
                 "content-type"    => "application/json",
                 "Accept"          => "*/*",
             ])
             ->get($url, [ 'email' => $emailTobeChecked ]);
-            
+
             $result = json_decode($response->body(), true);
             info('Result fetching from ignite');
             \Log::info($result);
@@ -95,24 +191,32 @@ class SumoService
             \Log::error($exception->getTraceAsString());
             throw $exception;
         }
-        
+
     }
 
-    public function validateMobile(String $phone){
+    /**
+     * Validate email and phone using sumo API.
+     *
+     * @param String $data
+     * @param String $type [ ex. mobile / email ]
+     * @return ConnectionApplication $newApplication
+     * @throws Exception $exception
+     */
+    public function validateData(String $data , String $type){
         $baseUrl              = config('sumo.base_url');
-        $url                  = $baseUrl . "/validation/phone";
-        $phoneTobeChecked     = $phone;
+        $url                  = $baseUrl . "/validation" . '/' .  strtolower(  $type );
+        $dataTobeChecked      = $data;
 
         try {
-            
+
             $response = Http::withHeaders([
                 "content-type"    => "application/json",
                 "Accept"          => "*/*",
             ])
-            ->get($url, [ 'phone' => $phoneTobeChecked ]);
-            
+            ->get($url, [ $type => $dataTobeChecked ]);
+
             $result = json_decode($response->body(), true);
-            info('Result fetching from ignite');
+            info('Result fetching from sumo server');
             \Log::info($result);
             \Log::info($result['valid']);
             return $result['valid'];
@@ -121,7 +225,7 @@ class SumoService
             \Log::error($exception->getTraceAsString());
             throw $exception;
         }
-        
+
     }
 
 }

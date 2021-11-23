@@ -308,7 +308,7 @@
                             </div>
                             <div class="text-field">
                                 <v-text-field
-                                    readonly
+                                readonly
                                 outlined
                                 dense
                                 hide-details="auto"
@@ -321,7 +321,7 @@
                                 <span>Card Colour</span>
                             </div>
                             <div class="text-field">
-                                <v-select readonly outlined dense hide-details="auto"
+                                <v-select   readonly outlined dense hide-details="auto"
                                             :value="data.identification.card_color"
                                             item-value="value"
                                             item-text="text"
@@ -334,58 +334,64 @@
 
                     <v-col cols="6">
                         <p class="sub-title title-align">Service Connection</p>
-                        <div class="d-flex mb-5">
-                                <div>
-                                    <p class="mb-0">Energy</p>
-                                    <div class="d-flex">
-                                        <div class="service-box" :class="{'active':isActive('power')}">
-                                            <p class="mb-0"><v-icon color="yellow">mdi-flash</v-icon> Power</p>
-                                        </div>
-                                        <div class="service-box" :class="{'active':isActive('gas')}">
-                                            <p class="mb-0"><v-icon color="red">mdi-fire</v-icon> Gas</p>
-                                        </div>
-                                </div>
-                                </div>
-                                <div>
-                                    <p class="mb-0 ml-2">Water</p>
-                                    <div class="service-box" :class="{'active':isActive('water')}">
-                                        <p class="mb-0"><v-icon color="grey lighten-1">mdi-water</v-icon> water</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <p class="mb-0 ml-2">Internet</p>
-                                    <div class="service-box" :class="{'active':isActive('internet')}">
-                                        <p class="mb-0"><v-icon color="grey lighten-1">mdi-wifi</v-icon> Internet</p>
-                                    </div>
-                                </div>
-                        </div>
-                        <div class="crm-text-field">
-                            <div class="field-label">
-                                <span>Supplier</span>
+
+                        <div v-if="data.submitType == 'water'" class="d-flex">
+                            <div class="d-flex px-2 py-1" style="background-color: purple; border-radius: 5px;">
+                                <v-icon color="#0CC4ED">
+                                    mdi-water
+                                </v-icon>
+                                <div class="white--text"> Water </div>
                             </div>
-                            <div class="text-field">
-                                <v-text-field
-                                    readonly
+                        </div>
+                        <div v-else-if="data.submitType == 'energy'">
+                        <div class="d-flex mb-2">
+                            
+
+                            <div v-if="data.service_interests.includes('power')" class="d-flex mx-2">
+                                <div class="d-flex px-2 py-1" style="background-color: #542E89; border-radius: 5px;">
+                                    <v-icon color="#FFC107" size="15">
+                                        mdi-flash
+                                    </v-icon>
+                                    <div class="white--text font-weight-bold"> Power </div>
+                                </div>
+                            </div>
+
+                            <div v-if="data.service_interests.includes('gas')" class="d-flex">
+                                <div class="d-flex px-2 py-1" style="background-color: #542E89; border-radius: 5px;">
+                                    <v-icon color="#FF5722" size="15">
+                                        mdi-fire
+                                    </v-icon>
+                                    <div class="white--text font-weight-bold"> Gas </div>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="crm-text-field">
+                                <div class="field-label">
+                                    <span>Supplier</span>
+                                </div>
+                                <div class="text-field">
+                                    <v-text-field
+                                        readonly
+                                        outlined
+                                        dense
+                                        hide-details="auto"
+                                        v-model="provider"
+                                    ></v-text-field>
+                                </div>
+                            </div>
+                            <div class="crm-text-field">
+                                <div class="field-label">
+                                    <span>Plan</span>
+                                </div>
+                                <div class="text-field">
+                                    <v-text-field
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    value="EA"
-
+                                    :value="selectedPlan"
+                                    readonly
                                 ></v-text-field>
-                            </div>
-                        </div>
-                        <div class="crm-text-field">
-                            <div class="field-label">
-                                <span>Plan</span>
-                            </div>
-                            <div class="text-field">
-                                <v-text-field
-                                outlined
-                                dense
-                                hide-details="auto"
-                                :value="selectedPlan"
-                                readonly
-                            ></v-text-field>
+                                </div>
                             </div>
                         </div>
 
@@ -534,6 +540,7 @@ export default {
                   value: 'YELLOW'
               }
           ],
+          provider: 'ea'
       }
     },
     computed: {
@@ -543,6 +550,7 @@ export default {
           },
 
         selectedPlan() {
+            this.provider = this.data.plan_type.provider;
             return Boolean(this.data.plan_type.title)?this.data.plan_type.title: this.data.plan_type.value;
         },
 
@@ -570,7 +578,7 @@ export default {
         },
 
     mounted() {
-      // console.log(this.data);
+      console.log('printing data' ,  this.data);
     }
 
 };

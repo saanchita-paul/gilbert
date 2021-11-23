@@ -30,9 +30,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('get:sales:status')->daily();
+         $schedule->command('fetch:submitted-leads')->daily();
+         $schedule->command('fetch:submitted-water-leads')->hourly();
          $schedule->command('ea:upload:lead')->daily();
-         
+
          if($this->shouldIgniteRun()){
             $schedule->command('ignite:fetch')->everyTenMinutes();
          }

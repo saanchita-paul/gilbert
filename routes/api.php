@@ -82,19 +82,19 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/applications/{applicationId}/draft', [ApplicationController::class, 'saveDraft']);
     Route::put('/applications/{id}/close', [ApplicationController::class, 'closeApplication']);
     Route::patch('/applications/{applicationId}/providers', [ApplicationController::class, 'providers']);
-    
+
     //todo: make a  separate controller for notes
     Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes']);
     Route::post('/applications/{id}/notes', [NoteController::class, 'createConnectionNotes']);
-    
+
     Route::get('/applications-metrics', [ApplicationController::class, 'getMetrics']);
     Route::get('/applications-metrics-count', [ApplicationController::class, 'getApplicationMetricsCount']);
     Route::get('/applications/{id}/nmi-mern', [ApplicationController::class, 'getNmiMern']);
     Route::get('/authoized-person/{id}', [ApplicationController::class, 'getAuthorizedPerson']);
     Route::post('/authoized-person', [ApplicationController::class, 'updateAuthorizedPerson']);
-    
+
     Route::post('/applications/{application_id}/service/update', [ApplicationController::class, 'updateService']);
-    
+
     //'+id
 });
 
@@ -118,4 +118,5 @@ Route::get('lnn/bot_token', function () {
 
 
 
-Route::get('/fast/test', [ApplicationController::class, 'fastTest']);
+
+Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);

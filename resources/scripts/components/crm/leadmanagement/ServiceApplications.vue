@@ -66,33 +66,50 @@
                     <p class="mb-0 sub-title">Which supplier would you like to connect with?</p>
                     <div class="d-flex align-content-lg-space-around mt-2">
                         <ServiceProvider @onSelectProvider="onSelectProvider(provider.name)" v-if="serviceProviderFlag" v-for="provider in serviceProvider"
-                                         :key="provider.id" :selectedProvider="selectedProviderId" :provider="provider"></ServiceProvider>
+                                         :key="provider.id" :selectedProvider="selectedPowerProvider" :provider="provider"></ServiceProvider>
 
                         <ServiceProvider @onSelectProvider="onSelectProvider1(provider.name)" v-if="serviceProviderFlag" v-for="provider in providers"
-                                         :key="provider.name" :selectedProvider="selectedProviderId" :provider="provider"></ServiceProvider>
+                                         :key="provider.name" :selectedProvider="selectedPowerProvider" :provider="provider"></ServiceProvider>
 
                     </div>
                 </v-col>
                 <v-col cols="12">
                     <v-divider></v-divider>
                 </v-col>
-                <v-col cols="12">
+                <v-col cols="12" ref="provider">
                     <p class="sub-title" v-if="selectPlanTitle.length > 0">Select a plan for {{selectPlanTitle}}</p>
 
-                    <div class="d-flex" v-if="plansFlag && selectedProviderId === 1">
+                    <div class="d-flex" v-if="plansFlag && selectedPowerProvider === 'ea'">
                             <EnergyPlan
                                 v-for="plan in plans"
                                 :key="plan.key"
                                 :plan="plan"
-                                :selectedPlan="selectedPlanType"
+                                :selectedPlan="activeEaPlan"
                                 @selectPlan="planSelect"
                                 @view="view"
                                 @click.native="planSelect(plan,true)"
                             ></EnergyPlan>
                     </div>
-                    <div class="d-flex" v-if="plansFlag &&  selectedProviderId !== 1">
-                        <div class="d-flex" v-for="plan in origin2" :key="plan.name">
-                            <SolePlan :plan="plan" @click.native="selectPlan(plan)" :isActive="isActivePlan"></SolePlan>
+
+                    <div class="d-flex" v-if="plansFlag &&  selectedPowerProvider !== 'ea'">
+                        <div v-if='isSumoLoading' class="sumo-loading-container">
+                            <v-progress-circular
+                                indeterminate
+                                color="primary"
+                            ></v-progress-circular>
+                        </div>
+                        <div v-else-if="sumoOptions.isError" class="d-flex justify-center" style="width: 100%">
+                            <div class="text-center font-weight-bold red--text"> Something went wrong, Please retry. </div>
+                            <!-- <v-btn color="error">Retry</v-btn> -->
+                        </div>
+                        <div v-else class="d-flex" v-for="plan in origin2" :key="plan.name">
+                            <SumoPlan
+                                :sumoPlanDetails="sumoPlanDetails"
+                                v-if="plan.name === 'sumo_saver'"
+                                :plan="plan" @soleDialog="soleDialog"
+                                @click.native="selectPlan({...plan, ...{name: sumoPlanName}}, 'sumo')" :isActive="activeOriginPlan">
+                            </SumoPlan>
+                            <SolePlan v-else :plan="plan" @soleDialog="soleDialog" @click.native="selectPlan(plan)" :isActive="activeOriginPlan"></SolePlan>
                         </div>
                     </div>
                 </v-col>
@@ -129,7 +146,29 @@
             <v-tab-item>
                 <InternetService :leadSummary="leadSummary" @updateStatus="updateStatus"></InternetService>
             </v-tab-item>
+
+
         </v-tabs>
+        <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
+
+            <v-btn :disabled="is_submit_disabled" color="#542E89" @click="submit" class="white--text">
+                    Submit for connection
+            </v-btn>
+
+        </div>
+
+        <v-dialog
+            v-model="solePlanDialog"
+            max-width="1200"
+        >
+            <v-card>
+                <SoleDetails
+                    @soleDialog="soleDialog"
+                    :sumoPlanDetails="sumoPlanDetails"
+                    :selectedPowerProvider="selectedPowerProvider"
+                />
+            </v-card>
+        </v-dialog>
 
     </v-row>
 </template>
@@ -148,12 +187,16 @@ import WaterService from "@scripts/components/crm/leadmanagement/WaterService";
 import InternetService from "@scripts/components/crm/leadmanagement/InternetService";
 import { isNull } from "lodash-es";
 import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
+import SumoPlan from "@scripts/components/crm/leadmanagement/SumoPlan";
 import ServiceProvideres from "@scripts/data/ServiceProvideres";
-
+import SumoService from '@scripts/services/crm/SumoService';
+import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails"
+import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
+import Spinner from "@scripts/plugins/Spinner";
 
 export default {
     name: "ServiceApplications",
-    components: {SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails},
+    components: { SumoPlan, SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails, SoleDetails},
     props: {
         leadSummary: {
             require: true
@@ -162,6 +205,7 @@ export default {
 
     data() {
         return {
+            providerSpinner: null,
             services: ['Power', 'Gas'],
             serviceProviderFlag: false,
             serviceProvider: [],
@@ -173,19 +217,36 @@ export default {
             activeService: 'energy',
             tab: null,
             origin: [ {text: 'Origin Go', bg: 'red', active: true, type: 'origin' },
-                { text: 'Origin Go Variable', bg: 'blue', active: false, type: 'origin' },
+                { text: 'Origin Go Variable', bg: 'blue', actSumoPlanDetailsive: false, type: 'origin' },
                 {text: 'Origin Basic', bg: 'orange', active: false , type: 'origin'}],
             sumo: [ {text: 'Sumo Saver', bg: 'purple', active: true, type: 'sumo' },
                 { text: 'Sumo ASSURE', bg: 'blue', active: false, type: 'sumo'},
                 {text: 'Sumo SELECT', bg: 'green', active: false, type: 'sumo'}],
             servicesNew: ['Energy', 'Water', 'NVN'],
             selectedProviderId: 1,
+            selectedPowerProvider: '',
+            activeOriginPlan: '',
+            activeEaPlan: '',
             waterStatus: null,
             origin2: null,
             isActivePlan: null,
+            solePlanDialog: false,
+            sumoPlanDetails: new SumoPlanDetails({}),
+            isSumoLoading: false,
+            sumoOptions: {
+                isError: false,
+                errorMsg: "",
+            }
         }
     },
     computed: {
+        sumoPlanName(){
+            if(this.sumoPlanDetails){
+                return this.sumoPlanDetails?.plan_name ?? "";
+            } else{
+                return '';
+            }
+        },
         selectPlanTitle() {
             const services = this.leadSummary.service_interests;
             if (services && services.includes('gas') && services.includes('power')) {
@@ -216,6 +277,20 @@ export default {
             return ServiceProvideres.filter((dt)=> {
                return dt.service_type === 'energy';
             });
+        },
+        is_submit_disabled(){
+            if( this.tab === this.tabMapper.Water && !['In Progress', 'Not Selected'].includes(this.getwaterServiceStatus)){
+                return true;
+            }else{
+                return false;
+            }
+        },
+        tabMapper(){
+            return {
+                'Energy'   : 0,
+                'Water'    : 1,
+                'Internet' : 2,
+            }
         }
     },
     watch: {
@@ -224,24 +299,45 @@ export default {
         }
     },
     mounted() {
-
+        this.providerSpinner = new Spinner(this.$refs.provider, {autoStart: true})
         this.loadServiceProvider();
         this.loadPlan();
         this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
+        this.loadSelectedPowerProvider();
+
+        const updateAddress = address => {
+            if (this.selectedPowerProvider === 'sumo') {
+                this.$eventBus.$emit("validate", this.setSumoDetailsData)
+            }
+        }
+
+        this.$eventBus.$on("address_updated", updateAddress );
+
+        this.$once("hook:beforeDestroy", () => {
+            this.$eventBus.$off("address_updated", updateAddress );
+        });
 
     },
     methods: {
+        soleDialog(){
+            this.solePlanDialog = !this.solePlanDialog;
+        },
         reviewPlan() {
             //todo
         },
 
         planSelect(plan, isManual = false) {
+            this.selectedPlanType = plan?.key;
+            this.activeEaPlan = plan?.key;
+            let newPlan = {
+                name: plan.key
+            }
+            this.selectedProviderId = 'ea';
+            this.selectPlan(newPlan);
             this.selectedPlanType = plan?.key
-            this.$emit('updatePlan', plan, isManual);
+            this.$emit('updatePlan', {...plan,  provider: this.selectedProviderId,}, isManual);
         },
         isActive(service) {
-
-
 
             return this.leadSummary.service_types.includes(service.toLowerCase()) ? true : false;
 
@@ -273,7 +369,18 @@ export default {
         },
 
         updateService(service) {
+            //todo add update sumo event emit
+            console.log(service)
+
+
+            if(service == 'Gas' || service == 'Power'){
+                this.onSelectProvider1('sumo');
+            }
+
             this.$emit('updateService', service);
+            if (this.selectedPowerProvider === 'sumo') {
+                this.$eventBus.$emit("validate", this.setSumoDetailsData)
+            }
         },
 
         view(plan) {
@@ -292,7 +399,7 @@ export default {
                 {
                     return this.mapStatus(newServices.status);
                 }
-                return 'can not connect';
+                return 'Not Selected';
 
             }
 
@@ -335,33 +442,137 @@ export default {
         },
 
         onSelectProvider(providerId) {
-            this.selectedProviderId = providerId
+            this.selectedPowerProvider = providerId;
         },
+        async setSumoDetailsData(name) {
+            this.isSumoLoading = true;
+            this.sumoPlanDetails = new SumoPlanDetails({})
+            this.sumoOptions.isError = false;
+            // this.sumoOptions.isError = true;
+            this.sumoOptions.errorMsg = "";
+            this.providerSpinner.start()
+            try {
+                // this.isSumoLoading = true;
+                let address = this.leadSummary.street_address + ' ' + this.leadSummary.city + ' ' + this.leadSummary.state + ' ' + this.leadSummary.postcode;
+                this.sumoPlanDetails =
+                    await SumoService.getPlans(address, this.leadSummary.service_interests, this.leadSummary?.created_by_agent, this.leadSummary);
+                this.actionOnSelectProvider(name)
+                this.isSumoLoading = false;
+                // this.isSumoLoading = false;
+                this.providerSpinner.stop()
+                return 0;
+            } catch (error) {
+                this.sumoOptions.isError = true;
+                this.sumoOptions.errorMsg = "Something weng wrong, retry";
+                this.sumoPlanDetails = new SumoPlanDetails();
+            } finally {
+                this.isSumoLoading = false;
+            }
 
-        onSelectProvider1(name) {
+        },
+        async onSelectProvider1(name) {
+            this.selectedPowerProvider = name;
+            // TODO need to decide if provider is
+            if(name == 'sumo'){
+
+                //listening on ApplicationDetailsPage component
+                this.$eventBus.$emit("validate", this.setSumoDetailsData)
+                // await this.setSumoDetailsData(name);
+            }else{
+                this.isSumoLoading = false;
+                this.actionOnSelectProvider(name)
+            }
+
+        },
+        actionOnSelectProvider(name){
+            console.log('sumo' ,  name)
             const providerData  = this.providers.find((pl)=>{
                 return pl.name === name;
             })
             this.origin2 = providerData.plans;
             this.isActivePlan = providerData.default_plan;
             this.selectedProviderId = name
-        },
 
+            console.log('this.selectedProviderId', this.selectedProviderId);
+
+            if(this.selectedProviderId === 'sumo') {
+                if( !(this.isActivePlan === 'sumo_saver' || this.isActivePlan === 'sumo_assure'|| this.isActivePlan === 'sumo_select')) {
+                    // this.isActivePlan = "sumo_saver";
+
+                }
+            }
+
+            if(this.selectedProviderId === 'origin') {
+                if( !(this.isActivePlan === 'origin_go' || this.isActivePlan === 'origin_go_variable'|| this.isActivePlan === 'origin_basic')) {
+                    // this.isActivePlan = "origin_go";
+
+                }
+            }
+
+        },
         updateStatus(text) {
             this.waterStatus = text;
         },
 
-        selectPlan(plan){
+        selectPlan(plan, provider = null) {
+            console.log('plan plna', plan);
             this.isActivePlan = plan.name;
-
+            this.activeOriginPlan = plan.name;
+                //todo update provider array for sumo plan
+                console.log('plan provider click' , plan);
                 let payload = {
                     service_type: this.leadSummary?.service_interests,
-                    provider_name: this.selectedProviderId,
+                    provider_name: this.selectedPowerProvider,
                     plan_type: plan.name
                 }
-                LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
+
+                if(this.selectedPowerProvider !== ''){
+                    LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
+                }
+            this.$emit('updatePlan', {
+                active: false,
+                key: plan.name,
+                title: plan.title,
+                provider: this.selectedProviderId
+            }, true);
+
+        },
+
+        loadSelectedPowerProvider() {
+            const connectionService = this.leadSummary.connection_services.find(data => data.service_type === 'power' || data.service_type === 'gas');
+
+            this.selectedPowerProvider = connectionService?.provider_name;
+            if(!this.selectedPowerProvider) {
+                // this.selectedPowerProvider = 'ea';
+                // this.activeEaPlan = 'total_plan';
+            }
+
+            if(this.selectedPowerProvider === 'sumo') {
+                setTimeout(() => this.$eventBus.$emit("validate", this.setSumoDetailsData), 600)
+            }
+
+            if(this.selectedPowerProvider === 'ea') {
+                this.activeEaPlan = connectionService?.plan_type;
+            }
+
+            if(this.selectedPowerProvider === 'origin') {
+                this.activeOriginPlan = connectionService?.plan_type;
+                this.actionOnSelectProvider('origin');
+            }
+
+        },
+        submit(){
+            let subType = 'energy';
+            if(this.tabMapper.Energy == this.tab){
+                subType = 'energy';
+            } else if(this.tabMapper.Water == this.tab){
+                subType = 'water';
+            } else {
+                subType = 'internet';
+            }
+            this.$eventBus.$emit("busWaterSubmit", subType)
         }
-    },
+    }
 };
 </script>
 
@@ -378,6 +589,10 @@ export default {
 .service-title {
  font-size: 16px;
     font-weight: bold;
+}
+.sumo-loading-container {
+    flex: 1;
+    text-align: center;
 }
 
 </style>

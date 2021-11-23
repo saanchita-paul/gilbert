@@ -19,6 +19,7 @@ class UserInvitationController extends Controller
     public function validateInvitation(Request $request)
     {
         try {
+            $request->
             $svcUserInvitation = new UserInvitationService();
             $user = $svcUserInvitation->getInvitationByToken($request->toArray());
 

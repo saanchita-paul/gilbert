@@ -4,6 +4,7 @@ namespace App\Http\Resources\Agency;
 
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ApplicationResource extends JsonResource
@@ -53,6 +54,7 @@ class ApplicationResource extends JsonResource
             'office_id' => $this->office_id,
             'agency_id' => $this->agency_id,
             'created_by' => $this->created_by,
+            'created_by_agent' => $this->createdBy,
             'assigned_to' => $this->assigned_to,
             'agent_profile' => $this->assignedTo,
             'status' => $this->status,
@@ -76,6 +78,8 @@ class ApplicationResource extends JsonResource
             'lead_source' => $this->SugerLead?->foxie_lead_source,
             'lead_source_description' => $this->SugerLead?->foxie_lead_source_description,
             'source' => $this->source,
+            'plan_type' => $this->mapPlan($this->plan_type),
+            'created_at' => (new Carbon($this->created_at))->format('d/m/Y')
         ];
     }
 
@@ -164,5 +168,13 @@ class ApplicationResource extends JsonResource
             return $fullName;
         }
         return null;
+    }
+
+    private function mapPlan($plan) {
+        if(!empty($plan)) {
+            return ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
+        }
+        return 'total_plan';
+
     }
 }

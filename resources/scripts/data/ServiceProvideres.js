@@ -36,16 +36,16 @@ export default [
                 name: 'sumo_saver',
                 bgColor: 'purple',
             }),
-            new ProviderPlan({
-                title:'Sumo ASSURE',
-                name: 'sumo_assure',
-                bgColor: 'blue',
-            }),
-            new ProviderPlan({
-                title:'Sumo SELECT',
-                name: 'sumo_select',
-                bgColor: 'green',
-            }),
+            // new ProviderPlan({
+            //     title:'Sumo ASSURE',
+            //     name: 'sumo_assure',
+            //     bgColor: 'blue',
+            // }),
+            // new ProviderPlan({
+            //     title:'Sumo SELECT',
+            //     name: 'sumo_select',
+            //     bgColor: 'green',
+            // }),
         ],
         logo: '/assets/images/logo/providers/sumo.png'
     },

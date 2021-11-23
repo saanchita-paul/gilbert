@@ -155,23 +155,39 @@ class ApplicationService
 
     public function createIdentification($identificationData, $id)
     {
-        $identification = Identification::where('connection_application_id', $id);
 
-        if ($identification->first()) {
-            return $identification->update($identificationData);
+
+        $identificationBuilder = Identification::where('connection_application_id', $id);
+        if(isset($identificationData['medicare_expire_date'])) {
+            unset($identificationData['medicare_expire_date']);
         }
-        $identificationData['connection_application_id'] = $id;
-        return Identification::create($identificationData);
+        $identification = $identificationBuilder->first();
+        if ($identification) {
+            $identification->type = isset($identificationData['type'])?$identificationData['type']: null;
+            $identification->card_number =  isset($identificationData['card_number'])?$identificationData['card_number']: null;
+            $identification->special_number =  isset($identificationData['special_number'])?$identificationData['special_number']: null; $identificationData['special_number'];
+            $identification->expire_date = isset($identificationData['expire_date'])?$identificationData['expire_date']: null;
+            $identification->card_color =  isset($identificationData['card_color'])?$identificationData['card_color']: null;
+            $identification->state = isset($identificationData['state'])?$identificationData['state']: null;
+            $identification->country =  isset($identificationData['country'])?$identificationData['country']: null;
+            $identification->save();
+
+        } else{
+            $identificationData['connection_application_id'] = $id;
+            return Identification::create($identificationData);
+        }
+
 
     }
 
 
     public function submit(array $applications, $id)
     {
+
         $lead = $applications['lead'];
         $vendorId = $this->calculateVendorId($id);
         $lead = array_merge($lead, [
-            'plan_type' => ConnectionApplication::PLAN_TYPE_MAPPER[$lead['plan_type']],
+            'plan_type' => null,
             'assigned_to' => null,
             'status' => ConnectionApplication::STATUS_SUBMITTED,
             'submitted_by' => auth()->id(),
@@ -184,9 +200,38 @@ class ApplicationService
 
         $this->createIdentification($lead['identification'], $id);
 
-        $this->updateConnectionService($lead['service_interests'], $id);;
+//      $this->updateConnectionService($lead['service_interests'], $id);
+
+        $this->checkAndAddWaterService($applications , $existLead);
 
         return $existLead;
+    }
+
+    private function checkAndAddWaterService(array $applications , $application){
+        info("printing application data"); 
+        \Log::info($applications);
+        \Log::info($applications['lead']['service_interests']);
+        // if( array_search("water",$applications['lead']['service_interests'])){
+        //     info("water found");
+        // };
+        if( $applications['lead']['submit_type'] == 'water'){
+            info("water found");
+
+            $waterService =  ConnectionService::where("connection_application_id" , $application->id)->where( "service_type" ,  "water")->first();
+            if(!$waterService){
+                info('creating water...');
+                $application->connectionServices()->create(['service_type' => 'water']);
+            }else{
+                info('water found inside');
+                \Log::info($waterService);
+            }
+
+        };
+
+
+
+
+
     }
 
 
@@ -223,6 +268,12 @@ class ApplicationService
         } else if ($isService) {
             $this->updateConnectionService($application['service_types'], $id);
         } else {
+
+            if(isset($application['plan_type']) && isset($application['plan_type']['key']))
+            {
+                $application['plan_type'] = ConnectionApplication::PLAN_TYPE_MAPPER[$application['plan_type']['key']];
+            }
+
             $existLead->update($application);
         }
 
@@ -278,7 +329,7 @@ class ApplicationService
     }
 
     public function updateService(array $data){
-        
+
         try {
             return ConnectionService::updateOrCreate(
                 [ 'id' => $data['id'] ?? null ],
@@ -287,7 +338,7 @@ class ApplicationService
         } catch (\Throwable $th) {
             throw $th;
         }
-        
+
     }
 
     public function providers(array $data, $applicationId)

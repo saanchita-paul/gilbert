@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Listeners\SumoSubmitListener;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
+use App\Listeners\WaterServiceListener;
 use App\Listeners\HTTP\LogRequestSending;
 use App\Listeners\HTTP\LogRequestReceiving;
 use App\Events\Agency\CreateApplicationEvent;
@@ -31,10 +33,11 @@ class EventServiceProvider extends ServiceProvider
          *
          */
         SubmitApplicationEvent::class => [
-//Fox Automatic rejection steps to replicate issue
-//            SendApplicationToEA::class,
+            SendApplicationToEA::class,
             UpdateHubSpotContact::class,
-            SendNotificationToSupportListener::class,
+//            SendNotificationToSupportListener::class,
+            SumoSubmitListener::class,
+            WaterServiceListener::class,
         ],
         CreateApplicationEvent::class => [
             CreateHubSpotContact::class,

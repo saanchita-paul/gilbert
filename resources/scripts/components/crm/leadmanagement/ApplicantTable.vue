@@ -148,11 +148,18 @@ export default {
                     value: 'services'
                 },
                 {
+                    text: 'Created At',
+                    align: 'start',
+                    sortable: true,
+                    value: 'created_at'
+                },
+                {
                     text: 'Assignee',
                     align: 'start',
                     sortable: true,
                     value: 'assignee'
                 }
+
             ],
         }
     },

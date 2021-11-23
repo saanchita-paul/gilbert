@@ -10,19 +10,20 @@ use App\Http\Controllers\Controller;
 use App\Services\FastConnectService;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ConnectionApplication;
+use App\Services\Utility\SumoService;
 use Illuminate\Support\Facades\Config;
 use App\Services\Agency\ApplicationService;
 use App\Events\Agency\CreateApplicationEvent;
 use App\Events\Agency\SubmitApplicationEvent;
 use App\Http\Requests\Agency\ProviderRequest;
 use App\Services\Agency\HubspotContactService;
+use App\Services\Agency\WaterAutoSubmitService;
 use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Resources\Agency\ApplicationResource;
 use App\Services\Agency\ApplicationsMetricsService;
 use App\Services\Agency\SearchConnectionApplication;
 use App\Services\Utility\IgniteConnectionLeadService;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
-use App\Services\Utility\SumoService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ApplicationController extends Controller
@@ -109,8 +110,6 @@ class ApplicationController extends Controller
     }
 }
 
-
-
      /**
       * Assigning user to an Application
       *
@@ -123,6 +122,7 @@ class ApplicationController extends Controller
     {
         try {
             $service = new ApplicationService();
+            $autoSubmitService = new WaterAutoSubmitService($applicationId);
             return ApplicationResource::make($service->assignUser(
                 $request->get('hood_user_id'),
                 $applicationId
@@ -167,9 +167,12 @@ class ApplicationController extends Controller
 {
     try {
         $service = new ApplicationService();
-        $res = $service->submit($request->toArray(), $id);
+        $requestArray = $request->toArray();
 
-        SubmitApplicationEvent::dispatch($id);
+        $res = $service->submit($requestArray, $id);
+
+        SubmitApplicationEvent::dispatch($id, data_get($requestArray, 'lead.submit_type'));
+
 
         return ApplicationResource::make($res);
     } catch (\Exception $exception) {
@@ -317,5 +320,5 @@ class ApplicationController extends Controller
           return 'validate email';
     }
 
-    
+
 }

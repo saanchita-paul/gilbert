@@ -44,6 +44,7 @@ class ConnectionService extends Model
     const STATUS_ACCEPTED = 5;
     const STATUS_REJECTED = 6;
     const STATUS_EA_PROCESSINF = 7;
+    const AC_MANUAL_PROCESSING = 11;
     const STATUS_CLOSED = 8;
     const STATUS_CANT_CONNECT = 9;
     const STATUS_NEEDS_MORE_INFO = 10;
@@ -53,6 +54,8 @@ class ConnectionService extends Model
     const WATER_STATUS_SUBMITTED = 4;
     const WATER_STATUS_CONNECTED = 5;
     const WATER_STATUS_CANT_CONNECT = 9;
+
+    const PROVIDER_SUMO = 'sumo';
 
 
     const STATUS_MAPPING = [
@@ -66,6 +69,19 @@ class ConnectionService extends Model
         self::STATUS_CLOSED => 'closed',
         self::STATUS_CANT_CONNECT => 'can\'t_connect',
         self::STATUS_NEEDS_MORE_INFO => 'need_more_info',
+        self::AC_MANUAL_PROCESSING => 'ac_manual_precessing',
+    ];
+
+    public const ENERGY_AUSTRALIA_BASIC_PLAN = 'Basic - Home';
+    public const ENERGY_AUSTRALIA_NO_FRILLS = 'No Frills (Home)';
+    public const ENERGY_AUSTRALIA_TOTAL_PLAN = 'Total Plan (Home)';
+    public const ENERGY_AUSTRALIA_TOTAL_PLUS_12_PLAN = 'Total Plan Plus 12 (Home)';
+
+    public const ENERGY_PLAN_MAPPER = [
+        'basic_plan' => self::ENERGY_AUSTRALIA_BASIC_PLAN,
+        'no_frills' => self::ENERGY_AUSTRALIA_NO_FRILLS,
+        'total_plan' => self::ENERGY_AUSTRALIA_TOTAL_PLAN,
+        'total_plan_plus_12' => self::ENERGY_AUSTRALIA_TOTAL_PLUS_12_PLAN,
     ];
 
 

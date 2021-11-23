@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\ConnectionApplication;
+use App\Services\Agency\HubspotContactService;
 use App\Services\Sales\GetSalesRequestStaus;
 use Illuminate\Console\Command;
 
@@ -12,14 +14,14 @@ class GetSellStatusCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'get:sales:status';
+    protected $signature = 'fetch:submitted-leads';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'get every sales status between 2 dates';
+    protected $description = 'fetch submitted lead from ea';
 
     /**
      * Create a new command instance.
@@ -38,8 +40,13 @@ class GetSellStatusCommand extends Command
      */
     public function handle()
     {
-        $service = new GetSalesRequestStaus();
-        $service->getSalesStatusByDateRange();
+        $this->checkStatus();
         return 0;
+    }
+
+    private function checkStatus()
+    {
+        $service = new GetSalesRequestStaus();
+        $service->fetchAllSubmittedLead();
     }
 }
