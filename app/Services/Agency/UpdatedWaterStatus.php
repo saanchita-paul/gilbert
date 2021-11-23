@@ -9,7 +9,7 @@ class UpdatedWaterStatus
 {
     const STATUS_MAPPING = [
         "RECEIVED" => [
-            'status' => ConnectionService::WATER_STATUS_IN_PROGRESS,
+            'status' => ConnectionService::WATER_STATUS_SUBMITTED,
             'reason' => ''
         ],
         "CONFIRMED" => [
@@ -17,7 +17,7 @@ class UpdatedWaterStatus
             'reason' => ''
         ],
         "ADVANCE" => [
-            'status' => ConnectionService::WATER_STATUS_IN_PROGRESS,
+            'status' => ConnectionService::WATER_STATUS_SUBMITTED,
             'reason' => ''
         ],
         "CANCELLED" => [
@@ -25,11 +25,11 @@ class UpdatedWaterStatus
             'reason' => ''
         ],
         "NOT_SEPERATELY_METERED" => [
-            'status' => ConnectionService::WATER_STATUS_IN_PROGRESS,
+            'status' => ConnectionService::WATER_STATUS_CANT_CONNECT,
             'reason' => 'the water is likely billed by a strata or is possibly a granny flat'
         ],
         "CUSTOMER_COMPLETED" => [
-            'status' => ConnectionService::WATER_STATUS_IN_PROGRESS,
+            'status' => ConnectionService::WATER_STATUS_CANT_CONNECT,
             'reason' => 'The customer (or their partner) has already made an application for that address'
         ],
     ];
