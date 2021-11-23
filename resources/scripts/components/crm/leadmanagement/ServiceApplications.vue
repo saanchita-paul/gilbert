@@ -97,7 +97,7 @@
                                 :sumoPlanDetails="sumoPlanDetails"
                                 v-if="plan.name === 'sumo_saver'"
                                 :plan="plan" @soleDialog="soleDialog"
-                                @click.native="selectPlan({...plan, ...{name: sumoPlanDetails.plan_name}}, 'sumo')" :isActive="activeOriginPlan">
+                                @click.native="selectPlan({...plan, ...{name: sumoPlanName}}, 'sumo')" :isActive="activeOriginPlan">
                             </SumoPlan>
                             <SolePlan v-else :plan="plan" @soleDialog="soleDialog" @click.native="selectPlan(plan)" :isActive="activeOriginPlan"></SolePlan>
                         </div>
@@ -225,6 +225,13 @@ export default {
         }
     },
     computed: {
+        sumoPlanName(){
+            if(this.sumoPlanDetails){
+                return this.sumoPlanDetails?.plan_name ?? "";
+            } else{
+                return '';
+            }
+        },
         selectPlanTitle() {
             const services = this.leadSummary.service_interests;
             if (services && services.includes('gas') && services.includes('power')) {
@@ -484,7 +491,9 @@ export default {
                     plan_type: plan.name
                 }
 
-                LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
+                if(this.selectedPowerProvider !== ''){
+                    LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
+                }
             this.$emit('updatePlan', {
                 active: false,
                 key: plan.name,

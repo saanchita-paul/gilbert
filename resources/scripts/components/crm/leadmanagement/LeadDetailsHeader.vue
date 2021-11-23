@@ -15,8 +15,6 @@
                         <span class="mx-1 font-normal" >{{leadSummary.status}}</span>
                     </small> -->
 
-         
-
                 </div>
             </div>
 
