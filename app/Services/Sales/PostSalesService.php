@@ -377,7 +377,7 @@ class PostSalesService
         if(!is_null($gasService)) {
             $servicePlan[] = [
                 "fuel"=> "GAS",
-                "planId" => $plan_id.'_G'.$state[0],
+                "planId" => $plan_id.'-G'.$state[0],
                 "sourceCode"=> $gasPlanSourceCode
             ];
         }
@@ -385,7 +385,7 @@ class PostSalesService
         if($eleService) {
             $servicePlan[] = [
                 "fuel"=> "ELE",
-                "planId" => $plan_id.'_E'.$state[0],
+                "planId" => $plan_id.'-E'.$state[0],
                 "sourceCode"=>  $elePlanSourceCode
             ];
         }
