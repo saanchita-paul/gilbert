@@ -29,11 +29,14 @@ class SearchConnectionApplication
         $this->status = optional($request)['status'];
         $this->leadType = optional($request)['active_lead_type'];
         $this->source = ConnectionApplication::SOURCE_MAPPING[$request['source']??''] ??  ConnectionApplication::SOURCE_ALL;
-
-
-
         $this->setSearch(optional($request)['search']);
-        $this->setSortBy(optional($request)['sort_by'], optional($request)['is_descending']);
+
+        if(empty(optional($request)['sort_by'])) {
+            $this->setSortBy('created_at', 'true');
+        } else {
+            $this->setSortBy(optional($request)['sort_by'], optional($request)['is_descending']);
+        }
+
     }
 
     /**

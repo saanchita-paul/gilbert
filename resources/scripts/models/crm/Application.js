@@ -6,5 +6,6 @@ export default class Application {
     phone = null;
     service_interests = null;
     status = null;
+    created_at = null;
     constructor() {}
 }

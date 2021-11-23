@@ -36,7 +36,7 @@ class SendApplicationToEA implements ShouldQueue
         $saleApiOn = env('EA_SALES_API_ON');
         info('submit type '. $submitType);
         info('sale api activated', [$saleApiOn === "1"]);
-        if ($submitType === 'energy' && $this->isProviderEa($application)) {
+        if ($saleApiOn === "1" && $submitType === 'energy' && $this->isProviderEa($application)) {
             $postEaService = new PostSalesService($event->applicationId);
             $postEaService->postToEa();
             $hubspotService = new HubspotContactService($event->applicationId);

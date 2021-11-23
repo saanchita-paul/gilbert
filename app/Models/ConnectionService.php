@@ -44,6 +44,7 @@ class ConnectionService extends Model
     const STATUS_ACCEPTED = 5;
     const STATUS_REJECTED = 6;
     const STATUS_EA_PROCESSINF = 7;
+    const AC_MANUAL_PROCESSING = 11;
     const STATUS_CLOSED = 8;
     const STATUS_CANT_CONNECT = 9;
     const STATUS_NEEDS_MORE_INFO = 10;
@@ -68,6 +69,7 @@ class ConnectionService extends Model
         self::STATUS_CLOSED => 'closed',
         self::STATUS_CANT_CONNECT => 'can\'t_connect',
         self::STATUS_NEEDS_MORE_INFO => 'need_more_info',
+        self::AC_MANUAL_PROCESSING => 'ac_manual_precessing',
     ];
 
     public const ENERGY_AUSTRALIA_BASIC_PLAN = 'Basic - Home';
