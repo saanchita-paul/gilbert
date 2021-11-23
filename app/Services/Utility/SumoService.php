@@ -93,7 +93,7 @@ class SumoService
             'interestedIn' => $this->getMappedService($this->application->connectionServices?->pluck('service_type')->toArray()),
             'lifeSupport' => false,
             // 'lifeSupportFuel' => "string",
-            'marketingConcent' => false,
+            'marketingConcent' => $this->application->is_contacted,
             'mirn' => $this->application->mirn,
             'nmi' => $this->application->nmi,
             'proposedMovingDate' => $this->getMappedDate($this->application->moving_date),
