@@ -173,7 +173,8 @@ class ConnectionApplication extends Model
         'submitted_by',
         'vendor_id',
         'is_contacted',
-        'is_auto_water_submit'
+        'is_auto_water_submit',
+        'water_submit_response'
     ];
 
 
