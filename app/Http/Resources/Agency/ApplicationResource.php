@@ -79,7 +79,7 @@ class ApplicationResource extends JsonResource
             'lead_source_description' => $this->SugerLead?->foxie_lead_source_description,
             'source' => $this->source,
             'plan_type' => $this->mapPlan($this->plan_type),
-            'created_at' => (new Carbon($this->created_at))->format('d/m/Y')
+            'created_at' => (new Carbon($this->created_at, '10'))->format('d/m/Y h:m a')
         ];
     }
 

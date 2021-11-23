@@ -19,9 +19,11 @@ export default {
                 let distributorData =  await SumoAPI.qualifyAddress(address , lead.id);
                 console.log('printing address ' , address)
 
-                let agent_name = '';  
+                let agent_name = '';
                 if(agent){
                     agent_name = agent.id + '_' + agent.first_name + '_' + agent.last_name;
+                } else {
+                    agent_name = 'Hood CSR'
                 }
 
                 // let plans;
