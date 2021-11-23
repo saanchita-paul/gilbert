@@ -425,7 +425,7 @@ export default {
             this.sumoPlanDetails = new SumoPlanDetails({})
             this.providerSpinner.start()
             try {
-                this.isSumoLoading = true;
+                // this.isSumoLoading = true;
                 let address = this.leadSummary.street_address + ' ' + this.leadSummary.city + ' ' + this.leadSummary.state + ' ' + this.leadSummary.postcode;
                 this.sumoPlanDetails =
                     await SumoService.getPlans(address, this.leadSummary.service_interests, this.leadSummary?.created_by_agent, this.leadSummary);
@@ -443,10 +443,12 @@ export default {
             this.selectedPowerProvider = name;
             // TODO need to decide if provider is
             if(name == 'sumo'){
+                this.isSumoLoading = true;
                 //listening on ApplicationDetailsPage component
                 this.$eventBus.$emit("validate", this.setSumoDetailsData)
                 // await this.setSumoDetailsData(name);
             }else{
+                this.isSumoLoading = false;
                 this.actionOnSelectProvider(name)
             }
 
