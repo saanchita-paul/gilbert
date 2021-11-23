@@ -279,7 +279,7 @@ export default {
             });
         },
         is_submit_disabled(){
-            if( this.tab == this.tabMapper.Water && this.getwaterServiceStatus !== 'In Progress' ){
+            if( this.tab === this.tabMapper.Water && !['In Progress', 'Not Selected'].includes(this.getwaterServiceStatus)){
                 return true;
             }else{
                 return false;
@@ -399,7 +399,7 @@ export default {
                 {
                     return this.mapStatus(newServices.status);
                 }
-                return 'can not connect';
+                return 'Not Selected';
 
             }
 
@@ -474,7 +474,7 @@ export default {
             this.selectedPowerProvider = name;
             // TODO need to decide if provider is
             if(name == 'sumo'){
-                
+
                 //listening on ApplicationDetailsPage component
                 this.$eventBus.$emit("validate", this.setSumoDetailsData)
                 // await this.setSumoDetailsData(name);
