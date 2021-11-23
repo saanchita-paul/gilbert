@@ -98,6 +98,10 @@
                                 color="primary"
                             ></v-progress-circular>
                         </div>
+                        <div v-else-if="sumoOptions.isError" class="d-flex justify-center" style="width: 100%">
+                            <div class="text-center font-weight-bold red--text"> Something went wrong! </div>
+                            <!-- <v-btn color="error">Retry</v-btn> -->
+                        </div>
                         <div v-else class="d-flex" v-for="plan in origin2" :key="plan.name">
                             <SumoPlan
                                 :sumoPlanDetails="sumoPlanDetails"
@@ -229,6 +233,10 @@ export default {
             solePlanDialog: false,
             sumoPlanDetails: new SumoPlanDetails({}),
             isSumoLoading: false,
+            sumoOptions: {
+                isError: false,
+                errorMsg: "",
+            }
         }
     },
     computed: {
@@ -437,7 +445,11 @@ export default {
             this.selectedPowerProvider = providerId;
         },
         async setSumoDetailsData(name) {
+            this.isSumoLoading = true;
             this.sumoPlanDetails = new SumoPlanDetails({})
+            this.sumoOptions.isError = false;
+            // this.sumoOptions.isError = true;
+            this.sumoOptions.errorMsg = "";
             this.providerSpinner.start()
             try {
                 // this.isSumoLoading = true;
@@ -446,11 +458,15 @@ export default {
                     await SumoService.getPlans(address, this.leadSummary.service_interests, this.leadSummary?.created_by_agent, this.leadSummary);
                 this.actionOnSelectProvider(name)
                 this.isSumoLoading = false;
+                // this.isSumoLoading = false;
                 this.providerSpinner.stop()
                 return 0;
             } catch (error) {
-                this.isSumoLoading = false;
+                this.sumoOptions.isError = true;
+                this.sumoOptions.errorMsg = "Something weng wrong";
                 this.sumoPlanDetails = new SumoPlanDetails();
+            } finally {
+                this.isSumoLoading = false;
             }
 
         },
@@ -458,7 +474,7 @@ export default {
             this.selectedPowerProvider = name;
             // TODO need to decide if provider is
             if(name == 'sumo'){
-                this.isSumoLoading = true;
+                
                 //listening on ApplicationDetailsPage component
                 this.$eventBus.$emit("validate", this.setSumoDetailsData)
                 // await this.setSumoDetailsData(name);
