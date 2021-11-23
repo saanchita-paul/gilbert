@@ -8,18 +8,21 @@ export default {
             quoteNumber: 'hood_'+applicationId,
         }
     },
-    mapProduct :(location , service_type , agent_name, lead_id)=>{
+    mapProduct :(sumoInfo , service_type , agent_name, lead_id)=>{
+        let distributorName = sumoInfo?.electricityDistributors[0]?.distributor ??  'electricDistributorNotFound';
+        console.log('printing distributor name mapProduct' , distributorName);
+
         return {
             campaign: 'hood',
             channel: 'crm',
-            consultantID: location?.distributor ? location.distributor : "electricDistributorNotFound" ,
-            electricityDistributor: agent_name,
+            consultantID: agent_name ,
+            electricityDistributor: distributorName,
             fuelType: service_type,
-            nmi: location.nmi,
-            postcode: location.postcode,
+            nmi: sumoInfo.nmi,
+            postcode: sumoInfo.postcode,
             prospectType: 'Residential',
             quoteNumber: 'hood_'+lead_id,
-            suburb: location.suburbOrPlaceOrLocality,
+            suburb: sumoInfo.suburbOrPlaceOrLocality,
         }
     },
     planMapper: (plansList)=>{
