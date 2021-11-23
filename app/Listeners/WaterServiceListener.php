@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Models\ConnectionApplication;
+use App\Services\Agency\UpdatedWaterStatus;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use FastConnect\Services\SubmitWaterLeadToFastConnect;
@@ -34,6 +35,10 @@ class WaterServiceListener implements ShouldQueue
 
             ConnectionApplication::saveFasConnectRef($event->applicationId, data_get($result, "info.customer_reference"));
 
+            $statusAssoc = UpdatedWaterStatus::mapFromFCStatus(data_get($result, "products.0.status"));
+            if ($statusAssoc) {
+                UpdatedWaterStatus::updateStatus($event->applicationId, $statusAssoc['status'], $statusAssoc['reason']);
+            }
         }
     }
 }
