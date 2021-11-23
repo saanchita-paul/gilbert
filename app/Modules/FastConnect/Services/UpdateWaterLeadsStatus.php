@@ -4,7 +4,7 @@
 namespace App\Modules\FastConnect\Services;
 
 
-use App\Jobs\GetWaterProcessingJob;
+use App\Jobs\WaterStatusUpdateJob;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Services\Agency\UpdatedWaterStatus;
@@ -48,7 +48,7 @@ class UpdateWaterLeadsStatus
         foreach ($leads as $lead) {
 
             if(!is_null($lead->connectionApplication?->fast_connect_customer_reference)) {
-                GetWaterProcessingJob::dispatch($lead->connection_application_id, $lead->connectionApplication->fast_connect_customer_reference);
+                WaterStatusUpdateJob::dispatch($lead->connection_application_id, $lead->connectionApplication->fast_connect_customer_reference);
             }
 
         }

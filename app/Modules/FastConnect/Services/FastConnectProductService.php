@@ -74,6 +74,7 @@ class FastConnectProductService
         });
         $this->waterConnection = $this->productConnectionGroups[$waterConnectionIndex];
 
+        $url = config('fastconnect.root_url') . config('fastconnect.get_product_details_uri');
         $authorization = 'Bearer ' . $this->accessToken;
         $response = Http::withHeaders([
             'content-type' => 'application/json',
@@ -81,9 +82,15 @@ class FastConnectProductService
             'authorization' => $authorization
         ])
             ->withBody(json_encode($this->getProductDetailsData()), 'application/json')
-            ->post(\config('fastconnect.root_url') . \config('fastconnect.get_product_details_uri'));
+            ->post($url);
 
         $this->productDetails = json_decode($response->body(), true);
+        info("FC PRODUCT API", [
+            'url' => $url,
+            'request_body' => $this->getProductDetailsData(),
+            'response_body' => $this->productDetails,
+            'response_status' => $response->status()
+        ]);
         return $this;
     }
 
@@ -99,7 +106,7 @@ class FastConnectProductService
                 // "property_type" => "old",
                 "street_name" => $this->application->street_name,
                 "street_number" => $this->application->street_number,
-                // "street_type" => "Rd"
+//                 "street_type" => "St"
             ]
         ];
     }

@@ -13,11 +13,9 @@ class WaterAutoSubmitService
 
     public function __construct(int $lead_id)
     {
-        info("inside water auto submit service");
-        \Log::info($lead_id);
         try {
             $lead = ConnectionApplication::with(['connectionServices' , 'identification'])->where( 'id' ,  $lead_id)->first();
-            if (!$lead->is_auto_water_submit) {
+            if (!$lead->is_auto_water_submi) {
                 $this->validateData($lead);
                 $this->updateConnectionApplication($lead);
             }
