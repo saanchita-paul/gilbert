@@ -40,7 +40,7 @@ export default {
         } catch (error) {
             console.log('in the error')
             console.log(error)
-            return error.data;
+            return 'failed';
         }
     }
 }
