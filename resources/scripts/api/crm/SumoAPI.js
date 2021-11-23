@@ -1,7 +1,7 @@
 import axios from "axios";
 import SumoMapper from "@scripts/api/mappers/crm/SumoMapper";
 
-const baseURL = 'https://stageapi.sumo.com.au/hood/v1.0';
+const baseURL = process.env.MIX_SUMO_BASE_URL || 'https://stageapi.sumo.com.au/hood/v1.0';
 
 const sumoAxios = axios.create({
     baseURL,
