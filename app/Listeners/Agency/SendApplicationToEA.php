@@ -34,7 +34,9 @@ class SendApplicationToEA implements ShouldQueue
         $application = ConnectionApplication::with('connectionServices')->where('id', $event->applicationId)->firstOrFail();
 
         $saleApiOn = env('EA_SALES_API_ON');
-        if ($saleApiOn === 1 && $submitType === 'energy' && $this->isProviderEa($application)) {
+        info('submit type '. $submitType);
+        info('sale api activated', [$saleApiOn === "1"]);
+        if ($submitType === 'energy' && $this->isProviderEa($application)) {
             $postEaService = new PostSalesService($event->applicationId);
             $postEaService->postToEa();
             $hubspotService = new HubspotContactService($event->applicationId);
@@ -51,6 +53,8 @@ class SendApplicationToEA implements ShouldQueue
     private function isProviderEa($application): bool
     {
         foreach ($application->connectionServices as $service) {
+            $provider = $service->provider_name?$service->provider_name:'';
+            info('provider name '.$provider);
             if ($service->provider_name === 'ea') {
                 return true;
             }

@@ -26,7 +26,7 @@ class PostSalesService
     private $planType;
     public function __construct(int $id)
     {
-        $this->chatbotUri = config('bot.root_url1');
+        $this->chatbotUri = config('bot.root_url');
         $this->connection = ConnectionApplication::with('connectionServices')->where('id', $id)->firstOrFail();
         $this->identification = $this->connection->identification;
         $this->accessToken = (new GetAccessToken())->getAccessToken();
