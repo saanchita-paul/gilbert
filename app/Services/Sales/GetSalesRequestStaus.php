@@ -176,6 +176,11 @@ class GetSalesRequestStaus
             {
                 $status = ConnectionApplication::STATUS_EA_PROCESSINF;
             }
+
+            if($quote->status == 'AC_MANUAL_PROCESSING')
+            {
+                $status = ConnectionService::AC_MANUAL_PROCESSING;
+            }
             Log::info($status);
 
             $lead = ConnectionApplication::find($leadId);

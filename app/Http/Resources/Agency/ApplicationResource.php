@@ -4,6 +4,7 @@ namespace App\Http\Resources\Agency;
 
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ApplicationResource extends JsonResource
@@ -77,7 +78,8 @@ class ApplicationResource extends JsonResource
             'lead_source' => $this->SugerLead?->foxie_lead_source,
             'lead_source_description' => $this->SugerLead?->foxie_lead_source_description,
             'source' => $this->source,
-            'plan_type' => $this->mapPlan($this->plan_type)
+            'plan_type' => $this->mapPlan($this->plan_type),
+            'created_at' => (new Carbon($this->created_at))->format('d/m/Y')
         ];
     }
 
