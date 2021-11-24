@@ -4,8 +4,10 @@ namespace OurProperty\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use OurProperty\Services\CreateOurPropertyService;
 use Illuminate\Http\Request;
+use OurProperty\Services\CreateOurPropertyService;
+
+
 class OurPropertyController extends Controller
 {
 
@@ -37,18 +39,15 @@ class OurPropertyController extends Controller
         try {
 
             $service = new CreateOurPropertyService();
-            $service->create($request->toArray());
+            $ourProperty = $service->create($request);
             $response = [
                 "status" => "success",
-                "hood_lead_id" => $connectionApplication->id,
+                "hood_lead_id" => $ourProperty->id,
                 "message" => "Hood lead has been added successfully"
             ];
             return response($response, 200);
         } catch (\Exception $ex) {
-            //throw $th;
-            \Log::error("Problem in Storing data");
-            \Log::error($ex->getMessage());
-            \Log::error($ex->getTraceAsString());
+            return $ex;
             $response = [
                 "status" => "failed",
                 "message" => "Hood lead can not be stored"

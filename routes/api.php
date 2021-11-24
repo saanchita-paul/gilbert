@@ -120,6 +120,7 @@ Route::get('lnn/bot_token', function () {
 
 
 Route::post('/our-property/token', [OurPropertyController::class, 'getAccessToken']);
+Route::post('/our-property/lead', [OurPropertyController::class, 'createOurProperty']);
 
 
 
