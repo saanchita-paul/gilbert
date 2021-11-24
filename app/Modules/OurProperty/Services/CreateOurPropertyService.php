@@ -15,13 +15,13 @@ class CreateOurPropertyService
      * 
      * @var string
     */
-    private string $email = "ourproperty@hood.ai";
+    private string $email = "lenin@hood.ai";
     /**
      * credetial password
      * 
      * @var string
     */
-    private string $password = "123456";
+    private string $password = "Hu435567";
     
     /**
      * server generated access token
