@@ -57,7 +57,7 @@ class CreateOurPropertyService
                 "expires_at" => $this->expires_at,
             ];
         }else{
-            throw new Exception("Value must be 1 or below");
+            throw new Exception("id pass does not match");
         }
     }
 
