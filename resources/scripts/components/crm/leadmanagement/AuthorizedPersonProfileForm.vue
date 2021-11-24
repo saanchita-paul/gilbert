@@ -44,7 +44,7 @@
                                                 :items="titlesDD"
                                                 v-model="authorized_person.title"
                                                 :error-messages="errors[0]"
-                                                placeholder="Mr"
+                                                placeholder="Please choose one"
                                             >
                                             </v-select>
                                         </ValidationProvider>
