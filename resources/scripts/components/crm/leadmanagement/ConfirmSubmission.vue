@@ -548,9 +548,12 @@ export default {
           // return false;
            return this.is_temp_condition  && this.is_life_support;
           },
-
         selectedPlan() {
             this.provider = this.data.plan_type.provider;
+            
+            if(this.provider == 'sumo') {
+                return Boolean(this.data.plan_type.title)?this.data.plan_type.key: this.data.plan_type.value;
+            }
             return Boolean(this.data.plan_type.title)?this.data.plan_type.title: this.data.plan_type.value;
         },
 

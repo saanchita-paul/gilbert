@@ -58,7 +58,7 @@ export default class ApplicationSummary {
     constructor(
         {
             id = null,
-            title = 'Mr',
+            title = '',
             first_name = '',
             middle_name = '',
             last_name = '',
