@@ -13,11 +13,9 @@ class OurPropertyController extends Controller
      * this is the controller which will return access token.
      *
      * @param  Request $requst
-     * @return array
+     * @return JsonResponse
      * @throws Exception
      */
-
-
     public function getAccessToken(Request $request) : JsonResponse {
         try {
             $ourPropertyService = new CreateOurPropertyService();
