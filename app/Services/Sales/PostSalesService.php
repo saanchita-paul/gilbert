@@ -186,8 +186,8 @@ class PostSalesService
                 Log::info('End Sale API request body');
                 Log::info($variables);
                 Log::info('Start Sale API request body');
-//            $results = $client->runQuery($gql, false, $variables );
-//            return $this->processEaData($results->getResponseBody());
+            $results = $client->runQuery($gql, false, $variables );
+            return $this->processEaData($results->getResponseBody());
 
         } catch (\Exception $e)
         {
