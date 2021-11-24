@@ -34,8 +34,6 @@ class SendApplicationToEA implements ShouldQueue
         $application = ConnectionApplication::with('connectionServices')->where('id', $event->applicationId)->firstOrFail();
 
         $saleApiOn = env('EA_SALES_API_ON');
-        info('submit type '. $submitType);
-        info('sale api activated', [$saleApiOn === "1"]);
         if ($saleApiOn === "1" && $submitType === 'energy' && $this->isProviderEa($application)) {
             $postEaService = new PostSalesService($event->applicationId);
             $postEaService->postToEa();

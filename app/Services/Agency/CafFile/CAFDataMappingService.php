@@ -56,8 +56,8 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                 return [
                     'vendor_id' => $utilityData->vendor_id,
                     'sale_date' => $this->getAgreeAt($utilityData),
-                    'elec_source_code' =>$services->contains('power')? $this->getElectricitySourceCode($utilityData->id, $utilityData->state): '',
-                    'gas_source_code' => $services->contains('gas')? $this->getGasSourceCode($utilityData->id, $utilityData->state): '',
+                    'elec_source_code' =>$services->contains('power')? $this->getElectricitySourceCode($utilityData->id, $utilityData->state, $utilityData->postcode): '',
+                    'gas_source_code' => $services->contains('gas')? $this->getGasSourceCode($utilityData->id, $utilityData->state, $utilityData->postcode): '',
                     'customer_type' => $utilityData->property_type == 1? 'RESI':'SME',
                     'offer_type' => 'ENE',
                     'connection_date' => Carbon::parse($utilityData->moving_date)->format("d/m/Y"),
@@ -144,8 +144,8 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'dpid' => '',
                     'fuel_elec' => $this->isServiceType('power', $utilityData->id)?'Y':'N',
                     'fuel_gas' =>  $this->isServiceType('gas', $utilityData->id)?'Y':'N',
-                    'elec_plan' => $services->contains('power')? $this->getElectricitySourceCode($utilityData->id, $utilityData->state): '',
-                    'gas_plan' => $services->contains('gas')?$this->getGasSourceCode($utilityData->id, $utilityData->state):'',
+                    'elec_plan' => $services->contains('power')? $this->getElectricitySourceCode($utilityData->id, $utilityData->state, $utilityData->postcode): '',
+                    'gas_plan' => $services->contains('gas')?$this->getGasSourceCode($utilityData->id, $utilityData->state, $utilityData->postcode):'',
                     'green_energy'=> 'N',
                     'window_power' => 'N',
                     'payment_method' =>'',
@@ -331,9 +331,8 @@ class CAFDataMappingService implements FromCollection, WithHeadings
         return $services->contains($service);
 
     }
-    private function getElectricitySourceCode($leadId, $state)
+    private function getElectricitySourceCode($leadId, $state, $postcode)
     {
-
         $connectionService = ConnectionService::query()
             ->where('connection_application_id', $leadId)
             ->where('service_type', 'gas')
@@ -344,9 +343,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
         $state = $this->stateMap($state);
 
         try{
-            Log::info('url', [$this->chatbotUri.'/api/ele-source-code']);
-            $response = Http::post($this->chatbotUri.'/api/ele-source-code',['plan'=>$plan,'state'=>$state]);
-            Log::info('gas_source_code',[$response->status()]);
+            $response = Http::post($this->chatbotUri.'/api/ele-source-code',['plan' => $plan,'state' => $state, 'postcode' => $postcode]);
             if($response->status() == 200)
             {
                 return json_decode($response->body())->source_code;
@@ -361,7 +358,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
 
     }
 
-    private function getGasSourceCode($leadId, $state)
+    private function getGasSourceCode($leadId, $state, $postcode)
     {
 //        Log::info($plan, [$plan]);
 
@@ -375,14 +372,11 @@ class CAFDataMappingService implements FromCollection, WithHeadings
 
         $state = $this->stateMap($state);
         try {
-            Log::info('url', [$this->chatbotUri.'/api/gas-source-code']);
-            $response = Http::post($this->chatbotUri.'/api/gas-source-code',['plan'=>$plan,'state'=>$state]);
-            Log::info('ele_source_code',[$response->status()]);
+            $response = Http::post($this->chatbotUri.'/api/gas-source-code',['plan'=>$plan,'state'=>$state, 'postcode' => $postcode]);
 
             if($response->status() == 200)
             {
                 return json_decode($response->body())->source_code;
-
             }
 
         } catch (\Exception $e)
@@ -435,8 +429,4 @@ class CAFDataMappingService implements FromCollection, WithHeadings
         $res = preg_replace('/[^0-9.]+/', '', explode(':', $str)[0]);
         return strlen($res) > 1 ? '#' . $res . '00#' : '#0' . $res . '00#';
     }
-
-
-
-
 }
