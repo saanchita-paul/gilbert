@@ -1,11 +1,9 @@
 <?php
 
-
-namespace App\Modules\OurProperty\HTTP\Controller;
-
+namespace OurProperty\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Modules\OurProperty\HTTP\Services\CreateOurPropertyService;
+use OurProperty\Services\CreateOurPropertyService;
 use Illuminate\Http\Request;
 
 class OurPropertyController extends Controller

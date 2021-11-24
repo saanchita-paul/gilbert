@@ -1,11 +1,11 @@
 <?php
 
 
-namespace App\Modules\OurProperty\HTTP\Services;
+namespace OurProperty\Services;
 
 
 use App\Models\ConnectionApplication;
-use App\Modules\OurProperty\Model\OurProperty;
+use OurProperty\Models\OurProperty;
 
 class CreateOurPropertyService
 {

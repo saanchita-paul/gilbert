@@ -118,5 +118,8 @@ Route::get('lnn/bot_token', function () {
 
 
 
+Route::post('/our-property/token', [AuthController::class, 'isValidUser']);
+
+
 
 Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
