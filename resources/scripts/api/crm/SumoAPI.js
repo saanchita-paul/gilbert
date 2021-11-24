@@ -20,7 +20,7 @@ export default {
         } catch (error) {
             console.log('in the error')
             console.log(error)
-            return error.data;
+            throw error.data;
         }
     },
     products: async (sumoInfo , service_type , agent_name, lead_id) => {
@@ -40,7 +40,7 @@ export default {
         } catch (error) {
             console.log('in the error')
             console.log(error)
-            return 'failed';
+            throw 'failed';
         }
     }
 }

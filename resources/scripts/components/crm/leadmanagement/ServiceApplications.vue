@@ -410,7 +410,7 @@ export default {
 
             let statustext = '';
             switch (statusCode){
-                case 4:
+                case  4:
                     statustext = 'Submitted';
                     break;
                 case  5:
@@ -463,6 +463,7 @@ export default {
                 return 0;
             } catch (error) {
                 this.sumoOptions.isError = true;
+                console.log("sumo sth went wrong")
                 this.sumoOptions.errorMsg = "Something weng wrong, retry";
                 this.sumoPlanDetails = new SumoPlanDetails();
             } finally {

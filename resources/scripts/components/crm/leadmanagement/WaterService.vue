@@ -12,25 +12,13 @@
         </div>
         <div class="d-flex ml-6 regularFontSize">
             <div>
-                This application have missing information. To proceed, please review above fields and manually submit the application by clicking the submit button below.
+                {{ connectionStatusReason }}
             </div>
         </div>
-        <!-- <div class="d-flex justify-end mt-4">
-            <div>
-                <v-btn color="#542E89" @click="submit" class="white--text">
-                    Submit for connection
-                </v-btn>
-            </div>
-        </div> -->
     </v-card>
 </template>
 
 <script>
-import DayJs from "dayjs";
-import WaterService from "@scripts/services/crm/WaterService";
-import {isNull} from "lodash-es";
-import dayJs from "dayjs";
-
 export default {
     name: "WaterService",
     props:['connection_id', 'leadSummary'],
@@ -38,7 +26,17 @@ export default {
         submit(){
             // * this will ber fired on ApplicationDetailsPage
             this.$eventBus.$emit("busWaterSubmit", 'water')
-            console.log('clicking submit')
+        }
+    },
+    computed:{
+        connectionStatusReason(){
+            let waterService = this.leadSummary.connection_services.find(n=>n.service_type=='water');
+            return waterService &&
+                   waterService.reason !== null &&
+                   waterService.reason !== undefined && 
+                   waterService.reason !== "" ?
+                   waterService.reason :
+                   "We are processing your application..." 
         }
     }
 }
