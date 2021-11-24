@@ -127,7 +127,7 @@ class ApplicationResource extends JsonResource
     {
         if($this->source === ConnectionApplication::SOURCE_HOOD)
         {
-            return $this->createdBy->first_name.' '. $this->createdBy->last_name;
+            return $this->createdBy?->first_name.' '. $this->createdBy?->last_name;
         }
         if($this->source === ConnectionApplication::SOURCE_FOXIE)
         {

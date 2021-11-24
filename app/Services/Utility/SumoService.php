@@ -2,18 +2,19 @@
 
 namespace App\Services\Utility;
 
-use App\Models\APILog;
-use App\Models\ConnectionApplication;
 use Exception;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
+use App\Models\APILog;
 use App\Models\Identification;
-use App\Models\ConnectionApplicationSecondaryACC;
-
-use JetBrains\PhpStorm\ArrayShape;
 use function PHPSTORM_META\map;
+use JetBrains\PhpStorm\ArrayShape;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use App\Models\ConnectionApplication;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
+use App\Models\ConnectionApplicationSecondaryACC;
 
 class SumoService
 {
@@ -74,6 +75,8 @@ class SumoService
 
         $response = Http::put($url, $this->getCustomerData());
 
+        \Log::info( 'printing sercondary contact for ' , $this->getCustomerData());
+
         return json_decode($response->body(), true);
     }
 
@@ -103,6 +106,7 @@ class SumoService
             'secondaryCustomerFirstName' => $this->application->authorizedPerson?->first_name,
             'secondaryCustomerLastName' => $this->application->authorizedPerson?->last_name,
             'secondaryCustomerPhone' => $this->application->authorizedPerson?->phone,
+            'secondaryCustomerDateOfBirth' => $this->application->authorizedPerson?->dob ? (new Carbon( $this->application->authorizedPerson?->dob ))->format('Y-m-d') : null,
             'secondaryCustomerTitle' => $this->application->authorizedPerson?->title,
         ]);
     }

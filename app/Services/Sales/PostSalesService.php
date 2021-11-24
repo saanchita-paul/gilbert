@@ -79,7 +79,6 @@ class PostSalesService
             'connectionDate'=>(new Carbon( $this->connection->moving_date))->format('Y-m-d'),
             'renovationsSinceDeenergisation'=> false,
             'renovationsInProgressOrPlanned'=> false,
-            'afterHoursServiceOrder'=> false,
         ];
 
 
@@ -105,7 +104,7 @@ class PostSalesService
             'mirn'=> $this->connection->mirn,
 
             'address'=> [
-                'unitNumber'=> $this->connection->address_unit,
+                'unitNumber'=> $this->connection->unit_number,
                 'streetNumber'=> $this->connection->street_number,
                 'streetName'=> $this->connection->street_address,
                 'streetType'=> $streetType,
@@ -231,7 +230,7 @@ class PostSalesService
                 $this->updateService('power', $status);
             }
 
-            $this->connection->update(['status'=>$status,'ea_sales_id'=> $salesId,'assigned_to'=> null]);
+//            $this->connection->update(['status'=>$status,'ea_sales_id'=> $salesId,'assigned_to'=> null]);
 
         }
 
