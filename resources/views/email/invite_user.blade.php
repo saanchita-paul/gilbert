@@ -51,7 +51,7 @@
             <p>Once you’re activated, you’re all set to send through the details of your movers.</p>
             <br>
             <p> We look forward helping your movers connect their services with ease.</p>
-            <p>Thanks.</p>
+            <p>Thank You.</p>
             <br>
             <div class="btn-area">
                 <a  class="started-btn" 
@@ -69,7 +69,6 @@
                 </a>
             </div>
             <br>
-            <p><small>Thank you,</small></p>
             <p>HOOD Support Team</p>
             <br>
             <div class="email-footer" style="background-color: #532D86;
