@@ -18,7 +18,7 @@
               :items="titlesDD"
               v-model="person_details.title"
               :error-messages="errors[0]"
-              placeholder="Mr"
+              placeholder="Please choose one"
             >
             </v-select>
           </ValidationProvider>
@@ -1053,7 +1053,7 @@ export default {
     return {
       needLifeSupprt: false,
       loadNmi: false,
-      titlesDD: ["Mrs", "Mr", "Ms"],
+      titlesDD:[ 'Mr.','Mrs.','Ms.','Miss','Dr.'],
       minConnectionDate: LeadApplicationService.getMinConnectionDate(),
       minExpiredate: new Date().toISOString(),
       emailBillingDD: [
