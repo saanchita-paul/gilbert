@@ -221,16 +221,31 @@
 <!--                                                </ValidationProvider>-->
 <!--                                            </v-col>-->
 
-                                    <v-col cols="12" class="py-0">
-                                        <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
-                                            <v-text-field
-                                                indentification
-                                                :error-messages=" errors[0]"
+                                    <!-- <v-col cols="12" class="py-0">
+                                        <ValidationProvider name="Title" rules="required" v-slot="{ errors }">
+                                            <v-select
                                                 outlined
-                                                label="First Name*"
-                                                v-model="authorized_person.first_name"
                                                 dense
-                                            ></v-text-field>
+                                                hide-details="auto"
+                                                :items="titlesDD"
+                                                v-model="authorized_person.title"
+                                                :error-messages="errors[0]"
+                                                placeholder="Mr"
+                                            >
+                                            </v-select>
+                                        </ValidationProvider>
+                                    </v-col> -->
+                                    <v-col cols="12" class="py-0">
+                                         <ValidationProvider name="Title" rules="required" v-slot="{ errors }">
+                                            <v-select
+                                                outlined
+                                                dense
+                                                :items="titlesDD"
+                                                v-model="authorized_person.title"
+                                                :error-messages="errors[0]"
+                                                placeholder="Mr"
+                                            >
+                                            </v-select>
                                         </ValidationProvider>
                                     </v-col>
                                     <v-col cols="12" class="py-0">
@@ -243,6 +258,18 @@
                                                 v-model="authorized_person.last_name"
                                                 dense
 
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="12" class="py-0">
+                                        <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
+                                            <v-text-field
+                                                indentification
+                                                :error-messages=" errors[0]"
+                                                outlined
+                                                label="First Name*"
+                                                v-model="authorized_person.first_name"
+                                                dense
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </v-col>
