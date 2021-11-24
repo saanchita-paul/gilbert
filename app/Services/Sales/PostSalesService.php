@@ -183,9 +183,9 @@ class PostSalesService
                 );
 
 
-                Log::info('End Sale API Payload');
+                Log::info('End Sale API request body');
                 Log::info($variables);
-                Log::info('Start Sale API Payload');
+                Log::info('Start Sale API request body');
             $results = $client->runQuery($gql, false, $variables );
             return $this->processEaData($results->getResponseBody());
 
@@ -346,7 +346,7 @@ class PostSalesService
         $plan_id = '';
 
         try {
-            $response = Http::post($this->chatbotUri.'/api/get-plan-details',['plan'=>$plan,'state'=>$state]);
+            $response = Http::post($this->chatbotUri.'/api/get-plan-details',['plan' => $plan,'state' => $state, 'postcode' => $this->connection->postcode]);
 //            Log::info($response->status());
 
             if($response->status() == 200) {
