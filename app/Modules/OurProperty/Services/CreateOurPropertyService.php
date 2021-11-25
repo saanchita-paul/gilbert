@@ -95,7 +95,7 @@ class CreateOurPropertyService
     private function prepareConnectionApp()
     {
         try {
-            $agency = Agency::where('name' , "Our-Property-Hood-Agent")->first();
+            $agency = Agency::where('name' , "Our-Property-Agency")->firstOrFail();
             $this->connectionApplicaton->agency_id = $agency?->id ?? 1;
             $this->connectionApplicaton->office_id = $agency?->offices[0]?->id ?? 1;
             if(!$agency) throw new Exception('Please run OurPropertySeeder');
@@ -108,10 +108,10 @@ class CreateOurPropertyService
     {
         $ourProperty = new OurProperty();
         $ourProperty->all_fields_dump = json_encode($requestData->toArray());
-//        $ourProperty->connection_application_id = $this->connectionApplicaton->id;
-//        $ourProperty->lead_id = $requestData->lead_id;
+        $ourProperty->connection_application_id = $this->connectionApplicaton->id;
+        $ourProperty->lead_id = $requestData->lead_id;
 //        $ourProperty->agent_name = $this->connectionApplicaton->createdBy->first_name;
-//        $ourProperty->agency_name = $this->connectionApplicaton->agency->name;
+        $ourProperty->agency_name = $this->connectionApplicaton->agency->name;
 //        $ourProperty->agent_email = $this->connectionApplicaton->createdBy->email;
         $ourProperty->save();
         return $ourProperty;
