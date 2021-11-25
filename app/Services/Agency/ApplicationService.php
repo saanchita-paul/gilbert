@@ -165,7 +165,7 @@ class ApplicationService
         if ($identification) {
             $identification->type = isset($identificationData['type'])?$identificationData['type']: null;
             $identification->card_number =  isset($identificationData['card_number'])?$identificationData['card_number']: null;
-            $identification->special_number =  isset($identificationData['special_number'])?$identificationData['special_number']: null; $identificationData['special_number'];
+            $identification->special_number =  isset($identificationData['special_number'])?$identificationData['special_number']: null;
             $identification->expire_date = isset($identificationData['expire_date'])?$identificationData['expire_date']: null;
             $identification->card_color =  isset($identificationData['card_color'])?$identificationData['card_color']: null;
             $identification->state = isset($identificationData['state'])?$identificationData['state']: null;
@@ -208,7 +208,7 @@ class ApplicationService
     }
 
     private function checkAndAddWaterService(array $applications , $application){
-        info("printing application data"); 
+        info("printing application data");
         \Log::info($applications);
         \Log::info($applications['lead']['service_interests']);
         // if( array_search("water",$applications['lead']['service_interests'])){
