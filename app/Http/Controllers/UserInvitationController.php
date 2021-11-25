@@ -19,7 +19,6 @@ class UserInvitationController extends Controller
     public function validateInvitation(Request $request)
     {
         try {
-            $request->
             $svcUserInvitation = new UserInvitationService();
             $user = $svcUserInvitation->getInvitationByToken($request->toArray());
 
@@ -30,7 +29,7 @@ class UserInvitationController extends Controller
             return response()->json(['success' => true, 'data' => $user]);
 
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
