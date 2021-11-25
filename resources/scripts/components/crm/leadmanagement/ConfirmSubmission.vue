@@ -433,7 +433,7 @@
 import SPECIAL_NUMBER from "@scripts/data/constants/SPECIAL_NUMBER";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import dayJs from "dayjs";
-
+import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
 export default {
   name: "ConfirmSubmission",
     props:{
@@ -449,9 +449,7 @@ export default {
           is_credit2_condition:null,
           is_life_support: null,
           row:null,
-          titlesDD:[
-              'Mrs','Mr'
-          ],
+          titlesDD:titlesMapperForDropdown,
           emailBillingDD: [ {
               text: 'Yes',
               value: 1
