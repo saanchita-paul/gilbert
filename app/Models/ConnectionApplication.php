@@ -237,6 +237,7 @@ class ConnectionApplication extends Model
     const SOURCE_HOOD = 0;
     const SOURCE_FOXIE = 1;
     const SOURCE_IGNITE = 2;
+    const SOURCE_OUR_PROPERTY = 4;
 
     const EMAIL_BILLING_EMAIL = 1;
     const EMAIL_BILLING_PAPER = 2;
@@ -262,7 +263,8 @@ class ConnectionApplication extends Model
         'all' => self::SOURCE_ALL,
         'hood' => self::SOURCE_HOOD,
         'foxie' => self::SOURCE_FOXIE,
-        'ignite' => self::SOURCE_IGNITE
+        'ignite' => self::SOURCE_IGNITE,
+        'our-property' => self::SOURCE_OUR_PROPERTY
     ];
 
     const PLAN_TYPE_MAPPER = [

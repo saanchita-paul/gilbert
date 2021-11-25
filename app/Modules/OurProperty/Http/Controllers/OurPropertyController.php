@@ -20,10 +20,13 @@ class OurPropertyController extends Controller
      */
     public function getAccessToken(Request $request) : JsonResponse {
         try {
+
             $ourPropertyService = new CreateOurPropertyService();
             $result =  $ourPropertyService->generateAccessToken($request->toArray());
             return  response()->json($result , 200);
+
         } catch (\Exception $exception) {
+
             \Log::error( "Error in OurPropertyController, getAccessToken method" , [ 'message' => $exception->getMessage()]);
             \Log::error($exception->getTraceAsString());
             $response =  [
@@ -31,6 +34,7 @@ class OurPropertyController extends Controller
                 'message' => "email and password does not match"
             ];
             return response()->json($response , 200);
+
         }
     }
 
