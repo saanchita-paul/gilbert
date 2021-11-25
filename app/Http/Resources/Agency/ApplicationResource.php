@@ -165,7 +165,7 @@ class ApplicationResource extends JsonResource
 
         if($this->authorizedPerson)
         {
-            $fullName = "{$this->authorizedPerson->first_name} {$this->authorizedPerson->middle_name} {$this->authorizedPerson->last_name}";
+            $fullName = "{$this->authorizedPerson->title} {$this->authorizedPerson->first_name} {$this->authorizedPerson->middle_name} {$this->authorizedPerson->last_name}";
             if(empty(trim($fullName))) return null;
             return $fullName;
         }
