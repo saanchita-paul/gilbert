@@ -36,6 +36,20 @@
 
 
                                     <v-col cols="12">
+                                        <ValidationProvider name="Title" rules="required" v-slot="{ errors }">
+                                            <v-select
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                                :items="titlesDD"
+                                                v-model="authorized_person.title"
+                                                :error-messages="errors[0]"
+                                                placeholder="Please choose one"
+                                            >
+                                            </v-select>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="12">
                                         <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
                                             <v-text-field
                                                 indentification
@@ -235,6 +249,7 @@ name: "AuthorizedPersonProfileForm",
         syncData() {
             this.authorized_person.connection_application_id = this.leadId;
             if(isNull(this.authorized_person_data)) return;
+            this.authorized_person.title = this.authorized_person_data.title;
             this.authorized_person.first_name = this.authorized_person_data.first_name;
             this.authorized_person.last_name = this.authorized_person_data.last_name;
             this.authorized_person.email = this.authorized_person_data.email;

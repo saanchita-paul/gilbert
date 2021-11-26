@@ -9,6 +9,34 @@
                         <p class="sub-title mb-0">Contact Details  <small class="font-weight-thin">Personal details or your applicant.</small>  <small class="font-weight-thin float-right">All fields are mandatory*</small></p>
                     </v-col>
 
+                     <!-- <v-col cols="6" class="py-0">
+                                         <ValidationProvider name="Title" rules="required" v-slot="{ errors }">
+                                            <v-select
+                                                outlined
+                                                dense
+                                                :items="titlesDD"
+                                                v-model="authorized_person.title"
+                                                :error-messages="errors[0]"
+                                                placeholder="Mr"
+                                            >
+                                            </v-select>
+                                        </ValidationProvider>
+                    </v-col> -->
+
+                    <v-col cols="6" class="pb-0">
+                        <ValidationProvider name="Title" rules="required" v-slot="{ errors }">
+                            <v-select
+                                    outlined
+                                    dense
+                                    :items="titlesDD"
+                                    v-model="application.title"
+                                    :error-messages="errors[0]"
+                                    placeholder="Please choose one"
+                            >
+                            </v-select>
+                        </ValidationProvider>
+                    </v-col>
+
                     <v-col cols="6" class="pb-0">
                         <ValidationProvider name="Firstname" rules="required"  v-slot="{ errors }">
                             <v-text-field
@@ -60,7 +88,7 @@
                     </ValidationProvider>
                     </v-col>
 
-                    <v-col cols="6" class="py-0">
+                    <v-col cols="6" class="py-0 mt-3">
                         <ValidationProvider name="Phone Types" rules="required"  v-slot="{ errors }">
                             <v-select outlined dense
                                       v-model="application.phone_type"
@@ -199,70 +227,48 @@
                         <v-row  v-if="has_authorized">
 
 
-
-
-
-
                             <v-col cols="6">
                                 <v-row>
 
-
-<!--                                    <v-col cols="12" class="py-0">-->
-
-<!--                                                <ValidationProvider name="Title" rules="required"  v-slot="{ errors }">-->
-<!--                                                    <v-select-->
-<!--                                                        outlined dense hide-details="auto"-->
-<!--                                                        :items="titlesDD"-->
-<!--                                                        v-model="authorized_person.title"-->
-<!--                                                        :error-messages=" errors[0]"-->
-<!--                                                        label="Title"-->
-<!--                                                        placeholder="Mr">-->
-<!--                                                    </v-select>-->
-<!--                                                </ValidationProvider>-->
-<!--                                            </v-col>-->
+                                    <v-col cols="12" class="py-0">
+                                         <ValidationProvider name="Title" rules="required" v-slot="{ errors }">
+                                            <v-select
+                                                outlined
+                                                dense
+                                                :items="titlesDD"
+                                                v-model="authorized_person.title"
+                                                :error-messages="errors[0]"
+                                                placeholder="Please choose one"
+                                            >
+                                            </v-select>
+                                        </ValidationProvider>
+                                    </v-col>
 
                                     <v-col cols="12" class="py-0">
-                                        <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
+                                        <ValidationProvider name="Middle Name"  v-slot="{ errors }">
                                             <v-text-field
                                                 indentification
                                                 :error-messages=" errors[0]"
                                                 outlined
-                                                label="First Name*"
-                                                v-model="authorized_person.first_name"
+                                                label="Middle Name"
+                                                v-model="authorized_person.middle_name"
                                                 dense
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </v-col>
+
                                     <v-col cols="12" class="py-0">
-                                        <ValidationProvider name="Last Name" rules="required"  v-slot="{ errors }">
+                                        <ValidationProvider name="Email address" rules="required|email"  v-slot="{ errors }">
                                             <v-text-field
                                                 indentification
                                                 :error-messages=" errors[0]"
                                                 outlined
-                                                label="Last Name*"
-                                                v-model="authorized_person.last_name"
+                                                label="Email address*"
+                                                v-model="authorized_person.email"
                                                 dense
-
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </v-col>
-                                    <v-col cols="12" class="py-0">
-                                        <ValidationProvider name="Mobile Number" rules="cv-phone|length:10" v-slot="{ errors }">
-                                            <v-text-field
-                                                indentification
-                                                :error-messages=" errors[0]"
-                                                outlined
-                                                label="Mobile Number (Optional)"
-                                                v-model="authorized_person.phone"
-                                                dense
-                                                placeholder="+61"
-
-                                            ></v-text-field>
-                                        </ValidationProvider>
-                                    </v-col>
-
-
-
 
                                     <v-col cols="12" class="py-0">
                                         <ValidationProvider name="Date Of Birth" rules="required"  v-slot="{ errors }">
@@ -305,29 +311,47 @@
                             <v-col cols="6">
                                 <v-row>
                                     <v-col cols="12" class="py-0">
-                                        <ValidationProvider name="Middle Name"  v-slot="{ errors }">
+                                        <ValidationProvider name="First Name" rules="required"  v-slot="{ errors }">
                                             <v-text-field
                                                 indentification
                                                 :error-messages=" errors[0]"
                                                 outlined
-                                                label="Middle Name"
-                                                v-model="authorized_person.middle_name"
+                                                label="First Name*"
+                                                v-model="authorized_person.first_name"
                                                 dense
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </v-col>
                                     <v-col cols="12" class="py-0">
-                                        <ValidationProvider name="Email address" rules="required|email"  v-slot="{ errors }">
+                                        <ValidationProvider name="Last Name" rules="required"  v-slot="{ errors }">
                                             <v-text-field
                                                 indentification
                                                 :error-messages=" errors[0]"
                                                 outlined
-                                                label="Email address*"
-                                                v-model="authorized_person.email"
+                                                label="Last Name*"
+                                                v-model="authorized_person.last_name"
                                                 dense
+
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </v-col>
+
+                                    <v-col cols="12" class="py-0">
+                                        <ValidationProvider name="Mobile Number" rules="cv-phone|length:10" v-slot="{ errors }">
+                                            <v-text-field
+                                                indentification
+                                                :error-messages=" errors[0]"
+                                                outlined
+                                                label="Mobile Number (Optional)"
+                                                v-model="authorized_person.phone"
+                                                dense
+                                                placeholder="+61"
+
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </v-col>
+
+
                                     <v-col cols="12" class="py-0">
                                         <ValidationProvider name="Authorised Person's role" rules="required"  v-slot="{ errors }">
                                             <v-select

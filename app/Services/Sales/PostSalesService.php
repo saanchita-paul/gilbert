@@ -79,7 +79,6 @@ class PostSalesService
             'connectionDate'=>(new Carbon( $this->connection->moving_date))->format('Y-m-d'),
             'renovationsSinceDeenergisation'=> false,
             'renovationsInProgressOrPlanned'=> false,
-            'afterHoursServiceOrder'=> false,
         ];
 
 
@@ -105,7 +104,7 @@ class PostSalesService
             'mirn'=> $this->connection->mirn,
 
             'address'=> [
-                'unitNumber'=> $this->connection->address_unit,
+                'unitNumber'=> $this->connection->unit_number,
                 'streetNumber'=> $this->connection->street_number,
                 'streetName'=> $this->connection->street_address,
                 'streetType'=> $streetType,
@@ -184,9 +183,9 @@ class PostSalesService
                 );
 
 
-                Log::info('End Sale API Payload');
+                Log::info('End Sale API request body');
                 Log::info($variables);
-                Log::info('Start Sale API Payload');
+                Log::info('Start Sale API request body');
             $results = $client->runQuery($gql, false, $variables );
             return $this->processEaData($results->getResponseBody());
 
@@ -231,7 +230,7 @@ class PostSalesService
                 $this->updateService('power', $status);
             }
 
-            $this->connection->update(['status'=>$status,'ea_sales_id'=> $salesId,'assigned_to'=> null]);
+//            $this->connection->update(['status'=>$status,'ea_sales_id'=> $salesId,'assigned_to'=> null]);
 
         }
 
@@ -347,7 +346,7 @@ class PostSalesService
         $plan_id = '';
 
         try {
-            $response = Http::post($this->chatbotUri.'/api/get-plan-details',['plan'=>$plan,'state'=>$state]);
+            $response = Http::post($this->chatbotUri.'/api/get-plan-details',['plan' => $plan,'state' => $state, 'postcode' => $this->connection->postcode]);
 //            Log::info($response->status());
 
             if($response->status() == 200) {

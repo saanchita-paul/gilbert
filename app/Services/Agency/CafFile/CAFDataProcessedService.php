@@ -7,6 +7,7 @@ namespace App\Services\Agency\CafFile;
 use App\Models\ConnectionApplication;
 use App\MovingUtilityData;
 use App\Plan;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 class CAFDataProcessedService
@@ -35,9 +36,13 @@ class CAFDataProcessedService
         $holidayDateService = new CheckHolidayService($this->dateTime);
 
         return ConnectionApplication::query()
+            ->with('connectionServices')
             ->where('status', '=',ConnectionApplication::STATUS_SUBMITTED)
             ->where('has_solar','=', ConnectionApplication::HAS_SOLAR)
             ->where('moving_date', '<=', $holidayDateService->getNextBusinessDay(7)->format('Y-m-d 23:59:00'))
+            ->whereHas('connectionServices', function (Builder $service) {
+                $service->where('provider_name','=','ea');
+            })
             ->get();
     }
 
@@ -49,11 +54,14 @@ class CAFDataProcessedService
     {
         $holidayDateService = new CheckHolidayService($this->dateTime);
 
-        $p =  ConnectionApplication::query()
+        return ConnectionApplication::query()
+            ->with('connectionServices')
             ->where('status', '=',ConnectionApplication::STATUS_SUBMITTED)
             ->where('has_solar', '=', ConnectionApplication::NO_SOLAR)
-            ->where('moving_date', '<=', $holidayDateService->getNextBusinessDay(7)->format('Y-m-d 23:59:00'));
-        return  $p->get();
+            ->where('moving_date', '<=', $holidayDateService->getNextBusinessDay(7)->format('Y-m-d 23:59:00'))
+            ->whereHas('connectionServices', function (Builder $service) {
+                $service->where('provider_name','=','ea');
+            })->get();
     }
 
     /**
@@ -64,10 +72,13 @@ class CAFDataProcessedService
     {
         $holidayDateService = new CheckHolidayService($this->dateTime);
         return ConnectionApplication::query()
+            ->with('connectionServices')
             ->where('status', ConnectionApplication::STATUS_SUBMITTED)
             ->where('has_solar', '=',ConnectionApplication::HAS_SOLAR)
             ->where('moving_date', '>', $holidayDateService->getNextBusinessDay(7)->format('Y-m-d 23:59:00'))
-            ->get();
+            ->whereHas('connectionServices', function (Builder $service) {
+                $service->where('provider_name','=','ea');
+            })->get();
 
 
     }
@@ -80,12 +91,14 @@ class CAFDataProcessedService
     {
         $holidayDateService = new CheckHolidayService($this->dateTime);
 
-
-        $p = ConnectionApplication::query()
+        return ConnectionApplication::query()
+            ->with('connectionServices')
             ->where('status', ConnectionApplication::STATUS_SUBMITTED)
             ->where('has_solar', '=', ConnectionApplication::NO_SOLAR)
-            ->where('moving_date', '>', $holidayDateService->getNextBusinessDay(7)->format('Y-m-d 23:59:00'));
-        return  $p->get();;
+            ->where('moving_date', '>', $holidayDateService->getNextBusinessDay(7)->format('Y-m-d 23:59:00'))
+            ->whereHas('connectionServices', function (Builder $service) {
+                $service->where('provider_name','=','ea');
+            })->get();
     }
 
     /**
