@@ -3,4 +3,4 @@
 
 use OurProperty\Http\Controllers\OurPropertyController;
 
-Route::get('/create', [OurPropertyController::class, 'createOurProperty']);
+Route::post('/create', [OurPropertyController::class, 'createOurProperty']);
