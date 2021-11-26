@@ -27,9 +27,9 @@ class OurPropertyMapper
         }
     }
 
-    public function mapYesNoToBool($isEmailBilling)
+    public function mapYesNoToBool($isAggree)
     {
-        if($isEmailBilling === 'yes') {
+        if($isAggree === 'yes') {
             return true;
         } else {
             return false;
@@ -43,21 +43,17 @@ class OurPropertyMapper
         } else {
             return 2;
         }
+
     }
 
     public function mapIdType($type)
     {
-        switch ($type) {
-            case 'medicare':
-                return Identification::TYPE_MEDICARE;
-            case 'passport':
-                return Identification::TYPE_PASSPORT;
-            case 'driver_license':
-                return Identification::TYPE_DRIVING_LICENCE;
-            default:
-                return null;
-
-        }
+        return match($type) {
+            'medicare'=> Identification::TYPE_MEDICARE,
+            'passport'=> Identification::TYPE_PASSPORT,
+            'driver_license'=> Identification::TYPE_DRIVING_LICENCE,
+            default => null
+        };
     }
 
 
