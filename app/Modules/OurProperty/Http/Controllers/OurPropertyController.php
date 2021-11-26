@@ -59,7 +59,7 @@ class OurPropertyController extends Controller
             \Log::error($ex->getTraceAsString());
             $response = [
                 "status" => "failed",
-                "message" => "Hood lead can not be stored"
+                "message" => $ex->getMessage()
             ];
             return response($response, 400);
         }
