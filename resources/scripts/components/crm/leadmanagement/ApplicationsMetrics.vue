@@ -5,6 +5,7 @@
         <single-lead-type title="Assigned" type="assigned" :count="assignCount" :active="activeLeadType" @changeLeadType="changeLeadType" subtext="Being attended"> </single-lead-type>
         <single-lead-type title="Escalated" type="escalated" :count="escalatedCount" :active="activeLeadType" @changeLeadType="changeLeadType" subtext="Needs attention"> </single-lead-type>
         <single-lead-type title="Submitted" type="submitted" :count="submittedCount"  :active="activeLeadType" @changeLeadType="changeLeadType" subtext="For connection"> </single-lead-type>
+        <single-lead-type title="Closed" type="closed" :count="closedCount"  :active="activeLeadType" @changeLeadType="changeLeadType" subtext="have been closed"> </single-lead-type>
 
     </div>
 </template>
@@ -30,6 +31,7 @@ export default {
           assignCount: 0,
           escalatedCount: 0,
           submittedCount: 0,
+          closedCount: 0,
           activeLead: 'My Applications'
       }
     },
@@ -58,6 +60,10 @@ export default {
                   case 'submitted':
                       totalLeads += lead.count;
                       this.submittedCount = lead.count;
+                      break;
+                  case 'closed':
+                      totalLeads += lead.count;
+                      this.closedCount = lead.count;
                       break;
                   default:
                       break

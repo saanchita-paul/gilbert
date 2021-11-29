@@ -1,8 +1,8 @@
 <template>
     <div class="applications-badge" v-bind:class="{active:type == active }" @click="changeLeadType(type)">
-        <p class="title">{{title}}</p>
-        <p class="number">{{count}}</p>
-        <p class="text">{{subtext}}</p>
+        <p class="font-weight-bold" style="font-size: 14px;">{{title}}</p>
+        <p class="font-weight-bold">{{count}}</p>
+        <p style="font-size: 12px;">{{subtext}}</p>
     </div>
 </template>
 

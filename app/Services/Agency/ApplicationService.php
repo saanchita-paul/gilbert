@@ -248,6 +248,26 @@ class ApplicationService
         return $existingApplication;
     }
 
+    /**
+     * 
+     * @param array $application
+     * @param int $applicationId
+     * @return ConnectionApplication $existingApplication
+    */
+    public function closeApplicationWithReason(array $application, int $applicationId)
+    {
+        try {
+            $existingApplication = ConnectionApplication::find($applicationId);
+            $existingApplication->closing_reason = $application['closing_reason'];
+            $existingApplication->status = ConnectionApplication::STATUS_CLOSED;
+            $existingApplication->save();
+            return $existingApplication;
+        } catch (\Exception $exception) {
+            \Log::error("**CloseApplication**", 
+            ["msg" => $exception->getMessage(), "trace" => $exception->getTraceAsString()]);
+        }
+    }
+
     public function updateSoleField(array $application, $id)
     {
         $existLead = ConnectionApplication::findOrFail($id);
