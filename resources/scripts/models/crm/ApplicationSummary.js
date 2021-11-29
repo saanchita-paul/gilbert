@@ -178,7 +178,7 @@ export default class ApplicationSummary {
     mapStatus(status) {
         status = status - 1;
         if (status < 0) return '';
-        const statusList = ['Unassigned', 'Assigned', 'Escalated', 'Submitted', 'Accepted', 'Rejected', 'Inprogress'];
+        const statusList = ['Unassigned', 'Assigned', 'Escalated', 'Submitted', 'Accepted', 'Rejected', 'Inprogress', 'Closed'];
         return statusList[status];
     }
 }
