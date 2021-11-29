@@ -338,7 +338,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
             ->where('service_type', 'gas')
             ->first();
 
-        $plan = $connectionService->plan_type;
+        $plan = $connectionService?->plan_type;
 
         $state = $this->stateMap($state);
 
@@ -368,7 +368,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
             ->where('service_type', 'gas')
             ->first();
 
-        $plan = $connectionService->plan_type;
+        $plan = $connectionService?->plan_type;
 
         $state = $this->stateMap($state);
         try {
