@@ -217,7 +217,18 @@ export default {
             return AppMetricsMapper.mapAppMetricList(data, leads.data.data);
 
         } catch (error) {
-            return error.data;N
+        }
+    },
+
+    async closeApplicationWithReason(id, closing_reason){
+        console.log('id and closing reason in api' , closing_reason, id)
+        try {
+            const data = await axios.post('/api/applications/'+id+'/closeApplication' , {closing_reason});
+            console.log(data)
+            return true;
+        } catch (error) {
+            console.log(error)
+            return false;
         }
     },
 
