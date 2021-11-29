@@ -41,10 +41,7 @@ class HoodUserController extends Controller
     public function getAssignee(Request $request): JsonResponse|AnonymousResourceCollection
     {
         try {
-            $service = new SearchHoodUser(array_merge(
-                $request->toArray(),
-                ['roles' => [RolePermission::ROLE_HOOD_TEAM_LEAD, RolePermission::ROLE_HOOD_CUSTOMER_REP]]
-            ));
+            $service = new SearchHoodUser($request->toArray());
             return HoodProfileResource::collection($service->get());
 
         } catch ( \Exception $exception) {
