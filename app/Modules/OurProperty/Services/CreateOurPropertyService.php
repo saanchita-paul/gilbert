@@ -256,10 +256,20 @@ class CreateOurPropertyService
         $ourProperty = new OurProperty();
         $ourProperty->all_fields_dump = json_encode($this->userRequestData->toArray());
         $ourProperty->lead_id = $this->userRequestData->our_property_lead_id ?? null;
-        $ourProperty->agent_name = $this->userRequestData->agent_firstname ?? null;
-        $ourProperty->agency_name = $this->connectionApplicaton->agency->name ?? null;
-        $ourProperty->agent_email =$this->userRequestData->agent_email ?? null;
+        $ourProperty->agent_name = $this->getAgentName() ?? null;
+        $ourProperty->agency_name = $this->userRequestData->agency_name ?? null;
+        $ourProperty->agent_email = $this->userRequestData->agent_email ?? null;
         $ourProperty->save();
         return $ourProperty;
+    }
+
+    /**
+     * @return string
+     */
+    private function getAgentName(): string
+    {
+        $name = $this->userRequestData->agent_firstname ?? '';
+        $name = $this->userRequestData->agent_lastname ? "$name " . $this->userRequestData->agent_lastname : $name;
+        return  trim($name);
     }
 }

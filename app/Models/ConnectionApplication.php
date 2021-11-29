@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use OurProperty\Models\OurProperty;
 
 /**
  * App\Models\ConnectionApplication
@@ -354,6 +355,14 @@ class ConnectionApplication extends Model
     public function igniteLead()
     {
         return $this->hasOne(IgniteLead::class , 'connection_application_id');
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function ourPropertyLead()
+    {
+        return $this->hasOne(OurProperty::class , 'connection_application_id');
     }
 
     /**
