@@ -891,11 +891,7 @@
           </ValidationProvider>
         </div>
         <div class="text-field"  v-if="indentification.type === 3">
-          <ValidationProvider
-            name="Expired Date"
-            rules="required"
-            v-slot="{ errors }"
-          >
+
             <v-menu
               v-model="showMovingDate"
               :close-on-content-click="false"
@@ -918,7 +914,7 @@
                     v-bind="attrs"
                     :error-messages="errors[0]"
                     hide-details="auto"
-                    @change="updateExpireDatePicker"
+                    @change="updateExpireDateMedicare"
                   >
                     <template slot="append">
                       <v-icon v-on="on">mdi-calendar</v-icon>
@@ -933,7 +929,6 @@
                 @input="showMovingDate = false"
               ></v-date-picker>
             </v-menu>
-          </ValidationProvider>
         </div>
 
 
@@ -950,6 +945,7 @@
             v-slot="{ errors }"
           >
             <v-select
+              :error-messages="errors[0]"
               v-model="indentification.card_color"
               item-text="text"
               item-value="value"
@@ -1030,6 +1026,8 @@ import SPECIAL_NUMBER from "@scripts/data/constants/SPECIAL_NUMBER";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import dayJs from "dayjs";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
+import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
+import { medicareRules, mediExpireDate } from '@scripts/plugins/VeeValidate';
 
 
 export default {
@@ -1053,7 +1051,7 @@ export default {
     return {
       needLifeSupprt: false,
       loadNmi: false,
-      titlesDD:[ 'Mr.','Mrs.','Ms.','Miss','Dr.'],
+      titlesDD: titlesMapperForDropdown,
       minConnectionDate: LeadApplicationService.getMinConnectionDate(),
       minExpiredate: new Date().toISOString(),
       emailBillingDD: [
@@ -1415,7 +1413,6 @@ export default {
         ).format("YYYY-MM-DD");
       }
     },
-
     updateExpireDatePicker() {
       if (DayJs(this.indentification.expire_date, "DD/MM/YYYY").isValid()) {
         this.expire_date = DayJs(
@@ -1424,6 +1421,17 @@ export default {
         ).format("YYYY-MM-DD");
       }
     },
+    updateExpireDateMedicare(){
+      console.log("date printing" , this.indentification);
+      console.log("date printing" , this.indentification.expire_date);
+      if( medicareRules(this.indentification.medicare_expire_date) && mediExpireDate(this.indentification.medicare_expire_date) && this.indentification.type == 3 ){
+        console.log("true medical")
+        // let dateMonth =  this.indentification.medicare_expire_date.split('/');
+        // this.expire_date = '04/' + '/' + dateMonth[0] + '/20' + dateMonth[1] ;
+        this.expire_date = ApplicationMapper.mapMadecareDateToServer(this.indentification.medicare_expire_date) ;
+        console.log(this.expire_date)
+      }
+    }
   },
 
     computed: {
