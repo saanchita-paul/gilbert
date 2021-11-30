@@ -1,6 +1,6 @@
 <?php
 
-namespace PropertyMe\services;
+namespace PropertyMe\Services;
 
 use Exception;
 use Illuminate\Support\Facades\Http;
