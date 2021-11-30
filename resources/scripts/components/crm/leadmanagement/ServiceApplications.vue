@@ -302,7 +302,7 @@ export default {
         this.providerSpinner = new Spinner(this.$refs.provider, {autoStart: true})
         this.loadServiceProvider();
         this.loadPlan();
-        this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
+         // this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
         this.loadSelectedPowerProvider();
 
         const updateAddress = address => {
@@ -330,12 +330,13 @@ export default {
             this.selectedPlanType = plan?.key;
             this.activeEaPlan = plan?.key;
             let newPlan = {
-                name: plan.key
+                name: plan.key,
+                service_area: 'energy'
             }
             this.selectedProviderId = 'ea';
             this.selectPlan(newPlan);
             this.selectedPlanType = plan?.key
-            this.$emit('updatePlan', {...plan,  provider: this.selectedProviderId,}, isManual);
+            this.$emit('updatePlan', {...plan,  provider: this.selectedProviderId, service_area:'energy' }, isManual);
         },
         isActive(service) {
 
@@ -516,7 +517,19 @@ export default {
         },
 
         selectPlan(plan, provider = null) {
-            console.log('plan plna', plan);
+
+          console.log(this.selectedPowerProvider)
+          if( this.selectedPowerProvider === 'ea') {
+            this.activeEaPlan =  plan.name;
+            this.activeOriginPlan = '';
+          }
+
+          if( this.selectedPowerProvider === 'origin') {
+            this.activeOriginPlan = plan.name;
+            this.activeEaPlan = '';
+          }
+
+
             this.isActivePlan = plan.name;
             this.activeOriginPlan = plan.name;
                 //todo update provider array for sumo plan
@@ -524,10 +537,13 @@ export default {
                 let payload = {
                     service_type: this.leadSummary?.service_interests,
                     provider_name: this.selectedPowerProvider,
-                    plan_type: plan.name
+                    plan_type: plan.name,
+                    service_area: 'energy'
                 }
 
                 if(this.selectedPowerProvider !== ''){
+                  this.isActivePlan = plan.name;
+                  this.activeOriginPlan = plan.name;
                     LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
                 }
             this.$emit('updatePlan', {
