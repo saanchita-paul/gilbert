@@ -44,7 +44,8 @@ class SubmitWaterLeadToFastConnect
         "South Australia" => 5,
         "Northern Territory" => 3,
         "Tasmania" => 6,
-        "Australian Capital Territory" => 1,
+        "Australian Capital Territory" => 1, 
+        "Western Australia" => 8,
     ];
 
     const MAP_IDENTIFICATION_COUNTRY = [
