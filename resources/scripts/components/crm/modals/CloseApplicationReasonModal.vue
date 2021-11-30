@@ -12,9 +12,21 @@
                         <p class="dialogs-title popup-escalate-title">What’s the reason why you want to Close this application?</p>
                     </v-col>
                     <v-col>
-                        <v-textarea v-model="close_reason">
-                            
-                        </v-textarea>
+                        <ValidationObserver ref="submit_reason">
+                            <ValidationProvider
+                                name="Closing reason"
+                                rules="required"
+                                v-slot="{ errors }"
+                            >
+                                <v-textarea
+                                v-model="close_reason"
+                                auto-grow
+                                hide-details="auto"
+                                :error-messages="errors[0]"
+                                placeholder="Please enter your closing reason"
+                                ></v-textarea>
+                            </ValidationProvider>
+                        </ValidationObserver>
                     </v-col>
                     <v-col cols="12">
                         <div class="d-flex justify-space-between">
@@ -53,7 +65,10 @@ export default {
         },
         async sucessSaveClose() {
             // await LeadApplicationService.saveEscalateReason(this.close_reason, this.leadSummary.id);
-            this.$emit('sucessSaveClose' , this.close_reason);
+            let v = await this.$refs.submit_reason.validate();
+            if(v){
+                this.$emit('sucessSaveClose' , this.close_reason);
+            };
         }
     }
 }
