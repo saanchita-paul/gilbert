@@ -110,7 +110,9 @@ export default class ApplicationSummary {
             lead_source = '',
             lead_source_description = '',
             source = '',
-            created_by_agent = null
+            created_by_agent = null,
+            fast_connect_customer_reference = null,
+            is_auto_water_submit = null,
         }
     ) {
 
@@ -172,6 +174,8 @@ export default class ApplicationSummary {
         this.lead_source_description = lead_source_description
         this.source = source
         this.created_by_agent = created_by_agent
+        this.fast_connect_customer_reference = fast_connect_customer_reference
+        this.is_auto_water_submit = is_auto_water_submit
 
     }
 
