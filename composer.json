@@ -51,7 +51,8 @@
             "Ignite\\": "app/Modules/Ignite",
             "FastConnect\\": "app/Modules/FastConnect",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "PropertyMe\\": "app/Modules/PropertyMe"
         }
     },
     "autoload-dev": {

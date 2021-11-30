@@ -120,3 +120,5 @@ Route::get('lnn/bot_token', function () {
 
 
 Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
+
+Route::get('/test/connect-me/get-contacts', [ApplicationController::class, 'getConnectMeContacts']);
