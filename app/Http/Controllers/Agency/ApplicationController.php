@@ -250,7 +250,7 @@ class ApplicationController extends Controller
             return response()->json(['success' => true, 'data' => $res]);
 
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
