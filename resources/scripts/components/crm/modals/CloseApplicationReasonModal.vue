@@ -1,0 +1,64 @@
+<template>
+    <v-row justify="center">
+        <v-dialog
+            v-model="dialog"
+            persistent
+            max-width="400px"
+        >
+            <v-card>
+                <div class="section-dialogs">
+                    <v-row>
+                    <v-col cols="12">
+                        <p class="dialogs-title popup-escalate-title">What’s the reason why you want to Close this application?</p>
+                    </v-col>
+                    <v-col>
+                        <v-textarea v-model="close_reason">
+                            
+                        </v-textarea>
+                    </v-col>
+                    <v-col cols="12">
+                        <div class="d-flex justify-space-between">
+                            <v-btn @click="cancelClose">Back</v-btn>
+                            <v-btn @click="sucessSaveClose" color="primary">Confirm</v-btn>
+                        </div>
+                    </v-col>
+                    </v-row>
+                </div>
+            </v-card>
+        </v-dialog>
+    </v-row>
+</template>
+
+<script>
+
+export default {
+    name: "CloseApplicationReasonModal",
+    components: {},
+    props:{
+        dialog: {
+            require: true,
+        },
+        leadSummary: {
+            require: true,
+        }
+    },
+    data() {
+        return {
+            close_reason: ''
+        }
+    },
+    methods: {
+        cancelClose() {
+            this.$emit('cancelClose');
+        },
+        async sucessSaveClose() {
+            // await LeadApplicationService.saveEscalateReason(this.close_reason, this.leadSummary.id);
+            this.$emit('sucessSaveClose' , this.close_reason);
+        }
+    }
+}
+</script>
+
+<style scoped>
+
+</style>

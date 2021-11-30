@@ -27,6 +27,10 @@ class ApplicationsMetricsService
         [
             "type" => "submitted",
             "count" => 0
+        ],
+        [
+            "type" => "closed",
+            "count" => 0
         ]
     ];
     /**

@@ -578,7 +578,7 @@ import LeadCreateSuccessfulModal from "@scripts/components/crm/modals/LeadCreate
 import {isNull} from "lodash-es";
 import IdentificationDetail from "@scripts/components/crm/agent/IdentificationDetail";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
-
+import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
 export default {
     name: "AgentCreateNewApplication",
     components: {
@@ -656,9 +656,7 @@ export default {
                 }
             ],
             has_authorized: false,
-            titlesDD:[
-                'Mrs','Mr','Ms'
-            ],
+            titlesDD: titlesMapperForDropdown,
             idenficationTypeDD: [
                 {
                     text: "Passport",

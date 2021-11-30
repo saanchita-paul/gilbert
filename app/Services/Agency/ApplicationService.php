@@ -157,21 +157,15 @@ class ApplicationService
     {
 
 
-        $identificationBuilder = Identification::where('connection_application_id', $id);
+        \Log::info('identification data_'.$id, $identificationData);
+        $identification = Identification::where('connection_application_id', $id)->first();
         if(isset($identificationData['medicare_expire_date'])) {
             unset($identificationData['medicare_expire_date']);
         }
-        $identification = $identificationBuilder->first();
+        
         if ($identification) {
-            $identification->type = isset($identificationData['type'])?$identificationData['type']: null;
-            $identification->card_number =  isset($identificationData['card_number'])?$identificationData['card_number']: null;
-            $identification->special_number =  isset($identificationData['special_number'])?$identificationData['special_number']: null; $identificationData['special_number'];
-            $identification->expire_date = isset($identificationData['expire_date'])?$identificationData['expire_date']: null;
-            $identification->card_color =  isset($identificationData['card_color'])?$identificationData['card_color']: null;
-            $identification->state = isset($identificationData['state'])?$identificationData['state']: null;
-            $identification->country =  isset($identificationData['country'])?$identificationData['country']: null;
-            $identification->save();
-
+            $identification->update($identificationData);
+        
         } else{
             $identificationData['connection_application_id'] = $id;
             return Identification::create($identificationData);
@@ -208,7 +202,7 @@ class ApplicationService
     }
 
     private function checkAndAddWaterService(array $applications , $application){
-        info("printing application data"); 
+        info("printing application data");
         \Log::info($applications);
         \Log::info($applications['lead']['service_interests']);
         // if( array_search("water",$applications['lead']['service_interests'])){
@@ -252,6 +246,26 @@ class ApplicationService
         $allicationNoteService->createNotes($eacalateNote, $applicationId);
 
         return $existingApplication;
+    }
+
+    /**
+     * 
+     * @param array $application
+     * @param int $applicationId
+     * @return ConnectionApplication $existingApplication
+    */
+    public function closeApplicationWithReason(array $application, int $applicationId)
+    {
+        try {
+            $existingApplication = ConnectionApplication::find($applicationId);
+            $existingApplication->closing_reason = $application['closing_reason'];
+            $existingApplication->status = ConnectionApplication::STATUS_CLOSED;
+            $existingApplication->save();
+            return $existingApplication;
+        } catch (\Exception $exception) {
+            \Log::error("**CloseApplication**", 
+            ["msg" => $exception->getMessage(), "trace" => $exception->getTraceAsString()]);
+        }
     }
 
     public function updateSoleField(array $application, $id)
