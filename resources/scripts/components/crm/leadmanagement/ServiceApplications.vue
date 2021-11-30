@@ -279,7 +279,13 @@ export default {
             });
         },
         is_submit_disabled(){
-            if( this.tab === this.tabMapper.Water && !['In Progress', 'Not Selected'].includes(this.getwaterServiceStatus)){
+            if( this.tab === this.tabMapper.Water && 
+            ( 
+                !['In Progress', 'Not Selected'].includes(this.getwaterServiceStatus) ||
+                ( this.leadSummary.is_auto_water_submit  && this.leadSummary.fast_connect_customer_reference !== null )
+            ) 
+            
+            ){
                 return true;
             }else{
                 return false;
@@ -304,6 +310,8 @@ export default {
         this.loadPlan();
         this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
         this.loadSelectedPowerProvider();
+
+        console.log("print lead summary" , this.leadSummary);
 
         const updateAddress = address => {
             if (this.selectedPowerProvider === 'sumo') {
@@ -410,7 +418,7 @@ export default {
 
             let statustext = '';
             switch (statusCode){
-                case 4:
+                case  4:
                     statustext = 'Submitted';
                     break;
                 case  5:
@@ -463,6 +471,7 @@ export default {
                 return 0;
             } catch (error) {
                 this.sumoOptions.isError = true;
+                console.log("sumo sth went wrong")
                 this.sumoOptions.errorMsg = "Something weng wrong, retry";
                 this.sumoPlanDetails = new SumoPlanDetails();
             } finally {
