@@ -252,15 +252,26 @@ class ApplicationService
      * 
      * @param array $application
      * @param int $applicationId
+     * @param User $user
      * @return ConnectionApplication $existingApplication
-    */
-    public function closeApplicationWithReason(array $application, int $applicationId)
+     */
+    public function closeApplicationWithReason(array $application, int $applicationId, User $user)
     {
         try {
             $existingApplication = ConnectionApplication::find($applicationId);
             $existingApplication->closing_reason = $application['closing_reason'];
             $existingApplication->status = ConnectionApplication::STATUS_CLOSED;
             $existingApplication->save();
+
+
+            $allicationNoteService = new ApplicationNoteService($user);
+            $closingeNote = [];
+            $closingeNote['text'] = $application['closing_reason'];
+            $closingeNote['type'] = 'close_connection';
+
+            $allicationNoteService->createNotes($closingeNote, $applicationId);
+
+
             return $existingApplication;
         } catch (\Exception $exception) {
             \Log::error("**CloseApplication**", 

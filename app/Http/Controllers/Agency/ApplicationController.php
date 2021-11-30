@@ -295,7 +295,8 @@ class ApplicationController extends Controller
     {
         try {
             $service = new ApplicationService();
-            $res = $service->closeApplicationWithReason($request->toArray(), $id);
+            $user = Auth::user();
+            $res = $service->closeApplicationWithReason($request->toArray(), $id, $user);
             return response()->json(['success' => true, 'data' => $res]);
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
