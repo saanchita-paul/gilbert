@@ -11,6 +11,7 @@ use App\Http\Controllers\UserInvitationController;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
+use PropertyMe\services\FetchContacts;
 
 /*
 |--------------------------------------------------------------------------
@@ -121,4 +122,7 @@ Route::get('lnn/bot_token', function () {
 
 Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
 
-Route::get('/test/connect-me/get-contacts', [ApplicationController::class, 'getConnectMeContacts']);
+Route::get('/lnn/ttr', function () {
+    $propertyMeService = new FetchContacts();
+    return $propertyMeService->getContacts();
+});

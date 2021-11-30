@@ -25,7 +25,7 @@ use App\Services\Agency\SearchConnectionApplication;
 use App\Services\Utility\IgniteConnectionLeadService;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use PropertyMe\services\PropertyMeService;
+use PropertyMe\services\FetchContacts;
 
 class ApplicationController extends Controller
 {
@@ -312,19 +312,4 @@ class ApplicationController extends Controller
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
-
-    public function fastTest(Request $request){
-    //    $igninte =  new IgniteConnectionLeadService();
-    //    $igninte->authenticate();
-          $s = new SumoService();
-          $s->validateEmail("riyad298");
-          return 'validate email';
-    }
-
-    public function getConnectMeContacts(Request $request){
-        $propertyMeService = new PropertyMeService();
-        $propertyMeService->getContacts();
-    }
-
-
 }
