@@ -979,8 +979,7 @@
             right
             class="primary--text float-right mt-5"
             @click="readMore"
-            >read more ...</v-btn
-          >
+            >read more ...</v-btn>
         </v-col>
       </v-row>
       <!--            <p class="sub-title mt-5">Agent’s Additional Instructions<v-btn text right class="primary&#45;&#45;text float-right" @click="readMore">read more ...</v-btn></p>-->
