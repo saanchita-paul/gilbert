@@ -16,6 +16,22 @@ Object.keys(rules).forEach(rule => {
 Vue.component('ValidationProvider', ValidationProvider);
 Vue.component('ValidationObserver', ValidationObserver );
 
+const medicareRules = function(value) {
+    let pattern = /^[0-9]{2}\/[0-9]{2}$/;
+    if(!pattern.test(value)){
+       return false;
+    }
+    let dateMonth =  value.split("/");
+    return dateMonth[0] > 12 ? false : true;        
+}
+
+const mediExpireDate = function(value) {
+    let spilitedData = value.split('/');
+    let fullMonthYear = spilitedData[0] + '/' + '20' + spilitedData[1];
+    let fullDateMonthYear =   dayjs().daysInMonth() + '/' + fullMonthYear;
+    return !(dayjs(fullDateMonthYear,'DD/MM/YYYY').isBefore());
+}
+
 extend('required', {
     ...rules.required,
     message: field => `${field} is required`,
@@ -137,19 +153,30 @@ extend('length', {
 extend('medicare-date', {
     message: field => `MM/YY is valid format`,
     validate(value) {
-        return dayJs(value, 'MM/YY').isValid();
+        let pattern = /^[0-9]{2}\/[0-9]{2}$/;
+        if(!pattern.test(value)){
+           return false;
+        }
+        let dateMonth =  value.split("/");
+        return dateMonth[0] > 12 ? false : true;        
     }
 })
 
 extend('medi-expire', {
     message: field => `Expired card. Please enter valid date`,
+    validate: mediExpireDate
+})
+
+extend('passport-expire', {
+    message: field => `Invalid expiry date`,
     validate(value) {
-        let spilitedData = value.split('/');
-        let fullMonthYear = spilitedData[0] + '/' + '20' + spilitedData[1];
-        let fullDateMonthYear =   dayjs().daysInMonth() + '/' + fullMonthYear;
-        return !(dayjs(fullDateMonthYear,'DD/MM/YYYY').isBefore());
+        let pattern = /^[0-9]{2}\/[0-9]{2}$/;
+        // pattern.test(value);
+        // let spilitedData = value.split('/');
+        // let fullMonthYear = spilitedData[0] + '/' + '20' + spilitedData[1];
+        // let fullDateMonthYear =   dayjs().daysInMonth() + '/' + fullMonthYear;
+        return pattern.test(value);
     }
 })
 
-
-
+export { medicareRules , mediExpireDate }
