@@ -147,16 +147,10 @@ class ApplicationResource extends JsonResource
     private function getAuthoizedPersonName()
     {
 
-<<<<<<< HEAD
-        if ($this->authorizedPerson) {
-            $fullName = "{$this->authorizedPerson->title} {$this->authorizedPerson->first_name} {$this->authorizedPerson->middle_name} {$this->authorizedPerson->last_name}";
-            if (empty(trim($fullName))) return null;
-=======
         if($this->authorizedPerson)
         {
             $fullName = "{$this->authorizedPerson->title} {$this->authorizedPerson->first_name} {$this->authorizedPerson->middle_name} {$this->authorizedPerson->last_name}";
             if(empty(trim($fullName))) return null;
->>>>>>> b57d8e0171bd6b87c7bf3b2bff8bf789192a3925
             return $fullName;
         }
         return null;
