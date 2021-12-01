@@ -12,6 +12,7 @@ use App\Http\Controllers\Agency\HoodUserController;
 use App\Http\Controllers\Agency\ApplicationController;
 use App\Http\Controllers\Agency\AgentProfileController;
 use OurProperty\Http\Controllers\OurPropertyController;
+use PropertyMe\services\FetchContacts;
 
 /*
 |--------------------------------------------------------------------------
@@ -126,3 +127,4 @@ Route::post('/our-property/lead', [OurPropertyController::class, 'createOurPrope
 
 
 Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
+
