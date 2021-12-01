@@ -214,19 +214,20 @@ class ApplicationService
      * @param array $service_interests
      * @return bool $status
      */
-    public function setSubmittedAtByServiceType(int $applicationId, string $type, array $service_interests) : bool {
+    public function setSubmittedAtByServiceType(int $applicationId, string $type, array $service_interests = []) : bool {
         try {
-            \Log::info("printing service interest" , $service_interests);
-            if($type=="energy"){
-                
-            }else{
-                $service =  ConnectionService::where('service_type' , strtolower($type))->where('connection_application_id' , $applicationId)->first();
+            $query = ConnectionService::where('connection_application_id' , $applicationId);
+            
+            if ($type=="energy"){
+                $servicesInterests = array_filter(array_unique($service_interests) , function($var){
+                    return ($var == 'power' || $var == 'gas');
+                });
+                $query =  $query->whereIn('service_type' , $servicesInterests );
+            } else {
+                $query = $query->where('service_type' , strtolower($type));
             }
-
-            if($service){
-                $service->submitted_at = now();
-                $service->save();
-            }
+            $query->update(["submitted_at" => now()]);
+            
             return true;
         } catch (\Exception $exception) {
             \Log::error("**Service submitted at, service not found**", 
