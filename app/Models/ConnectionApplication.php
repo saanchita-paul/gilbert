@@ -290,6 +290,10 @@ class ConnectionApplication extends Model
 
     ];
 
+    const AVAILABLE_USER_TITLES = [
+        'mr', 'miss', 'dr', 'mrs', 'ms'
+    ];
+
     /**
      * @return BelongsTo
      */

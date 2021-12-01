@@ -6,5 +6,5 @@ return [
     "refresh_token_url" => env("PROPERTY_ME_REFRESH_TOKEN_API", "https://login.propertyme.com/connect/token"),
     "api_root_url" => env("PROPERTY_ME_API_ROOT_URL", "https://app.propertyme.com"),
     "get_contact_url" => env("PROPERTY_ME_GET_CONTACT_URL", "/api/v1/contacts"),
-    'no_of_days'  => env('CONNECT_ME_NO_OF_DAYS', 1),
+    'no_of_days'  => env('CONNECT_ME_NO_OF_DAYS', -1),
 ];

@@ -81,6 +81,7 @@ class FetchContacts extends BasePropertyMeAPI
      */
     private function getTimestamp(): string
     {
-        return now()->addDays(-1)->format('U');
+        $noOfDays = config('property_me.no_of_days');
+        return now()->addDays($noOfDays)->format('U');
     }
 }
