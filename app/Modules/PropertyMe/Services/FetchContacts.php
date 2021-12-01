@@ -54,6 +54,7 @@ class FetchContacts extends BasePropertyMeAPI
         $alreadySavedIds = PropertyMeLead::query()->whereIn('lead_id', $ids)->pluck('lead_id')->toArray();
         return $leads->filter(function($value, $key) use ($alreadySavedIds) {
             return !in_array(data_get($value, 'Id'), $alreadySavedIds);
+//            return true;
         })->toArray();
     }
 

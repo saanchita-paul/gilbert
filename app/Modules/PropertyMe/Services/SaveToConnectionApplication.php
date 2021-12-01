@@ -16,13 +16,15 @@ class SaveToConnectionApplication
         throw_if(!$office, new \Exception("PropertyMe-Hood-Office not found. Please run: `php artisan db:seed --class=PropertyMeSeeder`"));
 
         $application = ConnectionApplication::query()->create([
+            'source' => ConnectionApplication::SOURCE_PROPERTY_ME,
             'office_id' => $office->id,
             'agency_id' => $office->agency->id,
+            'status' => ConnectionApplication::STATUS_UNASSIGNED,
 
             'first_name' => $this->extractContact($leadData, 'FirstName'),
             'title' => $this->getUserTitle($this->extractContact($leadData, 'Salutation')),
             'last_name' => $this->extractContact($leadData, 'LastName'),
-            'Email' => $this->extractContact($leadData, 'Email'),
+            'email' => $this->extractContact($leadData, 'Email'),
             'phone' => $this->extractContact($leadData, 'CellPhone'),
             'homephone' => $this->extractContact($leadData, 'HomePhone'),
 
@@ -76,7 +78,7 @@ class SaveToConnectionApplication
     private function getStreetAddress($leadData, $type = 'PhysicalAddress'): ?string
     {
         $name = $this->extractContact($leadData, "$type.Street");
-        $number = $this->extractContact($leadData, "$type.Number'");
+        $number = $this->extractContact($leadData, "PhysicalAddress.Number");
         $unit = $this->extractContact($leadData, "$type.Unit");
 
         $address = $name;
