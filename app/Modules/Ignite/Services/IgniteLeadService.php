@@ -35,6 +35,7 @@ class IgniteLeadService
     const MAP_STATE_NT  = 'Northern Territory';
     const MAP_STATE_TAS = 'Tasmania';
     const MAP_STATE_ACT = 'Australian Capital Territory';
+    const MAP_STATE_WA  = 'Western Australia';
 
     const MAP_STATE = [
         'nsw' => self::MAP_STATE_NSW,
@@ -44,6 +45,7 @@ class IgniteLeadService
         'nt'  => self::MAP_STATE_NT,
         'tas' => self::MAP_STATE_TAS,
         'act' => self::MAP_STATE_ACT,
+        'wa'  => self::MAP_STATE_WA,
     ];
 
     /**

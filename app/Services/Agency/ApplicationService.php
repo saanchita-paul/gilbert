@@ -141,7 +141,6 @@ class ApplicationService
     public function updateConnectionService(array $serviceList, $id)
     {
         ConnectionService::query()->where('connection_application_id', '=', $id)
-            ->whereIn('service_type',[ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
             ->delete();
         foreach ($serviceList as $service) {
             ConnectionService::create(
@@ -159,7 +158,7 @@ class ApplicationService
 
 
         \Log::info('identification data_'.$id, $identificationData);
-        $identification = Identification::where('connection_application_id', $id)->firstOrFail();
+        $identification = Identification::where('connection_application_id', $id)->first();
         if(isset($identificationData['medicare_expire_date'])) {
             unset($identificationData['medicare_expire_date']);
         }
@@ -246,7 +245,8 @@ class ApplicationService
         if( $applications['lead']['submit_type'] == 'water'){
             info("water found");
 
-            $waterService =  ConnectionService::where("connection_application_id" , $application->id)->where( "service_type" ,  "water")->first();
+            $waterService =  ConnectionService::where("connection_application_id" , $application->id)
+                ->where( "service_type" ,  "water")->first();
             if(!$waterService){
                 info('creating water...');
                 $application->connectionServices()->create(['service_type' => 'water']);
@@ -406,7 +406,17 @@ class ApplicationService
     public function providers(array $data, $applicationId)
     {
         $connectionApplication =  ConnectionApplication::find($applicationId);
-        foreach ($data['service_type'] as $service) {
+
+        $services = [];
+        $provider_service_type = $data['service_area']?? '';
+        if($provider_service_type === 'energy') {
+            $services = [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY];
+        } elseif($provider_service_type === 'internet') {
+            $services = [ConnectionService::TYPE_INTERNET];
+        }
+
+
+        foreach ($services as $service) {
             $connectionService = ConnectionService::where('connection_application_id', $applicationId)
                 ->where('service_type', $service)
                 ->first();
