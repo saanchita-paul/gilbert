@@ -2,6 +2,7 @@
 
 namespace Ignite\Services;
 
+use App\Jobs\CreateHubspotProperty;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Agency;
@@ -99,7 +100,7 @@ class IgniteLeadService
 
     /**
      * Set service types.
-     * 
+     *
      * @param array $serviceTypes
      * @return void
      * @throws Exception
@@ -166,21 +167,24 @@ class IgniteLeadService
         try {
             $this->connectionApplication = new ConnectionApplication;
             $this->lead = new IgniteLead();
-            
+
             $this->setOfficeAndAgencyId();
 
             $this->setAttribute($leadInfo);
-            
-            
+
+
             $this->connectionApplication->status = ConnectionApplication::STATUS_UNASSIGNED;
             $this->connectionApplication->save();
-            
+
             $this->setServiceTypeTable($leadInfo['utilityConnectionsAllowed'] ?? []);
-            
+
             $this->lead->all_fields_dump = json_encode($leadInfo);
             $this->lead->connection_application_id = $this->connectionApplication->id;
             $this->lead->save();
-            
+
+            // hubspot api call for creation
+            CreateHubspotProperty::dispatch($this->lead->id);
+
             return true;
         } catch (\Exception $exception) {
             \Log::error($exception->getMessage());
