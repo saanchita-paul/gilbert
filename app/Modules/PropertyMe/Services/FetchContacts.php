@@ -14,10 +14,12 @@ class FetchContacts extends BasePropertyMeAPI
      */
     private array $leads = [];
 
+    private array $savedLead = [];
+
     /**
      * @throws Exception
      */
-    public function fetchContacts()
+    public function fetchContacts(): static
     {
         $url = config('property_me.api_root_url') . config('property_me.get_contact_url');
         $query =  "?Timestamp=" . $this->getTimestamp();
@@ -28,7 +30,7 @@ class FetchContacts extends BasePropertyMeAPI
                 "Authorization" => $this->getAccessToken(),
             ])->get($url . $query);
 
-            $this->leads = json_decode($response->body(), true);
+            $this->leads = $this->filterByAlreadySavedLead(json_decode($response->body(), true));
         }
         catch (\Exception $exception)
         {
@@ -36,18 +38,42 @@ class FetchContacts extends BasePropertyMeAPI
             \Log::error($exception->getTraceAsString());
             throw $exception;
         }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param array $leads
+     * @return array
+     */
+    private function filterByAlreadySavedLead(array $leads): array
+    {
+        $leads = collect($leads);
+        $ids = $leads->pluck('Id')->toArray();
+        $alreadySavedIds = PropertyMeLead::query()->whereIn('lead_id', $ids)->pluck('lead_id')->toArray();
+        return $leads->filter(function($value, $key) use ($alreadySavedIds) {
+            return !in_array(data_get($value, 'Id'), $alreadySavedIds);
+        })->toArray();
     }
 
 
-    private function createLead()
+    public function createLead(): static
     {
-        $data = [];
-        foreach ($this->leads as $lead) {
+        foreach ($this->leads as $leadData) {
             $lead = new PropertyMeLead();
-            $lead->all_fields_dump = json_encode($lead);
-            $lead->lead_id = data_get($lead, 'id');
+            $lead->all_fields_dump = json_encode($leadData);
+            $lead->lead_id = data_get($leadData, 'Id');
             $lead->save();
+            $this->savedLead[] = $lead;
         }
+
+        return $this;
+    }
+
+    public function getSavedLeads(): array
+    {
+        return $this->savedLead;
     }
 
     /**
@@ -55,8 +81,6 @@ class FetchContacts extends BasePropertyMeAPI
      */
     private function getTimestamp(): string
     {
-        $noOfDays = config('property_me.no_of_days') ?? 1;
-        $earlierDate = date('Y-m-d',strtotime("-$noOfDays days"));
-        return (new \DateTime($earlierDate))->format('U');
+        return now()->addDays(-1)->format('U');
     }
 }
