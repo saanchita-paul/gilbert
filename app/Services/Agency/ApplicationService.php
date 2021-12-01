@@ -10,6 +10,7 @@ use App\Models\Identification;
 use App\Models\User;
 use App\Services\Agency\CreateOfficeAndAgency;
 use App\Services\Sales\PostSalesService;
+use Exception;
 use Illuminate\Console\Application;
 use function PHPUnit\Framework\isNull;
 
@@ -198,7 +199,40 @@ class ApplicationService
 
         $this->checkAndAddWaterService($applications , $existLead);
 
+        $submitType = data_get($applications, 'lead.submit_type');
+
+        $this->setSubmittedAtByServiceType($id, $submitType, $lead['service_interests']);
+
         return $existLead;
+    }
+
+
+    /** set submitted_at to connection_services table
+     * 
+     * @param int $applicationId
+     * @param string $type
+     * @param array $service_interests
+     * @return bool $status
+     */
+    public function setSubmittedAtByServiceType(int $applicationId, string $type, array $service_interests) : bool {
+        try {
+            \Log::info("printing service interest" , $service_interests);
+            if($type=="energy"){
+                
+            }else{
+                $service =  ConnectionService::where('service_type' , strtolower($type))->where('connection_application_id' , $applicationId)->first();
+            }
+
+            if($service){
+                $service->submitted_at = now();
+                $service->save();
+            }
+            return true;
+        } catch (\Exception $exception) {
+            \Log::error("**Service submitted at, service not found**", 
+            ["msg" => $exception->getMessage(), "trace" => $exception->getTraceAsString()]);
+            return false;
+        }
     }
 
     private function checkAndAddWaterService(array $applications , $application){
