@@ -129,6 +129,7 @@ class ApplicationResource extends JsonResource
             ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agent_name,
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agent_name,
             ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agent_name,
+            ConnectionApplication::SOURCE_PROPERTY_ME => $this->propertyMeLead?->agent_name,
             default => ''
         };
     }
@@ -140,6 +141,7 @@ class ApplicationResource extends JsonResource
             ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agency_name,
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agency_name,
             ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agency_name,
+            ConnectionApplication::SOURCE_PROPERTY_ME => $this->propertyMeLead?->agency_name,
             default => ''
         };
     }
