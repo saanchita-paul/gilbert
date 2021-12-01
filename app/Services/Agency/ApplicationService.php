@@ -10,6 +10,7 @@ use App\Models\Identification;
 use App\Models\User;
 use App\Services\Agency\CreateOfficeAndAgency;
 use App\Services\Sales\PostSalesService;
+use Exception;
 use Illuminate\Console\Application;
 use function PHPUnit\Framework\isNull;
 
@@ -197,7 +198,41 @@ class ApplicationService
 
         $this->checkAndAddWaterService($applications , $existLead);
 
+        $submitType = data_get($applications, 'lead.submit_type');
+
+        $this->setSubmittedAtByServiceType($id, $submitType, $lead['service_interests']);
+
         return $existLead;
+    }
+
+
+    /** set submitted_at to connection_services table
+     * 
+     * @param int $applicationId
+     * @param string $type
+     * @param array $service_interests
+     * @return bool $status
+     */
+    public function setSubmittedAtByServiceType(int $applicationId, string $type, array $service_interests = []) : bool {
+        try {
+            $query = ConnectionService::where('connection_application_id' , $applicationId);
+            
+            if ($type=="energy"){
+                $servicesInterests = array_filter(array_unique($service_interests) , function($var){
+                    return ($var == 'power' || $var == 'gas');
+                });
+                $query =  $query->whereIn('service_type' , $servicesInterests );
+            } else {
+                $query = $query->where('service_type' , strtolower($type));
+            }
+            $query->update(["submitted_at" => now()]);
+            
+            return true;
+        } catch (\Exception $exception) {
+            \Log::error("**Service submitted at, service not found**", 
+            ["msg" => $exception->getMessage(), "trace" => $exception->getTraceAsString()]);
+            return false;
+        }
     }
 
     private function checkAndAddWaterService(array $applications , $application){
@@ -261,6 +296,8 @@ class ApplicationService
             $existingApplication = ConnectionApplication::find($applicationId);
             $existingApplication->closing_reason = $application['closing_reason'];
             $existingApplication->status = ConnectionApplication::STATUS_CLOSED;
+            $existingApplication->closed_at = now();
+            $existingApplication->closed_by = $user->profile->id;
             $existingApplication->save();
 
 
