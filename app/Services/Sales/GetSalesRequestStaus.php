@@ -164,6 +164,8 @@ class GetSalesRequestStaus
         Log::info(json_encode($submitSallData));
         $quotes = $submitSallData?->quotes;
 
+        $processingFlag = false;
+
         foreach ($quotes as $quote)
         {
             $status = null;
@@ -172,8 +174,14 @@ class GetSalesRequestStaus
                 $status = ConnectionApplication::STATUS_REJECTED;
             }
 
+            if($quote->status == 'ACCEPTED')
+            {
+                $status = ConnectionApplication::STATUS_ACCEPTED;
+            }
+
             if($quote->status == 'PROCESSING')
             {
+                $processingFlag = true;
                 $status = ConnectionApplication::STATUS_EA_PROCESSINF;
             }
 
@@ -196,7 +204,6 @@ class GetSalesRequestStaus
         }
 
 
-
     }
 
     public function updateService($id, $power, $status = null) {
@@ -210,13 +217,14 @@ class GetSalesRequestStaus
 
     public function fetchAllSubmittedLead() {
         $leads = ConnectionApplication::query()
-            ->where([['status', '=', ConnectionApplication::STATUS_EA_PROCESSINF]])
+            ->where('status', '=', ConnectionApplication::STATUS_SUBMITTED)
             ->get();
 
         foreach ($leads as $lead) {
 
-            if(!is_null($lead->ea_sales_id)) {
-                CheckSaleApiLeadData::dispatch($lead->id, $lead->ea_sales_id);
+            if(!is_null($lead->vendor_id)) {
+                CheckSaleApiLeadData::dispatch($lead->id, $lead->vendor_id);
+                $lead->status = ConnectionApplication::STATUS_EA_PROCESSINF;
             }
 
         }
