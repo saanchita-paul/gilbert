@@ -117,7 +117,7 @@ export default class ApplicationSummary {
     ) {
 
         this.id = id;
-        this.applicant_name = title + ' ' + first_name + ' '+ ( isNull(middle_name)?'': middle_name) + ' ' + last_name;
+        this.applicant_name = ( title == null ? '' : title ) + ' ' + first_name + ' '+ ( isNull(middle_name)?'': middle_name) + ' ' + last_name;
         this.first_name = first_name;
         this.middle_name = middle_name;
         this.last_name = last_name;
