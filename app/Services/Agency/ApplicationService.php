@@ -261,6 +261,8 @@ class ApplicationService
             $existingApplication = ConnectionApplication::find($applicationId);
             $existingApplication->closing_reason = $application['closing_reason'];
             $existingApplication->status = ConnectionApplication::STATUS_CLOSED;
+            $existingApplication->closed_at = now();
+            $existingApplication->closed_by = $user->profile->id;
             $existingApplication->save();
 
 
