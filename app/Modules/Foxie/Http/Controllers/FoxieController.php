@@ -3,6 +3,7 @@
 namespace Foxie\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\CreateHubspotProperty;
 use Foxie\Http\Requests\FoxieRequest;
 use Foxie\Services\SugerLeadService;
 use Illuminate\Http\Request;
@@ -25,6 +26,9 @@ class FoxieController extends Controller
                 "hood_lead_id" => $connectionApplication->id,
                 "message" => "Hood lead has been added successfully"
             ];
+
+            // hubspot api call for creation
+            CreateHubspotProperty::dispatch($connectionApplication->id);
             return response($response, 200);
         } catch (\Exception $ex) {
             //throw $th;
