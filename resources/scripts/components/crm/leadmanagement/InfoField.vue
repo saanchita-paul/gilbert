@@ -487,7 +487,7 @@
           </ValidationProvider>
         </div>
       </div>
-      <div v-if="isNMIOptional" class="crm-text-field">
+      <div v-if="!isNMIRequired" class="crm-text-field">
         <div class="field-label">
           <span>NMI (Power)</span>
         </div>
@@ -516,7 +516,7 @@
       </div>
 
 
-        <div v-if="!isNMIOptional" class="crm-text-field">
+        <div v-if="isNMIRequired" class="crm-text-field">
             <div class="field-label">
                 <span>NMI (Power) *</span>
             </div>
@@ -545,7 +545,7 @@
         </div>
 
 
-      <div v-if="isMERNOptional" class="crm-text-field">
+      <div v-if="!isMERNRequired" class="crm-text-field">
         <div class="field-label">
           <span>MIRN (Gas)</span>
         </div>
@@ -573,7 +573,7 @@
         </div>
       </div>
 
-        <div  v-if="!isMERNOptional" class="crm-text-field">
+        <div  v-if="isMERNRequired" class="crm-text-field">
             <div class="field-label">
                 <span>MIRN (Gas) *</span>
             </div>
@@ -1435,22 +1435,22 @@ export default {
   },
 
     computed: {
-      isNMIOptional() {
-         return  (this.services.length == 1 &&
-             this.services.findIndex((service)=> service === 'gas') != -1)? true: false;
+      isNMIRequired() {
+        return  ( Array.isArray(this.services) && this.services.some(n=>n=='power') ) ?
+                true : false ; 
       },
-        isMERNOptional() {
-            return ((this.services.length == 1 &&
-                this.services.findIndex((service)=> service === 'power') != -1) || this.lead.state === 'Queensland'
-            )? true: false;
+      isMERNRequired() {
+        return  ( Array.isArray(this.services) && this.services.some(n=>n=='gas') ) ?
+                true : false ; 
 
           }
     },
 
   watch: {
     lead: {
-      handler() {
-        // console.log('calling...')
+      handler(val) {
+        console.log('calling...', val)
+        console.log('calling...services',  this.services)
         this.synFormData();
       },
       deep: true,

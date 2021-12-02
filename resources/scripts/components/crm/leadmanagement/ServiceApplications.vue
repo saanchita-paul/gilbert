@@ -378,7 +378,7 @@ export default {
         },
 
         updateService(service) {
-            //todo add update sumo event emit
+            // TODO add update sumo event emit
             console.log(service)
 
 
