@@ -14,6 +14,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use OurProperty\Models\OurProperty;
+use App\Services\AddressMapperService;
 
 class CreateOurPropertyService
 {
@@ -126,6 +127,7 @@ class CreateOurPropertyService
         try {
 
             $mapperService = new OurPropertyMapper();
+            $addressService = new AddressMapperService();
 
             $agency = Agency::where('name' , "Our-Property-Agency")->firstOrFail();
             if(!$agency) throw new Exception('Please run OurPropertySeeder');
@@ -150,11 +152,13 @@ class CreateOurPropertyService
                 $mapperService->mapTenancy($this->userRequestData->tenancy_type): null;
             $this->connectionApplicaton->moving_date = $this->userRequestData->tenancy_moving_date ?? null;
             $this->connectionApplicaton->additional_instruction = $this->userRequestData->additional_instruction ?? null;
-            $this->connectionApplicaton->street_address = $this->userRequestData->street_address ?? null;
+            $this->connectionApplicaton->street_address = $this->userRequestData->tenancy_street_address ?? null;
             $this->connectionApplicaton->city = $this->userRequestData->tenancy_city ?? null;
             $this->connectionApplicaton->postcode = $this->userRequestData->tenancy_postcode ?? null;
-            $this->connectionApplicaton->state = $this->userRequestData->tenancy_state ?? null;
-            $this->connectionApplicaton->country = $this->userRequestData->tenancy_country ?? null;
+            $this->connectionApplicaton->state = $this->userRequestData->tenancy_state ?
+                $addressService->mapState($this->userRequestData->tenancy_state) : null;
+            $this->connectionApplicaton->country = $this->userRequestData->tenancy_country ?
+                $addressService->mapCountry($this->userRequestData->tenancy_country) : null;
             $this->connectionApplicaton->address_text = $this->userRequestData->tenancy_address_text ?? null;
             $this->connectionApplicaton->is_email_billing = $this->userRequestData->is_email_billing ?
                 $mapperService->mapYesNoToBool( $this->userRequestData->is_email_billing): null;
@@ -179,6 +183,8 @@ class CreateOurPropertyService
             $this->connectionApplicaton->billing_address_text =$this->userRequestData->tenancy_billing_address_text ?? null;
             $this->connectionApplicaton->billing_street_address = $this->userRequestData->tenancy_billing_street_address ?? null;;
             $this->connectionApplicaton->billing_city = $this->userRequestData->tenancy_billing_city ?? null;
+            $this->connectionApplicaton->billing_state = $this->userRequestData->tenancy_billing_state ?
+                $addressService->mapState($this->userRequestData->tenancy_billing_state) : null;
             $this->connectionApplicaton->billing_postcode = $this->userRequestData->tenancy_billing_postcode ?? null;
             $this->connectionApplicaton->is_renovation_on = $this->userRequestData->tenancy_is_renovation_on ?
                 $mapperService->mapYesNoToBool( $this->userRequestData->tenancy_is_renovation_on): null;
@@ -207,14 +213,17 @@ class CreateOurPropertyService
     public function createIdentification( $leadId)
     {
         $mapperService = new OurPropertyMapper();
+        $addressService = new AddressMapperService();
 
         $identification = new Identification();
         $identification->connection_application_id = $leadId;
         $identification->type = $this->userRequestData->tenancy_identification_type ?
             $mapperService->mapIdType($this->userRequestData->tenancy_identification_type): null;
         $identification->card_number = $this->userRequestData->tenancy_identification_number ?? null;
-        $identification->state = $this->userRequestData->tenancy_identification_state ?? null;
-        $identification->country = $this->userRequestData->tenancy_identification_country ?? null;
+        $identification->state = $this->userRequestData->tenancy_identification_state ?
+            $addressService->mapState($this->userRequestData->tenancy_identification_state) : null;
+        $identification->country = $this->userRequestData->tenancy_identification_country ?
+            $addressService->mapCountry($this->userRequestData->tenancy_identification_country) : null;
         $identification->card_color = $this->userRequestData->tenancy_medicare_card_color ?
             strtoupper( $this->userRequestData->tenancy_medicare_card_color):null;
         $identification->special_number = $this->userRequestData->tenancy_medicare_reference_number ?? null;
