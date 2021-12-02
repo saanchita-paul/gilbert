@@ -69,8 +69,8 @@
                     max-width="700"
                 >
                     <v-card>
-                        <SoleDetails 
-                            @soleDialog="soleDialog" 
+                        <SoleDetails
+                            @soleDialog="soleDialog"
                         />
                     </v-card>
                 </v-dialog>
@@ -157,7 +157,8 @@ props: {
             let payload = {
                 service_type: ['internet'],
                 provider_name: '',
-                plan_type: ''
+                plan_type: '',
+                service_area: 'internet'
             }
         LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
         },

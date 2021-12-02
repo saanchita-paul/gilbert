@@ -29,6 +29,8 @@ class RouteServiceProvider extends ServiceProvider
     protected $namespace = 'App\\Http\\Controllers';
     protected $namespaceFoxie = 'Foxie\\Http\\Controllers';
     protected $namespaceIgnite = 'Ignite\\Http\\Controllers';
+    protected $namespaceOurProperty = 'OurProperty\\Http\\Controllers';
+
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -54,6 +56,11 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespaceFoxie)
             ->group(base_path('routes/ignite.php'));
+
+            Route::prefix('api/our-property')
+                ->middleware('api')
+                ->namespace($this->namespaceOurProperty)
+                ->group(base_path('routes/our-property.php'));
 
             Route::middleware('web')
                 ->namespace($this->namespace)

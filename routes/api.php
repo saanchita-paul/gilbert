@@ -1,16 +1,17 @@
 <?php
 
-use App\Http\Controllers\Agency\AgencyController;
-use App\Http\Controllers\Agency\AgentProfileController;
-use App\Http\Controllers\Agency\HoodUserController;
-use App\Http\Controllers\Agency\NoteController;
-use App\Http\Controllers\Agency\OfficeController;
-use App\Http\Controllers\Agency\ApplicationController;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\UserInvitationController;
 use Illuminate\Encryption\Encrypter;
-use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Broadcast;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Agency\NoteController;
+use App\Http\Controllers\Agency\AgencyController;
+use App\Http\Controllers\Agency\OfficeController;
+use App\Http\Controllers\UserInvitationController;
+use App\Http\Controllers\Agency\HoodUserController;
+use App\Http\Controllers\Agency\ApplicationController;
+use App\Http\Controllers\Agency\AgentProfileController;
+use OurProperty\Http\Controllers\OurPropertyController;
 use PropertyMe\services\FetchContacts;
 
 /*
@@ -79,9 +80,10 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/applications/{id}/submit', [ApplicationController::class, 'submit']);
     Route::post('/applications/{applicationId}/assign', [ApplicationController::class, 'assignUser']);
     Route::post('/applications/{applicationId}/escalate', [ApplicationController::class, 'escalate']);
+    Route::post('/applications/{applicationId}/closeApplication', [ApplicationController::class, 'closeApplication']);
     Route::put('/applications/{applicationId}/update-address', [ApplicationController::class, 'updateAddress']);
     Route::post('/applications/{applicationId}/draft', [ApplicationController::class, 'saveDraft']);
-    Route::put('/applications/{id}/close', [ApplicationController::class, 'closeApplication']);
+    Route::put('/applications/{id}/close', [ApplicationController::class, 'close']);
     Route::patch('/applications/{applicationId}/providers', [ApplicationController::class, 'providers']);
 
     //todo: make a  separate controller for notes
@@ -119,10 +121,10 @@ Route::get('lnn/bot_token', function () {
 
 
 
+Route::post('/our-property/token', [OurPropertyController::class, 'getAccessToken']);
+Route::post('/our-property/lead', [OurPropertyController::class, 'createOurProperty']);
+
+
 
 Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
 
-Route::get('/lnn/ttr', function () {
-    $propertyMeService = new FetchContacts();
-    return $propertyMeService->getContacts();
-});

@@ -110,12 +110,14 @@ export default class ApplicationSummary {
             lead_source = '',
             lead_source_description = '',
             source = '',
-            created_by_agent = null
+            created_by_agent = null,
+            fast_connect_customer_reference = null,
+            is_auto_water_submit = null,
         }
     ) {
 
         this.id = id;
-        this.applicant_name = first_name + ' '+ ( isNull(middle_name)?'': middle_name) + ' ' + last_name;
+        this.applicant_name = ( title == null ? '' : title ) + ' ' + first_name + ' '+ ( isNull(middle_name)?'': middle_name) + ' ' + last_name;
         this.first_name = first_name;
         this.middle_name = middle_name;
         this.last_name = last_name;
@@ -172,13 +174,15 @@ export default class ApplicationSummary {
         this.lead_source_description = lead_source_description
         this.source = source
         this.created_by_agent = created_by_agent
+        this.fast_connect_customer_reference = fast_connect_customer_reference
+        this.is_auto_water_submit = is_auto_water_submit
 
     }
 
     mapStatus(status) {
         status = status - 1;
         if (status < 0) return '';
-        const statusList = ['Unassigned', 'Assigned', 'Escalated', 'Submitted', 'Accepted', 'Rejected', 'Inprogress'];
+        const statusList = ['Unassigned', 'Assigned', 'Escalated', 'Submitted', 'Accepted', 'Rejected', 'Inprogress', 'Closed'];
         return statusList[status];
     }
 }

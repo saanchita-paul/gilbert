@@ -72,7 +72,9 @@ class ApplicationResource extends JsonResource
             'billing_postcode' => $this->billing_postcode,
             'is_billing_same' => $this->is_billing_same,
             'is_contacted' => $this->is_contacted,
-            'authorizedPersonName' =>$this->getAuthoizedPersonName(),
+            'is_auto_water_submit' => $this->is_auto_water_submit,
+            'fast_connect_customer_reference' => $this->fast_connect_customer_reference,
+            'authorizedPersonName' => $this->getAuthoizedPersonName(),
             'agent_name' => $this->getAgentName(),
             'agency_office' => $this->getAgencyName(),
             'lead_source' => $this->SugerLead?->foxie_lead_source,
@@ -105,22 +107,19 @@ class ApplicationResource extends JsonResource
                 $newService = [];
 
                 foreach ($service as $svc) {
-                    if(empty($svc->status)) {
+                    if (empty($svc->status)) {
                         $svc->status = ConnectionService::STATUS_UNASSIGNED;
                     }
                     $svc->statusText = ConnectionService::STATUS_MAPPING[$svc->status];
                     $newService[] = $svc;
-
                 }
                 return $newService;
             }
             return [];
-        } catch (\Exception $e)
-        {
-            \Log::info($e->getMessage() );
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
             return [];
         }
-
     }
 
     private function getAgentName()
@@ -129,6 +128,7 @@ class ApplicationResource extends JsonResource
             ConnectionApplication::SOURCE_HOOD => $this->createdBy?->first_name.' '. $this->createdBy?->last_name,
             ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agent_name,
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agent_name,
+            ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agent_name,
             ConnectionApplication::SOURCE_PROPERTY_ME => $this->propertyMeLead?->agent_name,
             default => ''
         };
@@ -140,6 +140,7 @@ class ApplicationResource extends JsonResource
             ConnectionApplication::SOURCE_HOOD => $this->office?->name,
             ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agency_name,
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agency_name,
+            ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agency_name,
             ConnectionApplication::SOURCE_PROPERTY_ME => $this->propertyMeLead?->agency_name,
             default => ''
         };
@@ -150,18 +151,18 @@ class ApplicationResource extends JsonResource
 
         if($this->authorizedPerson)
         {
-            $fullName = "{$this->authorizedPerson->first_name} {$this->authorizedPerson->middle_name} {$this->authorizedPerson->last_name}";
+            $fullName = "{$this->authorizedPerson->title} {$this->authorizedPerson->first_name} {$this->authorizedPerson->middle_name} {$this->authorizedPerson->last_name}";
             if(empty(trim($fullName))) return null;
             return $fullName;
         }
         return null;
     }
 
-    private function mapPlan($plan) {
-        if(!empty($plan)) {
+    private function mapPlan($plan)
+    {
+        if (!empty($plan)) {
             return ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
         }
         return 'total_plan';
-
     }
 }

@@ -114,7 +114,7 @@ class FastConnectService
     public static function stateMap($state)
     {
         $stateList = ['New South Wales'=>'NSW','Victoria'=>'VIC','Queensland'=>'QLD',
-            'South Australia'=>'SA','Northern Territory'=>'NT','TAS'=>'Tasmania','ACT'=>'Australian Capital Territory'];
+            'South Australia'=>'SA','Northern Territory'=>'NT','TAS'=>'Tasmania','ACT'=>'Australian Capital Territory', 'WA'=>'Western Australia'];
         if(array_key_exists($state, $stateList))
         {
             return $stateList[$state];

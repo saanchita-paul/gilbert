@@ -194,7 +194,7 @@
 import {isNull} from "lodash-es";
 import DayJs from "dayjs";
 import dayjs from "dayjs";
-
+import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
 export default {
 name: "AuthorizedPersonProfileForm",
     props:['dialog','authorized_person_data','leadId'],
@@ -230,9 +230,7 @@ name: "AuthorizedPersonProfileForm",
           ],
           authorized_person_dob:  (new DayJs((new Date()).setFullYear(2000))).format('YYYY-MM-DD'),
           showAuthoritydob: false,
-          titlesDD:[
-              'Mrs','Mr','Ms'
-          ],
+          titlesDD: titlesMapperForDropdown,
       }
     },
     methods:{

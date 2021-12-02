@@ -274,6 +274,10 @@ class HubspotContactService
                 "property" => "hs_lead_status",
                 "value" => $this->getStatus(),
             ],
+            [
+                "property" => "hood_business",
+                "value" => $this->getHoodBusiness(),
+            ],
 
         ];
     }
@@ -323,5 +327,20 @@ class HubspotContactService
             ConnectionApplication::STATUS_UNASSIGNED => 'NEW',
             default => 'IN_PROGRESS' //todo: handle default correctly
         };
+    }
+
+    private function getHoodBusiness()
+    {
+        $source = $this->application->source;
+
+        return match ($source) {
+            ConnectionApplication::SOURCE_FOXIE => 'Foxie',
+            ConnectionApplication::SOURCE_HOOD => 'HOOD',
+            ConnectionApplication::SOURCE_IGNITE => 'Ignite',
+            4 => 'OurProperty',
+            5 => 'PropertyMe',
+            default => 'HOOD'
+        };
+
     }
 }

@@ -30,6 +30,10 @@ class WaterAutoSubmitService
 
         try {
             $connectionApplcation->update(['is_auto_water_submit'=> WaterAutoSubmitService::STATUS_AUTO_SUBMIT_TRUE ]);
+            
+            $waterService = new ApplicationService();
+            $waterService->setSubmittedAtByServiceType($connectionApplcation->id, 'water');
+            
             WaterAutoSubmitJob::dispatch($connectionApplcation->id);
         } catch (\Exception $exception) {
             \Log::error($exception->getMessage());
