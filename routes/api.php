@@ -79,9 +79,10 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/applications/{id}/submit', [ApplicationController::class, 'submit']);
     Route::post('/applications/{applicationId}/assign', [ApplicationController::class, 'assignUser']);
     Route::post('/applications/{applicationId}/escalate', [ApplicationController::class, 'escalate']);
+    Route::post('/applications/{applicationId}/closeApplication', [ApplicationController::class, 'closeApplication']);
     Route::put('/applications/{applicationId}/update-address', [ApplicationController::class, 'updateAddress']);
     Route::post('/applications/{applicationId}/draft', [ApplicationController::class, 'saveDraft']);
-    Route::put('/applications/{id}/close', [ApplicationController::class, 'closeApplication']);
+    Route::put('/applications/{id}/close', [ApplicationController::class, 'close']);
     Route::patch('/applications/{applicationId}/providers', [ApplicationController::class, 'providers']);
 
     //todo: make a  separate controller for notes

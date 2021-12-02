@@ -22,7 +22,7 @@ class ApplicationNoteService
 
         'escalated' => self::ESCALATED,
         'confirm_connection' => self::CONFIRM_CONNECTION,
-        'confirm_connection' => self::CLOSE_CONNECTION,
+        'close_connection' => self::CLOSE_CONNECTION,
         'regular' => self::REGULAR,
 
     ];
@@ -46,6 +46,9 @@ class ApplicationNoteService
         if(!isset($note['type']) || $note['type'] == self::NOTETYPE['regular']) {
             $note['type'] = self::NOTETYPE['regular'];
             $note['title'] = 'Note by ['.$this->user->profile->first_name.']';
+        } else if ( $note['type'] == self::NOTETYPE['close_connection'] ) {
+            $note['type'] = self::NOTETYPE['close_connection'];
+            $note['title'] = 'Note by ' . $this->user->profile->first_name;
         } else {
             $note['title'] = $note['type'];
         }
