@@ -10,6 +10,7 @@ use App\Models\Identification;
 use App\Models\User;
 use App\Services\Agency\CreateOfficeAndAgency;
 use App\Services\Sales\PostSalesService;
+use Exception;
 use Illuminate\Console\Application;
 use function PHPUnit\Framework\isNull;
 
@@ -140,7 +141,6 @@ class ApplicationService
     public function updateConnectionService(array $serviceList, $id)
     {
         ConnectionService::query()->where('connection_application_id', '=', $id)
-            ->whereIn('service_type',[ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
             ->delete();
         foreach ($serviceList as $service) {
             ConnectionService::create(
@@ -158,7 +158,7 @@ class ApplicationService
 
 
         \Log::info('identification data_'.$id, $identificationData);
-        $identification = Identification::where('connection_application_id', $id)->firstOrFail();
+        $identification = Identification::where('connection_application_id', $id)->first();
         if(isset($identificationData['medicare_expire_date'])) {
             unset($identificationData['medicare_expire_date']);
         }
@@ -198,7 +198,41 @@ class ApplicationService
 
         $this->checkAndAddWaterService($applications , $existLead);
 
+        $submitType = data_get($applications, 'lead.submit_type');
+
+        $this->setSubmittedAtByServiceType($id, $submitType, $lead['service_interests']);
+
         return $existLead;
+    }
+
+
+    /** set submitted_at to connection_services table
+     * 
+     * @param int $applicationId
+     * @param string $type
+     * @param array $service_interests
+     * @return bool $status
+     */
+    public function setSubmittedAtByServiceType(int $applicationId, string $type, array $service_interests = []) : bool {
+        try {
+            $query = ConnectionService::where('connection_application_id' , $applicationId);
+            
+            if ($type=="energy"){
+                $servicesInterests = array_filter(array_unique($service_interests) , function($var){
+                    return ($var == 'power' || $var == 'gas');
+                });
+                $query =  $query->whereIn('service_type' , $servicesInterests );
+            } else {
+                $query = $query->where('service_type' , strtolower($type));
+            }
+            $query->update(["submitted_at" => now()]);
+            
+            return true;
+        } catch (\Exception $exception) {
+            \Log::error("**Service submitted at, service not found**", 
+            ["msg" => $exception->getMessage(), "trace" => $exception->getTraceAsString()]);
+            return false;
+        }
     }
 
     private function checkAndAddWaterService(array $applications , $application){
@@ -211,7 +245,8 @@ class ApplicationService
         if( $applications['lead']['submit_type'] == 'water'){
             info("water found");
 
-            $waterService =  ConnectionService::where("connection_application_id" , $application->id)->where( "service_type" ,  "water")->first();
+            $waterService =  ConnectionService::where("connection_application_id" , $application->id)
+                ->where( "service_type" ,  "water")->first();
             if(!$waterService){
                 info('creating water...');
                 $application->connectionServices()->create(['service_type' => 'water']);
@@ -246,6 +281,39 @@ class ApplicationService
         $allicationNoteService->createNotes($eacalateNote, $applicationId);
 
         return $existingApplication;
+    }
+
+    /**
+     * 
+     * @param array $application
+     * @param int $applicationId
+     * @param User $user
+     * @return ConnectionApplication $existingApplication
+     */
+    public function closeApplicationWithReason(array $application, int $applicationId, User $user)
+    {
+        try {
+            $existingApplication = ConnectionApplication::find($applicationId);
+            $existingApplication->closing_reason = $application['closing_reason'];
+            $existingApplication->status = ConnectionApplication::STATUS_CLOSED;
+            $existingApplication->closed_at = now();
+            $existingApplication->closed_by = $user->profile->id;
+            $existingApplication->save();
+
+
+            $allicationNoteService = new ApplicationNoteService($user);
+            $closingeNote = [];
+            $closingeNote['text'] = $application['closing_reason'];
+            $closingeNote['type'] = 'close_connection';
+
+            $allicationNoteService->createNotes($closingeNote, $applicationId);
+
+
+            return $existingApplication;
+        } catch (\Exception $exception) {
+            \Log::error("**CloseApplication**", 
+            ["msg" => $exception->getMessage(), "trace" => $exception->getTraceAsString()]);
+        }
     }
 
     public function updateSoleField(array $application, $id)
@@ -338,7 +406,17 @@ class ApplicationService
     public function providers(array $data, $applicationId)
     {
         $connectionApplication =  ConnectionApplication::find($applicationId);
-        foreach ($data['service_type'] as $service) {
+
+        $services = [];
+        $provider_service_type = $data['service_area']?? '';
+        if($provider_service_type === 'energy') {
+            $services = [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY];
+        } elseif($provider_service_type === 'internet') {
+            $services = [ConnectionService::TYPE_INTERNET];
+        }
+
+
+        foreach ($services as $service) {
             $connectionService = ConnectionService::where('connection_application_id', $applicationId)
                 ->where('service_type', $service)
                 ->first();

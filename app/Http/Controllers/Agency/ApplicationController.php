@@ -25,6 +25,7 @@ use App\Services\Agency\SearchConnectionApplication;
 use App\Services\Utility\IgniteConnectionLeadService;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use PropertyMe\services\FetchContacts;
 
 class ApplicationController extends Controller
 {
@@ -202,6 +203,27 @@ class ApplicationController extends Controller
     }
 
     /**
+     * Updating status to escalate of an application
+     *
+     * @param Request $request
+     * @param int $applicationId
+     *
+     * @return ApplicationResource|JsonResponse
+     */
+    public function close(Request $request, int $applicationId): ApplicationResource|JsonResponse
+    {
+        try {
+            $service = new ApplicationService();
+            $inputData = $request->toArray();
+            $user = Auth::user();
+            return ApplicationResource::make($service->updateEscalateApplication($inputData, $applicationId, $user));
+
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    /**
      * Getting All Aplication Metrics Count
      *
      * @param Request $request
@@ -270,11 +292,12 @@ class ApplicationController extends Controller
         }
     }
 
-    public function closeApplication($id)
+    public function closeApplication(Request $request, $id)
     {
         try {
             $service = new ApplicationService();
-            $res = $service->closeApplication($id);
+            $user = Auth::user();
+            $res = $service->closeApplicationWithReason($request->toArray(), $id, $user);
             return response()->json(['success' => true, 'data' => $res]);
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
@@ -311,14 +334,4 @@ class ApplicationController extends Controller
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
-
-    public function fastTest(Request $request){
-    //    $igninte =  new IgniteConnectionLeadService();
-    //    $igninte->authenticate();
-          $s = new SumoService();
-          $s->validateEmail("riyad298");
-          return 'validate email';
-    }
-
-
 }
