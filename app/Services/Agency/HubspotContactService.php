@@ -278,6 +278,10 @@ class HubspotContactService
                 "property" => "hood_business",
                 "value" => $this->getHoodBusiness(),
             ],
+            [
+                "property" => "hood_lead_source",
+                "value" => $this->getLeadSource(),
+            ],
 
         ];
     }
@@ -342,5 +346,15 @@ class HubspotContactService
             default => 'HOOD'
         };
 
+    }
+
+    private function getLeadSource()
+    {
+        $agencyName = $this->application?->agency?->id;
+
+        return match ($agencyName) {
+           17 => 'HOOD',
+            default => 'REA'
+        };
     }
 }
