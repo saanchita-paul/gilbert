@@ -4,6 +4,7 @@
 namespace OurProperty\Services;
 
 
+use App\Jobs\CreateHubspotProperty;
 use App\Models\Agency;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC as AuthorisedPerson;
@@ -109,6 +110,9 @@ class CreateOurPropertyService
             $this->createIdentification($this->connectionApplicaton->id);
             $this->createService($requestData->tenancy_service_type, $this->connectionApplicaton->id);
             $this->createAuthorizedPerson($this->connectionApplicaton->id);
+            CreateHubspotProperty::dispatch($this->connectionApplicaton->id);
+
+
         } catch (Exception $ex) {
             \Log::error("Lead create successful, Identification or Service or Authorization creation fail");
             \Log::error($ex->getMessage());
