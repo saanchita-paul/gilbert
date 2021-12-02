@@ -63,6 +63,9 @@ export default class Note {
         if(type.toLowerCase() == 'regular')
         {
             return title + '['+role+']';
+        } else if (type.toLowerCase() == 'close_connection')
+        {
+             return title + ' ' + role ;
         }
     }
 }

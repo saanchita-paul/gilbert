@@ -20,8 +20,8 @@ export default {
     loadAuthorizedPerson:(leadId) => LeadApplicationAPI.loadAuthorizedPerson(leadId),
     saveAuthorizedPerson:(data) => LeadApplicationAPI.saveAuthorizedPerson(data),
     updateApplicationProviders:(payload, application_id) => LeadApplicationAPI.updateApplicationProviders(payload , application_id),
-
-    /**
+    closeApplicationWithReason: (id, closing_reason) => LeadApplicationAPI.closeApplicationWithReason(id, closing_reason),
+     /**
      * Getting minimum valid Connection date
      *
      * @return {string}
