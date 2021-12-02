@@ -158,7 +158,7 @@ class ApplicationService
 
 
         \Log::info('identification data_'.$id, $identificationData);
-        $identification = Identification::where('connection_application_id', $id)->firstOrFail();
+        $identification = Identification::where('connection_application_id', $id)->first();
         if(isset($identificationData['medicare_expire_date'])) {
             unset($identificationData['medicare_expire_date']);
         }
