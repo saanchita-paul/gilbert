@@ -77,9 +77,9 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'renovation_privious' => ($utilityData->state === 'Victoria')?($utilityData->is_renovation_on?'Y':'N'):'',
                     'main_swith_off' => ($utilityData->state === 'Victoria')?($utilityData->is_renovation_on?'Y':'N'):'',
 
-                    'business_name' => '', //todo
-                    'business_abn' => '', //todo
-                    'business_type' => '', //todo
+                        'business_name' => '', //todo
+                        'business_abn' => '', //todo
+                        'business_type' => '', //todo
 
 
                     //Personal Details
@@ -350,7 +350,8 @@ class CAFDataMappingService implements FromCollection, WithHeadings
             }
         } catch (\Exception $e)
         {
-            Log::info($e->getMessage(),[]);
+            Log::error("[CAFDataMappingService:getElectricitySourceCode] ->  " .$e->getMessage());
+            Log::error($e->getTraceAsString());
             return  '';
         }
 
@@ -381,7 +382,8 @@ class CAFDataMappingService implements FromCollection, WithHeadings
 
         } catch (\Exception $e)
         {
-            Log::info($e->getMessage(),[]);
+            Log::error("[CAFDataMappingService:getGasSourceCode] ->  " .$e->getMessage());
+            Log::error($e->getTraceAsString());
             return  '';
         }
         return  '';
@@ -402,6 +404,8 @@ class CAFDataMappingService implements FromCollection, WithHeadings
             }
         } catch (\Exception $e)
         {
+            Log::error("[CAFDataMappingService:getBuyBackRate] ->  " .$e->getMessage());
+            Log::error($e->getTraceAsString());
             return  '';
         }
         return  '';
