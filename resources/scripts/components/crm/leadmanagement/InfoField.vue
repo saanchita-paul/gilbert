@@ -1025,6 +1025,7 @@ import SPECIAL_NUMBER from "@scripts/data/constants/SPECIAL_NUMBER";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import dayJs from "dayjs";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
+import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
 import { medicareRules, mediExpireDate } from '@scripts/plugins/VeeValidate';
 
 
@@ -1049,7 +1050,7 @@ export default {
     return {
       needLifeSupprt: false,
       loadNmi: false,
-      titlesDD:[ 'Mr.','Mrs.','Ms.','Miss','Dr.'],
+      titlesDD: titlesMapperForDropdown,
       minConnectionDate: LeadApplicationService.getMinConnectionDate(),
       minExpiredate: new Date().toISOString(),
       emailBillingDD: [
@@ -1078,6 +1079,7 @@ export default {
         { text: "NT", value: "Northern Territory" },
         { text: "TAS", value: "Tasmania" },
         { text: "ACT", value: "Australian Capital Territory" },
+        { text: "WA", value: "Western Australia" }, // TODO state definition can be updated
       ],
       tenantTypeDD: [
         {

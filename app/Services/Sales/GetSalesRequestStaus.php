@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use GraphQL\Client;
 use GraphQL\Query;
 use GraphQL\Variable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 
 class GetSalesRequestStaus
@@ -106,6 +107,7 @@ class GetSalesRequestStaus
                     $status = ConnectionApplication::STATUS_EA_PROCESSING;
                 }
 
+
             }
             $connection = ConnectionApplication::where('ea_sales_id', $item->id)->first();
             if(!is_null($connection)) {
@@ -143,9 +145,9 @@ class GetSalesRequestStaus
                 ]
             );
 
-
+        $url = env('EA_SALES_URL','https://apigw-nonprod.energyaustralia.com.au/graphql');
         $client = new Client(
-            'https://apigw-nonprod.energyaustralia.com.au/graphql',
+            $url,
             ['Authorization' => $this->accessToken]);
         $results = $client->runQuery($gql, true, $da );
 
@@ -164,16 +166,25 @@ class GetSalesRequestStaus
         Log::info(json_encode($submitSallData));
         $quotes = $submitSallData?->quotes;
 
+
+
         foreach ($quotes as $quote)
         {
+
             $status = null;
             if($quote->status == 'REJECTED')
             {
                 $status = ConnectionApplication::STATUS_REJECTED;
             }
 
+            if($quote->status == 'ACCEPTED')
+            {
+                $status = ConnectionApplication::STATUS_ACCEPTED;
+            }
+
             if($quote->status == 'PROCESSING')
             {
+                $processingFlag = true;
                 $status = ConnectionApplication::STATUS_EA_PROCESSINF;
             }
 
@@ -181,25 +192,21 @@ class GetSalesRequestStaus
             {
                 $status = ConnectionService::AC_MANUAL_PROCESSING;
             }
-            Log::info($status);
-
-            $lead = ConnectionApplication::find($leadId);
-            $lead->update(['status'=>$status]);
 
             if($quote->fuel === 'GAS') {
-                $this->updateService( $lead->id, 'gas', $status);
+                $this->updateService( $leadId, 'gas', $status);
             }
             if($quote->fuel === 'ELE') {
-                $this->updateService($lead->id, 'power', $status);
+                $this->updateService($leadId, 'power', $status);
             }
 
         }
 
 
-
     }
 
     public function updateService($id, $power, $status = null) {
+        info('put some message here', [$id, $power, $status]);
         $service = ConnectionService::query()
             ->where('connection_application_id', $id)
             ->where('service_type', $power)
@@ -210,13 +217,20 @@ class GetSalesRequestStaus
 
     public function fetchAllSubmittedLead() {
         $leads = ConnectionApplication::query()
-            ->where([['status', '=', ConnectionApplication::STATUS_EA_PROCESSINF]])
+            ->with('connectionServices')
+            ->where('status', '=', ConnectionApplication::STATUS_SUBMITTED)
+            ->whereNotNull('vendor_id')
+            ->whereHas('connectionServices', function (Builder $service) {
+                $service->where('provider_name','=','ea')
+                    ->whereIn('status', [ConnectionService::STATUS_EA_PROCESSINF, ConnectionService::AC_MANUAL_PROCESSING]);
+            })
             ->get();
 
         foreach ($leads as $lead) {
 
-            if(!is_null($lead->ea_sales_id)) {
-                CheckSaleApiLeadData::dispatch($lead->id, $lead->ea_sales_id);
+            if(!is_null($lead->vendor_id)) {
+                CheckSaleApiLeadData::dispatch($lead->id, $lead->vendor_id);
+                $lead->status = ConnectionApplication::STATUS_EA_PROCESSINF;
             }
 
         }
