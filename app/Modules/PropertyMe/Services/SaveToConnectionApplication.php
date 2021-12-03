@@ -2,6 +2,7 @@
 
 namespace App\Modules\PropertyMe\Services;
 
+use App\Jobs\CreateHubspotProperty;
 use App\Models\ConnectionApplication;
 use App\Models\Office;
 use PropertyMe\PropertyMeLead;
@@ -55,6 +56,7 @@ class SaveToConnectionApplication
         ]);
 
         $this->saveApplicationId($application->id, $lead);
+        CreateHubspotProperty::dispatch($application->id);
     }
 
 
