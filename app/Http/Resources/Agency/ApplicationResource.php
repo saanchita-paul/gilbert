@@ -125,39 +125,26 @@ class ApplicationResource extends JsonResource
 
     private function getAgentName()
     {
-        if($this->source === ConnectionApplication::SOURCE_HOOD)
-        {
-            return $this->createdBy?->first_name.' '. $this->createdBy?->last_name;
-        }
-        if($this->source === ConnectionApplication::SOURCE_FOXIE)
-        {
-            return $this->SugerLead?->agent_name;
-        }
-        if($this->source === ConnectionApplication::SOURCE_IGNITE)
-        {
-            return $this->igniteLead?->agent_name;
-        }
-
-        return '';
+        return match ($this->source) {
+            ConnectionApplication::SOURCE_HOOD => $this->createdBy?->first_name.' '. $this->createdBy?->last_name,
+            ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agent_name,
+            ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agent_name,
+            ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agent_name,
+            ConnectionApplication::SOURCE_PROPERTY_ME => $this->propertyMeLead?->agent_name,
+            default => ''
+        };
     }
 
     private function getAgencyName()
     {
-        if($this->source === ConnectionApplication::SOURCE_HOOD)
-        {
-            return $this->office?->name;
-        }
-        if($this->source === ConnectionApplication::SOURCE_FOXIE)
-        {
-            return $this->SugerLead?->agency_name;
-        }
-        if($this->source === ConnectionApplication::SOURCE_IGNITE)
-        {
-            return $this->igniteLead?->agency_name;
-        }
-
-        return '';
-
+        return match ($this->source) {
+            ConnectionApplication::SOURCE_HOOD => $this->office?->name,
+            ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agency_name,
+            ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agency_name,
+            ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agency_name,
+            ConnectionApplication::SOURCE_PROPERTY_ME => $this->propertyMeLead?->agency_name,
+            default => ''
+        };
     }
 
     private function getAuthoizedPersonName()

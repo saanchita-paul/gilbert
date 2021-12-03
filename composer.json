@@ -50,8 +50,10 @@
             "Foxie\\": "app/Modules/Foxie",
             "Ignite\\": "app/Modules/Ignite",
             "FastConnect\\": "app/Modules/FastConnect",
+            "OurProperty\\": "app/Modules/OurProperty",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "PropertyMe\\": "app/Modules/PropertyMe"
         }
     },
     "autoload-dev": {

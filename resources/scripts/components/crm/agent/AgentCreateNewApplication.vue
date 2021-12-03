@@ -658,7 +658,7 @@ export default {
             ],
             has_authorized: false,
             titlesDD:[
-                'Mrs','Mr','Ms'
+              'Mr.','Mrs.','Ms.','Miss','Dr.'
             ],
             idenficationTypeDD: [
                 {

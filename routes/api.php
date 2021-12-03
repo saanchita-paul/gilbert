@@ -1,16 +1,18 @@
 <?php
 
-use App\Http\Controllers\Agency\AgencyController;
-use App\Http\Controllers\Agency\AgentProfileController;
-use App\Http\Controllers\Agency\HoodUserController;
-use App\Http\Controllers\Agency\NoteController;
-use App\Http\Controllers\Agency\OfficeController;
-use App\Http\Controllers\Agency\ApplicationController;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\UserInvitationController;
 use Illuminate\Encryption\Encrypter;
-use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Broadcast;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Agency\NoteController;
+use App\Http\Controllers\Agency\AgencyController;
+use App\Http\Controllers\Agency\OfficeController;
+use App\Http\Controllers\UserInvitationController;
+use App\Http\Controllers\Agency\HoodUserController;
+use App\Http\Controllers\Agency\ApplicationController;
+use App\Http\Controllers\Agency\AgentProfileController;
+use OurProperty\Http\Controllers\OurPropertyController;
+use PropertyMe\services\FetchContacts;
 
 /*
 |--------------------------------------------------------------------------
@@ -119,5 +121,11 @@ Route::get('lnn/bot_token', function () {
 
 
 
+Route::post('/our-property/token', [OurPropertyController::class, 'getAccessToken']);
+Route::post('/our-property/lead', [OurPropertyController::class, 'createOurProperty']);
+
+
 
 Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
+
+
