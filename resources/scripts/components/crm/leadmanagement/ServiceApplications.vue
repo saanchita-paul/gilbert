@@ -193,7 +193,7 @@ import SumoService from '@scripts/services/crm/SumoService';
 import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails"
 import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
 import Spinner from "@scripts/plugins/Spinner";
-
+import { connectionServicesMapper } from '@scripts/data/ConnectionApplicationMapper';
 export default {
     name: "ServiceApplications",
     components: { SumoPlan, SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails, SoleDetails},
@@ -278,8 +278,17 @@ export default {
                return dt.service_type === 'energy';
             });
         },
+        checkEnergy(){
+
+            // this.leadSummary.connection_services.some(n=>n.title=='gas' && (n.status!==connectionServicesMapper.STATUS_UNASSIGNED&&n.status!==connectionServicesMapper.STATUS_ASSIGNED))
+            // (this.tab === this.tabMapper.Energy && !['In Progress', 'Not Selected'].includes(this.getwaterServiceStatus) )
+        },
         is_submit_disabled(){
-            if( this.tab === this.tabMapper.Water && !['In Progress', 'Not Selected'].includes(this.getwaterServiceStatus)){
+            if( (this.tab === this.tabMapper.Water && !['In Progress', 'Not Selected'].includes(this.getwaterServiceStatus))
+                // ||
+            ){
+                // connectionServicesMapper
+                // this.leadSummary.connection_services.
                 return true;
             }else{
                 return false;
@@ -295,6 +304,7 @@ export default {
     },
     watch: {
         'leadSummary.service_interests'() {
+            console.log("printing lead summary" , this.leadSummary)
             this.loadPlan();
         }
     },
@@ -369,9 +379,8 @@ export default {
         },
 
         updateService(service) {
-            //todo add update sumo event emit
+            // TODO add update sumo event emit
             console.log(service)
-
 
             if(service == 'Gas' || service == 'Power'){
                 this.onSelectProvider1('sumo');

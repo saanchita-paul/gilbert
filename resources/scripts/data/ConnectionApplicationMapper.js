@@ -26,3 +26,19 @@ export const connectionApplicationMapper = {
     '8' : 'STATUS_CLOSED',
 }
 
+
+
+export const connectionServicesMapper = {
+     'STATUS_UNASSIGNED'      :'1',
+     'STATUS_ASSIGNED'        :'2',
+     'STATUS_ESCALATED'       :'3',     
+     'STATUS_SUBMITTED'       :'4',
+     'STATUS_ACCEPTED'        :'5',
+     'STATUS_REJECTED'        :'6', //non payable
+     'STATUS_EA_PROCESSINF'   :'7',
+     'STATUS_CLOSED'          :'8',
+     'STATUS_CANT_CONNECT'    :'9',
+     'STATUS_NEEDS_MORE_INFO' :'10',
+     'AC_MANUAL_PROCESSING'   :'11',
+}
+
