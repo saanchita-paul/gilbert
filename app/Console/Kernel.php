@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Modules\PropertyMe\Commands\SavePropertyMeLeadsCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Ignite\Commands\IgniteFetchCommand;
 use App\Console\Commands\GetSellStatusCommand;
@@ -17,6 +18,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        SavePropertyMeLeadsCommand::class,
         GetSellStatusCommand::class,
         UploadConnectionDataToSFTPCommand::class,
         IgniteFetchCommand::class,
