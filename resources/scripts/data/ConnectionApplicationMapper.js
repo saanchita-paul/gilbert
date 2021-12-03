@@ -26,3 +26,7 @@ export const connectionApplicationMapper = {
     '8' : 'STATUS_CLOSED',
 }
 
+export const tenancyTypeMapper = {
+    Renter    : 1,
+    HomeOwner : 2,
+}
