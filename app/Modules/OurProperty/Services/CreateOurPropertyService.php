@@ -138,7 +138,7 @@ class CreateOurPropertyService
 
             //load Our Property
             $this->connectionApplicaton->title = $this->userRequestData->tenancy_title ?
-                ucfirst($this->userRequestData->tenancy_secondary_title): null;
+                ucfirst($this->userRequestData->tenancy_title): null;
             $this->connectionApplicaton->first_name = $this->userRequestData->tenancy_first_name ?? null;
             $this->connectionApplicaton->middle_name =  $this->userRequestData->tenancy_middle_name ?? null;
             $this->connectionApplicaton->last_name = $this->userRequestData->tenancy_last_name ?? null;
