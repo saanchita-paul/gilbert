@@ -18,7 +18,7 @@
               :items="titlesDD"
               v-model="person_details.title"
               :error-messages="errors[0]"
-              placeholder="Mr"
+              placeholder="Please choose one"
             >
             </v-select>
           </ValidationProvider>
@@ -487,7 +487,7 @@
           </ValidationProvider>
         </div>
       </div>
-      <div v-if="isNMIOptional" class="crm-text-field">
+      <div v-if="!isNMIRequired" class="crm-text-field">
         <div class="field-label">
           <span>NMI (Power)</span>
         </div>
@@ -516,7 +516,7 @@
       </div>
 
 
-        <div v-if="!isNMIOptional" class="crm-text-field">
+        <div v-if="isNMIRequired" class="crm-text-field">
             <div class="field-label">
                 <span>NMI (Power) *</span>
             </div>
@@ -545,7 +545,7 @@
         </div>
 
 
-      <div v-if="isMERNOptional" class="crm-text-field">
+      <div v-if="!isMERNRequired" class="crm-text-field">
         <div class="field-label">
           <span>MIRN (Gas)</span>
         </div>
@@ -573,7 +573,7 @@
         </div>
       </div>
 
-        <div  v-if="!isMERNOptional" class="crm-text-field">
+        <div  v-if="isMERNRequired" class="crm-text-field">
             <div class="field-label">
                 <span>MIRN (Gas) *</span>
             </div>
@@ -1025,6 +1025,7 @@ import SPECIAL_NUMBER from "@scripts/data/constants/SPECIAL_NUMBER";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import dayJs from "dayjs";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
+import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
 import { medicareRules, mediExpireDate } from '@scripts/plugins/VeeValidate';
 
 
@@ -1049,7 +1050,7 @@ export default {
     return {
       needLifeSupprt: false,
       loadNmi: false,
-      titlesDD: ["Mrs", "Mr", "Ms"],
+      titlesDD: titlesMapperForDropdown,
       minConnectionDate: LeadApplicationService.getMinConnectionDate(),
       minExpiredate: new Date().toISOString(),
       emailBillingDD: [
@@ -1078,6 +1079,7 @@ export default {
         { text: "NT", value: "Northern Territory" },
         { text: "TAS", value: "Tasmania" },
         { text: "ACT", value: "Australian Capital Territory" },
+        { text: "WA", value: "Western Australia" }, // TODO state definition can be updated
       ],
       tenantTypeDD: [
         {
@@ -1433,22 +1435,22 @@ export default {
   },
 
     computed: {
-      isNMIOptional() {
-         return  (this.services.length == 1 &&
-             this.services.findIndex((service)=> service === 'gas') != -1)? true: false;
+      isNMIRequired() {
+        return  ( Array.isArray(this.services) && this.services.some(n=>n=='power') ) ?
+                true : false ; 
       },
-        isMERNOptional() {
-            return ((this.services.length == 1 &&
-                this.services.findIndex((service)=> service === 'power') != -1) || this.lead.state === 'Queensland'
-            )? true: false;
+      isMERNRequired() {
+        return  ( Array.isArray(this.services) && this.services.some(n=>n=='gas') ) ?
+                true : false ; 
 
           }
     },
 
   watch: {
     lead: {
-      handler() {
-        // console.log('calling...')
+      handler(val) {
+        console.log('calling...', val)
+        console.log('calling...services',  this.services)
         this.synFormData();
       },
       deep: true,

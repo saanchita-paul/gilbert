@@ -65,5 +65,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         //foxie
         'foxie.suger.leads' => \Foxie\Http\Middleware\FoxieSugerLeads::class,
+        'our.property' => \OurProperty\Http\Middleware\AuthenticatOurproperty::class,
     ];
 }

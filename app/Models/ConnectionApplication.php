@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use OurProperty\Models\OurProperty;
+use PropertyMe\PropertyMeLead;
 
 /**
  * App\Models\ConnectionApplication
@@ -174,7 +176,8 @@ class ConnectionApplication extends Model
         'vendor_id',
         'is_contacted',
         'is_auto_water_submit',
-        'water_submit_response'
+        'water_submit_response',
+        'source'
     ];
 
 
@@ -237,6 +240,8 @@ class ConnectionApplication extends Model
     const SOURCE_HOOD = 0;
     const SOURCE_FOXIE = 1;
     const SOURCE_IGNITE = 2;
+    const SOURCE_OUR_PROPERTY = 4;
+    const SOURCE_PROPERTY_ME = 5;
 
     const EMAIL_BILLING_EMAIL = 1;
     const EMAIL_BILLING_PAPER = 2;
@@ -262,7 +267,9 @@ class ConnectionApplication extends Model
         'all' => self::SOURCE_ALL,
         'hood' => self::SOURCE_HOOD,
         'foxie' => self::SOURCE_FOXIE,
-        'ignite' => self::SOURCE_IGNITE
+        'ignite' => self::SOURCE_IGNITE,
+        'our-property' => self::SOURCE_OUR_PROPERTY,
+        'property_me' => self::SOURCE_PROPERTY_ME,
     ];
 
     const PLAN_TYPE_MAPPER = [
@@ -288,6 +295,10 @@ class ConnectionApplication extends Model
         self::PLAN_TYPE_SUMO_ASSURE_INDEX => self::PLAN_TYPE_SUMO_ASSURE,
         self::PLAN_TYPE_SUMO_SELECT_INDEX =>  self::PLAN_TYPE_SUMO_SELECT
 
+    ];
+
+    const AVAILABLE_USER_TITLES = [
+        'mr', 'miss', 'dr', 'mrs', 'ms'
     ];
 
     /**
@@ -352,6 +363,19 @@ class ConnectionApplication extends Model
     public function igniteLead()
     {
         return $this->hasOne(IgniteLead::class , 'connection_application_id');
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function ourPropertyLead()
+    {
+        return $this->hasOne(OurProperty::class, 'connection_application_id');
+    }
+
+    public function propertyMeLead()
+    {
+        return $this->hasOne(PropertyMeLead::class , 'connection_application_id');
     }
 
     /**
