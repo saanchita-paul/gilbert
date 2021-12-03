@@ -24,13 +24,13 @@ class CreateOurPropertyService
      *
      * @var string
     */
-    private string $email = "lenin@hood.ai";
+    private string $email = "hoodintegration@ourproperty.com.au";
     /**
      * credetial password
      *
      * @var string
     */
-    private string $password = "Hu435567";
+    private string $password = "h00dtwork266_tsh";
 
     /**
      * server generated access token
@@ -49,7 +49,7 @@ class CreateOurPropertyService
      *
      * @var string
     */
-    private string $expires_at = "2022-10-27 04:38:00";
+    private string $expires_at = "2022-12-27 04:38:00";
 
     private $connectionApplicaton;
 
