@@ -44,10 +44,10 @@ class ConnectionService extends Model
     const STATUS_ACCEPTED = 5;
     const STATUS_REJECTED = 6;
     const STATUS_EA_PROCESSINF = 7;
-    const AC_MANUAL_PROCESSING = 11;
     const STATUS_CLOSED = 8;
     const STATUS_CANT_CONNECT = 9;
     const STATUS_NEEDS_MORE_INFO = 10;
+    const AC_MANUAL_PROCESSING = 11;
 
     const WATER_STATUS_IN_PROGRESS = 7;
     const WATER_STATUS_NEED_INFO = 10;
