@@ -89,7 +89,7 @@ class WaterAutoSubmitService
         throw new Exception('invalid data in identifcation table, tenancy type');
     }
 
-    public function checkTenancyTypeDob(ConnectionApplication $connectionApplcation) : bool|Exception {
+    public function checkTenancyTypeDob(ConnectionApplication $connectionApplcation) : bool {
 
         if($connectionApplcation->tenancy_type == ConnectionApplication::TENANCY_TYPE_HOME_OWNER){
             return true;
