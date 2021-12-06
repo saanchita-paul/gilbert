@@ -4,7 +4,20 @@
 
             <div class="d-flex" >
                 <div class="mx-4 mb-0" >
-                    <p class="page-title mb-0"><span><v-img @click="goToBack()" src="/assets/images/icons/back_btn.png" max-height="40px" max-width="40px" class="back-btn mt-1"> </v-img></span>{{leadSummary.applicant_name}} </p>
+                    <p class="page-title mb-0">
+                        <span>
+                            <v-img @click="goToBack()" src="/assets/images/icons/back_btn.png" max-height="40px" max-width="40px" class="back-btn mt-1">
+                            </v-img>
+                        </span>
+                        <span>
+                            {{leadSummary.applicant_name}}
+                            <div style="margin-left:30px; margin-top: -10px;"> 
+                                <IdCopyToClipboard :applicationId="leadSummary.id"/>
+                            </div>
+                        </span>
+                    </p>
+                    
+                    
                     <!-- <small class="font-weight-bold">
                        Preference
                         <span class="mx-1 pa-2"  :class="{'mx-1':isActive('Power'), 'pa-2':isActive('Power'),}" ><v-icon size="16" :color="getColor('Power')">mdi-flash</v-icon> Power</span>
@@ -92,8 +105,10 @@
 <script>
 import { leadSourceMap } from '@scripts/data/LeadSourceMap'
 import { connectionApplicationMapper } from '@scripts/data/ConnectionApplicationMapper';
+import IdCopyToClipboard from '@scripts/components/common/IdCopyToClipboard.vue';
 export default {
 name: "LeadDetailsHeader",
+    components:{ IdCopyToClipboard },
     props: {
         leadSummary: {
             require: true
