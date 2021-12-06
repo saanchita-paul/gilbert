@@ -151,7 +151,7 @@
         </v-tabs>
         <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
 
-            <v-btn :disabled="is_submit_disabled" color="#542E89" @click="submit" class="white--text">
+            <v-btn :disabled="is_submit_disabled()" color="#542E89" @click="submit" class="white--text">
                     Submit for connection
             </v-btn>
 
@@ -278,29 +278,6 @@ export default {
                return dt.service_type === 'energy';
             });
         },
-        checkEnergy(){
-            let conditions = n =>
-                             (n.service_type=='gas' || n.service_type=='power' ) &&
-                             this.tab === this.tabMapper.Energy && 
-                             n.status!==connectionServicesMapper.STATUS_UNASSIGNED && 
-                             n.status!==connectionServicesMapper.STATUS_ASSIGNED;
-                             
-            if( this.leadSummary.connection_services.some(n=>conditions(n)) ){
-                return true;
-            } else {
-                return false;
-            }
-        },
-        is_submit_disabled(){
-            if( ( this.tab === this.tabMapper.Water && !['In Progress', 'Not Selected'].includes(this.getwaterServiceStatus) )
-                ||
-               this.checkEnergy 
-            ){
-                return true;
-            } else{
-                return false;
-            }
-        },
         tabMapper(){
             return {
                 'Energy'   : 0,
@@ -336,6 +313,16 @@ export default {
 
     },
     methods: {
+        is_submit_disabled() {
+            switch (this.tab) {
+                case this.tabMapper.Water:
+                    return !LeadApplicationService.canSubmitWater(this.leadSummary.connection_services)
+                case this.tabMapper.Energy:
+                    return !LeadApplicationService.canSubmitEnergy(this.leadSummary.connection_services);
+                default:
+                    return true;
+            }
+        },
         soleDialog(){
             this.solePlanDialog = !this.solePlanDialog;
         },

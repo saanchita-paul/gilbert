@@ -91,6 +91,9 @@ class GetSalesRequestStaus
         return $this->manageConnectionList($results->getResponseBody());
     }
 
+    /**
+     * @deprecated
+     */
     public function manageConnectionList($results)
     {
         $data = (json_decode($results));
@@ -104,7 +107,7 @@ class GetSalesRequestStaus
                 }
 
                 if($quote->status == 'PROCESSING') {
-                    $status = ConnectionApplication::STATUS_EA_PROCESSING;
+                    $status = ConnectionApplication::STATUS_EA_PROCESSINF;
                 }
 
 

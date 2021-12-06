@@ -1,4 +1,9 @@
 import LeadApplicationAPI from "@scripts/api/crm/LeadApplicationAPI";
+import {
+    connectionServicesMapper,
+    STATUSES_FOR_ENERGY_SUBMIT,
+    STATUSES_FOR_WATER_SUBMIT
+} from "@scripts/data/ConnectionApplicationMapper";
 
 export default {
     loadMetrics: (data) => LeadApplicationAPI.getMetrics(data),
@@ -32,4 +37,24 @@ export default {
         return date.toISOString()
     },
 
+    /**
+     * checking if we can submit energy
+     *
+     * @param {Object[]} services
+     *
+     * @return boolean
+     */
+    canSubmitEnergy: services => services.some(service => STATUSES_FOR_ENERGY_SUBMIT.includes(service.status)),
+
+    /**
+     * checking if we can submit water
+     *
+     * @param {Object[]} services
+     *
+     * @return boolean
+     */
+    canSubmitWater: services => {
+        let water = services.find(service => service.service_type === 'water');
+        return water ? services.some(service => STATUSES_FOR_WATER_SUBMIT.includes(service.status)) : true;
+    },
 }
