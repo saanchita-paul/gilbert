@@ -26,7 +26,6 @@ name: "EnergyPlan",
         },
 
         isActive() {
-            console.log('hei i am in plan', this.plan, this.selectedPlan);
             if(this.plan.id === this.selectedPlan) {
                 this.selectPlan(this.plan);
             }

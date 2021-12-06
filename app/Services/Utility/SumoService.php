@@ -32,6 +32,7 @@ class SumoService
         "Northern Territory" => 'NT',
         "Tasmania" => 'TAS',
         "Australian Capital Territory" => 'ACT',
+        "Western Australia" => 'WA',
     ];
 
     const MAP_TYPE = [
@@ -58,6 +59,7 @@ class SumoService
         "Northern Territory" => '08',
         "Tasmania" => '03',
         "Australian Capital Territory" => '02',
+        "Western Australia" => '08', // TODO recheck on documentation
     ];
 
     /**
