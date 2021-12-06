@@ -275,7 +275,7 @@ export default {
           return leadSourceMap;
       },
       date_of_birth() {
-          return dayJs(this.lead.date_of_birth,'YYYY-MM-DD').format('DD/MM/YYYY');
+          return dayJs(dayJs(this.lead.date_of_birth,'YYYY-MM-DD').format('DD/MM/YYYY')).isValid() ? dayJs(this.lead.date_of_birth,'YYYY-MM-DD').format('DD/MM/YYYY') : null;
       },
         moving_data() {
             return dayJs(this.lead.moving_date,'YYYY-MM-DD').format('DD/MM/YYYY');
