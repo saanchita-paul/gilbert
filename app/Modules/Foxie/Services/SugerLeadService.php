@@ -58,12 +58,22 @@ class SugerLeadService
      * @return void
      */
     private function setAttribute(Request $request){
+        try {
+            $dob = Carbon::parse($request->birthdate)->format("Y-m-d");
+        } catch (\Exception $exception) {
+            $dob = null;
+            \Log::error('***problem in date dob parsing, sugerLeadService, setAttribute***' , 
+            [ 'msg'  => $exception->getMessage(), 
+              'trace'=> $exception->getTraceAsString()  
+            ]);
+        }
+
         $this->connectionApplication->first_name = $request->first_name ?? 'Iron';
         $this->connectionApplication->last_name = $request->last_name ?? 'Man' ;
         $this->connectionApplication->source = ConnectionApplication::SOURCE_FOXIE ;
         $this->connectionApplication->email = $request->email1 ?? 'abc@hood.ai';
         $this->connectionApplication->address_text = $request->full_address_c ?? '';
-        $this->connectionApplication->dob = date("Y-m-d", strtotime($request->birthdate)) ?? '1991/08/09';
+        $this->connectionApplication->dob = $dob ?? '1991/08/09';
         $this->connectionApplication->moving_date = date("Y-m-d", strtotime($request->move_in_date_c))  ?? '2021/10/02';
         $this->connectionApplication->address_unit = $request->primary_address_unit_c ?? '';
         $this->connectionApplication->street_address = $request->primary_address_street ?? 'Queen Street';
@@ -104,7 +114,15 @@ class SugerLeadService
         $identification = new Identification;
 
         try {
-            $formattedDate = Carbon::parse($request->id_expiry_c)->format("Y-m-d");
+            try {
+                $formattedDate = Carbon::parse($request->id_expiry_c)->format("Y-m-d");
+            } catch (\Exception $exception) {
+                $formattedDate = null;
+                \Log::error('***problem in date id_expiry_c parsing , sugerLeadService, setIdentificationTable***' , 
+                [ 'msg' => $exception->getMessage(), 
+                  'trace'=> $exception->getTraceAsString()  
+                ]);
+            }
             $mappedType = Identification::TYPE_MAP[$request->id_type_c] ?? null;
 
             if($type == self::TYPE_CREATE){

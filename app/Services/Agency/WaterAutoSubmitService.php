@@ -26,7 +26,7 @@ class WaterAutoSubmitService
         }
     }
 
-    private function updateConnectionApplication($connectionApplcation){
+    private function updateConnectionApplication(ConnectionApplication $connectionApplcation){
 
         try {
             $connectionApplcation->update(['is_auto_water_submit'=> WaterAutoSubmitService::STATUS_AUTO_SUBMIT_TRUE ]);
@@ -39,7 +39,7 @@ class WaterAutoSubmitService
     }
 
 
-    private function validateData($connectionApplcation){
+    private function validateData(ConnectionApplication $connectionApplcation){
         info('checking connection application');
         \Log::info($connectionApplcation);
         // \Log::info($connectionApplcation->identification['connection_application_id']);
@@ -51,7 +51,7 @@ class WaterAutoSubmitService
                     isset($connectionApplcation->postcode)  &&
                     isset($connectionApplcation->first_name) &&
                     isset($connectionApplcation->last_name) &&
-                    isset($connectionApplcation->dob) &&
+                    $this->checkTenancyTypeDob($connectionApplcation) &&
                     isset($connectionApplcation->email) &&
                     isset($connectionApplcation->phone)  &&
                     isset($connectionApplcation->state)  &&
@@ -69,10 +69,10 @@ class WaterAutoSubmitService
                 if(
                     isset($connectionApplcation->identification['card_number']) &&
                     isset($connectionApplcation->identification['expire_date'])
-                ){
+                ) {
                     return true;
-                }else{
-                    throw new Exception('invalid data in identifcation table');
+                } else {
+                    return $this->checkTenancyType($connectionApplcation);
                 }
 
 
@@ -81,6 +81,22 @@ class WaterAutoSubmitService
             \Log::error($exception->getMessage());
             \Log::error($exception->getTraceAsString());
             throw new Exception("Error Processing Request", 1);
+        }
+    }
+
+    public function checkTenancyType(ConnectionApplication $connectionApplcation) : bool {
+        return $connectionApplcation->tenancy_type == ConnectionApplication::TENANCY_TYPE_HOME_OWNER ? true : 
+        throw new Exception('invalid data in identifcation table, tenancy type');
+    }
+
+    public function checkTenancyTypeDob(ConnectionApplication $connectionApplcation) : bool|Exception {
+
+        if($connectionApplcation->tenancy_type == ConnectionApplication::TENANCY_TYPE_HOME_OWNER){
+            return true;
+        }else if(isset($connectionApplcation->dob)){
+            return true;
+        }else{
+            throw new Exception('invalid data in identifcation table, tenancy type');
         }
     }
 }

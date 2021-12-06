@@ -269,7 +269,7 @@ export default {
 
         },
         date_of_birth() {
-            return dayJs(this.application.date_of_birth,'yyyy-dd-mm').format(DATE_FORMAT.DB_DATE);
+          return dayJs(dayJs(this.application.date_of_birth,'YYYY-MM-DD').format('DD/MM/YYYY')).isValid() ? dayJs(this.application.date_of_birth,'YYYY-MM-DD').format('DD/MM/YYYY') : null;
         },
 
         moving_date() {
