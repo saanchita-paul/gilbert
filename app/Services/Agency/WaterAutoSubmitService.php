@@ -96,7 +96,7 @@ class WaterAutoSubmitService
         }else if(isset($connectionApplcation->dob)){
             return true;
         }else{
-            throw new Exception('invalid data in identifcation table, tenancy type');
+            return false;
         }
     }
 }
