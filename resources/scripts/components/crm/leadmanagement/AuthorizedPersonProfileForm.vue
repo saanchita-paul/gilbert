@@ -231,7 +231,7 @@ name: "AuthorizedPersonProfileForm",
           authorized_person_dob:  (new DayJs((new Date()).setFullYear(2000))).format('YYYY-MM-DD'),
           showAuthoritydob: false,
           titlesDD:[
-              'Mrs','Mr','Ms'
+              'Mr.','Mrs.','Ms.','Miss','Dr.'
           ],
       }
     },

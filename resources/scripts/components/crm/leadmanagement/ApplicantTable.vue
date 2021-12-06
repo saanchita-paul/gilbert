@@ -12,7 +12,7 @@
                         item-value="value"
                         :items="srcOptions"
                         outlined
-                        dense 
+                        dense
                     >
                         <template v-slot:item="{ item, attrs, on }">
                             <v-list-item
@@ -127,6 +127,8 @@ export default {
                 {text: 'Hood Agent Portal', value: 'hood', icon: '/assets/images/icons/company/hood.png'},
                 {text: 'Foxie CRM', value: 'foxie', icon: '/assets/images/icons/company/foxie.png'},
                 {text: 'Ignite ', value: 'ignite', icon: '/assets/images/icons/company/ignite.png'},
+                {text: 'Our Property', value: 'our-property', icon: '/assets/images/icons/company/our-property.png'},
+                {text: 'PropertyMe ', value: 'property_me', icon: '/assets/images/icons/company/propertyMe.png'},
             ],
             headers:  [
                 {
