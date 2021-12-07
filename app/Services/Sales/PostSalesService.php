@@ -193,8 +193,7 @@ class PostSalesService
 
         } catch (\Exception $e)
         {
-            Log::info($e->getMessage());
-            return $e->getMessage();
+            throw new \Exception("EA Sales API ERROR: " . $e->getMessage());
         }
 
 
