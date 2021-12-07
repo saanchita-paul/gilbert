@@ -72,12 +72,16 @@ export default {
                 return {text: 'In Progress', color: 'blue'};
             case connectionServicesMapper.STATUS_ACCEPTED:
                 return {text: 'Accepted', color: 'green'};
+            case connectionServicesMapper.STATUS_EA_SUBMIT:
+                return {text: 'In Progress', color: 'green'};
+            case connectionServicesMapper.STATUS_AC_MANUAL_PROCESSING:
+                return {text: 'Manual Processing', color: 'orange'};
             case connectionServicesMapper.STATUS_CANT_CONNECT:
             case connectionServicesMapper.STATUS_REJECTED:
                 return {text: "Can't Connect", color: 'red'};
             default:
                 return {
-                    text: status ?  (status[0].toUpperCase() + status.slice(1)).replace(/_/g, " ") : {},
+                    text: 'Unknown Status',
                     color: 'black'
                 };
         }

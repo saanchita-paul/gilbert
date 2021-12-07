@@ -151,7 +151,7 @@
         </v-tabs>
         <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
 
-            <v-btn :disabled="is_submit_disabled()" color="#542E89" @click="submit" class="white--text">
+            <v-btn :disabled="!canSubmit()" color="#542E89" @click="submit" class="white--text">
                     Submit for connection
             </v-btn>
 
@@ -312,12 +312,12 @@ export default {
 
     },
     methods: {
-        is_submit_disabled() {
+        canSubmit() {
             switch (this.tab) {
                 case this.tabMapper.Water:
-                    return !LeadApplicationService.canSubmitWater(this.leadSummary.connection_services)
+                    return LeadApplicationService.canSubmitWater(this.leadSummary.connection_services)
                 case this.tabMapper.Energy:
-                    return !LeadApplicationService.canSubmitEnergy(this.leadSummary.connection_services);
+                    return LeadApplicationService.canSubmitEnergy(this.leadSummary.connection_services);
                 default:
                     return true;
             }
