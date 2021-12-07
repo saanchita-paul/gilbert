@@ -64,5 +64,13 @@ export default {
             text: 'Hood Agent',
             value: 'hood_agent'
         },
+        {
+            text: 'External Team Leader',
+            value: 'hood_external_team_lead'
+        },
+        {
+            text: 'External Customer Representative',
+            value: 'hood_external_customer_rep'
+        },
     ]
 }
