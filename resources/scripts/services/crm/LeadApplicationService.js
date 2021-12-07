@@ -57,4 +57,29 @@ export default {
         let water = services.find(service => service.service_type === 'water');
         return water ? services.some(service => STATUSES_FOR_WATER_SUBMIT.includes(service.status)) : true;
     },
+
+    /**
+     *
+     * @param status
+     * @return {{color: string, text: string}}
+     */
+    mapStatus: status => {
+        switch (status) {
+            case connectionServicesMapper.STATUS_UNASSIGNED:
+            case connectionServicesMapper.STATUS_ASSIGNED:
+            case connectionServicesMapper.STATUS_ESCALATED:
+            case connectionServicesMapper.STATUS_IN_PROGRESS:
+                return {text: 'In Progress', color: 'blue'};
+            case connectionServicesMapper.STATUS_ACCEPTED:
+                return {text: 'Accepted', color: 'green'};
+            case connectionServicesMapper.STATUS_CANT_CONNECT:
+            case connectionServicesMapper.STATUS_REJECTED:
+                return {text: "Can't Connect", color: 'red'};
+            default:
+                return {
+                    text: status ?  (status[0].toUpperCase() + status.slice(1)).replace(/_/g, " ") : {},
+                    color: 'black'
+                };
+        }
+    }
 }

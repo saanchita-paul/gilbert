@@ -13,9 +13,9 @@
                                   <v-icon color="yellow">mdi-flash</v-icon>Energy
                               </span>
                         </p>
-                        <p class="py-0 my-0 pl-4 service-status active-power-subtitle"
-                        >
-                            {{getenegryServiceStatus}}</p>
+<!--                        <p class="py-0 my-0 pl-4 service-status active-power-subtitle"-->
+<!--                        >-->
+<!--                            {{getenegryServiceStatus}}</p>-->
                 </v-card>
             </v-tab>
             <v-tab  class="px-0 py-3 tab-capital-case" >
@@ -193,7 +193,6 @@ import SumoService from '@scripts/services/crm/SumoService';
 import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails"
 import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
 import Spinner from "@scripts/plugins/Spinner";
-import { connectionServicesMapper } from '@scripts/data/ConnectionApplicationMapper';
 export default {
     name: "ServiceApplications",
     components: { SumoPlan, SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails, SoleDetails},
