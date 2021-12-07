@@ -24,13 +24,13 @@ class CreateOurPropertyService
      *
      * @var string
     */
-    private string $email = "lenin@hood.ai";
+    private string $email = "hoodintegration@ourproperty.com.au";
     /**
      * credetial password
      *
      * @var string
     */
-    private string $password = "Hu435567";
+    private string $password = "h00dtwork266_tsh";
 
     /**
      * server generated access token
@@ -49,7 +49,7 @@ class CreateOurPropertyService
      *
      * @var string
     */
-    private string $expires_at = "2022-10-27 04:38:00";
+    private string $expires_at = "2022-12-27 04:38:00";
 
     private $connectionApplicaton;
 
@@ -142,7 +142,7 @@ class CreateOurPropertyService
 
             //load Our Property
             $this->connectionApplicaton->title = $this->userRequestData->tenancy_title ?
-                ucfirst($this->userRequestData->tenancy_secondary_title): null;
+                ucfirst($this->userRequestData->tenancy_title): null;
             $this->connectionApplicaton->first_name = $this->userRequestData->tenancy_first_name ?? null;
             $this->connectionApplicaton->middle_name =  $this->userRequestData->tenancy_middle_name ?? null;
             $this->connectionApplicaton->last_name = $this->userRequestData->tenancy_last_name ?? null;
