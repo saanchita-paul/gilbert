@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Log;
 
 class PostSalesService
 {
+    use SalesResponseHandle;
 
     private $connection;
     private $identification;
@@ -198,6 +199,9 @@ class PostSalesService
 
     }
 
+    /**
+     * @throws \Exception
+     */
     public function processEaData($results)
     {
         Log::info('End Sale API Response');
@@ -209,31 +213,7 @@ class PostSalesService
         $quotes = $submitSallData?->quotes;
         $salesId = $submitSallData?->id;
 
-
-        foreach ($quotes as $quote)
-        {
-            $status = null;
-            if($quote->status == 'REJECTED')
-            {
-                $status = ConnectionApplication::STATUS_REJECTED;
-            }
-
-            if($quote->status == 'PROCESSING')
-            {
-                $status = ConnectionApplication::STATUS_EA_PROCESSINF;
-            }
-
-            if($quote->fuel === 'GAS') {
-                $this->updateService(  'gas', $status);
-            }
-            if($quote->fuel === 'ELE') {
-                $this->updateService('power', $status);
-            }
-
-//            $this->connection->update(['status'=>$status,'ea_sales_id'=> $salesId,'assigned_to'=> null]);
-
-        }
-
+        $this->handleResponse($quotes, $this->connection->id);
     }
 
 
@@ -396,16 +376,6 @@ class PostSalesService
     private function mapPlan($plan):string
     {
         return ConnectionService::ENERGY_PLAN_MAPPER[$plan];
-    }
-
-    public function updateService( $serviceType, $status = null) {
-        info('service updated');
-        $service = ConnectionService::query()
-            ->where('connection_application_id', $this->connection->id)
-            ->where('service_type', $serviceType)
-            ->first();
-        $service->status = $status;
-        $service->update();
     }
 
 }

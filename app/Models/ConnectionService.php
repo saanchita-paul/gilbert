@@ -56,6 +56,7 @@ class ConnectionService extends Model
     const WATER_STATUS_CANT_CONNECT = 9;
 
     const PROVIDER_SUMO = 'sumo';
+    const PROVIDER_EA = 'ea';
 
 
     const STATUS_MAPPING = [
@@ -106,6 +107,11 @@ class ConnectionService extends Model
     public function connectionApplication()
     {
         return $this->belongsTo(ConnectionApplication::class);
+    }
+
+    public function reasons()
+    {
+        return $this->hasMany(RejectionReason::class, 'connection_service_id');
     }
 
     public function allApplicationMetricsCount(array $matrixReq, User $user)
