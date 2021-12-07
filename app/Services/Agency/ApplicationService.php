@@ -162,10 +162,10 @@ class ApplicationService
         if(isset($identificationData['medicare_expire_date'])) {
             unset($identificationData['medicare_expire_date']);
         }
-        
+
         if ($identification) {
             $identification->update($identificationData);
-        
+
         } else{
             $identificationData['connection_application_id'] = $id;
             return Identification::create($identificationData);
@@ -207,7 +207,7 @@ class ApplicationService
 
 
     /** set submitted_at to connection_services table
-     * 
+     *
      * @param int $applicationId
      * @param string $type
      * @param array $service_interests
@@ -216,7 +216,7 @@ class ApplicationService
     public function setSubmittedAtByServiceType(int $applicationId, string $type, array $service_interests = []) : bool {
         try {
             $query = ConnectionService::where('connection_application_id' , $applicationId);
-            
+
             if ($type=="energy"){
                 $servicesInterests = array_filter(array_unique($service_interests) , function($var){
                     return ($var == 'power' || $var == 'gas');
@@ -226,29 +226,24 @@ class ApplicationService
                 $query = $query->where('service_type' , strtolower($type));
             }
             $query->update(["submitted_at" => now()]);
-            
+
             return true;
         } catch (\Exception $exception) {
-            \Log::error("**Service submitted at, service not found**", 
+            \Log::error("**Service submitted at, service not found**",
             ["msg" => $exception->getMessage(), "trace" => $exception->getTraceAsString()]);
             return false;
         }
     }
 
     private function checkAndAddWaterService(array $applications , $application){
-        info("printing application data");
-        \Log::info($applications);
-        \Log::info($applications['lead']['service_interests']);
         // if( array_search("water",$applications['lead']['service_interests'])){
         //     info("water found");
         // };
         if( $applications['lead']['submit_type'] == 'water'){
-            info("water found");
 
             $waterService =  ConnectionService::where("connection_application_id" , $application->id)
                 ->where( "service_type" ,  "water")->first();
             if(!$waterService){
-                info('creating water...');
                 $application->connectionServices()->create(['service_type' => 'water']);
             }else{
                 info('water found inside');
@@ -284,7 +279,7 @@ class ApplicationService
     }
 
     /**
-     * 
+     *
      * @param array $application
      * @param int $applicationId
      * @param User $user
@@ -311,7 +306,7 @@ class ApplicationService
 
             return $existingApplication;
         } catch (\Exception $exception) {
-            \Log::error("**CloseApplication**", 
+            \Log::error("**CloseApplication**",
             ["msg" => $exception->getMessage(), "trace" => $exception->getTraceAsString()]);
         }
     }
@@ -367,7 +362,7 @@ class ApplicationService
 
     private function calculateVendorId($id)
     {
-        return 'HD2_CRM'.str_pad($id, 10, "0", STR_PAD_LEFT);;
+        return 'HD2_CRM'.str_pad($id, 10, "0", STR_PAD_LEFT);
     }
 
     public function closeApplication($id)
