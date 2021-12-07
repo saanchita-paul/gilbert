@@ -420,4 +420,16 @@ class ConnectionApplication extends Model
             ->update(['fast_connect_customer_reference' => $ref]);
     }
 
+    public function getAgencyName()
+    {
+        return match ($this->source) {
+            ConnectionApplication::SOURCE_HOOD => $this->office?->name,
+            ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agency_name,
+            ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agency_name,
+            ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agency_name,
+            ConnectionApplication::SOURCE_PROPERTY_ME => $this->propertyMeLead?->agency_name,
+            default => ''
+        };
+    }
+
 }
