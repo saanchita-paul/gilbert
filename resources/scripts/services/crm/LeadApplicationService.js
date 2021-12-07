@@ -1,4 +1,9 @@
 import LeadApplicationAPI from "@scripts/api/crm/LeadApplicationAPI";
+import {
+    connectionServicesMapper,
+    STATUSES_FOR_ENERGY_SUBMIT,
+    STATUSES_FOR_WATER_SUBMIT
+} from "@scripts/data/ConnectionApplicationMapper";
 
 export default {
     loadMetrics: (data) => LeadApplicationAPI.getMetrics(data),
@@ -32,4 +37,53 @@ export default {
         return date.toISOString()
     },
 
+    /**
+     * checking if we can submit energy
+     *
+     * @param {Object[]} services
+     *
+     * @return boolean
+     */
+    canSubmitEnergy: services => services.some(service => STATUSES_FOR_ENERGY_SUBMIT.includes(service.status)),
+
+    /**
+     * checking if we can submit water
+     *
+     * @param {Object[]} services
+     *
+     * @return boolean
+     */
+    canSubmitWater: services => {
+        let water = services.find(service => service.service_type === 'water');
+        return water ? services.some(service => STATUSES_FOR_WATER_SUBMIT.includes(service.status)) : true;
+    },
+
+    /**
+     *
+     * @param status
+     * @return {{color: string, text: string}}
+     */
+    mapStatus: status => {
+        switch (status) {
+            case connectionServicesMapper.STATUS_UNASSIGNED:
+            case connectionServicesMapper.STATUS_ASSIGNED:
+            case connectionServicesMapper.STATUS_ESCALATED:
+            case connectionServicesMapper.STATUS_IN_PROGRESS:
+                return {text: 'In Progress', color: 'blue'};
+            case connectionServicesMapper.STATUS_ACCEPTED:
+                return {text: 'Accepted', color: 'green'};
+            case connectionServicesMapper.STATUS_EA_SUBMIT:
+                return {text: 'In Progress', color: 'green'};
+            case connectionServicesMapper.STATUS_AC_MANUAL_PROCESSING:
+                return {text: 'Manual Processing', color: 'orange'};
+            case connectionServicesMapper.STATUS_CANT_CONNECT:
+            case connectionServicesMapper.STATUS_REJECTED:
+                return {text: "Can't Connect", color: 'red'};
+            default:
+                return {
+                    text: 'Unknown Status',
+                    color: 'black'
+                };
+        }
+    }
 }
