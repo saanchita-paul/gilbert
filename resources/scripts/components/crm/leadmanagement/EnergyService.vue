@@ -7,8 +7,8 @@
                 :style="{color: this.statusObj.color}"
             >{{this.statusObj.text}}
             </p>
-            <p class="reason" v-if="service && service.reason">
-                {{service.reason}}
+            <p class="reason ma-0" v-for="reason in reasons" :key="reason">
+                {{reason}}
             </p>
         </div>
 </template>
@@ -40,6 +40,14 @@ export default {
                 return this.leadSummary.connection_services?.find(service => service.service_type === this.title.toLowerCase())
             }
             return null
+        },
+        reasons() {
+            const reasons = this.service?.reasons;
+
+            if (Array.isArray(reasons)) {
+                return reasons.map(reason => reason?.reason_text || '')
+            }
+            return []
         }
     },
     methods: {
