@@ -98,7 +98,8 @@ class ConnectionService extends Model
         'reason',
         'connection_date',
         'provider_name',
-        'plan_type'
+        'plan_type',
+        'lead_reference',
     ];
 
     /**

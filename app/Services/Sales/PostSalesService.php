@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use GraphQL\Client;
 use GraphQL\Mutation;
 use GraphQL\Variable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -213,7 +214,7 @@ class PostSalesService
         $quotes = $submitSallData?->quotes;
         $salesId = $submitSallData?->id;
 
-        $this->handleResponse($quotes, $this->connection->id);
+        $this->handleResponse($quotes, $this->connection->id, ['lead_reference' => $salesId]);
     }
 
 
@@ -347,10 +348,18 @@ class PostSalesService
 
         $servicePlan = [];
 
-        $gasService = ConnectionService::query()->where([['connection_application_id', '=', $this->connection->id],
-            ['service_type','=', 'gas']])->first();
-        $eleService = ConnectionService::query()->where([['connection_application_id', '=', $this->connection->id],
-            ['service_type','=', 'power']])->first();
+        $gasService = ConnectionService::query()->where([
+            ['connection_application_id', '=', $this->connection->id],
+            ['service_type','=', ConnectionService::TYPE_GAS],
+            ['lead_reference', null],
+        ])->first();
+
+
+        $eleService = ConnectionService::query()->where([
+            ['connection_application_id', '=', $this->connection->id],
+            ['service_type','=',  ConnectionService::TYPE_ELECTRICITY],
+            ['lead_reference', null],
+        ])->first();
 
 
         if(!is_null($gasService)) {
