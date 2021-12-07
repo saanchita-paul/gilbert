@@ -23,7 +23,7 @@ export const connectionServicesMapper = {
      'STATUS_SUBMITTED'       : 4,
      'STATUS_ACCEPTED'        : 5,
      'STATUS_REJECTED'        : 6, //non payable
-     'STATUS_EA_PROCESSINF'   : 7,
+     'STATUS_EA_PROCESSING'   : 12,
      'STATUS_IN_PROGRESS'   : 7,
      'STATUS_CLOSED'          : 8,
      'STATUS_CANT_CONNECT'    : 9,
@@ -33,9 +33,11 @@ export const connectionServicesMapper = {
 
 export const STATUSES_FOR_ENERGY_SUBMIT = [
     connectionServicesMapper.STATUS_ASSIGNED,
+    connectionServicesMapper.STATUS_ASSIGNED,
     connectionServicesMapper.STATUS_UNASSIGNED,
     connectionServicesMapper.STATUS_CANT_CONNECT,
     connectionServicesMapper.STATUS_REJECTED,
+    connectionServicesMapper.STATUS_IN_PROGRESS,
 ]
 
 export const STATUSES_FOR_WATER_SUBMIT = [
