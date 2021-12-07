@@ -47,3 +47,8 @@ export const STATUSES_FOR_WATER_SUBMIT = [
     connectionServicesMapper.STATUS_CANT_CONNECT,
 ]
 
+export const tenancyTypeMapper = {
+    Renter    : 1,
+    HomeOwner : 2,
+}
+

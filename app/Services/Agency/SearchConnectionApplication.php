@@ -67,11 +67,13 @@ class SearchConnectionApplication
             if ($this->leadType === 'submitted') {
                 $builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
                     ? $builder->whereIn('status', [4, 5, 6, 7])
-                    : $builder->where('assigned_to', $user->profile->id);
+                    : $builder->where('assigned_to', $user->profile->id)
+                              ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED);
             } else {
                 $builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
                     ? $builder->where('status', ConnectionApplication::STATUS_MAPPING[$this->leadType])
-                    : $builder->where('assigned_to', $user->profile->id);
+                    : $builder->where('assigned_to', $user->profile->id)
+                              ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED);
             }
 
         }

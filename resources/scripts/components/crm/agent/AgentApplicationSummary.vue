@@ -1,6 +1,7 @@
 <template>
     <v-card class="hood-card" v-if="application">
         <h3 class="page-title">{{application.applicant_name }}</h3>
+        <IdCopyToClipboard :applicationId="application.id"/>
         <p class="sub-title mt-4 mb-2">Personal Details</p>
 <!--        <table  class="application-info layout-fixed-table">-->
 <!--            <tr>-->
@@ -245,9 +246,10 @@
 import dayJs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
-
+import IdCopyToClipboard from '@scripts/components/common/IdCopyToClipboard.vue';
 export default {
     name: "AgentApplicationSummary",
+    components:{IdCopyToClipboard},
     props: ["application"],
     data() {
         return {
@@ -266,7 +268,7 @@ export default {
 
         },
         date_of_birth() {
-            return dayJs(this.application.date_of_birth,'yyyy-dd-mm').format(DATE_FORMAT.DB_DATE);
+          return dayJs(dayJs(this.application.date_of_birth,'YYYY-MM-DD').format('DD/MM/YYYY')).isValid() ? dayJs(this.application.date_of_birth,'YYYY-MM-DD').format('DD/MM/YYYY') : null;
         },
 
         moving_date() {

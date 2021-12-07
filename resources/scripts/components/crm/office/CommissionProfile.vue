@@ -38,7 +38,6 @@
                 v-model="profile.water"
                 @input="updateProfile"
                 outlined
-                disabled
                 dense
                 prepend-inner-icon="mdi-water blue-grey--text"
                 :error-messages=" errors[0]"
@@ -51,7 +50,6 @@
                 v-model="profile.internet"
                 @input="updateProfile"
                 outlined
-                disabled
                 dense
                 prepend-inner-icon="mdi-wifi black--text"
                 :error-messages=" errors[0]"
