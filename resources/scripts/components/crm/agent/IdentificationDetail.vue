@@ -42,7 +42,7 @@
                        transition="scale-transition"
                        offset-y
                        min-width="290px"
-                   >:rules="`${isTenancyHomeOwner?'':'required'}`"
+                   >
                        <template v-slot:activator="{ on, attrs }">
                            <ValidationProvider
                                name="Expiry Date"
