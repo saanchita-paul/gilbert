@@ -278,19 +278,17 @@ class PostSalesService
         }
 
         $servicePlan = [];
+        $gasService = ConnectionService::query()
+            ->where('connection_application_id',  $this->connection->id )
+            ->where('service_type', ConnectionService::TYPE_GAS)
+            ->whereNull('lead_reference')
+            ->first();
 
-        $gasService = ConnectionService::query()->where([
-            ['connection_application_id', '=', $this->connection->id],
-            ['service_type','=', ConnectionService::TYPE_GAS],
-            ['lead_reference', null],
-        ])->first();
-
-
-        $eleService = ConnectionService::query()->where([
-            ['connection_application_id', '=', $this->connection->id],
-            ['service_type','=',  ConnectionService::TYPE_ELECTRICITY],
-            ['lead_reference', null],
-        ])->first();
+        $eleService = ConnectionService::query()
+            ->where('connection_application_id',  $this->connection->id )
+            ->where('service_type', ConnectionService::TYPE_ELECTRICITY)
+            ->whereNull('lead_reference')
+            ->first();
 
 
         if(!is_null($gasService)) {
