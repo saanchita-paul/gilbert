@@ -53,7 +53,8 @@
             "OurProperty\\": "app/Modules/OurProperty",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "PropertyMe\\": "app/Modules/PropertyMe"
+            "PropertyMe\\": "app/Modules/PropertyMe",
+            "TSA\\": "app/Modules/TSA"
         }
     },
     "autoload-dev": {
