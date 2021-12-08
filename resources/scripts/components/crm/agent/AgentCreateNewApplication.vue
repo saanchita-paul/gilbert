@@ -704,7 +704,8 @@ export default {
             return tenancyTypeMapper;
         },
         isTenancyHomeOwner(){
-            return this.application.tenancy_type===tenancyTypeMapper.HomeOwner;
+            // return this.application.tenancy_type===tenancyTypeMapper.HomeOwner;
+            return false;
         }
     },
     methods: {
