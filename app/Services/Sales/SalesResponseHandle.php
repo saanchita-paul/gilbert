@@ -47,7 +47,13 @@ trait SalesResponseHandle
     private function saveRejectionReasons(array $data, int $leadId, string $serviceType)
     {
         $reasons = [];
+
+        /** @var ConnectionService $service */
         $service = $this->getServiceBuilder($leadId, $serviceType)->first();
+
+        if ($service) {
+            $service->reasons()->delete();
+        }
 
         foreach ($data as $reason) {
             $reasons[] = [
