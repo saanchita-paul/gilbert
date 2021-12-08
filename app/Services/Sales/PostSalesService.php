@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use GraphQL\Client;
 use GraphQL\Mutation;
 use GraphQL\Variable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -22,8 +23,6 @@ class PostSalesService
     private $identification;
     private $accessToken;
     private $chatbotUri;
-    private $gasSourceCode;
-    private $eleSourceCode;
     private $planType;
     public function __construct(int $id)
     {
@@ -31,10 +30,6 @@ class PostSalesService
         $this->connection = ConnectionApplication::with('connectionServices')->where('id', $id)->firstOrFail();
         $this->identification = $this->connection->identification;
         $this->accessToken = (new GetAccessToken())->getAccessToken();
-        $planType = $this->getPlanType();
-        $this->eleSourceCode = $this->getElectricitySourceCode($planType, $this->connection->state);
-        $this->gasSourceCode = $this->getGasSourceCode($planType, $this->connection->state);
-
     }
 
     public function getPlanType()
@@ -57,7 +52,7 @@ class PostSalesService
         $saleDate = (new Carbon($this->connection->updated_at))->toIso8601String();
         $customerType =  "RES";
         $transactionType = "ENE";
-        $premiseRelationship= $this->connection->tenancy_type == 1?"TENANT":"OWNER";
+        $premiseRelationship= $this->connection->tenancy_type == 1 ? "TENANT":"OWNER";
         $customer = [
             'title'=> strtoupper($this->connection->title),
             'firstName'=> $this->connection->first_name,
@@ -67,8 +62,8 @@ class PostSalesService
             'premiseRelationship'=> $premiseRelationship,
             'phone'=> [
                 [
-                    'type'=> $this->connection->phone_type == 1?'MOBILE': 'HOME',
-                    'number'=>$this->connection->phone_type == 1? $this->connection->phone:  $this->connection->homephone
+                    'type'=> $this->connection->phone_type == 1 ? 'MOBILE': 'HOME',
+                    'number'=>$this->connection->phone_type == 1 ? $this->connection->phone:  $this->connection->homephone
                 ]
             ],
             'preferredContactMethod' => 'EMAIL',
@@ -77,7 +72,7 @@ class PostSalesService
         $streetType = self::getStreetType($this->connection->street_name);
 
         $energisation = [
-            'connectionDate'=>(new Carbon( $this->connection->moving_date))->format('Y-m-d'),
+            'connectionDate'=>(new Carbon($this->connection->moving_date))->format('Y-m-d'),
             'renovationsSinceDeenergisation'=> false,
             'renovationsInProgressOrPlanned'=> false,
         ];
@@ -97,28 +92,9 @@ class PostSalesService
                 'postcode'=> $this->connection->postcode,
             ],
             'solarDetails'=> [
-                'solarPower'=> $this->connection->has_solar == 1?true:false,
+                'solarPower'=> $this->connection->has_solar == 1 ?true:false,
             ]
         ];
-
-        $premise1 = [
-            'mirn'=> $this->connection->mirn,
-
-            'address'=> [
-                'unitNumber'=> $this->connection->unit_number,
-                'streetNumber'=> $this->connection->street_number,
-                'streetName'=> $this->connection->street_address,
-                'streetType'=> $streetType,
-                'suburb'=> $this->connection->city,
-                'state'=> $this->connection->state,
-                'postcode'=> $this->connection->postcode,
-            ],
-            'solarDetails'=> [
-                'solarPower'=> $this->connection->has_solar?true:false,
-            ]
-        ];
-
-
 
         $offers = $this->prepareOffer();
         $mailingAddressType = 'STREET';
@@ -145,9 +121,9 @@ class PostSalesService
             "customerType"=> $customerType,
             "transactionType"=> $transactionType,
             "customer"=> $customer,
-            "energisation"=>$energisation,
-            "premise"=>$premise,
-            "offers"=>$offers,
+            "energisation"=> $energisation,
+            "premise"=> $premise,
+            "offers"=> $offers,
             "mailingAddressType"=> $mailingAddressType,
             "streetMailingAddress"=> $streetMailingAddress,
             "billDeliveryMethod"=> $billDeliveryMethod,
@@ -192,8 +168,7 @@ class PostSalesService
 
         } catch (\Exception $e)
         {
-            Log::info($e->getMessage());
-            return $e->getMessage();
+            throw new \Exception("EA Sales API ERROR: " . $e->getMessage());
         }
 
 
@@ -213,7 +188,7 @@ class PostSalesService
         $quotes = $submitSallData?->quotes;
         $salesId = $submitSallData?->id;
 
-        $this->handleResponse($quotes, $this->connection->id);
+        $this->handleResponse($quotes, $this->connection->id, ['lead_reference' => $salesId]);
     }
 
 
@@ -244,7 +219,6 @@ class PostSalesService
         }
         else if($this->identification->type === Identification::TYPE_DRIVING_LICENCE )
         {
-//            Log::info($this->identification);
             return [
                 'type'=> "DL",
                 'number'=> $this->identification->card_number,
@@ -279,42 +253,6 @@ class PostSalesService
         return $data[sizeof($data) - 1];
     }
 
-    private function getElectricitySourceCode($plan, $state)
-    {
-//        $plan = ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
-        $state = $this->stateMap($state);
-
-        try{
-            $response = Http::post($this->chatbotUri.'/api/ele-source-code',['plan'=>$plan,'state'=>$state]);
-            if($response->status() == 200) {
-//                return json_decode($response->body())->source_code;
-            }
-        } catch (\Exception $e) {
-            Log::info($e->getMessage(),[]);
-            return  '';
-        }
-
-        return  '';
-
-    }
-
-    private function getGasSourceCode($plan, $state)
-    {
-//        $plan = ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
-        $state = $this->stateMap($state);
-
-        try {
-            $response = Http::post($this->chatbotUri.'/api/gas-source-code',['plan'=>$plan,'state'=>$state]);
-            if($response->status() == 200) {
-//                return json_decode($response->body())->source_code;
-            }
-        } catch (\Exception $e) {
-            Log::info($e->getMessage(),[]);
-            return  '';
-        }
-        return  '';
-    }
-
     private function prepareOffer()
     {
 
@@ -327,18 +265,12 @@ class PostSalesService
 
         try {
             $response = Http::post($this->chatbotUri.'/api/get-plan-details',['plan' => $plan,'state' => $state, 'postcode' => $this->connection->postcode]);
-//            Log::info($response->status());
 
             if($response->status() == 200) {
                 $response = json_decode($response->body());
                 $gasPlanSourceCode = $response->gas_source_code;
                 $elePlanSourceCode = $response->ele_source_code;
                 $plan_id = $response->plan_id;
-                Log::info($gasPlanSourceCode);
-                Log::info($elePlanSourceCode);
-                Log::info($plan_id);
-
-
             }
         } catch (\Exception $e) {
             Log::info($e->getMessage(),[]);
@@ -346,11 +278,17 @@ class PostSalesService
         }
 
         $servicePlan = [];
+        $gasService = ConnectionService::query()
+            ->where('connection_application_id',  $this->connection->id )
+            ->where('service_type', ConnectionService::TYPE_GAS)
+            ->whereNull('lead_reference')
+            ->first();
 
-        $gasService = ConnectionService::query()->where([['connection_application_id', '=', $this->connection->id],
-            ['service_type','=', 'gas']])->first();
-        $eleService = ConnectionService::query()->where([['connection_application_id', '=', $this->connection->id],
-            ['service_type','=', 'power']])->first();
+        $eleService = ConnectionService::query()
+            ->where('connection_application_id',  $this->connection->id )
+            ->where('service_type', ConnectionService::TYPE_ELECTRICITY)
+            ->whereNull('lead_reference')
+            ->first();
 
 
         if(!is_null($gasService)) {
@@ -371,11 +309,6 @@ class PostSalesService
 
         return $servicePlan;
 
-    }
-
-    private function mapPlan($plan):string
-    {
-        return ConnectionService::ENERGY_PLAN_MAPPER[$plan];
     }
 
 }
