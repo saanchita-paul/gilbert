@@ -193,10 +193,8 @@ class GetSalesRequestStaus
             ->whereNotNull('lead_reference')
             ->distinct()
             ->get()
-            ->unique('lead_reference')
-            ->toArray();
-
-
+            ->unique('lead_reference');
+        
         foreach ($services as $service) {
 
             CheckSaleApiLeadData::dispatch($service->connection_application_id, $service->lead_reference);
