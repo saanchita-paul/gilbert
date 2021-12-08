@@ -1436,7 +1436,8 @@ export default {
           return tenancyTypeMapper;
         },
       isTenancyHomeOwner(){
-          return this.person_details.tenancy_type===tenancyTypeMapper.HomeOwner;
+          // return this.person_details.tenancy_type===tenancyTypeMapper.HomeOwner;
+          return false;
       }
     },
 
