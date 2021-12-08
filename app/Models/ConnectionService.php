@@ -43,7 +43,8 @@ class ConnectionService extends Model
     const STATUS_SUBMITTED = 4;
     const STATUS_ACCEPTED = 5;
     const STATUS_REJECTED = 6;
-    const STATUS_EA_PROCESSINF = 7;
+    const STATUS_EA_PROCESSINF = 7; //todo: rename this constant to STATUS_IN_PROGRESS
+    const STATUS_EA_SUBMIT = 12;
     const STATUS_CLOSED = 8;
     const STATUS_CANT_CONNECT = 9;
     const STATUS_NEEDS_MORE_INFO = 10;
@@ -67,6 +68,7 @@ class ConnectionService extends Model
         self::STATUS_ACCEPTED =>'accepted',
         self::STATUS_REJECTED => 'rejected',
         self::STATUS_EA_PROCESSINF => 'processing',
+        self::STATUS_EA_SUBMIT => 'processing',
         self::STATUS_CLOSED => 'closed',
         self::STATUS_CANT_CONNECT => 'can\'t_connect',
         self::STATUS_NEEDS_MORE_INFO => 'need_more_info',
@@ -98,7 +100,8 @@ class ConnectionService extends Model
         'reason',
         'connection_date',
         'provider_name',
-        'plan_type'
+        'plan_type',
+        'lead_reference',
     ];
 
     /**

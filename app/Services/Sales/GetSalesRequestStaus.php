@@ -187,15 +187,19 @@ class GetSalesRequestStaus
         $leads = ConnectionApplication::query()
             ->with('connectionServices')
             ->where('status', '=', ConnectionApplication::STATUS_SUBMITTED)
-            ->whereNotNull('vendor_id')
             ->whereHas('connectionServices', function (Builder $service) {
                 $service->where('provider_name', '=', ConnectionService::PROVIDER_EA)
+                    ->whereNotNull('lead_reference')
                     ->whereIn('status', [ConnectionService::STATUS_EA_PROCESSINF]);
             })
             ->get();
 
+
         foreach ($leads as $lead) {
-            CheckSaleApiLeadData::dispatch($lead->id, $lead->vendor_id);
+
+            $lead_reference =  ($lead?->connectionServices[0])?->lead_reference;
+
+            CheckSaleApiLeadData::dispatch($lead->id, $lead_reference);
         }
 
     }

@@ -17,13 +17,13 @@ trait SalesResponseHandle
      *
      * @throws Exception
      */
-    private function handleResponse($quotes, $leadId)
+    private function handleResponse($quotes, $leadId, $conncetionServiceData = [])
     {
         foreach ($quotes as $quote) {
 
-            $updateData = [
-                'status' => SalesStatusMapper::EAToGilbert($quote->status),
-            ];
+            $updateData = array_merge([
+                'status' => SalesStatusMapper::EAToGilbert($quote->status)
+            ], $conncetionServiceData);
             $reasons = data_get($quote, 'rejectionReasons') ?? [];
 
             if ($quote->fuel === 'GAS') {
@@ -59,6 +59,11 @@ trait SalesResponseHandle
             ];
         }
         RejectionReason::query()->insert($reasons);
+
+        //set lead referece null
+        if(!empty($data)) {
+            $this->updateService($leadId, $serviceType, ['lead_reference' => null]);
+        }
     }
 
 
