@@ -314,6 +314,18 @@ export default {
 
     },
     methods: {
+        getPlanType() {
+            let plan = null;
+            switch(this.selectedPowerProvider) {
+                case 'ea':
+                    plan = this.plans.find(p => p.key === this.activeEaPlan);
+                    break;
+                case 'origin':
+                     plan = this.origin2.find(p => p.name === this.activeOriginPlan);
+                    break; 
+            }
+            this.$emit('updatePlan', {...plan,  provider: this.selectedPowerProvider, service_area:'energy' }, false);
+        },
         isDisable() {
             switch (this.tab) {
                 case this.tabMapper.Water:
@@ -369,6 +381,7 @@ export default {
                     state: this.leadSummary.state
                 });
                 this.plansFlag = true;
+                this.getPlanType();
             } else {
                 this.plansFlag = false;
             }
