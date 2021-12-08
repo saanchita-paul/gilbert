@@ -51,8 +51,6 @@ class SendApplicationToEA implements ShouldQueue
     private function isValidForSalesApi($application): bool
     {
         foreach ($application->connectionServices as $service) {
-            $provider = $service->provider_name?$service->provider_name:'';
-            info('provider name '.$provider);
             if ($service->provider_name === 'ea' && is_null($service->lead_reference)) {
                 return true;
             }
