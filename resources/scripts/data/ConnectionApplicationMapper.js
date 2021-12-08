@@ -38,7 +38,6 @@ export const STATUSES_FOR_ENERGY_SUBMIT = [
     connectionServicesMapper.STATUS_CANT_CONNECT,
     connectionServicesMapper.STATUS_REJECTED,
     connectionServicesMapper.STATUS_IN_PROGRESS,
-    connectionServicesMapper.STATUS_EA_SUBMIT,
 ]
 
 export const STATUSES_FOR_WATER_SUBMIT = [
