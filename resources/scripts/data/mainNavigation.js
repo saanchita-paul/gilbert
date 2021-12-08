@@ -52,4 +52,11 @@ export default [
         route_name: 'applications',
         permissions: permissions.P_CAN_MANAGE_APPLICATION
     },
+    {
+        type: 'route',
+        title: 'Sales Dashboard',
+        icon: '/assets/images/icons/map_home.svg',
+        route_name: 'sales.dashboard',
+        permissions: permissions.P_CAN_MANAGE_APPLICATION
+    },
 ]

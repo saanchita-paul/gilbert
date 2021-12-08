@@ -85,6 +85,13 @@ export default {
                     to: 'applications.details'
                 }
             ]
+        } else if(type === 'RealEstate') {
+            breadcrumb = [
+                {
+                    text: 'Gilbert Dashboard',
+                    to: 'sales.dashboard'
+                }
+            ]
         }
         Store.commit('addBreadcrumb', breadcrumb)
     }

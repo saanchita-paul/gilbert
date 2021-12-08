@@ -177,6 +177,16 @@ const router = new VueRouter({
                         breadcrumbType: 'ApplicationsDetails',
                         roles: ['hood_admin', 'hood_team_lead', 'hood_customer_rep'],
                     }
+                },
+                {
+                    path: '/real-estate',
+                    component: ApplicationPage,
+                    name: 'sales.dashboard',
+                    meta: {
+                        isProtected: true,
+                        breadcrumbType: 'RealEstate',
+                        roles: ['hood_admin', 'hood_team_lead', 'hood_customer_rep'],
+                    }
                 }
 
             ]
