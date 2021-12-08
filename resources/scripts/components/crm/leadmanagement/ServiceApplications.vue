@@ -49,9 +49,22 @@
 
 
             <v-tab-item>
+                <v-col cols="12" >
+                    <b>There is a request for temporary connection for this property.</b>
+                </v-col>
+                <v-col cols="12" >
+                    <v-row>
+                        <v-col cols="4" > <b>Temp Connection</b> </v-col>
+                        <v-col cols="4" > Temp Connection </v-col>
+                        <v-col cols="4" > Temp Connection </v-col>
+                    </v-row>
+                </v-col>
+
                 <v-card >
                     <p class="sub-title ml-4 pt-5 mb-2" >Service Applications</p>
                     <p class="ml-4 mb-0">Energy</p>
+
+
                 <v-col cols="12" class="service-box-area">
                     <div v-for="service in services" :key="service">
                         <EnergyService @click.native="updateService(service)" :title="service"

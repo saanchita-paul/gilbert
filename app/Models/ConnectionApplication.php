@@ -177,7 +177,9 @@ class ConnectionApplication extends Model
         'is_contacted',
         'is_auto_water_submit',
         'water_submit_response',
-        'source'
+        'source',
+        'connection_end_date',
+        'is_temporary_connection',
     ];
 
 
