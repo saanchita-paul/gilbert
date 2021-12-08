@@ -1015,6 +1015,7 @@ import dayJs from "dayjs";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import { medicareRules, mediExpireDate } from '@scripts/plugins/VeeValidate';
 import { tenancyTypeMapper } from '@scripts/data/ConnectionApplicationMapper';
+import * as dayjs from "dayjs";
 
 
 export default {
@@ -1364,7 +1365,8 @@ export default {
       this.property_details.moving_date = dayJs(this.moving_date).format(
         "DD/MM/YYYY"
       );
-      this.person_details.dob = dayJs( dayJs(this.dob).format("DD/MM/YYYY") ).isValid() ? dayJs(this.dob).format("DD/MM/YYYY") : null ;
+        const birthdate =  dayjs(this.dob, 'YYYY-MM-DD');
+        this.person_details.dob = birthdate.isValid() ? birthdate.format('DD/MM/YYYY'): null;
 
       if(this.indentification.type === IDENTIFICATION.MEDICARE) {
           this.indentification.medicare_expire_date = (dayJs(this.expire_date).isValid())
