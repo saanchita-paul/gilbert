@@ -27,7 +27,6 @@ class PostSalesService
     public function __construct(int $id)
     {
         $this->chatbotUri = config('bot.root_url');
-        $this->chatbotUri = 'http://127.0.0.1:8000';
         $this->connection = ConnectionApplication::with('connectionServices')->where('id', $id)->firstOrFail();
         $this->identification = $this->connection->identification;
         $this->accessToken = (new GetAccessToken())->getAccessToken();
