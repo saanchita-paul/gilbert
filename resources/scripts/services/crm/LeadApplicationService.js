@@ -12,21 +12,21 @@ export default {
     loadUserLead: (id) => LeadApplicationAPI.getUserLead(id),
     closeApplication: (id) => LeadApplicationAPI.closeApplication(id),
     loadPlan: (serviceProvider) => LeadApplicationAPI.getPlan(serviceProvider),
-    loadNote: (leadUser)=> LeadApplicationAPI.getNote(leadUser),
-    loadServiceProvider: (services)=> LeadApplicationAPI.getServiceProvider(services),
+    loadNote: (leadUser) => LeadApplicationAPI.getNote(leadUser),
+    loadServiceProvider: (services) => LeadApplicationAPI.getServiceProvider(services),
     saveNote: (note, leadId) => LeadApplicationAPI.saveNote(note, leadId),
     eacalate: (leadId) => LeadApplicationAPI.eacalate(leadId),
-    saveEscalateReason: (reason, leadId) => LeadApplicationAPI.saveEscalateReason(reason,leadId),
+    saveEscalateReason: (reason, leadId) => LeadApplicationAPI.saveEscalateReason(reason, leadId),
     saveLead: (lead, leadId) => LeadApplicationAPI.saveLead(lead, leadId),
     updateAddress: (address, leadId) => LeadApplicationAPI.updateAddress(address, leadId),
     assignUser: (leadId, agentProfileId) => LeadApplicationAPI.assignUser(leadId, agentProfileId),
-    saveSoleField:(field, value, leadId, isDate,identification=false, isService=false) => LeadApplicationAPI.saveSoleField(field, value, leadId, isDate,identification,isService),
-    getNmiMern:(id) => LeadApplicationAPI.getNmiMern(id),
-    loadAuthorizedPerson:(leadId) => LeadApplicationAPI.loadAuthorizedPerson(leadId),
-    saveAuthorizedPerson:(data) => LeadApplicationAPI.saveAuthorizedPerson(data),
-    updateApplicationProviders:(payload, application_id) => LeadApplicationAPI.updateApplicationProviders(payload , application_id),
+    saveSoleField: (field, value, leadId, isDate, identification = false, isService = false) => LeadApplicationAPI.saveSoleField(field, value, leadId, isDate, identification, isService),
+    getNmiMern: (id) => LeadApplicationAPI.getNmiMern(id),
+    loadAuthorizedPerson: (leadId) => LeadApplicationAPI.loadAuthorizedPerson(leadId),
+    saveAuthorizedPerson: (data) => LeadApplicationAPI.saveAuthorizedPerson(data),
+    updateApplicationProviders: (payload, application_id) => LeadApplicationAPI.updateApplicationProviders(payload, application_id),
     closeApplicationWithReason: (id, closing_reason) => LeadApplicationAPI.closeApplicationWithReason(id, closing_reason),
-     /**
+    /**
      * Getting minimum valid Connection date
      *
      * @return {string}
@@ -44,7 +44,9 @@ export default {
      *
      * @return boolean
      */
-    canSubmitEnergy: services => services.some(service => STATUSES_FOR_ENERGY_SUBMIT.includes(service.status)),
+    canSubmitEnergy: services => services.some(service => (
+        STATUSES_FOR_ENERGY_SUBMIT.includes(service.status) && ['power', 'gas'].includes(service.service_type)
+    )),
 
     /**
      * checking if we can submit water
@@ -55,7 +57,10 @@ export default {
      */
     canSubmitWater: services => {
         let water = services.find(service => service.service_type === 'water');
-        return water ? services.some(service => STATUSES_FOR_WATER_SUBMIT.includes(service.status)) : true;
+        if (water) {
+            return services.some(service => STATUSES_FOR_WATER_SUBMIT.includes(service.status) && service.service_type === water)
+        }
+        return true;
     },
 
     /**
@@ -69,7 +74,7 @@ export default {
             case connectionServicesMapper.STATUS_ASSIGNED:
             case connectionServicesMapper.STATUS_ESCALATED:
             case connectionServicesMapper.STATUS_IN_PROGRESS:
-                return {text: 'In Progress', color: 'blue'};
+                return {text: 'Not Submitted', color: 'black'};
             case connectionServicesMapper.STATUS_ACCEPTED:
                 return {text: 'Accepted', color: 'green'};
             case connectionServicesMapper.STATUS_EA_SUBMIT:
@@ -78,7 +83,7 @@ export default {
                 return {text: 'Manual Processing', color: 'orange'};
             case connectionServicesMapper.STATUS_CANT_CONNECT:
             case connectionServicesMapper.STATUS_REJECTED:
-                return {text: "Can't Connect", color: 'red'};
+                return {text: "Rejected", color: 'red'};
             default:
                 return {
                     text: 'Unknown Status',

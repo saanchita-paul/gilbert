@@ -184,18 +184,20 @@ class GetSalesRequestStaus
 
     public function fetchAllSubmittedLead()
     {
-        $leads = ConnectionApplication::query()
-            ->with('connectionServices')
-            ->where('status', '=', ConnectionApplication::STATUS_SUBMITTED)
-            ->whereNotNull('vendor_id')
-            ->whereHas('connectionServices', function (Builder $service) {
-                $service->where('provider_name', '=', ConnectionService::PROVIDER_EA)
-                    ->whereIn('status', [ConnectionService::STATUS_EA_PROCESSINF]);
-            })
-            ->get();
 
-        foreach ($leads as $lead) {
-            CheckSaleApiLeadData::dispatch($lead->id, $lead->vendor_id);
+        $services = ConnectionService::query()
+            ->with('connectionApplication')
+            ->where('status', ConnectionService::STATUS_EA_SUBMIT)
+            ->where('provider_name', '=', ConnectionService::PROVIDER_EA)
+            ->whereIn('service_type', [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY])
+            ->whereNotNull('lead_reference')
+            ->distinct()
+            ->get()
+            ->unique('lead_reference');
+        
+        foreach ($services as $service) {
+
+            CheckSaleApiLeadData::dispatch($service->connection_application_id, $service->lead_reference);
         }
 
     }
