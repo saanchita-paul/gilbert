@@ -54,9 +54,9 @@ export default [
     },
     {
         type: 'route',
-        title: 'Sales Dashboard',
-        icon: '/assets/images/icons/map_home.svg',
-        route_name: 'sales.dashboard',
+        title: 'Applications Dashboard',
+        icon: '/assets/images/icons/Analytics.svg',
+        route_name: 'applications.dashboard',
         permissions: permissions.P_CAN_MANAGE_APPLICATION
     },
 ]

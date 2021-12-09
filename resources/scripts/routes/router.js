@@ -29,6 +29,7 @@ import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/Appl
 import ApplicationDetailsPage from "@scripts/pages/ApplicationDetailsPage";
 import OfficeProfile from "@scripts/components/crm/office/OfficeProfile";
 import InviteUser from "@scripts/components/crm/user/InviteUser";
+import ApplicationsDashboardPage from "@scripts/modules/sales/pages/ApplicationsDashboardPage";
 
 Vue.use(VueRouter);
 
@@ -179,12 +180,12 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: '/real-estate',
-                    component: ApplicationPage,
-                    name: 'sales.dashboard',
+                    path: '/applications-dashboard',
+                    component: ApplicationsDashboardPage,
+                    name: 'applications.dashboard',
                     meta: {
                         isProtected: true,
-                        breadcrumbType: 'RealEstate',
+                        breadcrumbType: 'ApplicationsDashboard',
                         roles: ['hood_admin', 'hood_team_lead', 'hood_customer_rep'],
                     }
                 }

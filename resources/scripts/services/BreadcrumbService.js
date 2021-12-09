@@ -85,11 +85,11 @@ export default {
                     to: 'applications.details'
                 }
             ]
-        } else if(type === 'RealEstate') {
+        } else if(type === 'ApplicationsDashboard') {
             breadcrumb = [
                 {
-                    text: 'Gilbert Dashboard',
-                    to: 'sales.dashboard'
+                    text: 'Applications Dashboard',
+                    to: 'applications.dashboard'
                 }
             ]
         }
