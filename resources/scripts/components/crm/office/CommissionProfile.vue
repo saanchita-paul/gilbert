@@ -31,7 +31,7 @@
                 :error-messages=" errors[0]"
               ></v-text-field>
             </ValidationProvider>
-            <ValidationProvider name="Water" rules="numeric|max:2|min_value:1|required"  v-slot="{ errors }">
+            <!-- <ValidationProvider name="Water" rules="numeric|max:2|min_value:1|required"  v-slot="{ errors }">
               <v-text-field
                 label="Water"
                 placeholder="$ 50.00"
@@ -42,7 +42,7 @@
                 prepend-inner-icon="mdi-water blue-grey--text"
                 :error-messages=" errors[0]"
               ></v-text-field>
-            </ValidationProvider>
+            </ValidationProvider> -->
             <ValidationProvider name="Internet" rules="numeric|max:2|min_value:1|required"  v-slot="{ errors }">
               <v-text-field
                 label="Internet"
