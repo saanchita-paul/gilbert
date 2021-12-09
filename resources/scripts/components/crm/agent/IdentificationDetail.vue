@@ -46,7 +46,7 @@
                        <template v-slot:activator="{ on, attrs }">
                            <ValidationProvider
                                name="Expiry Date"
-                               :rules="`${isTenancyHomeOwner?'':'required|'}'medicare-date|medi-expire'`"
+                               :rules="`${isTenancyHomeOwner?'':'required|'}medicare-date|medi-expire`"
                                v-slot="{ errors }"
                            >
                                <v-text-field
@@ -210,7 +210,7 @@
                             <template v-slot:activator="{ on, attrs }">
                                 <ValidationProvider
                                     name="Expiry Date"
-                                    :rules="`${isTenancyHomeOwner?'':'required|'}'valid-date'`"
+                                    :rules="`${isTenancyHomeOwner?'':'required|'}valid-date`"
                                     v-slot="{ errors }"
                                 >
                                     <v-text-field
