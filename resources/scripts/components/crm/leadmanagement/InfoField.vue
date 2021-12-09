@@ -1273,7 +1273,7 @@ export default {
       // console.log(this.lead);
 
       this.$emit("updateLead", {
-        indentification: this.indentification,
+        identification: this.indentification,
         property_details: this.property_details,
         person_details: this.person_details,
       });
