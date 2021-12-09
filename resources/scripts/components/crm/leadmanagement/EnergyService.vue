@@ -1,5 +1,5 @@
 <template>
-        <div class="service-box" :class="{active: isActive(title)}">
+        <div class="service-box" :class="{active: isActive(title), 'not-editable': !isServiceEditable }">
             <p class="mb-0 font-weight-bold"><v-icon :color="getColor(title)">{{icon}}</v-icon> {{title}}</p>
             <p
                 v-if="this.statusObj"
@@ -48,9 +48,14 @@ export default {
                 return reasons.map(reason => reason?.reason_text || '')
             }
             return []
-        }
+        },
+        isServiceEditable() {
+            return LeadApplicationService.canEditService(this.leadSummary.connection_services, this.title?.toLowerCase())
+        },
+
     },
     methods: {
+
         isActive(service) {
             return this.leadSummary.service_interests.includes(service.toLowerCase());
         },
@@ -101,6 +106,9 @@ export default {
 </script>
 
 <style scoped>
+.not-editable {
+    cursor: not-allowed;
+}
 .reason {
     font-size: .8em;
 }
