@@ -1447,9 +1447,11 @@ export default {
 
   watch: {
     lead: {
-      handler() {
-        // console.log('calling...')
+      async handler() {
         this.synFormData();
+          await this.synFormData();
+          await this.formatDate();
+          await this.updateLeads();
       },
       deep: true,
     },
