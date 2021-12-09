@@ -891,7 +891,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <ValidationProvider
                   name="Expired Date"
-                  :rules="`${isTenancyHomeOwner?'':'required|'}'medicare-date|medi-expire'`"
+                  :rules="`${isTenancyHomeOwner?'':'required|'}medicare-date|medi-expire`"
                   v-slot="{ errors }"
                 >
                   <v-text-field
