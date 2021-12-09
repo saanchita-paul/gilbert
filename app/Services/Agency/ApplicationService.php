@@ -130,7 +130,7 @@ class ApplicationService
             ->update(['assigned_to' => $agentId, 'status' => ConnectionApplication::STATUS_ASSIGNED]);
         
         if (in_array(HoodProfile::find($agentId)->user->roles->first()?->name,
-            [RolePermission::ROLE_EXTERNAL_HOOD_TEAM_LEAD, RolePermission::ROLE_EXTERNAL_HOOD_CUSTOMER_REP])) {
+            [RolePermission::ROLE_EXTERNAL_HOOD_TEAM_LEAD])) {
             (new TsaSendAppliationService($applicationId))->sendApplication();
         }
         return $this->findApplications($applicationId);
