@@ -41,7 +41,7 @@
                         </v-col>
                         <v-col cols="6" class="d-flex">
                             <div style="width:64%" class="d-flex">
-                                <v-divider vertical></v-divider>
+                                <v-divider class="vertical-divider" vertical></v-divider>
                                 <div class="ml-4">
                                     <h4>Open Applications</h4>
                                     <div class="d-flex mt-4">
@@ -57,7 +57,7 @@
                                 </div>
                             </div>
                             <div style="width:36%" class="d-flex">
-                                <v-divider vertical></v-divider>
+                                <v-divider class="vertical-divider" vertical></v-divider>
                                 <div class="ml-4">
                                     <h4>Closed Applications</h4>
                                     <div class='mt-4'>
@@ -112,6 +112,9 @@ export default {
     }
     .fixed-height {
         max-height: 55px !important;
+    }
+    .vertical-divider {
+        border-width: 1px !important;
     }
 </style>
 
