@@ -1428,11 +1428,11 @@ export default {
     computed: {
       isNMIRequired() {
         return  ( Array.isArray(this.services) && this.services.some(n=>n=='power') ) ?
-                true : false ; 
+                true : false ;
       },
       isMERNRequired() {
         return  ( Array.isArray(this.services) && this.services.some(n=>n=='gas') ) ?
-                true : false ; 
+                true : false ;
 
           },
       tenancyTypeMapper(){
@@ -1446,10 +1446,11 @@ export default {
 
   watch: {
     lead: {
-      handler(val) {
-        console.log('calling...', val)
-        console.log('calling...services',  this.services)
+      async handler() {
         this.synFormData();
+          await this.synFormData();
+          await this.formatDate();
+          await this.updateLeads();
       },
       deep: true,
     },

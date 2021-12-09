@@ -75,6 +75,7 @@ class PostSalesService
             'connectionDate'=>(new Carbon($this->connection->moving_date))->format('Y-m-d'),
             'renovationsSinceDeenergisation'=> false,
             'renovationsInProgressOrPlanned'=> false,
+            'afterHoursServiceOrder' => $this->getAfterHoursServiceOrder($this->connection->moving_date),
         ];
 
 
@@ -172,6 +173,13 @@ class PostSalesService
         }
 
 
+    }
+
+    private function getAfterHoursServiceOrder($date): bool
+    {
+        $tz = 11;
+        $maxTime =today($tz)->addHours(11)->addMinutes(30);
+        return Carbon::parse($date, $tz)->isCurrentDay() && now($tz)->greaterThan($maxTime);
     }
 
     /**
