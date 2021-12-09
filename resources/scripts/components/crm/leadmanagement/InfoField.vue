@@ -314,7 +314,7 @@
       </div>
     </v-col>
 
-    <v-col cols="4">
+    <v-col cols="4" v-if="!lead.is_temporary_connection">
       <p class="sub-title title-align">Property Details</p>
       <div class="crm-text-field">
         <div class="field-label">
@@ -1235,6 +1235,8 @@ export default {
         billing_unit_number: "",
         billing_street_number: "",
         billing_street_name: "",
+        connection_end_date: null,
+        is_temporary_connection : null,
       },
       person_details: {
         title: "",
@@ -1385,7 +1387,6 @@ export default {
           this.indentification.expire_date = (dayJs(this.expire_date).isValid())
               ? dayJs(this.expire_date).format("DD/MM/YYYY")
               : "";
-
       }
 
 
@@ -1501,10 +1502,45 @@ export default {
 
   },
   async mounted() {
-      // console.log('services', this.services);
+    // console.log('services', this.services);
     await this.synFormData();
     await this.formatDate();
     await this.updateLeads();
+
+    const update_moving_date = (date)=>{
+      console.log("change moving date" , date);
+      this.property_details.moving_date = date;
+      this.$emit(
+        "updateDraft",
+        "moving_date",
+        this.property_details.moving_date,
+        true,
+        false
+      );
+      this.updateLeads();
+    }
+
+    const update_connection_end_date = (date)=>{
+      console.log("change moving date" , date);
+      this.property_details.connection_end_date = date;
+      this.$emit(
+        "updateDraft",
+        "connection_end_date",
+        this.property_details.connection_end_date,
+        true,
+        false
+      );
+      this.updateLeads();
+    }
+
+    this.$eventBus.$on("update_moving_date", update_moving_date );
+    this.$eventBus.$on("update_connection_end_date", update_connection_end_date );
+
+    this.$once("hook:beforeDestroy", (date) => {
+        this.$eventBus.$off("update_moving_date", update_moving_date );
+        this.$eventBus.$off("update_connection_end_date", update_connection_end_date );
+    });
+
   },
 };
 </script>
