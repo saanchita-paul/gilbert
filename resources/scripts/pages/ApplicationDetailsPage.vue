@@ -249,7 +249,7 @@ export default {
                 payload=  { ...this.lead.property_details,
                     ...this.lead.person_details,
                     'service_interests':this.services,
-                    'identification':this.lead.indentification,
+                    'identification': this.lead.identification,
                     supplier: 1,
                     plan_type: this.plan?.key,
                     submit_type: this.submitType
