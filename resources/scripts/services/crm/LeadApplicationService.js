@@ -42,11 +42,25 @@ export default {
      *
      * @param {Object[]} services
      *
+     * @param energyServices
      * @return boolean
      */
-    canSubmitEnergy: services => services.some(service => (
-        STATUSES_FOR_ENERGY_SUBMIT.includes(service.status) && ['power', 'gas'].includes(service.service_type)
+    canSubmitEnergy: (services, energyServices = ['power', 'gas']) => services.some(service => (
+        STATUSES_FOR_ENERGY_SUBMIT.includes(service.status) && energyServices.includes(service.service_type)
     )),
+
+    /**
+     * checking if we can submit energy
+     *
+     * @param {Object[]} services
+     *
+     * @param {string} serviceName
+     * @return boolean
+     */
+    canEditService: (services, serviceName) => {
+        const service = services.find(service => service.service_type === serviceName)
+        return service ? STATUSES_FOR_ENERGY_SUBMIT.includes(service.status) : true
+    },
 
     /**
      * checking if we can submit water

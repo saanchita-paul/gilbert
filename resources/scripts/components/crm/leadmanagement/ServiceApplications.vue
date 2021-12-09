@@ -54,7 +54,7 @@
                     <p class="ml-4 mb-0">Energy</p>
                 <v-col cols="12" class="service-box-area">
                     <div v-for="service in services" :key="service">
-                        <EnergyService @click.native="updateService(service)" :title="service"
+                        <EnergyService  @click.native="updateService(service)" :title="service"
                                        :lead-summary="leadSummary">
                         </EnergyService>
                     </div>
@@ -320,7 +320,7 @@ export default {
                     break;
                 case 'origin':
                      plan = this.origin2.find(p => p.name === this.activeOriginPlan);
-                    break; 
+                    break;
             }
             this.$emit('updatePlan', {...plan,  provider: this.selectedPowerProvider, service_area:'energy' }, false);
         },
@@ -329,7 +329,7 @@ export default {
                 case this.tabMapper.Water:
                     return !LeadApplicationService.canSubmitWater(this.leadSummary.connection_services)
                 case this.tabMapper.Energy:
-                    return !LeadApplicationService.canSubmitEnergy(this.leadSummary.connection_services);
+                    return !LeadApplicationService.canSubmitEnergy(this.leadSummary.connection_services) || isNull(this.selectedPowerProvider);
                 default:
                     return true;
             }
@@ -385,17 +385,19 @@ export default {
             }
         },
 
+        isServiceEditable(service) {
+            return LeadApplicationService.canEditService(this.leadSummary.connection_services, service?.toLowerCase())
+        },
         updateService(service) {
-            // TODO add update sumo event emit
-            console.log(service)
+            if (this.isServiceEditable(service)) {
+                if((service === 'Gas' || service === 'Power') && this.selectedPowerProvider === 'sumo' ){
+                    this.onSelectProvider1('sumo');
+                }
 
-            if(service == 'Gas' || service == 'Power'){
-                this.onSelectProvider1('sumo');
-            }
-
-            this.$emit('updateService', service);
-            if (this.selectedPowerProvider === 'sumo') {
-                this.$eventBus.$emit("validate", this.setSumoDetailsData)
+                this.$emit('updateService', service);
+                if (this.selectedPowerProvider === 'sumo') {
+                    this.$eventBus.$emit("validate", this.setSumoDetailsData)
+                }
             }
         },
 
