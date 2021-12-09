@@ -128,4 +128,3 @@ Route::post('/our-property/lead', [OurPropertyController::class, 'createOurPrope
 
 Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
 
-

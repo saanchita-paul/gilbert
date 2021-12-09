@@ -581,6 +581,7 @@ import IdentificationDetail from "@scripts/components/crm/agent/IdentificationDe
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import { tenancyTypeMapper } from '@scripts/data/ConnectionApplicationMapper';
 import AuthService from '@scripts/services/AuthService';
+import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
 export default {
     name: "AgentCreateNewApplication",
     components: {
@@ -608,6 +609,7 @@ export default {
                 {text: 'NT', value: 'Northern Territory'},
                 {text: 'TAS', value: 'Tasmania'},
                 {text: 'ACT', value: 'Australian Capital Territory'},
+                {text: 'WA', value: 'Western Australia'},
             ],
             showMovingDate: false,
             showDOB: false,
@@ -658,9 +660,7 @@ export default {
                 }
             ],
             has_authorized: false,
-            titlesDD:[
-              'Mr.','Mrs.','Ms.','Miss','Dr.'
-            ],
+            titlesDD: titlesMapperForDropdown,
             idenficationTypeDD: [
                 {
                     text: "Passport",

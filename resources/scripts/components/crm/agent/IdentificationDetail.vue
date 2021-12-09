@@ -42,11 +42,11 @@
                        transition="scale-transition"
                        offset-y
                        min-width="290px"
-                   >:rules="`${isTenancyHomeOwner?'':'required'}`"
+                   >
                        <template v-slot:activator="{ on, attrs }">
                            <ValidationProvider
                                name="Expiry Date"
-                               :rules="`${isTenancyHomeOwner?'':'required|'}'medicare-date|medi-expire'`"
+                               :rules="`${isTenancyHomeOwner?'':'required|'}medicare-date|medi-expire`"
                                v-slot="{ errors }"
                            >
                                <v-text-field
@@ -210,7 +210,7 @@
                             <template v-slot:activator="{ on, attrs }">
                                 <ValidationProvider
                                     name="Expiry Date"
-                                    :rules="`${isTenancyHomeOwner?'':'required|'}'valid-date'`"
+                                    :rules="`${isTenancyHomeOwner?'':'required|'}valid-date`"
                                     v-slot="{ errors }"
                                 >
                                     <v-text-field
@@ -276,6 +276,7 @@ name: "IdentificationDetail",
                 { text: "NT", value: "Northern Territory" },
                 { text: "TAS", value: "Tasmania" },
                 { text: "ACT", value: "Australian Capital Territory" },
+                { text: "WA", value: "Western Australia" }, // TODO state definition can be updated
             ],
             expire_date: null,
             showMovingDate: false,

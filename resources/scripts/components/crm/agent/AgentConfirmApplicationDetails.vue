@@ -373,17 +373,20 @@ export default {
             applicant_full_name()
             {
                 return this.application.middle_name?
+                    this.application.title + ' ' +
                     this.application.first_name
                     + ' ' + this.application.middle_name
                     + ' ' + this.application.last_name:
-                    this.application.first_name + ' ' + this.application.last_name;
+                    this.application.title + ' ' + this.application.first_name + ' ' + this.application.last_name;
             },
 
             authorised_full_name(){
                 return this.authorisedPerson.middle_name?
+                    this.authorisedPerson.title + ' ' +
                     this.authorisedPerson.first_name
                     + ' ' + this.authorisedPerson.middle_name
                     + ' ' + this.authorisedPerson.last_name:
+                    this.authorisedPerson.title + ' ' +
                     this.authorisedPerson.first_name
                     + ' ' + this.authorisedPerson.last_name;
             },

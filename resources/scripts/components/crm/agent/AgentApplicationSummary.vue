@@ -1,6 +1,7 @@
 <template>
     <v-card class="hood-card" v-if="application">
         <h3 class="page-title">{{application.applicant_name }}</h3>
+        <IdCopyToClipboard :applicationId="application.id"/>
         <p class="sub-title mt-4 mb-2">Personal Details</p>
 <!--        <table  class="application-info layout-fixed-table">-->
 <!--            <tr>-->
@@ -112,9 +113,6 @@
                 <p class="mb-2">{{identification_number}}</p>
                 <p class="mb-2">Expires on {{identification_expire_data}}</p>
             </v-col>
-
-
-
 
         </v-row>
 
@@ -248,9 +246,10 @@
 import dayJs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
-
+import IdCopyToClipboard from '@scripts/components/common/IdCopyToClipboard.vue';
 export default {
     name: "AgentApplicationSummary",
+    components:{IdCopyToClipboard},
     props: ["application"],
     data() {
         return {
@@ -311,10 +310,6 @@ export default {
                 status[0].toUpperCase() + status.slice(1);
         }
     },
-
-    mounted() {
-
-    }
 };
 </script>
 
