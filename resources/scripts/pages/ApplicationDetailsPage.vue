@@ -22,13 +22,13 @@
             <!-- <LeadsDetailsFotter :lifeSupportInfo="infoToPass.lifeSupportInfo"  v-if="leadSummary.status != 1" :login-loading="this.submittedLoader" :isManualChangeFlag="isManualChangeFlag" @submitConnection="submitConnection"></LeadsDetailsFotter> -->
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
             <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" :title="fullName"></EscalationConfirmModal>
-            
+
             <CloseApplicationReasonModal v-if="closeLead" :dialog="closeLead" :leadSummary="leadSummary" @closeApplicationWithReason="closeApplicationWithReason" @cancelClose="cancelClose" @sucessSaveClose="sucessSaveClose"></CloseApplicationReasonModal>
 
             <CloseConfirmModal v-if="closeConfirm" :dialog="closeConfirm" :title="fullName"></CloseConfirmModal>
-            
+
             <!-- <CloseApplicationModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></CloseApplicationModal> -->
-            
+
             <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag"
                                :readmore="additionalInstruction"
                                @close="closeReadMore"> </LeadReadMoreModal>
@@ -199,12 +199,13 @@ export default {
             if(index == -1) {
                 this.services.push(service.toLowerCase());
                  LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
-
+                this.loadPlanNoteAndLead()
                 return;
             }
             this.services.splice(index,1);
             LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
             this.leadSummary.service_types = this.services;
+            this.loadPlanNoteAndLead()
         },
 
         async submitConnection(submitType) {
@@ -252,7 +253,7 @@ export default {
                     supplier: 1,
                     plan_type: this.plan?.key,
                     submit_type: this.submitType
-                    
+
                 };
             }
 
@@ -374,7 +375,7 @@ export default {
             this.$eventBus.$off("busWaterSubmit", busWaterSubmitEvent);
         });
 
-    
+
       this.leadId = this.$route.params.id;
       await this.loadPlanNoteAndLead();
       await this.updateMernNmi();

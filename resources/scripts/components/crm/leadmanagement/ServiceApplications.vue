@@ -287,7 +287,6 @@ export default {
     },
     watch: {
         'leadSummary.service_interests'() {
-            console.log("printing lead summary" , this.leadSummary)
             this.loadPlan();
         }
     },
