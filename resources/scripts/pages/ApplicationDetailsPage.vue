@@ -212,15 +212,15 @@ export default {
             let v = await this.validateLead();
             if(!v) return;
             this.submitType = submitType;
-
             this.payload = { ...this.lead.property_details,
                 ...this.lead.person_details,
-                'service_interests':this.services,
-                'identification':this.lead.indentification,
+                service_interests: this.services,
                 supplier: 1,
                 plan_type: this.plan,
                 submitType,
+                identification: this.lead.identification,
             };
+
             this.showSubmitModal = true;
         },
 

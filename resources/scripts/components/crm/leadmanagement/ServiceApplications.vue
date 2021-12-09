@@ -320,6 +320,9 @@ export default {
                 case 'origin':
                      plan = this.origin2.find(p => p.name === this.activeOriginPlan);
                     break;
+                default:
+                    console.log("getPlanType:defaultCase", this.selectedPowerProvider)
+
             }
             this.$emit('updatePlan', {...plan,  provider: this.selectedPowerProvider, service_area:'energy' }, false);
         },
