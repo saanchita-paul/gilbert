@@ -10,7 +10,7 @@
                            outlined
                            dense
                            placeholder="Medicare Card Number"
-                           label="Medicare Card Number"
+                           :label="`Medicare Card Number${isTenancyHomeOwner?'':'*'}`"
                            @change="updateIdentification"
                        ></v-text-field>
                    </ValidationProvider>
@@ -24,7 +24,7 @@
                            <v-select
                                v-model="identification.special_number"
                                :error-messages="errors[0]"
-                               label="Special Number"
+                               :label="`Special Number${isTenancyHomeOwner?'':'*'}`"
                                placeholder="1/2"
                                :items="specialNumberDD"
                                outlined
@@ -51,7 +51,7 @@
                            >
                                <v-text-field
                                    placeholder="MM/YY"
-                                   label="Expiry Date"
+                                   :label="`Expiry Date${isTenancyHomeOwner?'':'*'}`"
                                    outlined
                                    dense
                                    v-model="identification.expire_date"
@@ -82,7 +82,7 @@
                        <v-select
                            v-model="identification.card_color"
                            placeholder="Yellow"
-                           label="Card Colour"
+                           :label="`Card Colour${isTenancyHomeOwner?'':'*'}`"
                            item-text="text"
                            item-value="value"
                            :items="colorDD"
@@ -106,7 +106,7 @@
                             outlined
                             dense
                             placeholder="Passport Number"
-                            label="Passport Number *"
+                            :label="`Passport Number${isTenancyHomeOwner?'':'*'}`"
                             @change="updateIdentification"
                         ></v-text-field>
                     </ValidationProvider>
@@ -119,7 +119,7 @@
                             outlined
                             dense
                             placeholder="AUS"
-                            label="Issuing Country *"
+                            :label="`Issuing Country${isTenancyHomeOwner?'':'*'}`"
                             @change="updateIdentification"
                         ></v-text-field>
                     </ValidationProvider>
@@ -141,7 +141,7 @@
                                 >
                                     <v-text-field
                                         placeholder="DD/MM/YYYY"
-                                        label="Expiry Date *"
+                                        :label="`Expiry Date${isTenancyHomeOwner?'':'*'}`"
                                         outlined
                                         dense
                                         v-model="identification.expire_date"
@@ -173,7 +173,7 @@
                             outlined
                             dense
                             placeholder="License Number"
-                            label="Driver’s License*"
+                            :label="`Driver’s License${isTenancyHomeOwner?'':'*'}`"
                             @change="updateIdentification"
                         ></v-text-field>
                     </ValidationProvider>
@@ -187,7 +187,7 @@
                         <v-select
                             v-model="identification.state"
                             placeholder="Victoria"
-                            label="State *"
+                            :label="`State${isTenancyHomeOwner?'':'*'}`"
                             item-text="text"
                             item-value="value"
                             :items="statesDD"
@@ -215,7 +215,7 @@
                                 >
                                     <v-text-field
                                         placeholder="DD/MM/YYYY"
-                                        label="Expiry Date *"
+                                        :label="`Expiry Date${isTenancyHomeOwner?'':'*'}`"
                                         outlined
                                         dense
                                         v-model="identification.expire_date"

@@ -580,6 +580,7 @@ import {isNull} from "lodash-es";
 import IdentificationDetail from "@scripts/components/crm/agent/IdentificationDetail";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import { tenancyTypeMapper } from '@scripts/data/ConnectionApplicationMapper';
+import AuthService from '@scripts/services/AuthService';
 import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
 export default {
     name: "AgentCreateNewApplication",
@@ -705,7 +706,8 @@ export default {
         },
         isTenancyHomeOwner(){
             // return this.application.tenancy_type===tenancyTypeMapper.HomeOwner;
-            return false;
+            return AuthService.getRoles().includes("agency_office_property_manager") &&
+            this.application.tenancy_type===tenancyTypeMapper.HomeOwner;
         }
     },
     methods: {
