@@ -345,7 +345,7 @@
                         </div>
                         <div v-else-if="data.submitType == 'energy'">
                         <div class="d-flex mb-2">
-                            
+
 
                             <div v-if="data.service_interests.includes('power')" class="d-flex mx-2">
                                 <div class="d-flex px-2 py-1" style="background-color: #542E89; border-radius: 5px;">
@@ -551,7 +551,7 @@ export default {
           },
         selectedPlan() {
             this.provider = this.data.plan_type.provider;
-            
+
             if(this.provider == 'sumo') {
                 return Boolean(this.data.plan_type.title)?this.data.plan_type.key: this.data.plan_type.value;
             }
