@@ -52,6 +52,7 @@
                 <v-col cols="12" v-if="leadSummary.is_temporary_connection">
                     <b>There is a request for temporary connection for this property.</b>
                 </v-col>
+            <ValidationObserver ref="endConnection">
                 <v-col cols="12" v-if="leadSummary.is_temporary_connection">
                     <v-row>
                         <v-col cols="3" class="pt-5"> <b>Temp Connection</b> </v-col>
@@ -138,8 +139,10 @@
                 <v-text-field v-model="leadSummary.state" v-show="false" />
             </ValidationProvider>
                         </v-col>
+
                     </v-row>
                 </v-col>
+            </ValidationObserver>
 
                 <v-card >
                     <p class="sub-title ml-4 pt-5 mb-2" >Service Applications</p>
@@ -413,13 +416,8 @@ export default {
         }
     },
     mounted() {
-        console.log('root' , this.$root);
-        console.log('parent' , this.$parent);
-
         // const birthdate         =  dayjs(this.dob, 'YYYY-MM-DD');
         // this.person_details.dob =  birthdate.isValid() ? birthdate.format('DD/MM/YYYY'): null;
-
-        console.log("conn end date" , this.leadSummary.connection_end_date);
         
         this.modified_moving_date = formatDate(this.leadSummary.moving_date);
         this.moving_date =  this.leadSummary.moving_date;
@@ -438,17 +436,18 @@ export default {
                 this.$eventBus.$emit("validate", this.setSumoDetailsData)
             }
         }
+        const updateMovingDate =async (value)=>{
+            this.modified_moving_date = formatDate(value);
+            await this.$refs.endConnection?.validate()
+        }
 
         this.$eventBus.$on("address_updated", updateAddress );
-        this.$eventBus.$on("update_temporary_date", function(value){
-            console.log("val from " , value)
-            console.log(formatDate(value));
-        } );
-
+        this.$eventBus.$on("update_temporary_date", updateMovingDate );
         this.$once("hook:beforeDestroy", () => {
             this.$eventBus.$off("address_updated", updateAddress );
-            this.$eventBus.$off("update_temporary_date" );
+            this.$eventBus.$off("update_temporary_date" , updateMovingDate);
         });
+
 
     },
     methods: {
