@@ -440,9 +440,14 @@ export default {
         }
 
         this.$eventBus.$on("address_updated", updateAddress );
+        this.$eventBus.$on("update_temporary_date", function(value){
+            console.log("val from " , value)
+            console.log(formatDate(value));
+        } );
 
         this.$once("hook:beforeDestroy", () => {
             this.$eventBus.$off("address_updated", updateAddress );
+            this.$eventBus.$off("update_temporary_date" );
         });
 
     },

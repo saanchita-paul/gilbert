@@ -1465,6 +1465,9 @@ export default {
       this.property_details.moving_date = new DayJs(this.moving_date).format(
         "DD/MM/YYYY"
       );
+
+
+      this.$eventBus.$emit("update_temporary_date" , this.moving_date);
       this.$emit(
         "updateDraft",
         "moving_date",
