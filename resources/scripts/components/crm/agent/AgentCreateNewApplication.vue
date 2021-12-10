@@ -419,7 +419,7 @@
                                                     </v-text-field>
                                                 </ValidationProvider>
                                             </template>
-                                            <v-date-picker v-model="moving_date" :min="minDate"
+                                            <v-date-picker v-model="moving_date" 
                                                            @input="showMovingDate = false"></v-date-picker>
                                         </v-menu>
                                     </v-col>
@@ -662,7 +662,8 @@ import LeadCreateSuccessfulModal from "@scripts/components/crm/modals/LeadCreate
 import {isNull} from "lodash-es";
 import IdentificationDetail from "@scripts/components/crm/agent/IdentificationDetail";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
-
+import { formatDate } from "@scripts/services/others/DateService"
+ 
 export default {
     name: "AgentCreateNewApplication",
     components: {
@@ -875,10 +876,12 @@ export default {
         },
 
         moving_date() {
+            this.connection_end_date = null;
+            this.application.connection_end_date = null;
             this.application.moving_date = (new DayJs(this.moving_date).format('DD/MM/YYYY'));
         },
         connection_end_date() {
-            this.application.connection_end_date = (new DayJs(this.connection_end_date).format('DD/MM/YYYY'));
+            this.application.connection_end_date = formatDate(this.connection_end_date);
         },
         authorized_person_dob() {
             this.authorized_person.dob = (new DayJs(this.authorized_person_dob).format('DD/MM/YYYY'));

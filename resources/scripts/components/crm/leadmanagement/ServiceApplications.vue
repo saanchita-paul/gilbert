@@ -130,6 +130,7 @@
               </template>
               <v-date-picker
                 v-model="connection_end_date"
+                :min="moving_date"
                 @input="updateConnectionEndDate"
               ></v-date-picker>
             </v-menu>  
@@ -287,6 +288,7 @@ import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails"
 import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
 import Spinner from "@scripts/plugins/Spinner";
 import dayJs from "dayjs";
+import { formatDate } from "@scripts/services/others/DateService"
 export default {
     name: "ServiceApplications",
     components: { SumoPlan, SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails, SoleDetails},
@@ -419,10 +421,10 @@ export default {
 
         console.log("conn end date" , this.leadSummary.connection_end_date);
         
-        this.modified_moving_date = this.formatDate(this.leadSummary.moving_date);
+        this.modified_moving_date = formatDate(this.leadSummary.moving_date);
         this.moving_date =  this.leadSummary.moving_date;
         
-        this.modified_connection_end_date = this.formatDate(this.leadSummary.connection_end_date)
+        this.modified_connection_end_date = formatDate(this.leadSummary.connection_end_date)
         this.connection_end_date =  this.leadSummary.connection_end_date;
 
         this.providerSpinner = new Spinner(this.$refs.provider, {autoStart: true})
@@ -721,8 +723,10 @@ export default {
             // const date         =  dayJs(this.moving_date, 'YYYY-MM-DD');
             // return date.isValid() ? date.format('DD/MM/YYYY'): null
             
+            this.updateConnectionEndDate()
+
             this.connection_date_menu = false;
-            this.modified_moving_date = this.formatDate(this.moving_date)
+            this.modified_moving_date = formatDate(this.moving_date)
             this.$eventBus.$emit("update_moving_date", this.modified_moving_date)
             
             // console.log(this.moving_date)
@@ -732,37 +736,52 @@ export default {
             // console.log("hellow world" , value)
             console.log('value' , value)
             // console.log("clicked")
-            this.modified_moving_date = this.formatDate(value) ? this.formatDate(value) :
+
+            this.updateConnectionEndDate()
+
+            this.modified_moving_date = formatDate(value) ? formatDate(value) :
                                         this.modified_moving_date ;
             
             this.connection_end_date_menu = false;
             this.$eventBus.$emit("update_moving_date", this.modified_moving_date)
         },
-        formatDate(date){
-            const formattedDate =  dayJs(date, 'YYYY-MM-DD');
-            return formattedDate.isValid() ? formattedDate.format('DD/MM/YYYY'): null;
+        updateConnecitionEndNullDate(){
+            this.modified_connection_end_date = null;
+            this.connection_end_date = null;
+            LeadApplicationService.updateConnecitionEndNullDate(this.leadSummary.id);
         },
         updateConnectionEndDate(value){
             console.log('value' , value)
             
             // const date =  dayJs(this.connection_end_date, 'YYYY-MM-DD');
 
-            this.modified_connection_end_date = this.formatDate(this.connection_end_date)
+            this.modified_connection_end_date = formatDate(this.connection_end_date)
 
 
             this.connection_end_date_menu = false;
             
-            this.$eventBus.$emit("update_connection_end_date", this.modified_connection_end_date)
+            if(!formatDate(this.connection_end_date) && this.connection_end_date == ''){
+                this.updateConnecitionEndNullDate();
+            }
+
+            if(formatDate(this.connection_end_date)){
+                this.$eventBus.$emit("update_connection_end_date", this.modified_connection_end_date)
+            }
         },
          syncConnectionEndDate(value){
             console.log('value' , value)
             
             this.connection_end_date_menu = false;
 
-            this.modified_connection_end_date = this.formatDate(value) ? this.formatDate(value) : 
+            this.modified_connection_end_date = formatDate(value) ? formatDate(value) : 
                                                 this.modified_connection_end_date ;
-            
-            this.$eventBus.$emit("update_connection_end_date", this.modified_connection_end_date)
+            if(!formatDate(value) && value == '' ){
+                this.updateConnecitionEndNullDate();
+            }
+
+            if(formatDate(value)){
+                this.$eventBus.$emit("update_connection_end_date", this.modified_connection_end_date)
+            }
         },
      }
 };

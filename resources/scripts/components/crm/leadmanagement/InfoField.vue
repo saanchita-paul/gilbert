@@ -314,7 +314,7 @@
       </div>
     </v-col>
 
-    <v-col cols="4" v-if="!lead.is_temporary_connection">
+    <v-col cols="4" >
       <p class="sub-title title-align">Property Details</p>
       <div class="crm-text-field">
         <div class="field-label">

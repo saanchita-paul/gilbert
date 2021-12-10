@@ -31,5 +31,6 @@ export default {
         date.setDate(date.getDate());
         return date.toISOString()
     },
+    updateConnecitionEndNullDate: (leadId)=>LeadApplicationAPI.updateConnecitionEndNullDate(leadId),
 
 }
