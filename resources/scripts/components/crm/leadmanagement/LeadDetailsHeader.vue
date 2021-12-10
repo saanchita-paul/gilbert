@@ -13,7 +13,7 @@
                             {{leadSummary.applicant_name}}
                             <div style="margin-left:30px; margin-top: -10px;">
                                 <IdCopyToClipboard :applicationId="leadSummary.id"/>
-                            </div>
+                            </span>
                         </span>
                     </p>
 
@@ -105,8 +105,8 @@
 <script>
 import { leadSourceMap } from '@scripts/data/LeadSourceMap'
 import { connectionApplicationMapper } from '@scripts/data/ConnectionApplicationMapper';
-import IdCopyToClipboard from '@scripts/components/common/IdCopyToClipboard.vue';
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import IdCopyToClipboard from '@scripts/components/common/IdCopyToClipboard.vue';
 export default {
 name: "LeadDetailsHeader",
     components:{ IdCopyToClipboard },
