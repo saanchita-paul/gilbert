@@ -101,7 +101,7 @@ class PostSalesService
         $mailingAddressType = 'STREET';
 
         $streetMailingAddress = [
-            'unitNumber'=> $this->connection->address_unit,
+            'unitNumber'=> $this->connection->unit_number,
             'streetNumber'=> $this->connection->street_number,
             'streetName'=> $this->connection->street_address,
             'streetType'=> $streetType,
