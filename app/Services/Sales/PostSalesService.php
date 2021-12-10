@@ -137,9 +137,10 @@ class PostSalesService
 
         try{
             $url = env('EA_SALES_URL','https://apigw-nonprod.energyaustralia.com.au/graphql');
+            $XEAEnv = config('x_ea_env');
             $client = new Client(
                 $url,
-                ['Authorization' => $this->accessToken]);
+                ['Authorization' => $this->accessToken, 'X-EA-Env' => $XEAEnv]);
                 $gql = (new Mutation('submitSale'))
                 ->setVariables([new Variable('data', 'VendorSaleRequest!')])
                 ->setArguments(['input' => '$data'])
