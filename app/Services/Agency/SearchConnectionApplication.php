@@ -46,9 +46,9 @@ class SearchConnectionApplication
     public function get($user): LengthAwarePaginator
     {
         $builder = ConnectionApplication::query()
-            ->with('connectionServices')
-            ->with('assignedTo')
-            ->with('SugerLead');
+            ->with('connectionServices.reasons')
+            ->with('SugerLead')
+            ->with('assignedTo');
 
         if($this->source !== ConnectionApplication::SOURCE_ALL) {
             $builder->where('source', $this->source);

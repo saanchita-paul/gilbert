@@ -43,11 +43,12 @@ class ConnectionService extends Model
     const STATUS_SUBMITTED = 4;
     const STATUS_ACCEPTED = 5;
     const STATUS_REJECTED = 6;
-    const STATUS_EA_PROCESSINF = 7;
-    const AC_MANUAL_PROCESSING = 11;
+    const STATUS_EA_PROCESSINF = 7; //todo: rename this constant to STATUS_NOT_SUBMITTED
+    const STATUS_EA_SUBMIT = 12;
     const STATUS_CLOSED = 8;
     const STATUS_CANT_CONNECT = 9;
     const STATUS_NEEDS_MORE_INFO = 10;
+    const AC_MANUAL_PROCESSING = 11;
 
     const WATER_STATUS_IN_PROGRESS = 7;
     const WATER_STATUS_NEED_INFO = 10;
@@ -56,6 +57,7 @@ class ConnectionService extends Model
     const WATER_STATUS_CANT_CONNECT = 9;
 
     const PROVIDER_SUMO = 'sumo';
+    const PROVIDER_EA = 'ea';
 
 
     const STATUS_MAPPING = [
@@ -66,6 +68,7 @@ class ConnectionService extends Model
         self::STATUS_ACCEPTED =>'accepted',
         self::STATUS_REJECTED => 'rejected',
         self::STATUS_EA_PROCESSINF => 'processing',
+        self::STATUS_EA_SUBMIT => 'processing',
         self::STATUS_CLOSED => 'closed',
         self::STATUS_CANT_CONNECT => 'can\'t_connect',
         self::STATUS_NEEDS_MORE_INFO => 'need_more_info',
@@ -97,7 +100,8 @@ class ConnectionService extends Model
         'reason',
         'connection_date',
         'provider_name',
-        'plan_type'
+        'plan_type',
+        'lead_reference',
     ];
 
     /**
@@ -106,6 +110,11 @@ class ConnectionService extends Model
     public function connectionApplication()
     {
         return $this->belongsTo(ConnectionApplication::class);
+    }
+
+    public function reasons()
+    {
+        return $this->hasMany(RejectionReason::class, 'connection_service_id');
     }
 
     public function allApplicationMetricsCount(array $matrixReq, User $user)
