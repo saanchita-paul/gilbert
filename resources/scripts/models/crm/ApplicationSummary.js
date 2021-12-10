@@ -110,7 +110,9 @@ export default class ApplicationSummary {
             lead_source = '',
             lead_source_description = '',
             source = 0,
-            created_by_agent = null
+            created_by_agent = null,
+            is_temporary_connection = 0,
+            connection_end_date = null
         }
     ) {
 
@@ -172,6 +174,8 @@ export default class ApplicationSummary {
         this.lead_source_description = lead_source_description
         this.source = source
         this.created_by_agent = created_by_agent
+        this.is_temporary_connection = is_temporary_connection
+        this.connection_end_date = connection_end_date
 
     }
 
