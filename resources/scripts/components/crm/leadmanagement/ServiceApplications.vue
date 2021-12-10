@@ -723,7 +723,7 @@ export default {
             // const date         =  dayJs(this.moving_date, 'YYYY-MM-DD');
             // return date.isValid() ? date.format('DD/MM/YYYY'): null
             
-            this.updateConnectionEndDate()
+            this.updateConnecitionEndNullDate();
 
             this.connection_date_menu = false;
             this.modified_moving_date = formatDate(this.moving_date)
@@ -737,7 +737,7 @@ export default {
             console.log('value' , value)
             // console.log("clicked")
 
-            this.updateConnectionEndDate()
+            this.updateConnecitionEndNullDate();
 
             this.modified_moving_date = formatDate(value) ? formatDate(value) :
                                         this.modified_moving_date ;
