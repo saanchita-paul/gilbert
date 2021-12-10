@@ -130,7 +130,6 @@
                <p class="font-weight-bold">Connection Type:</p>
            </v-col>
            <v-col cols="7" class="py-0 my-0" v-if="lead.is_temporary_connection">
-               <p>Temporary Connection</p>
            </v-col>
            <v-col cols="5" class="py-0 my-0">
                <p class="font-weight-bold">Service Address:</p>

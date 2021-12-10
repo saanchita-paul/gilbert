@@ -107,8 +107,8 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <ValidationProvider
-                  name="Connection Date"
-                  rules="required|valid-date"
+                  name="Connection End Date"
+                  rules="valid-date"
                   v-slot="{ errors }"
                 >
                   <v-text-field
@@ -116,10 +116,11 @@
                     outlined
                     dense
                     append-icon="mdi-calendar"
-                    :value="modified_connection_end_date"
+                    v-model="modified_connection_end_date"
                     v-bind="attrs"
                     :error-messages="errors[0]"
                     hide-details="auto"
+                    @input="syncConnectionEndDate"
                   >
                     <template slot="append">
                       <v-icon v-on="on">mdi-calendar</v-icon>
@@ -129,7 +130,6 @@
               </template>
               <v-date-picker
                 v-model="connection_end_date"
-                :min="moving_date"
                 @input="updateConnectionEndDate"
               ></v-date-picker>
             </v-menu>  
@@ -338,6 +338,7 @@ export default {
             moving_date: null,
             minConnectionDate:  null,
             modified_moving_date: null,
+            modified_connection_end_date: null,
         }
     },
     computed: {
@@ -398,11 +399,11 @@ export default {
         //     return date.isValid() ? date.format('DD/MM/YYYY'): null;
             
         // },
-        modified_connection_end_date(){
-             const date         =  dayJs(this.connection_end_date, 'YYYY-MM-DD');
-             return date.isValid() ? date.format('DD/MM/YYYY'): null;
-            // return dayJs(this.connection_end_date).format("DD/MM/YYYY");
-        }
+        // modified_connection_end_date(){
+        //      const date         =  dayJs(this.connection_end_date, 'YYYY-MM-DD');
+        //      return date.isValid() ? date.format('DD/MM/YYYY'): null;
+        //     // return dayJs(this.connection_end_date).format("DD/MM/YYYY");
+        // }
     },
     watch: {
         'leadSummary.service_interests'() {
@@ -417,9 +418,12 @@ export default {
         // this.person_details.dob =  birthdate.isValid() ? birthdate.format('DD/MM/YYYY'): null;
 
         console.log("conn end date" , this.leadSummary.connection_end_date);
-        this.modified_moving_date = this.leadSummary.moving_date;
-        this.moving_date = this.leadSummary.moving_date;
-        this.connection_end_date = this.leadSummary.connection_end_date;
+        
+        this.modified_moving_date = this.formatDate(this.leadSummary.moving_date);
+        this.moving_date =  this.leadSummary.moving_date;
+        
+        this.modified_connection_end_date = this.formatDate(this.leadSummary.connection_end_date)
+        this.connection_end_date =  this.leadSummary.connection_end_date;
 
         this.providerSpinner = new Spinner(this.$refs.provider, {autoStart: true})
         this.loadServiceProvider();
@@ -700,6 +704,7 @@ export default {
             }
 
         },
+       
         submit(){
             let subType = 'energy';
             if(this.tabMapper.Energy == this.tab){
@@ -711,20 +716,55 @@ export default {
             }
             this.$eventBus.$emit("busWaterSubmit", subType)
         },
-        updateMovingDate(){
+        updateMovingDate(value){
             console.log("clicked")
             // const date         =  dayJs(this.moving_date, 'YYYY-MM-DD');
             // return date.isValid() ? date.format('DD/MM/YYYY'): null
+            
             this.connection_date_menu = false;
-            this.modified_moving_date = date.isValid() ? date.format('DD/MM/YYYY'): null
+            this.modified_moving_date = this.formatDate(this.moving_date)
+            this.$eventBus.$emit("update_moving_date", this.modified_moving_date)
+            
+            // console.log(this.moving_date)
+            // this.modified_moving_date = this.moving_date.format('DD/MM/YYYY')
+        },
+        syncConnectionDate(value){
+            // console.log("hellow world" , value)
+            console.log('value' , value)
+            // console.log("clicked")
+            this.modified_moving_date = this.formatDate(value) ? this.formatDate(value) :
+                                        this.modified_moving_date ;
+            
+            this.connection_end_date_menu = false;
             this.$eventBus.$emit("update_moving_date", this.modified_moving_date)
         },
-        updateConnectionEndDate(){
-            console.log("clicked")
+        formatDate(date){
+            const formattedDate =  dayJs(date, 'YYYY-MM-DD');
+            return formattedDate.isValid() ? formattedDate.format('DD/MM/YYYY'): null;
+        },
+        updateConnectionEndDate(value){
+            console.log('value' , value)
+            
+            // const date =  dayJs(this.connection_end_date, 'YYYY-MM-DD');
+
+            this.modified_connection_end_date = this.formatDate(this.connection_end_date)
+
+
             this.connection_end_date_menu = false;
+            
             this.$eventBus.$emit("update_connection_end_date", this.modified_connection_end_date)
-        }
-    }
+        },
+         syncConnectionEndDate(value){
+            console.log('value' , value)
+            
+            this.connection_end_date_menu = false;
+
+            this.modified_connection_end_date = this.formatDate(value) ? this.formatDate(value) : 
+                                                this.modified_connection_end_date ;
+            
+            this.$eventBus.$emit("update_connection_end_date", this.modified_connection_end_date)
+        },
+     }
 };
 </script>
 
