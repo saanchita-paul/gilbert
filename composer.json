@@ -11,6 +11,7 @@
         "php": "^8.0",
         "doctrine/dbal": "^3.1",
         "fideloper/proxy": "^4.2",
+        "firebase/php-jwt": "^5.5",
         "fruitcake/laravel-cors": "^2.0",
         "gmostafa/php-graphql-client": "^1.13",
         "guzzlehttp/guzzle": "^7.0.1",
@@ -53,7 +54,8 @@
             "OurProperty\\": "app/Modules/OurProperty",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "PropertyMe\\": "app/Modules/PropertyMe"
+            "PropertyMe\\": "app/Modules/PropertyMe",
+            "TSA\\": "app/Modules/TSA"
         }
     },
     "autoload-dev": {
