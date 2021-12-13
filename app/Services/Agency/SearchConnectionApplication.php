@@ -47,10 +47,12 @@ class SearchConnectionApplication
     {
         $builder = ConnectionApplication::query()
             ->with('connectionServices.reasons')
+            ->with('SugerLead')
             ->with('assignedTo');
 
         if($this->source !== ConnectionApplication::SOURCE_ALL) {
             $builder->where('source', $this->source);
+            $builder = $this->filterLeadForFoxie($builder);
         }
 
 
@@ -81,5 +83,14 @@ class SearchConnectionApplication
 
 
         return $builder->paginate($this->perPage);
+    }
+
+    private function filterLeadForFoxie($builder){
+        if($this->source == ConnectionApplication::SOURCE_FOXIE){
+            $builder =  $builder->whereHas('SugerLead' , function($query){
+                $query->where('compare_connect_id' , null); 
+            });
+        }
+        return $builder;
     }
 }

@@ -87,6 +87,7 @@ class SugerLeadService
         //SUGER LEADS TABLE
         $this->lead->service_address = $request->full_address_c ?? '';
         $this->lead->foxie_lead_source = $request->lead_source ?? '';
+        $this->lead->compare_connect_id = $request->compareconnect_id_c ?? '';
         $this->lead->foxie_lead_source_description = $request->lead_source_description ?? '';
         $this->lead->office_branch = $request->office_c ?? '';
         $this->lead->agent_name = $request->agent_c ?? '';
@@ -186,6 +187,7 @@ class SugerLeadService
         //SUGER LEADS TABLE
         $request->full_address_c ? $this->lead->service_address = $request->full_address_c : '';
         $request->office_c ? $this->lead->office_branch = $request->office_c : '';
+        $request->compareconnect_id_c ? $this->lead->compare_connect_id = $request->compareconnect_id_c : '';
         $request->foxie_agents_id_c ? $this->lead->agency_id = $request->foxie_agents_id_c : '';
         $request->agent_c ? $this->lead->agent_name = $request->agent_c : '';
         $request->id_c ? $this->lead->lead_id = $request->id_c : '';
