@@ -155,9 +155,10 @@ class GetSalesRequestStaus
             );
 
         $url = env('EA_SALES_URL', 'https://apigw-nonprod.energyaustralia.com.au/graphql');
+        $XEAEnv = config('ea.x_ea_env');
         $client = new Client(
             $url,
-            ['Authorization' => $this->accessToken]);
+            ['Authorization' => $this->accessToken, 'X-EA-Env' => $XEAEnv]);
         $results = $client->runQuery($gql, true, $da);
 
         $this->processEaData($results->getResponseBody(), $leadId);
@@ -194,7 +195,7 @@ class GetSalesRequestStaus
             ->distinct()
             ->get()
             ->unique('lead_reference');
-        
+
         foreach ($services as $service) {
 
             CheckSaleApiLeadData::dispatch($service->connection_application_id, $service->lead_reference);
