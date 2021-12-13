@@ -1,10 +1,23 @@
 <template>
-    <v-row>
+    <v-row v-if="leadSummary.id">
         <v-col cols="12" class="d-flex justify-space-between">
 
             <div class="d-flex" >
                 <div class="mx-4 mb-0" >
-                    <p class="page-title mb-0"><span><v-img @click="goToBack()" src="/assets/images/icons/back_btn.png" max-height="40px" max-width="40px" class="back-btn mt-1"> </v-img></span>{{leadSummary.applicant_name}} </p>
+                    <p class="page-title mb-0">
+                        <span>
+                            <v-img @click="goToBack()" src="/assets/images/icons/back_btn.png" max-height="40px" max-width="40px" class="back-btn mt-1">
+                            </v-img>
+                        </span>
+                        <span>
+                            {{leadSummary.applicant_name}}
+                            <div style="margin-left:30px; margin-top: -10px;">
+                                <IdCopyToClipboard :applicationId="leadSummary.id"/>
+                            </div>
+                        </span>
+                    </p>
+
+
                     <!-- <small class="font-weight-bold">
                        Preference
                         <span class="mx-1 pa-2"  :class="{'mx-1':isActive('Power'), 'pa-2':isActive('Power'),}" ><v-icon size="16" :color="getColor('Power')">mdi-flash</v-icon> Power</span>
@@ -26,7 +39,7 @@
                 </div>
                 <p v-if="leadSummary.is_contacted" class="application-consent mt-5"><v-icon size="14px" color="success" class="mx-2">call</v-icon>Applicant consents to be contacted by HOOD</p>
             </div>
-            
+
         </v-col>
 
                     <div style="width: 100%;" class="mb-4 ml-6 mr-4 pl-2">
@@ -39,29 +52,29 @@
                                     </div>
                                     <div :style="{ 'text-align': 'center', color: getServiceStatus('power').color }"  >   {{getServiceStatus('power').text}} </div>
                                 </div>
-                            
+
                                 <div class="d-flex justify-center" style="flex-wrap: wrap;">
                                     <div style="flex-basis: 100%; text-align: center;">
                                         <div class="font-weight-bold" :class="{'mx-1':isActive('Gas')}" ><v-icon size="16" :color="getColor('Gas')">mdi-fire</v-icon> Gas</div>
                                     </div>
                                     <div :style="{ 'text-align': 'center', color: getServiceStatus('gas').color }" :class="getStatusColor('gas')" >  {{getServiceStatus('gas').text}}  </div>
                                 </div>
-                            
-                            
+
+
                                 <div class="d-flex justify-center" style="flex-wrap: wrap;">
                                     <div style="flex-basis: 100%; text-align: center;">
                                         <div class="font-weight-bold" :class="{'mx-1':isActive('Water')}" ><v-icon size="16" :color="getColor('Water')">mdi-water</v-icon> Water</div>
                                     </div>
                                     <div :style="{ 'text-align': 'center', color: getServiceStatus('water').color }" :class="getStatusColor('water')" >  {{getServiceStatus('water').text}} </div>
                                 </div>
-                            
+
                                 <div class="d-flex justify-center" style="flex-wrap: wrap;">
                                     <div style="flex-basis: 100%; text-align: center;">
                                         <div class="font-weight-bold"  :class="{'mx-1':isActive('Internet')}" ><v-icon size="16" :color="getColor('Internet')">mdi-wifi</v-icon> Internet</div>
                                     </div>
                                     <div :style="{ 'text-align': 'center', color: getServiceStatus('internet').color }" :class="getStatusColor('internet')"  >  {{getServiceStatus('internet').text}} </div>
                                 </div>
-                            
+
                             </div>
 
                             <div class="d-flex align-end">
@@ -76,7 +89,7 @@
                     <div class="ml-4"><span class="font-weight-bold text-sm">Agent Name:</span> <span>{{ this.leadSummary.agent_name }}</span></div>
                     <p class="ml-4"><span class="font-weight-bold">Agency:</span> <span>{{ this.leadSummary.agency_office }}</span></p>
                 </div>
-                <div class="d-flex" v-if="this.leadSummary.source == this.leadSourceMap['SOURCE_FOXIE']"> 
+                <div class="d-flex" v-if="this.leadSummary.source == this.leadSourceMap['SOURCE_FOXIE']">
                     <p class="ml-4"><span class="font-weight-bold">Lead Source:</span> <span>{{ this.leadSummary.lead_source }}</span></p>
                     <p class="ml-4"><span class="font-weight-bold">LS Description:</span> <span>{{ this.leadSummary.lead_source_description }}</span></p>
                 </div>
@@ -85,15 +98,18 @@
         <v-col cols="12">
             <v-divider></v-divider>
         </v-col>
-        
+
     </v-row>
 </template>
 
 <script>
 import { leadSourceMap } from '@scripts/data/LeadSourceMap'
 import { connectionApplicationMapper } from '@scripts/data/ConnectionApplicationMapper';
+import IdCopyToClipboard from '@scripts/components/common/IdCopyToClipboard.vue';
+import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 export default {
 name: "LeadDetailsHeader",
+    components:{ IdCopyToClipboard },
     props: {
         leadSummary: {
             require: true
@@ -128,7 +144,7 @@ name: "LeadDetailsHeader",
             this.$emit('closeApplicationWithReason');
         },
 
-       
+
         closeConnection() {
             this.$router.push({name:'applications'});
         },
@@ -163,7 +179,7 @@ name: "LeadDetailsHeader",
                 return svc.service_type === conn_ser;
             })
             if(service) {
-                return this.mapConnectionStatus(service.statusText);
+                return this.mapConnectionStatus(service.status);
             }
             return {
                 text: 'Not Selected',
@@ -173,28 +189,7 @@ name: "LeadDetailsHeader",
         mapConnectionStatus(status) {
             // return ['unassigned','assigned', 'escalated'].includes(status)?'In Progress':
             //     status[0].toUpperCase() + status.slice(1);
-            if(['unassigned', 'assigned', 'escalated', 'processing'].includes(status)) {
-                return {
-                    text: 'In Progress',
-                    color: 'blue',
-                };
-            } else if(status === 'accepted') {
-                return {
-                    text: 'Accepted',
-                    color: 'green',
-                };
-            } else if(status === "can\'t_connect") {
-                return {
-                    text: "Can't Connect",
-                    color: 'red',
-                };
-            } 
-            else {
-                return {
-                    text: (status[0].toUpperCase() + status.slice(1)).replace(/_/g, " "),
-                    color: 'black',
-                };
-            }
+            return  LeadApplicationService.mapStatus(status)
         },
         getStatusColor(name){
             // TODO this function needs to be implemented for color

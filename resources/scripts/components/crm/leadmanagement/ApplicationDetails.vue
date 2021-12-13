@@ -1,6 +1,7 @@
 <template>
    <v-card class="hood-card" v-if="lead">
         <h3 class="page-title">{{lead.applicant_name}}</h3>
+        <IdCopyToClipboard :applicationId="lead.id"/>
         <p class="sub-title mt-4 mb-2">Personal Details</p>
 <!--        <table  class="application-info layout-fixed-table">-->
 <!--            <tr>-->
@@ -228,9 +229,10 @@
 import dayJs from "dayjs";
 import { leadSourceMap } from '@scripts/data/LeadSourceMap';
 import { emailBillingMapper } from '@scripts/data/ConnectionApplicationMapper';
-
+import IdCopyToClipboard from '@scripts/components/common/IdCopyToClipboard.vue';
 export default {
   name: "ApplicationDetails",
+    components:{IdCopyToClipboard},
     props: {
       lead: {
           required: true

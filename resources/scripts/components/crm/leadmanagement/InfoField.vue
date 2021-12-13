@@ -1027,6 +1027,7 @@ import dayJs from "dayjs";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import { medicareRules, mediExpireDate } from '@scripts/plugins/VeeValidate';
 
+import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
 
 export default {
   name: "InfoField",
@@ -1049,7 +1050,7 @@ export default {
     return {
       needLifeSupprt: false,
       loadNmi: false,
-      titlesDD:[ 'Mr.','Mrs.','Ms.','Miss','Dr.'],
+      titlesDD: titlesMapperForDropdown,
       minConnectionDate: LeadApplicationService.getMinConnectionDate(),
       minExpiredate: new Date().toISOString(),
       emailBillingDD: [
@@ -1078,6 +1079,7 @@ export default {
         { text: "NT", value: "Northern Territory" },
         { text: "TAS", value: "Tasmania" },
         { text: "ACT", value: "Australian Capital Territory" },
+        { text: "WA", value: "Western Australia" }, // TODO state definition can be updated
       ],
       tenantTypeDD: [
         {
@@ -1283,7 +1285,7 @@ export default {
       // console.log(this.lead);
 
       this.$emit("updateLead", {
-        indentification: this.indentification,
+        identification: this.indentification,
         property_details: this.property_details,
         person_details: this.person_details,
       });
@@ -1448,9 +1450,11 @@ export default {
 
   watch: {
     lead: {
-      handler() {
-        // console.log('calling...')
+      async handler() {
         this.synFormData();
+          await this.synFormData();
+          await this.formatDate();
+          await this.updateLeads();
       },
       deep: true,
     },

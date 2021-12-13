@@ -85,7 +85,7 @@ class ApplicationController extends Controller
     public function view(Request $request, ConnectionApplication $application): ApplicationResource|JsonResponse
     {
         try {
-            $application->load(['connectionServices']);
+            $application->load(['connectionServices.reasons']);
             return new ApplicationResource($application);
 
         } catch (\Exception $exception) {
