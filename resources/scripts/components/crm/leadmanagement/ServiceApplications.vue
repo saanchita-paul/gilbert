@@ -424,6 +424,8 @@ export default {
          // this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
         this.loadSelectedPowerProvider();
 
+        console.log("print lead summary" , this.leadSummary);
+
         const updateAddress = address => {
             if (this.selectedPowerProvider === 'sumo') {
                 this.$eventBus.$emit("validate", this.setSumoDetailsData)

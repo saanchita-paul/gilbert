@@ -109,6 +109,8 @@ export default class ApplicationSummary {
             agency_office = '',
             lead_source = '',
             lead_source_description = '',
+            fast_connect_customer_reference = null,
+            is_auto_water_submit = null,
             source = 0,
             created_by_agent = null,
             is_temporary_connection = 0,
@@ -117,7 +119,7 @@ export default class ApplicationSummary {
     ) {
 
         this.id = id;
-        this.applicant_name = first_name + ' '+ ( isNull(middle_name)?'': middle_name) + ' ' + last_name;
+        this.applicant_name = ( title == null ? '' : title ) + ' ' + first_name + ' '+ ( isNull(middle_name)?'': middle_name) + ' ' + last_name;
         this.first_name = first_name;
         this.middle_name = middle_name;
         this.last_name = last_name;
@@ -176,6 +178,8 @@ export default class ApplicationSummary {
         this.created_by_agent = created_by_agent
         this.is_temporary_connection = is_temporary_connection
         this.connection_end_date = connection_end_date
+        this.fast_connect_customer_reference = fast_connect_customer_reference
+        this.is_auto_water_submit = is_auto_water_submit
 
     }
 

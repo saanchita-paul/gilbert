@@ -50,6 +50,14 @@ class SearchConnectionApplication
             ->with('SugerLead')
             ->with('assignedTo');
 
+
+        if(empty($this->leadType)){
+            $builder = ConnectionApplication::query()
+            ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED)
+            ->with('connectionServices')
+            ->with('assignedTo');
+        }
+
         if($this->source !== ConnectionApplication::SOURCE_ALL) {
             $builder->where('source', $this->source);
             $builder = $this->filterLeadForFoxie($builder);

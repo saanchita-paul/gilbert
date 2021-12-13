@@ -374,6 +374,7 @@ class ConnectionApplication extends Model
     {
         return $this->hasOne(OurProperty::class, 'connection_application_id');
     }
+
     public function propertyMeLead()
     {
         return $this->hasOne(PropertyMeLead::class , 'connection_application_id');

@@ -151,9 +151,9 @@
                                 min-width="290px"
                             >
                                 <template v-slot:activator="{ on, attrs }">
-                                    <ValidationProvider name="Date of Birth" rules="required|valid-date|adult"  v-slot="{ errors }">
+                                    <ValidationProvider name="Date of Birth" :rules="`${isTenancyHomeOwner?'':'required|'}valid-date|adult`"  v-slot="{ errors }">
                                         <v-text-field
-                                            label="Date of Birth*"
+                                            :label="`Date of Birth ${isTenancyHomeOwner?'':'*'}`"
                                             placeholder="DD/MM/YYYY"
                                             outlined
                                             dense
@@ -191,19 +191,20 @@
                     </v-col>
 
                     <v-col cols="6" class="py-0">
-                        <ValidationProvider name="Identification Types" rules="required"  v-slot="{ errors }">
+                        <ValidationProvider name="Identification Types" :rules="`${isTenancyHomeOwner?'':'required'}`"  v-slot="{ errors }">
                             <v-select outlined dense
                                       v-model="indentification.type"
                                       :items="idenficationTypeDD"
                                       item-text="text"
                                       item-value="value"
-                                      label="Id Type*"
+                                      :label="`Id Type${isTenancyHomeOwner?'':'*'}`"
                                       :error-messages=" errors[0]"
                                       placeholder="Please select one">
                             </v-select>
                         </ValidationProvider>
                     </v-col>
                     <IdentificationDetail :indentification="indentification"
+                                          :isTenancyHomeOwner="isTenancyHomeOwner"
                                           @updateIdentification="updateIdentification">
                     </IdentificationDetail>
 
@@ -664,6 +665,8 @@ import IdentificationDetail from "@scripts/components/crm/agent/IdentificationDe
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import { formatDate } from "@scripts/services/others/DateService"
  
+import { tenancyTypeMapper } from '@scripts/data/ConnectionApplicationMapper';
+import AuthService from '@scripts/services/AuthService';
 import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
 export default {
     name: "AgentCreateNewApplication",
@@ -784,6 +787,16 @@ export default {
             }
         }, 250);
 
+    },
+    computed:{
+        tenancyTypeMapper(){
+            return tenancyTypeMapper;
+        },
+        isTenancyHomeOwner(){
+            // return this.application.tenancy_type===tenancyTypeMapper.HomeOwner;
+            return AuthService.getRoles().includes("agency_office_property_manager") &&
+            this.application.tenancy_type===tenancyTypeMapper.HomeOwner;
+        }
     },
     methods: {
         onAddressSelected(place) {
