@@ -200,30 +200,30 @@
                         <div class="leade-badge">
                             <h3>Internet</h3>
                             <div class="leade-icon pb-2">
-                                <v-icon color="grey lighten-1">mdi-wifi</v-icon>
+                                <v-icon color="green">mdi-wifi</v-icon>
                                 <span class="mr-4">$</span>
-<!--                                <ValidationProvider name="Internet" rules="numeric|max:2|min_value:1|required"  v-slot="{ errors }">-->
+                               <ValidationProvider name="Internet" rules="numeric|max:2|min_value:1|required"  v-slot="{ errors }">
                                 <v-text-field
                                     v-model="commission.internet"
                                     outlined
-                                    disabled
                                     dense
                                     hide-details
                                     placeholder="50"
+                                    :error-messages=" errors[0]"
                                 ></v-text-field>
-<!--                                </ValidationProvider>-->
+                               </ValidationProvider>
                             </div>
                             <p class="leade-text pr-5">Per successful connection</p>
                         </div>
                     </v-col>
 
-                    <v-col cols="3" class="pa-0">
+                    <!-- <v-col cols="3" class="pa-0">
                         <div class="leade-badge">
                             <h3>Water</h3>
                             <div class="leade-icon pb-2">
                                 <v-icon color="grey lighten-1">mdi-water</v-icon>
                                 <span class="mr-4">$</span>
-<!--                                <ValidationProvider name="Water"rules="numeric|max:2|min_value:1|required"  v-slot="{ errors }">-->
+                               <ValidationProvider name="Water" rules="numeric|max:2|min_value:1|required"  v-slot="{ errors }">
                                 <v-text-field
                                     disabled
                                     v-model="commission.water"
@@ -232,11 +232,11 @@
                                     hide-details
                                     placeholder="50"
                                 ></v-text-field>
-<!--                                </ValidationProvider>-->
+                               </ValidationProvider>
                             </div>
                             <p class="leade-text pr-5">Per successful connection</p>
                         </div>
-                    </v-col>
+                    </v-col> -->
                </v-row>
 
             </v-row>
