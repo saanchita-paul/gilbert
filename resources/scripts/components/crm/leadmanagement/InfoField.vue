@@ -93,14 +93,9 @@
       </div>
       <div class="crm-text-field">
         <div class="field-label">
-          <span>Date of Birth *</span>
+          <span>Date of Birth {{ isTenancyHomeOwner?'':'*' }}</span>
         </div>
         <div class="text-field">
-          <ValidationProvider
-            name="Date of Birth"
-            rules="required"
-            v-slot="{ errors }"
-          >
             <v-menu
               v-model="showDateOfBirth"
               :close-on-content-click="false"
@@ -112,7 +107,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <ValidationProvider
                   name="Bate Of Birth"
-                  rules="required|valid-date|adult"
+                  :rules="`${isTenancyHomeOwner?'':'required|'}valid-date|adult`"
                   v-slot="{ errors }"
                 >
                   <v-text-field
@@ -137,7 +132,6 @@
                 @input="showDateOfBirth = false"
               ></v-date-picker>
             </v-menu>
-          </ValidationProvider>
         </div>
       </div>
 
@@ -687,12 +681,12 @@
       <p class="sub-title title-align">Identification</p>
       <div class="crm-text-field">
         <div class="field-label">
-          <span>Identification *</span>
+          <span>Identification {{ isTenancyHomeOwner?'':'*' }}</span>
         </div>
         <div class="text-field">
           <ValidationProvider
             name="Identification Number"
-            rules="required"
+            :rules="`${isTenancyHomeOwner?'':'required'}`"
             v-slot="{ errors }"
           >
             <v-select
@@ -724,7 +718,7 @@
                 ? "Medicare Card"
                 : "Card"
             }}
-            *
+            {{ isTenancyHomeOwner?'':'*' }}
           </span>
         </div>
         <div class="text-field">
@@ -738,7 +732,7 @@
                 ? 'Medicare Card '
                 : ''
             "
-            rules="required"
+            :rules="`${isTenancyHomeOwner?'':'required'}`"
             v-slot="{ errors }"
           >
             <v-text-field
@@ -763,12 +757,12 @@
       </div>
       <div class="crm-text-field" v-if="indentification.type == 1">
         <div class="field-label">
-          <span>Country *</span>
+          <span>Country {{ isTenancyHomeOwner?'':'*' }}</span>
         </div>
         <div class="text-field">
           <ValidationProvider
             name="Country"
-            rules="required"
+            :rules="`${isTenancyHomeOwner?'':'required'}`"
             v-slot="{ errors }"
           >
             <v-text-field
@@ -787,10 +781,10 @@
 
       <div class="crm-text-field" v-if="indentification.type == 2">
         <div class="field-label">
-          <span>State *</span>
+          <span>State {{ isTenancyHomeOwner?'':'*' }}</span>
         </div>
         <div class="text-field">
-          <ValidationProvider name="State" rules="required" v-slot="{ errors }">
+          <ValidationProvider name="State" :rules="`${isTenancyHomeOwner?'':'required'}`" v-slot="{ errors }">
             <v-select
               v-model="indentification.state"
               @blur="saveDraft('state', indentification.state, false, true)"
@@ -810,12 +804,12 @@
 
       <div class="crm-text-field" v-if="indentification.type == 3">
         <div class="field-label">
-          <span>Special Number *</span>
+          <span>Special Number {{ isTenancyHomeOwner?'':'*' }}</span>
         </div>
         <div class="text-field">
           <ValidationProvider
             name="Special Number"
-            rules="required"
+            :rules="`${isTenancyHomeOwner?'':'required'}`"
             v-slot="{ errors }"
           >
             <v-select
@@ -841,17 +835,12 @@
       </div>
       <div class="crm-text-field">
         <div class="field-label">
-          <span>Expiry Date *</span>
+          <span>Expiry Date {{ isTenancyHomeOwner?'':'*' }}</span>
         </div>
 
 
 
         <div class="text-field"  v-if="indentification.type !== 3">
-          <ValidationProvider
-            name="Expired Date"
-            rules="required"
-            v-slot="{ errors }"
-          >
             <v-menu
               v-model="showMovingDate"
               :close-on-content-click="false"
@@ -863,7 +852,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <ValidationProvider
                   name="Expired Date"
-                  rules="required"
+                  :rules="`${isTenancyHomeOwner?'':'required'}`"
                   v-slot="{ errors }"
                 >
                   <v-text-field
@@ -888,7 +877,6 @@
                 @input="showMovingDate = false"
               ></v-date-picker>
             </v-menu>
-          </ValidationProvider>
         </div>
         <div class="text-field"  v-if="indentification.type === 3">
 
@@ -903,7 +891,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <ValidationProvider
                   name="Expired Date"
-                  rules="required|medicare-date|medi-expire"
+                  :rules="`${isTenancyHomeOwner?'':'required|'}'medicare-date|medi-expire'`"
                   v-slot="{ errors }"
                 >
                   <v-text-field
@@ -936,12 +924,12 @@
       </div>
       <div class="crm-text-field" v-if="indentification.type == 3">
         <div class="field-label">
-          <span>Card Colour *</span>
+          <span>Card Colour {{ isTenancyHomeOwner?'':'*' }}</span>
         </div>
         <div class="text-field">
           <ValidationProvider
             name="Card Color"
-            rules="required"
+            :rules="`${isTenancyHomeOwner?'':'required'}`"
             v-slot="{ errors }"
           >
             <v-select
@@ -1026,6 +1014,7 @@ import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import dayJs from "dayjs";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import { medicareRules, mediExpireDate } from '@scripts/plugins/VeeValidate';
+import { tenancyTypeMapper } from '@scripts/data/ConnectionApplicationMapper';
 
 import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
 
@@ -1377,7 +1366,7 @@ export default {
       this.property_details.moving_date = dayJs(this.moving_date).format(
         "DD/MM/YYYY"
       );
-      this.person_details.dob = dayJs(this.dob).format("DD/MM/YYYY");
+      this.person_details.dob = dayJs( dayJs(this.dob).format("DD/MM/YYYY") ).isValid() ? dayJs(this.dob).format("DD/MM/YYYY") : null ;
 
       if(this.indentification.type === IDENTIFICATION.MEDICARE) {
           this.indentification.medicare_expire_date = (dayJs(this.expire_date).isValid())
@@ -1444,7 +1433,13 @@ export default {
                 this.services.findIndex((service)=> service === 'power') != -1) || this.lead.state === 'Queensland'
             )? true: false;
 
-          }
+          },
+      tenancyTypeMapper(){
+          return tenancyTypeMapper;
+        },
+      isTenancyHomeOwner(){
+          return this.person_details.tenancy_type===tenancyTypeMapper.HomeOwner;
+      }
     },
 
   watch: {

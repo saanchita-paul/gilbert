@@ -15,6 +15,10 @@ export const connectionApplicationMapper = {
     '8' : 'STATUS_CLOSED',
 }
 
+export const tenancyTypeMapper = {
+    Renter    : 1,
+    HomeOwner : 2,
+}
 
 export const connectionServicesMapper = {
      'STATUS_UNASSIGNED'      : 1,
