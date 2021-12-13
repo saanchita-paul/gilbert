@@ -398,9 +398,19 @@ export default {
             identification: identification,
             isService: isService
         }
-
+        console.log("printing payload from api" , payload)
         const response = await axios.post('/api/applications/'+leadId+'/draft',payload);
     },
+    async updateConnecitionEndNullDate(leadId){
+        let payload = {
+            identification: false,
+            isService: false,
+            connection_end_date: null
+        }
+        await axios.post('/api/applications/'+leadId+'/draft',payload);
+    },
+
+
     async getNmiMern(id) {
         try {
             const data = await axios.get('/api/applications/'+id+'/nmi-mern');
