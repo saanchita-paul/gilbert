@@ -88,7 +88,11 @@ class SearchConnectionApplication
     private function filterLeadForFoxie($builder){
         if($this->source == ConnectionApplication::SOURCE_FOXIE){
             $builder =  $builder->whereHas('SugerLead' , function($query){
-                $query->where('compare_connect_id' , null); 
+                $query->where('compare_connect_id' , null)
+                      ->orWhere('compare_connect_id', 'N/A')
+                      ->orWhere('compare_connect_id', 'n/a')
+                      ->orWhere('compare_connect_id', 'N/a')
+                      ->orWhere('compare_connect_id', 'n/A');
             });
         }
         return $builder;
