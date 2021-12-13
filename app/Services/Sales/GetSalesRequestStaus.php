@@ -155,7 +155,7 @@ class GetSalesRequestStaus
             );
 
         $url = env('EA_SALES_URL', 'https://apigw-nonprod.energyaustralia.com.au/graphql');
-        $XEAEnv = config('x_ea_env');
+        $XEAEnv = config('ea.x_ea_env');
         $client = new Client(
             $url,
             ['Authorization' => $this->accessToken, 'X-EA-Env' => $XEAEnv]);
