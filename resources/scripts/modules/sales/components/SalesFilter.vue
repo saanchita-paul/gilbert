@@ -15,6 +15,7 @@
             dense
             label="Calender"
             placeholder="Today"
+            v-model="selectedDate"
             append-icon="mdi-calendar-range"
             readonly
             hide-details
@@ -36,6 +37,7 @@
 
 <script>
 import DatePickerModal from "@scripts/modules/sales/components/DatePickerModal";
+import { getToday, getYesterday, isSame } from '@scripts/services/DateRangeService';
 
 export default {
     name: "SalesFilter",
@@ -45,21 +47,36 @@ export default {
     data() {
         return {
             items: ['Energy', 'Water'],
-            showDatePickerModal: true,
+            showDatePickerModal: false,
             dateRange: {
-                start: '2021-12-09',
-                end: '2021-12-09',
+                start: null,
+                end: null,
             },
+            selectedDate: null,
         }
     },
     methods: {
         onSelectDate(dateRange) {
+            this.dateRange = dateRange;
             this.showDatePickerModal = false;
         },
         onCloseModal() {
             this.showDatePickerModal = false;
         },
     },
+    watch: {
+        dateRange() {
+            let today = getToday();
+            let yesterday = getYesterday();
+            if(isSame(this.dateRange.start, today)) {
+                this.selectedDate = 'Today';
+            } else if(isSame(this.dateRange.start, yesterday)) {
+                this.selectedDate = 'Yesterday';
+            } else {
+                this.selectedDate = `${this.dateRange.start} - ${this.dateRange.end}`;
+            }
+        }
+    }
 };
 </script>
 

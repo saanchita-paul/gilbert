@@ -10,9 +10,9 @@
                     <v-col cols="12">
                         <p>
                             <span class='header-title'>From: </span>
-                            <span class='header-value'>2021-11-01</span>
+                            <span class='header-value'>{{getFromDate}}</span>
                             <span class='header-title ml-2'>To: </span>
-                            <span class='header-value'>2021-11-01</span>
+                            <span class='header-value'>{{getToDate}}</span>
                         </p>
                     </v-col>
                 </v-row>
@@ -33,7 +33,7 @@
                                         :key="i"
                                     >
                                     <v-list-item-content>
-                                        <v-list-item-title v-text="item.text"></v-list-item-title>
+                                        <v-list-item-title v-text="item"></v-list-item-title>
                                     </v-list-item-content>
                                     </v-list-item>
                                 </v-list-item-group>
@@ -44,7 +44,7 @@
                         <v-text-field
                             class="date-range-field"
                             v-model="dateRangeText"
-                            label="Date range (YYYY-MM-DD)"
+                            label="Date range (YYYY/MM/DD)"
                             prepend-icon="mdi-calendar"
                             readonly
                         ></v-text-field>
@@ -80,8 +80,10 @@
 </template>
 
 <script>
-import dayjs from "dayjs";
-import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
+import { 
+    getTodayString, getYesterdayString, getToday, isBefore, isAfter,
+    getYesterday, getFormattedDateString, getSlashDate, isSame
+} from '@scripts/services/DateRangeService';
 
 export default {
     name: "DatePickerModal",
@@ -95,46 +97,106 @@ export default {
     },
     data() {
         return {
-            dates: this.dateRange.start
-                ? [
-                    dayjs(this.dateRange.start).format(DATE_FORMAT.DATE_DASH),
-                    dayjs(this.dateRange.end).format(DATE_FORMAT.DATE_DASH)
-                ] : [dayjs().format(DATE_FORMAT.DATE_DASH)],
+            presetItems: ['Today', 'Yesterday'],
+            dates: this.getDates(this.dateRange),
             selectedPreset: this.getPresetIndex(this.dateRange),
-            today: dayjs().format(DATE_FORMAT.DATE_DASH),
-            yesderday: dayjs().subtract(1, "day").format(DATE_FORMAT.DATE_DASH),
         }
     },
     computed: {
-      presetItems () {
-        return [
-            { text: 'Today', value: this.today },
-            { text: 'Yesterday', value: this.yesderday },
-        ]
-      }, 
-      dateRangeText () {
-        return this.dates.length > 0
-          ? this.dates.map(date => dayjs(date).format(DATE_FORMAT.DATE_SHASH)).join(' ~ ')
-          : ''
-      },
+        dateRangeText() {
+            if(this.dates.length > 1) {
+                return isBefore(this.dates[0], this.dates[1]) ?
+                    this.dates[0] + ' ~ ' + this.dates[1]
+                    : this.dates[1] + ' ~ ' + this.dates[0];
+            } else {
+                return this.dates[0] + ' ~ ' + this.dates[0]
+            }
+        },
+        getFromDate() {
+            if(this.dates.length > 1) {
+                return isBefore(this.dates[0], this.dates[1]) ?
+                    this.dates[0] : this.dates[1];
+            } else {
+                return this.dates[0] ? this.dates[0] : getTodayString();
+            }
+        },
+        getToDate() {
+            if(this.dates.length > 1) {
+                return isAfter(this.dates[0], this.dates[1]) ?
+                    this.dates[1] : this.dates[0];
+            } else {
+                return this.dates[0] ? this.dates[0] : getTodayString();
+            }
+        }
     },
     methods: {
+        getDates(dateRange) {
+            return dateRange.start ?
+                [getFormattedDateString(dateRange.start), getFormattedDateString(dateRange.end)]
+                : [getTodayString()];
+        },
+        getPresetIndex(dateRange) {
+            let today = getTodayString();
+            let yesterday = getYesterdayString()
+
+            if(isSame(dateRange.start, dateRange.end)) {
+                if(isSame(dateRange.start, today)) {
+                    return 0;
+                } else if(isSame(dateRange.start, yesterday)) {
+                    return 1;
+                }
+            }
+            return null;
+        },
+        getMatchedPreset(date) {
+            let today = getToday();
+            let yesterday = getYesterday();
+            if(isSame(date, today)) {
+                this.selectedPreset = 0;
+            } else if(isSame(date, yesterday)) {
+                this.selectedPreset = 1;
+            } else {
+                this.selectedPreset = null;
+            }
+        },
         close() {
             this.$emit('close');
         },
         select() {
-            this.$emit('select');
-        },
-        getPresetIndex(dateRange) {
-            if(dayjs(dateRange.start).isSame(dayjs(dateRange.end))) {
-                if(dayjs(dateRange.start).isSame(dayjs())) {
-                    return 0;
-                } else if(dayjs(dateRange.start).isSame(dayjs(this.yesderday))) {
-                    return 1;
-                }
-                console.log('No match');
+            let selectedDate = {
+                start: getTodayString(),
+                end: getTodayString()
             }
-            return null;
+            if(this.dates.length > 1) {
+                isBefore(this.dates[0], this.dates[1]) ?
+                (selectedDate.start = this.dates[0], selectedDate.end = this.dates[1])
+                : (selectedDate.start = this.dates[1], selectedDate.end = this.dates[0])
+            } else {
+                selectedDate.start = this.dates[0], selectedDate.end = this.dates[0]
+            }
+            this.$emit('select', selectedDate);
+        }
+    },
+    watch: {
+        dates(dates) {
+            if(dates.length > 1) {
+                if(isSame(dates[0], dates[1])) {
+                    this.getMatchedPreset(dates[0]);
+                } else {
+                    this.selectedPreset = null;
+                }
+            } else if(dates.length === 1) {
+                this.getMatchedPreset(dates[0]);
+            } else {
+                this.selectedPreset = null;
+            }
+        },
+        selectedPreset(selectedPreset) {
+            if(selectedPreset === 0) {
+                this.dates = [getTodayString()];
+            } else if(selectedPreset === 1) {
+                this.dates = [getYesterdayString()];
+            }
         },
     },
 }
