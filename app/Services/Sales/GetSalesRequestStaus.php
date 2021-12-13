@@ -5,9 +5,11 @@ namespace App\Services\Sales;
 
 
 use App\Jobs\CheckSaleApiLeadData;
+use App\Models\APILog;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\RejectionReason;
+use App\Services\Logger\LogSalesService;
 use Carbon\Carbon;
 use GraphQL\Client;
 use GraphQL\Query;
@@ -127,6 +129,7 @@ class GetSalesRequestStaus
 
     public function getSalesStatus($salesId, $leadId)
     {
+        $logSalesService = new LogSalesService();
         $da = ['data' =>
             [
                 'vendorCode' => "HD2",
@@ -155,10 +158,31 @@ class GetSalesRequestStaus
             );
 
         $url = env('EA_SALES_URL', 'https://apigw-nonprod.energyaustralia.com.au/graphql');
+        $XEAEnv = config('ea.x_ea_env');
+        $header = ['Authorization' => $this->accessToken, 'X-EA-Env' => $XEAEnv];
         $client = new Client(
             $url,
-            ['Authorization' => $this->accessToken]);
+            $header
+        );
+
+        //call logger api to save log
+
+        $loggerResponse = $logSalesService->createSalesLog(
+            $url,
+            APILog::API_SALES_API_GET_STATUS,
+            'POST',
+            json_encode($da),
+            json_encode($header)
+        );
         $results = $client->runQuery($gql, true, $da);
+
+
+        //update logger after response from graghql
+        $logSalesService->updateSalesLog($loggerResponse->key,
+            json_encode($results->getData()),
+            json_encode([]),
+            200
+        );
 
         $this->processEaData($results->getResponseBody(), $leadId);
 
@@ -194,7 +218,7 @@ class GetSalesRequestStaus
             ->distinct()
             ->get()
             ->unique('lead_reference');
-        
+
         foreach ($services as $service) {
 
             CheckSaleApiLeadData::dispatch($service->connection_application_id, $service->lead_reference);
