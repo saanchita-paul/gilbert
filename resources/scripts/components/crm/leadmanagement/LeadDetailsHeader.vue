@@ -11,7 +11,7 @@
                         </span>
                         <span>
                             {{leadSummary.applicant_name}}
-                            <div style="margin-left:30px; margin-top: -10px;">
+                            <span style="margin-left:30px; margin-top: -10px;">
                                 <IdCopyToClipboard :applicationId="leadSummary.id"/>
                             </span>
                         </span>
