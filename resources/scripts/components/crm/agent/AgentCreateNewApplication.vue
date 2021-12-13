@@ -458,6 +458,44 @@
                             </v-col>
 <!-- temporary end here -->
 
+                    <v-col cols="12" class="pb-0" v-if="!application.is_temporary_connection">
+                        <v-row>
+                            <v-col cols="6" class="py-0">
+                                <v-menu
+                                    v-model="showMovingDate"
+                                    :close-on-content-click="false"
+                                    :nudge-right="40"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+
+                                        <ValidationProvider name="Connection date" rules="required|valid-date|not-holiday:@State/Territory"  v-slot="{ errors }">
+                                            <v-text-field
+                                                label="Connection Date*"
+                                                placeholder="DD/MM/YYYY"
+                                                outlined
+                                                dense
+                                                v-model="application.moving_date"
+                                                v-bind="attrs"
+                                                :error-messages=" errors[0]"
+                                                @blur="syncMovingDate"
+                                            >
+
+                                                <template slot="append">
+                                                    <v-icon  v-on="on">mdi-calendar</v-icon>
+                                                </template>
+
+                                            </v-text-field>
+                                        </ValidationProvider>
+                                    </template>
+                                    <v-date-picker v-model="moving_date" :min="minDate"
+                                                   @input="showMovingDate = false"></v-date-picker>
+                                </v-menu>
+                            </v-col>
+                        </v-row>
+                    </v-col>
 
 
                     <v-col cols="12" class="pb-0 mt-2">
@@ -543,44 +581,6 @@
                     </v-col>
 
 
-                    <v-col cols="12" class="pb-0" v-if="!application.is_temporary_connection">
-                        <v-row>
-                            <v-col cols="6" class="py-0">
-                                <v-menu
-                                    v-model="showMovingDate"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    transition="scale-transition"
-                                    offset-y
-                                    min-width="290px"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
-
-                                        <ValidationProvider name="Connection date" rules="required|valid-date|not-holiday:@State/Territory"  v-slot="{ errors }">
-                                            <v-text-field
-                                                label="Connection Date*"
-                                                placeholder="DD/MM/YYYY"
-                                                outlined
-                                                dense
-                                                v-model="application.moving_date"
-                                                v-bind="attrs"
-                                                :error-messages=" errors[0]"
-                                                @blur="syncMovingDate"
-                                            >
-
-                                                <template slot="append">
-                                                    <v-icon  v-on="on">mdi-calendar</v-icon>
-                                                </template>
-
-                                            </v-text-field>
-                                        </ValidationProvider>
-                                    </template>
-                                    <v-date-picker v-model="moving_date" :min="minDate"
-                                                   @input="showMovingDate = false"></v-date-picker>
-                                </v-menu>
-                            </v-col>
-                        </v-row>
-                    </v-col>
 
 
                     <v-col cols="12" class="pb-0">
