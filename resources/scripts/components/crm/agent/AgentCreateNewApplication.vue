@@ -420,7 +420,7 @@
                                                     </v-text-field>
                                                 </ValidationProvider>
                                             </template>
-                                            <v-date-picker v-model="moving_date" 
+                                            <v-date-picker v-model="moving_date"
                                                            @input="showMovingDate = false"></v-date-picker>
                                         </v-menu>
                                     </v-col>
@@ -663,9 +663,9 @@ import LeadCreateSuccessfulModal from "@scripts/components/crm/modals/LeadCreate
 import {isNull} from "lodash-es";
 import IdentificationDetail from "@scripts/components/crm/agent/IdentificationDetail";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
-import { formatDate } from "@scripts/services/others/DateService"
- 
 import { tenancyTypeMapper } from '@scripts/data/ConnectionApplicationMapper';
+import { formatDate } from "@scripts/services/others/DateService"
+
 import AuthService from '@scripts/services/AuthService';
 import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
 export default {
