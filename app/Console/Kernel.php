@@ -33,7 +33,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
          $schedule->command('fetch:submitted-leads')->hourly();
-         $schedule->command('fetch:submitted-water-leads')->hourly();
+         $schedule->command('fetch:submitted-water-leads')->twiceDaily();
          $schedule->command('ea:upload:lead')->daily();
 
          if($this->shouldIgniteRun()){
