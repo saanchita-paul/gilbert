@@ -29,10 +29,12 @@ trait SalesResponseHandle
             if ($quote->fuel === 'GAS') {
                 $this->updateService($leadId, 'gas', $updateData);
                 $this->saveRejectionReasons($reasons, $leadId, 'gas');
+                $this->updateQuoteReference($leadId, 'gas', $quote->id);
             }
             if ($quote->fuel === 'ELE') {
                 $this->updateService($leadId, 'power', $updateData);
                 $this->saveRejectionReasons($reasons, $leadId, 'power');
+                $this->updateQuoteReference($leadId, 'power', $quote->id);
             }
         }
     }
@@ -98,5 +100,22 @@ trait SalesResponseHandle
     public function updateService($leadId, $serviceType, $updateData)
     {
         $this->getServiceBuilder($leadId, $serviceType)->update($updateData);
+    }
+
+    /**
+     * Updating Quote Reference
+     *
+     * @param $leadId
+     * @param $serviceType
+     * @param $quoteReference
+     */
+    private function updateQuoteReference($leadId, $serviceType, $quoteReference)
+    {
+        /** @var ConnectionService $service */
+        $service = $this->getServiceBuilder($leadId, $serviceType)->first();
+        if($service){
+            $service->quote_reference = $quoteReference;
+            $service->save();
+        }
     }
 }
