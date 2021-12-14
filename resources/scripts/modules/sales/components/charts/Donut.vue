@@ -1,5 +1,5 @@
 <template>
-    <canvas :id="chartId"></canvas>
+    <canvas width="120" :id="chartId"></canvas>
 </template>
 
 <script>
@@ -147,17 +147,22 @@ export default {
                                 tooltipEl.style.boxShadow = '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)';
 
 
-                                console.log(tooltipEl);
 
-                                // const title = "Energy Australia Plan"; //TODO remove comment
-                                console.log("labels ," , that.data.labels) //TODO remove comment
-                                console.log("index" , dataIndex) //TODO remove comment
                                 const title = that.data.labels[dataIndex];
                                 const tooltipBodyData = that.data.toolTips[dataIndex];
-                                console.log("tooltipBodyData" , tooltipBodyData) //TODO remove comment
                                 let tooltipBody = '';
-
-
+                                tooltipBodyData.forEach((item)=>{
+                                    tooltipBody +=  `
+                                                    <div style="display:flex; margin-top: 10px;">
+                                                        <p style="font-weight:bold; width: 40px;">
+                                                            ${item.key}
+                                                        </p>
+                                                        <p style="font-weight:normal; color: #7E8A8F; ">
+                                                            ${item.value}
+                                                        </p>
+                                                    </div>
+                                                    `
+                                });
                                 tableRoot.innerHTML = 
                                 `
                                 <div style="background: white;">
@@ -165,12 +170,7 @@ export default {
                                     
                                     <div>
                                         
-                                        <div style="display:flex; margin-top: 10px;">
-                                            <p style="font-weight:bold; width: 40px;">
-                                                20
-                                            </p>
-                                            <p style="font-weight:normal; color: #7E8A8F; ">Value</p>
-                                        </div>
+                                        ${tooltipBody}
 
                                     </div>
 

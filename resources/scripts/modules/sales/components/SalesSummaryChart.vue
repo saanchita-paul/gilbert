@@ -8,7 +8,7 @@
         <v-row  class="justify-center">
             <Donut :data="data"/>
         </v-row>
-        <v-row  class="justify-center d-flex mt-3">
+        <v-row  class="justify-center d-flex mt-1">
             <div v-for="(value, index) in data.datasets[0].data" :key="index" class="mx-3 justify-center" >
               <p class="label mb-1"><v-icon :color="data.datasets[0].backgroundColor[index]" size="13">mdi-checkbox-blank-circle</v-icon></p>
                 <p class="label font-weight-bold  mb-1">{{value}}</p>
