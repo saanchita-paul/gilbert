@@ -56,7 +56,7 @@ export default [
         type: 'route',
         title: 'Applications Dashboard',
         icon: '/assets/images/icons/Analytics.svg',
-        route_name: 'applications.dashboard',
+        route_name: 'sales.energy',
         permissions: permissions.P_CAN_MANAGE_APPLICATION
     },
 ]

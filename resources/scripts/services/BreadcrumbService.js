@@ -85,11 +85,24 @@ export default {
                     to: 'applications.details'
                 }
             ]
-        } else if(type === 'ApplicationsDashboard') {
+        } else if(type === 'SalesEnergy') {
             breadcrumb = [
                 {
                     text: 'Applications Dashboard',
-                    to: 'applications.dashboard'
+                },
+                {
+                    text: 'Energy',
+                    to: 'sales.energy'
+                }
+            ]
+        } else if(type === 'SalesWater') {
+            breadcrumb = [
+                {
+                    text: 'Applications Dashboard',
+                },
+                {
+                    text: 'Water',
+                    to: 'sales.water'
                 }
             ]
         }

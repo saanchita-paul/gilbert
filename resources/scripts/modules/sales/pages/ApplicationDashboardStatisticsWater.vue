@@ -86,7 +86,7 @@
                 247
               </div>
               <div
-                class="font-weight-bold text-center py-0 mb-2 mt-n2"
+                class="font-weight-bold text-center py-0 pb-3 mb-2 mt-n2"
                 style="font-size: 14px"
               >
                 Automated Submission
