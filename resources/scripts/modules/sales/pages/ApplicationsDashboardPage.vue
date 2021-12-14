@@ -47,33 +47,33 @@ export default {
         async load() {
             this.data  = {
                 labels: [
-                    'Red',
-                    'Blue',
+                    'Energy Australia',
+                    'Sumo',
                     'Yellow'
                 ],
                 toolTips: [
                     [
                         {
-                            a: 100, type: 'Ea',
+                            key: 100, value: 'Ea',
                         },
                         {
-                            a: 100, type: 'Ea',
+                            key: 100, value: 'Ea',
                         }
                     ],
                     [
                         {
-                            a: 100, type: 'Ea',
+                            key: 100, value: 'Ea',
                         },
                         {
-                            a: 100, type: 'Ea',
+                            key: 100, value: 'Ea',
                         }
                     ],
                     [
                         {
-                            a: 100, type: 'Ea',
+                            key: 100, value: 'Ea',
                         },
                         {
-                            a: 100, type: 'Ea',
+                            key: 100, value: 'Ea',
                         }
                     ],
                 ],

@@ -6,8 +6,7 @@
             </h3>
         </v-row>
         <v-row  class="justify-center">
-            <Donut :data="data">
-            </donut>
+            <Donut :data="data"/>
         </v-row>
         <v-row  class="justify-center d-flex mt-3">
             <div v-for="(value, index) in data.datasets[0].data" :key="index" class="mx-3 justify-center" >

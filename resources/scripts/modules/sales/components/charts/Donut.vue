@@ -79,6 +79,9 @@ export default {
 
                             let dataIndex = null;
                             that.data.toolTips
+                            let dataToShowInTooltip;
+                            console.log("tooltip data" , that.data)
+                            console.log("tooltip that" , that)
                             if(isArray(tooltipModel.dataPoints)) {
                                 dataIndex = tooltipModel.dataPoints[0].index;
                             }
@@ -146,9 +149,33 @@ export default {
 
                                 console.log(tooltipEl);
 
+                                // const title = "Energy Australia Plan"; //TODO remove comment
+                                console.log("labels ," , that.data.labels) //TODO remove comment
+                                console.log("index" , dataIndex) //TODO remove comment
+                                const title = that.data.labels[dataIndex];
+                                const tooltipBodyData = that.data.toolTips[dataIndex];
+                                console.log("tooltipBodyData" , tooltipBodyData) //TODO remove comment
+                                let tooltipBody = '';
 
 
-                                tableRoot.innerHTML = '<div style="background: #2d3748"><p>hello world</p><p>hello world</p><p>hello world</p></div>';
+                                tableRoot.innerHTML = 
+                                `
+                                <div style="background: white;">
+                                    <p style="font-weight:bold;">${title}</p>
+                                    
+                                    <div>
+                                        
+                                        <div style="display:flex; margin-top: 10px;">
+                                            <p style="font-weight:bold; width: 40px;">
+                                                20
+                                            </p>
+                                            <p style="font-weight:normal; color: #7E8A8F; ">Value</p>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                `;
 
                                 console.log('tooltipEl', tooltipEl);
 
