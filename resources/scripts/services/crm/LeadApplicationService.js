@@ -73,7 +73,7 @@ export default {
     canSubmitWater: services => {
         let water = services.find(service => service.service_type === 'water');
         if (water) {
-            return services.some(service => STATUSES_FOR_WATER_SUBMIT.includes(service.status) && service.service_type === water)
+            return services.some(service => STATUSES_FOR_WATER_SUBMIT.includes(service.status) && service.service_type === 'water')
         }
         return true;
     },
