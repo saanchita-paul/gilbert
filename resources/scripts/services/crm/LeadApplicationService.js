@@ -78,6 +78,8 @@ export default {
         return true;
     },
 
+    getServiceObj: (services, type) => services.find(svc => svc.service_type === type?.toLowerCase()),
+
     /**
      *
      * @param status
@@ -92,6 +94,7 @@ export default {
                 return {text: 'Not Submitted', color: 'black'};
             case connectionServicesMapper.STATUS_ACCEPTED:
                 return {text: 'Accepted', color: 'green'};
+            case connectionServicesMapper.STATUS_SUBMITTED:
             case connectionServicesMapper.STATUS_EA_SUBMIT:
                 return {text: 'In Progress', color: 'green'};
             case connectionServicesMapper.STATUS_AC_MANUAL_PROCESSING:
@@ -101,7 +104,7 @@ export default {
                 return {text: "Rejected", color: 'red'};
             default:
                 return {
-                    text: 'Unknown Status',
+                    text: 'Not Selected',
                     color: 'black'
                 };
         }

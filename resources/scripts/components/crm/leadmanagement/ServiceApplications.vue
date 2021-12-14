@@ -26,7 +26,7 @@
                               </span>
                         </p>
                         <p class="py-0 my-0 pl-4 service-status active-power-subtitle">
-                            {{getwaterServiceStatus}}
+                            {{getwaterServiceStatus.text}}
                             <!--                    Connected-->
                         </p>
                 </v-card>
@@ -56,8 +56,8 @@
                 <v-col cols="12" v-if="leadSummary.is_temporary_connection">
                     <v-row>
                         <v-col cols="3" class="pt-5"> <b>Temp Connection</b> </v-col>
-                        <v-col cols="4" >  
-                            
+                        <v-col cols="4" >
+
             <v-menu
               v-model="connection_date_menu"
               :close-on-content-click="false"
@@ -92,11 +92,11 @@
                 v-model="moving_date"
                 @input="updateMovingDate"
               ></v-date-picker>
-            </v-menu>    
-                           
+            </v-menu>
+
             </v-col>
             <v-col cols="1" class="pt-5">  To  </v-col>
-            <v-col cols="4" > 
+            <v-col cols="4" >
 
             <v-menu
               v-model="connection_end_date_menu"
@@ -134,7 +134,7 @@
                 :min="moving_date"
                 @input="updateConnectionEndDate"
               ></v-date-picker>
-            </v-menu>  
+            </v-menu>
             <ValidationProvider name="h_state">
                 <v-text-field v-model="leadSummary.state" v-show="false" />
             </ValidationProvider>
@@ -292,6 +292,7 @@ import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
 import Spinner from "@scripts/plugins/Spinner";
 import dayJs from "dayjs";
 import { formatDate } from "@scripts/services/others/DateService"
+import leadApplicationService from "@scripts/services/crm/LeadApplicationService";
 export default {
     name: "ServiceApplications",
     components: { SumoPlan, SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails, SoleDetails},
@@ -369,10 +370,7 @@ export default {
                 : (this.selectedProviderId === 3 ? this.sumo : [])
         },
         getwaterServiceStatus() {
-            if(isNull(this.waterStatus)) {
-                this.waterStatus =  this.getServiceStatus('water');
-            }
-            return this.waterStatus;
+            return LeadApplicationService.mapStatus(leadApplicationService.getServiceObj(this.leadSummary.connection_services, 'water')?.status);
         },
         getenegryServiceStatus() {
             return this.getServiceStatus('energy');
@@ -395,7 +393,7 @@ export default {
         // modified_moving_date(){
         //     const date         =  dayJs(this.moving_date, 'YYYY-MM-DD');
         //     return date.isValid() ? date.format('DD/MM/YYYY'): null;
-            
+
         // },
         // modified_connection_end_date(){
         //      const date         =  dayJs(this.connection_end_date, 'YYYY-MM-DD');
@@ -411,10 +409,10 @@ export default {
     mounted() {
         // const birthdate         =  dayjs(this.dob, 'YYYY-MM-DD');
         // this.person_details.dob =  birthdate.isValid() ? birthdate.format('DD/MM/YYYY'): null;
-        
+
         this.modified_moving_date = formatDate(this.leadSummary.moving_date);
         this.moving_date =  this.leadSummary.moving_date;
-        
+
         this.modified_connection_end_date = formatDate(this.leadSummary.connection_end_date)
         this.connection_end_date =  this.leadSummary.connection_end_date;
 
@@ -732,7 +730,7 @@ export default {
             }
 
         },
-       
+
         submit(){
             let subType = 'energy';
             if(this.tabMapper.Energy == this.tab){
@@ -774,7 +772,7 @@ export default {
         },
          syncConnectionEndDate(value){
             this.connection_end_date_menu = false;
-            this.modified_connection_end_date = formatDate(value) ? formatDate(value) : 
+            this.modified_connection_end_date = formatDate(value) ? formatDate(value) :
                                                 this.modified_connection_end_date ;
             if(!formatDate(value) && value == '' ){
                 this.updateConnecitionEndNullDate();
