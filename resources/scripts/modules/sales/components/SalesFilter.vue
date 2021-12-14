@@ -3,7 +3,11 @@
         <v-spacer></v-spacer>
         <v-select
             class='type-select'
-            :items="items"
+            :items="serviceType"
+            item-text="title"
+            item-value="value"
+            v-model="selectedType"
+            @change="changeServiceType"
             solo
             dense
             label="Type"
@@ -46,13 +50,23 @@ export default {
     },
     data() {
         return {
-            items: ['Energy', 'Water'],
+            serviceType: [
+                {
+                    title:  'Energy',
+                    value: 'energy',
+                },
+                {
+                    title:  'Water',
+                    value: 'water',
+                },
+            ],
             showDatePickerModal: false,
             dateRange: {
                 start: null,
                 end: null,
             },
             selectedDate: null,
+            selectedType: null,
         }
     },
     methods: {
@@ -62,6 +76,11 @@ export default {
         },
         onCloseModal() {
             this.showDatePickerModal = false;
+        },
+        changeServiceType() {
+            this.selectedType === 'energy' ?
+                this.$router.push({ name: 'sales.energy' }) :
+                this.$router.push({ name: 'sales.water' });
         },
     },
     watch: {

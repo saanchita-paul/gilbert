@@ -1,20 +1,25 @@
 <template>
     <v-card class="hood-card-light">
         <v-row>
-            <v-col cols="6">
-                <h3 class="page-title">Here’s a summary of all applications for</h3>
-                <h3 class="page-title">
+            <v-col cols="5">
+                <h3 v-if="type === 'energy'" class="page-title-text">Here’s a summary of all applications for
+                    <br>
                     Energy
                     <v-icon color="yellow">mdi-flash</v-icon>
                     <v-icon color="red">mdi-fire</v-icon>
                 </h3>
+                <h3 v-else class="page-title-text">Here’s a summary of all applications for
+                    <br>
+                    Water
+                    <v-icon color="blue">mdi-water</v-icon>
+                </h3>
                 <p class="my-2">
                     As of <span class="font-weight-medium">today</span>.
                 </p>
-                <p class="my-2 text-small">You can change these parameters using the filters on the top right corner.</p>
+                <p class="my-2 text-light">You can change these parameters using the filters on the top right corner.</p>
             </v-col>
-            <v-col cols="6" class="d-flex">
-                <div style="width:64%" class="d-flex">
+            <v-col cols="7" class="d-flex">
+                <div style="width:60%" class="d-flex">
                     <v-divider class="vertical-divider" vertical></v-divider>
                     <div class="ml-4">
                         <h4>Open Applications</h4>
@@ -30,7 +35,7 @@
                         </div>
                     </div>
                 </div>
-                <div style="width:36%" class="d-flex">
+                <div style="width:40%" class="d-flex">
                     <v-divider class="vertical-divider" vertical></v-divider>
                     <div class="ml-4">
                         <h4>Closed Applications</h4>
@@ -48,6 +53,12 @@
 <script>
 export default {
     name: "SalesSummary",
+    props: {
+        type: {
+            type: String,
+            default: 'energy'
+        }
+    },
     data() {
         return {
         
@@ -57,13 +68,23 @@ export default {
 </script>
 
 <style scoped>
+    .page-title-text {
+        font-size: 28px;
+        font-weight: 700;
+        color: #263238;
+        line-height: 1.3;
+    }
     .application-count {
-        font-size: 34px;
+        font-size: 35px;
         font-weight: bold;
         color: #5C229A
     }
+    .text-light {
+        font-size: 12px;
+    }
     .text-small {
         font-size: 14px;
+        font-weight: bold;
     }
     .vertical-divider {
         border-width: 1px !important;
