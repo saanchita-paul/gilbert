@@ -20,6 +20,10 @@ class UpdatedWaterStatus
             'status' => ConnectionService::WATER_STATUS_SUBMITTED,
             'reason' => ''
         ],
+        "IN_TRANSIT" => [
+            'status' => ConnectionService::WATER_STATUS_SUBMITTED,
+            'reason' => ''
+        ],
         "CANCELLED" => [
             'status' => ConnectionService::WATER_STATUS_CANT_CONNECT,
             'reason' => ''
@@ -31,7 +35,7 @@ class UpdatedWaterStatus
         "CUSTOMER_COMPLETED" => [
             'status' => ConnectionService::WATER_STATUS_CANT_CONNECT,
             'reason' => 'The customer (or their partner) has already made an application for that address'
-        ],
+        ]
     ];
 
 

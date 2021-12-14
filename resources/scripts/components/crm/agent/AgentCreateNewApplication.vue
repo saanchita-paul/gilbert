@@ -151,9 +151,9 @@
                                 min-width="290px"
                             >
                                 <template v-slot:activator="{ on, attrs }">
-                                    <ValidationProvider name="Date of Birth" rules="required|valid-date|adult"  v-slot="{ errors }">
+                                    <ValidationProvider name="Date of Birth" :rules="`${isTenancyHomeOwner?'':'required|'}valid-date|adult`"  v-slot="{ errors }">
                                         <v-text-field
-                                            label="Date of Birth*"
+                                            :label="`Date of Birth ${isTenancyHomeOwner?'':'*'}`"
                                             placeholder="DD/MM/YYYY"
                                             outlined
                                             dense
@@ -191,19 +191,20 @@
                     </v-col>
 
                     <v-col cols="6" class="py-0">
-                        <ValidationProvider name="Identification Types" rules="required"  v-slot="{ errors }">
+                        <ValidationProvider name="Identification Types" :rules="`${isTenancyHomeOwner?'':'required'}`"  v-slot="{ errors }">
                             <v-select outlined dense
                                       v-model="indentification.type"
                                       :items="idenficationTypeDD"
                                       item-text="text"
                                       item-value="value"
-                                      label="Id Type*"
+                                      :label="`Id Type${isTenancyHomeOwner?'':'*'}`"
                                       :error-messages=" errors[0]"
                                       placeholder="Please select one">
                             </v-select>
                         </ValidationProvider>
                     </v-col>
                     <IdentificationDetail :indentification="indentification"
+                                          :isTenancyHomeOwner="isTenancyHomeOwner"
                                           @updateIdentification="updateIdentification">
                     </IdentificationDetail>
 
@@ -376,6 +377,128 @@
                         <p class="sub-title mb-0">Moving Details <small class="font-weight-thin">Information about your lead’s move.</small></p>
                     </v-col>
 
+<!-- temporary starts here -->
+
+                     <v-col cols="12" class="pb-0">
+                        <v-row class="my-0 py-0">
+                            <v-col class="my-0 py-3">
+                                <v-checkbox
+                                    v-model="application.is_temporary_connection"
+                                    :label="`I want to set a temporary power connection for this property.`"
+                                ></v-checkbox>
+                            </v-col>
+                        </v-row>
+                    </v-col>
+
+
+                            <v-col cols="12" class="py-0" v-if="application.is_temporary_connection">
+                                <v-row>
+                                    <v-col cols="6" class="py-0">
+                                        <v-menu
+                                            v-model="showMovingDate"
+                                            :close-on-content-click="false"
+                                            :nudge-right="40"
+                                            transition="scale-transition"
+                                            offset-y
+                                            min-width="290px"
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <ValidationProvider name="Connection Start Date*" rules="required|valid-date|not-holiday:@State/Territory"  v-slot="{ errors }">
+                                                    <v-text-field
+                                                        label="Connection Start Date*"
+                                                        placeholder="DD/MM/YYYY"
+                                                        outlined
+                                                        dense
+                                                        v-model="application.moving_date"
+                                                        v-bind="attrs"
+                                                        :error-messages=" errors[0]"
+                                                        @blur="syncMovingDate"
+                                                    >
+                                                        <template slot="append">
+                                                            <v-icon  v-on="on">mdi-calendar</v-icon>
+                                                        </template>
+                                                    </v-text-field>
+                                                </ValidationProvider>
+                                            </template>
+                                            <v-date-picker v-model="moving_date" 
+                                                           @input="showMovingDate = false"></v-date-picker>
+                                        </v-menu>
+                                    </v-col>
+                                    <v-col cols="6" class="py-0">
+                                        <v-menu
+                                            v-model="showConnectionEndDate"
+                                            :close-on-content-click="false"
+                                            :nudge-right="40"
+                                            transition="scale-transition"
+                                            offset-y
+                                            min-width="290px"
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <ValidationProvider name="Connection End date" rules="valid-date:@State/Territory"  v-slot="{ errors }">
+                                                    <v-text-field
+                                                        label="Connection End Date"
+                                                        placeholder="DD/MM/YYYY"
+                                                        outlined
+                                                        dense
+                                                        v-model="application.connection_end_date"
+                                                        v-bind="attrs"
+                                                        :error-messages=" errors[0]"
+                                                        @blur="syncConnectionEndDate"
+                                                    >
+                                                        <template slot="append">
+                                                            <v-icon  v-on="on">mdi-calendar</v-icon>
+                                                        </template>
+                                                    </v-text-field>
+                                                </ValidationProvider>
+                                            </template>
+                                            <v-date-picker v-model="connection_end_date" :min="moving_date"
+                                                           @input="showConnectionEndDate = false"></v-date-picker>
+                                        </v-menu>
+                                    </v-col>
+                                </v-row>
+                            </v-col>
+<!-- temporary end here -->
+
+                    <v-col cols="12" class="pb-0" v-if="!application.is_temporary_connection">
+                        <v-row>
+                            <v-col cols="6" class="py-0">
+                                <v-menu
+                                    v-model="showMovingDate"
+                                    :close-on-content-click="false"
+                                    :nudge-right="40"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+
+                                        <ValidationProvider name="Connection date" rules="required|valid-date|not-holiday:@State/Territory"  v-slot="{ errors }">
+                                            <v-text-field
+                                                label="Connection Date*"
+                                                placeholder="DD/MM/YYYY"
+                                                outlined
+                                                dense
+                                                v-model="application.moving_date"
+                                                v-bind="attrs"
+                                                :error-messages=" errors[0]"
+                                                @blur="syncMovingDate"
+                                            >
+
+                                                <template slot="append">
+                                                    <v-icon  v-on="on">mdi-calendar</v-icon>
+                                                </template>
+
+                                            </v-text-field>
+                                        </ValidationProvider>
+                                    </template>
+                                    <v-date-picker v-model="moving_date" :min="minDate"
+                                                   @input="showMovingDate = false"></v-date-picker>
+                                </v-menu>
+                            </v-col>
+                        </v-row>
+                    </v-col>
+
+
                     <v-col cols="12" class="pb-0 mt-2">
                                 <v-menu offset-y v-model="showMenu">
                                     <template v-slot:activator="{ on }">
@@ -459,44 +582,6 @@
                     </v-col>
 
 
-                    <v-col cols="12" class="pb-0">
-                        <v-row>
-                            <v-col cols="6" class="py-0">
-                                <v-menu
-                                    v-model="showMovingDate"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    transition="scale-transition"
-                                    offset-y
-                                    min-width="290px"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
-
-                                        <ValidationProvider name="Connection date" rules="required|valid-date|not-holiday:@State/Territory"  v-slot="{ errors }">
-                                            <v-text-field
-                                                label="Connection Date*"
-                                                placeholder="DD/MM/YYYY"
-                                                outlined
-                                                dense
-                                                v-model="application.moving_date"
-                                                v-bind="attrs"
-                                                :error-messages=" errors[0]"
-                                                @blur="syncMovingDate"
-                                            >
-
-                                                <template slot="append">
-                                                    <v-icon  v-on="on">mdi-calendar</v-icon>
-                                                </template>
-
-                                            </v-text-field>
-                                        </ValidationProvider>
-                                    </template>
-                                    <v-date-picker v-model="moving_date" :min="minDate"
-                                                   @input="showMovingDate = false"></v-date-picker>
-                                </v-menu>
-                            </v-col>
-                        </v-row>
-                    </v-col>
 
 
                     <v-col cols="12" class="pb-0">
@@ -578,7 +663,11 @@ import LeadCreateSuccessfulModal from "@scripts/components/crm/modals/LeadCreate
 import {isNull} from "lodash-es";
 import IdentificationDetail from "@scripts/components/crm/agent/IdentificationDetail";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
-
+import { formatDate } from "@scripts/services/others/DateService"
+ 
+import { tenancyTypeMapper } from '@scripts/data/ConnectionApplicationMapper';
+import AuthService from '@scripts/services/AuthService';
+import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
 export default {
     name: "AgentCreateNewApplication",
     components: {
@@ -629,6 +718,8 @@ export default {
             createSuccessfulModal: false,
             title: '',
             authorized_person_dob:  (new DayJs((new Date()).setFullYear(2000))).format('YYYY-MM-DD'),
+            showConnectionEndDate: null,
+            connection_end_date: null,
             authorized_person:{
                 title :'',
                 first_name :'',
@@ -657,9 +748,7 @@ export default {
                 }
             ],
             has_authorized: false,
-            titlesDD:[
-              'Mr.','Mrs.','Ms.','Miss','Dr.'
-            ],
+            titlesDD: titlesMapperForDropdown,
             idenficationTypeDD: [
                 {
                     text: "Passport",
@@ -698,6 +787,16 @@ export default {
             }
         }, 250);
 
+    },
+    computed:{
+        tenancyTypeMapper(){
+            return tenancyTypeMapper;
+        },
+        isTenancyHomeOwner(){
+            // return this.application.tenancy_type===tenancyTypeMapper.HomeOwner;
+            return AuthService.getRoles().includes("agency_office_property_manager") &&
+            this.application.tenancy_type===tenancyTypeMapper.HomeOwner;
+        }
     },
     methods: {
         onAddressSelected(place) {
@@ -774,6 +873,12 @@ export default {
                 this.moving_date = (DayJs(this.application.moving_date,'DD/MM/YYYY')).format('YYYY-MM-DD');
             }
         },
+        syncConnectionEndDate() {
+            if(DayJs(this.application.connection_end_date,'DD/MM/YYYY').isValid())
+            {
+                this.connection_end_date = (DayJs(this.application.connection_end_date,'DD/MM/YYYY')).format('YYYY-MM-DD');
+            }
+        },
         updateIdentification(identification) {
             this.indentification = identification;
         }
@@ -784,7 +889,12 @@ export default {
         },
 
         moving_date() {
+            this.connection_end_date = null;
+            this.application.connection_end_date = null;
             this.application.moving_date = (new DayJs(this.moving_date).format('DD/MM/YYYY'));
+        },
+        connection_end_date() {
+            this.application.connection_end_date = formatDate(this.connection_end_date);
         },
         authorized_person_dob() {
             this.authorized_person.dob = (new DayJs(this.authorized_person_dob).format('DD/MM/YYYY'));

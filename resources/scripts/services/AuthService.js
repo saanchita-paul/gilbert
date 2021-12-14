@@ -121,6 +121,10 @@ const setBreadcrumbs = (breadcrumbType, params) => {
     }
 }
 
+const getRoles = () => {
+    return Store.getters.userRoles;
+}
+
 const hasUserRoles = allowedRoles => {
     let hasRoles = false;
     Store.getters.userRoles.map(p => {
@@ -143,7 +147,8 @@ export default {
     hasUserPermissions,
     getBreadcrumbs,
     setBreadcrumbs,
-    isUniqueEmail
+    isUniqueEmail,
+    getRoles,
 }
 
 

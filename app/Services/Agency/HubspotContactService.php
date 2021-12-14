@@ -282,6 +282,10 @@ class HubspotContactService
                 "property" => "hood_lead_source",
                 "value" => $this->getLeadSource(),
             ],
+            [
+                "property" => "hood_real_estate_agency",
+                "value" => $this->application->getAgencyName(),
+            ],
 
         ];
     }
@@ -357,4 +361,5 @@ class HubspotContactService
             default => 'REA'
         };
     }
+
 }

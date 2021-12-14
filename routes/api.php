@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SalesDashboard\SalesDashboardController;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Broadcast;
@@ -111,6 +112,17 @@ Route::post('/register/email-validation', [AuthController::class, 'isValidUser']
 Route::get('/users/is-unique-email', [AuthController::class, 'isEmailValid']);
 Route::get('/users/is-unique-email-update', [AuthController::class, 'isEmailTaken']);
 
+Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
+
+
+/***
+ * Sales Dashboard
+ */
+Route::get('/sales-dashboard/home', [SalesDashboardController::class, 'home']);
+
+
+
+
 /**
  * test routes
  */
@@ -126,6 +138,31 @@ Route::post('/our-property/lead', [OurPropertyController::class, 'createOurPrope
 
 
 
-Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
 
 
+Route::get("/karan/sales-status", function () {
+    $id = request()->get('id');
+    $power = request()->get('power');
+    $gas = request()->get('gas');
+
+    $ap = \App\Models\ConnectionApplication::findOrFail($id);
+    foreach ($ap->connectionServices as $service) {
+            if ($power === 'accepted' && $service->service_type === 'power') {
+                $service->status = \App\Models\ConnectionService::STATUS_ACCEPTED;
+            }
+            if ($power === 'rejected' && $service->service_type === 'power') {
+                $service->lead_reference = null;
+                $service->status = \App\Models\ConnectionService::STATUS_REJECTED;
+            }
+
+            if ($gas === 'accepted'  && $service->service_type === 'gas') {
+                $service->status = \App\Models\ConnectionService::STATUS_ACCEPTED;
+            }
+            if ($gas === 'rejected' && $service->service_type === 'gas') {
+                $service->lead_reference = null;
+                $service->status = \App\Models\ConnectionService::STATUS_REJECTED;
+            }
+            $service->save();
+        }
+    return "success";
+});

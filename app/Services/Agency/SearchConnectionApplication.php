@@ -46,11 +46,21 @@ class SearchConnectionApplication
     public function get($user): LengthAwarePaginator
     {
         $builder = ConnectionApplication::query()
+            ->with('connectionServices.reasons')
+            ->with('SugerLead')
+            ->with('assignedTo');
+
+
+        if(empty($this->leadType)){
+            $builder = ConnectionApplication::query()
+            ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED)
             ->with('connectionServices')
             ->with('assignedTo');
+        }
 
         if($this->source !== ConnectionApplication::SOURCE_ALL) {
             $builder->where('source', $this->source);
+            $builder = $this->filterLeadForFoxie($builder);
         }
 
 
@@ -59,11 +69,13 @@ class SearchConnectionApplication
             if ($this->leadType === 'submitted') {
                 $builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
                     ? $builder->whereIn('status', [4, 5, 6, 7])
-                    : $builder->where('assigned_to', $user->profile->id);
+                    : $builder->where('assigned_to', $user->profile->id)
+                              ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED);
             } else {
                 $builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
                     ? $builder->where('status', ConnectionApplication::STATUS_MAPPING[$this->leadType])
-                    : $builder->where('assigned_to', $user->profile->id);
+                    : $builder->where('assigned_to', $user->profile->id)
+                              ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED);
             }
 
         }
@@ -79,5 +91,18 @@ class SearchConnectionApplication
 
 
         return $builder->paginate($this->perPage);
+    }
+
+    private function filterLeadForFoxie($builder){
+        if($this->source == ConnectionApplication::SOURCE_FOXIE){
+            $builder =  $builder->whereHas('SugerLead' , function($query){
+                $query->where('compare_connect_id' , null)
+                      ->orWhere('compare_connect_id', 'N/A')
+                      ->orWhere('compare_connect_id', 'n/a')
+                      ->orWhere('compare_connect_id', 'N/a')
+                      ->orWhere('compare_connect_id', 'n/A');
+            });
+        }
+        return $builder;
     }
 }

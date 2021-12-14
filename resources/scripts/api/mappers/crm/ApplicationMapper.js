@@ -109,10 +109,11 @@ export default {
            identification: this.mapIdentification(data.identification),
            dob: this.mapDateToServer(data.application.date_of_birth),
            moving_date: this.mapDateToServer(data.application.moving_date),
+           connection_end_date: this.mapDateToServer(data.application.connection_end_date),
            is_email_billing: data.application.email_billing?data.application.email_billing:0,
            authorized_person: {
                ...data.authorized_person,
-               dob: this.mapDateToServer(data.authorized_person.dob) == "Invalid Date" ? null : this.mapDateToServer(data.authorized_person.dob)
+               dob: this.mapDateToServer(data.authorized_person.dob)
            }
 
        }
@@ -151,7 +152,8 @@ export default {
     },
 
     mapDateToServer(dt) {
-        return dayjs(dt,'DD/MM/YYYY').format('YYYY-MM-DD');
+        let dateCheck =  dayjs(dt,'DD/MM/YYYY').format('YYYY-MM-DD');
+        return dayjs(dateCheck).isValid() ? dateCheck : null;
     },
 
     mapMadecareDateToServer(dt, isDatabaseFormat = true) {

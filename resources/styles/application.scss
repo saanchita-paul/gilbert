@@ -103,14 +103,15 @@
     width: 100%;
 
     .service-box {
-        padding: 10px 20px;
+        padding: 10px 20px 0px 20px;
         background-color: #E0E0E0;
         margin-right: 8px;
         border-radius: 10px;
-        min-height: 70px;
+        min-height: 60px;
         &.active {
-            background-color:$primary_color !important;
-            color: #fff !important;
+            //background-color:$primary_color !important;
+            border: 2px solid #5C229A;
+            //color: #fff !important;
         }
     }
 }
