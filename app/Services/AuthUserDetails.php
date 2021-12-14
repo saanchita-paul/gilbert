@@ -22,9 +22,14 @@ class AuthUserDetails
         $user = auth()->user();
 
         return [
-            'user' => array_merge($user->toArray(), $this->getUserRolesAndPermissions($user),
-                $this->getOfficeDetails($user), $this->getProfileDetails($user)),
-            'bot_access_token' => $this->getBotAuthKey($user)
+            'user' => array_merge(
+                $user->toArray(),
+                $this->getUserRolesAndPermissions($user),
+                $this->getOfficeDetails($user),
+                $this->getProfileDetails($user),
+                ['pm_connected' => \Cache::get('pm_connected')]
+            ),
+            'bot_access_token' => $this->getBotAuthKey($user),
         ];
     }
 

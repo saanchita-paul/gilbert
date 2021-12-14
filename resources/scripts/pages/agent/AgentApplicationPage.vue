@@ -4,7 +4,11 @@
             <v-col cols="8">
                 <v-card  class="hood-card">
                     <h3 v-if="user" class="page-title">Hi {{ user.profile.first_name }}, <small class="font-weight">here is a
-                        summary of your applications.</small></h3>
+                        summary of your applications.</small>
+                    </h3>
+                    <span v-if="!pm_connected" style="float: right; margin-top: -10px">
+                        <v-btn @click="onLinkPropertyMe" small>🔗 Link PropertyMe</v-btn>
+                    </span>
                     <AgentLeadMetrics></AgentLeadMetrics>
                 </v-card>
                 <AgentApplicationTable v-if="isLoaded"
@@ -18,6 +22,33 @@
                 <AgentApplicationSummary :application="applicationSummary"></AgentApplicationSummary>
             </v-col>
         </v-row>
+        <v-dialog
+            v-model="dialog"
+            persistent
+            max-width="600px"
+        >
+            <v-card>
+                <v-container>
+                    <v-row>
+                        <v-col class="section-dialogs" cols="12">
+                            <div class="dialogs-title d-flex justify-center">
+                                <p>Linking PropertyMe account</p>
+                            </div>
+                            <div class="d-flex justify-center">
+                                <p > PropertyMe account successfully linked!</p>
+                            </div>
+                            <div class="d-flex justify-center">
+                                <v-btn @click="dismiss"
+                                       color="primary"
+                                >Done
+                                </v-btn>
+                            </div>
+                        </v-col>
+
+                    </v-row>
+                </v-container>
+            </v-card>
+        </v-dialog>
 
     </v-container>
 </template>
@@ -39,6 +70,7 @@ export default {
     data() {
         return {
             user: null,
+            dialog: null,
             applicationMetrics: null,
             applicationList: null,
             applicationSummary: null,
@@ -51,6 +83,12 @@ export default {
             totalItem: null,
             options: {},
             isLoaded: false,
+        }
+    },
+
+    computed: {
+        pm_connected() {
+            return AuthService.getAuthUser()?.pm_connected
         }
     },
 
@@ -80,12 +118,22 @@ export default {
         refreshDataTable(meta) {
             this.sort_search_meta = meta;
             this.getApplicationList();
+        },
+        onLinkPropertyMe() {
+            window.location = '/property-me/authorize';
+        },
+        dismiss() {
+            this.dialog = false;
+            this.$router.push({name: this.$route.name, query: {}})
         }
     },
 
     mounted() {
         this.getApplicationMetrics();
         this.getApplicationList();
+        if (this.$route.query.d === '1') {
+            this.dialog = true;
+        }
         this.user = AuthService.getAuthUser();
         setInterval(AuthService.authUser, 300000);
     },

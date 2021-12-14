@@ -17,7 +17,7 @@ class BasePropertyMeAPI
      */
     protected function refreshToken()
     {
-        $url = config('property_me.refresh_token_url');
+        $url = config('property_me.token_url');
         $data = ["grant_type" => "refresh_token", "refresh_token" => config('property_me.refresh_token')];
 
         try {
@@ -44,6 +44,18 @@ class BasePropertyMeAPI
             $this->refreshToken();
         }
         return "Bearer " .$this->accessToken;
+    }
+
+    public function getAccessTokenFromAuthCode(string $authCode): array
+    {
+        $response = Http::withHeaders(["Authorization" => $this->getBasicAuth()])
+            ->asForm()
+            ->post(config('property_me.token_url'), [
+                'grant_type' => 'authorization_code',
+                'redirect_uri' => url('/home/callback'),
+                'code' => $authCode
+            ]);
+        return json_decode($response->body(), true);
     }
 
 }
