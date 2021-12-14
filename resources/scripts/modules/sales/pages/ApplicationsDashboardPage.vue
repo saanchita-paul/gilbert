@@ -7,7 +7,7 @@
             <v-col cols="12">
                 <SalesSummary/>
             </v-col>
-            <v-col>
+            <div class="d-flex  justify-space-around" style="width: 100%;">
                 
                 <!-- <div style="width: 30%; background: white;">
                     <p class="font-weight-bold pt-4 text-center" style="font-size: 24px;">
@@ -41,9 +41,15 @@
                     </div>
                 </div> -->
 
-                <ApplicationDashboardStatistics/>
+                <!-- <ApplicationDashboardStatisticsEnergy/>
+                <ApplicationDashboardStatisticsEnergy/>
+                <ApplicationDashboardStatisticsEnergy/> -->
 
-            </v-col>
+                <ApplicationDashboardStatisticsWater/>
+                <ApplicationDashboardStatisticsWater/>
+                <ApplicationDashboardStatisticsWater/>
+
+            </div>
         </v-row>
     </v-container>
 </template>
@@ -53,7 +59,8 @@ import SalesFilter from "@scripts/modules/sales/components/SalesFilter";
 import SalesSummary from "@scripts/modules/sales/components/SalesSummary";
 import SalesDashboardService from "@scripts/modules/sales/services/SalesDashboardService";
 import SalesSummaryChart from "@scripts/modules/sales/components/SalesSummaryChart";
-import ApplicationDashboardStatistics from "@scripts/modules/sales/pages/ApplicationDashboardStatistics";
+// import ApplicationDashboardStatisticsEnergy from "@scripts/modules/sales/pages/ApplicationDashboardStatisticsEnergy";
+import ApplicationDashboardStatisticsWater from "@scripts/modules/sales/pages/ApplicationDashboardStatisticsWater";
 
 export default {
     name: "ApplicationsDashboardPage",
@@ -61,7 +68,8 @@ export default {
         SalesSummaryChart,
         SalesFilter,
         SalesSummary,
-        ApplicationDashboardStatistics
+        // ApplicationDashboardStatisticsEnergy
+        ApplicationDashboardStatisticsWater
     },
     data() {
         return{
