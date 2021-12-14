@@ -4,9 +4,11 @@
 namespace App\Services\Sales;
 
 
+use App\Models\APILog;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\Identification;
+use App\Services\Logger\LogSalesService;
 use Carbon\Carbon;
 use GraphQL\Client;
 use GraphQL\Mutation;
@@ -135,12 +137,15 @@ class PostSalesService
             'data'=>$eaData
         ];
 
+        $logSalesService = new LogSalesService();
+        $loggerResponse = null;
+
+
         try{
             $url = env('EA_SALES_URL','https://apigw-nonprod.energyaustralia.com.au/graphql');
             $XEAEnv = config('ea.x_ea_env');
-            $client = new Client(
-                $url,
-                ['Authorization' => $this->accessToken, 'X-EA-Env' => $XEAEnv]);
+            $header = ['Authorization' => $this->accessToken, 'X-EA-Env' => $XEAEnv];
+            $client = new Client($url, $header);
                 $gql = (new Mutation('submitSale'))
                 ->setVariables([new Variable('data', 'VendorSaleRequest!')])
                 ->setArguments(['input' => '$data'])
@@ -161,15 +166,37 @@ class PostSalesService
                     ]
                 );
 
-
                 Log::info('End Sale API request body');
                 Log::info($variables);
                 Log::info('Start Sale API request body');
+                // creating new log for sales api
+            $loggerResponse = $logSalesService->createSalesLog(
+                $url,
+                APILog::API_SALES_API_SUBMIT,
+                'POST',
+                json_encode($variables),
+                json_encode($header)
+            );
+
             $results = $client->runQuery($gql, false, $variables );
+
+            //update sales log with response
+
+            $logSalesService->updateSalesLog($loggerResponse->key,
+                json_encode($results->getData()),
+                json_encode([]),
+                200
+            );
+
             return $this->processEaData($results->getResponseBody());
 
         } catch (\Exception $e)
         {
+            $logSalesService->updateSalesLog($loggerResponse->key,
+                json_encode($e->getMessage()),
+                json_encode([]),
+                400
+            );
             throw new \Exception("EA Sales API ERROR: " . $e->getMessage());
         }
 
