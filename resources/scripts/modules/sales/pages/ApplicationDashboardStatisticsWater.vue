@@ -62,7 +62,7 @@
       ></div>
 
       <div class="d-flex justify-space-around " style="flex-wrap: wrap">
-          <div style="flex-basis: 100%;"> Submission Segmentation </div>
+          <div style="flex-basis: 100%;" class="font-weight-bold text-center py-2"> Submission Segmentation </div>
           <div>
               <div
                 class="font-weight-bold text-center py-0"
