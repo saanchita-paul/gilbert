@@ -66,7 +66,7 @@
       >
         Retailer Segmentation
       </div>
-      <div class="d-flex justify-center">
+      <div class="d-flex justify-center pb-3">
         <SalesSummaryChart v-if="is_laod" :data="data" title="Gas">
         </SalesSummaryChart>
         <SalesSummaryChart v-if="is_laod" :data="data" title="Gas">
