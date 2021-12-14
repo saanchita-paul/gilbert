@@ -4,6 +4,7 @@
 
 <script>
 import ApplicationService from "@scripts/services/ApplicationService";
+import {isArray} from "lodash-es";
 
 export default {
     name: "Donut",
@@ -22,11 +23,6 @@ export default {
         this.renderChart();
     },
     methods: {
-
-        externalTooltipHandler(context)
-        {
-            console.log('context', context);
-        },
 
         getCenterColor() {
             let dataset = this.data.datasets[0];
@@ -58,6 +54,7 @@ export default {
             });
             const ctx = document.getElementById(this.chartId);
             ctx.height = 200;
+            const that = this;
             const chart = new Chart(ctx, {
                 type: 'doughnut',
                 data: this.data,
@@ -77,14 +74,15 @@ export default {
                     },
 
                     tooltips: {
-                        enabled: true,
+                        enabled: false,
                         custom: function(tooltipModel) {
-                            console.log('this.chartId', this.chartId);
+
+                            let dataIndex = null;
+                            that.data.toolTips
+                            if(isArray(tooltipModel.dataPoints)) {
+                                dataIndex = tooltipModel.dataPoints[0].index;
+                            }
                             var tooltipEl = document.getElementById('chartjs-tooltip');
-
-                            console.log(' tooltipEl', tooltipEl);
-
-                            // Create element on first render
                             if (!tooltipEl) {
                                 tooltipEl = document.createElement('div');
                                 tooltipEl.id = 'chartjs-tooltip';
@@ -106,15 +104,9 @@ export default {
                                 tooltipEl.classList.add('no-transform');
                             }
 
-                            function getBody(bodyItem) {
-                                return bodyItem.lines;
-                            }
-
                             // Set Text
                             if (tooltipModel.body) {
                                 var titleLines = tooltipModel.title || [];
-                                var bodyLines = tooltipModel.body.map(getBody);
-
                                 var innerHtml = '<thead>';
 
                                 titleLines.forEach(function(title) {
@@ -122,35 +114,49 @@ export default {
                                 });
                                 innerHtml += '</thead><tbody>';
 
-                                console.log('bodyLines', bodyLines);
+                                let tooltipData = that.data.toolTips;
+                                console.log('tooltipData', tooltipData);
 
-                                bodyLines.forEach(function(body, i) {
-                                    var colors = tooltipModel.labelColors[i];
-                                    var style = 'background:' + colors.backgroundColor;
-                                    style += '; border-color:' + colors.borderColor;
-                                    style += '; border-width: 2px';
-                                    var span = '<span style="' + style + '"></span>';
-                                    innerHtml += '<tr><td>' + span + body + '</td></tr>';
+                                tooltipData[dataIndex].forEach(function(body, i) {
+                                    console.log('body data', body, i)
                                 });
                                 innerHtml += '</tbody>';
-
                                 var tableRoot = tooltipEl.querySelector('table');
-                                tableRoot.innerHTML = '<div style="background: #2d3748"><h1>hello world</h1><h1>hello world</h1><h1>hello world</h1></div>';
+
+                                console.log(tableRoot);
+
+                                var position = this._chart.canvas.getBoundingClientRect();
+
+                                // Display, position, and set styles for font
+                                tooltipEl.style.opacity = 1;
+                                tooltipEl.style.position = 'absolute';
+                                tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+                                tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+                                tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
+                                tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
+                                tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
+                                tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
+                                tooltipEl.style.pointerEvents = 'none';
+                                tooltipEl.style.width = '169px';
+                                tooltipEl.style.borderRadius = '16px';
+                                tooltipEl.style.padding = '16px';
+                                tooltipEl.style.background = 'white';
+                                tooltipEl.style.boxShadow = '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)';
+
+
+                                console.log(tooltipEl);
+
+
+
+                                tableRoot.innerHTML = '<div style="background: #2d3748"><p>hello world</p><p>hello world</p><p>hello world</p></div>';
+
+                                console.log('tooltipEl', tooltipEl);
+
                             }
 
                             // `this` will be the overall tooltip
-                            var position = this._chart.canvas.getBoundingClientRect();
 
-                            // Display, position, and set styles for font
-                            tooltipEl.style.opacity = 1;
-                            tooltipEl.style.position = 'absolute';
-                            tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-                            tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
-                            tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
-                            tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
-                            tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
-                            tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
-                            tooltipEl.style.pointerEvents = 'none';
+
                         }
 
                     }
