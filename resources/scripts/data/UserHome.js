@@ -1,6 +1,13 @@
 export default [
     {
-        roles: ['agency_office_admin', 'agency_office_director', 'agency_office_property_manager', 'agency_office_senior_property_manager', 'agency_office_real_estate_agent', 'agency_office_allocator'],
+        roles: [
+            'agency_office_admin',
+            'agency_office_director',
+            'agency_office_property_manager',
+            'agency_office_senior_property_manager',
+            'agency_office_real_estate_agent',
+            'agency_office_allocator'
+        ],
         route_name: 'agent.application.dashboard'
     },
     {
@@ -12,7 +19,12 @@ export default [
         route_name: ['real.state.agency.home']
     },
     {
-        roles: ['hood_team_lead', 'hood_customer_rep'],
+        roles: [
+            'hood_team_lead',
+            'hood_customer_rep',
+            'hood_external_team_lead',
+            'hood_external_customer_rep',
+        ],
         route_name: 'applications'
     }
 ]

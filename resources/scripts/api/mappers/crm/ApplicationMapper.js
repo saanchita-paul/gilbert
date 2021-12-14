@@ -109,6 +109,7 @@ export default {
            identification: this.mapIdentification(data.identification),
            dob: this.mapDateToServer(data.application.date_of_birth),
            moving_date: this.mapDateToServer(data.application.moving_date),
+           connection_end_date: this.mapDateToServer(data.application.connection_end_date),
            is_email_billing: data.application.email_billing?data.application.email_billing:0,
            authorized_person: {
                ...data.authorized_person,

@@ -50,7 +50,7 @@ class ConnectionService extends Model
     const STATUS_NEEDS_MORE_INFO = 10;
     const AC_MANUAL_PROCESSING = 11;
 
-    const WATER_STATUS_IN_PROGRESS = 7;
+    const WATER_STATUS_IN_PROGRESS = 7; // initial status
     const WATER_STATUS_NEED_INFO = 10;
     const WATER_STATUS_SUBMITTED = 4;
     const WATER_STATUS_CONNECTED = 5;

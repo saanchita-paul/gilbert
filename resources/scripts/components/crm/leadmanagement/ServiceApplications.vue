@@ -49,9 +49,106 @@
 
 
             <v-tab-item>
+                <v-col cols="12" v-if="leadSummary.is_temporary_connection">
+                    <b>There is a request for temporary connection for this property.</b>
+                </v-col>
+            <ValidationObserver ref="endConnection">
+                <v-col cols="12" v-if="leadSummary.is_temporary_connection">
+                    <v-row>
+                        <v-col cols="3" class="pt-5"> <b>Temp Connection</b> </v-col>
+                        <v-col cols="4" >  
+                            
+            <v-menu
+              v-model="connection_date_menu"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <ValidationProvider
+                  name="Connection Date"
+                  rules="required|valid-date|not-holiday:@h_state"
+                  v-slot="{ errors }"
+                >
+                  <v-text-field
+                    placeholder="DD/MM/YYYY"
+                    outlined
+                    dense
+                    v-bind="attrs"
+                    append-icon="mdi-calendar"
+                    v-model="modified_moving_date"
+                    :error-messages="errors[0]"
+                    hide-details="auto"
+                  >
+                    <template slot="append">
+                      <v-icon v-on="on">mdi-calendar</v-icon>
+                    </template>
+                  </v-text-field>
+                </ValidationProvider>
+              </template>
+              <v-date-picker
+                v-model="moving_date"
+                @input="updateMovingDate"
+              ></v-date-picker>
+            </v-menu>    
+                           
+            </v-col>
+            <v-col cols="1" class="pt-5">  To  </v-col>
+            <v-col cols="4" > 
+
+            <v-menu
+              v-model="connection_end_date_menu"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <ValidationProvider
+                  name="Connection End Date"
+                  rules="valid-date"
+                  v-slot="{ errors }"
+                >
+                  <v-text-field
+                    placeholder="DD/MM/YYYY"
+                    outlined
+                    dense
+                    append-icon="mdi-calendar"
+                    v-model="modified_connection_end_date"
+                    v-bind="attrs"
+                    :error-messages="errors[0]"
+                    hide-details="auto"
+                    @input="syncConnectionEndDate"
+                  >
+                    <template slot="append">
+                      <v-icon v-on="on">mdi-calendar</v-icon>
+                    </template>
+                  </v-text-field>
+                </ValidationProvider>
+              </template>
+              <v-date-picker
+                v-model="connection_end_date"
+                :min="moving_date"
+                @input="updateConnectionEndDate"
+              ></v-date-picker>
+            </v-menu>  
+            <ValidationProvider name="h_state">
+                <v-text-field v-model="leadSummary.state" v-show="false" />
+            </ValidationProvider>
+                        </v-col>
+
+                    </v-row>
+                </v-col>
+            </ValidationObserver>
+
                 <v-card >
                     <p class="sub-title ml-4 pt-5 mb-2" >Service Applications</p>
                     <p class="ml-4 mb-0">Energy</p>
+
+
                 <v-col cols="12" class="service-box-area">
                     <div v-for="service in services" :key="service">
                         <EnergyService  @click.native="updateService(service)" :title="service"
@@ -193,6 +290,8 @@ import SumoService from '@scripts/services/crm/SumoService';
 import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails"
 import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
 import Spinner from "@scripts/plugins/Spinner";
+import dayJs from "dayjs";
+import { formatDate } from "@scripts/services/others/DateService"
 export default {
     name: "ServiceApplications",
     components: { SumoPlan, SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails, SoleDetails},
@@ -235,7 +334,16 @@ export default {
             sumoOptions: {
                 isError: false,
                 errorMsg: "",
-            }
+            },
+
+
+            connection_date_menu: false,
+            connection_end_date_menu: false,
+            connection_end_date: null,
+            moving_date: null,
+            minConnectionDate:  null,
+            modified_moving_date: null,
+            modified_connection_end_date: null,
         }
     },
     computed: {
@@ -283,7 +391,17 @@ export default {
                 'Water'    : 1,
                 'Internet' : 2,
             }
-        }
+        },
+        // modified_moving_date(){
+        //     const date         =  dayJs(this.moving_date, 'YYYY-MM-DD');
+        //     return date.isValid() ? date.format('DD/MM/YYYY'): null;
+            
+        // },
+        // modified_connection_end_date(){
+        //      const date         =  dayJs(this.connection_end_date, 'YYYY-MM-DD');
+        //      return date.isValid() ? date.format('DD/MM/YYYY'): null;
+        //     // return dayJs(this.connection_end_date).format("DD/MM/YYYY");
+        // }
     },
     watch: {
         'leadSummary.service_interests'() {
@@ -291,23 +409,40 @@ export default {
         }
     },
     mounted() {
+        // const birthdate         =  dayjs(this.dob, 'YYYY-MM-DD');
+        // this.person_details.dob =  birthdate.isValid() ? birthdate.format('DD/MM/YYYY'): null;
+        
+        this.modified_moving_date = formatDate(this.leadSummary.moving_date);
+        this.moving_date =  this.leadSummary.moving_date;
+        
+        this.modified_connection_end_date = formatDate(this.leadSummary.connection_end_date)
+        this.connection_end_date =  this.leadSummary.connection_end_date;
+
         this.providerSpinner = new Spinner(this.$refs.provider, {autoStart: true})
         this.loadServiceProvider();
         this.loadPlan();
          // this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
         this.loadSelectedPowerProvider();
 
+        console.log("print lead summary" , this.leadSummary);
+
         const updateAddress = address => {
             if (this.selectedPowerProvider === 'sumo') {
                 this.$eventBus.$emit("validate", this.setSumoDetailsData)
             }
         }
+        const updateMovingDate =async (value)=>{
+            this.modified_moving_date = formatDate(value);
+            await this.$refs.endConnection?.validate()
+        }
 
         this.$eventBus.$on("address_updated", updateAddress );
-
+        this.$eventBus.$on("update_temporary_date", updateMovingDate );
         this.$once("hook:beforeDestroy", () => {
             this.$eventBus.$off("address_updated", updateAddress );
+            this.$eventBus.$off("update_temporary_date" , updateMovingDate);
         });
+
 
     },
     methods: {
@@ -597,6 +732,7 @@ export default {
             }
 
         },
+       
         submit(){
             let subType = 'energy';
             if(this.tabMapper.Energy == this.tab){
@@ -607,8 +743,47 @@ export default {
                 subType = 'internet';
             }
             this.$eventBus.$emit("busWaterSubmit", subType)
-        }
-    }
+        },
+        updateMovingDate(value){
+            this.updateConnecitionEndNullDate();
+            this.connection_date_menu = false;
+            this.modified_moving_date = formatDate(this.moving_date)
+            this.$eventBus.$emit("update_moving_date", this.modified_moving_date)
+        },
+        syncConnectionDate(value){
+            this.updateConnecitionEndNullDate();
+            this.modified_moving_date = formatDate(value) ? formatDate(value) :
+                                        this.modified_moving_date ;
+            this.connection_end_date_menu = false;
+            this.$eventBus.$emit("update_moving_date", this.modified_moving_date)
+        },
+        updateConnecitionEndNullDate(){
+            this.modified_connection_end_date = null;
+            this.connection_end_date = null;
+            LeadApplicationService.updateConnecitionEndNullDate(this.leadSummary.id);
+        },
+        updateConnectionEndDate(value){
+            this.modified_connection_end_date = formatDate(this.connection_end_date)
+            this.connection_end_date_menu = false;
+            if(!formatDate(this.connection_end_date) && this.connection_end_date == ''){
+                this.updateConnecitionEndNullDate();
+            }
+            if(formatDate(this.connection_end_date)){
+                this.$eventBus.$emit("update_connection_end_date", this.modified_connection_end_date)
+            }
+        },
+         syncConnectionEndDate(value){
+            this.connection_end_date_menu = false;
+            this.modified_connection_end_date = formatDate(value) ? formatDate(value) : 
+                                                this.modified_connection_end_date ;
+            if(!formatDate(value) && value == '' ){
+                this.updateConnecitionEndNullDate();
+            }
+            if(formatDate(value)){
+                this.$eventBus.$emit("update_connection_end_date", this.modified_connection_end_date)
+            }
+        },
+     }
 };
 </script>
 

@@ -55,7 +55,7 @@ class WaterAutoSubmitService
                     isset($connectionApplcation->postcode)  &&
                     isset($connectionApplcation->first_name) &&
                     isset($connectionApplcation->last_name) &&
-                    $this->checkTenancyTypeDob($connectionApplcation) &&
+                    isset($connectionApplcation->dob) &&
                     isset($connectionApplcation->email) &&
                     isset($connectionApplcation->phone)  &&
                     isset($connectionApplcation->state)  &&
@@ -73,10 +73,10 @@ class WaterAutoSubmitService
                 if(
                     isset($connectionApplcation->identification['card_number']) &&
                     isset($connectionApplcation->identification['expire_date'])
-                ) {
+                ){
                     return true;
-                } else {
-                    return $this->checkTenancyType($connectionApplcation);
+                }else{
+                    throw new Exception('invalid data in identifcation table');
                 }
 
 

@@ -20,9 +20,11 @@ export const tenancyTypeMapper = {
     HomeOwner : 2,
 }
 
+
 export const connectionServicesMapper = {
      'STATUS_UNASSIGNED'      : 1,
      'STATUS_ASSIGNED'        : 2,
+
      'STATUS_ESCALATED'       : 3,
      'STATUS_SUBMITTED'       : 4,
      'STATUS_ACCEPTED'        : 5,

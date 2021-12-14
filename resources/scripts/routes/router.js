@@ -165,7 +165,13 @@ const router = new VueRouter({
                     meta: {
                         isProtected: true,
                         breadcrumbType: 'LeadApplications',
-                        roles: ['hood_admin', 'hood_team_lead', 'hood_customer_rep'],
+                        roles: [
+                            'hood_admin',
+                            'hood_team_lead',
+                            'hood_customer_rep',
+                            'hood_external_team_lead',
+                            'hood_external_customer_rep'
+                        ],
                     }
                 },
                 {
@@ -175,7 +181,13 @@ const router = new VueRouter({
                     meta: {
                         isProtected: true,
                         breadcrumbType: 'ApplicationsDetails',
-                        roles: ['hood_admin', 'hood_team_lead', 'hood_customer_rep'],
+                        roles: [
+                            'hood_admin',
+                            'hood_team_lead',
+                            'hood_customer_rep',
+                            'hood_external_team_lead',
+                            'hood_external_customer_rep'
+                        ],
                     }
                 }
 

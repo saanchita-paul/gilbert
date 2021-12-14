@@ -114,9 +114,6 @@
                 <p class="mb-2">Expires on {{identification_expire_data}}</p>
             </v-col>
 
-
-
-
         </v-row>
 
         <div class="pt-5">
@@ -313,10 +310,6 @@ export default {
                 status[0].toUpperCase() + status.slice(1);
         }
     },
-
-    mounted() {
-
-    }
 };
 </script>
 
