@@ -28,7 +28,7 @@
                             class="font-weight-bold text-center py-0 mb-n3"
                             style="font-size: 12px; color: #7e8a8f"
                         >
-                            Conversion rate 27.5%
+                            Conversion rate {{chartData.conversiton_rate}}%
                             <span><v-icon color="success">trending_up </v-icon> </span>
                         </div>
                         <div
