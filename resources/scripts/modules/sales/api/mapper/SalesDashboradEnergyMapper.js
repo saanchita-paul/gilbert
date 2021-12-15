@@ -16,7 +16,7 @@ export default {
                 'Energy Australia',
                 'Sumo',
             ];
-            
+
             let toolTips = [
                 [
                     {
@@ -145,7 +145,7 @@ export default {
         return {
 
             submitted: getSubmittedData(response.submission),
-            converted: getConvertedData(response.conversion),
+            converted: getConvertedData(response.conversions),
             rejected: getRejectedData(response.rejected, response.declined),
             total_open_application: response.total_open_application,
             total_consent_pending: response.total_consent_pending,
