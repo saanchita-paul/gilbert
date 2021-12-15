@@ -1,6 +1,6 @@
 <?php
 
-use Reporting\Http\Controllers\SalesDashboardController;
+use Reporting\Http\Controllers\ReportController;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Broadcast;
@@ -118,7 +118,7 @@ Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWate
 /***
  * Sales Dashboard
  */
-Route::get('/sales-dashboard/home', [SalesDashboardController::class, 'home']);
+Route::get('/sales-dashboard/home', [ReportController::class, 'home']);
 
 
 

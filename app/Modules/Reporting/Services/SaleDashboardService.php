@@ -22,7 +22,7 @@ class SaleDashboardService
         $res = ConnectionService::query()
             ->selectRaw('provider_name, count(*) as total, service_type, plan_type')
             ->whereNotNull('provider_name')
-            ->whereIn('status', [ConnectionService::STATUS_SUBMITTED, ConnectionService::STATUS_EA_SUBMIT])
+            ->whereIn('status', [ConnectionService::STATUS_SUBMITTED, ConnectionService::STATUS_ENERGY_SUBMIT])
             ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
             ->groupBy('provider_name', 'service_type', 'plan_type')
             ->get()
