@@ -125,11 +125,20 @@ export default {
             }
         }
 
-        function getConvertedData(data) {
+        function getConvertedData(data, submittedData) {
+
+            let converstionRate = null;
+            if(data.total === 0 && submittedData.total ===0) {
+                converstionRate = 0;
+            } else {
+                converstionRate = ((data.total / submittedData.total) * 100).toFixed(1);
+            }
+
             return {
                 gasChartData: getGasData(data),
                 powerChartData: getPowerData(data),
-                total: data.total
+                total: data.total,
+                conversiton_rate: converstionRate
             }
         }
 
@@ -145,7 +154,7 @@ export default {
         return {
 
             submitted: getSubmittedData(response.submission),
-            converted: getConvertedData(response.conversions),
+            converted: getConvertedData(response.conversions, response.submission),
             rejected: getRejectedData(response.rejected, response.declined),
             total_open_application: response.total_open_application,
             total_consent_pending: response.total_consent_pending,
