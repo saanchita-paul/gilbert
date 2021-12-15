@@ -29,7 +29,7 @@
                                 <p class="text-small">Total open applications</p>
                             </div>
                             <div class="ml-6">
-                                <h3 class="application-count">{{summaryData.total_closed}}</h3>
+                                <h3 class="application-count">{{summaryData.total_consent_pending}}</h3>
                                 <p class="text-small">Consent pending</p>
                             </div>
                         </div>
@@ -40,7 +40,7 @@
                     <div class="ml-4">
                         <h4>Closed Applications</h4>
                         <div class='mt-4'>
-                            <h3 class="application-count">{{summaryData.total_consent_pending}}</h3>
+                            <h3 class="application-count">{{summaryData.total_closed}}</h3>
                             <p class="text-small">Total closed applications</p>
                         </div>
                     </div>

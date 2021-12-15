@@ -100,7 +100,7 @@ class EnergyReport
     public function totalDeclined()
     {
         return [
-            'total' => 100
+            'total' => 0
         ];
     }
 
