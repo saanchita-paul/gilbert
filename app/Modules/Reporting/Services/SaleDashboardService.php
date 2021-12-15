@@ -19,7 +19,7 @@ class SaleDashboardService
 
     public function run()
     {
-        return $res = ConnectionService::query()
+        $res = ConnectionService::query()
             ->selectRaw('provider_name, count(*) as total, service_type, plan_type')
             ->whereNotNull('provider_name')
             ->whereIn('status', [ConnectionService::STATUS_SUBMITTED, ConnectionService::STATUS_EA_SUBMIT])
@@ -27,5 +27,6 @@ class SaleDashboardService
             ->groupBy('provider_name', 'service_type', 'plan_type')
             ->get()
             ->toArray();
+        return (new MapEnergyReport($res))->getReportData();
     }
 }
