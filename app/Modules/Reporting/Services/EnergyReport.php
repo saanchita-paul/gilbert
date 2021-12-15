@@ -7,10 +7,12 @@ use Carbon\Carbon;
 use DB;
 use JetBrains\PhpStorm\ArrayShape;
 
-class SaleDashboardEnergyService
+class EnergyReport
 {
     private string $startDate;
     private string $endDate;
+
+    private int $timezone;
 
     private array $submisssionType = [ConnectionService::STATUS_SUBMITTED , ConnectionService::STATUS_ENERGY_SUBMIT];
     private array $conversionsType = [ConnectionService::STATUS_ACCEPTED];
@@ -23,13 +25,20 @@ class SaleDashboardEnergyService
 
     public function __construct(string $startDate, string $endDate)
     {
-        $this->startDate = Carbon::parse($startDate);
-        $this->endDate   = Carbon::parse($endDate)->addHours(11)->addMinutes(59)->addSeconds(59);
+        $this->timezone = env("TIME_ZONE", 11) ?? 11;
+
+        $this->startDate = Carbon::parse($startDate, tz: $this->timezone)->setTimezone(0)->toDateTimeString();
+        $this->endDate   = Carbon::parse($endDate, tz: $this->timezone)
+            ->addHours(11)
+            ->addMinutes(59)
+            ->addSeconds(59)
+            ->setTimezone(0)->toDateTimeString();
         $this->mapperService = new MapEnergyReport();
     }
 
     public function totalSubmissions()
     {
+
         return ConnectionService::query()
             ->selectRaw('provider_name, count(*) as total, service_type, plan_type')
             ->whereNotNull('provider_name')
