@@ -1,56 +1,35 @@
 <template>
-  <div style="width: 90%; background: white;" class="mx-3">
-    <div>
-      <p class="font-weight-bold pt-4 text-center" style="font-size: 20px">
-        Submissions to Retailer
-      </p>
-      <div class="d-flex justify-space-around ">
-          <!-- <div>
-              <div
-                class="font-weight-bold text-center py-0 mb-n3"
-                style="font-size: 12px; color: #7e8a8f"
-              >
-                Conversion rate 27.5%
-                <span><v-icon color="success">trending_up </v-icon> </span>
-              </div>
-              <div
-                class="font-weight-bold text-center py-0"
-                style="font-size: 40px; color: #542e89"
-              >
-                16,032
-              </div>
-              <div
-                class="font-weight-bold text-center py-0 mb-2 mt-n2"
-                style="font-size: 14px"
-              >
-                Total converted Applications
-              </div>
-          </div> -->
-          <div>
-              <div
-                class="font-weight-bold text-center py-0 mb-n3"
-                style="font-size: 12px; color: #7e8a8f"
-              >
-                Conversion rate 27.5%
-                <span><v-icon color="success">trending_up </v-icon> </span>
-              </div>
-              <div
-                class="font-weight-bold text-center py-0"
-                style="font-size: 40px; color: #542e89"
-              >
-                16,032
-              </div>
-              <div
-                class="font-weight-bold text-center py-0 mb-2 mt-n2"
-                style="font-size: 14px"
-              >
-                Total converted Applications
-              </div>
-          </div>
-      </div>
+    <div style="width: 90%; background: white;" class="mx-3">
+        <div>
+            <p class="font-weight-bold pt-4 text-center" style="font-size: 20px">
+                Submissions to Retailer
+            </p>
+            <div class="d-flex justify-space-around ">
+                <div>
+                    <div
+                        class="font-weight-bold text-center py-0 mb-n3"
+                        style="font-size: 12px; color: #7e8a8f"
+                    >
+                        Conversion rate 27.5%
+                        <span><v-icon color="success">trending_up </v-icon> </span>
+                    </div>
+                    <div
+                        class="font-weight-bold text-center py-0"
+                        style="font-size: 40px; color: #542e89"
+                    >
+                        16,032
+                    </div>
+                    <div
+                        class="font-weight-bold text-center py-0 mb-2 mt-n2"
+                        style="font-size: 14px"
+                    >
+                        Total converted Applications
+                    </div>
+                </div>
+            </div>
 
-      <div
-        style="
+            <div
+                style="
           background-color: #7e8a8f;
           width: 40px;
           height: 1px;
@@ -58,33 +37,40 @@
           margin-bottom: 20px;
           margin-top: 20px;
         "
-      ></div>
+            ></div>
 
-      <div
-        class="font-weight-bold text-center py-0 mb-2 mt-n2"
-        style="font-size: 18px"
-      >
-        Retailer Segmentation
-      </div>
-      <div class="d-flex justify-center pb-3">
-        <SalesSummaryChart v-if="is_laod" :data="data" title="Gas">
-        </SalesSummaryChart>
-        <SalesSummaryChart v-if="is_laod" :data="data" title="Gas">
-        </SalesSummaryChart>
-      </div>
+            <div
+                class="font-weight-bold text-center py-0 mb-2 mt-n2"
+                style="font-size: 18px"
+            >
+                Retailer Segmentation
+            </div>
+            <div class="d-flex justify-center pb-3">
+                <SalesSummaryChart v-if="is_laod" :data="chartData.gasChartData" title="Gas">
+                </SalesSummaryChart>
+                <SalesSummaryChart v-if="is_laod" :data="chartData.powerChartData" title="Power">
+                </SalesSummaryChart>
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
 import SalesSummaryChart from "@scripts/modules/sales/components/SalesSummaryChart";
+
 export default {
-  name: "ApplicationDashboardStatisticsEnergy",
-  components: {
-    SalesSummaryChart,
-  },
-      data() {
-        return{
+    name: "ApplicationDashboardStatisticsEnergy",
+    components: {
+        SalesSummaryChart,
+    },
+    props: {
+        chartData: {
+            type: Object,
+            required: true
+        }
+    },
+    data() {
+        return {
             utilityDashboardData: null,
             is_laod: false,
             data: null,
@@ -95,9 +81,9 @@ export default {
         this.load();
     },
 
-    methods : {
+    methods: {
         async load() {
-            this.data  = {
+            this.data = {
                 labels: [
                     'Energy Australia',
                     'Sumo',
