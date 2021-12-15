@@ -2,6 +2,7 @@
 
 namespace Reporting\Http\Controllers;
 
+use Reporting\Services\MapEnergyReport;
 use Reporting\Services\SaleDashboardService;
 use function response;
 
@@ -9,7 +10,8 @@ class SalesDashboardController
 {
     public function home()
     {
-        $data =  (new SaleDashboardService("2021-12-02", "2021-12-02"))->run();
+        return $data =  (new SaleDashboardService("2021-12-02", "2021-12-02"))->run();
+
         return response()->json(['data' => [
             'energy' => [
                 "submission" => [
