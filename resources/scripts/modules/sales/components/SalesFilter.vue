@@ -41,7 +41,8 @@
 
 <script>
 import DatePickerModal from "@scripts/modules/sales/components/DatePickerModal";
-import { getToday, getYesterday, isSame } from '@scripts/services/DateRangeService';
+import {getToday, getTodayString, getYesterday, isSame} from '@scripts/services/DateRangeService';
+import dayJs from "dayjs";
 
 export default {
     name: "SalesFilter",
@@ -62,8 +63,8 @@ export default {
             ],
             showDatePickerModal: false,
             dateRange: {
-                start: null,
-                end: null,
+                start: getTodayString(),
+                end:  getTodayString(),
             },
             selectedDate: null,
             selectedType: null,
@@ -82,6 +83,11 @@ export default {
                 this.$router.push({ name: 'sales.energy' }) :
                 this.$router.push({ name: 'sales.water' });
         },
+
+        updateDateRange() {
+            this.$emit('updateDate', this.dateRange)
+        }
+
     },
     watch: {
         dateRange() {
@@ -94,7 +100,12 @@ export default {
             } else {
                 this.selectedDate = `${this.dateRange.start} - ${this.dateRange.end}`;
             }
+            this.updateDateRange();
         }
+    },
+
+    mounted() {
+        this.updateDateRange();
     }
 };
 </script>

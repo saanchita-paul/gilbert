@@ -17,8 +17,6 @@ export default {
                 'Sumo',
             ];
 
-            console.log('provided data', data);
-
             let toolTips = [
                 [
                     {
@@ -121,29 +119,38 @@ export default {
         function getSubmittedData(data) {
             return {
                 gasChartData: getGasData(data),
-                powerChartData: getPowerData(data)
+                powerChartData: getPowerData(data),
+                total: data.total
+
             }
         }
 
         function getConvertedData(data) {
             return {
                 gasChartData: getGasData(data),
-                powerChartData: getPowerData(data)
+                powerChartData: getPowerData(data),
+                total: data.total
             }
         }
 
-        function getRejectedData(data) {
+        function getRejectedData(data, declined) {
             return {
                 gasChartData: getGasData(data, true),
-                powerChartData: getPowerData(data, true)
+                powerChartData: getPowerData(data, true),
+                total: data.total,
+                declined: declined.total
             }
         }
 
         return {
 
             submitted: getSubmittedData(response.submission),
-            converted: getConvertedData(response.submission),
-            rejected: getRejectedData(response.submission),
+            converted: getConvertedData(response.conversions),
+            rejected: getRejectedData(response.rejected, response.declined),
+            total_open_application: response.total_open_application,
+            total_consent_pending: response.total_consent_pending,
+            total_closed: response.total_closed,
+
         };
     },
 

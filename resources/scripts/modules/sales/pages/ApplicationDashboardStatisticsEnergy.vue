@@ -2,31 +2,87 @@
     <div style="width: 90%; background: white;" class="mx-3">
         <div>
             <p class="font-weight-bold pt-4 text-center" style="font-size: 20px">
-                Submissions to Retailer
+                {{title}}
             </p>
             <div class="d-flex justify-space-around ">
-                <div>
-                    <div
-                        class="font-weight-bold text-center py-0 mb-n3"
-                        style="font-size: 12px; color: #7e8a8f"
-                    >
-                        Conversion rate 27.5%
-                        <span><v-icon color="success">trending_up </v-icon> </span>
+                <template v-if="title === 'Submissions to Retailer'">
+                    <div>
+                        <div
+                            class="font-weight-bold text-center py-0"
+                            style="font-size: 40px; color: #542e89"
+                        >
+                            {{chartData.total}}
+                        </div>
+                        <div
+                            class="font-weight-bold text-center py-0 mb-2 mt-n2"
+                            style="font-size: 14px"
+                        >
+                            Total Submitted Applications
+                        </div>
                     </div>
-                    <div
-                        class="font-weight-bold text-center py-0"
-                        style="font-size: 40px; color: #542e89"
-                    >
-                        16,032
+                </template>
+
+                <template v-if="title === 'Conversions'">
+                    <div>
+                        <div
+                            class="font-weight-bold text-center py-0 mb-n3"
+                            style="font-size: 12px; color: #7e8a8f"
+                        >
+                            Conversion rate 27.5%
+                            <span><v-icon color="success">trending_up </v-icon> </span>
+                        </div>
+                        <div
+                            class="font-weight-bold text-center py-0"
+                            style="font-size: 40px; color: #542e89"
+                        >
+                            {{chartData.total}}
+                        </div>
+                        <div
+                            class="font-weight-bold text-center py-0 mb-2 mt-n2"
+                            style="font-size: 14px"
+                        >
+                            Total converted Applications
+                        </div>
                     </div>
-                    <div
-                        class="font-weight-bold text-center py-0 mb-2 mt-n2"
-                        style="font-size: 14px"
-                    >
-                        Total converted Applications
+                </template>
+
+
+                <template v-if="title === 'Rejected'">
+                    <div>
+                        <div
+                            class="font-weight-bold text-center py-0"
+                            style="font-size: 40px; color: #542e89"
+                        >
+                            {{chartData.total}}
+                        </div>
+                        <div
+                            class="font-weight-bold text-center py-0 mb-2 mt-n2"
+                            style="font-size: 14px"
+                        >
+                            Total Rejected Applications
+                        </div>
                     </div>
-                </div>
+                    <div>
+
+                        <div
+                            class="font-weight-bold text-center py-0"
+                            style="font-size: 40px; color: #542e89"
+                        >
+                            {{chartData.declined}}
+                        </div>
+                        <div
+                            class="font-weight-bold text-center py-0 mb-2 mt-n2"
+                            style="font-size: 14px"
+                        >
+                            Declined Credits
+                        </div>
+                    </div>
+                </template>
             </div>
+
+
+
+
 
             <div
                 style="
@@ -46,7 +102,7 @@
                 Retailer Segmentation
             </div>
             <div class="d-flex justify-center pb-3">
-                <SalesSummaryChart v-if="is_laod" :data="chartData.gasChartData" title="Gas">
+                <SalesSummaryChart v-if="is_laod" icon-color="primary" :data="chartData.gasChartData" title="Gas">
                 </SalesSummaryChart>
                 <SalesSummaryChart v-if="is_laod" :data="chartData.powerChartData" title="Power">
                 </SalesSummaryChart>
@@ -66,6 +122,9 @@ export default {
     props: {
         chartData: {
             type: Object,
+            required: true
+        },
+        title: {
             required: true
         }
     },

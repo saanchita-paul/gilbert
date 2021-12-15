@@ -2,15 +2,15 @@
     <v-container fluid>
         <v-row>
             <v-col cols="12" class="py-0">
-                <SalesFilter/>
+                <SalesFilter @updateDate="updateDate"/>
             </v-col>
             <v-col cols="12">
-                <SalesSummary type='energy'/>
+                <SalesSummary type='energy' :summary-data="chartData"/>
             </v-col>
             <div class="d-flex  justify-space-around" style="width: 100%;" v-if="is_laod">
-                <ApplicationDashboardStatisticsEnergy :chart-data="chartData.submitted"/>
-                <ApplicationDashboardStatisticsEnergy :chart-data="chartData.converted"/>
-                <ApplicationDashboardStatisticsEnergy :chart-data="chartData.rejected"/>
+                <ApplicationDashboardStatisticsEnergy title="Submissions to Retailer" :chart-data="chartData.submitted"/>
+                <ApplicationDashboardStatisticsEnergy title="Conversions" :chart-data="chartData.converted"/>
+                <ApplicationDashboardStatisticsEnergy title="Rejected" :chart-data="chartData.rejected"/>
             </div>
         </v-row>
     </v-container>
@@ -40,17 +40,18 @@ export default {
         }
     },
 
-    mounted() {
-        this.load();
-    },
 
     methods: {
-        async load() {
-            this.chartData = await SalesDashboardService.loadDashboardEnergyData();
-            console.log('chartData12', this.chartData);
+        async load(dateRange) {
+            this.chartData = await SalesDashboardService.loadDashboardEnergyData(dateRange);
             this.is_laod = true;
+        },
+
+        updateDate(dateRange) {
+            this.load(dateRange)
         }
-    }
+    },
+
 }
 </script>
 

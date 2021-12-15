@@ -121,7 +121,6 @@ export default {
                                 innerHtml += '</tbody>';
                                 var tableRoot = tooltipEl.querySelector('table');
 
-                                console.log(tableRoot);
 
                                 var position = this._chart.canvas.getBoundingClientRect();
 
@@ -170,13 +169,7 @@ export default {
 
                                 </div>
                                 `;
-
-                                console.log('tooltipEl', tooltipEl);
-
                             }
-
-                            // `this` will be the overall tooltip
-
 
                         }
 

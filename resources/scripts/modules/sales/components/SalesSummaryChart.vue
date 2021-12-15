@@ -2,7 +2,8 @@
     <v-container>
         <v-row class="justify-center">
             <h3 class="page-title">
-                <v-icon :color="iconColor">mdi-flash</v-icon>
+                <v-icon v-if="title === 'Power'" color="yellow">mdi-flash</v-icon>
+                <v-icon v-if="title === 'Gas'" color="red">mdi-fire</v-icon>
                 {{ title }}
             </h3>
         </v-row>
