@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Reporting\Http\Controllers;
+namespace Reporting\Http\Controllers;
 
 use Reporting\Services\SaleDashboardService;
 use function response;

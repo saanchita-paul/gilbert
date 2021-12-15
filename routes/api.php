@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\SalesDashboard\SalesDashboardController;
+use Reporting\Http\Controllers\SalesDashboardController;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Broadcast;
