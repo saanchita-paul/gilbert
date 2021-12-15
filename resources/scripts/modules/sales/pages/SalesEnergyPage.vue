@@ -4,8 +4,8 @@
             <v-col cols="12" class="py-0">
                 <SalesFilter @updateDate="updateDate"/>
             </v-col>
-            <v-col cols="12">
-                <SalesSummary type='energy' :summary-data="chartData"/>
+            <v-col cols="12" v-if="is_laod">
+                <SalesSummary type='energy' :summaryData="chartData"/>
             </v-col>
             <div class="d-flex  justify-space-around" style="width: 100%;" v-if="is_laod">
                 <ApplicationDashboardStatisticsEnergy title="Submissions to Retailer" :chart-data="chartData.submitted"/>
