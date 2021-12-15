@@ -2,6 +2,7 @@
 
 namespace Reporting\Http\Controllers;
 
+use Reporting\Services\SaleDashboardEnergyService;
 use Reporting\Services\SaleDashboardService;
 use function response;
 

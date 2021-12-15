@@ -33,19 +33,20 @@ class MapEnergyReport
     /**
      * @param array $energyData
      */
-    public function __construct(private array $energyData)
+    public function __construct(private array $energyData = [])
     {
         $this->resetReportData()->calculate();
-
     }
 
     /**
      * @param array $energyData
      */
-    public function setEnergyData(array $energyData): void
+    public function setEnergyData(array $energyData): MapEnergyReport
     {
         $this->energyData = $energyData;
         $this->resetReportData()->calculate();
+
+        return $this;
     }
     /**
      * @return array

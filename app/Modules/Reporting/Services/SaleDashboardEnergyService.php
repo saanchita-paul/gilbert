@@ -5,20 +5,27 @@ namespace Reporting\Services;
 use App\Models\ConnectionService;
 use Carbon\Carbon;
 use DB;
+use JetBrains\PhpStorm\ArrayShape;
 
 class SaleDashboardEnergyService
 {
     private string $startDate;
     private string $endDate;
 
-    private array $submisssionType = [ConnectionService::STATUS_SUBMITTED , ConnectionService::STATUS_EA_SUBMIT];
+    private array $submisssionType = [ConnectionService::STATUS_SUBMITTED , ConnectionService::STATUS_ENERGY_SUBMIT];
     private array $conversionsType = [ConnectionService::STATUS_ACCEPTED];
     private array $rejectedType    = [ConnectionService::STATUS_REJECTED];
+
+    /**
+     * @var MapEnergyReport
+     */
+    private MapEnergyReport $mapperService;
 
     public function __construct(string $startDate, string $endDate)
     {
         $this->startDate = Carbon::parse($startDate);
         $this->endDate   = Carbon::parse($endDate)->addHours(11)->addMinutes(59)->addSeconds(59);
+        $this->mapperService = new MapEnergyReport();
     }
 
     public function totalSubmissions()
@@ -56,8 +63,8 @@ class SaleDashboardEnergyService
             ->whereNotNull('provider_name')
             ->whereIn('status', $this->rejectedType)
             ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
-            ->where('submitted_at' , '>=' , $this->startDate)
-            ->where('submitted_at' , '<=' , $this->endDate)
+            ->where('updated_at' , '>=' , $this->startDate)
+            ->where('updated_at' , '<=' , $this->endDate)
             ->groupBy('provider_name', 'service_type', 'plan_type')
             ->get()
             ->toArray();
@@ -70,12 +77,14 @@ class SaleDashboardEnergyService
         ];
     }
 
-    public function getEnergyReport(){
+    #[ArrayShape(['submission' => "array", 'conversions' => "array", 'rejected' => "array", 'declined' => "array"])]
+    public function getEnergyReport(): array
+    {
         return [
-            'submission'  => $this->totalSubmissions(),
-            'conversions' => $this->totalConversions(),
-            'rejected'    => $this->totalRejected(),
-            'declined'    => $this->totalDeclined(),
+            'submission'  => $this->mapperService->setEnergyData($this->totalSubmissions())->getReportData(),
+            'conversions' =>  $this->mapperService->setEnergyData($this->totalConversions())->getReportData(),
+            'rejected'    =>  $this->mapperService->setEnergyData($this->totalRejected())->getReportData(),
+            'declined'    =>  $this->totalDeclined(),
         ];
     }
 }
