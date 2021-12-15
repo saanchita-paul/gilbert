@@ -15,6 +15,11 @@ export const connectionApplicationMapper = {
     '8' : 'STATUS_CLOSED',
 }
 
+export const tenancyTypeMapper = {
+    Renter    : 1,
+    HomeOwner : 2,
+}
+
 
 export const connectionServicesMapper = {
      'STATUS_UNASSIGNED'      : 1,
@@ -45,9 +50,4 @@ export const STATUSES_FOR_WATER_SUBMIT = [
     connectionServicesMapper.STATUS_IN_PROGRESS,
     connectionServicesMapper.STATUS_CANT_CONNECT,
 ]
-
-export const tenancyTypeMapper = {
-    Renter    : 1,
-    HomeOwner : 2,
-}
 

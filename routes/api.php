@@ -1,5 +1,6 @@
 <?php
 
+use Reporting\Http\Controllers\ReportController;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Broadcast;
@@ -111,6 +112,17 @@ Route::post('/register/email-validation', [AuthController::class, 'isValidUser']
 Route::get('/users/is-unique-email', [AuthController::class, 'isEmailValid']);
 Route::get('/users/is-unique-email-update', [AuthController::class, 'isEmailTaken']);
 
+Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
+
+
+/***
+ * Sales Dashboard
+ */
+Route::get('/sales-dashboard/home', [ReportController::class, 'home']);
+
+
+
+
 /**
  * test routes
  */
@@ -126,7 +138,6 @@ Route::post('/our-property/lead', [OurPropertyController::class, 'createOurPrope
 
 
 
-Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
 
 
 Route::get("/karan/sales-status", function () {
