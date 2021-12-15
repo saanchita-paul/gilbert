@@ -119,11 +119,11 @@ class EnergyReport
     {
         return ConnectionService::whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
             ->whereHas('connectionApplication', function ($query) {
-                $query->whereIn('status', [$this->closedType]);
-            })
-            ->where('closed_at', '>=', $this->startDate)
-            ->where('closed_at', '<=', $this->endDate)
-            ->count();
+                $query->whereIn('status', [$this->closedType])
+                        ->where('closed_at', '>=', $this->startDate)
+                        ->where('closed_at', '<=', $this->endDate);
+                })
+                ->count();
     }
 
     // #[ArrayShape(['submission' => "array", 'conversions' => "array", 'rejected' => "array", 'declined' => "array"])]
