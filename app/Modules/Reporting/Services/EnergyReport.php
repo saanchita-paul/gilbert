@@ -2,9 +2,11 @@
 
 namespace Reporting\Services;
 
+use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use Carbon\Carbon;
 use DB;
+use Doctrine\DBAL\Driver\IBMDB2\Connection;
 use JetBrains\PhpStorm\ArrayShape;
 
 class EnergyReport
@@ -14,9 +16,24 @@ class EnergyReport
 
     private int $timezone;
 
-    private array $submisssionType = [ConnectionService::STATUS_SUBMITTED , ConnectionService::STATUS_ENERGY_SUBMIT];
-    private array $conversionsType = [ConnectionService::STATUS_ACCEPTED];
-    private array $rejectedType    = [ConnectionService::STATUS_REJECTED];
+    private array $submisssionType = [ 
+                                       ConnectionService::STATUS_ACCEPTED , 
+                                       ConnectionService::STATUS_REJECTED,
+                                       ConnectionService::STATUS_ENERGY_SUBMIT,
+                                       ConnectionService::STATUS_CLOSED,
+                                       ConnectionService::STATUS_CANT_CONNECT,
+                                       ConnectionService::AC_MANUAL_PROCESSING 
+                                    ];
+
+    private array $conversionsType = [ ConnectionService::STATUS_ACCEPTED   ];
+    private array $closedType      = [ ConnectionApplication::STATUS_CLOSED ];
+    private array $rejectedType    = [ ConnectionService::STATUS_REJECTED   ];
+    
+    private array $openType        = [ 
+                                       ConnectionApplication::STATUS_ASSIGNED,
+                                       ConnectionApplication::STATUS_UNASSIGNED,
+                                       ConnectionApplication::STATUS_ESCALATED   
+                                    ];
 
     /**
      * @var MapEnergyReport
@@ -86,7 +103,29 @@ class EnergyReport
         ];
     }
 
-    #[ArrayShape(['submission' => "array", 'conversions' => "array", 'rejected' => "array", 'declined' => "array"])]
+    private function getTotalOpenApplication(){
+        $total = ConnectionService::whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
+                ->whereHas('connectionApplication' , function($query) {
+                    $query->whereIn('status' , $this->openType);
+                })
+                ->where('updated_at' , '>=' , $this->startDate)
+                ->where('updated_at' , '<=' , $this->endDate)
+                ->count();
+        return $total;
+    }
+    
+    private function getTotalClosedApplication(){
+        $total = ConnectionService::whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
+                ->whereHas('connectionApplication' , function($query) {
+                    $query->whereIn('status' , [$this->closedType]);
+                })
+                ->where('updated_at' , '>=' , $this->startDate)
+                ->where('updated_at' , '<=' , $this->endDate)
+                ->count();
+        return $total;
+    }
+
+    // #[ArrayShape(['submission' => "array", 'conversions' => "array", 'rejected' => "array", 'declined' => "array"])]
     public function getEnergyReport(): array
     {
         return [
@@ -94,6 +133,9 @@ class EnergyReport
             'conversions' =>  $this->mapperService->setEnergyData($this->totalConversions())->getReportData(),
             'rejected'    =>  $this->mapperService->setEnergyData($this->totalRejected())->getReportData(),
             'declined'    =>  $this->totalDeclined(),
+            "total_open_application" => $this->getTotalOpenApplication(),
+            "total_consent_pending" => 0,
+            "total_closed" => $this->getTotalClosedApplication(),
         ];
     }
 }
