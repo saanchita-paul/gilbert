@@ -121,8 +121,8 @@ class EnergyReport
             ->whereHas('connectionApplication', function ($query) {
                 $query->whereIn('status', [$this->closedType]);
             })
-            ->where('updated_at', '>=', $this->startDate)
-            ->where('updated_at', '<=', $this->endDate)
+            ->where('closed_at', '>=', $this->startDate)
+            ->where('closed_at', '<=', $this->endDate)
             ->count();
     }
 
