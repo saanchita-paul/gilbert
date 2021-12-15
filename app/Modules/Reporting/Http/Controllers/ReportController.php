@@ -12,13 +12,7 @@ class ReportController
     {
         $data =  (new EnergyReport("2021-12-01", "2021-12-15"))->getEnergyReport();
         return response()->json(['data' => [
-            'energy' => array_merge($data,
-                [
-                    "total_open_application" => 100,
-                    "total_consent_pending" => 100,
-                    "total_closed" => 100,
-                ]
-            ),
+            'energy' => $data,
             'water' => []
         ]]);
     }
