@@ -16,9 +16,17 @@ export default {
     },
     data() {
         return {
+            chart: null,
             chartId: ApplicationService.getRandomString()
         }
     },
+
+    watch: {
+      data(n, o) {
+          this.renderChart()
+      }
+    },
+
     mounted() {
         this.renderChart();
     },
@@ -54,7 +62,7 @@ export default {
             const ctx = document.getElementById(this.chartId);
             ctx.height = 200;
             const that = this;
-            const chart = new Chart(ctx, {
+            this.chart = new Chart(ctx, {
                 type: 'doughnut',
                 data: this.data,
                 options: {
@@ -178,6 +186,7 @@ export default {
             });
         }
     },
+
 }
 </script>
 
