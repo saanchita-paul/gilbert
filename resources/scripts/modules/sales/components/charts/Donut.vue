@@ -42,8 +42,7 @@ export default {
                         ctx.font = '600 ' + fontSize + "px sans-serif ";
                         ctx.textBaseline = "middle";
                         ctx.fillStyle = this.getCenterColor();
-
-                        let text = Math.max(...this.data.datasets[0].data),
+                        let text = that.data.total,
                             textX = Math.round((width - ctx.measureText(text).width) / 2),
                             textY = height / 2;
 
@@ -75,14 +74,12 @@ export default {
 
                     tooltips: {
                         enabled: false,
-                        custom: function(tooltipModel) {
+                        custom: function (tooltipModel) {
 
                             let dataIndex = null;
                             that.data.toolTips
                             let dataToShowInTooltip;
-                            console.log("tooltip data" , that.data)
-                            console.log("tooltip that" , that)
-                            if(isArray(tooltipModel.dataPoints)) {
+                            if (isArray(tooltipModel.dataPoints)) {
                                 dataIndex = tooltipModel.dataPoints[0].index;
                             }
                             var tooltipEl = document.getElementById('chartjs-tooltip');
@@ -112,16 +109,14 @@ export default {
                                 var titleLines = tooltipModel.title || [];
                                 var innerHtml = '<thead>';
 
-                                titleLines.forEach(function(title) {
+                                titleLines.forEach(function (title) {
                                     innerHtml += '<tr><th>' + title + '</th></tr>';
                                 });
                                 innerHtml += '</thead><tbody>';
 
                                 let tooltipData = that.data.toolTips;
-                                console.log('tooltipData', tooltipData);
 
-                                tooltipData[dataIndex].forEach(function(body, i) {
-                                    console.log('body data', body, i)
+                                tooltipData[dataIndex].forEach(function (body, i) {
                                 });
                                 innerHtml += '</tbody>';
                                 var tableRoot = tooltipEl.querySelector('table');
@@ -147,29 +142,28 @@ export default {
                                 tooltipEl.style.boxShadow = '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)';
 
 
-
                                 const title = that.data.labels[dataIndex];
                                 const tooltipBodyData = that.data.toolTips[dataIndex];
                                 let tooltipBody = '';
-                                tooltipBodyData.forEach((item)=>{
-                                    tooltipBody +=  `
+                                tooltipBodyData.forEach((item) => {
+                                    tooltipBody += `
                                                     <div style="display:flex; margin-top: 10px;">
                                                         <p style="font-weight:bold; width: 40px;">
-                                                            ${item.key}
+                                                            ${item.value}
                                                         </p>
                                                         <p style="font-weight:normal; color: #7E8A8F; ">
-                                                            ${item.value}
+                                                            ${item.key}
                                                         </p>
                                                     </div>
                                                     `
                                 });
-                                tableRoot.innerHTML = 
-                                `
+                                tableRoot.innerHTML =
+                                    `
                                 <div style="background: white;">
                                     <p style="font-weight:bold;">${title}</p>
-                                    
+
                                     <div>
-                                        
+
                                         ${tooltipBody}
 
                                     </div>
