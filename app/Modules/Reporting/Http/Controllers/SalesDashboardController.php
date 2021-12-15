@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\SalesDashboard;
+namespace App\Modules\Reporting\Http\Controllers;
 
-use App\Models\ConnectionService;
-use App\Services\SalesDashboard\SaleDashboardService;
+use Reporting\Services\SaleDashboardService;
+use function response;
 
 class SalesDashboardController
 {

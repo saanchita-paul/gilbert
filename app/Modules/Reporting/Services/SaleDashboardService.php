@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\SalesDashboard;
+namespace Reporting\Services;
 
 use App\Models\ConnectionService;
 use Carbon\Carbon;

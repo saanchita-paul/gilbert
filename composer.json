@@ -55,7 +55,8 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
             "PropertyMe\\": "app/Modules/PropertyMe",
-            "TSA\\": "app/Modules/TSA"
+            "TSA\\": "app/Modules/TSA",
+            "Reporting\\": "app/Modules/Reporting"
         }
     },
     "autoload-dev": {
