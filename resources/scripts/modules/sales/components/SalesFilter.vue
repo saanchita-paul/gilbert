@@ -24,6 +24,7 @@
             readonly
             hide-details
             @click="showDatePickerModal = true"
+            @click:append="showDatePickerModal = true"
         ></v-text-field>
         <v-btn class='download-button'>
             Download
@@ -83,14 +84,10 @@ export default {
                 this.$router.push({ name: 'sales.energy' }) :
                 this.$router.push({ name: 'sales.water' });
         },
-
         updateDateRange() {
             this.$emit('updateDate', this.dateRange)
-        }
-
-    },
-    watch: {
-        dateRange() {
+        },
+        checkDate() {
             let today = getToday();
             let yesterday = getYesterday();
             if(isSame(this.dateRange.start, today)) {
@@ -100,12 +97,18 @@ export default {
             } else {
                 this.selectedDate = `${this.dateRange.start} - ${this.dateRange.end}`;
             }
+        }
+    },
+    watch: {
+        dateRange() {
+            this.checkDate();
             this.updateDateRange();
         }
     },
-
     mounted() {
+        this.checkDate();
         this.updateDateRange();
+        this.selectedType = this.$route.name === 'sales.energy' ? 'energy' : 'water'; 
     }
 };
 </script>
