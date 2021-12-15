@@ -57,13 +57,16 @@ export default {
         type: {
             type: String,
             default: 'energy'
+        },
+
+        summaryData: {
+            type: Object,
+            require: true
         }
     },
-    data() {
-        return {
-        
-        }
-    },
+    mounted() {
+        console.log('summaryData', this.summaryData);
+    }
 };
 </script>
 
