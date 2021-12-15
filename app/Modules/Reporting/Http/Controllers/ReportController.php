@@ -2,15 +2,20 @@
 
 namespace Reporting\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Reporting\Services\EnergyReport;
 use Reporting\Services\SaleDashboardService;
 use function response;
 
 class ReportController
 {
-    public function home()
+    public function home(Request $request)
     {
-        $data =  (new EnergyReport("2021-12-01", "2021-12-15"))->getEnergyReport();
+        $data =  (new EnergyReport(
+            $request->get('start'),
+            $request->get('end')
+        ))->getEnergyReport();
+
         return response()->json(['data' => [
             'energy' => $data,
             'water' => []
