@@ -2,15 +2,15 @@
     <v-container fluid>
         <v-row>
             <v-col cols="12" class="py-0">
-                <SalesFilter/>
+                <SalesFilter @updateDate="updateDate"/>
             </v-col>
-            <v-col cols="12">
-                <SalesSummary type='water' />
+            <v-col cols="12" v-if="is_laod">
+                <SalesSummary type='water' :summaryData="chartData"/>
             </v-col>
-            <div class="d-flex  justify-space-around" style="width: 100%;">
-                <ApplicationDashboardStatisticsWater/>
-                <ApplicationDashboardStatisticsWater/>
-                <ApplicationDashboardStatisticsWater/>
+            <div class="d-flex  justify-space-around" style="width: 100%;" v-if="is_laod">
+                <ApplicationDashboardStatisticsWater title="Submissions to Retailer" type='submission' :chart-data="chartData.submitted"/>
+                <ApplicationDashboardStatisticsWater title="Conversions" type='conversion' :chart-data="chartData.converted"/>
+                <ApplicationDashboardStatisticsWater title="Rejected" type='rejected' :chart-data="chartData.rejected"/>
             </div>
         </v-row>
     </v-container>
@@ -22,6 +22,7 @@ import SalesSummary from "@scripts/modules/sales/components/SalesSummary";
 import SalesDashboardService from "@scripts/modules/sales/services/SalesDashboardService";
 import SalesSummaryChart from "@scripts/modules/sales/components/SalesSummaryChart";
 import ApplicationDashboardStatisticsWater from "@scripts/modules/sales/pages/ApplicationDashboardStatisticsWater";
+
 export default {
     name: "SalesWaterPage",
     components: {
@@ -35,58 +36,18 @@ export default {
             utilityDashboardData: null,
             is_laod: false,
             data: null,
+            chartData: null
         }
     },
 
-    mounted() {
-        this.load();
-    },
-
     methods : {
-        async load() {
-            this.data  = {
-                labels: [
-                    'Red',
-                    'Blue',
-                    'Yellow'
-                ],
-                toolTips: [
-                    [
-                        {
-                            a: 100, type: 'Ea',
-                        },
-                        {
-                            a: 100, type: 'Ea',
-                        }
-                    ],
-                    [
-                        {
-                            a: 100, type: 'Ea',
-                        },
-                        {
-                            a: 100, type: 'Ea',
-                        }
-                    ],
-                    [
-                        {
-                            a: 100, type: 'Ea',
-                        },
-                        {
-                            a: 100, type: 'Ea',
-                        }
-                    ],
-                ],
-                datasets: [{
-                    label: 'My First Dataset',
-                    data: [300, 50, 100],
-                    backgroundColor: [
-                        'rgb(255, 99, 132)',
-                        'rgb(54, 162, 235)',
-                        'rgb(255, 205, 86)'
-                    ],
-                }]
-            };
+       async load(dateRange) {
+            this.chartData = await SalesDashboardService.loadDashboardWaterData(dateRange);
             this.is_laod = true;
+        },
+
+        updateDate(dateRange) {
+            this.load(dateRange)
         }
     }
 }

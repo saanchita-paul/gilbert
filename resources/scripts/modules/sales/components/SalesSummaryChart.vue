@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-row class="justify-center">
-            <h3 class="page-title">
+            <h3 class="page-title" v-if="title !== 'Water'">
                 <v-icon v-if="title === 'Power'" color="yellow">mdi-flash</v-icon>
                 <v-icon v-if="title === 'Gas'" color="red">mdi-fire</v-icon>
                 {{ title }}
@@ -10,7 +10,7 @@
         <v-row class="justify-center">
             <Donut :data="data"/>
         </v-row>
-        <v-row class="justify-center d-flex mt-1">
+        <v-row v-if="title !== 'Water'" class="justify-center d-flex mt-1">
             <div v-for="(value, index) in data.datasets[0].data" :key="index" class="mx-3 justify-center">
                 <p class="label mb-1">
                     <v-icon :color="data.datasets[0].backgroundColor[index]" size="13">mdi-checkbox-blank-circle

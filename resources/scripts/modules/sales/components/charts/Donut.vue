@@ -83,6 +83,9 @@ export default {
                     tooltips: {
                         enabled: false,
                         custom: function (tooltipModel) {
+                            if(!that.data.toolTips) {
+                                return;
+                            }
 
                             let dataIndex = null;
                             that.data.toolTips

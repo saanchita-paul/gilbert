@@ -2,27 +2,46 @@
   <div class="mx-3 mainContainer">
     <div>
       <p class="font-weight-bold pt-4 text-center titleFont">
-        Submissions to Retailer
+          {{title}}
       </p>
       <div class="d-flex justify-space-around ">
-          <div>
-              <div
-                class="font-weight-bold text-center py-0 mb-n3 messageFont"
-              >
-                Conversion rate 27.5%
-                <span><v-icon color="success">trending_up </v-icon> </span>
+          <template v-if="type === 'submission'">
+              <div>
+                  <div class="font-weight-bold text-center py-0 statisticFont">
+                      {{chartData.total}}
+                  </div>
+                  <div class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont">
+                      Total Submitted Applications
+                  </div>
               </div>
-              <div
-                class="font-weight-bold text-center py-0 statisticFont"
-              >
-                16,032
+          </template>
+
+          <template v-if="type === 'conversion'">
+              <div>
+                  <div class="font-weight-bold text-center py-0 mb-n3 messageFont">
+                      Conversion rate {{chartData.conversiton_rate}}%
+                      <span><v-icon color="success">trending_up </v-icon> </span>
+                  </div>
+                  <div class="font-weight-bold text-center py-0 statisticFont">
+                      {{chartData.total}}
+                  </div>
+                  <div class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont">
+                      Total converted Applications
+                  </div>
               </div>
-              <div
-                class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
-              >
-                Total converted Applications
+          </template>
+
+
+          <template v-if="type === 'rejected'">
+              <div>
+                  <div class="font-weight-bold text-center py-0 statisticFont">
+                      {{chartData.total}}
+                  </div>
+                  <div class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont">
+                      Total Rejected Applications
+                  </div>
               </div>
-          </div>
+          </template>
       </div>
 
       <div class="dividerDesign"></div>
@@ -33,39 +52,40 @@
         <span> <v-icon color="blue" >mdi-water</v-icon> </span> Water Retailer Segmentation
       </div>
       <div class="d-flex justify-center">
-        <SalesSummaryChart v-if="is_laod" :data="data" title="Gas">
+        <SalesSummaryChart v-if="is_laod" icon-color="primary" :data="chartData.waterChartData" title="Water">
         </SalesSummaryChart>
       </div>
 
-       <div class="dividerDesign"></div>
+      <div class="dividerDesign"></div>
 
-      <div class="d-flex justify-space-around flexWrap">
-          <div class="font-weight-bold text-center py-2 flex100"> Submission Segmentation </div>
+      <div v-if="type !== 'rejected'" class="d-flex justify-space-around flexWrap">
+          <div v-if="type === 'submission'" class="font-weight-bold text-center py-2 flex100"> Submission Segmentation </div>
+          <div v-if="type === 'conversion'" class="font-weight-bold text-center py-2 flex100"> Conversion Segmentation </div>
           <div>
-              <div
-                class="font-weight-bold text-center py-0 countFont"
-              >
-                247
+              <div class="font-weight-bold text-center py-0 countFont">
+                {{chartData.waterChartData.segmentationData.manualSubmission}}
               </div>
-              <div
-                class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
-              >
+              <div class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont">
                 Manual Submission
               </div>
-              
           </div>
           <div>
-              <div
-                class="font-weight-bold text-center py-0 statisticFont"
-              >
-                247
+              <div class="font-weight-bold text-center py-0 statisticFont">
+                {{chartData.waterChartData.segmentationData.automatedSubmission}}
               </div>
-              <div
-                class="font-weight-bold text-center py-0 pb-3 mb-2 mt-n2 subtitleFont"
-              >
+              <div class="font-weight-bold text-center py-0 pb-3 mb-2 mt-n2 subtitleFont">
                 Automated Submission
               </div>
               
+          </div>
+      </div>
+
+      <div v-else>
+          <div class="font-weight-bold text-center py-0 statisticFont">
+              {{chartData.declined}}
+          </div>
+          <div class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont">
+              Declined Credits
           </div>
       </div>
 
@@ -76,69 +96,39 @@
 <script>
 import SalesSummaryChart from "@scripts/modules/sales/components/SalesSummaryChart";
 export default {
-  name: "ApplicationDashboardStatisticsEnergy",
+  name: "ApplicationDashboardStatisticsWater",
   components: {
     SalesSummaryChart,
   },
-      data() {
-        return{
-            utilityDashboardData: null,
-            is_laod: false,
-            data: null,
-        }
+  props: {
+    chartData: {
+        type: Object,
+        required: true
     },
-
-    mounted() {
-        this.load();
+    title: {
+        required: true
     },
-
-    methods : {
-        async load() {
-            this.data  = {
-                labels: [
-                    'Energy Australia',
-                    'Sumo',
-                    'Yellow'
-                ],
-                toolTips: [
-                    [
-                        {
-                            key: 100, value: 'Ea',
-                        },
-                        {
-                            key: 100, value: 'Ea',
-                        }
-                    ],
-                    [
-                        {
-                            key: 100, value: 'Ea',
-                        },
-                        {
-                            key: 100, value: 'Ea',
-                        }
-                    ],
-                    [
-                        {
-                            key: 100, value: 'Ea',
-                        },
-                        {
-                            key: 100, value: 'Ea',
-                        }
-                    ],
-                ],
-                datasets: [{
-                    label: 'My First Dataset',
-                    data: [300, 50, 100],
-                    backgroundColor: [
-                        'rgb(0, 99, 132)',
-                        'rgb(54, 162, 235)',
-                        'rgb(255, 205, 86)'
-                    ],
-                }]
-            };
-            this.is_laod = true;
-        }
+    type: {
+        required: true
     }
+  },
+  data() {
+    return{
+      utilityDashboardData: null,
+      is_laod: false,
+      data: null,
+    }
+  },
+
+  mounted() {
+    this.load();
+  },
+
+  methods: {
+    async load() {
+        this.is_laod = true;
+    }
+  }
 };
 </script>
 
