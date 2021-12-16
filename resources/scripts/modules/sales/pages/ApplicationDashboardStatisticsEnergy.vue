@@ -1,7 +1,7 @@
 <template>
-    <div style="width: 90%; background: white;" class="mx-3">
+    <div class="mx-3 mainContainer">
         <div>
-            <p class="font-weight-bold pt-4 text-center" style="font-size: 20px">
+            <p class="font-weight-bold pt-4 text-center titleFont">
                 {{title}}
             </p>
             <div class="d-flex justify-space-around ">
@@ -81,18 +81,15 @@
             </div>
 
 
-
-
-
             <div
                 style="
-          background-color: #7e8a8f;
-          width: 40px;
-          height: 1px;
-          margin: auto;
-          margin-bottom: 20px;
-          margin-top: 20px;
-        "
+                    background-color: #7e8a8f;
+                    width: 40px;
+                    height: 1px;
+                    margin: auto;
+                    margin-bottom: 20px;
+                    margin-top: 20px;
+                    "
             ></div>
 
             <div
@@ -142,48 +139,6 @@ export default {
 
     methods: {
         async load() {
-            this.data = {
-                labels: [
-                    'Energy Australia',
-                    'Sumo',
-                    'Yellow'
-                ],
-                toolTips: [
-                    [
-                        {
-                            key: 100, value: 'Ea',
-                        },
-                        {
-                            key: 100, value: 'Ea',
-                        }
-                    ],
-                    [
-                        {
-                            key: 100, value: 'Ea',
-                        },
-                        {
-                            key: 100, value: 'Ea',
-                        }
-                    ],
-                    [
-                        {
-                            key: 100, value: 'Ea',
-                        },
-                        {
-                            key: 100, value: 'Ea',
-                        }
-                    ],
-                ],
-                datasets: [{
-                    label: 'My First Dataset',
-                    data: [300, 50, 100],
-                    backgroundColor: [
-                        'rgb(255, 99, 132)',
-                        'rgb(54, 162, 235)',
-                        'rgb(255, 205, 86)'
-                    ],
-                }]
-            };
             this.is_laod = true;
         }
     }
@@ -191,4 +146,52 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.mainContainer{
+  width: 90%;
+  background: white;
+}
+
+.titleFont{
+  font-size: 20px;
+}
+
+.messageFont{
+  font-size: 12px;
+  color: #7e8a8f
+}
+
+.statisticFont{
+  font-size: 40px;
+  color: #542e89;
+}
+
+.subtitleFont{
+  font-size: 14px;
+}
+
+.dividerDesign{
+  background-color: #7e8a8f;
+  width: 40px;
+  height: 1px;
+  margin: auto;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.subtitleFont2{
+  font-size: 18px;
+}
+
+.flexWrap{
+  flex-wrap: wrap;
+}
+
+.flex100{
+  flex-basis: 100%;
+}
+
+.countFont{
+  font-size: 40px; 
+  color: #542e89;
+}
 </style>
