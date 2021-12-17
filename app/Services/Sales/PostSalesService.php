@@ -16,6 +16,7 @@ use GraphQL\Variable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use PHPUnit\Util\Exception;
 
 class PostSalesService
 {
@@ -273,16 +274,17 @@ class PostSalesService
 
     private function stateMap($state)
     {
-        $stateList = [ 'New South Wales'              => 'NSW',
-                       'Victoria'                     => 'VIC',
-                       'Queensland'                   => 'QLD',
-                       'South Australia'              => 'SA',
-                       'Northern Territory'           => 'NT',
-                       'Tasmania'                     => 'TAS',
-                       'Western Australia'            => 'WA',
-                       'Australian Capital Territory' => 'ACT' ];
-        if(array_key_exists($state, $stateList))
-        {
+
+        $stateList = [
+            'New South Wales' => 'NSW',
+            'Victoria' => 'VIC',
+            'Queensland' => 'QLD',
+            'South Australia' => 'SA',
+            'Northern Territory' => 'NT',
+            'Tasmania' => 'TAS',
+            'Western Australia' => 'WA',
+            'Australian Capital Territory' => 'ACT'];
+        if (array_key_exists($state, $stateList)) {
             return $stateList[$state];
         }
         return $state;
@@ -295,9 +297,11 @@ class PostSalesService
         return $data[sizeof($data) - 1];
     }
 
+    /**
+     * @throws \Exception
+     */
     private function prepareOffer()
     {
-
 //        Log::info('show Prepare call is called');
         $plan = $this->getPlanType();
         $state = $this->stateMap( $this->connection->state);
@@ -306,7 +310,8 @@ class PostSalesService
         $plan_id = '';
 
         try {
-            $response = Http::post($this->chatbotUri.'/api/get-plan-details',['plan' => $plan,'state' => $state, 'postcode' => $this->connection->postcode]);
+            $url = $this->chatbotUri.'/api/get-plan-details';
+            $response = Http::post($url, ['plan' => $plan,'state' => $state, 'postcode' => $this->connection->postcode]);
 
             if($response->status() == 200) {
                 $response = json_decode($response->body());
@@ -315,8 +320,7 @@ class PostSalesService
                 $plan_id = $response->plan_id;
             }
         } catch (\Exception $e) {
-            Log::info($e->getMessage(),[]);
-            return  '';
+            throw new \Exception("[PostSalesService:prepareOffer]: Error from chatbot source-code API: ". $e->getMessage());
         }
 
         $servicePlan = [];
@@ -348,7 +352,6 @@ class PostSalesService
                 "sourceCode"=>  $elePlanSourceCode
             ];
         }
-
         return $servicePlan;
 
     }
