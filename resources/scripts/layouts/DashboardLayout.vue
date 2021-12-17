@@ -148,6 +148,7 @@ export default {
         routes() {
             return this.all_routes.filter(route => {
                 if(this.user.id){
+                    // return route.permissions.some(r=> this.user.permissions.includes(r));
                     return this.user.permissions.includes(route.permissions)
                 }
             })
