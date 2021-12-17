@@ -42,7 +42,7 @@
 
 <script>
 import DatePickerModal from "@scripts/modules/sales/components/DatePickerModal";
-import {getToday, getTodayString, getYesterday, isSame} from '@scripts/services/DateRangeService';
+import {getToday, getTodayString, getYesterday, isSame, getFormattedDBDate} from '@scripts/services/DateRangeService';
 import dayJs from "dayjs";
 
 export default {
@@ -95,7 +95,7 @@ export default {
             } else if(isSame(this.dateRange.start, yesterday)) {
                 this.selectedDate = 'Yesterday';
             } else {
-                this.selectedDate = `${this.dateRange.start} - ${this.dateRange.end}`;
+                this.selectedDate = `${getFormattedDBDate(this.dateRange.start)} - ${getFormattedDBDate(this.dateRange.end)}`;
             }
         }
     },

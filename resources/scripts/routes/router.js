@@ -205,7 +205,12 @@ const router = new VueRouter({
                             meta: {
                                 isProtected: true,
                                 breadcrumbType: 'SalesEnergy',
-                                roles: ['hood_admin', 'hood_agent'],
+                                roles: [
+                                    'hood_admin',
+                                    'hood_agent',
+                                    'hood_customer_rep',
+                                    'hood_team_lead'
+                                ],
 
                             }
                         },
@@ -216,14 +221,24 @@ const router = new VueRouter({
                             meta: {
                                 isProtected: true,
                                 breadcrumbType: 'SalesWater',
-                                roles: ['hood_admin', 'hood_agent'],
+                                roles: [
+                                    'hood_admin',
+                                    'hood_agent',
+                                    'hood_customer_rep',
+                                    'hood_team_lead'
+                                ],
                             },
                             props: true
                         }
                     ],
                     meta: {
                         isProtected: true,
-                        roles: ['hood_admin', 'hood_agent'],
+                        roles: [
+                            'hood_admin',
+                            'hood_agent',
+                            'hood_customer_rep',
+                            'hood_team_lead'
+                        ],
                     }
                 },
             ]

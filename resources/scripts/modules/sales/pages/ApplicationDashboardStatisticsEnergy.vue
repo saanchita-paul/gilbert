@@ -5,8 +5,9 @@
                 {{title}}
             </p>
             <div class="d-flex justify-space-around ">
-                <template v-if="title === 'Submissions to Retailer'">
+                <template v-if="type === 'submission'">
                     <div>
+                        <div class="mb-3"></div>
                         <div
                             class="font-weight-bold text-center py-0"
                             style="font-size: 40px; color: #542e89"
@@ -17,12 +18,12 @@
                             class="font-weight-bold text-center py-0 mb-2 mt-n2"
                             style="font-size: 14px"
                         >
-                            Total Submitted Applications
+                            Total submitted to retailer
                         </div>
                     </div>
                 </template>
 
-                <template v-if="title === 'Conversions'">
+                <template v-if="type === 'conversion'">
                     <div>
                         <div
                             class="font-weight-bold text-center py-0 mb-n3"
@@ -41,14 +42,15 @@
                             class="font-weight-bold text-center py-0 mb-2 mt-n2"
                             style="font-size: 14px"
                         >
-                            Total converted Applications
+                            Total connected applications
                         </div>
                     </div>
                 </template>
 
 
-                <template v-if="title === 'Rejected'">
+                <template v-if="type === 'rejected'">
                     <div>
+                        <div class="mb-3"></div>
                         <div
                             class="font-weight-bold text-center py-0"
                             style="font-size: 40px; color: #542e89"
@@ -59,11 +61,11 @@
                             class="font-weight-bold text-center py-0 mb-2 mt-n2"
                             style="font-size: 14px"
                         >
-                            Total Rejected Applications
+                            Total rejected applications
                         </div>
                     </div>
                     <div>
-
+                        <div class="mb-3"></div>
                         <div
                             class="font-weight-bold text-center py-0"
                             style="font-size: 40px; color: #542e89"
@@ -74,7 +76,7 @@
                             class="font-weight-bold text-center py-0 mb-2 mt-n2"
                             style="font-size: 14px"
                         >
-                            Declined Credits
+                            Declined credits
                         </div>
                     </div>
                 </template>
@@ -122,6 +124,9 @@ export default {
             required: true
         },
         title: {
+            required: true
+        },
+        type: {
             required: true
         }
     },

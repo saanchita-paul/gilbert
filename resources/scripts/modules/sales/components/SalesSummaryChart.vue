@@ -1,13 +1,13 @@
 <template>
     <v-container>
         <v-row class="justify-center">
-            <h3 class="page-title" v-if="title !== 'Water'">
+            <h3 class="sub-title" v-if="title !== 'Water'">
                 <v-icon v-if="title === 'Power'" color="yellow">mdi-flash</v-icon>
                 <v-icon v-if="title === 'Gas'" color="red">mdi-fire</v-icon>
                 {{ title }}
             </h3>
         </v-row>
-        <v-row class="justify-center">
+        <v-row class="justify-center my-2">
             <Donut :data="data"/>
         </v-row>
         <v-row v-if="title !== 'Water'" class="justify-center d-flex mt-1">
@@ -50,7 +50,7 @@ export default {
 <style scoped>
 
 .label {
-    font-size: .6rem;
+    font-size: 14px;
     padding: 0px;
     text-align: center;
 }

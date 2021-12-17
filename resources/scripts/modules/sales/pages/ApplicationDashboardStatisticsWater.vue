@@ -7,11 +7,12 @@
       <div class="d-flex justify-space-around ">
           <template v-if="type === 'submission'">
               <div>
+                  <div class="mb-3"></div>
                   <div class="font-weight-bold text-center py-0 statisticFont">
                       {{chartData.total}}
                   </div>
                   <div class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont">
-                      Total Submitted Applications
+                      Total submitted to retailer
                   </div>
               </div>
           </template>
@@ -26,7 +27,7 @@
                       {{chartData.total}}
                   </div>
                   <div class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont">
-                      Total converted Applications
+                      Total connected applications
                   </div>
               </div>
           </template>
@@ -34,11 +35,12 @@
 
           <template v-if="type === 'rejected'">
               <div>
+                  <div class="mb-3"></div>
                   <div class="font-weight-bold text-center py-0 statisticFont">
                       {{chartData.total}}
                   </div>
                   <div class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont">
-                      Total Rejected Applications
+                      Total rejected applications
                   </div>
               </div>
           </template>
@@ -85,7 +87,7 @@
               {{chartData.declined}}
           </div>
           <div class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont">
-              Declined Credits
+              Declined credits
           </div>
       </div>
 

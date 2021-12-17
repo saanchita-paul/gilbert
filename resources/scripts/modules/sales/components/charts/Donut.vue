@@ -60,7 +60,7 @@ export default {
                 }
             });
             const ctx = document.getElementById(this.chartId);
-            ctx.height = 200;
+            ctx.height = 120;
             const that = this;
             this.chart = new Chart(ctx, {
                 type: 'doughnut',

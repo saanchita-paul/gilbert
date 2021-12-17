@@ -28,3 +28,6 @@ export const isAfter = (date1, date2) => {
 export const getSlashDate = (date) => {
     return dayjs(date).format(DATE_FORMAT.DATE_SHASH);
 }
+export const getFormattedDBDate = (date) => {
+    return dayjs(date).format(DATE_FORMAT.DB_DATE);
+}
