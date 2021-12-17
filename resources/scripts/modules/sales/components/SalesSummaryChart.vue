@@ -8,7 +8,8 @@
             </h3>
         </v-row>
         <v-row class="justify-center my-2">
-            <Donut :data="data"/>
+            <Donut v-if="isDataExists(data)" :data="data"/>
+            <EmptyDonut v-else :data="data"/>
         </v-row>
         <v-row v-if="title !== 'Water'" class="justify-center d-flex mt-1">
             <div v-for="(value, index) in data.datasets[0].data" :key="index" class="mx-3 justify-center">
@@ -25,11 +26,13 @@
 
 <script>
 import Donut from "@scripts/modules/sales/components/charts/Donut";
+import EmptyDonut from "@scripts/modules/sales/components/charts/EmptyDonut";
 
 export default {
     name: "SalesSummaryChart",
     components: {
-        Donut
+        Donut,
+        EmptyDonut
     },
     props: {
         data: {
@@ -42,8 +45,12 @@ export default {
         iconColor: {
             default: 'primary',
         }
-
     },
+    methods: {
+        isDataExists(data) {
+            return data.datasets[0].data.some(value => value !== 0);
+        }
+    }
 }
 </script>
 
