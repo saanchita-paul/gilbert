@@ -14,7 +14,7 @@
                     <v-icon color="blue">mdi-water</v-icon>
                 </h3>
                 <p class="my-2">
-                    As of <span class="font-weight-medium">today</span>.
+                    As of <span class="font-weight-medium">{{selectedDate}}</span>.
                 </p>
                 <p class="my-2 text-light">You can change these parameters using the filters on the top right corner.</p>
             </v-col>
@@ -51,6 +51,8 @@
 </template>
 
 <script>
+import {getToday, getYesterday, isSame, getFormattedDBDate} from '@scripts/services/DateRangeService';
+
 export default {
     name: "SalesSummary",
     props: {
@@ -58,15 +60,28 @@ export default {
             type: String,
             default: 'energy'
         },
-
         summaryData: {
+            type: Object,
+            require: true
+        },
+        dateRange: {
             type: Object,
             require: true
         }
     },
-    mounted() {
-        console.log('summaryData', this.summaryData);
-    }
+    computed: {
+        selectedDate() {
+            let today = getToday();
+            let yesterday = getYesterday();
+            if(isSame(this.dateRange.start, today)) {
+                return 'Today';
+            } else if(isSame(this.dateRange.start, yesterday)) {
+                return 'Yesterday';
+            } else {
+                return `${getFormattedDBDate(this.dateRange.start)} - ${getFormattedDBDate(this.dateRange.end)}`;
+            }
+        }
+    },
 };
 </script>
 

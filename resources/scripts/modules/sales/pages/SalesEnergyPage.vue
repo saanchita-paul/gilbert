@@ -5,12 +5,12 @@
                 <SalesFilter @updateDate="updateDate"/>
             </v-col>
             <v-col cols="12" v-if="is_laod">
-                <SalesSummary type='energy' :summaryData="chartData"/>
+                <SalesSummary type='energy' :summaryData="chartData" :dateRange='dateRange'/>
             </v-col>
             <div class="d-flex  justify-space-around" style="width: 100%;" v-if="is_laod">
-                <ApplicationDashboardStatisticsEnergy title="Submissions to Retailer" :chart-data="chartData.submitted"/>
-                <ApplicationDashboardStatisticsEnergy title="Conversions" :chart-data="chartData.converted"/>
-                <ApplicationDashboardStatisticsEnergy title="Rejected" :chart-data="chartData.rejected"/>
+                <ApplicationDashboardStatisticsEnergy title="Submissions to Retailer" type='submission' :chart-data="chartData.submitted"/>
+                <ApplicationDashboardStatisticsEnergy title="Connected" type='conversion' :chart-data="chartData.converted"/>
+                <ApplicationDashboardStatisticsEnergy title="Rejected" type='rejected' :chart-data="chartData.rejected"/>
             </div>
         </v-row>
     </v-container>
@@ -36,7 +36,8 @@ export default {
             utilityDashboardData: null,
             is_laod: false,
             data: null,
-            chartData: null
+            chartData: null,
+            dateRange: null
         }
     },
 
@@ -48,6 +49,7 @@ export default {
         },
 
         updateDate(dateRange) {
+            this.dateRange = dateRange;
             this.load(dateRange)
         }
     },

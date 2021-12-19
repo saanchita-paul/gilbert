@@ -5,96 +5,79 @@
                 {{title}}
             </p>
             <div class="d-flex justify-space-around ">
-                <template v-if="title === 'Submissions to Retailer'">
+                <template v-if="type === 'submission'">
                     <div>
+                        <div class="mb-3"></div>
                         <div
-                            class="font-weight-bold text-center py-0"
-                            style="font-size: 40px; color: #542e89"
+                            class="font-weight-bold text-center py-0 statisticFont"
                         >
                             {{chartData.total}}
                         </div>
                         <div
-                            class="font-weight-bold text-center py-0 mb-2 mt-n2"
-                            style="font-size: 14px"
+                            class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
                         >
-                            Total Submitted Applications
+                            Total submitted to retailer
                         </div>
                     </div>
                 </template>
 
-                <template v-if="title === 'Conversions'">
+                <template v-if="type === 'conversion'">
                     <div>
                         <div
-                            class="font-weight-bold text-center py-0 mb-n3"
-                            style="font-size: 12px; color: #7e8a8f"
+                            class="font-weight-bold text-center py-0 mb-n3 messageFont"
                         >
                             Conversion rate {{chartData.conversiton_rate}}%
                             <span><v-icon color="success">trending_up </v-icon> </span>
                         </div>
                         <div
-                            class="font-weight-bold text-center py-0"
-                            style="font-size: 40px; color: #542e89"
+                            class="font-weight-bold text-center py-0 countFont"
                         >
                             {{chartData.total}}
                         </div>
                         <div
-                            class="font-weight-bold text-center py-0 mb-2 mt-n2"
-                            style="font-size: 14px"
+                            class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
                         >
-                            Total converted Applications
+                            Total connected applications
                         </div>
                     </div>
                 </template>
 
 
-                <template v-if="title === 'Rejected'">
+                <template v-if="type === 'rejected'">
                     <div>
+                        <div class="mb-3"></div>
                         <div
-                            class="font-weight-bold text-center py-0"
-                            style="font-size: 40px; color: #542e89"
+                            class="font-weight-bold text-center py-0 countFont"
                         >
                             {{chartData.total}}
                         </div>
                         <div
-                            class="font-weight-bold text-center py-0 mb-2 mt-n2"
-                            style="font-size: 14px"
+                            class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
                         >
-                            Total Rejected Applications
+                            Total rejected applications
                         </div>
                     </div>
                     <div>
-
+                        <div class="mb-3"></div>
                         <div
-                            class="font-weight-bold text-center py-0"
-                            style="font-size: 40px; color: #542e89"
+                            class="font-weight-bold text-center py-0 countFont"
                         >
                             {{chartData.declined}}
                         </div>
                         <div
-                            class="font-weight-bold text-center py-0 mb-2 mt-n2"
-                            style="font-size: 14px"
+                            class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
                         >
-                            Declined Credits
+                            Declined credits
                         </div>
                     </div>
                 </template>
             </div>
 
 
-            <div
-                style="
-                    background-color: #7e8a8f;
-                    width: 40px;
-                    height: 1px;
-                    margin: auto;
-                    margin-bottom: 20px;
-                    margin-top: 20px;
-                    "
-            ></div>
+            <div class="dividerDesign"></div>
 
             <div
-                class="font-weight-bold text-center py-0 mb-2 mt-n2"
-                style="font-size: 18px"
+                class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont2"
             >
                 Retailer Segmentation
             </div>
@@ -122,6 +105,9 @@ export default {
             required: true
         },
         title: {
+            required: true
+        },
+        type: {
             required: true
         }
     },

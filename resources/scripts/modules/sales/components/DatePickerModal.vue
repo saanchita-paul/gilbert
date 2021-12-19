@@ -82,7 +82,7 @@
 <script>
 import { 
     getTodayString, getYesterdayString, getToday, isBefore, isAfter,
-    getYesterday, getFormattedDateString, getSlashDate, isSame
+    getYesterday, getFormattedDateString, getFormattedDBDate, isSame
 } from '@scripts/services/DateRangeService';
 
 export default {
@@ -106,26 +106,32 @@ export default {
         dateRangeText() {
             if(this.dates.length > 1) {
                 return isBefore(this.dates[0], this.dates[1]) ?
-                    this.dates[0] + ' ~ ' + this.dates[1]
-                    : this.dates[1] + ' ~ ' + this.dates[0];
+                    this.getFormattedDateRange(this.dates[0], this.dates[1])
+                    : this.getFormattedDateRange(this.dates[1], this.dates[0]);
             } else {
-                return this.dates[0] + ' ~ ' + this.dates[0]
+                return this.getFormattedDateRange(this.dates[0], this.dates[0])
             }
         },
         getFromDate() {
             if(this.dates.length > 1) {
                 return isBefore(this.dates[0], this.dates[1]) ?
-                    this.dates[0] : this.dates[1];
+                    getFormattedDBDate(this.dates[0])
+                    : getFormattedDBDate(this.dates[1]);
             } else {
-                return this.dates[0] ? this.dates[0] : getTodayString();
+                return this.dates[0] ?
+                    getFormattedDBDate(this.dates[0])
+                    : getTodayString();
             }
         },
         getToDate() {
             if(this.dates.length > 1) {
                 return isAfter(this.dates[0], this.dates[1]) ?
-                    this.dates[1] : this.dates[0];
+                    getFormattedDBDate(this.dates[1])
+                    : getFormattedDBDate(this.dates[0]);
             } else {
-                return this.dates[0] ? this.dates[0] : getTodayString();
+                return this.dates[0] ?
+                    getFormattedDBDate(this.dates[0])
+                    : getTodayString();
             }
         }
     },
@@ -175,6 +181,9 @@ export default {
                 selectedDate.start = this.dates[0], selectedDate.end = this.dates[0]
             }
             this.$emit('select', selectedDate);
+        },
+        getFormattedDateRange(date1, date2) {
+            return getFormattedDBDate(date1) + ' - ' + getFormattedDBDate(date2)
         }
     },
     watch: {
