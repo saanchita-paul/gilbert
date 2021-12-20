@@ -77,6 +77,11 @@ export default {
         onSelectDate(dateRange) {
             this.dateRange = dateRange;
             this.showDatePickerModal = false;
+
+            let queries = JSON.parse(JSON.stringify(this.$route.query));
+            queries.start = this.dateRange.start;
+            queries.end = this.dateRange.end;
+            this.$router.replace({ query: queries });
         },
         onCloseModal() {
             this.showDatePickerModal = false;
