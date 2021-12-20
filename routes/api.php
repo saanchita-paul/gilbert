@@ -119,6 +119,7 @@ Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWate
  * Sales Dashboard
  */
 Route::get('/sales-dashboard/home', [ReportController::class, 'home']);
+Route::get('/sales-dashboard/export/submission-report', [ReportController::class, 'submissionReport']);
 
 
 
