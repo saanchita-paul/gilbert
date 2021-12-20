@@ -7,6 +7,8 @@ use App\Models\HoodProfile;
 use App\Services\Utility\GilbertStatusMapper;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Query\JoinClause;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 class ExportSubmissionReport
@@ -70,8 +72,10 @@ class ExportSubmissionReport
             ->leftJoin('connection_applications as ca', 'cs.connection_application_id', '=', 'ca.id')
             ->leftJoin('agencies as ag', 'ca.agency_id', '=', 'ag.id')
             ->leftJoin('agent_profiles as ap', 'ap.id', '=', 'ca.created_by')
-            ->leftJoin('users as u', 'ap.id', '=', 'u.profile_id')
-            ->where('u.profile_type',  '!=', HoodProfile::class)
+            ->leftJoin('users as u', function (JoinClause $join) {
+                $join->on('ap.id', '=', 'u.profile_id')
+                    ->where('profile_type', AgentProfile::class);
+            })
             ->where('cs.updated_at', '>=', $this->startDate)
             ->where('cs.updated_at', '<=', $this->endDate)
             ->get()
