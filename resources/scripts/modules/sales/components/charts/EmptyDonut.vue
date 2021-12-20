@@ -1,5 +1,7 @@
 <template>
-    <canvas width="120" height="100" :id="chartId"></canvas>
+    <div class="canvas-container">
+        <canvas width="120px" height="120px" :id="chartId"></canvas>
+    </div>
 </template>
 
 <script>
@@ -30,13 +32,11 @@ export default {
             }
         }
     },
-
     watch: {
       data(n, o) {
           this.renderChart()
       }
     },
-
     mounted() {
         this.renderChart();
     },
@@ -63,14 +63,14 @@ export default {
                 }
             });
             const ctx = document.getElementById(this.chartId);
-            ctx.height = 140;
+            // ctx.height = 140;
             const that = this;
             this.chart = new Chart(ctx, {
                 type: 'doughnut',
                 data: this.newData,
                 options: {
                     __id: this.chartId,
-                    responsive: false,
+                    // responsive: false,
                     cutoutPercentage: 78,
                     legend: {
                         display: false
@@ -87,10 +87,13 @@ export default {
             });
         }
     },
-
 }
 </script>
 
 <style scoped>
-
+    .canvas-container {
+        height: 125px !important;
+        width: 125px !important;
+        margin-left: 30px !important;
+    }
 </style>
