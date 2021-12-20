@@ -34,7 +34,7 @@ class ExportSubmissionReport
 
     private function export()
     {
-        return  $this->leadsData;
+//        return  $this->leadsData;
         $name = now()->format('U') . '.csv';
         return (new FastExcel($this->leadsData))->download($name);
     }
