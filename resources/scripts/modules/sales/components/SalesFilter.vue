@@ -64,8 +64,10 @@ export default {
             ],
             showDatePickerModal: false,
             dateRange: {
-                start: getTodayString(),
-                end:  getTodayString(),
+                start: this.$route.query?.start ?
+                    this.$route.query?.start : getTodayString(),
+                end:  this.$route.query?.end ?
+                    this.$route.query?.end : getTodayString()
             },
             selectedDate: null,
             selectedType: null,
@@ -81,8 +83,14 @@ export default {
         },
         changeServiceType() {
             this.selectedType === 'energy' ?
-                this.$router.push({ name: 'sales.energy' }) :
-                this.$router.push({ name: 'sales.water' });
+                this.$router.push({
+                    name: 'sales.energy',
+                    query: { start: this.dateRange.start, end: this.dateRange.end }
+                }) :
+                this.$router.push({
+                    name: 'sales.water',
+                    query: { start: this.dateRange.start, end: this.dateRange.end }
+                });
         },
         updateDateRange() {
             this.$emit('updateDate', this.dateRange)
