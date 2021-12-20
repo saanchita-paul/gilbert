@@ -4,6 +4,7 @@ namespace Reporting\Services;
 
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use App\Modules\Reporting\Services\SetDateRage;
 use Carbon\Carbon;
 use DB;
 use Doctrine\DBAL\Driver\IBMDB2\Connection;
@@ -11,10 +12,11 @@ use JetBrains\PhpStorm\ArrayShape;
 
 class EnergyReport
 {
+    use SetDateRage;
     private string $startDate;
     private string $endDate;
 
-    private int $timezone;
+    private $timezone;
 
     private array $submisssionType = [
         ConnectionService::STATUS_ACCEPTED,
@@ -42,14 +44,7 @@ class EnergyReport
 
     public function __construct(string $startDate, string $endDate)
     {
-        $this->timezone = env("TIME_ZONE", 11) ?? 11;
-
-        $this->startDate = Carbon::parse($startDate, tz: $this->timezone)->setTimezone(0)->toDateTimeString();
-        $this->endDate = Carbon::parse($endDate, tz: $this->timezone)
-            ->addHours(11)
-            ->addMinutes(59)
-            ->addSeconds(59)
-            ->setTimezone(0)->toDateTimeString();
+        $this->setDateRange($startDate, $endDate);
 
         $this->mapperService = new MapEnergyReport();
     }
