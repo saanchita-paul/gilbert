@@ -26,7 +26,7 @@ class SalesStatusMapper
     public static function EAToGilbert(?string $status): int
     {
         return match ($status) {
-            static::STATUS_PROCESSING  => ConnectionService::STATUS_EA_SUBMIT,
+            static::STATUS_PROCESSING  => ConnectionService::STATUS_ENERGY_SUBMIT,
             static::STATUS_AC_MANUAL_PROCESSING,
             static::STATUS_MANUAL_PROCESSING  => ConnectionService::AC_MANUAL_PROCESSING,
             static::STATUS_ACCEPTED  => ConnectionService::STATUS_ACCEPTED,

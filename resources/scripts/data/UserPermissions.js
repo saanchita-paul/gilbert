@@ -2,6 +2,7 @@ export default {
     P_HOOD_ADMIN_CORE : 'hood_admin_core',
     P_HOOD_AGENT_CORE : 'hood_agent_core',
     P_AGENCY_AGENT_CORE : 'agency_agent_core',
+    P_ACCESS_SALES_DASHBOARD : 'can_access_sales_dashboard',
 
     P_CAN_MANAGE_APPLICATION : 'can_manage_application',
     P_CAN_MANAGE_AGENCY : 'can_manage_agency',

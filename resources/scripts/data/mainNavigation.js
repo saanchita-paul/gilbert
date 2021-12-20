@@ -52,4 +52,11 @@ export default [
         route_name: 'applications',
         permissions: permissions.P_CAN_MANAGE_APPLICATION
     },
+    {
+        type: 'route',
+        title: 'Applications Dashboard',
+        icon: '/assets/images/icons/Analytics.svg',
+        route_name: 'sales.energy',
+        permissions: permissions.P_ACCESS_SALES_DASHBOARD
+    },
 ]
