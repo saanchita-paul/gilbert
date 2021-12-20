@@ -26,7 +26,7 @@
             @click="showDatePickerModal = true"
             @click:append="showDatePickerModal = true"
         ></v-text-field>
-        <v-btn class='download-button'>
+        <v-btn class='download-button' @click="downloadSalesReport">
             Download
             <v-icon right>mdi-download</v-icon>
         </v-btn>
@@ -110,6 +110,12 @@ export default {
             } else {
                 this.selectedDate = `${getFormattedDBDate(this.dateRange.start)} - ${getFormattedDBDate(this.dateRange.end)}`;
             }
+        },
+        downloadSalesReport() {
+            window.open(
+                '/api/sales-dashboard/export/submission-report?start='+this.dateRange.start+'&end='+this.dateRange.end,
+                '_blank'
+            );
         }
     },
     watch: {
