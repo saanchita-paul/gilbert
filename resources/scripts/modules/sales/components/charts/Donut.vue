@@ -1,5 +1,7 @@
 <template>
-    <canvas width="120" height="100" :id="chartId"></canvas>
+    <div class="canvas-container">
+        <canvas width="120px" height="120px" :id="chartId"></canvas>
+    </div>
 </template>
 
 <script>
@@ -31,13 +33,10 @@ export default {
         this.renderChart();
     },
     methods: {
-
         getCenterColor() {
             let dataset = this.data.datasets[0];
             return dataset.backgroundColor[dataset.data.indexOf(Math.max(...dataset.data))];
         },
-
-
         renderChart() {
             Chart.pluginService.register({
                 beforeDraw: chart => {
@@ -60,14 +59,14 @@ export default {
                 }
             });
             const ctx = document.getElementById(this.chartId);
-            ctx.height = 140;
+            // ctx.height = 140;
             const that = this;
             this.chart = new Chart(ctx, {
                 type: 'doughnut',
                 data: this.data,
                 options: {
                     __id: this.chartId,
-                    responsive: false,
+                    // responsive: false,
                     cutoutPercentage: 78,
                     legend: {
                         display: false
@@ -181,18 +180,19 @@ export default {
                                 </div>
                                 `;
                             }
-
                         }
-
                     }
                 }
             });
         }
     },
-
 }
 </script>
 
 <style scoped>
-
+    .canvas-container {
+        height: 125px !important;
+        width: 125px !important;
+        margin-left: 30px !important;
+    }
 </style>

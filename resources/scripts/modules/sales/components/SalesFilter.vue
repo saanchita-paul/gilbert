@@ -26,7 +26,7 @@
             @click="showDatePickerModal = true"
             @click:append="showDatePickerModal = true"
         ></v-text-field>
-        <v-btn class='download-button'>
+        <v-btn class='download-button' @click="downloadSalesReport">
             Download
             <v-icon right>mdi-download</v-icon>
         </v-btn>
@@ -64,8 +64,10 @@ export default {
             ],
             showDatePickerModal: false,
             dateRange: {
-                start: getTodayString(),
-                end:  getTodayString(),
+                start: this.$route.query?.start ?
+                    this.$route.query?.start : getTodayString(),
+                end:  this.$route.query?.end ?
+                    this.$route.query?.end : getTodayString()
             },
             selectedDate: null,
             selectedType: null,
@@ -75,14 +77,25 @@ export default {
         onSelectDate(dateRange) {
             this.dateRange = dateRange;
             this.showDatePickerModal = false;
+
+            let queries = JSON.parse(JSON.stringify(this.$route.query));
+            queries.start = this.dateRange.start;
+            queries.end = this.dateRange.end;
+            this.$router.replace({ query: queries });
         },
         onCloseModal() {
             this.showDatePickerModal = false;
         },
         changeServiceType() {
             this.selectedType === 'energy' ?
-                this.$router.push({ name: 'sales.energy' }) :
-                this.$router.push({ name: 'sales.water' });
+                this.$router.push({
+                    name: 'sales.energy',
+                    query: { start: this.dateRange.start, end: this.dateRange.end }
+                }) :
+                this.$router.push({
+                    name: 'sales.water',
+                    query: { start: this.dateRange.start, end: this.dateRange.end }
+                });
         },
         updateDateRange() {
             this.$emit('updateDate', this.dateRange)
@@ -97,6 +110,12 @@ export default {
             } else {
                 this.selectedDate = `${getFormattedDBDate(this.dateRange.start)} - ${getFormattedDBDate(this.dateRange.end)}`;
             }
+        },
+        downloadSalesReport() {
+            window.open(
+                '/api/sales-dashboard/export/submission-report?start='+this.dateRange.start+'&end='+this.dateRange.end,
+                '_blank'
+            );
         }
     },
     watch: {
