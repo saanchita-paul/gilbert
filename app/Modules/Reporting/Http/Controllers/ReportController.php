@@ -33,7 +33,7 @@ class ReportController extends Controller
     public function submissionReport(Request $request)
     {
         try {
-            return (new ExportSubmissionReport($request->get('start'), $request->get('start')))->run();
+            return (new ExportSubmissionReport($request->get('start'), $request->get('end')))->run();
         } catch (\Exception $exception) {
             return  $this->sendErrorResponse($exception);
         }

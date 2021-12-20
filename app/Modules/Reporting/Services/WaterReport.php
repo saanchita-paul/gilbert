@@ -2,6 +2,7 @@
 
 namespace Reporting\Services;
 
+use App\Modules\Reporting\Services\SetDateRage;
 use DB;
 use Carbon\Carbon;
 use App\Models\ConnectionService;
@@ -12,10 +13,11 @@ use Doctrine\DBAL\Driver\IBMDB2\Connection;
 
 class WaterReport
 {
+    use SetDateRage;
     private string $startDate;
     private string $endDate;
 
-    private int $timezone;
+    private $timezone;
 
     private array $submisssionType = [
         ConnectionService::STATUS_ACCEPTED,
@@ -43,14 +45,7 @@ class WaterReport
 
     public function __construct(string $startDate, string $endDate)
     {
-        $this->timezone = env("TIME_ZONE", 11) ?? 11;
-
-        $this->startDate = Carbon::parse($startDate, tz: $this->timezone)->setTimezone(0)->toDateTimeString();
-        $this->endDate = Carbon::parse($endDate, tz: $this->timezone)
-            ->addHours(11)
-            ->addMinutes(59)
-            ->addSeconds(59)
-            ->setTimezone(0)->toDateTimeString();
+        $this->setDateRange($startDate, $endDate);
 
         $this->mapperService = new MapWaterReport();
     }

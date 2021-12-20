@@ -3,6 +3,8 @@ namespace App\Modules\Reporting\Services;
 
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
+use App\Models\HoodProfile;
+use App\Services\Utility\GilbertStatusMapper;
 use Carbon\Carbon;
 use DB;
 use Rap2hpoutre\FastExcel\FastExcel;
@@ -11,8 +13,8 @@ class ExportSubmissionReport
 {
     use SetDateRage;
 
-    private string $start;
-    private string $end;
+    private string $startDate;
+    private string $endDate;
     private $timezone;
 
     public function __construct(string $start, string $end)
@@ -39,6 +41,7 @@ class ExportSubmissionReport
     {
         foreach ($data as $datum) {
             $datum->Lead_Source = $this->getLeadSrc($datum->Lead_Source);
+            $datum->Lead_Status = GilbertStatusMapper::getStatusAsText ($datum->Lead_Status);
             $this->leadsData[] = $datum;
         }
     }
@@ -64,13 +67,13 @@ class ExportSubmissionReport
                 cs.plan_type as `Utility_Plan`,
                 cs.status as `Lead_Status`
             ")
-            ->join('connection_applications as ca', 'cs.connection_application_id', '=', 'ca.id')
-            ->join('agencies as ag', 'ca.agency_id', '=', 'ag.id')
+            ->leftJoin('connection_applications as ca', 'cs.connection_application_id', '=', 'ca.id')
+            ->leftJoin('agencies as ag', 'ca.agency_id', '=', 'ag.id')
             ->leftJoin('agent_profiles as ap', 'ap.id', '=', 'ca.created_by')
             ->leftJoin('users as u', 'ap.id', '=', 'u.profile_id')
-            ->where('u.profile_type',  '=', AgentProfile::class)
-            ->where('cs.updated_at', '>=', $this->start)
-            ->where('cs.updated_at', '<=', $this->end)
+            ->where('u.profile_type',  '!=', HoodProfile::class)
+            ->where('cs.updated_at', '>=', $this->startDate)
+            ->where('cs.updated_at', '<=', $this->endDate)
             ->get()
             ->toArray();
     }
