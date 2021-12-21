@@ -13,19 +13,6 @@ class ApplicationNoteService
     /** @var User $user */
     private $user;
 
-    const ESCALATED = 'escalated';
-    const CONFIRM_CONNECTION = 'confirmed_connection';
-    const CLOSE_CONNECTION = 'close_connection';
-    const REGULAR = 'regular';
-
-    const NOTETYPE = [
-
-        'escalated' => self::ESCALATED,
-        'confirm_connection' => self::CONFIRM_CONNECTION,
-        'close_connection' => self::CLOSE_CONNECTION,
-        'regular' => self::REGULAR,
-
-    ];
 
     public function __construct(User $user)
     {
@@ -44,10 +31,10 @@ class ApplicationNoteService
         $note['created_by'] = $this->user->id;
         $note['user_role'] = $this->user->roles->first()?->name;
         if(!isset($note['type']) || $note['type'] == self::NOTETYPE['regular']) {
-            $note['type'] = self::NOTETYPE['regular'];
+            $note['type'] = ApplicationNote::NOTETYPE['regular'];
             $note['title'] = 'Note by ['.$this->user->profile->first_name.']';
-        } else if ( $note['type'] == self::NOTETYPE['close_connection'] ) {
-            $note['type'] = self::NOTETYPE['close_connection'];
+        } else if ( $note['type'] == ApplicationNote::NOTETYPE['close_connection'] ) {
+            $note['type'] = ApplicationNote::NOTETYPE['close_connection'];
             $note['title'] = 'Note by ' . $this->user->profile->first_name;
         } else {
             $note['title'] = $note['type'];
