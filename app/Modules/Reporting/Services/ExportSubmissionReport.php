@@ -10,6 +10,7 @@ use DB;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Rap2hpoutre\FastExcel\FastExcel;
+use App\Models\ConnectionService;
 
 class ExportSubmissionReport
 {
@@ -18,10 +19,21 @@ class ExportSubmissionReport
     private string $startDate;
     private string $endDate;
     private $timezone;
+    private $serviceType;
 
-    public function __construct(string $start, string $end)
+    private array $energyType = [
+        ConnectionService::TYPE_ELECTRICITY,
+        ConnectionService::TYPE_GAS
+    ];
+
+    private array $waterType = [
+        ConnectionService::TYPE_WATER,
+    ];
+
+    public function __construct(string $type, string $start, string $end)
     {
         $this->setDateRange($start, $end);
+        $this->serviceType = $type === 'energy' ? $this->energyType : $this->waterType;
     }
 
     private array $leadsData = [];
@@ -78,6 +90,7 @@ class ExportSubmissionReport
             })
             ->where('cs.updated_at', '>=', $this->startDate)
             ->where('cs.updated_at', '<=', $this->endDate)
+            ->whereIn('service_type', $this->serviceType)
             ->get()
             ->toArray();
     }
