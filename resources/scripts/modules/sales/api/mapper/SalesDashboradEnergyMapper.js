@@ -116,12 +116,12 @@ export default {
             };
         }
 
-        function getSubmittedData(data) {
+        function getSubmittedData(data, waitingForConnectionData) {
             return {
                 gasChartData: getGasData(data),
                 powerChartData: getPowerData(data),
-                total: data.total
-
+                total: data.total,
+                waitingForConnection: waitingForConnectionData.total
             }
         }
 
@@ -153,7 +153,7 @@ export default {
 
         return {
 
-            submitted: getSubmittedData(response.submission),
+            submitted: getSubmittedData(response.submission, response.waiting_for_connection),
             converted: getConvertedData(response.conversions, response.submission),
             rejected: getRejectedData(response.rejected, response.declined),
             total_open_application: response.total_open_application,
