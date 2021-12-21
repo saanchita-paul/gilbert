@@ -58,8 +58,9 @@ class AgentProfileController extends Controller
             $agentAndUserSvc = new CreateAgentAndUser();
             $res = $agentAndUserSvc->createAgentAndUser($request->toArray());
 
-            (new SendUserInviteService($res->user))->run();
-
+            if(env('SEND_AGENT_CREATE_EMAIL', 0)) {
+                (new SendUserInviteService($res->user))->run();
+            }
             return AgencyResource::make($res);
 
         } catch ( \Exception $exception) {
