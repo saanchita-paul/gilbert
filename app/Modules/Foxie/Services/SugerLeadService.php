@@ -2,16 +2,20 @@
 
 namespace Foxie\Services;
 
-use App\Modules\Foxie\Services\LeadStatusMapper;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Agency;
 use Foxie\Models\SugerLead;
 use Illuminate\Http\Request;
 use App\Models\Identification;
-use Illuminate\Support\Facades\Log;
-use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use App\Models\ConnectionApplication;
+use App\Services\SearchAddress\GeocodeAddress;
+use App\Services\SearchAddress\GeoCodeService;
+use App\Modules\Foxie\Services\LeadStatusMapper;
+use App\Services\SearchAddress\ConnectionApplicationMapper;
 
 class SugerLeadService
 {
@@ -20,6 +24,7 @@ class SugerLeadService
      */
     private SugerLead $lead;
     private ConnectionApplication $connectionApplication;
+    private ConnectionApplicationMapper $connectionApplicationMappedData;
 
     const TYPE_CREATE = 1;
     const TYPE_UPDATE = 2;
@@ -53,6 +58,12 @@ class SugerLeadService
     ];
 
 
+    public function setGeoCodeToConnectionApplication(?string $address){
+            $response = GeoCodeService::getAddressFromGeoCode($address);
+            $geoCodeData = new GeocodeAddress($response);
+            $this->connectionApplicationMappedData = $geoCodeData->getConnectionApplicationVersion();
+    }
+
     /**
      * Set attribute for create.
      *
@@ -70,40 +81,43 @@ class SugerLeadService
             ]);
         }
 
-        $this->connectionApplication->first_name = $request->first_name ?? 'Iron';
-        $this->connectionApplication->last_name = $request->last_name ?? 'Man' ;
+        $this->setGeoCodeToConnectionApplication($request->full_address_c ?? null);
+
+        $this->connectionApplication->first_name = $request->first_name ?? null;
+        $this->connectionApplication->last_name = $request->last_name ?? null ;
         $this->connectionApplication->source = ConnectionApplication::SOURCE_FOXIE ;
-        $this->connectionApplication->email = $request->email1 ?? 'abc@hood.ai';
-        $this->connectionApplication->address_text = $request->full_address_c ?? '';
-        $this->connectionApplication->dob = $dob ?? '1991/08/09';
-        $this->connectionApplication->moving_date = date("Y-m-d", strtotime($request->move_in_date_c))  ?? '2021/10/02';
-        $this->connectionApplication->address_unit = $request->primary_address_unit_c ?? '';
-        $this->connectionApplication->street_address = $request->primary_address_street ?? 'Queen Street';
-        $this->connectionApplication->city = $request->primary_address_city ?? 'Brisbane City';
-        $this->connectionApplication->postcode = $request->alt_address_postcode ?? '4000';
-        $this->connectionApplication->phone = $request->phone_mobile ?? '';
+        $this->connectionApplication->email = $request->email1 ?? null;
+        $this->connectionApplication->address_text = $request->full_address_c ?? null;
+        $this->connectionApplication->dob = $dob ?? null;
+        $this->connectionApplication->moving_date = date("Y-m-d", strtotime($request->move_in_date_c))  ?? null;
+        $this->connectionApplication->address_unit = $this->connectionApplicationMappedData->address_unit ?? null;
+        $this->connectionApplication->street_address = $this->connectionApplicationMappedData->street_address ?? null;
+        $this->connectionApplication->street_number = $this->connectionApplicationMappedData->street_number ?? null;
+        $this->connectionApplication->city = $this->connectionApplicationMappedData->city ?? null;
+        $this->connectionApplication->postcode = $this->connectionApplicationMappedData->postcode ?? null;
+        $this->connectionApplication->phone = $request->phone_mobile ?? null;
         $this->connectionApplication->tenancy_type = ConnectionApplication::TENANCY_MAPPING[$request->property_relationship_c] ?? null ;
         $this->connectionApplication->property_type = ConnectionApplication::PROPERTY_TYPE_MAPPING[$request->customer_type_c] ?? null ;
-        $this->connectionApplication->state = self::MAP_STATE[strtolower( $request->primary_address_state )] ?? '';
-        $this->connectionApplication->country = $request->primary_address_country ?? 'Australia';
-        $this->connectionApplication->nmi = $request->electricity_nmi_c ?? '';
-        $this->connectionApplication->mirn = $request->gas_mirn_c ?? '';
-        $this->connectionApplication->unit_number = $request->primary_address_unit_c ?? '';
+        $this->connectionApplication->state = $this->connectionApplicationMappedData->state ?? null;
+        $this->connectionApplication->country = $this->connectionApplicationMappedData->country ?? null;
+        $this->connectionApplication->nmi = $request->electricity_nmi_c ?? null;
+        $this->connectionApplication->mirn = $request->gas_mirn_c ?? null;
+        $this->connectionApplication->unit_number = $request->primary_address_unit_c ?? null;
         $this->connectionApplication->plan_type = $request->meter_plan_type_c ?? '3';
         // $this->connectionApplication->created_at = now();
-        // $this->connectionApplication->title = $request->salutation ?? 'Mr';
-        $this->connectionApplication->title = 'Mr';
+        $this->connectionApplication->title = $request->salutation ?? null;
+        // $this->connectionApplication->title = 'Mr';
 
         //SUGER LEADS TABLE
-        $this->lead->service_address = $request->full_address_c ?? '';
-        $this->lead->foxie_lead_source = $request->lead_source ?? '';
-        $this->lead->compare_connect_id = $request->compareconnect_id_c ?? '';
-        $this->lead->foxie_lead_source_description = $request->lead_source_description ?? '';
-        $this->lead->office_branch = $request->office_c ?? '';
-        $this->lead->agent_name = $request->agent_c ?? '';
-        $this->lead->agency_id = $request->foxie_agents_id_c ?? '';
-        $this->lead->agency_name = $request->office_c ?? '';
-        $this->lead->lead_id = $request->id_c ?? '';
+        $this->lead->service_address = $request->full_address_c ?? null;
+        $this->lead->foxie_lead_source = $request->lead_source ?? null;
+        $this->lead->compare_connect_id = $request->compareconnect_id_c ?? null;
+        $this->lead->foxie_lead_source_description = $request->lead_source_description ?? null;
+        $this->lead->office_branch = $request->office_c ?? null;
+        $this->lead->agent_name = $request->agent_c ?? null;
+        $this->lead->agency_id = $request->foxie_agents_id_c ?? null;
+        $this->lead->agency_name = $request->office_c ?? null;
+        $this->lead->lead_id = $request->id_c ?? null;
         $this->lead->foxie_date_entered =  Carbon::parse($request->date_entered)->format("Y-m-d H:i:s")  ?? null;
         $this->lead->foxie_date_modified = Carbon::parse($request->date_modified)->format("Y-m-d H:i:s")  ?? null;
         $this->lead->created_at = now();
@@ -344,6 +358,25 @@ class SugerLeadService
         }
 
         return $data;
+    }
+
+    public static function getAddressFromGeoCode(string $address){
+        try {
+            $response = Http::withHeaders([
+                "content-type"    => "application/json",
+                "Accept"          => "*/*",
+            ])
+            ->get(config('geocode.baseUrl'), 
+                        [ "key"     => config('geocode.apiKey'),
+                          "address" => $address ]);
+            
+            $geoCodeData = new GeocodeAddress($response);
+            return $geoCodeData;
+        } catch (\Exception $exception) {
+            \Log::error($exception->getMessage());
+            \Log::error($exception->getTraceAsString());
+            throw $exception;
+        }
     }
 
 }
