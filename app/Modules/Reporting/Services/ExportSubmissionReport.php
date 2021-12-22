@@ -69,9 +69,9 @@ class ExportSubmissionReport
         }
     }
 
-    private function fetchData(): array
+    private function fetchData() : array
     {
-        return DB::table('connection_services as cs')
+        $builder = DB::table('connection_services as cs')
             ->selectRaw("
                 ag.name as `Agency_Name`,
                 concat(ap.first_name, ap.last_name) as `Agent_Name`,
@@ -102,11 +102,57 @@ class ExportSubmissionReport
             })
             ->leftJoin('suger_leads as sl', 'ca.id', '=', 'sl.connection_application_id')
             ->leftJoin('rejection_reasons as rr', 'cs.id', '=', 'rr.connection_service_id')
+            ->whereIn('cs.service_type', $this->serviceType);
+        
+        $tempBuilder = clone $builder;
+        $filterWithSubmittedAt = $this->filterWithSubmittedAt($tempBuilder)->get()->toArray();
+
+        $tempBuilder = clone $builder;
+        $filterWithUpdatedAt = $this->filterWithUpdatedAt($tempBuilder)->get()->toArray();
+
+        // $tempBuilder = clone $builder;
+        // $filterWithClosedAt = $this->filterWithClosedAt($tempBuilder)->get()->toArray();
+
+        return array_merge(
+            $filterWithSubmittedAt,
+            $filterWithUpdatedAt,
+            // $filterWithClosedAt
+        );
+    }
+
+    private function filterWithSubmittedAt($builder)
+    {
+        return $builder
+            ->whereIn('cs.status', [
+                ConnectionService::STATUS_ACCEPTED, //Accepted
+                ConnectionService::STATUS_ENERGY_SUBMIT, //In progress
+                ConnectionService::STATUS_SUBMITTED, //In progress
+                ConnectionService::AC_MANUAL_PROCESSING //MANUAL_PROCESSING
+            ])
+            ->where('cs.submitted_at', '>=', $this->startDate)
+            ->where('cs.submitted_at', '<=', $this->endDate);
+    }
+
+    private function filterWithUpdatedAt($builder)
+    {
+        return $builder
+            ->whereIn('cs.status', [
+                ConnectionService::STATUS_CANT_CONNECT, //Rejeted
+                ConnectionService::STATUS_REJECTED, //Rejeted
+                ConnectionService::STATUS_EA_PROCESSINF //Not submitted
+            ])
             ->where('cs.updated_at', '>=', $this->startDate)
-            ->where('cs.updated_at', '<=', $this->endDate)
-            ->whereIn('cs.service_type', $this->serviceType)
-            ->get()
-            ->toArray();
+            ->where('cs.updated_at', '<=', $this->endDate);
+    }
+
+    private function filterWithClosedAt($builder)
+    {
+        return $builder
+            ->whereIn('ca.status', [
+                ConnectionApplication::STATUS_CLOSED //Closed
+            ])
+            ->where('ca.closed_at', '>=', $this->startDate)
+            ->where('ca.closed_at', '<=', $this->endDate);
     }
 
     private function getLeadSrc(?int $src): string
