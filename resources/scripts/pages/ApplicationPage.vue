@@ -23,7 +23,7 @@
                 <!-- <v-text-field v-model="search" full-width /> -->
                 <router-view
                     :leadSrc="selectedSrc"
-                    :applications="leads"
+                    :applications="[{name: 'ff'}]"
                     :totalItem="totalItem"
                     :currentLead="leadDetails"
                 ></router-view>
