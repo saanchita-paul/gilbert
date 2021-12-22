@@ -21,8 +21,8 @@
                     dense
             >
                     <v-timeline-item color="primary" small v-for="nt in notes" :color="getColor(nt.active)" :key="nt.id">
-                        <Note :note="nt"></Note>
-                        <SubmittedNote :note="nt"> </SubmittedNote>
+                        <SubmittedNote v-if="nt.type == 'submitted_connection'" :note="nt"> </SubmittedNote>
+                        <Note v-else :note="nt"></Note>
                     </v-timeline-item>
              </v-timeline>
         </v-col>

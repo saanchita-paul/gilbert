@@ -30,13 +30,18 @@ class ApplicationNoteService
         $note['connection_application_id'] = $applicationId;
         $note['created_by'] = $this->user->id;
         $note['user_role'] = $this->user->roles->first()?->name;
-        if(!isset($note['type']) || $note['type'] == self::NOTETYPE['regular']) {
+        if(!isset($note['type']) || $note['type'] == ApplicationNote::NOTETYPE['regular']) {
             $note['type'] = ApplicationNote::NOTETYPE['regular'];
             $note['title'] = 'Note by ['.$this->user->profile->first_name.']';
-        } else if ( $note['type'] == ApplicationNote::NOTETYPE['close_connection'] ) {
+        }
+        else if ( $note['type'] == ApplicationNote::NOTETYPE['close_connection'] ) {
             $note['type'] = ApplicationNote::NOTETYPE['close_connection'];
             $note['title'] = 'Note by ' . $this->user->profile->first_name;
-        } else {
+        }
+        else if($note['type'] === ApplicationNote::SUBMITTED_CONNECTION) {
+            $note['title'] = 'Note by ['.$this->user->profile->first_name.']';
+        }
+        else {
             $note['title'] = $note['type'];
         }
         return ApplicationNote::create($note);

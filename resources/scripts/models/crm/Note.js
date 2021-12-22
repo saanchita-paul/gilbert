@@ -56,6 +56,10 @@ export default class Note {
                 return 'Regular';
                 break;
 
+            case 'submitted_connection':
+                return 'submitted_connection';
+                break;
+
             default:
                 break;
         }

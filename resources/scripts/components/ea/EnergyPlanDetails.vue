@@ -1,11 +1,11 @@
 <template>
         <v-container class="pa-0 " v-if="loaded">
-            <v-row no-gutters>
+<!--            <v-row no-gutters>-->
 <!--                <v-col  style="background: white" cols="12" class="mx-auto  outlined">-->
 <!--                    <header class="header-area py-4 px-3 rounded-t">-->
 <!--                        <h2 class="display-1">{{ planDetails.name }}</h2>-->
 <!--                        <p class="subtitle-1">{{ planText }}</p>-->
-<!--&lt;!&ndash;                        <p class="body-2 mb-0">{{ planDetails.slogan }}</p>&ndash;&gt;-->
+<!--                        <p class="body-2 mb-0">{{ planDetails.slogan }}</p>-->
 <!--                    </header>-->
 
 <!--                    <div class="content px-3">-->
@@ -320,7 +320,6 @@
                                      :plan="plan"
                                      :services="services"
                 ></EnergyPlanContainer>
-            </v-row>
         </v-container>
 </template>
 
@@ -389,9 +388,6 @@ export default {
         },
     },
     async mounted() {
-
-        console.log(this.postcode, this.state, this.plan, this.services);
-
         if (this.plan) {
             await this.getPlanDetails();
             this.loaded = true;
@@ -407,7 +403,6 @@ export default {
                 state: this.state
             }))
 
-            console.log('plan details ', this.planDetails);
         },
         goToSearch() {
             if (this.$refs.bdid) {

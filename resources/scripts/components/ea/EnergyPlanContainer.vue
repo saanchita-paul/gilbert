@@ -1,5 +1,11 @@
 <template>
-    <div class="content px-3">
+    <v-row no-gutters>
+    <header class="header-area py-4 px-3 rounded-t">
+        <h2 class="display-1">{{ planDetails.name }}</h2>
+        <p class="subtitle-1">{{ planText }}</p>
+        <p class="body-2 mb-0">{{ planDetails.slogan }}</p>
+    </header>
+    <div class="content px-3 background-white">
                     <div class="mt-3 mb-2" v-if="isPlanHasElectricity">
                         <p class="mb-1">{{ planDetails.description }}</p>
                         <p class="mb-1">{{ planDetails.gst_inclusive_text }}</p>
@@ -30,7 +36,7 @@
                                 </v-icon>
                             </div>
                             <div>
-<!--                                <p class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.electricity }} </span>-->
+                                <p class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.electricity }} </span>
                                 </p>
                                 <p v-if="plan === 'total_plan'">guaranteed</p>
                                 <p v-if="plan === 'no_frills'">Simplified energy pricing</p>
@@ -47,7 +53,7 @@
                                 </v-icon>
                             </div>
                             <div>
-<!--                                <p class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.gas  }}</span></p>-->
+                                <p class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.gas  }}</span></p>
                                 <p v-if="plan === 'total_plan'">guaranteed</p>
                                 <p v-if="plan === 'no_frills'">Simplified energy pricing</p>
                             </div>
@@ -304,6 +310,7 @@
                     <!--                        </v-btn>-->
 
                 </div>
+    </v-row>
 </template>
 
 <script>
@@ -342,7 +349,7 @@ export default {
             return this.postcode && this.postcode.length === 4 && this.postcode.slice(0, 1).toString() === '3'
         },
         planText() {
-            switch (this.service_type) {
+            switch (this.services) {
                 case SERVICE_TYPES.GAS:
                     return 'Gas';
                 case SERVICE_TYPES.ELECTRICITY:
@@ -368,14 +375,6 @@ export default {
             return Math.ceil(value)
         },
     },
-    async mounted() {
-
-        console.log('call from local', this.postcode, this.state, this.plan, this.services, this.planDetails);
-        // if (this.plan) {
-        //     await this.getPlanDetails();
-        //     this.loaded = true;
-        // }
-    },
 
     methods: {
         goToSearch() {
@@ -391,6 +390,7 @@ export default {
 .header-area {
     background-color: rgb(0, 83, 33);
     color: #ffffff;
+    width: 100% !important;
 }
 
 .outlined {
@@ -404,5 +404,9 @@ export default {
     justify-content: space-between;
     align-items: flex-start;
     align-content: flex-start;
+}
+
+.background-white{
+    background: #FFFFFF;
 }
 </style>
