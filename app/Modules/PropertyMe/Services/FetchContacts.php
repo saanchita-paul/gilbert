@@ -42,7 +42,7 @@ class FetchContacts extends BasePropertyMeAPI
         return $this;
     }
 
-    /**
+    /** filterByAlreadySavedLead and also filter hood leads only
      *
      * @param array $leads
      * @return array
@@ -53,7 +53,7 @@ class FetchContacts extends BasePropertyMeAPI
         $ids = $leads->pluck('Id')->toArray();
         $alreadySavedIds = PropertyMeLead::query()->whereIn('lead_id', $ids)->pluck('lead_id')->toArray();
         return $leads->filter(function($value, $key) use ($alreadySavedIds) {
-            return !in_array(data_get($value, 'Id'), $alreadySavedIds);
+            return strtolower(data_get($value, 'Labels')) == 'hood' && !in_array(data_get($value, 'Id'), $alreadySavedIds);
 //            return true;
         })->toArray();
     }
