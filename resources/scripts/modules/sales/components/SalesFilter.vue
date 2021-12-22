@@ -113,7 +113,7 @@ export default {
         },
         downloadSalesReport() {
             window.open(
-                '/api/sales-dashboard/export/submission-report?start='+this.dateRange.start+'&end='+this.dateRange.end,
+                '/api/sales-dashboard/export/submission-report?type='+this.selectedType+'&start='+this.dateRange.start+'&end='+this.dateRange.end,
                 '_blank'
             );
         }
