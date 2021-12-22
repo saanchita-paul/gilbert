@@ -60,8 +60,8 @@ class SearchConnectionApplication
 
         if($this->source !== ConnectionApplication::SOURCE_ALL) {
             $builder->where('source', $this->source);
-            $builder = $this->filterLeadForFoxie($builder);
         }
+        $builder = $this->filterLeadForFoxie($builder);
 
 
 
