@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-row class="mt-5">
+        <!-- <v-row class="mt-5">
             <v-col cols="12" md="4" class="search-bg">
                 <Search @updateSearch="updateLeadSearch"></Search>
             </v-col>
@@ -31,7 +31,7 @@
                         </template>
                     </v-select>
             </v-col>
-        </v-row>
+        </v-row> -->
         <v-card class="hood-card">
             <v-row>
                 <v-col cols="12" class="crm-table">

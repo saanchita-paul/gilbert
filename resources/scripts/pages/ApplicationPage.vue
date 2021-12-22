@@ -5,9 +5,9 @@
                 <v-card class="hood-card">
                     <p>Your Metrics</p>
                     <h3 class="page-title">Total Applications: {{total_leads}}</h3>
-                    <AgentLeadMetrics v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal"></AgentLeadMetrics>
+                    <ApplicationsMetrics v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal"></ApplicationsMetrics>
                 </v-card>
-                <ApplicantTable
+                <!-- <ApplicantTable
                     :leadSrc="selectedSrc"
                     v-if="isLoaded"
                     :applications="leads"
@@ -17,7 +17,16 @@
                     @openLeadSummary="openLeadSummary"
                     @updateLeadAndatrics="updateLeadAndatrics"
                 >
-                </ApplicantTable>
+                </ApplicantTable> -->
+
+                <ApplicationFilter/>
+                <!-- <v-text-field v-model="search" full-width /> -->
+                <router-view
+                    :leadSrc="selectedSrc"
+                    :applications="leads"
+                    :totalItem="totalItem"
+                    :currentLead="leadDetails"
+                ></router-view>
             </v-col>
             <v-col cols="4">
                 <ApplicationDetails :lead="leadDetails"></ApplicationDetails>
@@ -27,19 +36,22 @@
 </template>
 
 <script>
-import AgentLeadMetrics from "@scripts/components/crm/leadmanagement/ApplicationsMetrics";
+import ApplicationsMetrics from "@scripts/components/crm/leadmanagement/ApplicationsMetrics";
 import ApplicantTable from "@scripts/components/crm/leadmanagement/ApplicantTable";
 import ApplicationDetails from "@scripts/components/crm/leadmanagement/ApplicationDetails";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
 import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
+import ApplicationFilter from './ApplicationFilter';
+
 export default {
     name: "ApplicationPage",
     components: {
         ApplicationDetailScreen,
-        AgentLeadMetrics,
         ApplicantTable,
-        ApplicationDetails
+        ApplicationDetails,
+        ApplicationsMetrics,
+        ApplicationFilter
     },
 
     data() {
@@ -60,6 +72,7 @@ export default {
             itemsPerPage: 10,
             totalItem: null,
             options: {},
+            search: ""
         }
     },
 
