@@ -28,11 +28,13 @@ trait SalesResponseHandle
 
             if ($quote->fuel === 'GAS') {
                 $this->updateService($leadId, 'gas', $updateData);
+                $this->updateExtraDetails($leadId, 'gas', $updateData['status']);
                 $this->saveRejectionReasons($reasons, $leadId, 'gas');
                 $this->updateQuoteReference($leadId, 'gas', $quote->id);
             }
             if ($quote->fuel === 'ELE') {
                 $this->updateService($leadId, 'power', $updateData);
+                $this->updateExtraDetails($leadId, 'power', $updateData['status']);
                 $this->saveRejectionReasons($reasons, $leadId, 'power');
                 $this->updateQuoteReference($leadId, 'power', $quote->id);
             }
@@ -100,6 +102,15 @@ trait SalesResponseHandle
     public function updateService($leadId, $serviceType, $updateData)
     {
         $this->getServiceBuilder($leadId, $serviceType)->update($updateData);
+    }
+
+    public function updateExtraDetails($leadId, $serviceType, $status)
+    {
+        if($status == ConnectionService::STATUS_ACCEPTED) {
+            $this->getServiceBuilder($leadId, $serviceType)->update(['accepted_at' => now()]);
+        } elseif ($status == ConnectionService::STATUS_REJECTED) {
+            $this->getServiceBuilder($leadId, $serviceType)->update(['rejected_at' => now()]);
+        }
     }
 
     /**
