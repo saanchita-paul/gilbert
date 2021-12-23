@@ -34,7 +34,7 @@ class SubmittedLeadNote
            'agent_name' => $this->existLead?->getAgentName(),
            'nmi' => $this->existLead?->nmi,
            'mirn' => $this->existLead?->mirn,
-           'supplier' => 'Hood',
+           'supplier' => 'Ea',
            'plan_type' => $planType,
            'post_code' => $postCode,
            'state' => $state,
