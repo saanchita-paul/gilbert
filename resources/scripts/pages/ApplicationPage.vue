@@ -19,13 +19,17 @@
                 >
                 </ApplicantTable> -->
 
-                <ApplicationFilter/>
+                <ApplicationFilter v-bind="$attrs" />
                 <!-- <v-text-field v-model="search" full-width /> -->
                 <router-view
                     :leadSrc="selectedSrc"
-                    :applications="[{name: 'ff'}]"
+                    v-if="isLoaded"
+                    :applications="leads"
                     :totalItem="totalItem"
                     :currentLead="leadDetails"
+                    @refreshDataTable="refreshDataTable"
+                    @openLeadSummary="openLeadSummary"
+                    @updateLeadAndatrics="updateLeadAndatrics"
                 ></router-view>
             </v-col>
             <v-col cols="4">
@@ -93,7 +97,7 @@ export default {
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
             this.totalItem = data.pagination.total;
-            this.selected_lead_id = this.leads[0].id;
+            this.selected_lead_id = this.leads[0]?.id;
             this.loadLeadSummary();
             // console.log('lead list', this.leads);
         },
@@ -130,6 +134,7 @@ export default {
     watch: {
         '$route': {
             handler() {
+                console.log(this.$route.query.name)
                 let reload = this.activeLeadType !== this.$route.query?.type
                     || this.selectedSrc !== this.$route.query?.source;
 

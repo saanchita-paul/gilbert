@@ -13,7 +13,7 @@
         outlined
         dense
         hide-details="auto"
-        placeholder="Firstname"
+        placeholder="Name"
         style="background-color: white"
         class="my-1 mr-1"
       />
@@ -23,7 +23,7 @@
         outlined
         dense
         hide-details="auto"
-        placeholder="Firstname"
+        placeholder="Address"
         style="background-color: white"
         class="my-1 mr-1"
       />
@@ -33,13 +33,13 @@
         outlined
         dense
         hide-details="auto"
-        placeholder="Firstname"
+        placeholder="Mobile"
         style="background-color: white"
         class="my-1 mr-1"
       />
       <!-- lead source start -->
       <v-select
-        placeholder="Select a lead source"
+        placeholder="Source"
         v-model="leadSrc"
         item-text="text"
         item-value="value"
@@ -69,7 +69,7 @@
       <!-- lead source ends -->
       <!-- tenancy type starts -->
       <v-select
-        placeholder="Tenancy type"
+        placeholder="Tenancy"
         v-model="tenancyType"
         item-text="text"
         item-value="value"
@@ -151,7 +151,7 @@ export default {
   methods: {
     onSrcChange(value) {
       this.$router.push({
-        name: "applications",
+        name: "application.list",
         query: { ...this.$route.query, ...{ source: value } },
       });
     },

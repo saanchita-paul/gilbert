@@ -182,7 +182,8 @@ const router = new VueRouter({
                                     'hood_external_team_lead',
                                     'hood_external_customer_rep'
                                 ],
-                            }
+                            },
+                            props: true
                         },
                     ],
                     meta: {
