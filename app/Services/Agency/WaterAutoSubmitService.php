@@ -15,7 +15,7 @@ class WaterAutoSubmitService
     {
         try {
             $lead = ConnectionApplication::with(['connectionServices' , 'identification'])->where( 'id' ,  $lead_id)->first();
-            if (!$lead->is_auto_water_submi) {
+            if (!$lead->is_auto_water_submit) {
                 $this->validateData($lead);
                 $this->updateConnectionApplication($lead);
             }
