@@ -247,7 +247,7 @@ class SumoService
             ConnectionService::whereIn('service_type' , ['gas' , 'power'])
             ->where('provider_name', 'sumo')
             ->where('connection_application_id', $applicationId)
-            ->update(['status' =>  ConnectionService::STATUS_REJECTED ]);
+            ->update(['status' =>  ConnectionService::STATUS_REJECTED, 'rejected_at' => now()]);
         }
     }
 
