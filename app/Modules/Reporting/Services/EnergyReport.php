@@ -60,7 +60,7 @@ class EnergyReport
         return ConnectionService::query()
             ->selectRaw('provider_name, count(*) as total, service_type, plan_type')
             ->whereNotNull('provider_name')
-            ->whereIn('status', $this->submisssionType)
+            // ->whereIn('status', $this->submisssionType)
             ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
             ->where('submitted_at', '>=', $this->startDate)
             ->where('submitted_at', '<=', $this->endDate)

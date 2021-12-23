@@ -61,7 +61,7 @@ class WaterReport
                 ->selectRaw('provider_name , is_auto_water_submit,  count(*) as total')
                 ->join('connection_services' , 'connection_services.connection_application_id' , '=' , 'connection_applications.id')
                 ->whereIn('connection_services.service_type', [ConnectionService::TYPE_WATER])
-                ->whereIn('connection_applications.status', $this->submisssionType)
+                // ->whereIn('connection_applications.status', $this->submisssionType)
                 ->where('submitted_at', '>=', $this->startDate)
                 ->where('submitted_at', '<=', $this->endDate)
                 ->groupBy( 'provider_name', 'is_auto_water_submit')
