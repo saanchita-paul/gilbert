@@ -93,19 +93,18 @@ class SearchConnectionApplication
         return $builder->paginate($this->perPage);
     }
 
-    private function filterLeadForFoxie($builder){
-        if($this->source == ConnectionApplication::SOURCE_FOXIE){
-            $builder =  $builder->whereHas('SugerLead' , function($query){
+    private function filterLeadForFoxie($builder)
+    {
+        return match ($this->source) {
+            ConnectionApplication::SOURCE_FOXIE => $builder->whereHas('SugerLead' , function($query){
                 $query->where('compare_connect_id' , null)
-                      ->orWhere('compare_connect_id', 'N/A');
-            });
-        } 
-        else {
-            $builder = ConnectionApplication::where(function (Builder $builder) {
+                    ->orWhere('compare_connect_id', 'N/A');
+            }),
+            ConnectionApplication::SOURCE_ALL => ConnectionApplication::where(function (Builder $builder) {
                 $builder->doesntHave('SugerLead')
                     ->orWhereHas("SugerLead", fn (Builder $id) => $id->whereNull('compare_connect_id')->orWhere('compare_connect_id', 'N/A'));
-             });
-        }
-        return $builder;
+            }),
+            default => $builder
+        };
     }
 }
