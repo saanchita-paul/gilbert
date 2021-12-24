@@ -46,9 +46,10 @@ import ApplicationDetails from "@scripts/components/crm/leadmanagement/Applicati
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
 import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
-import ApplicationFilter from './ApplicationFilter';
 import {isEqual , pick} from "lodash-es";
-// import { LeadSearchFilterModel } from '@scripts/models/'
+import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel'
+import ApplicationFilter from '@scripts/pages/ApplicationFilter';
+
 export default {
     name: "ApplicationPage",
     components: {
@@ -85,7 +86,7 @@ export default {
                 source: "",
                 tenancy_type: "",
             },
-            advanceSearch: {}
+            advanceSearch: new LeadSearchFilterModel()
         }
     },
 
@@ -148,7 +149,7 @@ export default {
     mounted() {
         this.loadMetricTypes();
         this.loadLeads();
-        this.advanceSearch = pick(this.$route.query , ['tenancy_type','address', 'mobile', 'tenancy_name', 'source']);
+        this.advanceSearch = new LeadSearchFilterModel(this.$route.query);
         this.loadLeads();
         console.log("query" , this.$route.query)
 
