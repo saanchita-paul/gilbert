@@ -1,46 +1,48 @@
 <template>
   <div>
+    <v-form ref="form">
     <div class="d-flex justify-end pt-2">
+      <!-- <slot/> -->
       <div class="px-3 py-1 clearButton" @click="clearSearch">
-        <v-icon medium color="black"> mdi mdi-close </v-icon>
-        Clear Filter
+            <v-icon medium color="black"> mdi mdi-close </v-icon>
+              Clear Filter
       </div>
     </div>
     <div class="d-flex">
       <v-text-field
-        v-model="name"
+        v-model="$attrs.value.tenancyname"
         full-width
         outlined
         dense
         hide-details="auto"
-        placeholder="Firstname"
+        placeholder="Name"
         style="background-color: white"
         class="my-1 mr-1"
       />
       <v-text-field
-        v-model="address"
+        v-model="$attrs.value.address"
         full-width
         outlined
         dense
         hide-details="auto"
-        placeholder="Firstname"
+        placeholder="Address"
         style="background-color: white"
         class="my-1 mr-1"
       />
       <v-text-field
-        v-model="mobile"
+        v-model="$attrs.value.mobile"
         full-width
         outlined
         dense
         hide-details="auto"
-        placeholder="Firstname"
+        placeholder="Mobile"
         style="background-color: white"
         class="my-1 mr-1"
       />
       <!-- lead source start -->
       <v-select
-        placeholder="Select a lead source"
-        v-model="leadSrc"
+        placeholder="Source"
+        v-model="$attrs.value.source"
         item-text="text"
         item-value="value"
         :items="srcOptions"
@@ -53,7 +55,6 @@
         <template v-slot:item="{ item, attrs, on }">
           <v-list-item
             link
-            @change="onSrcChange(item.value)"
             v-bind="attrs"
             v-on="on"
           >
@@ -69,8 +70,8 @@
       <!-- lead source ends -->
       <!-- tenancy type starts -->
       <v-select
-        placeholder="Tenancy type"
-        v-model="tenancyType"
+        placeholder="Tenancy"
+        v-model="$attrs.value.tenancytype"
         item-text="text"
         item-value="value"
         :items="tanancyTypeOptions"
@@ -83,7 +84,6 @@
         <template v-slot:item="{ item, attrs, on }">
           <v-list-item
             link
-            @change="onSrcChange(item.value)"
             v-bind="attrs"
             v-on="on"
           >
@@ -95,6 +95,7 @@
       </v-select>
       <!-- tenancy type ends -->
     </div>
+     </v-form>
   </div>
 </template>
 
@@ -103,6 +104,7 @@ export default {
   name: "ApplicationFilter",
   data() {
     return {
+      tenancyname: "",
       name: "",
       address: "",
       mobile: "",
@@ -151,31 +153,32 @@ export default {
   methods: {
     onSrcChange(value) {
       this.$router.push({
-        name: "applications",
+        name: "application.list",
         query: { ...this.$route.query, ...{ source: value } },
       });
     },
     clearSearch(){
-        this.name = ""
-        this.address = ""
-        this.mobile = ""
-        this.leadSrc = "all"
-        this.tenancyType = "all"
-
-        this.$router.push({
-        name: "application.list",
-        query: {  },
-      });
+      //   this.name = ""
+      //   this.address = ""
+      //   this.mobile = ""
+      //   this.source = "all"
+      //   this.tenancytype = "all"
+        
+      //   this.$router.push({
+      //     name: "application.list",
+      //   query: {  },
+      // });
+        this.$refs.form.reset();
     }
   },
   watch: {
-    name() {
-      console.log("search printing");
-      this.$router.push({
-        name: "application.list",
-        query: { ...this.$route.query, ...{ name: this.name } },
-      });
-    },
+    // tenancyname() {
+    //   console.log("search printing");
+    //   this.$router.push({
+    //     name: "application.list",
+    //     query: { ...this.$route.query, ...{ tenancyname: this.tenancyname } },
+    //   });
+    // },
     address() {
       console.log("search printing");
       this.$router.push({

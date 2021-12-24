@@ -95,7 +95,7 @@ export default {
           required: true
       },
         totalItem: {
-          required: true
+          required: true,
       },
         currentLead: {
           required: true
@@ -114,7 +114,9 @@ export default {
 
             userSearch: '',
             leadSearch: '',
-            options: {},
+            options: {
+                itemsPerPage: 10
+            },
             loading: false,
             page: 1,
             pageCount: 0,

@@ -19,13 +19,17 @@
                 >
                 </ApplicantTable> -->
 
-                <ApplicationFilter/>
+                <ApplicationFilter v-model="advanceSearch" ></ApplicationFilter>
                 <!-- <v-text-field v-model="search" full-width /> -->
                 <router-view
                     :leadSrc="selectedSrc"
-                    :applications="[{name: 'ff'}]"
+                    v-if="isLoaded"
+                    :applications="leads"
                     :totalItem="totalItem"
                     :currentLead="leadDetails"
+                    @refreshDataTable="refreshDataTable"
+                    @openLeadSummary="openLeadSummary"
+                    @updateLeadAndatrics="updateLeadAndatrics"
                 ></router-view>
             </v-col>
             <v-col cols="4">
@@ -43,6 +47,7 @@ import LeadApplicationService from "@scripts/services/crm/LeadApplicationService
 import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
 import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
 import ApplicationFilter from './ApplicationFilter';
+
 
 export default {
     name: "ApplicationPage",
@@ -72,7 +77,15 @@ export default {
             itemsPerPage: 10,
             totalItem: null,
             options: {},
-            search: ""
+            search: "",
+            advanceSearchBluePrint: {
+                tenancyname:"",
+                address: "",
+                mobile: "",
+                source: "",
+                tenancytype: "",
+            },
+            advanceSearch: {}
         }
     },
 
@@ -87,13 +100,14 @@ export default {
         },
 
         async loadLeads () {
+            console.log("api calling");
             let data = await LeadApplicationService.loadUserLeads(this.sort_search_meta, this.activeLeadType, this.selectedSrc);
             this.leads = data.applications;
             this.isLoaded = true;
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
             this.totalItem = data.pagination.total;
-            this.selected_lead_id = this.leads[0].id;
+            this.selected_lead_id = this.leads[0]?.id;
             this.loadLeadSummary();
             // console.log('lead list', this.leads);
         },
@@ -120,6 +134,14 @@ export default {
       updateLeadAndatrics(leadId,userId) {
         this.leads.find(ld=>ld.id==leadId).assigned_to = userId;
         this.loadMetricTypes();
+        },
+        clearSearch(){
+            console.log("clicking slot")
+            this.advanceSearch = this.advanceSearchBluePrint;
+            this.$router.push({
+                    name: "application.list",
+                    query: this.advanceSearch,
+                });
         }
     },
 
@@ -130,6 +152,7 @@ export default {
     watch: {
         '$route': {
             handler() {
+                console.log(this.$route.query.name)
                 let reload = this.activeLeadType !== this.$route.query?.type
                     || this.selectedSrc !== this.$route.query?.source;
 
@@ -141,6 +164,19 @@ export default {
                 }
             }
         },
+        advanceSearch:{
+            handler(value) {
+                console.log("printing value" , value)
+                let val = { ...this.$route.query, ...value }
+                console.log('updaed' , val)
+                this.$router.push({
+                    name: "application.list",
+                    query: val,
+                });
+                // this.loadLeads();
+            },
+            deep: true
+        }
     },
 
 }
