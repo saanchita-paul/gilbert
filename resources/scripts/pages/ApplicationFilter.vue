@@ -8,7 +8,7 @@
     </div>
     <div class="d-flex">
       <v-text-field
-        v-model="name"
+        v-model="$attrs.value.tenancyname"
         full-width
         outlined
         dense
@@ -18,7 +18,7 @@
         class="my-1 mr-1"
       />
       <v-text-field
-        v-model="address"
+        v-model="$attrs.value.address"
         full-width
         outlined
         dense
@@ -28,7 +28,7 @@
         class="my-1 mr-1"
       />
       <v-text-field
-        v-model="mobile"
+        v-model="$attrs.value.mobile"
         full-width
         outlined
         dense
@@ -40,7 +40,7 @@
       <!-- lead source start -->
       <v-select
         placeholder="Source"
-        v-model="leadSrc"
+        v-model="$attrs.value.source"
         item-text="text"
         item-value="value"
         :items="srcOptions"
@@ -53,7 +53,6 @@
         <template v-slot:item="{ item, attrs, on }">
           <v-list-item
             link
-            @change="onSrcChange(item.value)"
             v-bind="attrs"
             v-on="on"
           >
@@ -70,7 +69,7 @@
       <!-- tenancy type starts -->
       <v-select
         placeholder="Tenancy"
-        v-model="tenancyType"
+        v-model="$attrs.value.tenancytype"
         item-text="text"
         item-value="value"
         :items="tanancyTypeOptions"
@@ -83,7 +82,6 @@
         <template v-slot:item="{ item, attrs, on }">
           <v-list-item
             link
-            @change="onSrcChange(item.value)"
             v-bind="attrs"
             v-on="on"
           >
@@ -103,6 +101,7 @@ export default {
   name: "ApplicationFilter",
   data() {
     return {
+      tenancyname: "",
       name: "",
       address: "",
       mobile: "",
@@ -159,9 +158,9 @@ export default {
         this.name = ""
         this.address = ""
         this.mobile = ""
-        this.leadSrc = "all"
-        this.tenancyType = "all"
-
+        this.source = "all"
+        this.tenancytype = "all"
+        
         this.$router.push({
         name: "application.list",
         query: {  },
@@ -169,13 +168,13 @@ export default {
     }
   },
   watch: {
-    name() {
-      console.log("search printing");
-      this.$router.push({
-        name: "application.list",
-        query: { ...this.$route.query, ...{ name: this.name } },
-      });
-    },
+    // tenancyname() {
+    //   console.log("search printing");
+    //   this.$router.push({
+    //     name: "application.list",
+    //     query: { ...this.$route.query, ...{ tenancyname: this.tenancyname } },
+    //   });
+    // },
     address() {
       console.log("search printing");
       this.$router.push({

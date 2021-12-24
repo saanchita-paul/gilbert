@@ -19,7 +19,7 @@
                 >
                 </ApplicantTable> -->
 
-                <ApplicationFilter v-bind="$attrs" />
+                <ApplicationFilter v-model="advanceSearch" />
                 <!-- <v-text-field v-model="search" full-width /> -->
                 <router-view
                     :leadSrc="selectedSrc"
@@ -76,7 +76,14 @@ export default {
             itemsPerPage: 10,
             totalItem: null,
             options: {},
-            search: ""
+            search: "",
+            advanceSearch: {
+                tenancyname:"",
+                address: "",
+                mobile: "",
+                source: "",
+                tenancytype: "",
+            }
         }
     },
 
@@ -91,6 +98,7 @@ export default {
         },
 
         async loadLeads () {
+            console.log("api calling");
             let data = await LeadApplicationService.loadUserLeads(this.sort_search_meta, this.activeLeadType, this.selectedSrc);
             this.leads = data.applications;
             this.isLoaded = true;
@@ -146,6 +154,18 @@ export default {
                 }
             }
         },
+        advanceSearch:{
+            handler(value) {
+                console.log("printing value" , value)
+                let val = { ...this.$route.query, ...value }
+                console.log('updaed' , val)
+                this.$router.push({
+                    name: "application.list",
+                    query: val,
+                });
+            },
+            deep: true
+        }
     },
 
 }
