@@ -29,6 +29,9 @@ import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/Appl
 import ApplicationDetailsPage from "@scripts/pages/ApplicationDetailsPage";
 import OfficeProfile from "@scripts/components/crm/office/OfficeProfile";
 import InviteUser from "@scripts/components/crm/user/InviteUser";
+import ApplicationsDashboardPage from "@scripts/modules/sales/pages/ApplicationsDashboardPage";
+import SalesEnergyPage from "@scripts/modules/sales/pages/SalesEnergyPage";
+import SalesWaterPage from "@scripts/modules/sales/pages/SalesWaterPage";
 
 Vue.use(VueRouter);
 
@@ -189,8 +192,55 @@ const router = new VueRouter({
                             'hood_external_customer_rep'
                         ],
                     }
-                }
+                },
+                {
+                    path: 'applications-dashboard',
+                    component: ApplicationsDashboardPage,
+                    name: 'applications.dashboard',
+                    children: [
+                        {
+                            path: 'energy',
+                            component: SalesEnergyPage,
+                            name: 'sales.energy',
+                            meta: {
+                                isProtected: true,
+                                breadcrumbType: 'SalesEnergy',
+                                roles: [
+                                    'hood_admin',
+                                    'hood_agent',
+                                    'hood_customer_rep',
+                                    'hood_team_lead'
+                                ],
 
+                            }
+                        },
+                        {
+                            path: 'water',
+                            component: SalesWaterPage,
+                            name: 'sales.water',
+                            meta: {
+                                isProtected: true,
+                                breadcrumbType: 'SalesWater',
+                                roles: [
+                                    'hood_admin',
+                                    'hood_agent',
+                                    'hood_customer_rep',
+                                    'hood_team_lead'
+                                ],
+                            },
+                            props: true
+                        }
+                    ],
+                    meta: {
+                        isProtected: true,
+                        roles: [
+                            'hood_admin',
+                            'hood_agent',
+                            'hood_customer_rep',
+                            'hood_team_lead'
+                        ],
+                    }
+                },
             ]
         },
         {

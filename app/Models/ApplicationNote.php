@@ -35,6 +35,21 @@ class ApplicationNote extends Model
 {
     use HasFactory;
 
+    const ESCALATED = 'escalated';
+    const CONFIRM_CONNECTION = 'confirmed_connection';
+    const CLOSE_CONNECTION = 'close_connection';
+    const REGULAR = 'regular';
+    const SUBMITTED_CONNECTION = 'submitted_connection';
+
+    const NOTETYPE = [
+        'escalated' => self::ESCALATED,
+        'confirm_connection' => self::CONFIRM_CONNECTION,
+        'close_connection' => self::CLOSE_CONNECTION,
+        'submitted_connection' => self::SUBMITTED_CONNECTION,
+        'regular' => self::REGULAR,
+    ];
+
+
     /**
      * The attributes that are mass assignable.
      *
@@ -46,7 +61,9 @@ class ApplicationNote extends Model
         'text',
         'title',
         'type',
-        'user_role'
+        'user_role',
+        'connection_details',
+        'plan_details'
     ];
 
     /**

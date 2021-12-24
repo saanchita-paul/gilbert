@@ -60,8 +60,8 @@ class SearchConnectionApplication
 
         if($this->source !== ConnectionApplication::SOURCE_ALL) {
             $builder->where('source', $this->source);
-            $builder = $this->filterLeadForFoxie($builder);
         }
+        $builder = $this->filterLeadForFoxie($builder);
 
 
 
@@ -97,11 +97,14 @@ class SearchConnectionApplication
         if($this->source == ConnectionApplication::SOURCE_FOXIE){
             $builder =  $builder->whereHas('SugerLead' , function($query){
                 $query->where('compare_connect_id' , null)
-                      ->orWhere('compare_connect_id', 'N/A')
-                      ->orWhere('compare_connect_id', 'n/a')
-                      ->orWhere('compare_connect_id', 'N/a')
-                      ->orWhere('compare_connect_id', 'n/A');
+                      ->orWhere('compare_connect_id', 'N/A');
             });
+        } 
+        else {
+            $builder = ConnectionApplication::where(function (Builder $builder) {
+                $builder->doesntHave('SugerLead')
+                    ->orWhereHas("SugerLead", fn (Builder $id) => $id->whereNull('compare_connect_id')->orWhere('compare_connect_id', 'N/A'));
+             });
         }
         return $builder;
     }

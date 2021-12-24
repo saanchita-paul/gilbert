@@ -18,7 +18,7 @@ class ChangeDataForConnectionServices extends Migration
         ConnectionService::query()->whereHas('connectionApplication', function (Builder $cp) {
             $cp->whereNotNull('vendor_id');
         })->where('status', ConnectionService::STATUS_EA_PROCESSINF)
-            ->update(['status' => ConnectionService::STATUS_EA_SUBMIT]);
+            ->update(['status' => ConnectionService::STATUS_ENERGY_SUBMIT]);
     }
 
     /**

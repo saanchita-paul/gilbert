@@ -274,6 +274,14 @@ class ConnectionApplication extends Model
         'property_me' => self::SOURCE_PROPERTY_ME,
     ];
 
+    const SOURCE_NAME_MAPPING = [
+        self::SOURCE_HOOD => 'Hood',
+        self::SOURCE_FOXIE => 'Foxie',
+        self::SOURCE_IGNITE => 'Ignite',
+        self::SOURCE_OUR_PROPERTY => 'Ourproperty',
+        self::SOURCE_PROPERTY_ME => 'Propertyme'
+    ];
+
     const PLAN_TYPE_MAPPER = [
         self::PLAN_TYPE_BASIC => 2,
         self::PLAN_TYPE_NO_FRILLS => 3,
@@ -431,6 +439,18 @@ class ConnectionApplication extends Model
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agency_name,
             ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agency_name,
             ConnectionApplication::SOURCE_PROPERTY_ME => $this->propertyMeLead?->agency_name,
+            default => ''
+        };
+    }
+
+    public function getAgentName()
+    {
+        return match ($this->source) {
+            ConnectionApplication::SOURCE_HOOD => $this->createdBy?->first_name.' '. $this->createdBy?->last_name,
+            ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agent_name,
+            ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agent_name,
+            ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agent_name,
+            ConnectionApplication::SOURCE_PROPERTY_ME => $this->propertyMeLead?->agent_name,
             default => ''
         };
     }

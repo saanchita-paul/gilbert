@@ -10,11 +10,13 @@ use App\Models\Agency;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Identification;
+use App\Mail\AgentNotFoundMail;
 use App\Models\ConnectionService;
 use App\Jobs\CreateHubspotProperty;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use OurProperty\Models\OurProperty;
+use Illuminate\Support\Facades\Mail;
 use App\Models\ConnectionApplication;
 use App\Services\AddressMapperService;
 use App\Services\AuthService\JwtAuthService;
@@ -40,6 +42,8 @@ class CreateOurPropertyService
     private $connectionApplicaton;
 
     private $userRequestData;
+
+    private OurProperty $ourProperty;
 
     /**
      * Generate token.
@@ -70,6 +74,16 @@ class CreateOurPropertyService
         return JwtAuthService::getAccessToken($credentials['email']);
     }
 
+    /** save all fields to dump  
+    * @param void
+    * @return void
+    */
+    private function saveAllFieldDump(){
+        $this->ourProperty = new OurProperty;
+        $this->ourProperty->lead_id = $this->userRequestData->our_property_lead_id ?? null;
+        $this->ourProperty->all_fields_dump = json_encode($this->userRequestData->toArray());
+        $this->ourProperty->save();
+    }
 
     public function create(Request $requestData)
     {
@@ -78,6 +92,9 @@ class CreateOurPropertyService
 
         // preparing connection app for Our-Property
         $this->userRequestData = $requestData;
+
+        //save allField dump first
+        $this->saveAllFieldDump();
 
         // saving all data to our property table
         $ourProperty = $this->storeToOurProperty();
@@ -205,8 +222,8 @@ class CreateOurPropertyService
             Log::error($exception->getMessage());
             Log::error($exception->getTraceAsString());
 
-            #todo: send email to support
-
+            #TODO: send email to support
+            $this->sendAgentNotFoundEmail();
 
             throw new Exception("Provided `agency_name` or `agent_email` is not found in the system");
         }
@@ -214,17 +231,22 @@ class CreateOurPropertyService
         return $res;
     }
 
-    public function setAttribute()
+    /** send email to support if agency is not found  
+    * @param string $agencyName
+    * @return void
+    */
+    private function sendAgentNotFoundEmail()
     {
-        $ourProperty = new OurProperty();
-        $ourProperty->all_fields_dump = json_encode($this->userRequestData->toArray());
-        $ourProperty->connection_application_id = $this->connectionApplicaton->id;
-        $ourProperty->lead_id = $this->userRequestData->our_property_lead_id;
-        $ourProperty->agent_name = $this->userRequestData->agent_firstname;
-        $ourProperty->agency_name = $this->connectionApplicaton->agency->name;
-        $ourProperty->agent_email = $this->userRequestData->agent_email;
-        $ourProperty->save();
-        return $ourProperty;
+        $dataToBeSent =  [
+            'reason of failure' => 'Agency not found',
+            'lead id'           =>  $this->ourProperty->lead_id,
+            'agency name'       =>  $this->userRequestData->agency_name,
+            'agent email'       =>  $this->userRequestData->agent_email,
+        ];
+        $emails =  explode( ',', config('our_property.support_emails'));
+        foreach ($emails as $recipient) {
+            Mail::to($recipient)->queue(new AgentNotFoundMail($dataToBeSent));
+        }
     }
 
     public function createIdentification($leadId)
@@ -279,14 +301,11 @@ class CreateOurPropertyService
 
     public function storeToOurProperty()
     {
-        $ourProperty = new OurProperty();
-        $ourProperty->all_fields_dump = json_encode($this->userRequestData->toArray());
-        $ourProperty->lead_id = $this->userRequestData->our_property_lead_id ?? null;
-        $ourProperty->agent_name = $this->getAgentName() ?? null;
-        $ourProperty->agency_name = $this->userRequestData->agency_name ?? null;
-        $ourProperty->agent_email = $this->userRequestData->agent_email ?? null;
-        $ourProperty->save();
-        return $ourProperty;
+        $this->ourProperty->agent_name = $this->getAgentName() ?? null;
+        $this->ourProperty->agency_name = $this->userRequestData->agency_name ?? null;
+        $this->ourProperty->agent_email = $this->userRequestData->agent_email ?? null;
+        $this->ourProperty->save();
+        return $this->ourProperty;
     }
 
     /**

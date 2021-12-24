@@ -128,7 +128,7 @@ class ApplicationService
         ConnectionApplication::query()
             ->where('id', $applicationId)
             ->update(['assigned_to' => $agentId, 'status' => ConnectionApplication::STATUS_ASSIGNED]);
-        
+
         if (in_array(HoodProfile::find($agentId)->user->roles->first()?->name,
             [RolePermission::ROLE_EXTERNAL_HOOD_TEAM_LEAD])) {
             (new TsaSendAppliationService($applicationId))->sendApplication();
@@ -243,6 +243,8 @@ class ApplicationService
 
         $this->setSubmittedAtByServiceType($id, $submitType, $lead['service_interests']);
 
+        $noteService = new SubmittedLeadNote($existLead);
+        $noteService->addSubmittedNote();
         return $existLead;
     }
 
@@ -314,7 +316,6 @@ class ApplicationService
         $eacalateNote['type'] = 'Escalated';
 
         $allicationNoteService->createNotes($eacalateNote, $applicationId);
-
         return $existingApplication;
     }
 
@@ -460,6 +461,5 @@ class ApplicationService
             }
         }
     }
-
 
 }
