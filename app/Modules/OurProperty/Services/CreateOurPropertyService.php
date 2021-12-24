@@ -188,12 +188,18 @@ class CreateOurPropertyService
             "office" => null
         ];
         try {
-            $res["agency"] = Agency::where('name', $this->userRequestData->agency_name)->firstOrFail();
-            $res["office"] = $res["agency"]->offices()->firstOrFail();
             $res["agent"] = AgentProfile::whereHas(
                 'user',
                 fn(Builder $user) => $user->where('email', $this->userRequestData->agent_email)
             )->firstOrFail();
+
+            $res["agency"] = Agency::query()
+                ->where('id', $res["agent"]->agency_id)
+                ->where('name', $this->userRequestData->agency_name)
+                ->firstOrFail();
+
+            $res["office"] = $res["agency"]->offices()->firstOrFail();
+
 
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
