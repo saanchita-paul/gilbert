@@ -19,7 +19,7 @@
                 >
                 </ApplicantTable> -->
 
-                <ApplicationFilter v-model="advanceSearch" />
+                <ApplicationFilter v-model="advanceSearch" ></ApplicationFilter>
                 <!-- <v-text-field v-model="search" full-width /> -->
                 <router-view
                     :leadSrc="selectedSrc"
@@ -47,6 +47,7 @@ import LeadApplicationService from "@scripts/services/crm/LeadApplicationService
 import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
 import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
 import ApplicationFilter from './ApplicationFilter';
+
 
 export default {
     name: "ApplicationPage",
@@ -77,13 +78,14 @@ export default {
             totalItem: null,
             options: {},
             search: "",
-            advanceSearch: {
+            advanceSearchBluePrint: {
                 tenancyname:"",
                 address: "",
                 mobile: "",
                 source: "",
                 tenancytype: "",
-            }
+            },
+            advanceSearch: {}
         }
     },
 
@@ -132,6 +134,14 @@ export default {
       updateLeadAndatrics(leadId,userId) {
         this.leads.find(ld=>ld.id==leadId).assigned_to = userId;
         this.loadMetricTypes();
+        },
+        clearSearch(){
+            console.log("clicking slot")
+            this.advanceSearch = this.advanceSearchBluePrint;
+            this.$router.push({
+                    name: "application.list",
+                    query: this.advanceSearch,
+                });
         }
     },
 
@@ -163,6 +173,7 @@ export default {
                     name: "application.list",
                     query: val,
                 });
+                // this.loadLeads();
             },
             deep: true
         }

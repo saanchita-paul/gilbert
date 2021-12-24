@@ -1,9 +1,11 @@
 <template>
   <div>
+    <v-form ref="form">
     <div class="d-flex justify-end pt-2">
+      <!-- <slot/> -->
       <div class="px-3 py-1 clearButton" @click="clearSearch">
-        <v-icon medium color="black"> mdi mdi-close </v-icon>
-        Clear Filter
+            <v-icon medium color="black"> mdi mdi-close </v-icon>
+              Clear Filter
       </div>
     </div>
     <div class="d-flex">
@@ -93,6 +95,7 @@
       </v-select>
       <!-- tenancy type ends -->
     </div>
+     </v-form>
   </div>
 </template>
 
@@ -155,16 +158,17 @@ export default {
       });
     },
     clearSearch(){
-        this.name = ""
-        this.address = ""
-        this.mobile = ""
-        this.source = "all"
-        this.tenancytype = "all"
+      //   this.name = ""
+      //   this.address = ""
+      //   this.mobile = ""
+      //   this.source = "all"
+      //   this.tenancytype = "all"
         
-        this.$router.push({
-        name: "application.list",
-        query: {  },
-      });
+      //   this.$router.push({
+      //     name: "application.list",
+      //   query: {  },
+      // });
+        this.$refs.form.reset();
     }
   },
   watch: {
