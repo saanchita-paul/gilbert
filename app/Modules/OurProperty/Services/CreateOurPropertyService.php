@@ -4,9 +4,10 @@
 namespace OurProperty\Services;
 
 
+use App\Models\AgentProfile;
 use Exception;
 use App\Models\Agency;
-use App\Models\AgentProfile;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Identification;
 use App\Mail\AgentNotFoundMail;
@@ -18,7 +19,6 @@ use OurProperty\Models\OurProperty;
 use Illuminate\Support\Facades\Mail;
 use App\Models\ConnectionApplication;
 use App\Services\AddressMapperService;
-use Illuminate\Database\Eloquent\Builder;
 use App\Services\AuthService\JwtAuthService;
 use App\Modules\OurProperty\Services\OurPropertyMapper;
 use App\Models\ConnectionApplicationSecondaryACC as AuthorisedPerson;
@@ -205,18 +205,24 @@ class CreateOurPropertyService
             "office" => null
         ];
         try {
-            $res["agency"] = Agency::where('name', $this->userRequestData->agency_name)->firstOrFail();
-            $res["office"] = $res["agency"]->offices()->firstOrFail();
             $res["agent"] = AgentProfile::whereHas(
                 'user',
                 fn(Builder $user) => $user->where('email', $this->userRequestData->agent_email)
             )->firstOrFail();
 
+            $res["agency"] = Agency::query()
+                ->where('id', $res["agent"]->agency_id)
+                ->where('name', $this->userRequestData->agency_name)
+                ->firstOrFail();
+
+            $res["office"] = $res["agency"]->offices()->firstOrFail();
+
+
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
             Log::error($exception->getTraceAsString());
 
-            #todo: send email to support
+            #TODO: send email to support
             $this->sendAgentNotFoundEmail();
 
             throw new Exception("Provided `agency_name` or `agent_email` is not found in the system");
