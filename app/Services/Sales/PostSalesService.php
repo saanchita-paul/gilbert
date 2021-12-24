@@ -274,6 +274,7 @@ class PostSalesService
 
     private function stateMap($state)
     {
+
         $stateList = [
             'New South Wales' => 'NSW',
             'Victoria' => 'VIC',

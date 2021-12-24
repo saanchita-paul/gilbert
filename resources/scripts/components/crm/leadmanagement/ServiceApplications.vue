@@ -181,7 +181,7 @@
                                 v-for="plan in plans"
                                 :key="plan.key"
                                 :plan="plan"
-                                :selectedPlan="activeEaPlan"
+                                :selectedPlan="selected_plan"
                                 @selectPlan="planSelect"
                                 @view="view"
                                 @click.native="planSelect(plan,true)"
@@ -204,9 +204,9 @@
                                 :sumoPlanDetails="sumoPlanDetails"
                                 v-if="plan.name === 'sumo_saver'"
                                 :plan="plan" @soleDialog="soleDialog"
-                                @click.native="selectPlan({...plan, ...{name: sumoPlanName}}, 'sumo')" :isActive="activeOriginPlan">
+                                @click.native="selectPlan({...plan, ...{name: sumoPlanName}}, 'sumo')" :isActive="selected_plan">
                             </SumoPlan>
-                            <SolePlan v-else :plan="plan" @soleDialog="soleDialog" @click.native="selectPlan(plan)" :isActive="activeOriginPlan"></SolePlan>
+                            <SolePlan v-else :plan="plan" @soleDialog="soleDialog" @click.native="selectPlan(plan)" :isActive="selected_plan"></SolePlan>
                         </div>
                     </div>
                 </v-col>
@@ -328,7 +328,7 @@ export default {
             activeEaPlan: '',
             waterStatus: null,
             origin2: null,
-            isActivePlan: null,
+            selected_plan: null,
             solePlanDialog: false,
             sumoPlanDetails: new SumoPlanDetails({}),
             isSumoLoading: false,
@@ -464,7 +464,7 @@ export default {
                 case this.tabMapper.Water:
                     return !LeadApplicationService.canSubmitWater(this.leadSummary.connection_services)
                 case this.tabMapper.Energy:
-                    return !LeadApplicationService.canSubmitEnergy(this.leadSummary.connection_services) || isNull(this.selectedPowerProvider);
+                    return !LeadApplicationService.canSubmitEnergy(this.leadSummary.connection_services) || isNull(this.selectedPowerProvider) || !this.selected_plan;
                 default:
                     return true;
             }
@@ -524,6 +524,7 @@ export default {
             return LeadApplicationService.canEditService(this.leadSummary.connection_services, service?.toLowerCase())
         },
         updateService(service) {
+            this.resetSelectedPlan();
             if (this.isServiceEditable(service)) {
                 if((service === 'Gas' || service === 'Power') && this.selectedPowerProvider === 'sumo' ){
                     this.onSelectProvider1('sumo');
@@ -595,6 +596,7 @@ export default {
         },
 
         onSelectProvider(providerId) {
+            this.resetSelectedPlan()
             this.selectedPowerProvider = providerId;
         },
         async setSumoDetailsData(name) {
@@ -624,10 +626,14 @@ export default {
             }
 
         },
+        resetSelectedPlan() {
+            this.selected_plan = null;
+        },
         async onSelectProvider1(name) {
             this.selectedPowerProvider = name;
+            this.resetSelectedPlan()
             // TODO need to decide if provider is
-            if(name == 'sumo'){
+            if(name === 'sumo'){
 
                 //listening on ApplicationDetailsPage component
                 this.$eventBus.$emit("validate", this.setSumoDetailsData)
@@ -639,29 +645,11 @@ export default {
 
         },
         actionOnSelectProvider(name){
-            console.log('sumo' ,  name)
             const providerData  = this.providers.find((pl)=>{
                 return pl.name === name;
             })
             this.origin2 = providerData.plans;
-            this.isActivePlan = providerData.default_plan;
             this.selectedProviderId = name
-
-            console.log('this.selectedProviderId', this.selectedProviderId);
-
-            if(this.selectedProviderId === 'sumo') {
-                if( !(this.isActivePlan === 'sumo_saver' || this.isActivePlan === 'sumo_assure'|| this.isActivePlan === 'sumo_select')) {
-                    // this.isActivePlan = "sumo_saver";
-
-                }
-            }
-
-            if(this.selectedProviderId === 'origin') {
-                if( !(this.isActivePlan === 'origin_go' || this.isActivePlan === 'origin_go_variable'|| this.isActivePlan === 'origin_basic')) {
-                    // this.isActivePlan = "origin_go";
-
-                }
-            }
 
         },
         updateStatus(text) {
@@ -669,8 +657,6 @@ export default {
         },
 
         selectPlan(plan, provider = null) {
-
-          console.log(this.selectedPowerProvider)
           if( this.selectedPowerProvider === 'ea') {
             this.activeEaPlan =  plan.name;
             this.activeOriginPlan = '';
@@ -680,9 +666,9 @@ export default {
             this.activeOriginPlan = plan.name;
             this.activeEaPlan = '';
           }
+            this.selected_plan = plan.name;
 
 
-            this.isActivePlan = plan.name;
             this.activeOriginPlan = plan.name;
                 //todo update provider array for sumo plan
                 console.log('plan provider click' , plan);
@@ -694,7 +680,6 @@ export default {
                 }
 
                 if(this.selectedPowerProvider !== ''){
-                  this.isActivePlan = plan.name;
                   this.activeOriginPlan = plan.name;
                     LeadApplicationService.updateApplicationProviders(payload , this.leadSummary.id);
                 }
@@ -711,6 +696,8 @@ export default {
             const connectionService = this.leadSummary.connection_services.find(data => data.service_type === 'power' || data.service_type === 'gas');
 
             this.selectedPowerProvider = connectionService?.provider_name;
+            this.selected_plan = connectionService?.plan_type;
+
             if(!this.selectedPowerProvider) {
                 // this.selectedPowerProvider = 'ea';
                 // this.activeEaPlan = 'total_plan';
@@ -733,9 +720,9 @@ export default {
 
         submit(){
             let subType = 'energy';
-            if(this.tabMapper.Energy == this.tab){
+            if(this.tabMapper.Energy === this.tab){
                 subType = 'energy';
-            } else if(this.tabMapper.Water == this.tab){
+            } else if(this.tabMapper.Water === this.tab){
                 subType = 'water';
             } else {
                 subType = 'internet';
