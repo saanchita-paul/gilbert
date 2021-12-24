@@ -10,7 +10,7 @@
     </div>
     <div class="d-flex">
       <v-text-field
-        v-model="$attrs.value.tenancyname"
+        v-model="$attrs.value.tenancy_name"
         full-width
         outlined
         dense
@@ -71,7 +71,7 @@
       <!-- tenancy type starts -->
       <v-select
         placeholder="Tenancy"
-        v-model="$attrs.value.tenancytype"
+        v-model="$attrs.value.tenancy_type"
         item-text="text"
         item-value="value"
         :items="tanancyTypeOptions"
@@ -104,7 +104,7 @@ export default {
   name: "ApplicationFilter",
   data() {
     return {
-      tenancyname: "",
+      tenancy_name: "",
       name: "",
       address: "",
       mobile: "",
@@ -147,7 +147,7 @@ export default {
         { text: "All", value: "all" },
       ],
       leadSrc: { default: "all" },
-      tenancyType: { default: "all" },
+      tenancy_Type: { default: "all" },
     };
   },
   methods: {
@@ -162,7 +162,7 @@ export default {
       //   this.address = ""
       //   this.mobile = ""
       //   this.source = "all"
-      //   this.tenancytype = "all"
+      //   this.tenancy_type = "all"
         
       //   this.$router.push({
       //     name: "application.list",
@@ -172,11 +172,11 @@ export default {
     }
   },
   watch: {
-    // tenancyname() {
+    // tenancy_name() {
     //   console.log("search printing");
     //   this.$router.push({
     //     name: "application.list",
-    //     query: { ...this.$route.query, ...{ tenancyname: this.tenancyname } },
+    //     query: { ...this.$route.query, ...{ tenancy_name: this.tenancy_name } },
     //   });
     // },
     address() {
@@ -200,11 +200,11 @@ export default {
         query: { ...this.$route.query, ...{ src: this.leadSrc } },
       });
     },
-    tenancyType() {
+    tenancy_Type() {
       console.log("search printing");
       this.$router.push({
         name: "application.list",
-        query: { ...this.$route.query, ...{ tenancy: this.tenancyType } },
+        query: { ...this.$route.query, ...{ tenancy: this.tenancy_Type } },
       });
     },
   },

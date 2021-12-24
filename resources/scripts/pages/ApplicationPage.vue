@@ -47,8 +47,8 @@ import LeadApplicationService from "@scripts/services/crm/LeadApplicationService
 import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
 import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
 import ApplicationFilter from './ApplicationFilter';
-
-
+import {isEqual} from "lodash-es";
+// import { LeadSearchFilterModel } from '@scripts/models/'
 export default {
     name: "ApplicationPage",
     components: {
@@ -79,11 +79,11 @@ export default {
             options: {},
             search: "",
             advanceSearchBluePrint: {
-                tenancyname:"",
+                tenancy_name:"",
                 address: "",
                 mobile: "",
                 source: "",
-                tenancytype: "",
+                tenancy_type: "",
             },
             advanceSearch: {}
         }
@@ -101,7 +101,7 @@ export default {
 
         async loadLeads () {
             console.log("api calling");
-            let data = await LeadApplicationService.loadUserLeads(this.sort_search_meta, this.activeLeadType, this.selectedSrc);
+            let data = await LeadApplicationService.loadUserLeads(this.sort_search_meta, this.activeLeadType, this.selectedSrc, this.advanceSearch);
             this.leads = data.applications;
             this.isLoaded = true;
             this.page = data.pagination.current_page;
@@ -148,6 +148,10 @@ export default {
     mounted() {
         this.loadMetricTypes();
         this.loadLeads();
+        this.advanceSearch = { ...this.$route.query};
+        this.loadLeads();
+        console.log("query" , this.$route.query)
+
     },
     watch: {
         '$route': {
@@ -159,20 +163,40 @@ export default {
                 this.activeLeadType = this.$route.query?.type;
                 this.selectedSrc = this.$route.query?.source
                 // console.log("watch", reload)
-                if (reload) {
-                    this.loadLeads();
-                }
+                // if (reload) {
+                //     this.loadLeads();
+                // }
+            }
+        },
+        activeLeadType: {
+            handler(value){
+                this.loadLeads();
             }
         },
         advanceSearch:{
             handler(value) {
                 console.log("printing value" , value)
                 let val = { ...this.$route.query, ...value }
+                if(isEqual(this.$route.query , value)) return;
+
                 console.log('updaed' , val)
                 this.$router.push({
                     name: "application.list",
                     query: val,
                 });
+                this.loadLeads();
+
+                // let reload = value.tenancy_type !== this.$route.query?.tenancy_type
+                //     || value.source !== this.$route.query?.source
+                //     || value.teancy_name !== this.$route.query?.teancy_name
+                //     || value.mobile !== this.$route.query?.mobile
+                //     || value.address !== this.$route.query?.address
+                // console.log("mobile" , value.mobile)
+                // console.log("query mobile" , this.$route.query?.mobile)
+                // if(value.mobile !== this.$route.query?.mobile){
+                    
+                // }
+
                 // this.loadLeads();
             },
             deep: true
