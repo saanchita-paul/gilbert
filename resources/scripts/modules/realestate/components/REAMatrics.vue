@@ -22,20 +22,22 @@
                     </v-col>
 
                     <v-col>
-                        <AppMatric :data = "matrics"></AppMatric>
+                        <AppMetric :data = "matrics.application_metrics.app_created"></AppMetric>
                     </v-col>
                     <v-col>
-                        <AppMatric  :data = "matrics"></AppMatric>
+                        <AppMetric  :data = "matrics.application_metrics.app_waiting_tenant"></AppMetric>
                     </v-col>
                     <v-col>
-                        <AppMatric  :data = "matrics"></AppMatric>
+                        <AppMetric  :data = "matrics.application_metrics.app_submitted_retialer"></AppMetric>
                     </v-col>
                     <v-col>
-                        <AppMatric  :data = "matrics"></AppMatric>
+                        <AppMetric  :data = "matrics.application_metrics.app_successful"></AppMetric>
                     </v-col>
                     <v-col>
-                        <AppMatric  :data = "matrics"></AppMatric>
+                        <AppMetric  :data = "matrics.application_metrics.app_closed"></AppMetric>
                     </v-col>
+
+
                 </v-row>
             </v-col>
             <v-col cols="1" class="text-center px-0">
@@ -46,66 +48,10 @@
                     <v-col cols="12" class="pa-0 ma-0">
                         <p class="mb-0 matrics-header">Utility Service</p>
                     </v-col>
-                    <v-col cols="4">
-                        <p class="mb-0  text-center service"><v-icon color="yellow">mdi-flash</v-icon>Electricity</p>
-                        <v-row>
-                            <v-col>
-                                <v-row class="matrics text-center">
-                                    <p class="matrics-title mb-1">{{'1000'}}</p>
-                                    <p class="matrics-subtitle">submitted</p>
-                                </v-row>
-                            </v-col>
-                            <v-col cols="1" class="text-center">
-                                <v-divider vertical></v-divider>
-                            </v-col>
-                            <v-col>
-                                <v-row class="matrics text-center">
-                                    <p class="matrics-title mb-1">{{'1000'}}</p>
-                                    <p class="matrics-subtitle">Connected</p>
-                                </v-row>
-                            </v-col>
-                        </v-row>
-                    </v-col>
-                    <v-col cols="4">
-                        <p class="mb-0  text-center service"><v-icon color="orange">mdi-fire</v-icon>Gas</p>
-                        <v-row>
-                            <v-col>
-                                <v-row class="matrics text-center">
-                                    <p class="matrics-title mb-1">{{'1000'}}</p>
-                                    <p class="matrics-subtitle">submitted</p>
-                                </v-row>
-                            </v-col>
-                            <v-col cols="1" class="text-center">
-                                <v-divider vertical></v-divider>
-                            </v-col>
-                            <v-col>
-                                <v-row class="matrics text-center">
-                                    <p class="matrics-title mb-1">{{'1000'}}</p>
-                                    <p class="matrics-subtitle">Connected</p>
-                                </v-row>
-                            </v-col>
-                        </v-row>
-                    </v-col>
-                    <v-col cols="4">
-                        <p class="mb-0 service text-center"><v-icon color="#9C27B0">mdi-wifi</v-icon>Internet</p>
-                        <v-row>
-                            <v-col>
-                                <v-row class="matrics text-center">
-                                    <p class="matrics-title mb-1">{{'1000'}}</p>
-                                    <p class="matrics-subtitle">submitted</p>
-                                </v-row>
-                            </v-col>
-                            <v-col cols="1" class="text-center">
-                                <v-divider vertical></v-divider>
-                            </v-col>
-                            <v-col>
-                                <v-row class="matrics text-center">
-                                    <p class="matrics-title mb-1">{{'1000'}}</p>
-                                    <p class="matrics-subtitle">Connected</p>
-                                </v-row>
-                            </v-col>
-                        </v-row>
-                    </v-col>
+                    <ServiceMetrics :data="matrics.utility_metrics.ele_metric" title="Electricity" ></ServiceMetrics>
+                    <ServiceMetrics :data="matrics.utility_metrics.gas_metric" title="Gas" ></ServiceMetrics>
+                    <ServiceMetrics :data="matrics.utility_metrics.internet_metric" title="Internet" ></ServiceMetrics>
+
                 </v-row>
             </v-col>
         </v-row>
@@ -114,32 +60,23 @@
 
 <script>
 import LeadMetrics from "@scripts/components/crm/LeadMetrics";
-import AppMatric from "@scripts/modules/realestate/components/AppMatric";
+import AppMetric from "@scripts/modules/realestate/components/AppMatric";
+import ServiceMetrics from "@scripts/modules/realestate/components/ServiceMetrics";
 export default {
     name: "REAMatrics",
     components: {
-        AppMatric, LeadMetrics
+        AppMetric, LeadMetrics, ServiceMetrics
     },
-    props: ['agency'],
-    data () {
-        return {
-            matrics : {
-                value: 1000,
-                title: 'Application Created'
-            }
-        }
-    },
+    props: ['agency', 'matrics'],
+
     methods: {
         backToAgency() {
-            let agencyId = this.$route.params?.id;
             this.$router.push(
                 {
                     name:'real.state.agency.home'
-
                 });
         },
         backToOffice() {
-            let officeId = this.$route.params?.officeId;
             let agencyId = this.$route.params?.id;
             this.$router.push(
                 {
