@@ -20,8 +20,8 @@
 <!--                    </v-col>-->
 <!--                </v-row>-->
 <!--            </v-card>-->
-            
-            <REAMatrics :agency="agency">
+
+            <REAMatrics :agency="agency" :matrics="matrics">
 
             </REAMatrics>
 
@@ -41,7 +41,7 @@
                 <div style="flex-basis: 40%;">
                     <Search @updateSearch="updateSearch"></Search>
                 </div>
-                
+
                 <div class="mx-2 buttonLarge">
                     <v-btn @click="changeComponent('ApplicatoinListTable')" :class="getButtonClass('ApplicatoinListTable')"> Performance Operation </v-btn>
                 </div>
@@ -60,7 +60,7 @@
             </div>
         </div>
         <!-- search button starts -->
-            
+
         <!-- search button ends -->
 
 
@@ -109,6 +109,7 @@
     import AgentListTable from "@scripts/modules/realestate/components/AgentListTable";
     import ApplicatoinListTable from "@scripts/modules/realestate/components/OfficeApplicatoinListTable";
     import REAMatrics from "@scripts/modules/realestate/components/REAMatrics";
+    import MartricServices from "@scripts/modules/realestate/services/MartricServices";
     export default {
         name: "CrmUserDatatable",
         components: {
@@ -127,7 +128,7 @@
                 usersList: [],
                 activeOffice: null,
                 roles: Roles,
-                
+
                 page: 1,
                 pageCount: 0,
                 itemsPerPage: 10,
@@ -186,7 +187,8 @@
                 loadingEmail: [],
                 snackbar: false,
                 timeout: 2000,
-                dynamicComponent: "AgentListTable"
+                dynamicComponent: "AgentListTable",
+                matrics: null,
             }
         },
         methods: {
@@ -222,7 +224,7 @@
             },
 
             async checkDataValidation(agency , type){
-                
+
                 if(!this.$refs[`inputRef`+type+agency.id]?.hasError){
                     await AgencyService.updateUserData(agency, agency.id);
                 }
@@ -331,17 +333,23 @@
                 this.dynamicComponent = name;
             },
             getButtonClass(name){
-                 return this.dynamicComponent === name ? 'buttonActive' : 'buttonInactive'; 
+                 return this.dynamicComponent === name ? 'buttonActive' : 'buttonInactive';
             },
             setEditMode(){
                 this.editMode = !this.editMode;
             },
+            async getREAMatrics()
+            {
+                this.matrics = await MartricServices.getMatrics(1)
+            }
         },
         async mounted() {
+            await this.getREAMatrics();
             await this.loadAgencyById();
             await this.loadUserData();
             this.activeOffice = this.$route.params.officeId;
             this.loadOffice();
+           
 
         },
     }
@@ -362,7 +370,7 @@
 
     .buttonActive{
         background: #DDE2FF;
-        color:  #542E89; 
+        color:  #542E89;
     }
 
     .buttonInactive{
