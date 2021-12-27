@@ -11,5 +11,8 @@ export default class CrmUser{
         this.email = user?.email;
         this.profile_img = profile_photo;
         this.is_active = user?.is_active;
+        this.last_submitted = '02/22/2022'; //todo: need to get from server
+        this.visa = 1;  //todo: need to get from server
+        this.cvr = '76%'  //todo: need to get from server
     }
 }
