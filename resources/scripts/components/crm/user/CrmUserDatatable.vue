@@ -66,7 +66,7 @@
 
         <!-- dynamic components starts -->
             <keep-alive>
-                <component :is="dynamicComponent" :editMode="editMode" ></component>
+                <component :is="dynamicComponent" :officeId="activeOffice" :editMode="editMode" ></component>
             </keep-alive>
         <!-- dynamic component ends -->
 
@@ -239,21 +239,21 @@
             },
 
             async loadUserData() {
-                const meta = {
-                    search: this.search,
-                    page: this.options.page,
-                    per_page: this.options.itemsPerPage,
-                    is_descending: this.options.sortDesc.length != 0? this.options.sortDesc[0]: false,
-                    sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: '',
-                }
-                const data = await CrmUserService.loadUserData(meta, this.$route.params.id, this.$route.params.officeId);
-                console.log(data)
-                this.usersList = data?.usersAgency;
-                console.log(this.usersList)
-                this.page = data.pagination.current_page;
-                this.itemsPerPage = data.pagination.per_page;
-                this.totalItem = data.pagination.total;
-                this.loading = false;
+                // const meta = {
+                //     search: this.search,
+                //     page: this.options.page,
+                //     per_page: this.options.itemsPerPage,
+                //     is_descending: this.options.sortDesc.length != 0? this.options.sortDesc[0]: false,
+                //     sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: '',
+                // }
+                // const data = await CrmUserService.loadUserData(meta, this.$route.params.id, this.$route.params.officeId);
+                // console.log(data)
+                // this.usersList = data?.usersAgency;
+                // console.log(this.usersList)
+                // this.page = data.pagination.current_page;
+                // this.itemsPerPage = data.pagination.per_page;
+                // this.totalItem = data.pagination.total;
+                // this.loading = false;
             },
 
             async loadOffice() {
