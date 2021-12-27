@@ -96,7 +96,7 @@ export default {
             this.itemsPerPage = data.pagination.per_page;
             this.totalItem = data.pagination.total;
             this.selected_lead_id = this.leads[0]?.id;
-            this.loadLeadSummary();
+            this.leads.length ? this.loadLeadSummary() : "";
             // console.log('lead list', this.leads);
         },
 
