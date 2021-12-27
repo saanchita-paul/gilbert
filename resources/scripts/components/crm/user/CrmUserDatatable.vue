@@ -36,27 +36,37 @@
                 </v-col>
             </v-row> -->
 
-        <!-- search button starts -->
+        <div class="d-flex justifyBetween">
             <div class="d-flex my-2">
                 <div style="flex-basis: 40%;">
                     <Search @updateSearch="updateSearch"></Search>
                 </div>
                 
-                <div style="width: 200px;" class="mx-2">
+                <div class="mx-2 buttonLarge">
                     <v-btn @click="changeComponent('ApplicatoinListTable')" :class="getButtonClass('ApplicatoinListTable')"> Performance Operation </v-btn>
                 </div>
 
-                <div style="width: 200px;" class="mx-2">
+                <div class="mx-2 buttonLarge">
                     <v-btn @click="changeComponent('AgentListTable')" :class="getButtonClass('AgentListTable')"> Backend of agency </v-btn>
                 </div>
-
             </div>
+            <div v-if="dynamicComponent === 'AgentListTable'" class="d-flex my-2">
+                <v-btn class="mr-4" @click="setEditMode">
+                    {{ editMode ? 'Cancel Edit' : 'Edit Staff' }}
+                </v-btn>
+                <v-btn color="primary" @click="addNewUser">
+                    <v-icon left>add</v-icon> Add New Staff
+                </v-btn>
+            </div>
+        </div>
+        <!-- search button starts -->
+            
         <!-- search button ends -->
 
 
         <!-- dynamic components starts -->
             <keep-alive>
-                <component :officeId="activeOffice" :is="dynamicComonent" ></component>
+                <component :is="dynamicComponent" :officeId="activeOffice" :editMode="editMode" ></component>
             </keep-alive>
         <!-- dynamic component ends -->
 
@@ -124,6 +134,7 @@
                 totalItem: null,
                 loading: true,
                 options: {},
+                editMode: false,
                 headers:  [
                     {
                         text: 'First Name',
@@ -175,7 +186,7 @@
                 loadingEmail: [],
                 snackbar: false,
                 timeout: 2000,
-                dynamicComonent: "AgentListTable"
+                dynamicComponent: "AgentListTable"
             }
         },
         methods: {
@@ -317,12 +328,14 @@
                 return false;
             },
             changeComponent(name){
-                this.dynamicComonent = name;
+                this.dynamicComponent = name;
             },
             getButtonClass(name){
-                 return this.dynamicComonent == name ? 'buttonActive' : 'buttonInactive'; 
-            }
-
+                 return this.dynamicComponent === name ? 'buttonActive' : 'buttonInactive'; 
+            },
+            setEditMode(){
+                this.editMode = !this.editMode;
+            },
         },
         async mounted() {
             await this.loadAgencyById();
@@ -374,10 +387,15 @@
         font-size: 0.875em;
         font-weight: 700;
     }
-
     .matrics-header {
         font-size: 1em;
         font-weight: 700;
+    }
+    .justifyBetween{
+        justify-content: space-between !important;
+    }
+    .buttonLarge{
+        width: 200px !important;
     }
 
 </style>

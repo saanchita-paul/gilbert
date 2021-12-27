@@ -1,117 +1,149 @@
 <template>
     <div>
         <v-row>
-                <v-col cols="12" class="crm-table">
-                    <v-data-table
-                            dense
-                            :headers="headers"
-                            :items="usersList"
-                            :options.sync="options"
-                            :server-items-length="totalItem"
-                            :loading="loading"
-                            class="elevation-1 row-pointer"
-                    >
+            <v-col cols="12" class="crm-table">
+                <v-data-table
+                    dense
+                    :headers="headers"
+                    :items="usersList"
+                    :options.sync="options"
+                    :server-items-length="totalItem"
+                    :loading="loading"
+                    class="elevation-1 row-pointer"
+                >
+                    <template v-slot:item.first_name="{ item }">
+                        <ValidationProvider name="Firstname" rules="required"  v-slot="{ errors }">
+                            <v-text-field
+                                class="mt-6"
+                                outlined
+                                dense
+                                placeholder="Firstname"
+                                v-model="item.first_name"
+                                :ref="'inputRefFirstname'+item.id"
+                                @blur="updateUserData(item , 'Firstname')"
+                                :error-messages=" errors[0]"
+                            ></v-text-field>
+                        </ValidationProvider>
+                    </template>
 
-                        <template v-slot:item.first_name="{ item }">
-                            <ValidationProvider name="Firstname" rules="required"  v-slot="{ errors }">
-                                <v-text-field
-                                    class="mt-6"
-                                    outlined
-                                    dense
-                                    placeholder="Firstname"
-                                    v-model="item.first_name"
-                                    :ref="'inputRefFirstname'+item.id"
-                                    @blur="updateUserData(item , 'Firstname')"
-                                    :error-messages=" errors[0]"
-                                ></v-text-field>
-                            </ValidationProvider>
-                        </template>
-                        <template v-slot:item.last_name="{ item }">
-                            <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
-                                <v-text-field
-                                    class="mt-6"
-                                    outlined
-                                    dense
-                                    placeholder="Lastname"
-                                    v-model="item.last_name"
-                                    :ref="'inputRefLastname'+item.id"
-                                    @blur="updateUserData(item , 'Lastname')"
-                                    :error-messages=" errors[0]"
-                                ></v-text-field>
-                            </ValidationProvider>
-                        </template>
+                    <template v-slot:item.last_name="{ item }">
+                        <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
+                            <v-text-field
+                                class="mt-6"
+                                outlined
+                                dense
+                                placeholder="Lastname"
+                                v-model="item.last_name"
+                                :ref="'inputRefLastname'+item.id"
+                                @blur="updateUserData(item , 'Lastname')"
+                                :error-messages=" errors[0]"
+                            ></v-text-field>
+                        </ValidationProvider>
+                    </template>
 
-                        <template v-slot:item.role="{ item }">
-                                <ValidationProvider name="Role" rules="required"  v-slot="{ errors }">
-                                    <v-select outlined dense
-                                            class="mt-6"
-                                            v-model="item.role"
-                                            :items="roles.AGENCY"
-                                            :error-messages=" errors[0]"
-                                            :ref="'inputRefRole'+item.id"
-                                            @blur="updateUserData(item , 'Role')"
-                                            placeholder="Please Select">
-                                    </v-select>
-                                </ValidationProvider>
+                    <template v-slot:item.role="{ item }">
+                        <ValidationProvider name="Role" rules="required"  v-slot="{ errors }">
+                            <v-select outlined dense
+                                class="mt-6"
+                                v-model="item.role"
+                                :items="roles.AGENCY"
+                                :error-messages=" errors[0]"
+                                :ref="'inputRefRole'+item.id"
+                                @blur="updateUserData(item , 'Role')"
+                                placeholder="Please Select">
+                            </v-select>
+                        </ValidationProvider>
+                    </template>
 
-                        </template>
+                    <template v-slot:item.submitted_lead="{ item }">
+                        <p>{{ item.submitted_lead }}</p>
+                    </template>
 
-                        <template v-slot:item.phone="{ item }">
-                                <ValidationProvider name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
-                                    <v-text-field
-                                        class="mt-6"
-                                        :maxlength="10"
-                                        outlined
-                                        dense
-                                        placeholder="04XX XXX XXX"
-                                        v-model="item.phone"
-                                        :ref="'inputRefPhone'+item.id"
-                                        @blur="updateUserData(item, 'Phone')"
-                                        :error-messages=" errors[0]"
-                                    ></v-text-field>
-                                </ValidationProvider>
+                    <template v-slot:item.last_submitted="{ item }">
+                        <p>{{ item.last_submitted }}</p>
+                    </template>
 
-                        </template>
-                        <template v-slot:item.email="{ item }">
-                                <ValidationProvider
-                                    name="Email"
-                                    rules="required|email|unique-email-update:@h_id"
-                                    v-slot="{ errors }"
-                                >
-                                    <v-text-field
-                                        class="mt-6"
-                                        outlined
-                                        v-model="item.email"
-                                        dense
-                                        :error-messages=" errors[0]"
-                                        :ref="'inputRefEmail'+item.id"
-                                        @blur="updateUserData(item, 'Email')"
-                                    ></v-text-field>
-                                </ValidationProvider>
+                    <template v-slot:item.email="{ item }">
+                        <ValidationProvider
+                            name="Email"
+                            rules="required|email|unique-email-update:@h_id"
+                            v-slot="{ errors }"
+                        >
+                            <v-text-field
+                                class="mt-6"
+                                outlined
+                                v-model="item.email"
+                                dense
+                                :error-messages=" errors[0]"
+                                :ref="'inputRefEmail'+item.id"
+                                @blur="updateUserData(item, 'Email')"
+                            ></v-text-field>
+                        </ValidationProvider>
                         <ValidationProvider name="h_id">
                             <v-text-field v-model="item.id" v-show="false" />
                         </ValidationProvider>
-                        </template>
-                        <template v-slot:item.action="{ item }">
-                                <v-tooltip bottom>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn
-                                            v-bind="attrs"
-                                            @click="sendMailToUser(item)"
-                                            :loading="isLoading(item)"
-                                            v-on="on"
-                                                icon
-                                                >
-                                            <v-icon>mdi-send</v-icon>
-                                        </v-btn>
-                                </template>
-                                <span>Invite</span>
-                                </v-tooltip>
-                        </template>
+                    </template>
 
-                    </v-data-table>
-                </v-col>
-            </v-row>
+                    <template v-slot:item.phone="{ item }">
+                        <ValidationProvider name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                            <v-text-field
+                                class="mt-6"
+                                :maxlength="10"
+                                outlined
+                                dense
+                                placeholder="04XX XXX XXX"
+                                v-model="item.phone"
+                                :ref="'inputRefPhone'+item.id"
+                                @blur="updateUserData(item, 'Phone')"
+                                :error-messages=" errors[0]"
+                            ></v-text-field>
+                        </ValidationProvider>
+                    </template>
+
+                    <template v-slot:item.cvr="{ item }">
+                        <p>{{ item.cvr }}</p>
+                    </template>
+
+                    <template v-slot:item.visa="{ item }">
+                        <ValidationProvider name="Visa" rules="required"  v-slot="{ errors }">
+                            <v-select outlined dense
+                                class="mt-6"
+                                v-model="item.visa"
+                                :items="visaItems"
+                                :error-messages=" errors[0]"
+                                :ref="'inputRefVisa'+item.id"
+                                @blur="updateUserData(item , 'Visa')"
+                                placeholder="Please Select">
+                            </v-select>
+                        </ValidationProvider>
+                    </template>
+
+                    <template v-slot:item.active="{ item }">
+                        <v-switch
+                            v-model="item.is_active"
+                            @change="updateUserData(item , 'Active')">
+                        </v-switch>
+                    </template>
+
+                    <template v-slot:item.action="{ item }">
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                    v-bind="attrs"
+                                    @click="sendMailToUser(item)"
+                                    :loading="isLoading(item)"
+                                    v-on="on"
+                                        icon
+                                        >
+                                    <v-icon>mdi-send</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Invite</span>
+                        </v-tooltip>
+                    </template>
+                </v-data-table>
+            </v-col>
+        </v-row>
     </div>
 </template>
 
@@ -128,9 +160,15 @@
     import AppMatric from "@scripts/modules/realestate/components/AppMatric";
     export default {
         name: "AgentListTable",
+        props:['editMode'],
         components: {
             AppMatric,
-            UserCreatedSuccessfulModal, UserCreationConfirmationModal, CreateUserModal, Search, LeadMetrics},
+            UserCreatedSuccessfulModal,
+            UserCreationConfirmationModal,
+            CreateUserModal,
+            Search,
+            LeadMetrics
+        },
         data () {
             return {
                 matrics : {
@@ -166,27 +204,51 @@
                         sortable: true,
                     },
                     {
-                        text: 'Applications',
-                        align: 'start',
-                        value: 'submitted_lead',
-                        sortable: true,
-                    },
-                    {
                         text: 'Role',
                         align: 'start',
                         value: 'role',
                         sortable: true,
                     },
                     {
-                        text: 'Mobile',
+                        text: 'Apps',
                         align: 'start',
-                        value: 'phone',
+                        value: 'submitted_lead',
+                        sortable: false,
+                    },
+                    {
+                        text: 'Last Submitted',
+                        align: 'start',
+                        value: 'last_submitted',
                         sortable: false,
                     },
                     {
                         text: 'Email',
                         align: 'start',
                         value: 'email',
+                        sortable: false,
+                    },
+                    {
+                        text: 'Contact',
+                        align: 'start',
+                        value: 'phone',
+                        sortable: false,
+                    },
+                    {
+                        text: 'CVR%',
+                        align: 'start',
+                        value: 'cvr',
+                        sortable: false,
+                    },
+                    {
+                        text: 'Visa',
+                        align: 'start',
+                        value: 'visa',
+                        sortable: false,
+                    },
+                    {
+                        text: 'Active',
+                        align: 'start',
+                        value: 'active',
                         sortable: false,
                     },
                     {
@@ -202,7 +264,11 @@
                 isLoaded: false,
                 loadingEmail: [],
                 snackbar: false,
-                timeout: 2000
+                timeout: 2000,
+                visaItems: [
+                    { text: 'Yes', value: 1 },
+                    { text: 'No', value: 0 },
+                ],
             }
         },
         methods: {
@@ -263,9 +329,7 @@
                     sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: '',
                 }
                 const data = await CrmUserService.loadUserData(meta, this.$route.params.id, this.$route.params.officeId);
-                console.log(data)
                 this.usersList = data?.usersAgency;
-                console.log(this.usersList)
                 this.page = data.pagination.current_page;
                 this.itemsPerPage = data.pagination.per_page;
                 this.totalItem = data.pagination.total;
