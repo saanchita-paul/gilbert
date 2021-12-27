@@ -7,20 +7,7 @@
                     <h3 class="page-title">Total Applications: {{total_leads}}</h3>
                     <ApplicationsMetrics v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal"></ApplicationsMetrics>
                 </v-card>
-                <!-- <ApplicantTable
-                    :leadSrc="selectedSrc"
-                    v-if="isLoaded"
-                    :applications="leads"
-                    :totalItem="totalItem"
-                    :currentLead="leadDetails"
-                    @refreshDataTable="refreshDataTable"
-                    @openLeadSummary="openLeadSummary"
-                    @updateLeadAndatrics="updateLeadAndatrics"
-                >
-                </ApplicantTable> -->
-
                 <ApplicationFilter v-model="advanceSearch" ></ApplicationFilter>
-                <!-- <v-text-field v-model="search" full-width /> -->
                 <router-view
                     :leadSrc="selectedSrc"
                     v-if="isLoaded"
@@ -46,8 +33,9 @@ import ApplicationDetails from "@scripts/components/crm/leadmanagement/Applicati
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
 import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
-import ApplicationFilter from './ApplicationFilter';
-
+import {isEqual , pick} from "lodash-es";
+import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel'
+import ApplicationFilter from '@scripts/pages/ApplicationFilter';
 
 export default {
     name: "ApplicationPage",
@@ -79,13 +67,13 @@ export default {
             options: {},
             search: "",
             advanceSearchBluePrint: {
-                tenancyname:"",
+                tenancy_name:"",
                 address: "",
                 mobile: "",
                 source: "",
-                tenancytype: "",
+                tenancy_type: "",
             },
-            advanceSearch: {}
+            advanceSearch: new LeadSearchFilterModel()
         }
     },
 
@@ -101,7 +89,7 @@ export default {
 
         async loadLeads () {
             console.log("api calling");
-            let data = await LeadApplicationService.loadUserLeads(this.sort_search_meta, this.activeLeadType, this.selectedSrc);
+            let data = await LeadApplicationService.loadUserLeads(this.sort_search_meta, this.activeLeadType, this.selectedSrc, this.advanceSearch);
             this.leads = data.applications;
             this.isLoaded = true;
             this.page = data.pagination.current_page;
@@ -147,7 +135,9 @@ export default {
 
     mounted() {
         this.loadMetricTypes();
+        this.advanceSearch = new LeadSearchFilterModel(this.$route.query);
         this.loadLeads();
+
     },
     watch: {
         '$route': {
@@ -159,21 +149,25 @@ export default {
                 this.activeLeadType = this.$route.query?.type;
                 this.selectedSrc = this.$route.query?.source
                 // console.log("watch", reload)
-                if (reload) {
-                    this.loadLeads();
-                }
+                // if (reload) {
+                //     this.loadLeads();
+                // }
+            }
+        },
+        activeLeadType: {
+            handler(){
+                this.loadLeads();
             }
         },
         advanceSearch:{
             handler(value) {
-                console.log("printing value" , value)
-                let val = { ...this.$route.query, ...value }
-                console.log('updaed' , val)
+                let params = { ...this.$route.query, ...value }
+                if(isEqual(this.$route.query , value)) return;
                 this.$router.push({
                     name: "application.list",
-                    query: val,
+                    query: params,
                 });
-                // this.loadLeads();
+                this.loadLeads();
             },
             deep: true
         }
