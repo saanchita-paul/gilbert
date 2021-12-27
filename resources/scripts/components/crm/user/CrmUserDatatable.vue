@@ -344,14 +344,6 @@
             this.loadOffice();
 
         },
-        watch: {
-            options: {
-                handler () {
-                    this.loadUserData();
-                },
-                deep: true,
-            },
-        },
     }
 </script>
 
