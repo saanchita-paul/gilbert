@@ -7,75 +7,23 @@
         <!--        </v-card>-->
 
         <div v-if="isLoaded">
-            <v-btn v-if="agency.type === 0"  class="back-button" @click="backToAgency"><v-icon>mdi-arrow-left</v-icon> Back to Agencies</v-btn>
-            <v-btn  v-else @click="backToOffice" class="back-button"><v-icon>mdi-arrow-left</v-icon> Back to {{agency.name}} Offices</v-btn>
-            <v-card class="hood-card  mt-4">
-                <v-row>
-                    <v-col cols="8">
-                        <span v-if="agency.type === 0" class="office-title">{{`${agency.name}, ${office.name}`}}</span>
-                        <span v-else class="office-title">{{office.name}} Office</span>
-                    </v-col>
-                    <v-col cols="4" class="text-right">
-                        <v-btn outlined @click="viewOfficeProfile">View Office Profile</v-btn>
-                    </v-col>
-                </v-row>
-            </v-card>
+<!--            <v-btn v-if="agency.type === 0"  class="back-button" @click="backToAgency"><v-icon>mdi-arrow-left</v-icon> Back to Agencies</v-btn>-->
+<!--            <v-btn  v-else @click="backToOffice" class="back-button"><v-icon>mdi-arrow-left</v-icon> Back to {{agency.name}} Offices</v-btn>-->
+<!--            <v-card class="hood-card  mt-4">-->
+<!--                <v-row>-->
+<!--                    <v-col cols="8">-->
+<!--                        <span v-if="agency.type === 0" class="office-title">{{`${agency.name}, ${office.name}`}}</span>-->
+<!--                        <span v-else class="office-title">{{office.name}} Office</span>-->
+<!--                    </v-col>-->
+<!--                    <v-col cols="4" class="text-right">-->
+<!--                        <v-btn outlined @click="viewOfficeProfile">View Office Profile</v-btn>-->
+<!--                    </v-col>-->
+<!--                </v-row>-->
+<!--            </v-card>-->
+            
+            <REAMatrics :agency="agency">
 
-
-
-            <v-card class="hood-card  mt-4">
-                <v-row>
-                    <v-col>
-                        <v-row>
-                            <v-col cols="12" class="pb-0 mb-0">
-                                <p class="mb-0">Applications Data</p>
-                            </v-col>
-
-                            <v-col>
-                                <AppMatric :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                        </v-row>
-                    </v-col>
-                    <v-col cols="1" class="text-center">
-                        <v-divider vertical></v-divider>
-                    </v-col>
-                    <v-col>
-                        <v-row>
-                            <v-col cols="12" class="pb-0 mb-0">
-                                <p class="mb-0">Applications Data</p>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                        </v-row>
-                    </v-col>
-                </v-row>
-            </v-card>
-
+            </REAMatrics>
 
 
 
@@ -150,10 +98,11 @@
     import AppMatric from "@scripts/modules/realestate/components/AppMatric";
     import AgentListTable from "@scripts/modules/realestate/components/AgentListTable";
     import ApplicatoinListTable from "@scripts/modules/realestate/components/OfficeApplicatoinListTable";
-
+    import REAMatrics from "@scripts/modules/realestate/components/REAMatrics";
     export default {
         name: "CrmUserDatatable",
         components: {
+            REAMatrics,
             ApplicatoinListTable,
             AgentListTable,
             AppMatric,
@@ -417,7 +366,30 @@
 
     .buttonInactive{
         background: #C0C3C4;;
-        color: #263238;; 
+        color: #263238;
+    }
+    .matrics{
+        display: flex;
+        flex-direction: column;
+    }
+    .matrics-title {
+        font-size: 1.5em;
+        color: #542E89;
+        font-weight: 700;
+    }
+    .matrics-subtitle{
+        font-size:  0.75em;
+        font-weight: normal;
+        color: #7E8A8F;
+    }
+    .service {
+        font-size: 0.875em;
+        font-weight: 700;
+    }
+
+    .matrics-header {
+        font-size: 1em;
+        font-weight: 700;
     }
 
 </style>
