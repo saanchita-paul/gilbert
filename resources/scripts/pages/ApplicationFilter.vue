@@ -1,101 +1,97 @@
 <template>
   <div>
     <v-form ref="form">
-    <div class="d-flex justify-end pt-2">
-      <!-- <slot/> -->
-      <div class="px-3 py-1 clearButton" @click="clearSearch">
+      <div class="d-flex justify-end pt-2">
+        <!-- <slot/> -->
+        <!-- <div class="px-3 py-1 clearButton" @click="clearSearch">
             <v-icon medium color="black"> mdi mdi-close </v-icon>
               Clear Filter
+      </div> -->
+        <v-btn small tile color="#e0e0e0" @click="clearSearch">
+          <v-icon small left> mdi mdi-close </v-icon>
+          Clear Filter
+        </v-btn>
       </div>
-    </div>
-    <div class="d-flex">
-      <v-text-field
-        v-model="$attrs.value.tenancy_name"
-        full-width
-        outlined
-        dense
-        hide-details="auto"
-        placeholder="Name"
-        style="background-color: white"
-        class="my-1 mr-1"
-      />
-      <v-text-field
-        v-model="$attrs.value.address"
-        full-width
-        outlined
-        dense
-        hide-details="auto"
-        placeholder="Address"
-        style="background-color: white"
-        class="my-1 mr-1"
-      />
-      <v-text-field
-        v-model="$attrs.value.mobile"
-        full-width
-        outlined
-        dense
-        hide-details="auto"
-        placeholder="Mobile"
-        style="background-color: white"
-        class="my-1 mr-1"
-      />
-      <!-- lead source start -->
-      <v-select
-        placeholder="Source"
-        v-model="$attrs.value.source"
-        item-text="text"
-        item-value="value"
-        :items="srcOptions"
-        hide-details="auto"
-        style="background-color: white"
-        class="my-1 mr-1"
-        outlined
-        dense
-      >
-        <template v-slot:item="{ item, attrs, on }">
-          <v-list-item
-            link
-            v-bind="attrs"
-            v-on="on"
-          >
-            <v-list-item-avatar>
-              <v-img :src="item.icon" width="20px" />
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title>{{ item.text }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </template>
-      </v-select>
-      <!-- lead source ends -->
-      <!-- tenancy type starts -->
-      <v-select
-        placeholder="Tenancy"
-        v-model="$attrs.value.tenancy_type"
-        item-text="text"
-        item-value="value"
-        :items="tanancyTypeOptions"
-        hide-details="auto"
-        style="background-color: white"
-        class="my-1"
-        outlined
-        dense
-      >
-        <template v-slot:item="{ item, attrs, on }">
-          <v-list-item
-            link
-            v-bind="attrs"
-            v-on="on"
-          >
-            <v-list-item-content>
-              <v-list-item-title>{{ item.text }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </template>
-      </v-select>
-      <!-- tenancy type ends -->
-    </div>
-     </v-form>
+      <div class="d-flex">
+        <v-text-field
+          v-model="$attrs.value.tenancy_name"
+          full-width
+          outlined
+          dense
+          hide-details="auto"
+          placeholder="Name"
+          style="background-color: white"
+          class="my-1 mr-1"
+        />
+        <v-text-field
+          v-model="$attrs.value.address"
+          full-width
+          outlined
+          dense
+          hide-details="auto"
+          placeholder="Address"
+          style="background-color: white"
+          class="my-1 mr-1"
+        />
+        <v-text-field
+          v-model="$attrs.value.mobile"
+          full-width
+          outlined
+          dense
+          hide-details="auto"
+          placeholder="Mobile"
+          style="background-color: white"
+          class="my-1 mr-1"
+        />
+        <!-- lead source start -->
+        <v-select
+          placeholder="Source"
+          v-model="$attrs.value.source"
+          item-text="text"
+          item-value="value"
+          :items="srcOptions"
+          hide-details="auto"
+          style="background-color: white"
+          class="my-1 mr-1"
+          outlined
+          dense
+        >
+          <template v-slot:item="{ item, attrs, on }">
+            <v-list-item link v-bind="attrs" v-on="on">
+              <v-list-item-avatar>
+                <v-img :src="item.icon" width="20px" />
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>{{ item.text }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+        </v-select>
+        <!-- lead source ends -->
+        <!-- tenancy type starts -->
+        <v-select
+          placeholder="Tenancy"
+          v-model="$attrs.value.tenancy_type"
+          item-text="text"
+          item-value="value"
+          :items="tanancyTypeOptions"
+          hide-details="auto"
+          style="background-color: white"
+          class="my-1"
+          outlined
+          dense
+        >
+          <template v-slot:item="{ item, attrs, on }">
+            <v-list-item link v-bind="attrs" v-on="on">
+              <v-list-item-content>
+                <v-list-item-title>{{ item.text }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+        </v-select>
+        <!-- tenancy type ends -->
+      </div>
+    </v-form>
   </div>
 </template>
 
@@ -109,7 +105,6 @@ export default {
       address: "",
       mobile: "",
       srcOptions: [
-        // {text: 'Select a lead', value: '', disabled: true},
         { text: "All Lead Source", value: "all", icon: "" },
         {
           text: "Hood Agent Portal",
@@ -138,7 +133,6 @@ export default {
         },
       ],
       tanancyTypeOptions: [
-        // {text: 'Select a lead', value: '', disabled: true},
         { text: "Renter", value: "renter" },
         {
           text: "Owner",
@@ -151,61 +145,8 @@ export default {
     };
   },
   methods: {
-    onSrcChange(value) {
-      this.$router.push({
-        name: "application.list",
-        query: { ...this.$route.query, ...{ source: value } },
-      });
-    },
-    clearSearch(){
-      //   this.name = ""
-      //   this.address = ""
-      //   this.mobile = ""
-      //   this.source = "all"
-      //   this.tenancy_type = "all"
-        
-      //   this.$router.push({
-      //     name: "application.list",
-      //   query: {  },
-      // });
-        this.$refs.form.reset();
-    }
-  },
-  watch: {
-    // tenancy_name() {
-    //   console.log("search printing");
-    //   this.$router.push({
-    //     name: "application.list",
-    //     query: { ...this.$route.query, ...{ tenancy_name: this.tenancy_name } },
-    //   });
-    // },
-    address() {
-      console.log("search printing");
-      this.$router.push({
-        name: "application.list",
-        query: { ...this.$route.query, ...{ address: this.address } },
-      });
-    },
-    mobile() {
-      console.log("search printing");
-      this.$router.push({
-        name: "application.list",
-        query: { ...this.$route.query, ...{ mobile: this.mobile } },
-      });
-    },
-    leadSrc() {
-      console.log("search printing");
-      this.$router.push({
-        name: "application.list",
-        query: { ...this.$route.query, ...{ src: this.leadSrc } },
-      });
-    },
-    tenancy_Type() {
-      console.log("search printing");
-      this.$router.push({
-        name: "application.list",
-        query: { ...this.$route.query, ...{ tenancy: this.tenancy_Type } },
-      });
+    clearSearch() {
+      this.$refs.form.reset();
     },
   },
 };

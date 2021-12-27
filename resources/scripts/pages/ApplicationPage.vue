@@ -7,20 +7,7 @@
                     <h3 class="page-title">Total Applications: {{total_leads}}</h3>
                     <ApplicationsMetrics v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal"></ApplicationsMetrics>
                 </v-card>
-                <!-- <ApplicantTable
-                    :leadSrc="selectedSrc"
-                    v-if="isLoaded"
-                    :applications="leads"
-                    :totalItem="totalItem"
-                    :currentLead="leadDetails"
-                    @refreshDataTable="refreshDataTable"
-                    @openLeadSummary="openLeadSummary"
-                    @updateLeadAndatrics="updateLeadAndatrics"
-                >
-                </ApplicantTable> -->
-
                 <ApplicationFilter v-model="advanceSearch" ></ApplicationFilter>
-                <!-- <v-text-field v-model="search" full-width /> -->
                 <router-view
                     :leadSrc="selectedSrc"
                     v-if="isLoaded"
@@ -148,10 +135,8 @@ export default {
 
     mounted() {
         this.loadMetricTypes();
-        this.loadLeads();
         this.advanceSearch = new LeadSearchFilterModel(this.$route.query);
         this.loadLeads();
-        console.log("query" , this.$route.query)
 
     },
     watch: {
@@ -170,35 +155,19 @@ export default {
             }
         },
         activeLeadType: {
-            handler(value){
+            handler(){
                 this.loadLeads();
             }
         },
         advanceSearch:{
             handler(value) {
-                console.log("printing value" , value)
-                let val = { ...this.$route.query, ...value }
+                let params = { ...this.$route.query, ...value }
                 if(isEqual(this.$route.query , value)) return;
-
-                console.log('updaed' , val)
                 this.$router.push({
                     name: "application.list",
-                    query: val,
+                    query: params,
                 });
                 this.loadLeads();
-
-                // let reload = value.tenancy_type !== this.$route.query?.tenancy_type
-                //     || value.source !== this.$route.query?.source
-                //     || value.teancy_name !== this.$route.query?.teancy_name
-                //     || value.mobile !== this.$route.query?.mobile
-                //     || value.address !== this.$route.query?.address
-                // console.log("mobile" , value.mobile)
-                // console.log("query mobile" , this.$route.query?.mobile)
-                // if(value.mobile !== this.$route.query?.mobile){
-                    
-                // }
-
-                // this.loadLeads();
             },
             deep: true
         }
