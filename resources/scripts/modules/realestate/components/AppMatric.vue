@@ -13,10 +13,10 @@ name: "AppMatric",
 </script>
 
 <style scoped>
-.matrics{
-    display: flex;
-    flex-direction: column;
-}
+    .matrics{
+        display: flex;
+        flex-direction: column;
+    }
     .matrics-title {
         font-size: 2em;
         color: #542E89;
