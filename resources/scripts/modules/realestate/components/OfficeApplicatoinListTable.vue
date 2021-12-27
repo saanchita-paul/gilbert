@@ -10,7 +10,6 @@
             :server-items-length="totalItem"
             :loading="loading"
             class="row-pointer"
-            @click:row="openLeadSummary"
           >
             <template v-slot:item.services="{ item }">
               <v-icon
