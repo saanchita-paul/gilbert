@@ -109,10 +109,6 @@
             UserCreatedSuccessfulModal, UserCreationConfirmationModal, CreateUserModal, Search, LeadMetrics},
         data () {
             return {
-                matrics : {
-                    value: 1000,
-                    title: 'Application Created'
-                },
                 isCreateStart: false,
                 isCreatingUser: false,
                 dataVerificationFlag: false,
@@ -121,7 +117,7 @@
                 usersList: [],
                 activeOffice: null,
                 roles: Roles,
-
+                
                 page: 1,
                 pageCount: 0,
                 itemsPerPage: 10,
@@ -215,7 +211,7 @@
             },
 
             async checkDataValidation(agency , type){
-
+                
                 if(!this.$refs[`inputRef`+type+agency.id]?.hasError){
                     await AgencyService.updateUserData(agency, agency.id);
                 }
