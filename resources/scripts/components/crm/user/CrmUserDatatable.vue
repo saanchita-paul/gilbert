@@ -21,64 +21,6 @@
                 </v-row>
             </v-card>
 
-
-
-            <v-card class="hood-card  mt-4">
-                <v-row>
-                    <v-col>
-                        <v-row>
-                            <v-col cols="12" class="pb-0 mb-0">
-                                <p class="mb-0">Applications Data</p>
-                            </v-col>
-
-                            <v-col>
-                                <AppMatric :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                        </v-row>
-                    </v-col>
-                    <v-col cols="1" class="text-center">
-                        <v-divider vertical></v-divider>
-                    </v-col>
-                    <v-col>
-                        <v-row>
-                            <v-col cols="12" class="pb-0 mb-0">
-                                <p class="mb-0">Applications Data</p>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                        </v-row>
-                    </v-col>
-                </v-row>
-            </v-card>
-
-
-
-
             <v-row class="mt-5">
                 <v-col cols="8" class="search-bg">
                     <Search @updateSearch="updateSearch"></Search>
@@ -236,18 +178,11 @@
     import OfficeService from "@scripts/services/crm/OfficeService";
     import AgencyService from "@scripts/services/crm/AgencyService";
     import Roles from '@scripts/data/UserRoles'
-    import AppMatric from "@scripts/modules/realestate/components/AppMatric";
     export default {
         name: "CrmUserDatatable",
-        components: {
-            AppMatric,
-            UserCreatedSuccessfulModal, UserCreationConfirmationModal, CreateUserModal, Search, LeadMetrics},
+        components: {UserCreatedSuccessfulModal, UserCreationConfirmationModal, CreateUserModal, Search, LeadMetrics},
         data () {
             return {
-                matrics : {
-                    value: 1000,
-                    title: 'Application Created'
-                },
                 isCreateStart: false,
                 isCreatingUser: false,
                 dataVerificationFlag: false,
@@ -256,7 +191,7 @@
                 usersList: [],
                 activeOffice: null,
                 roles: Roles,
-
+                
                 page: 1,
                 pageCount: 0,
                 itemsPerPage: 10,
@@ -349,7 +284,7 @@
             },
 
             async checkDataValidation(agency , type){
-
+                
                 if(!this.$refs[`inputRef`+type+agency.id]?.hasError){
                     await AgencyService.updateUserData(agency, agency.id);
                 }

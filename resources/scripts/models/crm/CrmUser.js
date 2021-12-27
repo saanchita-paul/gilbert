@@ -10,5 +10,6 @@ export default class CrmUser{
         this.phone = phone;
         this.email = user?.email;
         this.profile_img = profile_photo;
+        this.is_active = user?.is_active;
     }
 }
