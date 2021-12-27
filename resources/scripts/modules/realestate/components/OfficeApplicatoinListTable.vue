@@ -44,14 +44,6 @@
           </v-data-table>
         </v-col>
       </v-row>
-      <ReassignModal
-        :dialog="reassignFlag"
-        :user="selectedUser"
-        :assignedText="assignedText"
-        :lead="selectedLead"
-        @cancelModal="cancelModal"
-      >
-      </ReassignModal>
     </v-card>
   </div>
 </template>
@@ -59,12 +51,10 @@
 <script>
 import Search from "@scripts/components/crm/Search";
 import AssigneeDropdown from "@scripts/components/crm/leadmanagement/AssigneeDropdown";
-import CrmUserService from "@scripts/services/crm/CrmUserService";
 import AssignedtoPopUp from "@scripts/components/crm/leadmanagement/AssignedtoPopUp";
 import ReassignModal from "@scripts/components/crm/modals/ReassignModal";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import AuthService from "@scripts/services/AuthService";
-import axios from "axios";
 import { LeadSearchFilterModel } from "@scripts/models/LeadSearchFilterModel";
 import { leadSourceMapFromNumber } from "@scripts/data/LeadSourceMap";
 export default {
@@ -78,60 +68,17 @@ export default {
 
   props: {
     officeId: { required: true },
-    leadSrc: { default: "all" },
-    currentLead: {
-      required: false,
-    },
   },
 
   data() {
     return {
-      isActive: true,
-      users: null,
-      reassignFlag: false,
-      selectedLead: null,
-      selectedUser: null,
-      assignedText: null,
       currentUser: null,
 
-      userSearch: "",
       leadSearch: "",
       options: {},
       loading: false,
       page: 1,
-      pageCount: 0,
       itemsPerPage: 10,
-      totalUserItem: null,
-      selectedSrc: this.$route.query.source || "hood",
-      srcOptions: [
-        // {text: 'Select a lead', value: '', disabled: true},
-        { text: "All Lead Source", value: "all", icon: "" },
-        {
-          text: "Hood Agent Portal",
-          value: "hood",
-          icon: "/assets/images/icons/company/hood.png",
-        },
-        {
-          text: "Foxie CRM",
-          value: "foxie",
-          icon: "/assets/images/icons/company/foxie.png",
-        },
-        {
-          text: "Ignite ",
-          value: "ignite",
-          icon: "/assets/images/icons/company/ignite.png",
-        },
-        {
-          text: "Our Property",
-          value: "our-property",
-          icon: "/assets/images/icons/company/our-property.png",
-        },
-        {
-          text: "PropertyMe ",
-          value: "property_me",
-          icon: "/assets/images/icons/company/propertyMe.png",
-        },
-      ],
       headers: [
         {
           text: "Tenant Name",
@@ -190,9 +137,6 @@ export default {
       ],
       applications: [],
       totalItem: 0,
-      advanceSearch: "",
-      isLoaded: false,
-      sort_search_meta: {},
     };
   },
   computed: {
@@ -213,58 +157,9 @@ export default {
       this.itemsPerPage = data.pagination.per_page;
       this.totalItem = data.pagination.total;
     },
-    isSelectedClass(item) {
-      if (item.id === this.currentLead?.id) {
-        return "selectedRow";
-      }
-    },
-    updateUserSearch(search) {
-      this.userSearch = search;
-      this.loadUserList();
-    },
-    updateLeadSearch(search) {
-      this.leadSearch = search;
-      this.loadLeadList();
-    },
-    async loadUserList() {
-      const meta = {
-        search: this.userSearch,
-        page: this.options.page,
-        per_page: this.options.itemsPerPage,
-        is_descending: false,
-        sort_by: "",
-      };
-      const data = await CrmUserService.loadAllUser(meta);
-      this.users = data?.users;
-      this.page = data.pagination.current_page;
-      this.itemsPerPage = data.pagination.per_page;
-      this.totalUserItem = data.pagination.total;
-    },
-
-    async assignUser(user, lead, assignedText) {
-      this.selectedLead = lead;
-      this.selectedUser = user;
-      this.assignedText =
-        assignedText == "Reassign" ? "reassigned" : "assigned";
-      await LeadApplicationService.assignUser(lead.id, user.id).then((res) => {
-        // this.loadLeadList();
-        this.$emit("updateLeadAndatrics", lead.id, user.id);
-        this.reassignFlag = true;
-      });
-    },
-
     isServiceAllowed(services, type) {
       return !services.includes(type);
     },
-
-    cancelModal() {
-      this.reassignFlag = false;
-    },
-
-    openLeadSummary(application) {
-      this.$emit("openLeadSummary", application.id);
-    },
-
     loadLeadList() {
       const meta = {
         search: this.leadSearch,
@@ -276,12 +171,6 @@ export default {
         ...new LeadSearchFilterModel({ office_id: this.officeId }),
       };
       this.loadLeads(meta);
-    },
-    onSrcChange(value) {
-      this.$router.push({
-        name: "applications",
-        query: { ...this.$route.query, ...{ source: value } },
-      });
     },
   },
   mounted() {
