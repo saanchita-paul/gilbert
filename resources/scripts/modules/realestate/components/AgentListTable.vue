@@ -1,142 +1,120 @@
 <template>
-    <v-container fluid>
-
-        <!--        <v-card class="hood-card">-->
-        <!--            <h2>All Application Metrics</h2>-->
-        <!--            <LeadMetrics></LeadMetrics>-->
-        <!--        </v-card>-->
-
-        <div v-if="isLoaded">
-            <v-btn v-if="agency.type === 0"  class="back-button" @click="backToAgency"><v-icon>mdi-arrow-left</v-icon> Back to Agencies</v-btn>
-            <v-btn  v-else @click="backToOffice" class="back-button"><v-icon>mdi-arrow-left</v-icon> Back to {{agency.name}} Offices</v-btn>
-            <v-card class="hood-card  mt-4">
-                <v-row>
-                    <v-col cols="8">
-                        <span v-if="agency.type === 0" class="office-title">{{`${agency.name}, ${office.name}`}}</span>
-                        <span v-else class="office-title">{{office.name}} Office</span>
-                    </v-col>
-                    <v-col cols="4" class="text-right">
-                        <v-btn outlined @click="viewOfficeProfile">View Office Profile</v-btn>
-                    </v-col>
-                </v-row>
-            </v-card>
-
-
-
-            <v-card class="hood-card  mt-4">
-                <v-row>
-                    <v-col>
-                        <v-row>
-                            <v-col cols="12" class="pb-0 mb-0">
-                                <p class="mb-0">Applications Data</p>
-                            </v-col>
-
-                            <v-col>
-                                <AppMatric :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                        </v-row>
-                    </v-col>
-                    <v-col cols="1" class="text-center">
-                        <v-divider vertical></v-divider>
-                    </v-col>
-                    <v-col>
-                        <v-row>
-                            <v-col cols="12" class="pb-0 mb-0">
-                                <p class="mb-0">Applications Data</p>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                            <v-col>
-                                <AppMatric  :data = "matrics"></AppMatric>
-                            </v-col>
-                        </v-row>
-                    </v-col>
-                </v-row>
-            </v-card>
-
-
-
-
-            <!-- <v-row class="mt-5">
-                <v-col cols="4" class="search-bg">
-                    <Search @updateSearch="updateSearch"></Search>
-                </v-col>
-                <v-col cols="4" class="text-right">
-                    <v-btn color="primary" @click="addNewUser"><v-icon left>add</v-icon> Add New User</v-btn>
-                </v-col>
-            </v-row> -->
-
-        <!-- search button starts -->
-            <div class="d-flex my-2">
-                <div style="flex-basis: 40%;">
-                    <Search @updateSearch="updateSearch"></Search>
-                </div>
-                
-                <div style="width: 200px;" class="mx-2">
-                    <v-btn @click="changeComponent('ApplicatoinListTable')" :class="getButtonClass('ApplicatoinListTable')"> Performance Operation </v-btn>
-                </div>
-
-                <div style="width: 200px;" class="mx-2">
-                    <v-btn @click="changeComponent('AgentListTable')" :class="getButtonClass('AgentListTable')"> Backend of agency </v-btn>
-                </div>
-
-            </div>
-        <!-- search button ends -->
-
-
-        <!-- dynamic components starts -->
-            <keep-alive>
-                <component :is="dynamicComonent" ></component>
-            </keep-alive>
-        <!-- dynamic component ends -->
-
-            <CreateUserModal v-if="isCreateStart" :dialog="isCreatingUser" @goToNext="goToNextConfirmationModal" @cancelUserDialog="cancleUserDialog"></CreateUserModal>
-            <UserCreationConfirmationModal v-if="dataVerificationFlag" :dialog="dataVerificationFlag" :user="user" @backToEdit="backToEdit" @confirmData="confirmedData"></UserCreationConfirmationModal>
-            <UserCreatedSuccessfulModal v-if="creationDoneFlag" :dialog="creationDoneFlag" :user="user" @done="done"></UserCreatedSuccessfulModal>
-            <v-snackbar
-                v-model="snackbar"
-                :timeout="timeout"
-                right
-            >
-                {{ 'Invitation Mail Sent' }}
-
-                <template v-slot:action="{ attrs }">
-                    <v-btn
-                        color="red"
-                        text
-                        v-bind="attrs"
-                        @click="snackbar = false"
+    <div>
+        <v-row>
+                <v-col cols="12" class="crm-table">
+                    <v-data-table
+                            dense
+                            :headers="headers"
+                            :items="usersList"
+                            :options.sync="options"
+                            :server-items-length="totalItem"
+                            :loading="loading"
+                            class="elevation-1 row-pointer"
                     >
-                        Close
-                    </v-btn>
-                </template>
-            </v-snackbar>
-        </div>
-    </v-container>
 
+                        <template v-slot:item.first_name="{ item }">
+                            <ValidationProvider name="Firstname" rules="required"  v-slot="{ errors }">
+                                <v-text-field
+                                    class="mt-6"
+                                    outlined
+                                    dense
+                                    placeholder="Firstname"
+                                    v-model="item.first_name"
+                                    :ref="'inputRefFirstname'+item.id"
+                                    @blur="updateUserData(item , 'Firstname')"
+                                    :error-messages=" errors[0]"
+                                ></v-text-field>
+                            </ValidationProvider>
+                        </template>
+                        <template v-slot:item.last_name="{ item }">
+                            <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
+                                <v-text-field
+                                    class="mt-6"
+                                    outlined
+                                    dense
+                                    placeholder="Lastname"
+                                    v-model="item.last_name"
+                                    :ref="'inputRefLastname'+item.id"
+                                    @blur="updateUserData(item , 'Lastname')"
+                                    :error-messages=" errors[0]"
+                                ></v-text-field>
+                            </ValidationProvider>
+                        </template>
+
+                        <template v-slot:item.role="{ item }">
+                                <ValidationProvider name="Role" rules="required"  v-slot="{ errors }">
+                                    <v-select outlined dense
+                                            class="mt-6"
+                                            v-model="item.role"
+                                            :items="roles.AGENCY"
+                                            :error-messages=" errors[0]"
+                                            :ref="'inputRefRole'+item.id"
+                                            @blur="updateUserData(item , 'Role')"
+                                            placeholder="Please Select">
+                                    </v-select>
+                                </ValidationProvider>
+
+                        </template>
+
+                        <template v-slot:item.phone="{ item }">
+                                <ValidationProvider name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                                    <v-text-field
+                                        class="mt-6"
+                                        :maxlength="10"
+                                        outlined
+                                        dense
+                                        placeholder="04XX XXX XXX"
+                                        v-model="item.phone"
+                                        :ref="'inputRefPhone'+item.id"
+                                        @blur="updateUserData(item, 'Phone')"
+                                        :error-messages=" errors[0]"
+                                    ></v-text-field>
+                                </ValidationProvider>
+
+                        </template>
+                        <template v-slot:item.email="{ item }">
+                                <ValidationProvider
+                                    name="Email"
+                                    rules="required|email|unique-email-update:@h_id"
+                                    v-slot="{ errors }"
+                                >
+                                    <v-text-field
+                                        class="mt-6"
+                                        outlined
+                                        v-model="item.email"
+                                        dense
+                                        :error-messages=" errors[0]"
+                                        :ref="'inputRefEmail'+item.id"
+                                        @blur="updateUserData(item, 'Email')"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                        <ValidationProvider name="h_id">
+                            <v-text-field v-model="item.id" v-show="false" />
+                        </ValidationProvider>
+                        </template>
+                        <template v-slot:item.action="{ item }">
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn
+                                            v-bind="attrs"
+                                            @click="sendMailToUser(item)"
+                                            :loading="isLoading(item)"
+                                            v-on="on"
+                                                icon
+                                                >
+                                            <v-icon>mdi-send</v-icon>
+                                        </v-btn>
+                                </template>
+                                <span>Invite</span>
+                                </v-tooltip>
+                        </template>
+
+                    </v-data-table>
+                </v-col>
+            </v-row>
+    </div>
 </template>
+
 <script>
     import Search from "@scripts/components/crm/Search";
     import CreateUserModal from "@scripts/components/crm/modals/CreateUserModal";
@@ -148,14 +126,9 @@
     import AgencyService from "@scripts/services/crm/AgencyService";
     import Roles from '@scripts/data/UserRoles'
     import AppMatric from "@scripts/modules/realestate/components/AppMatric";
-    import AgentListTable from "@scripts/modules/realestate/components/AgentListTable";
-    import ApplicatoinListTable from "@scripts/modules/realestate/components/OfficeApplicatoinListTable";
-
     export default {
-        name: "CrmUserDatatable",
+        name: "AgentListTable",
         components: {
-            ApplicatoinListTable,
-            AgentListTable,
             AppMatric,
             UserCreatedSuccessfulModal, UserCreationConfirmationModal, CreateUserModal, Search, LeadMetrics},
         data () {
@@ -229,8 +202,7 @@
                 isLoaded: false,
                 loadingEmail: [],
                 snackbar: false,
-                timeout: 2000,
-                dynamicComonent: "AgentListTable"
+                timeout: 2000
             }
         },
         methods: {
@@ -370,12 +342,6 @@
                 if(this.loadingEmail.includes(item.id))
                     return true;
                 return false;
-            },
-            changeComponent(name){
-                this.dynamicComonent = name;
-            },
-            getButtonClass(name){
-                 return this.dynamicComonent == name ? 'buttonActive' : 'buttonInactive'; 
             }
 
         },
@@ -409,15 +375,4 @@
     font-weight: 700 !important;
     font-family: 'Roboto' !important;
     }
-
-    .buttonActive{
-        background: #DDE2FF;
-        color:  #542E89; 
-    }
-
-    .buttonInactive{
-        background: #C0C3C4;;
-        color: #263238;; 
-    }
-
 </style>
