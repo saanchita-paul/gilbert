@@ -2,18 +2,13 @@
     <v-card class="hood-card  mt-4">
         <v-row>
             <v-col>
-                <p v-if="agency.type === 0" class="flex">
-                    <v-img @click="backToAgency()" src="/assets/images/icons/back_btn.png" style="display: inline-block !important;" max-height="24px" max-width="24px" class="back-btn mt-1">
-                    </v-img> <span>Buxton - Sunbury (Performance of Operations)</span>
-                </p>
-
-                <span v-else @click="backToOffice" class="flex">
-                            <v-img src="/assets/images/icons/back_btn.png" max-height="24px" max-width="24px" class="back-btn mt-1">
-                            </v-img> Buxton - Sunbury (Performance of Operations)
-                        </span>
-                <!--                        <v-btn v-if="agency.type === 0"  class="back-button" @click="backToAgency"><v-icon>mdi-arrow-left</v-icon> Back to Agencies</v-btn>-->
-                <!--                        <v-btn  v-else @click="backToOffice" class="back-button"><v-icon>mdi-arrow-left</v-icon> Back to {{agency.name}} Offices</v-btn>-->
-            </v-col>
+                <v-btn text v-if="agency.type === 0" @click="backToAgency">
+                    <v-icon>mdi-chevron-left</v-icon> Buxton - Sunbury (Performance of Operations)
+                </v-btn>
+                    <v-btn text v-else @click="backToOffice">
+                          <v-icon>mdi-chevron-left</v-icon> Buxton - Sunbury (Performance of Operations)
+                    </v-btn>
+               </v-col>
             <v-spacer></v-spacer>
             <v-col class="text-right">
                 <v-btn outlined @click="viewOfficeProfile">Office Profile</v-btn>
