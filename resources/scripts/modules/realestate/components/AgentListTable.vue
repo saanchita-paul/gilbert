@@ -12,7 +12,7 @@
                     class="elevation-1 row-pointer"
                 >
                     <template v-slot:item.first_name="{ item }">
-                        <ValidationProvider name="Firstname" rules="required"  v-slot="{ errors }">
+                        <ValidationProvider v-if="editMode" name="Firstname" rules="required"  v-slot="{ errors }">
                             <v-text-field
                                 class="mt-6"
                                 outlined
@@ -24,10 +24,11 @@
                                 :error-messages=" errors[0]"
                             ></v-text-field>
                         </ValidationProvider>
+                        <p v-else class="mt-3">{{ item.first_name }}</p>
                     </template>
 
                     <template v-slot:item.last_name="{ item }">
-                        <ValidationProvider name="Lastname" rules="required"  v-slot="{ errors }">
+                        <ValidationProvider v-if="editMode" name="Lastname" rules="required"  v-slot="{ errors }">
                             <v-text-field
                                 class="mt-6"
                                 outlined
@@ -39,10 +40,11 @@
                                 :error-messages=" errors[0]"
                             ></v-text-field>
                         </ValidationProvider>
+                        <p v-else class="mt-3">{{ item.last_name }}</p>
                     </template>
 
                     <template v-slot:item.role="{ item }">
-                        <ValidationProvider name="Role" rules="required"  v-slot="{ errors }">
+                        <ValidationProvider v-if="editMode" name="Role" rules="required"  v-slot="{ errors }">
                             <v-select outlined dense
                                 class="mt-6"
                                 v-model="item.role"
@@ -50,21 +52,23 @@
                                 :error-messages=" errors[0]"
                                 :ref="'inputRefRole'+item.id"
                                 @blur="updateUserData(item , 'Role')"
-                                placeholder="Please Select">
+                                placeholder="Please select an role">
                             </v-select>
                         </ValidationProvider>
+                        <p v-else class="mt-3">{{ item.role | filterRole }}</p>
                     </template>
 
                     <template v-slot:item.submitted_lead="{ item }">
-                        <p>{{ item.submitted_lead }}</p>
+                        <p class="mt-3">{{ item.submitted_lead }}</p>
                     </template>
 
                     <template v-slot:item.last_submitted="{ item }">
-                        <p>{{ item.last_submitted }}</p>
+                        <p class="mt-3">{{ item.last_submitted }}</p>
                     </template>
 
                     <template v-slot:item.email="{ item }">
                         <ValidationProvider
+                            v-if="editMode"
                             name="Email"
                             rules="required|email|unique-email-update:@h_id"
                             v-slot="{ errors }"
@@ -79,13 +83,14 @@
                                 @blur="updateUserData(item, 'Email')"
                             ></v-text-field>
                         </ValidationProvider>
+                        <p v-else class="mt-3">{{ item.email }}</p>
                         <ValidationProvider name="h_id">
                             <v-text-field v-model="item.id" v-show="false" />
                         </ValidationProvider>
                     </template>
 
                     <template v-slot:item.phone="{ item }">
-                        <ValidationProvider name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                        <ValidationProvider v-if="editMode" name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
                             <v-text-field
                                 class="mt-6"
                                 :maxlength="10"
@@ -98,14 +103,15 @@
                                 :error-messages=" errors[0]"
                             ></v-text-field>
                         </ValidationProvider>
+                        <p v-else class="mt-3">{{ item.phone }}</p>
                     </template>
 
                     <template v-slot:item.cvr="{ item }">
-                        <p>{{ item.cvr }}</p>
+                        <p class="mt-3">{{ item.cvr }}</p>
                     </template>
 
                     <template v-slot:item.visa="{ item }">
-                        <ValidationProvider name="Visa" rules="required"  v-slot="{ errors }">
+                        <ValidationProvider v-if="editMode" name="Visa" rules="required"  v-slot="{ errors }">
                             <v-select outlined dense
                                 class="mt-6"
                                 v-model="item.visa"
@@ -116,6 +122,7 @@
                                 placeholder="Please Select">
                             </v-select>
                         </ValidationProvider>
+                        <p v-else class="mt-3">{{ item.visa === 1 ? 'Yes' : 'No' }}</p>
                     </template>
 
                     <template v-slot:item.active="{ item }">
@@ -424,6 +431,12 @@
                 deep: true,
             },
         },
+        filters: {
+            filterRole: function (value) {
+                const role = Roles.AGENCY.find(item => item.value === value);
+                return role?.text;
+            }
+        }
     }
 </script>
 
