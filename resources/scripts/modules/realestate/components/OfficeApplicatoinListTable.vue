@@ -1,6 +1,11 @@
 <template>
     <div>
-        office application list table 
+        <ApplicantTable
+            v-if="isLoaded"
+            :applications="leads"
+            :totalItem="totalItem"
+        >
+        </ApplicantTable>
     </div>
 </template>
 
