@@ -47,6 +47,7 @@ import ReassignModal from "@scripts/components/crm/modals/ReassignModal";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import AuthService from "@scripts/services/AuthService";
 import axios from 'axios'
+import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel';
 
 export default {
   name: "OfficeApplicatoinListTable",
@@ -212,6 +213,8 @@ export default {
     mounted() {
       this.loadUserList();
       this.currentUser = AuthService.getAuthUser();
+    
+      
 
       axios.get("http://localhost:8000/api/applications?search=&page=1&per_page=10&is_descending=false&sort_by=&active_lead_type=assigned&source=hood")
       .then(res=>console.log("response" , res))

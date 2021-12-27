@@ -7,12 +7,14 @@ class LeadSearchFilterModel {
         mobile,
         address,
         tenancy_type,
+        office_id,
     } = {}) {
         this.tenancy_name = tenancy_name;
         this.source = source;
         this.mobile = mobile;
         this.address = address;
         this.tenancy_type = tenancy_type;
+        this.office_id = office_id;
     }
 
     isSearchEmpty() {
