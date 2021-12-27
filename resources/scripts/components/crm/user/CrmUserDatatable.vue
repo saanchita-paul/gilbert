@@ -56,7 +56,7 @@
 
         <!-- dynamic components starts -->
             <keep-alive>
-                <component :is="dynamicComonent" ></component>
+                <component :officeId="activeOffice" :is="dynamicComonent" ></component>
             </keep-alive>
         <!-- dynamic component ends -->
 

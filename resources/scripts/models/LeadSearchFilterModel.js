@@ -1,7 +1,7 @@
 import { isEmpty } from "lodash-es";
 
 class LeadSearchFilterModel {
-    LeadSearchFilterModel({
+    constructor({
         tenancy_name,
         source,
         mobile,
