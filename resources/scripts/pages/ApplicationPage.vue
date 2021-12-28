@@ -7,7 +7,7 @@
                     <h3 class="page-title">Total Applications: {{total_leads}}</h3>
                     <ApplicationsMetrics v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal"></ApplicationsMetrics>
                 </v-card>
-                <ApplicationFilter v-model="advanceSearch" ></ApplicationFilter>
+                <ApplicationFilter v-model="advanceSearch" :isSearchEmpty="advanceSearch.isSearchEmpty()"></ApplicationFilter>
                 <router-view
                     :leadSrc="selectedSrc"
                     v-if="isLoaded"
@@ -161,6 +161,7 @@ export default {
         },
         advanceSearch:{
             handler(value) {
+                console.log("ff" , value.isSearchEmpty())
                 let params = { ...this.$route.query, ...value }
                 if(isEqual(this.$route.query , value)) return;
                 this.$router.push({
@@ -168,6 +169,7 @@ export default {
                     query: params,
                 });
                 this.loadLeads();
+
             },
             deep: true
         }

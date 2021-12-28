@@ -6,8 +6,8 @@
         <!-- <div class="px-3 py-1 clearButton" @click="clearSearch">
             <v-icon medium color="black"> mdi mdi-close </v-icon>
               Clear Filter
-      </div> -->
-        <v-btn small tile color="#e0e0e0" @click="clearSearch">
+        </div> -->
+        <v-btn v-show="!isSearchEmpty" x-small tile color="#e0e0e0" @click="clearSearch">
           <v-icon small left> mdi mdi-close </v-icon>
           Clear Filter
         </v-btn>
@@ -98,6 +98,7 @@
 <script>
 export default {
   name: "ApplicationFilter",
+  props: ["isSearchEmpty"],
   data() {
     return {
       tenant_name: "",
@@ -149,6 +150,12 @@ export default {
       this.$refs.form.reset();
     },
   },
+  watch:{
+    isSearchEmpty(val){
+      console.log("feea" , val)
+    }
+  },
+
 };
 </script>
 
