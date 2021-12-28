@@ -14,7 +14,7 @@
       </div>
       <div class="d-flex">
         <v-text-field
-          v-model="$attrs.value.tenancy_name"
+          v-model="$attrs.value.tenant_name"
           full-width
           outlined
           dense
@@ -34,7 +34,7 @@
           class="my-1 mr-1"
         />
         <v-text-field
-          v-model="$attrs.value.mobile"
+          v-model="$attrs.value.phone"
           full-width
           outlined
           dense
@@ -100,12 +100,12 @@ export default {
   name: "ApplicationFilter",
   data() {
     return {
-      tenancy_name: "",
+      tenant_name: "",
       name: "",
       address: "",
       mobile: "",
       srcOptions: [
-        { text: "All Lead Source", value: "all", icon: "" },
+        { text: "All Lead Source", value: "", icon: "" },
         {
           text: "Hood Agent Portal",
           value: "hood",
@@ -136,9 +136,9 @@ export default {
         { text: "Renter", value: "renter" },
         {
           text: "Owner",
-          value: "owner",
+          value: "home_owner",
         },
-        { text: "All", value: "all" },
+        { text: "All", value: "" },
       ],
       leadSrc: { default: "all" },
       tenancy_Type: { default: "all" },

@@ -67,9 +67,9 @@ export default {
             options: {},
             search: "",
             advanceSearchBluePrint: {
-                tenancy_name:"",
+                tenant_name:"",
                 address: "",
-                mobile: "",
+                phone: "",
                 source: "",
                 tenancy_type: "",
             },
