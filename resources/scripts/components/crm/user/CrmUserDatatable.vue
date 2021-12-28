@@ -21,7 +21,7 @@
 <!--                </v-row>-->
 <!--            </v-card>-->
 
-            <REAMatrics :agency="agency" :matrics="matrics">
+            <REAMatrics :agency="agency" :matrics="matrics" :office="office">
 
             </REAMatrics>
 
@@ -349,7 +349,7 @@
             await this.loadUserData();
             this.activeOffice = this.$route.params.officeId;
             this.loadOffice();
-           
+
 
         },
     }
