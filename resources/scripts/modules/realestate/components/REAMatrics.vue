@@ -1,17 +1,17 @@
 <template>
-    <v-card class="hood-card  mt-4">
+    <v-card class="hood-card  mt-0 pt-0">
         <v-row>
-            <v-col>
-                <v-btn text v-if="agency.type === 0" @click="backToAgency">
-                    <v-icon>mdi-chevron-left</v-icon> Buxton - Sunbury (Performance of Operations)
+            <v-col class="pl-0 pb-0">
+                <v-btn class="px-0" text  v-if="agency.type === 0" @click="backToAgency">
+                    <v-icon>mdi-chevron-left</v-icon> {{ agency.name }} (Back of Agency)
                 </v-btn>
-                    <v-btn text v-else @click="backToOffice">
-                          <v-icon>mdi-chevron-left</v-icon> Buxton - Sunbury (Performance of Operations)
+                    <v-btn  class="px-0" text v-else @click="backToOffice">
+                          <v-icon>mdi-chevron-left</v-icon>{{ office.name }} (Back of Office)
                     </v-btn>
                </v-col>
-            <v-spacer></v-spacer>
-            <v-col class="text-right">
-                <v-btn outlined @click="viewOfficeProfile">Office Profile</v-btn>
+            <v-spacer class="pb-0"></v-spacer>
+            <v-col class="text-right  pb-0">
+                <v-btn  outlined @click="viewOfficeProfile">Office Profile</v-btn>
             </v-col>
         </v-row>
         <v-row>
@@ -67,7 +67,7 @@ export default {
     components: {
         AppMetric, LeadMetrics, ServiceMetrics
     },
-    props: ['agency', 'matrics'],
+    props: ['agency', 'matrics', 'office'],
 
     methods: {
         backToAgency() {

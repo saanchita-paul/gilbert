@@ -40,6 +40,9 @@
             <template v-slot:item.source="{ item }">
               <div v-text="leadSourceMapFromNumber[item.source]"></div>
             </template>
+            <template v-slot:item.tenant_name="{ item }">
+              <div v-text="tenantName(item)"></div>
+            </template>
           </v-data-table>
         </v-col>
       </v-row>
@@ -144,12 +147,17 @@ export default {
     },
   },
   methods: {
+    tenantName(item){
+      console.log("priting item" , item)
+      return item.first_name  + " " + item.last_name ; 
+    },
     async loadLeads(meta) {
       console.log("load lead");
       this.loading = true;
       let data = await LeadApplicationService.loadUserLeads(
         meta
       );
+      console.log("data" , data)
       this.loading = false;
       this.applications = data.applications;
       this.page = data.pagination.current_page;
