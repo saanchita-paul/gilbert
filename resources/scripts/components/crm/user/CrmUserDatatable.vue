@@ -340,7 +340,8 @@
             },
             async getREAMatrics()
             {
-                this.matrics = await MartricServices.getMatrics(1)
+                let office_id = this.$route.params.officeId;
+                this.matrics = await MartricServices.getMatrics(office_id)
             }
         },
         async mounted() {
@@ -349,6 +350,7 @@
             await this.loadUserData();
             this.activeOffice = this.$route.params.officeId;
             this.loadOffice();
+
 
 
         },
