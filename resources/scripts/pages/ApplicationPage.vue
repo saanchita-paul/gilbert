@@ -5,9 +5,10 @@
                 <v-card class="hood-card">
                     <p>Your Metrics</p>
                     <h3 class="page-title">Total Applications: {{total_leads}}</h3>
-                    <AgentLeadMetrics v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal"></AgentLeadMetrics>
+                    <ApplicationsMetrics v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal"></ApplicationsMetrics>
                 </v-card>
-                <ApplicantTable
+                <ApplicationFilter v-model="advanceSearch" :isSearchEmpty="advanceSearch.isSearchEmpty()"></ApplicationFilter>
+                <router-view
                     :leadSrc="selectedSrc"
                     v-if="isLoaded"
                     :applications="leads"
@@ -16,8 +17,7 @@
                     @refreshDataTable="refreshDataTable"
                     @openLeadSummary="openLeadSummary"
                     @updateLeadAndatrics="updateLeadAndatrics"
-                >
-                </ApplicantTable>
+                ></router-view>
             </v-col>
             <v-col cols="4">
                 <ApplicationDetails :lead="leadDetails"></ApplicationDetails>
@@ -27,19 +27,24 @@
 </template>
 
 <script>
-import AgentLeadMetrics from "@scripts/components/crm/leadmanagement/ApplicationsMetrics";
+import ApplicationsMetrics from "@scripts/components/crm/leadmanagement/ApplicationsMetrics";
 import ApplicantTable from "@scripts/components/crm/leadmanagement/ApplicantTable";
 import ApplicationDetails from "@scripts/components/crm/leadmanagement/ApplicationDetails";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
 import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
+import {isEqual , pick} from "lodash-es";
+import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel'
+import ApplicationFilter from '@scripts/pages/ApplicationFilter';
+
 export default {
     name: "ApplicationPage",
     components: {
         ApplicationDetailScreen,
-        AgentLeadMetrics,
         ApplicantTable,
-        ApplicationDetails
+        ApplicationDetails,
+        ApplicationsMetrics,
+        ApplicationFilter
     },
 
     data() {
@@ -60,6 +65,15 @@ export default {
             itemsPerPage: 10,
             totalItem: null,
             options: {},
+            search: "",
+            advanceSearchBluePrint: {
+                tenant_name:"",
+                address: "",
+                phone: "",
+                source: "",
+                tenancy_type: "",
+            },
+            advanceSearch: new LeadSearchFilterModel()
         }
     },
 
@@ -74,14 +88,15 @@ export default {
         },
 
         async loadLeads () {
-            let data = await LeadApplicationService.loadUserLeads(this.sort_search_meta, this.activeLeadType, this.selectedSrc);
+            console.log("api calling");
+            let data = await LeadApplicationService.loadUserLeads(this.sort_search_meta, this.activeLeadType, this.selectedSrc, this.advanceSearch);
             this.leads = data.applications;
             this.isLoaded = true;
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
             this.totalItem = data.pagination.total;
-            this.selected_lead_id = this.leads[0].id;
-            this.loadLeadSummary();
+            this.selected_lead_id = this.leads[0]?.id;
+            this.leads.length ? this.loadLeadSummary() : "";
             // console.log('lead list', this.leads);
         },
 
@@ -107,27 +122,57 @@ export default {
       updateLeadAndatrics(leadId,userId) {
         this.leads.find(ld=>ld.id==leadId).assigned_to = userId;
         this.loadMetricTypes();
+        },
+        clearSearch(){
+            console.log("clicking slot")
+            this.advanceSearch = this.advanceSearchBluePrint;
+            this.$router.push({
+                    name: "application.list",
+                    query: this.advanceSearch,
+                });
         }
     },
 
     mounted() {
         this.loadMetricTypes();
+        this.advanceSearch = new LeadSearchFilterModel(this.$route.query);
         this.loadLeads();
+
     },
     watch: {
         '$route': {
             handler() {
+                console.log(this.$route.query.name)
                 let reload = this.activeLeadType !== this.$route.query?.type
                     || this.selectedSrc !== this.$route.query?.source;
 
                 this.activeLeadType = this.$route.query?.type;
                 this.selectedSrc = this.$route.query?.source
                 // console.log("watch", reload)
-                if (reload) {
-                    this.loadLeads();
-                }
+                // if (reload) {
+                //     this.loadLeads();
+                // }
             }
         },
+        activeLeadType: {
+            handler(){
+                this.loadLeads();
+            }
+        },
+        advanceSearch:{
+            handler(value) {
+                console.log("ff" , value.isSearchEmpty())
+                let params = { ...this.$route.query, ...value }
+                if(isEqual(this.$route.query , value)) return;
+                this.$router.push({
+                    name: "application.list",
+                    query: params,
+                });
+                this.loadLeads();
+
+            },
+            deep: true
+        }
     },
 
 }

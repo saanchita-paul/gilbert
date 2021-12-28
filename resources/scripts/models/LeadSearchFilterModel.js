@@ -2,26 +2,24 @@ import { isEmpty } from "lodash-es";
 
 class LeadSearchFilterModel {
     constructor({
-        tenancy_name,
+        tenant_name,
         source,
-        mobile,
+        phone,
         address,
         tenancy_type,
-        office_id,
     } = {}) {
-        this.tenancy_name = tenancy_name;
-        this.source = source;
-        this.mobile = mobile;
+        this.tenant_name = tenant_name;
+        this.source = source ?? "";
+        this.phone = phone;
         this.address = address;
-        this.tenancy_type = tenancy_type;
-        this.office_id = office_id;
+        this.tenancy_type = tenancy_type ?? "";
     }
 
     isSearchEmpty() {
         const isNoValue =
-            isEmpty(this.tenancy_name) &&
+            isEmpty(this.tenant_name) &&
             isEmpty(this.source) &&
-            isEmpty(this.mobile) &&
+            isEmpty(this.phone) &&
             isEmpty(this.address) &&
             isEmpty(this.tenancy_type);
         

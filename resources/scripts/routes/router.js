@@ -32,6 +32,8 @@ import InviteUser from "@scripts/components/crm/user/InviteUser";
 import ApplicationsDashboardPage from "@scripts/modules/sales/pages/ApplicationsDashboardPage";
 import SalesEnergyPage from "@scripts/modules/sales/pages/SalesEnergyPage";
 import SalesWaterPage from "@scripts/modules/sales/pages/SalesWaterPage";
+import ApplicationSearchList from '@scripts/pages/ApplicationSearchList'
+
 
 Vue.use(VueRouter);
 
@@ -165,6 +167,25 @@ const router = new VueRouter({
                     path: '/applications',
                     component: ApplicationPage,
                     name: 'applications',
+                    children:[
+                        {
+                            path: '',
+                            name: 'application.list',
+                            component: ApplicationSearchList,
+                            meta: {
+                                isProtected: true,
+                                breadcrumbType: 'LeadApplications',
+                                roles: [
+                                    'hood_admin',
+                                    'hood_team_lead',
+                                    'hood_customer_rep',
+                                    'hood_external_team_lead',
+                                    'hood_external_customer_rep'
+                                ],
+                            },
+                            props: true
+                        },
+                    ],
                     meta: {
                         isProtected: true,
                         breadcrumbType: 'LeadApplications',

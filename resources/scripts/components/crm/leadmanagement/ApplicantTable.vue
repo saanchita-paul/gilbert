@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-row class="mt-5">
+        <!-- <v-row class="mt-5">
             <v-col cols="12" md="4" class="search-bg">
                 <Search @updateSearch="updateLeadSearch"></Search>
             </v-col>
@@ -31,7 +31,7 @@
                         </template>
                     </v-select>
             </v-col>
-        </v-row>
+        </v-row> -->
         <v-card class="hood-card">
             <v-row>
                 <v-col cols="12" class="crm-table">
@@ -95,7 +95,7 @@ export default {
           required: true
       },
         totalItem: {
-          required: true
+          required: true,
       },
         currentLead: {
           required: true
@@ -114,7 +114,9 @@ export default {
 
             userSearch: '',
             leadSearch: '',
-            options: {},
+            options: {
+                itemsPerPage: 10
+            },
             loading: false,
             page: 1,
             pageCount: 0,
@@ -237,8 +239,15 @@ export default {
     mounted() {
       this.loadUserList();
       this.currentUser = AuthService.getAuthUser();
+      console.log("value app mouted")
+      console.log(this.applications)
+    
     },
     watch: {
+        applications(val){
+            console.log("value app")
+            console.log(val)
+        },
         options: {
             handler () {
                 this.loadLeadList();
