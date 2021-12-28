@@ -84,7 +84,6 @@ class SearchConnectionApplication
         $this->builder = ConnectionApplication::query()
             ->with('connectionServices.reasons')
             ->with('SugerLead')
-            ->with('connectionServices')
             ->with('assignedTo');
 
         $this->applyFilterLeadType($user)
@@ -131,7 +130,7 @@ class SearchConnectionApplication
     /**
      * @return static
      */
-    public function applyFilterSource(): static
+    private function applyFilterSource(): static
     {
         if($this->source) {
             $this->builder = $this->builder->where('source', $this->source);
@@ -179,7 +178,7 @@ class SearchConnectionApplication
     /**
      * @return $this
      */
-    public function applySearch(): static
+    private function applySearch(): static
     {
         /** @var FullTextSearchInterface $fts */
         $fts = resolve(FullTextSearchInterface::class);
@@ -194,7 +193,7 @@ class SearchConnectionApplication
      *
      * @return void
      */
-    public function createFullTextQueries(array $filters): void
+    private function createFullTextQueries(array $filters): void
     {
         /** @var FullTextQueryInterface $query */
         $query = resolve(FullTextQueryInterface::class);
