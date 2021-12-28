@@ -47,6 +47,7 @@ class SearchConnectionApplication
      * @var Builder
      */
     private Builder $builder;
+    private ?int $tenancyType;
 
 
     /**
@@ -56,12 +57,15 @@ class SearchConnectionApplication
     {
         $this->createFullTextQueries($request);
 
-        $this->perPage = empty($request['per_page']) ? null : (int)$request['per_page'];
+        $this->perPage = empty($request['per_page']) ? null : (int) $request['per_page'];
         $this->status = optional($request)['status'];
         $this->leadType = optional($request)['active_lead_type'];
-        $this->source = ConnectionApplication::SOURCE_MAPPING[$request['source']??''] ??  ConnectionApplication::SOURCE_ALL;
+        $this->source = !empty($request['source']) ? (ConnectionApplication::SOURCE_MAPPING[$request['source']]) : null;
+        $this->tenancyType = !empty($request['tenancy_type']) ? ConnectionApplication::TENANCY_MAPPING[$request['tenancy_type']] ?? null: null;
 
-        if(empty(optional($request)['sort_by'])) {
+
+
+        if(empty($request['sort_by'])) {
             $this->setSortBy('created_at', 'true');
         } else {
             $this->setSortBy(optional($request)['sort_by'], optional($request)['is_descending']);
@@ -78,11 +82,13 @@ class SearchConnectionApplication
         $this->builder = ConnectionApplication::query()
             ->with('connectionServices.reasons')
             ->with('SugerLead')
+            ->with('connectionServices')
             ->with('assignedTo');
 
-        $this->filterByLeadType($user)
-            ->filterByOffice($user)
-            ->filterLeadForFoxie()
+        $this->applyFilterLeadType($user)
+            ->applyFilterUserOffice($user)
+            ->applyFilterSource()
+            ->applyFilterForFoxie()
             ->applySearch();
 
         $this->builder = $this->applySorting($this->builder);
@@ -93,13 +99,10 @@ class SearchConnectionApplication
     /**
      * @return $this
      */
-    private function filterByLeadType(User $user): static
+    private function applyFilterLeadType(User $user): static
     {
         if (empty($this->leadType)) {
-            $this->builder = ConnectionApplication::query()
-                ->where('status', '!=', ConnectionApplication::STATUS_CLOSED)
-                ->with('connectionServices')
-                ->with('assignedTo');
+            $this->builder = $this->builder->where('status', '!=', ConnectionApplication::STATUS_CLOSED);
         }
 
 
@@ -122,19 +125,31 @@ class SearchConnectionApplication
     }
 
     /**
+     * @return static
+     */
+    public function applyFilterSource(): static
+    {
+        if($this->source) {
+            $this->builder = $this->builder->where('source', $this->source);
+        }
+        return $this;
+
+    }
+
+    /**
      * @return void
      */
-    public function applyOthersFilter()
+    private function applyFilterTenancyType()
     {
-        if($this->source !== ConnectionApplication::SOURCE_ALL) {
-            $this->builder->where('source', $this->source);
+        if ($this->tenancyType) {
+            $this->builder = $this->builder->where('tenancy_type', $this->tenancyType);
         }
     }
 
     /**
      * @return $this
      */
-    private function filterByOffice(User $user): static
+    private function applyFilterUserOffice(User $user): static
     {
         if ($user->profile_type === AgentProfile::class) {
             $this->builder = $this->builder
@@ -163,7 +178,6 @@ class SearchConnectionApplication
      *
      * @return void
      */
-    #[NoReturn]
     public function createFullTextQueries(array $filters): void
     {
         /** @var FullTextQueryInterface $query */
@@ -185,36 +199,22 @@ class SearchConnectionApplication
     /**
      * @return $this
      */
-    private function filterLeadForFoxie(): static
+    private function applyFilterForFoxie(): static
     {
         $this->builder = match ($this->source) {
-            ConnectionApplication::SOURCE_FOXIE => $this->builder->whereHas('SugerLead' , function($query){
-                $query->where('compare_connect_id' , null)
+            ConnectionApplication::SOURCE_FOXIE => $this->builder->whereHas('SugerLead' , function(Builder $query){
+                $query->whereNull('compare_connect_id')
                     ->orWhere('compare_connect_id', 'N/A');
             }),
-            ConnectionApplication::SOURCE_ALL => $this->builder->where(function (Builder $builder) {
+            null => $this->builder->where(function (Builder $builder) {
                 $builder->doesntHave('SugerLead')
                     ->orWhereHas("SugerLead", fn (Builder $id) => $id->whereNull('compare_connect_id')->orWhere('compare_connect_id', 'N/A'));
             }),
             default => $this->builder
         };
 
+//        $r = $this->builder->pluck('source')->toArray();
+//        dd($r1, $r);
         return $this;
-    }
-
-
-    /**
-     * applying sorting
-     *
-     * @param Builder $builder
-     *
-     * @return Builder
-     */
-    private function applySorting(Builder $builder): Builder
-    {
-        if ($this->sortBy) {
-            return $builder->orderBy($this->sortBy, $this->sortDir);
-        }
-        return $builder;
     }
 }

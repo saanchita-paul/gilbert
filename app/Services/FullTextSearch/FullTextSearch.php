@@ -30,8 +30,8 @@ class FullTextSearch implements FullTextSearchInterface
         $text = $this->fullTextWildCards($query->getSearchText());
         $index = $query->getIndex();
 
-//        return $builder->where(fn(Builder $builder) => $builder->$methodRaw("MATCH(" . $index . ") AGAINST( '$text' IN $this->searchMode MODE)"));
-        return  $builder->$methodRaw("MATCH(" . $index . ") AGAINST( '$text' IN $this->searchMode MODE)");
+        return $builder->where(fn(Builder $builder) => $builder->$methodRaw("MATCH(" . $index . ") AGAINST( '$text' IN $this->searchMode MODE)"));
+//        return  $builder->$methodRaw("MATCH(" . $index . ") AGAINST( '$text' IN $this->searchMode MODE)");
     }
 
     /**
