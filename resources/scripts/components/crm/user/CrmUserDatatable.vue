@@ -1,31 +1,25 @@
 <template>
     <v-container fluid>
-
-        <!--        <v-card class="hood-card">-->
-        <!--            <h2>All Application Metrics</h2>-->
-        <!--            <LeadMetrics></LeadMetrics>-->
-        <!--        </v-card>-->
+        <!-- <v-card class="hood-card">
+            <h2>All Application Metrics</h2>
+            <LeadMetrics></LeadMetrics>
+        </v-card> -->
 
         <div v-if="isLoaded">
-<!--            <v-btn v-if="agency.type === 0"  class="back-button" @click="backToAgency"><v-icon>mdi-arrow-left</v-icon> Back to Agencies</v-btn>-->
-<!--            <v-btn  v-else @click="backToOffice" class="back-button"><v-icon>mdi-arrow-left</v-icon> Back to {{agency.name}} Offices</v-btn>-->
-<!--            <v-card class="hood-card  mt-4">-->
-<!--                <v-row>-->
-<!--                    <v-col cols="8">-->
-<!--                        <span v-if="agency.type === 0" class="office-title">{{`${agency.name}, ${office.name}`}}</span>-->
-<!--                        <span v-else class="office-title">{{office.name}} Office</span>-->
-<!--                    </v-col>-->
-<!--                    <v-col cols="4" class="text-right">-->
-<!--                        <v-btn outlined @click="viewOfficeProfile">View Office Profile</v-btn>-->
-<!--                    </v-col>-->
-<!--                </v-row>-->
-<!--            </v-card>-->
-
-            <REAMatrics :agency="agency" :matrics="matrics">
-
-            </REAMatrics>
-
-
+            <!-- <v-btn v-if="agency.type === 0"  class="back-button" @click="backToAgency"><v-icon>mdi-arrow-left</v-icon> Back to Agencies</v-btn>
+            <v-btn  v-else @click="backToOffice" class="back-button"><v-icon>mdi-arrow-left</v-icon> Back to {{agency.name}} Offices</v-btn>
+            <v-card class="hood-card  mt-4">
+                <v-row>
+                    <v-col cols="8">
+                        <span v-if="agency.type === 0" class="office-title">{{`${agency.name}, ${office.name}`}}</span>
+                        <span v-else class="office-title">{{office.name}} Office</span>
+                    </v-col>
+                    <v-col cols="4" class="text-right">
+                        <v-btn outlined @click="viewOfficeProfile">View Office Profile</v-btn>
+                    </v-col>
+                </v-row>
+            </v-card> -->
+            <REAMatrics :agency="agency" :matrics="matrics"></REAMatrics>
 
             <!-- <v-row class="mt-5">
                 <v-col cols="4" class="search-bg">
@@ -36,39 +30,42 @@
                 </v-col>
             </v-row> -->
 
-        <div class="d-flex justifyBetween">
-            <div class="d-flex my-2">
-                <div style="flex-basis: 40%;">
-                    <Search @updateSearch="updateSearch"></Search>
-                </div>
+            <div class="d-flex justifyBetween">
+                <div class="d-flex my-2">
+                    <div style="flex-basis: 40%;">
+                        <Search @updateSearch="updateSearch"></Search>
+                    </div>
 
-                <div class="mx-2 buttonLarge">
-                    <v-btn @click="changeComponent('ApplicatoinListTable')" :class="getButtonClass('ApplicatoinListTable')"> Performance Operation </v-btn>
-                </div>
+                    <div class="mx-2 buttonLarge">
+                        <v-btn @click="changeComponent('ApplicatoinListTable')" :class="getButtonClass('ApplicatoinListTable')"> Performance Operation </v-btn>
+                    </div>
 
-                <div class="mx-2 buttonLarge">
-                    <v-btn @click="changeComponent('AgentListTable')" :class="getButtonClass('AgentListTable')"> Backend of agency </v-btn>
+                    <div class="mx-2 buttonLarge">
+                        <v-btn @click="changeComponent('AgentListTable')" :class="getButtonClass('AgentListTable')"> Backend of agency </v-btn>
+                    </div>
+                </div>
+                <div v-if="dynamicComponent === 'AgentListTable'" class="d-flex my-2">
+                    <v-btn v-if="selectedAgentCount > 0" class="mr-4">
+                        <v-icon color="primary">mdi-send</v-icon> Invite Selected
+                    </v-btn>
+                    <v-btn class="mr-4" @click="setEditMode">
+                        {{ editMode ? 'Cancel Edit' : 'Edit Staff' }}
+                    </v-btn>
+                    <v-btn color="primary" @click="addNewUser">
+                        <v-icon left>add</v-icon> Add New Staff
+                    </v-btn>
                 </div>
             </div>
-            <div v-if="dynamicComponent === 'AgentListTable'" class="d-flex my-2">
-                <v-btn class="mr-4" @click="setEditMode">
-                    {{ editMode ? 'Cancel Edit' : 'Edit Staff' }}
-                </v-btn>
-                <v-btn color="primary" @click="addNewUser">
-                    <v-icon left>add</v-icon> Add New Staff
-                </v-btn>
-            </div>
-        </div>
-        <!-- search button starts -->
 
-        <!-- search button ends -->
-
-
-        <!-- dynamic components starts -->
             <keep-alive>
-                <component :is="dynamicComponent" :officeId="activeOffice" :editMode="editMode" ></component>
+                <component
+                    :is="dynamicComponent"
+                    :officeId="activeOffice"
+                    :editMode="editMode"
+                    @changeAgentCount="changeAgentCount"
+                >
+                </component>
             </keep-alive>
-        <!-- dynamic component ends -->
 
             <CreateUserModal v-if="isCreateStart" :dialog="isCreatingUser" @goToNext="goToNextConfirmationModal" @cancelUserDialog="cancleUserDialog"></CreateUserModal>
             <UserCreationConfirmationModal v-if="dataVerificationFlag" :dialog="dataVerificationFlag" :user="user" @backToEdit="backToEdit" @confirmData="confirmedData"></UserCreationConfirmationModal>
@@ -128,7 +125,7 @@
                 usersList: [],
                 activeOffice: null,
                 roles: Roles,
-
+                selectedAgentCount: 0,
                 page: 1,
                 pageCount: 0,
                 itemsPerPage: 10,
@@ -136,50 +133,6 @@
                 loading: true,
                 options: {},
                 editMode: false,
-                headers:  [
-                    {
-                        text: 'First Name',
-                        align: 'start',
-                        sortable: true,
-                        value: 'first_name'
-                    },
-                    {
-                        text: 'Last Name',
-                        align: 'start',
-                        value: 'last_name',
-                        sortable: true,
-                    },
-                    {
-                        text: 'Applications',
-                        align: 'start',
-                        value: 'submitted_lead',
-                        sortable: true,
-                    },
-                    {
-                        text: 'Role',
-                        align: 'start',
-                        value: 'role',
-                        sortable: true,
-                    },
-                    {
-                        text: 'Mobile',
-                        align: 'start',
-                        value: 'phone',
-                        sortable: false,
-                    },
-                    {
-                        text: 'Email',
-                        align: 'start',
-                        value: 'email',
-                        sortable: false,
-                    },
-                    {
-                        text: 'Action',
-                        align: 'start',
-                        value: 'action',
-                        sortable: false,
-                    }
-                ],
                 search: '',
                 agency: '',
                 office: '',
@@ -261,9 +214,6 @@
             async loadOffice() {
                 this.data = await OfficeService.loadOfficeById(this.activeOffice);
                 this.office.name = this.data.office.name;
-                //console.log(this.data.office.name);
-                console.log(this.office.name);
-                //await this.syncData();
                 this.isLoaded = true;
             },
 
@@ -279,34 +229,29 @@
             viewOfficeProfile() {
                 let officeId = this.$route.params?.officeId;
                 let agencyId = this.$route.params?.id;
-                this.$router.push(
-                    {
-                        name:'real.state.office.profile',params: {'id': agencyId, 'officeId': officeId}
-
-                    });
+                this.$router.push({
+                    name:'real.state.office.profile',
+                    params: {'id': agencyId, 'officeId': officeId}}
+                );
             },
 
             backToOffice() {
                 let officeId = this.$route.params?.officeId;
                 let agencyId = this.$route.params?.id;
-                this.$router.push(
-                    {
-                        name:'real.state.agency.office',params: {'id': agencyId}
-
-                    });
+                this.$router.push({
+                    name:'real.state.agency.office',
+                    params: {'id': agencyId}}
+                );
             },
 
             backToAgency() {
                 let agencyId = this.$route.params?.id;
-                this.$router.push(
-                    {
-                        name:'real.state.agency.home'
-
-                    });
+                this.$router.push({
+                    name:'real.state.agency.home'}
+                );
             },
 
             async loadAgencyById() {
-
                 let agencyId = this.$route.params?.id;
                 let officeId = this.$route.params?.officeId;
                 this.agency = await AgencyService.loadAgencyById(agencyId);
@@ -341,6 +286,9 @@
             async getREAMatrics()
             {
                 this.matrics = await MartricServices.getMatrics(1)
+            },
+            changeAgentCount(count){
+                this.selectedAgentCount = count;
             }
         },
         async mounted() {

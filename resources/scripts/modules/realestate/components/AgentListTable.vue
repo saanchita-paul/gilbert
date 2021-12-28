@@ -9,7 +9,9 @@
                     :options.sync="options"
                     :server-items-length="totalItem"
                     :loading="loading"
-                    class="elevation-1 row-pointer"
+                    class="elevation-1"
+                    v-model="selected"
+                    show-select
                 >
                     <template v-slot:item.first_name="{ item }">
                         <ValidationProvider v-if="editMode" name="Firstname" rules="required"  v-slot="{ errors }">
@@ -139,10 +141,9 @@
                                     v-bind="attrs"
                                     @click="sendMailToUser(item)"
                                     :loading="isLoading(item)"
-                                    v-on="on"
-                                        icon
-                                        >
-                                    <v-icon>mdi-send</v-icon>
+                                    v-on="on" icon
+                                >
+                                    <v-icon color="primary">mdi-send</v-icon>
                                 </v-btn>
                             </template>
                             <span>Invite</span>
@@ -190,7 +191,6 @@
                 usersList: [],
                 activeOffice: null,
                 roles: Roles,
-
                 page: 1,
                 pageCount: 0,
                 itemsPerPage: 10,
@@ -276,6 +276,7 @@
                     { text: 'Yes', value: 1 },
                     { text: 'No', value: 0 },
                 ],
+                selected: [],
             }
         },
         methods: {
@@ -284,6 +285,7 @@
                 else if( !( /.+@.+\..+/.test(item.email) ) ) item.errorMsg = 'E-mail must be valid'
                 else item.errorMsg = [];
             },
+
             addNewUser() {
                 this.isCreatingUser= true;
                 this.isCreateStart = true;
@@ -311,7 +313,6 @@
             },
 
             async checkDataValidation(agency , type){
-
                 if(!this.$refs[`inputRef`+type+agency.id]?.hasError){
                     await AgencyService.updateUserData(agency, agency.id);
                 }
@@ -346,8 +347,6 @@
             async loadOffice() {
                 this.data = await OfficeService.loadOfficeById(this.activeOffice);
                 this.office.name = this.data.office.name;
-                //console.log(this.data.office.name);
-                console.log(this.office.name);
                 //await this.syncData();
                 this.isLoaded = true;
             },
@@ -357,41 +356,38 @@
                 await CrmUserService.saveUser(this.user, officeId);
                 this.loadUserData();
             },
+
             updateSearch(search) {
                 this.search = search;
                 this.loadUserData();
             },
+
             viewOfficeProfile() {
                 let officeId = this.$route.params?.officeId;
                 let agencyId = this.$route.params?.id;
-                this.$router.push(
-                    {
-                        name:'real.state.office.profile',params: {'id': agencyId, 'officeId': officeId}
-
-                    });
+                this.$router.push({
+                    name:'real.state.office.profile',
+                    params: {'id': agencyId, 'officeId': officeId}}
+                );
             },
 
             backToOffice() {
                 let officeId = this.$route.params?.officeId;
                 let agencyId = this.$route.params?.id;
-                this.$router.push(
-                    {
-                        name:'real.state.agency.office',params: {'id': agencyId}
-
-                    });
+                this.$router.push({
+                    name:'real.state.agency.office',
+                    params: {'id': agencyId}}
+                );
             },
 
             backToAgency() {
                 let agencyId = this.$route.params?.id;
-                this.$router.push(
-                    {
-                        name:'real.state.agency.home'
-
-                    });
+                this.$router.push({
+                    name:'real.state.agency.home'}
+                );
             },
 
             async loadAgencyById() {
-
                 let agencyId = this.$route.params?.id;
                 let officeId = this.$route.params?.officeId;
                 this.agency = await AgencyService.loadAgencyById(agencyId);
@@ -401,11 +397,11 @@
                 this.isLoaded = true;
             },
 
-          async sendMailToUser(item) {
+            async sendMailToUser(item) {
                 this.loadingEmail.push(item.id);
                 const index = this.loadingEmail.indexOf(item.id);
-                const response = await  AgencyService.sendMail(item);
-                this.loadingEmail.splice(index,1);
+                const response = await AgencyService.sendMail(item);
+                this.loadingEmail.splice(index, 1);
                 this.snackbar = true;
             },
 
@@ -414,7 +410,6 @@
                     return true;
                 return false;
             }
-
         },
         async mounted() {
             await this.loadAgencyById();
@@ -427,6 +422,15 @@
             options: {
                 handler () {
                     this.loadUserData();
+                },
+                deep: true,
+            },
+            selected: {
+                handler () {
+                    this.$emit(
+                        'changeAgentCount',
+                        this.selected.length
+                    );
                 },
                 deep: true,
             },
