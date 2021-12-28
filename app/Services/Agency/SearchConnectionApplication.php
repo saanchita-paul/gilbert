@@ -60,7 +60,7 @@ class SearchConnectionApplication
         $this->perPage = empty($request['per_page']) ? null : (int) $request['per_page'];
         $this->status = optional($request)['status'];
         $this->leadType = optional($request)['active_lead_type'];
-        $this->source = !empty($request['source']) ? (ConnectionApplication::SOURCE_MAPPING[$request['source']]) : null;
+        $this->source = !empty($request['source']) ? (ConnectionApplication::SOURCE_MAPPING[$request['source']] ?? null) : null;
         $this->tenancyType = !empty($request['tenancy_type']) ? ConnectionApplication::TENANCY_MAPPING[$request['tenancy_type']] ?? null: null;
 
 
@@ -89,6 +89,7 @@ class SearchConnectionApplication
             ->applyFilterUserOffice($user)
             ->applyFilterSource()
             ->applyFilterForFoxie()
+            ->applyFilterTenancyType()
             ->applySearch();
 
         $this->builder = $this->applySorting($this->builder);
@@ -137,13 +138,14 @@ class SearchConnectionApplication
     }
 
     /**
-     * @return void
+     * @return $this
      */
-    private function applyFilterTenancyType()
+    private function applyFilterTenancyType(): static
     {
         if ($this->tenancyType) {
             $this->builder = $this->builder->where('tenancy_type', $this->tenancyType);
         }
+        return $this;
     }
 
     /**
@@ -214,7 +216,7 @@ class SearchConnectionApplication
         };
 
 //        $r = $this->builder->pluck('source')->toArray();
-//        dd($r1, $r);
+//        dd($r);
         return $this;
     }
 }
