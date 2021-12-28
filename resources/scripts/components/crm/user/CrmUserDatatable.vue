@@ -19,7 +19,7 @@
                     </v-col>
                 </v-row>
             </v-card> -->
-            <REAMatrics :agency="agency" :matrics="matrics"></REAMatrics>
+            <REAMatrics :office="office" :agency="agency" :matrics="matrics"></REAMatrics>
 
             <!-- <v-row class="mt-5">
                 <v-col cols="4" class="search-bg">
