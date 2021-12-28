@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use OurProperty\Models\OurProperty;
 use PropertyMe\PropertyMeLead;
+use App\User;
 
 /**
  * App\Models\ConnectionApplication
@@ -333,6 +334,14 @@ class ConnectionApplication extends Model
     public function createdBy()
     {
         return $this->belongsTo(AgentProfile::class, 'created_by');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function submittedBy()
+    {
+        return $this->belongsTo(User::class, 'submitted_by');
     }
 
     /**

@@ -83,7 +83,8 @@ class ApplicationResource extends JsonResource
             'plan_type' => $this->mapPlan($this->plan_type),
             'is_temporary_connection' => $this->is_temporary_connection,
             'connection_end_date' => $this->connection_end_date,
-
+            'submitted_by' => $this->submitted_by,
+            'submittedBy' => $this->submittedBy(),
             #todo: set timezone dynamically based on daylight saving
             'created_at' => (new Carbon($this->created_at, '11'))->format('d/m/Y h:m a')
         ];
