@@ -109,7 +109,7 @@
                     </template>
 
                     <template v-slot:item.cvr="{ item }">
-                        <p class="mt-3">{{ item.cvr }}</p>
+                        <p class="mt-3">{{ item.conversion_rate }}%</p>
                     </template>
 
                     <template v-slot:item.visa="{ item }">

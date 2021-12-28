@@ -41,13 +41,13 @@ class AgentProfileResource extends JsonResource
 
     private function getLastCreatedApplication($applications)
     {
-        $max = null;
+        $lastSubmittedDate = null;
         foreach($applications as $application) {
-            if( new DateTime($application['created_at']) > $max) {
-                $max = new DateTime($application['created_at']);
+            if( new DateTime($application['created_at']) > $lastSubmittedDate) {
+                $lastSubmittedDate = new DateTime($application['created_at']);
             }
         }
-        return $max;
+        return $lastSubmittedDate ? date_format($lastSubmittedDate,"m/d/Y") : null;
     }
 
     private function getConversionRate($id)
@@ -73,10 +73,7 @@ class AgentProfileResource extends JsonResource
                 ConnectionService::AC_MANUAL_PROCESSING
             ])
             ->count();
-        if($totalConnected === 0 && $totalSubmitted === 0) {
-            return 0;
-        } else {
-            return number_format((($totalConnected / $totalSubmitted) * 100), 1);
-        }
+       
+        return $totalSubmitted !== 0 ? number_format((($totalConnected / $totalSubmitted) * 100), 0) : 0;
     }
 }
