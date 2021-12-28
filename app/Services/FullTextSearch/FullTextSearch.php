@@ -29,7 +29,6 @@ class FullTextSearch implements FullTextSearchInterface
         $methodRaw = strtolower($conditionType) === 'and' ? 'whereRaw' : 'orWhereRaw';
         $text = $this->fullTextWildCards($query->getSearchText());
         $index = $query->getIndex();
-
         return $builder->where(fn(Builder $builder) => $builder->$methodRaw("MATCH(" . $index . ") AGAINST( '$text' IN $this->searchMode MODE)"));
 //        return  $builder->$methodRaw("MATCH(" . $index . ") AGAINST( '$text' IN $this->searchMode MODE)");
     }
@@ -74,12 +73,17 @@ class FullTextSearch implements FullTextSearchInterface
     {
         // removing symbols used by MySQL
         $reservedSymbols = ['-', '+', '<', '>', '@', '(', ')', '~'];
+        $replaceBySpace = ['/', ','];
         $term = str_replace($reservedSymbols, '', $text);
+
+        #replacing others specials characters with 1 space
+        $term = preg_replace('/[^a-zA-Z0-9 :]/', ' ', $term);
 
         // removing extra space
         $term = preg_replace('/\s+/', ' ', trim($term));
 
-        $words = explode(' ', $term);
+        $words = explode(' ', trim($term));
+
 
         foreach ($words as $key => $word) {
             /*
