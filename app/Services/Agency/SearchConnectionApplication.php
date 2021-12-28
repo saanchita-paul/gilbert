@@ -48,6 +48,7 @@ class SearchConnectionApplication
      */
     private Builder $builder;
     private ?int $tenancyType;
+    private $officeId;
 
 
     /**
@@ -62,6 +63,7 @@ class SearchConnectionApplication
         $this->leadType = optional($request)['active_lead_type'];
         $this->source = !empty($request['source']) ? (ConnectionApplication::SOURCE_MAPPING[$request['source']] ?? null) : null;
         $this->tenancyType = !empty($request['tenancy_type']) ? ConnectionApplication::TENANCY_MAPPING[$request['tenancy_type']] ?? null: null;
+        $this->officeId = !empty($request['office_id']) ? $request['office_id'] : null;
 
 
 
@@ -88,6 +90,7 @@ class SearchConnectionApplication
         $this->applyFilterLeadType($user)
             ->applyFilterUserOffice($user)
             ->applyFilterSource()
+            ->applyFilterOfficeId()
             ->applyFilterForFoxie()
             ->applyFilterTenancyType()
             ->applySearch();
@@ -135,6 +138,17 @@ class SearchConnectionApplication
         }
         return $this;
 
+    }
+
+    /**
+     * @return $this
+     */
+    private function applyFilterOfficeId(): static
+    {
+        if($this->officeId) {
+            $this->builder = $this->builder->where('office_id', $this->officeId);
+        }
+        return $this;
     }
 
     /**
