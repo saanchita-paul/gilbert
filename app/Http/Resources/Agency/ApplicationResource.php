@@ -2,9 +2,10 @@
 
 namespace App\Http\Resources\Agency;
 
-use App\Models\ConnectionApplication;
-use App\Models\ConnectionService;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\ConnectionService;
+use App\Models\ConnectionApplication;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ApplicationResource extends JsonResource
@@ -90,6 +91,16 @@ class ApplicationResource extends JsonResource
         ];
     }
 
+    private function submittedBy(){
+        try {
+            $user = User::query()->where("id" , $this->submitted_by)->firstOrFail();
+            $name = $user->profile->first_name . ' ' . $user->profile->last_name;
+            return $name; 
+        } catch (\Exception $ex) {
+            \Log::info($ex->getMessage());
+            return "";
+        }
+    }
     private function getConnectionServices($services)
     {
         $service_array = [];

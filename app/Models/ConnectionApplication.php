@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use OurProperty\Models\OurProperty;
 use PropertyMe\PropertyMeLead;
-use App\User;
+use App\Models\User;
 
 /**
  * App\Models\ConnectionApplication
