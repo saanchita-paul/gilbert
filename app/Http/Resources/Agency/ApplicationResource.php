@@ -5,6 +5,7 @@ namespace App\Http\Resources\Agency;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\ConnectionService;
+use Illuminate\Support\Facades\DB;
 use App\Models\ConnectionApplication;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -84,8 +85,8 @@ class ApplicationResource extends JsonResource
             'plan_type' => $this->mapPlan($this->plan_type),
             'is_temporary_connection' => $this->is_temporary_connection,
             'connection_end_date' => $this->connection_end_date,
-            'submitted_by' => $this->submitted_by,
-            'submittedBy' => $this->submittedBy(),
+            'submitted_by' => $this->submittedBy(),
+            'submitted_at' => $this->submittedAt(),
             #todo: set timezone dynamically based on daylight saving
             'created_at' => (new Carbon($this->created_at, '11'))->format('d/m/Y h:m a')
         ];
@@ -96,11 +97,27 @@ class ApplicationResource extends JsonResource
             $user = User::query()->where("id" , $this->submitted_by)->firstOrFail();
             $name = $user->profile->first_name . ' ' . $user->profile->last_name;
             return $name; 
-        } catch (\Exception $ex) {
-            \Log::info($ex->getMessage());
+        } catch (\Exception $exception) {
+            \Log::info($exception->getMessage());
+            \Log::info($exception->getTraceAsString());
             return "";
         }
     }
+
+    private function submittedAt(){
+        try {
+            $date = DB::table("connection_services")
+            ->where("connection_application_id" , $this->id )
+            ->orderBy("submitted_at", "desc")
+            ->first(["submitted_at"]);
+            return $date->submitted_at;
+        } catch (\Exception $exception) {
+            \Log::info($exception->getMessage());
+            \Log::info($exception->getTraceAsString());
+            return "";
+        }
+    }
+
     private function getConnectionServices($services)
     {
         $service_array = [];

@@ -110,7 +110,7 @@ export default {
           text: "Submitted By",
           align: "start",
           sortable: true,
-          value: "submittedBy",
+          value: "submitted_by",
         },
         {
           text: "Created At",
