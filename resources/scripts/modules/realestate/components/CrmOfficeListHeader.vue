@@ -14,7 +14,7 @@
             </div>
         </div>
         <div  class="d-flex my-2" v-if="dynamicComponent === 'AgentListTable'">
-            <v-btn v-if="selected.length > 0" class="mr-4">
+            <v-btn v-if="selected.length > 0" class="mr-4" @click="sendInvitationToSelected">
                 <v-icon color="primary">mdi-send</v-icon> Invite Selected
             </v-btn>
             <v-btn class="mr-4" @click="setEditMode">
@@ -34,8 +34,8 @@ name: "CrmOfficeListHeader",
     components: {Search},
     props: ['editMode', 'selected', 'dynamicComponent'],
     methods: {
-        updateSearch() {
-
+        updateSearch(text) {
+            this.$emit('updateSearch', text);
         },
 
         changeComponent(name){
@@ -49,16 +49,26 @@ name: "CrmOfficeListHeader",
         setEditMode(){
             this.$emit('changeEditMode');
         },
+
         addNewUser() {
             this.$emit('addNewUser');
         },
+
+        sendInvitationToSelected() {
+            this.$emit('sendInvitationToSelected');
+        }
     }
 }
 </script>
 
 <style scoped>
-.buttonActive{
-    background: #DDE2FF;
-    color:  #542E89;
-}
+    .buttonActive{
+        background: #DDE2FF !important;
+        color:  #542E89 !important;
+    }
+
+    .buttonInactive{
+        /* background: #C0C3C4 !important; */
+        color: #263238 !important;
+    }
 </style>

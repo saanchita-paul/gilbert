@@ -263,7 +263,7 @@
                 this.isLoaded = true;
             },
 
-          async sendMailToUser(item) {
+            async sendMailToUser(item) {
                 this.loadingEmail.push(item.id);
                 const index = this.loadingEmail.indexOf(item.id);
                 const response = await  AgencyService.sendMail(item);

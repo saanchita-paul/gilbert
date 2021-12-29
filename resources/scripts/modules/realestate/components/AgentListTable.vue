@@ -1,11 +1,14 @@
 <template>
     <div>
-        <CrmOfficeListHeader dynamicComponent="AgentListTable"
-                             :edit-mode="editMode"
-                             :selected="selected"
-                             @changeEditMode="changeEditMode"
-                             @addNewUser="addNewUser"
-                             @changeComponent="changeComponent"
+        <CrmOfficeListHeader
+            dynamicComponent="AgentListTable"
+            :edit-mode="editMode"
+            :selected="selected"
+            @changeEditMode="changeEditMode"
+            @addNewUser="addNewUser"
+            @changeComponent="changeComponent"
+            @sendInvitationToSelected="sendInvitationToSelected"
+            @updateSearch="updateSearch"
         > </CrmOfficeListHeader>
         <v-row>
             <v-col cols="12" class="crm-table">
@@ -418,14 +421,20 @@
                     return true;
                 return false;
             },
-            changeEditMode()
-            {
+
+            changeEditMode() {
                 this.editMode = !this.editMode;
             },
 
             changeComponent(name) {
                 this.$emit('changeComponent', name);
-            }
+            },
+
+            async sendInvitationToSelected() {
+                this.selected.forEach(async (item) => {
+                    await this.sendMailToUser(item);
+                });
+            },
         },
         async mounted() {
             await this.loadAgencyById();
