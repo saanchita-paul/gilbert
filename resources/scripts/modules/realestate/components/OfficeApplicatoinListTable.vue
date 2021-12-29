@@ -1,5 +1,6 @@
 <template>
   <div>
+      <CrmOfficeListHeader dynamicComponent="ApplicatoinListTable" @changeComponent="changeComponent"> </CrmOfficeListHeader>
     <v-card class="hood-card">
       <v-row>
         <v-col cols="12" class="crm-table">
@@ -59,9 +60,11 @@ import LeadApplicationService from "@scripts/services/crm/LeadApplicationService
 import AuthService from "@scripts/services/AuthService";
 import { LeadSearchFilterModel } from "@scripts/models/LeadSearchFilterModel";
 import { leadSourceMapFromNumber } from "@scripts/data/LeadSourceMap";
+import CrmOfficeListHeader from "@scripts/modules/realestate/components/CrmOfficeListHeader";
 export default {
   name: "OfficeApplicatoinListTable",
   components: {
+      CrmOfficeListHeader,
     ReassignModal,
     Search,
     AssigneeDropdown,
@@ -149,7 +152,7 @@ export default {
   methods: {
     tenantName(item){
       console.log("priting item" , item)
-      return item.first_name  + " " + item.last_name ; 
+      return item.first_name  + " " + item.last_name ;
     },
     async loadLeads(meta) {
       console.log("load lead");
@@ -179,6 +182,9 @@ export default {
       };
       this.loadLeads(meta);
     },
+      changeComponent(name) {
+          this.$emit('changeComponent', name);
+      }
   },
   mounted() {
     this.currentUser = AuthService.getAuthUser();

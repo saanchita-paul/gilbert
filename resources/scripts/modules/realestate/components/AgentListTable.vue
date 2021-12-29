@@ -1,5 +1,12 @@
 <template>
     <div>
+        <CrmOfficeListHeader dynamicComponent="AgentListTable"
+                             :edit-mode="editMode"
+                             :selected="selected"
+                             @changeEditMode="changeEditMode"
+                             @addNewUser="addNewUser"
+                             @changeComponent="changeComponent"
+        > </CrmOfficeListHeader>
         <v-row>
             <v-col cols="12" class="crm-table">
                 <v-data-table
@@ -166,10 +173,11 @@
     import AgencyService from "@scripts/services/crm/AgencyService";
     import Roles from '@scripts/data/UserRoles'
     import AppMatric from "@scripts/modules/realestate/components/AppMatric";
+    import CrmOfficeListHeader from "@scripts/modules/realestate/components/CrmOfficeListHeader";
     export default {
         name: "AgentListTable",
-        props:['editMode'],
         components: {
+            CrmOfficeListHeader,
             AppMatric,
             UserCreatedSuccessfulModal,
             UserCreationConfirmationModal,
@@ -277,6 +285,7 @@
                     { text: 'No', value: 0 },
                 ],
                 selected: [],
+                editMode: false,
             }
         },
         methods: {
@@ -287,8 +296,7 @@
             },
 
             addNewUser() {
-                this.isCreatingUser= true;
-                this.isCreateStart = true;
+                this.$emit('createAgent');
             },
 
             cancleUserDialog() {
@@ -409,6 +417,14 @@
                 if(this.loadingEmail.includes(item.id))
                     return true;
                 return false;
+            },
+            changeEditMode()
+            {
+                this.editMode = !this.editMode;
+            },
+
+            changeComponent(name) {
+                this.$emit('changeComponent', name);
             }
         },
         async mounted() {
