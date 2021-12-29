@@ -154,7 +154,6 @@ export default {
 
         async loadOffice() {
             this.data = await OfficeService.loadOfficeById(this.activeOffice);
-            this.office.name = this.data.office.name;
             this.isLoaded = true;
         },
 

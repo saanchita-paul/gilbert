@@ -6,11 +6,23 @@
             </div>
 
             <div class="mx-2 buttonLarge">
-                <v-btn @click="changeComponent('ApplicatoinListTable')" :class="getButtonClass('ApplicatoinListTable')"> Performance Operation </v-btn>
+                <v-btn
+                    :text="dynamicComponent === 'AgentListTable'"
+                    @click="changeComponent('ApplicatoinListTable')"
+                    :class="getButtonClass('ApplicatoinListTable')"
+                > 
+                    Performance Operation 
+                </v-btn>
             </div>
 
             <div class="mx-2 buttonLarge">
-                <v-btn @click="changeComponent('AgentListTable')" :class="getButtonClass('AgentListTable')"> Backend of agency </v-btn>
+                <v-btn
+                    :text="dynamicComponent === 'ApplicatoinListTable'"
+                    @click="changeComponent('AgentListTable')"
+                    :class="getButtonClass('AgentListTable')"
+                > 
+                    Backend of agency
+                </v-btn>
             </div>
         </div>
         <div  class="d-flex my-2" v-if="dynamicComponent === 'AgentListTable'">
@@ -65,6 +77,7 @@ name: "CrmOfficeListHeader",
     .buttonActive{
         background: #DDE2FF !important;
         color:  #542E89 !important;
+        cursor: default !important;
     }
 
     .buttonInactive{
