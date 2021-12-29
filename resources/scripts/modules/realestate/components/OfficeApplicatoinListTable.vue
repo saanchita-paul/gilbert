@@ -1,6 +1,8 @@
 <template>
   <div>
-      <CrmOfficeListHeader dynamicComponent="ApplicatoinListTable" @changeComponent="changeComponent"> </CrmOfficeListHeader>
+      <CrmOfficeListHeader dynamicComponent="ApplicatoinListTable"
+                           @updateSearch="search"
+                           @changeComponent="changeComponent"> </CrmOfficeListHeader>
     <v-card class="hood-card">
       <v-row>
         <v-col cols="12" class="crm-table">
@@ -65,8 +67,8 @@ export default {
   name: "OfficeApplicatoinListTable",
   components: {
       CrmOfficeListHeader,
-    ReassignModal,
-    Search,
+      ReassignModal,
+      Search,
     AssigneeDropdown,
     AssignedtoPopUp,
   },
@@ -78,7 +80,6 @@ export default {
   data() {
     return {
       currentUser: null,
-
       leadSearch: "",
       options: {},
       loading: false,
@@ -142,6 +143,7 @@ export default {
       ],
       applications: [],
       totalItem: 0,
+        advanceSearch: new LeadSearchFilterModel()
     };
   },
   computed: {
@@ -157,9 +159,9 @@ export default {
     async loadLeads(meta) {
       console.log("load lead");
       this.loading = true;
-      let data = await LeadApplicationService.loadUserLeads(
-        meta
-      );
+      let data = await LeadApplicationService.loadUserLeads(meta, '', '', this.advanceSearch);
+
+
       console.log("data" , data)
       this.loading = false;
       this.applications = data.applications;
@@ -184,6 +186,11 @@ export default {
     },
       changeComponent(name) {
           this.$emit('changeComponent', name);
+      },
+
+      search(searchText) {
+        this.advanceSearch.tenancy_name = searchText;
+        this.loadLeadList();
       }
   },
   mounted() {

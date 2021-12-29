@@ -96,7 +96,7 @@ class ApplicationResource extends JsonResource
         try {
             $user = User::query()->where("id" , $this->submitted_by)->firstOrFail();
             $name = $user->profile->first_name . ' ' . $user->profile->last_name;
-            return $name; 
+            return $name;
         } catch (\Exception $exception) {
             \Log::info($exception->getMessage());
             \Log::info($exception->getTraceAsString());
@@ -110,7 +110,7 @@ class ApplicationResource extends JsonResource
             ->where("connection_application_id" , $this->id )
             ->orderBy("submitted_at", "desc")
             ->first(["submitted_at"]);
-            return $date->submitted_at;
+            return $date?->submitted_at;
         } catch (\Exception $exception) {
             \Log::info($exception->getMessage());
             \Log::info($exception->getTraceAsString());

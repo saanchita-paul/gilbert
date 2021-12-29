@@ -44,7 +44,6 @@ class ApplicationController extends Controller
         $user = auth()->user();
         try {
             $service = new SearchConnectionApplication($request->toArray());
-            \Log::info("msgggg" ,[ $service->get($user) ]);
             return ApplicationResource::collection($service->get($user));
 
         } catch (\Exception $exception) {
