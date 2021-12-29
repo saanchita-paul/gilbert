@@ -2,13 +2,12 @@
 
 namespace App\Services\Agency;
 
-use App\Models\Agency;
 use App\Models\AgentProfile;
-use App\Models\Office;
 use App\Traits\Agency\Searchable;
 use App\Traits\Agency\Sortable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+
 
 class SearchAgentProfileService
 {
@@ -45,7 +44,7 @@ class SearchAgentProfileService
         $agencyBuilder = $this->applySearch($agencyBuilder, ['first_name', 'last_name']);
         $agencyBuilder = $this->applySorting($agencyBuilder);
 
-        return  $agencyBuilder->paginate($this->perPage);
+        return $agencyBuilder->paginate($this->perPage);
     }
 
     /**
@@ -56,6 +55,7 @@ class SearchAgentProfileService
     private function createAgencyBuilder(): Builder
     {
         return AgentProfile::query()
-            ->with('user.roles:name');
+            ->with('user.roles:name')
+            ->with('createdApplications');
     }
 }
