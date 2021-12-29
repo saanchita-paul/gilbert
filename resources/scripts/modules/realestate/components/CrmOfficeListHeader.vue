@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex justify-space-between">
-        <div class="d-flex my-2">
+        <div class="d-flex mt-5 mb-1">
             <div style="flex-basis: 40%;">
                 <Search @updateSearch="updateSearch"></Search>
             </div>
@@ -10,22 +10,22 @@
                     :text="dynamicComponent === 'AgentListTable'"
                     @click="changeComponent('ApplicatoinListTable')"
                     :class="getButtonClass('ApplicatoinListTable')"
-                > 
-                    Performance Operation 
+                >
+                    Performance Operation
                 </v-btn>
             </div>
 
-            <div class="mx-2 buttonLarge">
+            <div class="buttonLarge">
                 <v-btn
                     :text="dynamicComponent === 'ApplicatoinListTable'"
                     @click="changeComponent('AgentListTable')"
                     :class="getButtonClass('AgentListTable')"
-                > 
+                >
                     Backend of agency
                 </v-btn>
             </div>
         </div>
-        <div  class="d-flex my-2" v-if="dynamicComponent === 'AgentListTable'">
+        <div  class="d-flex  mt-5 mb-1" v-if="dynamicComponent === 'AgentListTable'">
             <v-btn v-if="selected.length > 0" class="mr-4" @click="sendInvitationToSelected">
                 <v-icon color="primary">mdi-send</v-icon> Invite Selected
             </v-btn>

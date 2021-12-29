@@ -168,7 +168,7 @@ export default {
         tenantName(item) {
             return item.first_name + " " + item.last_name;
         },
-        
+
         async loadLeads(meta) {
             this.loading = true;
             let data = await LeadApplicationService.loadUserLeads(
@@ -200,7 +200,6 @@ export default {
                     this.options.sortBy.length != 0
                         ? this.options.sortBy[0]
                         : "",
-                ...new LeadSearchFilterModel({ office_id: this.officeId })
             };
             this.loadLeads(meta);
         },
@@ -210,7 +209,8 @@ export default {
         },
 
         search(searchText) {
-            this.advanceSearch.tenancy_name = searchText;
+            this.advanceSearch.tenant_name = searchText;
+            this.advanceSearch.office_id = this.officeId;
             this.loadLeadList();
         }
     },
