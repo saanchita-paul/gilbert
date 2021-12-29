@@ -51,11 +51,12 @@ name: "CrmOfficeListHeader",
         },
 
         changeComponent(name){
-
-            this.$router.push({name: 'real.state.agency.users',
-                params: {id : this.$route.params.id, office_id : this.$route.params.officeId},
-                query: { type: name}
-            })
+            if(this.$route.query.type !== name){
+                this.$router.push({name: 'real.state.agency.users',
+                    params: {id : this.$route.params.id, office_id : this.$route.params.officeId},
+                    query: { type: name}
+                })
+            }
         },
 
         getButtonClass(name){

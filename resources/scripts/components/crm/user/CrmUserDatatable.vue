@@ -101,7 +101,7 @@ export default {
             loadingEmail: [],
             snackbar: false,
             timeout: 2000,
-            dynamicComponent: "ApplicatoinListTable",
+            dynamicComponent: null,
             matrics: null
         };
     },
@@ -196,7 +196,6 @@ export default {
     watch: {
         '$route': {
             handler() {
-
                 this.getActiveComponent(this.$route.query?.type);
             }
         }
@@ -209,8 +208,7 @@ export default {
         this.activeOffice = this.$route.params.officeId;
         this.loadOffice();
         this.getActiveComponent();
-
-
+        this.getActiveComponent(this.$route.query?.type);
     }
 };
 </script>

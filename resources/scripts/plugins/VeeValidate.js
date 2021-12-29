@@ -124,7 +124,6 @@ extend('unique-email-update', {
     message: field => `Email already taken!`,
     params: ['target'],
     validate: async (value, {target}) =>  {
-        console.log('printing email' , value ,target)
         return !(await AgencyService.emailUpdateValidationRule(value, target))
     }
 });

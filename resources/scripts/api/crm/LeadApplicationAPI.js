@@ -221,10 +221,8 @@ export default {
     },
 
     async closeApplicationWithReason(id, closing_reason){
-        console.log('id and closing reason in api' , closing_reason, id)
         try {
             const data = await axios.post('/api/applications/'+id+'/closeApplication' , {closing_reason});
-            console.log(data)
             return true;
         } catch (error) {
             console.log(error)
@@ -243,12 +241,12 @@ export default {
     },
 
     async getUserLeads(sort_search_meta, active_lead_type, src, params) {
-       console.log('params', params);
         try {
             const data = await axios.get('/api/applications',{params:{...sort_search_meta, active_lead_type, source: src , ...params}});
             return ApplicationMapper.mapApplicationList(data.data);
 
         } catch (error) {
+            console.log('error', error);
             return error.data;
         }
     },
