@@ -1,4 +1,4 @@
-import { isEmpty } from "lodash-es";
+import {isEmpty} from "lodash-es";
 
 class LeadSearchFilterModel {
     constructor({
@@ -16,14 +16,11 @@ class LeadSearchFilterModel {
     }
 
     isSearchEmpty() {
-        const isNoValue =
-            isEmpty(this.tenant_name) &&
+        return isEmpty(this.tenant_name) &&
             isEmpty(this.source) &&
             isEmpty(this.phone) &&
             isEmpty(this.address) &&
             isEmpty(this.tenancy_type);
-        
-        return isNoValue ? true : false;
     }
 }
 
