@@ -320,13 +320,13 @@
     }
 
     .buttonActive{
-        background: #DDE2FF;
-        color:  #542E89;
+        background: #DDE2FF !important;
+        color:  #542E89 !important;
     }
 
     .buttonInactive{
-        background: #C0C3C4;;
-        color: #263238;
+        /* background: #C0C3C4 !important; */
+        color: #263238 !important;
     }
     .matrics{
         display: flex;
