@@ -8,7 +8,7 @@
             <div class="mx-2 buttonLarge">
                 <v-btn
                     :text="dynamicComponent === 'AgentListTable'"
-                    @click="changeComponent('ApplicatoinListTable')"
+                    @click="changeComponent('lead')"
                     :class="getButtonClass('ApplicatoinListTable')"
                 >
                     Performance Operation
@@ -18,7 +18,7 @@
             <div class="buttonLarge">
                 <v-btn
                     :text="dynamicComponent === 'ApplicatoinListTable'"
-                    @click="changeComponent('AgentListTable')"
+                    @click="changeComponent('user')"
                     :class="getButtonClass('AgentListTable')"
                 >
                     Backend of agency
@@ -51,7 +51,11 @@ name: "CrmOfficeListHeader",
         },
 
         changeComponent(name){
-            this.$emit('changeComponent', name);
+
+            this.$router.push({name: 'real.state.agency.users',
+                params: {id : this.$route.params.id, office_id : this.$route.params.officeId},
+                query: { type: name}
+            })
         },
 
         getButtonClass(name){

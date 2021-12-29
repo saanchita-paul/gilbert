@@ -205,6 +205,11 @@ export default {
         },
 
         changeComponent(name) {
+
+            this.$router.push({name: 'real.state.agency.users',
+                params: {id : this.$route.params.id, office_id : this.$route.params.officeId},
+                query: { type: name}
+            })
             this.$emit("changeComponent", name);
         },
 

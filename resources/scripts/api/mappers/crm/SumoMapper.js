@@ -10,7 +10,6 @@ export default {
     },
     mapProduct :(sumoInfo , service_type , agent_name, lead_id)=>{
         let distributorName = sumoInfo?.electricityDistributors[0]?.distributor ??  'electricDistributorNotFound';
-        console.log('printing distributor name mapProduct' , distributorName);
 
         return {
             campaign: 'hood',

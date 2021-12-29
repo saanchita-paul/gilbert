@@ -398,7 +398,7 @@ export default {
             identification: identification,
             isService: isService
         }
-        console.log("printing payload from api" , payload)
+        // console.log("printing payload from api" , payload)
         const response = await axios.post('/api/applications/'+leadId+'/draft',payload);
     },
     async updateConnecitionEndNullDate(leadId){

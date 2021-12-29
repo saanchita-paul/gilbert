@@ -101,7 +101,7 @@ export default {
             loadingEmail: [],
             snackbar: false,
             timeout: 2000,
-            dynamicComponent: "AgentListTable",
+            dynamicComponent: "ApplicatoinListTable",
             matrics: null
         };
     },
@@ -180,14 +180,37 @@ export default {
         async getREAMatrics() {
             let office_id = this.$route.params.officeId;
             this.matrics = await MartricServices.getMatrics(office_id);
+        },
+
+        getActiveComponent(type) {
+            if(type === 'user')
+            {
+                this.dynamicComponent = 'AgentListTable';
+            }
+            else {
+                this.dynamicComponent = 'ApplicatoinListTable';
+            }
         }
     },
+
+    watch: {
+        '$route': {
+            handler() {
+
+                this.getActiveComponent(this.$route.query?.type);
+            }
+        }
+    },
+
     async mounted() {
         await this.getREAMatrics();
         await this.loadAgencyById();
         await this.loadUserData();
         this.activeOffice = this.$route.params.officeId;
         this.loadOffice();
+        this.getActiveComponent();
+
+
     }
 };
 </script>

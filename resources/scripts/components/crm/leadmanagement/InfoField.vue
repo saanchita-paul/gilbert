@@ -1413,8 +1413,6 @@ export default {
       }
     },
     updateExpireDateMedicare(){
-      console.log("date printing" , this.indentification);
-      console.log("date printing" , this.indentification.expire_date);
       if( medicareRules(this.indentification.medicare_expire_date) && mediExpireDate(this.indentification.medicare_expire_date) && this.indentification.type == 3 ){
         console.log("true medical")
         // let dateMonth =  this.indentification.medicare_expire_date.split('/');
