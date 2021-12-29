@@ -41,7 +41,7 @@
                         :item-class="isSelectedClass"
                         :options.sync="options"
                         :server-items-length="totalItem"
-                        :loading="loading"
+                        :loading="isSearching"
                         class="row-pointer"
                         @click:row="openLeadSummary"
                     >
@@ -90,16 +90,19 @@ export default {
     },
 
     props: {
-      leadSrc: {default: 'all'},
-      applications: {
-          required: true
-      },
+        leadSrc: {default: 'all'},
+        applications: {
+            required: true
+        },
         totalItem: {
-          required: true,
-      },
+            required: true,
+        },
         currentLead: {
-          required: true
-      }
+            required: true
+        },
+        isSearching: {
+            default: false
+        }
     },
 
     data() {
@@ -241,7 +244,7 @@ export default {
       this.currentUser = AuthService.getAuthUser();
       console.log("value app mouted")
       console.log(this.applications)
-    
+
     },
     watch: {
         applications(val){
