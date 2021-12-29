@@ -48,8 +48,8 @@ class ApplicationController extends Controller
             return ApplicationResource::collection($service->get($user));
 
         } catch (\Exception $exception) {
-    return $this->sendErrorResponse($exception);
-}
+            return $this->sendErrorResponse($exception);
+        }
     }
 
 

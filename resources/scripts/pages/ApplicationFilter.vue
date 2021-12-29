@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-form ref="form">
+    <v-form ref="form" autocomplete="off" >
       <div class="d-flex justify-end pt-2">
         <!-- <slot/> -->
         <!-- <div class="px-3 py-1 clearButton" @click="clearSearch">
@@ -14,6 +14,7 @@
       </div>
       <div class="d-flex">
         <v-text-field
+            autocomplete="off"
           v-model="$attrs.value.tenant_name"
           full-width
           outlined

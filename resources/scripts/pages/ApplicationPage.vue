@@ -17,6 +17,7 @@
                     @refreshDataTable="refreshDataTable"
                     @openLeadSummary="openLeadSummary"
                     @updateLeadAndatrics="updateLeadAndatrics"
+                    :isSearching="isSearching"
                 ></router-view>
             </v-col>
             <v-col cols="4">
@@ -36,6 +37,7 @@ import AgentApplicationService from "@scripts/services/crm/AgentApplicationServi
 import {isEqual , pick} from "lodash-es";
 import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel'
 import ApplicationFilter from '@scripts/pages/ApplicationFilter';
+import debounce from "lodash-es/debounce";
 
 export default {
     name: "ApplicationPage",
@@ -49,6 +51,7 @@ export default {
 
     data() {
         return {
+            isSearching: false,
             leadTypes:[],
             selectedSrc: this.$route.query.source || 'all',
             activeLeadType: 'my_applications',
@@ -87,16 +90,17 @@ export default {
             this.leadTypesFlag = true;
         },
 
-        async loadLeads () {
-            console.log("api calling");
+        async fetchLeads () {
+            this.isSearching = true;
             let data = await LeadApplicationService.loadUserLeads(this.sort_search_meta, this.activeLeadType, this.selectedSrc, this.advanceSearch);
             this.leads = data.applications;
             this.isLoaded = true;
+            this.isSearching = false;
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
             this.totalItem = data.pagination.total;
             this.selected_lead_id = this.leads[0]?.id;
-            this.leads.length ? this.loadLeadSummary() : "";
+            this.leads.length ? await this.loadLeadSummary() : "";
             // console.log('lead list', this.leads);
         },
 
@@ -133,6 +137,12 @@ export default {
         }
     },
 
+    created() {
+        this.loadLeads = debounce(() => {
+            this.fetchLeads()
+        }, 400);
+    },
+
     mounted() {
         this.loadMetricTypes();
         this.advanceSearch = new LeadSearchFilterModel(this.$route.query);
@@ -161,7 +171,6 @@ export default {
         },
         advanceSearch:{
             handler(value) {
-                console.log("ff" , value.isSearchEmpty())
                 let params = { ...this.$route.query, ...value }
                 if(isEqual(this.$route.query , value)) return;
                 this.$router.push({
