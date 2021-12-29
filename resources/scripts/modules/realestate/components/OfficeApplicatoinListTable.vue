@@ -216,6 +216,7 @@ export default {
     },
     mounted() {
         this.currentUser = AuthService.getAuthUser();
+        this.advanceSearch.office_id = this.officeId;
         this.loadLeadList();
     },
     watch: {
