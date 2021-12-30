@@ -6,63 +6,61 @@
             @changeComponent="changeComponent"
         >
         </CrmOfficeListHeader>
-        <v-card class="hood-card">
-            <v-row>
-                <v-col cols="12" class="crm-table">
-                    <v-data-table
-                        :headers="headers"
-                        :items="applications"
-                        :options.sync="options"
-                        :server-items-length="totalItem"
-                        :loading="loading"
-                        class="row-pointer"
-                    >
-                        <template v-slot:item.services="{ item }">
-                            <v-icon
-                                small
-                                :disabled="
-                                    isServiceAllowed(item.services, 'power')
-                                "
-                                color="yellow"
-                                >mdi-flash</v-icon
-                            >
-                            <v-icon
-                                small
-                                :disabled="
-                                    isServiceAllowed(item.services, 'gas')
-                                "
-                                color="red"
-                                >mdi-fire</v-icon
-                            >
-                            <v-icon
-                                small
-                                :disabled="
-                                    isServiceAllowed(item.services, 'internet')
-                                "
-                                color="green"
-                                >mdi-wifi</v-icon
-                            >
-                            <v-icon
-                                small
-                                :disabled="
-                                    isServiceAllowed(item.services, 'water')
-                                "
-                                color="blue"
-                                >mdi-water</v-icon
-                            >
-                        </template>
-                        <template v-slot:item.source="{ item }">
-                            <div
-                                v-text="leadSourceMapFromNumber[item.source]"
-                            ></div>
-                        </template>
-                        <template v-slot:item.tenant_name="{ item }">
-                            <div v-text="tenantName(item)"></div>
-                        </template>
-                    </v-data-table>
-                </v-col>
-            </v-row>
-        </v-card>
+        <v-row>
+            <v-col cols="12" class="crm-table">
+                <v-data-table
+                    :headers="headers"
+                    :items="applications"
+                    :options.sync="options"
+                    :server-items-length="totalItem"
+                    :loading="loading"
+                    class="row-pointer"
+                >
+                    <template v-slot:item.services="{ item }">
+                        <v-icon
+                            small
+                            :disabled="
+                                isServiceAllowed(item.services, 'power')
+                            "
+                            color="yellow"
+                            >mdi-flash</v-icon
+                        >
+                        <v-icon
+                            small
+                            :disabled="
+                                isServiceAllowed(item.services, 'gas')
+                            "
+                            color="red"
+                            >mdi-fire</v-icon
+                        >
+                        <v-icon
+                            small
+                            :disabled="
+                                isServiceAllowed(item.services, 'internet')
+                            "
+                            color="green"
+                            >mdi-wifi</v-icon
+                        >
+                        <v-icon
+                            small
+                            :disabled="
+                                isServiceAllowed(item.services, 'water')
+                            "
+                            color="blue"
+                            >mdi-water</v-icon
+                        >
+                    </template>
+                    <template v-slot:item.source="{ item }">
+                        <div
+                            v-text="leadSourceMapFromNumber[item.source]"
+                        ></div>
+                    </template>
+                    <template v-slot:item.tenant_name="{ item }">
+                        <div v-text="tenantName(item)"></div>
+                    </template>
+                </v-data-table>
+            </v-col>
+        </v-row>
     </div>
 </template>
 

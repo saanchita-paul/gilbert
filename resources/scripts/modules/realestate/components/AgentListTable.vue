@@ -14,7 +14,6 @@
         <v-row>
             <v-col cols="12" class="crm-table">
                 <v-data-table
-                    dense
                     :headers="headers"
                     :items="usersList"
                     :options.sync="options"
