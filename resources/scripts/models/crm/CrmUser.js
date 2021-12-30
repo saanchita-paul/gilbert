@@ -11,8 +11,8 @@ export default class CrmUser{
         this.email = user?.email;
         this.profile_img = profile_photo;
         this.is_active = user?.is_active;
-        this.last_submitted = application_details.last_submitted_application;
-        this.visa = application_details.visa;
-        this.conversion_rate = application_details.conversion_rate;
+        this.last_submitted = application_details?.last_submitted_application;
+        this.visa = application_details?.visa;
+        this.conversion_rate = application_details?.conversion_rate;
     }
 }

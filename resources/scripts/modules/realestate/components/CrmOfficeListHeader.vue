@@ -26,7 +26,12 @@
             </div>
         </div>
         <div  class="d-flex  mt-5 mb-1" v-if="dynamicComponent === 'AgentListTable'">
-            <v-btn v-if="selected.length > 0" class="mr-4" @click="sendInvitationToSelected">
+            <v-btn
+                v-if="selected.length > 0"
+                class="mr-4"
+                @click="sendInvitationToSelected"
+                :loading="isSendingInvitation"
+            >
                 <v-icon color="primary">mdi-send</v-icon> Invite Selected
             </v-btn>
             <v-btn class="mr-4" @click="setEditMode">
@@ -44,7 +49,7 @@ import Search from "@scripts/components/crm/Search";
 export default {
 name: "CrmOfficeListHeader",
     components: {Search},
-    props: ['editMode', 'selected', 'dynamicComponent'],
+    props: ['editMode', 'selected', 'dynamicComponent', 'isSendingInvitation'],
     methods: {
         updateSearch(text) {
             this.$emit('updateSearch', text);

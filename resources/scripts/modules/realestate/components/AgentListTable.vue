@@ -4,6 +4,7 @@
             dynamicComponent="AgentListTable"
             :edit-mode="editMode"
             :selected="selected"
+            :isSendingInvitation="isSendingInvitation"
             @changeEditMode="changeEditMode"
             @addNewUser="addNewUser"
             @changeComponent="changeComponent"
@@ -98,7 +99,7 @@
 
                     <template v-slot:item.email="{ item }">
                         <ValidationProvider
-                            v-if="editMode"
+                            v-show="editMode"
                             name="Email"
                             rules="required|email|unique-email-update:@h_id"
                             v-slot="{ errors }"
@@ -113,7 +114,7 @@
                                 @blur="updateUserData(item, 'Email')"
                             ></v-text-field>
                         </ValidationProvider>
-                        <p v-else class="mt-3">{{ item.email }}</p>
+                        <p v-show="!editMode" class="mt-3">{{ item.email }}</p>
                         <ValidationProvider name="h_id">
                             <v-text-field v-model="item.id" v-show="false" />
                         </ValidationProvider>
@@ -228,6 +229,8 @@ export default {
             office: "",
             isLoaded: false,
             loadingEmail: [],
+            loadingMultipleEmail: [],
+            isSendingInvitation: false,
             snackbar: false,
             visaItems: [
                 { text: "Yes", value: 1 },
@@ -386,9 +389,16 @@ export default {
         },
 
         async sendInvitationToSelected() {
-            this.selected.forEach(async item => {
-                await this.sendMailToUser(item);
-            });
+            this.isSendingInvitation = true;
+                await Promise.all(
+                    this.selected.map(async item => {
+                    this.loadingMultipleEmail.push(item.id);
+                    const index = this.loadingMultipleEmail.indexOf(item.id);
+                    await AgencyService.sendMail(item);
+                    this.loadingMultipleEmail.splice(index, 1);
+                })
+            )
+            this.isSendingInvitation = false;
         }
     },
     async mounted() {
