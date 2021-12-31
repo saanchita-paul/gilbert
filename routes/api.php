@@ -120,6 +120,7 @@ Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWate
  */
 Route::get('/sales-dashboard/home', [ReportController::class, 'home']);
 Route::get('/sales-dashboard/export/submission-report', [ReportController::class, 'submissionReport']);
+Route::get('/plans-details/{id}/export', [NoteController::class, 'download']);
 
 
 
