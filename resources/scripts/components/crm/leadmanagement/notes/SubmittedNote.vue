@@ -4,7 +4,7 @@
         <p>{{note.created_at}}</p>
         <p>{{note.text}}</p>
         <v-btn  outlined small
-               color="indigo" class="mb-4">Export Note</v-btn>
+               color="indigo" class="mb-4" @click="exportNote(note.id)">Export Note</v-btn>
 
         <p class="title">Utility Type:<span class="note-data">({{note.leads.utility_type}})</span></p>
         <p class="title">Applicant Name: <span class="note-data">{{note.leads.application_name}}</span></p>
@@ -81,10 +81,15 @@ name: "SubmittedNote",
         showPlan() {
             this.dialog = true;
         },
-
-       async mapPlanDetail()
-        {
+       async mapPlanDetail() {
             this.planDetails = await SubmittedNoteService.mapEnergyPlan(this.note.plans, this.note.leads.plan_type);
+        },
+        exportNote(id) {
+            window.open(
+                '/api/plans-details/' + id + '/export',
+                '_blank'
+            );
+
         }
     },
 

@@ -34,11 +34,14 @@ class SubmittedLeadNote
            'agent_name' => $this->existLead?->getAgentName(),
            'nmi' => $this->existLead?->nmi,
            'mirn' => $this->existLead?->mirn,
-           'supplier' => 'Hood',
+           'supplier' => 'EA',
            'plan_type' => $planType,
            'post_code' => $postCode,
            'state' => $state,
-           'services' => $submittedService
+           'services' => $submittedService,
+           'first_name' => $this->existLead?->first_name,
+           'last_name' => $this->existLead?->last_name,
+           'application_id' => $this->existLead?->id
         ];
 
        return json_encode($leadData);
