@@ -75,7 +75,7 @@ class ExportSubmissionReport
             ->selectRaw("
                 ag.name as `Agency_Name`,
                 concat(ap.first_name, ap.last_name) as `Agent_Name`,
-                u.email as `Agent_Email`,
+                u.email as `Submitted_User_Email`,
                 ca.source as `Lead_Source`,
                 ca.first_name as `Customer_Firstname`,
                 ca.last_name as `Customer_Lastname`,
@@ -91,15 +91,12 @@ class ExportSubmissionReport
                 cs.status as `Lead_Status`,
                 sl.agency_name as `Foxie_Agency_Name`,
                 sl.agent_name as `Foxie_Agent_Name`,
-                rr.reason_text as `Reason_Text`
+                rr.reason_text as `Rejection_Reason`
             ")
             ->leftJoin('connection_applications as ca', 'cs.connection_application_id', '=', 'ca.id')
             ->leftJoin('agencies as ag', 'ca.agency_id', '=', 'ag.id')
             ->leftJoin('agent_profiles as ap', 'ap.id', '=', 'ca.created_by')
-            ->leftJoin('users as u', function (JoinClause $join) {
-                $join->on('ap.id', '=', 'u.profile_id')
-                    ->where('profile_type', AgentProfile::class);
-            })
+            ->leftJoin('users as u', 'ca.submitted_by', '=', 'u.id')
             ->leftJoin('suger_leads as sl', 'ca.id', '=', 'sl.connection_application_id')
             ->leftJoin('rejection_reasons as rr', 'cs.id', '=', 'rr.connection_service_id')
             ->whereIn('cs.service_type', $this->serviceType);
@@ -110,13 +107,13 @@ class ExportSubmissionReport
         $tempBuilder = clone $builder;
         $filterWithUpdatedAt = $this->filterWithUpdatedAt($tempBuilder)->get()->toArray();
 
-        // $tempBuilder = clone $builder;
-        // $filterWithClosedAt = $this->filterWithClosedAt($tempBuilder)->get()->toArray();
+        $tempBuilder = clone $builder;
+        $filterWithClosedAt = $this->filterWithClosedAt($tempBuilder)->get()->toArray();
 
         return array_merge(
             $filterWithSubmittedAt,
             $filterWithUpdatedAt,
-            // $filterWithClosedAt
+            $filterWithClosedAt
         );
     }
 
@@ -127,7 +124,12 @@ class ExportSubmissionReport
                 ConnectionService::STATUS_ACCEPTED, //Accepted
                 ConnectionService::STATUS_ENERGY_SUBMIT, //In progress
                 ConnectionService::STATUS_SUBMITTED, //In progress
-                ConnectionService::AC_MANUAL_PROCESSING //MANUAL_PROCESSING
+                ConnectionService::AC_MANUAL_PROCESSING, //MANUAL_PROCESSING
+
+                ConnectionService::STATUS_CANT_CONNECT, //Rejeted
+                ConnectionService::STATUS_REJECTED, //Rejeted
+                ConnectionService::STATUS_EA_PROCESSINF, //Not submitted
+                ConnectionApplication::STATUS_CLOSED //Closed
             ])
             ->where('cs.submitted_at', '>=', $this->startDate)
             ->where('cs.submitted_at', '<=', $this->endDate);
@@ -142,7 +144,9 @@ class ExportSubmissionReport
                 ConnectionService::STATUS_EA_PROCESSINF //Not submitted
             ])
             ->where('cs.updated_at', '>=', $this->startDate)
-            ->where('cs.updated_at', '<=', $this->endDate);
+            ->where('cs.updated_at', '<=', $this->endDate)
+            ->whereNotBetween('cs.submitted_at', [$this->startDate, $this->endDate])
+            ->whereNotNull('cs.submitted_at');
     }
 
     private function filterWithClosedAt($builder)
@@ -152,7 +156,9 @@ class ExportSubmissionReport
                 ConnectionApplication::STATUS_CLOSED //Closed
             ])
             ->where('ca.closed_at', '>=', $this->startDate)
-            ->where('ca.closed_at', '<=', $this->endDate);
+            ->where('ca.closed_at', '<=', $this->endDate)
+            ->whereNotBetween('cs.submitted_at', [$this->startDate, $this->endDate])
+            ->whereNotNull('cs.submitted_at');
     }
 
     private function getLeadSrc(?int $src): string
