@@ -94,7 +94,7 @@
                     </template>
 
                     <template v-slot:item.last_submitted="{ item }">
-                        <p class="mt-3">{{ item.last_submitted }}</p>
+                        <p class="mt-3">{{ getLastSubmitted(item.last_submitted) }}</p>
                     </template>
 
                     <template v-slot:item.email="{ item }">
@@ -207,6 +207,8 @@ import OfficeService from "@scripts/services/crm/OfficeService";
 import AgencyService from "@scripts/services/crm/AgencyService";
 import Roles from "@scripts/data/UserRoles";
 import CrmOfficeListHeader from "@scripts/modules/realestate/components/CrmOfficeListHeader";
+import dayjs from "dayjs";
+
 export default {
     name: "AgentListTable",
     components: {
@@ -399,6 +401,10 @@ export default {
                 })
             )
             this.isSendingInvitation = false;
+        },
+
+        getLastSubmitted($date) {
+            return dayjs($date).format('MM/DD/YYYY');
         }
     },
     async mounted() {
