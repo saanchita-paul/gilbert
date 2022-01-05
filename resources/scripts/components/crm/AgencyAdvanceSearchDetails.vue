@@ -67,6 +67,17 @@
     </div>
 
     <div class="d-flex justify-space-between align-center py-2">
+      <div class="font-weight-bold ml-6" style="flex-basis: 15%">Agent Name</div>
+      <div style="flex-basis: 65%" class="mr-6">
+        <AgentDropdown
+          :selectedAgentId="3"
+          @onChangeAgent="onChangeAgent"
+        >
+        </AgentDropdown>
+      </div>
+    </div>
+
+    <div class="d-flex justify-space-between align-center py-2">
       <div class="font-weight-bold ml-6" style="flex-basis: 15%">
         Moving Date
       </div>
@@ -160,8 +171,10 @@
 <script>
 import { formatDate } from "@scripts/services/others/DateService"
 import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel';
+import AgentDropdown from './agent/AgentDropdown';
 export default {
   name: "AgencyAdvanceSearchDetails",
+  components: {AgentDropdown},
   props: [],
   data() {
     return {
@@ -209,6 +222,9 @@ export default {
     },
     clearFilter(){
       this.search.clear();
+    },
+    onChangeAgent(id){
+      console.log("checkign id" , id)
     }
   },
 };

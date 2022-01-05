@@ -2,7 +2,14 @@
     <div>
         <v-row class="mt-5">
             <v-col cols="8" class="search-bg">
-                <Search @updateSearch="updateSearch"></Search>
+                <!-- <Search @updateSearch="updateSearch"></Search> -->
+                <v-btn
+                    class="ma-2"
+                    outlined
+                    color="indigo"
+                    @click="advanceSearchDialog">
+                        Advanced Search
+                    </v-btn>
             </v-col>
             <v-col cols="4" class="text-right">
                 <v-btn color="primary" @click="addNewApplication"
@@ -40,17 +47,21 @@
                 </v-col>
             </v-row>
         </v-card>
+        <AdvanceSearchModal v-if="advanceSearchModal" :dialog="advanceSearchModal" :title="''" @cancelDialog="cancelAdvanceSearchModal">
+        </AdvanceSearchModal>
     </div>
 </template>
 
 <script>
 import Search from "@scripts/components/crm/Search";
+import AdvanceSearchModal from '@scripts/components/crm/modals/AdvanceSearchModal.vue';
 
 export default {
     name: "AgentApplicationTable",
     props: ["applications","totalItem", 'selectedAppId'],
     components: {
-        Search
+        Search,
+        AdvanceSearchModal,
     },
 
 
@@ -94,6 +105,7 @@ export default {
             }
         ],
         search: '',
+        advanceSearchModal: false,
       }
     },
     computed: {
@@ -129,6 +141,12 @@ export default {
       updateSearch(search) {
           this.search = search;
           this.loadApplication();
+      },
+      cancelAdvanceSearchModal(){
+            this.advanceSearchModal = false;
+      },
+      advanceSearchDialog(){
+          this.advanceSearchModal = true;
       }
     },
   watch: {

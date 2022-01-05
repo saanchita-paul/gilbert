@@ -6,6 +6,7 @@
         item-value="id"
         placeholder="Select Agent"
         outlined
+        dense
         hide-details="auto"
         @change="onChangeAgent"
     >

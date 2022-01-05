@@ -7,15 +7,15 @@
         <div>
             <v-row class="mt-5">
                 <v-col cols="8" class="search-bg">
-                    <!-- <Search @updateSearch="updateSearch"></Search> -->
-                    <v-btn
+                    <Search @updateSearch="updateSearch"></Search>
+                    <!-- <v-btn
                         class="ma-2"
                         outlined
                         color="indigo"
                         @click="advanceSearchDialog"
                     >
                         Advanced Search
-                    </v-btn>
+                    </v-btn> -->
                 </v-col>
                 <v-col cols="4" class="text-right">
                     <v-btn  class="hood-btn" color="primary" @click="addAgency"
