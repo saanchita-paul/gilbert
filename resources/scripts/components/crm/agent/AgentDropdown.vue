@@ -69,12 +69,13 @@ export default {
         changeText() {
             this.loadAgentList();
         },
-        onChangeAgent(agent) {
-            this.$emit('onChangeAgent', agent);
+        onChangeAgent(agentId) {
+            let agent = this.agents.find(item => item.id === agentId);
+            let agentName = agent?.full_name;
+            this.$emit('onChangeAgent', {agentId, agentName});
         },
         setDefaultData() {
             const user = AuthService.getAuthUser();
-            console.log('user', user);
             this.agentId = user?.profile?.id;
             this.officeId = user?.profile?.office?.id;
             this.currentUserName = user?.profile?.first_name + ' ' + user?.profile?.last_name;
@@ -93,6 +94,14 @@ export default {
                 full_name: `Me (${this.currentUserName})`,
             });
             return filteredAgents;
+        },
+    },
+    watch: {
+        selectedAgentId: {
+            handler() {
+                this.selectedAgent = this.selectedAgentId;
+            },
+            deep: true,
         },
     },
 };
