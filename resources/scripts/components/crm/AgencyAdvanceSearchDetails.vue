@@ -70,7 +70,7 @@
       <div class="font-weight-bold ml-6" style="flex-basis: 15%">Agent Name</div>
       <div style="flex-basis: 65%" class="mr-6">
         <AgentDropdown
-          :selectedAgentId="3"
+          :selectedAgentId="search.agent_id"
           @onChangeAgent="onChangeAgent"
         >
         </AgentDropdown>
@@ -171,7 +171,7 @@
 <script>
 import { formatDate } from "@scripts/services/others/DateService"
 import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel';
-import AgentDropdown from './agent/AgentDropdown';
+import AgentDropdown from '@scripts/components/crm/agent/AgentDropdown';
 import { sources } from '@scripts/data/LeadSourceMap';
 import { statuses } from '@scripts/data/ConnectionStatusMapper';
 export default {

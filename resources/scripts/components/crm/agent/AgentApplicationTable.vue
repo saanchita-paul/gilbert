@@ -47,7 +47,7 @@
                 </v-col>
             </v-row>
         </v-card>
-        <AdvanceSearchModal v-if="advanceSearchModal" :dialog="advanceSearchModal" :title="''" @cancelDialog="cancelAdvanceSearchModal">
+        <AdvanceSearchModal @filteredData="getFilteredData" v-if="advanceSearchModal" :dialog="advanceSearchModal" :title="''" @cancelDialog="cancelAdvanceSearchModal">
         </AdvanceSearchModal>
     </div>
 </template>
@@ -55,7 +55,7 @@
 <script>
 import Search from "@scripts/components/crm/Search";
 import AdvanceSearchModal from '@scripts/components/crm/modals/AdvanceSearchModal.vue';
-
+import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel';
 export default {
     name: "AgentApplicationTable",
     props: ["applications","totalItem", 'selectedAppId'],
@@ -106,6 +106,7 @@ export default {
         ],
         search: '',
         advanceSearchModal: false,
+        searchFilterModel: new LeadSearchFilterModel()
       }
     },
     computed: {
@@ -147,6 +148,9 @@ export default {
       },
       advanceSearchDialog(){
           this.advanceSearchModal = true;
+      },
+      getFilteredData(filteredData){
+            this.searchFilterModel = filteredData;
       }
     },
   watch: {
