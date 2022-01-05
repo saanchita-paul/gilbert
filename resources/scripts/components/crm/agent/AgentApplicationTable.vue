@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-row class="mt-5">
+        <v-row no-gutters class="mt-5">
             <v-col cols="8" class="search-bg">
                 <!-- <Search @updateSearch="updateSearch"></Search> -->
                 <v-btn
@@ -18,7 +18,18 @@
                 </v-btn>
             </v-col>
         </v-row>
-        <v-card class="hood-card">
+        <v-row no-gutters>
+            <v-col cols="12">
+              <v-chip
+                v-for="(item, index) in filterItems"
+                :key="index"
+                class="mx-2" color="#DDE2FF"
+              >
+                {{ item }}
+              </v-chip>
+            </v-col>
+        </v-row>
+        <v-card class="mt-2 hood-card">
             <v-row>
                 <v-col cols="12" class="crm-table">
                   <v-data-table
@@ -63,8 +74,6 @@ export default {
         Search,
         AdvanceSearchModal,
     },
-
-
     data() {
       return {
         page: 1,
@@ -106,13 +115,13 @@ export default {
         ],
         search: '',
         advanceSearchModal: false,
-        searchFilterModel: new LeadSearchFilterModel()
+        searchFilterModel: new LeadSearchFilterModel(),
+        filterItems: []
       }
     },
-    computed: {
-
+    mounted() {
+      this.setFilterItems();
     },
-
     methods: {
         isSelectedClass(item) {
             if(item.id === this.selectedAppId) {
@@ -151,6 +160,33 @@ export default {
       },
       getFilteredData(filteredData){
             this.searchFilterModel = filteredData;
+      },
+      setFilterItems(){
+          this.filterItems = [];
+          if(this.searchFilterModel?.app_id && this.searchFilterModel?.app_id !== '') {
+              this.filterItems.push('App ID: ' + this.searchFilterModel?.app_id);
+          }
+          if(this.searchFilterModel?.tenant_name && this.searchFilterModel?.tenant_name !== '') {
+              this.filterItems.push('Tenant Name: ' + this.searchFilterModel?.tenant_name);
+          }
+          if(this.searchFilterModel?.address && this.searchFilterModel?.address !== '') {
+              this.filterItems.push('Address: ' + this.searchFilterModel?.address);
+          }
+          if(this.searchFilterModel?.email && this.searchFilterModel?.email !== '') {
+              this.filterItems.push('Email: ' + this.searchFilterModel?.email);
+          }
+          if(this.searchFilterModel?.agent_id && this.searchFilterModel?.agent_id !== '') {
+              this.filterItems.push('Agent Name: ' + this.searchFilterModel?.agent_id);
+          }
+          if(this.searchFilterModel?.moving_date && this.searchFilterModel?.moving_date !== '') {
+              this.filterItems.push('Moving Date: ' + this.searchFilterModel?.moving_date);
+          }
+          if(this.searchFilterModel?.source && this.searchFilterModel?.source !== '') {
+              this.filterItems.push('Source: ' + this.searchFilterModel?.source);
+          }
+          if(this.searchFilterModel?.status && this.searchFilterModel?.status !== '') {
+              this.filterItems.push('Status: ' + this.searchFilterModel?.status);
+          }
       }
     },
   watch: {
@@ -160,10 +196,13 @@ export default {
       },
       deep: true,
     },
-  },
-    mounted() {
-        // console.log(this.applications);
-    }
+    searchFilterModel: {
+      handler () {
+        this.setFilterItems();
+      },
+      deep: true,
+    },
+  }
 }
 </script>
 
