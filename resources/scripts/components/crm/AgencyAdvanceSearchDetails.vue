@@ -8,7 +8,7 @@
     </div>
 
     <div class="d-flex justify-space-between align-center py-2">
-      <div class="font-weight-bold ml-6" style="flex-basis: 15%">APP ID</div>
+      <div class="font-weight-bold ml-6" style="flex-basis: 15%">App Id</div>
       <div style="flex-basis: 65%" class="mr-6">
         <v-text-field
           outlined
@@ -172,6 +172,8 @@
 import { formatDate } from "@scripts/services/others/DateService"
 import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel';
 import AgentDropdown from './agent/AgentDropdown';
+import { sources } from '@scripts/data/LeadSourceMap';
+import { statuses } from '@scripts/data/ConnectionStatusMapper';
 export default {
   name: "AgencyAdvanceSearchDetails",
   components: {AgentDropdown},
@@ -192,9 +194,7 @@ export default {
           title: "Franchised Agency",
         },
       ],
-      sources: ["Hood", "Foxie"],
       source: "",
-      statuses: ["Active", "Processing"],
       status: "",
       connection_date_menu: false,
       modified_moving_date: null,
@@ -204,6 +204,14 @@ export default {
 
 
     };
+  },
+  computed:{
+    sources(){
+      return sources;
+    },
+    statuses(){
+      return statuses;
+    }
   },
   methods: {
     cancel() {
@@ -235,6 +243,6 @@ export default {
   background: #542e89;
   color: white;
   height: 50px;
-  width: 500px;
+  width: 100%;
 }
 </style>
