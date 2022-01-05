@@ -14,6 +14,7 @@ use App\Services\Agency\UpdateAgentService;
 use App\Http\Resources\Agency\AgencyResource;
 use App\Services\Agency\SearchAgentProfileService;
 use App\Http\Resources\Agency\AgentProfileResource;
+use App\Http\Resources\Agency\AgentListResource;
 use App\Http\Requests\Agency\CreateAgentProfileRequest;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -112,6 +113,16 @@ class AgentProfileController extends Controller
             $userService = new AgencyUserService();
             (new SendUserInviteService($userService->getUserByProfile($request->toArray(), $id)))->run();
             return response()->json(['success' => true, ]);
+        } catch ( \Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function getAgentList(Request $request, int $officeId): AnonymousResourceCollection | JsonResponse
+    {
+        try {
+            $service = new SearchAgentProfileService($request->toArray());
+            return AgentListResource::collection($service->getAgentList($officeId));
         } catch ( \Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
