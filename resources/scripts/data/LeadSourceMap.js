@@ -5,3 +5,4 @@ export const leadSourceMap = {
         SOURCE_IGNITE : 2,  
 }
 
+export const sources = [ 'All' , 'Hood' , 'Foxie' , 'Ignite' ]

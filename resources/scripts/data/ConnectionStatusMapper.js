@@ -5,3 +5,4 @@ export const leadSourceMap = {
         SOURCE_IGNITE : 2,  
 }
 
+export const statuses = [ 'Unassigned' , 'Assigned' , 'Escalated' , 'Submitted' , 'Accepted' , 'Rejected' , 'Closed' ] 
