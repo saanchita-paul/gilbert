@@ -73,6 +73,7 @@ export default {
       },
         changeLeadType(type) {
             this.activeLead = type;
+            this.$emit('resetPage');
             let query =omit({...this.$route.query}, 'type');
             this.$router.push({query:{type:type, ...query}});
         }

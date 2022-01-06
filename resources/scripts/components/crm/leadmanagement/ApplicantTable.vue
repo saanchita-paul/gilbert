@@ -242,15 +242,8 @@ export default {
     mounted() {
       this.loadUserList();
       this.currentUser = AuthService.getAuthUser();
-      console.log("value app mouted")
-      console.log(this.applications)
-
     },
     watch: {
-        applications(val){
-            console.log("value app")
-            console.log(val)
-        },
         options: {
             handler () {
                 this.loadLeadList();
