@@ -162,7 +162,7 @@
 
     <div class="d-flex justify-center pb-4">
       <div style="flex-basis: 90%">
-        <v-btn block color="#542E89" class="white--text">Search</v-btn>
+        <v-btn block @click="submit" color="#542E89" class="white--text">Search</v-btn>
       </div>
     </div>
   </div>
@@ -214,6 +214,10 @@ export default {
     }
   },
   methods: {
+    submit(){
+      this.$emit('filteredData' , this.search);
+      this.cancel();
+    },
     cancel() {
       this.$emit("cancelDialog");
     },
@@ -234,14 +238,6 @@ export default {
     onChangeAgent(id){
       console.log("checkign id" , id)
     }
-  },
-  watch:{
-     search: {
-            handler (newValue) {
-                this.$emit('filteredData' , newValue);
-            },
-            deep: true,
-        },
   }
 };
 </script>
