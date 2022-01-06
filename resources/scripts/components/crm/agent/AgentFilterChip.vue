@@ -47,7 +47,7 @@ export default {
               this.filterItems.push('Email: ' + this.searchFilterModel?.email);
           }
           if(this.searchFilterModel?.agent_id && this.searchFilterModel?.agent_id !== '') {
-              this.filterItems.push('Agent Name: ' + this.searchFilterModel?.agent_id);
+              this.filterItems.push('Agent Name: ' + this.searchFilterModel?.agent_name);
           }
           if(this.searchFilterModel?.moving_date && this.searchFilterModel?.moving_date !== '') {
               this.filterItems.push('Moving Date: ' + this.searchFilterModel?.moving_date);
