@@ -28,10 +28,7 @@ class SearchConnectionApplication
      */
     private ?int $perPage;
     /**
-     * @var string|mixed|null
-     */
-    private ?string $status;
-    /**
+     * status
      * @var string|mixed|null
      */
     private ?string $leadType;
@@ -51,6 +48,9 @@ class SearchConnectionApplication
     private ?int $tenancyType;
     private $officeId;
 
+    private $appId;
+    private $movingDate;
+    private $agentId;
 
     /**
      * @param array $request
@@ -61,11 +61,13 @@ class SearchConnectionApplication
         Log::info('SearchConnectionApplication::__construct()', $request);
 
         $this->perPage = empty($request['per_page']) ? null : (int) $request['per_page'];
-        $this->status = optional($request)['status'];
         $this->leadType = optional($request)['active_lead_type'];
         $this->source = !empty($request['source']) ? (ConnectionApplication::SOURCE_MAPPING[$request['source']] ?? null) : null;
         $this->tenancyType = !empty($request['tenancy_type']) ? ConnectionApplication::TENANCY_MAPPING[$request['tenancy_type']] ?? null: null;
         $this->officeId = !empty($request['office_id']) ? $request['office_id'] : null;
+        $this->appId = !empty($request['app_id']) ? $request['office_id'] : null;
+        $this->movingDate = !empty($request['moving_date']) ? $request['office_id'] : null;
+        $this->agentId = !empty($request['agent_id']) ? $request['office_id'] : null;
 
 
 
@@ -94,6 +96,9 @@ class SearchConnectionApplication
             ->applyFilterOfficeId()
             ->applyFilterForFoxie()
             ->applyFilterTenancyType()
+            ->applyFilterAppId()
+            ->applyFilterMovingDate()
+            ->applyFilterAgentId()
             ->applySearch();
 
         $this->builder = $this->applySorting($this->builder);
@@ -136,6 +141,33 @@ class SearchConnectionApplication
     {
         if($this->source) {
             $this->builder = $this->builder->where('source', $this->source);
+        }
+        return $this;
+
+    }
+
+    private function applyFilterAppId(): static
+    {
+        if($this->source) {
+            $this->builder = $this->builder->where('id', $this->appId);
+        }
+        return $this;
+
+    }
+
+    private function applyFilterMovingDate(): static
+    {
+        if($this->source) {
+            $this->builder = $this->builder->where('moving_date', $this->movingDate);
+        }
+        return $this;
+
+    }
+
+    private function applyFilterAgentId(): static
+    {
+        if($this->source) {
+            $this->builder = $this->builder->where('created_by', $this->agentId);
         }
         return $this;
 
