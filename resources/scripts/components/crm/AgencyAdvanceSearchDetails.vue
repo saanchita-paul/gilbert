@@ -234,10 +234,15 @@ export default {
     },
     clearFilter(){
       this.search.clear();
+      this.$emit('filteredData' , this.search);
+      this.cancel();
     },
     onChangeAgent(id){
       console.log("checkign id" , id)
     }
+  },
+  mounted(){
+    console.log("mounted");
   }
 };
 </script>
