@@ -31,9 +31,7 @@ export default {
       this.$emit('updateLeadAndatrics',leadId,userId);
     },
   },
-  mounted(){
-    console.log("applicatons" , this.applications)
-  }
+
 };
 </script>
 
