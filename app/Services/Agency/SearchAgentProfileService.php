@@ -7,7 +7,7 @@ use App\Traits\Agency\Searchable;
 use App\Traits\Agency\Sortable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
-
+use App\Models\ConnectionService;
 
 class SearchAgentProfileService
 {
@@ -17,6 +17,8 @@ class SearchAgentProfileService
      * @var mixed|null
      */
     private ?int $perPage;
+
+    private ?int $officeId;
 
 
     public function __construct(array $request)
@@ -50,12 +52,39 @@ class SearchAgentProfileService
     /**
      * Creating agency builder
      *
-     * @return Builder
      */
-    private function createAgencyBuilder(): Builder
+    private function createAgencyBuilder()
     {
         return AgentProfile::query()
             ->with('user.roles:name')
-            ->with('createdApplications');
+            ->withCount('createdApplications as application_count')
+            ->withMax('createdApplications as last_created', 'created_at');
+    }
+
+    public function getConversionCount(int $officeId): int
+    {
+        $this->officeId = $officeId;
+        $totalConnected = ConnectionService::query()
+            ->whereHas('connectionApplication', function ($query) {
+                $query->where('created_by', '=', $this->officeId);
+            })
+            ->whereIn('status', [ConnectionService::STATUS_ACCEPTED])
+            ->count();
+
+        $totalSubmitted = ConnectionService::query()
+            ->whereHas('connectionApplication', function ($query) {
+                $query->where('created_by', '=', $this->officeId);
+            })
+            ->whereIn('status', [
+                ConnectionService::STATUS_ACCEPTED,
+                ConnectionService::STATUS_REJECTED,
+                ConnectionService::STATUS_ENERGY_SUBMIT,
+                ConnectionService::STATUS_CLOSED,
+                ConnectionService::STATUS_CANT_CONNECT,
+                ConnectionService::AC_MANUAL_PROCESSING
+            ])
+            ->count();
+       
+        return $totalSubmitted !== 0 ? number_format((($totalConnected / $totalSubmitted) * 100), 0) : 0;
     }
 }

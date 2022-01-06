@@ -5,7 +5,7 @@ namespace App\Http\Resources\Agency;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Models\ConnectionService;
+use App\Services\Agency\SearchAgentProfileService;
 
 class AgentProfileResource extends JsonResource
 {
@@ -19,8 +19,8 @@ class AgentProfileResource extends JsonResource
     {
         $data = parent::toArray($request);
         $data['user']['roles'] = !empty($data['user']['roles']) ? $this->roles($data['user']['roles']) : [];
-        $data['application_details'] = $this->getApplicationDetails($data['id'], $data['created_applications']);
-        unset($data['created_applications']);
+        $data['conversion_rate'] = $this->getConversionRate($request, $data['id']);
+        $data['is_visa'] = 1;
         return  $data;
     }
 
@@ -29,51 +29,9 @@ class AgentProfileResource extends JsonResource
         return collect($roles)->pluck('name')->toArray();
     }
 
-    private function getApplicationDetails($id, $applications)
+    private function getConversionRate($request, $id)
     {
-        return [
-            'application_count' => count($applications),
-            'last_submitted_application' => $this->getLastCreatedApplication($applications),
-            'conversion_rate' => $this->getConversionRate($id),
-            'visa' => 1
-        ];
-    }
-
-    private function getLastCreatedApplication($applications)
-    {
-        $lastSubmittedDate = null;
-        foreach($applications as $application) {
-            if( new DateTime($application['created_at']) > $lastSubmittedDate) {
-                $lastSubmittedDate = new DateTime($application['created_at']);
-            }
-        }
-        return $lastSubmittedDate ? date_format($lastSubmittedDate,"m/d/Y") : null;
-    }
-
-    private function getConversionRate($id)
-    {
-        $this->officeId = $id;
-        $totalConnected = ConnectionService::query()
-            ->whereHas('connectionApplication', function ($query) {
-                $query->where('created_by', '=', $this->officeId);
-            })
-            ->whereIn('status', [ConnectionService::STATUS_ACCEPTED])
-            ->count();
-
-        $totalSubmitted = ConnectionService::query()
-            ->whereHas('connectionApplication', function ($query) {
-                $query->where('created_by', '=', $this->officeId);
-            })
-            ->whereIn('status', [
-                ConnectionService::STATUS_ACCEPTED,
-                ConnectionService::STATUS_REJECTED,
-                ConnectionService::STATUS_ENERGY_SUBMIT,
-                ConnectionService::STATUS_CLOSED,
-                ConnectionService::STATUS_CANT_CONNECT,
-                ConnectionService::AC_MANUAL_PROCESSING
-            ])
-            ->count();
-       
-        return $totalSubmitted !== 0 ? number_format((($totalConnected / $totalSubmitted) * 100), 0) : 0;
+        $service = new SearchAgentProfileService($request->toArray());
+        return $service->getConversionCount($id);
     }
 }
