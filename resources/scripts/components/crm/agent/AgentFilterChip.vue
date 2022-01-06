@@ -1,12 +1,20 @@
 <template>
-    <v-row no-gutters>
+    <v-row v-if="filterItems.length>0" no-gutters>
         <v-col cols="12">
           <v-chip
             v-for="(item, index) in filterItems"
             :key="index"
-            class="mx-2" color="#DDE2FF"
+            class="mx-1 mb-1" color="#DDE2FF"
           >
             {{ item }}
+          </v-chip>
+          <v-chip
+            class="mx-1 close"
+            color="#F7E755"
+            @click="removeFilters"
+          >
+            Clear
+            <v-icon small>mdi-close</v-icon>
           </v-chip>
         </v-col>
     </v-row>
@@ -50,6 +58,9 @@ export default {
           if(this.searchFilterModel?.status && this.searchFilterModel?.status !== '') {
               this.filterItems.push('Status: ' + this.searchFilterModel?.status);
           }
+      },
+      removeFilters(){
+          this.$emit('removeFilters');
       }
     },
   watch: {
@@ -62,3 +73,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.close {
+  cursor: pointer;
+}
+</style>
