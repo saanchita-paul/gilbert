@@ -219,6 +219,7 @@ export default {
       this.cancel();
     },
     cancel() {
+      // this.$router.push({name: 'agent', query: {...this.$route.query, ...this.search}})
       this.$emit("cancelDialog");
     },
     async saveAgency() {
