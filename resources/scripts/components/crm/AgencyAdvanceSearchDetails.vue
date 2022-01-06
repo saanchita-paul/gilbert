@@ -61,7 +61,7 @@
           full-width
           hide-details="auto"
           label="Email"
-          v-model="search.email"
+          v-model="search.tenant_email"
         ></v-text-field>
       </div>
     </div>
@@ -144,7 +144,7 @@
           dense
           full-width
           hide-details="auto"
-          v-model="search.status"
+          v-model="search.active_lead_type"
           :items="statuses"
           label="Status"
         >
@@ -250,6 +250,7 @@ export default {
   },
   mounted(){
     console.log("mounted");
+    this.search =  new LeadSearchFilterModel(this.$route.query);
   }
 };
 </script>
