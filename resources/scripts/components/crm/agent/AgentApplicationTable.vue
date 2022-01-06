@@ -58,7 +58,7 @@
                 </v-col>
             </v-row>
         </v-card>
-        <AdvanceSearchModal @filteredData="getFilteredData" v-if="advanceSearchModal" :dialog="advanceSearchModal" :title="''" @cancelDialog="cancelAdvanceSearchModal">
+        <AdvanceSearchModal @filteredData="getFilteredData" v-show="advanceSearchModal" :dialog="advanceSearchModal" :title="''" @cancelDialog="cancelAdvanceSearchModal">
         </AdvanceSearchModal>
     </div>
 </template>
