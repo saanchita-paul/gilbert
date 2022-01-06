@@ -435,4 +435,14 @@ class ConnectionApplication extends Model
         };
     }
 
+    /**
+     * @return BelongsTo
+     */
+    public function submittedByUser()
+    {
+        return $this->belongsTo(User::class, 'submitted_by');
+    }
+
+
+
 }

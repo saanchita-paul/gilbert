@@ -84,7 +84,8 @@ class SearchConnectionApplication
         $this->builder = ConnectionApplication::query()
             ->with('connectionServices.reasons')
             ->with('SugerLead')
-            ->with('assignedTo');
+            ->with('assignedTo')
+            ->with('submittedByUser');
 
         $this->applyFilterLeadType($user)
             ->applyFilterUserOffice($user)
