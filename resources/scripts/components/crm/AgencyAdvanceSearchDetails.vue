@@ -219,7 +219,11 @@ export default {
       this.cancel();
     },
     cancel() {
-      // this.$router.push({name: 'agent', query: {...this.$route.query, ...this.search}})
+      try {
+        this.$router.push({name: 'agent.application.dashboard', query: this.search })
+      } catch (error) {
+        console.log("error occured")
+      }
       this.$emit("cancelDialog");
     },
     async saveAgency() {
