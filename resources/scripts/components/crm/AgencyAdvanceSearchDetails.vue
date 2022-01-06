@@ -2,7 +2,7 @@
   <div>
     <div class="d-flex header justify-space-between align-center mb-6">
       <div class="font-weight-bold ml-6">Advanced Search</div>
-      <div class="mr-6" @click="cancel">
+      <div class="mr-6 cursor-pointer" @click="cancel">
         <v-icon color="white"> mdi-close </v-icon> Close
       </div>
     </div>
@@ -253,5 +253,8 @@ export default {
   color: white;
   height: 50px;
   width: 100%;
+}
+.cursor-pointer {
+  cursor: pointer;
 }
 </style>
