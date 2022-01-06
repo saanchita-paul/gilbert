@@ -15,6 +15,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\NoReturn;
 use Carbon\Carbon;
+use App\Modules\Reporting\Services\SetDateRage;
 
 /**
  *
@@ -23,6 +24,7 @@ class SearchConnectionApplication
 {
 
     use Sortable;
+    use SetDateRage;
 
     /**
      * @var mixed|null
@@ -52,6 +54,7 @@ class SearchConnectionApplication
     private $appId;
     private $movingDate;
     private $agentId;
+    private $tenantEmail;
 
     /**
      * @param array $request
@@ -67,17 +70,16 @@ class SearchConnectionApplication
         $this->tenancyType = !empty($request['tenancy_type']) ? ConnectionApplication::TENANCY_MAPPING[$request['tenancy_type']] ?? null: null;
         $this->officeId = !empty($request['office_id']) ? $request['office_id'] : null;
         $this->appId = !empty($request['app_id']) ? $request['app_id'] : null;
-        $this->movingDate = !empty($request['moving_date']) ? $this->getDate($request['moving_date']) : null;
         $this->agentId = !empty($request['agent_id']) ? $request['agent_id'] : null;
-
-
+        $this->tenantEmail = !empty($request['tenant_email']) ? $request['tenant_email'] : null;
+        
+        !empty($request['moving_date']) && $this->setDateRangeNoTz($request['moving_date'], $request['moving_date']);
 
         if(empty($request['sort_by'])) {
             $this->setSortBy('created_at', 'true');
         } else {
             $this->setSortBy(optional($request)['sort_by'], optional($request)['is_descending']);
         }
-
     }
 
     /**
@@ -101,6 +103,7 @@ class SearchConnectionApplication
             ->applyFilterAppId()
             ->applyFilterMovingDate()
             ->applyFilterAgentId()
+            ->applyFilterTenantEmail()
             ->applySearch();
 
         $this->builder = $this->applySorting($this->builder);
@@ -159,11 +162,21 @@ class SearchConnectionApplication
 
     private function applyFilterMovingDate(): static
     {
-        if($this->movingDate) {
-            $this->builder = $this->builder->where('moving_date', $this->movingDate);
+        if($this->startDate && $this->endDate) {
+            $this->builder = $this->builder
+                ->where('moving_date', '>=' , $this->startDate)
+                ->where('moving_date', '<=' , $this->endDate);
         }
         return $this;
+    }
 
+    private function applyFilterTenantEmail(): static
+    {
+        if($this->tenantEmail) {
+            $this->builder = $this->builder
+                ->where('email', 'like' , "%$this->tenantEmail%");
+        }
+        return $this;
     }
 
     private function applyFilterAgentId(): static
@@ -207,7 +220,6 @@ class SearchConnectionApplication
                 ->where('office_id', $user->profile->office_id)
                 ->where('agency_id', $user->profile->agency_id);
         }
-
         return $this;
     }
 
@@ -244,7 +256,6 @@ class SearchConnectionApplication
             $index = 'unit_number,street_number,street_name,city,postcode,state,country,street_address,address_text';
             $this->searchQueries[] = $query->createNew( text:$filters['address'], index: $index);
         }
-
     }
 
     /**
@@ -263,21 +274,6 @@ class SearchConnectionApplication
             }),
             default => $this->builder
         };
-
-//        $r = $this->builder->pluck('source')->toArray();
-//        dd($r);
         return $this;
-    }
-    private function getDate($date)
-    {
-        Log::info('Moving Date', [$date]);
-
-        $timezone = env("TIME_ZONE", 11) ?? 11;
-
-        // $newDate = Carbon::parse($date, tz: $timezone)->setTimezone(0)->toDateTimeString();
-        $newDate = Carbon::createFromFormat('d/m/Y', $date, tz: $timezone)->setTimezone(0)->toDateTimeString();
-
-        Log::info('New Moving Date', [$newDate]);
-        return $newDate;
     }
 }

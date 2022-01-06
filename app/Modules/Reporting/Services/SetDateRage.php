@@ -17,4 +17,15 @@ trait SetDateRage
             ->addSeconds(59)
             ->setTimezone(0)->toDateTimeString();
     }
+
+    private function setDateRangeNoTz(string $start, string $end)
+    {
+
+        $this->startDate = Carbon::parse($start)->toDateTimeString();
+        $this->endDate = Carbon::parse($end)
+            ->addHours(23)
+            ->addMinutes(59)
+            ->addSeconds(59)
+            ->toDateTimeString();
+    }
 }
