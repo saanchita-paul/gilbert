@@ -629,7 +629,7 @@
 
                     <v-col cols="12">
                         <div class="d-flex  flex-row-reverse">
-                            <v-btn @click="onSubmit" :loading="loadSubmit" color="primary">Submit</v-btn>
+                            <v-btn @click="onSubmit" :disabled="isUserActive" :loading="loadSubmit" color="primary">Submit</v-btn>
                             <v-btn @click="onCancel" class="mx-4">Cancel</v-btn>
                         </div>
                     </v-col>
@@ -796,7 +796,10 @@ export default {
             // return this.application.tenancy_type===tenancyTypeMapper.HomeOwner;
             return AuthService.getRoles().includes("agency_office_property_manager") &&
             this.application.tenancy_type===tenancyTypeMapper.HomeOwner;
-        }
+        },
+        isUserActive() {
+            return this.user.is_active === 0 ? true : false;
+        },
     },
     methods: {
         onAddressSelected(place) {

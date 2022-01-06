@@ -32,7 +32,7 @@
                 @click="sendInvitationToSelected"
                 :loading="isSendingInvitation"
             >
-                <v-icon color="primary">mdi-send</v-icon> Invite Selected
+                <v-icon color="primary">mdi-send</v-icon> Send Invite's
             </v-btn>
             <v-btn class="mr-4" @click="setEditMode">
                 {{ editMode ? 'Cancel Edit' : 'Edit Staff' }}
