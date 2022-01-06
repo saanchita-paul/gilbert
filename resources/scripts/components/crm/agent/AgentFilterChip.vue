@@ -23,6 +23,7 @@
 <script>
 import { sources } from '@scripts/data/LeadSourceMap';
 import { statuses } from '@scripts/data/ConnectionStatusMapper';
+import { formatDate } from "@scripts/services/others/DateService"
 export default {
     props: ["searchFilterModel"],
     data() {
@@ -39,6 +40,9 @@ export default {
       },
       status(){
         return statuses.find(n=>n.value==this.searchFilterModel?.active_lead_type)?.text ?? "";
+      },
+      moving_date(){
+        return formatDate(this.searchFilterModel?.moving_date) ?? "";
       }
     },
     methods: {
@@ -60,13 +64,13 @@ export default {
               this.filterItems.push('Agent: ' + this.searchFilterModel?.agent_name);
           }
           if(this.searchFilterModel?.moving_date && this.searchFilterModel?.moving_date !== '') {
-              this.filterItems.push('Move Date: ' + this.searchFilterModel?.moving_date);
+              this.filterItems.push('Move Date: ' + this.moving_date);
           }
           if(this.searchFilterModel?.source && this.searchFilterModel?.source !== '') {
-              this.filterItems.push('Source: ' + this.source); //TODO
+              this.filterItems.push('Source: ' + this.source); 
           }
           if(this.searchFilterModel?.active_lead_type && this.searchFilterModel?.active_lead_type !== '') {
-              this.filterItems.push('Status: ' + this.status); //TODO
+              this.filterItems.push('Status: ' + this.status); 
           }
       },
       removeFilters(){
