@@ -6,7 +6,7 @@
             @changeComponent="changeComponent"
         >
         </CrmOfficeListHeader>
-        <v-row>
+        <v-row >
             <v-col cols="12" class="crm-table">
                 <v-data-table
                     :headers="headers"
@@ -128,12 +128,6 @@ export default {
                     value: "submitted_by"
                 },
                 {
-                    text: "Created At",
-                    align: "start",
-                    sortable: true,
-                    value: "created_at"
-                },
-                {
                     text: "Source",
                     align: "start",
                     sortable: true,
@@ -233,8 +227,18 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .selectedRow {
     background-color: lightgray !important;
 }
+
+.crm-table thead tr th {
+   font-size: 3em !important;
+}
+
+.crm-table tr td{
+    font-size: 5.4em !important;
+}
+
+
 </style>
