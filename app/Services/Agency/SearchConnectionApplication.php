@@ -89,7 +89,8 @@ class SearchConnectionApplication
         $this->builder = ConnectionApplication::query()
             ->with('connectionServices.reasons')
             ->with('SugerLead')
-            ->with('assignedTo');
+            ->with('assignedTo')
+            ->with('submittedByUser');
 
         $this->applyFilterLeadType($user)
             ->applyFilterUserOffice($user)
@@ -240,7 +241,7 @@ class SearchConnectionApplication
             $this->searchQueries[] = $query->createNew( text:$filters['phone'], index: 'phone,homephone');
         }
         if (!empty($filters['address'])) {
-            $index = 'unit_number,street_number,street_name,city,postcode,state,country';
+            $index = 'unit_number,street_number,street_name,city,postcode,state,country,street_address,address_text';
             $this->searchQueries[] = $query->createNew( text:$filters['address'], index: $index);
         }
 

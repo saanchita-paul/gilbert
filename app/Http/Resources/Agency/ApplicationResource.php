@@ -4,6 +4,7 @@ namespace App\Http\Resources\Agency;
 
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -85,7 +86,9 @@ class ApplicationResource extends JsonResource
             'connection_end_date' => $this->connection_end_date,
 
             #todo: set timezone dynamically based on daylight saving
-            'created_at' => (new Carbon($this->created_at, '11'))->format('d/m/Y h:m a')
+            'created_at' => (new Carbon($this->created_at, '11'))->format('d/m/Y h:m a'),
+            'submitted_by' => $this->submittedBy(),
+            'submitted_at' => $this->submittedAt(),
         ];
     }
 
@@ -166,5 +169,15 @@ class ApplicationResource extends JsonResource
             return ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
         }
         return 'total_plan';
+    }
+
+    private function submittedBy(){
+
+        $fullName = $this->submittedByUser?->profile?->first_name .' '. $this->submittedByUser?->profile?->last_name;
+        return trim($fullName);
+    }
+
+    private function submittedAt(){
+        return $this->connectionServices?->pluck('submitted_at')?->sort()?->first();
     }
 }

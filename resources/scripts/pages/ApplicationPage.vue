@@ -5,7 +5,7 @@
                 <v-card class="hood-card">
                     <p>Your Metrics</p>
                     <h3 class="page-title">Total Applications: {{total_leads}}</h3>
-                    <ApplicationsMetrics v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal"></ApplicationsMetrics>
+                    <ApplicationsMetrics @resetPage="resetPage" v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal"></ApplicationsMetrics>
                 </v-card>
                 <ApplicationFilter v-model="advanceSearch" :isSearchEmpty="advanceSearch.isSearchEmpty()"></ApplicationFilter>
                 <router-view
@@ -34,7 +34,7 @@ import ApplicationDetails from "@scripts/components/crm/leadmanagement/Applicati
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
 import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
-import {isEqual , pick} from "lodash-es";
+import {isEqual, omit, pick} from "lodash-es";
 import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel'
 import ApplicationFilter from '@scripts/pages/ApplicationFilter';
 import debounce from "lodash-es/debounce";
@@ -92,7 +92,11 @@ export default {
 
         async fetchLeads () {
             this.isSearching = true;
-            let data = await LeadApplicationService.loadUserLeads(this.sort_search_meta, this.activeLeadType, this.selectedSrc, this.advanceSearch);
+            let data = await LeadApplicationService.loadUserLeads(
+                this.sort_search_meta,
+                this.activeLeadType,
+                this.selectedSrc, this.advanceSearch
+            );
             this.leads = data.applications;
             this.isLoaded = true;
             this.isSearching = false;
@@ -119,7 +123,8 @@ export default {
         },
 
         refreshDataTable(meta) {
-            this.sort_search_meta = meta;
+            this.page = meta.page
+            this.sort_search_meta = omit({...meta}, 'page');
             this.loadLeads();
             // this.loadMetricTypes();
         },
@@ -128,12 +133,14 @@ export default {
         this.loadMetricTypes();
         },
         clearSearch(){
-            console.log("clicking slot")
             this.advanceSearch = this.advanceSearchBluePrint;
             this.$router.push({
                     name: "application.list",
                     query: this.advanceSearch,
                 });
+        },
+        resetPage() {
+            this.page = 1;
         }
     },
 
@@ -177,6 +184,7 @@ export default {
                     name: "application.list",
                     query: params,
                 });
+                this.resetPage();
                 this.loadLeads();
 
             },
