@@ -174,7 +174,7 @@ import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel';
 import AgentDropdown from '@scripts/components/crm/agent/AgentDropdown';
 import { sources } from '@scripts/data/LeadSourceMap';
 import { statuses } from '@scripts/data/ConnectionStatusMapper';
-import { omitBy, isNil } from 'lodash-es'
+import { omitBy, isNil, isEqual } from 'lodash-es'
 export default {
   name: "AgencyAdvanceSearchDetails",
   components: {AgentDropdown},
@@ -221,7 +221,10 @@ export default {
     },
     cancel() {
       try {
-        this.$router.push({name: 'agent.application.dashboard', query: omitBy(this.search, isNil) })
+        let params = omitBy(this.search, isNil);
+        if(!isEqual(this.$route.query , params)){
+          this.$router.push({name: 'agent.application.dashboard', query: params })
+        }
       } catch (error) {
         console.log("error occured")
       }
