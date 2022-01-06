@@ -15,10 +15,10 @@ class LeadSearchFilterModel {
         agent_name,
     } = {}) {
         this.tenant_name = tenant_name;
-        this.source = source ?? "";
+        this.source = source ?? null;
         this.phone = phone;
         this.address = address;
-        this.tenancy_type = tenancy_type ?? "";
+        this.tenancy_type = tenancy_type ?? null;
         this.app_id = app_id;
         this.email = email;
         this.moving_date = moving_date;
@@ -46,6 +46,7 @@ class LeadSearchFilterModel {
         this.moving_date = null;
         this.status = null;
         this.agent_id = null;
+        this.agent_name = null;
     }
 }
 

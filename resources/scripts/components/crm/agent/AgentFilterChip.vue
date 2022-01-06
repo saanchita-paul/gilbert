@@ -53,10 +53,10 @@ export default {
               this.filterItems.push('Moving Date: ' + this.searchFilterModel?.moving_date);
           }
           if(this.searchFilterModel?.source && this.searchFilterModel?.source !== '') {
-              this.filterItems.push('Source: ' + this.searchFilterModel?.source);
+              this.filterItems.push('Source: ' + this.searchFilterModel?.source); //TODO
           }
           if(this.searchFilterModel?.status && this.searchFilterModel?.status !== '') {
-              this.filterItems.push('Status: ' + this.searchFilterModel?.status);
+              this.filterItems.push('Status: ' + this.searchFilterModel?.status); //TODO
           }
       },
       removeFilters(){
