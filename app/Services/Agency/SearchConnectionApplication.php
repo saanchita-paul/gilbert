@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\NoReturn;
+use Carbon\Carbon;
 
 /**
  *
@@ -65,9 +66,9 @@ class SearchConnectionApplication
         $this->source = !empty($request['source']) ? (ConnectionApplication::SOURCE_MAPPING[$request['source']] ?? null) : null;
         $this->tenancyType = !empty($request['tenancy_type']) ? ConnectionApplication::TENANCY_MAPPING[$request['tenancy_type']] ?? null: null;
         $this->officeId = !empty($request['office_id']) ? $request['office_id'] : null;
-        $this->appId = !empty($request['app_id']) ? $request['office_id'] : null;
-        $this->movingDate = !empty($request['moving_date']) ? $request['office_id'] : null;
-        $this->agentId = !empty($request['agent_id']) ? $request['office_id'] : null;
+        $this->appId = !empty($request['app_id']) ? $request['app_id'] : null;
+        $this->movingDate = !empty($request['moving_date']) ? $this->getDate($request['moving_date']) : null;
+        $this->agentId = !empty($request['agent_id']) ? $request['agent_id'] : null;
 
 
 
@@ -265,5 +266,17 @@ class SearchConnectionApplication
 //        $r = $this->builder->pluck('source')->toArray();
 //        dd($r);
         return $this;
+    }
+    private function getDate($date)
+    {
+        Log::info('Moving Date', [$date]);
+
+        $timezone = env("TIME_ZONE", 11) ?? 11;
+
+        // $newDate = Carbon::parse($date, tz: $timezone)->setTimezone(0)->toDateTimeString();
+        $newDate = Carbon::createFromFormat('d/m/Y', $date, tz: $timezone)->setTimezone(0)->toDateTimeString();
+
+        Log::info('New Moving Date', [$newDate]);
+        return $newDate;
     }
 }
