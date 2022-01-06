@@ -10,7 +10,7 @@ class LeadSearchFilterModel {
         app_id,
         tenant_email,
         moving_date,
-        status,
+        active_lead_type,
         agent_id,
         agent_name,
     } = {}) {
@@ -22,7 +22,7 @@ class LeadSearchFilterModel {
         this.app_id = app_id;
         this.tenant_email = tenant_email;
         this.moving_date = moving_date;
-        this.status = status;
+        this.active_lead_type = active_lead_type;
         this.agent_id = agent_id;
         this.agent_name = agent_name;
     }
@@ -44,7 +44,7 @@ class LeadSearchFilterModel {
         this.app_id = null;
         this.tenant_email = null;
         this.moving_date = null;
-        this.status = null;
+        this.active_lead_type = null;
         this.agent_id = null;
         this.agent_name = null;
     }

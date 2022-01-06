@@ -38,7 +38,7 @@ export default {
         return sources.find(n=>n.value==this.searchFilterModel?.source)?.text ?? "";
       },
       status(){
-        return statuses.find(n=>n.value==this.searchFilterModel?.status)?.text ?? "";
+        return statuses.find(n=>n.value==this.searchFilterModel?.active_lead_type)?.text ?? "";
       }
     },
     methods: {
@@ -65,7 +65,7 @@ export default {
           if(this.searchFilterModel?.source && this.searchFilterModel?.source !== '') {
               this.filterItems.push('Source: ' + this.source); //TODO
           }
-          if(this.searchFilterModel?.status && this.searchFilterModel?.status !== '') {
+          if(this.searchFilterModel?.active_lead_type && this.searchFilterModel?.active_lead_type !== '') {
               this.filterItems.push('Status: ' + this.status); //TODO
           }
       },

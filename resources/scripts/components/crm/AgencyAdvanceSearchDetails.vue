@@ -144,7 +144,7 @@
           dense
           full-width
           hide-details="auto"
-          v-model="search.status"
+          v-model="search.active_lead_type"
           :items="statuses"
           label="Status"
         >

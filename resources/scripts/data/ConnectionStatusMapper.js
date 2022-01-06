@@ -6,11 +6,11 @@ export const leadSourceMap = {
 };
 
 export const statuses = [
-    { text: "Unassigned", value: 1 },
-    { text: "Assigned", value: 2 },
-    { text: "Escalated", value: 3 },
-    { text: "Submitted", value: 4 },
-    { text: "Accepted", value: 5 },
-    { text: "Rejected", value: 6 },
-    { text: "Closed", value: 8 },
+    { text: "Unassigned", value: 'unassigned' },
+    { text: "Assigned", value: 'assigned' },
+    { text: "Escalated", value: 'escalated' },
+    { text: "Submitted", value: 'submitted' },
+    { text: "Accepted", value: 'accepted' },
+    { text: "Rejected", value: 'rejected' },
+    { text: "Closed", value: 'closed' },
 ];
