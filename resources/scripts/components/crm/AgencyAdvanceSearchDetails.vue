@@ -102,7 +102,7 @@
                 dense
                 v-bind="attrs"
                 append-icon="mdi-calendar"
-                v-model="search.moving_date"
+                v-model="modified_moving_date"
                 :error-messages="errors[0]"
                 hide-details="auto"
               >
@@ -235,7 +235,8 @@ export default {
       return v;
     },
     updateMovingDate(value) {
-      this.search.moving_date = formatDate(value);
+      this.modified_moving_date = formatDate(value);
+      this.search.moving_date = value;
       this.connection_date_menu = false;
     },
     clearFilter(){
@@ -251,6 +252,7 @@ export default {
   mounted(){
     console.log("mounted");
     this.search =  new LeadSearchFilterModel(this.$route.query);
+    this.modified_moving_date = formatDate(this.$route.query?.moving_date);
   }
 };
 </script>
