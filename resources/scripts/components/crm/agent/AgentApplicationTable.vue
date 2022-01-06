@@ -18,7 +18,10 @@
                 </v-btn>
             </v-col>
         </v-row>
-        <AgentFilterChip :searchFilterModel="searchFilterModel"/>
+        <AgentFilterChip
+          :searchFilterModel="searchFilterModel"
+          @removeFilters="removeFilters"
+        />
         <v-card class="mt-2 hood-card">
             <v-row>
                 <v-col cols="12" class="crm-table">
@@ -150,6 +153,9 @@ export default {
       getFilteredData(filteredData){
           this.searchFilterModel = filteredData;
           this.loadApplication();
+      },
+      removeFilters(){
+          
       }
     },
   watch: {
