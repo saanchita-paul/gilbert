@@ -150,6 +150,7 @@ export default {
           this.advanceSearchModal = true;
       },
       getFilteredData(filteredData){
+            console.log(filteredData);
             this.searchFilterModel = filteredData;
       }
     },

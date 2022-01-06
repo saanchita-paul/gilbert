@@ -6,7 +6,7 @@
             max-width="600px"
         >
             <v-card>
-                    <AgencyAdvanceSearchDetails @cancelDialog="cancelDialog"  @saveAgency="saveAgency"></AgencyAdvanceSearchDetails>
+                    <AgencyAdvanceSearchDetails @filteredData="filteredData" @cancelDialog="cancelDialog"  @saveAgency="saveAgency"></AgencyAdvanceSearchDetails>
             </v-card>
         </v-dialog>
     </v-row>
@@ -25,6 +25,9 @@ name: "AdvanceSearchModal",
         },
         saveAgency(agency) {
            this.$emit('openSuccessfulModal',agency);
+        },
+        filteredData(data){
+            this.$emit('filteredData', data);
         }
     }
 }

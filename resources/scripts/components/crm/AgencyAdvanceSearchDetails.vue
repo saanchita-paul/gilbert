@@ -235,6 +235,14 @@ export default {
       console.log("checkign id" , id)
     }
   },
+  watch:{
+     search: {
+            handler (newValue) {
+                this.$emit('filteredData' , newValue);
+            },
+            deep: true,
+        },
+  }
 };
 </script>
 
