@@ -150,7 +150,7 @@ class SearchConnectionApplication
 
     private function applyFilterAppId(): static
     {
-        if($this->source) {
+        if($this->appId) {
             $this->builder = $this->builder->where('id', $this->appId);
         }
         return $this;
@@ -159,7 +159,7 @@ class SearchConnectionApplication
 
     private function applyFilterMovingDate(): static
     {
-        if($this->source) {
+        if($this->movingDate) {
             $this->builder = $this->builder->where('moving_date', $this->movingDate);
         }
         return $this;
@@ -168,7 +168,7 @@ class SearchConnectionApplication
 
     private function applyFilterAgentId(): static
     {
-        if($this->source) {
+        if($this->agentId) {
             $this->builder = $this->builder->where('created_by', $this->agentId);
         }
         return $this;
