@@ -51,7 +51,7 @@
                 </v-col>
             </v-row>
         </v-card>
-        <AdvanceSearchModal @filteredData="getFilteredData" v-show="advanceSearchModal" :dialog="advanceSearchModal" :title="''" @cancelDialog="cancelAdvanceSearchModal">
+        <AdvanceSearchModal @filteredData="getFilteredData" v-if="advanceSearchModal" :dialog="advanceSearchModal" :title="''" @cancelDialog="cancelAdvanceSearchModal">
         </AdvanceSearchModal>
     </div>
 </template>
@@ -156,11 +156,12 @@ export default {
       },
       removeFilters(){
          this.searchFilterModel = new LeadSearchFilterModel();
+         this.$router.push({name: 'agent.application.dashboard', query: {} })
          this.loadApplication();
       }
     },
   mounted(){
-    this.searchFilterModel =  new LeadSearchFilterModel(this.$route.query);;
+    this.searchFilterModel =  new LeadSearchFilterModel(this.$route.query);
     this.loadApplication();
   },
   watch: {

@@ -10,10 +10,10 @@
           </v-chip>
           <v-chip
             class="mx-1 close"
-            color="#F7E755"
+            color="#D0D0D0"
             @click="removeFilters"
           >
-            Clear
+            Clear filters
             <v-icon small>mdi-close</v-icon>
           </v-chip>
         </v-col>
@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import { sources } from '@scripts/data/LeadSourceMap';
+import { statuses } from '@scripts/data/ConnectionStatusMapper';
 export default {
     props: ["searchFilterModel"],
     data() {
@@ -31,6 +33,14 @@ export default {
     mounted() {
       this.setFilterItems();
     },
+    computed:{
+      source(){
+        return sources.find(n=>n.value==this.searchFilterModel?.source)?.text ?? "";
+      },
+      status(){
+        return statuses.find(n=>n.value==this.searchFilterModel?.status)?.text ?? "";
+      }
+    },
     methods: {
       setFilterItems(){
           this.filterItems = [];
@@ -38,25 +48,25 @@ export default {
               this.filterItems.push('App ID: ' + this.searchFilterModel?.app_id);
           }
           if(this.searchFilterModel?.tenant_name && this.searchFilterModel?.tenant_name !== '') {
-              this.filterItems.push('Tenant Name: ' + this.searchFilterModel?.tenant_name);
+              this.filterItems.push('Tenant: ' + this.searchFilterModel?.tenant_name);
           }
           if(this.searchFilterModel?.address && this.searchFilterModel?.address !== '') {
               this.filterItems.push('Address: ' + this.searchFilterModel?.address);
           }
-          if(this.searchFilterModel?.email && this.searchFilterModel?.email !== '') {
-              this.filterItems.push('Email: ' + this.searchFilterModel?.email);
+          if(this.searchFilterModel?.tenant_email && this.searchFilterModel?.tenant_email !== '') {
+              this.filterItems.push('Email: ' + this.searchFilterModel?.tenant_email);
           }
           if(this.searchFilterModel?.agent_id && this.searchFilterModel?.agent_id !== '') {
-              this.filterItems.push('Agent Name: ' + this.searchFilterModel?.agent_name);
+              this.filterItems.push('Agent: ' + this.searchFilterModel?.agent_name);
           }
           if(this.searchFilterModel?.moving_date && this.searchFilterModel?.moving_date !== '') {
-              this.filterItems.push('Moving Date: ' + this.searchFilterModel?.moving_date);
+              this.filterItems.push('Move Date: ' + this.searchFilterModel?.moving_date);
           }
           if(this.searchFilterModel?.source && this.searchFilterModel?.source !== '') {
-              this.filterItems.push('Source: ' + this.searchFilterModel?.source); //TODO
+              this.filterItems.push('Source: ' + this.source); //TODO
           }
           if(this.searchFilterModel?.status && this.searchFilterModel?.status !== '') {
-              this.filterItems.push('Status: ' + this.searchFilterModel?.status); //TODO
+              this.filterItems.push('Status: ' + this.status); //TODO
           }
       },
       removeFilters(){

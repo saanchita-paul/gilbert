@@ -61,7 +61,7 @@
           full-width
           hide-details="auto"
           label="Email"
-          v-model="search.email"
+          v-model="search.tenant_email"
         ></v-text-field>
       </div>
     </div>
@@ -250,6 +250,7 @@ export default {
   },
   mounted(){
     console.log("mounted");
+    this.search =  new LeadSearchFilterModel(this.$route.query);
   }
 };
 </script>
