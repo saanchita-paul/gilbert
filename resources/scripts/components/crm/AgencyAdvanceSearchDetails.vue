@@ -242,8 +242,9 @@ export default {
       this.$emit('filteredData' , this.search);
       this.cancel();
     },
-    onChangeAgent(id){
-      console.log("checkign id" , id)
+    onChangeAgent(agent){
+      this.search.agent_id = agent.id;
+      this.search.agent_name = agent.name;
     }
   },
   mounted(){

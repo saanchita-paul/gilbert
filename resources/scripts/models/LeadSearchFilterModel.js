@@ -12,6 +12,7 @@ class LeadSearchFilterModel {
         moving_date,
         status,
         agent_id,
+        agent_name,
     } = {}) {
         this.tenant_name = tenant_name;
         this.source = source ?? "";
@@ -23,6 +24,7 @@ class LeadSearchFilterModel {
         this.moving_date = moving_date;
         this.status = status;
         this.agent_id = agent_id;
+        this.agent_name = agent_name;
     }
 
     isSearchEmpty() {
