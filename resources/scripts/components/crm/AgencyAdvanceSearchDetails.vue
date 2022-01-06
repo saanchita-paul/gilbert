@@ -174,6 +174,7 @@ import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel';
 import AgentDropdown from '@scripts/components/crm/agent/AgentDropdown';
 import { sources } from '@scripts/data/LeadSourceMap';
 import { statuses } from '@scripts/data/ConnectionStatusMapper';
+import { omitBy, isNil } from 'lodash-es'
 export default {
   name: "AgencyAdvanceSearchDetails",
   components: {AgentDropdown},
@@ -219,6 +220,11 @@ export default {
       this.cancel();
     },
     cancel() {
+      try {
+        this.$router.push({name: 'agent.application.dashboard', query: omitBy(this.search, isNil) })
+      } catch (error) {
+        console.log("error occured")
+      }
       this.$emit("cancelDialog");
     },
     async saveAgency() {
@@ -237,8 +243,9 @@ export default {
       this.$emit('filteredData' , this.search);
       this.cancel();
     },
-    onChangeAgent(id){
-      console.log("checkign id" , id)
+    onChangeAgent(agent){
+      this.search.agent_id = agent.id;
+      this.search.agent_name = agent.name;
     }
   },
   mounted(){

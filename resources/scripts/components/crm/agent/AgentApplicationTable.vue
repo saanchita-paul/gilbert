@@ -151,20 +151,30 @@ export default {
           this.advanceSearchModal = true;
       },
       getFilteredData(filteredData){
-          this.searchFilterModel = filteredData;
+          this.searchFilterModel = {...filteredData};
           this.loadApplication();
       },
       removeFilters(){
-          
+         this.searchFilterModel = new LeadSearchFilterModel();
+         this.loadApplication();
       }
     },
+  mounted(){
+    this.searchFilterModel =  new LeadSearchFilterModel(this.$route.query);;
+    this.loadApplication();
+  },
   watch: {
     options: {
       handler () {
         this.loadApplication();
       },
       deep: true,
-    }
+    },
+  //   '$route': {
+  //     handler() {
+        
+  //   }
+  // },
   }
 }
 </script>

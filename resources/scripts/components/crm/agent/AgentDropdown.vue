@@ -72,7 +72,7 @@ export default {
         onChangeAgent(agentId) {
             let agent = this.agents.find(item => item.id === agentId);
             let agentName = agent?.full_name;
-            this.$emit('onChangeAgent', {agentId, agentName});
+            this.$emit('onChangeAgent', {id: agentId, name: agentName});
         },
         setDefaultData() {
             const user = AuthService.getAuthUser();

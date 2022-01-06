@@ -47,16 +47,16 @@ export default {
               this.filterItems.push('Email: ' + this.searchFilterModel?.email);
           }
           if(this.searchFilterModel?.agent_id && this.searchFilterModel?.agent_id !== '') {
-              this.filterItems.push('Agent Name: ' + this.searchFilterModel?.agent_id);
+              this.filterItems.push('Agent Name: ' + this.searchFilterModel?.agent_name);
           }
           if(this.searchFilterModel?.moving_date && this.searchFilterModel?.moving_date !== '') {
               this.filterItems.push('Moving Date: ' + this.searchFilterModel?.moving_date);
           }
           if(this.searchFilterModel?.source && this.searchFilterModel?.source !== '') {
-              this.filterItems.push('Source: ' + this.searchFilterModel?.source);
+              this.filterItems.push('Source: ' + this.searchFilterModel?.source); //TODO
           }
           if(this.searchFilterModel?.status && this.searchFilterModel?.status !== '') {
-              this.filterItems.push('Status: ' + this.searchFilterModel?.status);
+              this.filterItems.push('Status: ' + this.searchFilterModel?.status); //TODO
           }
       },
       removeFilters(){
