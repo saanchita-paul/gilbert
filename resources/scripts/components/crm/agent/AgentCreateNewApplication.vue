@@ -793,9 +793,9 @@ export default {
             return tenancyTypeMapper;
         },
         isTenancyHomeOwner(){
-            return this.application.tenancy_type===tenancyTypeMapper.HomeOwner;
-            // return AuthService.getRoles().includes("agency_office_property_manager") &&
-            // this.application.tenancy_type===tenancyTypeMapper.HomeOwner;
+            // return this.application.tenancy_type===tenancyTypeMapper.HomeOwner;
+            return AuthService.getRoles().includes("agency_office_property_manager") &&
+            this.application.tenancy_type===tenancyTypeMapper.HomeOwner;
         }
     },
     methods: {
