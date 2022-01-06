@@ -155,7 +155,8 @@ export default {
           this.loadApplication();
       },
       removeFilters(){
-          
+         this.searchFilterModel.clear();
+         this.loadApplication();
       }
     },
   watch: {
