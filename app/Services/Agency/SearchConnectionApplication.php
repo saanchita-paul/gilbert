@@ -55,6 +55,8 @@ class SearchConnectionApplication
     private $movingDate;
     private $agentId;
     private $tenantEmail;
+    private ?string $startDate = null;
+    private ?string $endDate = null;
 
     /**
      * @param array $request
