@@ -1,11 +1,11 @@
 <template>
-    <div>
+    <div v-if="user">
         <v-row class="mt-5">
             <v-col cols="8" class="search-bg">
                 <Search @updateSearch="updateSearch"></Search>
             </v-col>
             <v-col cols="4" class="text-right">
-                <v-btn color="primary" @click="addNewApplication"
+                <v-btn :disabled="isUserActive" color="primary" @click="addNewApplication"
                 ><v-icon left>add
                 </v-icon> Add New Application
                 </v-btn>
@@ -45,6 +45,7 @@
 
 <script>
 import Search from "@scripts/components/crm/Search";
+import AuthService from "@scripts/services/AuthService";
 
 export default {
     name: "AgentApplicationTable",
@@ -56,6 +57,7 @@ export default {
 
     data() {
       return {
+        user: null,
         page: 1,
         pageCount: 0,
         itemsPerPage: 10,
@@ -97,7 +99,9 @@ export default {
       }
     },
     computed: {
-
+      isUserActive() {
+        return this.user.is_active === 0 ? true : false;
+      },
     },
 
     methods: {
@@ -139,9 +143,9 @@ export default {
       deep: true,
     },
   },
-    mounted() {
-        // console.log(this.applications);
-    }
+  async mounted() {
+    this.user = await AuthService.getAuthUser();
+  }
 }
 </script>
 

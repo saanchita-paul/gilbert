@@ -64,7 +64,8 @@ class User extends Authenticatable
         'email',
         'password',
         'profile_type',
-        'profile_id'
+        'profile_id',
+        'is_active'
     ];
 
     /**

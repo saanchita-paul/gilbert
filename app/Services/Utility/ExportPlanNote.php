@@ -100,7 +100,7 @@ class ExportPlanNote
 
         ];
 
-        $gasUsageRate = data_get($data, 'rates.gas.usage_rates');
+        $gasUsageRate = data_get($data, 'rates.gas.usage_rates', []);
         $mappedGasRateData = $this->mapGasUsageRate($gasUsageRate);
         $mappedFeatureData = $this->mapFeature(data_get($data, 'features', []));
         return array_merge($mappdata, $mappedGasRateData, $mappedFeatureData);
