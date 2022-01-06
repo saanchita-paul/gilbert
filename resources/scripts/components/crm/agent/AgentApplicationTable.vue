@@ -128,7 +128,7 @@ export default {
         },
       loadApplication() {
         const meta = {
-          search: this.search,
+          ...this.searchFilterModel,
           page: this.options.page,
           per_page: this.options.itemsPerPage,
           is_descending: this.options.sortDesc.length != 0? this.options.sortDesc[0]: false,
@@ -149,6 +149,7 @@ export default {
       },
       getFilteredData(filteredData){
           this.searchFilterModel = filteredData;
+          this.loadApplication();
       }
     },
   watch: {
