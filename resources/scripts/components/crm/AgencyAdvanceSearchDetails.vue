@@ -253,7 +253,6 @@ export default {
     }
   },
   mounted(){
-    console.log("mounted");
     this.search =  new LeadSearchFilterModel(this.$route.query);
     this.modified_moving_date = formatDate(this.$route.query?.moving_date);
   }

@@ -61,7 +61,6 @@ export default {
             }
             const data = await AgentApplicationService.loadAgentList(meta, this.agentId, this.officeId);
             this.agents = data?.agents;
-            console.log('agents', data);
             this.current_page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
             this.totalItems = data.pagination.total;
