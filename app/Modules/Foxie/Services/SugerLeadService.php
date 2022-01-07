@@ -106,7 +106,7 @@ class SugerLeadService
         $this->connectionApplication->address_text = $this->address->address_text;
         $this->connectionApplication->dob = $dob ?? null;
         $this->connectionApplication->moving_date = date("Y-m-d", strtotime($request->move_in_date_c))  ?? null;
-//        $this->connectionApplication->street_address = $this->address->street_address ?? null;
+        $this->connectionApplication->street_address = $this->address->street_address ?? null;
         $this->connectionApplication->street_number = $this->address->street_number ?? null;
         $this->connectionApplication->street_name = $this->address->street_name ?? null;
         $this->connectionApplication->city = $this->address->city ?? null;
