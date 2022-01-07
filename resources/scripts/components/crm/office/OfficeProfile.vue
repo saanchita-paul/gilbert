@@ -363,6 +363,8 @@ export default {
             this.office.agency_name = data.agency_name;
             this.office.agency_type = data.agency_type;
             this.office.agency_id = data.agency_id;
+            this.office.rent_roll = data.rent_roll;
+            this.office.hood_agent_id = data.hood_agent_id;
 
         },
 

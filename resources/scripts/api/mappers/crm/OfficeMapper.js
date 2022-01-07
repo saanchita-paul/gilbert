@@ -98,7 +98,8 @@ export default {
                 abn: ofc.abn,
                 phone: ofc.contact,
                 email: ofc.email,
-                rent_roll: ofc.rent_roll
+                rent_roll: ofc.rent_roll,
+                hood_agent_id: ofc.hood_agent_id,
             };
         agent = {
                 first_name: agPro.first_name,
