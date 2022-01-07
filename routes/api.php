@@ -46,6 +46,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/agencies/{id}/update', [AgencyController::class, 'update']);
     Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
     Route::post('/agencies/{agencyId}/offices', [OfficeController::class, 'createAgencyOffice']);
+    Route::get('/agencies/{id}/get-agency-metrics', [AgencyController::class, 'getAgencyMetrics']);
 
 
 
@@ -171,3 +172,5 @@ Route::get("/karan/sales-status", function () {
         }
     return "success";
 });
+
+Route::get('/tonmoy/test', [AgencyController::class, 'getAgencyMetrics']);
