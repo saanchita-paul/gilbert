@@ -63,8 +63,8 @@
                     </ValidationProvider>
 
                     <ValidationProvider name="Office Account Manager"  v-slot="{ errors }">
-                       <!-- <HoodAgentDropdown :selectedAgentId="1"
-                        @onChangeAgent="onChangeAgent" /> -->
+                       <HoodAgentDropdown :selectedAgentId="1"
+                        @onChangeAgent="onChangeAgent" />
                     </ValidationProvider>
 
 
@@ -278,12 +278,11 @@
 import OfficeService from "@scripts/services/crm/OfficeService";
 import CreateSuccessfulModal from "@scripts/components/crm/modals/CreateSuccessfulModal";
 import HoodAgentDropdown from "@scripts/components/crm/office/HoodAgentDropdown";
-import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
 export default {
   name: "OfficeProfile",
     components: {
         CreateSuccessfulModal,
-        // HoodAgentDropdown,
+        HoodAgentDropdown,
     },
     data() {
       return {
@@ -436,8 +435,6 @@ export default {
     mounted() {
       this.activeOffice = this.$route.params.officeId;
         this.loadOffice();
-       AgentApplicationService.loadHoodAgentList({ search: 'hood' }, 1, 1).
-       then(res=>console.log("res" , res))
     }
 };
 </script>

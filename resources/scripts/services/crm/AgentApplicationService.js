@@ -7,5 +7,5 @@ export default {
     async createApplication(application) {
         return await AgentApplicationAPI.createApplication(application);
     },
-    loadHoodAgentList: (meta, agencyId, officeId) => AgentApplicationAPI.loadHoodAgentList(meta, agencyId, officeId),
+    loadHoodAgentList: (meta) => AgentApplicationAPI.loadHoodAgentList(meta),
 }
