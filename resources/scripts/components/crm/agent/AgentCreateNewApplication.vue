@@ -772,7 +772,8 @@ export default {
                 state: "",
                 country: "",
             },
-            loadSubmit: false
+            loadSubmit: false,
+            user: null,
         }
 
     },
@@ -903,6 +904,9 @@ export default {
             this.authorized_person.dob = (new DayJs(this.authorized_person_dob).format('DD/MM/YYYY'));
         },
 
+    },
+    async mounted() {
+        this.user = await AuthService.getAuthUser();
     }
 };
 </script>
