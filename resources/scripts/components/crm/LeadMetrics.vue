@@ -123,10 +123,8 @@
     </v-row>
         <v-row class="my-4">
             <v-col cols="2">
-                <div
-                    class="font-weight-bold text-center py-0 count_font"
-                >
-                    {{'123456'}}
+                <div class="font-weight-bold text-center py-2 count_font">
+                    <h3>{{'123456'}} </h3>
                 </div>
                 <div
                     class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font"
@@ -135,22 +133,18 @@
                 </div>
             </v-col>
             <v-col cols="2" class="border-left">
-                <div
-                    class="font-weight-bold text-center py-0 count_font"
-                >
-                    {{'123456'}}
+                <div class="font-weight-bold text-center py-2 count_font">
+                    <h3>{{'123456'}} </h3>
                 </div>
                 <div
-                    class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font"
-                >
+                    class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font">
                     Agent Portal
                 </div>
             </v-col>
             <v-col cols="2" class="border-left">
                 <div
-                    class="font-weight-bold text-center py-0 count_font"
-                >
-                    {{'123456'}}
+                    class="font-weight-bold text-center py-2 count_font">
+                    <h3>{{'123456'}} </h3>
                 </div>
                 <div
                     class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font"
@@ -159,10 +153,8 @@
                 </div>
             </v-col>
             <v-col cols="2" class="border-left">
-                <div
-                    class="font-weight-bold text-center py-0 count_font"
-                >
-                    {{'123456'}}
+                <div class="font-weight-bold text-center py-2 count_font">
+                    <h3>{{'123456'}} </h3>
                 </div>
                 <div
                     class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font"
@@ -172,13 +164,10 @@
             </v-col>
             <v-col cols="2" class="border-left">
                 <div
-                    class="font-weight-bold text-center py-0 count_font"
-                >
-                    {{'123456'}}
+                    class="font-weight-bold text-center py-2 count_font">
+                    <h3>{{'123456'}}</h3>
                 </div>
-                <div
-                    class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font"
-                >
+                <div class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font">
                     Total connected applications
                 </div>
             </v-col>
@@ -210,6 +199,7 @@ import {getFormattedDBDate, getToday, getTodayString, getYesterday, isSame} from
 import DatePickerModal from "@scripts/modules/sales/components/DatePickerModal";
 import {STATES} from "@scripts/data/constants/STATES";
 import {merge} from "lodash-es";
+import {AgencyFilter} from "@scripts/models/crm/AgencyFilter";
 
 export default {
   name: "LeadMetrics",
@@ -234,7 +224,6 @@ export default {
           },
           states : STATES,
           state: '',
-          selected_state: '',
           hood_user: '',
           hood_users: [],
           search_agency: '',
@@ -244,6 +233,7 @@ export default {
           search_office: '',
           offices: [],
           selectedOffice: '',
+          agencyFilter : new AgencyFilter()
 
 
       }
@@ -260,7 +250,6 @@ export default {
         },
         async loadAgencies() {
             this.agencies = await LeadApplicationService.loadAgencies();
-            console.log('agencies', this.agencies);
         },
         async loadOffices() {
             this.offices = await LeadApplicationService.loadOffices(this.selectedAgency);
@@ -274,7 +263,10 @@ export default {
             let queries = JSON.parse(JSON.stringify(this.$route.query));
             queries.start = this.dateRange.start;
             queries.end = this.dateRange.end;
-             this.$router.replace({ query: queries });
+            this.agencyFilter.start = this.dateRange.start;
+            this.agencyFilter.end = this.dateRange.end;
+            this.updateRouteParams();
+             // this.$router.replace({ query: queries });
         },
 
         checkDate() {
@@ -293,7 +285,8 @@ export default {
             this.showDatePickerModal = false;
         },
         onChangeAgentAgency() {
-            this.updateRouteParams({agency: this.selectedAgency});
+            merge(this.agencyFilter, {agency_id: this.selectedAgency});
+            this.updateRouteParams();
         },
         changeText() {
 
@@ -302,22 +295,21 @@ export default {
 
         },
         onChangeOffice() {
-            this.updateRouteParams({office: this.selectedOffice});
+            merge(this.agencyFilter, {office_id: this.selectedOffice});
+            this.updateRouteParams();
         },
         changeState() {
-          this.updateRouteParams({state: this.state});
+          merge(this.agencyFilter, {state: this.state});
+          this.updateRouteParams();
         },
 
         changeHoodUser() {
-          this.updateRouteParams({hood_user_id: this.hood_user})
+            merge(this.agencyFilter, {account_manager_id: this.hood_user});
+          this.updateRouteParams()
         },
 
-        updateRouteParams(q) {
-            let queryParams = this.$route.query;
-            queryParams = merge(queryParams, q);
-            // this.$router.push({name:'real.state.agency', query: {...queryParams}});
-            console.log('query Params', queryParams);
-            this.$router.replace({ query: queryParams });
+        updateRouteParams() {
+            this.$router.replace({ query: {...this.agencyFilter} });
         },
 
         syncQueryParas() {
@@ -331,7 +323,7 @@ export default {
         },
         dateRange() {
             this.checkDate();
-            this.updateDateRange();
+            // this.updateDateRange();
         },
         '$route': {
             handler() {
@@ -352,7 +344,7 @@ export default {
 <style scoped>
 
 .count_font{
-    font-size: 32px;
+    font-size: 1.5em;
     color: #542e89;
 }
 .subtitle_font{
