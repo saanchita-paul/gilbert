@@ -13,3 +13,12 @@ export const sources = [
     { text: "Our-Property", value: "our-property" },
     { text: "Property_Me", value: "property_me" },
 ];
+
+export const sourcesNumberToName = {
+    0 : 'Hood',
+    1 : 'Foxie',
+    2 : 'Ignite', 
+    3 : 'All',
+    4 : 'Our-Property',
+    5 : 'Property_Me',
+};

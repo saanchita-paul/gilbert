@@ -37,9 +37,12 @@
                     <template v-slot:item.first_name="{ item }">
                       {{ item.first_name + ' ' + item.last_name }}
                     </template>
-                      <template v-slot:item.status="{ item }">
-                          {{['UnAssigned','Assigned', 'Escalated'].includes(item.status)?'In Progress': item.status }}
-                      </template>
+                    <template v-slot:item.source="{ item }">
+                      {{ sourcesNumberToName[item.source] }}
+                    </template>
+                    <template v-slot:item.status="{ item }">
+                        {{['UnAssigned','Assigned', 'Escalated'].includes(item.status)?'In Progress': item.status }}
+                    </template>
                     <template v-slot:item.services="{ item }">
                       <v-icon small  :disabled="isServiceAllowed(item.services, 'power')" color="yellow">mdi-flash</v-icon>
                       <v-icon small :disabled="isServiceAllowed(item.services, 'gas')" color="red">mdi-fire</v-icon>
@@ -59,6 +62,7 @@
 import AdvanceSearchModal from '@scripts/components/crm/modals/AdvanceSearchModal.vue';
 import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel';
 import AgentFilterChip from '@scripts/components/crm/agent/AgentFilterChip';
+import { sourcesNumberToName } from '@scripts/data/LeadSourceMap';
 export default {
     name: "AgentApplicationTable",
     props: ["applications","totalItem", 'selectedAppId'],
@@ -75,28 +79,40 @@ export default {
         options: {},
         headers:  [
           {
-            text: 'Name',
+            text: 'App Id',
+            align: 'start',
+            sortable: true,
+            value: 'id'
+          },
+          {
+            text: 'Tenant Name',
             align: 'start',
             sortable: true,
             value: 'first_name'
           },
           {
-            text: 'Moving date',
+            text: 'Property Address',
             align: 'start',
             sortable: true,
-            value: 'moving_date'
+            value: 'address_text'
           },
           {
-            text: 'Mobile',
+            text: 'Date Submitted',
             align: 'start',
             sortable: true,
-            value: 'phone'
+            value: 'submitted_at'
           },
           {
-            text: 'Preference',
-            align: 'start',
-            sortable: true,
-            value: 'services'
+              text: 'Agent Name',
+              align: 'start',
+              sortable: true,
+              value: 'agent_name'
+          },
+          {
+              text: 'Source',
+              align: 'start',
+              sortable: true,
+              value: 'source'
           },
           {
               text: 'Status',
@@ -109,6 +125,11 @@ export default {
         advanceSearchModal: false,
         searchFilterModel: new LeadSearchFilterModel(),
         filterItems: []
+      }
+    },
+    computed:{
+      sourcesNumberToName(){
+        return sourcesNumberToName;
       }
     },
     methods: {
