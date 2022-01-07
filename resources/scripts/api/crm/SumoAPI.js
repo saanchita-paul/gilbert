@@ -26,16 +26,9 @@ export default {
     products: async (sumoInfo , service_type , agent_name, lead_id) => {
         try {
 
-            console.log('print sumoInfo info' , sumoInfo);
-
-            console.log('calling sumo api' , sumoInfo);
             let meta   = SumoMapper.mapProduct(sumoInfo , service_type, agent_name, lead_id);
-            console.log('printing meta of sumo' , meta)
             const data = await sumoAxios.get('/products',{params: meta});
-            console.log('calling sumo api')
-            console.log('sumo' , data);
             let a = SumoMapper.planMapper(data.data);
-            console.log('mapper data' , a)
             return SumoMapper.planMapper(data.data);
         } catch (error) {
             console.log('in the error')

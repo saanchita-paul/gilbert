@@ -221,10 +221,8 @@ export default {
     },
 
     async closeApplicationWithReason(id, closing_reason){
-        console.log('id and closing reason in api' , closing_reason, id)
         try {
             const data = await axios.post('/api/applications/'+id+'/closeApplication' , {closing_reason});
-            console.log(data)
             return true;
         } catch (error) {
             console.log(error)
@@ -242,12 +240,13 @@ export default {
         }
     },
 
-    async getUserLeads(sort_search_meta, active_lead_type, src) {
+    async getUserLeads(sort_search_meta, active_lead_type, src, params) {
         try {
-            const data = await axios.get('/api/applications',{params:{...sort_search_meta, active_lead_type, source: src}});
+            const data = await axios.get('/api/applications',{params:{...sort_search_meta, active_lead_type, source: src , ...params}});
             return ApplicationMapper.mapApplicationList(data.data);
 
         } catch (error) {
+            console.log('error', error);
             return error.data;
         }
     },
@@ -398,7 +397,7 @@ export default {
             identification: identification,
             isService: isService
         }
-        console.log("printing payload from api" , payload)
+        // console.log("printing payload from api" , payload)
         const response = await axios.post('/api/applications/'+leadId+'/draft',payload);
     },
     async updateConnecitionEndNullDate(leadId){

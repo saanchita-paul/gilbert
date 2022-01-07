@@ -5,3 +5,12 @@ export const leadSourceMap = {
         SOURCE_IGNITE : 2,  
 }
 
+export const leadSourceMapFromNumber = {
+        3 : 'All',
+        0 : 'Hood',
+        1 : 'Foxie',
+        2 : 'Ignite',   
+        4 : 'OurProperty',   
+        5 : 'PropertyMe',   
+}
+
