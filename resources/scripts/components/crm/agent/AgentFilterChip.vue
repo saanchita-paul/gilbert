@@ -24,6 +24,7 @@
 import { sources } from '@scripts/data/LeadSourceMap';
 import { statuses } from '@scripts/data/ConnectionStatusMapper';
 import { formatDate } from "@scripts/services/others/DateService"
+import dayJs from "dayjs";
 export default {
     props: ["searchFilterModel"],
     data() {
@@ -42,7 +43,14 @@ export default {
         return statuses.find(n=>n.value==this.searchFilterModel?.active_lead_type)?.text ?? "";
       },
       moving_date(){
-        return formatDate(this.searchFilterModel?.moving_date) ?? "";
+        let formattedDate = formatDate(this.searchFilterModel?.moving_date);
+        if(formattedDate){
+          return formatDate(this.searchFilterModel?.moving_date);
+        } else if(dayJs(this.searchFilterModel?.moving_date, 'DD/MM/YYYY').isValid()){
+          return this.searchFilterModel?.moving_date;
+        } else {
+          return "";
+        }
       }
     },
     methods: {

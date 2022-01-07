@@ -2,7 +2,6 @@
     <div>
         <v-row no-gutters class="mt-5">
             <v-col cols="8" class="search-bg">
-                <!-- <Search @updateSearch="updateSearch"></Search> -->
                 <v-btn
                     class="ma-2"
                     outlined
@@ -57,7 +56,6 @@
 </template>
 
 <script>
-import Search from "@scripts/components/crm/Search";
 import AdvanceSearchModal from '@scripts/components/crm/modals/AdvanceSearchModal.vue';
 import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel';
 import AgentFilterChip from '@scripts/components/crm/agent/AgentFilterChip';
@@ -65,7 +63,6 @@ export default {
     name: "AgentApplicationTable",
     props: ["applications","totalItem", 'selectedAppId'],
     components: {
-        Search,
         AdvanceSearchModal,
         AgentFilterChip
     },
@@ -101,12 +98,12 @@ export default {
             sortable: true,
             value: 'services'
           },
-            {
-                text: 'Status',
-                align: 'start',
-                sortable: true,
-                value: 'status'
-            }
+          {
+              text: 'Status',
+              align: 'start',
+              sortable: true,
+              value: 'status'
+          }
         ],
         search: '',
         advanceSearchModal: false,
@@ -142,7 +139,7 @@ export default {
 
       updateSearch(search) {
           this.search = search;
-          this.loadApplication();
+          // this.loadApplication();
       },
       cancelAdvanceSearchModal(){
             this.advanceSearchModal = false;
@@ -152,12 +149,12 @@ export default {
       },
       getFilteredData(filteredData){
           this.searchFilterModel = {...filteredData};
-          this.loadApplication();
+          // this.loadApplication();
       },
       removeFilters(){
          this.searchFilterModel = new LeadSearchFilterModel();
          this.$router.push({name: 'agent.application.dashboard', query: {} })
-         this.loadApplication();
+        //  this.loadApplication();
       }
     },
   mounted(){
@@ -171,11 +168,11 @@ export default {
       },
       deep: true,
     },
-  //   '$route': {
-  //     handler() {
-        
-  //   }
-  // },
+    '$route': {
+      handler() {
+        this.loadApplication();
+    }
+  },
   }
 }
 </script>

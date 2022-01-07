@@ -102,7 +102,8 @@
                 dense
                 v-bind="attrs"
                 append-icon="mdi-calendar"
-                v-model="modified_moving_date"
+                :value="modified_moving_date"
+                @input="updateDate"
                 :error-messages="errors[0]"
                 hide-details="auto"
               >
@@ -215,6 +216,9 @@ export default {
     }
   },
   methods: {
+    updateDate(value){
+      this.search.moving_date = value;
+    },
     submit(){
       this.$emit('filteredData' , this.search);
       this.cancel();
@@ -226,7 +230,7 @@ export default {
           this.$router.push({name: 'agent.application.dashboard', query: params })
         }
       } catch (error) {
-        console.log("error occured")
+        console.log("error occured in route")
       }
       this.$emit("cancelDialog");
     },
@@ -253,10 +257,9 @@ export default {
     }
   },
   mounted(){
-    console.log("mounted");
     this.search =  new LeadSearchFilterModel(this.$route.query);
     this.modified_moving_date = formatDate(this.$route.query?.moving_date);
-  }
+  },
 };
 </script>
 
