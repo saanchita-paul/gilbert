@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container v-if="user">
         <v-card  class="hood-card new-application">
             <ValidationObserver ref="create_application">
                 <v-row>
