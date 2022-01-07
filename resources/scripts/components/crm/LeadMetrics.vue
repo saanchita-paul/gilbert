@@ -124,7 +124,7 @@
         <v-row class="my-4">
             <v-col cols="2">
                 <div class="font-weight-bold text-center py-2 count_font">
-                    <h3>{{'123456'}} </h3>
+                    <h3>{{appMetrics.applications_created}} </h3>
                 </div>
                 <div
                     class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font"
@@ -134,51 +134,51 @@
             </v-col>
             <v-col cols="2" class="border-left">
                 <div class="font-weight-bold text-center py-2 count_font">
-                    <h3>{{'123456'}} </h3>
+                    <h3>{{appMetrics.active_agents}} </h3>
                 </div>
                 <div
                     class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font">
-                    Agent Portal
+                    Active Agent
                 </div>
             </v-col>
             <v-col cols="2" class="border-left">
                 <div
                     class="font-weight-bold text-center py-2 count_font">
-                    <h3>{{'123456'}} </h3>
+                    <h3>{{appMetrics.agent_portal}} </h3>
                 </div>
                 <div
                     class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font"
-                >
-                   Digital Application Platform
+                > Agent Portal
+
                 </div>
             </v-col>
             <v-col cols="2" class="border-left">
                 <div class="font-weight-bold text-center py-2 count_font">
-                    <h3>{{'123456'}} </h3>
+                    <h3>{{appMetrics.digital_application_platform}} </h3>
                 </div>
                 <div
                     class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font"
                 >
-                    Property Management System
+                    Digital Application Platform
                 </div>
             </v-col>
             <v-col cols="2" class="border-left">
                 <div
                     class="font-weight-bold text-center py-2 count_font">
-                    <h3>{{'123456'}}</h3>
+                    <h3>{{appMetrics.property_management_system}} </h3>
                 </div>
                 <div class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font">
-                    Total connected applications
+                    Property Management System
                 </div>
             </v-col>
             <v-col cols="2" class="border-left">
 
-                <p class="font-weight-bold text-center  subtitle_font">
-                    12345 <span class="lead_span">Property Me</span>
+                <p class="font-weight-bold text-center  subtitle_font mt-3">
+                    {{appMetrics.connected_property_me}} <span class="lead_span">Property Me</span>
 
                 </p>
                 <p class="font-weight-bold text-center subtitle_font">
-                    12345 <span  class="lead_span">Our Property</span>
+                    {{appMetrics.connected_our_property}} <span  class="lead_span">Our Property</span>
                 </p>
             </v-col>
         </v-row>
@@ -213,7 +213,15 @@ export default {
   },
     data(){
       return {
-          appMetrics: [],
+          appMetrics: {
+              active_agents: 0,
+              agent_portal: 0,
+              applications_created: 0,
+              connected_our_property: 0,
+              connected_property_me: 0,
+              digital_application_platform: 0,
+              property_management_system: 0
+          },
           selectedDate: '',
           showDatePickerModal: false,
           dateRange: {
@@ -240,8 +248,12 @@ export default {
     },
     methods: {
       async loadMetrics() {
-          const allMetric = await LeadApplicationService.loadMetrics({agency_id: this.agency_id});
-          this.appMetrics = allMetric.mapData;
+          const allMetrics = await LeadApplicationService.loadAgencyMetrics(this.agencyFilter);
+          this.appMetrics = allMetrics
+          console.log(this.appMetrics);
+
+          // const allMetric = await LeadApplicationService.loadMetrics({agency_id: this.agency_id});
+          // this.appMetrics = allMetric.mapData;
 
       },
         async loadHooaUser() {
@@ -313,7 +325,7 @@ export default {
         },
 
         syncQueryParas() {
-          console.log('query params', this.$route.query);
+          this.loadMetrics();
         }
     },
 
@@ -334,6 +346,7 @@ export default {
     },
 
     async mounted() {
+      this.agencyFilter = merge(this.agencyFilter, this.$route.query);
       await this.loadMetrics();
       await this.loadHooaUser();
       await this.loadAgencies();
