@@ -63,16 +63,8 @@
                     </ValidationProvider>
 
                     <ValidationProvider name="Office Account Manager"  v-slot="{ errors }">
-                        <v-select
-                            label="Office Account Manager"
-                            outlined
-                            dense
-                            v-model="office.account_manager"
-                            :items="hood_users"
-                            item-text="name"
-                            item-value="id"
-                            :error-messages=" errors[0]"
-                        ></v-select>
+                       <HoodAgentDropdown :selectedAgentId="1"
+                        @onChangeAgent="onChangeAgent" />
                     </ValidationProvider>
 
 
@@ -285,10 +277,12 @@
 <script>
 import OfficeService from "@scripts/services/crm/OfficeService";
 import CreateSuccessfulModal from "@scripts/components/crm/modals/CreateSuccessfulModal";
+import HoodAgentDropdown from "@scripts/components/crm/office/HoodAgentDropdown";
 export default {
   name: "OfficeProfile",
     components: {
         CreateSuccessfulModal,
+        HoodAgentDropdown,
     },
     data() {
       return {
@@ -329,6 +323,7 @@ export default {
       }
     },
     methods:{
+      onChangeAgent(id){},
       async loadOffice() {
           this.data = await OfficeService.loadOfficeById(this.activeOffice);
           // console.log(this.data);

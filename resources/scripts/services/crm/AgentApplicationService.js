@@ -7,4 +7,5 @@ export default {
     async createApplication(application) {
         return await AgentApplicationAPI.createApplication(application);
     },
+    loadHoodAgentList:()=>{}
 }
