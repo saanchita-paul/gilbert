@@ -92,9 +92,9 @@
                     ></v-text-field>
                     </ValidationProvider>
 
-                    <ValidationProvider name="Rent Roll" rules="cv-phone|length:10"  v-slot="{ errors }">
+                    <ValidationProvider name="Rent Roll" rules="required|numeric"  v-slot="{ errors }">
                         <v-text-field
-                            label="Rent Roll"
+                            label="Rent Roll*"
                             outlined
                             dense
                             v-model="office.rent_roll"
@@ -303,6 +303,7 @@ export default {
               agency_id: null,
               rent_roll: null,
               account_manager: null,
+              hood_agent_id: null,
           },
           commission: {
               gas:null,
@@ -323,7 +324,9 @@ export default {
       }
     },
     methods:{
-      onChangeAgent(id){},
+      onChangeAgent(id){
+          this.office.hood_agent_id = id;
+      },
       async loadOffice() {
           this.data = await OfficeService.loadOfficeById(this.activeOffice);
           // console.log(this.data);

@@ -71,7 +71,9 @@ class Office extends Model
         'country',
         'abn',
         'phone',
-        'email'
+        'email',
+        'hood_agent_id',
+        'rent_roll',
     ];
 
     /**
