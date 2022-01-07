@@ -11,15 +11,14 @@ class GeoCodeService
     {
         try {
             $response = Http::withHeaders([
-                "content-type"    => "application/json",
-                "Accept"          => "*/*",
+                "content-type" => "application/json",
+                "Accept" => "application/json",
             ])
-            ->get(
-                config('geocode.baseUrl'),
-                [ "key"     => config('geocode.apiKey'),
-                  "address" => $address ]
-            );
-            
+                ->get(config('geocode.baseUrl'), [
+                        "key" => config('geocode.apiKey'),
+                        "address" => $address
+                    ]
+                );
             return $response;
         } catch (\Exception $exception) {
             \Log::error($exception->getMessage());
