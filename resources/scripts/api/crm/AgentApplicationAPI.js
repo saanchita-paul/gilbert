@@ -89,4 +89,15 @@ export default {
         return await axios.post(`/api/applications`, {...application});
 
     },
+    loadHoodAgentList: async (meta, agencyId, officeId)=> {
+        try {
+            // meta = HoodAgentListMapper.mapMetaData(meta);
+            const data = await axios.get('/api/hood-users', {params: {...meta}});
+            console.log("printing data" , data)
+            // return AgentListMapper.mapAgentList(data.data);
+        } catch (error) {
+            console.log('Error', error);
+            return error.data;
+        }
+    },
 }
