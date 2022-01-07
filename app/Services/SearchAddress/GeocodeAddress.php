@@ -55,7 +55,6 @@ class GeocodeAddress{
              }
     }
 
-    #[Pure]
     public function getConnectionApplicationVersion(): AddressModel
     {
         return new AddressModel(

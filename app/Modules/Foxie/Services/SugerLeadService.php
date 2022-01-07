@@ -266,6 +266,9 @@ class SugerLeadService
      */
     public function create(Request $request): ConnectionApplication
     {
+//        $this->setGeoCodeToConnectionApplication($request);
+//
+//        dd($this->address);
         $this->connectionApplication = new ConnectionApplication;
         $this->lead = new SugerLead();
         $this->lead->all_fields_dump = json_encode(request()->all());
