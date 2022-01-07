@@ -65,7 +65,7 @@
             <v-col cols="5" class="my-0 py-0">
                 <p class="font-weight-bold  pl-2 mb-2">Email</p>
             </v-col>
-            <v-col cols="7"class="my-0 py-0">
+            <v-col cols="7" class="my-0 py-0">
                 <p class="mb-2">{{ application.email }}</p>
             </v-col>
 
@@ -272,7 +272,7 @@ export default {
         },
 
         moving_date() {
-            return dayJs(this.application.moving_date,'yyyy-dd-mm').format(DATE_FORMAT.DB_DATE);
+            return dayJs(this.application.moving_date).format(DATE_FORMAT.DB_DATE);
         },
 
         identification_type() {

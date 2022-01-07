@@ -12,7 +12,6 @@ use App\Traits\Agency\Searchable;
 use App\Traits\Agency\Sortable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\NoReturn;
 use Carbon\Carbon;
 use App\Modules\Reporting\Services\SetDateRage;
@@ -64,7 +63,6 @@ class SearchConnectionApplication
     public function __construct(array $request)
     {
         $this->createFullTextQueries($request);
-        Log::info('SearchConnectionApplication::__construct()', $request);
 
         $this->perPage = empty($request['per_page']) ? null : (int) $request['per_page'];
         $this->leadType = optional($request)['active_lead_type'];
