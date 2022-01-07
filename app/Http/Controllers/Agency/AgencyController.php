@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Notifications\NotifyToSupport;
 use App\Services\Agency\AgencyService;
+use App\Services\Agency\AgencyMetricService;
 use App\Services\Agency\CreateAgentAndUser;
 use App\Services\Agency\SearchAgencyService;
 use Illuminate\Support\Facades\Notification;
@@ -20,6 +21,7 @@ use App\Http\Requests\Agency\UpdateAgencyRequest;
 use App\Http\Resources\Agency\IndependentAgencyResource;
 use App\Http\Requests\Agency\CreateIndependentAgencyRequest;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Log;
 
 class AgencyController extends Controller
 {
@@ -89,6 +91,16 @@ class AgencyController extends Controller
         try {
             $service = new AgencyService();
             return AgencyResource::make($service->getAgency($id));
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    public function getAgencyMetrics(Request $request)
+    {
+        try {
+            $service = new AgencyMetricService($request->toArray());
+            return $service->getAgencyMetrics();
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
