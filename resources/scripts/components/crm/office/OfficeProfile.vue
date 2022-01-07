@@ -61,6 +61,21 @@
                             :error-messages=" errors[0]"
                         ></v-text-field>
                     </ValidationProvider>
+
+                    <ValidationProvider name="Office Account Manager"  v-slot="{ errors }">
+                        <v-select
+                            label="Office Account Manager"
+                            outlined
+                            dense
+                            v-model="office.account_manager"
+                            :items="hood_users"
+                            item-text="name"
+                            item-value="id"
+                            :error-messages=" errors[0]"
+                        ></v-select>
+                    </ValidationProvider>
+
+
                 </v-col>
 
                 <v-col cols="6">
@@ -84,6 +99,18 @@
                         :error-messages=" errors[0]"
                     ></v-text-field>
                     </ValidationProvider>
+
+                    <ValidationProvider name="Rent Roll" rules="cv-phone|length:10"  v-slot="{ errors }">
+                        <v-text-field
+                            label="Rent Roll"
+                            outlined
+                            dense
+                            v-model="office.rent_roll"
+                            placeholder="Rent Roll"
+                            :error-messages=" errors[0]"
+                        ></v-text-field>
+                    </ValidationProvider>
+
                 </v-col>
 
                 <v-col cols="12" class="py-0">
@@ -265,6 +292,7 @@ export default {
     },
     data() {
       return {
+          hood_users: [],
           updateConfirmFlag: false,
           data: null,
           isLoaded : false,
@@ -279,12 +307,15 @@ export default {
               agency_name: null,
               agency_type: null,
               agency_id: null,
+              rent_roll: null,
+              account_manager: null,
           },
           commission: {
               gas:null,
               water:null,
               power:null,
-              internet:null
+              internet:null,
+              sponsorship: null
           },
           commissionObject: null,
           agent: {
@@ -310,6 +341,8 @@ export default {
            await this.updateOffice(this.data?.office);
            await this.updateCommission(this.data?.commissions);
            await this.updateAgent(this.data?.agent);
+           this.hood_users = this.data?.hood_users;
+
         },
 
         updateAgent(data) {

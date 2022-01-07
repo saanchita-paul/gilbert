@@ -5,6 +5,7 @@ import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
 import DayJs from "dayjs";
 import dayjs from "dayjs";
+import OfficeMapper from "@scripts/api/mappers/crm/OfficeMapper";
 
 const data = [
     {
@@ -441,6 +442,35 @@ export default {
             return error.data;
         }
     },
+
+    async loadHoodUser() {
+        try {
+            const data = await axios.get('/api/hood-users');
+            return OfficeMapper.mapHoodProfileData(data.data.data);
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    async loadAgencies() {
+        try {
+            const data = await axios.get('/api/agencies');
+            return data?.data?.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+    async loadOffices(agencyId) {
+        try {
+            const data = await axios.get('/api/agencies/' + agencyId + '/offices');
+            return data?.data?.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    }
 
 
 

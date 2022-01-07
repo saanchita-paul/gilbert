@@ -47,6 +47,9 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
     Route::post('/agencies/{agencyId}/offices', [OfficeController::class, 'createAgencyOffice']);
 
+
+
+
     Route::post('/independent-agency', [AgencyController::class, 'createIndependentAgency']);
 
     Route::post('/offices', [OfficeController::class, 'createOffice']);

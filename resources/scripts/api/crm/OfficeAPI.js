@@ -49,6 +49,9 @@ export default {
     saveOfficeData: async (officeData, agencyId) => {
         try {
             // const data = await axios.get('/')
+
+            console.log('office data', officeData);
+
             officeData = OfficeMapper.mapOfficeToserver(officeData , agencyId);
             const data = await axios.post('/api/offices',{...officeData});
             return OfficeMapper.mapOffice(data.data.data);
@@ -64,6 +67,8 @@ export default {
             return OfficeMapper.mapOfficeCommissionAgent(data.data.data);
 
         } catch (error) {
+
+            console.log('error', error);
             return error.data;
         }
     },

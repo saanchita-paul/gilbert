@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-card class="hood-card">
-            <h2>All Application Metrics</h2>
+<!--            <h2>All Application Metrics</h2>-->
             <LeadMetrics ></LeadMetrics>
         </v-card>
         <div>

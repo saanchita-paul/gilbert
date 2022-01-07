@@ -50,6 +50,16 @@ function mapCommissions (commissions){
     }
 }
 
+function mapHoodProfile(hoodUsers) {
+
+    return hoodUsers.map(userProfile => {
+        return {
+            ...userProfile,
+            name: userProfile.first_name + ' ' + userProfile.last_name
+        };
+    })
+}
+
 
 export default {
     mapOfficeList: (officeList)=> {
@@ -88,6 +98,7 @@ export default {
                 abn: ofc.abn,
                 phone: ofc.contact,
                 email: ofc.email,
+                rent_roll: ofc.rent_roll
             };
         agent = {
                 first_name: agPro.first_name,
@@ -114,6 +125,10 @@ export default {
                     type: COMMISSION.WATER.type,
                     rate: commission.water,
                 },
+            {
+                type: COMMISSION.SPONSORSHIP.type,
+                rate: commission.sponsorship,
+            },
             ];
 
 
@@ -142,11 +157,19 @@ export default {
         office.agency_id = office.agency.id;
         let commissions = mapCommissions(data.commissions);
         let agent = mapAgent(data.agent);
+        let hood_users = mapHoodProfile(data?.hood_users);
         return {
             office: office,
             commissions: commissions,
             agent: agent,
+            hood_users: hood_users
         }
+    },
+
+    mapHoodProfileData: (data) => {
+        return mapHoodProfile(data);
     }
+
+
 
 }

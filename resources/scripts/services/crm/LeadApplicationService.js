@@ -26,6 +26,10 @@ export default {
     saveAuthorizedPerson: (data) => LeadApplicationAPI.saveAuthorizedPerson(data),
     updateApplicationProviders: (payload, application_id) => LeadApplicationAPI.updateApplicationProviders(payload, application_id),
     closeApplicationWithReason: (id, closing_reason) => LeadApplicationAPI.closeApplicationWithReason(id, closing_reason),
+    loadHoodUser: () => LeadApplicationAPI.loadHoodUser(),
+    loadAgencies: () => LeadApplicationAPI.loadAgencies(),
+    loadOffices: (agencyId) => LeadApplicationAPI.loadOffices(agencyId),
+
     /**
      * Getting minimum valid Connection date
      *
@@ -108,5 +112,7 @@ export default {
                     color: 'black'
                 };
         }
-    }
+    },
+
+
 }
