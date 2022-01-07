@@ -61,7 +61,7 @@ export default {
       };
       const data = await AgentApplicationService.loadHoodAgentList(meta);
       console.log("printing data from ", data);
-      this.agents = data.data;
+      this.agents = data?.agents;
       this.current_page = data.pagination.current_page;
       this.itemsPerPage = data.pagination.per_page;
       this.totalItems = data.pagination.total;
@@ -89,12 +89,7 @@ export default {
   },
   computed: {
     filteredAgents() {
-      return this.agents.map((n) => {
-        return {
-          full_name: n.first_name + " " + n.last_name,
-          id: n.id,
-        };
-      });
+      return this.agents;
     },
   },
   watch: {

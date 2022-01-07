@@ -1,6 +1,7 @@
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
 import COMMISSION from "@scripts/data/constants/COMMISSION";
+import AgentListMapper from "../mappers/crm/AgentListMapper";
 const applications = [
     {
         id: 1,
@@ -91,11 +92,11 @@ export default {
     },
     loadHoodAgentList: async (meta)=> {
         try {
-            // meta = HoodAgentListMapper.mapMetaData(meta);
+            // meta = AgentListMapper.mapMetaData(meta);
             const data = await axios.get('/api/hood-users', {params: {...meta}});
             console.log("printing data" , data)
-            return data.data;
-            // return AgentListMapper.mapAgentList(data.data);
+            // return data.data;
+            return AgentListMapper.mapAgentList(data.data);
         } catch (error) {
             console.log('Error', error);
             return error.data;
