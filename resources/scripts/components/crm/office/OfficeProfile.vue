@@ -63,7 +63,7 @@
                     </ValidationProvider>
 
                     <ValidationProvider name="Office Account Manager"  v-slot="{ errors }">
-                       <HoodAgentDropdown :selectedAgentId="1"
+                       <HoodAgentDropdown :selectedAgentId="selectedAgentId"
                         @onChangeAgent="onChangeAgent" />
                     </ValidationProvider>
 
@@ -320,7 +320,8 @@ export default {
               email: null,
               f_id_12: null,
               phone: null,
-          }
+          },
+          selectedAgentId: null,
       }
     },
     methods:{
@@ -329,7 +330,8 @@ export default {
       },
       async loadOffice() {
           this.data = await OfficeService.loadOfficeById(this.activeOffice);
-          // console.log(this.data);
+          console.log("office data" , this.data);
+
           await this.syncData();
           // console.log(this.office);
           this.isLoaded = true;
