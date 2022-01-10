@@ -7,9 +7,12 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\AgentProfile;
 use Illuminate\Database\Eloquent\Builder;
+use App\Modules\Reporting\Services\SetDateRage;
 
 class AgencyMetricService
 {
+    use SetDateRage;
+
     private $startDate = null;
     private $endDate = null;
     private $state = null;
@@ -19,12 +22,13 @@ class AgencyMetricService
 
     public function __construct(array $request)
     {
-        $this->startDate = empty($request['start']) ? null : (int) $request['start'];
-        $this->endDate = empty($request['end']) ? null : (int) $request['end'];
-        $this->state = empty($request['state']) ? null : (int) $request['state'];
-        $this->accountManagerId = empty($request['account_manager_id']) ? null : (int) $request['account_manager_id'];
-        $this->agencyId = empty($request['agency_id']) ? null : (int) $request['agency_id'];
-        $this->officeId = empty($request['office_id']) ? null : (int) $request['office_id'];
+        $this->state = empty($request['state']) ? null : $request['state'];
+        $this->accountManagerId = empty($request['account_manager_id']) ? null : $request['account_manager_id'];
+        $this->agencyId = empty($request['agency_id']) ? null : $request['agency_id'];
+        $this->officeId = empty($request['office_id']) ? null : $request['office_id'];
+
+        !empty($request['start']) && !empty($request['end']) &&
+        $this->setDateRange($request['start'], $request['end']);
     }
 
     public function getAgencyMetrics()
@@ -47,6 +51,8 @@ class AgencyMetricService
             $builder,
             [ConnectionApplication::SOURCE_MAPPING['hood']]
         );
+        $builder = $this->applyDateFilter($builder, 'created_at');
+
 
         return $builder->count();
     }
@@ -58,6 +64,7 @@ class AgencyMetricService
             ->whereHas('user', function (Builder $agent) {
                 $agent->where('is_active', 1);
             });
+        $builder = $this->applyDateFilter($builder, 'created_at');
 
         return $builder->count();
     }
@@ -73,6 +80,7 @@ class AgencyMetricService
             ]
         );
         $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_SUBMITTED);
+        $builder = $this->applyDateFilter($builder, 'created_at');
 
         return $builder->count();
     }
@@ -84,6 +92,7 @@ class AgencyMetricService
             $builder,
             [ConnectionApplication::SOURCE_MAPPING['ignite']]
         );
+        $builder = $this->applyDateFilter($builder, 'created_at');
 
         return $builder->count();
     }
@@ -98,6 +107,7 @@ class AgencyMetricService
                 ConnectionApplication::SOURCE_MAPPING['property_me']
             ]
         );
+        $builder = $this->applyDateFilter($builder, 'created_at');
 
         return $builder->count();
     }
@@ -110,6 +120,7 @@ class AgencyMetricService
             [ConnectionApplication::SOURCE_MAPPING['property_me']]
         );
         $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_ACCEPTED);
+        $builder = $this->applyDateFilter($builder, 'created_at');
 
         return $builder->count();
     }
@@ -122,6 +133,7 @@ class AgencyMetricService
             [ConnectionApplication::SOURCE_MAPPING['our-property']]
         );
         $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_ACCEPTED);
+        $builder = $this->applyDateFilter($builder, 'created_at');
 
         return $builder->count();
     }
@@ -143,4 +155,16 @@ class AgencyMetricService
     {
         return $builder->where('status', $status);
     }
+
+    private function applyDateFilter(Builder $builder, $column): Builder
+    {
+        if($this->startDate && $this->endDate) {
+            $builder = $builder
+                ->where($column, '>=' , $this->startDate)
+                ->where($column, '<=' , $this->endDate);
+        }
+        return $builder;
+    }
+
+
 }

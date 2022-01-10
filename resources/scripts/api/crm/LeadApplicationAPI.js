@@ -470,7 +470,17 @@ export default {
         } catch (error) {
             return error.data;
         }
-    }
+    },
+
+  async loadAgencyMetrics(query) {
+        try {
+            const data = await axios.get('/api/agencies/1/get-agency-metrics',{params: query});
+            return data?.data?.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
 
 
 

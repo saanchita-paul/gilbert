@@ -123,10 +123,8 @@
     </v-row>
         <v-row class="my-4">
             <v-col cols="2">
-                <div
-                    class="font-weight-bold text-center py-0 count_font"
-                >
-                    {{'123456'}}
+                <div class="font-weight-bold text-center py-2 count_font">
+                    <h3>{{appMetrics.applications_created}} </h3>
                 </div>
                 <div
                     class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font"
@@ -135,61 +133,52 @@
                 </div>
             </v-col>
             <v-col cols="2" class="border-left">
-                <div
-                    class="font-weight-bold text-center py-0 count_font"
-                >
-                    {{'123456'}}
+                <div class="font-weight-bold text-center py-2 count_font">
+                    <h3>{{appMetrics.active_agents}} </h3>
                 </div>
                 <div
-                    class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font"
-                >
-                    Agent Portal
+                    class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font">
+                    Active Agent
                 </div>
             </v-col>
             <v-col cols="2" class="border-left">
                 <div
-                    class="font-weight-bold text-center py-0 count_font"
-                >
-                    {{'123456'}}
+                    class="font-weight-bold text-center py-2 count_font">
+                    <h3>{{appMetrics.agent_portal}} </h3>
+                </div>
+                <div
+                    class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font"
+                > Agent Portal
+
+                </div>
+            </v-col>
+            <v-col cols="2" class="border-left">
+                <div class="font-weight-bold text-center py-2 count_font">
+                    <h3>{{appMetrics.digital_application_platform}} </h3>
                 </div>
                 <div
                     class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font"
                 >
-                   Digital Application Platform
+                    Digital Application Platform
                 </div>
             </v-col>
             <v-col cols="2" class="border-left">
                 <div
-                    class="font-weight-bold text-center py-0 count_font"
-                >
-                    {{'123456'}}
+                    class="font-weight-bold text-center py-2 count_font">
+                    <h3>{{appMetrics.property_management_system}} </h3>
                 </div>
-                <div
-                    class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font"
-                >
+                <div class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font">
                     Property Management System
                 </div>
             </v-col>
             <v-col cols="2" class="border-left">
-                <div
-                    class="font-weight-bold text-center py-0 count_font"
-                >
-                    {{'123456'}}
-                </div>
-                <div
-                    class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font"
-                >
-                    Total connected applications
-                </div>
-            </v-col>
-            <v-col cols="2" class="border-left">
 
-                <p class="font-weight-bold text-center  subtitle_font">
-                    12345 <span class="lead_span">Property Me</span>
+                <p class="font-weight-bold text-center  subtitle_font mt-3">
+                    {{appMetrics.connected_property_me}} <span class="lead_span">Property Me</span>
 
                 </p>
                 <p class="font-weight-bold text-center subtitle_font">
-                    12345 <span  class="lead_span">Our Property</span>
+                    {{appMetrics.connected_our_property}} <span  class="lead_span">Our Property</span>
                 </p>
             </v-col>
         </v-row>
@@ -210,6 +199,7 @@ import {getFormattedDBDate, getToday, getTodayString, getYesterday, isSame} from
 import DatePickerModal from "@scripts/modules/sales/components/DatePickerModal";
 import {STATES} from "@scripts/data/constants/STATES";
 import {merge} from "lodash-es";
+import {AgencyFilter} from "@scripts/models/crm/AgencyFilter";
 
 export default {
   name: "LeadMetrics",
@@ -223,7 +213,15 @@ export default {
   },
     data(){
       return {
-          appMetrics: [],
+          appMetrics: {
+              active_agents: 0,
+              agent_portal: 0,
+              applications_created: 0,
+              connected_our_property: 0,
+              connected_property_me: 0,
+              digital_application_platform: 0,
+              property_management_system: 0
+          },
           selectedDate: '',
           showDatePickerModal: false,
           dateRange: {
@@ -234,7 +232,6 @@ export default {
           },
           states : STATES,
           state: '',
-          selected_state: '',
           hood_user: '',
           hood_users: [],
           search_agency: '',
@@ -244,14 +241,19 @@ export default {
           search_office: '',
           offices: [],
           selectedOffice: '',
+          agencyFilter : new AgencyFilter()
 
 
       }
     },
     methods: {
       async loadMetrics() {
-          const allMetric = await LeadApplicationService.loadMetrics({agency_id: this.agency_id});
-          this.appMetrics = allMetric.mapData;
+          const allMetrics = await LeadApplicationService.loadAgencyMetrics(this.agencyFilter);
+          this.appMetrics = allMetrics
+          console.log(this.appMetrics);
+
+          // const allMetric = await LeadApplicationService.loadMetrics({agency_id: this.agency_id});
+          // this.appMetrics = allMetric.mapData;
 
       },
         async loadHooaUser() {
@@ -260,7 +262,6 @@ export default {
         },
         async loadAgencies() {
             this.agencies = await LeadApplicationService.loadAgencies();
-            console.log('agencies', this.agencies);
         },
         async loadOffices() {
             this.offices = await LeadApplicationService.loadOffices(this.selectedAgency);
@@ -274,7 +275,10 @@ export default {
             let queries = JSON.parse(JSON.stringify(this.$route.query));
             queries.start = this.dateRange.start;
             queries.end = this.dateRange.end;
-             this.$router.replace({ query: queries });
+            this.agencyFilter.start = this.dateRange.start;
+            this.agencyFilter.end = this.dateRange.end;
+            this.updateRouteParams();
+             // this.$router.replace({ query: queries });
         },
 
         checkDate() {
@@ -293,7 +297,8 @@ export default {
             this.showDatePickerModal = false;
         },
         onChangeAgentAgency() {
-            this.updateRouteParams({agency: this.selectedAgency});
+            merge(this.agencyFilter, {agency_id: this.selectedAgency});
+            this.updateRouteParams();
         },
         changeText() {
 
@@ -302,26 +307,25 @@ export default {
 
         },
         onChangeOffice() {
-            this.updateRouteParams({office: this.selectedOffice});
+            merge(this.agencyFilter, {office_id: this.selectedOffice});
+            this.updateRouteParams();
         },
         changeState() {
-          this.updateRouteParams({state: this.state});
+          merge(this.agencyFilter, {state: this.state});
+          this.updateRouteParams();
         },
 
         changeHoodUser() {
-          this.updateRouteParams({hood_user_id: this.hood_user})
+            merge(this.agencyFilter, {account_manager_id: this.hood_user});
+          this.updateRouteParams()
         },
 
-        updateRouteParams(q) {
-            let queryParams = this.$route.query;
-            queryParams = merge(queryParams, q);
-            // this.$router.push({name:'real.state.agency', query: {...queryParams}});
-            console.log('query Params', queryParams);
-            this.$router.replace({ query: queryParams });
+        updateRouteParams() {
+            this.$router.replace({ query: {...this.agencyFilter} });
         },
 
         syncQueryParas() {
-          console.log('query params', this.$route.query);
+          this.loadMetrics();
         }
     },
 
@@ -331,7 +335,7 @@ export default {
         },
         dateRange() {
             this.checkDate();
-            this.updateDateRange();
+            // this.updateDateRange();
         },
         '$route': {
             handler() {
@@ -342,6 +346,7 @@ export default {
     },
 
     async mounted() {
+      this.agencyFilter = merge(this.agencyFilter, this.$route.query);
       await this.loadMetrics();
       await this.loadHooaUser();
       await this.loadAgencies();
@@ -352,7 +357,7 @@ export default {
 <style scoped>
 
 .count_font{
-    font-size: 32px;
+    font-size: 1.5em;
     color: #542e89;
 }
 .subtitle_font{
