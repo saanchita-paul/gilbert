@@ -356,7 +356,6 @@ export default {
             this.loadOffices();
         },
         dateRange(val) {
-            console.log(val)
             this.checkDate();
             // this.updateDateRange();
         },
