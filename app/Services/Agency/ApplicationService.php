@@ -243,8 +243,8 @@ class ApplicationService
 
         $this->setSubmittedAtByServiceType($id, $submitType, $lead['service_interests']);
 
-        $noteService = new SubmittedLeadNote($existLead);
-        $noteService->addSubmittedNote();
+//        $noteService = new SubmittedLeadNote($existLead);
+//        $noteService->addSubmittedNote();
         return $existLead;
     }
 
@@ -460,6 +460,14 @@ class ApplicationService
                 $connectionService->save();
             }
         }
+    }
+
+    public function getNotSubmittedEaService($id): array
+    {
+        return ConnectionService::query()->where('connection_application_id',$id )
+            ->where('provider_name', ConnectionService::PROVIDER_EA )
+            ->whereNull('lead_reference')
+            ->pluck('id')->toArray();
     }
 
 }

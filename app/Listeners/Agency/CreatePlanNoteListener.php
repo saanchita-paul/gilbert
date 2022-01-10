@@ -29,11 +29,12 @@ class CreatePlanNoteListener implements ShouldQueue
      */
     public function handle(SubmitApplicationEvent $event)
     {
-        info('submitted note created ', ['connection_application_id'=>$event?->id]);
-        $existLead = ConnectionApplication::findOrFail($event->id);
-        $noteService = new SubmittedLeadNote($existLead);
+        $user = $event->options['auth_user'];
+        $servicesId = $event->options['services_id'];
+        $existLead = ConnectionApplication::findOrFail($event->applicationId);
+        $noteService = new SubmittedLeadNote($existLead, $user, $servicesId);
         $noteService->addSubmittedNote();
-        info('new note is created for lead id'. $event->id, ['connection_application_id'=>$event?->id]);
+        info('new note is created for lead id'. $event->applicationId, ['connection_application_id'=>$event?->applicationId]);
     }
 
 }
