@@ -63,16 +63,8 @@
                     </ValidationProvider>
 
                     <ValidationProvider name="Office Account Manager"  v-slot="{ errors }">
-                        <v-select
-                            label="Office Account Manager"
-                            outlined
-                            dense
-                            v-model="office.account_manager"
-                            :items="hood_users"
-                            item-text="name"
-                            item-value="id"
-                            :error-messages=" errors[0]"
-                        ></v-select>
+                       <HoodAgentDropdown :selectedAgentId="hoodAgentId"
+                        @onChangeAgent="onChangeAgent" />
                     </ValidationProvider>
 
 
@@ -100,9 +92,9 @@
                     ></v-text-field>
                     </ValidationProvider>
 
-                    <ValidationProvider name="Rent Roll" rules="cv-phone|length:10"  v-slot="{ errors }">
+                    <ValidationProvider name="Rent Roll" rules="required|numeric"  v-slot="{ errors }">
                         <v-text-field
-                            label="Rent Roll"
+                            label="Rent Roll*"
                             outlined
                             dense
                             v-model="office.rent_roll"
@@ -285,10 +277,12 @@
 <script>
 import OfficeService from "@scripts/services/crm/OfficeService";
 import CreateSuccessfulModal from "@scripts/components/crm/modals/CreateSuccessfulModal";
+import HoodAgentDropdown from "@scripts/components/crm/office/HoodAgentDropdown";
 export default {
   name: "OfficeProfile",
     components: {
         CreateSuccessfulModal,
+        HoodAgentDropdown,
     },
     data() {
       return {
@@ -309,6 +303,7 @@ export default {
               agency_id: null,
               rent_roll: null,
               account_manager: null,
+              hood_agent_id: null,
           },
           commission: {
               gas:null,
@@ -325,13 +320,21 @@ export default {
               email: null,
               f_id_12: null,
               phone: null,
-          }
+          },
+          selectedAgentId: null,
       }
     },
+    computed:{
+        hoodAgentId(){
+            return this.office?.hood_agent_id;
+        }
+    },
     methods:{
+      onChangeAgent(agent){
+          this.office.hood_agent_id = agent.id;
+      },
       async loadOffice() {
           this.data = await OfficeService.loadOfficeById(this.activeOffice);
-          // console.log(this.data);
           await this.syncData();
           // console.log(this.office);
           this.isLoaded = true;
@@ -365,6 +368,8 @@ export default {
             this.office.agency_name = data.agency_name;
             this.office.agency_type = data.agency_type;
             this.office.agency_id = data.agency_id;
+            this.office.rent_roll = data.rent_roll;
+            this.office.hood_agent_id = data.hood_agent_id;
 
         },
 

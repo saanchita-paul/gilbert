@@ -1,0 +1,105 @@
+<template>
+  <v-select
+    v-model="selectedAgent"
+    :items="filteredAgents"
+    item-text="full_name"
+    item-value="id"
+    placeholder="Select Agent"
+    outlined
+    dense
+    hide-details="auto"
+    @change="onChangeAgent"
+  >
+    <template v-slot:prepend-item>
+      <v-list-item ripple>
+        <v-text-field
+          label="Search Agent"
+          outlined
+          dense
+          prepend-inner-icon="mdi-magnify"
+          hide-details="auto"
+          v-model="searchText"
+          @input="changeText"
+        ></v-text-field>
+      </v-list-item>
+      <v-divider class="mt-2"></v-divider>
+    </template>
+  </v-select>
+</template>
+
+<script>
+import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
+import AuthService from "@scripts/services/AuthService";
+
+export default {
+  name: "HoodAgentDropdown",
+  props: {
+    selectedAgentId: {
+      required: false,
+    },
+  },
+  data() {
+    return {
+      agents: [],
+      officeId: null,
+      agentId: null,
+      selectedAgent: null,
+      searchText: null,
+      current_page: 1,
+      itemsPerPage: 15,
+      totalItems: null,
+      currentUserName: "",
+    };
+  },
+  methods: {
+    async loadAgentList() {
+      const meta = {
+        search: this.searchText,
+        per_page: this.itemsPerPage,
+        is_descending: false,
+        sort_by: "",
+      };
+      const data = await AgentApplicationService.loadHoodAgentList(meta);
+      this.agents = data?.agents;
+      this.current_page = data.pagination.current_page;
+      this.itemsPerPage = data.pagination.per_page;
+      this.totalItems = data.pagination.total;
+    },
+    changeText() {
+      this.loadAgentList();
+    },
+    onChangeAgent(agentId) {
+      let agent = this.agents.find((item) => item.id === agentId);
+      let agentName = agent?.full_name;
+      this.$emit("onChangeAgent", { id: agentId, name: agentName });
+    },
+    setDefaultData() {
+      const user = AuthService.getAuthUser();
+      this.agentId = user?.profile?.id;
+      this.officeId = user?.profile?.office?.id;
+      this.currentUserName =
+        user?.profile?.first_name + " " + user?.profile?.last_name;
+    },
+  },
+  mounted() {
+    this.setDefaultData();
+    this.selectedAgent = this.selectedAgentId;
+    this.loadAgentList();
+  },
+  computed: {
+    filteredAgents() {
+      return this.agents;
+    },
+  },
+  watch: {
+    // selectedAgentId: {
+    //   handler() {
+    //     this.selectedAgent = this.selectedAgentId;
+    //   },
+    //   deep: true,
+    // },
+  },
+};
+</script>
+
+<style scoped></style>

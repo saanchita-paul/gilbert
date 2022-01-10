@@ -138,6 +138,7 @@ export default {
     mounted() {
      // this.updateOffice();
      this.updateWithProps();
+     
     },
 
     watch: {
