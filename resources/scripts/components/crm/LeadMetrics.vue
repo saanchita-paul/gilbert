@@ -331,7 +331,6 @@ export default {
           this.loadMetrics();
         },
         clearFilter(){
-            console.log("clear filter")
             this.selectedDate = null;
             this.state = null;
             this.hood_user = null;
@@ -339,6 +338,16 @@ export default {
             this.selectedOffice = null;
             this.agencyFilter.clear();
             this.$router.replace({ query: {} });
+        },
+        fillData(){
+            this.dateRange = {
+                end: this.$route?.query?.end,
+                start: this.$route?.query?.start,
+            }
+            this.state = this.$route?.query?.state;
+            this.hood_user = parseInt(this.$route?.query?.account_manager_id);
+            this.selectedOffice = parseInt(this.$route?.query?.office_id);
+            this.selectedAgency = parseInt(this.$route?.query?.agency_id);
         }
     },
 
@@ -346,7 +355,8 @@ export default {
         selectedAgency() {
             this.loadOffices();
         },
-        dateRange() {
+        dateRange(val) {
+            console.log(val)
             this.checkDate();
             // this.updateDateRange();
         },
@@ -369,6 +379,8 @@ export default {
       await this.loadMetrics();
       await this.loadHooaUser();
       await this.loadAgencies();
+      await this.loadOffices();
+      this.fillData();
     }
 };
 </script>
