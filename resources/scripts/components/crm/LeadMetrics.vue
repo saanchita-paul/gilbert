@@ -204,7 +204,7 @@ import DatePickerModal from "@scripts/modules/sales/components/DatePickerModal";
 import {STATES} from "@scripts/data/constants/STATES";
 import {merge} from "lodash-es";
 import {AgencyFilter} from "@scripts/models/crm/AgencyFilter";
-
+import { isEqual } from 'lodash-es'
 export default {
   name: "LeadMetrics",
     components: {DatePickerModal, SalesFilter},
@@ -324,21 +324,33 @@ export default {
         },
 
         updateRouteParams() {
-            this.$router.replace({ query: {...this.agencyFilter} });
+            let params = { ...this.$route.query, ...this.agencyFilter }
+            if(isEqual(this.$route.query , this.agencyFilter)) return;
+            this.$router.replace({ query: {...params} });
         },
 
         syncQueryParas() {
           this.loadMetrics();
         },
         clearFilter(){
-            console.log("clear filter")
             this.selectedDate = null;
             this.state = null;
             this.hood_user = null;
             this.selectedAgency = null;
             this.selectedOffice = null;
             this.agencyFilter.clear();
+            if(isEqual(this.$route.query , {})) return;
             this.$router.replace({ query: {} });
+        },
+        fillData(){
+            this.dateRange = {
+                end: this.$route?.query?.end,
+                start: this.$route?.query?.start,
+            }
+            this.state = this.$route?.query?.state;
+            this.hood_user = parseInt(this.$route?.query?.account_manager_id);
+            this.selectedOffice = parseInt(this.$route?.query?.office_id);
+            this.selectedAgency = parseInt(this.$route?.query?.agency_id);
         }
     },
 
@@ -346,7 +358,7 @@ export default {
         selectedAgency() {
             this.loadOffices();
         },
-        dateRange() {
+        dateRange(val) {
             this.checkDate();
             // this.updateDateRange();
         },
@@ -369,6 +381,8 @@ export default {
       await this.loadMetrics();
       await this.loadHooaUser();
       await this.loadAgencies();
+      await this.loadOffices();
+      this.fillData();
     }
 };
 </script>
