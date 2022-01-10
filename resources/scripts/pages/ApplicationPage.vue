@@ -159,7 +159,6 @@ export default {
     watch: {
         '$route': {
             handler() {
-                console.log(this.$route.query.name)
                 let reload = this.activeLeadType !== this.$route.query?.type
                     || this.selectedSrc !== this.$route.query?.source;
 
