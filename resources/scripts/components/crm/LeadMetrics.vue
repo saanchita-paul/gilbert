@@ -204,7 +204,7 @@ import DatePickerModal from "@scripts/modules/sales/components/DatePickerModal";
 import {STATES} from "@scripts/data/constants/STATES";
 import {merge} from "lodash-es";
 import {AgencyFilter} from "@scripts/models/crm/AgencyFilter";
-
+import { isEqual } from 'lodash-es'
 export default {
   name: "LeadMetrics",
     components: {DatePickerModal, SalesFilter},
@@ -324,7 +324,9 @@ export default {
         },
 
         updateRouteParams() {
-            this.$router.replace({ query: {...this.agencyFilter} });
+            let params = { ...this.$route.query, ...this.agencyFilter }
+            if(isEqual(this.$route.query , this.agencyFilter)) return;
+            this.$router.replace({ query: {...params} });
         },
 
         syncQueryParas() {
@@ -337,6 +339,7 @@ export default {
             this.selectedAgency = null;
             this.selectedOffice = null;
             this.agencyFilter.clear();
+            if(isEqual(this.$route.query , {})) return;
             this.$router.replace({ query: {} });
         },
         fillData(){
