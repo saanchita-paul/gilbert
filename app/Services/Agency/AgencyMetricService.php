@@ -50,10 +50,6 @@ class AgencyMetricService
             $builder,
             [ConnectionApplication::SOURCE_MAPPING['hood']]
         );
-        $builder = $this->applyDateFilter($builder, 'created_at');
-        $builder = $this->applyStateFilter($builder, 'state');
-        $builder = $this->applyOfficeFilter($builder, 'office_id');
-        $builder = $this->applyAgencyFilter($builder, 'agency_id');
         
         return $builder->count();
     }
@@ -69,10 +65,6 @@ class AgencyMetricService
             ]
         );
         $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_SUBMITTED);
-        $builder = $this->applyDateFilter($builder, 'created_at');
-        $builder = $this->applyStateFilter($builder, 'state');
-        $builder = $this->applyOfficeFilter($builder, 'office_id');
-        $builder = $this->applyAgencyFilter($builder, 'agency_id');
 
         return $builder->count();
     }
@@ -84,10 +76,6 @@ class AgencyMetricService
             $builder,
             [ConnectionApplication::SOURCE_MAPPING['ignite']]
         );
-        $builder = $this->applyDateFilter($builder, 'created_at');
-        $builder = $this->applyStateFilter($builder, 'state');
-        $builder = $this->applyOfficeFilter($builder, 'office_id');
-        $builder = $this->applyAgencyFilter($builder, 'agency_id');
 
         return $builder->count();
     }
@@ -102,10 +90,6 @@ class AgencyMetricService
                 ConnectionApplication::SOURCE_MAPPING['property_me']
             ]
         );
-        $builder = $this->applyDateFilter($builder, 'created_at');
-        $builder = $this->applyStateFilter($builder, 'state');
-        $builder = $this->applyOfficeFilter($builder, 'office_id');
-        $builder = $this->applyAgencyFilter($builder, 'agency_id');
 
         return $builder->count();
     }
@@ -118,10 +102,6 @@ class AgencyMetricService
             [ConnectionApplication::SOURCE_MAPPING['property_me']]
         );
         $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_ACCEPTED);
-        $builder = $this->applyDateFilter($builder, 'created_at');
-        $builder = $this->applyStateFilter($builder, 'state');
-        $builder = $this->applyOfficeFilter($builder, 'office_id');
-        $builder = $this->applyAgencyFilter($builder, 'agency_id');
 
         return $builder->count();
     }
@@ -134,10 +114,6 @@ class AgencyMetricService
             [ConnectionApplication::SOURCE_MAPPING['our-property']]
         );
         $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_ACCEPTED);
-        $builder = $this->applyDateFilter($builder, 'created_at');
-        $builder = $this->applyStateFilter($builder, 'state');
-        $builder = $this->applyOfficeFilter($builder, 'office_id');
-        $builder = $this->applyAgencyFilter($builder, 'agency_id');
 
         return $builder->count();
     }
@@ -146,6 +122,7 @@ class AgencyMetricService
     {
         $builder = AgentProfile::query()
             ->with('user')
+            ->with('office')
             ->whereHas('user', function (Builder $agent) {
                 $agent->where('is_active', 1);
             });
@@ -156,21 +133,30 @@ class AgencyMetricService
                 ->where('created_at', '<=' , $this->endDate);
         }
 
-        if($this->officeId) {
-            $builder = $builder->where('office_id', $this->officeId);
+        if($this->accountManagerId) {
+            $builder = $builder->whereHas('office', function (Builder $builder) {
+                $builder = $builder->where('hood_agent_id', $this->accountManagerId);
+            });
         }
 
-        if($this->agencyId) {
-            $builder = $builder->where('agency_id', $this->agencyId);
-        }
+        $this->officeId && $builder = $builder->where('office_id', $this->officeId);
+        $this->agencyId && $builder = $builder->where('agency_id', $this->agencyId);
 
         return $builder->count();
     }
 
     private function connectionServiceBuilder()
     {
-        return ConnectionService::query()
-            ->with('connectionApplication.createdBy.user');
+        $builder = ConnectionService::query()
+            ->with('connectionApplication.office');
+
+        $builder = $this->applyDateFilter($builder, 'created_at');
+        $builder = $this->applyStateFilter($builder, 'state');
+        $builder = $this->applyAccManagerFilter($builder, 'hood_agent_id');
+        $builder = $this->applyOfficeFilter($builder, 'office_id');
+        $builder = $this->applyAgencyFilter($builder, 'agency_id');
+
+        return $builder;
     }
 
     private function applySourceFilter(Builder $builder, array $source): Builder
@@ -225,6 +211,16 @@ class AgencyMetricService
         if($this->officeId) {
             $builder->whereHas('connectionApplication', function (Builder $builder) use ($column) {
                 $builder = $builder->where($column, $this->officeId);
+            });
+        }
+        return $builder;
+    }
+
+    private function applyAccManagerFilter(Builder $builder, $column): Builder
+    {
+        if($this->accountManagerId) {
+            $builder->whereHas('connectionApplication.office', function (Builder $builder) use ($column) {
+                $builder = $builder->where($column, $this->accountManagerId);
             });
         }
         return $builder;

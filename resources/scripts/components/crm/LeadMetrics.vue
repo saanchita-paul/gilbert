@@ -250,7 +250,6 @@ export default {
       async loadMetrics() {
           const allMetrics = await LeadApplicationService.loadAgencyMetrics(this.agencyFilter);
           this.appMetrics = allMetrics
-          console.log(this.appMetrics);
 
           // const allMetric = await LeadApplicationService.loadMetrics({agency_id: this.agency_id});
           // this.appMetrics = allMetric.mapData;
