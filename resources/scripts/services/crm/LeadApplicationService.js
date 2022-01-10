@@ -28,8 +28,8 @@ export default {
     updateApplicationProviders: (payload, application_id) => LeadApplicationAPI.updateApplicationProviders(payload, application_id),
     closeApplicationWithReason: (id, closing_reason) => LeadApplicationAPI.closeApplicationWithReason(id, closing_reason),
     loadHoodUser: () => LeadApplicationAPI.loadHoodUser(),
-    loadAgencies: () => LeadApplicationAPI.loadAgencies(),
-    loadOffices: (agencyId) => LeadApplicationAPI.loadOffices(agencyId),
+    loadAgencies: (search) => LeadApplicationAPI.loadAgencies(search),
+    loadOffices: (agencyId, search) => LeadApplicationAPI.loadOffices(agencyId, search),
 
     /**
      * Getting minimum valid Connection date

@@ -46,6 +46,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/agencies/{id}', [AgencyController::class, 'getAgency']);
     Route::post('/agencies/{id}/update', [AgencyController::class, 'update']);
     Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
+    // Route::get('/agencies/offices', [OfficeController::class, 'index']);
     Route::post('/agencies/{agencyId}/offices', [OfficeController::class, 'createAgencyOffice']);
 
 
@@ -172,4 +173,6 @@ Route::get("/karan/sales-status", function () {
         }
     return "success";
 });
+
+Route::get('/alloffices', [OfficeController::class, 'allOffices']);
 
