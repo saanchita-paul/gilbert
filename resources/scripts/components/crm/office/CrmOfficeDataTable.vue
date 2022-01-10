@@ -105,6 +105,12 @@ name: "CrmOfficeDataTable",
                     align: 'start',
                     sortable: true,
                     value: 'user_count'
+                },
+                {
+                    text: 'Rent Roll',
+                    align: 'start',
+                    sortable: true,
+                    value: 'rent_roll'
                 }
             ],
             search: '',

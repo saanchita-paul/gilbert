@@ -31,6 +31,7 @@ class OfficeResource extends JsonResource
             'agents_count' => $this->agents_count,
             'applications_count' => $this->applications_count,
             'agency' => $this->agency,
+            'rent_roll' => $this->rent_roll ?? 0
         ];
     }
 }
