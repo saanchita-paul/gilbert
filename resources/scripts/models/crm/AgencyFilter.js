@@ -8,4 +8,13 @@ export class AgencyFilter{
     office_id = null;
     constructor() {}
 
+    clear(){
+        this.start = null;
+        this.end = null;
+        this.state = null;
+        this.account_manager_id = null;
+        this.agency_id = null;
+        this.office_id = null;
+    }
+
 };
