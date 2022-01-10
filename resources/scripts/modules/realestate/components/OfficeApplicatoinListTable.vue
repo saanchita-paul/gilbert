@@ -116,10 +116,10 @@ export default {
                     value: "moving_date"
                 },
                 {
-                    text: "Submission Date",
+                    text: "Creation date",
                     align: "start",
                     sortable: true,
-                    value: "submitted_at"
+                    value: "created_at"
                 },
                 {
                     text: "Created By",
