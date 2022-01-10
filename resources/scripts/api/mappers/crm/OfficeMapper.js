@@ -36,6 +36,9 @@ function mapCommissions (commissions){
             case 4:
                 commission.text = COMMISSION.WATER.text;
                 break;
+            case 5:
+                commission.text = COMMISSION.SPONSORSHIP.text;
+                break;
             default:
                 break;
         }
@@ -122,10 +125,10 @@ export default {
                     type: COMMISSION.POWER.type,
                     rate: commission.power,
                 },
-                {
-                    type: COMMISSION.WATER.type,
-                    rate: commission.water,
-                },
+                // {
+                //     type: COMMISSION.WATER.type,
+                //     rate: commission.water,
+                // },
             {
                 type: COMMISSION.SPONSORSHIP.type,
                 rate: commission.sponsorship,

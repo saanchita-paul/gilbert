@@ -57,7 +57,7 @@
             </ValidationProvider>
 
           <p class="title">SponsorShip</p>
-          <ValidationProvider name="SponsorShip" rules="numeric|max:2|min_value:1|required"  v-slot="{ errors }">
+          <ValidationProvider name="SponsorShip" rules="numeric|required"  v-slot="{ errors }">
             <v-text-field
                 label="Sponsorship per Annum"
                 placeholder="$ 50.00"
