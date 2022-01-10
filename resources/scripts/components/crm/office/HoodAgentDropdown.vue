@@ -60,7 +60,6 @@ export default {
         sort_by: "",
       };
       const data = await AgentApplicationService.loadHoodAgentList(meta);
-      console.log("printing data from ", data);
       this.agents = data?.agents;
       this.current_page = data.pagination.current_page;
       this.itemsPerPage = data.pagination.per_page;
@@ -93,12 +92,12 @@ export default {
     },
   },
   watch: {
-    selectedAgentId: {
-      handler() {
-        this.selectedAgent = this.selectedAgentId;
-      },
-      deep: true,
-    },
+    // selectedAgentId: {
+    //   handler() {
+    //     this.selectedAgent = this.selectedAgentId;
+    //   },
+    //   deep: true,
+    // },
   },
 };
 </script>
