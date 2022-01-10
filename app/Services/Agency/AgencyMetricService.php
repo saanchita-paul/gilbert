@@ -7,12 +7,11 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\AgentProfile;
 use Illuminate\Database\Eloquent\Builder;
-use App\Modules\Reporting\Services\SetDateRage;
+use App\Services\AddressMapperService;
+use Carbon\Carbon;
 
 class AgencyMetricService
 {
-    use SetDateRage;
-
     private $startDate = null;
     private $endDate = null;
     private $state = null;
@@ -28,7 +27,7 @@ class AgencyMetricService
         $this->officeId = empty($request['office_id']) ? null : $request['office_id'];
 
         !empty($request['start']) && !empty($request['end']) &&
-        $this->setDateRange($request['start'], $request['end']);
+        $this->setDateRangeNoTz($request['start'], $request['end']);
     }
 
     public function getAgencyMetrics()
@@ -46,13 +45,99 @@ class AgencyMetricService
 
     private function getTotalApplicationCount()
     {
-        $builder = $this->connectedServiceBuilder();
+        $builder = $this->connectionServiceBuilder();
         $builder = $this->applySourceFilter(
             $builder,
             [ConnectionApplication::SOURCE_MAPPING['hood']]
         );
         $builder = $this->applyDateFilter($builder, 'created_at');
+        $builder = $this->applyStateFilter($builder, 'state');
+        $builder = $this->applyOfficeFilter($builder, 'office_id');
+        $builder = $this->applyAgencyFilter($builder, 'agency_id');
+        
+        return $builder->count();
+    }
 
+    private function getAgentPortalCount()
+    {
+        $builder = $this->connectionServiceBuilder();
+        $builder = $this->applySourceFilter(
+            $builder,
+            [
+                ConnectionApplication::SOURCE_MAPPING['hood'],
+                ConnectionApplication::SOURCE_MAPPING['foxie']
+            ]
+        );
+        $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_SUBMITTED);
+        $builder = $this->applyDateFilter($builder, 'created_at');
+        $builder = $this->applyStateFilter($builder, 'state');
+        $builder = $this->applyOfficeFilter($builder, 'office_id');
+        $builder = $this->applyAgencyFilter($builder, 'agency_id');
+
+        return $builder->count();
+    }
+
+    private function getIgniteApplicationCount()
+    {
+        $builder = $this->connectionServiceBuilder();
+        $builder = $this->applySourceFilter(
+            $builder,
+            [ConnectionApplication::SOURCE_MAPPING['ignite']]
+        );
+        $builder = $this->applyDateFilter($builder, 'created_at');
+        $builder = $this->applyStateFilter($builder, 'state');
+        $builder = $this->applyOfficeFilter($builder, 'office_id');
+        $builder = $this->applyAgencyFilter($builder, 'agency_id');
+
+        return $builder->count();
+    }
+
+    private function getPropertyApplicationCount()
+    {
+        $builder = $this->connectionServiceBuilder();
+        $builder = $this->applySourceFilter(
+            $builder,
+            [
+                ConnectionApplication::SOURCE_MAPPING['our-property'],
+                ConnectionApplication::SOURCE_MAPPING['property_me']
+            ]
+        );
+        $builder = $this->applyDateFilter($builder, 'created_at');
+        $builder = $this->applyStateFilter($builder, 'state');
+        $builder = $this->applyOfficeFilter($builder, 'office_id');
+        $builder = $this->applyAgencyFilter($builder, 'agency_id');
+
+        return $builder->count();
+    }
+
+    private function getConnectedPropertyMeCount()
+    {
+        $builder = $this->connectionServiceBuilder();
+        $builder = $this->applySourceFilter(
+            $builder,
+            [ConnectionApplication::SOURCE_MAPPING['property_me']]
+        );
+        $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_ACCEPTED);
+        $builder = $this->applyDateFilter($builder, 'created_at');
+        $builder = $this->applyStateFilter($builder, 'state');
+        $builder = $this->applyOfficeFilter($builder, 'office_id');
+        $builder = $this->applyAgencyFilter($builder, 'agency_id');
+
+        return $builder->count();
+    }
+
+    private function getConnectedOurPropertyCount()
+    {
+        $builder = $this->connectionServiceBuilder();
+        $builder = $this->applySourceFilter(
+            $builder,
+            [ConnectionApplication::SOURCE_MAPPING['our-property']]
+        );
+        $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_ACCEPTED);
+        $builder = $this->applyDateFilter($builder, 'created_at');
+        $builder = $this->applyStateFilter($builder, 'state');
+        $builder = $this->applyOfficeFilter($builder, 'office_id');
+        $builder = $this->applyAgencyFilter($builder, 'agency_id');
 
         return $builder->count();
     }
@@ -64,81 +149,25 @@ class AgencyMetricService
             ->whereHas('user', function (Builder $agent) {
                 $agent->where('is_active', 1);
             });
-        $builder = $this->applyDateFilter($builder, 'created_at');
+
+        if($this->startDate && $this->endDate) {
+            $builder = $builder
+                ->where('created_at', '>=' , $this->startDate)
+                ->where('created_at', '<=' , $this->endDate);
+        }
+
+        if($this->officeId) {
+            $builder = $builder->where('office_id', $this->officeId);
+        }
+
+        if($this->agencyId) {
+            $builder = $builder->where('agency_id', $this->agencyId);
+        }
 
         return $builder->count();
     }
 
-    private function getAgentPortalCount()
-    {
-        $builder = $this->connectedServiceBuilder();
-        $builder = $this->applySourceFilter(
-            $builder,
-            [
-                ConnectionApplication::SOURCE_MAPPING['hood'],
-                ConnectionApplication::SOURCE_MAPPING['foxie']
-            ]
-        );
-        $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_SUBMITTED);
-        $builder = $this->applyDateFilter($builder, 'created_at');
-
-        return $builder->count();
-    }
-
-    private function getIgniteApplicationCount()
-    {
-        $builder = $this->connectedServiceBuilder();
-        $builder = $this->applySourceFilter(
-            $builder,
-            [ConnectionApplication::SOURCE_MAPPING['ignite']]
-        );
-        $builder = $this->applyDateFilter($builder, 'created_at');
-
-        return $builder->count();
-    }
-
-    private function getPropertyApplicationCount()
-    {
-        $builder = $this->connectedServiceBuilder();
-        $builder = $this->applySourceFilter(
-            $builder,
-            [
-                ConnectionApplication::SOURCE_MAPPING['our-property'],
-                ConnectionApplication::SOURCE_MAPPING['property_me']
-            ]
-        );
-        $builder = $this->applyDateFilter($builder, 'created_at');
-
-        return $builder->count();
-    }
-
-    private function getConnectedPropertyMeCount()
-    {
-        $builder = $this->connectedServiceBuilder();
-        $builder = $this->applySourceFilter(
-            $builder,
-            [ConnectionApplication::SOURCE_MAPPING['property_me']]
-        );
-        $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_ACCEPTED);
-        $builder = $this->applyDateFilter($builder, 'created_at');
-
-        return $builder->count();
-    }
-
-    private function getConnectedOurPropertyCount()
-    {
-        $builder = $this->connectedServiceBuilder();
-        $builder = $this->applySourceFilter(
-            $builder,
-            [ConnectionApplication::SOURCE_MAPPING['our-property']]
-        );
-        $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_ACCEPTED);
-        $builder = $this->applyDateFilter($builder, 'created_at');
-
-        return $builder->count();
-    }
-
-    private function connectedServiceBuilder()
+    private function connectionServiceBuilder()
     {
         return ConnectionService::query()
             ->with('connectionApplication.createdBy.user');
@@ -159,12 +188,55 @@ class AgencyMetricService
     private function applyDateFilter(Builder $builder, $column): Builder
     {
         if($this->startDate && $this->endDate) {
-            $builder = $builder
-                ->where($column, '>=' , $this->startDate)
-                ->where($column, '<=' , $this->endDate);
+            $builder->whereHas('connectionApplication', function (Builder $builder) use ($column) {
+                $builder = $builder
+                    ->where($column, '>=' , $this->startDate)
+                    ->where($column, '<=' , $this->endDate);
+            });
         }
         return $builder;
     }
 
+    private function applyStateFilter(Builder $builder, $column): Builder
+    {
+        if($this->state) {
+            $addressService = new AddressMapperService();
+            $state = $addressService->mapState($this->state);
 
+            $builder->whereHas('connectionApplication', function (Builder $builder) use ($column, $state) {
+                $builder = $builder->where($column, $state);
+            });
+        }
+        return $builder;
+    }
+
+    private function applyAgencyFilter(Builder $builder, $column): Builder
+    {
+        if($this->agencyId) {
+            $builder->whereHas('connectionApplication', function (Builder $builder) use ($column) {
+                $builder = $builder->where($column, $this->agencyId);
+            });
+        }
+        return $builder;
+    }
+
+    private function applyOfficeFilter(Builder $builder, $column): Builder
+    {
+        if($this->officeId) {
+            $builder->whereHas('connectionApplication', function (Builder $builder) use ($column) {
+                $builder = $builder->where($column, $this->officeId);
+            });
+        }
+        return $builder;
+    }
+
+    private function setDateRangeNoTz(string $start, string $end)
+    {
+        $this->startDate = Carbon::parse($start)->toDateTimeString();
+        $this->endDate = Carbon::parse($end)
+            ->addHours(23)
+            ->addMinutes(59)
+            ->addSeconds(59)
+            ->toDateTimeString();
+    }
 }

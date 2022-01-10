@@ -100,8 +100,7 @@ class AgencyController extends Controller
     {
         try {
             $service = new AgencyMetricService($request->toArray());
-            info('fkjsadf',  $request->toArray());
-            return response()->json(['success' => false, 'data' => $service->getAgencyMetrics()]);
+            return response()->json(['success' => true, 'data' => $service->getAgencyMetrics()]);
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
