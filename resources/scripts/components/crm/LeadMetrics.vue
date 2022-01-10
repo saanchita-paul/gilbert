@@ -1,6 +1,6 @@
 <template>
     <div>
-    <v-row>
+    <div class="d-flex justify-space-between">
 <!--      <div class="section-leademetriics">-->
 <!--        <div class="leade-badge" v-for=" appMetric in appMetrics" :key="appMetric.id">-->
 <!--            <h3>{{appMetric.title}}</h3>-->
@@ -12,12 +12,13 @@
 <!--        </div>-->
 <!--      </div>-->
 
-        <v-col cols="3" class="py-0">
+        <div style="flex-basis: 20%;" class="py-0">
             <h3>All Application Metrics</h3>
-        </v-col>
-        <v-col cols="9"  class="py-0">
-           <v-row>
-               <v-col  class="py-0">
+        </div>
+        <div style="flex-basis: 75%;"  class="py-0">
+           <div class="d-flex justify-end" style="flex-wrap: wrap;" >
+            <div class="py-2 mr-2"> <v-btn @click="clearFilter" color="#C0C3C4" small> <v-icon small> mdi-close </v-icon> Reset </v-btn> </div>
+               <div  class="py-0 mr-2" style="flex-basis: 235px;">
                    <v-text-field
                        class='date-select'
                        solo
@@ -27,12 +28,13 @@
                        v-model="selectedDate"
                        append-icon="mdi-calendar-range"
                        readonly
+                       outlined
                        hide-details
                        @click="showDatePickerModal = true"
                        @click:append="showDatePickerModal = true"
                    ></v-text-field>
-               </v-col>
-               <v-col  class="py-0">
+               </div>
+               <div  class="py-0 mr-2" style="flex-basis: 90px;">
                    <v-select
                        class='date-select'
                        solo
@@ -41,16 +43,18 @@
                        v-model="state"
                        @change="changeState"
                        item-text="text"
+                       outlined
                        item-value="text"
                        :items="states"
                        hide-details
                    ></v-select>
-               </v-col>
-               <v-col  class="py-0">
+               </div>
+               <div  class="py-0 mr-2" style="flex-basis: 130px;">
                    <v-select
                        class='date-select'
                        solo
                        dense
+                       outlined
                        label="Acct Manager HOOD"
                        v-model="hood_user"
                        :items="hood_users"
@@ -59,8 +63,8 @@
                        item-value="id"
                        hide-details
                    ></v-select>
-               </v-col>
-               <v-col  class="py-0">
+               </div>
+               <div  class="py-0 mr-2" style="flex-basis: 130px;">
                    <v-select
                        v-model="selectedAgency"
                        :items="agencies"
@@ -87,8 +91,8 @@
                            <v-divider class="mt-2"></v-divider>
                        </template>
                    </v-select>
-               </v-col>
-               <v-col  class="py-0">
+               </div>
+               <div  class="py-0 mr-1" style="flex-basis: 130px;">
                    <v-select
                        v-model="selectedOffice"
                        :items="offices"
@@ -115,12 +119,12 @@
                            <v-divider class="mt-2"></v-divider>
                        </template>
                    </v-select>
-               </v-col>
-           </v-row>
-        </v-col>
+               </div>
+           </div>
+        </div>
 
 
-    </v-row>
+    </div>
         <v-row class="my-4">
             <v-col cols="2">
                 <div class="font-weight-bold text-center py-2 count_font">
@@ -261,10 +265,10 @@ export default {
 
         },
         async loadAgencies() {
-            this.agencies = await LeadApplicationService.loadAgencies();
+            this.agencies = await LeadApplicationService.loadAgencies(this.search_agency);
         },
         async loadOffices() {
-            this.offices = await LeadApplicationService.loadOffices(this.selectedAgency);
+            this.offices = await LeadApplicationService.loadOffices(this.selectedAgency, this.search_office);
         },
         updateDate(dateRange) {
             this.dateRange = dateRange;
@@ -326,6 +330,16 @@ export default {
 
         syncQueryParas() {
           this.loadMetrics();
+        },
+        clearFilter(){
+            console.log("clear filter")
+            this.selectedDate = null;
+            this.state = null;
+            this.hood_user = null;
+            this.selectedAgency = null;
+            this.selectedOffice = null;
+            this.agencyFilter.clear();
+            this.$router.replace({ query: {} });
         }
     },
 
@@ -341,6 +355,12 @@ export default {
             handler() {
                 this.syncQueryParas();
             }
+        },
+        search_agency(){
+            this.loadAgencies();
+        },
+        search_office(){
+            this.loadOffices();
         },
 
     },

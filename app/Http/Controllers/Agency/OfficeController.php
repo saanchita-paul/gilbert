@@ -41,6 +41,25 @@ class OfficeController extends Controller
     }
 
     /**
+     * Getting Office List for an agency
+     *
+     * @param Request $request
+     * @param int $agencyId
+     *
+     * @return AnonymousResourceCollection|JsonResponse
+     */
+    public function allOffices(Request $request): AnonymousResourceCollection | JsonResponse
+    {
+        try {
+            $service = new SearchOfficeService($request->toArray());
+            return OfficeResource::collection($service->get());
+
+        } catch ( \Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    /**
      * Creating new Office inside Agency
      *
      * @param Request $request

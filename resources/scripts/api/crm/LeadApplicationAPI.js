@@ -453,18 +453,24 @@ export default {
         }
     },
 
-    async loadAgencies() {
+    async loadAgencies(search) {
         try {
-            const data = await axios.get('/api/agencies');
+            const data = await axios.get('/api/agencies', { params: { search } });
             return data?.data?.data;
 
         } catch (error) {
             return error.data;
         }
     },
-    async loadOffices(agencyId) {
+    async loadOffices(agencyId, search = null) {
         try {
-            const data = await axios.get('/api/agencies/' + agencyId + '/offices');
+            let data = "";
+            if(agencyId){
+                data = await axios.get('/api/agencies/' + agencyId + '/offices');
+            }else{
+                data = await axios.get('/api/alloffices' , { params: { search } });
+            }
+
             return data?.data?.data;
 
         } catch (error) {
