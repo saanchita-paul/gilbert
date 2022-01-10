@@ -335,7 +335,6 @@ export default {
       },
       async loadOffice() {
           this.data = await OfficeService.loadOfficeById(this.activeOffice);
-          console.log("office data" , this.data);
           await this.syncData();
           // console.log(this.office);
           this.isLoaded = true;
