@@ -90,28 +90,40 @@ name: "CrmAgencyDataTable",
             options: {},
             headers:  [
                 {
-                text: ' Agency name',
+                text: ' Agency',
                 align: 'start',
                 sortable: true,
                 value: 'title'
                 },
                 {
                     text: 'Applications',
-                    align: 'start',
+                    align: 'center',
                     sortable: true,
                     value: 'total_leads'
                 },
                 {
-                    text: 'Last updated',
+                    text: 'Last Application',
                     align: 'start',
                     sortable: true,
-                    value: 'last_updated'
+                    value: 'last_application'
                 },
                 {
-                    text: 'Offices',
-                    align: 'start',
-                    sortable: true,
-                    value: 'offices'
+                    text: 'CVR%',
+                    align: 'center',
+                    sortable: false,
+                    value: 'conversion_rate'
+                },
+                {
+                    text: 'Active Users',
+                    align: 'center',
+                    sortable: false,
+                    value: 'active_user_count'
+                },
+                {
+                    text: 'Rent Roll',
+                    align: 'center',
+                    sortable: false,
+                    value: 'rent_roll_count'
                 }
             ],
             search: '',

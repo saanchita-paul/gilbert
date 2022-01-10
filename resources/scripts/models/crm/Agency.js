@@ -8,7 +8,11 @@ export default class Agency {
                     applications_count = 0,
                     updated_at = '',
                     offices_count = 0,
-                    type = null
+                    type = null,
+                    last_application = null,
+                    conversion_rate = 0,
+                    active_user_count = 0,
+                    rent_roll_count = 0,
                 }) {
         this.id = id;
         this.title = name;
@@ -16,5 +20,9 @@ export default class Agency {
         this.last_updated = updated_at? new DayJs(updated_at).format(DATE_FORMAT.REAL_ESTATE_FORMAT) : null;
         this.offices = offices_count;
         this.type = type;
+        this.last_application = last_application? new DayJs(last_application).format(DATE_FORMAT.REAL_ESTATE_FORMAT) : null;
+        this.conversion_rate = conversion_rate+'%';
+        this.active_user_count = active_user_count;
+        this.rent_roll_count = rent_roll_count;
     }
 }
