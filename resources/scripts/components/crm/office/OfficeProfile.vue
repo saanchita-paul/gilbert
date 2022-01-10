@@ -63,7 +63,7 @@
                     </ValidationProvider>
 
                     <ValidationProvider name="Office Account Manager"  v-slot="{ errors }">
-                       <HoodAgentDropdown :selectedAgentId="selectedAgentId"
+                       <HoodAgentDropdown :selectedAgentId="hoodAgentId"
                         @onChangeAgent="onChangeAgent" />
                     </ValidationProvider>
 
@@ -324,14 +324,18 @@ export default {
           selectedAgentId: null,
       }
     },
+    computed:{
+        hoodAgentId(){
+            return this.office?.hood_agent_id;
+        }
+    },
     methods:{
-      onChangeAgent(id){
-          this.office.hood_agent_id = id;
+      onChangeAgent(agent){
+          this.office.hood_agent_id = agent.id;
       },
       async loadOffice() {
           this.data = await OfficeService.loadOfficeById(this.activeOffice);
           console.log("office data" , this.data);
-
           await this.syncData();
           // console.log(this.office);
           this.isLoaded = true;

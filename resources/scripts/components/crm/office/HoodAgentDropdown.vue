@@ -93,12 +93,12 @@ export default {
     },
   },
   watch: {
-    selectedAgentId: {
-      handler() {
-        this.selectedAgent = this.selectedAgentId;
-      },
-      deep: true,
-    },
+    // selectedAgentId: {
+    //   handler() {
+    //     this.selectedAgent = this.selectedAgentId;
+    //   },
+    //   deep: true,
+    // },
   },
 };
 </script>
