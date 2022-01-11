@@ -73,17 +73,11 @@ class SearchAgencyService
 
     public function getActiveUserCount(int $agencyId): int
     {
-        $count = 0;
-        $agentProfiles = AgentProfile::where('agency_id', $agencyId)->get();
-
-        foreach ($agentProfiles as $agentProfile) {
-            $userCount = User::where('profile_id', $agentProfile->id)
-                ->where('profile_type', 'App\\Models\\AgentProfile')
-                ->where('is_active', 1)
-                ->count();
-            $count = $count + $userCount;
-        }
-        return $count;
+        $agentProfiles = AgentProfile::where('agency_id', $agencyId)->pluck('id');
+        return User::whereIn('profile_id', $agentProfiles)
+            ->where('profile_type', 'App\\Models\\AgentProfile')
+            ->where('is_active', 1)
+            ->count();
     }
 
     public function getRentRollCount(int $agencyId): int
