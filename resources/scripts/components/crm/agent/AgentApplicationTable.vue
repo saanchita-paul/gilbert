@@ -5,7 +5,8 @@
                 <v-btn
                     class="ma-2"
                     outlined
-                    color="indigo"
+                    color="#542E89"
+                    style="background: white;"
                     @click="advanceSearchDialog">
                         Advanced Search
                     </v-btn>
