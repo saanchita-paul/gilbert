@@ -26,8 +26,7 @@ class AuthUserDetails
                 $user->toArray(),
                 $this->getUserRolesAndPermissions($user),
                 $this->getOfficeDetails($user),
-                $this->getProfileDetails($user),
-                ['pm_connected' => \Cache::get('pm_connected')]
+                $this->getProfileDetails($user)
             ),
             'bot_access_token' => $this->getBotAuthKey($user),
         ];

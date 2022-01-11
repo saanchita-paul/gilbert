@@ -13,7 +13,7 @@ export default {
         const res = (await axios.get('/api/user')).data;
         axios.defaults.headers.common['Bot-Access-Token'] = res.bot_access_token;
 
-        return {... new User({
+        return new User({
             id: res?.user.id,
             name: res?.user.name,
             email: res?.user.email,
@@ -22,7 +22,7 @@ export default {
             profile: res?.user.profile,
             profile_type: res?.user.profile_type,
             is_active: res?.user.is_active,
-        }), ... {pm_connected: res?.user.pm_connected}};
+        });
     },
 
     checkBotAuth: () => {
