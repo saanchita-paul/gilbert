@@ -286,6 +286,14 @@ class ConnectionApplication extends Model
         self::PLAN_TYPE_SUMO_SELECT => 9
     ];
 
+    const SOURCE_NAME_MAPPING = [
+        self::SOURCE_HOOD => 'Hood',
+        self::SOURCE_FOXIE => 'Foxie',
+        self::SOURCE_IGNITE => 'Ignite',
+        self::SOURCE_OUR_PROPERTY => 'Ourproperty',
+        self::SOURCE_PROPERTY_ME => 'Propertyme'
+    ];
+
     const PLAN_TYPE_REVERSE_MAPPER = [
         self::PLAN_TYPE_TOTAL_INDEX => self::PLAN_TYPE_TOTAL,
         self::PLAN_TYPE_BASIC_INDEX => self::PLAN_TYPE_BASIC,
@@ -435,6 +443,18 @@ class ConnectionApplication extends Model
         };
     }
 
+    public function getAgentName()
+    {
+        return match ($this->source) {
+            ConnectionApplication::SOURCE_HOOD => $this->createdBy?->first_name.' '. $this->createdBy?->last_name,
+            ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agent_name,
+            ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agent_name,
+            ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agent_name,
+            ConnectionApplication::SOURCE_PROPERTY_ME => $this->propertyMeLead?->agent_name,
+            default => ''
+        };
+    }
+
     /**
      * @return BelongsTo
      */
@@ -442,7 +462,5 @@ class ConnectionApplication extends Model
     {
         return $this->belongsTo(User::class, 'submitted_by');
     }
-
-
 
 }
