@@ -50,6 +50,12 @@ export const authUser = async () => {
 }
 
 /**
+ *
+ * @return {Office | null}
+ */
+export const getUserOffice = () => Store.getters.user?.profile?.office
+
+/**
  * route authentication middleware
  *
  * @param to
@@ -149,6 +155,7 @@ export default {
     setBreadcrumbs,
     isUniqueEmail,
     getRoles,
+    getUserOffice
 }
 
 

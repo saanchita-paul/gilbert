@@ -6,8 +6,11 @@
                     <h3 v-if="user" class="page-title">Hi {{ user.profile.first_name }}, <small class="font-weight">here is a
                         summary of your applications.</small>
                     </h3>
-                    <span v-if="!pm_connected" style="float: right; margin-top: -10px">
+                    <span v-if="!pm_connected" class="link-prop">
                         <v-btn @click="onLinkPropertyMe" small>🔗 Link PropertyMe</v-btn>
+                    </span>
+                    <span v-else class="link-prop">
+                        <v-btn class="linked" disabled x-small>🔗 PropertyMe is linked</v-btn>
                     </span>
                     <AgentLeadMetrics></AgentLeadMetrics>
                 </v-card>
@@ -88,7 +91,10 @@ export default {
 
     computed: {
         pm_connected() {
-            return AuthService.getAuthUser()?.pm_connected
+            return !! this.office?.property_me_refresh_token
+        },
+        office() {
+            return AuthService.getUserOffice();
         }
     },
 
@@ -120,7 +126,7 @@ export default {
             this.getApplicationList();
         },
         onLinkPropertyMe() {
-            window.location = '/property-me/authorize';
+            window.location = `/property-me/authorize?office_id=${this.office?.id}`;
         },
         dismiss() {
             this.dialog = false;
@@ -143,6 +149,10 @@ export default {
 <style scoped>
 .row-pointer >>> tbody tr :hover {
     cursor: pointer;
+}
+.link-prop {
+    float: right;
+    margin-top: -10px
 }
 
 .intro-message {

@@ -2,6 +2,7 @@
 
 namespace App\Modules\PropertyMe\Commands;
 
+use App\Models\Office;
 use App\Modules\PropertyMe\Services\SaveToConnectionApplication;
 use Illuminate\Console\Command;
 use PropertyMe\Services\FetchContacts;
@@ -39,8 +40,24 @@ class SavePropertyMeLeadsCommand extends Command
      */
     public function handle()
     {
-        $pm = new FetchContacts();
+        $likedOffice = Office::query()
+            ->whereNotNull('property_me_refresh_token')
+            ->pluck('property_me_refresh_token')
+            ->toArray();
+
+        foreach ($likedOffice as $refreshToken) {
+            $this->saveLead($refreshToken);
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function saveLead(string $refreshToken): void
+    {
+        $pm = new FetchContacts($refreshToken);
         $leads = $pm->fetchContacts()->createLead()->getSavedLeads();
+
         $this->info("New Lead: " . sizeof($leads));
 
         $saveService = new SaveToConnectionApplication();
