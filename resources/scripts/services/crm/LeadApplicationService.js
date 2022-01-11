@@ -8,7 +8,7 @@ import {
 export default {
     loadMetrics: (data) => LeadApplicationAPI.getMetrics(data),
     loadUserLeadMetrics: () => LeadApplicationAPI.getUserLeadMetrics(),
-    loadUserLeads: (sort_search_meta, active_lead_type, src = 'hood') => LeadApplicationAPI.getUserLeads(sort_search_meta, active_lead_type, src),
+    loadUserLeads: (sort_search_meta, active_lead_type, src = 'hood' , params) => LeadApplicationAPI.getUserLeads(sort_search_meta, active_lead_type, src , params),
     loadUserLead: (id) => LeadApplicationAPI.getUserLead(id),
     closeApplication: (id) => LeadApplicationAPI.closeApplication(id),
     loadPlan: (serviceProvider) => LeadApplicationAPI.getPlan(serviceProvider),
@@ -36,6 +36,7 @@ export default {
         date.setDate(date.getDate());
         return date.toISOString()
     },
+    updateConnecitionEndNullDate: (leadId)=>LeadApplicationAPI.updateConnecitionEndNullDate(leadId),
 
     /**
      * checking if we can submit energy
@@ -72,10 +73,12 @@ export default {
     canSubmitWater: services => {
         let water = services.find(service => service.service_type === 'water');
         if (water) {
-            return services.some(service => STATUSES_FOR_WATER_SUBMIT.includes(service.status) && service.service_type === water)
+            return services.some(service => STATUSES_FOR_WATER_SUBMIT.includes(service.status) && service.service_type === 'water')
         }
         return true;
     },
+
+    getServiceObj: (services, type) => services.find(svc => svc.service_type === type?.toLowerCase()),
 
     /**
      *
@@ -91,6 +94,7 @@ export default {
                 return {text: 'Not Submitted', color: 'black'};
             case connectionServicesMapper.STATUS_ACCEPTED:
                 return {text: 'Accepted', color: 'green'};
+            case connectionServicesMapper.STATUS_SUBMITTED:
             case connectionServicesMapper.STATUS_EA_SUBMIT:
                 return {text: 'In Progress', color: 'green'};
             case connectionServicesMapper.STATUS_AC_MANUAL_PROCESSING:
@@ -100,7 +104,7 @@ export default {
                 return {text: "Rejected", color: 'red'};
             default:
                 return {
-                    text: 'Unknown Status',
+                    text: 'Not Selected',
                     color: 'black'
                 };
         }

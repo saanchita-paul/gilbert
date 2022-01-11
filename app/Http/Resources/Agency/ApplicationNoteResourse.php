@@ -24,6 +24,8 @@ class ApplicationNoteResourse extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'user_role' => $this->user_role,
+            'leads' => json_decode($this->connection_details),
+            'plans' => json_decode($this->plan_details)
         ];
     }
 }

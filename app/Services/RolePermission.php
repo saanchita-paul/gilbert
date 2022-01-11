@@ -8,6 +8,9 @@ class RolePermission {
     const ROLE_HOOD_TEAM_LEAD = 'hood_team_lead';
     const ROLE_HOOD_CUSTOMER_REP= 'hood_customer_rep';
 
+    const ROLE_EXTERNAL_HOOD_TEAM_LEAD = 'hood_external_team_lead';
+    const ROLE_EXTERNAL_HOOD_CUSTOMER_REP= 'hood_external_customer_rep';
+
     const ROLE_AGENCY_AGENT = 'agency_agent';
     const ROLE_AGENCY_OFFICE_ALLOCATOR = 'agency_office_allocator';
     const ROLE_AGENCY_OFFICE_ADMIN = 'agency_office_admin';
@@ -27,6 +30,9 @@ class RolePermission {
     const P_HOOD_TEAM_LEAD_CORE = 'hood_team_lead_core';
     const P_HOOD_CUSTOMER_REP_CORE = 'hood_customer_rep_core';
 
+    const P_HOOD_EXTERNAL_TEAM_LEAD_CORE = 'hood_external_team_lead_core';
+    const P_HOOD_EXTERNAL_CUSTOMER_REP_CORE = 'hood_external_customer_rep_core';
+
     const P_AGENCY_AGENT_CORE = 'agency_agent_core';
     const P_AGENCY_AGENT_OFFICE_ALLOCATOR_CORE = 'agency_office_allocator_core';
     const P_CAN_CREATE_APPLICATION = 'can_create_application';
@@ -38,4 +44,6 @@ class RolePermission {
 
     const P_CAN_MANAGE_APPLICATION = 'can_manage_application';
     const P_CAN_MANAGE_AGENCY = 'can_manage_agency';
+
+    const P_ACCESS_SALES_DASHBOARD = 'can_access_sales_dashboard';
 }

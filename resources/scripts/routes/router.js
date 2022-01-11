@@ -29,6 +29,11 @@ import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/Appl
 import ApplicationDetailsPage from "@scripts/pages/ApplicationDetailsPage";
 import OfficeProfile from "@scripts/components/crm/office/OfficeProfile";
 import InviteUser from "@scripts/components/crm/user/InviteUser";
+import ApplicationsDashboardPage from "@scripts/modules/sales/pages/ApplicationsDashboardPage";
+import SalesEnergyPage from "@scripts/modules/sales/pages/SalesEnergyPage";
+import SalesWaterPage from "@scripts/modules/sales/pages/SalesWaterPage";
+import ApplicationSearchList from '@scripts/pages/ApplicationSearchList'
+
 
 Vue.use(VueRouter);
 
@@ -118,7 +123,7 @@ const router = new VueRouter({
 
                         },
                         {
-                            path: ':id/offices/:officeId/users',
+                            path: ':id/offices/:officeId',
                             component: CrmUserDatatable,
                             name: 'real.state.agency.users',
                             meta: {
@@ -162,10 +167,35 @@ const router = new VueRouter({
                     path: '/applications',
                     component: ApplicationPage,
                     name: 'applications',
+                    children:[
+                        {
+                            path: '',
+                            name: 'application.list',
+                            component: ApplicationSearchList,
+                            meta: {
+                                isProtected: true,
+                                breadcrumbType: 'LeadApplications',
+                                roles: [
+                                    'hood_admin',
+                                    'hood_team_lead',
+                                    'hood_customer_rep',
+                                    'hood_external_team_lead',
+                                    'hood_external_customer_rep'
+                                ],
+                            },
+                            props: true
+                        },
+                    ],
                     meta: {
                         isProtected: true,
                         breadcrumbType: 'LeadApplications',
-                        roles: ['hood_admin', 'hood_team_lead', 'hood_customer_rep'],
+                        roles: [
+                            'hood_admin',
+                            'hood_team_lead',
+                            'hood_customer_rep',
+                            'hood_external_team_lead',
+                            'hood_external_customer_rep'
+                        ],
                     }
                 },
                 {
@@ -175,10 +205,63 @@ const router = new VueRouter({
                     meta: {
                         isProtected: true,
                         breadcrumbType: 'ApplicationsDetails',
-                        roles: ['hood_admin', 'hood_team_lead', 'hood_customer_rep'],
+                        roles: [
+                            'hood_admin',
+                            'hood_team_lead',
+                            'hood_customer_rep',
+                            'hood_external_team_lead',
+                            'hood_external_customer_rep'
+                        ],
                     }
-                }
+                },
+                {
+                    path: 'applications-dashboard',
+                    component: ApplicationsDashboardPage,
+                    name: 'applications.dashboard',
+                    children: [
+                        {
+                            path: 'energy',
+                            component: SalesEnergyPage,
+                            name: 'sales.energy',
+                            meta: {
+                                isProtected: true,
+                                breadcrumbType: 'SalesEnergy',
+                                roles: [
+                                    'hood_admin',
+                                    'hood_agent',
+                                    'hood_customer_rep',
+                                    'hood_team_lead'
+                                ],
 
+                            }
+                        },
+                        {
+                            path: 'water',
+                            component: SalesWaterPage,
+                            name: 'sales.water',
+                            meta: {
+                                isProtected: true,
+                                breadcrumbType: 'SalesWater',
+                                roles: [
+                                    'hood_admin',
+                                    'hood_agent',
+                                    'hood_customer_rep',
+                                    'hood_team_lead'
+                                ],
+                            },
+                            props: true
+                        }
+                    ],
+                    meta: {
+                        isProtected: true,
+                        roles: [
+                            'hood_admin',
+                            'hood_agent',
+                            'hood_customer_rep',
+                            'hood_team_lead'
+                        ],
+                    }
+                },
             ]
         },
         {

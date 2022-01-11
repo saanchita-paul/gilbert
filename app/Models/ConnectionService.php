@@ -44,13 +44,13 @@ class ConnectionService extends Model
     const STATUS_ACCEPTED = 5;
     const STATUS_REJECTED = 6;
     const STATUS_EA_PROCESSINF = 7; //todo: rename this constant to STATUS_NOT_SUBMITTED
-    const STATUS_EA_SUBMIT = 12;
+    const STATUS_ENERGY_SUBMIT = 12;
     const STATUS_CLOSED = 8;
     const STATUS_CANT_CONNECT = 9;
     const STATUS_NEEDS_MORE_INFO = 10;
     const AC_MANUAL_PROCESSING = 11;
 
-    const WATER_STATUS_IN_PROGRESS = 7;
+    const WATER_STATUS_IN_PROGRESS = 7; // initial status
     const WATER_STATUS_NEED_INFO = 10;
     const WATER_STATUS_SUBMITTED = 4;
     const WATER_STATUS_CONNECTED = 5;
@@ -68,7 +68,7 @@ class ConnectionService extends Model
         self::STATUS_ACCEPTED =>'accepted',
         self::STATUS_REJECTED => 'rejected',
         self::STATUS_EA_PROCESSINF => 'processing',
-        self::STATUS_EA_SUBMIT => 'processing',
+        self::STATUS_ENERGY_SUBMIT => 'processing',
         self::STATUS_CLOSED => 'closed',
         self::STATUS_CANT_CONNECT => 'can\'t_connect',
         self::STATUS_NEEDS_MORE_INFO => 'need_more_info',

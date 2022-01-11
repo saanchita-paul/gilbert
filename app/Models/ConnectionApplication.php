@@ -177,7 +177,9 @@ class ConnectionApplication extends Model
         'is_contacted',
         'is_auto_water_submit',
         'water_submit_response',
-        'source'
+        'source',
+        'connection_end_date',
+        'is_temporary_connection',
     ];
 
 
@@ -372,6 +374,7 @@ class ConnectionApplication extends Model
     {
         return $this->hasOne(OurProperty::class, 'connection_application_id');
     }
+
     public function propertyMeLead()
     {
         return $this->hasOne(PropertyMeLead::class , 'connection_application_id');
@@ -431,5 +434,15 @@ class ConnectionApplication extends Model
             default => ''
         };
     }
+
+    /**
+     * @return BelongsTo
+     */
+    public function submittedByUser()
+    {
+        return $this->belongsTo(User::class, 'submitted_by');
+    }
+
+
 
 }

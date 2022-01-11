@@ -114,9 +114,6 @@
                 <p class="mb-2">Expires on {{identification_expire_data}}</p>
             </v-col>
 
-
-
-
         </v-row>
 
         <div class="pt-5">
@@ -271,7 +268,7 @@ export default {
 
         },
         date_of_birth() {
-            return dayJs(this.application.date_of_birth,'yyyy-dd-mm').format(DATE_FORMAT.DB_DATE);
+          return dayJs(dayJs(this.application.date_of_birth,'YYYY-MM-DD').format('DD/MM/YYYY')).isValid() ? dayJs(this.application.date_of_birth,'YYYY-MM-DD').format('DD/MM/YYYY') : null;
         },
 
         moving_date() {
@@ -313,10 +310,6 @@ export default {
                 status[0].toUpperCase() + status.slice(1);
         }
     },
-
-    mounted() {
-
-    }
 };
 </script>
 

@@ -11,9 +11,9 @@
                         </span>
                         <span>
                             {{leadSummary.applicant_name}}
-                            <div style="margin-left:30px; margin-top: -10px;">
+                            <span style="margin-left:30px; margin-top: -10px;">
                                 <IdCopyToClipboard :applicationId="leadSummary.id"/>
-                            </div>
+                            </span>
                         </span>
                     </p>
 
@@ -105,8 +105,9 @@
 <script>
 import { leadSourceMap } from '@scripts/data/LeadSourceMap'
 import { connectionApplicationMapper } from '@scripts/data/ConnectionApplicationMapper';
-import IdCopyToClipboard from '@scripts/components/common/IdCopyToClipboard.vue';
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import IdCopyToClipboard from '@scripts/components/common/IdCopyToClipboard.vue';
+import leadApplicationService from "@scripts/services/crm/LeadApplicationService";
 export default {
 name: "LeadDetailsHeader",
     components:{ IdCopyToClipboard },
@@ -175,16 +176,7 @@ name: "LeadDetailsHeader",
             return 'grey lighten-1';
         },
         getServiceStatus(conn_ser) {
-            let service = this.leadSummary.connection_services.find((svc)=>{
-                return svc.service_type === conn_ser;
-            })
-            if(service) {
-                return this.mapConnectionStatus(service.status);
-            }
-            return {
-                text: 'Not Selected',
-                color: 'black',
-            };
+            return LeadApplicationService.mapStatus(leadApplicationService.getServiceObj(this.leadSummary.connection_services, conn_ser)?.status);
         },
         mapConnectionStatus(status) {
             // return ['unassigned','assigned', 'escalated'].includes(status)?'In Progress':

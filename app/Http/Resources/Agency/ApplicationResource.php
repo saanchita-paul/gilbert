@@ -4,6 +4,7 @@ namespace App\Http\Resources\Agency;
 
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -72,16 +73,22 @@ class ApplicationResource extends JsonResource
             'billing_postcode' => $this->billing_postcode,
             'is_billing_same' => $this->is_billing_same,
             'is_contacted' => $this->is_contacted,
-            'authorizedPersonName' =>$this->getAuthoizedPersonName(),
+            'is_auto_water_submit' => $this->is_auto_water_submit,
+            'fast_connect_customer_reference' => $this->fast_connect_customer_reference,
+            'authorizedPersonName' => $this->getAuthoizedPersonName(),
             'agent_name' => $this->getAgentName(),
             'agency_office' => $this->getAgencyName(),
             'lead_source' => $this->SugerLead?->foxie_lead_source,
             'lead_source_description' => $this->SugerLead?->foxie_lead_source_description,
             'source' => $this->source,
             'plan_type' => $this->mapPlan($this->plan_type),
+            'is_temporary_connection' => $this->is_temporary_connection,
+            'connection_end_date' => $this->connection_end_date,
 
             #todo: set timezone dynamically based on daylight saving
             'created_at' => (new Carbon($this->created_at, '11'))->format('d/m/Y h:m a'),
+            'submitted_by' => $this->submittedBy(),
+            'submitted_at' => $this->submittedAt(),
         ];
     }
 
@@ -105,22 +112,19 @@ class ApplicationResource extends JsonResource
                 $newService = [];
 
                 foreach ($service as $svc) {
-                    if(empty($svc->status)) {
+                    if (empty($svc->status)) {
                         $svc->status = ConnectionService::STATUS_UNASSIGNED;
                     }
                     $svc->statusText = ConnectionService::STATUS_MAPPING[$svc->status];
                     $newService[] = $svc;
-
                 }
                 return $newService;
             }
             return [];
-        } catch (\Exception $e)
-        {
-            \Log::info($e->getMessage() );
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
             return [];
         }
-
     }
 
     private function getAgentName()
@@ -152,18 +156,28 @@ class ApplicationResource extends JsonResource
 
         if($this->authorizedPerson)
         {
-            $fullName = "{$this->authorizedPerson->first_name} {$this->authorizedPerson->middle_name} {$this->authorizedPerson->last_name}";
+            $fullName = "{$this->authorizedPerson->title} {$this->authorizedPerson->first_name} {$this->authorizedPerson->middle_name} {$this->authorizedPerson->last_name}";
             if(empty(trim($fullName))) return null;
             return $fullName;
         }
         return null;
     }
 
-    private function mapPlan($plan) {
-        if(!empty($plan)) {
+    private function mapPlan($plan)
+    {
+        if (!empty($plan)) {
             return ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
         }
         return 'total_plan';
+    }
 
+    private function submittedBy(){
+
+        $fullName = $this->submittedByUser?->profile?->first_name .' '. $this->submittedByUser?->profile?->last_name;
+        return trim($fullName);
+    }
+
+    private function submittedAt(){
+        return $this->connectionServices?->pluck('submitted_at')?->sort()?->first();
     }
 }

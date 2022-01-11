@@ -8,12 +8,15 @@ use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use App\Models\Identification;
 use App\Models\User;
+use App\Models\HoodProfile;
+use App\Services\RolePermission;
 use App\Services\Agency\CreateOfficeAndAgency;
 use App\Services\Sales\PostSalesService;
 use Exception;
 use Illuminate\Console\Application;
 use JetBrains\PhpStorm\ArrayShape;
 use function PHPUnit\Framework\isNull;
+use TSA\Services\TsaSendAppliationService;
 
 class ApplicationService
 {
@@ -126,6 +129,10 @@ class ApplicationService
             ->where('id', $applicationId)
             ->update(['assigned_to' => $agentId, 'status' => ConnectionApplication::STATUS_ASSIGNED]);
 
+        if (in_array(HoodProfile::find($agentId)->user->roles->first()?->name,
+            [RolePermission::ROLE_EXTERNAL_HOOD_TEAM_LEAD])) {
+            (new TsaSendAppliationService($applicationId))->sendApplication();
+        }
         return $this->findApplications($applicationId);
     }
 
@@ -236,6 +243,8 @@ class ApplicationService
 
         $this->setSubmittedAtByServiceType($id, $submitType, $lead['service_interests']);
 
+        $noteService = new SubmittedLeadNote($existLead);
+        $noteService->addSubmittedNote();
         return $existLead;
     }
 
@@ -307,7 +316,6 @@ class ApplicationService
         $eacalateNote['type'] = 'Escalated';
 
         $allicationNoteService->createNotes($eacalateNote, $applicationId);
-
         return $existingApplication;
     }
 
@@ -453,6 +461,5 @@ class ApplicationService
             }
         }
     }
-
 
 }

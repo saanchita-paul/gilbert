@@ -107,7 +107,7 @@
 
         <v-btn block class="my-4" color="primary" @click="goToLeadDetails(lead.id)">View Application Details</v-btn>
 
-        <p class="sub-title mt-4 mb-2">Property  Details</p>
+        <p class="sub-title mt-4 mb-2">Property Details</p>
 <!--        <table  class="application-info">-->
 <!--            <tr>-->
 <!--                <td class="font-weight-bold">Tenancy Type:</td>-->
@@ -126,6 +126,12 @@
            </v-col>
            <v-col cols="7" class="py-0 my-0">
                <p>{{lead.tenancy_type == 1? 'Renter': 'Owner'}}</p>
+           </v-col>
+           <v-col cols="5" class="py-0 my-0" v-if="lead.is_temporary_connection">
+               <p class="font-weight-bold">Connection Type:</p>
+           </v-col>
+           <v-col cols="7" class="py-0 my-0" v-if="lead.is_temporary_connection">
+               <p>Temporary Connection</p>
            </v-col>
            <v-col cols="5" class="py-0 my-0">
                <p class="font-weight-bold">Service Address:</p>
@@ -277,7 +283,7 @@ export default {
           return leadSourceMap;
       },
       date_of_birth() {
-          return dayJs(this.lead.date_of_birth,'YYYY-MM-DD').format('DD/MM/YYYY');
+          return dayJs(dayJs(this.lead.date_of_birth,'YYYY-MM-DD').format('DD/MM/YYYY')).isValid() ? dayJs(this.lead.date_of_birth,'YYYY-MM-DD').format('DD/MM/YYYY') : null;
       },
         moving_data() {
             return dayJs(this.lead.moving_date,'YYYY-MM-DD').format('DD/MM/YYYY');

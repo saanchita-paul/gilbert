@@ -15,9 +15,7 @@ export default {
                     throw 'plan not selected';
                 }
 
-                console.log('service type' , service_type);
                 let distributorData =  await SumoAPI.qualifyAddress(address , lead.id);
-                console.log('printing address ' , address)
 
                 let agent_name = '';
                 if(agent){

@@ -35,8 +35,12 @@ export default {
                    waterService.reason !== null &&
                    waterService.reason !== undefined && 
                    waterService.reason !== "" ?
-                   waterService.reason :
+                   waterService.reason : 
+                   this.leadSummary.is_auto_water_submit  &&
+                   this.leadSummary.fast_connect_customer_reference !== null ? 
+                   "Your application has been submitted automatically. Please wait while we process." :
                    "We are processing your application..." 
+                   
         }
     }
 }

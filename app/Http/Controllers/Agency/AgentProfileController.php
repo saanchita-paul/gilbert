@@ -58,8 +58,9 @@ class AgentProfileController extends Controller
             $agentAndUserSvc = new CreateAgentAndUser();
             $res = $agentAndUserSvc->createAgentAndUser($request->toArray());
 
-            (new SendUserInviteService($res->user))->run();
-
+            if(env('SEND_AGENT_CREATE_EMAIL', 0)) {
+                (new SendUserInviteService($res->user))->run();
+            }
             return AgencyResource::make($res);
 
         } catch ( \Exception $exception) {
@@ -72,7 +73,7 @@ class AgentProfileController extends Controller
     {
         try {
             $updateAgentService = new UpdateAgentService();
-            return response()->json(['success' => false, 'message' => $updateAgentService->update($id)]);
+            return response()->json(['success' => true, 'message' => $updateAgentService->update($id)]);
 //            return AgencyResource::make();
         } catch ( \Exception $exception) {
             return $this->sendErrorResponse($exception);
@@ -83,7 +84,7 @@ class AgentProfileController extends Controller
     {
         try {
             $updateAgentService = new UpdateUserProfileService($id);
-            return response()->json(['success' => false, 'user' => $updateAgentService->updateProfile($request->toArray())]);
+            return response()->json(['success' => true, 'user' => $updateAgentService->updateProfile($request->toArray())]);
         } catch ( \Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
@@ -100,7 +101,7 @@ class AgentProfileController extends Controller
     public function updateUserData(Request $request , $id){
         try {
             $updateAgentService = new UpdateUserProfileService($id);
-            return response()->json(['success' => false, 'user' => $updateAgentService->updateUserData($request->toArray())]);
+            return response()->json(['success' => true, 'user' => $updateAgentService->updateUserData($request->toArray())]);
         } catch ( \Exception $exception) {
             return response( $exception->getMessage() , 409);
         }

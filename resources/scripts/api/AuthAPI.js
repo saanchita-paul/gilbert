@@ -20,7 +20,8 @@ export default {
             permissions: res?.user.permissions,
             roles: res?.user.roles,
             profile: res?.user.profile,
-            profile_type: res?.user.profile_type
+            profile_type: res?.user.profile_type,
+            is_active: res?.user.is_active,
         }), ... {pm_connected: res?.user.pm_connected}};
     },
 

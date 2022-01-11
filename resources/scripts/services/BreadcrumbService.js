@@ -85,6 +85,26 @@ export default {
                     to: 'applications.details'
                 }
             ]
+        } else if(type === 'SalesEnergy') {
+            breadcrumb = [
+                {
+                    text: 'Applications Dashboard',
+                },
+                {
+                    text: 'Energy',
+                    to: 'sales.energy'
+                }
+            ]
+        } else if(type === 'SalesWater') {
+            breadcrumb = [
+                {
+                    text: 'Applications Dashboard',
+                },
+                {
+                    text: 'Water',
+                    to: 'sales.water'
+                }
+            ]
         }
         Store.commit('addBreadcrumb', breadcrumb)
     }

@@ -4,9 +4,11 @@
 namespace App\Services\Sales;
 
 
+use App\Models\APILog;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\Identification;
+use App\Services\Logger\LogSalesService;
 use Carbon\Carbon;
 use GraphQL\Client;
 use GraphQL\Mutation;
@@ -14,6 +16,7 @@ use GraphQL\Variable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use PHPUnit\Util\Exception;
 
 class PostSalesService
 {
@@ -135,12 +138,15 @@ class PostSalesService
             'data'=>$eaData
         ];
 
+        $logSalesService = new LogSalesService();
+        $loggerResponse = null;
+
+
         try{
             $url = env('EA_SALES_URL','https://apigw-nonprod.energyaustralia.com.au/graphql');
             $XEAEnv = config('ea.x_ea_env');
-            $client = new Client(
-                $url,
-                ['Authorization' => $this->accessToken, 'X-EA-Env' => $XEAEnv]);
+            $header = ['Authorization' => $this->accessToken, 'X-EA-Env' => $XEAEnv];
+            $client = new Client($url, $header);
                 $gql = (new Mutation('submitSale'))
                 ->setVariables([new Variable('data', 'VendorSaleRequest!')])
                 ->setArguments(['input' => '$data'])
@@ -161,15 +167,37 @@ class PostSalesService
                     ]
                 );
 
-
                 Log::info('End Sale API request body');
                 Log::info($variables);
                 Log::info('Start Sale API request body');
+                // creating new log for sales api
+            $loggerResponse = $logSalesService->createSalesLog(
+                $url,
+                APILog::API_SALES_API_SUBMIT,
+                'POST',
+                json_encode($variables),
+                json_encode($header)
+            );
+
             $results = $client->runQuery($gql, false, $variables );
+
+            //update sales log with response
+
+            $logSalesService->updateSalesLog($loggerResponse->key,
+                json_encode($results->getData()),
+                json_encode([]),
+                200
+            );
+
             return $this->processEaData($results->getResponseBody());
 
         } catch (\Exception $e)
         {
+            $logSalesService->updateSalesLog($loggerResponse->key,
+                json_encode($e->getMessage()),
+                json_encode([]),
+                400
+            );
             throw new \Exception("EA Sales API ERROR: " . $e->getMessage());
         }
 
@@ -246,10 +274,17 @@ class PostSalesService
 
     private function stateMap($state)
     {
-        $stateList = ['New South Wales'=>'NSW','Victoria'=>'VIC','Queensland'=>'QLD',
-            'South Australia'=>'SA','Northern Territory'=>'NT','TAS'=>'Tasmania','ACT'=>'Australian Capital Territory','WA' => 'Western Australia'];
-        if(array_key_exists($state, $stateList))
-        {
+
+        $stateList = [
+            'New South Wales' => 'NSW',
+            'Victoria' => 'VIC',
+            'Queensland' => 'QLD',
+            'South Australia' => 'SA',
+            'Northern Territory' => 'NT',
+            'Tasmania' => 'TAS',
+            'Western Australia' => 'WA',
+            'Australian Capital Territory' => 'ACT'];
+        if (array_key_exists($state, $stateList)) {
             return $stateList[$state];
         }
         return $state;
@@ -262,9 +297,11 @@ class PostSalesService
         return $data[sizeof($data) - 1];
     }
 
+    /**
+     * @throws \Exception
+     */
     private function prepareOffer()
     {
-
 //        Log::info('show Prepare call is called');
         $plan = $this->getPlanType();
         $state = $this->stateMap( $this->connection->state);
@@ -273,7 +310,8 @@ class PostSalesService
         $plan_id = '';
 
         try {
-            $response = Http::post($this->chatbotUri.'/api/get-plan-details',['plan' => $plan,'state' => $state, 'postcode' => $this->connection->postcode]);
+            $url = $this->chatbotUri.'/api/get-plan-details';
+            $response = Http::post($url, ['plan' => $plan,'state' => $state, 'postcode' => $this->connection->postcode]);
 
             if($response->status() == 200) {
                 $response = json_decode($response->body());
@@ -282,8 +320,7 @@ class PostSalesService
                 $plan_id = $response->plan_id;
             }
         } catch (\Exception $e) {
-            Log::info($e->getMessage(),[]);
-            return  '';
+            throw new \Exception("[PostSalesService:prepareOffer]: Error from chatbot source-code API: ". $e->getMessage());
         }
 
         $servicePlan = [];
@@ -315,7 +352,6 @@ class PostSalesService
                 "sourceCode"=>  $elePlanSourceCode
             ];
         }
-
         return $servicePlan;
 
     }
