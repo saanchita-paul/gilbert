@@ -6,6 +6,11 @@ use App\Models\Agency;
 use App\Traits\Agency\Searchable;
 use App\Traits\Agency\Sortable;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\Office;
+use App\Models\ConnectionService;
+use App\Models\AgentProfile;
+use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class SearchAgencyService
 {
@@ -30,13 +35,59 @@ class SearchAgencyService
     {
         $agencyBuilder = Agency::query()
             ->withCount('offices')
-            ->withCount('applications');
+            ->withCount('applications')
+            ->withMax('applications as last_application', 'created_at');
 
         $agencyBuilder = $this->applySearch($agencyBuilder, ['name']);
 
         $agencyBuilder = $this->applySorting($agencyBuilder);
 
-
         return  $agencyBuilder->paginate($this->perPage);
+    }
+
+    public function getConversionCount(int $agencyId): int
+    {
+        $totalConnected = ConnectionService::query()
+            ->whereHas('connectionApplication', function ($query) use ($agencyId) {
+                $query->where('agency_id', '=', $agencyId);
+            })
+            ->whereIn('status', [ConnectionService::STATUS_ACCEPTED])
+            ->count();
+
+        $totalSubmitted = ConnectionService::query()
+            ->whereHas('connectionApplication', function ($query) use ($agencyId) {
+                $query->where('agency_id', '=', $agencyId);
+            })
+            ->whereIn('status', [
+                ConnectionService::STATUS_ACCEPTED,
+                ConnectionService::STATUS_REJECTED,
+                ConnectionService::STATUS_ENERGY_SUBMIT,
+                ConnectionService::STATUS_CLOSED,
+                ConnectionService::STATUS_CANT_CONNECT,
+                ConnectionService::AC_MANUAL_PROCESSING
+            ])
+            ->count();
+       
+        return $totalSubmitted !== 0 ? number_format((($totalConnected / $totalSubmitted) * 100), 0) : 0;
+    }
+
+    public function getActiveUserCount(int $agencyId): int
+    {
+        $count = 0;
+        $agentProfiles = AgentProfile::where('agency_id', $agencyId)->get();
+
+        foreach ($agentProfiles as $agentProfile) {
+            $userCount = User::where('profile_id', $agentProfile->id)
+                ->where('profile_type', 'App\\Models\\AgentProfile')
+                ->where('is_active', 1)
+                ->count();
+            $count = $count + $userCount;
+        }
+        return $count;
+    }
+
+    public function getRentRollCount(int $agencyId): int
+    {
+        return Office::where('agency_id', $agencyId)->sum('rent_roll');
     }
 }
