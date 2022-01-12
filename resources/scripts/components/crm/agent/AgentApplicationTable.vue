@@ -100,10 +100,10 @@ export default {
             value: 'address_text'
           },
           {
-            text: 'Date Submitted',
+            text: 'Created Date',
             align: 'start',
             sortable: true,
-            value: 'submitted_at'
+            value: 'created_at'
           },
           {
               text: 'Agent Name',
