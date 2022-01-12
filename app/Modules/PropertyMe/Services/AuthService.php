@@ -68,7 +68,7 @@ class AuthService
             ->asForm()
             ->post(config('property_me.token_url'), [
                 'grant_type' => 'authorization_code',
-                'redirect_uri' => url('/home/callback'),
+                'redirect_uri' => config('property_me.o_auth_callback_uri'),
                 'code' => $authCode
             ]);
         return json_decode($response->body())?->refresh_token;
