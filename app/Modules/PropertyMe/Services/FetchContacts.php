@@ -4,6 +4,7 @@ namespace PropertyMe\Services;
 
 use Exception;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use PropertyMe\PropertyMeLead;
 
 class FetchContacts extends BasePropertyMeAPI
@@ -35,6 +36,7 @@ class FetchContacts extends BasePropertyMeAPI
             ])->get($url . $query);
 
             $this->leads = $this->filterByAlreadySavedLead(json_decode($response->body(), true));
+            Log::info('PropertyMe: Fetch Contacts: ', [$this->leads]);
         }
         catch (\Exception $exception)
         {
@@ -57,7 +59,7 @@ class FetchContacts extends BasePropertyMeAPI
         $ids = $leads->pluck('Id')->toArray();
         $alreadySavedIds = PropertyMeLead::query()->whereIn('lead_id', $ids)->pluck('lead_id')->toArray();
         return $leads->filter(function($value, $key) use ($alreadySavedIds) {
-            return strtolower(data_get($value, 'Labels')) == '|hood|' && !in_array(data_get($value, 'Id'), $alreadySavedIds);
+            return strtolower(data_get($value, 'Labels')) == strtolower('|Consent given for hood|') && !in_array(data_get($value, 'Id'), $alreadySavedIds);
 //            return true;
         })->toArray();
     }

@@ -3,9 +3,21 @@
 namespace App\Modules\PropertyMe\Services;
 
 use App\Models\Identification;
+use Illuminate\Support\Facades\Log;
 
 class DobIdentificationService
 {
+    const STATE_NSW = "New South Wales";
+    const STATE_VIC = "Victoria";
+    const STATE_QLD = "Queensland";
+    const STATE_SA = "South Australia";
+    const STATE_NT = "Northern Territory";
+    const STATE_TAS = "Tasmania";
+    const STATE_ACT = "Australian Capital Territory";
+    const STATE_WA = "Western Australia";
+
+    const Country_AUS = "Australia";
+    
     private $data;
 
     public function __construct($data)
@@ -15,13 +27,33 @@ class DobIdentificationService
 
     public function get()
     {
-        $data_array = array_chunk(explode("\n", $this->data), 2);
+        if(trim($this->data) === null || trim($this->data) === '') {
+            Log::info('PropertyMe: Note is empty');
+            return null;
+        }
+
+        $single_n_data = preg_replace("/[\r\n]+/", "\n", $this->data);
+        $data_array = array_chunk(explode("\n", $single_n_data), 2);
 
         $raw_person_data = array_key_exists(0, $data_array) ? $data_array[0] : null;
         $raw_authorised_person_data = array_key_exists(1, $data_array) ? $data_array[1] : null;
 
-        $person_data = $this->getPersonData($raw_person_data, 'person');
-        $authorised_person_data = $this->getPersonData($raw_authorised_person_data, 'authorised_person');
+        if($this->validatePersonData($raw_person_data)){
+            $person_data = $this->getPersonData($raw_person_data, 'person');
+        } else {
+            $person_data = null;
+            Log::info('PropertyMe: Note data is invalid', [$this->data]);
+        }
+
+        if($this->validateAuthorizedPersonData($raw_authorised_person_data)){
+            $authorised_person_data = $this->getPersonData($raw_authorised_person_data, 'authorised_person');
+        } else {
+            $authorised_person_data = null;
+            Log::info('PropertyMe: Authorized user data is invalid', [$this->data]);
+        }
+
+        // $person_data = $this->getPersonData($raw_person_data, 'person');
+        // $authorised_person_data = $this->getPersonData($raw_authorised_person_data, 'authorised_person');
 
         return [
             'person' => $person_data,
@@ -71,8 +103,8 @@ class DobIdentificationService
         return [
             'type' => $type,
             'card_number' => $identification_data[1] ?? null,
-            'state' => $type === 2 ? $identification_data[2] : null,
-            'country' => $type === 1 ? $identification_data[2] : null,
+            'state' => $type === 2 ? $this->mapState($identification_data[2]) : null,
+            'country' => $type === 1 ? $this->mapCountry($identification_data[2]) : null,
         ];
     }
 
@@ -85,4 +117,76 @@ class DobIdentificationService
         }
         return null;
     }
+
+    private function mapState(?string $state)
+    {
+        return match($state) {
+            'NSW' => self::STATE_NSW,
+            'VIC' => self::STATE_VIC,
+            'QLD' => self::STATE_QLD,
+            'SA' => self::STATE_SA,
+            'NT' => self::STATE_NT,
+            'TAS' => self::STATE_TAS,
+            'ACT' => self::STATE_ACT,
+            'WA' => self::STATE_WA,
+            default => null
+        };
+    }
+
+    private function mapCountry(?string $country)
+    {
+        return match($country) {
+            'AUS' => self::Country_AUS,
+            default => null
+        };
+    }
+
+    private function validatePersonData($data)
+    {
+        if (!is_array($data) || count($data) < 2) {
+            return false;
+        }
+        else {
+            if (!str_contains($data[0], 'DOB')
+                || !preg_match('/\d{2}\/\d{2}\/\d{4}/', $data[0])) {
+                return false;
+            }
+            if (!(str_contains($data[1], 'Passport') || str_contains($data[1], 'DL'))
+                || count(explode(' ', $data[1])) < 4) {
+                return false;
+            }
+            if (!$this->containState($data[1])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function validateAuthorizedPersonData($data)
+    {
+        if (!is_array($data) || count($data) < 1) {
+            return false;
+        }
+        else {
+            if (!str_contains($data[0], 'DOB')
+                || !preg_match('/\d{2}\/\d{2}\/\d{4}/', $data[0])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function containState($data)
+    {
+        $state_words = [
+            'NSW', 'VIC', 'QLD', 'SA', 'NT', 'TAS', 'ACT', 'WA', 'AUS'
+        ];
+        foreach ($state_words as $word) {
+            if (str_contains($data, $word)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
