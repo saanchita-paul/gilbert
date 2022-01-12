@@ -5,6 +5,7 @@ namespace App\Modules\PropertyMe\Services;
 use App\Models\ConnectionApplication;
 use App\Models\Office;
 use PropertyMe\PropertyMeLead;
+use App\Modules\PropertyMe\Services\DobIdentificationService;
 
 class SaveToConnectionApplication
 {
@@ -105,5 +106,11 @@ class SaveToConnectionApplication
     {
         $lead->connection_application_id = $id;
         $lead->save();
+    }
+
+    public function getIdentificationDetails($data)
+    {
+        // $data = "DOB: 02/11/1992 - Harry\nPassport: PA1111222 AUS - Harry\nDOB: 01/12/1991 - Tonmoy\nDL: 015432362 VIC - Tonmoy";
+        return (new DobIdentificationService($data))->get();
     }
 }
