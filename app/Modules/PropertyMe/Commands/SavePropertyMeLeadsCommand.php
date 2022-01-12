@@ -42,25 +42,25 @@ class SavePropertyMeLeadsCommand extends Command
     {
         $likedOffice = Office::query()
             ->whereNotNull('property_me_refresh_token')
-            ->pluck('property_me_refresh_token')
-            ->toArray();
+            ->with('agency')
+            ->get();
 
-        foreach ($likedOffice as $refreshToken) {
-            $this->saveLead($refreshToken);
+        foreach ($likedOffice as $office) {
+            $this->saveLead($office);
         }
     }
 
     /**
      * @throws \Exception
      */
-    private function saveLead(string $refreshToken): void
+    private function saveLead(Office $office): void
     {
-        $pm = new FetchContacts($refreshToken);
+        $pm = new FetchContacts($office->property_me_refresh_token);
         $leads = $pm->fetchContacts()->createLead()->getSavedLeads();
 
         $this->info("New Lead: " . sizeof($leads));
 
-        $saveService = new SaveToConnectionApplication();
+        $saveService = new SaveToConnectionApplication($office);
 
         foreach ($leads as $lead) {
             $saveService->run($lead);
