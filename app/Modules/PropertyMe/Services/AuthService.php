@@ -19,7 +19,8 @@ class AuthService
         $queries = [
             'response_type' => 'code',
             'state' => json_encode($states),
-            'redirect_uri' => url('/home/callback'),
+//            'redirect_uri' => url('/home/callback'),
+            'redirect_uri' => config('property_me.o_auth_callback_uri'),
             'client_id' => config('property_me.client_id'),
             'scope' => 'activity:read communication:read contact:read property:read transaction:read offline_access'
         ];

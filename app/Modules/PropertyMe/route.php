@@ -8,3 +8,10 @@ Route::prefix('property-me')->group(function () {
 });
 Route::get("/home/callback", [AuthController::class, "callback"]);
 
+
+Route::get("/pp", function () {
+
+    $url = '/okay?' . http_build_query(request()->toArray());
+    return redirect($url)->withHeaders(request()->headers);
+});
+

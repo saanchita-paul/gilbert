@@ -10,7 +10,7 @@
                         <v-btn @click="onLinkPropertyMe" small>🔗 Link PropertyMe</v-btn>
                     </span>
                     <span v-else class="link-prop">
-                        <v-btn class="linked" disabled x-small>🔗 PropertyMe is linked</v-btn>
+                        <v-btn disabled x-small>🔗 PropertyMe is linked</v-btn>
                     </span>
                     <AgentLeadMetrics></AgentLeadMetrics>
                 </v-card>

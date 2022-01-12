@@ -8,5 +8,5 @@ return [
     "get_contact_url" => env("PROPERTY_ME_GET_CONTACT_URL", "/api/v1/contacts"),
     'no_of_days'  => env('CONNECT_ME_NO_OF_DAYS', -1),
     'o_auth_url' => env("PROPERTY_ME_O_AUTH_URL", 'https://login.propertyme.com/connect/authorize'),
-    'o_auth_callback_uri' => env("PROPERTY_ME_O_AUTH_URL", '/property-me/callback')
+    'o_auth_callback_uri' => env("PROPERTY_ME_OAUTH_CALLBACK", '/property-me/callback')
 ];
