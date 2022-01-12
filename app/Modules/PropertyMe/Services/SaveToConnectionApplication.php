@@ -7,6 +7,7 @@ use App\Models\ConnectionApplication;
 use App\Models\Office;
 use PropertyMe\PropertyMeLead;
 use App\Modules\PropertyMe\Services\DobIdentificationService;
+use App\Models\Identification;
 
 class SaveToConnectionApplication
 {
@@ -19,7 +20,9 @@ class SaveToConnectionApplication
     {
         $leadData = json_decode($lead->all_fields_dump, true);
 
-
+        $data = "DOB: 01/01/1992 - Harry\nPassport: PA1111222 AUS - Harry\nDOB: 01/12/1991 - Tonmoy\nDL: 015432362 VIC - Tonmoy";
+        $note_data = $this->getIdentificationDetails($data);
+        
         $application = ConnectionApplication::query()->create([
             'source' => ConnectionApplication::SOURCE_PROPERTY_ME,
             'office_id' => $this->office->id,
@@ -32,6 +35,7 @@ class SaveToConnectionApplication
             'email' => $this->extractContact($leadData, 'Email'),
             'phone' => $this->extractContact($leadData, 'CellPhone'),
             'homephone' => $this->extractContact($leadData, 'HomePhone'),
+            'dob' => $this->extractNoteData($note_data, 'person.dob'),
 
             'tenancy_type' => $this->getTenancyType($leadData),
             'property_type' => $this->getTenancyType($leadData),
@@ -59,6 +63,20 @@ class SaveToConnectionApplication
 
         ]);
 
+        if($this->extractNoteData($note_data, 'person.identification.type') !== null
+            && $this->extractNoteData($note_data, 'person.identification.card_number') !== null
+            && ($this->extractNoteData($note_data, 'person.identification.state') !== null
+            || $this->extractNoteData($note_data, 'person.identification.country') !== null)
+        ) {
+            Identification::query()->create([
+                'connection_application_id' => $application->id,
+                'type' => $this->extractNoteData($note_data, 'person.identification.type'),
+                'card_number' => $this->extractNoteData($note_data, 'person.identification.card_number'),
+                'state' => $this->extractNoteData($note_data, 'person.identification.state'),
+                'country' => $this->extractNoteData($note_data, 'person.identification.country'),
+            ]);
+        }
+
         $this->saveApplicationId($application->id, $lead);
 //        CreateHubspotProperty::dispatch($application->id);
     }
@@ -74,6 +92,11 @@ class SaveToConnectionApplication
     private function extractContact($leadData, $key)
     {
         return data_get($leadData, "PrimaryContactPerson.$key") ?? data_get($leadData, "ContactPersons.0.$key");
+    }
+
+    private function extractNoteData($data, $key)
+    {
+        return data_get($data, $key);
     }
 
     private function getIsEmailBilling(?array $preferences): bool
