@@ -10,4 +10,5 @@ return [
     'get_product_details_uri' => env('FC_WATER_PRODUCT_DETAILS', '/api/order/products'),
     'submit_water_lead_url' => env('FC_SUBMIT_LEAD_URL', '/api/order/submit'),
     'submitted_water_status_lead_url' => env('FC_SUBMITTED_LEAD_URL', '/api/order/status/customer_reference'),
+    'get_countries' => env('GET_COUNTRIES', '/api/order/countries'),
 ];

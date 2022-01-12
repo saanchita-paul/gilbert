@@ -1,19 +1,20 @@
 <?php
 
-use Reporting\Http\Controllers\ReportController;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Route;
+use PropertyMe\services\FetchContacts;
 use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Agency\NoteController;
+use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\Agency\AgencyController;
 use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\UserInvitationController;
 use App\Http\Controllers\Agency\HoodUserController;
 use App\Http\Controllers\Agency\ApplicationController;
+use FastConnect\Services\SubmitWaterLeadToFastConnect;
 use App\Http\Controllers\Agency\AgentProfileController;
 use OurProperty\Http\Controllers\OurPropertyController;
-use PropertyMe\services\FetchContacts;
 
 /*
 |--------------------------------------------------------------------------
@@ -168,4 +169,12 @@ Route::get("/karan/sales-status", function () {
             $service->save();
         }
     return "success";
+});
+
+
+
+Route::get('country_test', function () {
+    $ser =  new SubmitWaterLeadToFastConnect(1);
+    return $ser->getMappedIdentificationCountry('Australia'); 
+    // return 'got' ;
 });
