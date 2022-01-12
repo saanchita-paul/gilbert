@@ -211,7 +211,7 @@ class GetSalesRequestStaus
 
         $services = ConnectionService::query()
             ->with('connectionApplication')
-            ->where('status', ConnectionService::STATUS_EA_SUBMIT)
+            ->where('status', ConnectionService::STATUS_ENERGY_SUBMIT)
             ->where('provider_name', '=', ConnectionService::PROVIDER_EA)
             ->whereIn('service_type', [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY])
             ->whereNotNull('lead_reference')

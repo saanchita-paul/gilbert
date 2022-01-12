@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container v-if="user">
         <v-card  class="hood-card new-application">
             <ValidationObserver ref="create_application">
                 <v-row>
@@ -629,7 +629,7 @@
 
                     <v-col cols="12">
                         <div class="d-flex  flex-row-reverse">
-                            <v-btn @click="onSubmit" :loading="loadSubmit" color="primary">Submit</v-btn>
+                            <v-btn @click="onSubmit" :disabled="isUserActive" :loading="loadSubmit" color="primary">Submit</v-btn>
                             <v-btn @click="onCancel" class="mx-4">Cancel</v-btn>
                         </div>
                     </v-col>
@@ -772,7 +772,8 @@ export default {
                 state: "",
                 country: "",
             },
-            loadSubmit: false
+            loadSubmit: false,
+            user: null,
         }
 
     },
@@ -793,10 +794,13 @@ export default {
             return tenancyTypeMapper;
         },
         isTenancyHomeOwner(){
-            // return this.application.tenancy_type===tenancyTypeMapper.HomeOwner;
-            return AuthService.getRoles().includes("agency_office_property_manager") &&
-            this.application.tenancy_type===tenancyTypeMapper.HomeOwner;
-        }
+            return this.application.tenancy_type === tenancyTypeMapper.HomeOwner;
+            // return AuthService.getRoles().includes("agency_office_property_manager") &&
+            // this.application.tenancy_type===tenancyTypeMapper.HomeOwner;
+        },
+        isUserActive() {
+            return this.user.is_active === 0 ;
+        },
     },
     methods: {
         onAddressSelected(place) {
@@ -900,6 +904,9 @@ export default {
             this.authorized_person.dob = (new DayJs(this.authorized_person_dob).format('DD/MM/YYYY'));
         },
 
+    },
+    async mounted() {
+        this.user = await AuthService.getAuthUser();
     }
 };
 </script>

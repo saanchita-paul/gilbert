@@ -90,10 +90,13 @@ class RolePermissionSeeder extends Seeder
     public function run(): void
     {
         foreach ($this->roles as $role) {
-            $r = Role::create(['name' => $role]);
-            foreach ( $this->permissions[$role] as $permission) {
-                $p = Permission::findOrCreate($permission);
-                $p->assignRole($r);
+            $r = Role::findOrCreate($role);
+            if (array_key_exists($role, $this->permissions))
+            {
+                foreach ( $this->permissions[$role] as $permission) {
+                    $p = Permission::findOrCreate($permission);
+                    $p->assignRole($r);
+                }
             }
         }
     }
