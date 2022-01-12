@@ -172,6 +172,7 @@ export default {
           this.advanceSearchModal = true;
       },
       getFilteredData(filteredData){
+          this.options.page = 1;
           this.searchFilterModel = {...filteredData};
           // this.loadApplication();
       },
