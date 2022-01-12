@@ -9,17 +9,20 @@ use PropertyMe\PropertyMeLead;
 
 class SaveToConnectionApplication
 {
+
+    public function __construct(private Office $office)
+    {
+    }
+
     public function run(PropertyMeLead $lead)
     {
         $leadData = json_decode($lead->all_fields_dump, true);
-        $office = Office::query()->with('agency')->whereName('PropertyMe-Hood-Office')->first();
 
-        throw_if(!$office, new \Exception("PropertyMe-Hood-Office not found. Please run: `php artisan db:seed --class=PropertyMeSeeder`"));
 
         $application = ConnectionApplication::query()->create([
             'source' => ConnectionApplication::SOURCE_PROPERTY_ME,
-            'office_id' => $office->id,
-            'agency_id' => $office->agency->id,
+            'office_id' => $this->office->id,
+            'agency_id' => $this->office->agency->id,
             'status' => ConnectionApplication::STATUS_UNASSIGNED,
 
             'first_name' => $this->extractContact($leadData, 'FirstName'),
@@ -56,7 +59,7 @@ class SaveToConnectionApplication
         ]);
 
         $this->saveApplicationId($application->id, $lead);
-        CreateHubspotProperty::dispatch($application->id);
+//        CreateHubspotProperty::dispatch($application->id);
     }
 
 
