@@ -2,6 +2,7 @@
 
 namespace Ignite\Services;
 
+use App\Jobs\CreateHubspotProperty;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Agency;
@@ -35,6 +36,7 @@ class IgniteLeadService
     const MAP_STATE_NT  = 'Northern Territory';
     const MAP_STATE_TAS = 'Tasmania';
     const MAP_STATE_ACT = 'Australian Capital Territory';
+    const MAP_STATE_WA  = 'Western Australia';
 
     const MAP_STATE = [
         'nsw' => self::MAP_STATE_NSW,
@@ -44,6 +46,7 @@ class IgniteLeadService
         'nt'  => self::MAP_STATE_NT,
         'tas' => self::MAP_STATE_TAS,
         'act' => self::MAP_STATE_ACT,
+        'wa'  => self::MAP_STATE_WA,
     ];
 
     /**
@@ -97,7 +100,7 @@ class IgniteLeadService
 
     /**
      * Set service types.
-     * 
+     *
      * @param array $serviceTypes
      * @return void
      * @throws Exception
@@ -164,21 +167,24 @@ class IgniteLeadService
         try {
             $this->connectionApplication = new ConnectionApplication;
             $this->lead = new IgniteLead();
-            
+
             $this->setOfficeAndAgencyId();
 
             $this->setAttribute($leadInfo);
-            
-            
+
+
             $this->connectionApplication->status = ConnectionApplication::STATUS_UNASSIGNED;
             $this->connectionApplication->save();
-            
+
             $this->setServiceTypeTable($leadInfo['utilityConnectionsAllowed'] ?? []);
-            
+
             $this->lead->all_fields_dump = json_encode($leadInfo);
             $this->lead->connection_application_id = $this->connectionApplication->id;
             $this->lead->save();
-            
+
+            // hubspot api call for creation
+            CreateHubspotProperty::dispatch($this->lead->id);
+
             return true;
         } catch (\Exception $exception) {
             \Log::error($exception->getMessage());

@@ -27,6 +27,10 @@ class ApplicationsMetricsService
         [
             "type" => "submitted",
             "count" => 0
+        ],
+        [
+            "type" => "closed",
+            "count" => 0
         ]
     ];
     /**
@@ -71,6 +75,7 @@ class ApplicationsMetricsService
     {
         $res = DB::table('connection_applications')
             ->where('assigned_to', $this->assignedUserId)
+            ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED)
             ->select(DB::raw("count(*) as count"))
             ->get()->toArray();
 

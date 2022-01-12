@@ -274,6 +274,18 @@ class HubspotContactService
                 "property" => "hs_lead_status",
                 "value" => $this->getStatus(),
             ],
+            [
+                "property" => "hood_business",
+                "value" => $this->getHoodBusiness(),
+            ],
+            [
+                "property" => "hood_lead_source",
+                "value" => $this->getLeadSource(),
+            ],
+            [
+                "property" => "hood_real_estate_agency",
+                "value" => $this->application->getAgencyName(),
+            ],
 
         ];
     }
@@ -324,4 +336,30 @@ class HubspotContactService
             default => 'IN_PROGRESS' //todo: handle default correctly
         };
     }
+
+    private function getHoodBusiness()
+    {
+        $source = $this->application->source;
+
+        return match ($source) {
+            ConnectionApplication::SOURCE_FOXIE => 'Foxie',
+            ConnectionApplication::SOURCE_HOOD => 'HOOD',
+            ConnectionApplication::SOURCE_IGNITE => 'Ignite',
+            4 => 'OurProperty',
+            5 => 'PropertyMe',
+            default => 'HOOD'
+        };
+
+    }
+
+    private function getLeadSource()
+    {
+        $agencyName = $this->application?->agency?->id;
+
+        return match ($agencyName) {
+           17 => 'HOOD',
+            default => 'REA'
+        };
+    }
+
 }

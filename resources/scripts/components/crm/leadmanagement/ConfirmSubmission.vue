@@ -345,7 +345,7 @@
                         </div>
                         <div v-else-if="data.submitType == 'energy'">
                         <div class="d-flex mb-2">
-                            
+
 
                             <div v-if="data.service_interests.includes('power')" class="d-flex mx-2">
                                 <div class="d-flex px-2 py-1" style="background-color: #542E89; border-radius: 5px;">
@@ -433,7 +433,7 @@
 import SPECIAL_NUMBER from "@scripts/data/constants/SPECIAL_NUMBER";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import dayJs from "dayjs";
-
+import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
 export default {
   name: "ConfirmSubmission",
     props:{
@@ -449,9 +449,7 @@ export default {
           is_credit2_condition:null,
           is_life_support: null,
           row:null,
-          titlesDD:[
-              'Mrs','Mr'
-          ],
+          titlesDD:titlesMapperForDropdown,
           emailBillingDD: [ {
               text: 'Yes',
               value: 1
@@ -469,6 +467,7 @@ export default {
               {text: 'NT', value: 'Northern Territory'},
               {text: 'TAS', value: 'Tasmania'},
               {text: 'ACT', value: 'Australian Capital Territory'},
+              {text: 'WA', value: 'Western Australia'},
           ],
           tenantTypeDD: [
               {
@@ -550,7 +549,7 @@ export default {
           },
         selectedPlan() {
             this.provider = this.data.plan_type.provider;
-            
+
             if(this.provider == 'sumo') {
                 return Boolean(this.data.plan_type.title)?this.data.plan_type.key: this.data.plan_type.value;
             }
@@ -580,9 +579,6 @@ export default {
 
         },
 
-    mounted() {
-      console.log('printing data' ,  this.data);
-    }
 
 };
 </script>

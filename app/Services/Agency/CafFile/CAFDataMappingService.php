@@ -77,9 +77,9 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'renovation_privious' => ($utilityData->state === 'Victoria')?($utilityData->is_renovation_on?'Y':'N'):'',
                     'main_swith_off' => ($utilityData->state === 'Victoria')?($utilityData->is_renovation_on?'Y':'N'):'',
 
-                    'business_name' => '', //todo
-                    'business_abn' => '', //todo
-                    'business_type' => '', //todo
+                        'business_name' => '', //todo
+                        'business_abn' => '', //todo
+                        'business_type' => '', //todo
 
 
                     //Personal Details
@@ -338,7 +338,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
             ->where('service_type', 'gas')
             ->first();
 
-        $plan = $connectionService->plan_type;
+        $plan = $connectionService?->plan_type;
 
         $state = $this->stateMap($state);
 
@@ -350,7 +350,8 @@ class CAFDataMappingService implements FromCollection, WithHeadings
             }
         } catch (\Exception $e)
         {
-            Log::info($e->getMessage(),[]);
+            Log::error("[CAFDataMappingService:getElectricitySourceCode] ->  " .$e->getMessage());
+            Log::error($e->getTraceAsString());
             return  '';
         }
 
@@ -368,7 +369,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
             ->where('service_type', 'gas')
             ->first();
 
-        $plan = $connectionService->plan_type;
+        $plan = $connectionService?->plan_type;
 
         $state = $this->stateMap($state);
         try {
@@ -381,7 +382,8 @@ class CAFDataMappingService implements FromCollection, WithHeadings
 
         } catch (\Exception $e)
         {
-            Log::info($e->getMessage(),[]);
+            Log::error("[CAFDataMappingService:getGasSourceCode] ->  " .$e->getMessage());
+            Log::error($e->getTraceAsString());
             return  '';
         }
         return  '';
@@ -402,6 +404,8 @@ class CAFDataMappingService implements FromCollection, WithHeadings
             }
         } catch (\Exception $e)
         {
+            Log::error("[CAFDataMappingService:getBuyBackRate] ->  " .$e->getMessage());
+            Log::error($e->getTraceAsString());
             return  '';
         }
         return  '';
@@ -412,7 +416,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
     private function stateMap($state)
     {
         $stateList = ['New South Wales'=>'NSW','Victoria'=>'VIC','Queensland'=>'QLD',
-            'South Australia'=>'SA','Northern Territory'=>'NT','TAS'=>'Tasmania','ACT'=>'Australian Capital Territory'];
+            'South Australia'=>'SA','Northern Territory'=>'NT','TAS'=>'Tasmania','ACT'=>'Australian Capital Territory','WA' => 'Western Australia'];
         if(array_key_exists($state, $stateList))
         {
             return $stateList[$state];

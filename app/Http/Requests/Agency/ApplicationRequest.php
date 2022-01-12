@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Agency;
 
+use App\Models\ConnectionApplication;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ApplicationRequest extends FormRequest
@@ -21,7 +23,7 @@ class ApplicationRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(Request $request)
     {
         return [
             'first_name' => 'required|string',
@@ -29,7 +31,9 @@ class ApplicationRequest extends FormRequest
             'email' => 'required|string|email',
             'phone' => 'nullable|string',
             'tenancy_type' => 'required|integer',
-            'dob' => 'required|date|', #before_or_equal:-18 years
+            'dob' => $request->tenancy_type == 
+                     ConnectionApplication::TENANCY_TYPE_HOME_OWNER ?
+                     'nullable|date' : 'required|date', #before_or_equal:-18 years
             'moving_date' => 'required|date', #|after_or_equal:3 days
             'address_unit' => 'nullable|string',
             'street_address' => 'required|string',

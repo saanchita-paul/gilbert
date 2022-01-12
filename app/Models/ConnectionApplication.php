@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use OurProperty\Models\OurProperty;
 use PropertyMe\PropertyMeLead;
 
 /**
@@ -156,7 +157,7 @@ class ConnectionApplication extends Model
         'mirn',
         'is_escalated',
         'supplier',
-        'plan_type',
+//        'plan_type',
         'status',
         'ea_sales_id',
         'unit_number',
@@ -176,7 +177,9 @@ class ConnectionApplication extends Model
         'is_contacted',
         'is_auto_water_submit',
         'water_submit_response',
-        'source'
+        'source',
+        'connection_end_date',
+        'is_temporary_connection',
     ];
 
 
@@ -239,6 +242,7 @@ class ConnectionApplication extends Model
     const SOURCE_HOOD = 0;
     const SOURCE_FOXIE = 1;
     const SOURCE_IGNITE = 2;
+    const SOURCE_OUR_PROPERTY = 4;
     const SOURCE_PROPERTY_ME = 5;
 
     const EMAIL_BILLING_EMAIL = 1;
@@ -266,6 +270,7 @@ class ConnectionApplication extends Model
         'hood' => self::SOURCE_HOOD,
         'foxie' => self::SOURCE_FOXIE,
         'ignite' => self::SOURCE_IGNITE,
+        'our-property' => self::SOURCE_OUR_PROPERTY,
         'property_me' => self::SOURCE_PROPERTY_ME,
     ];
 
@@ -365,6 +370,11 @@ class ConnectionApplication extends Model
     /**
      * @return HasOne
      */
+    public function ourPropertyLead()
+    {
+        return $this->hasOne(OurProperty::class, 'connection_application_id');
+    }
+
     public function propertyMeLead()
     {
         return $this->hasOne(PropertyMeLead::class , 'connection_application_id');
@@ -412,5 +422,27 @@ class ConnectionApplication extends Model
             ->where('id', $applicationId)
             ->update(['fast_connect_customer_reference' => $ref]);
     }
+
+    public function getAgencyName()
+    {
+        return match ($this->source) {
+            ConnectionApplication::SOURCE_HOOD => $this->office?->name,
+            ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agency_name,
+            ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agency_name,
+            ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agency_name,
+            ConnectionApplication::SOURCE_PROPERTY_ME => $this->propertyMeLead?->agency_name,
+            default => ''
+        };
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function submittedByUser()
+    {
+        return $this->belongsTo(User::class, 'submitted_by');
+    }
+
+
 
 }

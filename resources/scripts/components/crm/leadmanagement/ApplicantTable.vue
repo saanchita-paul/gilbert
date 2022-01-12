@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-row class="mt-5">
+        <!-- <v-row class="mt-5">
             <v-col cols="12" md="4" class="search-bg">
                 <Search @updateSearch="updateLeadSearch"></Search>
             </v-col>
@@ -31,7 +31,7 @@
                         </template>
                     </v-select>
             </v-col>
-        </v-row>
+        </v-row> -->
         <v-card class="hood-card">
             <v-row>
                 <v-col cols="12" class="crm-table">
@@ -41,7 +41,7 @@
                         :item-class="isSelectedClass"
                         :options.sync="options"
                         :server-items-length="totalItem"
-                        :loading="loading"
+                        :loading="isSearching"
                         class="row-pointer"
                         @click:row="openLeadSummary"
                     >
@@ -90,16 +90,19 @@ export default {
     },
 
     props: {
-      leadSrc: {default: 'all'},
-      applications: {
-          required: true
-      },
+        leadSrc: {default: 'all'},
+        applications: {
+            required: true
+        },
         totalItem: {
-          required: true
-      },
+            required: true,
+        },
         currentLead: {
-          required: true
-      }
+            required: true
+        },
+        isSearching: {
+            default: false
+        }
     },
 
     data() {
@@ -114,7 +117,9 @@ export default {
 
             userSearch: '',
             leadSearch: '',
-            options: {},
+            options: {
+                itemsPerPage: 10
+            },
             loading: false,
             page: 1,
             pageCount: 0,
@@ -127,6 +132,7 @@ export default {
                 {text: 'Hood Agent Portal', value: 'hood', icon: '/assets/images/icons/company/hood.png'},
                 {text: 'Foxie CRM', value: 'foxie', icon: '/assets/images/icons/company/foxie.png'},
                 {text: 'Ignite ', value: 'ignite', icon: '/assets/images/icons/company/ignite.png'},
+                {text: 'Our Property', value: 'our-property', icon: '/assets/images/icons/company/our-property.png'},
                 {text: 'PropertyMe ', value: 'property_me', icon: '/assets/images/icons/company/propertyMe.png'},
             ],
             headers:  [

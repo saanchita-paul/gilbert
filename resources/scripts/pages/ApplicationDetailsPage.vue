@@ -5,22 +5,29 @@
                                 v-model="infoToPass"
                                 :nmiMernFlag="nmiMernFlag"
                                 :services="services"
+                                @closeApplicationWithReason="closeApplicationWithReason"
                                 @closeApplication="closeApplication"
                                 @eacalate="eacalate"
                                 @updateLead="updateLead"
                                 @readMore="readMore" :leadSummary="leadSummary"
                                 @updateAddress="updateAddress" @updateDraft="updateDraft"
                         ></LeadUserDetails>
-            </ValidationObserver>
+                 </ValidationObserver>            <!-- <LeadsDetailsFotter :lifeSupportInfo="infoToPass.lifeSupportInfo"  v-if="leadSummary.status != 1" :login-loading="this.submittedLoader" :isManualChangeFlag="isManualChangeFlag" @submitConnection="submitConnection"></LeadsDetailsFotter> -->
                 <LeadServicesAndNotes
                                    @updateService="updateService"
                                    @updatePlan="updatePlan"
                                    @updateNote= "updateNote"
                                    :leadSummary="leadSummary" :notes="notes"></LeadServicesAndNotes>
 
-            <!-- <LeadsDetailsFotter :lifeSupportInfo="infoToPass.lifeSupportInfo"  v-if="leadSummary.status != 1" :login-loading="this.submittedLoader" :isManualChangeFlag="isManualChangeFlag" @submitConnection="submitConnection"></LeadsDetailsFotter> -->
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
             <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" :title="fullName"></EscalationConfirmModal>
+
+            <CloseApplicationReasonModal v-if="closeLead" :dialog="closeLead" :leadSummary="leadSummary" @closeApplicationWithReason="closeApplicationWithReason" @cancelClose="cancelClose" @sucessSaveClose="sucessSaveClose"></CloseApplicationReasonModal>
+
+            <CloseConfirmModal v-if="closeConfirm" :dialog="closeConfirm" :title="fullName"></CloseConfirmModal>
+
+            <!-- <CloseApplicationModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></CloseApplicationModal> -->
+
             <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag"
                                :readmore="additionalInstruction"
                                @close="closeReadMore"> </LeadReadMoreModal>
@@ -34,12 +41,15 @@ import LeadServicesAndNotes from "@scripts/components/crm/leadmanagement/LeadSer
 import LeadsDetailsFotter from "@scripts/components/crm/leadmanagement/LeadsDetailsFotter";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import EscalateReasonModal from "@scripts/components/crm/modals/EscalateReasonModal";
+import CloseApplicationReasonModal from "@scripts/components/crm/modals/CloseApplicationReasonModal";
+import CloseConfirmModal from "@scripts/components/crm/modals/CloseConfirmModal";
 import EscalationConfirmModal from "@scripts/components/crm/modals/EscalationConfirmModal";
 import LeadReadMoreModal from "@scripts/components/crm/modals/LeadReadMoreModal";
 import LeadSubmitConfirmationModal from "@scripts/components/crm/modals/LeadSubmitConfirmationModal";
 import LeadApplicationAPI from "@scripts/api/crm/LeadApplicationAPI";
 import * as dayjs from "dayjs";
 import {isNull} from "lodash-es";
+import axios from 'axios'
 export default {
     name: "ApplicationDetailsPage",
 
@@ -50,7 +60,9 @@ export default {
         LeadsDetailsFotter,
         LeadServicesAndNotes,
         LeadUserDetails,
-        LeadSubmitConfirmationModal
+        LeadSubmitConfirmationModal,
+        CloseApplicationReasonModal,
+        CloseConfirmModal
 
     },
 
@@ -62,7 +74,9 @@ export default {
             notes: null,
             planNoteFlag: false,
             escalateLead: false,
+            closeConfirm: false,
             escalateLeadConfirm: false,
+            closeLead: false,
             readMoreFlag: false,
             additionalInstruction:null,
             lead: null,
@@ -112,7 +126,38 @@ export default {
         eacalate() {
             this.escalateLead = true;
         },
+        closeApplicationWithReason(){
+            console.log("closeApplicationWithReason");
+            this.closeLead = true;
+        },
+        cancelClose(){
+            this.closeLead = false;
+        },
+       async sucessSaveClose(closing_reason){
+            // this.closeLead = false;
+            console.log("do sth for closing1");
+            console.log(closing_reason);
 
+            // try {
+            //     const data = await axios.post('api/applications/'+this.leadId+'/closeApplication' , {closing_reason});
+            //     console.log(data)
+            //     return true;
+            // } catch (error) {
+            //     console.log(error)
+            //     return false;
+            // }
+
+            try {
+                console.log("do sth for closing1 try");
+                await LeadApplicationService.closeApplicationWithReason(this.leadId , closing_reason);
+                console.log("do sth for closing1 try end");
+                this.closeLead = false;
+                this.closeConfirm = true;
+                // this.$router.push({name:'applications'});
+            } catch (error) {
+                console.log('closeApplication error' , error);
+            }
+        },
         sucessSaveEscal()
         {
             this.escalateLead = false;
@@ -153,27 +198,28 @@ export default {
             if(index == -1) {
                 this.services.push(service.toLowerCase());
                  LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
-
+                this.loadPlanNoteAndLead()
                 return;
             }
             this.services.splice(index,1);
             LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
             this.leadSummary.service_types = this.services;
+            this.loadPlanNoteAndLead()
         },
 
         async submitConnection(submitType) {
             let v = await this.validateLead();
             if(!v) return;
             this.submitType = submitType;
-
             this.payload = { ...this.lead.property_details,
                 ...this.lead.person_details,
-                'service_interests':this.services,
-                'identification':this.lead.indentification,
+                service_interests: this.services,
                 supplier: 1,
                 plan_type: this.plan,
                 submitType,
+                identification: this.lead.identification,
             };
+
             this.showSubmitModal = true;
         },
 
@@ -182,7 +228,7 @@ export default {
         },
 
         async validateLead() {
-          return await this.$refs.submit_lead.validate();
+          return await this.$refs.submit_lead.validate()
         },
 
         async saveData() {
@@ -202,11 +248,11 @@ export default {
                 payload=  { ...this.lead.property_details,
                     ...this.lead.person_details,
                     'service_interests':this.services,
-                    'identification':this.lead.indentification,
+                    'identification': this.lead.identification,
                     supplier: 1,
                     plan_type: this.plan?.key,
                     submit_type: this.submitType
-                    
+
                 };
             }
 
@@ -328,7 +374,7 @@ export default {
             this.$eventBus.$off("busWaterSubmit", busWaterSubmitEvent);
         });
 
-    
+
       this.leadId = this.$route.params.id;
       await this.loadPlanNoteAndLead();
       await this.updateMernNmi();

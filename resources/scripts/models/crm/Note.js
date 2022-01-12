@@ -11,6 +11,9 @@ export default class Note {
     type = null;
     created_at = null;
     user_role = null;
+    leads = null;
+    plans = null;
+
     constructor(
         {
             id = null,
@@ -20,6 +23,8 @@ export default class Note {
             type = null,
             created_at = null,
             user_role = null,
+            leads = null,
+            plans = null
         }
     ) {
         this.id = id;
@@ -29,6 +34,8 @@ export default class Note {
         this.created_at = new DayJs(created_at).format(DATE_FORMAT.NOTE_TIME);
         this.user_role = this.mapRole(user_role);
         this.title = this.mapTitle(type,title, this.user_role);
+        this.leads = leads;
+        this.plans = plans
     }
 
     mapType(type)
@@ -49,6 +56,10 @@ export default class Note {
                 return 'Regular';
                 break;
 
+            case 'submitted_connection':
+                return 'submitted_connection';
+                break;
+
             default:
                 break;
         }
@@ -63,6 +74,9 @@ export default class Note {
         if(type.toLowerCase() == 'regular')
         {
             return title + '['+role+']';
+        } else if (type.toLowerCase() == 'close_connection')
+        {
+             return title + ' ' + role ;
         }
     }
 }

@@ -81,6 +81,7 @@ class ProcessAndUploadConnectionToSFTPService
             Log::info(sprintf('%s file exported to EA', $path));
 
         } catch (\Exception $exception) {
+            Log::error("[ProcessAndUploadConnectionToSFTPService:generate] ->  " .$exception->getMessage());
             Log::error($exception->getTraceAsString());
         } finally {
 //            $this->deleteLocalGeneratedCSVFiles($path);

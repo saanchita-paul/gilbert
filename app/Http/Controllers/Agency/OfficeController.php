@@ -10,6 +10,7 @@ use App\Http\Resources\Agency\OfficeResource;
 use App\Services\Agency\AgencyService;
 use App\Services\Agency\CreateAgentAndUser;
 use App\Services\Agency\CreateOfficeAndAgency;
+use App\Services\Agency\OfficeMatricsService;
 use App\Services\Agency\OfficeService;
 use App\Services\Agency\SearchOfficeService;
 use App\Services\Agency\UpdateOfficeService;
@@ -148,6 +149,17 @@ class OfficeController extends Controller
             $service = new OfficeService($id);
             return response()->json(['success' => true, 'data' => $service->getOnlyOffice()]);
 
+        } catch ( \Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    public function getMatricsData(int $id)
+    {
+        try {
+            $service = new OfficeMatricsService($id);
+            $data = $service->get();
+            return response()->json(['success' => true, 'data' => $data]);
         } catch ( \Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }

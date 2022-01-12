@@ -18,7 +18,7 @@
               :items="titlesDD"
               v-model="person_details.title"
               :error-messages="errors[0]"
-              placeholder="Mr"
+              placeholder="Please choose one"
             >
             </v-select>
           </ValidationProvider>
@@ -93,14 +93,9 @@
       </div>
       <div class="crm-text-field">
         <div class="field-label">
-          <span>Date of Birth *</span>
+          <span>Date of Birth {{ isTenancyHomeOwner?'':'*' }}</span>
         </div>
         <div class="text-field">
-          <ValidationProvider
-            name="Date of Birth"
-            rules="required"
-            v-slot="{ errors }"
-          >
             <v-menu
               v-model="showDateOfBirth"
               :close-on-content-click="false"
@@ -112,7 +107,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <ValidationProvider
                   name="Bate Of Birth"
-                  rules="required|valid-date|adult"
+                  :rules="`${isTenancyHomeOwner?'':'required|'}valid-date|adult`"
                   v-slot="{ errors }"
                 >
                   <v-text-field
@@ -137,7 +132,6 @@
                 @input="showDateOfBirth = false"
               ></v-date-picker>
             </v-menu>
-          </ValidationProvider>
         </div>
       </div>
 
@@ -314,7 +308,7 @@
       </div>
     </v-col>
 
-    <v-col cols="4">
+    <v-col cols="4" >
       <p class="sub-title title-align">Property Details</p>
       <div class="crm-text-field">
         <div class="field-label">
@@ -487,7 +481,7 @@
           </ValidationProvider>
         </div>
       </div>
-      <div v-if="isNMIOptional" class="crm-text-field">
+      <div v-if="!isNMIRequired" class="crm-text-field">
         <div class="field-label">
           <span>NMI (Power)</span>
         </div>
@@ -516,7 +510,7 @@
       </div>
 
 
-        <div v-if="!isNMIOptional" class="crm-text-field">
+        <div v-if="isNMIRequired" class="crm-text-field">
             <div class="field-label">
                 <span>NMI (Power) *</span>
             </div>
@@ -545,7 +539,7 @@
         </div>
 
 
-      <div v-if="isMERNOptional" class="crm-text-field">
+      <div v-if="!isMERNRequired" class="crm-text-field">
         <div class="field-label">
           <span>MIRN (Gas)</span>
         </div>
@@ -573,7 +567,7 @@
         </div>
       </div>
 
-        <div  v-if="!isMERNOptional" class="crm-text-field">
+        <div  v-if="isMERNRequired" class="crm-text-field">
             <div class="field-label">
                 <span>MIRN (Gas) *</span>
             </div>
@@ -687,12 +681,12 @@
       <p class="sub-title title-align">Identification</p>
       <div class="crm-text-field">
         <div class="field-label">
-          <span>Identification *</span>
+          <span>Identification {{ isTenancyHomeOwner?'':'*' }}</span>
         </div>
         <div class="text-field">
           <ValidationProvider
             name="Identification Number"
-            rules="required"
+            :rules="`${isTenancyHomeOwner?'':'required'}`"
             v-slot="{ errors }"
           >
             <v-select
@@ -724,7 +718,7 @@
                 ? "Medicare Card"
                 : "Card"
             }}
-            *
+            {{ isTenancyHomeOwner?'':'*' }}
           </span>
         </div>
         <div class="text-field">
@@ -738,7 +732,7 @@
                 ? 'Medicare Card '
                 : ''
             "
-            rules="required"
+            :rules="`${isTenancyHomeOwner?'':'required'}`"
             v-slot="{ errors }"
           >
             <v-text-field
@@ -763,12 +757,12 @@
       </div>
       <div class="crm-text-field" v-if="indentification.type == 1">
         <div class="field-label">
-          <span>Country *</span>
+          <span>Country {{ isTenancyHomeOwner?'':'*' }}</span>
         </div>
         <div class="text-field">
           <ValidationProvider
             name="Country"
-            rules="required"
+            :rules="`${isTenancyHomeOwner?'':'required'}`"
             v-slot="{ errors }"
           >
             <v-text-field
@@ -787,10 +781,10 @@
 
       <div class="crm-text-field" v-if="indentification.type == 2">
         <div class="field-label">
-          <span>State *</span>
+          <span>State {{ isTenancyHomeOwner?'':'*' }}</span>
         </div>
         <div class="text-field">
-          <ValidationProvider name="State" rules="required" v-slot="{ errors }">
+          <ValidationProvider name="State" :rules="`${isTenancyHomeOwner?'':'required'}`" v-slot="{ errors }">
             <v-select
               v-model="indentification.state"
               @blur="saveDraft('state', indentification.state, false, true)"
@@ -810,12 +804,12 @@
 
       <div class="crm-text-field" v-if="indentification.type == 3">
         <div class="field-label">
-          <span>Special Number *</span>
+          <span>Special Number {{ isTenancyHomeOwner?'':'*' }}</span>
         </div>
         <div class="text-field">
           <ValidationProvider
             name="Special Number"
-            rules="required"
+            :rules="`${isTenancyHomeOwner?'':'required'}`"
             v-slot="{ errors }"
           >
             <v-select
@@ -841,17 +835,12 @@
       </div>
       <div class="crm-text-field">
         <div class="field-label">
-          <span>Expiry Date *</span>
+          <span>Expiry Date {{ isTenancyHomeOwner?'':'*' }}</span>
         </div>
 
 
 
         <div class="text-field"  v-if="indentification.type !== 3">
-          <ValidationProvider
-            name="Expired Date"
-            rules="required"
-            v-slot="{ errors }"
-          >
             <v-menu
               v-model="showMovingDate"
               :close-on-content-click="false"
@@ -863,7 +852,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <ValidationProvider
                   name="Expired Date"
-                  rules="required"
+                  :rules="`${isTenancyHomeOwner?'':'required'}`"
                   v-slot="{ errors }"
                 >
                   <v-text-field
@@ -888,14 +877,9 @@
                 @input="showMovingDate = false"
               ></v-date-picker>
             </v-menu>
-          </ValidationProvider>
         </div>
         <div class="text-field"  v-if="indentification.type === 3">
-          <ValidationProvider
-            name="Expired Date"
-            rules="required"
-            v-slot="{ errors }"
-          >
+
             <v-menu
               v-model="showMovingDate"
               :close-on-content-click="false"
@@ -907,7 +891,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <ValidationProvider
                   name="Expired Date"
-                  rules="required|medicare-date|medi-expire"
+                  :rules="`${isTenancyHomeOwner?'':'required|'}medicare-date|medi-expire`"
                   v-slot="{ errors }"
                 >
                   <v-text-field
@@ -918,7 +902,7 @@
                     v-bind="attrs"
                     :error-messages="errors[0]"
                     hide-details="auto"
-                    @change="updateExpireDatePicker"
+                    @change="updateExpireDateMedicare"
                   >
                     <template slot="append">
                       <v-icon v-on="on">mdi-calendar</v-icon>
@@ -933,7 +917,6 @@
                 @input="showMovingDate = false"
               ></v-date-picker>
             </v-menu>
-          </ValidationProvider>
         </div>
 
 
@@ -941,15 +924,16 @@
       </div>
       <div class="crm-text-field" v-if="indentification.type == 3">
         <div class="field-label">
-          <span>Card Colour *</span>
+          <span>Card Colour {{ isTenancyHomeOwner?'':'*' }}</span>
         </div>
         <div class="text-field">
           <ValidationProvider
             name="Card Color"
-            rules="required"
+            :rules="`${isTenancyHomeOwner?'':'required'}`"
             v-slot="{ errors }"
           >
             <v-select
+              :error-messages="errors[0]"
               v-model="indentification.card_color"
               item-text="text"
               item-value="value"
@@ -983,8 +967,7 @@
             right
             class="primary--text float-right mt-5"
             @click="readMore"
-            >read more ...</v-btn
-          >
+            >read more ...</v-btn>
         </v-col>
       </v-row>
       <!--            <p class="sub-title mt-5">Agent’s Additional Instructions<v-btn text right class="primary&#45;&#45;text float-right" @click="readMore">read more ...</v-btn></p>-->
@@ -1030,7 +1013,10 @@ import SPECIAL_NUMBER from "@scripts/data/constants/SPECIAL_NUMBER";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import dayJs from "dayjs";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
-
+import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
+import { medicareRules, mediExpireDate } from '@scripts/plugins/VeeValidate';
+import { tenancyTypeMapper } from '@scripts/data/ConnectionApplicationMapper';
+import * as dayjs from "dayjs";
 
 export default {
   name: "InfoField",
@@ -1053,7 +1039,7 @@ export default {
     return {
       needLifeSupprt: false,
       loadNmi: false,
-      titlesDD: ["Mrs", "Mr", "Ms"],
+      titlesDD: titlesMapperForDropdown,
       minConnectionDate: LeadApplicationService.getMinConnectionDate(),
       minExpiredate: new Date().toISOString(),
       emailBillingDD: [
@@ -1082,6 +1068,7 @@ export default {
         { text: "NT", value: "Northern Territory" },
         { text: "TAS", value: "Tasmania" },
         { text: "ACT", value: "Australian Capital Territory" },
+        { text: "WA", value: "Western Australia" }, // TODO state definition can be updated
       ],
       tenantTypeDD: [
         {
@@ -1239,6 +1226,8 @@ export default {
         billing_unit_number: "",
         billing_street_number: "",
         billing_street_name: "",
+        connection_end_date: null,
+        is_temporary_connection : null,
       },
       person_details: {
         title: "",
@@ -1285,7 +1274,7 @@ export default {
       // console.log(this.lead);
 
       this.$emit("updateLead", {
-        indentification: this.indentification,
+        identification: this.indentification,
         property_details: this.property_details,
         person_details: this.person_details,
       });
@@ -1379,7 +1368,8 @@ export default {
       this.property_details.moving_date = dayJs(this.moving_date).format(
         "DD/MM/YYYY"
       );
-      this.person_details.dob = dayJs(this.dob).format("DD/MM/YYYY");
+        const birthdate =  dayjs(this.dob, 'YYYY-MM-DD');
+        this.person_details.dob = birthdate.isValid() ? birthdate.format('DD/MM/YYYY'): null;
 
       if(this.indentification.type === IDENTIFICATION.MEDICARE) {
           this.indentification.medicare_expire_date = (dayJs(this.expire_date).isValid())
@@ -1389,7 +1379,6 @@ export default {
           this.indentification.expire_date = (dayJs(this.expire_date).isValid())
               ? dayJs(this.expire_date).format("DD/MM/YYYY")
               : "";
-
       }
 
 
@@ -1415,7 +1404,6 @@ export default {
         ).format("YYYY-MM-DD");
       }
     },
-
     updateExpireDatePicker() {
       if (DayJs(this.indentification.expire_date, "DD/MM/YYYY").isValid()) {
         this.expire_date = DayJs(
@@ -1424,26 +1412,43 @@ export default {
         ).format("YYYY-MM-DD");
       }
     },
+    updateExpireDateMedicare(){
+      if( medicareRules(this.indentification.medicare_expire_date) && mediExpireDate(this.indentification.medicare_expire_date) && this.indentification.type == 3 ){
+        console.log("true medical")
+        // let dateMonth =  this.indentification.medicare_expire_date.split('/');
+        // this.expire_date = '04/' + '/' + dateMonth[0] + '/20' + dateMonth[1] ;
+        this.expire_date = ApplicationMapper.mapMadecareDateToServer(this.indentification.medicare_expire_date) ;
+        console.log(this.expire_date)
+      }
+    }
   },
 
     computed: {
-      isNMIOptional() {
-         return  (this.services.length == 1 &&
-             this.services.findIndex((service)=> service === 'gas') != -1)? true: false;
+      isNMIRequired() {
+        return  ( Array.isArray(this.services) && this.services.some(n=>n=='power') ) ?
+                true : false ;
       },
-        isMERNOptional() {
-            return ((this.services.length == 1 &&
-                this.services.findIndex((service)=> service === 'power') != -1) || this.lead.state === 'Queensland'
-            )? true: false;
+      isMERNRequired() {
+        return  ( Array.isArray(this.services) && this.services.some(n=>n=='gas') ) ?
+                true : false ;
 
-          }
+          },
+      tenancyTypeMapper(){
+          return tenancyTypeMapper;
+        },
+      isTenancyHomeOwner(){
+          // return this.person_details.tenancy_type===tenancyTypeMapper.HomeOwner;
+          return false;
+      }
     },
 
   watch: {
     lead: {
-      handler() {
-        // console.log('calling...')
+      async handler() {
         this.synFormData();
+          await this.synFormData();
+          await this.formatDate();
+          await this.updateLeads();
       },
       deep: true,
     },
@@ -1458,6 +1463,9 @@ export default {
       this.property_details.moving_date = new DayJs(this.moving_date).format(
         "DD/MM/YYYY"
       );
+
+
+      this.$eventBus.$emit("update_temporary_date" , this.moving_date);
       this.$emit(
         "updateDraft",
         "moving_date",
@@ -1495,10 +1503,45 @@ export default {
 
   },
   async mounted() {
-      // console.log('services', this.services);
+    // console.log('services', this.services);
     await this.synFormData();
     await this.formatDate();
     await this.updateLeads();
+
+    const update_moving_date = (date)=>{
+      console.log("change moving date" , date);
+      this.property_details.moving_date = date;
+      this.$emit(
+        "updateDraft",
+        "moving_date",
+        this.property_details.moving_date,
+        true,
+        false
+      );
+      this.updateLeads();
+    }
+
+    const update_connection_end_date = (date)=>{
+      console.log("change moving date" , date);
+      this.property_details.connection_end_date = date;
+      this.$emit(
+        "updateDraft",
+        "connection_end_date",
+        this.property_details.connection_end_date,
+        true,
+        false
+      );
+      this.updateLeads();
+    }
+
+    this.$eventBus.$on("update_moving_date", update_moving_date );
+    this.$eventBus.$on("update_connection_end_date", update_connection_end_date );
+
+    this.$once("hook:beforeDestroy", (date) => {
+        this.$eventBus.$off("update_moving_date", update_moving_date );
+        this.$eventBus.$off("update_connection_end_date", update_connection_end_date );
+    });
+
   },
 };
 </script>

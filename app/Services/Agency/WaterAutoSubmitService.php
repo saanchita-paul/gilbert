@@ -15,7 +15,7 @@ class WaterAutoSubmitService
     {
         try {
             $lead = ConnectionApplication::with(['connectionServices' , 'identification'])->where( 'id' ,  $lead_id)->first();
-            if (!$lead->is_auto_water_submi) {
+            if (!$lead->is_auto_water_submit) {
                 $this->validateData($lead);
                 $this->updateConnectionApplication($lead);
             }
@@ -26,10 +26,14 @@ class WaterAutoSubmitService
         }
     }
 
-    private function updateConnectionApplication($connectionApplcation){
+    private function updateConnectionApplication(ConnectionApplication $connectionApplcation){
 
         try {
             $connectionApplcation->update(['is_auto_water_submit'=> WaterAutoSubmitService::STATUS_AUTO_SUBMIT_TRUE ]);
+            
+            $waterService = new ApplicationService();
+            $waterService->setSubmittedAtByServiceType($connectionApplcation->id, 'water');
+            
             WaterAutoSubmitJob::dispatch($connectionApplcation->id);
         } catch (\Exception $exception) {
             \Log::error($exception->getMessage());
@@ -39,7 +43,7 @@ class WaterAutoSubmitService
     }
 
 
-    private function validateData($connectionApplcation){
+    private function validateData(ConnectionApplication $connectionApplcation){
         info('checking connection application');
         \Log::info($connectionApplcation);
         // \Log::info($connectionApplcation->identification['connection_application_id']);
@@ -81,6 +85,22 @@ class WaterAutoSubmitService
             \Log::error($exception->getMessage());
             \Log::error($exception->getTraceAsString());
             throw new Exception("Error Processing Request", 1);
+        }
+    }
+
+    public function checkTenancyType(ConnectionApplication $connectionApplcation) : bool {
+        return $connectionApplcation->tenancy_type == ConnectionApplication::TENANCY_TYPE_HOME_OWNER ? true : 
+        throw new Exception('invalid data in identifcation table, tenancy type');
+    }
+
+    public function checkTenancyTypeDob(ConnectionApplication $connectionApplcation) : bool {
+
+        if($connectionApplcation->tenancy_type == ConnectionApplication::TENANCY_TYPE_HOME_OWNER){
+            return true;
+        }else if(isset($connectionApplcation->dob)){
+            return true;
+        }else{
+            return false;
         }
     }
 }

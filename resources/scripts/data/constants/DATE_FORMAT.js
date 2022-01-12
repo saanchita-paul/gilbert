@@ -7,5 +7,7 @@ export default {
     DEFAULT_DATETIME_SLASH: 'DD/MM/YYYY hh:mm A',
     DEFAULT_DATETIME_DASH: 'DD/MM/YYYY hh:mm A',
     REAL_ESTATE_FORMAT: 'DD/MM/YYYY hh:mm A',
-    NOTE_TIME: 'DD/MM/YYYY hh:mm A'
+    NOTE_TIME: 'DD/MM/YYYY hh:mm A',
+    DATE_DASH: 'YYYY-MM-DD',
+    DATE_SHASH: 'YYYY/MM/DD',
 }

@@ -39,7 +39,10 @@ class UpdateUserProfileService
             $agent = AgentProfile::findOrFail($this->id);
             $user = $agent->user;
             $agent->update( $profileData );
-            $user->update( ['email' => $profileData['email']] );
+            $user->update([
+                'email' => $profileData['email'],
+                'is_active' => $profileData['is_active']
+            ]);
             $roles = [ $profileData['role'] ];
             $this->updateRole($roles,  $user);
             return $user->refresh();

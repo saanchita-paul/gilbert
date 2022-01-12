@@ -15,6 +15,7 @@ use App\Models\ConnectionApplication;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\ConnectionApplicationSecondaryACC;
+use App\Models\ConnectionService;
 
 class SumoService
 {
@@ -32,6 +33,7 @@ class SumoService
         "Northern Territory" => 'NT',
         "Tasmania" => 'TAS',
         "Australian Capital Territory" => 'ACT',
+        "Western Australia" => 'WA',
     ];
 
     const MAP_TYPE = [
@@ -58,6 +60,7 @@ class SumoService
         "Northern Territory" => '08',
         "Tasmania" => '03',
         "Australian Capital Territory" => '02',
+        "Western Australia" => '08', // TODO recheck on documentation
     ];
 
     /**
@@ -230,6 +233,22 @@ class SumoService
             throw $exception;
         }
 
+    }
+
+    public function saveStatus($applicationId, $status , $credit)
+    {
+        $status = strtolower($status);
+        if($status == 'success'){
+            ConnectionService::whereIn('service_type' , ['gas' , 'power'])
+            ->where('provider_name', 'sumo')
+            ->where('connection_application_id', $applicationId)
+            ->update(['status' =>  ConnectionService::STATUS_ENERGY_SUBMIT ]);
+        } else if($status == 'failed'){
+            ConnectionService::whereIn('service_type' , ['gas' , 'power'])
+            ->where('provider_name', 'sumo')
+            ->where('connection_application_id', $applicationId)
+            ->update(['status' =>  ConnectionService::STATUS_REJECTED, 'rejected_at' => now()]);
+        }
     }
 
 }

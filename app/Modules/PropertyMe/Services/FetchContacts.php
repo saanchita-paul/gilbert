@@ -9,6 +9,10 @@ use PropertyMe\PropertyMeLead;
 class FetchContacts extends BasePropertyMeAPI
 {
 
+    public function __construct(private string $refreshToken)
+    {
+    }
+
     /**
      * @var array $leads
      */
@@ -27,7 +31,7 @@ class FetchContacts extends BasePropertyMeAPI
         try {
             $response = Http::withHeaders([
                 "Accept" => "application/json",
-                "Authorization" => $this->getAccessToken(),
+                "Authorization" => $this->getAccessToken($this->refreshToken),
             ])->get($url . $query);
 
             $this->leads = $this->filterByAlreadySavedLead(json_decode($response->body(), true));
@@ -42,7 +46,7 @@ class FetchContacts extends BasePropertyMeAPI
         return $this;
     }
 
-    /**
+    /** filterByAlreadySavedLead and also filter hood leads only
      *
      * @param array $leads
      * @return array
@@ -53,7 +57,7 @@ class FetchContacts extends BasePropertyMeAPI
         $ids = $leads->pluck('Id')->toArray();
         $alreadySavedIds = PropertyMeLead::query()->whereIn('lead_id', $ids)->pluck('lead_id')->toArray();
         return $leads->filter(function($value, $key) use ($alreadySavedIds) {
-            return !in_array(data_get($value, 'Id'), $alreadySavedIds);
+            return strtolower(data_get($value, 'Labels')) == '|hood|' && !in_array(data_get($value, 'Id'), $alreadySavedIds);
 //            return true;
         })->toArray();
     }
