@@ -78,7 +78,7 @@ class SaveToConnectionApplication
         }
 
         $this->saveApplicationId($application->id, $lead);
-//        CreateHubspotProperty::dispatch($application->id);
+        CreateHubspotProperty::dispatch($application->id);
     }
 
 
