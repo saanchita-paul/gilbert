@@ -6,7 +6,6 @@ use App\Models\Office;
 use App\Modules\PropertyMe\Services\SaveToConnectionApplication;
 use Exception;
 use Illuminate\Console\Command;
-use PropertyMe\Services\FetchContacts;
 use PropertyMe\Services\SaveContacts;
 
 class SavePropertyMeLeadsCommand extends Command

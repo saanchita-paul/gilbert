@@ -4,15 +4,19 @@ namespace PropertyMe\Services;
 
 use App\Modules\PropertyMe\Services\FetchContactAPI;
 use Exception;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use PropertyMe\PropertyMeLead;
 
 class SaveContacts
 {
 
+    /**
+     * @var array
+     */
     private array $lots;
 
+    /**
+     * @param string $refreshToken
+     */
     public function __construct(private string $refreshToken)
     {
     }
@@ -22,6 +26,9 @@ class SaveContacts
      */
     private array $leads = [];
 
+    /**
+     * @var array
+     */
     private array $savedLead = [];
 
     /**
@@ -42,7 +49,8 @@ class SaveContacts
         return $this;
     }
 
-    /** filterByAlreadySavedLead and also filter hood leads only
+    /**
+     * taking new lead only new and which has labeled 'hood'
      *
      * @param array $leads
      * @return array
@@ -51,11 +59,13 @@ class SaveContacts
     {
         $leads = collect($leads);
         $ids = $leads->pluck('Id')->toArray();
+        #todo:: need to find a better way to filter old leads
         $alreadySavedIds = PropertyMeLead::query()->whereIn('lead_id', $ids)->pluck('lead_id')->toArray();
-        return $leads->filter(function($value, $key) use ($alreadySavedIds) {
-            return strtolower(data_get($value, 'Labels')) == '|hood|' && !in_array(data_get($value, 'Id'), $alreadySavedIds);
-//            return true;
-        })->toArray();
+
+        return $leads->filter(fn($value) => (
+            strtolower(data_get($value, 'Labels')) == config('property_me.label')
+            && !in_array(data_get($value, 'Id'), $alreadySavedIds)
+        ))->toArray();
     }
 
 
