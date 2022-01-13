@@ -30,6 +30,7 @@ class RouteServiceProvider extends ServiceProvider
     protected $namespaceFoxie = 'Foxie\\Http\\Controllers';
     protected $namespaceIgnite = 'Ignite\\Http\\Controllers';
     protected $namespaceOurProperty = 'OurProperty\\Http\\Controllers';
+    protected $namespacePropertyMe = 'PropertyMe\\Http\\Controllers';
 
 
     /**
@@ -61,6 +62,9 @@ class RouteServiceProvider extends ServiceProvider
                 ->middleware('api')
                 ->namespace($this->namespaceOurProperty)
                 ->group(base_path('routes/our-property.php'));
+
+            Route::middleware([])
+                ->group(base_path('app/Modules/PropertyMe/route.php'));
 
             Route::middleware('web')
                 ->namespace($this->namespace)

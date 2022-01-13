@@ -9,6 +9,10 @@ use PropertyMe\PropertyMeLead;
 class FetchContacts extends BasePropertyMeAPI
 {
 
+    public function __construct(private string $refreshToken)
+    {
+    }
+
     /**
      * @var array $leads
      */
@@ -27,7 +31,7 @@ class FetchContacts extends BasePropertyMeAPI
         try {
             $response = Http::withHeaders([
                 "Accept" => "application/json",
-                "Authorization" => $this->getAccessToken(),
+                "Authorization" => $this->getAccessToken($this->refreshToken),
             ])->get($url . $query);
 
             $this->leads = $this->filterByAlreadySavedLead(json_decode($response->body(), true));
