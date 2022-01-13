@@ -3,7 +3,10 @@
 namespace App\Jobs;
 
 use App\Models\ConnectionApplication;
+use Exception;
 use Illuminate\Bus\Queueable;
+use App\Mail\WaterSumissionFailed;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Services\Agency\WaterEmailService;
@@ -27,6 +30,18 @@ class WaterAutoSubmitJob implements ShouldQueue
     public function __construct(int $applicationId)
     {
         $this->applicationId = $applicationId;
+    }
+
+    private function sendEmail($msg){
+        $connectionApplication = ConnectionApplication::where('id' , $this->applicationId)->first();
+        $dataToBeSent =  [
+            'reason of failure' => $msg,
+            'lead id'           =>  $connectionApplication->id,
+        ];
+        $emails =  explode( ',', config('water.support_emails'));
+        foreach ($emails as $recipient) {
+            Mail::to($recipient)->send(new WaterSumissionFailed($dataToBeSent));
+        }
     }
 
     /**

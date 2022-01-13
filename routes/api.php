@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\ConnectionService;
+use App\Mail\WaterSumissionFailed;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Route;
 use PropertyMe\services\FetchContacts;

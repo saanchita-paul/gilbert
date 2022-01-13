@@ -265,7 +265,6 @@ class SubmitWaterLeadToFastConnect
             // }
             // return $countries[$countryIndex]['id'];
         } catch (\Exception $exception) {
-            //TODO send mail when no country found
             info('exception in getMappedIdentificationCountry, SubmitWaterLeadToFastConnect' , [ $exception->getTraceAsString() , $exception->getMessage() ]);
             throw new Exception("Country not found");
         }
