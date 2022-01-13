@@ -4,6 +4,7 @@ namespace App\Modules\PropertyMe\Services;
 
 use App\Models\Identification;
 use Illuminate\Support\Facades\Log;
+use App\Services\Logger\ErrorLogService;
 
 class DobIdentificationService
 {
@@ -43,6 +44,10 @@ class DobIdentificationService
         } else {
             $person_data = null;
             Log::error('PropertyMe (Save Contact): Note is invalid', [$this->data]);
+            ErrorLogService::send(
+                'PropertyMe (Save Contact): Note is invalid',
+                ['atikur.rahman@brc.technology', 'dimuthu.satharasinghe@brc.technology']
+            );
         }
 
         if($this->validateAuthorizedPersonData($raw_authorised_person_data)){
@@ -50,6 +55,10 @@ class DobIdentificationService
         } else {
             $authorised_person_data = null;
             Log::error('PropertyMe (Save Contact): Note is invalid', [$this->data]);
+            ErrorLogService::send(
+                'PropertyMe (Save Contact): Note is invalid',
+                ['atikur.rahman@brc.technology', 'dimuthu.satharasinghe@brc.technology']
+            );
         }
 
         // $person_data = $this->getPersonData($raw_person_data, 'person');
