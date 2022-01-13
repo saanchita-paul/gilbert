@@ -21,8 +21,8 @@ class SaveToConnectionApplication
     {
         $leadData = json_decode($lead->all_fields_dump, true);
 
-        $data = "DOB: 01/01/1992 - Harry\nPassport: PA1111222 NT - Harry\nDOB: 01/01/1993 - Tonmoy\nDL: 015432362 VIC - Tonmoy";
-        $note_data = $this->getIdentificationDetails($data);
+        // $data = "DOB: 01/01/1992 - Harry\nDL: PA1111222 NT - Harry\nDOB: 01/01/1993 - Tonmoy\nDL: 015432362 VIC - Tonmoy";
+        $note_data = $this->getIdentificationDetails(data_get($leadData, 'Notes'));
         
         $application = ConnectionApplication::query()->create([
             'source' => ConnectionApplication::SOURCE_PROPERTY_ME,
@@ -154,7 +154,6 @@ class SaveToConnectionApplication
 
     public function getIdentificationDetails($data)
     {
-        // $data = "DOB: 02/11/1992 - Harry\nPassport: PA1111222 AUS - Harry\nDOB: 01/12/1991 - Tonmoy\nDL: 015432362 VIC - Tonmoy";
         return (new DobIdentificationService($data))->get();
     }
 }

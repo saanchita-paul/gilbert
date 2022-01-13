@@ -28,7 +28,7 @@ class DobIdentificationService
     public function get()
     {
         if(trim($this->data) === null || trim($this->data) === '') {
-            Log::info('PropertyMe: Note is empty');
+            Log::info('PropertyMe (Save Contact): Note is empty');
             return null;
         }
 
@@ -42,14 +42,14 @@ class DobIdentificationService
             $person_data = $this->getPersonData($raw_person_data, 'person');
         } else {
             $person_data = null;
-            Log::info('PropertyMe: Note data is invalid', [$this->data]);
+            Log::error('PropertyMe (Save Contact): Note is invalid', [$this->data]);
         }
 
         if($this->validateAuthorizedPersonData($raw_authorised_person_data)){
             $authorised_person_data = $this->getPersonData($raw_authorised_person_data, 'authorised_person');
         } else {
             $authorised_person_data = null;
-            Log::info('PropertyMe: Authorized user data is invalid', [$this->data]);
+            Log::error('PropertyMe (Save Contact): Note is invalid', [$this->data]);
         }
 
         // $person_data = $this->getPersonData($raw_person_data, 'person');
