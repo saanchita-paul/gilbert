@@ -6,6 +6,7 @@ export const leadSourceMap = {
 };
 
 export const statuses = [
+    { text: "All", value: '' },
     { text: "Unassigned", value: 'unassigned' },
     { text: "Assigned", value: 'assigned' },
     { text: "Escalated", value: 'escalated' },

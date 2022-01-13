@@ -7,6 +7,7 @@
         placeholder="Select Agent"
         outlined
         dense
+        clearable
         hide-details="auto"
         @change="onChangeAgent"
     >
