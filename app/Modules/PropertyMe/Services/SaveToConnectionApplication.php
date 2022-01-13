@@ -12,7 +12,7 @@ use App\Models\Identification;
 class SaveToConnectionApplication
 {
 
-    public function __construct(private Office $office)
+    public function __construct(private Office $office, private array $lots)
     {
     }
 
@@ -22,12 +22,14 @@ class SaveToConnectionApplication
 
         $data = "DOB: 01/01/1992 - Harry\nPassport: PA1111222 AUS - Harry\nDOB: 01/12/1991 - Tonmoy\nDL: 015432362 VIC - Tonmoy";
         $note_data = $this->getIdentificationDetails($data);
-        
+
         $application = ConnectionApplication::query()->create([
             'source' => ConnectionApplication::SOURCE_PROPERTY_ME,
             'office_id' => $this->office->id,
             'agency_id' => $this->office->agency->id,
             'status' => ConnectionApplication::STATUS_UNASSIGNED,
+
+            'moving_date' => $this->getMovingDate(data_get($leadData, 'CustomerId')),
 
             'first_name' => $this->extractContact($leadData, 'FirstName'),
             'title' => $this->getUserTitle($this->extractContact($leadData, 'Salutation')),
@@ -140,5 +142,18 @@ class SaveToConnectionApplication
     {
         // $data = "DOB: 02/11/1992 - Harry\nPassport: PA1111222 AUS - Harry\nDOB: 01/12/1991 - Tonmoy\nDL: 015432362 VIC - Tonmoy";
         return (new DobIdentificationService($data))->get();
+    }
+
+
+    /**
+     * @param string $id
+     * @return string|null
+     */
+    private function getMovingDate(string $id): ?string
+    {
+        return collect($this->lots)
+            ->filter(fn($value) => data_get($value, 'CustomerId') === $id)
+            ->pluck('TenancyStart')
+            ->first();
     }
 }
