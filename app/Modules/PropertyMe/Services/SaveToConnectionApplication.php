@@ -8,6 +8,7 @@ use App\Models\Office;
 use PropertyMe\PropertyMeLead;
 use App\Modules\PropertyMe\Services\DobIdentificationService;
 use App\Models\Identification;
+use App\Models\ConnectionApplicationSecondaryACC;
 
 class SaveToConnectionApplication
 {
@@ -20,8 +21,8 @@ class SaveToConnectionApplication
     {
         $leadData = json_decode($lead->all_fields_dump, true);
 
-        $data = "DOB: 01/01/1992 - Harry\nPassport: PA1111222 AUS - Harry\nDOB: 01/12/1991 - Tonmoy\nDL: 015432362 VIC - Tonmoy";
-        $note_data = $this->getIdentificationDetails($data);
+        // $data = "DOB: 01/01/1992 - Harry\nDL: PA1111222 NT - Harry\nDOB: 01/01/1993 - Tonmoy\nDL: 015432362 VIC - Tonmoy";
+        $note_data = $this->getIdentificationDetails(data_get($leadData, 'Notes'));
 
         $application = ConnectionApplication::query()->create([
             'source' => ConnectionApplication::SOURCE_PROPERTY_ME,
@@ -79,6 +80,16 @@ class SaveToConnectionApplication
             ]);
         }
 
+        ConnectionApplicationSecondaryACC::query()->create([
+            'connection_application_id' => $application->id,
+            'title' => $this->getUserTitle($this->extractSecondaryContact($leadData, 'Salutation')),
+            'first_name' => $this->extractSecondaryContact($leadData, 'FirstName'),
+            'last_name' => $this->extractSecondaryContact($leadData, 'LastName'),
+            'email' => $this->extractSecondaryContact($leadData, 'Email'),
+            'phone' => $this->extractSecondaryContact($leadData, 'CellPhone'),
+            'dob' => $this->extractNoteData($note_data, 'authorised_person.dob'),
+        ]);
+
         $this->saveApplicationId($application->id, $lead);
         CreateHubspotProperty::dispatch($application->id);
     }
@@ -93,7 +104,12 @@ class SaveToConnectionApplication
 
     private function extractContact($leadData, $key)
     {
-        return data_get($leadData, "PrimaryContactPerson.$key") ?? data_get($leadData, "ContactPersons.0.$key");
+        return data_get($leadData, "PrimaryContactPerson.$key");
+    }
+
+    private function extractSecondaryContact($leadData, $key)
+    {
+        return data_get($leadData, "ContactPersons.0.$key");
     }
 
     private function extractNoteData($data, $key)
@@ -140,7 +156,6 @@ class SaveToConnectionApplication
 
     public function getIdentificationDetails($data)
     {
-        // $data = "DOB: 02/11/1992 - Harry\nPassport: PA1111222 AUS - Harry\nDOB: 01/12/1991 - Tonmoy\nDL: 015432362 VIC - Tonmoy";
         return (new DobIdentificationService($data))->get();
     }
 
