@@ -232,7 +232,7 @@ export default {
   },
   methods: {
     updateDate(value){
-      this.search.moving_date = value;
+      this.search.moving_date = value.replace(/[/]/g , '-');
     },
     submit(){
       this.$emit('filteredData' , this.search);
@@ -242,6 +242,7 @@ export default {
       try {
         let params = omitBy(this.search, isNil);
         if(!isEqual(this.$route.query , params)){
+          console.log("params" , params)
           this.$router.push({name: 'agent.application.dashboard', query: params })
         }
       } catch (error) {
@@ -256,8 +257,12 @@ export default {
       }
       return v;
     },
+    formatDate(date){
+      const formattedDate = dayJs(date, 'YYYY-MM-DD');
+      return formattedDate.isValid() ? formattedDate.format('DD-MM-YYYY'): null;
+    },
     updateMovingDate(value) {
-      this.modified_moving_date = formatDate(value);
+      this.modified_moving_date = this.formatDate(value);
       this.search.moving_date = value;
       this.connection_date_menu = false;
     },
