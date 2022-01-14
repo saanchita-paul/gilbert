@@ -3,10 +3,11 @@
 namespace App\Jobs;
 
 use App\Models\ConnectionApplication;
-use App\Services\Agency\UpdatedWaterStatus;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Services\Agency\WaterEmailService;
+use App\Services\Agency\UpdatedWaterStatus;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -35,6 +36,8 @@ class WaterAutoSubmitJob implements ShouldQueue
      */
     public function handle()
     {
+        try
+        {
         $service = new SubmitWaterLeadToFastConnect($this->applicationId);
         $result = $service->submitWaterLead();
         ConnectionApplication::saveFasConnectRef($this->applicationId, data_get($result, "info.customer_reference"));
@@ -42,6 +45,12 @@ class WaterAutoSubmitJob implements ShouldQueue
         $statusAssoc = UpdatedWaterStatus::mapFromFCStatus(data_get($result, "products.0.status"));
         if ($statusAssoc) {
             UpdatedWaterStatus::updateStatus($this->applicationId, $statusAssoc['status'], $statusAssoc['reason']);
+        }
+        } catch(\Exception $exception)
+        {
+            WaterEmailService::sendEmailWhenSubmissionFails($exception->getMessage(), $this->applicationId);
+            info('exception in handle method, WaterAutoSubmitJob', [$exception->getTraceAsString(), $exception->getMessage()]);
+            throw new \Exception('Water submission failed, WaterAutoSubmitJob');
         }
     }
 }
