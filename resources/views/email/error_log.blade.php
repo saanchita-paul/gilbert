@@ -39,7 +39,7 @@
             <br>
             <p>An error occured!</p>
             <br>
-            <p>Log: {{$data}}</p>
+            <p>Log: {!! nl2br($data) !!}</p>
             <br>
             <br>
             <p>HOOD Support Team</p>

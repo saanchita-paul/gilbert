@@ -20,10 +20,12 @@ class DobIdentificationService
     const Country_AUS = "Australia";
     
     private $data;
+    private $id;
 
-    public function __construct($data)
+    public function __construct($data, $id)
     {
         $this->data = $data;
+        $this->id = $id;
     }
 
     public function get()
@@ -45,7 +47,7 @@ class DobIdentificationService
             $person_data = null;
             Log::error('PropertyMe (Save Contact): Note data is invalid', [$this->data]);
             ErrorLogService::send(
-                'PropertyMe (Save Contact): Note data is invalid',
+                "PropertyMe (Save Contact): Note data is invalid. \n Table: property_me_leads \n Lead ID: " . $this->id,
                 []
             );
         }
@@ -57,7 +59,7 @@ class DobIdentificationService
                 $authorised_person_data = null;
                 Log::error('PropertyMe (Save Contact): Note data for Authorized person is invalid', [$this->data]);
                 ErrorLogService::send(
-                    'PropertyMe (Save Contact): Note data for Authorized person is invalid',
+                    "PropertyMe (Save Contact): Note data for Authorized person is invalid. \n Table: property_me_leads \n Lead ID: " . $this->id,
                     []
                 );
             }
