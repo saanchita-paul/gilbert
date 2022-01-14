@@ -46,7 +46,7 @@ class DobIdentificationService
             Log::error('PropertyMe (Save Contact): Note data is invalid', [$this->data]);
             ErrorLogService::send(
                 'PropertyMe (Save Contact): Note data is invalid',
-                ['taige.alhadweh@brc.technology', 'taige.alhadweh@hood.ai', 'matthew.gray@hood.ai', 'atikur@hood.ai']
+                []
             );
         }
 
@@ -58,7 +58,7 @@ class DobIdentificationService
                 Log::error('PropertyMe (Save Contact): Note data for Authorized person is invalid', [$this->data]);
                 ErrorLogService::send(
                     'PropertyMe (Save Contact): Note data for Authorized person is invalid',
-                    ['taige.alhadweh@brc.technology', 'taige.alhadweh@hood.ai', 'matthew.gray@hood.ai', 'atikur@hood.ai']
+                    []
                 );
             }
         }
