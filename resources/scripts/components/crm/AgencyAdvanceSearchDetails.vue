@@ -67,6 +67,20 @@
     </div>
 
     <div class="d-flex justify-space-between align-center py-2">
+      <div class="font-weight-bold ml-6" style="flex-basis: 15%">Phone</div>
+      <div style="flex-basis: 65%" class="mr-6">
+        <v-text-field
+          outlined
+          dense
+          full-width
+          hide-details="auto"
+          label="Phone"
+          v-model="search.phone"
+        ></v-text-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-space-between align-center py-2">
       <div class="font-weight-bold ml-6" style="flex-basis: 15%">Agent Name</div>
       <div style="flex-basis: 65%" class="mr-6">
         <AgentDropdown
