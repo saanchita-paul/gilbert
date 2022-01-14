@@ -43,26 +43,28 @@ class DobIdentificationService
             $person_data = $this->getPersonData($raw_person_data, 'person');
         } else {
             $person_data = null;
-            Log::error('PropertyMe (Save Contact): Note is invalid', [$this->data]);
+            Log::error('PropertyMe (Save Contact): Note data is invalid', [$this->data]);
             ErrorLogService::send(
-                'PropertyMe (Save Contact): Note is invalid',
-                ['atikur.rahman@brc.technology', 'dimuthu.satharasinghe@brc.technology']
+                'PropertyMe (Save Contact): Note data is invalid',
+                ['taige.alhadweh@brc.technology', 'taige.alhadweh@hood.ai', 'matthew.gray@hood.ai', 'atikur@hood.ai']
             );
         }
 
-        if($this->validateAuthorizedPersonData($raw_authorised_person_data)){
-            $authorised_person_data = $this->getPersonData($raw_authorised_person_data, 'authorised_person');
-        } else {
+        if (is_array($raw_authorised_person_data) && count($raw_authorised_person_data) >= 1) {
+            if($this->validateAuthorizedPersonData($raw_authorised_person_data)){
+                $authorised_person_data = $this->getPersonData($raw_authorised_person_data, 'authorised_person');
+            } else {
+                $authorised_person_data = null;
+                Log::error('PropertyMe (Save Contact): Note data for Authorized person is invalid', [$this->data]);
+                ErrorLogService::send(
+                    'PropertyMe (Save Contact): Note data for Authorized person is invalid',
+                    ['taige.alhadweh@brc.technology', 'taige.alhadweh@hood.ai', 'matthew.gray@hood.ai', 'atikur@hood.ai']
+                );
+            }
+        }
+        else {
             $authorised_person_data = null;
-            Log::error('PropertyMe (Save Contact): Note is invalid', [$this->data]);
-            ErrorLogService::send(
-                'PropertyMe (Save Contact): Note is invalid',
-                ['atikur.rahman@brc.technology', 'dimuthu.satharasinghe@brc.technology']
-            );
         }
-
-        // $person_data = $this->getPersonData($raw_person_data, 'person');
-        // $authorised_person_data = $this->getPersonData($raw_authorised_person_data, 'authorised_person');
 
         return [
             'person' => $person_data,
@@ -173,14 +175,9 @@ class DobIdentificationService
 
     private function validateAuthorizedPersonData($data)
     {
-        if (!is_array($data) || count($data) < 1) {
+        if (!str_contains($data[0], 'DOB')
+            || !preg_match('/\d{2}\/\d{2}\/\d{4}/', $data[0])) {
             return false;
-        }
-        else {
-            if (!str_contains($data[0], 'DOB')
-                || !preg_match('/\d{2}\/\d{2}\/\d{4}/', $data[0])) {
-                return false;
-            }
         }
         return true;
     }

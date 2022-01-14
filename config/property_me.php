@@ -11,5 +11,5 @@ return [
     'o_auth_url' => env("PROPERTY_ME_O_AUTH_URL", 'https://login.propertyme.com/connect/authorize'),
     'o_auth_callback_uri' => env("PROPERTY_ME_OAUTH_CALLBACK", '/property-me/callback'),
 
-    'label' => env('PROPERTY_ME_LABEL', '|HOOD|')
+    'label' => env('PROPERTY_ME_LABEL', '|hood|')
 ];
