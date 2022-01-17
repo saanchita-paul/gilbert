@@ -76,7 +76,10 @@ export default {
         pageCount: 0,
         itemsPerPage: 10,
         loading: false,
-        options: {},
+        options: {
+          sortDesc: [],
+          sortBy: [],
+        },
         headers:  [
           {
             text: 'App Id',
@@ -178,10 +181,6 @@ export default {
         //  this.loadApplication();
       }
     },
-  mounted(){
-    this.searchFilterModel =  new LeadSearchFilterModel(this.$route.query);
-    this.loadApplication();
-  },
   watch: {
     applications(val){
       console.log(val)
@@ -197,6 +196,11 @@ export default {
         this.loadApplication();
     }
   },
+  },
+  async mounted() {
+    this.user = await AuthService.getAuthUser();
+    this.searchFilterModel =  new LeadSearchFilterModel(this.$route.query);
+    this.loadApplication();
   }
 }
 </script>

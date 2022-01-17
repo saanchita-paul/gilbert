@@ -435,6 +435,21 @@ class ConnectionApplication extends Model
         };
     }
 
+<<<<<<< HEAD
+=======
+    public function getAgentName()
+    {
+        return match ($this->source) {
+            ConnectionApplication::SOURCE_HOOD,
+            ConnectionApplication::SOURCE_FOXIE => $this->createdBy?->first_name.' '. $this->createdBy?->last_name,
+            ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agent_name,
+            ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agent_name,
+            ConnectionApplication::SOURCE_PROPERTY_ME => $this->propertyMeLead?->agent_name,
+            default => ''
+        };
+    }
+
+>>>>>>> ab6627df... [HCO-356] [Agent Portal] Data is not being binded after re-loading
     /**
      * @return BelongsTo
      */
