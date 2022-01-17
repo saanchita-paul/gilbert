@@ -190,6 +190,7 @@ import AgentDropdown from '@scripts/components/crm/agent/AgentDropdown';
 import { sources } from '@scripts/data/LeadSourceMap';
 import { statusesForAgent } from '@scripts/data/ConnectionStatusMapper';
 import { omitBy, isNil, isEqual } from 'lodash-es'
+import dayJs from 'dayjs'
 export default {
   name: "AgencyAdvanceSearchDetails",
   components: {AgentDropdown},
