@@ -4,7 +4,7 @@ namespace App\Modules\PropertyMe\Services;
 
 use App\Models\Identification;
 use Illuminate\Support\Facades\Log;
-use App\Services\Logger\ErrorLogService;
+use App\Services\Logger\PropertyMeNoteLogService;
 
 class DobIdentificationService
 {
@@ -20,18 +20,24 @@ class DobIdentificationService
     const Country_AUS = "Australia";
     
     private $data;
-    private $id;
+    private $leadId;
+    private $firstName;
+    private $lastName;
+    private $validationType = null;
 
-    public function __construct($data, $id)
+    public function __construct($data, $leadId, $firstName, $lastName)
     {
         $this->data = $data;
-        $this->id = $id;
+        $this->leadId = $leadId;
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
     }
 
     public function get()
     {
         if(trim($this->data) === null || trim($this->data) === '') {
-            Log::info('PropertyMe (Save Contact): Note is empty');
+            Log::error('PropertyMe (Save Contact): Note is empty');
+            $this->sendEmptyEmail();
             return null;
         }
 
@@ -46,10 +52,8 @@ class DobIdentificationService
         } else {
             $person_data = null;
             Log::error('PropertyMe (Save Contact): Note data is invalid', [$this->data]);
-            ErrorLogService::send(
-                "PropertyMe (Save Contact): Note data is invalid. \n Table: property_me_leads \n Lead ID: " . $this->id,
-                []
-            );
+            $this->validationType = 'person';
+            // $this->sendInvalidEmail();
         }
 
         if (is_array($raw_authorised_person_data) && count($raw_authorised_person_data) >= 1) {
@@ -58,14 +62,16 @@ class DobIdentificationService
             } else {
                 $authorised_person_data = null;
                 Log::error('PropertyMe (Save Contact): Note data for Authorized person is invalid', [$this->data]);
-                ErrorLogService::send(
-                    "PropertyMe (Save Contact): Note data for Authorized person is invalid. \n Table: property_me_leads \n Lead ID: " . $this->id,
-                    []
-                );
+                $this->validationType = $this->validationType === 'person' ? 'both' : 'authorised_person';
+                // $this->sendInvalidEmail();
             }
         }
         else {
             $authorised_person_data = null;
+        }
+
+        if($this->validationType !== null){
+            $this->sendInvalidEmail();
         }
 
         return [
@@ -197,4 +203,35 @@ class DobIdentificationService
         return false;
     }
 
+    private function sendInvalidEmail()
+    {
+        $title = $this->validationType === 'authorised_person' ?
+            'PropertyMe (Save Contact): Note data for Authorized Person is invalid'
+            : 'PropertyMe (Save Contact): Note data is invalid';
+            
+        PropertyMeNoteLogService::send(
+            [
+                'title' => $title,
+                'tenant_name' => $this->firstName . ' ' . $this->lastName,
+                'lead_id' => $this->leadId,
+                'expected_format' => "DOB: DD/MM/YYY - Contact first name\nPassport: PAXXXXX Country - Contact first name\nDOB: DD/MM/YYY - Contact first name\nDL: 02132111 State - Contact first name",
+                'actual_format' => $this->data,
+            ],
+            []
+        );
+    }
+
+    private function sendEmptyEmail()
+    {
+        PropertyMeNoteLogService::send(
+            [
+                'title' => 'PropertyMe (Save Contact): Note is empty',
+                'tenant_name' => $this->firstName . ' ' . $this->lastName,
+                'lead_id' => $this->leadId,
+                'expected_format' => "DOB: DD/MM/YYY - Contact first name\nPassport: PAXXXXX Country - Contact first name",
+                'actual_format' => $this->data,
+            ],
+            []
+        );
+    }
 }

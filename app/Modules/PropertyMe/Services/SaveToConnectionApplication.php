@@ -22,7 +22,12 @@ class SaveToConnectionApplication
         $leadData = json_decode($lead->all_fields_dump, true);
 
         // $data = "DOB: 01/01/1992 - Harry\nDL: PA1111222 NT - Harry\nDOB: 01/01/1993 - Tonmoy\nDL: 015432362 VIC - Tonmoy";
-        $note_data = $this->getIdentificationDetails(data_get($leadData, 'Notes'), data_get($leadData, 'Id'));
+        $note_data = $this->getIdentificationDetails(
+            data_get($leadData, 'Notes'),
+            data_get($leadData, 'Id'),
+            $this->extractContact($leadData, 'FirstName'),
+            $this->extractContact($leadData, 'LastName')
+        );
 
         $application = ConnectionApplication::query()->create([
             'source' => ConnectionApplication::SOURCE_PROPERTY_ME,
@@ -154,9 +159,9 @@ class SaveToConnectionApplication
         $lead->save();
     }
 
-    public function getIdentificationDetails($data, $id)
+    public function getIdentificationDetails($data, $leadId, $firstName, $lastName)
     {
-        return (new DobIdentificationService($data, $id))->get();
+        return (new DobIdentificationService($data, $leadId, $firstName, $lastName))->get();
     }
 
 
