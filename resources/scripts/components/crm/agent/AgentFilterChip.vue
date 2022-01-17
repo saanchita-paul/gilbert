@@ -80,6 +80,9 @@ export default {
           if(this.searchFilterModel?.active_lead_type && this.searchFilterModel?.active_lead_type !== '') {
               this.filterItems.push('Status: ' + this.status); 
           }
+          if(this.searchFilterModel?.phone && this.searchFilterModel?.phone !== '') {
+              this.filterItems.push('Phone: ' + this.searchFilterModel?.phone);
+          }
       },
       removeFilters(){
           this.$emit('removeFilters');
