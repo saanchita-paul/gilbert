@@ -6,11 +6,14 @@ use App\Jobs\CreateHubspotProperty;
 use App\Models\ConnectionApplication;
 use App\Models\Office;
 use PropertyMe\PropertyMeLead;
+use App\Modules\PropertyMe\Services\DobIdentificationService;
+use App\Models\Identification;
+use App\Models\ConnectionApplicationSecondaryACC;
 
 class SaveToConnectionApplication
 {
 
-    public function __construct(private Office $office)
+    public function __construct(private Office $office, private array $tenancies)
     {
     }
 
@@ -18,6 +21,13 @@ class SaveToConnectionApplication
     {
         $leadData = json_decode($lead->all_fields_dump, true);
 
+        // $data = "DOB: 01/01/1992 - Harry\nDL: PA1111222 NT - Harry\nDOB: 01/01/1993 - Tonmoy\nDL: 015432362 VIC - Tonmoy";
+        $note_data = $this->getIdentificationDetails(
+            data_get($leadData, 'Notes'),
+            data_get($leadData, 'Id'),
+            $this->extractContact($leadData, 'FirstName'),
+            $this->extractContact($leadData, 'LastName')
+        );
 
         $application = ConnectionApplication::query()->create([
             'source' => ConnectionApplication::SOURCE_PROPERTY_ME,
@@ -25,12 +35,15 @@ class SaveToConnectionApplication
             'agency_id' => $this->office->agency->id,
             'status' => ConnectionApplication::STATUS_UNASSIGNED,
 
+            'moving_date' => $this->getMovingDate(data_get($leadData, 'Id')),
+
             'first_name' => $this->extractContact($leadData, 'FirstName'),
             'title' => $this->getUserTitle($this->extractContact($leadData, 'Salutation')),
             'last_name' => $this->extractContact($leadData, 'LastName'),
             'email' => $this->extractContact($leadData, 'Email'),
             'phone' => $this->extractContact($leadData, 'CellPhone'),
             'homephone' => $this->extractContact($leadData, 'HomePhone'),
+            'dob' => $this->extractNoteData($note_data, 'person.dob'),
 
             'tenancy_type' => $this->getTenancyType($leadData),
             'property_type' => $this->getTenancyType($leadData),
@@ -58,6 +71,30 @@ class SaveToConnectionApplication
 
         ]);
 
+        if($this->extractNoteData($note_data, 'person.identification.type') !== null
+            && $this->extractNoteData($note_data, 'person.identification.card_number') !== null
+            && ($this->extractNoteData($note_data, 'person.identification.state') !== null
+            || $this->extractNoteData($note_data, 'person.identification.country') !== null)
+        ) {
+            Identification::query()->create([
+                'connection_application_id' => $application->id,
+                'type' => $this->extractNoteData($note_data, 'person.identification.type'),
+                'card_number' => $this->extractNoteData($note_data, 'person.identification.card_number'),
+                'state' => $this->extractNoteData($note_data, 'person.identification.state'),
+                'country' => $this->extractNoteData($note_data, 'person.identification.country'),
+            ]);
+        }
+
+        ConnectionApplicationSecondaryACC::query()->create([
+            'connection_application_id' => $application->id,
+            'title' => $this->getUserTitle($this->extractSecondaryContact($leadData, 'Salutation')),
+            'first_name' => $this->extractSecondaryContact($leadData, 'FirstName'),
+            'last_name' => $this->extractSecondaryContact($leadData, 'LastName'),
+            'email' => $this->extractSecondaryContact($leadData, 'Email'),
+            'phone' => $this->extractSecondaryContact($leadData, 'CellPhone'),
+            'dob' => $this->extractNoteData($note_data, 'authorised_person.dob'),
+        ]);
+
         $this->saveApplicationId($application->id, $lead);
         CreateHubspotProperty::dispatch($application->id);
     }
@@ -72,7 +109,17 @@ class SaveToConnectionApplication
 
     private function extractContact($leadData, $key)
     {
-        return data_get($leadData, "PrimaryContactPerson.$key") ?? data_get($leadData, "ContactPersons.0.$key");
+        return data_get($leadData, "PrimaryContactPerson.$key");
+    }
+
+    private function extractSecondaryContact($leadData, $key)
+    {
+        return data_get($leadData, "ContactPersons.0.$key");
+    }
+
+    private function extractNoteData($data, $key)
+    {
+        return data_get($data, $key);
     }
 
     private function getIsEmailBilling(?array $preferences): bool
@@ -110,5 +157,23 @@ class SaveToConnectionApplication
     {
         $lead->connection_application_id = $id;
         $lead->save();
+    }
+
+    public function getIdentificationDetails($data, $leadId, $firstName, $lastName)
+    {
+        return (new DobIdentificationService($data, $leadId, $firstName, $lastName))->get();
+    }
+
+
+    /**
+     * @param string $id
+     * @return string|null
+     */
+    private function getMovingDate(string $id): ?string
+    {
+        return collect($this->tenancies)
+            ->filter(fn($value) => data_get($value, 'ContactId') === $id)
+            ->pluck('TenancyStart')
+            ->first();
     }
 }
