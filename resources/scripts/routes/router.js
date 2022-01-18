@@ -123,7 +123,7 @@ const router = new VueRouter({
 
                         },
                         {
-                            path: ':id/offices/:officeId/users',
+                            path: ':id/offices/:officeId',
                             component: CrmUserDatatable,
                             name: 'real.state.agency.users',
                             meta: {

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Identification;
 use App\Models\ConnectionApplication;
+use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use FastConnect\Services\FastConnectProductService;
@@ -53,6 +54,10 @@ class SubmitWaterLeadToFastConnect
         "AUSTRALIA" => 13
     ];
 
+    const MAP_COUNTRY = [
+        "AUS" => 'Australia'
+    ];
+
     const MAP_STATE = [
         "New South Wales" => 'NSW',
         "Victoria" => 'VIC',
@@ -69,6 +74,26 @@ class SubmitWaterLeadToFastConnect
         $this->application = ConnectionApplication::findOrFail($id);
         $this->application->load(['identification', 'connectionServices', 'authorizedPerson']);
         $this->authenticate();
+    }
+
+    public function getCountries(){
+        try {
+            $authorization = 'Bearer ' . $this->accessToken;
+            $url = config('fastconnect.root_url') . config('fastconnect.get_countries');
+            $response = Http::withHeaders([
+                'content-type' => 'application/json',
+                'accept' => 'application/json',
+                'authorization' => $authorization
+            ])
+            ->get($url);
+            $countries = json_decode($response->body(), true);
+            return $countries;
+        } catch (\Exception $exception) {
+            info('exception in getCountires' , [ $exception->getTraceAsString() , $exception->getMessage() ]);
+            return [];
+            //throw $th;
+        }
+        
     }
 
     public function authenticate(): static
@@ -222,9 +247,27 @@ class SubmitWaterLeadToFastConnect
         return $state ?  SubmitWaterLeadToFastConnect::MAP_IDENTIFICATION_STATE[$state] : "";
     }
 
-    private function getMappedIdentificationCountry($country)
+    public function getMappedIdentificationCountry($country)
     {
-        return SubmitWaterLeadToFastConnect::MAP_IDENTIFICATION_COUNTRY[strtoupper($country)];
+        try {
+            $countries =  $this->getCountries();
+            $country = SubmitWaterLeadToFastConnect::MAP_COUNTRY[ strtoupper($country) ] ?? $country;
+            foreach ($countries as $val) {
+                if ( strtolower( $val['name'] ) === strtolower( $country) ) {
+                    return $val['id'];
+                }
+            }
+            throw new Exception("Country not found");
+            //TODO check array search case insensitive
+            // $id = null;
+            // $countryIndex =  array_search($country, array_column( $countries, 'name'));
+            // if( gettype($countryIndex) == 'boolean'){
+            // }
+            // return $countries[$countryIndex]['id'];
+        } catch (\Exception $exception) {
+            info('exception in getMappedIdentificationCountry, SubmitWaterLeadToFastConnect' , [ $exception->getTraceAsString() , $exception->getMessage() ]);
+            throw new Exception("Country not found");
+        }
     }
 
     private function addExtraData($lead, $data)

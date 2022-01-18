@@ -121,8 +121,7 @@ export default {
     sendMail: async (item) => {
         try {
             const response = await axios.post('/api/office-agents/' + item.id + '/send-confirm-mail',{...item}) ;
-
-            return response.status === 200?true : false;
+            return response.status === 200 ? true : false;
         } catch (error) {
             console.log(error)
             return error.data;

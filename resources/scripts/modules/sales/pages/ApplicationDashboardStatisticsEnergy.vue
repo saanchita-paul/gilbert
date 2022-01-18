@@ -19,6 +19,19 @@
                             Total submitted to retailer
                         </div>
                     </div>
+                    <div>
+                        <div class="mb-3"></div>
+                        <div
+                            class="font-weight-bold text-center py-0 countFont"
+                        >
+                            {{chartData.waitingForConnection}}
+                        </div>
+                        <div
+                            class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
+                        >
+                            Waiting for connection
+                        </div>
+                    </div>
                 </template>
 
                 <template v-if="type === 'conversion'">

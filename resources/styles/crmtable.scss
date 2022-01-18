@@ -5,20 +5,24 @@
     table {
         tr {
             th {
-                font-size: 16px !important;
-                font-weight: 700 !important;
+                font-size: 0.87em !important;
+                font-weight: 600 !important;
                 color: #000 !important;
             }
         }
         tr {
             td {
-                font-size: 16px !important;
+                font-size: 0.87em  !important;
                 font-weight: 400 !important;
                 color: #7E8A8F !important;
+                padding-right: 0px !important;
+                padding-left: .5em !important;
                 &:first-child {
-                    font-size: 16px !important;
+                    font-size:  0.87em  !important;
                     font-weight: 400 !important;
                     color: #263238 !important;
+                    padding-right: 0px !important;
+                    padding-left: 1em !important;
                 }
             }
 

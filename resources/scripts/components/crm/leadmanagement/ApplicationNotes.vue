@@ -16,16 +16,13 @@
             <v-btn class="ma-2 float-right" @click="saveNote">Submit Note</v-btn>
         </v-col>
 
-        <v-col cols="12" class="notes-containser" >
+        <v-col cols="12" class="notes-container" >
                 <v-timeline
                     dense
             >
                     <v-timeline-item color="primary" small v-for="nt in notes" :color="getColor(nt.active)" :key="nt.id">
-                            <v-card class="elevation-2 timeline-card" color="gray" :class="{active:false}">
-                                <p class="title">{{nt.title}}</p>
-                                <p>{{nt.created_at}}</p>
-                                <p>{{nt.text}}</p>
-                            </v-card>
+                        <SubmittedNote v-if="nt.type == 'submitted_connection'" :note="nt"> </SubmittedNote>
+                        <Note v-else :note="nt"></Note>
                     </v-timeline-item>
              </v-timeline>
         </v-col>
@@ -33,8 +30,11 @@
 </template>
 
 <script>
+import Note from "@scripts/components/crm/leadmanagement/notes/Note";
+import SubmittedNote from "@scripts/components/crm/leadmanagement/notes/SubmittedNote";
 export default {
   name: "ApplicationNotes",
+    components: {SubmittedNote, Note},
     props: {
       notes: {
           require: true
@@ -68,7 +68,7 @@ export default {
 </script>
 
 <style scoped>
-.notes-containser{
+.notes-container{
   max-height: 500px;
   overflow-y: auto;
 }

@@ -1,19 +1,22 @@
 <?php
 
-use Reporting\Http\Controllers\ReportController;
+use App\Models\ConnectionService;
+use App\Mail\WaterSumissionFailed;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Route;
+use PropertyMe\services\FetchContacts;
 use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Agency\NoteController;
+use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\Agency\AgencyController;
 use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\UserInvitationController;
 use App\Http\Controllers\Agency\HoodUserController;
 use App\Http\Controllers\Agency\ApplicationController;
+use FastConnect\Services\SubmitWaterLeadToFastConnect;
 use App\Http\Controllers\Agency\AgentProfileController;
 use OurProperty\Http\Controllers\OurPropertyController;
-use PropertyMe\services\FetchContacts;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +55,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/offices', [OfficeController::class, 'createOffice']);
     Route::get('/offices/{id}', [OfficeController::class, 'getOffice']);
     Route::get('/offices/office/{id}', [OfficeController::class, 'getOnlyOffice']);
+    Route::get('/offices/{id}/get-metrics', [OfficeController::class, 'getMatricsData']);
     Route::post('/offices/{id}/update', [OfficeController::class, 'updateOffice']);
     Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index']);
     Route::get('/offices/{officeId}/agents', [AgentProfileController::class, 'getAgentList']);
@@ -121,6 +125,7 @@ Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWate
  */
 Route::get('/sales-dashboard/home', [ReportController::class, 'home']);
 Route::get('/sales-dashboard/export/submission-report', [ReportController::class, 'submissionReport']);
+Route::get('/plans-details/{id}/export', [NoteController::class, 'download']);
 
 
 
@@ -167,4 +172,12 @@ Route::get("/karan/sales-status", function () {
             $service->save();
         }
     return "success";
+});
+
+
+
+Route::get('country_test', function () {
+    $ser =  new SubmitWaterLeadToFastConnect(1);
+    return $ser->getMappedIdentificationCountry('Australia'); 
+    // return 'got' ;
 });

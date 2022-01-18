@@ -66,10 +66,8 @@ const userData = [
 export default {
     getUsersData: async (meta, agencyId, officeId)=> {
         try {
-            // const data = await axios.get('/');
-            // return CrmUserMapper.mapUserList(data);
             meta = CrmUserMapper.mapMetaData(meta);
-            const data = await axios.get('/api/offices/'+ officeId + '/users',{params: {...meta}});
+            const data = await axios.get('/api/offices/'+ officeId + '/users', {params: {...meta}});
             return CrmUserMapper.mapUserList(data.data);
 
         } catch (error) {

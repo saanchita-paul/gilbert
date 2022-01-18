@@ -32,6 +32,11 @@ class WaterReport
     private array $closedType = [ConnectionApplication::STATUS_CLOSED];
     private array $rejectedType = [ConnectionService::STATUS_CLOSED];
 
+    private array $waitingConnectionType = [
+        ConnectionService::WATER_STATUS_SUBMITTED,
+        ConnectionService::AC_MANUAL_PROCESSING
+    ];
+
     private array $openType = [
         ConnectionApplication::STATUS_ASSIGNED,
         ConnectionApplication::STATUS_UNASSIGNED,
@@ -56,7 +61,7 @@ class WaterReport
                 ->selectRaw('provider_name , is_auto_water_submit,  count(*) as total')
                 ->join('connection_services' , 'connection_services.connection_application_id' , '=' , 'connection_applications.id')
                 ->whereIn('connection_services.service_type', [ConnectionService::TYPE_WATER])
-                ->whereIn('connection_applications.status', $this->submisssionType)
+                // ->whereIn('connection_services.status', $this->submisssionType)
                 ->where('submitted_at', '>=', $this->startDate)
                 ->where('submitted_at', '<=', $this->endDate)
                 ->groupBy( 'provider_name', 'is_auto_water_submit')
@@ -71,7 +76,7 @@ class WaterReport
         ->selectRaw('provider_name , is_auto_water_submit,  count(*) as total')
         ->join('connection_services', 'connection_services.connection_application_id', '=', 'connection_applications.id')
         ->whereIn('connection_services.service_type', [ConnectionService::TYPE_WATER])
-        ->whereIn('connection_applications.status', $this->conversionsType)
+        ->whereIn('connection_services.status', $this->conversionsType)
         ->where('submitted_at', '>=', $this->startDate)
         ->where('submitted_at', '<=', $this->endDate)
         ->groupBy('provider_name', 'is_auto_water_submit')
@@ -87,8 +92,8 @@ class WaterReport
         ->join('connection_services', 'connection_services.connection_application_id', '=', 'connection_applications.id')
         ->whereIn('connection_services.service_type', [ConnectionService::TYPE_WATER])
         ->whereIn('connection_applications.status', $this->rejectedType)
-        ->where('submitted_at', '>=', $this->startDate)
-        ->where('submitted_at', '<=', $this->endDate)
+        ->where('connection_services.updated_at', '>=', $this->startDate)
+        ->where('connection_services.updated_at', '<=', $this->endDate)
         ->groupBy('provider_name', 'is_auto_water_submit')
         ->get()
         ->toArray();
@@ -109,6 +114,20 @@ class WaterReport
         return [
             'total' => $total
         ];
+    }
+
+    public function totalWaitingForConnection()
+    {
+        return DB::table('connection_applications')
+                ->selectRaw('provider_name , is_auto_water_submit,  count(*) as total')
+                ->join('connection_services' , 'connection_services.connection_application_id' , '=' , 'connection_applications.id')
+                ->whereIn('connection_services.service_type', [ConnectionService::TYPE_WATER])
+                ->whereIn('connection_applications.status', $this->waitingConnectionType)
+                ->where('submitted_at', '>=', $this->startDate)
+                ->where('submitted_at', '<=', $this->endDate)
+                ->groupBy( 'provider_name', 'is_auto_water_submit')
+                ->get()
+                ->toArray();
     }
 
     private function getTotalOpenApplication()
@@ -140,6 +159,7 @@ class WaterReport
             'conversions' => $this->mapperService->setWaterData( $this->totalConversions() )->getReportData(),
             'rejected' => $this->mapperService->setWaterData($this->totalRejected())->getReportData(),
             'declined' => $this->totalDeclined(),
+            'waiting_for_connection' => $this->mapperService->setWaterData($this->totalWaitingForConnection())->getReportData(),
             "total_open_application" => $this->getTotalOpenApplication(),
             "total_consent_pending" => 0,
             "total_closed" => $this->getTotalClosedApplication(),

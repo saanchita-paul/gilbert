@@ -579,9 +579,6 @@ export default {
 
         },
 
-    mounted() {
-      console.log('printing data' ,  this.data);
-    }
 
 };
 </script>

@@ -31,6 +31,11 @@ class EnergyReport
     private array $closedType = [ConnectionApplication::STATUS_CLOSED];
     private array $rejectedType = [ConnectionService::STATUS_REJECTED];
 
+    private array $waitingConnectionType = [
+        ConnectionService::STATUS_ENERGY_SUBMIT,
+        ConnectionService::AC_MANUAL_PROCESSING
+    ];
+
     private array $openType = [
         ConnectionApplication::STATUS_ASSIGNED,
         ConnectionApplication::STATUS_UNASSIGNED,
@@ -55,7 +60,7 @@ class EnergyReport
         return ConnectionService::query()
             ->selectRaw('provider_name, count(*) as total, service_type, plan_type')
             ->whereNotNull('provider_name')
-            ->whereIn('status', $this->submisssionType)
+            // ->whereIn('status', $this->submisssionType)
             ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
             ->where('submitted_at', '>=', $this->startDate)
             ->where('submitted_at', '<=', $this->endDate)
@@ -99,6 +104,20 @@ class EnergyReport
         ];
     }
 
+    public function totalWaitingForConnection()
+    {
+        return ConnectionService::query()
+            ->selectRaw('provider_name, count(*) as total, service_type, plan_type')
+            ->whereNotNull('provider_name')
+            ->whereIn('status', $this->waitingConnectionType)
+            ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
+            ->where('submitted_at', '>=', $this->startDate)
+            ->where('submitted_at', '<=', $this->endDate)
+            ->groupBy('provider_name', 'service_type', 'plan_type')
+            ->get()
+            ->toArray();
+    }
+
     private function getTotalOpenApplication()
     {
         return ConnectionService::whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
@@ -129,6 +148,7 @@ class EnergyReport
             'conversions' => $this->mapperService->setEnergyData($this->totalConversions())->getReportData(),
             'rejected' => $this->mapperService->setEnergyData($this->totalRejected())->getReportData(),
             'declined' => $this->totalDeclined(),
+            'waiting_for_connection' => $this->mapperService->setEnergyData($this->totalWaitingForConnection())->getReportData(),
             "total_open_application" => $this->getTotalOpenApplication(),
             "total_consent_pending" => 0,
             "total_closed" => $this->getTotalClosedApplication(),

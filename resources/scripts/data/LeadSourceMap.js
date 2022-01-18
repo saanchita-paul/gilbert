@@ -22,3 +22,12 @@ export const sourcesNumberToName = {
     4 : 'Our-Property',
     5 : 'Property_Me',
 };
+export const leadSourceMapFromNumber = {
+        3 : 'All',
+        0 : 'Hood',
+        1 : 'Foxie',
+        2 : 'Ignite',   
+        4 : 'OurProperty',   
+        5 : 'PropertyMe',   
+}
+

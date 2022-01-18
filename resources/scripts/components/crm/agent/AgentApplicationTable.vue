@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <v-row no-gutters class="mt-5">
+    <div v-if="user">
+        <v-row class="mt-5">
             <v-col cols="8" class="search-bg">
                 <v-btn
                     class="ma-2"
@@ -12,7 +12,7 @@
                     </v-btn>
             </v-col>
             <v-col cols="4" class="text-right">
-                <v-btn color="primary" @click="addNewApplication"
+                <v-btn :disabled="isUserActive" color="primary" @click="addNewApplication"
                 ><v-icon left>add
                 </v-icon> Add New Application
                 </v-btn>
@@ -64,6 +64,9 @@ import AdvanceSearchModal from '@scripts/components/crm/modals/AdvanceSearchModa
 import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel';
 import AgentFilterChip from '@scripts/components/crm/agent/AgentFilterChip';
 import { sourcesNumberToName } from '@scripts/data/LeadSourceMap';
+import Search from "@scripts/components/crm/Search";
+import AuthService from "@scripts/services/AuthService";
+
 export default {
     name: "AgentApplicationTable",
     props: ["applications","totalItem", 'selectedAppId'],
@@ -73,6 +76,7 @@ export default {
     },
     data() {
       return {
+        user: null,
         page: 1,
         pageCount: 0,
         itemsPerPage: 10,
@@ -134,7 +138,10 @@ export default {
     computed:{
       sourcesNumberToName(){
         return sourcesNumberToName;
-      }
+      },
+      isUserActive() {
+        return this.user.is_active === 0 ? true : false;
+      },
     },
     methods: {
         isSelectedClass(item) {
