@@ -26,4 +26,14 @@ class BasePropertyMeAPI
         }
         return "Bearer " . $this->accessToken;
     }
+
+
+    /**
+     * @throws Exception
+     */
+    protected function getTimestamp(int $day = null): string
+    {
+        $noOfDays = $day ?? config('property_me.no_of_days');
+        return now()->addDays($noOfDays)->format('U');
+    }
 }

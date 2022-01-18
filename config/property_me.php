@@ -6,7 +6,11 @@ return [
     "token_url" => env("PROPERTY_ME_REFRESH_TOKEN_API", "https://login.propertyme.com/connect/token"),
     "api_root_url" => env("PROPERTY_ME_API_ROOT_URL", "https://app.propertyme.com"),
     "get_contact_url" => env("PROPERTY_ME_GET_CONTACT_URL", "/api/v1/contacts"),
+    "get_lots_url" => env("PROPERTY_ME_GET_LOTS_URL", "/api/v1/lots"),
+    "get_tenancies_url" => env("PROPERTY_ME_GET_TENANCIES_URL", "/api/v1/tenancies"),
     'no_of_days'  => env('CONNECT_ME_NO_OF_DAYS', -1),
     'o_auth_url' => env("PROPERTY_ME_O_AUTH_URL", 'https://login.propertyme.com/connect/authorize'),
-    'o_auth_callback_uri' => env("PROPERTY_ME_OAUTH_CALLBACK", '/property-me/callback')
+    'o_auth_callback_uri' => env("PROPERTY_ME_OAUTH_CALLBACK", '/property-me/callback'),
+
+    'label' => env('PROPERTY_ME_LABEL', '|hood|')
 ];
