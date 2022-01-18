@@ -22,14 +22,16 @@ class EnergyReport
         ConnectionService::STATUS_ACCEPTED,
         ConnectionService::STATUS_REJECTED,
         ConnectionService::STATUS_ENERGY_SUBMIT,
-        ConnectionService::STATUS_CLOSED,
         ConnectionService::STATUS_CANT_CONNECT,
         ConnectionService::AC_MANUAL_PROCESSING
     ];
 
     private array $conversionsType = [ConnectionService::STATUS_ACCEPTED];
     private array $closedType = [ConnectionApplication::STATUS_CLOSED];
-    private array $rejectedType = [ConnectionService::STATUS_REJECTED];
+    private array $rejectedType = [
+        ConnectionService::STATUS_REJECTED,
+        ConnectionService::STATUS_CANT_CONNECT
+    ];
 
     private array $waitingConnectionType = [
         ConnectionService::STATUS_ENERGY_SUBMIT,
@@ -60,7 +62,7 @@ class EnergyReport
         return ConnectionService::query()
             ->selectRaw('provider_name, count(*) as total, service_type, plan_type')
             ->whereNotNull('provider_name')
-            // ->whereIn('status', $this->submisssionType)
+            ->whereIn('status', $this->submisssionType)
             ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
             ->where('submitted_at', '>=', $this->startDate)
             ->where('submitted_at', '<=', $this->endDate)
@@ -90,8 +92,8 @@ class EnergyReport
             ->whereNotNull('provider_name')
             ->whereIn('status', $this->rejectedType)
             ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
-            ->where('updated_at', '>=', $this->startDate)
-            ->where('updated_at', '<=', $this->endDate)
+            ->where('submitted_at', '>=', $this->startDate)
+            ->where('submitted_at', '<=', $this->endDate)
             ->groupBy('provider_name', 'service_type', 'plan_type')
             ->get()
             ->toArray();
@@ -99,9 +101,19 @@ class EnergyReport
 
     public function totalDeclined()
     {
-        return [
-            'total' => 0
-        ];
+        return ConnectionService::query()
+            ->selectRaw('provider_name, count(*) as total, service_type, plan_type')
+            ->whereNotNull('provider_name')
+            ->whereIn('status', $this->rejectedType)
+            ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
+            ->where('submitted_at', '>=', $this->startDate)
+            ->where('submitted_at', '<=', $this->endDate)
+            ->whereHas('reasons', function ($query) {
+                $query->whereRaw('LOWER(reason_code) in (?)', ['credit_check']);
+            })
+            ->groupBy('provider_name', 'service_type', 'plan_type')
+            ->get()
+            ->toArray();
     }
 
     public function totalWaitingForConnection()
@@ -147,7 +159,7 @@ class EnergyReport
             'submission' => $this->mapperService->setEnergyData($this->totalSubmissions())->getReportData(),
             'conversions' => $this->mapperService->setEnergyData($this->totalConversions())->getReportData(),
             'rejected' => $this->mapperService->setEnergyData($this->totalRejected())->getReportData(),
-            'declined' => $this->totalDeclined(),
+            'declined' => $this->mapperService->setEnergyData($this->totalDeclined())->getReportData(),
             'waiting_for_connection' => $this->mapperService->setEnergyData($this->totalWaitingForConnection())->getReportData(),
             "total_open_application" => $this->getTotalOpenApplication(),
             "total_consent_pending" => 0,

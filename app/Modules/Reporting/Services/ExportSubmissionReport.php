@@ -99,21 +99,22 @@ class ExportSubmissionReport
             ->leftJoin('users as u', 'ca.submitted_by', '=', 'u.id')
             ->leftJoin('suger_leads as sl', 'ca.id', '=', 'sl.connection_application_id')
             ->leftJoin('rejection_reasons as rr', 'cs.id', '=', 'rr.connection_service_id')
-            ->whereIn('cs.service_type', $this->serviceType);
+            ->whereIn('cs.service_type', $this->serviceType)
+            ->whereNotNull('cs.provider_name');
         
         $tempBuilder = clone $builder;
         $filterWithSubmittedAt = $this->filterWithSubmittedAt($tempBuilder)->get()->toArray();
 
-        $tempBuilder = clone $builder;
-        $filterWithUpdatedAt = $this->filterWithUpdatedAt($tempBuilder)->get()->toArray();
+        // $tempBuilder = clone $builder;
+        // $filterWithUpdatedAt = $this->filterWithUpdatedAt($tempBuilder)->get()->toArray();
 
-        $tempBuilder = clone $builder;
-        $filterWithClosedAt = $this->filterWithClosedAt($tempBuilder)->get()->toArray();
+        // $tempBuilder = clone $builder;
+        // $filterWithClosedAt = $this->filterWithClosedAt($tempBuilder)->get()->toArray();
 
         return array_merge(
             $filterWithSubmittedAt,
-            $filterWithUpdatedAt,
-            $filterWithClosedAt
+            // $filterWithUpdatedAt,
+            // $filterWithClosedAt
         );
     }
 
@@ -123,13 +124,13 @@ class ExportSubmissionReport
             ->whereIn('cs.status', [
                 ConnectionService::STATUS_ACCEPTED, //Accepted
                 ConnectionService::STATUS_ENERGY_SUBMIT, //In progress
-                ConnectionService::STATUS_SUBMITTED, //In progress
+                // ConnectionService::STATUS_SUBMITTED, //In progress
                 ConnectionService::AC_MANUAL_PROCESSING, //MANUAL_PROCESSING
 
                 ConnectionService::STATUS_CANT_CONNECT, //Rejeted
                 ConnectionService::STATUS_REJECTED, //Rejeted
-                ConnectionService::STATUS_EA_PROCESSINF, //Not submitted
-                ConnectionApplication::STATUS_CLOSED //Closed
+                // ConnectionService::STATUS_EA_PROCESSINF, //Not submitted
+                // ConnectionApplication::STATUS_CLOSED //Closed
             ])
             ->where('cs.submitted_at', '>=', $this->startDate)
             ->where('cs.submitted_at', '<=', $this->endDate);
