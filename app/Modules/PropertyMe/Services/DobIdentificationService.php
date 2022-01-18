@@ -5,6 +5,7 @@ namespace App\Modules\PropertyMe\Services;
 use App\Models\Identification;
 use Illuminate\Support\Facades\Log;
 use App\Services\Logger\PropertyMeNoteLogService;
+use Carbon\Carbon;
 
 class DobIdentificationService
 {
@@ -82,11 +83,11 @@ class DobIdentificationService
 
     private function getPersonData(?array $data, ?string $type)
     {
-        $raw_dob_data = collect($data)->filter(function ($item) {
+        $raw_dob_data = collect($data[0])->filter(function ($item) {
             return str_contains($item, 'DOB');
         })->first();
 
-        $raw_identification_data = collect($data)->filter(function ($item) {
+        $raw_identification_data = collect($data[1])->filter(function ($item) {
             return str_contains($item, 'Passport') || str_contains($item, 'DL');
         })->first();
 
@@ -109,8 +110,8 @@ class DobIdentificationService
 
     private function getFormattedDate(string $raw_dob, string $type)
     {
-        $format = $type === 'person' ? 'Y/m/d' : 'Y/m/d H:i:s';
-        return date($format, strtotime($raw_dob));
+        $format = $type === 'person' ? 'Y-m-d' : 'Y-m-d 00:00:00';
+        return Carbon::createFromFormat('d/m/Y', $raw_dob)->format($format);
     }
 
     private function getIdentificationData(?string $raw_identification)
@@ -170,11 +171,12 @@ class DobIdentificationService
                 || !preg_match('/\d{2}\/\d{2}\/\d{4}/', $data[0])) {
                 return false;
             }
-            if (!(str_contains($data[1], 'Passport') || str_contains($data[1], 'DL'))
-                || count(explode(' ', $data[1])) < 4) {
-                return false;
-            }
-            if (!$this->containState($data[1])) {
+
+            $data[1] = preg_split('/\s+/', $data[1]);
+            
+            if ((!is_array($data[1]) || count($data[1]) < 4)
+                ||!(str_contains($data[1][0], 'Passport') || str_contains($data[1][0], 'DL'))
+                || !$this->containState($data[1][2])) {
                 return false;
             }
         }
