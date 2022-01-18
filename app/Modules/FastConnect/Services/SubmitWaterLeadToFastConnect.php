@@ -69,6 +69,8 @@ class SubmitWaterLeadToFastConnect
         'Western Australia' => 'WA'
     ];
 
+    const mapLengthOfCountry = [ 2 => 'short_code' , 3 => 'country_code' , 4 => 'name' ];
+
     public function __construct(int $id) {
         $this->applicationId = $id;
         $this->application = ConnectionApplication::findOrFail($id);
@@ -251,19 +253,13 @@ class SubmitWaterLeadToFastConnect
     {
         try {
             $countries =  $this->getCountries();
-            $country = SubmitWaterLeadToFastConnect::MAP_COUNTRY[ strtoupper($country) ] ?? $country;
+            $lenghtOfName =  strlen($country) > 3 ? 4 : strlen($country);
             foreach ($countries as $val) {
-                if ( strtolower( $val['name'] ) === strtolower( $country) ) {
+                if ( strtolower( $val[SubmitWaterLeadToFastConnect::mapLengthOfCountry[$lenghtOfName]] ) === strtolower( $country) ) {
                     return $val['id'];
                 }
             }
             throw new Exception("Country not found");
-            //TODO check array search case insensitive
-            // $id = null;
-            // $countryIndex =  array_search($country, array_column( $countries, 'name'));
-            // if( gettype($countryIndex) == 'boolean'){
-            // }
-            // return $countries[$countryIndex]['id'];
         } catch (\Exception $exception) {
             info('exception in getMappedIdentificationCountry, SubmitWaterLeadToFastConnect' , [ $exception->getTraceAsString() , $exception->getMessage() ]);
             throw new Exception("Country not found");
