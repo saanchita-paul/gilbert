@@ -71,7 +71,8 @@ class Office extends Model
         'country',
         'abn',
         'phone',
-        'email'
+        'email',
+        'property_me_refresh_token'
     ];
 
     /**
@@ -104,5 +105,18 @@ class Office extends Model
     public function applications(): HasMany
     {
         return $this->hasMany(ConnectionApplication::class);
+    }
+
+    /**
+     * Saving property-me refresh token
+     *
+     * @param int $officeId
+     * @param string $refreshToken
+     *
+     * @return void
+     */
+    public static function linkWithPropertyMe(int $officeId, string $refreshToken): void
+    {
+        static::where('id', $officeId)->update(['property_me_refresh_token' => $refreshToken]);
     }
 }
