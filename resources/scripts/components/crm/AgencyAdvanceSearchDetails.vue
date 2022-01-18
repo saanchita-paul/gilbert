@@ -174,7 +174,7 @@ import { formatDate } from "@scripts/services/others/DateService"
 import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel';
 import AgentDropdown from '@scripts/components/crm/agent/AgentDropdown';
 import { sources } from '@scripts/data/LeadSourceMap';
-import { statuses } from '@scripts/data/ConnectionStatusMapper';
+import { statusesForAgent } from '@scripts/data/ConnectionStatusMapper';
 import { omitBy, isNil, isEqual } from 'lodash-es'
 export default {
   name: "AgencyAdvanceSearchDetails",
@@ -212,7 +212,7 @@ export default {
       return sources;
     },
     statuses(){
-      return statuses;
+      return statusesForAgent;
     }
   },
   methods: {

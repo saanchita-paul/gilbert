@@ -102,7 +102,7 @@
             </v-col>
             <v-col cols="7" class="my-0 py-0">
 <!--                <p class="font-weight-bold">Status:</p>-->
-                <p class="mb-2">{{['Unassigned','Assigned', 'Escalated'].includes(application.status)?'In Progress': application.status }}</p>
+                <p class="mb-2">{{['Unassigned', 'UnAssigned', 'Assigned', 'Escalated' , 'Submitted'].includes(application.status)?'In Progress': application.status }}</p>
             </v-col>
 
             <v-col cols="5" class="my-0 py-0">

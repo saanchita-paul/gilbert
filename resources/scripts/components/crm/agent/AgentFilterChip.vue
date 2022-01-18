@@ -22,7 +22,7 @@
 
 <script>
 import { sources } from '@scripts/data/LeadSourceMap';
-import { statuses } from '@scripts/data/ConnectionStatusMapper';
+import { statusesForAgent } from '@scripts/data/ConnectionStatusMapper';
 import { formatDate } from "@scripts/services/others/DateService"
 import dayJs from "dayjs";
 export default {
@@ -40,7 +40,7 @@ export default {
         return sources.find(n=>n.value==this.searchFilterModel?.source)?.text ?? "";
       },
       status(){
-        return statuses.find(n=>n.value==this.searchFilterModel?.active_lead_type)?.text ?? "";
+        return statusesForAgent.find(n=>n.value==this.searchFilterModel?.active_lead_type)?.text ?? "";
       },
       moving_date(){
         let formattedDate = formatDate(this.searchFilterModel?.moving_date);

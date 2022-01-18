@@ -41,7 +41,7 @@
                       {{ sourcesNumberToName[item.source] }}
                     </template>
                     <template v-slot:item.status="{ item }">
-                        {{['UnAssigned','Assigned', 'Escalated'].includes(item.status)?'In Progress': item.status }}
+                        {{['UnAssigned', 'Unassigned', 'Assigned', 'Escalated' , 'Submitted'].includes(item.status)?'In Progress': item.status }}
                     </template>
                     <template v-slot:item.services="{ item }">
                       <v-icon small  :disabled="isServiceAllowed(item.services, 'power')" color="yellow">mdi-flash</v-icon>
@@ -183,6 +183,9 @@ export default {
     this.loadApplication();
   },
   watch: {
+    applications(val){
+      console.log(val)
+    },
     options: {
       handler () {
         this.loadApplication();

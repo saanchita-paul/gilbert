@@ -14,3 +14,11 @@ export const statuses = [
     { text: "Rejected", value: 'rejected' },
     { text: "Closed", value: 'closed' },
 ];
+
+export const statusesForAgent = [
+    { text: "All", value: '' },
+    { text: "In Progress", value: 'in_progress' },
+    { text: "Accepted", value: 'accepted' },
+    { text: "Rejected", value: 'rejected' },
+    { text: "Closed", value: 'closed' },
+];
