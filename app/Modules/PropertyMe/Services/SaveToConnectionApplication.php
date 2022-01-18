@@ -13,7 +13,7 @@ use App\Models\ConnectionApplicationSecondaryACC;
 class SaveToConnectionApplication
 {
 
-    public function __construct(private Office $office, private array $lots)
+    public function __construct(private Office $office, private array $tenancies)
     {
     }
 
@@ -35,7 +35,7 @@ class SaveToConnectionApplication
             'agency_id' => $this->office->agency->id,
             'status' => ConnectionApplication::STATUS_UNASSIGNED,
 
-            'moving_date' => $this->getMovingDate(data_get($leadData, 'CustomerId')),
+            'moving_date' => $this->getMovingDate(data_get($leadData, 'Id')),
 
             'first_name' => $this->extractContact($leadData, 'FirstName'),
             'title' => $this->getUserTitle($this->extractContact($leadData, 'Salutation')),
@@ -171,8 +171,8 @@ class SaveToConnectionApplication
      */
     private function getMovingDate(string $id): ?string
     {
-        return collect($this->lots)
-            ->filter(fn($value) => data_get($value, 'CustomerId') === $id)
+        return collect($this->tenancies)
+            ->filter(fn($value) => data_get($value, 'ContactId') === $id)
             ->pluck('TenancyStart')
             ->first();
     }

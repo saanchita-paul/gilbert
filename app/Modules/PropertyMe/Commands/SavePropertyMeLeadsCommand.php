@@ -59,11 +59,11 @@ class SavePropertyMeLeadsCommand extends Command
     {
         $pm = new SaveContacts($office->property_me_refresh_token);
         $leads = $pm->fetch()->createLead()->getSavedLeads();
-        $lots = $pm->getLots();
+        $tenancies = $pm->getTenancies();
 
         $this->info("New Lead: " . sizeof($leads));
 
-        $saveService = new SaveToConnectionApplication($office, $lots);
+        $saveService = new SaveToConnectionApplication($office, $tenancies);
 
         foreach ($leads as $lead) {
             $saveService->run($lead);

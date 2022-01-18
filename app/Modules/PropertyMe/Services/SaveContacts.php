@@ -12,7 +12,7 @@ class SaveContacts
     /**
      * @var array
      */
-    private array $lots;
+    private array $tenancies;
 
     /**
      * @param string $refreshToken
@@ -40,7 +40,7 @@ class SaveContacts
         $apiService = new FetchContactAPI($this->refreshToken);
 
         $this->leads = $this->getNewHoodLeadOnly($apiService->fetchContacts()->getContacts());
-        $this->lots = $apiService->fetchLots()->getLots();
+        $this->tenancies = $apiService->fetchTenancies()->getTenancies();
 
         info("raw contact", $apiService->getContacts());
         info("filtered contact", $this->leads);
@@ -90,9 +90,9 @@ class SaveContacts
     /**
      * @return array
      */
-    public function getLots(): array
+    public function getTenancies(): array
     {
-        return $this->lots;
+        return $this->tenancies;
     }
 
 }

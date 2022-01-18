@@ -10,9 +10,11 @@ use PropertyMe\Services\BasePropertyMeAPI;
 
 class FetchContactAPI extends BasePropertyMeAPI
 {
-    private array $lots;
+    private array $lots = [];
 
-    private array $contacts;
+    private array $contacts = [];
+
+    private array $tenancies = [];
 
 
     public function __construct(private string $refreshToken)
@@ -52,6 +54,27 @@ class FetchContactAPI extends BasePropertyMeAPI
         return $this;
     }
 
+    public function fetchTenancies(): static
+    {
+        $url = config('property_me.api_root_url') . config('property_me.get_tenancies_url');
+        $query = "?Timestamp=" . $this->getTimestamp(-100);
+
+        try {
+            $response = Http::withHeaders([
+                "Accept" => "application/json",
+                "Authorization" => $this->getAccessToken($this->refreshToken),
+            ])->get($url . $query);
+
+            $this->tenancies = json_decode($response->body(), true);
+//            Log::info('PropertyMe: Fetch Tenancies: ', [$this->tenancies]);
+        } catch (\Exception $exception) {
+            \Log::error("[FetchContactAPI:fetchTenancies] " . $exception->getMessage());
+            \Log::error($exception->getTraceAsString());
+        }
+
+        return $this;
+    }
+
 
     /**F
      * @throws Exception
@@ -68,7 +91,7 @@ class FetchContactAPI extends BasePropertyMeAPI
             ])->get($url . $query);
 
             $this->contacts = json_decode($response->body(), true);
-            Log::info('PropertyMe: Fetch Contacts: ', [$this->contacts]);
+//            Log::info('PropertyMe: Fetch Contacts: ', [$this->contacts]);
         } catch (\Exception $exception) {
             \Log::error($exception->getMessage());
             \Log::error($exception->getTraceAsString());
@@ -84,6 +107,14 @@ class FetchContactAPI extends BasePropertyMeAPI
     public function getContacts(): array
     {
         return $this->contacts;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTenancies(): array
+    {
+        return $this->tenancies;
     }
 
 }
