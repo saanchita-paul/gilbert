@@ -267,6 +267,7 @@ const router = new VueRouter({
         {
             path: '/agent',
             component: AgentDashboardLayout,
+            name: 'agent',
             children: [
                 {
                     path: '',

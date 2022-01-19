@@ -28,7 +28,7 @@ export default {
     {
         status = status - 1;
         if(status < 0) return  '';
-        const statusList = ['UnAssigned','Assigned', 'Escalated','Submitted', 'Accepted', 'Rejected'];
+        const statusList = ['UnAssigned','Assigned', 'Escalated','Submitted', 'Accepted', 'Rejected', 'EA_PROCESSINF', 'Closed'];
         return statusList[status];
     },
 
