@@ -152,7 +152,7 @@ class SearchConnectionApplication
      */
     private function applyFilterSource(): static
     {
-        if($this->source) {
+        if(isset($this->source) && gettype($this->source) == 'integer') {
             $this->builder = $this->builder->where('source', $this->source);
         }
         return $this;
