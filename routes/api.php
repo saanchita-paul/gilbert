@@ -177,7 +177,9 @@ Route::get("/karan/sales-status", function () {
 
 
 Route::get('country_test', function () {
+    //  return SubmitWaterLeadToFastConnect::mapLengthOfCountry[2];
     $ser =  new SubmitWaterLeadToFastConnect(1);
-    return $ser->getMappedIdentificationCountry('Australia'); 
+    // return $ser;
+    return $ser->getMappedIdentificationCountry('AX'); 
     // return 'got' ;
 });
