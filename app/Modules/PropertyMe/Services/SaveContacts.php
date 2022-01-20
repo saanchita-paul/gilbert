@@ -79,7 +79,7 @@ class SaveContacts
 
             if ($lotId = $this->getLotId($leadId) ) {
                 $lotMembers = $this->apiService->fetchTLotMembers($lotId);
-                $lead->lotId = $lotId;
+                $lead->lot_id = $lotId;
                 $lead->agent_email = data_get($lotMembers, 'RegisteredEmail');
             }
 
