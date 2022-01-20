@@ -14,12 +14,6 @@ class SaveContacts
      */
     private array $tenancies;
 
-    /**
-     * @param string $refreshToken
-     */
-    public function __construct(private string $refreshToken)
-    {
-    }
 
     /**
      * @var array $leads
@@ -35,16 +29,21 @@ class SaveContacts
      * @throws Exception
      */
 
+    private FetchContactAPI $apiService;
+
+    public function __construct(private string $refreshToken)
+    {
+        $this->apiService = new FetchContactAPI($this->refreshToken);
+    }
+
+    /**
+     * @throws Exception
+     */
     public function fetch(): static
     {
-        $apiService = new FetchContactAPI($this->refreshToken);
 
-        $this->leads = $this->getNewHoodLeadOnly($apiService->fetchContacts()->getContacts());
-        $this->tenancies = $apiService->fetchTenancies()->getTenancies();
-
-        info("raw contact", $apiService->getContacts());
-        info("filtered contact", $this->leads);
-        info("raw lots", $apiService->getContacts());
+        $this->leads = $this->getNewHoodLeadOnly($this->apiService->fetchContacts()->getContacts());
+        $this->tenancies = $this->apiService->fetchTenancies()->getTenancies();
 
         return $this;
     }
@@ -72,9 +71,18 @@ class SaveContacts
     public function createLead(): static
     {
         foreach ($this->leads as $leadData) {
+
+            $leadId = data_get($leadData, 'Id');
             $lead = new PropertyMeLead();
             $lead->all_fields_dump = json_encode($leadData);
-            $lead->lead_id = data_get($leadData, 'Id');
+            $lead->lead_id = $leadId;
+
+            if ($lotId = $this->getLotId($leadId) ) {
+                $lotMembers = $this->apiService->fetchTLotMembers($lotId);
+                $lead->lotId = $lotId;
+                $lead->agent_email = data_get($lotMembers, 'RegisteredEmail');
+            }
+
             $lead->save();
             $this->savedLead[] = $lead;
         }
@@ -93,6 +101,19 @@ class SaveContacts
     public function getTenancies(): array
     {
         return $this->tenancies;
+    }
+
+
+    /**
+     * @param string $contactId
+     * @return string|null
+     */
+    private function getLotId(string $contactId): ?string
+    {
+        return collect($this->tenancies)
+            ->filter(fn($value) => data_get($value, 'ContactId') === $contactId)
+            ->pluck('LotId')
+            ->first();
     }
 
 }
