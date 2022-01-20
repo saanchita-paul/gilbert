@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-row class="mt-0">
-            <v-col cols="8">
+            <v-col cols="12">
                 <v-card  class="hood-card">
                     <h3 v-if="user" class="page-title">Hi {{ user.profile.first_name }}, <small class="font-weight">here is a
                         summary of your applications.</small>
@@ -21,9 +21,9 @@
                                        @refreshDataTable="refreshDataTable"
                                        @openApplicationSummary="openApplicationSummary"></AgentApplicationTable>
             </v-col>
-            <v-col cols="4">
+            <!-- <v-col cols="4">
                 <AgentApplicationSummary :application="applicationSummary"></AgentApplicationSummary>
-            </v-col>
+            </v-col> -->
         </v-row>
         <v-dialog
             v-model="dialog"

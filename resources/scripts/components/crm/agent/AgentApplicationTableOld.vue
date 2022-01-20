@@ -21,12 +21,8 @@
                       :server-items-length="totalItem"
                       :loading="loading"
                       :item-class="isSelectedClass"
-                      :single-expand="singleExpand"
-                      :expanded.sync="expanded"
-                      item-key="id"
-                      show-expand
                       class="row-pointer"
-                      @click:row="(item, slot) => slot.expand(!slot.isExpanded)"
+                      @click:row="openApplicationSummary"
                   >
                     <template v-slot:item.first_name="{ item }">
                       {{ item.first_name + ' ' + item.last_name }}
@@ -40,39 +36,6 @@
                       <v-icon small  :disabled="isServiceAllowed(item.services, 'internet')" color="green">mdi-wifi</v-icon>
                       <v-icon small :disabled="isServiceAllowed(item.services, 'water')" color="blue" >mdi-water</v-icon>
                     </template>
-
-                    <template v-slot:expanded-item="{ headers, item }">
-                      <td :colspan="headers.length">
-                          <v-container fluid>
-                            <v-row no-gutters> 
-                                <v-col cols="6">
-                                   <h3>Mr. Dimuthu Satharasinghe</h3>
-                                   <p>App ID: <span class="font-weight-bold">0312</span></p>
-                                </v-col>
-                                <v-col cols="6" style="text-align:right">
-                                    <v-icon small color="red">mdi-phone-off-outline</v-icon>
-                                    Waiting for consent...
-                                </v-col>
-                            </v-row>
-                            <v-row no-gutters> 
-                                <v-col cols="4">
-                                  <h4>Personal Details</h4>
-                                  <div class="item">
-                                    <p class="item-title">Homephone/Mobile</p>
-                                    <p class="item-value">0410758792</p>
-                                  </div>
-                                </v-col>
-                                <v-col cols="4" class="hr-bar">
-                                  <h4>Property Details</h4>
-                                </v-col>
-                                <v-col cols="4" class="hr-bar">
-                                  <h4>Agent's Additional Instructions</h4>
-                                </v-col>
-                            </v-row>
-                          </v-container>
-                      </td>
-                    </template>
-
                   </v-data-table>
                 </v-col>
             </v-row>
@@ -94,8 +57,6 @@ export default {
 
     data() {
       return {
-        expanded: [],
-        singleExpand: true,
         user: null,
         page: 1,
         pageCount: 0,
@@ -127,16 +88,12 @@ export default {
             sortable: true,
             value: 'services'
           },
-          {
-            text: 'Status',
-            align: 'start',
-            sortable: true,
-            value: 'status'
-          },
-          {
-            text: '',
-            value: 'data-table-expand' 
-          }
+            {
+                text: 'Status',
+                align: 'start',
+                sortable: true,
+                value: 'status'
+            }
         ],
         search: '',
       }
@@ -195,19 +152,5 @@ export default {
 <style scoped>
 .row-pointer >>> tbody tr :hover {
   cursor: pointer;
-}
-.hr-bar {
-  border-left: 1px solid #ccc;
-  padding-left: 10px;
-}
-.item {
-  display: flex;
-}
-.item-title {
-  width: 40%;
-  font-weight: 600;
-}
-.item-value {
-  width: 60%;
 }
 </style>
