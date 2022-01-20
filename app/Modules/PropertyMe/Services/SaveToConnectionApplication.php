@@ -217,7 +217,7 @@ class SaveToConnectionApplication
             . "\nServer url: " . config('app.url')
             . "\nTable: property_me_leads"
             . "\nColumn: lead_id"
-            ."\nvalue: $leadId";
+            ."\nvalue: <strong>$leadId<strong>";
 
         $emails = explode(',', config('property_me.support_emails'));
 
