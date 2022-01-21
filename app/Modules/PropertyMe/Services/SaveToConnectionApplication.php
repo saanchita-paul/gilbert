@@ -8,7 +8,7 @@ use App\Models\ConnectionApplication;
 use App\Models\Office;
 use App\Notifications\ErrorLogNotification;
 use Illuminate\Database\Eloquent\Builder;
-use Log;
+use Illuminate\Support\Facades\Log;
 use Notification;
 use PropertyMe\PropertyMeLead;
 use App\Modules\PropertyMe\Services\DobIdentificationService;
@@ -91,15 +91,18 @@ class SaveToConnectionApplication
             ]);
         }
 
-        ConnectionApplicationSecondaryACC::query()->create([
-            'connection_application_id' => $application->id,
-            'title' => $this->getUserTitle($this->extractSecondaryContact($leadData, 'Salutation')),
-            'first_name' => $this->extractSecondaryContact($leadData, 'FirstName'),
-            'last_name' => $this->extractSecondaryContact($leadData, 'LastName'),
-            'email' => $this->extractSecondaryContact($leadData, 'Email'),
-            'phone' => $this->extractSecondaryContact($leadData, 'CellPhone'),
-            'dob' => $this->extractNoteData($note_data, 'authorised_person.dob'),
-        ]);
+        $contactPerson = $this->leadHasContactPerson($leadData);
+        if($contactPerson) {
+            ConnectionApplicationSecondaryACC::query()->create([ 
+                'connection_application_id' => $application->id,
+                'title' => $this->getUserTitle($this->extractSecondaryContact($contactPerson, 'Salutation')),
+                'first_name' => $this->extractSecondaryContact($contactPerson, 'FirstName'),
+                'last_name' => $this->extractSecondaryContact($contactPerson, 'LastName'),
+                'email' => $this->extractSecondaryContact($contactPerson, 'Email'),
+                'phone' => $this->extractSecondaryContact($contactPerson, 'CellPhone'),
+                'dob' => $this->extractNoteData($note_data, 'authorised_person.dob'),
+            ]);
+        }
 
         $this->saveApplicationId($application->id, $lead);
         CreateHubspotProperty::dispatch($application->id);
@@ -120,7 +123,12 @@ class SaveToConnectionApplication
 
     private function extractSecondaryContact($leadData, $key)
     {
-        return data_get($leadData, "ContactPersons.0.$key");
+        return data_get($leadData, $key);
+    }
+
+    private function leadHasContactPerson($leadData)
+    {
+        return collect(data_get($leadData, 'ContactPersons'))->where('IsPrimary', false)->first();
     }
 
     private function extractNoteData($data, $key)
