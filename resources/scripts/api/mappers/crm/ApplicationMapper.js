@@ -9,20 +9,27 @@ import DayJS from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import dayjs from "dayjs";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
+import {isNull} from "lodash-es";
+import {getApplicationStatusText} from "../../../data/ConnectionApplicationStatuses";
+import AuthService from "../../../services/AuthService";
 export default {
     mapApplication(data) {
         let model = Object.assign(new Application(), { ...data });
         model.status = this.mapStatus(model.status);
         model.moving_date = new DayJS(model.moving_date).format(DATE_FORMAT.DB_DATE);
+        if(isNull(data.created_by_agent))
+        {
+            model.created_by = '';
+        } else {
+            model.created_by = (data.created_by_agent?.first_name + ' ' + data.created_by_agent?.last_name);
+        }
         return model;
     },
 
     mapStatus(status)
     {
-        status = status - 1;
-        if(status < 0) return  '';
-        const statusList = ['UnAssigned','Assigned', 'Escalated','Submitted', 'Accepted', 'Rejected'];
-        return statusList[status];
+        const office = AuthService.getUserOffice()
+        return getApplicationStatusText(status, !!office)
     },
 
     mapApplicationList(data) {

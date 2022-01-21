@@ -16,7 +16,8 @@ class EaPlanDetailsService
     public function __construct(
         public string $state,
         public string $postcode,
-        public int $leadId
+        public int $leadId,
+        public array $servicesId
 
     )
     {
@@ -50,14 +51,14 @@ class EaPlanDetailsService
             ->where('connection_application_id',  $this->leadId )
             ->where('provider_name', ConnectionService::PROVIDER_EA )
             ->where('service_type', ConnectionService::TYPE_GAS)
-            ->whereNull('lead_reference')
+            ->whereIn('id', $this->servicesId)
             ->first();
 
         $eleService = ConnectionService::query()
             ->where('connection_application_id',  $this->leadId )
             ->where('service_type', ConnectionService::TYPE_ELECTRICITY)
             ->where('provider_name', ConnectionService::PROVIDER_EA )
-            ->whereNull('lead_reference')
+            ->whereIn('id', $this->servicesId)
             ->first();
 
         $powerFlag = false;

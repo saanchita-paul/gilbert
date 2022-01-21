@@ -93,9 +93,9 @@ export default {
         async fetchLeads () {
             this.isSearching = true;
             let data = await LeadApplicationService.loadUserLeads(
-                this.sort_search_meta,
+                {...this.sort_search_meta, ...{page: this.page}},
                 this.activeLeadType,
-                this.selectedSrc, this.advanceSearch
+                this.selectedSrc, this.advanceSearch,
             );
             this.leads = data.applications;
             this.isLoaded = true;

@@ -2,14 +2,21 @@
 
 namespace App\Services\SearchAddress;
 
+use JetBrains\PhpStorm\Pure;
+
 class GeocodeAddress{
-    
+
+    /**
+     * @var null
+     */
+    private $street_number;
+
     public function __construct(object $geoCodeRawData)
-    {   
+    {
         $this->geoCodeRawData =  $geoCodeRawData;
         $this->firstResult    =  $geoCodeRawData['results'][0] ?? null;
         $this->addressArray   =  $this->firstResult['address_components'] ?? null;
-        
+
         if($this->addressArray)
         {
             $this->setAddress();
@@ -36,9 +43,9 @@ class GeocodeAddress{
         $shortName = $name.'_short_name';
         $this->$longName = null;
         $this->$shortName = null;
-        
+
         $data =  $this->geoCodeRawData['results'][0]['address_components'];
-        
+
         foreach ($data as $value) {
                  if(in_array($name, $value['types']) ){
                      $this->$longName = $value['long_name'];
@@ -48,12 +55,20 @@ class GeocodeAddress{
              }
     }
 
-    public function getConnectionApplicationVersion(){
-        $connectionApplication = new ConnectionApplicationMapper($this);
-        return $connectionApplication;
+    public function getConnectionApplicationVersion(): AddressModel
+    {
+        return new AddressModel(
+            $this->subpremise_long_name ?? null,
+            $this->street_number_long_name ?? null,
+            $this->route_long_name ?? null,
+            $this->postal_code_long_name ?? null,
+            $this->locality_long_name ?? null,
+            $this->administrative_area_level_1_long_name ?? null,
+            $this->country_long_name ?? null
+        );
     }
 
-    public function __toString() 
+    public function __toString()
     {
         return $this->geoCodeRawData;
     }

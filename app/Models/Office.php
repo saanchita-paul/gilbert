@@ -74,6 +74,7 @@ class Office extends Model
         'email',
         'hood_agent_id',
         'rent_roll',
+        'property_me_refresh_token'
     ];
 
     /**
@@ -106,5 +107,18 @@ class Office extends Model
     public function applications(): HasMany
     {
         return $this->hasMany(ConnectionApplication::class);
+    }
+
+    /**
+     * Saving property-me refresh token
+     *
+     * @param int $officeId
+     * @param string $refreshToken
+     *
+     * @return void
+     */
+    public static function linkWithPropertyMe(int $officeId, string $refreshToken): void
+    {
+        static::where('id', $officeId)->update(['property_me_refresh_token' => $refreshToken]);
     }
 }

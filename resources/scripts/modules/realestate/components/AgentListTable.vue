@@ -186,6 +186,7 @@
                                     v-bind="attrs"
                                     @click="sendMailToUser(item)"
                                     :loading="isLoading(item)"
+                                    :disabled="isDisable(item)"
                                     v-on="on"
                                     icon
                                 >
@@ -380,6 +381,11 @@ export default {
         isLoading(item) {
             if (this.loadingEmail.includes(item.id)) return true;
             return false;
+        },
+
+        isDisable(item) {
+            if (item.is_active) return  false
+            return true;
         },
 
         changeEditMode() {

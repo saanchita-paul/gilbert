@@ -2,9 +2,11 @@
 
 namespace App\Modules\PropertyMe\Commands;
 
+use App\Models\Office;
 use App\Modules\PropertyMe\Services\SaveToConnectionApplication;
+use Exception;
 use Illuminate\Console\Command;
-use PropertyMe\Services\FetchContacts;
+use PropertyMe\Services\SaveContacts;
 
 class SavePropertyMeLeadsCommand extends Command
 {
@@ -34,16 +36,34 @@ class SavePropertyMeLeadsCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return int
-     * @throws \Exception
+     * @return void
+     * @throws Exception
      */
     public function handle()
     {
-        $pm = new FetchContacts();
-        $leads = $pm->fetchContacts()->createLead()->getSavedLeads();
+        $linkedOffice = Office::query()
+            ->whereNotNull('property_me_refresh_token')
+            ->with('agency')
+            ->get();
+
+        foreach ($linkedOffice as $office) {
+            $this->saveLead($office);
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+
+    private function saveLead(Office $office): void
+    {
+        $pm = new SaveContacts($office->property_me_refresh_token);
+        $leads = $pm->fetch()->createLead()->getSavedLeads();
+        $tenancies = $pm->getTenancies();
+
         $this->info("New Lead: " . sizeof($leads));
 
-        $saveService = new SaveToConnectionApplication();
+        $saveService = new SaveToConnectionApplication($office, $tenancies);
 
         foreach ($leads as $lead) {
             $saveService->run($lead);

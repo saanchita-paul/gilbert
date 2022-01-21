@@ -122,10 +122,10 @@ export default {
                     value: "submitted_at"
                 },
                 {
-                    text: "Submitted By",
+                    text: "Created By",
                     align: "start",
                     sortable: true,
-                    value: "submitted_by"
+                    value: "created_by"
                 },
                 {
                     text: "Source",

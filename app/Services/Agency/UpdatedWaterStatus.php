@@ -64,5 +64,12 @@ class UpdatedWaterStatus
             ->where('connection_application_id', $leadId)
             ->where('service_type', ConnectionService::TYPE_WATER)
             ->update(['status' => $status, 'reason' => $reason]);
+        
+        if($status == ConnectionService::WATER_STATUS_CONNECTED) {
+            ConnectionService::query()
+                ->where('connection_application_id', $leadId)
+                ->where('service_type', ConnectionService::TYPE_WATER)
+                ->update(['accepted_at' => now()]);
+        }
     }
 }

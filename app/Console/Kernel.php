@@ -35,6 +35,7 @@ class Kernel extends ConsoleKernel
          $schedule->command('fetch:submitted-leads')->hourly();
          $schedule->command('fetch:submitted-water-leads')->twiceDaily();
          $schedule->command('ea:upload:lead')->daily();
+         $schedule->command('property_me:save_contact')->everyFifteenMinutes();
 
          if($this->shouldIgniteRun()){
             $schedule->command('ignite:fetch')->everyTenMinutes();

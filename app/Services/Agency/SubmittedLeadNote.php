@@ -14,7 +14,7 @@ use phpDocumentor\Reflection\Utils;
 class SubmittedLeadNote
 {
 
-    public function __construct(public ConnectionApplication $existLead)
+    public function __construct(public ConnectionApplication $existLead, public $user, public array $servicesId)
     {
 
     }
@@ -34,11 +34,14 @@ class SubmittedLeadNote
            'agent_name' => $this->existLead?->getAgentName(),
            'nmi' => $this->existLead?->nmi,
            'mirn' => $this->existLead?->mirn,
-           'supplier' => 'Hood',
+           'supplier' => 'EA',
            'plan_type' => $planType,
            'post_code' => $postCode,
            'state' => $state,
-           'services' => $submittedService
+           'services' => $submittedService,
+           'first_name' => $this->existLead?->first_name,
+           'last_name' => $this->existLead?->last_name,
+           'application_id' => $this->existLead?->id
         ];
 
        return json_encode($leadData);
@@ -49,14 +52,14 @@ class SubmittedLeadNote
         $stateService = new StateMapService();
         $state = $stateService->getShortName($this->existLead?->state);
         $postCode = $this->existLead?->postcode;
-        $eaPlanService = new EaPlanDetailsService($state, $postCode, $this->existLead->id);
+        $eaPlanService = new EaPlanDetailsService($state, $postCode, $this->existLead->id, $this->servicesId);
         $plan_type = $eaPlanService->plan_type;
 
         //if provider is not ea then note is not created
         if(empty($plan_type)) return;
 
-        $user = \Auth::user();
-        $noteService = new ApplicationNoteService($user);
+//        $user = \Auth::user();
+        $noteService = new ApplicationNoteService($this->user);
         $submittedService = $this->getServices($eaPlanService->service_type);
         $planDetails = $eaPlanService->getPlanDetails();
         $this->leadDetailsJson = $this->prepareLeadData($plan_type, $postCode, $state, $submittedService);

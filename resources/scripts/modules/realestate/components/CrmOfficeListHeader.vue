@@ -35,7 +35,7 @@
                 <v-icon color="primary">mdi-send</v-icon> Send Invite's
             </v-btn>
             <v-btn class="mr-4" @click="setEditMode">
-                {{ editMode ? 'Cancel Edit' : 'Edit Staff' }}
+                {{ editMode ? 'Close Edit Mode' : 'Edit Staff Mode' }}
             </v-btn>
             <v-btn color="primary" @click="addNewUser">
                 <v-icon left>add</v-icon> Add New Staff

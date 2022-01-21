@@ -18,8 +18,11 @@ class SubmitApplicationEvent
      * Create a new event instance.
      *
      * @return void
+     * @param int $applicationId
+     * @param string|null $submitType
+     * @param array|null $options
      */
-    public function __construct(public int $applicationId , public ?string $submitType = null )
+    public function __construct(public int $applicationId , public ?string $submitType = null, public? array $options = [])
     {
         //
     }
