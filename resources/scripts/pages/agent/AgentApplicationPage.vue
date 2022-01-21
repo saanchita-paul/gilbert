@@ -14,12 +14,14 @@
                     </span>
                     <AgentLeadMetrics></AgentLeadMetrics>
                 </v-card>
-                <AgentApplicationTable v-if="isLoaded"
-                                       :applications="applicationList"
-                                       :totalItem="totalItem"
-                                       :selectedAppId="selected_application_id"
-                                       @refreshDataTable="refreshDataTable"
-                                       @openApplicationSummary="openApplicationSummary"></AgentApplicationTable>
+                <AgentApplicationTable
+                    v-if="isLoaded"
+                    :applications="applicationList"
+                    :totalItem="totalItem"
+                    :selectedAppId="selected_application_id"
+                    @refreshDataTable="refreshDataTable"
+                    @openApplicationSummary="openApplicationSummary">
+                </AgentApplicationTable>
             </v-col>
             <!-- <v-col cols="4">
                 <AgentApplicationSummary :application="applicationSummary"></AgentApplicationSummary>

@@ -43,36 +43,9 @@
 
                     <template v-slot:expanded-item="{ headers, item }">
                       <td :colspan="headers.length">
-                          <v-container fluid>
-                            <v-row no-gutters> 
-                                <v-col cols="6">
-                                   <h3>Mr. Dimuthu Satharasinghe</h3>
-                                   <p>App ID: <span class="font-weight-bold">0312</span></p>
-                                </v-col>
-                                <v-col cols="6" style="text-align:right">
-                                    <v-icon small color="red">mdi-phone-off-outline</v-icon>
-                                    Waiting for consent...
-                                </v-col>
-                            </v-row>
-                            <v-row no-gutters> 
-                                <v-col cols="4">
-                                  <h4>Personal Details</h4>
-                                  <div class="item">
-                                    <p class="item-title">Homephone/Mobile</p>
-                                    <p class="item-value">0410758792</p>
-                                  </div>
-                                </v-col>
-                                <v-col cols="4" class="hr-bar">
-                                  <h4>Property Details</h4>
-                                </v-col>
-                                <v-col cols="4" class="hr-bar">
-                                  <h4>Agent's Additional Instructions</h4>
-                                </v-col>
-                            </v-row>
-                          </v-container>
+                         <AgentApplicationDetails :application='item'/>
                       </td>
                     </template>
-
                   </v-data-table>
                 </v-col>
             </v-row>
@@ -83,15 +56,15 @@
 <script>
 import Search from "@scripts/components/crm/Search";
 import AuthService from "@scripts/services/AuthService";
+import AgentApplicationDetails from "@scripts/components/crm/agent/AgentApplicationDetails";
 
 export default {
     name: "AgentApplicationTable",
     props: ["applications","totalItem", 'selectedAppId'],
     components: {
-        Search
+        Search,
+        AgentApplicationDetails
     },
-
-
     data() {
       return {
         expanded: [],
@@ -195,19 +168,5 @@ export default {
 <style scoped>
 .row-pointer >>> tbody tr :hover {
   cursor: pointer;
-}
-.hr-bar {
-  border-left: 1px solid #ccc;
-  padding-left: 10px;
-}
-.item {
-  display: flex;
-}
-.item-title {
-  width: 40%;
-  font-weight: 600;
-}
-.item-value {
-  width: 60%;
 }
 </style>

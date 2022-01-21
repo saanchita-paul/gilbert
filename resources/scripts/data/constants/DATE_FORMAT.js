@@ -10,4 +10,5 @@ export default {
     NOTE_TIME: 'DD/MM/YYYY hh:mm A',
     DATE_DASH: 'YYYY-MM-DD',
     DATE_SHASH: 'YYYY/MM/DD',
+    DB_MONTH_FIRST: 'MM/DD/YYYY',
 }
