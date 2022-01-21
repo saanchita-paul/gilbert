@@ -10,6 +10,8 @@ import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import dayjs from "dayjs";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import {isNull} from "lodash-es";
+import {getApplicationStatusText} from "../../../data/ConnectionApplicationStatuses";
+import AuthService from "../../../services/AuthService";
 export default {
     mapApplication(data) {
         let model = Object.assign(new Application(), { ...data });
@@ -26,10 +28,8 @@ export default {
 
     mapStatus(status)
     {
-        status = status - 1;
-        if(status < 0) return  '';
-        const statusList = ['UnAssigned','Assigned', 'Escalated','Submitted', 'Accepted', 'Rejected'];
-        return statusList[status];
+        const office = AuthService.getUserOffice()
+        return getApplicationStatusText(status, !!office)
     },
 
     mapApplicationList(data) {

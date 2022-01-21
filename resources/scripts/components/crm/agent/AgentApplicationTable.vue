@@ -28,7 +28,7 @@
                       {{ item.first_name + ' ' + item.last_name }}
                     </template>
                       <template v-slot:item.status="{ item }">
-                          {{['UnAssigned','Assigned', 'Escalated'].includes(item.status)?'In Progress': item.status }}
+                          {{item.status}}
                       </template>
                     <template v-slot:item.services="{ item }">
                       <v-icon small  :disabled="isServiceAllowed(item.services, 'power')" color="yellow">mdi-flash</v-icon>
