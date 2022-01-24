@@ -3,8 +3,13 @@
 namespace App\Modules\PropertyMe\Services;
 
 use App\Jobs\CreateHubspotProperty;
+use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\Office;
+use App\Notifications\ErrorLogNotification;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
+use Notification;
 use PropertyMe\PropertyMeLead;
 use App\Modules\PropertyMe\Services\DobIdentificationService;
 use App\Models\Identification;
@@ -33,6 +38,7 @@ class SaveToConnectionApplication
             'source' => ConnectionApplication::SOURCE_PROPERTY_ME,
             'office_id' => $this->office->id,
             'agency_id' => $this->office->agency->id,
+            'created_by' => $this->getCreatedById($lead),
             'status' => ConnectionApplication::STATUS_UNASSIGNED,
 
             'moving_date' => $this->getMovingDate(data_get($leadData, 'Id')),
@@ -71,10 +77,10 @@ class SaveToConnectionApplication
 
         ]);
 
-        if($this->extractNoteData($note_data, 'person.identification.type') !== null
+        if ($this->extractNoteData($note_data, 'person.identification.type') !== null
             && $this->extractNoteData($note_data, 'person.identification.card_number') !== null
             && ($this->extractNoteData($note_data, 'person.identification.state') !== null
-            || $this->extractNoteData($note_data, 'person.identification.country') !== null)
+                || $this->extractNoteData($note_data, 'person.identification.country') !== null)
         ) {
             Identification::query()->create([
                 'connection_application_id' => $application->id,
@@ -85,15 +91,18 @@ class SaveToConnectionApplication
             ]);
         }
 
-        ConnectionApplicationSecondaryACC::query()->create([
-            'connection_application_id' => $application->id,
-            'title' => $this->getUserTitle($this->extractSecondaryContact($leadData, 'Salutation')),
-            'first_name' => $this->extractSecondaryContact($leadData, 'FirstName'),
-            'last_name' => $this->extractSecondaryContact($leadData, 'LastName'),
-            'email' => $this->extractSecondaryContact($leadData, 'Email'),
-            'phone' => $this->extractSecondaryContact($leadData, 'CellPhone'),
-            'dob' => $this->extractNoteData($note_data, 'authorised_person.dob'),
-        ]);
+        $contactPerson = $this->leadHasContactPerson($leadData);
+        if($contactPerson) {
+            ConnectionApplicationSecondaryACC::query()->create([ 
+                'connection_application_id' => $application->id,
+                'title' => $this->getUserTitle($this->extractSecondaryContact($contactPerson, 'Salutation')),
+                'first_name' => $this->extractSecondaryContact($contactPerson, 'FirstName'),
+                'last_name' => $this->extractSecondaryContact($contactPerson, 'LastName'),
+                'email' => $this->extractSecondaryContact($contactPerson, 'Email'),
+                'phone' => $this->extractSecondaryContact($contactPerson, 'CellPhone'),
+                'dob' => $this->extractNoteData($note_data, 'authorised_person.dob'),
+            ]);
+        }
 
         $this->saveApplicationId($application->id, $lead);
         CreateHubspotProperty::dispatch($application->id);
@@ -114,7 +123,12 @@ class SaveToConnectionApplication
 
     private function extractSecondaryContact($leadData, $key)
     {
-        return data_get($leadData, "ContactPersons.0.$key");
+        return data_get($leadData, $key);
+    }
+
+    private function leadHasContactPerson($leadData)
+    {
+        return collect(data_get($leadData, 'ContactPersons'))->where('IsPrimary', false)->first();
     }
 
     private function extractNoteData($data, $key)
@@ -175,5 +189,46 @@ class SaveToConnectionApplication
             ->filter(fn($value) => data_get($value, 'ContactId') === $id)
             ->pluck('TenancyStart')
             ->first();
+    }
+
+
+    /**
+     * @param PropertyMeLead $lead
+     * @return int|null
+     */
+    private function getCreatedById(PropertyMeLead $lead): ?int
+    {
+        try {
+            $agent = AgentProfile::whereHas(
+                'user',
+                fn(Builder $b) => $b->where('email', $lead->agent_email)
+            )->firstOrFail();
+
+            return $agent->id;
+        } catch (\Exception $exception) {
+            Log::error('Failed to map property me agent', [
+                'mgs' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString()
+            ]);
+
+            $this->sendErrorNotification($lead->lead_id);
+
+            return null;
+        }
+    }
+
+    private function sendErrorNotification(string $leadId)
+    {
+        $mgs = " System is failed to map an agent email when saving PropertyMe lead!"
+            . "\n\n"
+            . "\n[Properties for debugging]\n"
+            . "\nServer url: " . config('app.url')
+            . "\nTable: property_me_leads"
+            . "\nColumn: lead_id"
+            ."\nvalue: <strong>$leadId<strong>";
+
+        $emails = explode(',', config('property_me.support_emails'));
+
+        Notification::route('mail', $emails)->notify(new ErrorLogNotification($mgs, "Failed PropertyMe agent mapping"));
     }
 }

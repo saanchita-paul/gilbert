@@ -109,12 +109,13 @@ export default {
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
             this.totalItem = data.pagination.total;
-            this.selected_application_id = this.applicationList[0].id;
+            this.selected_application_id = this.applicationList[0]?.id;
             this.getApplicationSummary();
         },
         async getApplicationSummary() {
-            this.applicationSummary = await AgentApplicationService.getApplicationSummary(this.selected_application_id);
-            // console.log('summary', this.selected_application_id, this.applicationSummary);
+            this.applicationSummary = this.selected_application_id ?
+                await AgentApplicationService.getApplicationSummary(this.selected_application_id)
+                : null;
         },
         openApplicationSummary(id) {
             this.selected_application_id = id;
