@@ -175,7 +175,7 @@
                     Property Management System
                 </div>
             </v-col>
-            <v-col cols="2" class="border-left">
+            <v-col cols="2">
 
                 <p class="font-weight-bold text-center  subtitle_font mt-3">
                     {{appMetrics.connected_property_me}} <span class="lead_span">Property Me</span>
