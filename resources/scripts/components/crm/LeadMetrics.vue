@@ -34,7 +34,7 @@
                        @click:append="showDatePickerModal = true"
                    ></v-text-field>
                </div>
-               <div  class="py-0 mr-2" style="flex-basis: 90px;">
+               <div v-if="!isModeEdit" class="py-0 mr-2" style="flex-basis: 90px;">
                    <v-select
                        class='date-select'
                        solo
@@ -49,7 +49,7 @@
                        hide-details
                    ></v-select>
                </div>
-               <div  class="py-0 mr-2" style="flex-basis: 130px;">
+               <div v-if="!isModeEdit" class="py-0 mr-2" style="flex-basis: 130px;">
                    <v-select
                        class='date-select'
                        solo
@@ -64,7 +64,7 @@
                        hide-details
                    ></v-select>
                </div>
-               <div  class="py-0 mr-2" style="flex-basis: 130px;">
+               <div v-if="!isModeEdit" class="py-0 mr-2" style="flex-basis: 130px;">
                    <v-select
                        v-model="selectedAgency"
                        :items="agencies"
@@ -92,7 +92,7 @@
                        </template>
                    </v-select>
                </div>
-               <div  class="py-0 mr-1" style="flex-basis: 130px;">
+               <div v-if="!isModeEdit"  class="py-0 mr-1" style="flex-basis: 130px;">
                    <v-select
                        v-model="selectedOffice"
                        :items="offices"
@@ -248,7 +248,11 @@ export default {
           agencyFilter : new AgencyFilter(),
           isSearchEmpty: true,
 
-
+      }
+    },
+    computed:{
+        isModeEdit(){
+            return this.$route.name == 'real.state.agency.office' ? true : false;
       }
     },
     methods: {
