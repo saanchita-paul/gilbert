@@ -17,7 +17,7 @@
         </div>
         <div style="flex-basis: 75%;"  class="py-0">
            <div class="d-flex justify-end" style="flex-wrap: wrap;" >
-            <div class="py-2 mr-2"> <v-btn @click="clearFilter" color="#C0C3C4" small> <v-icon small> mdi-close </v-icon> Reset </v-btn> </div>
+            <div class="py-2 mr-2"> <v-btn @click="clearFilter" color="#C0C3C4" small v-if="!isSearchEmpty"> <v-icon small> mdi-close </v-icon> Reset </v-btn> </div>
                <div  class="py-0 mr-2" style="flex-basis: 235px;">
                    <v-text-field
                        class='date-select'
@@ -245,13 +245,15 @@ export default {
           search_office: '',
           offices: [],
           selectedOffice: '',
-          agencyFilter : new AgencyFilter()
+          agencyFilter : new AgencyFilter(),
+          isSearchEmpty: true,
 
 
       }
     },
     methods: {
       async loadMetrics() {
+          this.isSearchEmpty = (new AgencyFilter(this.$route.query)).isSearchEmpty();
           const allMetrics = await LeadApplicationService.loadAgencyMetrics(this.agencyFilter);
           this.appMetrics = allMetrics
 
