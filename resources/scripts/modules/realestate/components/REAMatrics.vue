@@ -3,10 +3,10 @@
         <v-row>
             <v-col class="pl-0 pb-0">
                 <v-btn class="px-0" text  v-if="agency.type === 0" @click="backToAgency">
-                    <v-icon>mdi-chevron-left</v-icon> {{ agency.name }} (Back of Agency)
+                    <v-icon>mdi-chevron-left</v-icon> {{ agency.name }} {{ ' ('+ buttonLabel +')' }}
                 </v-btn>
                     <v-btn  class="px-0" text v-else @click="backToOffice">
-                          <v-icon>mdi-chevron-left</v-icon>{{ office.name }} (Back of Office)
+                          <v-icon>mdi-chevron-left</v-icon>{{ office.name }} {{ ' ('+ buttonLabel +')' }}
                     </v-btn>
                </v-col>
             <v-spacer class="pb-0"></v-spacer>
@@ -68,7 +68,11 @@ export default {
         AppMetric, LeadMetrics, ServiceMetrics
     },
     props: ['agency', 'matrics', 'office'],
-
+    data(){
+        return {
+            buttonLabel: 'Performance Operation'
+        }
+    },
     methods: {
         backToAgency() {
             this.$router.push(
@@ -93,7 +97,22 @@ export default {
 
                 });
         },
+        setLabelOfBackButton(value){
+            if(value == 'user'){
+                this.buttonLabel = 'Backend Of Agency'
+            } else{
+                this.buttonLabel = 'Performance Operation'
+            }
+        }
     },
+    mounted(){
+        this.setLabelOfBackButton(this.$route.query?.type);
+    },
+    watch:{
+        $route(value){
+            this.setLabelOfBackButton(value.query?.type);
+        }
+    }
 
 }
 </script>
