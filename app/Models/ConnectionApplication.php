@@ -434,11 +434,11 @@ class ConnectionApplication extends Model
     public function getAgencyName()
     {
         return match ($this->source) {
-            ConnectionApplication::SOURCE_HOOD => $this->office?->name,
+            ConnectionApplication::SOURCE_HOOD,
+            ConnectionApplication::SOURCE_PROPERTY_ME => $this->office?->name,
             ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agency_name,
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agency_name,
             ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agency_name,
-            ConnectionApplication::SOURCE_PROPERTY_ME => $this->propertyMeLead?->agency_name,
             default => ''
         };
     }
@@ -446,11 +446,11 @@ class ConnectionApplication extends Model
     public function getAgentName()
     {
         return match ($this->source) {
-            ConnectionApplication::SOURCE_HOOD => $this->createdBy?->first_name.' '. $this->createdBy?->last_name,
+            ConnectionApplication::SOURCE_HOOD,
+            ConnectionApplication::SOURCE_PROPERTY_ME => $this->createdBy?->first_name.' '. $this->createdBy?->last_name,
             ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agent_name,
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agent_name,
             ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agent_name,
-            ConnectionApplication::SOURCE_PROPERTY_ME => $this->propertyMeLead?->agent_name,
             default => ''
         };
     }
