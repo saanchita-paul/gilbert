@@ -166,7 +166,7 @@
                     Digital Application Platform
                 </div>
             </v-col>
-            <v-col cols="2" class="border-left">
+            <v-col cols="2" class="border-left pr-0">
                 <div
                     class="font-weight-bold text-center py-2 count_font">
                     <h3>{{appMetrics.property_management_system}} </h3>
@@ -175,13 +175,13 @@
                     Property Management System
                 </div>
             </v-col>
-            <v-col cols="2">
+            <v-col cols="2" class="px-0 ">
 
-                <p class="font-weight-bold text-center  subtitle_font mt-3">
+                <p class="font-weight-bold text-left  subtitle_font mt-3">
                     {{appMetrics.connected_property_me}} <span class="lead_span">Property Me</span>
 
                 </p>
-                <p class="font-weight-bold text-center subtitle_font">
+                <p class="font-weight-bold text-left subtitle_font">
                     {{appMetrics.connected_our_property}} <span  class="lead_span">Our Property</span>
                 </p>
             </v-col>
