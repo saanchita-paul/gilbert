@@ -116,9 +116,9 @@ class SearchConnectionApplication
      */
     private function applyFilterLeadType(User $user): static
     {
-        if (empty($this->leadType)) {
-            $this->builder = $this->builder->where('status', '!=', ConnectionApplication::STATUS_CLOSED);
-        }
+//        if (empty($this->leadType)) {
+//            $this->builder = $this->builder->where('status', '!=', ConnectionApplication::STATUS_CLOSED);
+//        }
 
 
         //todo: need to refactor this "BAD" code (ask Sazzad if needed).

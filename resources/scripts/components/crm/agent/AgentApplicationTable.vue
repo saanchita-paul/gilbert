@@ -41,9 +41,10 @@
                     <template v-slot:item.source="{ item }">
                       {{ sourcesNumberToName[item.source] }}
                     </template>
-                    <template v-slot:item.status="{ item }">
-                        {{['UnAssigned', 'Unassigned', 'Assigned', 'Escalated' , 'Submitted', 'inprogress', 'Inprogress' ].includes(item.status)?'In Progress': item.status }}
-                    </template>
+
+                      <template v-slot:item.status="{ item }">
+                          {{item.status}}
+                      </template>
                     <template v-slot:item.services="{ item }">
                       <v-icon small  :disabled="isServiceAllowed(item.services, 'power')" color="yellow">mdi-flash</v-icon>
                       <v-icon small :disabled="isServiceAllowed(item.services, 'gas')" color="red">mdi-fire</v-icon>
