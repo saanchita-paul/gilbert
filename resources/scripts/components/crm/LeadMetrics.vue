@@ -409,4 +409,17 @@ export default {
     border-left: 1px solid #7E8A8F;
 }
 
+
+.v-text-field >>> input {
+    font-size: 14px;
+}
+
+.v-select >>> input {
+    font-size: 14px;
+}
+
+.v-text-field .v-input__control .v-input__slot {
+    min-height: 32px !important;
+  }
+
 </style>
