@@ -21,7 +21,6 @@
                <div  class="py-0 mr-2" style="flex-basis: 235px;">
                    <v-text-field
                        class='date-select'
-                       solo
                        dense
                        label="Calender"
                        placeholder="Today"
@@ -37,7 +36,6 @@
                <div v-if="!isModeEdit" class="py-0 mr-2" style="flex-basis: 90px;">
                    <v-select
                        class='date-select'
-                       solo
                        dense
                        label="State"
                        v-model="state"
@@ -52,7 +50,6 @@
                <div v-if="!isModeEdit" class="py-0 mr-2" style="flex-basis: 130px;">
                    <v-select
                        class='date-select'
-                       solo
                        dense
                        outlined
                        label="Acct Manager HOOD"
