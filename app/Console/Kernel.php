@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Modules\PropertyMe\Commands\SavePropertyMeLeadsCommand;
+use App\Modules\PropertyMe\Commands\SyncAgent;
 use Illuminate\Console\Scheduling\Schedule;
 use Ignite\Commands\IgniteFetchCommand;
 use App\Console\Commands\GetSellStatusCommand;
@@ -19,6 +20,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         SavePropertyMeLeadsCommand::class,
+        SyncAgent::class,
         GetSellStatusCommand::class,
         UploadConnectionDataToSFTPCommand::class,
         IgniteFetchCommand::class,
