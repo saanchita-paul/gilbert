@@ -56,7 +56,7 @@ class SyncAgentService
             ->whereHas('office', fn(Builder $b) => $b->whereNotNull('property_me_refresh_token'))
             ->where('source', ConnectionApplication::SOURCE_PROPERTY_ME)
             ->whereNull('created_by')
-            ->where('id', '>', 194) # this condition is for testing purpose only.
+//            ->where('id', '>', 194) # this condition is for testing purpose only.
             ->get();
     }
 
