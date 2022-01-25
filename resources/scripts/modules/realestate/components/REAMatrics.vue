@@ -1,11 +1,11 @@
 <template>
     <v-card class="hood-card  mt-0 pt-0">
         <v-row>
-            <v-col class="pl-0 pb-0">
-                <v-btn class="px-0" text  v-if="agency.type === 0" @click="backToAgency">
-                    <v-icon>mdi-chevron-left</v-icon> {{ agency.name }} {{ ' ('+ buttonLabel +')' }}
+            <v-col class="pl-0 pb-3">
+                <v-btn class="px-0" text  v-if="agency.type === 0" @click="backToAgency"  style="font-size: 24px; font-weight: 700;">
+                    <v-icon large>mdi-chevron-left</v-icon> {{ agency.name }} {{ ' ('+ buttonLabel +')' }}
                 </v-btn>
-                    <v-btn  class="px-0" text v-else @click="backToOffice">
+                    <v-btn  class="px-0" text v-else @click="backToOffice"  style="font-size: 24px; font-weight: 700;">
                           <v-icon>mdi-chevron-left</v-icon>{{ office.name }} {{ ' ('+ buttonLabel +')' }}
                     </v-btn>
                </v-col>
