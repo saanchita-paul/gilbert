@@ -125,7 +125,7 @@ export default {
             }
         }
 
-        function getConvertedData(data, submittedData) {
+        function getConnectedData(data, submittedData) {
 
             let converstionRate = null;
             if(data.total === 0 && submittedData.total ===0) {
@@ -152,14 +152,14 @@ export default {
         }
 
         return {
-
-            submitted: getSubmittedData(response.submission, response.waiting_for_connection),
-            converted: getConvertedData(response.conversions, response.submission),
-            rejected: getRejectedData(response.rejected, response.declined),
-            total_open_application: response.total_open_application,
+            total_new_application: response.total_new_application,
+            total_unassigned: response.unassigned_application,
+            total_assigned: response.assigned_application,
             total_consent_pending: response.total_consent_pending,
             total_closed: response.total_closed,
-
+            submitted: getSubmittedData(response.successful_submission, response.waiting_for_connection),
+            connected: getConnectedData(response.connected, response.successful_submission),
+            rejected: getRejectedData(response.rejected, response.declined),
         };
     },
 

@@ -24,15 +24,15 @@
                     <h4 class='ml-4'>Total New Applications</h4>
                     <div class="d-flex mt-4 justify-space-around">
                         <div class="ml-1">
-                            <h3 class="application-count text-center">{{summaryData.total_open_application}}</h3>
+                            <h3 class="application-count text-center">{{summaryData.total_new_application}}</h3>
                             <p class="text-small">Total applications created</p>
                         </div>
                         <div class="ml-1">
-                            <h3 class="application-count text-center">5</h3>
+                            <h3 class="application-count text-center">{{summaryData.total_unassigned}}</h3>
                             <p class="text-small">Unassigned</p>
                         </div>
                         <div class="ml-1">
-                            <h3 class="application-count text-center">5</h3>
+                            <h3 class="application-count text-center">{{summaryData.total_assigned}}</h3>
                             <p class="text-small">Assigned</p>
                         </div>
                         <div class="ml-1">
