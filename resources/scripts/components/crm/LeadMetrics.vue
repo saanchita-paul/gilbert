@@ -255,6 +255,7 @@ export default {
     methods: {
       async loadMetrics() {
           this.isSearchEmpty = (new AgencyFilter(this.$route.query)).isSearchEmpty();
+          console.log("agency filter" , this.agencyFilter)
           const allMetrics = await LeadApplicationService.loadAgencyMetrics(this.agencyFilter);
           this.appMetrics = allMetrics
 
@@ -380,6 +381,7 @@ export default {
     },
 
     async mounted() {
+      this.agencyFilter.agency_id = this.$route.params.id
       this.agencyFilter = merge(this.agencyFilter, this.$route.query);
       await this.loadMetrics();
       await this.loadHooaUser();
