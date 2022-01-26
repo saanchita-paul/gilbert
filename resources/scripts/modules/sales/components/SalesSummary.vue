@@ -19,28 +19,34 @@
                 <p class="my-2 text-light">You can change these parameters using the filters on the top right corner.</p>
             </v-col>
             <v-col cols="7" class="d-flex">
-                <div style="width:60%" class="d-flex">
-                    <v-divider class="vertical-divider" vertical></v-divider>
-                    <div class="ml-4">
-                        <h4>Open Applications</h4>
-                        <div class="d-flex mt-4">
-                            <div>
-                                <h3 class="application-count">{{summaryData.total_open_application}}</h3>
-                                <p class="text-small">Total open applications</p>
-                            </div>
-                            <div class="ml-6">
-                                <h3 class="application-count">{{summaryData.total_consent_pending}}</h3>
-                                <p class="text-small">Consent pending</p>
-                            </div>
+                <v-divider class="vertical-divider" vertical></v-divider>
+                <div style="width:72%">
+                    <h4 class='ml-4'>Total New Applications</h4>
+                    <div class="d-flex mt-4 justify-space-around">
+                        <div class="ml-1">
+                            <h3 class="application-count text-center">{{summaryData.total_open_application}}</h3>
+                            <p class="text-small">Total applications created</p>
+                        </div>
+                        <div class="ml-1">
+                            <h3 class="application-count text-center">5</h3>
+                            <p class="text-small">Unassigned</p>
+                        </div>
+                        <div class="ml-1">
+                            <h3 class="application-count text-center">5</h3>
+                            <p class="text-small">Assigned</p>
+                        </div>
+                        <div class="ml-1">
+                            <h3 class="application-count text-center">{{summaryData.total_consent_pending}}</h3>
+                            <p class="text-small">Consent pending</p>
                         </div>
                     </div>
                 </div>
-                <div style="width:40%" class="d-flex">
-                    <v-divider class="vertical-divider" vertical></v-divider>
-                    <div class="ml-4">
-                        <h4>Closed Applications</h4>
-                        <div class='mt-4'>
-                            <h3 class="application-count">{{summaryData.total_closed}}</h3>
+                 <v-divider class="vertical-divider" vertical></v-divider>
+                <div style="width:27%">
+                    <h4 class='ml-4'>Closed Applications</h4>
+                    <div class='d-flex mt-4 justify-space-around'>
+                        <div class="ml-1">
+                            <h3 class="application-count text-center">{{summaryData.total_closed}}</h3>
                             <p class="text-small">Total closed applications</p>
                         </div>
                     </div>

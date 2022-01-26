@@ -16,9 +16,10 @@
                         <div
                             class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
                         >
-                            Total submitted to retailer
+                            Successful submissions to retailer
                         </div>
                     </div>
+                    <v-divider class="vertical-divider" vertical></v-divider>
                     <div>
                         <div class="mb-3"></div>
                         <div
@@ -31,6 +32,10 @@
                         >
                             Waiting for connection
                         </div>
+                    </div>
+                    <div class="center-flex-items mr-2">
+                       <div class="messageFont mb-2 text-no-wrap"><span class="font-weight-bold">10</span> Manual Processing</div>
+                       <div class="messageFont text-no-wrap"><span class="font-weight-bold">20</span> AC Manual Processing</div>
                     </div>
                 </template>
 
@@ -192,5 +197,15 @@ export default {
 .countFont{
   font-size: 40px; 
   color: #542e89;
+}
+
+.center-flex-items{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.vertical-divider {
+    border-width: 1px !important;
+    width: 1px;
 }
 </style>
