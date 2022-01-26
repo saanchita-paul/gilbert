@@ -76,6 +76,7 @@ class ApplicationsMetricsService
         $res = DB::table('connection_applications')
             ->where('assigned_to', $this->assignedUserId)
             ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED)
+            ->where('status' , '!=' , ConnectionApplication::STATUS_SUBMITTED)
             ->select(DB::raw("count(*) as count"))
             ->get()->toArray();
 
