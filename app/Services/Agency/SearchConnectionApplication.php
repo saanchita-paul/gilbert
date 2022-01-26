@@ -121,7 +121,8 @@ class SearchConnectionApplication
                 $this->builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
                     ? $this->builder->where('status', ConnectionApplication::STATUS_MAPPING[$this->leadType])
                     : $this->builder->where('assigned_to', $user->profile->id)
-                        ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED);
+                        ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED)
+                        ->whereNull('submitted_by');
             }
         }
 

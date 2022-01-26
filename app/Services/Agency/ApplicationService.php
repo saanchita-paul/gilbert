@@ -223,7 +223,7 @@ class ApplicationService
         $vendorId = $this->calculateVendorId($id);
         $lead = array_merge($lead, [
             'plan_type' => null,
-            'assigned_to' => null,
+            // 'assigned_to' => null,
             'status' => ConnectionApplication::STATUS_SUBMITTED,
             'submitted_by' => auth()->id(),
             'vendor_id' => $vendorId
@@ -468,6 +468,12 @@ class ApplicationService
             ->where('provider_name', ConnectionService::PROVIDER_EA )
             ->whereNull('lead_reference')
             ->pluck('id')->toArray();
+    }
+
+    public function getAssignedHoodUser($id)
+    {
+        $existingApplication = ConnectionApplication::find($id);
+        return $existingApplication->assigned_to;
     }
 
 }
