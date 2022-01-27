@@ -1,14 +1,11 @@
 <?php
 namespace App\Modules\Reporting\Services;
 
-use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
-use App\Models\HoodProfile;
 use App\Services\Utility\GilbertStatusMapper;
-use Carbon\Carbon;
 use DB;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Database\Query\JoinClause;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Rap2hpoutre\FastExcel\FastExcel;
 use App\Models\ConnectionService;
 
@@ -21,6 +18,7 @@ class ExportSubmissionReport
     private $timezone;
     private $serviceType;
     private $type;
+    private $chatbotUri;
 
     private array $energyType = [
         ConnectionService::TYPE_ELECTRICITY,
@@ -36,6 +34,7 @@ class ExportSubmissionReport
         $this->setDateRange($start, $end);
         $this->type = $type;
         $this->serviceType = $type === 'energy' ? $this->energyType : $this->waterType;
+        $this->chatbotUri = config('bot.root_url');
     }
 
     private array $leadsData = [];
@@ -59,6 +58,11 @@ class ExportSubmissionReport
         foreach ($data as $datum) {
             $datum->Lead_Source = $this->getLeadSrc($datum->Lead_Source);
             $datum->Lead_Status = GilbertStatusMapper::getStatusAsText ($datum->Lead_Status);
+            $datum->Street_Type = $this->getRoadType($datum->Street_Type);
+            $datum->Customer_Type = $datum->Customer_Type === 1? 'RESI':'SME';
+            $datum->Offer_Type = 'ENE';
+            $datum->Lead_Submitted_Date = $datum->Lead_Submitted_Date ?? 'Null';
+            $datum->Source_Code = $this->getSourceCode($datum->Utility_Service, $datum->State, $datum->Utility_Plan, $datum->Postcode);
             
             $this->setAgencyName($datum);
 
@@ -82,13 +86,25 @@ class ExportSubmissionReport
                 CONVERT_TZ(ca.created_at, '+00:00', '+10:00') as `Lead_Created_Date`,
                 CONVERT_TZ(ca.moving_date, '+00:00', '+10:00') as `Connection_Date`,
                 CONVERT_TZ(cs.submitted_at, '+00:00', '+10:00') as `Lead_Submitted_Date`,
-                ca.address_text as `Customer_Address`,
+                ca.unit_number as `Unit_Number`,
+                ca.street_number as `Street_Number`,
+                ca.street_name as `Street_Name`,
+                ca.street_name as `Street_Type`,
+                ca.city as `Suburb`,
+                ca.state as `State`,
+                ca.postcode as `Postcode`,
                 ca.vendor_id as `Vendor_ID`,
+                ca.nmi as `NMI`,
+                ca.mirn as `MIRN`,
+                ca.property_type as `Customer_Type`,
+                ca.status as `Offer_Type`,
+                ca.status as `Source_Code`,
                 cs.lead_reference as `Lead_Reference`,
                 cs.provider_name as `Utility_Provider`,
                 cs.service_type as `Utility_Service`,
                 cs.plan_type as `Utility_Plan`,
                 cs.status as `Lead_Status`,
+                cs.quote_reference as `Quote_ID`,
                 sl.agency_name as `Foxie_Agency_Name`,
                 sl.agent_name as `Foxie_Agent_Name`,
                 rr.reason_text as `Rejection_Reason`
@@ -99,41 +115,37 @@ class ExportSubmissionReport
             ->leftJoin('users as u', 'ca.submitted_by', '=', 'u.id')
             ->leftJoin('suger_leads as sl', 'ca.id', '=', 'sl.connection_application_id')
             ->leftJoin('rejection_reasons as rr', 'cs.id', '=', 'rr.connection_service_id')
-            ->whereIn('cs.service_type', $this->serviceType)
-            ->whereNotNull('cs.provider_name');
-        
+            ->whereIn('cs.service_type', $this->serviceType);
+            // ->whereNotNull('cs.provider_name');
+
         $tempBuilder = clone $builder;
-        $filterWithSubmittedAt = $this->filterWithSubmittedAt($tempBuilder)->get()->toArray();
+        $filterWithCreatedDate = $this->filterWithCreatedDate($tempBuilder)->get()->toArray();
 
         // $tempBuilder = clone $builder;
         // $filterWithUpdatedAt = $this->filterWithUpdatedAt($tempBuilder)->get()->toArray();
 
-        // $tempBuilder = clone $builder;
-        // $filterWithClosedAt = $this->filterWithClosedAt($tempBuilder)->get()->toArray();
 
         return array_merge(
-            $filterWithSubmittedAt,
+            $filterWithCreatedDate,
             // $filterWithUpdatedAt,
-            // $filterWithClosedAt
         );
     }
 
-    private function filterWithSubmittedAt($builder)
+    private function filterWithCreatedDate($builder)
     {
         return $builder
             ->whereIn('cs.status', [
-                ConnectionService::STATUS_ACCEPTED, //Accepted
+                ConnectionService::STATUS_EA_PROCESSINF, //Not submitted
+                ConnectionService::STATUS_SUBMITTED, //In progress
                 ConnectionService::STATUS_ENERGY_SUBMIT, //In progress
-                // ConnectionService::STATUS_SUBMITTED, //In progress
+                ConnectionService::STATUS_ACCEPTED, //Accepted
+                ConnectionService::STATUS_REJECTED, //Rejected
+                ConnectionApplication::STATUS_CLOSED, //Closed
                 ConnectionService::AC_MANUAL_PROCESSING, //MANUAL_PROCESSING
-
-                ConnectionService::STATUS_CANT_CONNECT, //Rejeted
-                ConnectionService::STATUS_REJECTED, //Rejeted
-                // ConnectionService::STATUS_EA_PROCESSINF, //Not submitted
-                // ConnectionApplication::STATUS_CLOSED //Closed
+                ConnectionService::STATUS_CANT_CONNECT, //Failed
             ])
-            ->where('cs.submitted_at', '>=', $this->startDate)
-            ->where('cs.submitted_at', '<=', $this->endDate);
+            ->where('ca.created_at', '>=', $this->startDate)
+            ->where('ca.created_at', '<=', $this->endDate);
     }
 
     private function filterWithUpdatedAt($builder)
@@ -150,22 +162,52 @@ class ExportSubmissionReport
             ->whereNotNull('cs.submitted_at');
     }
 
-    private function filterWithClosedAt($builder)
-    {
-        return $builder
-            ->whereIn('ca.status', [
-                ConnectionApplication::STATUS_CLOSED //Closed
-            ])
-            ->where('ca.closed_at', '>=', $this->startDate)
-            ->where('ca.closed_at', '<=', $this->endDate)
-            ->whereNotBetween('cs.submitted_at', [$this->startDate, $this->endDate])
-            ->whereNotNull('cs.submitted_at');
-    }
-
     private function getLeadSrc(?int $src): string
     {
         $res = array_search($src, ConnectionApplication::SOURCE_MAPPING);
         return $res ?: "Unknown";
+    }
+
+    private function getRoadType($street_name)
+    {
+        $data = explode(' ', $street_name);
+        return $data[sizeof($data) - 1];
+    }
+
+    private function getSourceCode($service, $state, $plan, $postcode)
+    {
+        $state = $this->stateMap($state);
+
+        try {
+            $source_url = $service === 'power' ? 'ele-source-code' : 'gas-source-code';
+            $response = Http::post("$this->chatbotUri/api/$source_url", ['plan' => $plan, 'state' => $state, 'postcode' => $postcode]);
+            if ($response->status() == 200) {
+                return json_decode($response->body())->source_code;
+            }
+        } catch (\Exception $e) {
+            Log::error("[ExportEnergyReport:getElectricitySourceCode] ->  " . $e->getMessage());
+            Log::error($e->getTraceAsString());
+            return  '';
+        }
+
+        return  '';
+    }
+
+    private function stateMap($state)
+    {
+        $stateList = [
+            'New South Wales' => 'NSW', 'Victoria' => 'VIC', 'Queensland' => 'QLD',
+            'South Australia' => 'SA', 'Northern Territory' => 'NT', 'TAS' => 'Tasmania', 'ACT' => 'Australian Capital Territory', 'WA' => 'Western Australia'
+        ];
+        if (array_key_exists($state, $stateList)) {
+            return $stateList[$state];
+        }
+        return $state;
+    }
+
+    private function getElectricitySourceCode($leadId, $state, $postcode)
+    {
+        
     }
 
     private function setAgencyName(object $datum)
