@@ -5,10 +5,6 @@ namespace Reporting\Services;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Modules\Reporting\Services\SetDateRage;
-use Carbon\Carbon;
-use DB;
-use Doctrine\DBAL\Driver\IBMDB2\Connection;
-use JetBrains\PhpStorm\ArrayShape;
 
 class EnergyReport
 {
