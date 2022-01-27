@@ -244,6 +244,7 @@ class ConnectionApplication extends Model
     const SOURCE_IGNITE = 2;
     const SOURCE_OUR_PROPERTY = 4;
     const SOURCE_PROPERTY_ME = 5;
+    const SOURCE_HOOD_LEAD = 10;
 
     const EMAIL_BILLING_EMAIL = 1;
     const EMAIL_BILLING_PAPER = 2;
