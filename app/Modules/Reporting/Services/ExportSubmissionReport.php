@@ -103,8 +103,8 @@ class ExportSubmissionReport
                 cs.provider_name as `Utility_Provider`,
                 cs.service_type as `Utility_Service`,
                 cs.plan_type as `Utility_Plan`,
-                cs.status as `Lead_Status`,
                 cs.quote_reference as `Quote_ID`,
+                cs.status as `Lead_Status`,
                 sl.agency_name as `Foxie_Agency_Name`,
                 sl.agent_name as `Foxie_Agent_Name`,
                 rr.reason_text as `Rejection_Reason`
@@ -121,13 +121,12 @@ class ExportSubmissionReport
         $tempBuilder = clone $builder;
         $filterWithCreatedDate = $this->filterWithCreatedDate($tempBuilder)->get()->toArray();
 
-        // $tempBuilder = clone $builder;
-        // $filterWithUpdatedAt = $this->filterWithUpdatedAt($tempBuilder)->get()->toArray();
-
+        $tempBuilder = clone $builder;
+        $filterWithSubmittedDate = $this->filterWithSubmittedDate($tempBuilder)->get()->toArray();
 
         return array_merge(
             $filterWithCreatedDate,
-            // $filterWithUpdatedAt,
+            $filterWithSubmittedDate,
         );
     }
 
@@ -148,18 +147,23 @@ class ExportSubmissionReport
             ->where('ca.created_at', '<=', $this->endDate);
     }
 
-    private function filterWithUpdatedAt($builder)
+    private function filterWithSubmittedDate($builder)
     {
         return $builder
             ->whereIn('cs.status', [
-                ConnectionService::STATUS_CANT_CONNECT, //Rejeted
-                ConnectionService::STATUS_REJECTED, //Rejeted
-                ConnectionService::STATUS_EA_PROCESSINF //Not submitted
+                ConnectionService::STATUS_EA_PROCESSINF, //Not submitted
+                ConnectionService::STATUS_SUBMITTED, //In progress
+                ConnectionService::STATUS_ENERGY_SUBMIT, //In progress
+                ConnectionService::STATUS_ACCEPTED, //Accepted
+                ConnectionService::STATUS_REJECTED, //Rejected
+                ConnectionApplication::STATUS_CLOSED, //Closed
+                ConnectionService::AC_MANUAL_PROCESSING, //MANUAL_PROCESSING
+                ConnectionService::STATUS_CANT_CONNECT, //Failed
             ])
-            ->where('cs.updated_at', '>=', $this->startDate)
-            ->where('cs.updated_at', '<=', $this->endDate)
-            ->whereNotBetween('cs.submitted_at', [$this->startDate, $this->endDate])
-            ->whereNotNull('cs.submitted_at');
+            ->whereNotNull('cs.submitted_at')
+            ->where('cs.submitted_at', '>=', $this->startDate)
+            ->where('cs.submitted_at', '<=', $this->endDate)
+            ->whereNotBetween('ca.created_at', [$this->startDate, $this->endDate]);
     }
 
     private function getLeadSrc(?int $src): string
@@ -180,7 +184,7 @@ class ExportSubmissionReport
 
         try {
             $source_url = $service === 'power' ? 'ele-source-code' : 'gas-source-code';
-            $response = Http::post("$this->chatbotUri/api/$source_url", ['plan' => $plan, 'state' => $state, 'postcode' => $postcode]);
+            $response = Http::withoutVerifying()->post("$this->chatbotUri/api/$source_url", ['plan' => $plan, 'state' => $state, 'postcode' => $postcode]);
             if ($response->status() == 200) {
                 return json_decode($response->body())->source_code;
             }
