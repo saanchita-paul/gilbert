@@ -36,14 +36,14 @@
                         </div>
                         <div class="sideDesign">
 
-                           <div class="d-flex">
+                           <div class="d-flex mb-2 align-center">
                                <div class=" mb-2 mr-1"><span class="font-weight-bold">10</span> </div>
-                               <div style="font-size: 10px;">Manual Processing</div>
-                           </div>
+                               <div class="messageFont">Manual Processing</div>
+                           </div> 
 
-                           <div class="d-flex">
+                           <div class="d-flex align-center">
                                <div class=" mb-2 mr-1"><span class="font-weight-bold">10</span> </div>
-                               <div style="font-size: 10px;">Manual Processing</div>
+                               <div class="messageFont">Manual Processing</div>
                            </div>
                            
                            <!-- <div class="messageFont "><span class="font-weight-bold">20</span> AC Manual Processing</div> -->
@@ -104,10 +104,10 @@
             </div>
 
 
-            <div class="dividerDesign"></div>
+            <div class="dividerDesign" :class="type !== 'submission' ? 'dividerMargin' : '' "></div>
 
             <div
-                class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont2"
+                class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont2" 
             >
                 Retailer Segmentation
             </div>
@@ -173,7 +173,7 @@ export default {
 
 .messageFont{
   font-size: 12px;
-  color: #7e8a8f
+  color: #7e8a8f;
 }
 
 .statisticFont{
@@ -227,5 +227,9 @@ export default {
     flex-direction: column; 
     width: 100%; 
     justify-content: center;
+}
+
+.dividerMargin{
+    margin-top: 54px;
 }
 </style>
