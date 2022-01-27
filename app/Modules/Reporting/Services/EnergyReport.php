@@ -36,6 +36,10 @@ class EnergyReport
         ConnectionService::AC_MANUAL_PROCESSING
     ];
 
+    private array $acManualProcessing = [
+        ConnectionService::AC_MANUAL_PROCESSING
+    ];
+
     private array $openType = [
         ConnectionApplication::STATUS_ASSIGNED,
         ConnectionApplication::STATUS_UNASSIGNED,
@@ -145,6 +149,18 @@ class EnergyReport
             ->toArray();
     }
 
+    public function getAcManualProcessing()
+    {
+        return ConnectionService::whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
+            ->whereNotNull('provider_name')
+            ->whereIn('status', $this->acManualProcessing)
+            ->whereHas('connectionApplication', function ($query) {
+                $query->where('created_at', '>=', $this->startDate);
+                $query->where('created_at', '<=', $this->endDate);
+            })
+            ->count();
+    }
+
     public function totalConnected()
     {
         return ConnectionService::query()
@@ -213,6 +229,8 @@ class EnergyReport
             "total_closed" => $this->getTotalClosedApplication(),
             'successful_submission' => $this->mapperService->setEnergyData($this->totalSubmissions())->getReportData(),
             'waiting_for_connection' => $this->mapperService->setEnergyData($this->totalWaitingForConnection())->getReportData(),
+            "ac_manual_processing" => $this->getAcManualProcessing(),
+            "manual_processing" => 0,
             'connected' => $this->mapperService->setEnergyData($this->totalConnected())->getReportData(),
             'rejected' => $this->mapperService->setEnergyData($this->totalRejected())->getReportData(),
             'declined' => $this->mapperService->setEnergyData($this->totalDeclined())->getReportData(), 
