@@ -20,6 +20,7 @@ use App\Http\Requests\Agency\CreateOfficeRequest;
 use App\Http\Requests\Agency\UpdateAgencyRequest;
 use App\Http\Resources\Agency\IndependentAgencyResource;
 use App\Http\Requests\Agency\CreateIndependentAgencyRequest;
+use App\Services\Agency\AgencyMetricByApplication;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Log;
 
@@ -100,6 +101,16 @@ class AgencyController extends Controller
     {
         try {
             $service = new AgencyMetricService($request->toArray());
+            return response()->json(['success' => true, 'data' => $service->getAgencyMetrics()]);
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
+
+    public function getAgencyApplicationMetrics(Request $request)
+    {
+        try {
+            $service = new AgencyMetricByApplication($request->toArray());
             return response()->json(['success' => true, 'data' => $service->getAgencyMetrics()]);
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);

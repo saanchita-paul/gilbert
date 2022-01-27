@@ -8,6 +8,7 @@ import {
 export default {
     loadMetrics: (data) => LeadApplicationAPI.getMetrics(data),
     loadAgencyMetrics: (data) => LeadApplicationAPI.loadAgencyMetrics(data),
+    loadAgencyMetricsByApplication: (data) => LeadApplicationAPI.loadAgencyMetricsByApplication(data),
     loadUserLeadMetrics: () => LeadApplicationAPI.getUserLeadMetrics(),
     loadUserLeads: (sort_search_meta, active_lead_type, src = 'hood' , params) => LeadApplicationAPI.getUserLeads(sort_search_meta, active_lead_type, src , params),
     loadUserLead: (id) => LeadApplicationAPI.getUserLead(id),

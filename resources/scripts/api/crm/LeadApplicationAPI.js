@@ -488,6 +488,16 @@ export default {
         }
     },
 
+  async loadAgencyMetricsByApplication(query) {
+        try {
+            const data = await axios.get('/api/agencies/get-agency-application-metrics',{params: query});
+            return data?.data?.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
 
 
 

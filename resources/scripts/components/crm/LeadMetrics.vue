@@ -137,7 +137,7 @@
                 <div
                     class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font"
                 >
-                    Application Created
+                    Applicants Created
                 </div>
             </v-col>
             <v-col cols="2" class="border-left">
@@ -263,7 +263,7 @@ export default {
       async loadMetrics() {
           this.isSearchEmpty = (new AgencyFilter(this.$route.query)).isSearchEmpty();
           console.log("agency filter" , this.agencyFilter)
-          const allMetrics = await LeadApplicationService.loadAgencyMetrics(this.agencyFilter);
+          const allMetrics = await LeadApplicationService.loadAgencyMetricsByApplication(this.agencyFilter);
           this.appMetrics = allMetrics
 
           // const allMetric = await LeadApplicationService.loadMetrics({agency_id: this.agency_id});

@@ -46,6 +46,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/agencies', [AgencyController::class, 'index']);
     Route::post('/agencies', [AgencyController::class, 'create']);
     Route::get('/agencies/get-agency-metrics', [AgencyController::class, 'getAgencyMetrics']);
+    Route::get('/agencies/get-agency-application-metrics', [AgencyController::class, 'getAgencyApplicationMetrics']);
     Route::get('/agencies/{id}', [AgencyController::class, 'getAgency']);
     Route::post('/agencies/{id}/update', [AgencyController::class, 'update']);
     Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
