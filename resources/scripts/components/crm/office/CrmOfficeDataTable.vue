@@ -1,14 +1,21 @@
 <template>
     <v-container fluid>
-       <v-btn class="px-0" text  @click="backToAgency"  style="font-size: 24px; font-weight: 700;">
-                    <v-icon large>mdi-chevron-left</v-icon> {{ agency.title }}
-        </v-btn>
+       
         <v-card v-if="isLoaded" class="hood-card  mt-4 ">
-            <div class="d-flex justify-space-between pb-4">
+            <!-- <div class="d-flex justify-space-between pb-4">
                 <h2>{{agency.title}} Offices</h2>
-                <v-btn outlined @click="editAgencyName">Edit Agency Name</v-btn>
-            </div>
-            <LeadMetrics :agency_id="id"></LeadMetrics>
+                <v-btn outlined @click="editAgencyName">Edit Agency</v-btn>
+            </div> -->
+            <LeadMetrics :agency_id="id">
+                <template v-slot:editButton>
+                    <v-btn style="height: 40px;" outlined @click="editAgencyName">Edit Agency</v-btn>
+                </template>
+                <template v-slot:backButton>
+                    <v-btn class="px-0" text  @click="backToAgency"  style="font-size: 24px; font-weight: 700;">
+                        <v-icon large>mdi-chevron-left</v-icon> {{ agency.title }}
+                    </v-btn>
+                </template>
+            </LeadMetrics>
         </v-card>
 
         <div>
@@ -116,7 +123,7 @@ name: "CrmOfficeDataTable",
                 }
             ],
             search: '',
-            agency: null,
+            agency: {},
             isLoaded: false,
 
         }

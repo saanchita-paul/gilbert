@@ -13,12 +13,13 @@
 <!--      </div>-->
 
         <div style="flex-basis: 20%;" class="py-0">
-            <h3>All Application Metrics</h3>
+            <slot v-if="isModeEdit" name="backButton"/>
+            <h3  v-else >All Application Metrics</h3>
         </div>
         <div style="flex-basis: 75%;"  class="py-0">
            <div class="d-flex justify-end" style="flex-wrap: wrap;" >
             <div class="py-2 mr-2"> <v-btn @click="clearFilter" color="#C0C3C4" small v-if="!isSearchEmpty"> <v-icon small> mdi-close </v-icon> Reset </v-btn> </div>
-               <div  class="py-0 mr-2" style="flex-basis: 235px;">
+               <div  class="py-0 mr-2 LeadMatics123" style="flex-basis: 235px;">
                    <v-text-field
                        class='date-select'
                        dense
@@ -33,7 +34,13 @@
                        @click:append="showDatePickerModal = true"
                    ></v-text-field>
                </div>
-               <div v-if="!isModeEdit" class="py-0 mr-2" style="flex-basis: 90px;">
+               <div v-if="isModeEdit" class="py-0 mr-2 LeadMatics123 justify-end" style="flex-basis: 123px;">
+                   <!-- <v-btn outlined >Edit Agency</v-btn> -->
+                   <slot name="editButton"/>
+               </div>
+
+               
+               <div v-if="!isModeEdit" class="py-0 mr-2 LeadMatics123" style="flex-basis: 90px;">
                    <v-select
                        class='date-select'
                        dense
@@ -47,7 +54,7 @@
                        hide-details
                    ></v-select>
                </div>
-               <div v-if="!isModeEdit" class="py-0 mr-2" style="flex-basis: 130px;">
+               <div v-if="!isModeEdit" class="py-0 mr-2 LeadMatics123" style="flex-basis: 130px;">
                    <v-select
                        class='date-select'
                        dense
@@ -61,7 +68,7 @@
                        hide-details
                    ></v-select>
                </div>
-               <div v-if="!isModeEdit" class="py-0 mr-2" style="flex-basis: 130px;">
+               <div v-if="!isModeEdit" class="py-0 mr-2 LeadMatics123" style="flex-basis: 130px;">
                    <v-select
                        v-model="selectedAgency"
                        :items="agencies"
@@ -89,7 +96,7 @@
                        </template>
                    </v-select>
                </div>
-               <div v-if="!isModeEdit"  class="py-0 mr-1" style="flex-basis: 130px;">
+               <div v-if="!isModeEdit"  class="py-0 mr-1 LeadMatics123" style="flex-basis: 130px;">
                    <v-select
                        v-model="selectedOffice"
                        :items="offices"
