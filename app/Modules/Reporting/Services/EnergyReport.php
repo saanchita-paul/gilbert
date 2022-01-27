@@ -62,10 +62,12 @@ class EnergyReport
     {
         return ConnectionService::whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
             ->whereHas('connectionApplication', function ($query) {
-                $query->whereNotNull('provider_name');
+                $query->where('created_at', '>=', $this->startDate);
+                $query->where('created_at', '<=', $this->endDate);
             })
-            ->where('updated_at', '>=', $this->startDate)
-            ->where('updated_at', '<=', $this->endDate)
+            // ->whereNotNull('provider_name')
+            // ->where('updated_at', '>=', $this->startDate)
+            // ->where('updated_at', '<=', $this->endDate)
             ->count();
     }
 
@@ -73,11 +75,13 @@ class EnergyReport
     {
         return ConnectionService::whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
             ->whereHas('connectionApplication', function ($query) {
-                $query->whereNotNull('provider_name');
                 $query->whereNull('assigned_to');
+                $query->where('created_at', '>=', $this->startDate);
+                $query->where('created_at', '<=', $this->endDate);
             })
-            ->where('updated_at', '>=', $this->startDate)
-            ->where('updated_at', '<=', $this->endDate)
+            // ->whereNotNull('provider_name')
+            // ->where('updated_at', '>=', $this->startDate)
+            // ->where('updated_at', '<=', $this->endDate)
             ->count();
     }
 
@@ -85,11 +89,13 @@ class EnergyReport
     {
         return ConnectionService::whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
             ->whereHas('connectionApplication', function ($query) {
-                $query->whereNotNull('provider_name');
                 $query->whereNotNull('assigned_to');
+                $query->where('created_at', '>=', $this->startDate);
+                $query->where('created_at', '<=', $this->endDate);
             })
-            ->where('updated_at', '>=', $this->startDate)
-            ->where('updated_at', '<=', $this->endDate)
+            // ->whereNotNull('provider_name')
+            // ->where('updated_at', '>=', $this->startDate)
+            // ->where('updated_at', '<=', $this->endDate)
             ->count();
     }
 
@@ -97,11 +103,13 @@ class EnergyReport
     {
         return ConnectionService::whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
             ->whereHas('connectionApplication', function ($query) {
-                $query->whereNotNull('provider_name');
                 $query->whereIn('status', [$this->closedType]);
+                $query->where('created_at', '>=', $this->startDate);
+                $query->where('created_at', '<=', $this->endDate);
             })
-            ->where('updated_at', '>=', $this->startDate)
-            ->where('updated_at', '<=', $this->endDate)
+            // ->whereNotNull('provider_name');
+            // ->where('updated_at', '>=', $this->startDate)
+            // ->where('updated_at', '<=', $this->endDate)
             ->count();
     } 
     
@@ -112,8 +120,12 @@ class EnergyReport
             ->whereNotNull('provider_name')
             ->whereIn('status', $this->submissionType)
             ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
-            ->where('updated_at', '>=', $this->startDate)
-            ->where('updated_at', '<=', $this->endDate)
+            ->whereHas('connectionApplication', function ($query) {
+                $query->where('created_at', '>=', $this->startDate);
+                $query->where('created_at', '<=', $this->endDate);
+            })
+            // ->where('updated_at', '>=', $this->startDate)
+            // ->where('updated_at', '<=', $this->endDate)
             ->groupBy('provider_name', 'service_type', 'plan_type')
             ->get()
             ->toArray();
@@ -126,8 +138,12 @@ class EnergyReport
             ->whereNotNull('provider_name')
             ->whereIn('status', $this->waitingConnectionType)
             ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
-            ->where('updated_at', '>=', $this->startDate)
-            ->where('updated_at', '<=', $this->endDate)
+            ->whereHas('connectionApplication', function ($query) {
+                $query->where('created_at', '>=', $this->startDate);
+                $query->where('created_at', '<=', $this->endDate);
+            })
+            // ->where('updated_at', '>=', $this->startDate)
+            // ->where('updated_at', '<=', $this->endDate)
             ->groupBy('provider_name', 'service_type', 'plan_type')
             ->get()
             ->toArray();
@@ -140,8 +156,12 @@ class EnergyReport
             ->whereNotNull('provider_name')
             ->whereIn('status', $this->connectedType)
             ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
-            ->where('updated_at', '>=', $this->startDate)
-            ->where('updated_at', '<=', $this->endDate)
+            ->whereHas('connectionApplication', function ($query) {
+                $query->where('created_at', '>=', $this->startDate);
+                $query->where('created_at', '<=', $this->endDate);
+            })
+            // ->where('updated_at', '>=', $this->startDate)
+            // ->where('updated_at', '<=', $this->endDate)
             ->groupBy('provider_name', 'service_type', 'plan_type')
             ->get()
             ->toArray();
@@ -154,8 +174,12 @@ class EnergyReport
             ->whereNotNull('provider_name')
             ->whereIn('status', $this->rejectedType)
             ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
-            ->where('updated_at', '>=', $this->startDate)
-            ->where('updated_at', '<=', $this->endDate)
+            ->whereHas('connectionApplication', function ($query) {
+                $query->where('created_at', '>=', $this->startDate);
+                $query->where('created_at', '<=', $this->endDate);
+            })
+            // ->where('updated_at', '>=', $this->startDate)
+            // ->where('updated_at', '<=', $this->endDate)
             ->groupBy('provider_name', 'service_type', 'plan_type')
             ->get()
             ->toArray();
@@ -168,8 +192,12 @@ class EnergyReport
             ->whereNotNull('provider_name')
             ->whereIn('status', $this->rejectedType)
             ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
-            ->where('updated_at', '>=', $this->startDate)
-            ->where('updated_at', '<=', $this->endDate)
+            ->whereHas('connectionApplication', function ($query) {
+                $query->where('created_at', '>=', $this->startDate);
+                $query->where('created_at', '<=', $this->endDate);
+            })
+            // ->where('updated_at', '>=', $this->startDate)
+            // ->where('updated_at', '<=', $this->endDate)
             ->whereHas('reasons', function ($query) {
                 $query->whereRaw('LOWER(reason_code) in (?)', ['credit_check']);
             })
