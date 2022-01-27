@@ -6,36 +6,48 @@
             </p>
             <div class="d-flex justify-space-around ">
                 <template v-if="type === 'submission'">
-                    <div>
-                        <div class="mb-3"></div>
-                        <div
-                            class="font-weight-bold text-center py-0 statisticFont"
-                        >
-                            {{chartData.total}}
+                    <div class="d-flex" style="flex-wrap: wrap;">
+                        <div style="flex-basis: 36%;">
+                            <div class="mb-3"></div>
+                            <div
+                                class="font-weight-bold text-center py-0 statisticFont"
+                            >
+                                {{chartData.total}}
+                            </div>
+                            <div
+                                class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
+                            >
+                                Successful submissions to retailer
+                            </div>
                         </div>
-                        <div
-                            class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
-                        >
-                            Successful submissions to retailer
+                        <v-divider style="flex-basis: 2px;" class="vertical-divider mx-1" vertical></v-divider>
+                        <div style="flex-basis: 36%;">
+                            <div class="mb-3"></div>
+                            <div
+                                class="font-weight-bold text-center py-0 countFont"
+                            >
+                                {{chartData.waitingForConnection}}
+                            </div>
+                            <div
+                                class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
+                            >
+                                Waiting for connection
+                            </div>
                         </div>
-                    </div>
-                    <v-divider class="vertical-divider" vertical></v-divider>
-                    <div>
-                        <div class="mb-3"></div>
-                        <div
-                            class="font-weight-bold text-center py-0 countFont"
-                        >
-                            {{chartData.waitingForConnection}}
+                        <div class="sideDesign">
+
+                           <div class="d-flex">
+                               <div class=" mb-2 mr-1"><span class="font-weight-bold">10</span> </div>
+                               <div style="font-size: 10px;">Manual Processing</div>
+                           </div>
+
+                           <div class="d-flex">
+                               <div class=" mb-2 mr-1"><span class="font-weight-bold">10</span> </div>
+                               <div style="font-size: 10px;">Manual Processing</div>
+                           </div>
+                           
+                           <!-- <div class="messageFont "><span class="font-weight-bold">20</span> AC Manual Processing</div> -->
                         </div>
-                        <div
-                            class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
-                        >
-                            Waiting for connection
-                        </div>
-                    </div>
-                    <div class="center-flex-items mr-2">
-                       <div class="messageFont mb-2 text-no-wrap"><span class="font-weight-bold">10</span> Manual Processing</div>
-                       <div class="messageFont text-no-wrap"><span class="font-weight-bold">20</span> AC Manual Processing</div>
                     </div>
                 </template>
 
@@ -207,5 +219,13 @@ export default {
 .vertical-divider {
     border-width: 1px !important;
     width: 1px;
+}
+
+.sideDesign{
+    flex-basis: 80px; 
+    display: flex; 
+    flex-direction: column; 
+    width: 100%; 
+    justify-content: center;
 }
 </style>
