@@ -55,9 +55,11 @@ class ExportSubmissionReport
 
     private function mapData(array $data)
     {
+        //show assigned unassigned// show closed status
         foreach ($data as $datum) {
             $datum->Lead_Source = $this->getLeadSrc($datum->Lead_Source);
-            $datum->Lead_Status = GilbertStatusMapper::getStatusAsText ($datum->Lead_Status);
+            
+            $datum->Lead_Status = $this->getStatus($datum->Application_Status, $datum->Lead_Status, $datum->Assigned_To);
             $datum->Street_Type = $this->getRoadType($datum->Street_Type);
             $datum->Customer_Type = $datum->Customer_Type === 1? 'RESI':'SME';
             $datum->Offer_Type = 'ENE';
@@ -68,11 +70,14 @@ class ExportSubmissionReport
 
             unset($datum->Foxie_Agency_Name);
             unset($datum->Foxie_Agent_Name);
+            unset($datum->Assigned_To);
+            unset($datum->Application_Status);
 
             $this->leadsData[] = $datum;
         }
     }
 
+    // Offer_Type, Source_Code is faked assigned just to place the data in the right order
     private function fetchData() : array
     {
         $builder = DB::table('connection_services as cs')
@@ -99,6 +104,8 @@ class ExportSubmissionReport
                 ca.property_type as `Customer_Type`,
                 ca.status as `Offer_Type`,
                 ca.status as `Source_Code`,
+                ca.assigned_to as `Assigned_To`,
+                ca.status as `Application_Status`,
                 cs.lead_reference as `Lead_Reference`,
                 cs.provider_name as `Utility_Provider`,
                 cs.service_type as `Utility_Service`,
@@ -209,9 +216,15 @@ class ExportSubmissionReport
         return $state;
     }
 
-    private function getElectricitySourceCode($leadId, $state, $postcode)
+    private function getStatus($leadStatus, $serviceStatus, $assignedTo)
     {
-        
+        if($leadStatus === ConnectionApplication::STATUS_CLOSED) {
+            return 'CLOSED';
+        }
+        elseif($serviceStatus === ConnectionService::STATUS_EA_PROCESSINF) {
+            return $assignedTo === null ? 'UN_ASSIGNED' : 'ASSIGNED';
+        }
+        return GilbertStatusMapper::getStatusAsText($serviceStatus);
     }
 
     private function setAgencyName(object $datum)
