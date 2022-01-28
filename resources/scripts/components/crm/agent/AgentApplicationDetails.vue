@@ -1,5 +1,5 @@
 <template>
-    <v-container v-if="application">
+    <div v-if="application" class="containerRootClass">
         <v-row no-gutters>
             <v-col cols="6">
                 <CopyToClipboard title="Name" :data="applicant_name"/>
@@ -56,7 +56,7 @@
                     <p class="item-value">DD/MM/YYYY HH:MM (Email)</p>
                 </div>
             </v-col>
-            <v-col cols="4" class="hr-bar">
+            <v-col cols="4" class="hr-bar pl-2">
                 <h4 class="header">Property Details</h4>
                 <div class="item">
                     <p class="item-title">Occupancy Type</p>
@@ -75,7 +75,7 @@
                     </p>
                 </div>
             </v-col>
-            <v-col cols="4" class="hr-bar">
+            <v-col cols="4" class="hr-bar pl-2">
                 <h4 class="header">Agent's Additional Instructions</h4>
                 <div class="item">
                     <p class="item-title">Agency Office</p>
@@ -89,7 +89,7 @@
                 </div>
             </v-col>
         </v-row>
-    </v-container>
+    </div>
 </template>
 
 <script>
@@ -174,5 +174,19 @@ export default {
 .item-value {
     width: 60%;
     margin-bottom: 5px !important;
+}
+
+.application-consent{
+    color:green !important;
+    font-size: 14px !important;
+}
+.application-consent-waiting{
+    color:#E91E63 !important;
+    font-size: 14px !important;
+}
+.containerRootClass{
+    background-color: #FAFAFE;
+    margin-left: -12px;
+    padding: 20px 30px;
 }
 </style>

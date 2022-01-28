@@ -37,7 +37,7 @@
                       item-key="id"
                       show-expand
                       class="row-pointer"
-                      @click:row="(item, slot) => slot.expand(!slot.isExpanded)"
+                      @click:row="onRowSelect"
                   >
                     <template v-slot:item.first_name="{ item }">
                       {{ item.first_name + ' ' + item.last_name }}
@@ -57,7 +57,7 @@
                     </template>
 
                     <template v-slot:expanded-item="{ headers, item }">
-                      <td :colspan="headers.length">
+                      <td :colspan="headers.length" >
                          <AgentApplicationDetails :application='item'/>
                       </td>
                     </template>
@@ -167,7 +167,8 @@ export default {
         search: '',
         advanceSearchModal: false,
         searchFilterModel: new LeadSearchFilterModel(),
-        filterItems: []
+        filterItems: [],
+        selectedRowId: 0,
       }
     },
     computed:{
@@ -179,9 +180,13 @@ export default {
       },
     },
     methods: {
+       onRowSelect(item, slot){
+         this.selectedRowId = item.id;
+         slot.expand(!slot.isExpanded)
+       },
         isSelectedClass(item) {
-            if(item.id === this.selectedAppId) {
-                return 'selectedRow';
+            if(item.id === this.selectedRowId) {
+                return 'selectedRowForAgentTable';
             }
         },
         addNewApplication() {
@@ -253,4 +258,5 @@ export default {
 .row-pointer >>> tbody tr :hover {
   cursor: pointer;
 }
+
 </style>
