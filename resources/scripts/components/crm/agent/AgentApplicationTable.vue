@@ -22,7 +22,7 @@
           :searchFilterModel="searchFilterModel"
           @removeFilters="removeFilters"
         />
-        <v-card class="mt-2 hood-card">
+        <v-card class="mt-2 hood-card-for-agency">
             <v-row>
                 <v-col cols="12" class="crm-table">
                   <v-data-table
