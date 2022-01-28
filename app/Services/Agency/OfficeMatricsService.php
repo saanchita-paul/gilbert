@@ -15,6 +15,20 @@ class OfficeMatricsService
         
     }
 
+    private function calculateApplicationMatrics($connectionServiceData){
+        $builder = DB::table('connection_applications', 'ca');
+        $builder->where('office_id', $this->officeId);
+
+        $connectionServiceData[0]->app_total = $builder->count();
+        $connectionServiceData[0]->app_unassigned = $builder->where('status', ConnectionApplication::STATUS_UNASSIGNED)->count();
+        $connectionServiceData[0]->app_submitted = $builder->where('status', ConnectionApplication::STATUS_SUBMITTED)->whereNotIn('status' , [ConnectionApplication::STATUS_ESCALATED, ConnectionApplication::STATUS_CLOSED])->count();
+        $connectionServiceData[0]->app_connected = $builder->where('status', ConnectionApplication::STATUS_ACCEPTED)->whereNotIn('status' , [ConnectionApplication::STATUS_ESCALATED, ConnectionApplication::STATUS_CLOSED])->count();
+        $connectionServiceData[0]->app_closed = $builder->where('status', ConnectionApplication::STATUS_CLOSED)->count();
+
+        return $connectionServiceData;
+        
+    }
+
     private function calculateServiceMetrics()
     {
         $builder = DB::table('connection_applications', 'ca');
@@ -57,8 +71,11 @@ class OfficeMatricsService
     }
 
     public function get()
-    {
-        return $connectionServiceData = $this->calculateServiceMetrics();
+    {   
+        
+        $connectionServiceData = $this->calculateServiceMetrics();
+        $connectionApplicationData = $this->calculateApplicationMatrics($connectionServiceData);
+        return $connectionApplicationData;
     }
 
 }
