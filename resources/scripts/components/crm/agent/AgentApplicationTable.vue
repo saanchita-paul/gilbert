@@ -140,6 +140,18 @@ export default {
               value: 'agent_name'
           },
           {
+              text: 'Agency',
+              align: 'start',
+              sortable: true,
+              value: 'agency_office'
+          },
+          {
+              text: 'Moving Date',
+              align: 'start',
+              sortable: true,
+              value: 'moving_date'
+          },
+          {
               text: 'Source',
               align: 'start',
               sortable: true,
