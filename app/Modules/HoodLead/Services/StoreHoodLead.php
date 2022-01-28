@@ -47,6 +47,7 @@ class StoreHoodLead
             'office_id' => $office->id,
             'agency_id' => $office->agency_id,
             'source' => ConnectionApplication::SOURCE_HOOD_LEAD,
+            'status' => ConnectionApplication::STATUS_UNASSIGNED,
             'first_name' => $this->requestData['first_name'] ?? null,
             'last_name' => $this->requestData['last_name'] ?? null,
             'phone' => $this->requestData['phone'] ?? null,
