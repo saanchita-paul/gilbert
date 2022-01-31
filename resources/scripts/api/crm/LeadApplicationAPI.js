@@ -442,6 +442,15 @@ export default {
         }
     },
 
+    async getAssignedHoodUser(id) {
+        try {
+            const data =  await axios.get('/api/applications/' + id +'/get-assigned-hood-user');
+            return data.data.data;
+        } catch (error) {
+            return error.data;
+        }
+    },
+
 
 
 

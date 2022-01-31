@@ -32,6 +32,8 @@
                                :readmore="additionalInstruction"
                                @close="closeReadMore"> </LeadReadMoreModal>
             <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" v-if="showSubmitModal" @saveData="saveData" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
+
+            <AssignedToUserEmptyModal v-if="assignedToDialog" :dialog="assignedToDialog" @closeMessage="closeAssignedToEmptyModal"></AssignedToUserEmptyModal>
     </v-container>
 </template>
 
@@ -46,6 +48,7 @@ import CloseConfirmModal from "@scripts/components/crm/modals/CloseConfirmModal"
 import EscalationConfirmModal from "@scripts/components/crm/modals/EscalationConfirmModal";
 import LeadReadMoreModal from "@scripts/components/crm/modals/LeadReadMoreModal";
 import LeadSubmitConfirmationModal from "@scripts/components/crm/modals/LeadSubmitConfirmationModal";
+import AssignedToUserEmptyModal from "@scripts/components/crm/modals/AssignedToUserEmptyModal";
 import LeadApplicationAPI from "@scripts/api/crm/LeadApplicationAPI";
 import * as dayjs from "dayjs";
 import {isNull} from "lodash-es";
@@ -62,8 +65,8 @@ export default {
         LeadUserDetails,
         LeadSubmitConfirmationModal,
         CloseApplicationReasonModal,
-        CloseConfirmModal
-
+        CloseConfirmModal,
+        AssignedToUserEmptyModal
     },
 
     data() {
@@ -89,6 +92,7 @@ export default {
             submittedLoader: false,
             isManualChangeFlag: false,
             submitType: null,
+            assignedToDialog: false,
 
             //$attrs
             infoToPass:{
@@ -210,6 +214,13 @@ export default {
         async submitConnection(submitType) {
             let v = await this.validateLead();
             if(!v) return;
+
+            let assignedHoodUser = await this.getAssignedHoodUser();
+            if(!assignedHoodUser) {
+                this.assignedToDialog = true;
+                return;
+            }
+
             this.submitType = submitType;
             this.payload = { ...this.lead.property_details,
                 ...this.lead.person_details,
@@ -221,6 +232,10 @@ export default {
             };
 
             this.showSubmitModal = true;
+        },
+
+        async getAssignedHoodUser() {
+            return await LeadApplicationService.getAssignedHoodUser(this.leadId);
         },
 
         backToEdit() {
@@ -334,22 +349,19 @@ export default {
                 return;
             }
             this.leadSummary[field] = value;
-
         },
 
-        async updateMernNmi()
-        {
-
-            if(this.leadSummary.nmi == null && this.leadSummary.mirn == null)
-            {
+        async updateMernNmi() {
+            if(this.leadSummary.nmi == null && this.leadSummary.mirn == null) {
                 const nmiMern = await LeadApplicationService.getNmiMern(this.leadId);
                 this.leadSummary.nmi = nmiMern.nmi;
                 this.leadSummary.mirn = nmiMern.mirn;
             }
+        },
 
-
+        closeAssignedToEmptyModal(){
+            this.assignedToDialog = false;
         }
-
     },
 
   async  mounted() {

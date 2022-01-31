@@ -6,30 +6,47 @@
             </p>
             <div class="d-flex justify-space-around ">
                 <template v-if="type === 'submission'">
-                    <div>
-                        <div class="mb-3"></div>
-                        <div
-                            class="font-weight-bold text-center py-0 statisticFont"
-                        >
-                            {{chartData.total}}
+                    <div class="d-flex" style="flex-wrap: wrap;">
+                        <div style="flex-basis: 36%;">
+                            <div class="mb-3"></div>
+                            <div
+                                class="font-weight-bold text-center py-0 statisticFont"
+                            >
+                                {{chartData.total}}
+                            </div>
+                            <div
+                                class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
+                            >
+                                Successful submissions to retailer
+                            </div>
                         </div>
-                        <div
-                            class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
-                        >
-                            Total submitted to retailer
+                        <v-divider style="flex-basis: 2px;" class="vertical-divider mx-1" vertical></v-divider>
+                        <div style="flex-basis: 36%;">
+                            <div class="mb-3"></div>
+                            <div
+                                class="font-weight-bold text-center py-0 countFont"
+                            >
+                                {{chartData.waitingForConnection}}
+                            </div>
+                            <div
+                                class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
+                            >
+                                Waiting for connection
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <div class="mb-3"></div>
-                        <div
-                            class="font-weight-bold text-center py-0 countFont"
-                        >
-                            {{chartData.waitingForConnection}}
-                        </div>
-                        <div
-                            class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
-                        >
-                            Waiting for connection
+                        <div class="sideDesign">
+
+                           <div class="d-flex mb-2 align-center">
+                               <div class=" mb-2 mr-1"><span class="font-weight-bold">{{ chartData.manualProcessing }}</span> </div>
+                               <div class="messageFont">Manual Processing</div>
+                           </div> 
+
+                           <div class="d-flex align-center">
+                               <div class=" mb-2 mr-1"><span class="font-weight-bold">{{ chartData.acManualProcessing }}</span> </div>
+                               <div class="messageFont">AC Manual Processing</div>
+                           </div>
+                           
+                           <!-- <div class="messageFont "><span class="font-weight-bold">20</span> AC Manual Processing</div> -->
                         </div>
                     </div>
                 </template>
@@ -87,10 +104,10 @@
             </div>
 
 
-            <div class="dividerDesign"></div>
+            <div class="dividerDesign" :class="type !== 'submission' ? 'dividerMargin' : '' "></div>
 
             <div
-                class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont2"
+                class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont2" 
             >
                 Retailer Segmentation
             </div>
@@ -156,7 +173,7 @@ export default {
 
 .messageFont{
   font-size: 12px;
-  color: #7e8a8f
+  color: #7e8a8f;
 }
 
 .statisticFont{
@@ -192,5 +209,27 @@ export default {
 .countFont{
   font-size: 40px; 
   color: #542e89;
+}
+
+.center-flex-items{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.vertical-divider {
+    border-width: 1px !important;
+    width: 1px;
+}
+
+.sideDesign{
+    flex-basis: 80px; 
+    display: flex; 
+    flex-direction: column; 
+    width: 100%; 
+    justify-content: center;
+}
+
+.dividerMargin{
+    margin-top: 54px;
 }
 </style>

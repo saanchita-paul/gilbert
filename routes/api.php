@@ -103,6 +103,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/authoized-person', [ApplicationController::class, 'updateAuthorizedPerson']);
 
     Route::post('/applications/{application_id}/service/update', [ApplicationController::class, 'updateService']);
+    Route::get('/applications/{id}/get-assigned-hood-user', [ApplicationController::class, 'getAssignedHoodUser']);
 
     //'+id
 });

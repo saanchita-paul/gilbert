@@ -338,4 +338,15 @@ class ApplicationController extends Controller
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
+
+    public function getAssignedHoodUser($applicationId){
+        try {
+            $service = new ApplicationService();
+            $res = $service->getAssignedHoodUser($applicationId);
+            return response()->json(['success' => true, 'data' => $res]);
+
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+        }
+    }
 }

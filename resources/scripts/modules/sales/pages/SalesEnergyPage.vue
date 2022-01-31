@@ -9,7 +9,7 @@
             </v-col>
             <div class="d-flex  justify-space-around" style="width: 100%;" v-if="is_laod">
                 <ApplicationDashboardStatisticsEnergy title="Submissions to Retailer" type='submission' :chart-data="chartData.submitted"/>
-                <ApplicationDashboardStatisticsEnergy title="Connected" type='conversion' :chart-data="chartData.converted"/>
+                <ApplicationDashboardStatisticsEnergy title="Connected" type='conversion' :chart-data="chartData.connected"/>
                 <ApplicationDashboardStatisticsEnergy title="Rejected" type='rejected' :chart-data="chartData.rejected"/>
             </div>
         </v-row>
