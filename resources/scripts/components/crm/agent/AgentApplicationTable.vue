@@ -23,7 +23,7 @@
           @removeFilters="removeFilters"
         />
         <v-card class="mt-2 hood-card-for-agency">
-            <v-row>
+            <v-row class="crmTableRowDesign">
                 <v-col cols="12" class="crm-table">
                   <v-data-table
                       :headers="headers"
@@ -105,13 +105,13 @@ export default {
           {
             text: 'App Id',
             align: 'start',
-            sortable: true,
+            // sortable: true,
             value: 'id'
           },
           {
             text: 'Tenant Name',
             align: 'start',
-            sortable: true,
+            // sortable: true,
             value: 'first_name'
           },
           {
