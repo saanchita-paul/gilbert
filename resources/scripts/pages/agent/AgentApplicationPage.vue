@@ -161,4 +161,14 @@ export default {
 .intro-message {
     font-weight: 400 !important;
 }
+
+.light-font {
+    font-weight: 500 !important;
+}
+
+.mainContainer{
+    padding: 24px;
+    max-width: 1920px;
+    margin: auto;
+}
 </style>
