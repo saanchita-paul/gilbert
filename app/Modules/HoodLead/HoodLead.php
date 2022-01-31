@@ -15,5 +15,5 @@ class HoodLead extends Model
         'lead_id'
     ];
 
-    const DEFAULT_OFFICE = "HoodLead-Office";
+    const DEFAULT_OFFICE = "HoodAI-Office";
 }

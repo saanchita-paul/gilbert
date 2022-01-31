@@ -15,9 +15,9 @@ class HoodLeadSeeder extends Seeder
      */
     public function run()
     {
-        $count =  Agency::where('name' , "HoodLead-Agency" )->count();
+        $count =  Agency::where('name' , "HoodAI-Agency" )->count();
         if($count < 1){
-            $agency =  Agency::create(["name" => "HoodLead-Agency" , "type" => Agency::TYPE_INDEPENDENT]);
+            $agency =  Agency::create(["name" => "HoodAI-Agency" , "type" => Agency::TYPE_INDEPENDENT]);
             $agency->offices()->create([
                 'name' => HoodLead::DEFAULT_OFFICE,
                 'street_address' => "100 Plenty Rd",
