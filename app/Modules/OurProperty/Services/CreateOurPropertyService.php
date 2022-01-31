@@ -5,6 +5,7 @@ namespace OurProperty\Services;
 
 
 use App\Models\AgentProfile;
+use App\Models\Office;
 use Exception;
 use App\Models\Agency;
 use Illuminate\Database\Eloquent\Builder;
@@ -136,9 +137,9 @@ class CreateOurPropertyService
         $agencyData = $this->getAgencyAndOffice();
 
 
-        $this->connectionApplicaton->agency_id = $agencyData["agency"]?->id ?? 1;
-        $this->connectionApplicaton->office_id = $agencyData["office"]?->id ?? 1;
-        $this->connectionApplicaton->created_by = $agencyData["agent"]?->id ?? 1;
+        $this->connectionApplicaton->agency_id = $agencyData["agency"]?->id;
+        $this->connectionApplicaton->office_id = $agencyData["office"]?->id;
+        $this->connectionApplicaton->created_by = $agencyData["agent"]?->id ?? null;
         $this->connectionApplicaton->source = ConnectionApplication::SOURCE_OUR_PROPERTY;
 
         //load Our Property
@@ -200,6 +201,7 @@ class CreateOurPropertyService
     #[ArrayShape(["agent" => "\App\Models\AgentProfile|null", "agency" => "\App\Models\Agency||null", "office" => "\App\Models\Office|null"])]
     private function getAgencyAndOffice(): array
     {
+        $email = $this->userRequestData->agent_email;
         $res = [
             "agent" => null,
             "agency" => null,
@@ -208,29 +210,27 @@ class CreateOurPropertyService
         try {
             $res["agent"] = AgentProfile::whereHas(
                 'user',
-                fn(Builder $user) => $user->where('email', $this->userRequestData->agent_email)
-            )->firstOrFail();
-
-            $res["agency"] = Agency::query()
-                ->where('id', $res["agent"]->agency_id)
-//                ->where('name', $this->userRequestData->agency_name)
-                ->firstOrFail();
-
-            $res["office"] = $res["agency"]->offices()->firstOrFail();
-
+                fn(Builder $user) => $user->where('email', $email)
+            )->first();
+            if ($res["agent"]) {
+                $res["office"] = $res["agent"]->office;
+                $res["agency"] = $res["agent"]->agency;
+            } else {
+                $res['office'] = Office::whereName('Our-Property-Hood-Office')->firstOrFail();
+                $res["agency"] = $res["office"]?->agency;
+                throw  new Exception("No Agent matched for email: $email. falling back to default agency & office mapping.");
+            }
 
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
             Log::error($exception->getTraceAsString());
 
-            #TODO: send email to support
             $this->sendAgentNotFoundEmail($exception->getMessage());
-
-            throw new Exception("Provided `agency_name` or `agent_email` is not found in the system");
         }
 
         return $res;
     }
+
 
     /** send email to support if agency is not found
      * @param string $agencyName
