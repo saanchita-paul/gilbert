@@ -1,6 +1,6 @@
 <?php
 use HoodLead\Http\Controllers\HoodLeadController;
 
-Route::middleware(['api'])->group(function () {
+Route::prefix('/api/hood-lead')->middleware(['api'])->group(function () {
     Route::post('leads', [HoodLeadController::class, "store"]);
 });

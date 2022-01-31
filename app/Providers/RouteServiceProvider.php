@@ -70,7 +70,6 @@ class RouteServiceProvider extends ServiceProvider
              * HoodLead module
              */
             Route::middleware([])
-                ->prefix('hood-lead')
                 ->group(base_path('app/Modules/HoodLead/route.php'));
 
             Route::middleware('web')
