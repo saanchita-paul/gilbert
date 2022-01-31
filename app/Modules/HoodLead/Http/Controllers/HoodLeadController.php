@@ -2,6 +2,7 @@
 
 namespace HoodLead\Http\Controllers;
 
+use App\Events\Agency\CreateApplicationEvent;
 use App\Http\Controllers\Controller;
 use HoodLead\Services\StoreHoodLead;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ class HoodLeadController extends Controller
         try {
             $service = new StoreHoodLead($request->toArray());
             $leadId = $service->save();
+            CreateApplicationEvent::dispatch($leadId);
 
             return response()->json([
                 'success' => true,
