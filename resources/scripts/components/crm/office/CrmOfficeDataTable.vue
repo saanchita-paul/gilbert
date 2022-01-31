@@ -65,6 +65,9 @@ import OfficeService from "@scripts/services/crm/OfficeService";
 import LeadMetrics from "@scripts/components/crm/LeadMetrics";
 import AgencyService from "@scripts/services/crm/AgencyService";
 import AgencyEditModal from "@scripts/components/crm/modals/AgencyEditModal";
+import AuthService from "@scripts/services/AuthService";
+
+
 export default {
 name: "CrmOfficeDataTable",
     props: {
@@ -213,6 +216,7 @@ name: "CrmOfficeDataTable",
             let payload = {name: agency}
            await AgencyService.updateAgency(payload, this.$route.params.id)
             this.editAgencyNameFlag = false;
+            AuthService.setBreadcrumbs(this.$route.meta.breadcrumbType, this.$route.params)
 
         },
 
