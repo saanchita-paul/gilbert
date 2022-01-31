@@ -273,6 +273,7 @@ class ConnectionApplication extends Model
         'ignite' => self::SOURCE_IGNITE,
         'our-property' => self::SOURCE_OUR_PROPERTY,
         'property_me' => self::SOURCE_PROPERTY_ME,
+        'hood_ai' => self::SOURCE_HOOD_LEAD,
     ];
 
     const PLAN_TYPE_MAPPER = [
@@ -292,7 +293,8 @@ class ConnectionApplication extends Model
         self::SOURCE_FOXIE => 'Foxie',
         self::SOURCE_IGNITE => 'Ignite',
         self::SOURCE_OUR_PROPERTY => 'Ourproperty',
-        self::SOURCE_PROPERTY_ME => 'Propertyme'
+        self::SOURCE_PROPERTY_ME => 'Propertyme',
+        self::SOURCE_HOOD_LEAD => "Hood.ai",
     ];
 
     const PLAN_TYPE_REVERSE_MAPPER = [

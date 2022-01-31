@@ -72,7 +72,7 @@ class SearchConnectionApplication
         $this->appId = !empty($request['app_id']) ? $request['app_id'] : null;
         $this->agentId = !empty($request['agent_id']) ? $request['agent_id'] : null;
         $this->tenantEmail = !empty($request['tenant_email']) ? $request['tenant_email'] : null;
-        
+
         !empty($request['moving_date']) && $this->setDateRangeNoTz($request['moving_date'], $request['moving_date']);
 
         if(empty($request['sort_by'])) {
@@ -135,7 +135,7 @@ class SearchConnectionApplication
                       ])
                     : $this->builder->where('assigned_to', $user->profile->id)
                         ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED);
-            } 
+            }
              else {
                 $this->builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
                     ? $this->builder->where('status', ConnectionApplication::STATUS_MAPPING[$this->leadType])
