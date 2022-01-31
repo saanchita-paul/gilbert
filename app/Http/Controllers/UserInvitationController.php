@@ -57,7 +57,6 @@ class UserInvitationController extends Controller
             $service = new UserInvitationService();
             $service->updatePassword($request->toArray());
             $service->updateToken($request->toArray());
-            $service->setEmailVerificationTime($request->toArray());
 
             return response()->json(['success' => true, 'message' => "Password successfully updated."]);
         } catch (\Exception $exception) {

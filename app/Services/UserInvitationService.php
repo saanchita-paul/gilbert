@@ -47,13 +47,4 @@ class UserInvitationService
             return $userInvitation->update(['status'=> 'successful']);
         }
     }
-
-    public function setEmailVerificationTime($updateData){
-        $userInvitation = UserInvitation::where('token' , $updateData['token'])->first();
-        $user = User::where('email' , $userInvitation->email);
-        if($user->first())
-        {
-            return $user->update(['email_verified_at'=> now()]);
-        }
-    }
 }
