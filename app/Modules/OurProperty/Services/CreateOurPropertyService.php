@@ -5,6 +5,7 @@ namespace OurProperty\Services;
 
 
 use App\Models\AgentProfile;
+use App\Models\Office;
 use Exception;
 use App\Models\Agency;
 use Illuminate\Database\Eloquent\Builder;
@@ -74,11 +75,12 @@ class CreateOurPropertyService
         return JwtAuthService::getAccessToken($credentials['email']);
     }
 
-    /** save all fields to dump  
-    * @param void
-    * @return void
-    */
-    private function saveAllFieldDump(){
+    /** save all fields to dump
+     * @param void
+     * @return void
+     */
+    private function saveAllFieldDump()
+    {
         $this->ourProperty = new OurProperty;
         $this->ourProperty->lead_id = $this->userRequestData->our_property_lead_id ?? null;
         $this->ourProperty->all_fields_dump = json_encode($this->userRequestData->toArray());
@@ -135,9 +137,9 @@ class CreateOurPropertyService
         $agencyData = $this->getAgencyAndOffice();
 
 
-        $this->connectionApplicaton->agency_id = $agencyData["agency"]?->id ?? 1;
-        $this->connectionApplicaton->office_id = $agencyData["office"]?->id ?? 1;
-        $this->connectionApplicaton->created_by = $agencyData["agent"]?->id ?? 1;
+        $this->connectionApplicaton->agency_id = $agencyData["agency"]?->id;
+        $this->connectionApplicaton->office_id = $agencyData["office"]?->id;
+        $this->connectionApplicaton->created_by = $agencyData["agent"]?->id ?? null;
         $this->connectionApplicaton->source = ConnectionApplication::SOURCE_OUR_PROPERTY;
 
         //load Our Property
@@ -199,6 +201,7 @@ class CreateOurPropertyService
     #[ArrayShape(["agent" => "\App\Models\AgentProfile|null", "agency" => "\App\Models\Agency||null", "office" => "\App\Models\Office|null"])]
     private function getAgencyAndOffice(): array
     {
+        $email = $this->userRequestData->agent_email;
         $res = [
             "agent" => null,
             "agency" => null,
@@ -207,43 +210,41 @@ class CreateOurPropertyService
         try {
             $res["agent"] = AgentProfile::whereHas(
                 'user',
-                fn(Builder $user) => $user->where('email', $this->userRequestData->agent_email)
-            )->firstOrFail();
-
-            $res["agency"] = Agency::query()
-                ->where('id', $res["agent"]->agency_id)
-                ->where('name', $this->userRequestData->agency_name)
-                ->firstOrFail();
-
-            $res["office"] = $res["agency"]->offices()->firstOrFail();
-
+                fn(Builder $user) => $user->where('email', $email)
+            )->first();
+            if ($res["agent"]) {
+                $res["office"] = $res["agent"]->office;
+                $res["agency"] = $res["agent"]->agency;
+            } else {
+                $res['office'] = Office::whereName('Our-Property-Hood-Office')->firstOrFail();
+                $res["agency"] = $res["office"]?->agency;
+                throw  new Exception("No Agent matched for email: $email. falling back to default agency & office mapping.");
+            }
 
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
             Log::error($exception->getTraceAsString());
 
-            #TODO: send email to support
-            $this->sendAgentNotFoundEmail();
-
-            throw new Exception("Provided `agency_name` or `agent_email` is not found in the system");
+            $this->sendAgentNotFoundEmail($exception->getMessage());
         }
 
         return $res;
     }
 
-    /** send email to support if agency is not found  
-    * @param string $agencyName
-    * @return void
-    */
-    private function sendAgentNotFoundEmail()
+
+    /** send email to support if agency is not found
+     * @param string $agencyName
+     * @return void
+     */
+    private function sendAgentNotFoundEmail(?string $mgs = null)
     {
-        $dataToBeSent =  [
-            'reason of failure' => 'Agency not found',
-            'lead id'           =>  $this->ourProperty->lead_id,
-            'agency name'       =>  $this->userRequestData->agency_name,
-            'agent email'       =>  $this->userRequestData->agent_email,
+        $dataToBeSent = [
+            'reason of failure' => $mgs ?? 'Agency not found',
+            'lead id' => $this->ourProperty->lead_id,
+            'agency name' => $this->userRequestData->agency_name,
+            'agent email' => $this->userRequestData->agent_email,
         ];
-        $emails =  explode( ',', config('our_property.support_emails'));
+        $emails = explode(',', config('our_property.support_emails'));
         foreach ($emails as $recipient) {
             Mail::to($recipient)->queue(new AgentNotFoundMail($dataToBeSent));
         }
