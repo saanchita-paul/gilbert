@@ -50,7 +50,8 @@ class UserInvitation extends Model
         'email',
         'user_id',
         'status',
-        'valid_till'
+        'valid_till',
+        'email_verified_at'
     ];
 
     /**
