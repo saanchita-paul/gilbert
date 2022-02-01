@@ -163,7 +163,7 @@ export default {
 
         async loadLeads(meta) {
             this.loading = true;
-            let data = await LeadApplicationService.loadUserLeads(
+            let data = await LeadApplicationService.loadUserLeadsForAgents(
                 meta,
                 "",
                 "",

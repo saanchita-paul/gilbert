@@ -11,6 +11,7 @@ export default {
     loadAgencyMetricsByApplication: (data) => LeadApplicationAPI.loadAgencyMetricsByApplication(data),
     loadUserLeadMetrics: () => LeadApplicationAPI.getUserLeadMetrics(),
     loadUserLeads: (sort_search_meta, active_lead_type, src = 'hood' , params) => LeadApplicationAPI.getUserLeads(sort_search_meta, active_lead_type, src , params),
+    loadUserLeadsForAgents: (sort_search_meta, active_lead_type, src = 'hood' , params) => LeadApplicationAPI.loadUserLeadsForAgents(sort_search_meta, active_lead_type, src , params),
     loadUserLead: (id) => LeadApplicationAPI.getUserLead(id),
     closeApplication: (id) => LeadApplicationAPI.closeApplication(id),
     loadPlan: (serviceProvider) => LeadApplicationAPI.getPlan(serviceProvider),

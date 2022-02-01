@@ -252,6 +252,17 @@ export default {
         }
     },
 
+    async loadUserLeadsForAgents(sort_search_meta, active_lead_type, src, params) {
+        try {
+            const data = await axios.get('/api/applications/agents',{params:{...sort_search_meta, active_lead_type, source: src , ...params}});
+            return ApplicationMapper.mapApplicationList(data.data);
+
+        } catch (error) {
+            console.log('error', error);
+            return error.data;
+        }
+    },
+
   async getUserLead (id) {
         try {
             const data = await axios.get('/api/applications/' + id);

@@ -86,6 +86,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::post('/applications', [ApplicationController::class, 'create']);
     Route::get('/applications', [ApplicationController::class, 'index']);
+    Route::get('/applications/agents', [ApplicationController::class, 'SearchConnectionApplicationAgents']);
     Route::get('/applications/{application}', [ApplicationController::class, 'view']);
 
     Route::post('/applications/{id}/submit', [ApplicationController::class, 'submit']);
