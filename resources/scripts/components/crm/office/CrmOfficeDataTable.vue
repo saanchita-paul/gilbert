@@ -212,8 +212,9 @@ name: "CrmOfficeDataTable",
         },
 
         async saveAgencyName(agency) {
-            // console.log(agency);
+            console.log('agency' , agency);
             let payload = {name: agency}
+            this.agency.title = agency;
            await AgencyService.updateAgency(payload, this.$route.params.id)
             this.editAgencyNameFlag = false;
             AuthService.setBreadcrumbs(this.$route.meta.breadcrumbType, this.$route.params)
