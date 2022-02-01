@@ -6,7 +6,19 @@
                 <h2>{{agency.title}} Offices</h2>
                 <v-btn outlined @click="editAgencyName">Edit Agency Name</v-btn>
             </div>
-            <LeadMetrics :agency_id="id"></LeadMetrics>
+<!--            <LeadMetrics :agency_id="id"></LeadMetrics>-->
+<!--                <v-btn outlined @click="editAgencyName">Edit Agency</v-btn>-->
+            <LeadMetrics :agency_id="id">
+                <template v-slot:editButton>
+                    <v-btn style="height: 40px;" outlined @click="editAgencyName">Edit Agency</v-btn>
+                </template>
+                <template v-slot:backButton>
+                    <v-btn class="px-0" text  @click="backToAgency"  style="font-size: 24px; font-weight: 700;">
+                        <v-icon large>mdi-chevron-left</v-icon> {{ agency.title }}
+                    </v-btn>
+                </template>
+                <v-btn style="height: 40px;" outlined @click="editAgencyName">Edit Agency</v-btn>
+            </LeadMetrics>
         </v-card>
 
         <div>
@@ -56,6 +68,7 @@ import OfficeService from "@scripts/services/crm/OfficeService";
 import LeadMetrics from "@scripts/components/crm/LeadMetrics";
 import AgencyService from "@scripts/services/crm/AgencyService";
 import AgencyEditModal from "@scripts/components/crm/modals/AgencyEditModal";
+
 export default {
 name: "CrmOfficeDataTable",
     props: {
