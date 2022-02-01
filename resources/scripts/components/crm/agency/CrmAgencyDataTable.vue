@@ -96,7 +96,7 @@ name: "CrmAgencyDataTable",
                 value: 'title'
                 },
                 {
-                    text: 'Applications',
+                    text: 'Apps',
                     align: 'center',
                     sortable: true,
                     value: 'total_leads'

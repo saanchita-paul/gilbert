@@ -137,7 +137,7 @@
                 <div
                     class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitle_font"
                 >
-                    Applicants Created
+                    Applications Created
                 </div>
             </v-col>
             <v-col cols="2" class="border-left">

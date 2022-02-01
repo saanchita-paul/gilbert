@@ -101,7 +101,7 @@ name: "CrmOfficeDataTable",
                     value: 'title'
                 },
                 {
-                    text: 'Applicants',
+                    text: 'Apps',
                     align: 'start',
                     sortable: true,
                     value: 'total_leads'
