@@ -16,12 +16,13 @@
             <v-btn class="ma-2 float-right" @click="saveNote">Submit Note</v-btn>
         </v-col>
 
-        <v-col cols="12" class="notes-container" >
+        <v-col cols="12" class="notes-container">
                 <v-timeline
                     dense
             >
                     <v-timeline-item color="primary" small v-for="nt in notes" :color="getColor(nt.active)" :key="nt.id">
                         <SubmittedNote v-if="nt.type == 'submitted_connection'" :note="nt"> </SubmittedNote>
+                        <InvalidNote v-else-if="nt.type == 'invalid_property_me_note'" :note="nt"> </InvalidNote>
                         <Note v-else :note="nt"></Note>
                     </v-timeline-item>
              </v-timeline>
@@ -31,10 +32,11 @@
 
 <script>
 import Note from "@scripts/components/crm/leadmanagement/notes/Note";
+import InvalidNote from "@scripts/components/crm/leadmanagement/notes/InvalidNote";
 import SubmittedNote from "@scripts/components/crm/leadmanagement/notes/SubmittedNote";
 export default {
   name: "ApplicationNotes",
-    components: {SubmittedNote, Note},
+    components: {SubmittedNote, Note, InvalidNote},
     props: {
       notes: {
           require: true
