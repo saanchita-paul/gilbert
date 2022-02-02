@@ -224,7 +224,7 @@ class ApplicationService
         $lead = array_merge($lead, [
             'plan_type' => null,
             'assigned_to' => null,
-            'status' => ConnectionApplication::STATUS_SUBMITTED,
+            // 'status' => ConnectionApplication::STATUS_SUBMITTED,
             'submitted_by' => auth()->id(),
             'vendor_id' => $vendorId
         ]);
