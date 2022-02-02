@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Services\Agency;
+namespace App\Services\Applications;
 
 use App\Models\ConnectionApplication;
-use App\Models\User;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -36,7 +36,7 @@ class ApplicationsMetricsService
     /**
      * @var array
      */
-    private $result = [];
+    private $results = [];
 
     public function __construct(public int $assignedUserId, public ?int $officeId = null) {
         $this->fetchOthers()
@@ -56,15 +56,18 @@ class ApplicationsMetricsService
      */
     private function fetchOthers(): static
     {
-        $builder = DB::table('connection_applications');
+        $builder = DB::table('connection_applications', 'ca');
         if ($this->officeId) {
             $builder->where('office_id', $this->officeId);
         }
 
-        $this->result = $builder->select('status', DB::raw("count(*) as total"))
+        $this->results = $builder->select('status', DB::raw("count(*) as total"))
+            ->leftJoin("suger_leads as fx", 'ca.id', '=', 'fx.connection_application_id')
+            ->where(function (Builder $builder) {
+                $builder->whereNull('fx.compare_connect_id')->orWhere('fx.compare_connect_id', 'N/A');
+            })
             ->groupBy('status')
             ->get();
-
         return  $this;
     }
 
@@ -75,9 +78,10 @@ class ApplicationsMetricsService
     {
         $res = DB::table('connection_applications')
             ->where('assigned_to', $this->assignedUserId)
-            ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED)
+            ->where('status', ConnectionApplication::STATUS_ASSIGNED)
             ->select(DB::raw("count(*) as count"))
-            ->get()->toArray();
+            ->get()
+            ->toArray();
 
         $this->metrics[] = array_merge(['type' => 'my_application'], (array)array_shift($res));
         return $this;
@@ -90,17 +94,14 @@ class ApplicationsMetricsService
      */
     private function calculate(): void
     {
-        foreach ($this->result as $datum) {
-            $status = array_search($datum->status, ConnectionApplication::STATUS_MAPPING);
+        foreach ($this->results as $result) {
+            $status = ApplicationStatusFilterMapper::getFilter($result->status);
             if ($status) {
                 $va = array_search($status, array_column($this->metrics, 'type'));
-                $this->metrics[$va]['count'] += $datum->total;
-
-                if($status === 'processing' || $status === 'accepted' || $status === 'rejected')
-                {
-                    $this->metrics[3]['count'] += $datum->total;
-                }
+                $this->metrics[$va]['count'] += $result->total;
             }
         }
     }
+
+
 }

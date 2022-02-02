@@ -6,9 +6,7 @@ use App\Events\Agency\SubmitApplicationEvent;
 use App\Models\ConnectionApplication;
 use App\Services\Agency\HubspotContactService;
 use App\Services\Sales\PostSalesService;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use FastConnect\Services\SubmitWaterLeadToFastConnect;
 
 class SendApplicationToEA implements ShouldQueue
 {
@@ -39,6 +37,7 @@ class SendApplicationToEA implements ShouldQueue
             $postEaService->postToEa();
             $hubspotService = new HubspotContactService($event->applicationId);
             $hubspotService->update();
+            ConnectionApplication::where('id' , $event->applicationId)->update('status' , ConnectionApplication::STATUS_SUBMITTED);
         } else {
             info("Skipping EA Submit", [
                 'EA_SALES_API_ON' => $saleApiOn,
