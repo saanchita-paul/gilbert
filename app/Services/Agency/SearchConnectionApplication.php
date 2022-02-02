@@ -112,6 +112,7 @@ class SearchConnectionApplication
     }
 
     /**
+     * view business docs here: "/docs/business/applications_card_filters.md"
      * @return $this
      */
     private function applyFilterLeadType(User $user): static
