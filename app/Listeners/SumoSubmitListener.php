@@ -37,6 +37,7 @@ class SumoSubmitListener implements ShouldQueue
             info("no response 1");
             \Log::info($res['status']);
             (new SumoService())->saveStatus($event->applicationId, $res['status'] , $res['creditCheck']);
+            ConnectionApplication::where('id' , $event->applicationId)->update('status' , ConnectionApplication::STATUS_SUBMITTED);
             info(json_encode($res));
             info("no response 2");
             info("Sumo response body");
