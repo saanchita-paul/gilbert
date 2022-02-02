@@ -64,18 +64,18 @@ class SearchConnectionApplication
     {
         $this->createFullTextQueries($request);
 
-        $this->perPage = empty($request['per_page']) ? null : (int) $request['per_page'];
+        $this->perPage = empty($request['per_page']) ? null : (int)$request['per_page'];
         $this->leadType = optional($request)['active_lead_type'];
         $this->source = !empty($request['source']) ? (ConnectionApplication::SOURCE_MAPPING[$request['source']] ?? null) : null;
-        $this->tenancyType = !empty($request['tenancy_type']) ? ConnectionApplication::TENANCY_MAPPING[$request['tenancy_type']] ?? null: null;
+        $this->tenancyType = !empty($request['tenancy_type']) ? ConnectionApplication::TENANCY_MAPPING[$request['tenancy_type']] ?? null : null;
         $this->officeId = !empty($request['office_id']) ? $request['office_id'] : null;
         $this->appId = !empty($request['app_id']) ? $request['app_id'] : null;
         $this->agentId = !empty($request['agent_id']) ? $request['agent_id'] : null;
         $this->tenantEmail = !empty($request['tenant_email']) ? $request['tenant_email'] : null;
-        
+
         !empty($request['moving_date']) && $this->setDateRangeNoTz($request['moving_date'], $request['moving_date']);
 
-        if(empty($request['sort_by'])) {
+        if (empty($request['sort_by'])) {
             $this->setSortBy('created_at', 'true');
         } else {
             $this->setSortBy(optional($request)['sort_by'], optional($request)['is_descending']);
@@ -116,33 +116,35 @@ class SearchConnectionApplication
      */
     private function applyFilterLeadType(User $user): static
     {
-//        if (empty($this->leadType)) {
-//            $this->builder = $this->builder->where('status', '!=', ConnectionApplication::STATUS_CLOSED);
-//        }
-
-
-        //todo: need to refactor this "BAD" code (ask Sazzad if needed).
-        if ($this->leadType) {
-            if ($this->leadType === 'submitted') {
-                $this->builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
-                    ? $this->builder->whereIn('status', [4, 5, 6, 7])
-                    : $this->builder->where('assigned_to', $user->profile->id)
-                        ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED);
-            } else if ($this->leadType === 'in_progress') {
-                $this->builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
-                    ? $this->builder->whereIn('status', [ ConnectionApplication::STATUS_UNASSIGNED, ConnectionApplication::STATUS_ASSIGNED,
-                     ConnectionApplication::STATUS_ESCALATED, ConnectionApplication::STATUS_SUBMITTED,
-                      ])
-                    : $this->builder->where('assigned_to', $user->profile->id)
-                        ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED);
-            } 
-             else {
-                $this->builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
-                    ? $this->builder->where('status', ConnectionApplication::STATUS_MAPPING[$this->leadType])
-                    : $this->builder->where('assigned_to', $user->profile->id)
-                        ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED);
-            }
+        if (!$this->leadType) {
+            return $this;
         }
+
+
+        $this->builder = match ($this->leadType) {
+            'closed' => $this->builder->whereIn('status', [ConnectionApplication::STATUS_CLOSED]),
+
+            ConnectionApplication::MY_APPLICATIONS => $this->builder->whereIn('status', [
+                ConnectionApplication::STATUS_ASSIGNED,
+                #todo: need to add submission-failed status here
+            ])->where('assigned_to', $user->profile->id),
+
+            'in_progress' => $this->builder->whereIn('status', [
+                ConnectionApplication::STATUS_UNASSIGNED,
+                ConnectionApplication::STATUS_ASSIGNED,
+                ConnectionApplication::STATUS_ESCALATED,
+                ConnectionApplication::STATUS_SUBMITTED,
+            ]),
+
+            'submitted' => $this->builder->whereIn('status', [
+                ConnectionApplication::STATUS_SUBMITTED,
+                ConnectionApplication::STATUS_REJECTED,
+                ConnectionApplication::STATUS_ACCEPTED,
+                ConnectionApplication::STATUS_EA_PROCESSINF, #todo: need to check this status
+            ]),
+
+            default => $this->builder->where('status', ConnectionApplication::STATUS_MAPPING[$this->leadType])
+        };
 
         return $this;
     }
@@ -152,7 +154,7 @@ class SearchConnectionApplication
      */
     private function applyFilterSource(): static
     {
-        if(isset($this->source) && gettype($this->source) == 'integer') {
+        if (isset($this->source) && gettype($this->source) == 'integer') {
             $this->builder = $this->builder->where('source', $this->source);
         }
         return $this;
@@ -161,7 +163,7 @@ class SearchConnectionApplication
 
     private function applyFilterAppId(): static
     {
-        if($this->appId) {
+        if ($this->appId) {
             $this->builder = $this->builder->where('id', $this->appId);
         }
         return $this;
@@ -170,26 +172,26 @@ class SearchConnectionApplication
 
     private function applyFilterMovingDate(): static
     {
-        if($this->startDate && $this->endDate) {
+        if ($this->startDate && $this->endDate) {
             $this->builder = $this->builder
-                ->where('moving_date', '>=' , $this->startDate)
-                ->where('moving_date', '<=' , $this->endDate);
+                ->where('moving_date', '>=', $this->startDate)
+                ->where('moving_date', '<=', $this->endDate);
         }
         return $this;
     }
 
     private function applyFilterTenantEmail(): static
     {
-        if($this->tenantEmail) {
+        if ($this->tenantEmail) {
             $this->builder = $this->builder
-                ->where('email', 'like' , "%$this->tenantEmail%");
+                ->where('email', 'like', "%$this->tenantEmail%");
         }
         return $this;
     }
 
     private function applyFilterAgentId(): static
     {
-        if($this->agentId) {
+        if ($this->agentId) {
             $this->builder = $this->builder->where('created_by', $this->agentId);
         }
         return $this;
@@ -201,7 +203,7 @@ class SearchConnectionApplication
      */
     private function applyFilterOfficeId(): static
     {
-        if($this->officeId) {
+        if ($this->officeId) {
             $this->builder = $this->builder->where('office_id', $this->officeId);
         }
         return $this;
@@ -242,6 +244,7 @@ class SearchConnectionApplication
 
         return $this;
     }
+
     /**
      * building search query
      *
@@ -255,14 +258,14 @@ class SearchConnectionApplication
         $query = resolve(FullTextQueryInterface::class);
 
         if (!empty($filters['tenant_name'])) {
-            $this->searchQueries[] = $query->createNew( text:$filters['tenant_name'], index: 'first_name, middle_name, last_name');
+            $this->searchQueries[] = $query->createNew(text: $filters['tenant_name'], index: 'first_name, middle_name, last_name');
         }
         if (!empty($filters['phone'])) {
-            $this->searchQueries[] = $query->createNew( text:$filters['phone'], index: 'phone,homephone');
+            $this->searchQueries[] = $query->createNew(text: $filters['phone'], index: 'phone,homephone');
         }
         if (!empty($filters['address'])) {
             $index = 'unit_number,street_number,street_name,city,postcode,state,country,street_address,address_text';
-            $this->searchQueries[] = $query->createNew( text:$filters['address'], index: $index);
+            $this->searchQueries[] = $query->createNew(text: $filters['address'], index: $index);
         }
     }
 
@@ -272,13 +275,13 @@ class SearchConnectionApplication
     private function applyFilterForFoxie(): static
     {
         $this->builder = match ($this->source) {
-            ConnectionApplication::SOURCE_FOXIE => $this->builder->whereHas('SugerLead' , function(Builder $query){
+            ConnectionApplication::SOURCE_FOXIE => $this->builder->whereHas('SugerLead', function (Builder $query) {
                 $query->whereNull('compare_connect_id')
                     ->orWhere('compare_connect_id', 'N/A');
             }),
             null => $this->builder->where(function (Builder $builder) {
                 $builder->doesntHave('SugerLead')
-                    ->orWhereHas("SugerLead", fn (Builder $id) => $id->whereNull('compare_connect_id')->orWhere('compare_connect_id', 'N/A'));
+                    ->orWhereHas("SugerLead", fn(Builder $id) => $id->whereNull('compare_connect_id')->orWhere('compare_connect_id', 'N/A'));
             }),
             default => $this->builder
         };
