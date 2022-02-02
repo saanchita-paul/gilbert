@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Foxie\Models\SugerLead;
 use Ignite\Models\IgniteLead;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use OurProperty\Models\OurProperty;
 use PropertyMe\PropertyMeLead;
 
@@ -198,6 +198,11 @@ class ConnectionApplication extends Model
 
     const MY_APPLICATIONS = 'my_applications';
 
+    /**
+     * do not use this anymore, use ApplicationStatusFilterMapper instead.
+     *
+     * @deprecated
+     */
     const STATUS_MAPPING = [
         'unassigned' => self::STATUS_UNASSIGNED,
         'assigned' => self::STATUS_ASSIGNED,

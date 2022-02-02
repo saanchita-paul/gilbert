@@ -1,20 +1,18 @@
 <?php
 
-namespace App\Services\Agency;
+namespace App\Services\Applications;
 
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\User;
-use App\Services\FullTextSearch\FullTextQuery;
+use App\Modules\Reporting\Services\SetDateRage;
 use App\Services\FullTextSearch\FullTextQueryInterface;
 use App\Services\FullTextSearch\FullTextSearchInterface;
-use App\Traits\Agency\Searchable;
 use App\Traits\Agency\Sortable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
-use JetBrains\PhpStorm\NoReturn;
-use Carbon\Carbon;
-use App\Modules\Reporting\Services\SetDateRage;
+use function optional;
+use function resolve;
 
 /**
  *
@@ -121,30 +119,16 @@ class SearchConnectionApplication
             return $this;
         }
 
+        $statuses = ApplicationStatusFilterMapper::getStatuses($this->leadType);
+
+        if (sizeof($statuses) > 0) {
+            $this->builder = $this->builder->whereIn('status', $statuses);
+        }
 
         $this->builder = match ($this->leadType) {
-            'closed' => $this->builder->whereIn('status', [ConnectionApplication::STATUS_CLOSED]),
-
-            ConnectionApplication::MY_APPLICATIONS => $this->builder->whereIn('status', [
-                ConnectionApplication::STATUS_ASSIGNED,
-                #todo: need to add submission-failed status here
-            ])->where('assigned_to', $user->profile->id),
-
-            'in_progress' => $this->builder->whereIn('status', [
-                ConnectionApplication::STATUS_UNASSIGNED,
-                ConnectionApplication::STATUS_ASSIGNED,
-                ConnectionApplication::STATUS_ESCALATED,
-                ConnectionApplication::STATUS_SUBMITTED,
-            ]),
-
-            'submitted' => $this->builder->whereIn('status', [
-                ConnectionApplication::STATUS_SUBMITTED,
-                ConnectionApplication::STATUS_REJECTED,
-                ConnectionApplication::STATUS_ACCEPTED,
-                ConnectionApplication::STATUS_EA_PROCESSINF, #todo: need to check this status
-            ]),
-
-            default => $this->builder->where('status', ConnectionApplication::STATUS_MAPPING[$this->leadType])
+            ConnectionApplication::MY_APPLICATIONS => $this->builder->where('assigned_to', $user->profile->id),
+            #note: if any  status needs some special conditions, then add more cases here.
+            default => $this->builder
         };
 
         return $this;
