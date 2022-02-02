@@ -90,4 +90,24 @@ class SearchAgentProfileService
 
         return $totalCreatedApplication !== 0 ? number_format((($totalSubmittedApplication / $totalCreatedApplication) * 100), 0) : 0;
     }
+
+    private function createAgentBuilder(): Builder
+    {
+        return AgentProfile::query();
+    }
+
+    public function getAgentList(int $officeId = null): LengthAwarePaginator
+    {
+        $agencyBuilder = $this->createAgentBuilder();
+
+        if ($officeId) {
+            $agencyBuilder->where('office_id', $officeId);
+        }
+
+        $agencyBuilder = $this->applySearch($agencyBuilder, ['first_name', 'last_name']);
+        $agencyBuilder = $this->applySorting($agencyBuilder);
+
+        return  $agencyBuilder->paginate($this->perPage);
+    }
 }
+

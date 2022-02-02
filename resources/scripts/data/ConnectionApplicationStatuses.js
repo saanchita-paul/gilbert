@@ -38,8 +38,5 @@ export const getApplicationStatusText = (status, agent = false) => {
         return 'In Progress'
     }
 
-    let yo = LEAD_STATUS_TO_TEXT[status]
-
-    console.log("STATUS", status, yo)
-    return yo;
+    return LEAD_STATUS_TO_TEXT[status] ?? ''
 }

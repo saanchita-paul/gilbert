@@ -2,7 +2,14 @@
     <div v-if="user">
         <v-row class="mt-5">
             <v-col cols="8" class="search-bg">
-                <Search @updateSearch="updateSearch"></Search>
+                <v-btn
+                    class="ma-2"
+                    outlined
+                    color="#542E89"
+                    style="background: white;"
+                    @click="advanceSearchDialog">
+                        Advanced Search
+                    </v-btn>
             </v-col>
             <v-col cols="4" class="text-right">
                 <v-btn :disabled="isUserActive" color="primary" @click="addNewApplication"
@@ -11,7 +18,11 @@
                 </v-btn>
             </v-col>
         </v-row>
-        <v-card class="hood-card">
+        <AgentFilterChip
+          :searchFilterModel="searchFilterModel"
+          @removeFilters="removeFilters"
+        />
+        <v-card class="mt-2 hood-card">
             <v-row>
                 <v-col cols="12" class="crm-table">
                   <v-data-table
@@ -27,6 +38,10 @@
                     <template v-slot:item.first_name="{ item }">
                       {{ item.first_name + ' ' + item.last_name }}
                     </template>
+                    <template v-slot:item.source="{ item }">
+                      {{ sourcesNumberToName[item.source] }}
+                    </template>
+
                       <template v-slot:item.status="{ item }">
                           {{item.status}}
                       </template>
@@ -40,10 +55,16 @@
                 </v-col>
             </v-row>
         </v-card>
+        <AdvanceSearchModal @filteredData="getFilteredData" v-if="advanceSearchModal" :dialog="advanceSearchModal" :title="''" @cancelDialog="cancelAdvanceSearchModal">
+        </AdvanceSearchModal>
     </div>
 </template>
 
 <script>
+import AdvanceSearchModal from '@scripts/components/crm/modals/AdvanceSearchModal.vue';
+import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel';
+import AgentFilterChip from '@scripts/components/crm/agent/AgentFilterChip';
+import { sourcesNumberToName } from '@scripts/data/LeadSourceMap';
 import Search from "@scripts/components/crm/Search";
 import AuthService from "@scripts/services/AuthService";
 
@@ -51,10 +72,9 @@ export default {
     name: "AgentApplicationTable",
     props: ["applications","totalItem", 'selectedAppId'],
     components: {
-        Search
+        AdvanceSearchModal,
+        AgentFilterChip
     },
-
-
     data() {
       return {
         user: null,
@@ -62,48 +82,68 @@ export default {
         pageCount: 0,
         itemsPerPage: 10,
         loading: false,
-        options: {},
+        options: {
+          sortDesc: [],
+          sortBy: [],
+        },
         headers:  [
           {
-            text: 'Name',
+            text: 'App Id',
+            align: 'start',
+            sortable: true,
+            value: 'id'
+          },
+          {
+            text: 'Tenant Name',
             align: 'start',
             sortable: true,
             value: 'first_name'
           },
           {
-            text: 'Moving date',
+            text: 'Property Address',
             align: 'start',
             sortable: true,
-            value: 'moving_date'
+            value: 'address_text'
           },
           {
-            text: 'Mobile',
+            text: 'Created Date',
             align: 'start',
             sortable: true,
-            value: 'phone'
+            value: 'created_at'
           },
           {
-            text: 'Preference',
-            align: 'start',
-            sortable: true,
-            value: 'services'
+              text: 'Agent Name',
+              align: 'start',
+              sortable: true,
+              value: 'agent_name'
           },
-            {
-                text: 'Status',
-                align: 'start',
-                sortable: true,
-                value: 'status'
-            }
+          {
+              text: 'Source',
+              align: 'start',
+              sortable: true,
+              value: 'source'
+          },
+          {
+              text: 'Status',
+              align: 'start',
+              sortable: true,
+              value: 'status'
+          }
         ],
         search: '',
+        advanceSearchModal: false,
+        searchFilterModel: new LeadSearchFilterModel(),
+        filterItems: []
       }
     },
-    computed: {
+    computed:{
+      sourcesNumberToName(){
+        return sourcesNumberToName;
+      },
       isUserActive() {
         return this.user.is_active === 0 ? true : false;
       },
     },
-
     methods: {
         isSelectedClass(item) {
             if(item.id === this.selectedAppId) {
@@ -121,30 +161,56 @@ export default {
         },
       loadApplication() {
         const meta = {
-          search: this.search,
+          ...this.searchFilterModel,
           page: this.options.page,
           per_page: this.options.itemsPerPage,
           is_descending: this.options.sortDesc.length != 0? this.options.sortDesc[0]: false,
           sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: '',
         }
-        this.$emit('refreshDataTable',meta);
+        this.$emit('refreshDataTable', meta);
       },
 
       updateSearch(search) {
           this.search = search;
-          this.loadApplication();
+          // this.loadApplication();
+      },
+      cancelAdvanceSearchModal(){
+            this.advanceSearchModal = false;
+      },
+      advanceSearchDialog(){
+          this.advanceSearchModal = true;
+      },
+      getFilteredData(filteredData){
+          this.options.page = 1;
+          this.searchFilterModel = {...filteredData};
+          // this.loadApplication();
+      },
+      removeFilters(){
+         this.searchFilterModel = new LeadSearchFilterModel();
+         this.$router.push({name: 'agent.application.dashboard', query: {} })
+        //  this.loadApplication();
       }
     },
   watch: {
+    applications(val){
+      console.log(val)
+    },
     options: {
       handler () {
         this.loadApplication();
       },
       deep: true,
     },
+    '$route': {
+      handler() {
+        this.loadApplication();
+    }
+  },
   },
   async mounted() {
     this.user = await AuthService.getAuthUser();
+    this.searchFilterModel =  new LeadSearchFilterModel(this.$route.query);
+    this.loadApplication();
   }
 }
 </script>

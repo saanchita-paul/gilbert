@@ -64,6 +64,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/offices/{id}/get-metrics', [OfficeController::class, 'getMatricsData']);
     Route::post('/offices/{id}/update', [OfficeController::class, 'updateOffice']);
     Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index']);
+    Route::get('/offices/{officeId}/agents', [AgentProfileController::class, 'getAgentList']);
     Route::post('/offices/{officeId}/users', [AgentProfileController::class, 'createAgent']);
 
     Route::get('/office-agents', [AgentProfileController::class, 'officeAgents']);

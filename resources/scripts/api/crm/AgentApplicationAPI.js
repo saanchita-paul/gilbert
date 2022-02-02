@@ -1,7 +1,7 @@
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
 import COMMISSION from "@scripts/data/constants/COMMISSION";
-import AgentListMapper from "../mappers/crm/AgentListMapper";
+import AgentListMapper from "@scripts/api/mappers/crm/AgentListMapper";
 const applications = [
     {
         id: 1,
@@ -67,7 +67,7 @@ export default {
     getApplicationMetrics() {
         return null;
     },
-  getApplicationList:  async (sort_search_meta) => {
+    getApplicationList:  async (sort_search_meta) => {
         try {
             let data = await axios.get('/api/applications',{params:{...sort_search_meta}});
             return ApplicationMapper.mapApplicationList(data.data);
@@ -94,8 +94,17 @@ export default {
         try {
             // meta = AgentListMapper.mapMetaData(meta);
             const data = await axios.get('/api/hood-users', {params: {...meta}});
-            console.log("printing data" , data)
+            console.log("printing data", data)
             // return data.data;
+        } catch (error) {
+            console.log('Error', error);
+            return error.data;
+        }
+    },
+    loadAgentList: async (meta, agencyId, officeId)=> {
+        try {
+            meta = AgentListMapper.mapMetaData(meta);
+            const data = await axios.get('/api/offices/'+ officeId + '/agents', {params: {...meta}});
             return AgentListMapper.mapAgentList(data.data);
         } catch (error) {
             console.log('Error', error);

@@ -8,6 +8,14 @@
             <v-row class="mt-5">
                 <v-col cols="8" class="search-bg">
                     <Search @updateSearch="updateSearch"></Search>
+                    <!-- <v-btn
+                        class="ma-2"
+                        outlined
+                        color="indigo"
+                        @click="advanceSearchDialog"
+                    >
+                        Advanced Search
+                    </v-btn> -->
                 </v-col>
                 <v-col cols="4" class="text-right">
                     <v-btn  class="hood-btn" color="primary" @click="addAgency"
@@ -49,6 +57,8 @@
             </CreateIndeOfficeModal>
             <CreateSuccessfulModal v-if="agencyCreateSuccessFullModal" :dialog="agencyCreateSuccessFullModal" :title="title" @cancel="cancelSuccessfulModal">
             </CreateSuccessfulModal>
+            <AdvanceSearchModal v-if="advanceSearchModal" :dialog="advanceSearchModal" :title="title" @cancelDialog="cancelAdvanceSearchModal">
+            </AdvanceSearchModal>
         </div>
     </v-container>
 </template>
@@ -60,7 +70,7 @@ import AgencyDetailsModal from "@scripts/components/crm/modals/AgencyDetailsModa
 import Search from "@scripts/components/crm/Search";
 import AgencyService from "@scripts/services/crm/AgencyService";
 import LeadMetrics from "@scripts/components/crm/LeadMetrics";
-
+import AdvanceSearchModal from '@scripts/components/crm/modals/AdvanceSearchModal';
 export default {
 name: "CrmAgencyDataTable",
     components: {
@@ -68,7 +78,8 @@ name: "CrmAgencyDataTable",
         CreateSuccessfulModal,
         AgencyDetailsModal,
         Search,
-        LeadMetrics
+        LeadMetrics,
+        AdvanceSearchModal,
     },
     data(){
         return {
@@ -127,6 +138,7 @@ name: "CrmAgencyDataTable",
                 }
             ],
             search: '',
+            advanceSearchModal: false,
 
         }
     },
@@ -220,6 +232,12 @@ name: "CrmAgencyDataTable",
 
         editItem(item) {
 
+        },
+        cancelAdvanceSearchModal(){
+            this.advanceSearchModal = false;
+        },
+        advanceSearchDialog(){
+            this.advanceSearchModal = true;
         }
     },
 

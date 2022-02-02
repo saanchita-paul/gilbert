@@ -243,7 +243,7 @@ export default {
 
     async getUserLeads(sort_search_meta, active_lead_type, src, params) {
         try {
-            const data = await axios.get('/api/applications',{params:{...sort_search_meta, active_lead_type, source: src , ...params}});
+            const data = await axios.get('/api/applications',{params:{...sort_search_meta, source: src , ...params, active_lead_type:active_lead_type}});
             return ApplicationMapper.mapApplicationList(data.data);
 
         } catch (error) {
