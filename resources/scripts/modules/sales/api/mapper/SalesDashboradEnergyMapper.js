@@ -127,20 +127,20 @@ export default {
             }
         }
 
-        function getConnectedData(data, submittedData) {
+        function getConnectedData(data, submittedData, rejectedData) {
 
-            let converstionRate = null;
-            if(data.total === 0 && submittedData.total ===0) {
-                converstionRate = 0;
+            let conversionRate = null;
+            if(rejectedData.total === 0 && submittedData.total === 0) {
+                conversionRate = 0;
             } else {
-                converstionRate = ((data.total / submittedData.total) * 100).toFixed(1);
+                conversionRate = ((data.total / (submittedData.total + rejectedData.total)) * 100).toFixed(1);
             }
 
             return {
                 gasChartData: getGasData(data),
                 powerChartData: getPowerData(data),
                 total: data.total,
-                conversiton_rate: converstionRate
+                conversiton_rate: conversionRate
             }
         }
 
@@ -160,7 +160,7 @@ export default {
             total_consent_pending: response.total_consent_pending,
             total_closed: response.total_closed,
             submitted: getSubmittedData(response.successful_submission, response.waiting_for_connection, response.ac_manual_processing, response.manual_processing),
-            connected: getConnectedData(response.connected, response.successful_submission),
+            connected: getConnectedData(response.connected, response.successful_submission, response.rejected),
             rejected: getRejectedData(response.rejected, response.declined),
         };
     },
