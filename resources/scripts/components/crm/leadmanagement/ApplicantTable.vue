@@ -130,6 +130,7 @@ export default {
                 // {text: 'Select a lead', value: '', disabled: true},
                 {text: 'All Lead Source', value: 'all', icon: ''},
                 {text: 'Hood Agent Portal', value: 'hood', icon: '/assets/images/icons/company/hood.png'},
+                {text: 'Hood.AI', value: 'hood_ai', icon: '/assets/images/icons/company/hood.png'},
                 {text: 'Foxie CRM', value: 'foxie', icon: '/assets/images/icons/company/foxie.png'},
                 {text: 'Ignite ', value: 'ignite', icon: '/assets/images/icons/company/ignite.png'},
                 {text: 'Our Property', value: 'our-property', icon: '/assets/images/icons/company/our-property.png'},
