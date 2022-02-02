@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Rap2hpoutre\FastExcel\FastExcel;
 use App\Models\ConnectionService;
+use App\Models\RejectionReason;
 
 class ExportSubmissionReport
 {
@@ -61,19 +62,24 @@ class ExportSubmissionReport
             
             $datum->Lead_Status = $this->getStatus($datum->Application_Status, $datum->Lead_Status, $datum->Assigned_To);
             $datum->Street_Type = $this->getRoadType($datum->Street_Type);
-            $datum->Customer_Type = $datum->Customer_Type === 1? 'RESI':'SME';
+            $datum->Customer_Type = $this->getCustomerType($datum->Customer_Type);
             $datum->Offer_Type = 'ENE';
             $datum->Lead_Submitted_Date = $datum->Lead_Submitted_Date ?? 'Null';
             $datum->Source_Code = $this->getSourceCode($datum->Utility_Service, $datum->State, $datum->Utility_Plan, $datum->Postcode);
             
             $this->setAgencyName($datum);
 
+            $datum->Rejection_Reason = $this->getRejectionReason($datum->Service_Id, $datum->Utility_Service);
+
+            unset($datum->Service_Id);
             unset($datum->Foxie_Agency_Name);
             unset($datum->Foxie_Agent_Name);
             unset($datum->Assigned_To);
             unset($datum->Application_Status);
 
-            $this->leadsData[] = $datum;
+            if($this->allowedForExport($datum->Utility_Provider, $datum->Lead_Status)) {
+                $this->leadsData[] = $datum;
+            }
         }
     }
 
@@ -114,14 +120,13 @@ class ExportSubmissionReport
                 cs.status as `Lead_Status`,
                 sl.agency_name as `Foxie_Agency_Name`,
                 sl.agent_name as `Foxie_Agent_Name`,
-                rr.reason_text as `Rejection_Reason`
+                cs.id as `Service_Id`
             ")
             ->leftJoin('connection_applications as ca', 'cs.connection_application_id', '=', 'ca.id')
             ->leftJoin('agencies as ag', 'ca.agency_id', '=', 'ag.id')
             ->leftJoin('agent_profiles as ap', 'ap.id', '=', 'ca.created_by')
             ->leftJoin('users as u', 'ca.submitted_by', '=', 'u.id')
             ->leftJoin('suger_leads as sl', 'ca.id', '=', 'sl.connection_application_id')
-            ->leftJoin('rejection_reasons as rr', 'cs.id', '=', 'rr.connection_service_id')
             ->whereIn('cs.service_type', $this->serviceType);
             // ->whereNotNull('cs.provider_name');
 
@@ -227,6 +232,21 @@ class ExportSubmissionReport
         return GilbertStatusMapper::getStatusAsText($serviceStatus);
     }
 
+    private function getRejectionReason($serviceId, $serviceType)
+    {
+        $reason = RejectionReason::where('connection_service_id', $serviceId)->first();
+        return $reason  ?  $reason->reason_text : null;
+    }
+
+    private function getCustomerType($customerType)
+    {
+        return match ($customerType) {
+            1 => 'RESI',
+            2 => 'SME',
+            default => null
+        };
+    }
+
     private function setAgencyName(object $datum)
     {
         if( $datum->Foxie_Agency_Name && $datum->Foxie_Agency_Name !== 'null') {
@@ -236,5 +256,15 @@ class ExportSubmissionReport
         if( $datum->Foxie_Agent_Name && $datum->Foxie_Agent_Name !== 'null') {
             $datum->Agent_Name = $datum->Foxie_Agent_Name;
         }
+    }
+
+    private function allowedForExport($serviceProvider, $serviceStatus)
+    {
+        $nonEmptyProviders = ['IN_PROGRESS', 'MANUAL_PROCESSING', 'ACCEPTED', 'REJECTED'];
+
+        if(in_array($serviceStatus, $nonEmptyProviders) && $serviceProvider === null) {
+            return false;
+        }
+        return true;
     }
 }
