@@ -74,6 +74,67 @@
                         {{ application.billing_address_text }}
                     </p>
                 </div>
+
+                <div >
+                    <p class="preferenceTitle mt-4 mb-2">Service Preference</p>
+                            <v-row>
+
+                        <v-col  class="my-0 py-0 mx-0">
+                <p class="pt-2 pb-1 mb-0 services">
+                  <span class="ml-1">
+                      <v-icon :disabled="isServiceAllowed(application.services, 'power')" color="yellow">mdi-flash</v-icon>Power
+                  </span>
+                </p>
+                <p class="py-0 my-0 pl-5 service-status active-power-subtitle"
+                   :class="{ 'active-power-subtitle': !isServiceAllowed(application.services, 'power') }" >
+                    {{getServiceStatus('power')}}
+<!--                    Connected-->
+                </p>
+            </v-col>
+
+            <v-col  class="my-0 py-0 mx-0">
+                <p class="pt-2 pb-1 mb-0 services">
+                  <span class="ml-1">
+                      <v-icon :disabled="isServiceAllowed(application.services, 'gas')" color="red">mdi-fire</v-icon>Gas
+                  </span>
+                </p>
+                <p class="py-0 my-0 pl-5 service-status active-power-subtitle"
+                   :class="{ 'active-gas-subtitle': !isServiceAllowed(application.services, 'gas') }">
+                    {{getServiceStatus('gas')}}
+<!--                    Connected-->
+                </p>
+            </v-col>
+            <v-col  class="my-0 py-0 mx-0">
+                <p class="pt-2 pb-1 mb-0 services">
+                  <span class="ml-1">
+                      <v-icon :disabled="isServiceAllowed(application.services, 'water')" color="blue" >mdi-water</v-icon>Water
+                  </span>
+                </p>
+                <p class="py-0 my-0 pl-5 service-status "
+                   :class="{ 'active-water-subtitle': !isServiceAllowed(application.services, 'water') }">
+                    {{getServiceStatus('water')}}
+<!--                    Connected-->
+                </p>
+            </v-col>
+            <v-col  class="my-0 py-0 mx-0">
+                <p class="pt-2 pb-1 mb-0 services">
+                  <span class="ml-1">
+                       <v-icon :disabled="isServiceAllowed(application.services, 'internet')" color="green">mdi-wifi</v-icon>Internet
+                  </span>
+                </p>
+                <p class="py-0 my-0 pl-5 service-status active-power-subtitle"
+                   :class="{ 'active-internet-subtitle': !isServiceAllowed(application.services, 'internet') }">
+                    {{getServiceStatus('internet')}}
+<!--                    Connected-->
+                </p>
+            </v-col>
+
+
+
+
+        </v-row>
+                </div>
+
             </v-col>
             <v-col cols="4" class="hr-bar pl-2">
                 <h4 class="header">Agent's Additional Instructions</h4>
@@ -147,6 +208,29 @@ export default {
               ? 'Expires on ' + dayjs(this.application?.identification?.expire_date, 'YYYY-MM-DD').format('MM/YY')
               : null;
         },
+    },
+        methods: {
+        isServiceAllowed(services, type) {
+            return !services.includes(type);
+        },
+
+        getServiceStatus(conn_ser) {
+            let service = this.application.connection_services.find((svc)=>{
+                return svc.service_type === conn_ser;
+            })
+            if(service) {
+                return this.mapConnectionStatus(service.statusText);
+            }
+            return '';
+        },
+
+        mapConnectionStatus(status) {
+            return ['unassigned','assigned', 'escalated','processing'].includes(status)?'In Progress':
+                status[0].toUpperCase() + status.slice(1);
+        }
+    },
+    mounted(){
+        console.log("applicaiton", this.application)
     }
 };
 </script>
@@ -188,5 +272,35 @@ export default {
     background-color: #FAFAFE;
     margin-left: -12px;
     padding: 20px 30px;
+}
+
+.layout-fixed-table{
+    table-layout: fixed;
+    width: 100%
+}
+.service-status{
+    font-size: 10px;
+    font-weight: 400;
+}
+.services{
+    font-size: 16px !important;
+    font-weight: 700;
+}
+
+.active-power-subtitle {
+    color: #15DB64;
+}
+.active-gas-subtitle {
+    color: #263238;
+}
+.active-water-subtitle {
+    color: #E91E63;
+}
+.active-internet-subtitle {
+    color: #263238;
+ }
+.preferenceTitle{
+    font-size: 16px;
+    font-weight: 700;
 }
 </style>
