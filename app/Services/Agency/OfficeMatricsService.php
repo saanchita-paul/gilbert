@@ -18,30 +18,33 @@ class OfficeMatricsService
 
     private function calculateApplicationMatrics($connectionServiceData)
     {
+
+        $submittedStatuses = [ConnectionService::STATUS_SUBMITTED, ConnectionService::STATUS_ESCALATED, ConnectionService::STATUS_REJECTED, ConnectionService::STATUS_CLOSED];
+
         $connectionServiceData[0]->app_total = $this->getDBBuilder()->count();
         $connectionServiceData[0]->app_unassigned = $this->getDBBuilder()->where('status', ConnectionApplication::STATUS_UNASSIGNED)->count();
         $connectionServiceData[0]->app_assigned = $this->getDBBuilder()->where('status', ConnectionApplication::STATUS_ASSIGNED)->count();
         
         
-        $connectionServiceData[0]->app_submitted = $this->getDBBuilder()->whereHas('connectionServices', function($query){
-            $query->where('status' , ConnectionService::STATUS_SUBMITTED)->whereIn('service_type', ['power', 'gas']);
+        $connectionServiceData[0]->app_submitted = $this->getDBBuilder()->whereHas('connectionServices', function($query) use ($submittedStatuses) {
+            $query->whereIn('status' , $submittedStatuses)->whereIn('service_type', ['power', 'gas']);
         })->count();
 
         $connectionServiceData[0]->app_connected = $this->getDBBuilder()->whereHas('connectionServices', function($query){
-            $query->where('status' , ConnectionService::STATUS_ACCEPTED)->whereIn('service_type', ['power', 'gas']);
+            $query->whereIn('status' , [ConnectionService::STATUS_ACCEPTED])->whereIn('service_type', ['power', 'gas']);
         })->count();
 
 
-        $connectionServiceData[0]->power_submitted = $this->getDBBuilder()->whereHas('connectionServices', function($query){
-            $query->where('status' , ConnectionService::STATUS_SUBMITTED)->where('service_type', 'power');
+        $connectionServiceData[0]->power_submitted = $this->getDBBuilder()->whereHas('connectionServices', function($query) use ($submittedStatuses){
+            $query->whereIn('status' , $submittedStatuses)->where('service_type', 'power');
         })->count();
 
         $connectionServiceData[0]->power_connected = $this->getDBBuilder()->whereHas('connectionServices', function($query){
             $query->where('status' , ConnectionService::STATUS_ACCEPTED)->where('service_type', 'power');
         })->count();
 
-        $connectionServiceData[0]->gas_submitted = $this->getDBBuilder()->whereHas('connectionServices', function($query){
-            $query->where('status' , ConnectionService::STATUS_SUBMITTED)->where('service_type', 'gas');
+        $connectionServiceData[0]->gas_submitted = $this->getDBBuilder()->whereHas('connectionServices', function($query) use ($submittedStatuses){
+            $query->whereIn('status' , $submittedStatuses)->where('service_type', 'gas');
         })->count();
 
         $connectionServiceData[0]->gas_connected = $this->getDBBuilder()->whereHas('connectionServices', function($query){
