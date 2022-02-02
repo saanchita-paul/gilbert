@@ -113,10 +113,10 @@ name: "CrmOfficeDataTable",
                     value: 'last_updated'
                 },
                 {
-                    text: 'User Count',
+                    text: 'Active Users',
                     align: 'start',
                     sortable: true,
-                    value: 'user_count'
+                    value: 'active_user_count'
                 },
                 {
                     text: 'Rent Roll',

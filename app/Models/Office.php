@@ -93,6 +93,12 @@ class Office extends Model
         return $this->hasMany(AgentProfile::class);
     }
 
+    public function activeAgents(){
+        return $this->agents()->whereHas('user', function($query){
+            $query->where('is_active' , 1);
+        })->count();
+    }
+
     /**
      * @return HasMany
      */
