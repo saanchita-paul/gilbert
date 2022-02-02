@@ -62,7 +62,7 @@ class ExportSubmissionReport
             
             $datum->Lead_Status = $this->getStatus($datum->Application_Status, $datum->Lead_Status, $datum->Assigned_To);
             $datum->Street_Type = $this->getRoadType($datum->Street_Type);
-            $datum->Customer_Type = $datum->Customer_Type === 1? 'RESI':'SME';
+            $datum->Customer_Type = $this->getCustomerType($datum->Customer_Type);
             $datum->Offer_Type = 'ENE';
             $datum->Lead_Submitted_Date = $datum->Lead_Submitted_Date ?? 'Null';
             $datum->Source_Code = $this->getSourceCode($datum->Utility_Service, $datum->State, $datum->Utility_Plan, $datum->Postcode);
@@ -236,6 +236,15 @@ class ExportSubmissionReport
     {
         $reason = RejectionReason::where('connection_service_id', $serviceId)->first();
         return $reason  ?  $reason->reason_text : null;
+    }
+
+    private function getCustomerType($customerType)
+    {
+        return match ($customerType) {
+            1 => 'RESI',
+            2 => 'SME',
+            default => null
+        };
     }
 
     private function setAgencyName(object $datum)
