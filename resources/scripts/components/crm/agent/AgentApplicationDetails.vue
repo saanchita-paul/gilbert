@@ -86,7 +86,7 @@
                   </span>
                 </p>
                 <p class="py-0 my-0 pl-5 service-status active-power-subtitle"
-                   :class="{ 'active-power-subtitle': !isServiceAllowed(application.services, 'power') }" >
+                   :class="getSubtitleColor('power')" >
                     {{getServiceStatus('power')}}
 <!--                    Connected-->
                 </p>
@@ -99,7 +99,7 @@
                   </span>
                 </p>
                 <p class="py-0 my-0 pl-5 service-status active-power-subtitle"
-                   :class="{ 'active-gas-subtitle': !isServiceAllowed(application.services, 'gas') }">
+                   :class="getSubtitleColor('gas')">
                     {{getServiceStatus('gas')}}
 <!--                    Connected-->
                 </p>
@@ -111,7 +111,7 @@
                   </span>
                 </p>
                 <p class="py-0 my-0 pl-5 service-status "
-                   :class="{ 'active-water-subtitle': !isServiceAllowed(application.services, 'water') }">
+                   :class="getSubtitleColor('water')">
                     {{getServiceStatus('water')}}
 <!--                    Connected-->
                 </p>
@@ -123,7 +123,7 @@
                   </span>
                 </p>
                 <p class="py-0 my-0 pl-5 service-status active-power-subtitle"
-                   :class="{ 'active-internet-subtitle': !isServiceAllowed(application.services, 'internet') }">
+                   :class="getSubtitleColor('internet')">
                     {{getServiceStatus('internet')}}
 <!--                    Connected-->
                 </p>
@@ -210,6 +210,16 @@ export default {
         },
     },
         methods: {
+        getSubtitleColor(name){
+            let status = this.getServiceStatus(name)
+            if(status == 'In Progress'){
+                return 'inprogress-color';
+            }else if(status == 'Submitted'){
+                return 'submitted-color';
+            }else if(status == 'Rejected'){
+                return 'rejected-color';
+            }
+        },
         isServiceAllowed(services, type) {
             return !services.includes(type);
         },
@@ -283,7 +293,7 @@ export default {
     font-weight: 400;
 }
 .services{
-    font-size: 16px !important;
+    font-size: 14px !important;
     font-weight: 700;
 }
 
@@ -303,4 +313,25 @@ export default {
     font-size: 16px;
     font-weight: 700;
 }
+
+.submitted-color{
+    color: #0CC4ED;
+}
+
+.connected-color{
+    color: #16A948;
+}
+
+.needinfo-color{
+    color: #16A948;
+}
+
+.inprogress-color{
+    color: #263238;
+}
+
+.rejected-color{
+    color: #E91E63;
+}
+
 </style>
