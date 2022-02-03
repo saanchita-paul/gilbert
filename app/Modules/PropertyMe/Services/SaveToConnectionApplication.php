@@ -14,6 +14,7 @@ use PropertyMe\PropertyMeLead;
 use App\Modules\PropertyMe\Services\DobIdentificationService;
 use App\Models\Identification;
 use App\Models\ConnectionApplicationSecondaryACC;
+use App\Models\ApplicationNote;
 
 class SaveToConnectionApplication
 {
@@ -88,6 +89,18 @@ class SaveToConnectionApplication
                 'card_number' => $this->extractNoteData($note_data, 'person.identification.card_number'),
                 'state' => $this->extractNoteData($note_data, 'person.identification.state'),
                 'country' => $this->extractNoteData($note_data, 'person.identification.country'),
+            ]);
+        }
+
+        if ($this->extractNoteData($note_data, 'invalid_note_data') !== null)
+        {
+            ApplicationNote::query()->create([
+                'connection_application_id' => $application->id,
+                'created_by' => $this->getCreatedById($lead) ?? 1,
+                'text' => $this->extractNoteData($note_data, 'invalid_note_data'),
+                'type' => 'invalid_property_me_note',
+                'title' => 'Invalid PropertyMe Note',
+                'user_role' => 'hood_admin'
             ]);
         }
 

@@ -25,6 +25,7 @@ class DobIdentificationService
     private $firstName;
     private $lastName;
     private $validationType = null;
+    private $invalidNoteData = null;
 
     public function __construct($data, $leadId, $firstName, $lastName)
     {
@@ -72,12 +73,14 @@ class DobIdentificationService
         }
 
         if($this->validationType !== null){
+            $this->invalidNoteData = $single_n_data;
             $this->sendInvalidEmail();
         }
 
         return [
             'person' => $person_data,
             'authorised_person' => $authorised_person_data,
+            'invalid_note_data' => $this->invalidNoteData
         ];
     }
 

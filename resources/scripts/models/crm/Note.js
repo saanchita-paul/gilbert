@@ -60,6 +60,10 @@ export default class Note {
                 return 'submitted_connection';
                 break;
 
+            case 'invalid_property_me_note':
+                return 'invalid_property_me_note';
+                break;
+
             default:
                 break;
         }
@@ -77,6 +81,9 @@ export default class Note {
         } else if (type.toLowerCase() == 'close_connection')
         {
              return title + ' ' + role ;
+        } else if (type.toLowerCase() == 'invalid_property_me_note')
+        {
+             return "Inserting ID details, didn't exactly match.";
         }
     }
 }
