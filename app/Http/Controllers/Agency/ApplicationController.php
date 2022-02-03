@@ -13,7 +13,6 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\User;
 use App\Services\Agency\ApplicationService;
-use App\Services\Agency\SearchConnectionApplicationAgents;
 use App\Services\Agency\WaterAutoSubmitService;
 use App\Services\Applications\ApplicationsMetricsService;
 use App\Services\Applications\SearchConnectionApplication;
@@ -53,8 +52,8 @@ class ApplicationController extends Controller
         /** @var User $user */
         $user = auth()->user();
         try {
-            $service = new SearchConnectionApplicationAgents($request->toArray());
-            return ApplicationResource::collection($service->get($user));
+            $service = new SearchConnectionApplication($request->toArray());
+            return ApplicationResource::collection($service->getApplicationForAgency($user));
 
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
