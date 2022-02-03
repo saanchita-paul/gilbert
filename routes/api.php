@@ -1,22 +1,20 @@
 <?php
 
-use App\Models\ConnectionService;
-use App\Mail\WaterSumissionFailed;
-use Illuminate\Encryption\Encrypter;
-use Illuminate\Support\Facades\Route;
-use PropertyMe\services\FetchContacts;
-use Illuminate\Support\Facades\Broadcast;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Agency\NoteController;
-use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\Agency\AgencyController;
-use App\Http\Controllers\Agency\OfficeController;
-use App\Http\Controllers\UserInvitationController;
-use App\Http\Controllers\Agency\HoodUserController;
-use App\Http\Controllers\Agency\ApplicationController;
-use FastConnect\Services\SubmitWaterLeadToFastConnect;
 use App\Http\Controllers\Agency\AgentProfileController;
+use App\Http\Controllers\Agency\ApplicationController;
+use App\Http\Controllers\Agency\HoodUserController;
+use App\Http\Controllers\Agency\NoteController;
+use App\Http\Controllers\Agency\OfficeController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\UserInvitationController;
+use FastConnect\Services\SubmitWaterLeadToFastConnect;
+use Illuminate\Encryption\Encrypter;
+use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Route;
 use OurProperty\Http\Controllers\OurPropertyController;
+use PropertyMe\services\FetchContacts;
+use Reporting\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,10 +43,16 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::get('/agencies', [AgencyController::class, 'index']);
     Route::post('/agencies', [AgencyController::class, 'create']);
+    Route::get('/agencies/get-agency-metrics', [AgencyController::class, 'getAgencyMetrics']);
+    Route::get('/agencies/get-agency-application-metrics', [AgencyController::class, 'getAgencyApplicationMetrics']);
     Route::get('/agencies/{id}', [AgencyController::class, 'getAgency']);
     Route::post('/agencies/{id}/update', [AgencyController::class, 'update']);
     Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
+    // Route::get('/agencies/offices', [OfficeController::class, 'index']);
     Route::post('/agencies/{agencyId}/offices', [OfficeController::class, 'createAgencyOffice']);
+
+
+
 
     Route::post('/independent-agency', [AgencyController::class, 'createIndependentAgency']);
 
@@ -81,6 +85,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::post('/applications', [ApplicationController::class, 'create']);
     Route::get('/applications', [ApplicationController::class, 'index']);
+    Route::get('/applications/agents', [ApplicationController::class, 'SearchConnectionApplicationAgents']);
     Route::get('/applications/{application}', [ApplicationController::class, 'view']);
 
     Route::post('/applications/{id}/submit', [ApplicationController::class, 'submit']);
@@ -175,12 +180,13 @@ Route::get("/karan/sales-status", function () {
     return "success";
 });
 
+Route::get('/alloffices', [OfficeController::class, 'allOffices']);
 
 
 Route::get('country_test', function () {
     //  return SubmitWaterLeadToFastConnect::mapLengthOfCountry[2];
     $ser =  new SubmitWaterLeadToFastConnect(1);
     // return $ser;
-    return $ser->getMappedIdentificationCountry('AX'); 
+    return $ser->getMappedIdentificationCountry('AX');
     // return 'got' ;
 });

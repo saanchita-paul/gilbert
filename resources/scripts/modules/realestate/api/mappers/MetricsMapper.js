@@ -21,7 +21,7 @@ export default {
 
         let app_waiting_tenant = new SingleMetric({
             title: 'Waiting Tenant Confirmation',
-            value: metricsData['app_unassigned']
+            value: metricsData['app_unassigned'] + metricsData['app_assigned']
         })
 
         let app_submitted_retialer = new SingleMetric({

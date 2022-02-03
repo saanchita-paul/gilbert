@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-card class="hood-card">
-            <h2>All Application Metrics</h2>
+<!--            <h2>All Application Metrics</h2>-->
             <LeadMetrics ></LeadMetrics>
         </v-card>
         <div>
@@ -71,6 +71,7 @@ import Search from "@scripts/components/crm/Search";
 import AgencyService from "@scripts/services/crm/AgencyService";
 import LeadMetrics from "@scripts/components/crm/LeadMetrics";
 import AdvanceSearchModal from '@scripts/components/crm/modals/AdvanceSearchModal';
+
 export default {
 name: "CrmAgencyDataTable",
     components: {
@@ -101,28 +102,40 @@ name: "CrmAgencyDataTable",
             options: {},
             headers:  [
                 {
-                text: ' Agency name',
+                text: ' Agency',
                 align: 'start',
                 sortable: true,
                 value: 'title'
                 },
                 {
-                    text: 'Applications',
-                    align: 'start',
+                    text: 'Apps',
+                    align: 'center',
                     sortable: true,
                     value: 'total_leads'
                 },
                 {
-                    text: 'Last updated',
+                    text: 'Last Application',
                     align: 'start',
                     sortable: true,
-                    value: 'last_updated'
+                    value: 'last_application'
                 },
                 {
-                    text: 'Offices',
-                    align: 'start',
-                    sortable: true,
-                    value: 'offices'
+                    text: 'CVR%',
+                    align: 'center',
+                    sortable: false,
+                    value: 'conversion_rate'
+                },
+                {
+                    text: 'Active Users',
+                    align: 'center',
+                    sortable: false,
+                    value: 'active_user_count'
+                },
+                {
+                    text: 'Rent Roll',
+                    align: 'center',
+                    sortable: false,
+                    value: 'rent_roll_count'
                 }
             ],
             search: '',
@@ -186,7 +199,7 @@ name: "CrmAgencyDataTable",
             const meta = {
                 search: this.search,
                 page: this.options.page,
-                per_page: this.options.itemsPerPage,
+                per_page: this.options.itemsPerPage === -1 ? this.totalItem : this.options.itemsPerPage,
                 is_descending: this.options.sortDesc.length != 0? this.options.sortDesc[0]: false,
                 sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: '',
             }

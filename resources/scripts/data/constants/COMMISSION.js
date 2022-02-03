@@ -15,5 +15,9 @@ export default {
                 text: 'water',
                 type: 4,
         },
+    SPONSORSHIP: {
+        text: 'sponsorship',
+        type: 5,
+    },
 
 }

@@ -3,11 +3,12 @@
 namespace App\Services\Agency;
 
 use App\Models\AgentProfile;
+use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
 use App\Traits\Agency\Searchable;
 use App\Traits\Agency\Sortable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Models\ConnectionService;
 
 class SearchAgentProfileService
 {
@@ -64,28 +65,30 @@ class SearchAgentProfileService
     public function getConversionCount(int $officeId): int
     {
         $this->officeId = $officeId;
-        $totalConnected = ConnectionService::query()
-            ->whereHas('connectionApplication', function ($query) {
-                $query->where('created_by', '=', $this->officeId);
+
+        $totalCreatedApplication = ConnectionApplication::query()
+            ->where('created_by', '=', $this->officeId)
+            ->whereHas('connectionServices', function ($query) {
+                $query->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS]);
             })
-            ->whereIn('status', [ConnectionService::STATUS_ACCEPTED])
             ->count();
 
-        $totalSubmitted = ConnectionService::query()
-            ->whereHas('connectionApplication', function ($query) {
-                $query->where('created_by', '=', $this->officeId);
+        $totalSubmittedApplication = ConnectionApplication::query()
+            ->where('created_by', '=', $this->officeId)
+            ->whereHas('connectionServices', function ($query) {
+                $query->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS]);
+                $query->whereIn('status', [
+                    ConnectionService::STATUS_SUBMITTED,
+                    ConnectionService::STATUS_ENERGY_SUBMIT,
+                    ConnectionService::STATUS_ACCEPTED,
+                    ConnectionService::STATUS_REJECTED,
+                    ConnectionService::AC_MANUAL_PROCESSING
+                ]);
             })
-            ->whereIn('status', [
-                ConnectionService::STATUS_ACCEPTED,
-                ConnectionService::STATUS_REJECTED,
-                ConnectionService::STATUS_ENERGY_SUBMIT,
-                ConnectionService::STATUS_CLOSED,
-                ConnectionService::STATUS_CANT_CONNECT,
-                ConnectionService::AC_MANUAL_PROCESSING
-            ])
+            ->whereNotIn('status', [ConnectionApplication::STATUS_CLOSED])
             ->count();
-       
-        return $totalSubmitted !== 0 ? number_format((($totalConnected / $totalSubmitted) * 100), 0) : 0;
+
+        return $totalCreatedApplication !== 0 ? number_format((($totalSubmittedApplication / $totalCreatedApplication) * 100), 0) : 0;
     }
 
     private function createAgentBuilder(): Builder

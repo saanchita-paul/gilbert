@@ -1,10 +1,8 @@
-import CrmUserMapper from "@scripts/api/mappers/crm/CrmUserMapper";
 import AppMetricsMapper from "@scripts/api/mappers/crm/AppMetricsMapper";
-import AppLeadMapper from "@scripts/api/mappers/crm/AppLeadMapper";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
-import DayJs from "dayjs";
 import dayjs from "dayjs";
+import OfficeMapper from "@scripts/api/mappers/crm/OfficeMapper";
 
 const data = [
     {
@@ -251,6 +249,17 @@ export default {
         }
     },
 
+    async loadUserLeadsForAgents(sort_search_meta, active_lead_type, src, params) {
+        try {
+            const data = await axios.get('/api/applications/agents',{params:{...sort_search_meta, active_lead_type, source: src , ...params}});
+            return ApplicationMapper.mapApplicationList(data.data);
+
+        } catch (error) {
+            console.log('error', error);
+            return error.data;
+        }
+    },
+
   async getUserLead (id) {
         try {
             const data = await axios.get('/api/applications/' + id);
@@ -444,8 +453,62 @@ export default {
 
     async getAssignedHoodUser(id) {
         try {
-            const data =  await axios.get('/api/applications/' + id +'/get-assigned-hood-user');
+            const data = await axios.get('/api/applications/' + id + '/get-assigned-hood-user');
             return data.data.data;
+        } catch (error) {
+            return error.data;
+        }
+    },
+    async loadHoodUser() {
+        try {
+            const data = await axios.get('/api/hood-users');
+            return OfficeMapper.mapHoodProfileData(data.data.data);
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    async loadAgencies(search) {
+        try {
+            const data = await axios.get('/api/agencies', { params: { search } });
+            return data?.data?.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+    async loadOffices(agencyId, search = null) {
+        try {
+            let data = "";
+            if(agencyId){
+                data = await axios.get('/api/agencies/' + agencyId + '/offices');
+            }else{
+                data = await axios.get('/api/alloffices' , { params: { search } });
+            }
+
+            return data?.data?.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+  async loadAgencyMetrics(query) {
+        try {
+            const data = await axios.get('/api/agencies/get-agency-metrics',{params: query});
+            return data?.data?.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+  async loadAgencyMetricsByApplication(query) {
+        try {
+            const data = await axios.get('/api/agencies/get-agency-application-metrics',{params: query});
+            return data?.data?.data;
+
         } catch (error) {
             return error.data;
         }

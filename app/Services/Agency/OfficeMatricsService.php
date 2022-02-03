@@ -5,14 +5,59 @@ namespace App\Services\Agency;
 
 
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
 use Illuminate\Support\Facades\DB;
-use phpDocumentor\Reflection\Utils;
 
 class OfficeMatricsService
 {
     public function __construct(public int $officeId)
     {
-        
+
+    }
+
+    private function calculateApplicationMatrics($connectionServiceData)
+    {
+
+        $submittedStatuses = [ConnectionService::STATUS_SUBMITTED, ConnectionService::STATUS_ESCALATED, ConnectionService::STATUS_REJECTED, ConnectionService::STATUS_CLOSED];
+
+        $connectionServiceData[0]->app_total = $this->getDBBuilder()->count();
+        $connectionServiceData[0]->app_unassigned = $this->getDBBuilder()->where('status', ConnectionApplication::STATUS_UNASSIGNED)->count();
+        $connectionServiceData[0]->app_assigned = $this->getDBBuilder()->where('status', ConnectionApplication::STATUS_ASSIGNED)->count();
+
+
+        $connectionServiceData[0]->app_submitted = $this->getDBBuilder()->whereHas('connectionServices', function($query) use ($submittedStatuses) {
+            $query->whereIn('status' , $submittedStatuses)->whereIn('service_type', ['power', 'gas']);
+        })->count();
+
+        $connectionServiceData[0]->app_connected = $this->getDBBuilder()->whereHas('connectionServices', function($query){
+            $query->whereIn('status' , [ConnectionService::STATUS_ACCEPTED])->whereIn('service_type', ['power', 'gas']);
+        })->count();
+
+
+        $connectionServiceData[0]->power_submitted = $this->getDBBuilder()->whereHas('connectionServices', function($query) use ($submittedStatuses){
+            $query->whereIn('status' , $submittedStatuses)->where('service_type', 'power');
+        })->count();
+
+        $connectionServiceData[0]->power_connected = $this->getDBBuilder()->whereHas('connectionServices', function($query){
+            $query->where('status' , ConnectionService::STATUS_ACCEPTED)->where('service_type', 'power');
+        })->count();
+
+        $connectionServiceData[0]->gas_submitted = $this->getDBBuilder()->whereHas('connectionServices', function($query) use ($submittedStatuses){
+            $query->whereIn('status' , $submittedStatuses)->where('service_type', 'gas');
+        })->count();
+
+        $connectionServiceData[0]->gas_connected = $this->getDBBuilder()->whereHas('connectionServices', function($query){
+            $query->where('status' , ConnectionService::STATUS_ACCEPTED)->where('service_type', 'gas');
+        })->count();
+
+
+        $connectionServiceData[0]->app_closed = $this->getDBBuilder()->where('status', ConnectionApplication::STATUS_CLOSED)->count();
+
+        return $connectionServiceData;
+    }
+
+    private function getDBBuilder(){
+        return ConnectionApplication::where('office_id', $this->officeId);
     }
 
     private function calculateServiceMetrics()
@@ -22,35 +67,11 @@ class OfficeMatricsService
         $builder->leftJoin('connection_services as cs', 'ca.id', '=', 'cs.connection_application_id')
             ->select(
                 DB::raw("IFNULL(SUM(CASE
-            WHEN cs.status = 4 AND ca.status NOT IN (3, 8) THEN 1 ELSE 0 END), 0) AS app_submitted"),
-
-                DB::raw("IFNULL(SUM(CASE
-            WHEN cs.status = 5 AND ca.status NOT IN (3, 8) THEN 1 ELSE 0 END), 0) AS app_connected"),
-
-                DB::raw("IFNULL(SUM(CASE
-            WHEN cs.service_type = 'power' AND ca.status NOT IN (3, 8) AND cs.status = 4 THEN 1 ELSE 0 END), 0) AS power_submitted"),
-
-                DB::raw("IFNULL(SUM(CASE
-            WHEN cs.service_type = 'power' AND ca.status NOT IN (3, 8) AND cs.status = 5 THEN 1 ELSE 0 END), 0) AS power_connected"),
-
-                DB::raw("IFNULL(SUM(CASE
-            WHEN cs.service_type = 'gas' AND ca.status NOT IN (3, 8) AND cs.status = 4 THEN 1 ELSE 0 END), 0) AS gas_submitted"),
-
-                DB::raw("IFNULL(SUM(CASE
-            WHEN cs.service_type = 'gas' AND ca.status NOT IN (3, 8) AND cs.status = 5 THEN 1 ELSE 0 END), 0) AS gas_connected"),
-
-                DB::raw("IFNULL(SUM(CASE
             WHEN cs.service_type = 'internet' AND ca.status NOT IN (3, 8) AND cs.status = 4 THEN 1 ELSE 0 END), 0) AS internet_submitted"),
 
                 DB::raw("IFNULL(SUM(CASE
             WHEN cs.service_type = 'internet' AND ca.status NOT IN (3, 8) AND cs.status = 5 THEN 1 ELSE 0 END), 0) AS internet_connected"),
 
-                DB::raw("IFNULL(SUM(CASE
-            WHEN ca.status = 8 THEN 1 ELSE 0 END), 0) AS app_closed"),
-
-                DB::raw("IFNULL(SUM(CASE
-            WHEN ca.status = 1 THEN 1 ELSE 0 END), 0) AS app_unassigned"),
-                DB::raw("COUNT(*) AS app_total"),
             );
 
         return $builder->get();
@@ -58,7 +79,10 @@ class OfficeMatricsService
 
     public function get()
     {
-        return $connectionServiceData = $this->calculateServiceMetrics();
+
+        $connectionServiceData = $this->calculateServiceMetrics();
+        $connectionApplicationData = $this->calculateApplicationMatrics($connectionServiceData);
+        return $connectionApplicationData;
     }
 
 }

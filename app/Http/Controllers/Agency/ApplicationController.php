@@ -2,29 +2,26 @@
 
 namespace App\Http\Controllers\Agency;
 
-use App\Models\User;
-use Illuminate\Http\Request;
-use App\Models\ConnectionService;
-use Illuminate\Http\JsonResponse;
-use App\Http\Controllers\Controller;
-use App\Services\FastConnectService;
-use Illuminate\Support\Facades\Auth;
-use App\Models\ConnectionApplication;
-use App\Services\Utility\SumoService;
-use Illuminate\Support\Facades\Config;
-use App\Services\Agency\ApplicationService;
 use App\Events\Agency\CreateApplicationEvent;
 use App\Events\Agency\SubmitApplicationEvent;
-use App\Http\Requests\Agency\ProviderRequest;
-use App\Services\Agency\HubspotContactService;
-use App\Services\Agency\WaterAutoSubmitService;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Agency\ApplicationRequest;
-use App\Http\Resources\Agency\ApplicationResource;
-use App\Services\Agency\ApplicationsMetricsService;
-use App\Services\Agency\SearchConnectionApplication;
-use App\Services\Utility\IgniteConnectionLeadService;
+use App\Http\Requests\Agency\ProviderRequest;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
+use App\Http\Resources\Agency\ApplicationResource;
+use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
+use App\Models\User;
+use App\Services\Agency\ApplicationService;
+use App\Services\Agency\SearchConnectionApplicationAgents;
+use App\Services\Agency\WaterAutoSubmitService;
+use App\Services\Application\ApplicationsMetricsService;
+use App\Services\Application\SearchConnectionApplication;
+use App\Services\FastConnectService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 use PropertyMe\services\FetchContacts;
 
 class ApplicationController extends Controller
@@ -44,6 +41,19 @@ class ApplicationController extends Controller
         $user = auth()->user();
         try {
             $service = new SearchConnectionApplication($request->toArray());
+            return ApplicationResource::collection($service->get($user));
+
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function SearchConnectionApplicationAgents(Request $request): AnonymousResourceCollection|JsonResponse
+    {
+        /** @var User $user */
+        $user = auth()->user();
+        try {
+            $service = new SearchConnectionApplicationAgents($request->toArray());
             return ApplicationResource::collection($service->get($user));
 
         } catch (\Exception $exception) {

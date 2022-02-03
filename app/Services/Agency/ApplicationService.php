@@ -6,16 +6,11 @@ use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
+use App\Models\HoodProfile;
 use App\Models\Identification;
 use App\Models\User;
-use App\Models\HoodProfile;
 use App\Services\RolePermission;
-use App\Services\Agency\CreateOfficeAndAgency;
-use App\Services\Sales\PostSalesService;
-use Exception;
-use Illuminate\Console\Application;
 use JetBrains\PhpStorm\ArrayShape;
-use function PHPUnit\Framework\isNull;
 use TSA\Services\TsaSendAppliationService;
 
 class ApplicationService
@@ -224,7 +219,8 @@ class ApplicationService
         $lead = array_merge($lead, [
             'plan_type' => null,
             // 'assigned_to' => null,
-            'status' => ConnectionApplication::STATUS_SUBMITTED,
+            'assigned_to' => null,
+            // 'status' => ConnectionApplication::STATUS_SUBMITTED,
             'submitted_by' => auth()->id(),
             'vendor_id' => $vendorId
         ]);

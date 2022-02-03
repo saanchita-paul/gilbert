@@ -2,14 +2,11 @@
 
 namespace App\Listeners;
 
-use App\Mail\WaterSumissionFailed;
-use Illuminate\Support\Facades\Mail;
 use App\Models\ConnectionApplication;
-use Illuminate\Queue\InteractsWithQueue;
-use App\Services\Agency\WaterEmailService;
 use App\Services\Agency\UpdatedWaterStatus;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Services\Agency\WaterEmailService;
 use FastConnect\Services\SubmitWaterLeadToFastConnect;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class WaterServiceListener implements ShouldQueue
 {
@@ -37,7 +34,7 @@ class WaterServiceListener implements ShouldQueue
             $result = $service->submitWaterLead();
 
             ConnectionApplication::saveFasConnectRef($event->applicationId, data_get($result, "info.customer_reference"));
-
+            ConnectionApplication::where('id' , $event->applicationId)->update('status' , ConnectionApplication::STATUS_SUBMITTED);
             $statusAssoc = UpdatedWaterStatus::mapFromFCStatus(data_get($result, "products.0.status"));
             if ($statusAssoc) {
                 UpdatedWaterStatus::updateStatus($event->applicationId, $statusAssoc['status'], $statusAssoc['reason']);
