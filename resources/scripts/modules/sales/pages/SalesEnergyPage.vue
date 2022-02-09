@@ -55,6 +55,7 @@ export default {
     methods: {
         async load(dateRange) {
             this.chartData = await SalesDashboardService.loadDashboardEnergyData(dateRange);
+            console.log("data" , this.chartData)
             this.is_laod = true;
         },
 
