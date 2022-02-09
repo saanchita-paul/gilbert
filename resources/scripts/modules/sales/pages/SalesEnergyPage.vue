@@ -1,18 +1,25 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col cols="12" class="py-0">
+            <v-col cols="12" class="py-0s">
                 <SalesFilter @updateDate="updateDate"/>
             </v-col>
-            <v-col cols="12" v-if="is_laod">
+            <div style="width: 100%;" class="mb-4" v-if="is_laod">
 <!--                <SalesSummary type="energy"  :summaryData="chartData" :dateRange='dateRange'/>-->
                 <EnergyApplicationSummary  :summaryData="chartData" :dateRange='dateRange'/>
-            </v-col>
-            <div class="d-flex  justify-space-around" style="width: 100%;" v-if="is_laod">
-                <ApplicationDashboardStatisticsEnergy title="Submissions to Retailer" type='submission' :chart-data="chartData.submitted"/>
-                <ApplicationDashboardStatisticsEnergy title="Connected" type='conversion' :chart-data="chartData.connected"/>
-                <ApplicationDashboardStatisticsEnergy title="Rejected" type='rejected' :chart-data="chartData.rejected"/>
             </div>
+            <v-card class="summary-container" v-if="is_laod">
+                <p class="summary-title-text">Summary of Energy Utilities</p>
+                <div style="flex-basis: 30%;">
+                    <ApplicationDashboardStatisticsEnergy title="Utility Submissions" type='submission' :chart-data="chartData.submitted"/>
+                </div>
+                <div style="flex-basis: 30%;">
+                    <ApplicationDashboardStatisticsEnergy title="Connected" type='conversion' :chart-data="chartData.connected"/>
+                </div>
+                <div style="flex-basis: 30%;">
+                    <ApplicationDashboardStatisticsEnergy title="Rejected" type='rejected' :chart-data="chartData.rejected"/>
+                </div>
+            </v-card>
         </v-row>
     </v-container>
 </template>
@@ -59,4 +66,29 @@ export default {
 
 }
 </script>
+
+<style scoped lang="scss">
+.summary-container{
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    flex-wrap: wrap;
+    padding: 24px;
+}
+
+.title-style{
+    font-family: Roboto;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 42px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+
+.summary-title-text{
+    flex-basis: 100%;
+    @extend .title-style; 
+}
+</style>
 

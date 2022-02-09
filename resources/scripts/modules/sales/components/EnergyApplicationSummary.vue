@@ -119,10 +119,15 @@ export default {
 
 <style lang="scss" scoped>
 .page-title-text {
-    font-size: 22px;
+    //styleName: Heading 4;
+    font-family: Roboto;
+    font-size: 32px;
+    font-style: normal;
     font-weight: 700;
-    color: #263238;
-    line-height: 1.3;
+    line-height: 42px;
+    letter-spacing: 0em;
+    text-align: left;
+
 }
 
 .text-light {
