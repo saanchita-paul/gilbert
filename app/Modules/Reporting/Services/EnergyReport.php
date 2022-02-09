@@ -4,7 +4,7 @@ namespace Reporting\Services;
 
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
-use App\Modules\Reporting\Services\MapEnergyApplicationReport;
+use App\Modules\Reporting\Services\CalculateEnergyApplicationSummary;
 use App\Modules\Reporting\Services\SetDateRage;
 
 class EnergyReport
@@ -261,16 +261,18 @@ class EnergyReport
     // #[ArrayShape(['submission' => "array", 'conversions' => "array", 'rejected' => "array", 'declined' => "array"])]
     public function getEnergyReport(): array
     {
-        $a = ConnectionApplication::selectRaw("count(*) as total, status, source")->groupBy('status', 'source')->get();
+        $data = ConnectionApplication::selectRaw("count(*) as total, status, source")
+            ->groupBy('status', 'source')
+            ->get();
 
-        $appMapper = new MapEnergyApplicationReport();
+        $appSummary = CalculateEnergyApplicationSummary::getSummary($data->toArray());
 
         return array_merge([
-            "total_new_application" => $this->getTotalNewApplication(),
-            "unassigned_application" => $this->getUnassignedApplication(),
-            "assigned_application" => $this->getAssignedApplication(),
-            "total_consent_pending" => 0,
-            "total_closed" => $this->getTotalClosedApplication(),
+            "total_new_application" => $this->getTotalNewApplication(), #todo: need to remove this
+            "unassigned_application" => $this->getUnassignedApplication(), #todo: need to remove this
+            "assigned_application" => $this->getAssignedApplication(), #todo: need to remove this
+            "total_consent_pending" => 0, #todo: need to remove this
+            "total_closed" => $this->getTotalClosedApplication(), #todo: need to remove this
             'successful_submission' => $this->mapperService->setEnergyData($this->totalSubmissions())->getReportData(),
             'waiting_for_connection' => $this->mapperService->setEnergyData($this->totalWaitingForConnection())->getReportData(),
             "ac_manual_processing" => $this->getAcManualProcessing(),
@@ -278,6 +280,6 @@ class EnergyReport
             'connected' => $this->mapperService->setEnergyData($this->totalConnected())->getReportData(),
             'rejected' => $this->mapperService->setEnergyData($this->totalRejected())->getReportData(),
             'declined' => $this->mapperService->setEnergyData($this->totalDeclined())->getReportData(),
-        ], ['application_summary' => $appMapper->map($a->toArray())]);
+        ], ['application_summary' => $appSummary]);
     }
 }
