@@ -1,4 +1,5 @@
 import COLOR from "@scripts/data/constants/COLOR";
+import { DashboardSourceModel } from "../../models/DashboardSourceModel";
 
 export default {
 
@@ -154,6 +155,13 @@ export default {
         }
 
         return {
+            source_all: new DashboardSourceModel(response.application_summary.all),
+            source_assigned: new DashboardSourceModel(response.application_summary.assigned),
+            source_closed: new DashboardSourceModel(response.application_summary.closed),
+            source_consent_pending: new DashboardSourceModel(response.application_summary.consent_pending),
+            source_conversation_rate: new DashboardSourceModel(response.application_summary.conversation_rate),
+            source_submitted: new DashboardSourceModel(response.application_summary.submitted),
+            source_unassigned: new DashboardSourceModel(response.application_summary.unassigned),
             total_new_application: response.total_new_application,
             total_unassigned: response.unassigned_application,
             total_assigned: response.assigned_application,

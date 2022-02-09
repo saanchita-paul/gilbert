@@ -13,30 +13,30 @@
             <!--            Application Created-->
             <div class="created with-source mx-2">
                 <div class="lead-count">
-                    <div class="count-value"><h2>60</h2></div>
+                    <div class="count-value"><h2>{{ summaryData.source_all.total }}</h2></div>
                     <div class="count-label"><p>Application created</p></div>
                 </div>
                 <div class="lead-sources">
-                    <p class="lead-source-value"><span>123</span> Ignite</p>
-                    <p class="lead-source-value"><span>123</span> Our Property</p>
-                    <p class="lead-source-value"><span>123</span> PropertyMe</p>
-                    <p class="lead-source-value"><span>123</span> Foxie</p>
-                    <p class="lead-source-value"><span>123</span> Hood</p>
-                    <p class="lead-source-value"><span>123</span> Hood.ai</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_all.ignite }}</span> Ignite</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_all.our_property }}</span> Our Property</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_all.property_me }}</span> PropertyMe</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_all.foxie }}</span> Foxie</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_all.hood }}</span> Hood</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_all.hood_ai }}</span> Hood.ai</p>
                 </div>
             </div>
             <v-divider vertical class="divider"></v-divider>
 
             <!--            Application unassigned-->
             <div class="unassigned lead-count mx-2">
-                <div class="count-value"><h2>30</h2></div>
+                <div class="count-value"><h2>{{ summaryData.source_unassigned.total }}</h2></div>
                 <div class="count-label"><p>Unassigned</p></div>
             </div>
             <v-divider vertical class="divider"></v-divider>
 
             <!--            Application assigned-->
             <div class="assigned lead-count">
-                <div class="count-value"><h2>20</h2></div>
+                <div class="count-value"><h2>{{ summaryData.source_assigned.total }}</h2></div>
                 <div class="count-label"><p>Assigned</p></div>
             </div>
             <v-divider vertical class="divider"></v-divider>
@@ -45,16 +45,16 @@
             <!--            Application submitted-->
             <div class="submitted with-source mx-2">
                 <div class="lead-count">
-                    <div class="count-value"><h2>20,008</h2></div>
+                    <div class="count-value"><h2>{{ summaryData.source_submitted.total }}</h2></div>
                     <div class="count-label"><p>Submitted to retailer</p></div>
                 </div>
                 <div class="lead-sources">
-                    <p class="lead-source-value"><span>123</span> Ignite</p>
-                    <p class="lead-source-value"><span>123</span> Our Property</p>
-                    <p class="lead-source-value"><span>123</span> PropertyMe</p>
-                    <p class="lead-source-value"><span>123</span> Foxie</p>
-                    <p class="lead-source-value"><span>123</span> Hood</p>
-                    <p class="lead-source-value"><span>123</span> Hood.ai</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_submitted.ignite }}</span> Ignite</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_submitted.our_property }}</span> Our Property</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_submitted.property_me }}</span> PropertyMe</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_submitted.foxie }}</span> Foxie</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_submitted.hood }}</span> Hood</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_submitted.hood_ai }}</span> Hood.ai</p>
                 </div>
             </div>
             <v-divider vertical class="divider"></v-divider>
@@ -63,16 +63,16 @@
             <!--            Application conversion-rate-->
             <div class="conversion-rate with-source mx-2">
                 <div class="lead-count">
-                    <div class="count-value"><h2>47.6%</h2></div>
+                    <div class="count-value"><h2>{{ summaryData.source_conversation_rate.total }}%</h2></div>
                     <div class="count-label"><p>Overall Conversion Rate</p></div>
                 </div>
                 <div class="lead-sources">
-                    <p class="lead-source-value"><span>123</span> Ignite</p>
-                    <p class="lead-source-value"><span>123</span> Our Property</p>
-                    <p class="lead-source-value"><span>123</span> PropertyMe</p>
-                    <p class="lead-source-value"><span>123</span> Foxie</p>
-                    <p class="lead-source-value"><span>123</span> Hood</p>
-                    <p class="lead-source-value"><span>123</span> Hood.ai</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.ignite }}%</span> Ignite</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.our_property }}%</span> Our Property</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.property_me }}%</span> PropertyMe</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.foxie }}%</span> Foxie</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.hood }}%</span> Hood</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.hood_ai }}%</span> Hood.ai</p>
                 </div>
             </div>
             <v-divider vertical class="divider"></v-divider>
@@ -80,15 +80,15 @@
 
             <!--            Application rea??-->
             <div class="rea lead-count mx-2">
-                <div class="count-value"><h2>1</h2></div>
-                <div class="count-label"><p>title </p></div>
+                <div class="count-value"><h2>{{ summaryData.source_consent_pending.total }}</h2></div>
+                <div class="count-label"><p>Consent Pending </p></div>
             </div>
             <v-divider vertical class="divider"></v-divider>
 
 
             <!--            Application closed-->
             <div class="closed lead-count mx-2">
-                <div class="count-value"><h2>10</h2></div>
+                <div class="count-value"><h2>{{ summaryData.source_closed.total }}</h2></div>
                 <div class="count-label"><p>Closed</p></div>
             </div>
         </div>
