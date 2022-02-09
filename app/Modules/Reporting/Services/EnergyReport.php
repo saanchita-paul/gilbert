@@ -262,6 +262,8 @@ class EnergyReport
     public function getEnergyReport(): array
     {
         $data = ConnectionApplication::selectRaw("count(*) as total, status, source")
+            ->where('created_at', '>=', $this->startDate)
+            ->where('created_at', '<=', $this->endDate)
             ->groupBy('status', 'source')
             ->get();
 
