@@ -6,7 +6,7 @@ class DashboardSourceModel{
         ignite,
         our_property, 
         property_me, 
-        total}={}){
+        total }={}){
             this.foxie = foxie
             this.hood = hood
             this.hood_ai = hood_ai

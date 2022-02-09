@@ -1,5 +1,5 @@
 import COLOR from "@scripts/data/constants/COLOR";
-import { DashboardSourceModel } from "../../models/DashboardSourceModel";
+import { DashboardSourceModel } from "@scripts/modules/sales/models/DashboardSourceModel";
 
 export default {
 

@@ -1,6 +1,6 @@
 <template>
-    <v-card>
-        <div class="py-5 px-3">
+    <v-card class="card-style">
+        <div class="">
             <h3 class="page-title-text">Here's a summary of all created applications/tenants</h3>
             <p class="my-2">
                 As of <span class="font-weight-medium">{{ selectedDate }}</span>.
@@ -182,5 +182,9 @@ export default {
 
 .divider {
     border-color: #41464b !important;
+}
+
+.card-style{
+    padding: 24px;
 }
 </style>

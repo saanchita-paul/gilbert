@@ -5,7 +5,6 @@ export default {
     loadEnergyData: async (dateRange) => {
         try {
             const data = await axios.get('/api/sales-dashboard/home', {params:{...dateRange}});
-            console.log("data" , data)
             return SalesDashboradEnergyMapper.getEnergyDashboardData(data.data.data.energy)
 
 
