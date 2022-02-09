@@ -5,7 +5,8 @@
                 <SalesFilter @updateDate="updateDate"/>
             </v-col>
             <v-col cols="12" v-if="is_laod">
-                <SalesSummary type='energy' :summaryData="chartData" :dateRange='dateRange'/>
+<!--                <SalesSummary type="energy"  :summaryData="chartData" :dateRange='dateRange'/>-->
+                <EnergyApplicationSummary  :summaryData="chartData" :dateRange='dateRange'/>
             </v-col>
             <div class="d-flex  justify-space-around" style="width: 100%;" v-if="is_laod">
                 <ApplicationDashboardStatisticsEnergy title="Submissions to Retailer" type='submission' :chart-data="chartData.submitted"/>
@@ -19,6 +20,7 @@
 <script>
 import SalesFilter from "@scripts/modules/sales/components/SalesFilter";
 import SalesSummary from "@scripts/modules/sales/components/SalesSummary";
+import EnergyApplicationSummary from "@scripts/modules/sales/components/EnergyApplicationSummary";
 import SalesDashboardService from "@scripts/modules/sales/services/SalesDashboardService";
 import SalesSummaryChart from "@scripts/modules/sales/components/SalesSummaryChart";
 import ApplicationDashboardStatisticsEnergy from "@scripts/modules/sales/pages/ApplicationDashboardStatisticsEnergy";
@@ -29,6 +31,7 @@ export default {
         SalesSummaryChart,
         SalesFilter,
         SalesSummary,
+        EnergyApplicationSummary,
         ApplicationDashboardStatisticsEnergy
     },
     data() {
