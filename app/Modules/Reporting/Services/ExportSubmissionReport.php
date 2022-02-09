@@ -60,11 +60,13 @@ class ExportSubmissionReport
         foreach ($data as $datum) {
             $datum->Lead_Source = $this->getLeadSrc($datum->Lead_Source);
             
+            info('id' , ['service id ' , $datum->Service_ID]);
+
             $datum->Lead_Status = $this->getStatus($datum->Application_Status, $datum->Lead_Status, $datum->Assigned_To);
             $datum->Street_Type = $this->getRoadType($datum->Street_Type);
             $datum->Customer_Type = $this->getCustomerType($datum->Customer_Type);
             $datum->Offer_Type = 'ENE';
-            $datum->Lead_Submitted_Date = $datum->Lead_Submitted_Date ?? 'Null';
+            $datum->Lead_Submitted_Date = $datum->Lead_Submitted_Date ?? 'NULL';
             $datum->Source_Code = $this->getSourceCode($datum->Utility_Service, $datum->State, $datum->Utility_Plan, $datum->Postcode);
             
             $this->setAgencyName($datum);
@@ -89,6 +91,7 @@ class ExportSubmissionReport
         $builder = DB::table('connection_services as cs')
             ->selectRaw("
                 ag.name as `Agency_Name`,
+                cs.id as `Service_ID`,
                 concat(ap.first_name, ap.last_name) as `Agent_Name`,
                 u.email as `Submitted_User_Email`,
                 ca.source as `Lead_Source`,
