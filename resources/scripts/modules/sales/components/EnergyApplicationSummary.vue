@@ -8,7 +8,7 @@
             <p class="text-light">You can change these parameters using the filters on the top right corner.</p>
         </div>
 
-        <div class="metrics pa-4">
+        <div class="metrics">
 
             <!--            Application Created-->
             <div class="created with-source mx-2">
@@ -131,7 +131,7 @@ export default {
 }
 
 .text-light {
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .lead-count {
@@ -155,18 +155,18 @@ export default {
 
 .lead-source-value {
     margin: 0px;
-    font-size: .7em;
+    font-size: 14px;
 }
 
 .with-source {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
 }
 
 .count-label {
-    font-size: .7em;
+    font-size: 16px;
     color: #263238;
 }
 .count-value  {
