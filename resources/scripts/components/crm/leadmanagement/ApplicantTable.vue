@@ -130,6 +130,7 @@ export default {
                 // {text: 'Select a lead', value: '', disabled: true},
                 {text: 'All Lead Source', value: 'all', icon: ''},
                 {text: 'Hood Agent Portal', value: 'hood', icon: '/assets/images/icons/company/hood.png'},
+                {text: 'Hood.AI', value: 'hood_ai', icon: '/assets/images/icons/company/hood.png'},
                 {text: 'Foxie CRM', value: 'foxie', icon: '/assets/images/icons/company/foxie.png'},
                 {text: 'Ignite ', value: 'ignite', icon: '/assets/images/icons/company/ignite.png'},
                 {text: 'Our Property', value: 'our-property', icon: '/assets/images/icons/company/our-property.png'},
@@ -229,7 +230,7 @@ export default {
             const meta = {
                 search: this.leadSearch,
                 page: this.options.page,
-                per_page: this.options.itemsPerPage,
+                per_page: this.options.itemsPerPage === -1 ? this.totalItem : this.options.itemsPerPage,
                 is_descending: this.options.sortDesc.length != 0? this.options.sortDesc[0]: false,
                 sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: '',
             }

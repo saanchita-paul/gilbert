@@ -113,6 +113,11 @@ export default {
           value: "hood",
           icon: "/assets/images/icons/company/hood.png",
         },
+          {
+              text: "Hood.AI",
+              value: "hood_ai",
+              icon: "/assets/images/icons/company/hood.png",
+          },
         {
           text: "Foxie CRM",
           value: "foxie",

@@ -343,10 +343,6 @@ class HubspotContactService
 
         return match ($source) {
             ConnectionApplication::SOURCE_FOXIE => 'Foxie',
-            ConnectionApplication::SOURCE_HOOD => 'HOOD',
-            ConnectionApplication::SOURCE_IGNITE => 'Ignite',
-            4 => 'OurProperty',
-            5 => 'PropertyMe',
             default => 'HOOD'
         };
 
