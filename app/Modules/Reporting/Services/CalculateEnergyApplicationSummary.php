@@ -100,10 +100,10 @@ class CalculateEnergyApplicationSummary
         $this->applicationSummary[$statusKey]["total"] += $item['total'];
         $this->applicationSummary["all"]["total"] += $item['total'];
 
-        $sourceKey = $this->mapSource($item['source']);
-        if ($sourceKey) {
-            $this->applicationSummary[$statusKey][$sourceKey] += $item['total'];
-            $this->applicationSummary["all"][$sourceKey] += $item['total'];
+        $sourceAsString = $this->mapSourceToString($item['source']);
+        if ($sourceAsString) {
+            $this->applicationSummary[$statusKey][$sourceAsString] += $item['total'];
+            $this->applicationSummary["all"][$sourceAsString] += $item['total'];
         }
     }
 
@@ -114,7 +114,7 @@ class CalculateEnergyApplicationSummary
      *
      * @return string|null
      */
-    private function mapSource(?int $source): ?string
+    private function mapSourceToString(?int $source): ?string
     {
         return match ($source) {
             ConnectionApplication::SOURCE_FOXIE => 'foxie',
