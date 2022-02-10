@@ -66,7 +66,9 @@ class ExportSubmissionReport
             $datum->Street_Type = $this->getRoadType($datum->Street_Type);
             $datum->Customer_Type = $this->getCustomerType($datum->Customer_Type);
             $datum->Offer_Type = 'ENE';
-            $datum->Lead_Submitted_Date = $datum->Lead_Submitted_Date ?? 'NULL';
+            // $datum->Lead_Submitted_Date = $datum->Lead_Submitted_Date ?? 'NULL';
+            // $datum->Unit_Number = $datum->Unit_Number ?? 'NULL';
+            // $datum->Vendor_ID = $datum->Vendor_ID ?? 'NULL';
             $datum->Source_Code = $this->getSourceCode($datum->Utility_Service, $datum->State, $datum->Utility_Plan, $datum->Postcode);
             
             $this->setAgencyName($datum);
@@ -88,33 +90,34 @@ class ExportSubmissionReport
     // Offer_Type, Source_Code is faked assigned just to place the data in the right order
     private function fetchData() : array
     {
+        $energyType = $this->energyType;
         $builder = DB::table('connection_services as cs')
             ->selectRaw("
                 ag.name as `Agency_Name`,
                 cs.id as `Service_ID`,
                 concat(ap.first_name, ap.last_name) as `Agent_Name`,
-                u.email as `Submitted_User_Email`,
+                IFNULL(u.email, 'NULL') as `Submitted_User_Email`,
                 ca.source as `Lead_Source`,
                 ca.first_name as `Customer_Firstname`,
                 ca.last_name as `Customer_Lastname`,
-                CONVERT_TZ(ca.created_at, '+00:00', '+10:00') as `Lead_Created_Date`,
+                IFNULL(CONVERT_TZ(ca.created_at, '+00:00', '+10:00'), 'NULL') as `Lead_Created_Date`,
                 CONVERT_TZ(ca.moving_date, '+00:00', '+10:00') as `Connection_Date`,
-                CONVERT_TZ(cs.submitted_at, '+00:00', '+10:00') as `Lead_Submitted_Date`,
-                ca.unit_number as `Unit_Number`,
-                ca.street_number as `Street_Number`,
-                ca.street_name as `Street_Name`,
-                ca.street_name as `Street_Type`,
-                ca.city as `Suburb`,
-                ca.state as `State`,
-                ca.postcode as `Postcode`,
-                ca.vendor_id as `Vendor_ID`,
-                ca.nmi as `NMI`,
-                ca.mirn as `MIRN`,
-                ca.property_type as `Customer_Type`,
-                ca.status as `Offer_Type`,
-                ca.status as `Source_Code`,
-                ca.assigned_to as `Assigned_To`,
-                ca.status as `Application_Status`,
+                IFNULL(CONVERT_TZ(cs.submitted_at, '+00:00', '+10:00'), 'NULL') as `Lead_Submitted_Date`,
+                IFNULL(ca.unit_number, 'NULL') as `Unit_Number`,
+                IFNULL(ca.street_number, 'NULL') as `Street_Number`,
+                IFNULL(ca.street_name, 'NULL') as `Street_Name`,
+                IFNULL(ca.street_name, 'NULL') as `Street_Type`,
+                IFNULL(ca.city,'NULL') as `Suburb`,
+                IFNULL(ca.state,'NULL') as `State`,
+                IFNULL(ca.postcode,'NULL') as `Postcode`,
+                IFNULL(ca.vendor_id,'NULL') as `Vendor_ID`,
+                IFNULL(ca.nmi,'NULL') as `NMI`,
+                IFNULL(ca.mirn,'NULL') as `MIRN`,
+                IFNULL(ca.property_type,'NULL') as `Customer_Type`,
+                IFNULL(ca.status,'NULL') as `Offer_Type`,
+                IFNULL(ca.status,'NULL') as `Source_Code`,
+                IFNULL(ca.assigned_to,'NULL') as `Assigned_To`,
+                IFNULL(ca.status,'NULL') as `Application_Status`,
                 cs.lead_reference as `Lead_Reference`,
                 cs.provider_name as `Utility_Provider`,
                 cs.service_type as `Utility_Service`,
@@ -125,12 +128,12 @@ class ExportSubmissionReport
                 sl.agent_name as `Foxie_Agent_Name`,
                 cs.id as `Service_Id`
             ")
-            ->leftJoin('connection_applications as ca', 'cs.connection_application_id', '=', 'ca.id')
+            ->rightJoin('connection_applications as ca', 'ca.id', '=', 'cs.connection_application_id')
             ->leftJoin('agencies as ag', 'ca.agency_id', '=', 'ag.id')
             ->leftJoin('agent_profiles as ap', 'ap.id', '=', 'ca.created_by')
             ->leftJoin('users as u', 'ca.submitted_by', '=', 'u.id')
             ->leftJoin('suger_leads as sl', 'ca.id', '=', 'sl.connection_application_id')
-            ->whereIn('cs.service_type', $this->serviceType);
+            ->where( function($q) use ($energyType) { $q->whereIn('cs.service_type', $energyType)->orWhereNull('cs.service_type'); } );
             // ->whereNotNull('cs.provider_name');
 
         $tempBuilder = clone $builder;
