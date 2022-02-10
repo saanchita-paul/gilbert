@@ -79,7 +79,7 @@
 
 
             <!--            Application rea??-->
-            <div class="rea lead-count mx-2">
+            <div class="rea lead-count mx-2" style="opacity: 0.2;">
                 <div class="count-value"><h2>{{ summaryData.source_consent_pending.total }}</h2></div>
                 <div class="count-label"><p>Consent Pending </p></div>
             </div>
