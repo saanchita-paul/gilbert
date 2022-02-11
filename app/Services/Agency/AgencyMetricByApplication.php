@@ -55,11 +55,10 @@ class AgencyMetricByApplication
         $builder = $this->applySourceFilter(
             $builder,
             [
-                ConnectionApplication::SOURCE_MAPPING['hood'],
-                ConnectionApplication::SOURCE_MAPPING['foxie']
+                ConnectionApplication::SOURCE_MAPPING['hood']
             ]
         );
-        $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_SUBMITTED);
+        // $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_SUBMITTED);
 
         return $builder->count();
     }
