@@ -64,6 +64,7 @@ export default {
                 abn: ofc.abn,
                 phone: ofc.contact,
                 email: ofc.email,
+                rent_roll: ofc.rent_roll
             };
             agent = {
                 first_name: agPro.first_name,
