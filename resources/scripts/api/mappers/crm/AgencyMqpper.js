@@ -91,6 +91,10 @@ export default {
                     type: COMMISSION.WATER.type,
                     rate: commission.water,
                 },
+                {
+                    type: COMMISSION.SPONSORSHIP.type,
+                    rate: commission.sponsorship,
+                },
             ];
         }
 
