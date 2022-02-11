@@ -41,7 +41,6 @@
                
                <div v-if="!isModeEdit" class="py-0 mr-2 LeadMatics123" style="flex-basis: 90px;">
                    <v-select
-                       class='date-select'
                        dense
                        label="State"
                        v-model="state"
@@ -207,7 +206,7 @@ import DatePickerModal from "@scripts/modules/sales/components/DatePickerModal";
 import {STATES} from "@scripts/data/constants/STATES";
 import {merge} from "lodash-es";
 import {AgencyFilter} from "@scripts/models/crm/AgencyFilter";
-import { isEqual } from 'lodash-es'
+import { isEqual, isNil } from 'lodash-es'
 export default {
   name: "LeadMetrics",
     components: {DatePickerModal, SalesFilter},
@@ -229,7 +228,7 @@ export default {
               digital_application_platform: 0,
               property_management_system: 0
           },
-          selectedDate: '',
+          selectedDate: null,
           showDatePickerModal: false,
           dateRange: {
               start: this.$route.query?.start ?
@@ -295,6 +294,10 @@ export default {
         },
 
         checkDate() {
+            if(isNil(this.$route.query?.start) && isNil(this.$route.query?.end)){
+                return;
+            }
+
             let today = getToday();
             let yesterday = getYesterday();
             if(isSame(this.dateRange.start, today)) {
