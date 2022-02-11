@@ -43,7 +43,8 @@ class UpdateOfficeService
                 $officeCmtn->update($commission);
             } else {
                 $commission['office_id'] = $this->id;
-                $commission['agency_id'] = $office->agency_id;
+                $commission['agency_id'] = $office['agency_id'];
+                $commission['type'] = OfficeCommission::Type[$commission['text']];
                 OfficeCommission::create($commission);
             }
 
