@@ -96,7 +96,7 @@ class AgencyMetricByApplication
             $builder,
             [ConnectionApplication::SOURCE_MAPPING['property_me']]
         );
-        $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_ACCEPTED);
+        // $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_ACCEPTED);
 
         return $builder->count();
     }
@@ -108,7 +108,7 @@ class AgencyMetricByApplication
             $builder,
             [ConnectionApplication::SOURCE_MAPPING['our-property']]
         );
-        $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_ACCEPTED);
+        // $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_ACCEPTED);
 
         return $builder->count();
     }
