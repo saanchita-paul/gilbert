@@ -23,8 +23,7 @@
                    <v-text-field
                        class='date-select'
                        dense
-                       label="Calender"
-                       placeholder="Today"
+                       placeholder="Date"
                        v-model="selectedDate"
                        append-icon="mdi-calendar-range"
                        readonly
@@ -54,7 +53,7 @@
                        hide-details
                    ></v-select>
                </div>
-               <div v-if="!isModeEdit" class="py-0 mr-2 LeadMatics123" style="flex-basis: 130px;">
+               <div v-if="!isModeEdit" class="py-0 mr-2 LeadMatics123" style="flex-basis: 180px;">
                    <v-select
                        class='date-select'
                        dense
@@ -68,7 +67,7 @@
                        hide-details
                    ></v-select>
                </div>
-               <div v-if="!isModeEdit" class="py-0 mr-2 LeadMatics123" style="flex-basis: 130px;">
+               <div v-if="!isModeEdit" class="py-0 mr-2 LeadMatics123" style="flex-basis: 140px;">
                    <v-select
                        v-model="selectedAgency"
                        :items="agencies"
@@ -418,14 +417,14 @@ export default {
     border-left: 1px solid #7E8A8F;
 }
 
-
+/* 
 .v-text-field >>> input {
     font-size: 14px;
 }
 
 .v-select >>> input {
     font-size: 14px;
-}
+} */
 
 .v-text-field .v-input__control .v-input__slot {
     min-height: 32px !important;
