@@ -2,13 +2,13 @@
 namespace App\Modules\Reporting\Services;
 
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
+use App\Models\RejectionReason;
 use App\Services\Utility\GilbertStatusMapper;
 use DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Rap2hpoutre\FastExcel\FastExcel;
-use App\Models\ConnectionService;
-use App\Models\RejectionReason;
 
 class ExportSubmissionReport
 {
@@ -59,9 +59,11 @@ class ExportSubmissionReport
         //show assigned unassigned// show closed status
         foreach ($data as $datum) {
             $datum->Lead_Source = $this->getLeadSrc($datum->Lead_Source);
-            
-            info('id' , ['service id ' , $datum->Service_ID]);
 
+            info('id' , ['service id ' , $datum->Service_ID]);
+//            if ($datum->Customer_Firstname === 'neha') {
+//                dd($datum->Application_Status, $datum->Lead_Status, $datum->Assigned_To);
+//            }
             $datum->Lead_Status = $this->getStatus($datum->Application_Status, $datum->Lead_Status, $datum->Assigned_To);
             $datum->Street_Type = $this->getRoadType($datum->Street_Type);
             $datum->Customer_Type = $this->getCustomerType($datum->Customer_Type);
@@ -70,7 +72,7 @@ class ExportSubmissionReport
             // $datum->Unit_Number = $datum->Unit_Number ?? 'NULL';
             // $datum->Vendor_ID = $datum->Vendor_ID ?? 'NULL';
             $datum->Source_Code = $this->getSourceCode($datum->Utility_Service, $datum->State, $datum->Utility_Plan, $datum->Postcode);
-            
+
             $this->setAgencyName($datum);
 
             $datum->Rejection_Reason = $this->getRejectionReason($datum->Service_Id, $datum->Utility_Service);
@@ -233,7 +235,7 @@ class ExportSubmissionReport
             return 'CLOSED';
         }
         elseif($serviceStatus === ConnectionService::STATUS_EA_PROCESSINF) {
-            return $assignedTo === null ? 'UN_ASSIGNED' : 'ASSIGNED';
+            return $assignedTo === "NULL" ? 'UN_ASSIGNED' : 'ASSIGNED';
         }
         return GilbertStatusMapper::getStatusAsText($serviceStatus);
     }
