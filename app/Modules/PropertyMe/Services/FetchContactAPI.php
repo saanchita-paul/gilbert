@@ -5,7 +5,6 @@ namespace App\Modules\PropertyMe\Services;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use PropertyMe\PropertyMeLead;
 use PropertyMe\Services\BasePropertyMeAPI;
 
 class FetchContactAPI extends BasePropertyMeAPI
@@ -15,6 +14,8 @@ class FetchContactAPI extends BasePropertyMeAPI
     private array $contacts = [];
 
     private array $tenancies = [];
+
+    private array $lotMembers = [];
 
 
     public function __construct(private string $refreshToken)
@@ -75,6 +76,34 @@ class FetchContactAPI extends BasePropertyMeAPI
         return $this;
     }
 
+    public function fetchTLotMembers(string $lotId): ?array
+    {
+        $url = config('property_me.api_root_url')
+            . config('property_me.get_lots_url')
+            . "/"
+            . $lotId
+            . "/"
+            . "members";
+
+        $query = "?Timestamp=" . $this->getTimestamp(-100);
+
+        try {
+            $response = Http::withHeaders([
+                "Accept" => "application/json",
+                "Authorization" => $this->getAccessToken($this->refreshToken),
+            ])->get($url . $query);
+
+            return json_decode($response->body(), true);
+//            Log::info('PropertyMe: Fetch Tenancies: ', [$this->tenancies]);
+        } catch (\Exception $exception) {
+            \Log::error("[FetchContactAPI:fetchTLotMembers] " . $exception->getMessage());
+            \Log::error($exception->getTraceAsString());
+
+            return  null;
+        }
+
+    }
+
 
     /**F
      * @throws Exception
@@ -115,6 +144,14 @@ class FetchContactAPI extends BasePropertyMeAPI
     public function getTenancies(): array
     {
         return $this->tenancies;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLotMembers(): array
+    {
+        return $this->lotMembers;
     }
 
 }

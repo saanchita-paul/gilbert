@@ -6,9 +6,7 @@ use App\Events\Agency\SubmitApplicationEvent;
 use App\Models\ConnectionApplication;
 use App\Services\Agency\HubspotContactService;
 use App\Services\Sales\PostSalesService;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use FastConnect\Services\SubmitWaterLeadToFastConnect;
 
 class SendApplicationToEA implements ShouldQueue
 {
@@ -37,6 +35,7 @@ class SendApplicationToEA implements ShouldQueue
         if ($saleApiOn === "1" && $submitType === 'energy' && $this->isValidForSalesApi($application) ) {
             $postEaService = new PostSalesService($event->applicationId);
             $postEaService->postToEa();
+            ConnectionApplication::where('id' , $event->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
             $hubspotService = new HubspotContactService($event->applicationId);
             $hubspotService->update();
         } else {

@@ -3,11 +3,11 @@
 namespace App\Services\Agency;
 
 use App\Models\AgentProfile;
+use App\Models\ConnectionService;
 use App\Traits\Agency\Searchable;
 use App\Traits\Agency\Sortable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Models\ConnectionService;
 
 class SearchAgentProfileService
 {
@@ -84,7 +84,27 @@ class SearchAgentProfileService
                 ConnectionService::AC_MANUAL_PROCESSING
             ])
             ->count();
-       
+
         return $totalSubmitted !== 0 ? number_format((($totalConnected / $totalSubmitted) * 100), 0) : 0;
     }
+
+    private function createAgentBuilder(): Builder
+    {
+        return AgentProfile::query();
+    }
+
+    public function getAgentList(int $officeId = null): LengthAwarePaginator
+    {
+        $agencyBuilder = $this->createAgentBuilder();
+
+        if ($officeId) {
+            $agencyBuilder->where('office_id', $officeId);
+        }
+
+        $agencyBuilder = $this->applySearch($agencyBuilder, ['first_name', 'last_name']);
+        $agencyBuilder = $this->applySorting($agencyBuilder);
+
+        return  $agencyBuilder->paginate($this->perPage);
+    }
 }
+

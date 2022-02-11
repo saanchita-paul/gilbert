@@ -3,14 +3,12 @@
 namespace FastConnect\Services;
 
 use App\Models\APILog;
+use App\Models\ConnectionApplication;
+use App\Models\Identification;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Identification;
-use App\Models\ConnectionApplication;
-use Exception;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use FastConnect\Services\FastConnectProductService;
 
 class SubmitWaterLeadToFastConnect
 {
@@ -45,7 +43,7 @@ class SubmitWaterLeadToFastConnect
         "South Australia" => 5,
         "Northern Territory" => 3,
         "Tasmania" => 6,
-        "Australian Capital Territory" => 1, 
+        "Australian Capital Territory" => 1,
         "Western Australia" => 8,
     ];
 
@@ -68,6 +66,8 @@ class SubmitWaterLeadToFastConnect
         "Australian Capital Territory" => 'ACT',
         'Western Australia' => 'WA'
     ];
+
+    const mapLengthOfCountry = [ 2 => 'short_code' , 3 => 'country_code' , 4 => 'name' ];
 
     public function __construct(int $id) {
         $this->applicationId = $id;
@@ -93,7 +93,7 @@ class SubmitWaterLeadToFastConnect
             return [];
             //throw $th;
         }
-        
+
     }
 
     public function authenticate(): static
@@ -251,19 +251,13 @@ class SubmitWaterLeadToFastConnect
     {
         try {
             $countries =  $this->getCountries();
-            $country = SubmitWaterLeadToFastConnect::MAP_COUNTRY[ strtoupper($country) ] ?? $country;
+            $lenghtOfName =  strlen($country) > 3 ? 4 : strlen($country);
             foreach ($countries as $val) {
-                if ( strtolower( $val['name'] ) === strtolower( $country) ) {
+                if ( strtolower( $val[SubmitWaterLeadToFastConnect::mapLengthOfCountry[$lenghtOfName]] ) === strtolower( $country) ) {
                     return $val['id'];
                 }
             }
             throw new Exception("Country not found");
-            //TODO check array search case insensitive
-            // $id = null;
-            // $countryIndex =  array_search($country, array_column( $countries, 'name'));
-            // if( gettype($countryIndex) == 'boolean'){
-            // }
-            // return $countries[$countryIndex]['id'];
         } catch (\Exception $exception) {
             info('exception in getMappedIdentificationCountry, SubmitWaterLeadToFastConnect' , [ $exception->getTraceAsString() , $exception->getMessage() ]);
             throw new Exception("Country not found");

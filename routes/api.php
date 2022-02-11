@@ -1,22 +1,20 @@
 <?php
 
-use App\Models\ConnectionService;
-use App\Mail\WaterSumissionFailed;
-use Illuminate\Encryption\Encrypter;
-use Illuminate\Support\Facades\Route;
-use PropertyMe\services\FetchContacts;
-use Illuminate\Support\Facades\Broadcast;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Agency\NoteController;
-use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\Agency\AgencyController;
-use App\Http\Controllers\Agency\OfficeController;
-use App\Http\Controllers\UserInvitationController;
-use App\Http\Controllers\Agency\HoodUserController;
-use App\Http\Controllers\Agency\ApplicationController;
-use FastConnect\Services\SubmitWaterLeadToFastConnect;
 use App\Http\Controllers\Agency\AgentProfileController;
+use App\Http\Controllers\Agency\ApplicationController;
+use App\Http\Controllers\Agency\HoodUserController;
+use App\Http\Controllers\Agency\NoteController;
+use App\Http\Controllers\Agency\OfficeController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\UserInvitationController;
+use FastConnect\Services\SubmitWaterLeadToFastConnect;
+use Illuminate\Encryption\Encrypter;
+use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Route;
 use OurProperty\Http\Controllers\OurPropertyController;
+use PropertyMe\services\FetchContacts;
+use Reporting\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +56,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/offices/{id}/get-metrics', [OfficeController::class, 'getMatricsData']);
     Route::post('/offices/{id}/update', [OfficeController::class, 'updateOffice']);
     Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index']);
+    Route::get('/offices/{officeId}/agents', [AgentProfileController::class, 'getAgentList']);
     Route::post('/offices/{officeId}/users', [AgentProfileController::class, 'createAgent']);
 
     Route::get('/office-agents', [AgentProfileController::class, 'officeAgents']);
@@ -177,7 +176,9 @@ Route::get("/karan/sales-status", function () {
 
 
 Route::get('country_test', function () {
+    //  return SubmitWaterLeadToFastConnect::mapLengthOfCountry[2];
     $ser =  new SubmitWaterLeadToFastConnect(1);
-    return $ser->getMappedIdentificationCountry('Australia'); 
+    // return $ser;
+    return $ser->getMappedIdentificationCountry('AX');
     // return 'got' ;
 });

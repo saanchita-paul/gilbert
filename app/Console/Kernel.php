@@ -2,13 +2,13 @@
 
 namespace App\Console;
 
-use App\Modules\PropertyMe\Commands\SavePropertyMeLeadsCommand;
-use Illuminate\Console\Scheduling\Schedule;
-use Ignite\Commands\IgniteFetchCommand;
 use App\Console\Commands\GetSellStatusCommand;
-use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Console\Commands\UploadConnectionDataToSFTPCommand;
-use Ignite\Jobs\IgniteFetchJob;
+use App\Modules\PropertyMe\Commands\SavePropertyMeLeadsCommand;
+use App\Modules\PropertyMe\Commands\SyncAgent;
+use Ignite\Commands\IgniteFetchCommand;
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         SavePropertyMeLeadsCommand::class,
+        SyncAgent::class,
         GetSellStatusCommand::class,
         UploadConnectionDataToSFTPCommand::class,
         IgniteFetchCommand::class,
@@ -33,13 +34,20 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
          $schedule->command('fetch:submitted-leads')->hourly();
-         $schedule->command('fetch:submitted-water-leads')->twiceDaily();
          $schedule->command('ea:upload:lead')->daily();
          $schedule->command('property_me:save_contact')->everyFifteenMinutes();
 
          if($this->shouldIgniteRun()){
             $schedule->command('ignite:fetch')->everyTenMinutes();
          }
+
+         $this->registerWaterStatusUpdate($schedule);
+    }
+
+    private function registerWaterStatusUpdate(Schedule $schedule)
+    {
+        $schedule->command('fetch:submitted-water-leads')->timezone(11)->dailyAt("0:00");
+        $schedule->command('fetch:submitted-water-leads')->timezone(11)->dailyAt("5:00");
     }
 
     private function shouldIgniteRun(){

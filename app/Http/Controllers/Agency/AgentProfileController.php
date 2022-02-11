@@ -1,21 +1,21 @@
 <?php
 namespace App\Http\Controllers\Agency;
 
-use App\Models\AgentProfile;
-use App\Services\Agency\AgencyUserService;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Agency\CreateAgentProfileRequest;
+use App\Http\Resources\Agency\AgencyResource;
+use App\Http\Resources\Agency\AgentListResource;
+use App\Http\Resources\Agency\AgentProfileResource;
+use App\Services\Agency\AgencyUserService;
+use App\Services\Agency\CreateAgentAndUser;
+use App\Services\Agency\SearchAgentProfileService;
+use App\Services\Agency\UpdateAgentService;
 use App\Services\SendUserInviteService;
 use App\Services\UpdateUserProfileService;
-use App\Services\Agency\CreateAgentAndUser;
-use App\Services\Agency\UpdateAgentService;
-use App\Http\Resources\Agency\AgencyResource;
-use App\Services\Agency\SearchAgentProfileService;
-use App\Http\Resources\Agency\AgentProfileResource;
-use App\Http\Requests\Agency\CreateAgentProfileRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 
 class AgentProfileController extends Controller
 {
@@ -113,6 +113,16 @@ class AgentProfileController extends Controller
             $userService = new AgencyUserService();
             (new SendUserInviteService($userService->getUserByProfile($request->toArray(), $id)))->run();
             return response()->json(['success' => true, ]);
+        } catch ( \Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function getAgentList(Request $request, int $officeId): AnonymousResourceCollection | JsonResponse
+    {
+        try {
+            $service = new SearchAgentProfileService($request->toArray());
+            return AgentListResource::collection($service->getAgentList($officeId));
         } catch ( \Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

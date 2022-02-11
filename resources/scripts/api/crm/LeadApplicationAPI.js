@@ -1,9 +1,6 @@
-import CrmUserMapper from "@scripts/api/mappers/crm/CrmUserMapper";
 import AppMetricsMapper from "@scripts/api/mappers/crm/AppMetricsMapper";
-import AppLeadMapper from "@scripts/api/mappers/crm/AppLeadMapper";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
-import DayJs from "dayjs";
 import dayjs from "dayjs";
 
 const data = [
@@ -242,7 +239,7 @@ export default {
 
     async getUserLeads(sort_search_meta, active_lead_type, src, params) {
         try {
-            const data = await axios.get('/api/applications',{params:{...sort_search_meta, active_lead_type, source: src , ...params}});
+            const data = await axios.get('/api/applications',{params:{...sort_search_meta, source: src , ...params, active_lead_type:active_lead_type}});
             return ApplicationMapper.mapApplicationList(data.data);
 
         } catch (error) {

@@ -2,28 +2,21 @@
 
 namespace App\Notifications;
 
-use DateTime;
 use Illuminate\Bus\Queueable;
-use App\Models\ConnectionApplication;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class ErrorLogNotification extends Notification implements ShouldQueue
 {
     use Queueable;
-
-    private string $text;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(string $text)
-    {
-        $this->text = $text;
-    }
+    public function __construct(private string $text, private string $subject = "Hood Error Log") {}
 
     /**
      * Get the notification's delivery channels.
@@ -45,7 +38,7 @@ class ErrorLogNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject("Hood Error Log")
+            ->subject($this->subject)
             ->view('email.error_log', [
                 'data' => $this->text,
             ]);
