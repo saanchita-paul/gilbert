@@ -21,7 +21,6 @@ class WaterEmailService{
             ];
             $emails =  explode( ',', config('water.support_emails'));
             info('emails' , $emails);
-            Mail::to("riyad298@gmail.com")->send(new WaterSumissionFailed($dataToBeSent));
             foreach($emails as $recipient) 
             {
                 info('email sending to: ' , [ $recipient ]);
