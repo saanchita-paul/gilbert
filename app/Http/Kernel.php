@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         //foxie
         'foxie.suger.leads' => \Foxie\Http\Middleware\FoxieSugerLeads::class,
         'our.property' => \OurProperty\Http\Middleware\AuthenticatOurproperty::class,
+        'external.lead' => \ExternalLead\Http\Middleware\Authentication::class,
     ];
 }

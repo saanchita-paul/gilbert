@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use ExternalLead\Models\TApp;
 use Foxie\Models\SugerLead;
 use Ignite\Models\IgniteLead;
 use Illuminate\Database\Eloquent\Model;
@@ -246,6 +247,8 @@ class ConnectionApplication extends Model
     const SOURCE_PROPERTY_ME = 5;
     const SOURCE_HOOD_LEAD = 10;
 
+    const SOURCE_T_APP = 11;
+
     const EMAIL_BILLING_EMAIL = 1;
     const EMAIL_BILLING_PAPER = 2;
 
@@ -384,6 +387,14 @@ class ConnectionApplication extends Model
     public function ourPropertyLead()
     {
         return $this->hasOne(OurProperty::class, 'connection_application_id');
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function tApp()
+    {
+        return $this->hasOne(TApp::class, 'connection_application_id');
     }
 
     public function propertyMeLead()
