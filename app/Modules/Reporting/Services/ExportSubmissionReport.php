@@ -6,6 +6,7 @@ use App\Models\ConnectionService;
 use App\Models\RejectionReason;
 use App\Services\Utility\GilbertStatusMapper;
 use DB;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Rap2hpoutre\FastExcel\FastExcel;
@@ -28,6 +29,16 @@ class ExportSubmissionReport
 
     private array $waterType = [
         ConnectionService::TYPE_WATER,
+    ];
+
+    const STATUES_TO_KEEP = [
+        ConnectionService::STATUS_EA_PROCESSINF, //Not submitted
+        ConnectionService::STATUS_SUBMITTED, //In progress
+        ConnectionService::STATUS_ENERGY_SUBMIT, //In progress
+        ConnectionService::STATUS_ACCEPTED, //Accepted
+        ConnectionService::STATUS_REJECTED, //Rejected
+        ConnectionService::AC_MANUAL_PROCESSING, //MANUAL_PROCESSING
+        ConnectionService::STATUS_CANT_CONNECT, //Failed
     ];
 
     public function __construct(string $type, string $start, string $end)
@@ -61,9 +72,7 @@ class ExportSubmissionReport
             $datum->Lead_Source = $this->getLeadSrc($datum->Lead_Source);
 
             info('id' , ['service id ' , $datum->Service_ID]);
-//            if ($datum->Customer_Firstname === 'neha') {
-//                dd($datum->Application_Status, $datum->Lead_Status, $datum->Assigned_To);
-//            }
+
             $datum->Lead_Status = $this->getStatus($datum->Application_Status, $datum->Lead_Status, $datum->Assigned_To);
             $datum->Street_Type = $this->getRoadType($datum->Street_Type);
             $datum->Customer_Type = $this->getCustomerType($datum->Customer_Type);
@@ -137,10 +146,9 @@ class ExportSubmissionReport
             ->leftJoin('suger_leads as sl', 'ca.id', '=', 'sl.connection_application_id')
             ->where( function($q) use ($energyType) { $q->whereIn('cs.service_type', $energyType)->orWhereNull('cs.service_type'); } );
             // ->whereNotNull('cs.provider_name');
-
+        $builder = $this->applyStatusFilter($builder);
         $tempBuilder = clone $builder;
         $filterWithCreatedDate = $this->filterWithCreatedDate($tempBuilder)->get()->toArray();
-
         $tempBuilder = clone $builder;
         $filterWithSubmittedDate = $this->filterWithSubmittedDate($tempBuilder)->get()->toArray();
 
@@ -150,19 +158,26 @@ class ExportSubmissionReport
         );
     }
 
+    private function applyStatusFilter(Builder $builder): Builder
+    {
+        return $builder->where(function (Builder $b) {
+            $b->whereIn('cs.status', self::STATUES_TO_KEEP)->orWhereNull('cs.status');
+        });
+    }
+
     private function filterWithCreatedDate($builder)
     {
         return $builder
-            ->whereIn('cs.status', [
-                ConnectionService::STATUS_EA_PROCESSINF, //Not submitted
-                ConnectionService::STATUS_SUBMITTED, //In progress
-                ConnectionService::STATUS_ENERGY_SUBMIT, //In progress
-                ConnectionService::STATUS_ACCEPTED, //Accepted
-                ConnectionService::STATUS_REJECTED, //Rejected
-                ConnectionApplication::STATUS_CLOSED, //Closed
-                ConnectionService::AC_MANUAL_PROCESSING, //MANUAL_PROCESSING
-                ConnectionService::STATUS_CANT_CONNECT, //Failed
-            ])
+//            ->whereIn('cs.status', [
+//                ConnectionService::STATUS_EA_PROCESSINF, //Not submitted
+//                ConnectionService::STATUS_SUBMITTED, //In progress
+//                ConnectionService::STATUS_ENERGY_SUBMIT, //In progress
+//                ConnectionService::STATUS_ACCEPTED, //Accepted
+//                ConnectionService::STATUS_REJECTED, //Rejected
+//                ConnectionApplication::STATUS_CLOSED, //Closed
+//                ConnectionService::AC_MANUAL_PROCESSING, //MANUAL_PROCESSING
+//                ConnectionService::STATUS_CANT_CONNECT, //Failed
+//            ])
             ->where('ca.created_at', '>=', $this->startDate)
             ->where('ca.created_at', '<=', $this->endDate);
     }
@@ -170,16 +185,16 @@ class ExportSubmissionReport
     private function filterWithSubmittedDate($builder)
     {
         return $builder
-            ->whereIn('cs.status', [
-                ConnectionService::STATUS_EA_PROCESSINF, //Not submitted
-                ConnectionService::STATUS_SUBMITTED, //In progress
-                ConnectionService::STATUS_ENERGY_SUBMIT, //In progress
-                ConnectionService::STATUS_ACCEPTED, //Accepted
-                ConnectionService::STATUS_REJECTED, //Rejected
-                ConnectionApplication::STATUS_CLOSED, //Closed
-                ConnectionService::AC_MANUAL_PROCESSING, //MANUAL_PROCESSING
-                ConnectionService::STATUS_CANT_CONNECT, //Failed
-            ])
+//            ->whereIn('cs.status', [
+//                ConnectionService::STATUS_EA_PROCESSINF, //Not submitted
+//                ConnectionService::STATUS_SUBMITTED, //In progress
+//                ConnectionService::STATUS_ENERGY_SUBMIT, //In progress
+//                ConnectionService::STATUS_ACCEPTED, //Accepted
+//                ConnectionService::STATUS_REJECTED, //Rejected
+//                ConnectionApplication::STATUS_CLOSED, //Closed
+//                ConnectionService::AC_MANUAL_PROCESSING, //MANUAL_PROCESSING
+//                ConnectionService::STATUS_CANT_CONNECT, //Failed
+//            ])
             ->whereNotNull('cs.submitted_at')
             ->where('cs.submitted_at', '>=', $this->startDate)
             ->where('cs.submitted_at', '<=', $this->endDate)
