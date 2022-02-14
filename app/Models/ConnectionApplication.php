@@ -246,7 +246,6 @@ class ConnectionApplication extends Model
     const SOURCE_OUR_PROPERTY = 4;
     const SOURCE_PROPERTY_ME = 5;
     const SOURCE_HOOD_LEAD = 10;
-
     const SOURCE_T_APP = 11;
 
     const EMAIL_BILLING_EMAIL = 1;
@@ -277,6 +276,7 @@ class ConnectionApplication extends Model
         'our-property' => self::SOURCE_OUR_PROPERTY,
         'property_me' => self::SOURCE_PROPERTY_ME,
         'hood_ai' => self::SOURCE_HOOD_LEAD,
+        't_app' => self::SOURCE_T_APP,
     ];
 
     const PLAN_TYPE_MAPPER = [
