@@ -21,19 +21,6 @@ class OfficeMatricsService
 
         $submittedStatuses = [ConnectionService::STATUS_SUBMITTED, ConnectionService::STATUS_ESCALATED, ConnectionService::STATUS_REJECTED, ConnectionService::STATUS_CLOSED];
 
-        $connectionServiceData->app_total = $this->getDBBuilder()->count();
-        $connectionServiceData->app_unassigned = $this->getDBBuilder()->where('status', ConnectionApplication::STATUS_UNASSIGNED)->count();
-        $connectionServiceData->app_assigned = $this->getDBBuilder()->where('status', ConnectionApplication::STATUS_ASSIGNED)->count();
-
-
-        $connectionServiceData->app_submitted = $this->getDBBuilder()->whereHas('connectionServices', function($query) use ($submittedStatuses) {
-            $query->whereIn('status' , $submittedStatuses)->whereIn('service_type', ['power', 'gas']);
-        })->count();
-
-        $connectionServiceData->app_connected = $this->getDBBuilder()->whereHas('connectionServices', function($query){
-            $query->whereIn('status' , [ConnectionService::STATUS_ACCEPTED])->whereIn('service_type', ['power', 'gas']);
-        })->count();
-
 
         $connectionServiceData->power_submitted = $this->getDBBuilder()->whereHas('connectionServices', function($query) use ($submittedStatuses){
             $query->whereIn('status' , $submittedStatuses)->where('service_type', 'power');
@@ -50,10 +37,7 @@ class OfficeMatricsService
         $connectionServiceData->gas_connected = $this->getDBBuilder()->whereHas('connectionServices', function($query){
             $query->where('status' , ConnectionService::STATUS_ACCEPTED)->where('service_type', 'gas');
         })->count();
-
-
-        $connectionServiceData->app_closed = $this->getDBBuilder()->where('status', ConnectionApplication::STATUS_CLOSED)->count();
-
+        
         return $connectionServiceData;
     }
 
@@ -105,7 +89,7 @@ class OfficeMatricsService
             'app_closed' => 0,
             'app_waiting_tenant' => 0,
             'app_submitted' => 0,
-            'app_connected' => $totalConnectedApplication->total
+            'app_connected' => (int) $totalConnectedApplication?->total
 
         ];
 
@@ -114,14 +98,14 @@ class OfficeMatricsService
         {
             switch ($datum->status) {
                 case ConnectionService::STATUS_CLOSED:
-                    $result['app_closed'] = $datum->total;
+                    $result['app_closed'] = (int) $datum?->total;
                     break;
                 case ConnectionService::STATUS_SUBMITTED:
-                    $result['app_submitted'] = $datum->total - $totalConnectedApplication->total;
+                    $result['app_submitted'] = (int) $datum?->total - (int) $totalConnectedApplication?->total;
                     break;
                 case ConnectionService::STATUS_UNASSIGNED:
                 case ConnectionService::STATUS_ASSIGNED:
-                    $result['app_waiting_tenant'] = $result['app_waiting_tenant'] + $datum->total;
+                    $result['app_waiting_tenant'] = $result['app_waiting_tenant'] + (int)$datum?->total;
                     break;
 
                 default:
