@@ -246,7 +246,7 @@ class ExportSubmissionReport
 
     private function getStatus($leadStatus, $serviceStatus, $assignedTo)
     {
-        if($leadStatus === ConnectionApplication::STATUS_CLOSED) {
+        if( (int) $leadStatus === ConnectionApplication::STATUS_CLOSED) {
             return 'CLOSED';
         }
         elseif($serviceStatus === ConnectionService::STATUS_EA_PROCESSINF) {
