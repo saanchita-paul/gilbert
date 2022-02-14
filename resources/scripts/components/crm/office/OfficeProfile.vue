@@ -376,7 +376,7 @@ export default {
             this.agent.first_name = data.first_name;
             this.agent.last_name = data.last_name;
             this.agent.phone = data.phone;
-            this.agent.email = data.email;
+            this.agent.email = data?.user?.email;
             this.agent.f_id_12 = data.f_id_12;
         },
 

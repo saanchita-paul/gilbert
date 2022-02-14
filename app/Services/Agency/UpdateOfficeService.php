@@ -21,6 +21,8 @@ class UpdateOfficeService
 
     public function updateOffice($data)
     {
+        info("request data" , ['request data' => $data]);
+
         $office = Office::findOrFail($this->id);
         $office->update($data['office']);
 
@@ -56,6 +58,7 @@ class UpdateOfficeService
     {
        $agent = AgentProfile::findOrFail($agentData['id']);
        $agent->update($agentData);
+       $agent->user->update(["email" => $agentData['email']]);
        return $agent->refresh();
     }
 }
