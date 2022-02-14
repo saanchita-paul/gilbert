@@ -263,9 +263,9 @@
 <!--                           <div class="leade-icon pb-2">-->
 <!--                               <v-icon color="green">mdi-wifi</v-icon>-->
 <!--                               <span class="mr-4">$</span>-->
-                               <ValidationProvider name="Internet" rules="numeric|required"  v-slot="{ errors }">
+                               <ValidationProvider name="Sponsorship" rules="numeric|required"  v-slot="{ errors }">
                                    <v-text-field
-                                       v-model="commission.sponsorship"
+                                       v-model.number="commission.sponsorship"
                                        outlined
                                        dense
                                        hide-details
@@ -376,7 +376,7 @@ export default {
             this.agent.first_name = data.first_name;
             this.agent.last_name = data.last_name;
             this.agent.phone = data.phone;
-            this.agent.email = data.email;
+            this.agent.email = data?.user?.email;
             this.agent.f_id_12 = data.f_id_12;
         },
 
