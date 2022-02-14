@@ -1,9 +1,6 @@
-import CrmUserMapper from "@scripts/api/mappers/crm/CrmUserMapper";
 import AppMetricsMapper from "@scripts/api/mappers/crm/AppMetricsMapper";
-import AppLeadMapper from "@scripts/api/mappers/crm/AppLeadMapper";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
-import DayJs from "dayjs";
 import dayjs from "dayjs";
 
 const data = [
@@ -437,6 +434,15 @@ export default {
             const data = await axios.post('/api/authoized-person',{...audata});
             return data.data.data;
 
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    async getAssignedHoodUser(id) {
+        try {
+            const data =  await axios.get('/api/applications/' + id +'/get-assigned-hood-user');
+            return data.data.data;
         } catch (error) {
             return error.data;
         }

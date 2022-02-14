@@ -3,14 +3,12 @@
 namespace FastConnect\Services;
 
 use App\Models\APILog;
+use App\Models\ConnectionApplication;
+use App\Models\Identification;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Identification;
-use App\Models\ConnectionApplication;
-use Exception;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use FastConnect\Services\FastConnectProductService;
 
 class SubmitWaterLeadToFastConnect
 {
@@ -45,7 +43,7 @@ class SubmitWaterLeadToFastConnect
         "South Australia" => 5,
         "Northern Territory" => 3,
         "Tasmania" => 6,
-        "Australian Capital Territory" => 1, 
+        "Australian Capital Territory" => 1,
         "Western Australia" => 8,
     ];
 
@@ -95,7 +93,7 @@ class SubmitWaterLeadToFastConnect
             return [];
             //throw $th;
         }
-        
+
     }
 
     public function authenticate(): static

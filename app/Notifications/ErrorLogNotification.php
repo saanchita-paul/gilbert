@@ -2,12 +2,10 @@
 
 namespace App\Notifications;
 
-use DateTime;
 use Illuminate\Bus\Queueable;
-use App\Models\ConnectionApplication;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class ErrorLogNotification extends Notification implements ShouldQueue
 {

@@ -4,11 +4,11 @@ import NewDashboardLayout from "@scripts/layouts/DashboardLayout";
 import AgentDashboardLayout from "@scripts/layouts/AgentDashboardLayout";
 
 
-import  LoginPage from "@scripts/pages/auth/LoginPage";
+import LoginPage from "@scripts/pages/auth/LoginPage";
 
-import  ForgotPasswordPage from "@scripts/pages/auth/ForgotPasswordPage";
+import ForgotPasswordPage from "@scripts/pages/auth/ForgotPasswordPage";
 
-import  ResetPasswordPage from "@scripts/pages/auth/ResetPasswordPage";
+import ResetPasswordPage from "@scripts/pages/auth/ResetPasswordPage";
 
 import {checkRouteAuthentication} from "@scripts/services/AuthService";
 
@@ -25,7 +25,6 @@ import CrmOfficeDataTable from "@scripts/components/crm/office/CrmOfficeDataTabl
 import CrmUserDatatable from "@scripts/components/crm/user/CrmUserDatatable";
 import LeadApplications from "@scripts/components/crm/leadmanagement/LeadApplications";
 import ApplicationPage from "@scripts/pages/ApplicationPage";
-import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
 import ApplicationDetailsPage from "@scripts/pages/ApplicationDetailsPage";
 import OfficeProfile from "@scripts/components/crm/office/OfficeProfile";
 import InviteUser from "@scripts/components/crm/user/InviteUser";

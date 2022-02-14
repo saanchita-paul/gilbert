@@ -1,7 +1,7 @@
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
-import COMMISSION from "@scripts/data/constants/COMMISSION";
 import AgentListMapper from "@scripts/api/mappers/crm/AgentListMapper";
+
 const applications = [
     {
         id: 1,
