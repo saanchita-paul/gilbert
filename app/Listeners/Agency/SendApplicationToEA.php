@@ -35,9 +35,9 @@ class SendApplicationToEA implements ShouldQueue
         if ($saleApiOn === "1" && $submitType === 'energy' && $this->isValidForSalesApi($application) ) {
             $postEaService = new PostSalesService($event->applicationId);
             $postEaService->postToEa();
+            ConnectionApplication::where('id' , $event->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
             $hubspotService = new HubspotContactService($event->applicationId);
             $hubspotService->update();
-            ConnectionApplication::where('id' , $event->applicationId)->update('status' , ConnectionApplication::STATUS_SUBMITTED);
         } else {
             info("Skipping EA Submit", [
                 'EA_SALES_API_ON' => $saleApiOn,

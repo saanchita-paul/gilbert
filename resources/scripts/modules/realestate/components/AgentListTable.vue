@@ -338,7 +338,7 @@ export default {
             const meta = {
                 search: this.search,
                 page: this.options.page,
-                per_page: this.options.itemsPerPage,
+                per_page: this.options.itemsPerPage === -1 ? this.totalItem : this.options.itemsPerPage,
                 is_descending:
                     this.options.sortDesc.length != 0
                         ? this.options.sortDesc[0]

@@ -1,27 +1,27 @@
-#Application card Filters:
+# Application card Filters
 
-##My applications
+## My applications
 - Assigned to the user .
 - Not submitted or failed
 - If submitted , it will not show.
-####Negative scenario:
+#### Negative scenario:
 - If failed during submit, it still should show in My Applications
 
-##Pending Consent:
+## Pending Consent:
 - Waiting for consent approval
 
-##Unassigned:
+## Unassigned:
 - If any application is unassigned then it has shown here
 - No need to show closed application with Unassigned status.
 
-##Assigned:
+## Assigned:
 - All application that are assigned should show here. No matter what is in My applications.
 - It will be same number of all user.
 - It will not include Submitted items.
 - Only before Submission
 - Submission Failed items no need to show here
 
-##Escalated:
+## Escalated:
 - When application status escalated.
 
 ## Submitted:
@@ -30,7 +30,7 @@
 - Submission Failed  need to show here
 - Number based on one application not service
 
-##Closed:
+## Closed:
 - When application is closed ,
 - All the status show that are closed.
 - No need to show in Unassigned or Assigned.
