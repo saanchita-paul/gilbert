@@ -15,6 +15,7 @@
 <script>
 import AgencyAdvanceSearchDetails from "@scripts/components/crm/AgencyAdvanceSearchDetails";
 import SetupIndeAgency from "@scripts/components/crm/SetupIndeAgency";
+
 export default {
 name: "AdvanceSearchModal",
     components: {SetupIndeAgency, AgencyAdvanceSearchDetails},

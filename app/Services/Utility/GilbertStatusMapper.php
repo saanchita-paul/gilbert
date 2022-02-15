@@ -21,10 +21,10 @@ class GilbertStatusMapper
             ConnectionService::STATUS_CLOSED => 'CLOSED',
             ConnectionService::STATUS_ENERGY_SUBMIT,
             ConnectionService::STATUS_SUBMITTED => 'IN_PROGRESS',
-            ConnectionService::STATUS_REJECTED,
-            ConnectionService::STATUS_CANT_CONNECT => 'REJECTED',
+            ConnectionService::STATUS_REJECTED => 'REJECTED',
+            ConnectionService::STATUS_CANT_CONNECT => 'FAILED',
             ConnectionService::AC_MANUAL_PROCESSING => 'MANUAL_PROCESSING',
-            default => $status
+            default => 'NULL',
         };
     }
 }

@@ -247,6 +247,7 @@ import dayJs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import IdCopyToClipboard from '@scripts/components/common/IdCopyToClipboard.vue';
+
 export default {
     name: "AgentApplicationSummary",
     components:{IdCopyToClipboard},

@@ -4,25 +4,24 @@
 namespace OurProperty\Services;
 
 
-use App\Models\AgentProfile;
-use App\Models\Office;
-use Exception;
-use App\Models\Agency;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
-use App\Models\Identification;
-use App\Mail\AgentNotFoundMail;
-use App\Models\ConnectionService;
 use App\Jobs\CreateHubspotProperty;
-use Illuminate\Support\Facades\Log;
-use JetBrains\PhpStorm\ArrayShape;
-use OurProperty\Models\OurProperty;
-use Illuminate\Support\Facades\Mail;
+use App\Mail\AgentNotFoundMail;
+use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionApplicationSecondaryACC as AuthorisedPerson;
+use App\Models\ConnectionService;
+use App\Models\Identification;
+use App\Models\Office;
+use App\Modules\OurProperty\Services\OurPropertyMapper;
 use App\Services\AddressMapperService;
 use App\Services\AuthService\JwtAuthService;
-use App\Modules\OurProperty\Services\OurPropertyMapper;
-use App\Models\ConnectionApplicationSecondaryACC as AuthorisedPerson;
+use Exception;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use JetBrains\PhpStorm\ArrayShape;
+use OurProperty\Models\OurProperty;
 
 class CreateOurPropertyService
 {
