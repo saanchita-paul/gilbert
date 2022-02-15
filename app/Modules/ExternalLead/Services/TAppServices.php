@@ -28,13 +28,13 @@ class TAppServices
      *
      * @var string
      */
-    private string $email = "email@tapp.com.au";
+    private string $email = "support@tradingreference.com";
     /**
      * credetial password
      *
      * @var string
      */
-    private string $password = "";
+    private string $password = "h00dtapp_tsh";
 
 
     private $connectionApplicaton;
