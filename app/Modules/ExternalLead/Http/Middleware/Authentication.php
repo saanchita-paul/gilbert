@@ -31,7 +31,7 @@ class Authentication
                 throw new Exception("API key is not matched", 1);
             }
         } catch (\Throwable $th) {
-            return response(["status" => "failed", "message" =>  "Your api-key is not matched"], 401);
+            return response([ "message" =>  "unauthenticated"], 401);
         }
     }
 }
