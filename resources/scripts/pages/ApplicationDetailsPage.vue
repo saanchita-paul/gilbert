@@ -64,8 +64,7 @@ export default {
         LeadUserDetails,
         LeadSubmitConfirmationModal,
         CloseApplicationReasonModal,
-        CloseConfirmModal
-
+        CloseConfirmModal,
         PreventSubmissionModal
     },
 
