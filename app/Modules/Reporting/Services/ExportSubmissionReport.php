@@ -104,6 +104,7 @@ class ExportSubmissionReport
         $energyType = $this->energyType;
         $builder = DB::table('connection_services as cs')
             ->selectRaw("
+                ca.id as `App_id`,
                 ag.name as `Agency_Name`,
                 cs.id as `Service_ID`,
                 concat(ap.first_name, ap.last_name) as `Agent_Name`,
