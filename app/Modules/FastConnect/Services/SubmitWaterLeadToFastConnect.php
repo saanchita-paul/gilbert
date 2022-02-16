@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use FastConnect\Services\FastConnectProductService;
 
+use function PHPUnit\Framework\isNull;
+
 class SubmitWaterLeadToFastConnect
 {
     private string $accessToken;
@@ -170,6 +172,10 @@ class SubmitWaterLeadToFastConnect
         return json_decode($response->body());
     }
 
+    public function getPhoneNumber(){
+        return $this->application->phone_type == ConnectionApplication::PHONE_TYPE_MOBILE && !is_null($this->application->phone) ? $this->application->phone : $this->application->homephone;
+    }
+
     public function getData($lead)
     {
         return [
@@ -208,7 +214,7 @@ class SubmitWaterLeadToFastConnect
                     "last_name" => $lead->last_name,
                     "date_of_birth" => $lead->dob,
                     "email" => $lead->email,
-                    "phone_preference" => $lead->phone,
+                    "phone_preference" => $this->getPhoneNumber(),
                     // "phone_alternate" => "0491570006",
                     "identification" => [
                         [
