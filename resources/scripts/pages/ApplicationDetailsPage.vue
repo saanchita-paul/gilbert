@@ -32,6 +32,7 @@
                                :readmore="additionalInstruction"
                                @close="closeReadMore"> </LeadReadMoreModal>
             <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" v-if="showSubmitModal" @saveData="saveData" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
+            <PreventSubmissionModal v-if="preventSubmissionFlag" :message="preventSubmissionMessage" :dialog="preventSubmissionFlag" @closeMessage="closePreventSubmissionModal"></PreventSubmissionModal>
     </v-container>
 </template>
 
@@ -50,6 +51,7 @@ import LeadApplicationAPI from "@scripts/api/crm/LeadApplicationAPI";
 import * as dayjs from "dayjs";
 import {isNull} from "lodash-es";
 import axios from 'axios'
+import PreventSubmissionModal from "@scripts/components/crm/modals/PreventSubmissionModal";
 export default {
     name: "ApplicationDetailsPage",
 
@@ -64,6 +66,7 @@ export default {
         CloseApplicationReasonModal,
         CloseConfirmModal
 
+        PreventSubmissionModal
     },
 
     data() {
@@ -89,6 +92,9 @@ export default {
             submittedLoader: false,
             isManualChangeFlag: false,
             submitType: null,
+            assignedToDialog: false,
+            preventSubmissionFlag: false,
+            preventSubmissionMessage: '',
 
             //$attrs
             infoToPass:{
@@ -210,6 +216,13 @@ export default {
         async submitConnection(submitType) {
             let v = await this.validateLead();
             if(!v) return;
+            if(this.isWaterOutsideVic(submitType, this.lead?.property_details?.state))
+            {
+                this.preventSubmissionFlag = true;
+                this.preventSubmissionMessage = 'Water is not available outside Victoria';
+                return;
+            }
+
             this.submitType = submitType;
             this.payload = { ...this.lead.property_details,
                 ...this.lead.person_details,
@@ -222,6 +235,16 @@ export default {
 
             this.showSubmitModal = true;
         },
+
+        isWaterOutsideVic($submitType, $state) {
+            return $submitType === 'water' && $state !== 'Victoria';
+        },
+
+        closePreventSubmissionModal() {
+          this.preventSubmissionFlag = false;
+        },
+
+
 
         backToEdit() {
             this.showSubmitModal = false;
@@ -346,8 +369,11 @@ export default {
                 this.leadSummary.nmi = nmiMern.nmi;
                 this.leadSummary.mirn = nmiMern.mirn;
             }
+        },
 
 
+        closeAssignedToEmptyModal(){
+            this.assignedToDialog = false;
         }
 
     },
