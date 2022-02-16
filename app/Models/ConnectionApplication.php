@@ -180,6 +180,7 @@ class ConnectionApplication extends Model
         'source',
         'connection_end_date',
         'is_temporary_connection',
+        'water_next_available_date'
     ];
 
 

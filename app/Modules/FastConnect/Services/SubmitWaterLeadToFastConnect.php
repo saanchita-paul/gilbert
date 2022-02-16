@@ -2,14 +2,15 @@
 
 namespace FastConnect\Services;
 
-use App\Models\APILog;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
-use App\Models\Identification;
-use App\Models\ConnectionApplication;
 use Exception;
-use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
+use App\Models\APILog;
+use App\Models\Identification;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use App\Models\ConnectionApplication;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
 use FastConnect\Services\FastConnectProductService;
 
 class SubmitWaterLeadToFastConnect
@@ -111,6 +112,23 @@ class SubmitWaterLeadToFastConnect
         return $this;
     }
 
+    private function getCompparedDate($requestedDate, $availableDate)
+    {
+        $format = 'Y/m/d H:i:s';
+        $availableDateCarbon = Carbon::createFromFormat($format, Carbon::parse($availableDate)->format($format));
+        $requestedDateCarbon = Carbon::createFromFormat($format, Carbon::parse($requestedDate)->format($format));
+
+        return $requestedDateCarbon->gte($availableDateCarbon) ? $requestedDateCarbon->format('Y-m-d') : $availableDateCarbon->format('Y-m-d') ;
+    }
+
+    private function getNextAvailableDate(){
+        return $this->productServiceData->productDetails[0]['sub_groups'][0]['products'][0]['next_available_date'];
+    }
+
+    private function getMovingDate(){
+        return $this->getCompparedDate($this->application->moving_date, $this->getNextAvailableDate());
+    }
+
     public function submitWaterLead()
     {
         $productService = new FastConnectProductService($this->applicationId);
@@ -142,7 +160,12 @@ class SubmitWaterLeadToFastConnect
         info($response->body());
         info("Water submit response body");
 
-        $this->application->update(['water_submit_response' => empty($response->body()) ? null : $response->body()]);
+
+        info("nextAvailableDatebody ");
+        info($this->getNextAvailableDate());
+        info("nextAvailableDatebody");
+
+        $this->application->update(['water_submit_response' => empty($response->body()) ? null : $response->body(), 'water_next_available_date' => $this->getNextAvailableDate() ]);
 
         return json_decode($response->body());
     }
@@ -173,7 +196,7 @@ class SubmitWaterLeadToFastConnect
                     "id" => $this->productServiceData->productDetails[0]['sub_groups'][0]['products'][0]['id'],
                     "product_group_id" => $this->productServiceData->waterConnection->id,
                     "contract_id" => $this->productServiceData->productDetails[0]['sub_groups'][0]['products'][0]['contracts'][0]['id'],
-                    "requested_date" => $this->getMappedDate($lead->moving_date),
+                    "requested_date" => $this->getMovingDate(),
                     "marketing" => false
                 ]
             ],
