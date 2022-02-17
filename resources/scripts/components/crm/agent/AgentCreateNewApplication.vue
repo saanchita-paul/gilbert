@@ -370,6 +370,260 @@
                             </v-col>
                         </v-row>
 
+                        <v-row  v-if="has_authorized">
+                            <v-col cols="12">
+                                <p class="sub-title mb-0">Authorised Person’s Identification <small class="font-weight-thin">Personal details</small></p>
+                            </v-col>
+                        </v-row>
+                        <v-row  v-if="has_authorized">
+                            <v-col cols="12">
+                                <v-row>
+                                    <v-col cols="6" class="py-0">
+                                        <ValidationProvider name="Title" rules="required" v-slot="{ errors }">
+                                            <v-select outlined dense
+                                                      v-model="authorized_person.identification_type"
+                                                      :items="idenficationTypeDD"
+                                                      item-text="text"
+                                                      item-value="value"
+                                                      :label="`Id Type${isTenancyHomeOwner?'':'*'}`"
+                                                      :error-messages=" errors[0]"
+                                                      placeholder="Please select one">
+                                            </v-select>
+                                        </ValidationProvider>
+                                    </v-col>
+                                </v-row>
+                            </v-col>
+                            <v-col v-if="authorized_person.identification_type === 3" cols="12">
+                                <v-row>
+                                    <v-col cols="6" class="pb-0">
+                                        <ValidationProvider :rules="'required'" name="Medicare Card Number" v-slot="{ errors }">
+                                            <v-text-field
+                                                :error-messages="errors[0]"
+                                                v-model="authorized_person.card_number"
+                                                outlined
+                                                dense
+                                                placeholder="Medicare Card Number"
+                                                :label="`Medicare Card Number *`"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="6" class="pb-0">
+                                        <ValidationProvider
+                                            name="Special Number"
+                                            :rules="'required'"
+                                            v-slot="{ errors }"
+                                        >
+                                            <v-select
+                                                v-model="authorized_person.special_number"
+                                                :error-messages="errors[0]"
+                                                :label="'Special Number *'"
+                                                placeholder="1/2"
+                                                :items="specialNumberDD"
+                                                outlined
+                                                dense
+                                            >
+                                            </v-select>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="6" class="pb-0">
+                                        <v-menu
+                                            v-model="showMovingDate"
+                                            :close-on-content-click="false"
+                                            :nudge-right="40"
+                                            transition="scale-transition"
+                                            offset-y
+                                            min-width="290px"
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <ValidationProvider
+                                                    name="Expiry Date"
+                                                    :rules="'required|medicare-date|medi-expire'"
+                                                    v-slot="{ errors }"
+                                                >
+                                                    <v-text-field
+                                                        placeholder="MM/YY"
+                                                        :label="'Expiry Date *'"
+                                                        outlined
+                                                        dense
+                                                        v-model="authorized_person.expire_date"
+                                                        v-bind="attrs"
+                                                        :error-messages="errors[0]"
+                                                    >
+                                                        <template slot="append">
+                                                            <v-icon v-on="on">mdi-calendar</v-icon>
+                                                        </template>
+                                                    </v-text-field>
+                                                </ValidationProvider>
+                                            </template>
+                                            <v-date-picker
+                                                v-model="expire_date"
+                                                @input="showMovingDate = false"
+                                                type="month"
+                                                :min="minExpiredate"
+                                            ></v-date-picker>
+                                        </v-menu>
+                                    </v-col>
+                                    <v-col cols="6" class="pb-0">
+                                        <ValidationProvider
+                                            name="Card Colour"
+                                            :rules="'required'"
+                                            v-slot="{ errors }"
+                                        >
+                                            <v-select
+                                                v-model="authorized_person.card_color"
+                                                placeholder="Yellow"
+                                                :label="'Card Colour *'"
+                                                item-text="text"
+                                                item-value="value"
+                                                :items="colorDD"
+                                                outlined
+                                                dense
+                                            >
+                                            </v-select>
+                                        </ValidationProvider>
+                                    </v-col>
+                                </v-row>
+                            </v-col>
+                            <v-col v-if="authorized_person.identification_type === 1" cols="12">
+                                <v-row>
+                                    <v-col cols="6" class="pb-0">
+                                        <ValidationProvider :rules="`${isTenancyHomeOwner?'':'required'}`" name="Passport Number" v-slot="{ errors }">
+                                            <v-text-field
+                                                :error-messages="errors[0]"
+                                                v-model="authorized_person.card_number"
+                                                outlined
+                                                dense
+                                                placeholder="Passport Number"
+                                                :label="`Passport Number${isTenancyHomeOwner?'':'*'}`"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="6" class="pb-0">
+                                        <ValidationProvider :rules="`${isTenancyHomeOwner?'':'required'}`" name="Issuing Country" v-slot="{ errors }">
+                                            <v-text-field
+                                                :error-messages="errors[0]"
+                                                v-model="authorized_person.country"
+                                                outlined
+                                                dense
+                                                placeholder="AUS"
+                                                :label="`Issuing Country${isTenancyHomeOwner?'':'*'}`"
+                                                @change="updateIdentification"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="6" class="pb-0">
+                                        <v-menu
+                                            v-model="showMovingDate"
+                                            :close-on-content-click="false"
+                                            :nudge-right="40"
+                                            transition="scale-transition"
+                                            offset-y
+                                            min-width="290px"
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <ValidationProvider
+                                                    name="Expiry Date"
+                                                    :rules="`${isTenancyHomeOwner?'':'required|'}valid-date`"
+                                                    v-slot="{ errors }"
+                                                >
+                                                    <v-text-field
+                                                        placeholder="DD/MM/YYYY"
+                                                        :label="`Expiry Date${isTenancyHomeOwner?'':'*'}`"
+                                                        outlined
+                                                        dense
+                                                        v-model="authorized_person.expire_date"
+                                                        v-bind="attrs"
+                                                        :error-messages="errors[0]"
+                                                    >
+                                                        <template slot="append">
+                                                            <v-icon v-on="on">mdi-calendar</v-icon>
+                                                        </template>
+                                                    </v-text-field>
+                                                </ValidationProvider>
+                                            </template>
+                                            <v-date-picker
+                                                v-model="expire_date"
+                                                @input="showMovingDate = false"
+                                            ></v-date-picker>
+                                        </v-menu>
+                                    </v-col>
+                                </v-row>
+                            </v-col>
+                            <v-col v-if="authorized_person.identification_type === 2" cols="12">
+                                <v-row>
+                                    <v-col cols="6" class="pb-0">
+                                        <ValidationProvider :rules="`${isTenancyHomeOwner?'':'required'}`" name="Driver’s License*" v-slot="{ errors }">
+                                            <v-text-field
+                                                :error-messages="errors[0]"
+                                                v-model="authorized_person.card_number"
+                                                outlined
+                                                dense
+                                                placeholder="License Number"
+                                                :label="`Driver’s License${isTenancyHomeOwner?'':'*'}`"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="6" class="pb-0">
+                                        <ValidationProvider
+                                            name="State"
+                                            :rules="`${isTenancyHomeOwner?'':'required'}`"
+                                            v-slot="{ errors }"
+                                        >
+                                            <v-select
+                                                v-model="authorized_person.state"
+                                                placeholder="Victoria"
+                                                :label="`State${isTenancyHomeOwner?'':'*'}`"
+                                                item-text="text"
+                                                item-value="value"
+                                                :items="states"
+                                                outlined
+                                                dense
+                                            >
+                                            </v-select>
+                                        </ValidationProvider>
+                                    </v-col>
+                                    <v-col cols="6" class="pb-0">
+                                        <v-menu
+                                            v-model="showMovingDate"
+                                            :close-on-content-click="false"
+                                            :nudge-right="40"
+                                            transition="scale-transition"
+                                            offset-y
+                                            min-width="290px"
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <ValidationProvider
+                                                    name="Expiry Date"
+                                                    :rules="`${isTenancyHomeOwner?'':'required|'}valid-date`"
+                                                    v-slot="{ errors }"
+                                                >
+                                                    <v-text-field
+                                                        placeholder="DD/MM/YYYY"
+                                                        :label="`Expiry Date${isTenancyHomeOwner?'':'*'}`"
+                                                        outlined
+                                                        dense
+                                                        v-model="authorized_person.expire_date"
+                                                        v-bind="attrs"
+                                                        :error-messages="errors[0]"
+                                                    >
+                                                        <template slot="append">
+                                                            <v-icon v-on="on">mdi-calendar</v-icon>
+                                                        </template>
+                                                    </v-text-field>
+                                                </ValidationProvider>
+                                            </template>
+                                            <v-date-picker
+                                                v-model="expire_date"
+                                                @input="showMovingDate = false"
+                                            ></v-date-picker>
+                                        </v-menu>
+                                    </v-col>
+                                </v-row>
+                            </v-col>
+
+                        </v-row>
+
+
                     </v-col>
 
 
@@ -668,6 +922,8 @@ import { formatDate } from "@scripts/services/others/DateService"
 
 import AuthService from '@scripts/services/AuthService';
 import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
+import SPECIAL_NUMBER from "@scripts/data/constants/SPECIAL_NUMBER";
+import dayJs from "dayjs";
 export default {
     name: "AgentCreateNewApplication",
     components: {
@@ -720,6 +976,23 @@ export default {
             authorized_person_dob:  (new DayJs((new Date()).setFullYear(2000))).format('YYYY-MM-DD'),
             showConnectionEndDate: null,
             connection_end_date: null,
+            expire_date: null,
+            minExpiredate: new Date().toISOString(),
+            colorDD: [
+                {
+                    text: "Green",
+                    value: "GREEN",
+                },
+                {
+                    text: "Blue",
+                    value: "BLUE",
+                },
+                {
+                    text: "Yellow",
+                    value: "YELLOW",
+                },
+            ],
+            specialNumberDD: SPECIAL_NUMBER,
             authorized_person:{
                 title :'',
                 first_name :'',
@@ -729,8 +1002,15 @@ export default {
                 role: '',
                 phone: '',
                 dob: null,
-
+                identification_type: '',
+                card_number: '',
+                state: '',
+                country: '',
+                card_color: '',
+                special_number: '',
+                expire_date: null,
             },
+            showAuthIdExpireDate: false,
             roles:[
                 {
                     value: 1,
@@ -885,6 +1165,10 @@ export default {
         },
         updateIdentification(identification) {
             this.indentification = identification;
+        },
+        isSecondaryIdMedicare() {
+            console.log('identification type', this.authorized_person.identification_type);
+            return this.authorized_person.identification_type === IDENTIFICATION.MEDICARE;
         }
     },
     watch: {
@@ -902,6 +1186,17 @@ export default {
         },
         authorized_person_dob() {
             this.authorized_person.dob = (new DayJs(this.authorized_person_dob).format('DD/MM/YYYY'));
+        },
+
+        expire_date() {
+            if (isNull(this.expire_date)) return;
+            if(this.isSecondaryIdMedicare()) {
+                this.authorized_person.expire_date = dayJs(this.expire_date).format("MM/YY");
+            } else {
+                this.authorized_person.expire_date = dayJs(this.expire_date).format(
+                    "DD/MM/YYYY"
+                );
+            }
         },
 
     },
