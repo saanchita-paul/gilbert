@@ -215,10 +215,10 @@ export default {
         async submitConnection(submitType) {
             let v = await this.validateLead();
             if(!v) return;
-            if(this.isWaterOutsideVic(submitType, this.lead?.property_details?.state))
+
+            if(this.isWaterUnavailable(submitType, this.lead?.property_details?.state, this.lead?.person_details?.tenancy_type))
             {
                 this.preventSubmissionFlag = true;
-                this.preventSubmissionMessage = 'Water is not available outside Victoria';
                 return;
             }
 
@@ -235,8 +235,17 @@ export default {
             this.showSubmitModal = true;
         },
 
-        isWaterOutsideVic($submitType, $state) {
-            return $submitType === 'water' && $state !== 'Victoria';
+        isWaterUnavailable($submitType, $state, $tenantType) {
+
+            if($submitType === 'water' && $state !== 'Victoria') {
+                this.preventSubmissionMessage = 'Water is not available outside Victoria';
+                return true;
+            }
+            if($submitType === 'water' && $tenantType === 2) {
+                this.preventSubmissionMessage = 'Water is not available for Tenancy Home Owner ';
+                return true;
+            }
+             return false;
         },
 
         closePreventSubmissionModal() {
