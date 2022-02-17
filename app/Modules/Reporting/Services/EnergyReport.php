@@ -6,7 +6,6 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Modules\Reporting\Services\CalculateEnergyApplicationSummary;
 use App\Modules\Reporting\Services\SetDateRage;
-use Illuminate\Support\Facades\Log;
 
 class EnergyReport
 {
