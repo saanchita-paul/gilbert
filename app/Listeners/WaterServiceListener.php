@@ -33,6 +33,14 @@ class WaterServiceListener implements ShouldQueue
     {
         try {
         if (isset($event->submitType) && $event->submitType == 'water') {
+
+            $ca = ConnectionApplication::query()->where('id', $event->applicationId)->firstOrFail();
+            if($ca->state !== 'Victoria') {
+                throw new \Exception('Water Service is not available outside Victoria');
+            }
+            if($ca->state === ConnectionApplication::TENANCY_TYPE_HOME_OWNER) {
+                throw new \Exception('Water Service is not available for Tenancy Type HomeOwner');
+            }
             $service = new SubmitWaterLeadToFastConnect($event->applicationId);
             $result = $service->submitWaterLead();
 

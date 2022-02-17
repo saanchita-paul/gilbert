@@ -32,6 +32,7 @@
                                :readmore="additionalInstruction"
                                @close="closeReadMore"> </LeadReadMoreModal>
             <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" v-if="showSubmitModal" @saveData="saveData" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
+            <PreventSubmissionModal v-if="preventSubmissionFlag" :message="preventSubmissionMessage" :dialog="preventSubmissionFlag" @closeMessage="closePreventSubmissionModal"></PreventSubmissionModal>
     </v-container>
 </template>
 
@@ -50,6 +51,7 @@ import LeadApplicationAPI from "@scripts/api/crm/LeadApplicationAPI";
 import * as dayjs from "dayjs";
 import {isNull} from "lodash-es";
 import axios from 'axios'
+import PreventSubmissionModal from "@scripts/components/crm/modals/PreventSubmissionModal";
 export default {
     name: "ApplicationDetailsPage",
 
@@ -62,8 +64,8 @@ export default {
         LeadUserDetails,
         LeadSubmitConfirmationModal,
         CloseApplicationReasonModal,
-        CloseConfirmModal
-
+        CloseConfirmModal,
+        PreventSubmissionModal
     },
 
     data() {
@@ -89,6 +91,9 @@ export default {
             submittedLoader: false,
             isManualChangeFlag: false,
             submitType: null,
+            assignedToDialog: false,
+            preventSubmissionFlag: false,
+            preventSubmissionMessage: '',
 
             //$attrs
             infoToPass:{
@@ -210,6 +215,13 @@ export default {
         async submitConnection(submitType) {
             let v = await this.validateLead();
             if(!v) return;
+
+            if(this.isWaterUnavailable(submitType, this.lead?.property_details?.state, this.lead?.person_details?.tenancy_type))
+            {
+                this.preventSubmissionFlag = true;
+                return;
+            }
+
             this.submitType = submitType;
             this.payload = { ...this.lead.property_details,
                 ...this.lead.person_details,
@@ -222,6 +234,25 @@ export default {
 
             this.showSubmitModal = true;
         },
+
+        isWaterUnavailable($submitType, $state, $tenantType) {
+
+            if($submitType === 'water' && $state !== 'Victoria') {
+                this.preventSubmissionMessage = 'Water is not available outside Victoria';
+                return true;
+            }
+            if($submitType === 'water' && $tenantType === 2) {
+                this.preventSubmissionMessage = 'Water is not available for Tenancy Home Owner ';
+                return true;
+            }
+             return false;
+        },
+
+        closePreventSubmissionModal() {
+          this.preventSubmissionFlag = false;
+        },
+
+
 
         backToEdit() {
             this.showSubmitModal = false;
@@ -346,8 +377,11 @@ export default {
                 this.leadSummary.nmi = nmiMern.nmi;
                 this.leadSummary.mirn = nmiMern.mirn;
             }
+        },
 
 
+        closeAssignedToEmptyModal(){
+            this.assignedToDialog = false;
         }
 
     },
