@@ -6,6 +6,7 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Modules\Reporting\Services\CalculateEnergyApplicationSummary;
 use App\Modules\Reporting\Services\SetDateRage;
+use Illuminate\Support\Facades\Log;
 
 class EnergyReport
 {
@@ -264,6 +265,12 @@ class EnergyReport
         $data = ConnectionApplication::selectRaw("count(*) as total, status, source")
             ->where('created_at', '>=', $this->startDate)
             ->where('created_at', '<=', $this->endDate)
+            ->where(function ($query) {
+                $query->whereHas('connectionServices', function ($q) {
+                    $q->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS]);
+                });
+                $query->orWhereDoesntHave('connectionServices');
+            })
             ->groupBy('status', 'source')
             ->get();
 
