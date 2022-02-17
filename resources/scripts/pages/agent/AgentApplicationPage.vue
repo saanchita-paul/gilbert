@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-row class="mt-0">
-            <v-col cols="8">
+            <v-col cols="12">
                 <v-card  class="hood-card">
                     <h3 v-if="user" class="page-title">Hi {{ user.profile.first_name }}, <small class="font-weight">here is a
                         summary of your applications.</small>
@@ -14,16 +14,18 @@
                     </span>
                     <AgentLeadMetrics></AgentLeadMetrics>
                 </v-card>
-                <AgentApplicationTable v-if="isLoaded"
-                                       :applications="applicationList"
-                                       :totalItem="totalItem"
-                                       :selectedAppId="selected_application_id"
-                                       @refreshDataTable="refreshDataTable"
-                                       @openApplicationSummary="openApplicationSummary"></AgentApplicationTable>
+                <AgentApplicationTable
+                    v-if="isLoaded"
+                    :applications="applicationList"
+                    :totalItem="totalItem"
+                    :selectedAppId="selected_application_id"
+                    @refreshDataTable="refreshDataTable"
+                    @openApplicationSummary="openApplicationSummary">
+                </AgentApplicationTable>
             </v-col>
-            <v-col cols="4">
+            <!-- <v-col cols="4">
                 <AgentApplicationSummary :application="applicationSummary"></AgentApplicationSummary>
-            </v-col>
+            </v-col> -->
         </v-row>
         <v-dialog
             v-model="dialog"
@@ -158,5 +160,15 @@ export default {
 
 .intro-message {
     font-weight: 400 !important;
+}
+
+.light-font {
+    font-weight: 500 !important;
+}
+
+.mainContainer{
+    padding: 24px;
+    max-width: 1920px;
+    margin: auto;
 }
 </style>
