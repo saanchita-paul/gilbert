@@ -1,13 +1,8 @@
+import {getAllAgentRoles} from "@scripts/data/UserRoles";
+
 export default [
     {
-        roles: [
-            'agency_office_admin',
-            'agency_office_director',
-            'agency_office_property_manager',
-            'agency_office_senior_property_manager',
-            'agency_office_real_estate_agent',
-            'agency_office_allocator'
-        ],
+        roles: getAllAgentRoles(),
         route_name: 'agent.application.dashboard'
     },
     {

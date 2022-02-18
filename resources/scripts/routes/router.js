@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router'
 import NewDashboardLayout from "@scripts/layouts/DashboardLayout";
-import AgentDashboardLayout from "@scripts/layouts/AgentDashboardLayout";
 
 
 import LoginPage from "@scripts/pages/auth/LoginPage";
@@ -18,8 +17,6 @@ import UtilityAnalyticPage from "@scripts/pages/dashboard/UtilityAnalyticPage";
 import CustomerList from "@scripts/pages/HelpdeskPage";
 import Test from "@scripts/pages/Test";
 import RealStateAgencyPage from "@scripts/pages/RealStateAgencyPage";
-import AgentApplicationPage from "@scripts/pages/agent/AgentApplicationPage";
-import AgentCreateNewApplication from "@scripts/components/crm/agent/AgentCreateNewApplication";
 import CrmAgencyDataTable from "@scripts/components/crm/agency/CrmAgencyDataTable";
 import CrmOfficeDataTable from "@scripts/components/crm/office/CrmOfficeDataTable";
 import CrmUserDatatable from "@scripts/components/crm/user/CrmUserDatatable";
@@ -32,6 +29,7 @@ import ApplicationsDashboardPage from "@scripts/modules/sales/pages/Applications
 import SalesEnergyPage from "@scripts/modules/sales/pages/SalesEnergyPage";
 import SalesWaterPage from "@scripts/modules/sales/pages/SalesWaterPage";
 import ApplicationSearchList from '@scripts/pages/ApplicationSearchList'
+import agent_routes from "@scripts/routes/agent_routes";
 
 
 Vue.use(VueRouter);
@@ -263,31 +261,7 @@ const router = new VueRouter({
                 },
             ]
         },
-        {
-            path: '/agent',
-            component: AgentDashboardLayout,
-            name: 'agent',
-            children: [
-                {
-                    path: '',
-                    component: AgentApplicationPage,
-                    name: 'agent.application.dashboard',
-                    meta: {
-                        isProtected: true,
-                        roles: ['agency_office_admin', 'agency_office_director', 'agency_office_property_manager', 'agency_office_senior_property_manager', 'agency_office_real_estate_agent', 'agency_office_allocator'],
-                    }
-                },
-                {
-                    path: '/create-application',
-                    component: AgentCreateNewApplication,
-                    name: 'agent.create.application',
-                    meta: {
-                        isProtected: true,
-                        roles: ['agency_office_admin', 'agency_office_director', 'agency_office_property_manager', 'agency_office_senior_property_manager', 'agency_office_real_estate_agent', 'agency_office_allocator'],
-                    }
-                },
-            ]
-        },
+        {...agent_routes},
         {
             path: '/auth/login',
             component: LoginPage,
