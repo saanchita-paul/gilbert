@@ -20,21 +20,6 @@
                             </v-col>
                             <v-col cols="12">
                                 <v-row >
-
-<!--                                    <v-col cols="12">-->
-<!--                                    <ValidationProvider name="Title" rules="required"  v-slot="{ errors }">-->
-<!--                                        <v-select-->
-<!--                                            outlined dense hide-details="auto"-->
-<!--                                            :items="titlesDD"-->
-<!--                                            v-model="authorized_person.title"-->
-<!--                                            :error-messages=" errors[0]"-->
-<!--                                            label="Title"-->
-<!--                                            placeholder="Mr">-->
-<!--                                        </v-select>-->
-<!--                                    </ValidationProvider>-->
-<!--                                    </v-col>-->
-
-
                                     <v-col cols="12">
                                         <ValidationProvider name="Title" rules="required" v-slot="{ errors }">
                                             <v-select
@@ -264,7 +249,7 @@
                                                 <v-select
                                                     v-model="authorized_person.card_color"
                                                     placeholder="Yellow"
-                                                    :label="`Card Colour${isTenancyHomeOwner?'':'*'}`"
+                                                    :label="`Card Colour *`"
                                                     item-text="text"
                                                     item-value="value"
                                                     :items="colorDD"
@@ -445,6 +430,8 @@ import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
 import SPECIAL_NUMBER from "@scripts/data/constants/SPECIAL_NUMBER";
 import dayJs from "dayjs";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
+import MEDICARE_COLOR_DD from "@scripts/data/constants/MEDICARE_COLOR_DD";
+import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 export default {
 name: "AuthorizedPersonProfileForm",
     props:['dialog','authorized_person_data','leadId'],
@@ -452,6 +439,7 @@ name: "AuthorizedPersonProfileForm",
     {
       return {
           specialNumberDD: SPECIAL_NUMBER,
+          colorDD: MEDICARE_COLOR_DD,
           idenficationTypeDD: [
               {
                   text: "Passport",
@@ -490,8 +478,6 @@ name: "AuthorizedPersonProfileForm",
               {
                   value: 1,
                   text:'Enquiry Only',
-
-
               },
               {
                   value: 2,
@@ -522,7 +508,7 @@ name: "AuthorizedPersonProfileForm",
        async submitForm() {
             let v = await this.$refs.edit_authority.validate();
             if(!v) return
-            this.$emit('saveAuthroizedPerson', this.authorized_person);
+            this.$emit('saveAuthorizedPerson', this.authorized_person);
         },
 
         closeModal() {
@@ -541,7 +527,15 @@ name: "AuthorizedPersonProfileForm",
             this.authorized_person.phone = this.authorized_person_data.phone;
             this.authorized_person.role = this.authorized_person_data.role;
             this.authorized_person.id = this.authorized_person_data.id
-            this.authorized_person.connection_application_id = this.authorized_person_data.connection_application_id
+            this.authorized_person.connection_application_id = this.authorized_person_data.connection_application_id;
+            this.authorized_person.identification_type = this.authorized_person_data.identification_type;
+            this.authorized_person.card_number = this.authorized_person_data.card_number;
+            this.authorized_person.state = this.authorized_person_data.state;
+            this.authorized_person.country = this.authorized_person_data.country;
+            this.authorized_person.card_color = this.authorized_person_data.card_color;
+            this.authorized_person.special_number = this.authorized_person_data.special_number;
+            let expireDateFormat = DATE_FORMAT.DB_DATE;
+            this.expire_date = this.authorized_person_data.expire_date;
         },
 
         isSecondaryIdMedicare() {

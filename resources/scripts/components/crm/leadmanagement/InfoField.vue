@@ -951,12 +951,6 @@
         </div>
       </div>
 
-
-
-
-
-
-
       <v-row>
         <v-col cols="8">
           <p class="sub-title mt-5">Agent’s Additional Instructions</p>

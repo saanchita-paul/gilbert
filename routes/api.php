@@ -99,8 +99,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/applications-metrics', [ApplicationController::class, 'getMetrics']);
     Route::get('/applications-metrics-count', [ApplicationController::class, 'getApplicationMetricsCount']);
     Route::get('/applications/{id}/nmi-mern', [ApplicationController::class, 'getNmiMern']);
-    Route::get('/authoized-person/{id}', [ApplicationController::class, 'getAuthorizedPerson']);
-    Route::post('/authoized-person', [ApplicationController::class, 'updateAuthorizedPerson']);
+    Route::get('/secondary-contact/{id}', [ApplicationController::class, 'getAuthorizedPerson']);
+    Route::post('/secondary-contact', [ApplicationController::class, 'updateAuthorizedPerson']);
 
     Route::post('/applications/{application_id}/service/update', [ApplicationController::class, 'updateService']);
 
@@ -180,6 +180,6 @@ Route::get('country_test', function () {
     //  return SubmitWaterLeadToFastConnect::mapLengthOfCountry[2];
     $ser =  new SubmitWaterLeadToFastConnect(1);
     // return $ser;
-    return $ser->getMappedIdentificationCountry('AX'); 
+    return $ser->getMappedIdentificationCountry('AX');
     // return 'got' ;
 });

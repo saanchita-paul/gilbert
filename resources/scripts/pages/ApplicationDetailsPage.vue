@@ -31,7 +31,7 @@
             <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag"
                                :readmore="additionalInstruction"
                                @close="closeReadMore"> </LeadReadMoreModal>
-            <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" v-if="showSubmitModal" @saveData="saveData" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
+            <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" secondaryContact="secondaryContact" v-if="showSubmitModal" @saveData="saveData" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
             <PreventSubmissionModal v-if="preventSubmissionFlag" :message="preventSubmissionMessage" :dialog="preventSubmissionFlag" @closeMessage="closePreventSubmissionModal"></PreventSubmissionModal>
     </v-container>
 </template>
