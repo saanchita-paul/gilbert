@@ -26,6 +26,7 @@ export default {
     saveAuthorizedPerson: (data) => LeadApplicationAPI.saveAuthorizedPerson(data),
     updateApplicationProviders: (payload, application_id) => LeadApplicationAPI.updateApplicationProviders(payload, application_id),
     closeApplicationWithReason: (id, closing_reason) => LeadApplicationAPI.closeApplicationWithReason(id, closing_reason),
+    getAssignedHoodUser: (id) => LeadApplicationAPI.getAssignedHoodUser(id),
     /**
      * Getting minimum valid Connection date
      *

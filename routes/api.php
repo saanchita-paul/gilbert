@@ -1,22 +1,20 @@
 <?php
 
-use App\Models\ConnectionService;
-use App\Mail\WaterSumissionFailed;
-use Illuminate\Encryption\Encrypter;
-use Illuminate\Support\Facades\Route;
-use PropertyMe\services\FetchContacts;
-use Illuminate\Support\Facades\Broadcast;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Agency\NoteController;
-use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\Agency\AgencyController;
-use App\Http\Controllers\Agency\OfficeController;
-use App\Http\Controllers\UserInvitationController;
-use App\Http\Controllers\Agency\HoodUserController;
-use App\Http\Controllers\Agency\ApplicationController;
-use FastConnect\Services\SubmitWaterLeadToFastConnect;
 use App\Http\Controllers\Agency\AgentProfileController;
+use App\Http\Controllers\Agency\ApplicationController;
+use App\Http\Controllers\Agency\HoodUserController;
+use App\Http\Controllers\Agency\NoteController;
+use App\Http\Controllers\Agency\OfficeController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\UserInvitationController;
+use FastConnect\Services\SubmitWaterLeadToFastConnect;
+use Illuminate\Encryption\Encrypter;
+use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Route;
 use OurProperty\Http\Controllers\OurPropertyController;
+use PropertyMe\services\FetchContacts;
+use Reporting\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +101,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/authoized-person', [ApplicationController::class, 'updateAuthorizedPerson']);
 
     Route::post('/applications/{application_id}/service/update', [ApplicationController::class, 'updateService']);
+    Route::get('/applications/{id}/get-assigned-hood-user', [ApplicationController::class, 'getAssignedHoodUser']);
 
     //'+id
 });
@@ -180,6 +179,6 @@ Route::get('country_test', function () {
     //  return SubmitWaterLeadToFastConnect::mapLengthOfCountry[2];
     $ser =  new SubmitWaterLeadToFastConnect(1);
     // return $ser;
-    return $ser->getMappedIdentificationCountry('AX'); 
+    return $ser->getMappedIdentificationCountry('AX');
     // return 'got' ;
 });

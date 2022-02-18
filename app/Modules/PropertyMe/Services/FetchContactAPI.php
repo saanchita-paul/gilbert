@@ -5,7 +5,6 @@ namespace App\Modules\PropertyMe\Services;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use PropertyMe\PropertyMeLead;
 use PropertyMe\Services\BasePropertyMeAPI;
 
 class FetchContactAPI extends BasePropertyMeAPI

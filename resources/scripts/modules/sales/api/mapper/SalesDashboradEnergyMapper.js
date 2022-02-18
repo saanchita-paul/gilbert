@@ -1,4 +1,5 @@
 import COLOR from "@scripts/data/constants/COLOR";
+import { DashboardSourceModel } from "@scripts/modules/sales/models/DashboardSourceModel";
 
 export default {
 
@@ -116,29 +117,31 @@ export default {
             };
         }
 
-        function getSubmittedData(data, waitingForConnectionData) {
+        function getSubmittedData(data, waitingForConnectionData, acManualProcessing, manualProcessing) {
             return {
                 gasChartData: getGasData(data),
                 powerChartData: getPowerData(data),
                 total: data.total,
-                waitingForConnection: waitingForConnectionData.total
+                waitingForConnection: waitingForConnectionData.total,
+                acManualProcessing: acManualProcessing,
+                manualProcessing: manualProcessing
             }
         }
 
-        function getConvertedData(data, submittedData) {
+        function getConnectedData(data, submittedData, rejectedData) {
 
-            let converstionRate = null;
-            if(data.total === 0 && submittedData.total ===0) {
-                converstionRate = 0;
+            let conversionRate = null;
+            if(rejectedData.total === 0 && submittedData.total === 0) {
+                conversionRate = 0;
             } else {
-                converstionRate = ((data.total / submittedData.total) * 100).toFixed(1);
+                conversionRate = ((data.total / (submittedData.total + rejectedData.total)) * 100).toFixed(1);
             }
 
             return {
                 gasChartData: getGasData(data),
                 powerChartData: getPowerData(data),
                 total: data.total,
-                conversiton_rate: converstionRate
+                conversiton_rate: conversionRate
             }
         }
 
@@ -152,14 +155,21 @@ export default {
         }
 
         return {
-
-            submitted: getSubmittedData(response.submission, response.waiting_for_connection),
-            converted: getConvertedData(response.conversions, response.submission),
-            rejected: getRejectedData(response.rejected, response.declined),
-            total_open_application: response.total_open_application,
+            source_all: new DashboardSourceModel(response.application_summary.all),
+            source_assigned: new DashboardSourceModel(response.application_summary.assigned),
+            source_closed: new DashboardSourceModel(response.application_summary.closed),
+            source_consent_pending: new DashboardSourceModel(response.application_summary.consent_pending),
+            source_conversation_rate: new DashboardSourceModel(response.application_summary.conversation_rate),
+            source_submitted: new DashboardSourceModel(response.application_summary.submitted),
+            source_unassigned: new DashboardSourceModel(response.application_summary.unassigned),
+            total_new_application: response.total_new_application,
+            total_unassigned: response.unassigned_application,
+            total_assigned: response.assigned_application,
             total_consent_pending: response.total_consent_pending,
             total_closed: response.total_closed,
-
+            submitted: getSubmittedData(response.successful_submission, response.waiting_for_connection, response.ac_manual_processing, response.manual_processing),
+            connected: getConnectedData(response.connected, response.successful_submission, response.rejected),
+            rejected: getRejectedData(response.rejected, response.declined),
         };
     },
 

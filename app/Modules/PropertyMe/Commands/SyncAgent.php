@@ -2,12 +2,9 @@
 
 namespace App\Modules\PropertyMe\Commands;
 
-use App\Models\Office;
-use App\Modules\PropertyMe\Services\SaveToConnectionApplication;
 use App\Modules\PropertyMe\Services\SyncAgentService;
 use Exception;
 use Illuminate\Console\Command;
-use PropertyMe\Services\SaveContacts;
 
 class SyncAgent extends Command
 {

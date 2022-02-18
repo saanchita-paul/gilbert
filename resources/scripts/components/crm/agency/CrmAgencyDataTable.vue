@@ -71,6 +71,7 @@ import Search from "@scripts/components/crm/Search";
 import AgencyService from "@scripts/services/crm/AgencyService";
 import LeadMetrics from "@scripts/components/crm/LeadMetrics";
 import AdvanceSearchModal from '@scripts/components/crm/modals/AdvanceSearchModal';
+
 export default {
 name: "CrmAgencyDataTable",
     components: {

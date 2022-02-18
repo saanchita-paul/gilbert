@@ -217,7 +217,7 @@ export default {
             }
         })
 
-        // const messages = customerMessages.data.map(message => {
+        // const messages = customerMessages.data.calculate(message => {
         //     return new CustomerMessage(message, true);
         // });
         const pagination = new Pagination({
