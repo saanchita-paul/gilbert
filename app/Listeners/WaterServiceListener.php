@@ -34,7 +34,13 @@ class WaterServiceListener implements ShouldQueue
             $result = $service->submitWaterLead();
 
             ConnectionApplication::saveFasConnectRef($event->applicationId, data_get($result, "info.customer_reference"));
-            ConnectionApplication::where('id' , $event->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
+
+            /**
+             * for water submission we are not changing the application status
+             */
+//            ConnectionApplication::where('id' , $event->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
+
+
             $statusAssoc = UpdatedWaterStatus::mapFromFCStatus(data_get($result, "products.0.status"));
             if ($statusAssoc) {
                 UpdatedWaterStatus::updateStatus($event->applicationId, $statusAssoc['status'], $statusAssoc['reason']);
