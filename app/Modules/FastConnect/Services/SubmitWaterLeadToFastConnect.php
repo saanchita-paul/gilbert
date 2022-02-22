@@ -12,6 +12,10 @@ use App\Models\ConnectionApplication;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use FastConnect\Services\FastConnectProductService;
+use App\Models\ConnectionService;
+use App\Models\RejectionReason;
+use Illuminate\Database\Eloquent\Builder;
+
 
 use function PHPUnit\Framework\isNull;
 
@@ -394,7 +398,7 @@ class SubmitWaterLeadToFastConnect
             switch ($secondaryContact?->identification_type) {
                 case Identification::TYPE_PASSPORT:
                     return [
-                        'identification_profile_item_id' => $this->getMappedIdentificationType($secondaryContact->type),
+                        'identification_profile_item_id' => $this->getMappedIdentificationType($secondaryContact->identification_type),
                         'number' => $secondaryContact->card_number,
                         'expiry' => $expireDate,
                         'issuer_country_id' => $this->getMappedIdentificationCountry($secondaryContact->country),
@@ -402,7 +406,7 @@ class SubmitWaterLeadToFastConnect
                     break;
                 case Identification::TYPE_MEDICARE:
                     return [
-                        'identification_profile_item_id' => $this->getMappedIdentificationType($secondaryContact->type),
+                        'identification_profile_item_id' => $this->getMappedIdentificationType($secondaryContact->identification_type),
                         'number' => $secondaryContact->card_number,
                         'expiry' => $expireDate,
                         'medicare_color' => $secondaryContact?->card_color,
@@ -412,7 +416,7 @@ class SubmitWaterLeadToFastConnect
 
                 case Identification::TYPE_DRIVING_LICENCE:
                     return [
-                        'identification_profile_item_id' => $this->getMappedIdentificationType($secondaryContact->type),
+                        'identification_profile_item_id' => $this->getMappedIdentificationType($secondaryContact->identification_type),
                         'number' => $secondaryContact->card_number,
                         'expiry' => $expireDate,
                         'issuer_state_id' => $this->getMappedIdentificationState($secondaryContact->identification->state),
