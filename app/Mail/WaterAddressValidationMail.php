@@ -30,6 +30,7 @@ class WaterAddressValidationMail extends Mailable
      */
     public function build()
     {
+        info('information address', ['$this->lead_info' , $this->lead_info]);
         return $this->view('email.applications.water_address_validation_failed')
             ->subject("Water Address Validation Failed")
             ->with([

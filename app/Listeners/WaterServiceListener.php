@@ -68,6 +68,7 @@ class WaterServiceListener implements ShouldQueue
     {
 
         $address = [
+            'id'=>$ca->id,
             'city'=>$ca->city,
             'postcode'=> $ca->postcode,
             'state'=> $ca->state,
@@ -79,13 +80,15 @@ class WaterServiceListener implements ShouldQueue
         $addressKeys = ['city', 'postcode', 'state', 'street_name', 'street_number', 'tenancy_type'];
         $addressValidationService = new AddressValidationService($address, $addressKeys);
         $missingField = $addressValidationService->validate();
-
+        info('water variable log' , ['info' => $missingField]);
         if(!empty($missingField)) {
             // call email and
-//            WaterEmailService
-            WaterEmailService::sendInvalidAddressWaterMail();
+            // WaterEmailService
+            info("water address missing info");
+            info('water variable log' , ['info2' => $missingField]);
+            WaterEmailService::sendInvalidAddressWaterMail($address);
 
-            throw new \Exception('Water submission failed, Due to address issue');
+            // throw new \Exception('Water submission failed, Due to address issue');
         }
 
 
