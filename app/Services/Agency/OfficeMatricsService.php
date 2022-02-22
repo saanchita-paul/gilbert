@@ -26,17 +26,22 @@ class OfficeMatricsService
             $query->whereIn('status' , $submittedStatuses)->where('service_type', 'power');
         })->count();
 
-        $connectionServiceData->power_connected = $this->getDBBuilder()->whereHas('connectionServices', function($query){
+        $connectionServiceData->power_connected = $this->getDBBuilder()->where('status', ConnectionApplication::STATUS_SUBMITTED )->whereHas('connectionServices', function($query){
             $query->where('status' , ConnectionService::STATUS_ACCEPTED)->where('service_type', 'power');
         })->count();
+
+        $connectionServiceData->power_submitted =(int) $connectionServiceData->power_submitted - (int)$connectionServiceData->power_connected;
 
         $connectionServiceData->gas_submitted = $this->getDBBuilder()->whereHas('connectionServices', function($query) use ($submittedStatuses){
             $query->whereIn('status' , $submittedStatuses)->where('service_type', 'gas');
         })->count();
 
-        $connectionServiceData->gas_connected = $this->getDBBuilder()->whereHas('connectionServices', function($query){
+        $connectionServiceData->gas_connected = $this->getDBBuilder()->where('status', ConnectionApplication::STATUS_SUBMITTED)->whereHas('connectionServices', function($query){
             $query->where('status' , ConnectionService::STATUS_ACCEPTED)->where('service_type', 'gas');
         })->count();
+        
+        $connectionServiceData->gas_submitted =(int) $connectionServiceData->gas_submitted - (int)$connectionServiceData->gas_connected;
+
         
         return $connectionServiceData;
     }
