@@ -167,7 +167,7 @@ class SubmitWaterLeadToFastConnect
         info($this->getNextAvailableDate());
         info("nextAvailableDatebody");
 
-        $this->application->update(['water_submit_response' => empty($response->body()) ? null : $response->body(), 'water_next_available_date' => $this->getNextAvailableDate() ]);
+        $this->application->update(['water_submit_response' => empty($response->body()) ? null : $response->body(), 'water_next_available_date' => $this->getMovingDate() ]);
 
         return json_decode($response->body());
     }
