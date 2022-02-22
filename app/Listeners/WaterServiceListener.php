@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Mail\WaterSumissionFailed;
+use App\Services\Utility\AddressValidationService;
 use Illuminate\Support\Facades\Mail;
 use App\Models\ConnectionApplication;
 use Illuminate\Queue\InteractsWithQueue;
@@ -41,6 +42,9 @@ class WaterServiceListener implements ShouldQueue
             if($ca->state === ConnectionApplication::TENANCY_TYPE_HOME_OWNER) {
                 throw new \Exception('Water Service is not available for Tenancy Type HomeOwner');
             }
+
+            $this->validateCAAddress($ca);
+
             $service = new SubmitWaterLeadToFastConnect($event->applicationId);
             $result = $service->submitWaterLead();
 
@@ -57,6 +61,33 @@ class WaterServiceListener implements ShouldQueue
             info('exception in handle method, WaterAutoSubmitJob' , [ $exception->getTraceAsString() , $exception->getMessage() ]);
             throw new \Exception('Water submission failed, WaterAutoSubmitJob');
         }
+
+    }
+
+    private function validateCAAddress(ConnectionApplication $ca)
+    {
+
+        $address = [
+            'city'=>$ca->city,
+            'postcode'=> $ca->postcode,
+            'state'=> $ca->state,
+            'street_name'=>$ca->street_name,
+            'street_number' => $ca->street_number,
+            'tenancy_type' => $ca->tenancy_type,
+        ];
+
+        $addressKeys = ['city', 'postcode', 'state', 'street_name', 'street_number', 'tenancy_type'];
+        $addressValidationService = new AddressValidationService($address, $addressKeys);
+        $missingField = $addressValidationService->validate();
+
+        if(!empty($missingField)) {
+            // call email and
+//            WaterEmailService
+            WaterEmailService::sendInvalidAddressWaterMail();
+
+            throw new \Exception('Water submission failed, Due to address issue');
+        }
+
 
     }
 }

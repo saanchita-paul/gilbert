@@ -395,9 +395,9 @@
                     <v-col cols="12" v-if="isAuthorizedPersonExist">
                         <v-row>
                             <v-col cols="12">
-                                <p class="sub-title title-align">Service Connection</p>
+                                <p class="sub-title title-align">Authorized Person</p>
                             </v-col>
-                            <v-col cols="6">
+                            <v-col cols="6" class="py-0">
                                 <div class="crm-text-field">
                                     <div class="field-label">
                                         <span>Title</span>
@@ -413,7 +413,7 @@
                                     </div>
                                 </div>
                             </v-col>
-                            <v-col cols="6">
+                            <v-col cols="6" class="py-0">
                                 <div class="crm-text-field">
                                     <div class="field-label">
                                         <span>Date of Birth</span>
@@ -429,7 +429,7 @@
                                     </div>
                                 </div>
                             </v-col>
-                            <v-col cols="6">
+                            <v-col cols="6" class="py-0">
                                 <div class="crm-text-field">
                                     <div class="field-label">
                                         <span>First Name</span>
@@ -445,7 +445,7 @@
                                     </div>
                                 </div>
                             </v-col>
-                            <v-col cols="6">
+                            <v-col cols="6" class="py-0">
                                 <div class="crm-text-field">
                                     <div class="field-label">
                                         <span>Mobile</span>
@@ -461,7 +461,7 @@
                                     </div>
                                 </div>
                             </v-col>
-                            <v-col cols="6">
+                            <v-col cols="6" class="py-0">
                                 <div class="crm-text-field">
                                     <div class="field-label">
                                         <span>Middle Name</span>
@@ -477,7 +477,7 @@
                                     </div>
                                 </div>
                             </v-col>
-                            <v-col cols="6">
+                            <v-col cols="6" class="py-0">
                                 <div class="crm-text-field">
                                     <div class="field-label">
                                         <span>Email</span>
@@ -493,7 +493,7 @@
                                     </div>
                                 </div>
                             </v-col>
-                            <v-col cols="6">
+                            <v-col cols="6" class="py-0">
                             <div class="crm-text-field">
                                 <div class="field-label">
                                     <span>Last Name</span>
@@ -509,7 +509,7 @@
                                 </div>
                             </div>
                         </v-col>
-                            <v-col cols="6">
+                            <v-col cols="6" class="py-0">
                                 <div class="crm-text-field">
                                     <div class="field-label">
                                         <span>Role</span>
@@ -530,7 +530,7 @@
                             <v-col cols="12">
                                 <p class="sub-title title-align">Authorized Person's Identification</p>
                             </v-col>
-                            <v-col cols="6">
+                            <v-col cols="6" class="py-0">
                                 <div class="crm-text-field">
                                     <div class="field-label">
                                         <span>Identification Type</span>
@@ -546,7 +546,7 @@
                                     </div>
                                 </div>
                             </v-col>
-                            <v-col cols="6">
+                            <v-col cols="6" class="py-0">
                                 <div class="crm-text-field">
                                     <div class="field-label">
                                         <span>{{authorizedPerson.card_title}} No.</span>
@@ -562,7 +562,7 @@
                                     </div>
                                 </div>
                             </v-col>
-                            <v-col cols="6" v-if="authorizedPerson.card_title === 'Card'">
+                            <v-col cols="6" class="py-0" v-if="authorizedPerson.card_title === 'Card'">
                                 <div class="crm-text-field">
                                     <div class="field-label">
                                         <span>Special Number</span>
@@ -578,7 +578,7 @@
                                     </div>
                                 </div>
                             </v-col>
-                            <v-col v-if="authorizedPerson.card_title === 'License'" cols="6">
+                            <v-col class="py-0" v-if="authorizedPerson.card_title === 'License'" cols="6">
                                 <div class="crm-text-field">
                                     <div class="field-label">
                                         <span>State</span>
@@ -594,7 +594,7 @@
                                     </div>
                                 </div>
                             </v-col>
-                            <v-col cols="6"  v-if="this.authorizedPerson.card_title === 'Passport'">
+                            <v-col  class="py-0" cols="6"  v-if="this.authorizedPerson.card_title === 'Passport'">
                                 <div class="crm-text-field">
                                     <div class="field-label">
                                         <span>Issuing Country</span>
@@ -610,7 +610,7 @@
                                     </div>
                                 </div>
                             </v-col>
-                            <v-col cols="6">
+                            <v-col class="py-0" cols="6">
                                 <div class="crm-text-field">
                                     <div class="field-label">
                                         <span>Expire Date</span>
@@ -626,7 +626,7 @@
                                     </div>
                                 </div>
                             </v-col>
-                            <v-col cols="6"  v-if="this.authorizedPerson.card_title === 'Card'">
+                            <v-col cols="6"  class="py-0" v-if="this.authorizedPerson.card_title === 'Card'">
                                 <div class="crm-text-field">
                                     <div class="field-label">
                                         <span>Card Colour</span>
@@ -681,6 +681,7 @@ import dayJs from "dayjs";
 import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import SecondaryContactMapper from "@scripts/api/mappers/crm/SecondaryContactMapper";
+import {isNull} from "lodash-es";
 export default {
   name: "ConfirmSubmission",
     props:{
@@ -826,6 +827,7 @@ export default {
         },
         async loadAuthorisedPersonPerson() {
             let unMappedSecondaryContact = await LeadApplicationService.loadAuthorizedPerson(this.$route.params.id);
+            console.log('unMappedSecondaryContact', unMappedSecondaryContact);
             if(isNull(unMappedSecondaryContact)) {
                 this.isAuthorizedPersonExist = false;
                 return;
