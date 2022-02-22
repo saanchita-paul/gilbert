@@ -12,6 +12,9 @@ use App\Models\ConnectionApplication;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use FastConnect\Services\FastConnectProductService;
+use App\Models\ConnectionService;
+use App\Models\RejectionReason;
+use Illuminate\Database\Eloquent\Builder;
 
 use function PHPUnit\Framework\isNull;
 
@@ -162,6 +165,17 @@ class SubmitWaterLeadToFastConnect
         info($response->body());
         info("Water submit response body");
 
+        if($response->status() === 403)
+        {
+            info("Saving Water Failed Response");
+            $this->saveRejectionReason($response->body(), $this->application->id, 'water');
+        }
+
+        if($response->status() === 201)
+        {
+            info("Deleting old reasons");
+            $this->deleteOldRejectionReasons($this->application->id, 'water');
+        }
 
         info("nextAvailableDatebody ");
         info($this->getNextAvailableDate());
@@ -352,5 +366,48 @@ class SubmitWaterLeadToFastConnect
         }
 
         return $data;
+    }
+
+     /**
+     * get ConnectionService builder
+     *
+     * @param int $leadId
+     * @param $serviceType
+     *
+     * @return Builder
+     */
+    private function getServiceBuilder(int $leadId, $serviceType): Builder
+    {
+        return ConnectionService::query()
+            ->where('connection_application_id', $leadId)
+            ->where('service_type', $serviceType);
+    }
+
+    private function saveRejectionReason(string $data, int $leadId, string $serviceType)
+    {
+        /** @var ConnectionService $service */
+        $service = $this->getServiceBuilder($leadId, $serviceType)->first();
+
+        if ($service) {
+            $service->reasons()->delete();
+        }
+
+        $rejectionReason = new RejectionReason();
+        $rejectionReason->connection_application_id = $leadId;
+        $rejectionReason->connection_service_id = $service?->id;
+        $rejectionReason->service_type = $serviceType;
+        $rejectionReason->reason_code = 'WATER_SUBMIT_FAILED';
+        $rejectionReason->reason_text = $data;
+        $rejectionReason->save();
+    }
+
+    private function deleteOldRejectionReasons(int $leadId, string $serviceType)
+    {
+        /** @var ConnectionService $service */
+        $service = $this->getServiceBuilder($leadId, $serviceType)->first();
+
+        if ($service) {
+            $service->reasons()->delete();
+        }
     }
 }
