@@ -343,7 +343,7 @@ class SubmitWaterLeadToFastConnect
 
         if($lead->authorizedPerson?->first_name && $lead->authorizedPerson?->email) {
             if($this->isInValidSecondaryContactExit($lead->authorizedPerson)) {
-                return ;
+                return $data;
             }
             $data['contact']['secondary']['title'] = $this->getMappedTitle($lead->authorizedPerson->title) ?? "MR";
             $data['contact']['secondary']['first_name'] = $lead->authorizedPerson->first_name ?? "";
