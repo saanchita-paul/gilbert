@@ -48,7 +48,7 @@ class SubmitWaterLeadToFastConnect
         "South Australia" => 5,
         "Northern Territory" => 3,
         "Tasmania" => 6,
-        "Australian Capital Territory" => 1, 
+        "Australian Capital Territory" => 1,
         "Western Australia" => 8,
     ];
 
@@ -98,7 +98,7 @@ class SubmitWaterLeadToFastConnect
             return [];
             //throw $th;
         }
-        
+
     }
 
     public function authenticate(): static
@@ -340,7 +340,11 @@ class SubmitWaterLeadToFastConnect
                 = $lead->getbillingRoadType() : null;
         }
 
+
         if($lead->authorizedPerson?->first_name && $lead->authorizedPerson?->email) {
+            if($this->isInValidSecondaryContactExit($lead->authorizedPerson)) {
+                return ;
+            }
             $data['contact']['secondary']['title'] = $this->getMappedTitle($lead->authorizedPerson->title) ?? "MR";
             $data['contact']['secondary']['first_name'] = $lead->authorizedPerson->first_name ?? "";
             $data['contact']['secondary']['middle_name'] = $lead->authorizedPerson->middle_name ?? "";
@@ -348,9 +352,75 @@ class SubmitWaterLeadToFastConnect
             $data['contact']['secondary']['date_of_birth'] = $this->getMappedDate($lead->authorizedPerson->dob);
             $data['contact']['secondary']['email'] = $lead->authorizedPerson->email ?? "";
             $data['contact']['secondary']['phone_preference'] = $lead->authorizedPerson->phone ?? "";
-            $data['contact']['secondary']['identification'] = [];
+            $data['contact']['secondary']['identification'] = $this->secondaryContactIdentification($lead->authorizedPerson);
         }
 
         return $data;
     }
+
+    private function isInValidSecondaryContactExit($secondaryContact) {
+        if(empty($secondaryContact?->identification_type)) {
+            return true;
+        }
+        switch ($secondaryContact?->identification_type) {
+            case Identification::TYPE_PASSPORT:
+                return empty($secondaryContact?->card_number)
+                    || empty($secondaryContact?->country)
+                    || empty($secondaryContact?->expire_date);
+                break;
+            case Identification::TYPE_MEDICARE:
+                return empty($secondaryContact?->card_number)
+                    || empty($secondaryContact?->card_color)
+                    || empty($secondaryContact?->special_number)
+                    || empty($secondaryContact?->expire_date);
+                break;
+
+            case Identification::TYPE_DRIVING_LICENCE:
+                return empty($secondaryContact?->card_number)
+                    || empty($secondaryContact?->state)
+                    || empty($secondaryContact?->expire_date);
+                    break;
+            default:
+                return true;
+                break;
+            }
+        return false;
+        }
+
+        private function secondaryContactIdentification($secondaryContact)
+        {
+            $expireDate = (new Carbon($secondaryContact->expire_date))->format('y-m-d');
+
+            switch ($secondaryContact?->identification_type) {
+                case Identification::TYPE_PASSPORT:
+                    return [
+                        'identification_profile_item_id' => $this->getMappedIdentificationType($secondaryContact->type),
+                        'number' => $secondaryContact->card_number,
+                        'expiry' => $expireDate,
+                        'issuer_country_id' => $this->getMappedIdentificationCountry($secondaryContact->country),
+                    ];
+                    break;
+                case Identification::TYPE_MEDICARE:
+                    return [
+                        'identification_profile_item_id' => $this->getMappedIdentificationType($secondaryContact->type),
+                        'number' => $secondaryContact->card_number,
+                        'expiry' => $expireDate,
+                        'medicare_color' => $secondaryContact?->card_color,
+                        'medicare_irn' => $secondaryContact->special_number,
+                    ];;
+                    break;
+
+                case Identification::TYPE_DRIVING_LICENCE:
+                    return [
+                        'identification_profile_item_id' => $this->getMappedIdentificationType($secondaryContact->type),
+                        'number' => $secondaryContact->card_number,
+                        'expiry' => $expireDate,
+                        'issuer_state_id' => $this->getMappedIdentificationState($secondaryContact->identification->state),
+                    ];;
+                default:
+                    return [];
+                    break;
+            }
+            return [];
+        }
 }
