@@ -423,4 +423,46 @@ class SubmitWaterLeadToFastConnect
             }
             return [];
         }
+    /**
+     * get ConnectionService builder
+     *
+     * @param int $leadId
+     * @param $serviceType
+     *
+     * @return Builder
+     */
+    private function getServiceBuilder(int $leadId, $serviceType): Builder
+    {
+        return ConnectionService::query()
+            ->where('connection_application_id', $leadId)
+            ->where('service_type', $serviceType);
+    }
+
+    private function saveRejectionReason(string $data, int $leadId, string $serviceType)
+    {
+        /** @var ConnectionService $service */
+        $service = $this->getServiceBuilder($leadId, $serviceType)->first();
+
+        if ($service) {
+            $service->reasons()->delete();
+        }
+
+        $rejectionReason = new RejectionReason();
+        $rejectionReason->connection_application_id = $leadId;
+        $rejectionReason->connection_service_id = $service?->id;
+        $rejectionReason->service_type = $serviceType;
+        $rejectionReason->reason_code = 'WATER_SUBMIT_FAILED';
+        $rejectionReason->reason_text = $data;
+        $rejectionReason->save();
+    }
+
+    private function deleteOldRejectionReasons(int $leadId, string $serviceType)
+    {
+        /** @var ConnectionService $service */
+        $service = $this->getServiceBuilder($leadId, $serviceType)->first();
+
+        if ($service) {
+            $service->reasons()->delete();
+        }
+    }
 }
