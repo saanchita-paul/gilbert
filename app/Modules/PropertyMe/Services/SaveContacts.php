@@ -62,7 +62,7 @@ class SaveContacts
         $alreadySavedIds = PropertyMeLead::query()->whereIn('lead_id', $ids)->pluck('lead_id')->toArray();
 
         return $leads->filter(fn($value) => (
-            strtolower(data_get($value, 'Labels')) == config('property_me.label')
+            str_contains(strtolower(data_get($value, 'Labels')), config('property_me.label'))
             && !in_array(data_get($value, 'Id'), $alreadySavedIds)
         ))->toArray();
     }
