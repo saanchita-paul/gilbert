@@ -163,7 +163,18 @@ class SubmitWaterLeadToFastConnect
         info($response->body());
         info("Water submit response body");
 
+        if($response->status() === 403)
+        {
+            info("Saving Water Failed Response");
+            $this->saveRejectionReason($response->body(), $this->application->id, 'water');
+        }
 
+        if($response->status() === 201)
+        {
+            info("Deleting old reasons");
+            $this->deleteOldRejectionReasons($this->application->id, 'water');
+        }
+        
         info("nextAvailableDatebody ");
         info($this->getNextAvailableDate());
         info("nextAvailableDatebody");
