@@ -39,7 +39,7 @@ class WaterServiceListener implements ShouldQueue
             if($ca->state !== 'Victoria') {
                 throw new \Exception('Water Service is not available outside Victoria');
             }
-            if($ca->state === ConnectionApplication::TENANCY_TYPE_HOME_OWNER) {
+            if($ca->tenancy_type === ConnectionApplication::TENANCY_TYPE_HOME_OWNER) {
                 throw new \Exception('Water Service is not available for Tenancy Type HomeOwner');
             }
 
