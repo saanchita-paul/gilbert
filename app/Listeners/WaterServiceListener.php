@@ -45,6 +45,8 @@ class WaterServiceListener implements ShouldQueue
 
             $this->validateCAAddress($ca);
 
+            $ca->update(['is_auto_water_submit' => 0]);
+
             $service = new SubmitWaterLeadToFastConnect($event->applicationId);
             $result = $service->submitWaterLead();
 

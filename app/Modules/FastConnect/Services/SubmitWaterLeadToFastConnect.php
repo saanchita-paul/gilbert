@@ -167,6 +167,7 @@ class SubmitWaterLeadToFastConnect
         {
             info("Saving Water Failed Response");
             $this->saveRejectionReason($response->body(), $this->application->id, 'water');
+            $this->setStatusFailed($this->application->id, 'water');
         }
 
         if($response->status() === 201)
@@ -466,6 +467,17 @@ class SubmitWaterLeadToFastConnect
 
         if ($service) {
             $service->reasons()->delete();
+        }
+    }
+
+    private function setStatusFailed(int $leadId, string $serviceType)
+    {
+        /** @var ConnectionService $service */
+        $service = $this->getServiceBuilder($leadId, $serviceType)->first();
+
+        if ($service) {
+            $service->status = ConnectionService::STATUS_FAILED;
+            $service->save();
         }
     }
 }
