@@ -2,12 +2,13 @@
 
 namespace Reporting\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Modules\Reporting\Services\ExportSubmissionReport;
 use function response;
 use Illuminate\Http\Request;
 use Reporting\Services\WaterReport;
+use App\Http\Controllers\Controller;
 use Reporting\Services\EnergyReport;
+use App\Services\Agency\SimpleTokenService;
+use App\Modules\Reporting\Services\ExportSubmissionReport;
 
 class ReportController extends Controller
 {
@@ -37,10 +38,17 @@ class ReportController extends Controller
                 new ExportSubmissionReport(
                     $request->get('type'),
                     $request->get('start'),
-                    $request->get('end'))
+                    $request->get('end'),
+                    $request->get('token'),
+                    )
             )->run();
         } catch (\Exception $exception) {
             return  $this->sendErrorResponse($exception);
         }
+    }
+
+    public function getReportAccessToken(){
+        $accessToken = (new SimpleTokenService())->getAccessToken();
+        return $accessToken;
     }
 }

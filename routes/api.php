@@ -128,6 +128,12 @@ Route::get('/plans-details/{id}/export', [NoteController::class, 'download']);
 
 
 
+/**
+ * api's for admin only
+ */
+Route::get('/get-report-access-token', [ReportController::class, 'getReportAccessToken']);
+
+
 
 /**
  * test routes

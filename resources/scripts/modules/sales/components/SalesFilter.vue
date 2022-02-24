@@ -44,6 +44,7 @@
 import DatePickerModal from "@scripts/modules/sales/components/DatePickerModal";
 import {getToday, getTodayString, getYesterday, isSame, getFormattedDBDate} from '@scripts/services/DateRangeService';
 import dayJs from "dayjs";
+import SalesDashboardService from "@scripts/modules/sales/services/SalesDashboardService";
 
 export default {
     name: "SalesFilter",
@@ -111,9 +112,12 @@ export default {
                 this.selectedDate = `${getFormattedDBDate(this.dateRange.start)} - ${getFormattedDBDate(this.dateRange.end)}`;
             }
         },
-        downloadSalesReport() {
+        async downloadSalesReport() {
+            console.log("download clicked")
+            let token = await SalesDashboardService.getReportAccessToken();
+            console.log(token);
             window.open(
-                '/api/sales-dashboard/export/submission-report?type='+this.selectedType+'&start='+this.dateRange.start+'&end='+this.dateRange.end,
+                '/api/sales-dashboard/export/submission-report?token='+token+'&type='+this.selectedType+'&start='+this.dateRange.start+'&end='+this.dateRange.end,
                 '_blank'
             );
         }

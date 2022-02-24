@@ -4,4 +4,5 @@ import SalesDashboradAPI from "@scripts/modules/sales/api/SalesDashboradAPI";
 export default {
     loadDashboardEnergyData: (dateRange)=> SalesDashboradAPI.loadEnergyData(dateRange),
     loadDashboardWaterData: (dateRange)=> SalesDashboradAPI.loadWaterData(dateRange),
+    getReportAccessToken: ()=> SalesDashboradAPI.getReportAccessToken(),
 }

@@ -1,15 +1,16 @@
 <?php
 namespace App\Modules\Reporting\Services;
 
-use App\Models\ConnectionApplication;
-use App\Models\ConnectionService;
-use App\Models\RejectionReason;
-use App\Services\Utility\GilbertStatusMapper;
 use DB;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Facades\Http;
+use App\Models\RejectionReason;
+use App\Models\ConnectionService;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use Rap2hpoutre\FastExcel\FastExcel;
+use App\Models\ConnectionApplication;
+use Illuminate\Database\Query\Builder;
+use App\Services\Agency\SimpleTokenService;
+use App\Services\Utility\GilbertStatusMapper;
 
 class ExportSubmissionReport
 {
@@ -41,20 +42,37 @@ class ExportSubmissionReport
         ConnectionService::STATUS_CANT_CONNECT, //Failed
     ];
 
-    public function __construct(string $type, string $start, string $end)
+    public function __construct(string $type, string $start, string $end, string $token)
     {
         $this->setDateRange($start, $end);
         $this->type = $type;
         $this->serviceType = $type === 'energy' ? $this->energyType : $this->waterType;
         $this->chatbotUri = config('bot.root_url');
+        $this->token = $token;
     }
 
     private array $leadsData = [];
 
     public function run()
     {
+        $accessToken = (new SimpleTokenService())->verifyAccessToken($this->token);
+        if (!$accessToken) {
+            throw new \Exception('Invalid token');
+        }
         $this->mapData($this->fetchData());
         return $this->export();
+    }
+
+    public function getAccessToke(){
+        return 'token';
+    }
+
+    public function verifyAccessToken(){
+        $token = 'token';
+
+        if($token === 'token'){
+             $this->run();
+        }
     }
 
     private function export()
