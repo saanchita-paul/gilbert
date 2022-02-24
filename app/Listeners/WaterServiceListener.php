@@ -63,6 +63,10 @@ class WaterServiceListener implements ShouldQueue
             }
         }
         } catch (\Exception $exception) {
+            // Saving Failed reason and set Water status as Failed 
+            $service->saveRejectionReason($exception->getMessage(), $event->applicationId, 'water');
+            $service->setStatusFailed($event->applicationId, 'water');
+
             // $this->sendEmail($exception->getMessage());
             WaterEmailService::sendEmailWhenSubmissionFails($exception->getMessage() , $event->applicationId);
             info('exception in handle method, WaterAutoSubmitJob' , [ $exception->getTraceAsString() , $exception->getMessage() ]);

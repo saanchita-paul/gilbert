@@ -444,7 +444,7 @@ class SubmitWaterLeadToFastConnect
             ->where('service_type', $serviceType);
     }
 
-    private function saveRejectionReason(string $data, int $leadId, string $serviceType)
+    public function saveRejectionReason(string $data, int $leadId, string $serviceType)
     {
         /** @var ConnectionService $service */
         $service = $this->getServiceBuilder($leadId, $serviceType)->first();
@@ -472,7 +472,7 @@ class SubmitWaterLeadToFastConnect
         }
     }
 
-    private function setStatusFailed(int $leadId, string $serviceType)
+    public function setStatusFailed(int $leadId, string $serviceType)
     {
         /** @var ConnectionService $service */
         $service = $this->getServiceBuilder($leadId, $serviceType)->first();
