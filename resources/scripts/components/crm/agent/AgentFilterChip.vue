@@ -21,10 +21,11 @@
 </template>
 
 <script>
-import { sources } from '@scripts/data/LeadSourceMap';
-import { statusesForAgent } from '@scripts/data/ConnectionStatusMapper';
-import { formatDate } from "@scripts/services/others/DateService"
+import {sources} from '@scripts/data/LeadSourceMap';
+import {statusesForAgent} from '@scripts/data/ConnectionStatusMapper';
+import {formatDate} from "@scripts/services/others/DateService"
 import dayJs from "dayjs";
+
 export default {
     props: ["searchFilterModel"],
     data() {
@@ -75,10 +76,10 @@ export default {
               this.filterItems.push('Move Date: ' + this.moving_date);
           }
           if(this.searchFilterModel?.source && this.searchFilterModel?.source !== '') {
-              this.filterItems.push('Source: ' + this.source); 
+              this.filterItems.push('Source: ' + this.source);
           }
           if(this.searchFilterModel?.active_lead_type && this.searchFilterModel?.active_lead_type !== '') {
-              this.filterItems.push('Status: ' + this.status); 
+              this.filterItems.push('Status: ' + this.status);
           }
           if(this.searchFilterModel?.phone && this.searchFilterModel?.phone !== '') {
               this.filterItems.push('Phone: ' + this.searchFilterModel?.phone);

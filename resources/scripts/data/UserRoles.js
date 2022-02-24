@@ -1,48 +1,52 @@
+import * as roles from "@scripts/data/constants/ROLES";
+import {AGENT_ROLES} from "@scripts/data/constants/ROLES";
+
+
 export default {
     AGENCY: [
         {
             text: 'OFFICE ADMIN',
-            value: 'agency_office_admin'
+            value: roles.AGENCY_OFFICE_ADMIN
         },
         {
             text: 'DIRECTOR',
-            value: 'agency_office_director'
+            value: roles.AGENCY_OFFICE_DIRECTOR
         },
         {
 
             text: 'PROPERTY MANAGER',
-            value: 'agency_office_property_manager'
+            value: roles.AGENCY_OFFICE_PROPERTY_MANAGER
         },
         {
 
             text: 'SENIOR PROPERTY MANAGER',
-            value: 'agency_office_senior_property_manager'
+            value: roles.AGENCY_OFFICE_SENIOR_PROPERTY_MANAGER
         },
         {
             text: 'ASSISTANT PROPERTY MANAGER',
-            value: 'agency_assistant_property_manager'
+            value: roles.AGENCY_ASSISTANT_PROPERTY_MANAGER
         },
         {
             text: 'REAL ESTATE AGENT',
-            value: 'agency_office_real_estate_agent'
+            value: roles.AGENCY_OFFICE_REAL_ESTATE_AGENT
         },
         {
             text: 'AGENCY OFFICE ALLOCATOR',
-            value: 'agency_office_allocator'
+            value: roles.AGENCY_OFFICE_ALLOCATOR
         },
         {
-            text: 'AGENCY OFFICE BUSSINESS DEVELOPMENT MANAGER',
-            value: 'agency_office_business_development_manager'
+            text: 'AGENCY OFFICE BUSINESS DEVELOPMENT MANAGER',
+            value: roles.AGENCY_OFFICE_BUSINESS_DEVELOPMENT_MANAGER
         },
         {
             text: 'AGENCY SALES PA',
-            value: 'agency_sales_pa'
+            value: roles.AGENCY_SALES_PA
         },
         {
             text: 'AGENCY RECEPTIONIST',
-            value: 'agency_receptionist'
+            value: roles.AGENCY_RECEPTIONIST
         },
-        
+
     ],
     HOOD: [
 
@@ -73,4 +77,17 @@ export default {
             value: 'hood_external_customer_rep'
         },
     ]
+}
+
+/**
+ * Getting all agent roles
+ *
+ * @param excepts
+ * @return {(string)[]|[string,string,string,string,string,null,null,null,null,null,null]}
+ */
+export const getAllAgentRoles = ({excepts} = {}) => {
+    if (excepts) {
+        return AGENT_ROLES.filter(role => !excepts.includes(role));
+    }
+    return  AGENT_ROLES
 }

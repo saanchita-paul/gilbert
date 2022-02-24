@@ -4,6 +4,7 @@ namespace Reporting\Services;
 
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use App\Modules\Reporting\Services\CalculateEnergyApplicationSummary;
 use App\Modules\Reporting\Services\SetDateRage;
 
 class EnergyReport
@@ -20,7 +21,7 @@ class EnergyReport
         ConnectionService::STATUS_ACCEPTED,
         // ConnectionService::STATUS_REJECTED,
         ConnectionService::AC_MANUAL_PROCESSING,
-        // ConnectionService::STATUS_CANT_CONNECT, 
+        // ConnectionService::STATUS_CANT_CONNECT,
     ];
 
     private array $connectedType = [ConnectionService::STATUS_ACCEPTED];
@@ -54,6 +55,8 @@ class EnergyReport
         ConnectionService::STATUS_REJECTED
     ];
 
+
+
     /**
      * @var MapEnergyReport
      */
@@ -64,6 +67,25 @@ class EnergyReport
         $this->setDateRange($startDate, $endDate);
 
         $this->mapperService = new MapEnergyReport();
+
+        $leadBreakDown = [
+            "total" => 0,
+            "ignite" => 0,
+            "our_property" => 0,
+            "property_me" => 0,
+            "foxie" => 0,
+            "hood" => 0,
+            "hood_ai" => 0,
+        ];
+        $data = [
+            "total_application" => $leadBreakDown,
+            "unassigned_application" => $leadBreakDown,
+            "assigned_application" => $leadBreakDown,
+            "submitted_application" => $leadBreakDown,
+            "conversation_rate" => $leadBreakDown,
+            "consent_pending" => $leadBreakDown,
+            "closed" => $leadBreakDown,
+        ];
     }
 
     private function getTotalNewApplication()
@@ -123,8 +145,8 @@ class EnergyReport
             // ->where('updated_at', '>=', $this->startDate)
             // ->where('updated_at', '<=', $this->endDate)
             ->count();
-    } 
-    
+    }
+
     public function totalSubmissions()
     {
         return ConnectionService::query()
@@ -239,19 +261,33 @@ class EnergyReport
     // #[ArrayShape(['submission' => "array", 'conversions' => "array", 'rejected' => "array", 'declined' => "array"])]
     public function getEnergyReport(): array
     {
-        return [
-            "total_new_application" => $this->getTotalNewApplication(),
-            "unassigned_application" => $this->getUnassignedApplication(),
-            "assigned_application" => $this->getAssignedApplication(),
-            "total_consent_pending" => 0,
-            "total_closed" => $this->getTotalClosedApplication(),
+        $data = ConnectionApplication::selectRaw("count(*) as total, status, source")
+            ->where('created_at', '>=', $this->startDate)
+            ->where('created_at', '<=', $this->endDate)
+            ->where(function ($query) {
+                $query->whereHas('connectionServices', function ($q) {
+                    $q->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS]);
+                });
+                $query->orWhereDoesntHave('connectionServices');
+            })
+            ->groupBy('status', 'source')
+            ->get();
+
+        $appSummary = CalculateEnergyApplicationSummary::getSummary($data->toArray());
+
+        return array_merge([
+            "total_new_application" => $this->getTotalNewApplication(), #todo: need to remove this
+            "unassigned_application" => $this->getUnassignedApplication(), #todo: need to remove this
+            "assigned_application" => $this->getAssignedApplication(), #todo: need to remove this
+            "total_consent_pending" => 0, #todo: need to remove this
+            "total_closed" => $this->getTotalClosedApplication(), #todo: need to remove this
             'successful_submission' => $this->mapperService->setEnergyData($this->totalSubmissions())->getReportData(),
             'waiting_for_connection' => $this->mapperService->setEnergyData($this->totalWaitingForConnection())->getReportData(),
             "ac_manual_processing" => $this->getAcManualProcessing(),
             "manual_processing" => 0,
             'connected' => $this->mapperService->setEnergyData($this->totalConnected())->getReportData(),
             'rejected' => $this->mapperService->setEnergyData($this->totalRejected())->getReportData(),
-            'declined' => $this->mapperService->setEnergyData($this->totalDeclined())->getReportData(), 
-        ];
+            'declined' => $this->mapperService->setEnergyData($this->totalDeclined())->getReportData(),
+        ], ['application_summary' => $appSummary]);
     }
 }

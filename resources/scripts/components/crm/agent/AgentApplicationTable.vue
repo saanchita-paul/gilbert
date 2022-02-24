@@ -62,10 +62,9 @@
 
 <script>
 import AdvanceSearchModal from '@scripts/components/crm/modals/AdvanceSearchModal.vue';
-import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel';
+import {LeadSearchFilterModel} from '@scripts/models/LeadSearchFilterModel';
 import AgentFilterChip from '@scripts/components/crm/agent/AgentFilterChip';
-import { sourcesNumberToName } from '@scripts/data/LeadSourceMap';
-import Search from "@scripts/components/crm/Search";
+import {sourcesNumberToName} from '@scripts/data/LeadSourceMap';
 import AuthService from "@scripts/services/AuthService";
 
 export default {

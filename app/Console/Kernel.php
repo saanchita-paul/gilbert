@@ -2,14 +2,13 @@
 
 namespace App\Console;
 
+use App\Console\Commands\GetSellStatusCommand;
+use App\Console\Commands\UploadConnectionDataToSFTPCommand;
 use App\Modules\PropertyMe\Commands\SavePropertyMeLeadsCommand;
 use App\Modules\PropertyMe\Commands\SyncAgent;
-use Illuminate\Console\Scheduling\Schedule;
 use Ignite\Commands\IgniteFetchCommand;
-use App\Console\Commands\GetSellStatusCommand;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use App\Console\Commands\UploadConnectionDataToSFTPCommand;
-use Ignite\Jobs\IgniteFetchJob;
 
 class Kernel extends ConsoleKernel
 {

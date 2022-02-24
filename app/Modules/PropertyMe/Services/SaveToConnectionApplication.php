@@ -5,6 +5,8 @@ namespace App\Modules\PropertyMe\Services;
 use App\Jobs\CreateHubspotProperty;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionApplicationSecondaryACC;
+use App\Models\Identification;
 use App\Models\Office;
 use App\Notifications\ErrorLogNotification;
 use Illuminate\Database\Eloquent\Builder;
@@ -12,8 +14,6 @@ use Illuminate\Support\Facades\Log;
 use Notification;
 use PropertyMe\PropertyMeLead;
 use App\Modules\PropertyMe\Services\DobIdentificationService;
-use App\Models\Identification;
-use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ApplicationNote;
 
 class SaveToConnectionApplication
@@ -106,7 +106,7 @@ class SaveToConnectionApplication
 
         $contactPerson = $this->leadHasContactPerson($leadData);
         if($contactPerson) {
-            ConnectionApplicationSecondaryACC::query()->create([ 
+            ConnectionApplicationSecondaryACC::query()->create([
                 'connection_application_id' => $application->id,
                 'title' => $this->getUserTitle($this->extractSecondaryContact($contactPerson, 'Salutation')),
                 'first_name' => $this->extractSecondaryContact($contactPerson, 'FirstName'),

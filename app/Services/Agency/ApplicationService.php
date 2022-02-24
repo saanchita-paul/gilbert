@@ -218,9 +218,6 @@ class ApplicationService
         $vendorId = $this->calculateVendorId($id);
         $lead = array_merge($lead, [
             'plan_type' => null,
-            // 'assigned_to' => null,
-            'assigned_to' => null,
-            // 'status' => ConnectionApplication::STATUS_SUBMITTED,
             'submitted_by' => auth()->id(),
             'vendor_id' => $vendorId
         ]);
@@ -285,7 +282,7 @@ class ApplicationService
             $waterService = ConnectionService::where("connection_application_id", $application->id)
                 ->where("service_type", "water")->first();
             if (!$waterService) {
-                $application->connectionServices()->create(['service_type' => 'water']);
+                $application->connectionServices()->create(['service_type' => 'water', 'status' => ConnectionService::STATUS_EA_PROCESSINF]);
             } else {
                 info('water found inside');
                 \Log::info($waterService);

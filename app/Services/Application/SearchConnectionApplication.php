@@ -121,6 +121,7 @@ class SearchConnectionApplication
 
         $statuses = ApplicationStatusFilterMapper::getStatuses($this->leadType);
 
+
         if (sizeof($statuses) > 0) {
             $this->builder = $this->builder->whereIn('status', $statuses);
         }

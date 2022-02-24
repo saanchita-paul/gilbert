@@ -1,7 +1,7 @@
 <template>
-    <div class="mx-3 mainContainer">
+    <div class="mx-3 mainContainer" :class="title == 'Connected' ? 'border-around' : ''">
         <div>
-            <p class="font-weight-bold pt-4 text-center titleFont">
+            <p class="pt-4 text-center titleFont">
                 {{title}}
             </p>
             <div class="d-flex justify-space-around ">
@@ -15,7 +15,7 @@
                                 {{chartData.total}}
                             </div>
                             <div
-                                class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
+                                class=" text-center py-0 mb-2 mt-n2 subtitleFont"
                             >
                                 Successful submissions to retailer
                             </div>
@@ -29,7 +29,7 @@
                                 {{chartData.waitingForConnection}}
                             </div>
                             <div
-                                class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
+                                class="text-center py-0 mb-2 mt-n2 subtitleFont"
                             >
                                 Waiting for connection
                             </div>
@@ -56,7 +56,7 @@
                         <div
                             class="font-weight-bold text-center py-0 mb-n3 messageFont"
                         >
-                            Conversion rate {{chartData.conversiton_rate}}%
+                            Connection rate {{chartData.conversiton_rate}}%
                             <span><v-icon color="success">trending_up </v-icon> </span>
                         </div>
                         <div
@@ -65,9 +65,9 @@
                             {{chartData.total}}
                         </div>
                         <div
-                            class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
+                            class="text-center py-0 mb-2 mt-n2 subtitleFont"
                         >
-                            Total connected applications
+                            Total connected utilities
                         </div>
                     </div>
                 </template>
@@ -82,9 +82,9 @@
                             {{chartData.total}}
                         </div>
                         <div
-                            class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
+                            class="text-center py-0 mb-2 mt-n2 subtitleFont"
                         >
-                            Total rejected applications
+                            Total rejected utilities
                         </div>
                     </div>
                     <div>
@@ -95,7 +95,7 @@
                             {{chartData.declined}}
                         </div>
                         <div
-                            class="font-weight-bold text-center py-0 mb-2 mt-n2 subtitleFont"
+                            class="text-center py-0 mb-2 mt-n2 subtitleFont"
                         >
                             Declined credits
                         </div>
@@ -167,8 +167,24 @@ export default {
   background: white;
 }
 
+.border-around{
+    border-left: 1px dotted black;
+    border-right: 1px dotted black;
+}
+
+.titleFont-style{
+    //styleName: Large Text Bold;
+    font-family: Roboto;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 31px;
+    letter-spacing: 0em;
+    text-align: center;
+}
+
 .titleFont{
-  font-size: 20px;
+    @extend .titleFont-style;
 }
 
 .messageFont{
@@ -181,8 +197,20 @@ export default {
   color: #542e89;
 }
 
+.subtitleFont-style{
+    //styleName: Normal Text Regular;
+    font-family: Roboto;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: center;
+
+}
+
 .subtitleFont{
-  font-size: 14px;
+    @extend .subtitleFont-style;
 }
 
 .dividerDesign{
