@@ -63,6 +63,10 @@ class WaterAutoSubmitJob implements ShouldQueue
         }
         } catch(\Exception $exception)
         {
+            // Saving Failed reason and set Water status as Failed 
+            $service->saveRejectionReason($exception->getMessage(), $this->applicationId, 'water');
+            $service->setStatusFailed($this->applicationId, 'water');
+
             WaterEmailService::sendEmailWhenSubmissionFails($exception->getMessage(), $this->applicationId);
             info('exception in handle method, WaterAutoSubmitJob', [$exception->getTraceAsString(), $exception->getMessage()]);
             throw new \Exception('Water submission failed, WaterAutoSubmitJob');

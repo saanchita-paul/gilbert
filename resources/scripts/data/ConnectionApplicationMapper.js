@@ -35,6 +35,7 @@ export const connectionServicesMapper = {
      'STATUS_CANT_CONNECT'    : 9,
      'STATUS_NEEDS_MORE_INFO' : 10,
      'STATUS_AC_MANUAL_PROCESSING'   : 11,
+     'STATUS_FAILED'   : 13,
 }
 
 export const STATUSES_FOR_ENERGY_SUBMIT = [
@@ -49,5 +50,6 @@ export const STATUSES_FOR_ENERGY_SUBMIT = [
 export const STATUSES_FOR_WATER_SUBMIT = [
     connectionServicesMapper.STATUS_IN_PROGRESS,
     connectionServicesMapper.STATUS_CANT_CONNECT,
+    connectionServicesMapper.STATUS_FAILED,
 ]
 

@@ -185,9 +185,9 @@ class ApplicationController extends Controller
         $ea_services_id = $service->getNotSubmittedEaService($id);
 
         $options = ['auth_user'=>$authUser, 'services_id'=> $ea_services_id];
-
+        
         SubmitApplicationEvent::dispatch($id, data_get($requestArray, 'lead.submit_type'), $options);
-
+        
         return ApplicationResource::make($res);
     } catch (\Exception $exception) {
         return $this->sendErrorResponse($exception);

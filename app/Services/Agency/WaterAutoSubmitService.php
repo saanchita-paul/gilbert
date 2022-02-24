@@ -5,6 +5,7 @@ namespace App\Services\Agency;
 use Exception;
 use App\Jobs\WaterAutoSubmitJob;
 use App\Models\ConnectionApplication;
+use FastConnect\Services\SubmitWaterLeadToFastConnect;
 
 class WaterAutoSubmitService
 {
@@ -15,12 +16,16 @@ class WaterAutoSubmitService
     {
         try {
             $lead = ConnectionApplication::with(['connectionServices' , 'identification'])->where( 'id' ,  $lead_id)->first();
+            info('water auto submit service, lead info');
             if (!$lead->is_auto_water_submit) {
+                info('water auto submit service, lead info, inside, turned on');
+                $lead->update(['is_auto_water_submit'=> WaterAutoSubmitService::STATUS_AUTO_SUBMIT_TRUE ]);
                 $this->validateData($lead);
                 $this->updateConnectionApplication($lead);
             }
 
         } catch (\Exception $exception) {
+            $lead->update(['is_auto_water_submit'=> 0 ]);
             \Log::error($exception->getMessage());
             \Log::error($exception->getTraceAsString());
         }
@@ -29,7 +34,7 @@ class WaterAutoSubmitService
     private function updateConnectionApplication(ConnectionApplication $connectionApplcation){
 
         try {
-            $connectionApplcation->update(['is_auto_water_submit'=> WaterAutoSubmitService::STATUS_AUTO_SUBMIT_TRUE ]);
+            // $connectionApplcation->update(['is_auto_water_submit'=> WaterAutoSubmitService::STATUS_AUTO_SUBMIT_TRUE ]);
             
             $waterService = new ApplicationService();
             $waterService->setSubmittedAtByServiceType($connectionApplcation->id, 'water');
@@ -69,7 +74,6 @@ class WaterAutoSubmitService
                     throw new Exception('invalid field found in connection application table');
                 }
 
-
                 if(
                     isset($connectionApplcation->identification['card_number']) &&
                     isset($connectionApplcation->identification['expire_date'])
@@ -78,10 +82,12 @@ class WaterAutoSubmitService
                 }else{
                     throw new Exception('invalid data in identifcation table');
                 }
-
-
-
         } catch (\Exception $exception) {
+            // Saving Failed reason and set Water status as Failed 
+            $service = new SubmitWaterLeadToFastConnect($connectionApplcation->id);
+            $service->saveRejectionReason($exception->getMessage(), $connectionApplcation->id, 'water');
+            $service->setStatusFailed($connectionApplcation->id, 'water');
+
             \Log::error($exception->getMessage());
             \Log::error($exception->getTraceAsString());
             throw new Exception("Error Processing Request", 1);

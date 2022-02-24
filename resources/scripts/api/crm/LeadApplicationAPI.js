@@ -3,6 +3,7 @@ import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
 import dayjs from "dayjs";
 import OfficeMapper from "@scripts/api/mappers/crm/OfficeMapper";
+import SecondaryContactMapper from "@scripts/api/mappers/crm/SecondaryContactMapper";
 
 const data = [
     {
@@ -431,22 +432,22 @@ export default {
 
     async loadAuthorizedPerson(id) {
         try {
-
-            const data = await axios.get('/api/authoized-person/'+id);
+            const data = await axios.get('/api/secondary-contact/'+id);
             return data.data.data;
-
         } catch (error) {
             return error.data;
         }
     },
 
-    async saveAuthorizedPerson(audata) {
+    async saveAuthorizedPerson(secondaryAuthority) {
         try {
-            audata.dob =  dayjs(audata.dob,'DD/MM/YYYY').format('YYYY-MM-DD');
-            const data = await axios.post('/api/authoized-person',{...audata});
+            let mappedDate = SecondaryContactMapper.mapContactToServer(secondaryAuthority);
+            console.log(mappedDate, secondaryAuthority);
+            const data = await axios.post('/api/secondary-contact',{...mappedDate});
             return data.data.data;
 
         } catch (error) {
+            console.log(error.data);
             return error.data;
         }
     },
@@ -513,8 +514,4 @@ export default {
             return error.data;
         }
     },
-
-
-
-
 }

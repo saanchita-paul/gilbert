@@ -63,6 +63,9 @@ class FastConnectProductService
         info('Water Log',$this->getProductGroupData());
         info('Water Log',json_decode($response->body(), true));
 
+        if($response->status() === 400) {
+            throw new \Exception('Product Group: '. json_decode($response->body())->detail);
+        }
 
         $this->productConnectionGroups = json_decode($response->body())->connection_groups;
         return $this;

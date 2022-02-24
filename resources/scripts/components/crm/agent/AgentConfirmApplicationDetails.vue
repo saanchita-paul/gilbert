@@ -14,7 +14,7 @@
                                 Lead Details
                             </h4>
                         </v-col>
-                        <v-col cols="4" class="my-0 py-0  d-flex justify-end">
+                        <v-col cols="4" class="my-0 py-0  d-flex ">
                             <p class="font-weight-bold pl-2 mb-1">Applicant Name:</p>
                         </v-col>
                         <v-col cols="7" class="my-0 py-0">
@@ -24,7 +24,7 @@
                             </p>
                         </v-col>
 
-                        <v-col cols="4" class="my-0 py-0  d-flex justify-end">
+                        <v-col cols="4" class="my-0 py-0  d-flex ">
                             <p class="font-weight-bold pl-2 mb-1">Occupancy Type:</p>
                         </v-col>
                         <v-col cols="7" class="my-0 py-0">
@@ -32,7 +32,7 @@
                                 {{ application.tenancy_type == 1?'Renter':'Owner' }}
                             </p>
                         </v-col>
-                        <v-col cols="4" class="my-0 py-0  d-flex justify-end">
+                        <v-col cols="4" class="my-0 py-0  d-flex ">
                             <p class="font-weight-bold pl-2 mb-1">Date of Birth:</p>
                         </v-col>
                         <v-col cols="7" class="my-0 py-0">
@@ -40,7 +40,7 @@
                                 {{ application.date_of_birth}}
                             </p>
                         </v-col>
-                        <v-col v-if="application.phone_type === 1"  cols="4" class="my-0 py-0  d-flex justify-end">
+                        <v-col v-if="application.phone_type === 1"  cols="4" class="my-0 py-0  d-flex ">
                             <p class="font-weight-bold pl-2 mb-1">Mobile No:</p>
                         </v-col>
                         <v-col v-if="application.phone_type === 1" cols="7" class="my-0 py-0">
@@ -49,7 +49,7 @@
                             </p>
                         </v-col>
 
-                        <v-col v-if="application.phone_type !== 1" cols="4" class="my-0 py-0  d-flex justify-end">
+                        <v-col v-if="application.phone_type !== 1" cols="4" class="my-0 py-0  d-flex ">
                             <p class="font-weight-bold pl-2 mb-1">Homephone No:</p>
                         </v-col>
                         <v-col v-if="application.phone_type !== 1" cols="7" class="my-0 py-0 ">
@@ -58,7 +58,7 @@
                             </p>
                         </v-col>
 
-                        <v-col cols="4" class="my-0 py-0  d-flex justify-end">
+                        <v-col cols="4" class="my-0 py-0  d-flex ">
                             <p class="font-weight-bold pl-2 mb-1">Email:</p>
                         </v-col>
                         <v-col cols="7" class="my-0 py-0">
@@ -89,7 +89,7 @@
                             </h4>
                         </v-col>
                         <template v-if="identification.type === 3">
-                            <v-col cols="4" class="my-0 py-0 d-flex justify-end">
+                            <v-col cols="4" class="my-0 py-0 d-flex ">
                                 <p class="font-weight-bold pl-2 mb-1">Identification Type:</p>
                             </v-col>
                             <v-col cols="7" class="my-0 py-0">
@@ -98,7 +98,7 @@
                                 </p>
                             </v-col>
 
-                            <v-col cols="4" class="my-0 py-0  d-flex justify-end">
+                            <v-col cols="4" class="my-0 py-0  d-flex ">
                                 <p class="font-weight-bold pl-2 mb-1">Medicare Number:</p>
                             </v-col>
                             <v-col cols="7" class="my-0 py-0">
@@ -106,7 +106,7 @@
                                     {{ identification.card_number}}
                                 </p>
                             </v-col>
-                            <v-col cols="4" class="my-0 py-0 d-flex justify-end">
+                            <v-col cols="4" class="my-0 py-0 d-flex ">
                                 <p class="font-weight-bold pl-2 mb-1">Special Number:</p>
                             </v-col>
                             <v-col cols="7" class="my-0 py-0">
@@ -114,7 +114,7 @@
                                     {{ identification.special_number}}
                                 </p>
                             </v-col>
-                            <v-col cols="4" class="my-0 py-0 d-flex justify-end">
+                            <v-col cols="4" class="my-0 py-0 d-flex ">
                                 <p class="font-weight-bold pl-2 mb-1">Expiry Date:</p>
                             </v-col>
                             <v-col cols="7" class="my-0 py-0">
@@ -122,7 +122,7 @@
                                     {{ identification.expire_date}}
                                 </p>
                             </v-col>
-                            <v-col cols="4" class="my-0 py-0  d-flex justify-end">
+                            <v-col cols="4" class="my-0 py-0  d-flex ">
                                 <p class="font-weight-bold pl-2 mb-1">Card Colour:</p>
                             </v-col>
                             <v-col cols="7" class="my-0 py-0">
@@ -133,7 +133,7 @@
                         </template>
 
                         <template v-if="identification.type === 1">
-                            <v-col  cols="4" class="my-0 py-0  d-flex justify-end">
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
                                 <p class="font-weight-bold pl-2 mb-1">Identification Type:</p>
                             </v-col>
                             <v-col cols="7" class="my-0 py-0">
@@ -142,7 +142,7 @@
                                 </p>
                             </v-col>
 
-                            <v-col  cols="4" class="my-0 py-0  d-flex justify-end">
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
                                 <p class="font-weight-bold pl-2 mb-1">Passport Number:</p>
                             </v-col>
                             <v-col cols="7" class="my-0 py-0">
@@ -150,7 +150,7 @@
                                     {{ identification.card_number}}
                                 </p>
                             </v-col>
-                            <v-col  cols="4" class="my-0 py-0  d-flex justify-end">
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
                                 <p class="font-weight-bold pl-2 mb-1">Issuing Country:</p>
                             </v-col>
                             <v-col cols="7" class="my-0 py-0">
@@ -158,7 +158,7 @@
                                     {{ identification.country}}
                                 </p>
                             </v-col>
-                            <v-col  cols="4" class="my-0 py-0  d-flex justify-end">
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
                                 <p class="font-weight-bold pl-2 mb-1">Expiry Date:</p>
                             </v-col>
                             <v-col cols="7" class="my-0 py-0">
@@ -169,7 +169,7 @@
                         </template>
 
                         <template v-if="identification.type === 2">
-                            <v-col  cols="4" class="my-0 py-0  d-flex justify-end">
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
                                 <p class="font-weight-bold pl-2 mb-1">Identification Type:</p>
                             </v-col>
                             <v-col cols="7" class="my-0 py-0">
@@ -178,7 +178,7 @@
                                 </p>
                             </v-col>
 
-                            <v-col  cols="4" class="my-0 py-0  d-flex justify-end">
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
                                 <p class="font-weight-bold pl-2 mb-1">Driver’s License:</p>
                             </v-col>
                             <v-col cols="7" class="my-0 py-0">
@@ -186,7 +186,7 @@
                                     {{ identification.card_number}}
                                 </p>
                             </v-col>
-                            <v-col cols="4" class="my-0 py-0  d-flex justify-end">
+                            <v-col cols="4" class="my-0 py-0  d-flex ">
                                 <p class="font-weight-bold pl-2 mb-1" >State:</p>
                             </v-col>
                             <v-col cols="7" class="my-0 py-0">
@@ -194,7 +194,7 @@
                                     {{ identification.state}}
                                 </p>
                             </v-col>
-                            <v-col  cols="4" class="my-0 py-0  d-flex justify-end">
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
                                 <p class="font-weight-bold pl-2 mb-1">Expiry Date:</p>
                             </v-col>
                             <v-col cols="7" class="my-0 py-0">
@@ -207,11 +207,10 @@
                         <template v-if="has_authorized">
                             <v-col cols="12">
                                 <h4 class="mt-5 primary--text">
-                                    Authorised Person
+                                    Authorised Person's Details
                                 </h4>
                             </v-col>
-
-                            <v-col  cols="4" class="my-0 py-0  d-flex justify-end">
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
                                 <p class="font-weight-bold pl-2 mb-1">Applicant Name:</p>
                             </v-col>
                             <v-col cols="7" class="my-0 py-0">
@@ -219,7 +218,7 @@
                                     {{ authorised_full_name }}
                                 </p>
                             </v-col>
-                            <v-col  cols="4" class="my-0 py-0  d-flex justify-end">
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
                                 <p class="font-weight-bold pl-2 mb-1">Email:</p>
                             </v-col>
                             <v-col cols="7" class="my-0 py-0">
@@ -227,7 +226,7 @@
                                     {{ authorisedPerson.email}}
                                 </p>
                             </v-col>
-                            <v-col  cols="4" class="my-0 py-0  d-flex justify-end">
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
                                 <p class="font-weight-bold pl-2 mb-1">Date of Birth:</p>
                             </v-col>
                             <v-col cols="7" class="my-0 py-0">
@@ -235,7 +234,7 @@
                                     {{ authorisedPerson.dob}}
                                 </p>
                             </v-col>
-                            <v-col  cols="4" class="my-0 py-0  d-flex justify-end">
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
                                 <p class="font-weight-bold pl-2 mb-1">Mobile No:</p>
                             </v-col>
                             <v-col cols="7" class="my-0 py-0">
@@ -245,7 +244,135 @@
                             </v-col>
                         </template>
 
+                        <template v-if="has_authorized && authorisedPerson.identification_type === 3">
+                            <v-col cols="12">
+                                <h4 class="mt-5 primary--text">
+                                    Authorised Person's Identification
+                                </h4>
+                            </v-col>
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
+                                <p class="font-weight-bold pl-2 mb-1">Identification Type:</p>
+                            </v-col>
+                            <v-col cols="7" class="my-0 py-0">
+                                <p class="mb-1">
+                                    {{ 'Medicare' }}
+                                </p>
+                            </v-col>
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
+                                <p class="font-weight-bold pl-2 mb-1">Medicare Number:</p>
+                            </v-col>
+                            <v-col cols="7" class="my-0 py-0">
+                                <p class="mb-1">
+                                    {{ authorisedPerson.card_number}}
+                                </p>
+                            </v-col>
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
+                                <p class="font-weight-bold pl-2 mb-1">Special Number:</p>
+                            </v-col>
+                            <v-col cols="7" class="my-0 py-0">
+                                <p class="mb-1">
+                                    {{ authorisedPerson.special_number}}
+                                </p>
+                            </v-col>
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
+                                <p class="font-weight-bold pl-2 mb-1">Expiry Date:</p>
+                            </v-col>
+                            <v-col cols="7" class="my-0 py-0">
+                                <p class="mb-1">
+                                    {{ authorisedPerson.expire_date}}
+                                </p>
+                            </v-col>
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
+                                <p class="font-weight-bold pl-2 mb-1">Card Color:</p>
+                            </v-col>
+                            <v-col cols="7" class="my-0 py-0">
+                                <p class="mb-1">
+                                    {{ authorisedPerson.card_color}}
+                                </p>
+                            </v-col>
+                        </template>
+                        <template v-if="has_authorized && authorisedPerson.identification_type === 1">
+                            <v-col cols="12">
+                                <h4 class="mt-5 primary--text">
+                                    Authorised Person's Identification
+                                </h4>
+                            </v-col>
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
+                                <p class="font-weight-bold pl-2 mb-1">Identification Type:</p>
+                            </v-col>
+                            <v-col cols="7" class="my-0 py-0">
+                                <p class="mb-1">
+                                    {{ 'Passport' }}
+                                </p>
+                            </v-col>
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
+                                <p class="font-weight-bold pl-2 mb-1">Passport Number:</p>
+                            </v-col>
+                            <v-col cols="7" class="my-0 py-0">
+                                <p class="mb-1">
+                                    {{ authorisedPerson.card_number}}
+                                </p>
+                            </v-col>
 
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
+                                <p class="font-weight-bold pl-2 mb-1">Issuing Country:</p>
+                            </v-col>
+                            <v-col cols="7" class="my-0 py-0">
+                                <p class="mb-1">
+                                    {{ authorisedPerson.country}}
+                                </p>
+                            </v-col>
+
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
+                                <p class="font-weight-bold pl-2 mb-1">Expiry Date:</p>
+                            </v-col>
+                            <v-col cols="7" class="my-0 py-0">
+                                <p class="mb-1">
+                                    {{ authorisedPerson.expire_date}}
+                                </p>
+                            </v-col>
+                        </template>
+                        <template v-if="has_authorized && authorisedPerson.identification_type === 2">
+                            <v-col cols="12">
+                                <h4 class="mt-5 primary--text">
+                                    Authorised Person's Identification
+                                </h4>
+                            </v-col>
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
+                                <p class="font-weight-bold pl-2 mb-1">Identification Type:</p>
+                            </v-col>
+                            <v-col cols="7" class="my-0 py-0">
+                                <p class="mb-1">
+                                    {{ 'License' }}
+                                </p>
+                            </v-col>
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
+                                <p class="font-weight-bold pl-2 mb-1">Driver's License:</p>
+                            </v-col>
+                            <v-col cols="7" class="my-0 py-0">
+                                <p class="mb-1">
+                                    {{ authorisedPerson.card_number}}
+                                </p>
+                            </v-col>
+
+                            <v-col cols="4" class="my-0 py-0  d-flex ">
+                                <p class="font-weight-bold pl-2 mb-1" >State:</p>
+                            </v-col>
+                            <v-col cols="7" class="my-0 py-0">
+                                <p class="mb-1">
+                                    {{ authorisedPerson.state}}
+                                </p>
+                            </v-col>
+
+                            <v-col  cols="4" class="my-0 py-0  d-flex ">
+                                <p class="font-weight-bold pl-2 mb-1">Expiry Date:</p>
+                            </v-col>
+                            <v-col cols="7" class="my-0 py-0">
+                                <p class="mb-1">
+                                    {{ authorisedPerson.expire_date}}
+                                </p>
+                            </v-col>
+                        </template>
                         <v-col cols="12">
                             <h4 class="mt-4 primary--text">
                                 Connection Details
@@ -254,7 +381,7 @@
 
 
 
-                        <v-col  cols="4" class="my-0 py-0  d-flex justify-end">
+                        <v-col  cols="4" class="my-0 py-0  d-flex ">
                             <p class="font-weight-bold pl-2 mb-1">Moving Date:</p>
                         </v-col>
                         <v-col cols="7" class="my-0 py-0">
@@ -262,7 +389,7 @@
                                 {{ application.moving_date}}
                             </p>
                         </v-col>
-                        <v-col  cols="4" class="my-0 py-0  d-flex justify-end">
+                        <v-col  cols="4" class="my-0 py-0  d-flex ">
                             <p class="font-weight-bold pl-2 mb-1">Address:</p>
                         </v-col>
                         <v-col cols="7" class="my-0 py-0">

@@ -60,16 +60,17 @@ class UpdatedWaterStatus
      */
     public static function updateStatus(int $leadId, int $status, ?string $reason)
     {
-        ConnectionService::query()
+        $waterServiceBuilder =  ConnectionService::query()
             ->where('connection_application_id', $leadId)
-            ->where('service_type', ConnectionService::TYPE_WATER)
-            ->update(['status' => $status, 'reason' => $reason]);
-        
+            ->where('service_type', ConnectionService::TYPE_WATER);
+
+        if(is_null($waterServiceBuilder->first())) {
+            ConnectionService::create(['connection_application_id'=> $leadId, 'service_type'=> ConnectionService::TYPE_WATER]);
+        }
+        $waterServiceBuilder->update(['status' => $status, 'reason' => $reason]);
+
         if($status == ConnectionService::WATER_STATUS_CONNECTED) {
-            ConnectionService::query()
-                ->where('connection_application_id', $leadId)
-                ->where('service_type', ConnectionService::TYPE_WATER)
-                ->update(['accepted_at' => now()]);
+            $waterServiceBuilder->update(['accepted_at' => now()]);
         }
     }
 }

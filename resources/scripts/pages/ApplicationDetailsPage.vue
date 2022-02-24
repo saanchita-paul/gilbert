@@ -31,9 +31,14 @@
             <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag"
                                :readmore="additionalInstruction"
                                @close="closeReadMore"> </LeadReadMoreModal>
+<<<<<<< HEAD
             <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" v-if="showSubmitModal" @saveData="saveData" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
 
             <AssignedToUserEmptyModal v-if="assignedToDialog" :dialog="assignedToDialog" @closeMessage="closeAssignedToEmptyModal"></AssignedToUserEmptyModal>
+=======
+            <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" secondaryContact="secondaryContact" v-if="showSubmitModal" @saveData="saveData" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
+            <PreventSubmissionModal v-if="preventSubmissionFlag" :message="preventSubmissionMessage" :dialog="preventSubmissionFlag" @closeMessage="closePreventSubmissionModal"></PreventSubmissionModal>
+>>>>>>> HCO_517_water_related_issues
     </v-container>
 </template>
 
@@ -53,6 +58,7 @@ import LeadApplicationAPI from "@scripts/api/crm/LeadApplicationAPI";
 import * as dayjs from "dayjs";
 import {isNull} from "lodash-es";
 import axios from 'axios'
+import PreventSubmissionModal from "@scripts/components/crm/modals/PreventSubmissionModal";
 export default {
     name: "ApplicationDetailsPage",
 
@@ -66,7 +72,8 @@ export default {
         LeadSubmitConfirmationModal,
         CloseApplicationReasonModal,
         CloseConfirmModal,
-        AssignedToUserEmptyModal
+        AssignedToUserEmptyModal,
+        PreventSubmissionModal
     },
 
     data() {
@@ -93,6 +100,8 @@ export default {
             isManualChangeFlag: false,
             submitType: null,
             assignedToDialog: false,
+            preventSubmissionFlag: false,
+            preventSubmissionMessage: '',
 
             //$attrs
             infoToPass:{
@@ -218,6 +227,10 @@ export default {
             let assignedHoodUser = await this.getAssignedHoodUser();
             if(!assignedHoodUser) {
                 this.assignedToDialog = true;
+            }
+            if(this.isWaterUnavailable(submitType, this.lead?.property_details?.state, this.lead?.person_details?.tenancy_type))
+            {
+                this.preventSubmissionFlag = true;
                 return;
             }
 
@@ -236,6 +249,23 @@ export default {
 
         async getAssignedHoodUser() {
             return await LeadApplicationService.getAssignedHoodUser(this.leadId);
+        },
+
+        isWaterUnavailable($submitType, $state, $tenantType) {
+
+            if($submitType === 'water' && $state !== 'Victoria') {
+                this.preventSubmissionMessage = 'Water is not available outside Victoria';
+                return true;
+            }
+            if($submitType === 'water' && $tenantType === 2) {
+                this.preventSubmissionMessage = 'Water is not available for Tenancy Home Owner ';
+                return true;
+            }
+             return false;
+        },
+
+        closePreventSubmissionModal() {
+          this.preventSubmissionFlag = false;
         },
 
         backToEdit() {
