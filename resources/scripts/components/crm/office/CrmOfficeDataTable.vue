@@ -1,13 +1,11 @@
 <template>
     <v-container fluid>
-        <v-btn  class="back-button"  @click="backToAgency"><v-icon>mdi-arrow-left</v-icon> Back to Agencies</v-btn>
+       
         <v-card v-if="isLoaded" class="hood-card  mt-4 ">
-            <div class="d-flex justify-space-between pb-4">
+            <!-- <div class="d-flex justify-space-between pb-4">
                 <h2>{{agency.title}} Offices</h2>
-                <v-btn outlined @click="editAgencyName">Edit Agency Name</v-btn>
-            </div>
-<!--            <LeadMetrics :agency_id="id"></LeadMetrics>-->
-<!--                <v-btn outlined @click="editAgencyName">Edit Agency</v-btn>-->
+                <v-btn outlined @click="editAgencyName">Edit Agency</v-btn>
+            </div> -->
             <LeadMetrics :agency_id="id">
                 <template v-slot:editButton>
                     <v-btn style="height: 40px;" outlined @click="editAgencyName">Edit Agency</v-btn>
@@ -68,7 +66,6 @@ import OfficeService from "@scripts/services/crm/OfficeService";
 import LeadMetrics from "@scripts/components/crm/LeadMetrics";
 import AgencyService from "@scripts/services/crm/AgencyService";
 import AgencyEditModal from "@scripts/components/crm/modals/AgencyEditModal";
-
 export default {
 name: "CrmOfficeDataTable",
     props: {
@@ -102,7 +99,7 @@ name: "CrmOfficeDataTable",
                     value: 'title'
                 },
                 {
-                    text: 'Applications',
+                    text: 'Applicants',
                     align: 'start',
                     sortable: true,
                     value: 'total_leads'
@@ -118,10 +115,16 @@ name: "CrmOfficeDataTable",
                     align: 'start',
                     sortable: true,
                     value: 'user_count'
+                },
+                {
+                    text: 'Rent Roll',
+                    align: 'start',
+                    sortable: true,
+                    value: 'rent_roll'
                 }
             ],
             search: '',
-            agency: null,
+            agency: {},
             isLoaded: false,
 
         }
@@ -208,8 +211,12 @@ name: "CrmOfficeDataTable",
 
         async saveAgencyName(agency) {
             // console.log(agency);
-            let payload = {name: agency}
-           await AgencyService.updateAgency(payload, this.$route.params.id)
+            let formData = new FormData();
+            console.log("agency" , agency);
+            formData.append('title' , agency.title);
+            formData.append('image' , agency.logo);
+            console.log('name printi'  , formData.get('name'))
+            await AgencyService.updateAgency(formData, this.$route.params.id)
             this.editAgencyNameFlag = false;
 
         },
