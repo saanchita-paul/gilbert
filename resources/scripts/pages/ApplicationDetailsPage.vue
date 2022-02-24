@@ -31,14 +31,9 @@
             <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag"
                                :readmore="additionalInstruction"
                                @close="closeReadMore"> </LeadReadMoreModal>
-<<<<<<< HEAD
-            <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" v-if="showSubmitModal" @saveData="saveData" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
 
-            <AssignedToUserEmptyModal v-if="assignedToDialog" :dialog="assignedToDialog" @closeMessage="closeAssignedToEmptyModal"></AssignedToUserEmptyModal>
-=======
             <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" secondaryContact="secondaryContact" v-if="showSubmitModal" @saveData="saveData" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
             <PreventSubmissionModal v-if="preventSubmissionFlag" :message="preventSubmissionMessage" :dialog="preventSubmissionFlag" @closeMessage="closePreventSubmissionModal"></PreventSubmissionModal>
->>>>>>> HCO_517_water_related_issues
     </v-container>
 </template>
 
@@ -54,11 +49,10 @@ import EscalationConfirmModal from "@scripts/components/crm/modals/EscalationCon
 import LeadReadMoreModal from "@scripts/components/crm/modals/LeadReadMoreModal";
 import LeadSubmitConfirmationModal from "@scripts/components/crm/modals/LeadSubmitConfirmationModal";
 import AssignedToUserEmptyModal from "@scripts/components/crm/modals/AssignedToUserEmptyModal";
-import LeadApplicationAPI from "@scripts/api/crm/LeadApplicationAPI";
 import * as dayjs from "dayjs";
 import {isNull} from "lodash-es";
-import axios from 'axios'
 import PreventSubmissionModal from "@scripts/components/crm/modals/PreventSubmissionModal";
+
 export default {
     name: "ApplicationDetailsPage",
 

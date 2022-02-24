@@ -2,12 +2,10 @@
 namespace App\Listeners;
 
 
-use App\Mail\WaterSumissionFailed;
-use App\Services\Utility\AddressValidationService;
-use Illuminate\Support\Facades\Mail;
 use App\Models\ConnectionApplication;
 use App\Services\Agency\UpdatedWaterStatus;
 use App\Services\Agency\WaterEmailService;
+use App\Services\Utility\AddressValidationService;
 use FastConnect\Services\SubmitWaterLeadToFastConnect;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -68,14 +66,16 @@ class WaterServiceListener implements ShouldQueue
             }
         }
         } catch (\Exception $exception) {
+            ConnectionApplication::where('id', $event->applicationId)->update(['is_auto_water_submit' => 0 ]);
+
             // Saving Failed reason and set Water status as Failed
             $service->saveRejectionReason($exception->getMessage(), $event->applicationId, 'water');
             $service->setStatusFailed($event->applicationId, 'water');
 
             // $this->sendEmail($exception->getMessage());
             WaterEmailService::sendEmailWhenSubmissionFails($exception->getMessage() , $event->applicationId);
-            info('exception in handle method, WaterAutoSubmitJob' , [ $exception->getTraceAsString() , $exception->getMessage() ]);
-            throw new \Exception('Water submission failed, WaterAutoSubmitJob');
+            \Log::error('Water submission failed, WaterAutoSubmitJob, WaterAutoSubmitJob' , [ $exception->getMessage(), $exception->getTraceAsString()]);
+            throw new \Exception('Water submission failed: ' . $exception->getMessage());
         }
 
     }

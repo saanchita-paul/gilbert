@@ -132,11 +132,12 @@ class ApplicationController extends Controller
     {
         try {
             $service = new ApplicationService();
-            $autoSubmitService = new WaterAutoSubmitService($applicationId);
-            return ApplicationResource::make($service->assignUser(
+            $data = $service->assignUser(
                 $request->get('hood_user_id'),
                 $applicationId
-            ));
+            );
+            $autoSubmitService = new WaterAutoSubmitService($applicationId);
+            return ApplicationResource::make($data);
 
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
@@ -185,9 +186,9 @@ class ApplicationController extends Controller
         $ea_services_id = $service->getNotSubmittedEaService($id);
 
         $options = ['auth_user'=>$authUser, 'services_id'=> $ea_services_id];
-        
+
         SubmitApplicationEvent::dispatch($id, data_get($requestArray, 'lead.submit_type'), $options);
-        
+
         return ApplicationResource::make($res);
     } catch (\Exception $exception) {
         return $this->sendErrorResponse($exception);

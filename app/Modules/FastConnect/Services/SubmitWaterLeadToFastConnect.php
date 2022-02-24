@@ -4,17 +4,16 @@ namespace FastConnect\Services;
 
 use App\Models\APILog;
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionApplicationSecondaryACC;
+use App\Models\ConnectionService;
 use App\Models\Identification;
+use App\Models\RejectionReason;
+use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
-use App\Models\ConnectionApplicationSecondaryACC;
-use App\Models\ConnectionService;
-use App\Models\RejectionReason;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
-
 
 
 class SubmitWaterLeadToFastConnect
@@ -175,13 +174,8 @@ class SubmitWaterLeadToFastConnect
 
         if($response->status() === 201)
         {
-            info("Deleting old reasons");
             $this->deleteOldRejectionReasons($this->application->id, 'water');
         }
-
-        info("nextAvailableDatebody ");
-        info($this->getNextAvailableDate());
-        info("nextAvailableDatebody");
 
         $this->application->update(['water_submit_response' => empty($response->body()) ? null : $response->body(), 'water_next_available_date' => $this->getMovingDate() ]);
 
