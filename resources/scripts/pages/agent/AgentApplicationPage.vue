@@ -1,18 +1,20 @@
 <template>
-    <v-container fluid>
-        <v-row class="mt-0">
+    <div class="mainContainer">
+        <v-row class="mt-0" no-gutters>
             <v-col cols="12">
                 <v-card  class="hood-card">
                     <h3 v-if="user" class="page-title">Hi {{ user.profile.first_name }}, <small class="font-weight">here is a
                         summary of your applications.</small>
-                    </h3>
-                    <span v-if="!pm_connected" class="link-prop">
+
+                        <span v-if="!pm_connected" class="link-prop">
                         <v-btn @click="onLinkPropertyMe" small>🔗 Link PropertyMe</v-btn>
                     </span>
-                    <span v-else class="link-prop">
+                        <span v-else class="link-prop">
                         <v-btn disabled x-small>🔗 PropertyMe is linked</v-btn>
                     </span>
-                    <AgentLeadMetrics></AgentLeadMetrics>
+                    </h3>
+
+                    <AgentApplicationMetrics />
                 </v-card>
                 <AgentApplicationTable
                     v-if="isLoaded"
@@ -55,11 +57,11 @@
             </v-card>
         </v-dialog>
 
-    </v-container>
+    </div>
 </template>
 
 <script>
-import AgentLeadMetrics from "@scripts/components/crm/agent/AgentLeadMetrics";
+import AgentApplicationMetrics from "@scripts/components/crm/agent/AgentApplicationMetrics";
 import AgentApplicationTable from "@scripts/components/crm/agent/AgentApplicationTable";
 import AgentApplicationSummary from "@scripts/components/crm/agent/AgentApplicationSummary";
 import AuthService from "@scripts/services/AuthService";
@@ -69,7 +71,7 @@ export default {
     name: "AgentApplicationPage",
     components: {
         AgentApplicationTable,
-        AgentLeadMetrics,
+        AgentApplicationMetrics,
         AgentApplicationSummary
     },
     data() {
@@ -105,7 +107,8 @@ export default {
             this.applicationMetrics = AgentApplicationService.getApplicationMetrics();
         },
         async getApplicationList() {
-            let data = await AgentApplicationService.getApplicationList(this.sort_search_meta);
+            let type = this.$route.query.type;
+            let data = await AgentApplicationService.getApplicationList({...this.sort_search_meta, consent_type:type});
             this.applicationList = data.applications;
             this.isLoaded = true;
             this.page = data.pagination.current_page;
@@ -123,7 +126,6 @@ export default {
             this.selected_application_id = id;
             this.getApplicationSummary();
         },
-
         refreshDataTable(meta) {
             this.sort_search_meta = meta;
             this.getApplicationList();
