@@ -36,6 +36,11 @@ class WaterServiceListener implements ShouldQueue
         if (isset($event->submitType) && $event->submitType == 'water') {
 
             $ca = ConnectionApplication::query()->where('id', $event->applicationId)->firstOrFail();
+            if($ca->is_auto_water_submit){
+                info("Auto submit water lead , skipping");
+                return false;
+            }
+
             if($ca->state !== 'Victoria') {
                 throw new \Exception('Water Service is not available outside Victoria');
             }

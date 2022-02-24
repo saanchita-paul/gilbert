@@ -15,12 +15,17 @@ class WaterAutoSubmitService
     {
         try {
             $lead = ConnectionApplication::with(['connectionServices' , 'identification'])->where( 'id' ,  $lead_id)->first();
+            info('water auto submit service, lead info');
             if (!$lead->is_auto_water_submit) {
+                info('water auto submit service, lead info, inside, turned on');
+                $lead->update(['is_auto_water_submit'=> WaterAutoSubmitService::STATUS_AUTO_SUBMIT_TRUE ]);
                 $this->validateData($lead);
                 $this->updateConnectionApplication($lead);
             }
 
         } catch (\Exception $exception) {
+            info('water auto submit service, lead info, inside, turned off in service');
+            $lead->update(['is_auto_water_submit'=> 0 ]);
             \Log::error($exception->getMessage());
             \Log::error($exception->getTraceAsString());
         }
@@ -29,7 +34,7 @@ class WaterAutoSubmitService
     private function updateConnectionApplication(ConnectionApplication $connectionApplcation){
 
         try {
-            $connectionApplcation->update(['is_auto_water_submit'=> WaterAutoSubmitService::STATUS_AUTO_SUBMIT_TRUE ]);
+            // $connectionApplcation->update(['is_auto_water_submit'=> WaterAutoSubmitService::STATUS_AUTO_SUBMIT_TRUE ]);
             
             $waterService = new ApplicationService();
             $waterService->setSubmittedAtByServiceType($connectionApplcation->id, 'water');

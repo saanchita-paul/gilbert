@@ -12,9 +12,11 @@ class WaterEmailService{
     public static function sendEmailWhenSubmissionFails($msg, $applicationId)
     {
         try {
-            info("trying to send email");
+            info("trying to send email , fallback");
             info($applicationId);
             $connectionApplication = ConnectionApplication::where('id' , $applicationId)->first();
+            info('water auto submit service, lead info, inside, turned off in email service');
+            $connectionApplication->update(['is_auto_water_submit'=> 0 ]);
             info("connection application , " , [$connectionApplication->id]);
             $dataToBeSent =  [
                 'reason of failure' => $msg,
