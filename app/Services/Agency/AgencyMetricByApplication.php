@@ -55,11 +55,10 @@ class AgencyMetricByApplication
         $builder = $this->applySourceFilter(
             $builder,
             [
-                ConnectionApplication::SOURCE_MAPPING['hood'],
-                ConnectionApplication::SOURCE_MAPPING['foxie']
+                ConnectionApplication::SOURCE_MAPPING['hood']
             ]
         );
-        $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_SUBMITTED);
+        // $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_SUBMITTED);
 
         return $builder->count();
     }
@@ -96,7 +95,7 @@ class AgencyMetricByApplication
             $builder,
             [ConnectionApplication::SOURCE_MAPPING['property_me']]
         );
-        $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_ACCEPTED);
+        // $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_ACCEPTED);
 
         return $builder->count();
     }
@@ -108,7 +107,7 @@ class AgencyMetricByApplication
             $builder,
             [ConnectionApplication::SOURCE_MAPPING['our-property']]
         );
-        $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_ACCEPTED);
+        // $builder = $this->applyStatusFilter($builder, ConnectionService::STATUS_ACCEPTED);
 
         return $builder->count();
     }

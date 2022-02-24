@@ -31,6 +31,20 @@ class OfficeCommission extends Model
 {
     use HasFactory;
 
+    const GAS = 1;
+    const INTERNET = 2;
+    const POWER = 3;
+    const WATER = 4;
+    const SPONSORSHIP = 5;
+
+    const Type = [
+        'gas' => self::GAS,
+        'internet' => self::INTERNET,
+        'power' => self::POWER,
+        'water' => self::WATER,
+        'sponsorship' => self::SPONSORSHIP,
+    ];
+    
     /**
      * The attributes that are mass assignable.
      *

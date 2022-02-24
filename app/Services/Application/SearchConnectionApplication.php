@@ -109,6 +109,26 @@ class SearchConnectionApplication
         return $this->builder->paginate($this->perPage);
     }
 
+    public function getApplicationForAgency(User $user): LengthAwarePaginator
+    {
+        $this->builder = ConnectionApplication::query()
+            ->with('connectionServices.reasons')
+            ->with('SugerLead')
+            ->with('assignedTo')
+            ->with('submittedByUser');
+
+        $this->applyFilterLeadType($user)
+            ->applyFilterUserOffice($user)
+            ->applyFilterSource()
+            ->applyFilterOfficeId()
+            ->applyFilterTenancyType()
+            ->applySearch();
+
+        $this->builder = $this->applySorting($this->builder);
+
+        return $this->builder->paginate($this->perPage);
+    }
+
     /**
      * view business docs here: "/docs/business/applications_card_filters.md"
      * @return $this

@@ -20,7 +20,9 @@ export default class Agency {
         this.last_updated = updated_at? new DayJs(updated_at).format(DATE_FORMAT.REAL_ESTATE_FORMAT) : null;
         this.offices = offices_count;
         this.type = type;
-        this.last_application = last_application? new DayJs(last_application).format(DATE_FORMAT.DATE_MONTH_FORMAT) : null;
+        this.logo = logo;
+        this.last_application = last_application
+        // this.last_application = last_application? new DayJs(last_application).format(DATE_FORMAT.DATE_MONTH_FORMAT) : null;
         this.conversion_rate = conversion_rate+'%';
         this.active_user_count = active_user_count;
         this.rent_roll_count = rent_roll_count;

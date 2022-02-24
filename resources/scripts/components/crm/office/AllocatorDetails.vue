@@ -39,7 +39,7 @@
 <!--              ></v-select>-->
 <!--            </ValidationProvider>-->
 
-          <v-text-field  v-model="allocator.id_212f" @input="updateAllocator" label="212f ID" outlined dense></v-text-field>
+          <v-text-field  v-model="allocator.f_id_12" @input="updateAllocator" label="212f ID" outlined dense></v-text-field>
             <ValidationProvider name="Email" rules="required|email|unique-user-email"  v-slot="{ errors }">
               <v-text-field
                 label="Email Address*"
@@ -75,7 +75,7 @@ export default {
               first_name: '',
               last_name: '',
               job_title: '',
-              id_212f: '',
+              f_id_12: '',
               email: '',
               phone_number: '',
           }

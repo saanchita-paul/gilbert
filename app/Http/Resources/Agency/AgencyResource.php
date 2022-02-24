@@ -2,8 +2,10 @@
 
 namespace App\Http\Resources\Agency;
 
-use App\Services\Agency\SearchAgencyService;
+
 use Illuminate\Http\Resources\Json\JsonResource;
+use Carbon\Carbon;
+use App\Services\Agency\SearchAgencyService;
 
 class AgencyResource extends JsonResource
 {
@@ -23,7 +25,7 @@ class AgencyResource extends JsonResource
             'applications_count' => $this->applications_count,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'last_application' => $this->last_application,
+            'last_application' => (new Carbon($this->last_application, '11'))->format('d/m/Y h:m a'),
             'conversion_rate' => $this->getConversionRate($request, $this->id),
             'active_user_count' => $this->getActiveUserCount($request, $this->id),
             'rent_roll_count' => $this->getRentRollCount($request, $this->id),
