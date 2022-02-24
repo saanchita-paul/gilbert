@@ -168,6 +168,8 @@ class SubmitWaterLeadToFastConnect
             info("Saving Water Failed Response");
             $this->saveRejectionReason($response->body(), $this->application->id, 'water');
             $this->setStatusFailed($this->application->id, 'water');
+            $this->application->update(['is_auto_water_submit' => 0 ]); 
+
         }
 
         if($response->status() === 201)
