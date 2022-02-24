@@ -113,13 +113,13 @@ export default {
             }
         },
         async downloadSalesReport() {
-            console.log("download clicked")
             let token = await SalesDashboardService.getReportAccessToken();
-            console.log(token);
-            window.open(
-                '/api/sales-dashboard/export/submission-report?token='+token+'&type='+this.selectedType+'&start='+this.dateRange.start+'&end='+this.dateRange.end,
-                '_blank'
-            );
+            if(token){
+                window.open(
+                    '/api/sales-dashboard/export/submission-report?token='+token+'&type='+this.selectedType+'&start='+this.dateRange.start+'&end='+this.dateRange.end,
+                    '_blank'
+                );
+            }
         }
     },
     watch: {

@@ -43,12 +43,12 @@ class ReportController extends Controller
                     )
             )->run();
         } catch (\Exception $exception) {
-            return  $this->sendErrorResponse($exception);
+            return  response([ 'status' => false, 'msg' => 'Unathenticated'] , 401);
         }
     }
 
     public function getReportAccessToken(){
         $accessToken = (new SimpleTokenService())->getAccessToken();
-        return $accessToken;
+        return response( [ 'token' => $accessToken , 'status' => true ] , 200);
     }
 }
