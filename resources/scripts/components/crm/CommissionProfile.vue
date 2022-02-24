@@ -36,6 +36,16 @@
             dense
             prepend-inner-icon="mdi-wifi black--text"
           ></v-text-field>
+
+            <p class="title">SponsorShip</p>
+            <v-text-field
+                label="Sponsorship per Annum"
+                placeholder="$ 50.00"
+                outlined
+                dense
+                prepend-inner-icon="mdi-wifi black--text"
+            ></v-text-field>
+
         </div>
       </v-col>
     </v-row>

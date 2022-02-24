@@ -43,10 +43,16 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::get('/agencies', [AgencyController::class, 'index']);
     Route::post('/agencies', [AgencyController::class, 'create']);
+    Route::get('/agencies/get-agency-metrics', [AgencyController::class, 'getAgencyMetrics']);
+    Route::get('/agencies/get-agency-application-metrics', [AgencyController::class, 'getAgencyApplicationMetrics']);
     Route::get('/agencies/{id}', [AgencyController::class, 'getAgency']);
     Route::post('/agencies/{id}/update', [AgencyController::class, 'update']);
     Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
+    // Route::get('/agencies/offices', [OfficeController::class, 'index']);
     Route::post('/agencies/{agencyId}/offices', [OfficeController::class, 'createAgencyOffice']);
+
+
+
 
     Route::post('/independent-agency', [AgencyController::class, 'createIndependentAgency']);
 
@@ -79,6 +85,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::post('/applications', [ApplicationController::class, 'create']);
     Route::get('/applications', [ApplicationController::class, 'index']);
+    Route::get('/applications/agents', [ApplicationController::class, 'SearchConnectionApplicationAgents']);
     Route::get('/applications/{application}', [ApplicationController::class, 'view']);
 
     Route::post('/applications/{id}/submit', [ApplicationController::class, 'submit']);
@@ -173,6 +180,7 @@ Route::get("/karan/sales-status", function () {
     return "success";
 });
 
+Route::get('/alloffices', [OfficeController::class, 'allOffices']);
 
 
 Route::get('country_test', function () {

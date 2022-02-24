@@ -109,40 +109,32 @@ class SearchConnectionApplication
         return $this->builder->paginate($this->perPage);
     }
 
+    public function getApplicationForAgency(User $user): LengthAwarePaginator
+    {
+        $this->builder = ConnectionApplication::query()
+            ->with('connectionServices.reasons')
+            ->with('SugerLead')
+            ->with('assignedTo')
+            ->with('submittedByUser');
+
+        $this->applyFilterLeadType($user)
+            ->applyFilterUserOffice($user)
+            ->applyFilterSource()
+            ->applyFilterOfficeId()
+            ->applyFilterTenancyType()
+            ->applySearch();
+
+        $this->builder = $this->applySorting($this->builder);
+
+        return $this->builder->paginate($this->perPage);
+    }
+
     /**
      * view business docs here: "/docs/business/applications_card_filters.md"
      * @return $this
      */
     private function applyFilterLeadType(User $user): static
     {
-//        if (empty($this->leadType)) {
-//            $this->builder = $this->builder->where('status', '!=', ConnectionApplication::STATUS_CLOSED);
-//        }
-
-
-        //todo: need to refactor this "BAD" code (ask Sazzad if needed).
-        if ($this->leadType) {
-            if ($this->leadType === 'submitted') {
-                $this->builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
-                    ? $this->builder->whereIn('status', [4, 5, 6, 7])
-                    : $this->builder->where('assigned_to', $user->profile->id)
-                        ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED);
-            } else if ($this->leadType === 'in_progress') {
-                $this->builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
-                    ? $this->builder->whereIn('status', [ ConnectionApplication::STATUS_UNASSIGNED, ConnectionApplication::STATUS_ASSIGNED,
-                     ConnectionApplication::STATUS_ESCALATED, ConnectionApplication::STATUS_SUBMITTED,
-                      ])
-                    : $this->builder->where('assigned_to', $user->profile->id)
-                        ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED);
-            }
-             else {
-                $this->builder = $this->leadType !== ConnectionApplication::MY_APPLICATIONS
-                    ? $this->builder->where('status', ConnectionApplication::STATUS_MAPPING[$this->leadType])
-                    : $this->builder->where('assigned_to', $user->profile->id)
-                        ->where('status' , '!=' , ConnectionApplication::STATUS_CLOSED);
-            }
-        }
-
         if (!$this->leadType) {
             return $this;
         }

@@ -33,9 +33,8 @@ import ApplicantTable from "@scripts/components/crm/leadmanagement/ApplicantTabl
 import ApplicationDetails from "@scripts/components/crm/leadmanagement/ApplicationDetails";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import ApplicationDetailScreen from "@scripts/components/crm/leadmanagement/ApplicationDetailScreen";
-import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
-import {isEqual, omit, pick} from "lodash-es";
-import { LeadSearchFilterModel } from '@scripts/models/LeadSearchFilterModel'
+import {isEqual, omit} from "lodash-es";
+import {LeadSearchFilterModel} from '@scripts/models/LeadSearchFilterModel'
 import ApplicationFilter from '@scripts/pages/ApplicationFilter';
 import debounce from "lodash-es/debounce";
 
@@ -159,7 +158,6 @@ export default {
     watch: {
         '$route': {
             handler() {
-                console.log(this.$route.query.name)
                 let reload = this.activeLeadType !== this.$route.query?.type
                     || this.selectedSrc !== this.$route.query?.source;
 

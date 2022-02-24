@@ -72,6 +72,8 @@ class Office extends Model
         'abn',
         'phone',
         'email',
+        'hood_agent_id',
+        'rent_roll',
         'property_me_refresh_token'
     ];
 
@@ -89,6 +91,12 @@ class Office extends Model
     public function agents(): HasMany
     {
         return $this->hasMany(AgentProfile::class);
+    }
+
+    public function activeAgents(){
+        return $this->agents()->whereHas('user', function($query){
+            $query->where('is_active' , 1);
+        })->count();
     }
 
     /**

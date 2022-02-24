@@ -55,6 +55,20 @@
                 :error-messages=" errors[0]"
               ></v-text-field>
             </ValidationProvider>
+
+          <p class="title">SponsorShip</p>
+          <ValidationProvider name="SponsorShip" rules="numeric|required"  v-slot="{ errors }">
+            <v-text-field
+                label="Sponsorship per Annum"
+                placeholder="$ 50.00"
+                v-model="profile.sponsorship"
+                @input="updateProfile"
+                outlined
+                dense
+                :error-messages=" errors[0]"
+            ></v-text-field>
+          </ValidationProvider>
+
         </div>
       </v-col>
     </v-row>
@@ -71,6 +85,7 @@ export default {
               gas: null,
               water: null,
               internet: null,
+            sponsorship: null
 
           }
       }

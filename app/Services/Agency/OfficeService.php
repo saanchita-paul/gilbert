@@ -6,6 +6,7 @@ namespace App\Services\Agency;
 
 use App\Models\Agency;
 use App\Models\AgentProfile;
+use App\Models\HoodProfile;
 use App\Models\Office;
 use App\Models\OfficeCommission;
 
@@ -24,6 +25,7 @@ class OfficeService
         $office['agency'] = Agency::find($office['agency_id']);
         $office['commissions'] = $this->getOfficeCommistion();
         $office['agent'] = $this->getAgent();
+        $office['hood_users'] = $this->getHoodUser();
         return $office;
     }
     public function getOnlyOffice()
@@ -43,4 +45,10 @@ class OfficeService
     {
         return AgentProfile::query()->with('user')->where('office_id','=', $this->id)->first();
     }
+
+    public function getHoodUser()
+    {
+        return HoodProfile::query()->get();
+    }
+
 }

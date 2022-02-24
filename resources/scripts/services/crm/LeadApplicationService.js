@@ -7,8 +7,11 @@ import {
 
 export default {
     loadMetrics: (data) => LeadApplicationAPI.getMetrics(data),
+    loadAgencyMetrics: (data) => LeadApplicationAPI.loadAgencyMetrics(data),
+    loadAgencyMetricsByApplication: (data) => LeadApplicationAPI.loadAgencyMetricsByApplication(data),
     loadUserLeadMetrics: () => LeadApplicationAPI.getUserLeadMetrics(),
     loadUserLeads: (sort_search_meta, active_lead_type, src = 'hood' , params) => LeadApplicationAPI.getUserLeads(sort_search_meta, active_lead_type, src , params),
+    loadUserLeadsForAgents: (sort_search_meta, active_lead_type, src = 'hood' , params) => LeadApplicationAPI.loadUserLeadsForAgents(sort_search_meta, active_lead_type, src , params),
     loadUserLead: (id) => LeadApplicationAPI.getUserLead(id),
     closeApplication: (id) => LeadApplicationAPI.closeApplication(id),
     loadPlan: (serviceProvider) => LeadApplicationAPI.getPlan(serviceProvider),
@@ -27,6 +30,10 @@ export default {
     updateApplicationProviders: (payload, application_id) => LeadApplicationAPI.updateApplicationProviders(payload, application_id),
     closeApplicationWithReason: (id, closing_reason) => LeadApplicationAPI.closeApplicationWithReason(id, closing_reason),
     getAssignedHoodUser: (id) => LeadApplicationAPI.getAssignedHoodUser(id),
+    loadHoodUser: () => LeadApplicationAPI.loadHoodUser(),
+    loadAgencies: (search) => LeadApplicationAPI.loadAgencies(search),
+    loadOffices: (agencyId, search) => LeadApplicationAPI.loadOffices(agencyId, search),
+
     /**
      * Getting minimum valid Connection date
      *
@@ -109,5 +116,7 @@ export default {
                     color: 'black'
                 };
         }
-    }
+    },
+
+
 }

@@ -8,4 +8,5 @@ export default {
     async createApplication(application) {
         return await AgentApplicationAPI.createApplication(application);
     },
+    loadHoodAgentList: (meta) => AgentApplicationAPI.loadHoodAgentList(meta),
 }
