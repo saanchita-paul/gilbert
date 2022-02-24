@@ -168,19 +168,14 @@ class SubmitWaterLeadToFastConnect
             info("Saving Water Failed Response");
             $this->saveRejectionReason($response->body(), $this->application->id, 'water');
             $this->setStatusFailed($this->application->id, 'water');
-            $this->application->update(['is_auto_water_submit' => 0 ]); 
+            $this->application->update(['is_auto_water_submit' => 0 ]);
 
         }
 
         if($response->status() === 201)
         {
-            info("Deleting old reasons");
             $this->deleteOldRejectionReasons($this->application->id, 'water');
         }
-        
-        info("nextAvailableDatebody ");
-        info($this->getNextAvailableDate());
-        info("nextAvailableDatebody");
 
         $this->application->update(['water_submit_response' => empty($response->body()) ? null : $response->body(), 'water_next_available_date' => $this->getMovingDate() ]);
 
