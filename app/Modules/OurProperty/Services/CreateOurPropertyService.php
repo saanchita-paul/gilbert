@@ -158,14 +158,14 @@ class CreateOurPropertyService
             $mapperService->mapTenancy($this->userRequestData->tenancy_type) : null;
         $this->connectionApplicaton->moving_date = $this->userRequestData->tenancy_moving_date ?? null;
         $this->connectionApplicaton->additional_instruction = $this->userRequestData->additional_instruction ?? null;
-        $this->connectionApplicaton->street_address = $this->userRequestData->tenancy_street_address ?? null;
+        $this->connectionApplicaton->street_address = $this->getStreetAddress($this->userRequestData) ?? null;
         $this->connectionApplicaton->city = $this->userRequestData->tenancy_city ?? null;
         $this->connectionApplicaton->postcode = $this->userRequestData->tenancy_postcode ?? null;
         $this->connectionApplicaton->state = $this->userRequestData->tenancy_state ?
             $addressService->mapState($this->userRequestData->tenancy_state) : null;
         $this->connectionApplicaton->country = $this->userRequestData->tenancy_country ?
             $addressService->mapCountry($this->userRequestData->tenancy_country) : null;
-        $this->connectionApplicaton->address_text = $this->userRequestData->tenancy_address_text ?? null;
+        $this->connectionApplicaton->address_text = $this->getAddressText($this->userRequestData) ?? null;
         $this->connectionApplicaton->is_email_billing = $this->userRequestData->is_email_billing ?
             $mapperService->mapYesNoToBool($this->userRequestData->is_email_billing) : null;
         $this->connectionApplicaton->property_type = $this->userRequestData->tenancy_property_type ?
@@ -180,7 +180,7 @@ class CreateOurPropertyService
         $this->connectionApplicaton->mirn = $this->userRequestData->tenancy_mirn ?? null;
         $this->connectionApplicaton->unit_number = $this->userRequestData->tenancy_unit_number ?? null;
         $this->connectionApplicaton->street_number = $this->userRequestData->tenancy_street_number ?? null;
-        $this->connectionApplicaton->street_name = $this->userRequestData->tenancy_street_name ?? null;
+        $this->connectionApplicaton->street_name = $this->getStreetName($this->userRequestData) ?? null;
         $this->connectionApplicaton->billing_unit_number = $this->userRequestData->tenancy_billing_unit_number ?? null;
         $this->connectionApplicaton->billing_street_number = $this->userRequestData->tenancy_billing_street_number ?? null;
         $this->connectionApplicaton->billing_street_name = $this->userRequestData->tenancy_billing_street_name ?? null;
@@ -317,5 +317,59 @@ class CreateOurPropertyService
         $name = $this->userRequestData->agent_firstname ?? '';
         $name = $this->userRequestData->agent_lastname ? "$name " . $this->userRequestData->agent_lastname : $name;
         return trim($name);
+    }
+
+    /**
+     * @return string
+     */
+    private function getStreetName($data): string
+    {
+        if ($data->tenancy_street_type !== null) {
+            return $data->tenancy_street_name . ' ' . $data->tenancy_street_type;
+        }
+        return $data->tenancy_street_name;
+    }
+
+
+    /**
+     * @return string
+     */
+    private function getUnitStreetNumber($data): string
+    {
+        if ($data->tenancy_unit_number !== null) {
+            return $data->tenancy_unit_number . '/' . $data->tenancy_street_number;
+        }
+        return $data->tenancy_street_number;
+    }
+
+    /**
+     * @return string
+     */
+    private function getStreetAddress($data): string
+    {
+        if ($data->tenancy_street_address !== null) {
+            return $data->tenancy_street_address;
+        }
+        $streetName = $this->getStreetName($data);
+        $unitStreetNumber = $this->getUnitStreetNumber($data);
+        
+        return $unitStreetNumber . ', ' . $streetName;
+    }
+
+    /**
+     * @return string
+     */
+    private function getAddressText($data): string
+    {
+        $mapperService = new OurPropertyMapper();
+        if ($data->tenancy_address_text !== null) {
+            return $data->tenancy_address_text;
+        }
+        $unitStreetNumber = $this->getUnitStreetNumber($data);
+
+        return $unitStreetNumber . ' ' . $data->tenancy_street_name
+            . ' ' . $mapperService->mapState($data->tenancy_street_type) . ', ' . ucfirst(strtolower($data->tenancy_city))
+            . ' ' . $data->tenancy_state . ' ' . $data->tenancy_postcode
+            . ', ' . $data->tenancy_country;
     }
 }
