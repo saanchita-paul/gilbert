@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-       
+
         <v-card v-if="isLoaded" class="hood-card  mt-4 ">
             <!-- <div class="d-flex justify-space-between pb-4">
                 <h2>{{agency.title}} Offices</h2>
