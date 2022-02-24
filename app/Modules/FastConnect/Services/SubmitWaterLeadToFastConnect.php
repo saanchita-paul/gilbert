@@ -420,7 +420,7 @@ class SubmitWaterLeadToFastConnect
                     ],
 
                 Identification::TYPE_DRIVING_LICENCE => [
-                        'issuer_state_id' => $this->getMappedIdentificationState($secondaryContact->identification->state),
+                        'issuer_state_id' => $this->getMappedIdentificationState($secondaryContact->state),
                     ],
                 default => []
             };
