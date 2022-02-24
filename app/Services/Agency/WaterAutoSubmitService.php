@@ -65,19 +65,19 @@ class WaterAutoSubmitService
     private function validateData(ConnectionApplication $connectionApplcation)
     {
         if (
-            isset($connectionApplcation->street_number) &&
-            isset($connectionApplcation->street_name) &&
-            isset($connectionApplcation->city) &&
-            isset($connectionApplcation->postcode) &&
-            isset($connectionApplcation->first_name) &&
-            isset($connectionApplcation->last_name) &&
-            isset($connectionApplcation->dob) &&
-            isset($connectionApplcation->email) &&
-            isset($connectionApplcation->phone) &&
-            isset($connectionApplcation->state) &&
-            isset($connectionApplcation->title) &&
-            isset($connectionApplcation->tenancy_type) &&
-            isset($connectionApplcation->identification)
+            !empty($connectionApplcation->street_number) &&
+            !empty($connectionApplcation->street_name) &&
+            !empty($connectionApplcation->city) &&
+            !empty($connectionApplcation->postcode) &&
+            !empty($connectionApplcation->first_name) &&
+            !empty($connectionApplcation->last_name) &&
+            !empty($connectionApplcation->dob) &&
+            !empty($connectionApplcation->email) &&
+            !empty($connectionApplcation->phone) &&
+            !empty($connectionApplcation->state) &&
+            !empty($connectionApplcation->title) &&
+            !empty($connectionApplcation->tenancy_type) &&
+            !empty($connectionApplcation->identification)
         ) {
             info('lead passed');
             // throw new Exception('invalid field found in connection application table');
@@ -86,8 +86,8 @@ class WaterAutoSubmitService
         }
 
         if (
-            isset($connectionApplcation->identification['card_number']) &&
-            isset($connectionApplcation->identification['expire_date'])
+            !empty($connectionApplcation->identification['card_number']) &&
+            !empty($connectionApplcation->identification['expire_date'])
         ) {
             return true;
         } else {
@@ -108,7 +108,7 @@ class WaterAutoSubmitService
 
         if ($connectionApplcation->tenancy_type == ConnectionApplication::TENANCY_TYPE_HOME_OWNER) {
             return true;
-        } else if (isset($connectionApplcation->dob)) {
+        } else if (!empty($connectionApplcation->dob)) {
             return true;
         } else {
             return false;

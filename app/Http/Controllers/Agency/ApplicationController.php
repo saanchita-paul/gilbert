@@ -2,29 +2,25 @@
 
 namespace App\Http\Controllers\Agency;
 
-use App\Models\User;
-use Illuminate\Http\Request;
-use App\Models\ConnectionService;
-use Illuminate\Http\JsonResponse;
-use App\Http\Controllers\Controller;
-use App\Services\FastConnectService;
-use Illuminate\Support\Facades\Auth;
-use App\Models\ConnectionApplication;
-use App\Services\Utility\SumoService;
-use Illuminate\Support\Facades\Config;
-use App\Services\Agency\ApplicationService;
 use App\Events\Agency\CreateApplicationEvent;
 use App\Events\Agency\SubmitApplicationEvent;
-use App\Http\Requests\Agency\ProviderRequest;
-use App\Services\Agency\HubspotContactService;
-use App\Services\Agency\WaterAutoSubmitService;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Agency\ApplicationRequest;
+use App\Http\Requests\Agency\ProviderRequest;
+use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationResource;
+use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
+use App\Models\User;
+use App\Services\Agency\ApplicationService;
 use App\Services\Agency\ApplicationsMetricsService;
 use App\Services\Agency\SearchConnectionApplication;
-use App\Services\Utility\IgniteConnectionLeadService;
-use App\Http\Resources\Agency\ApplicationMetricsResource;
+use App\Services\Agency\WaterAutoSubmitService;
+use App\Services\FastConnectService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 use PropertyMe\services\FetchContacts;
 
 class ApplicationController extends Controller
@@ -123,11 +119,12 @@ class ApplicationController extends Controller
     {
         try {
             $service = new ApplicationService();
-            $autoSubmitService = new WaterAutoSubmitService($applicationId);
-            return ApplicationResource::make($service->assignUser(
+            $data = $service->assignUser(
                 $request->get('hood_user_id'),
                 $applicationId
-            ));
+            );
+            $autoSubmitService = new WaterAutoSubmitService($applicationId);
+            return ApplicationResource::make($data);
 
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
@@ -176,9 +173,9 @@ class ApplicationController extends Controller
         $ea_services_id = $service->getNotSubmittedEaService($id);
 
         $options = ['auth_user'=>$authUser, 'services_id'=> $ea_services_id];
-        
+
         SubmitApplicationEvent::dispatch($id, data_get($requestArray, 'lead.submit_type'), $options);
-        
+
         return ApplicationResource::make($res);
     } catch (\Exception $exception) {
         return $this->sendErrorResponse($exception);
