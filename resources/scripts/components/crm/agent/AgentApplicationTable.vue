@@ -127,12 +127,6 @@ export default {
             value: 'created_at'
           },
           {
-            text: 'Status',
-            align: 'start',
-            sortable: true,
-            value: 'status'
-          },
-          {
 
               text: 'Agent Name',
               align: 'start',
@@ -162,7 +156,13 @@ export default {
               value: 'data-table-expand',
               align: 'start',
               sortable: true,
-          }
+          },
+          {
+            text: 'Status',
+            align: 'start',
+            sortable: true,
+            value: 'status'
+          },
         ],
         search: '',
         advanceSearchModal: false,
