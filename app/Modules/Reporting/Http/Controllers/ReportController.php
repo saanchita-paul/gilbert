@@ -38,8 +38,7 @@ class ReportController extends Controller
                 new ExportSubmissionReport(
                     $request->get('type'),
                     $request->get('start'),
-                    $request->get('end'),
-                    $request->get('token'),
+                    $request->get('end')
                     )
             )->run();
         } catch (\Exception $exception) {

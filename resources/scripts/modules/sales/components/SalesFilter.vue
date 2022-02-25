@@ -113,13 +113,13 @@ export default {
             }
         },
         async downloadSalesReport() {
-            let token = await SalesDashboardService.getReportAccessToken();
-            if(token){
-                window.open(
-                    '/api/sales-dashboard/export/submission-report?token='+token+'&type='+this.selectedType+'&start='+this.dateRange.start+'&end='+this.dateRange.end,
-                    '_blank'
-                );
-            }
+            // let token = await SalesDashboardService.getReportAccessToken();
+            // if(token){
+            window.open(
+                '/api/sales-dashboard/export/submission-report?type='+this.selectedType+'&start='+this.dateRange.start+'&end='+this.dateRange.end,
+                '_blank'
+            );
+            // }
         }
     },
     watch: {

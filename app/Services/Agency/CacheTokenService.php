@@ -14,7 +14,8 @@ class CacheTokenService implements TokenManagerInterface {
     public function verifyAccessToken(string $token): bool
     {
         $savedToken = Cache::get($this->getUserId(), false);
-        if($savedToken == $token){
+        if($savedToken == $token)
+        {
             return true;
         } else {
             return false;

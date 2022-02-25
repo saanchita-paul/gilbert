@@ -42,23 +42,22 @@ class ExportSubmissionReport
         ConnectionService::STATUS_CANT_CONNECT, //Failed
     ];
 
-    public function __construct(string $type, string $start, string $end, string $token)
+    public function __construct(string $type, string $start, string $end)
     {
         $this->setDateRange($start, $end);
         $this->type = $type;
         $this->serviceType = $type === 'energy' ? $this->energyType : $this->waterType;
         $this->chatbotUri = config('bot.root_url');
-        $this->token = $token;
     }
 
     private array $leadsData = [];
 
     public function run()
     {
-        $accessToken = (new SimpleTokenService())->verifyAccessToken($this->token);
-        if (!$accessToken) {
-            throw new \Exception('Invalid token');
-        }
+        // $accessToken = (new SimpleTokenService())->verifyAccessToken($this->token);
+        // if (!$accessToken) {
+        //     throw new \Exception('Invalid token');
+        // }
         $this->mapData($this->fetchData());
         return $this->export();
     }
@@ -68,11 +67,11 @@ class ExportSubmissionReport
     }
 
     public function verifyAccessToken(){
-        $token = 'token';
+        // $token = 'token';
 
-        if($token === 'token'){
+        // if($token === 'token'){
              $this->run();
-        }
+        // }
     }
 
     private function export()

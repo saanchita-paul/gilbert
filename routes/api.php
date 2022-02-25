@@ -104,6 +104,13 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/applications/{id}/get-assigned-hood-user', [ApplicationController::class, 'getAssignedHoodUser']);
 
     //'+id
+
+    /***
+        * Sales Dashboard
+    */
+    Route::get('/sales-dashboard/home', [ReportController::class, 'home']);
+    Route::get('/sales-dashboard/export/submission-report', [ReportController::class, 'submissionReport']);
+    Route::get('/plans-details/{id}/export', [NoteController::class, 'download']);
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
@@ -119,12 +126,7 @@ Route::get('/users/is-unique-email-update', [AuthController::class, 'isEmailTake
 Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
 
 
-/***
- * Sales Dashboard
- */
-Route::get('/sales-dashboard/home', [ReportController::class, 'home']);
-Route::get('/sales-dashboard/export/submission-report', [ReportController::class, 'submissionReport']);
-Route::get('/plans-details/{id}/export', [NoteController::class, 'download']);
+
 
 
 
