@@ -13,6 +13,7 @@ export default class Agency {
                     conversion_rate = 0,
                     active_user_count = 0,
                     rent_roll_count = 0,
+                    logo = null
                 }) {
         this.id = id;
         this.title = name;
