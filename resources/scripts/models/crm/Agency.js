@@ -14,7 +14,7 @@ export default class Agency {
                     active_user_count = 0,
                     rent_roll_count = 0,
                     logo = null
-                }) {
+                } = {}) {
         this.id = id;
         this.title = name;
         this.total_leads =  applications_count;
