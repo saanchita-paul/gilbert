@@ -2,40 +2,24 @@
 
 namespace App\Services\Agency;
 
-use App\Modules\Reporting\Services\ExportSubmissionReport;
-use Illuminate\Support\Facades\Cache;
+use App\Interfaces\TokenManagerInterface;
 class SimpleTokenService{
+
+    private TokenManagerInterface $tokenManager;
+
+    public function __construct()
+    {
+        $this->tokenManager = new CacheTokenService();
+    }
 
     public function getAccessToken() : int
     {
-        return $this->generateToken();
-    }
-
-    private function getUserId() : int 
-    {
-        return auth()->user()->id;
-    }
-
-    private function getRandomToken() : int 
-    {
-        return random_int(100000, 999999);
-    }
-
-    private function generateToken() : string
-    {
-        $token = $this->getRandomToken();
-        Cache::put( $this->getUserId() , $token , 120);
-        return $token;
+        return $this->tokenManager->getAccessToken();
     }
 
     public function verifyAccessToken(string $token) : bool
     {
-        $savedToken = Cache::get( $this->getUserId(), false);
-        if($savedToken == $token){
-            return true;
-        } else {
-            return false;
-        }
+        return $this->tokenManager->verifyAccessToken($token);
     }
 
 }
