@@ -152,16 +152,16 @@ export default {
               value: 'source'
           },
           {
-              text: '',
-              value: 'data-table-expand',
-              align: 'start',
-              sortable: true,
-          },
-          {
             text: 'Status',
             align: 'start',
             sortable: true,
             value: 'status'
+          },
+          {
+            text: '',
+            value: 'data-table-expand',
+            align: 'start',
+            sortable: true,
           },
         ],
         search: '',
