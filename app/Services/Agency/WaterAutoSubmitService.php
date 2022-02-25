@@ -64,6 +64,13 @@ class WaterAutoSubmitService
      */
     private function validateData(ConnectionApplication $connectionApplcation)
     {
+        if($connectionApplcation->state !== 'Victoria') {
+            throw new Exception('Water Service is not available outside Victoria');
+        }
+        if($connectionApplcation->tenancy_type === ConnectionApplication::TENANCY_TYPE_HOME_OWNER) {
+            throw new Exception('Water Service is not available for Tenancy Type HomeOwner');
+        }
+        
         if (
             !empty($connectionApplcation->street_number) &&
             !empty($connectionApplcation->street_name) &&
@@ -82,7 +89,7 @@ class WaterAutoSubmitService
             info('lead passed');
             // throw new Exception('invalid field found in connection application table');
         } else {
-            throw new Exception('invalid field found in connection application table');
+            throw new Exception('Some required data missing for water submission, Please check with IT team');
         }
 
         if (
@@ -91,7 +98,7 @@ class WaterAutoSubmitService
         ) {
             return true;
         } else {
-            throw new Exception('invalid data in identifcation table');
+            throw new Exception('Some required data missing for water submission, Please check with IT team');
         }
 
 
