@@ -5,10 +5,10 @@
                 <CopyToClipboard title="Name" :data="applicant_name"/>
                 <IdCopyToClipboard class="mb-3" :applicationId="application.id"/>
             </v-col>
-            <v-col cols="6" style="text-align:right">
+            <!-- <v-col cols="6" style="text-align:right">
                 <v-icon small color="red">mdi-phone-off-outline</v-icon>
                 Waiting for consent...
-            </v-col>
+            </v-col> -->
         </v-row>
         <v-row no-gutters>
             <v-col cols="4">
@@ -47,14 +47,14 @@
                         {{identification_expire_date}}
                     </p>
                 </div>
-                <div class="item">
+                <!-- <div class="item">
                     <p class="item-title">Consent Sent</p>
                     <p class="item-value">02/22/2022 HH:MM</p>
                 </div>
                 <div class="item">
                     <p class="item-title">Consent Received</p>
                     <p class="item-value">DD/MM/YYYY HH:MM (Email)</p>
-                </div>
+                </div> -->
             </v-col>
             <v-col cols="4" class="hr-bar pl-2">
                 <h4 class="header">Property Details</h4>
