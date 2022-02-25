@@ -132,11 +132,12 @@ class ApplicationController extends Controller
     {
         try {
             $service = new ApplicationService();
-            $autoSubmitService = new WaterAutoSubmitService($applicationId);
-            return ApplicationResource::make($service->assignUser(
+            $data = $service->assignUser(
                 $request->get('hood_user_id'),
                 $applicationId
-            ));
+            );
+            $autoSubmitService = new WaterAutoSubmitService($applicationId);
+            return ApplicationResource::make($data);
 
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);

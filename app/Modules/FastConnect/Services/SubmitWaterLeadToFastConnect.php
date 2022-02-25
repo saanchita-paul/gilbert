@@ -4,11 +4,17 @@ namespace FastConnect\Services;
 
 use App\Models\APILog;
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionApplicationSecondaryACC;
+use App\Models\ConnectionService;
 use App\Models\Identification;
+use App\Models\RejectionReason;
+use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
+
 
 class SubmitWaterLeadToFastConnect
 {
@@ -109,6 +115,23 @@ class SubmitWaterLeadToFastConnect
         return $this;
     }
 
+    private function getCompparedDate($requestedDate, $availableDate)
+    {
+        $format = 'Y/m/d H:i:s';
+        $availableDateCarbon = Carbon::createFromFormat($format, Carbon::parse($availableDate)->format($format));
+        $requestedDateCarbon = Carbon::createFromFormat($format, Carbon::parse($requestedDate)->format($format));
+
+        return $requestedDateCarbon->gte($availableDateCarbon) ? $requestedDateCarbon->format('Y-m-d') : $availableDateCarbon->format('Y-m-d') ;
+    }
+
+    private function getNextAvailableDate(){
+        return $this->productServiceData->productDetails[0]['sub_groups'][0]['products'][0]['next_available_date'];
+    }
+
+    private function getMovingDate(){
+        return $this->getCompparedDate($this->application->moving_date, $this->getNextAvailableDate());
+    }
+
     public function submitWaterLead()
     {
         $productService = new FastConnectProductService($this->applicationId);
@@ -140,9 +163,27 @@ class SubmitWaterLeadToFastConnect
         info($response->body());
         info("Water submit response body");
 
-        $this->application->update(['water_submit_response' => empty($response->body()) ? null : $response->body()]);
+        if($response->status() === 403)
+        {
+            info("Saving Water Failed Response");
+            $this->saveRejectionReason($response->body(), $this->application->id, 'water');
+            $this->setStatusFailed($this->application->id, 'water');
+            $this->application->update(['is_auto_water_submit' => 0 ]);
+
+        }
+
+        if($response->status() === 201)
+        {
+            $this->deleteOldRejectionReasons($this->application->id, 'water');
+        }
+
+        $this->application->update(['water_submit_response' => empty($response->body()) ? null : $response->body(), 'water_next_available_date' => $this->getMovingDate() ]);
 
         return json_decode($response->body());
+    }
+
+    public function getPhoneNumber(){
+        return $this->application->phone_type == ConnectionApplication::PHONE_TYPE_MOBILE && !is_null($this->application->phone) ? $this->application->phone : $this->application->homephone;
     }
 
     public function getData($lead)
@@ -171,7 +212,7 @@ class SubmitWaterLeadToFastConnect
                     "id" => $this->productServiceData->productDetails[0]['sub_groups'][0]['products'][0]['id'],
                     "product_group_id" => $this->productServiceData->waterConnection->id,
                     "contract_id" => $this->productServiceData->productDetails[0]['sub_groups'][0]['products'][0]['contracts'][0]['id'],
-                    "requested_date" => $this->getMappedDate($lead->moving_date),
+                    "requested_date" => $this->getMovingDate(),
                     "marketing" => false
                 ]
             ],
@@ -183,7 +224,7 @@ class SubmitWaterLeadToFastConnect
                     "last_name" => $lead->last_name,
                     "date_of_birth" => $lead->dob,
                     "email" => $lead->email,
-                    "phone_preference" => $lead->phone,
+                    "phone_preference" => $this->getPhoneNumber(),
                     // "phone_alternate" => "0491570006",
                     "identification" => [
                         [
@@ -309,7 +350,11 @@ class SubmitWaterLeadToFastConnect
                 = $lead->getbillingRoadType() : null;
         }
 
+
         if($lead->authorizedPerson?->first_name && $lead->authorizedPerson?->email) {
+            if($this->isInValidSecondaryContactExit($lead->authorizedPerson)) {
+                return $data;
+            }
             $data['contact']['secondary']['title'] = $this->getMappedTitle($lead->authorizedPerson->title) ?? "MR";
             $data['contact']['secondary']['first_name'] = $lead->authorizedPerson->first_name ?? "";
             $data['contact']['secondary']['middle_name'] = $lead->authorizedPerson->middle_name ?? "";
@@ -317,9 +362,119 @@ class SubmitWaterLeadToFastConnect
             $data['contact']['secondary']['date_of_birth'] = $this->getMappedDate($lead->authorizedPerson->dob);
             $data['contact']['secondary']['email'] = $lead->authorizedPerson->email ?? "";
             $data['contact']['secondary']['phone_preference'] = $lead->authorizedPerson->phone ?? "";
-            $data['contact']['secondary']['identification'] = [];
+            $data['contact']['secondary']['identification'] = [$this->secondaryContactIdentification($lead->authorizedPerson)];
         }
 
         return $data;
+    }
+
+    private function isInValidSecondaryContactExit(?ConnectionApplicationSecondaryACC $secondaryContact)
+    {
+
+        if (!$secondaryContact) {
+            return true;
+        }
+        $invalid = empty($secondaryContact->first_name)
+            || empty($secondaryContact->last_name)
+            || empty($secondaryContact->title)
+            || empty($secondaryContact->dob)
+            || empty($secondaryContact->email)
+            || empty($secondaryContact->phone);
+
+        if ($invalid) {
+            return true;
+        }
+
+
+        return match ($secondaryContact?->identification_type) {
+            Identification::TYPE_PASSPORT => empty($secondaryContact?->card_number)
+                || empty($secondaryContact?->country)
+                || empty($secondaryContact?->expire_date),
+            Identification::TYPE_MEDICARE => empty($secondaryContact?->card_number)
+                || empty($secondaryContact?->card_color)
+                || empty($secondaryContact?->special_number)
+                || empty($secondaryContact?->expire_date),
+            Identification::TYPE_DRIVING_LICENCE => empty($secondaryContact?->card_number)
+                || empty($secondaryContact?->state)
+                || empty($secondaryContact?->expire_date),
+            default => true,
+        };
+    }
+
+        private function secondaryContactIdentification($secondaryContact)
+        {
+            $expireDate = (new Carbon($secondaryContact->expire_date))->format('Y-m-d');
+            $identification = [
+                'number' => $secondaryContact->card_number,
+                'expiry' => $expireDate,
+                'identification_profile_item_id' => $this->getMappedIdentificationType($secondaryContact->identification_type),
+            ];
+
+            $data = match($secondaryContact?->identification_type) {
+                Identification::TYPE_PASSPORT => ['issuer_country_id' => $this->getMappedIdentificationCountry($secondaryContact->country)],
+                Identification::TYPE_MEDICARE => [
+                        'medicare_color' => $secondaryContact?->card_color,
+                        'medicare_irn' => $secondaryContact->special_number,
+                    ],
+
+                Identification::TYPE_DRIVING_LICENCE => [
+                        'issuer_state_id' => $this->getMappedIdentificationState($secondaryContact->state),
+                    ],
+                default => []
+            };
+            return array_merge($identification, $data);
+        }
+    /**
+     * get ConnectionService builder
+     *
+     * @param int $leadId
+     * @param $serviceType
+     *
+     * @return Builder
+     */
+    private function getServiceBuilder(int $leadId, $serviceType): Builder
+    {
+        return ConnectionService::query()
+            ->where('connection_application_id', $leadId)
+            ->where('service_type', $serviceType);
+    }
+
+    public function saveRejectionReason(string $data, int $leadId, string $serviceType)
+    {
+        /** @var ConnectionService $service */
+        $service = $this->getServiceBuilder($leadId, $serviceType)->first();
+
+        if ($service) {
+            $service->reasons()->delete();
+        }
+
+        $rejectionReason = new RejectionReason();
+        $rejectionReason->connection_application_id = $leadId;
+        $rejectionReason->connection_service_id = $service?->id;
+        $rejectionReason->service_type = $serviceType;
+        $rejectionReason->reason_code = 'WATER_SUBMIT_FAILED';
+        $rejectionReason->reason_text = $data;
+        $rejectionReason->save();
+    }
+
+    private function deleteOldRejectionReasons(int $leadId, string $serviceType)
+    {
+        /** @var ConnectionService $service */
+        $service = $this->getServiceBuilder($leadId, $serviceType)->first();
+
+        if ($service) {
+            $service->reasons()->delete();
+        }
+    }
+
+    public function setStatusFailed(int $leadId, string $serviceType)
+    {
+        /** @var ConnectionService $service */
+        $service = $this->getServiceBuilder($leadId, $serviceType)->first();
+
+        if ($service) {
+            $service->status = ConnectionService::STATUS_FAILED;
+            $service->save();
+        }
     }
 }

@@ -180,6 +180,7 @@ class ConnectionApplication extends Model
         'source',
         'connection_end_date',
         'is_temporary_connection',
+        'water_next_available_date'
     ];
 
 
@@ -260,6 +261,9 @@ class ConnectionApplication extends Model
 
     const PROPERTY_TYPE_RESIDENTIAL = 1;
     const PROPERTY_TYPE_BUSINESS = 2;
+
+    const PHONE_TYPE_MOBILE = 1;
+    const PHONE_TYPE_HOMEPHONE = 2;
 
     const PROPERTY_TYPE_MAPPING = [
         'residential' => self::TENANCY_TYPE_RENTER,

@@ -25,7 +25,8 @@
                                   <v-icon  color="blue" >mdi-water</v-icon>Water
                               </span>
                         </p>
-                        <p class="py-0 my-0 pl-4 service-status active-power-subtitle">
+                        <p class="py-0 my-0 pl-4 service-status active-power-subtitle"
+                            :class="{ dangerText: isWaterFailed }">
                             {{getwaterServiceStatus.text}}
                             <!--                    Connected-->
                         </p>
@@ -345,6 +346,7 @@ export default {
             minConnectionDate:  null,
             modified_moving_date: null,
             modified_connection_end_date: null,
+            isWaterFailed: false,
         }
     },
     computed: {
@@ -370,7 +372,9 @@ export default {
                 : (this.selectedProviderId === 3 ? this.sumo : [])
         },
         getwaterServiceStatus() {
-            return LeadApplicationService.mapStatus(leadApplicationService.getServiceObj(this.leadSummary.connection_services, 'water')?.status);
+            const status = LeadApplicationService.mapStatus(leadApplicationService.getServiceObj(this.leadSummary.connection_services, 'water')?.status);
+            status.text === 'Failed' ? this.isWaterFailed = true : this.isWaterFailed = false;
+            return status;
         },
         getenegryServiceStatus() {
             return this.getServiceStatus('energy');
@@ -789,6 +793,9 @@ export default {
 .sumo-loading-container {
     flex: 1;
     text-align: center;
+}
+.dangerText {
+    color: red;
 }
 
 </style>

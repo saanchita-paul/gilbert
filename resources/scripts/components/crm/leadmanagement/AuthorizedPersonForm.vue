@@ -15,12 +15,11 @@
                 ></v-text-field>
         </div>
         <AuthorizedPersonProfileForm @closeModal="closeModal"
-                                     @saveAuthroizedPerson = "saveAuthroizedPerson"
+                                     @saveAuthorizedPerson = "saveAuthroizedPerson"
                                      v-if="dialog"
                                      dialog="dialog"
                                      :leadId="this.leadId"
-                                     :authorized_person_data="authorized_person_data"
-        >
+                                     :authorized_person_data="authorized_person_data">
 
         </AuthorizedPersonProfileForm>
     </div>
