@@ -94,6 +94,7 @@ class SearchConnectionApplication
 
         $this->applyFilterLeadType($user)
             ->applyFilterUserOffice($user)
+            ->applyFilterCreatedBy($user)
             ->applyFilterSource()
             ->applyFilterOfficeId()
             ->applyFilterForFoxie()
@@ -120,6 +121,7 @@ class SearchConnectionApplication
         $this->applyFilterLeadType($user)
             ->applyFilterUserOffice($user)
             ->applyFilterSource()
+            ->applyFilterCreatedBy($user)
             ->applyFilterOfficeId()
             ->applyFilterTenancyType()
             ->applySearch();
@@ -235,6 +237,18 @@ class SearchConnectionApplication
             $this->builder = $this->builder
                 ->where('office_id', $user->profile->office_id)
                 ->where('agency_id', $user->profile->agency_id);
+        }
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    private function applyFilterCreatedBy(User $user): static
+    {
+        if ($user->profile_type === AgentProfile::class) {
+            $this->builder = $this->builder
+                ->where('created_by', $user->profile->id);
         }
         return $this;
     }
