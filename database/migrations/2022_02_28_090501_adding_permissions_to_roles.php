@@ -53,14 +53,14 @@ class AddingPermissionsToRoles extends Migration
         foreach ($permissions as $permission) {
             $model = Permission::query()->firstOrNew([
                 'name' => $permission,
-                'guard_name' => 'api',
+                'guard_name' => 'web',
             ]);
             $model->save();
         }
 
         foreach ($agencyRoles as $role) {
             if ($role) {
-                $role->givePermissionTo(RolePermissionService::hoodAdminPermissions());
+                $role->givePermissionTo(RolePermissionService::allAgencyPermission());
             }
         }
 
@@ -121,7 +121,7 @@ class AddingPermissionsToRoles extends Migration
 
         foreach ($agencyRoles as $role) {
             if ($role) {
-                $role->revokePermissionTo(RolePermissionService::hoodAdminPermissions());
+                $role->revokePermissionTo(RolePermissionService::allAgencyPermission());
             }
         }
 

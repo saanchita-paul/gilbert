@@ -1,28 +1,7 @@
 <?php
-
 namespace App\Services;
-
-use Exception;
-use Carbon\Carbon;
-use App\Models\APILog;
-use App\Models\Identification;
-use function PHPSTORM_META\map;
-use App\Models\ConnectionService;
-use JetBrains\PhpStorm\ArrayShape;
-use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Log;
-
-use Illuminate\Support\Facades\Http;
-use App\Models\ConnectionApplication;
-use Illuminate\Database\Eloquent\Model;
-use Spatie\Permission\Models\Permission;
-use Illuminate\Database\Eloquent\Collection;
-use App\Models\ConnectionApplicationSecondaryACC;
-
 class RolePermissionService
 {
-    
-    //A Agent
     public const CAN_GET_AGENCY_DETAILS = 'can_get_agency_details';
     public const CAN_GET_APPLICATION_METRICS = 'can_get_application_metrics';
     public const CAN_GET_APPLICATION_LIST = 'can_get_application_list';
@@ -30,8 +9,6 @@ class RolePermissionService
     public const CAN_SUBMIT_APPLICATION = 'can_submit_application';
     public const CAN_GET_AGENT_LIST = 'can_get_agent_list';
     public const CAN_UPDATE_AGENT_PROFILE = 'can_update_agent_profile';
-
-    //H Admin
     public const CAN_GET_LEAD_METRICS = 'can_get_lead_metrics';
     public const CAN_GET_ASSIGNEE_LIST = 'can_get_assignee_list';
     public const CAN_ASSIGN_HOOD_USER = 'can_assign_hood_user';
@@ -47,11 +24,6 @@ class RolePermissionService
     public const CAN_UPDATE_SERVICE_PROVIDERS = 'can_update_service_providers';
     public const CAN_GET_ASSIGNED_USER = 'can_get_assigned_user';
     public const CAN_GET_NMI_MERN = 'can_get_nmi_mern';
-
-
-    //H Team lead
-
-    //H Agent
     public const CAN_GET_AGENCY_LIST = 'can_get_agency_list';
     public const CAN_CREATE_INDEPENDENT_AGENCY = 'can_create_independent_agency';
     public const CAN_CREATE_FRANCHISED_AGENCY = 'can_create_franchised_agency';
@@ -65,8 +37,6 @@ class RolePermissionService
     public const CAN_UPDATE_OFFICE = 'can_update_office';
     public const CAN_UPDATE_OFFICE_AGENT = 'can_update_office_agent';
     public const CAN_SEND_CONFIRRMATION_MAIL = 'can_send_confirrmation_mail';
-
-    //H Customer Representative
     public const CAN_GET_OPERATION_REPORT = 'can_get_operation_report';
     public const CAN_GET_EXPORT_REPORT = 'can_get_export_report';
     public const CAN_GET_REPORT_ACCESS_TOKEN = 'can_get_report_access_token';
@@ -74,7 +44,7 @@ class RolePermissionService
     public static function allPermission()
     {
         return [
-            //A Agent
+            //Agency Agent Permissions
             static::CAN_GET_AGENCY_DETAILS,
             static::CAN_GET_APPLICATION_METRICS,
             static::CAN_GET_APPLICATION_LIST,
@@ -83,7 +53,7 @@ class RolePermissionService
             static::CAN_GET_AGENT_LIST,
             static::CAN_UPDATE_AGENT_PROFILE,
         
-            //H Admin
+            //Hood Admin Permissions
             static::CAN_GET_OPERATION_REPORT,
             static::CAN_GET_EXPORT_REPORT,
             static::CAN_GET_REPORT_ACCESS_TOKEN,
@@ -106,8 +76,7 @@ class RolePermissionService
             static::CAN_SUBMIT_APPLICATION,
             static::CAN_GET_NMI_MERN,
         
-        
-            //H Team lead
+            //Hood Team lead Permissions
             static::CAN_GET_OPERATION_REPORT,
             static::CAN_GET_EXPORT_REPORT,
             static::CAN_GET_REPORT_ACCESS_TOKEN,
@@ -130,7 +99,7 @@ class RolePermissionService
             static::CAN_SUBMIT_APPLICATION,
             static::CAN_GET_NMI_MERN,
         
-            //H Agent
+            //Hood Agent Permissions
             static::CAN_GET_OPERATION_REPORT,
             static::CAN_GET_EXPORT_REPORT,
             static::CAN_GET_REPORT_ACCESS_TOKEN,
@@ -151,7 +120,7 @@ class RolePermissionService
             static::CAN_UPDATE_OFFICE_AGENT,
             static::CAN_SEND_CONFIRRMATION_MAIL,
         
-            //H Customer Representative
+            //Hood Customer Representative  Permissions
             static::CAN_GET_OPERATION_REPORT,
             static::CAN_GET_EXPORT_REPORT,
             static::CAN_GET_REPORT_ACCESS_TOKEN,
@@ -259,88 +228,4 @@ class RolePermissionService
             static::CAN_GET_REPORT_ACCESS_TOKEN,
         ];
     }
-
-
-    
-    
-    // CONST agency_agent = 'agency_agent';
-    // CONST agency_office_allocator = 'agency_office_allocator';
-    // CONST agency_office_admin = 'agency_office_admin';
-    // CONST agency_office_director = 'agency_office_director';
-
-    // CONST rolesAgency = [
-    //     self::agency_agent,
-    //     self::agency_office_allocator,
-    //     self::agency_office_admin,
-    //     self::agency_office_director
-    // ];
-
-    // const hood_admin = 'hood_admin';
-    // const hood_agent = 'hood_agent';
-    // CONST hood_team_lead = 'hood_team_lead';
-    // CONST hood_customer_rep = 'hood_customer_rep';
-
-    // const can_get_agency_details = 'can_get_agency_details';
-    // const can_get_application_metrics = 'can_get_application_metrics';
-    // const can_get_application_details = 'can_get_application_details';
-    // const can_submit_application = 'can_submit_application';
-    // const can_get_agent_list = 'can_get_agent_list';
-    // const can_update_agent_profile = 'can_update_agent_profile';
-
-    // const permissionAAgent = [
-    //     self::can_get_agency_details,
-    //     self::can_get_application_metrics ,
-    //     self::can_get_application_details,
-    //     self::can_submit_application ,
-    //     self::can_get_agent_list ,
-    //     self::can_update_agent_profile 
-    // ];
-
-
-
-    
-    // const can_get_operation_report = 'can_get_operation_report';
-    // const can_get_export_report = 'can_get_export_report';
-    // const can_get_report_access_token = 'can_get_report_access_token';
-
-
-
-    // public function permissionAndRoleSetup(){
-
-    //     if ($channelDoctor) {
-    //         self::hood_admin->givePermissionTo([
-    //             Permission::TREATMENT_PATIENT_AGREE,
-    //             Permission::SEND_TREATMENT_SUMMARY_TO_PATIENT,
-    //             Permission::CAN_SUBMIT_CASE,
-    //             Permission::IS_DOCTOR,
-    //             Permission::CHANGE_EXPRESS_UPDATE,
-    //             Permission::CREATE_DEFAULT_INFORMATION_CURRENT_USER,
-    //             Permission::FIND_PRESCRIPTION_INFORMATION_CURRENT_USER,
-    //             Permission::SUBMIT_PHASE_REQUEST,
-    //         ]);
-    //     }
-
-    // }
-
-
-    // public function modifyRolesAndPermission(){
-
-    //     $this->setRolesAndPermission(self::permissionAAgent, self::rolesAgency);
-
-    //     return 'ok';
-    // }
-
-    // public function setRolesAndPermission($permissionAAgent, $rolesAgency){
-    //     foreach ($permissionAAgent as $permissionName) {
-    //         $permission = Permission::query()->firstOrNew([
-    //             'name' => $permissionName,
-    //             'guard_name' => 'web',
-    //         ]);
-    //         $permission->save();
-    //         $roles = Role::whereIn('name', $rolesAgency)->get();
-    //         $permission->syncRoles($roles);
-    //         // $model->AssignRole($agency_agent);
-    //     }
-    // }
-
 }
