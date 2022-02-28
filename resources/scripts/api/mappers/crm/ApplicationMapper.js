@@ -83,27 +83,27 @@ export default {
     mapToServer(data) {
 
         // console.log(data);
-        let commsission = [];
+        let commission = [];
         data.application.service_interests.forEach(service => {
             if(service === COMMISSION.GAS.text)
             {
-                commsission.push({
+                commission.push({
                     service_type: COMMISSION.GAS.text
                 })
             }
             if(service === COMMISSION.INTERNET.text)
             {
-                commsission.push({
+                commission.push({
                     service_type: COMMISSION.INTERNET.text
                 })
             } if(service === COMMISSION.WATER.text)
             {
-                commsission.push({
+                commission.push({
                     service_type: COMMISSION.WATER.text
                 })
             } if(service === COMMISSION.POWER.text)
             {
-                commsission.push({
+                commission.push({
                     service_type: COMMISSION.POWER.text
                 })
             }
@@ -111,7 +111,7 @@ export default {
 
         });
 
-        data.application.service_interests = commsission;
+        data.application.service_interests = commission;
        return {
            ...data.application,
            identification: this.mapIdentification(data.identification),
@@ -121,7 +121,8 @@ export default {
            is_email_billing: data.application.email_billing?data.application.email_billing:0,
            authorized_person: {
                ...data.authorized_person,
-               dob: this.mapDateToServer(data.authorized_person.dob)
+               dob: this.mapDateToServer(data.authorized_person.dob),
+               expire_date : this.mapSecondaryContactIdExpire(data.authorized_person.identification_type, data.authorized_person.expire_date)
            }
 
        }
@@ -159,14 +160,35 @@ export default {
         return '';
     },
 
+    mapSecondaryContactIdExpire(type, expire_date)
+    {
+
+
+        let mappedDate = null;
+        switch (type) {
+            case IDENTIFICATION.PASSPORT:
+            case IDENTIFICATION.DL:
+                mappedDate = this.mapDateToServer(expire_date);
+                break;
+            case IDENTIFICATION.MEDICARE:
+                mappedDate = this.mapMadecareDateToServer(expire_date);
+                break;
+            default:
+                break;
+        }
+        console.log(type, expire_date, mappedDate);
+        return mappedDate;
+
+    },
+
     mapDateToServer(dt) {
         let dateCheck =  dayjs(dt,'DD/MM/YYYY').format('YYYY-MM-DD');
         return dayjs(dateCheck).isValid() ? dateCheck : null;
     },
 
     mapMadecareDateToServer(dt, isDatabaseFormat = true) {
-        let spilitedData = dt.split('/');
-        let fullMonthYear = spilitedData[0] + '/' + '20' + spilitedData[1];
+        let siltedData = dt.split('/');
+        let fullMonthYear = siltedData[0] + '/' + '20' + siltedData[1];
         let fullDateMonthYear = dayjs(fullMonthYear, 'MM/YYYY').daysInMonth() + '/' + fullMonthYear;
         if(isDatabaseFormat) return dayjs(fullDateMonthYear,'DD/MM/YYYY').format('YYYY-MM-DD');
         return fullDateMonthYear;

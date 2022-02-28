@@ -49,7 +49,10 @@ class ConnectionService extends Model
     const STATUS_CANT_CONNECT = 9;
     const STATUS_NEEDS_MORE_INFO = 10;
     const AC_MANUAL_PROCESSING = 11;
+    const STATUS_FAILED = 13;
 
+
+    // Do not use these statuese
     const WATER_STATUS_IN_PROGRESS = 7; // initial status
     const WATER_STATUS_NEED_INFO = 10;
     const WATER_STATUS_SUBMITTED = 4;
@@ -73,6 +76,7 @@ class ConnectionService extends Model
         self::STATUS_CANT_CONNECT => 'can\'t_connect',
         self::STATUS_NEEDS_MORE_INFO => 'need_more_info',
         self::AC_MANUAL_PROCESSING => 'ac_manual_precessing',
+        self::STATUS_FAILED => 'failed',
     ];
 
     public const ENERGY_AUSTRALIA_BASIC_PLAN = 'Basic - Home';

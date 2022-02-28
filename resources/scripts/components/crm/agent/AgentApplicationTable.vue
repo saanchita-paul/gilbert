@@ -22,8 +22,8 @@
           :searchFilterModel="searchFilterModel"
           @removeFilters="removeFilters"
         />
-        <v-card class="mt-2 hood-card">
-            <v-row>
+        <v-card class="mt-2 hood-card-for-agency">
+            <v-row class="crmTableRowDesign">
                 <v-col cols="12" class="crm-table">
                   <v-data-table
                       :headers="headers"
@@ -32,8 +32,12 @@
                       :server-items-length="totalItem"
                       :loading="loading"
                       :item-class="isSelectedClass"
+                      :single-expand="singleExpand"
+                      :expanded.sync="expanded"
+                      item-key="id"
+                      show-expand
                       class="row-pointer"
-                      @click:row="openApplicationSummary"
+                      @click:row="onRowSelect"
                   >
                     <template v-slot:item.first_name="{ item }">
                       {{ item.first_name + ' ' + item.last_name }}
@@ -51,6 +55,12 @@
                       <v-icon small  :disabled="isServiceAllowed(item.services, 'internet')" color="green">mdi-wifi</v-icon>
                       <v-icon small :disabled="isServiceAllowed(item.services, 'water')" color="blue" >mdi-water</v-icon>
                     </template>
+
+                    <template v-slot:expanded-item="{ headers, item }">
+                      <td :colspan="headers.length" >
+                         <AgentApplicationDetails :application='item'/>
+                      </td>
+                    </template>
                   </v-data-table>
                 </v-col>
             </v-row>
@@ -65,17 +75,23 @@ import AdvanceSearchModal from '@scripts/components/crm/modals/AdvanceSearchModa
 import {LeadSearchFilterModel} from '@scripts/models/LeadSearchFilterModel';
 import AgentFilterChip from '@scripts/components/crm/agent/AgentFilterChip';
 import {sourcesNumberToName} from '@scripts/data/LeadSourceMap';
+import Search from "@scripts/components/crm/Search";
 import AuthService from "@scripts/services/AuthService";
+import AgentApplicationDetails from "@scripts/components/crm/agent/AgentApplicationDetails";
 
 export default {
     name: "AgentApplicationTable",
     props: ["applications","totalItem", 'selectedAppId'],
     components: {
+        Search,
+        AgentApplicationDetails,
         AdvanceSearchModal,
         AgentFilterChip
     },
     data() {
       return {
+        expanded: [],
+        singleExpand: true,
         user: null,
         page: 1,
         pageCount: 0,
@@ -89,13 +105,13 @@ export default {
           {
             text: 'App Id',
             align: 'start',
-            sortable: true,
+            // sortable: true,
             value: 'id'
           },
           {
             text: 'Tenant Name',
             align: 'start',
-            sortable: true,
+            // sortable: true,
             value: 'first_name'
           },
           {
@@ -111,10 +127,23 @@ export default {
             value: 'created_at'
           },
           {
+
               text: 'Agent Name',
               align: 'start',
               sortable: true,
               value: 'agent_name'
+          },
+          {
+              text: 'Agency',
+              align: 'start',
+              sortable: true,
+              value: 'agency_office'
+          },
+          {
+              text: 'Moving Date',
+              align: 'start',
+              sortable: true,
+              value: 'moving_date'
           },
           {
               text: 'Source',
@@ -123,16 +152,23 @@ export default {
               value: 'source'
           },
           {
-              text: 'Status',
-              align: 'start',
-              sortable: true,
-              value: 'status'
-          }
+            text: 'Status',
+            align: 'start',
+            sortable: true,
+            value: 'status'
+          },
+          {
+            text: '',
+            value: 'data-table-expand',
+            align: 'start',
+            sortable: true,
+          },
         ],
         search: '',
         advanceSearchModal: false,
         searchFilterModel: new LeadSearchFilterModel(),
-        filterItems: []
+        filterItems: [],
+        selectedRowId: 0,
       }
     },
     computed:{
@@ -144,9 +180,13 @@ export default {
       },
     },
     methods: {
+       onRowSelect(item, slot){
+         this.selectedRowId = item.id;
+         slot.expand(!slot.isExpanded)
+       },
         isSelectedClass(item) {
-            if(item.id === this.selectedAppId) {
-                return 'selectedRow';
+            if(item.id === this.selectedRowId) {
+                return 'selectedRowForAgentTable';
             }
         },
         addNewApplication() {
@@ -218,4 +258,5 @@ export default {
 .row-pointer >>> tbody tr :hover {
   cursor: pointer;
 }
+
 </style>

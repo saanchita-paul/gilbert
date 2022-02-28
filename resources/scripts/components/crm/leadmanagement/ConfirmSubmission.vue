@@ -107,7 +107,6 @@
                                 </div>
                             </div>
                     </v-col>
-
                     <v-col cols="">
                             <p class="sub-title title-align">Property Details</p>
                             <div class="crm-text-field">
@@ -221,11 +220,9 @@
                                 </div>
                             </div>
                     </v-col>
-
                     <v-col cols="12">
                         <v-divider></v-divider>
                     </v-col>
-
                     <v-col cols="6">
                         <p class="sub-title title-align">Identification</p>
                         <div class="crm-text-field">
@@ -331,7 +328,6 @@
                             </div>
                         </div>
                     </v-col>
-
                     <v-col cols="6">
                         <p class="sub-title title-align">Service Connection</p>
 
@@ -396,16 +392,265 @@
                         </div>
 
                     </v-col>
+                    <v-col cols="12" v-if="isAuthorizedPersonExist">
+                        <v-row>
+                            <v-col cols="12">
+                                <p class="sub-title title-align">Authorized Person</p>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Title</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :value=" this.authorizedPerson.title"
+                                            readonly
+                                        ></v-text-field>
+                                    </div>
+                                </div>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Date of Birth</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :value=" this.authorizedPerson.dob"
+                                            readonly
+                                        ></v-text-field>
+                                    </div>
+                                </div>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>First Name</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :value=" this.authorizedPerson.first_name"
+                                            readonly
+                                        ></v-text-field>
+                                    </div>
+                                </div>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Mobile</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :value="authorizedPerson.phone"
+                                            readonly
+                                        ></v-text-field>
+                                    </div>
+                                </div>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Middle Name</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :value="authorizedPerson.middle_name"
+                                            readonly
+                                        ></v-text-field>
+                                    </div>
+                                </div>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Email</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :value="authorizedPerson.email"
+                                            readonly
+                                        ></v-text-field>
+                                    </div>
+                                </div>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                            <div class="crm-text-field">
+                                <div class="field-label">
+                                    <span>Last Name</span>
+                                </div>
+                                <div class="text-field">
+                                    <v-text-field
+                                        outlined
+                                        dense
+                                        hide-details="auto"
+                                        :value="authorizedPerson.last_name"
+                                        readonly
+                                    ></v-text-field>
+                                </div>
+                            </div>
+                        </v-col>
+                            <v-col cols="6" class="py-0">
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Role</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :value="authorizedPerson.role"
+                                            readonly
+                                        ></v-text-field>
+                                    </div>
+                                </div>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12">
+                                <p class="sub-title title-align">Authorized Person's Identification</p>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Identification Type</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :value="authorizedPerson.identification_type"
+                                            readonly
+                                        ></v-text-field>
+                                    </div>
+                                </div>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>{{authorizedPerson.card_title}} No.</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :value="authorizedPerson.card_number"
+                                            readonly
+                                        ></v-text-field>
+                                    </div>
+                                </div>
+                            </v-col>
+                            <v-col cols="6" class="py-0" v-if="authorizedPerson.card_title === 'Card'">
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Special Number</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :value="authorizedPerson.special_number"
+                                            readonly
+                                        ></v-text-field>
+                                    </div>
+                                </div>
+                            </v-col>
+                            <v-col class="py-0" v-if="authorizedPerson.card_title === 'License'" cols="6">
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>State</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :value="authorizedPerson.state"
+                                            readonly
+                                        ></v-text-field>
+                                    </div>
+                                </div>
+                            </v-col>
+                            <v-col  class="py-0" cols="6"  v-if="this.authorizedPerson.card_title === 'Passport'">
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Issuing Country</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :value="this.authorizedPerson.country"
+                                            readonly
+                                        ></v-text-field>
+                                    </div>
+                                </div>
+                            </v-col>
+                            <v-col class="py-0" cols="6">
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Expire Date</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :value="this.authorizedPerson.expire_date"
+                                            readonly
+                                        ></v-text-field>
+                                    </div>
+                                </div>
+                            </v-col>
+                            <v-col cols="6"  class="py-0" v-if="this.authorizedPerson.card_title === 'Card'">
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Card Colour</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :value="this.authorizedPerson.card_color"
+                                            readonly
+                                        ></v-text-field>
+                                    </div>
+                                </div>
+                            </v-col>
+
+
+                        </v-row>
+                    </v-col>
 
                     <v-col cols="12">
                         <v-divider></v-divider>
                     </v-col>
-
-
-
                     <v-col cols="12">
-
-
 <!--                        <p class="sub-title">I have asked the applicant "Does anyone in the household require the use of medical equipment for life support?”</p>-->
                         <v-checkbox v-model="is_life_support" label='I have asked the applicant "Does anyone in the household require the use of medical equipment for life support?”'>
 
@@ -434,6 +679,9 @@ import SPECIAL_NUMBER from "@scripts/data/constants/SPECIAL_NUMBER";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import dayJs from "dayjs";
 import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
+import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import SecondaryContactMapper from "@scripts/api/mappers/crm/SecondaryContactMapper";
+import {isNull} from "lodash-es";
 export default {
   name: "ConfirmSubmission",
     props:{
@@ -443,6 +691,8 @@ export default {
     },
     data() {
       return {
+          authorizedPerson: null,
+          isAuthorizedPersonExist: false,
           is_temp_condition:null,
           is_discount_condition:null,
           is_credit_condition:null,
@@ -566,7 +816,6 @@ export default {
 
     },
     methods: {
-
         backToEdit() {
             this.$emit('backToEdit');
         },
@@ -575,9 +824,22 @@ export default {
         },
         isActive(service) {
             return this.data.service_interests.includes(service);
-        }
-
         },
+        async loadAuthorisedPersonPerson() {
+            let unMappedSecondaryContact = await LeadApplicationService.loadAuthorizedPerson(this.$route.params.id);
+            console.log('unMappedSecondaryContact', unMappedSecondaryContact);
+            if(isNull(unMappedSecondaryContact)) {
+                this.isAuthorizedPersonExist = false;
+                return;
+            }
+            this.authorizedPerson = SecondaryContactMapper.mapServerData(unMappedSecondaryContact);
+            this.isAuthorizedPersonExist = true;
+        },
+    },
+
+    mounted() {
+      this.loadAuthorisedPersonPerson();
+    }
 
 
 };

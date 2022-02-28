@@ -61,6 +61,13 @@
                             :error-messages=" errors[0]"
                         ></v-text-field>
                     </ValidationProvider>
+
+                    <ValidationProvider name="Office Account Manager"  v-slot="{ errors }">
+                       <HoodAgentDropdown :selectedAgentId="hoodAgentId"
+                        @onChangeAgent="onChangeAgent" />
+                    </ValidationProvider>
+
+
                 </v-col>
 
                 <v-col cols="6">
@@ -84,6 +91,18 @@
                         :error-messages=" errors[0]"
                     ></v-text-field>
                     </ValidationProvider>
+
+                    <ValidationProvider name="Rent Roll" rules="required|numeric"  v-slot="{ errors }">
+                        <v-text-field
+                            label="Rent Roll*"
+                            outlined
+                            dense
+                            v-model="office.rent_roll"
+                            placeholder="Rent Roll"
+                            :error-messages=" errors[0]"
+                        ></v-text-field>
+                    </ValidationProvider>
+
                 </v-col>
 
                 <v-col cols="12" class="py-0">
@@ -154,12 +173,12 @@
                 </v-col>
 
                <v-row  class="section-leademetriics pa-4">
-                    <v-col cols="3" class="pa-0">
-                        <div class="leade-badge">
-                            <h3>Power</h3>
-                            <div class="leade-icon pb-2">
-                                <v-icon color="yellow">mdi-flash</v-icon>
-                                <span class="mr-4">$</span>
+                    <v-col cols="3" class="pa-0 px-3">
+<!--                        <div class="leade-badge">-->
+                            <h4 class="mb-2"> <v-icon color="yellow">mdi-flash</v-icon> Electricity</h4>
+<!--                            <div class="leade-icon pb-2">-->
+<!--                                <v-icon color="yellow">mdi-flash</v-icon>-->
+<!--                                <span class="mr-4">$</span>-->
                                 <ValidationProvider name="Power" rules="numeric|max:2|min_value:1|required"  v-slot="{ errors }">
                                 <v-text-field
                                     v-model="commission.power"
@@ -170,17 +189,17 @@
                                     :error-messages=" errors[0]"
                                 ></v-text-field>
                                 </ValidationProvider>
-                            </div>
+<!--                            </div>-->
                             <p class="leade-text pr-5 mb-0">Per successful connection</p>
-                        </div>
+<!--                        </div>-->
                     </v-col>
 
-                    <v-col cols="3" class="pa-0">
-                        <div class="leade-badge">
-                            <h3>Gas</h3>
-                            <div class="leade-icon pb-2">
-                                <v-icon color="red">mdi-fire</v-icon>
-                                <span class="mr-4">$</span>
+                    <v-col cols="3" class="pa-0 pr-3">
+<!--                        <div class="leade-badge">-->
+                            <h4  class="mb-2"> <v-icon color="red">mdi-fire</v-icon> Gas</h4>
+<!--                            <div class="leade-icon pb-2">-->
+
+<!--                                <span class="mr-4">$</span>-->
                                 <ValidationProvider name="Gas" rules="numeric|max:2|min_value:1|required"  v-slot="{ errors }">
                                 <v-text-field
                                     v-model="commission.gas"
@@ -191,17 +210,17 @@
                                     :error-messages=" errors[0]"
                                 ></v-text-field>
                                 </ValidationProvider>
-                            </div>
+<!--                            </div>-->
                             <p class="leade-text pr-5">Per successful connection</p>
-                        </div>
+<!--                        </div>-->
                     </v-col>
 
-                    <v-col cols="3" class="pa-0">
-                        <div class="leade-badge">
-                            <h3>Internet</h3>
-                            <div class="leade-icon pb-2">
-                                <v-icon color="green">mdi-wifi</v-icon>
-                                <span class="mr-4">$</span>
+                    <v-col cols="3" class="pa-0 pr-3">
+<!--                        <div class="leade-badge">-->
+                            <h4  class="mb-2"> <v-icon color="green">mdi-wifi</v-icon> Internet</h4>
+<!--                            <div class="leade-icon pb-2">-->
+
+<!--                                <span class="mr-4">$</span>-->
                                <ValidationProvider name="Internet" rules="numeric|max:2|min_value:1|required"  v-slot="{ errors }">
                                 <v-text-field
                                     v-model="commission.internet"
@@ -212,9 +231,9 @@
                                     :error-messages=" errors[0]"
                                 ></v-text-field>
                                </ValidationProvider>
-                            </div>
+<!--                            </div>-->
                             <p class="leade-text pr-5">Per successful connection</p>
-                        </div>
+<!--                        </div>-->
                     </v-col>
 
                     <!-- <v-col cols="3" class="pa-0">
@@ -237,6 +256,28 @@
                             <p class="leade-text pr-5">Per successful connection</p>
                         </div>
                     </v-col> -->
+
+                   <v-col cols="3" class="pa-0 pr-3">
+<!--                       <div class="leade-badge">-->
+                           <h4  class="mb-2">Sponsorship</h4>
+<!--                           <div class="leade-icon pb-2">-->
+<!--                               <v-icon color="green">mdi-wifi</v-icon>-->
+<!--                               <span class="mr-4">$</span>-->
+                               <ValidationProvider name="Sponsorship" rules="numeric|required"  v-slot="{ errors }">
+                                   <v-text-field
+                                       v-model.number="commission.sponsorship"
+                                       outlined
+                                       dense
+                                       hide-details
+                                       placeholder="10,000"
+                                       :error-messages=" errors[0]"
+                                   ></v-text-field>
+                               </ValidationProvider>
+<!--                           </div>-->
+                           <p class="leade-text pr-5">Per Annum</p>
+<!--                       </div>-->
+                   </v-col>
+
                </v-row>
 
             </v-row>
@@ -258,13 +299,17 @@
 <script>
 import OfficeService from "@scripts/services/crm/OfficeService";
 import CreateSuccessfulModal from "@scripts/components/crm/modals/CreateSuccessfulModal";
+import HoodAgentDropdown from "@scripts/components/crm/office/HoodAgentDropdown";
+
 export default {
   name: "OfficeProfile",
     components: {
         CreateSuccessfulModal,
+        HoodAgentDropdown,
     },
     data() {
       return {
+          hood_users: [],
           updateConfirmFlag: false,
           data: null,
           isLoaded : false,
@@ -279,12 +324,16 @@ export default {
               agency_name: null,
               agency_type: null,
               agency_id: null,
+              rent_roll: null,
+              account_manager: null,
+              hood_agent_id: null,
           },
           commission: {
               gas:null,
               water:null,
               power:null,
-              internet:null
+              internet:null,
+              sponsorship: null
           },
           commissionObject: null,
           agent: {
@@ -294,13 +343,21 @@ export default {
               email: null,
               f_id_12: null,
               phone: null,
-          }
+          },
+          selectedAgentId: null,
       }
     },
+    computed:{
+        hoodAgentId(){
+            return this.office?.hood_agent_id;
+        }
+    },
     methods:{
+      onChangeAgent(agent){
+          this.office.hood_agent_id = agent.id;
+      },
       async loadOffice() {
           this.data = await OfficeService.loadOfficeById(this.activeOffice);
-          // console.log(this.data);
           await this.syncData();
           // console.log(this.office);
           this.isLoaded = true;
@@ -310,6 +367,8 @@ export default {
            await this.updateOffice(this.data?.office);
            await this.updateCommission(this.data?.commissions);
            await this.updateAgent(this.data?.agent);
+           this.hood_users = this.data?.hood_users;
+
         },
 
         updateAgent(data) {
@@ -318,7 +377,7 @@ export default {
             this.agent.first_name = data.first_name;
             this.agent.last_name = data.last_name;
             this.agent.phone = data.phone;
-            this.agent.email = data.email;
+            this.agent.email = data?.user?.email;
             this.agent.f_id_12 = data.f_id_12;
         },
 
@@ -332,6 +391,8 @@ export default {
             this.office.agency_name = data.agency_name;
             this.office.agency_type = data.agency_type;
             this.office.agency_id = data.agency_id;
+            this.office.rent_roll = data.rent_roll;
+            this.office.hood_agent_id = data.hood_agent_id;
 
         },
 
@@ -352,6 +413,9 @@ export default {
                       break;
                   case 'internet':
                       this.commission.internet = parseInt(dt.rate);
+                      break;
+                  case 'sponsorship':
+                      this.commission.sponsorship = parseInt(dt.rate);
                       break;
 
               }
@@ -374,6 +438,10 @@ export default {
                 if(dt.text === 'internet') {
                     dt.rate = this.commission.internet;
                 }
+                  if(dt.text === 'sponsorship') {
+                      dt.rate = this.commission.sponsorship;
+                  }
+
                 return dt;
             }
             );

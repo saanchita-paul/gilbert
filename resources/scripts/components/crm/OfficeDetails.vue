@@ -66,6 +66,13 @@
                                    :error-messages=" errors[0]"
                     ></v-text-field>
                   </ValidationProvider>
+                  <ValidationProvider name="Rent Roll"   v-slot="{ errors }">
+                    <v-text-field  v-model = "office.rent_roll" @input="updateOffice"
+                                   label="Rent Roll"
+                                   outlined dense
+                                   :error-messages=" errors[0]"
+                    ></v-text-field>
+                  </ValidationProvider>
               </div>
             </v-col>
           </v-row>
@@ -81,12 +88,13 @@ export default {
     data() {
       return {
           office: {
-              id: null,
-              title: '',
-              contact: '',
-              email: '',
-              abn: '',
-              address: ''
+            id: null,
+            title: '',
+            contact: '',
+            email: '',
+            abn: '',
+            address: '',
+            rent_roll: ''
           },
           showMenu: false,
           searchResult: [],
@@ -117,7 +125,7 @@ export default {
         },
         onAddressSelected(place)
         {
-            GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
+            GoogleMapService.getAddressDetailsByPlaceId(place.description)
                 .then((data) => {
                     this.office.address = data.formatted_address;
                 });
@@ -130,6 +138,7 @@ export default {
     mounted() {
      // this.updateOffice();
      this.updateWithProps();
+     
     },
 
     watch: {

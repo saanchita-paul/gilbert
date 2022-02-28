@@ -2,6 +2,8 @@ import AppMetricsMapper from "@scripts/api/mappers/crm/AppMetricsMapper";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
 import dayjs from "dayjs";
+import OfficeMapper from "@scripts/api/mappers/crm/OfficeMapper";
+import SecondaryContactMapper from "@scripts/api/mappers/crm/SecondaryContactMapper";
 
 const data = [
     {
@@ -248,6 +250,17 @@ export default {
         }
     },
 
+    async loadUserLeadsForAgents(sort_search_meta, active_lead_type, src, params) {
+        try {
+            const data = await axios.get('/api/applications/agents',{params:{...sort_search_meta, active_lead_type, source: src , ...params}});
+            return ApplicationMapper.mapApplicationList(data.data);
+
+        } catch (error) {
+            console.log('error', error);
+            return error.data;
+        }
+    },
+
   async getUserLead (id) {
         try {
             const data = await axios.get('/api/applications/' + id);
@@ -419,36 +432,86 @@ export default {
 
     async loadAuthorizedPerson(id) {
         try {
-
-            const data = await axios.get('/api/authoized-person/'+id);
+            const data = await axios.get('/api/secondary-contact/'+id);
             return data.data.data;
-
         } catch (error) {
             return error.data;
         }
     },
 
-    async saveAuthorizedPerson(audata) {
+    async saveAuthorizedPerson(secondaryAuthority) {
         try {
-            audata.dob =  dayjs(audata.dob,'DD/MM/YYYY').format('YYYY-MM-DD');
-            const data = await axios.post('/api/authoized-person',{...audata});
+            let mappedDate = SecondaryContactMapper.mapContactToServer(secondaryAuthority);
+            console.log(mappedDate, secondaryAuthority);
+            const data = await axios.post('/api/secondary-contact',{...mappedDate});
             return data.data.data;
 
         } catch (error) {
+            console.log(error.data);
             return error.data;
         }
     },
 
     async getAssignedHoodUser(id) {
         try {
-            const data =  await axios.get('/api/applications/' + id +'/get-assigned-hood-user');
+            const data = await axios.get('/api/applications/' + id + '/get-assigned-hood-user');
             return data.data.data;
         } catch (error) {
             return error.data;
         }
     },
+    async loadHoodUser() {
+        try {
+            const data = await axios.get('/api/hood-users');
+            return OfficeMapper.mapHoodProfileData(data.data.data);
 
+        } catch (error) {
+            return error.data;
+        }
+    },
 
+    async loadAgencies(search) {
+        try {
+            const data = await axios.get('/api/agencies', { params: { search } });
+            return data?.data?.data;
 
+        } catch (error) {
+            return error.data;
+        }
+    },
+    async loadOffices(agencyId, search = null) {
+        try {
+            let data = "";
+            if(agencyId){
+                data = await axios.get('/api/agencies/' + agencyId + '/offices');
+            }else{
+                data = await axios.get('/api/alloffices' , { params: { search } });
+            }
 
+            return data?.data?.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+  async loadAgencyMetrics(query) {
+        try {
+            const data = await axios.get('/api/agencies/get-agency-metrics',{params: query});
+            return data?.data?.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+  async loadAgencyMetricsByApplication(query) {
+        try {
+            const data = await axios.get('/api/agencies/get-agency-application-metrics',{params: query});
+            return data?.data?.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
 }

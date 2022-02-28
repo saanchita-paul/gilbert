@@ -51,18 +51,21 @@ class WaterAutoSubmitJob implements ShouldQueue
      */
     public function handle()
     {
-        try
-        {
-        $service = new SubmitWaterLeadToFastConnect($this->applicationId);
-        $result = $service->submitWaterLead();
-        ConnectionApplication::saveFasConnectRef($this->applicationId, data_get($result, "info.customer_reference"));
+        try {
+            $service = new SubmitWaterLeadToFastConnect($this->applicationId);
+            $result = $service->submitWaterLead();
+            ConnectionApplication::saveFasConnectRef($this->applicationId, data_get($result, "info.customer_reference"));
 
-        $statusAssoc = UpdatedWaterStatus::mapFromFCStatus(data_get($result, "products.0.status"));
-        if ($statusAssoc) {
-            UpdatedWaterStatus::updateStatus($this->applicationId, $statusAssoc['status'], $statusAssoc['reason']);
-        }
+            $statusAssoc = UpdatedWaterStatus::mapFromFCStatus(data_get($result, "products.0.status"));
+            if ($statusAssoc) {
+                UpdatedWaterStatus::updateStatus($this->applicationId, $statusAssoc['status'], $statusAssoc['reason']);
+            }
         } catch(\Exception $exception)
         {
+            // Saving Failed reason and set Water status as Failed 
+            $service->saveRejectionReason($exception->getMessage(), $this->applicationId, 'water');
+            $service->setStatusFailed($this->applicationId, 'water');
+
             WaterEmailService::sendEmailWhenSubmissionFails($exception->getMessage(), $this->applicationId);
             info('exception in handle method, WaterAutoSubmitJob', [$exception->getTraceAsString(), $exception->getMessage()]);
             throw new \Exception('Water submission failed, WaterAutoSubmitJob');
