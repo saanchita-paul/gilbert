@@ -80,7 +80,7 @@ class ExportSubmissionReport
             // $datum->Lead_Submitted_Date = $datum->Lead_Submitted_Date ?? 'NULL';
             // $datum->Unit_Number = $datum->Unit_Number ?? 'NULL';
             // $datum->Vendor_ID = $datum->Vendor_ID ?? 'NULL';
-            $datum->Source_Code = $this->getSourceCode($datum->Utility_Service, $datum->State, $datum->Utility_Plan, $datum->Postcode);
+            // $datum->Source_Code = $this->getSourceCode($datum->Utility_Service, $datum->State, $datum->Utility_Plan, $datum->Postcode);
 
             $this->setAgencyName($datum);
 
@@ -127,7 +127,6 @@ class ExportSubmissionReport
                 IFNULL(ca.mirn,'NULL') as `MIRN`,
                 IFNULL(ca.property_type,'NULL') as `Customer_Type`,
                 IFNULL(ca.status,'NULL') as `Offer_Type`,
-                IFNULL(ca.status,'NULL') as `Source_Code`,
                 IFNULL(ca.assigned_to,'NULL') as `Assigned_To`,
                 IFNULL(ca.status,'NULL') as `Application_Status`,
                 cs.lead_reference as `Lead_Reference`,
@@ -214,6 +213,7 @@ class ExportSubmissionReport
         return $data[sizeof($data) - 1];
     }
 
+    // Not using this function anymore, can delete
     private function getSourceCode($service, $state, $plan, $postcode)
     {
         $state = $this->stateMap($state);
