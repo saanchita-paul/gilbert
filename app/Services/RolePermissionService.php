@@ -163,6 +163,22 @@ class RolePermissionService
             static::CAN_GET_ASSIGNED_USER,
             static::CAN_SUBMIT_APPLICATION,
             static::CAN_GET_NMI_MERN,
+            static::CAN_GET_APPLICATION_METRICS,
+            static::CAN_GET_AGENCY_LIST,
+            static::CAN_CREATE_INDEPENDENT_AGENCY,
+            static::CAN_CREATE_FRANCHISED_AGENCY,
+            static::CAN_GET_AGENCY_DETAILS,
+            static::CAN_GET_OFFICES,
+            static::CAN_UPDATE_AGENCY,
+            static::CAN_CREATE_NEW_OFFICE,
+            static::CAN_GET_OFFICE_METRICS,
+            static::CAN_GET_OFFICE_DETAILS,
+            static::CAN_GET_APPLICATION_LIST,
+            static::CAN_GET_OFFICE_USER_LIST,
+            static::CAN_CREATE_OFFICE_USER,
+            static::CAN_UPDATE_OFFICE,
+            static::CAN_UPDATE_OFFICE_AGENT,
+            static::CAN_SEND_CONFIRRMATION_MAIL,
         ];
     }
 

@@ -58,7 +58,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_CREATE_INDEPENDENT_AGENCY);
 
     Route::post('/offices', [OfficeController::class, 'createOffice'])
-        ->middleware( 'permission:' . RolePermissionService::CAN_CREATE_NEW_OFFICE );
+        ->middleware('permission:' . RolePermissionService::CAN_CREATE_NEW_OFFICE );
     Route::get('/offices/{id}', [OfficeController::class, 'getOffice']);
     Route::get('/offices/office/{id}', [OfficeController::class, 'getOnlyOffice'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICE_DETAILS);
