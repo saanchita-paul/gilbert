@@ -10,7 +10,7 @@
                                 <p class="dialogs-title">Hello  {{user.first_name}}</p>
                                 <p class="primary-text">Confirm NEW Password</p>
                             </div>
-                            <ValidationProvider name="password" rules="required"  v-slot="{ errors }">
+                            <ValidationProvider name="password" rules="required|password"  v-slot="{ errors }">
                                 <v-text-field
                                 label="Password *"
                                 outlined
@@ -36,7 +36,7 @@
                               <v-btn block color="primary" @click="setPassword">Set Password</v-btn>
                               </ValidationObserver>
                       </v-card>
-                   
+
                       <v-card  v-if="isLoaded == 2" class="pa-4 hood-card">
                         <p>Your token is expired or invalidated</p>
                         <v-btn @click="goToLogin" color="primary">ok</v-btn>

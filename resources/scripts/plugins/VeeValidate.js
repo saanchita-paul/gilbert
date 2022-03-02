@@ -22,7 +22,7 @@ const medicareRules = function(value) {
        return false;
     }
     let dateMonth =  value.split("/");
-    return dateMonth[0] > 12 ? false : true;        
+    return dateMonth[0] > 12 ? false : true;
 }
 
 const mediExpireDate = function(value) {
@@ -50,6 +50,15 @@ extend('email', {
 extend('secret', {
     validate: value => value === 'example',
     message: 'This is not the magic word'
+});
+extend('password', {
+    message: field => `${field} should contains minimum 8 digits with both cases letter, a number and a special character`,
+    validate: value =>  {
+        return new Promise(resolve => {
+            let isValid = value.match('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$');
+            resolve({ valid: !!isValid })
+        })
+    }
 });
 
 extend('cv-phone', {
@@ -157,7 +166,7 @@ extend('medicare-date', {
            return false;
         }
         let dateMonth =  value.split("/");
-        return dateMonth[0] > 12 ? false : true;        
+        return dateMonth[0] > 12 ? false : true;
     }
 })
 
