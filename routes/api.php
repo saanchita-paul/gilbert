@@ -46,8 +46,9 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_GET_AGENCY_LIST );
     Route::post('/agencies', [AgencyController::class, 'create'])
         ->middleware('permission:' . RolePermissionService::CAN_CREATE_FRANCHISED_AGENCY );
-    Route::get('/agencies/get-agency-metrics', [AgencyController::class, 'getAgencyMetrics']);
-    Route::get('/agencies/get-agency-application-metrics', [AgencyController::class, 'getAgencyApplicationMetrics']);
+    Route::get('/agencies/get-agency-metrics', [AgencyController::class, 'getAgencyMetrics']); # not is use
+    Route::get('/agencies/get-agency-application-metrics', [AgencyController::class, 'getAgencyApplicationMetrics'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_METRICS);
     Route::get('/agencies/{id}', [AgencyController::class, 'getAgency'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_AGENCY_DETAILS);
     Route::post('/agencies/{id}/update', [AgencyController::class, 'update'])

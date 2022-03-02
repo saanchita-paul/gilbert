@@ -63,14 +63,24 @@ class AuthUserDetails
      */
     private function getBotAuthKey(User $user): string
     {
-        $data = [
-            'expired_at' => Carbon::now()->addMinutes((int) config('session.lifetime'))->timestamp,
-            'access_key' => config('bot.access_key'),
-            'user_email' => $user->email
-        ];
+        try {
+            if ($user->hasAnyPermission([RolePermission::P_HOOD_ADMIN_CORE, RolePermissionService::CAN_SUBMIT_APPLICATION])) {
+                $data = [
+                    'expired_at' => Carbon::now()->addMinutes((int) config('session.lifetime'))->timestamp,
+                    'access_key' => config('bot.access_key'),
+                    'user_email' => $user->email
+                ];
 
-        $crypt = new Encrypter( config('bot.encryption_key'), 'AES-128-CBC');
-        return $crypt->encrypt($data, true);
+                $crypt = new Encrypter( config('bot.encryption_key'), 'AES-128-CBC');
+                return $crypt->encrypt($data, true);
+            }
+
+        } catch (\Exception $e) {
+            \Log::error($e->getMessage());
+            \Log::error($e->getTraceAsString());
+        }
+
+        return '';
     }
 
     public function getOfficeDetails(User $user)
