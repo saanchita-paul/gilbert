@@ -42,4 +42,9 @@ class ResetPasswordService
         return response()->json(['success' => true, 'message' => 'Success']);
     }
 
+    public function checkIsValidToken($token)
+    {
+       $validUser = DB::table('password_resets')->where('token', $token)->first();
+       return !is_null($validUser);
+    }
 }

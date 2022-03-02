@@ -155,6 +155,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+Route::post('/check-is-valid-token', [AuthController::class, 'checkIsValidToken']);
 
 Route::post('/invitation/validation', [UserInvitationController::class, 'validateInvitation']);
 Route::post('/invitation/change-password', [UserInvitationController::class, 'passwordChange']);

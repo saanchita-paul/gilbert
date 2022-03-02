@@ -100,4 +100,15 @@ class AuthController extends Controller
             return response()->json(['success' => false, 'message' => $exception->getMessage()]);
         }
     }
+    public function checkIsValidToken(Request $request)
+    {
+        try {
+            $service = new ResetPasswordService();
+            $token = $request->only('token');
+            $isValidToken = $service->checkIsValidToken($token);
+            return response()->json(['success' => false, 'is_valid_token' => $isValidToken]);
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'is_valid_token' => false, 'message' => $exception->getMessage()]);
+        }
+    }
 }
