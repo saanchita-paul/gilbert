@@ -186,10 +186,10 @@ class ConnectionService extends Model
         else {
             if($user->profile_type === AgentProfile::class) {
                 $agency_id = $user->profile->agency_id;
+                $office_id = $user->profile->office_id;
                 $profile_id = $user->profile->id;
                 $appCount = DB::table('connection_applications')
-                    ->where('created_by','=', $profile_id)
-                    ->where('agency_id', '=', $agency_id )
+                    ->where('office_id','=', $office_id)
                     ->count();
 
                 $nopayCount = DB::table('connection_applications')->whereIn('status',[
