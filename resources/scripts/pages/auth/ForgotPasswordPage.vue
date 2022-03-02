@@ -12,22 +12,10 @@
                                                  v-slot=""
                             >
                                 <form @submit.prevent="handleSubmit" class="pa-3">
-                                    <!--                                <v-fade-transition>-->
-                                    <!--                                    <div-->
-                                    <!--                                            v-if="errorMessage"-->
-                                    <!--                                            style="border-radius: 10px"-->
-                                    <!--                                            class="red white&#45;&#45;text pa-2 ma-3 text-center app-title-small"-->
-                                    <!--                                    >Error occured.-->
-                                    <!--                                    </div>-->
-                                    <!--                                    <v-snackbar v-model="snackbar" :timeout="5000" top color="success">-->
-                                    <!--                                        <span>Please check your email to get the reset link</span>-->
-                                    <!--                                        <v-btn flat color="red" @click="snackbar = false">Close</v-btn>-->
-                                    <!--                                    </v-snackbar>-->
-                                    <!--                                </v-fade-transition>-->
                                     <validation-provider
                                         v-slot="{ errors }"
                                         name="email"
-                                        rules="required|email|email-exist"
+                                        rules="required|email"
                                     >
                                         <v-text-field
                                             class="mt-7"
@@ -91,7 +79,6 @@
             return {
                 email: '',
                 loginLoading: false,
-                //isSubmitFailed: false,
                 errors: null,
                 snackbar: false,
                 errorMessage: ''
