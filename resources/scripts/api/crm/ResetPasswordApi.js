@@ -1,4 +1,3 @@
-import AgencyMqpper from "@scripts/api/mappers/crm/AgencyMqpper";
 import axios from "axios";
 
 export default {
