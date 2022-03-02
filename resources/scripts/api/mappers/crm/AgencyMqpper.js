@@ -64,6 +64,7 @@ export default {
                 abn: ofc.abn,
                 phone: ofc.contact,
                 email: ofc.email,
+                rent_roll: ofc.rent_roll
             };
             agent = {
                 first_name: agPro.first_name,
@@ -89,6 +90,10 @@ export default {
                 {
                     type: COMMISSION.WATER.type,
                     rate: commission.water,
+                },
+                {
+                    type: COMMISSION.SPONSORSHIP.type,
+                    rate: commission.sponsorship,
                 },
             ];
         }

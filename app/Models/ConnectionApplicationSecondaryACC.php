@@ -41,6 +41,13 @@ class ConnectionApplicationSecondaryACC extends Model
         'role',
         'dob',
         'connection_application_id',
+        'identification_type',
+        'card_number',
+        'state',
+        'country',
+        'card_color',
+        'special_number',
+        'expire_date'
     ];
 
     protected  $table = 'application_secondary_acc';

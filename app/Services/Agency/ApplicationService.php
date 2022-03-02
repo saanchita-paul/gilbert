@@ -218,7 +218,6 @@ class ApplicationService
         $vendorId = $this->calculateVendorId($id);
         $lead = array_merge($lead, [
             'plan_type' => null,
-            // 'status' => ConnectionApplication::STATUS_SUBMITTED,
             'submitted_by' => auth()->id(),
             'vendor_id' => $vendorId
         ]);

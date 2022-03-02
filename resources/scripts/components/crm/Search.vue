@@ -39,5 +39,6 @@ export default {
 <style scoped>
 .app-search{
     border-radius: 8px !important;
+    background: white;
 }
 </style>

@@ -5,8 +5,8 @@ import OfficeMetrics from "@scripts/modules/realestate/models/OfficeMetrics";
 
 export default {
     mapMetrics(data) {
-        let application_metrics = this.mapOffAppMetrics(data[0]);
-        let utility_metrics = this.mapUitlityMetrics(data[0]);
+        let application_metrics = this.mapOffAppMetrics(data.app_metrics);
+        let utility_metrics = this.mapUitlityMetrics(data);
 
         return (new OfficeMetrics({application_metrics, utility_metrics}));
 
@@ -14,6 +14,8 @@ export default {
 
     mapOffAppMetrics(metricsData)
     {
+
+
         let app_created = new SingleMetric({
             title: 'Applications Created',
             value: metricsData['app_total']
@@ -21,7 +23,7 @@ export default {
 
         let app_waiting_tenant = new SingleMetric({
             title: 'Waiting Tenant Confirmation',
-            value: metricsData['app_unassigned']
+            value: metricsData['app_waiting_tenant']
         })
 
         let app_submitted_retialer = new SingleMetric({

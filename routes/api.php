@@ -46,6 +46,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_GET_AGENCY_LIST );
     Route::post('/agencies', [AgencyController::class, 'create'])
         ->middleware('permission:' . RolePermissionService::CAN_CREATE_FRANCHISED_AGENCY );
+    Route::get('/agencies/get-agency-metrics', [AgencyController::class, 'getAgencyMetrics']);
+    Route::get('/agencies/get-agency-application-metrics', [AgencyController::class, 'getAgencyApplicationMetrics']);
     Route::get('/agencies/{id}', [AgencyController::class, 'getAgency'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_AGENCY_DETAILS);
     Route::post('/agencies/{id}/update', [AgencyController::class, 'update'])
@@ -99,6 +101,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_SUBMIT_APPLICATION);
     Route::get('/applications', [ApplicationController::class, 'index'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
+    Route::get('/applications/agents', [ApplicationController::class, 'SearchConnectionApplicationAgents']);
     Route::get('/applications/{application}', [ApplicationController::class, 'view'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_DETAILS);
     Route::post('/applications/{id}/submit', [ApplicationController::class, 'submit'])
@@ -129,9 +132,9 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_METRICS);
     Route::get('/applications/{id}/nmi-mern', [ApplicationController::class, 'getNmiMern'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_NMI_MERN);
-    Route::get('/authoized-person/{id}', [ApplicationController::class, 'getAuthorizedPerson'])
+    Route::get('/secondary-contact/{id}', [ApplicationController::class, 'getAuthorizedPerson'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_AUTHORIZED_PERSON);
-    Route::post('/authoized-person', [ApplicationController::class, 'updateAuthorizedPerson'])
+    Route::post('/secondary-contact', [ApplicationController::class, 'updateAuthorizedPerson'])
         ->middleware('permission:' . RolePermissionService::CAN_SAVE_AUTHORIZED_PERSON);
 
     Route::post('/applications/{application_id}/service/update', [ApplicationController::class, 'updateService']);
@@ -218,6 +221,7 @@ Route::get("/karan/sales-status", function () {
     return "success";
 });
 
+Route::get('/alloffices', [OfficeController::class, 'allOffices']);
 
 
 Route::get('country_test', function () {

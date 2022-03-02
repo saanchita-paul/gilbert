@@ -21,6 +21,8 @@ class UpdateOfficeService
 
     public function updateOffice($data)
     {
+        info("request data" , ['request data' => $data]);
+
         $office = Office::findOrFail($this->id);
         $office->update($data['office']);
 
@@ -43,7 +45,8 @@ class UpdateOfficeService
                 $officeCmtn->update($commission);
             } else {
                 $commission['office_id'] = $this->id;
-                $commission['agency_id'] = $office->agency_id;
+                $commission['agency_id'] = $office['agency_id'];
+                $commission['type'] = OfficeCommission::Type[$commission['text']];
                 OfficeCommission::create($commission);
             }
 
@@ -55,6 +58,7 @@ class UpdateOfficeService
     {
        $agent = AgentProfile::findOrFail($agentData['id']);
        $agent->update($agentData);
+       $agent->user->update(["email" => $agentData['email']]);
        return $agent->refresh();
     }
 }

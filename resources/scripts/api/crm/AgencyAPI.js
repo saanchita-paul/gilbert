@@ -38,8 +38,11 @@ export default {
         try {
             meta = AgencyMqpper.mapMetaData(meta);
             const data = await axios.get('/api/agencies',{params: {...meta}});
-            return AgencyMqpper.mapAgencyList(data.data);
+            let dada = AgencyMqpper.mapAgencyList(data.data);
+            console.log(dada, "DADA")
+            return dada
         } catch (error) {
+            console.log(error)
             return error.data;
         }
     },

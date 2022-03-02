@@ -71,9 +71,10 @@ import AssignedtoPopUp from "@scripts/components/crm/leadmanagement/AssignedtoPo
 import ReassignModal from "@scripts/components/crm/modals/ReassignModal";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import AuthService from "@scripts/services/AuthService";
-import { LeadSearchFilterModel } from "@scripts/models/LeadSearchFilterModel";
-import { leadSourceMapFromNumber } from "@scripts/data/LeadSourceMap";
+import {LeadSearchFilterModel} from "@scripts/models/LeadSearchFilterModel";
+import {leadSourceMapFromNumber} from "@scripts/data/LeadSourceMap";
 import CrmOfficeListHeader from "@scripts/modules/realestate/components/CrmOfficeListHeader";
+
 export default {
     name: "OfficeApplicatoinListTable",
     components: {
@@ -163,7 +164,7 @@ export default {
 
         async loadLeads(meta) {
             this.loading = true;
-            let data = await LeadApplicationService.loadUserLeads(
+            let data = await LeadApplicationService.loadUserLeadsForAgents(
                 meta,
                 "",
                 "",

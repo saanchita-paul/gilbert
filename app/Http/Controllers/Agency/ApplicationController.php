@@ -47,6 +47,19 @@ class ApplicationController extends Controller
         }
     }
 
+    public function SearchConnectionApplicationAgents(Request $request): AnonymousResourceCollection|JsonResponse
+    {
+        /** @var User $user */
+        $user = auth()->user();
+        try {
+            $service = new SearchConnectionApplication($request->toArray());
+            return ApplicationResource::collection($service->getApplicationForAgency($user));
+
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
 
     /**
      * Create new application
@@ -119,11 +132,12 @@ class ApplicationController extends Controller
     {
         try {
             $service = new ApplicationService();
-            $autoSubmitService = new WaterAutoSubmitService($applicationId);
-            return ApplicationResource::make($service->assignUser(
+            $data = $service->assignUser(
                 $request->get('hood_user_id'),
                 $applicationId
-            ));
+            );
+            $autoSubmitService = new WaterAutoSubmitService($applicationId);
+            return ApplicationResource::make($data);
 
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);

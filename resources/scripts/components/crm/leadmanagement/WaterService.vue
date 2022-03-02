@@ -11,9 +11,7 @@
             </div>
         </div>
         <div class="d-flex ml-6 regularFontSize">
-            <div>
-                {{ connectionStatusReason }}
-            </div>
+            <div :class="{ errorColor: isError }">{{ connectionStatusReason }}</div>
         </div>
     </v-card>
 </template>
@@ -22,6 +20,11 @@
 export default {
     name: "WaterService",
     props:['connection_id', 'leadSummary'],
+    data() {
+        return {
+            isError: false
+        }
+    },
     methods:{
         submit(){
             // * this will ber fired on ApplicationDetailsPage
@@ -31,6 +34,12 @@ export default {
     computed:{
         connectionStatusReason(){
             let waterService = this.leadSummary.connection_services.find(n=>n.service_type=='water');
+
+            if(waterService && waterService.reasons && waterService.reasons.length>0){
+                this.isError = true;
+                return waterService.reasons[0].reason_text;
+            }
+
             return waterService &&
                    waterService.reason !== null &&
                    waterService.reason !== undefined && 
@@ -74,7 +83,6 @@ export default {
     .buttonBackgroundColor{
         background-color: $buttonBackgroundColor;
     }
-
 </style> 
 
 

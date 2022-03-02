@@ -2,38 +2,54 @@
 
 namespace App\Services\Agency;
 
-use Exception;
 use App\Jobs\WaterAutoSubmitJob;
 use App\Models\ConnectionApplication;
+use Exception;
+use FastConnect\Services\SubmitWaterLeadToFastConnect;
 
 class WaterAutoSubmitService
 {
     const STATUS_AUTO_SUBMIT_TRUE = 1;
 
 
+    /**
+     * @throws Exception
+     */
     public function __construct(int $lead_id)
     {
         try {
-            $lead = ConnectionApplication::with(['connectionServices' , 'identification'])->where( 'id' ,  $lead_id)->first();
+            $lead = ConnectionApplication::with(['connectionServices', 'identification'])->where('id', $lead_id)->firstOrFail();
             if (!$lead->is_auto_water_submit) {
+                $lead->update(['is_auto_water_submit' => WaterAutoSubmitService::STATUS_AUTO_SUBMIT_TRUE]);
                 $this->validateData($lead);
                 $this->updateConnectionApplication($lead);
             }
 
         } catch (\Exception $exception) {
-            \Log::error($exception->getMessage());
-            \Log::error($exception->getTraceAsString());
+            if (isset($lead)) {
+                $lead->update(['is_auto_water_submit' => 0]);
+                \Log::error($exception->getMessage());
+                \Log::error($exception->getTraceAsString());
+                // Saving Failed reason and set Water status as Failed
+                $service = new SubmitWaterLeadToFastConnect($lead->id);
+                $service->saveRejectionReason($exception->getMessage(), $lead->id, 'water');
+                $service->setStatusFailed($lead->id, 'water');
+            }
+
+
+            throw new Exception("EAuto Water Submit failed: ". $exception->getMessage());
         }
     }
 
-    private function updateConnectionApplication(ConnectionApplication $connectionApplcation){
+    private function updateConnectionApplication(ConnectionApplication $connectionApplcation)
+    {
 
         try {
-            $connectionApplcation->update(['is_auto_water_submit'=> WaterAutoSubmitService::STATUS_AUTO_SUBMIT_TRUE ]);
-            
+            // $connectionApplcation->update(['is_auto_water_submit'=> WaterAutoSubmitService::STATUS_AUTO_SUBMIT_TRUE ]);
+
             $waterService = new ApplicationService();
             $waterService->setSubmittedAtByServiceType($connectionApplcation->id, 'water');
-            
+
             WaterAutoSubmitJob::dispatch($connectionApplcation->id);
         } catch (\Exception $exception) {
             \Log::error($exception->getMessage());
@@ -43,63 +59,65 @@ class WaterAutoSubmitService
     }
 
 
-    private function validateData(ConnectionApplication $connectionApplcation){
-        info('checking connection application');
-        \Log::info($connectionApplcation);
-        // \Log::info($connectionApplcation->identification['connection_application_id']);
-        try {
-            if(
-                    isset($connectionApplcation->street_number)  &&
-                    isset($connectionApplcation->street_name)  &&
-                    isset($connectionApplcation->city) &&
-                    isset($connectionApplcation->postcode)  &&
-                    isset($connectionApplcation->first_name) &&
-                    isset($connectionApplcation->last_name) &&
-                    isset($connectionApplcation->dob) &&
-                    isset($connectionApplcation->email) &&
-                    isset($connectionApplcation->phone)  &&
-                    isset($connectionApplcation->state)  &&
-                    isset($connectionApplcation->title)  &&
-                    isset($connectionApplcation->tenancy_type)  &&
-                    isset($connectionApplcation->identification)
-              ){
-                    info('lead passed');
-                    // throw new Exception('invalid field found in connection application table');
-                } else{
-                    throw new Exception('invalid field found in connection application table');
-                }
-
-
-                if(
-                    isset($connectionApplcation->identification['card_number']) &&
-                    isset($connectionApplcation->identification['expire_date'])
-                ){
-                    return true;
-                }else{
-                    throw new Exception('invalid data in identifcation table');
-                }
-
-
-
-        } catch (\Exception $exception) {
-            \Log::error($exception->getMessage());
-            \Log::error($exception->getTraceAsString());
-            throw new Exception("Error Processing Request", 1);
+    /**
+     * @throws Exception
+     */
+    private function validateData(ConnectionApplication $connectionApplcation)
+    {
+        if($connectionApplcation->state !== 'Victoria') {
+            throw new Exception('Water Service is not available outside Victoria');
         }
+        if($connectionApplcation->tenancy_type === ConnectionApplication::TENANCY_TYPE_HOME_OWNER) {
+            throw new Exception('Water Service is not available for Tenancy Type HomeOwner');
+        }
+        
+        if (
+            !empty($connectionApplcation->street_number) &&
+            !empty($connectionApplcation->street_name) &&
+            !empty($connectionApplcation->city) &&
+            !empty($connectionApplcation->postcode) &&
+            !empty($connectionApplcation->first_name) &&
+            !empty($connectionApplcation->last_name) &&
+            !empty($connectionApplcation->dob) &&
+            !empty($connectionApplcation->email) &&
+            !empty($connectionApplcation->phone) &&
+            !empty($connectionApplcation->state) &&
+            !empty($connectionApplcation->title) &&
+            !empty($connectionApplcation->tenancy_type) &&
+            !empty($connectionApplcation->identification)
+        ) {
+            info('lead passed');
+            // throw new Exception('invalid field found in connection application table');
+        } else {
+            throw new Exception('Some required data missing for water submission, Please check with IT team');
+        }
+
+        if (
+            !empty($connectionApplcation->identification['card_number']) &&
+            !empty($connectionApplcation->identification['expire_date'])
+        ) {
+            return true;
+        } else {
+            throw new Exception('Some required data missing for water submission, Please check with IT team');
+        }
+
+
     }
 
-    public function checkTenancyType(ConnectionApplication $connectionApplcation) : bool {
-        return $connectionApplcation->tenancy_type == ConnectionApplication::TENANCY_TYPE_HOME_OWNER ? true : 
-        throw new Exception('invalid data in identifcation table, tenancy type');
+    public function checkTenancyType(ConnectionApplication $connectionApplcation): bool
+    {
+        return $connectionApplcation->tenancy_type == ConnectionApplication::TENANCY_TYPE_HOME_OWNER ? true :
+            throw new Exception('invalid data in identifcation table, tenancy type');
     }
 
-    public function checkTenancyTypeDob(ConnectionApplication $connectionApplcation) : bool {
+    public function checkTenancyTypeDob(ConnectionApplication $connectionApplcation): bool
+    {
 
-        if($connectionApplcation->tenancy_type == ConnectionApplication::TENANCY_TYPE_HOME_OWNER){
+        if ($connectionApplcation->tenancy_type == ConnectionApplication::TENANCY_TYPE_HOME_OWNER) {
             return true;
-        }else if(isset($connectionApplcation->dob)){
+        } else if (!empty($connectionApplcation->dob)) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
