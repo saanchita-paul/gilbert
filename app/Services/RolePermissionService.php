@@ -40,6 +40,7 @@ class RolePermissionService
     public const CAN_GET_OPERATION_REPORT = 'can_get_operation_report';
     public const CAN_GET_EXPORT_REPORT = 'can_get_export_report';
     public const CAN_GET_REPORT_ACCESS_TOKEN = 'can_get_report_access_token';
+    public const CAN_CREATE_NEW_APPLICATION = 'can_create_new_application';
 
     public static function allPermission()
     {
