@@ -94,7 +94,7 @@ class SearchConnectionApplication
 
         $this->applyFilterLeadType($user)
             ->applyFilterUserOffice($user)
-            ->applyFilterCreatedBy($user)
+            // ->applyFilterCreatedBy($user)
             ->applyFilterSource()
             ->applyFilterOfficeId()
             ->applyFilterForFoxie()
@@ -121,7 +121,7 @@ class SearchConnectionApplication
         $this->applyFilterLeadType($user)
             ->applyFilterUserOffice($user)
             ->applyFilterSource()
-            ->applyFilterCreatedBy($user)
+            // ->applyFilterCreatedBy($user)
             ->applyFilterOfficeId()
             ->applyFilterTenancyType()
             ->applySearch();
