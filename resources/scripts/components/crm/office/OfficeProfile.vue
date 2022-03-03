@@ -329,10 +329,10 @@ export default {
               hood_agent_id: null,
           },
           commission: {
-              gas:null,
-              water:null,
-              power:null,
-              internet:null,
+              gas: null,
+              water: null,
+              power: null,
+              internet: null,
               sponsorship: null
           },
           commissionObject: null,
@@ -424,27 +424,44 @@ export default {
 
         synCommissionbeforeSave()
         {
-          return   this.data.commissions.map((dt)=> {
-                if(dt.text === 'gas') {
-                    dt.rate = this.commission.gas;
-                }
+            // return this.data.commissions.map((dt) => {
+            //     if(dt.text === 'gas') {
+            //         dt.rate = this.commission.gas;
+            //     }
 
-                if(dt.text === 'water') {
-                    dt.rate = this.commission.water;
-                }
-                if(dt.text === 'power') {
-                    dt.rate = this.commission.power;
-                }
-                if(dt.text === 'internet') {
-                    dt.rate = this.commission.internet;
-                }
-                  if(dt.text === 'sponsorship') {
-                      dt.rate = this.commission.sponsorship;
-                  }
+            //     if(dt.text === 'water') {
+            //         dt.rate = this.commission.water;
+            //     }
+            //     if(dt.text === 'power') {
+            //         dt.rate = this.commission.power;
+            //     }
+            //     if(dt.text === 'internet') {
+            //         dt.rate = this.commission.internet;
+            //     }
+            //     if(dt.text === 'sponsorship') {
+            //         dt.rate = this.commission.sponsorship;
+            //     }
+            //     return dt;
+            // });
 
-                return dt;
-            }
-            );
+            let commissions = [];
+            let utilities = ['gas', 'water', 'power', 'internet', 'sponsorship'];
+
+            utilities.forEach((utility) => {
+                let item = this.data.commissions.find((dt) => {
+                    return dt.text === utility;
+                });
+                if(item) {
+                    item.rate = this.commission[utility];
+                    commissions.push(item);
+                } else {
+                    commissions.push({
+                        text: utility,
+                        rate: this.commission[utility],
+                    });
+                }
+            });
+            return commissions;
         },
 
         cancelChange() {

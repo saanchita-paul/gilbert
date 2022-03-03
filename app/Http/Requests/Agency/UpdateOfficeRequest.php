@@ -33,7 +33,7 @@ class UpdateOfficeRequest extends FormRequest
             'office.email'=>'required|email',
             'office.abn'=>'nullable|string',
 
-            'agent.id'=>'required',
+            // 'agent.id'=>'required',
             'agent.phone'=>'nullable|string',
         ];
     }
