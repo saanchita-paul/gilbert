@@ -56,6 +56,38 @@ class OurPropertyMapper
         };
     }
 
-
-
+    public function mapState($type)
+    {
+        $lowerType = strtolower($type);
+        return match($lowerType) {
+            'alley'=> 'Ally',
+            'arcade'=> 'Arc',
+            'avenue'=> 'Ave',
+            'boulevard'=> 'Bvd',
+            'bypass'=> 'Bypa',
+            'circuit'=> 'Cct',
+            'close'=> 'Cl',
+            'corner'=> 'Crn',
+            'court'=> 'Ct',
+            'crescent'=> 'Cres',
+            'cul-de-sac'=> 'Cds',
+            'drive'=> 'Dr',
+            'esplanade'=> 'Esp',
+            'green'=> 'Grn',
+            'grove'=> 'Gr',
+            'highway'=> 'Hwy',
+            'junction'=> 'Jnc',
+            'lane'=> 'Lane',
+            'link'=> 'Link',
+            'mews'=> 'Mews',
+            'parade'=> 'Pde',
+            'place'=> 'Pl',
+            'ridge'=> 'Rdge',
+            'road'=> 'Rd',
+            'square'=> 'Sq',
+            'street'=> 'St',
+            'terrace'=> 'Tce',
+            default => $type
+        };
+    }
 }
