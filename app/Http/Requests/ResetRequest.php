@@ -25,7 +25,10 @@ class ResetRequest extends FormRequest
     {
         return [
             'token' => 'required',
-            'password' => 'required',
+            'password' => [
+                'required',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$/',
+            ],
             'confirm_password' => 'required|same:password',
         ];
     }
