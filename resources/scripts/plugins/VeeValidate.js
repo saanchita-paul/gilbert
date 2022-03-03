@@ -22,10 +22,13 @@ const medicareRules = function(value) {
        return false;
     }
     let dateMonth =  value.split("/");
-    return dateMonth[0] > 12 ? false : true;        
+    return dateMonth[0] > 12 ? false : true;
 }
 
 const mediExpireDate = function(value) {
+    if (!value || value?.length < 0) {
+        return true;
+    }
     let spilitedData = value.split('/');
     let fullMonthYear = spilitedData[0] + '/' + '20' + spilitedData[1];
     let fullDateMonthYear =   dayjs().daysInMonth() + '/' + fullMonthYear;
@@ -140,6 +143,7 @@ extend('adult', {
 extend('valid-date', {
     message: field => `DD/MM/YYYY is valid format`,
     validate(value) {
+        console.log("dayJs(value, 'DD/MM/YYYY').isValid()", dayJs(value, 'DD/MM/YYYY').isValid())
         return dayJs(value, 'DD/MM/YYYY').isValid();
     }
 });
@@ -157,7 +161,7 @@ extend('medicare-date', {
            return false;
         }
         let dateMonth =  value.split("/");
-        return dateMonth[0] > 12 ? false : true;        
+        return dateMonth[0] > 12 ? false : true;
     }
 })
 
