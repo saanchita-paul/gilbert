@@ -151,10 +151,10 @@ class ConnectionService extends Model
             WHEN CA.status = 6 THEN 1 ELSE 0 END) AS nonpayable"),
 
                 DB::raw("SUM(CASE
-            WHEN CS.service_type = 'power' and CS.status = 12 AND CA.status = 4 THEN 1 ELSE 0 END) AS power"),
+            WHEN CS.service_type = 'power' and (CS.status = 12 or CS.status = 4 or CS.status=5) AND CA.status = 4 THEN 1 ELSE 0 END) AS power"),
 
                 DB::raw("SUM(CASE
-            WHEN CS.service_type = 'gas' and CS.status = 12 AND CA.status = 4 THEN 1 ELSE 0 END) AS gas"),
+            WHEN CS.service_type = 'gas' and (CS.status = 12 or CS.status = 4 or CS.status=5) AND CA.status = 4 THEN 1 ELSE 0 END) AS gas"),
 
                 DB::raw("SUM(CASE
             WHEN CS.service_type = 'internet' and CS.status = 4 AND CA.status = 4 THEN 1 ELSE 0 END) AS internet"),
