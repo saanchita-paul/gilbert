@@ -124,6 +124,7 @@ class ConnectionService extends Model
     public function allApplicationMetricsCount(array $matrixReq, User $user)
     {
 
+        info('matrics print' , ['matrixReq' => $matrixReq]);
         $service = DB::table('connection_services AS CS');
         info('user',[$user->profile_type]);
         if(!empty($matrixReq['agency_id'])){
@@ -131,9 +132,8 @@ class ConnectionService extends Model
         } else {
             if($user->profile_type === AgentProfile::class) {
             $profileId = $user->profile->id;
-            $agency_id = $user->profile->agency_id;
-                $service->where('CA.created_by', $profileId)
-                ->where('agency_id', '=', $agency_id );
+            $office_id = $user->profile->office_id;
+                $service->where('office_id', '=', $office_id );
             }
 
         }
