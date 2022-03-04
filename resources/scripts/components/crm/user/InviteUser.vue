@@ -31,6 +31,7 @@
                                 :type="'password'"
                                 :error-messages=" errors[0]"
                                 placeholder="confirm password"
+                                class="mt-3"
                             ></v-text-field>
                                 </ValidationProvider>
                               <v-btn block color="primary" @click="setPassword">Set Password</v-btn>

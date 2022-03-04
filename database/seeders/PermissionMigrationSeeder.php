@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Services\RolePermissionMigrationService;
 use App\Services\CreateApplicationMigrationService;
+use App\Services\AddPermissionToCsrRoleService;
 
 
 class PermissionMigrationSeeder extends Seeder
@@ -18,5 +19,6 @@ class PermissionMigrationSeeder extends Seeder
     {
         (new RolePermissionMigrationService())->setPermissions();
         (new CreateApplicationMigrationService())->setPermissions();
+        (new AddPermissionToCsrRoleService())->setPermissions();
     }
 }

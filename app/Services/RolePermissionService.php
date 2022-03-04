@@ -1,5 +1,7 @@
 <?php
 namespace App\Services;
+
+use App\Services\RolePermission;
 class RolePermissionService
 {
     public const CAN_GET_AGENCY_DETAILS = 'can_get_agency_details';
@@ -239,6 +241,34 @@ class RolePermissionService
         return [
             static::CAN_GET_OPERATION_REPORT,
             static::CAN_GET_EXPORT_REPORT,
+        ];
+    }
+
+    public static function hoodCustomerRepExtraPermissions()
+    {
+        return [
+            static::CAN_GET_OPERATION_REPORT,
+            static::CAN_GET_EXPORT_REPORT,
+            static::CAN_GET_LEAD_METRICS,
+            static::CAN_GET_APPLICATION_LIST,
+            static::CAN_GET_APPLICATION_DETAILS,
+            static::CAN_GET_ASSIGNEE_LIST,
+            static::CAN_ASSIGN_HOOD_USER,
+            static::CAN_GET_APPLICATION_NOTES,
+            static::CAN_CREATE_NOTES,
+            static::CAN_GET_AUTHORIZED_PERSON,
+            static::CAN_SAVE_AUTHORIZED_PERSON,
+            static::CAN_GET_EA_PLANS,
+            static::CAN_UPDATE_APPLICATION,
+            static::CAN_ESCALATE_APPLICATION,
+            static::CAN_CLOSE_APPLICATION,
+            static::CAN_UPDATE_ADDRESS,
+            static::CAN_UPDATE_SERVICE_PROVIDERS,
+            static::CAN_GET_ASSIGNED_USER,
+            static::CAN_SUBMIT_APPLICATION,
+            static::CAN_GET_NMI_MERN,
+            RolePermission::P_CAN_MANAGE_APPLICATION
+
         ];
     }
 

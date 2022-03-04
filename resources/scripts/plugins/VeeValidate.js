@@ -51,13 +51,16 @@ extend('secret', {
     validate: value => value === 'example',
     message: 'This is not the magic word'
 });
-extend('password', {
-    message: field => `${field} should contains minimum 8 digits with both cases letter, a number and a special character`,
-    validate: value =>  {
+extend("password", {
+    message: field =>
+        `${field} must be at least eight characters in length. Must contain both uppercase and lowercase characters (e.g., a-z and A-Z), at least one number (e.g., 0-9) and a special character e.g., ! @`,
+    validate: value => {
         return new Promise(resolve => {
-            let isValid = value.match('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$');
-            resolve({ valid: !!isValid })
-        })
+            let isValid = value.match(
+                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~])[A-Za-z\\d!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~]{8,}$"
+            );
+            resolve({ valid: !!isValid });
+        });
     }
 });
 
