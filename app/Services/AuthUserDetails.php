@@ -64,7 +64,7 @@ class AuthUserDetails
     private function getBotAuthKey(User $user): string
     {
         try {
-            if ($user->hasAnyPermission([RolePermission::P_HOOD_ADMIN_CORE, RolePermissionService::CAN_SUBMIT_APPLICATION])) {
+            if ($user->hasAnyPermission([RolePermission::P_HOOD_ADMIN_CORE])) {
                 $data = [
                     'expired_at' => Carbon::now()->addMinutes((int) config('session.lifetime'))->timestamp,
                     'access_key' => config('bot.access_key'),
