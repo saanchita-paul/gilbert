@@ -52,7 +52,7 @@ class UserInvitationController extends Controller
             $this->validate($request, [
                 'password' => [
                     'required',
-                    'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$/',
+                    'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$/',
                 ],
                 'token' => 'required',
             ]);

@@ -55,7 +55,7 @@ extend('password', {
     message: field => `${field} should contains minimum 8 digits with both cases letter, a number and a special character`,
     validate: value =>  {
         return new Promise(resolve => {
-            let isValid = value.match('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$');
+            let isValid = value.match('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$');
             resolve({ valid: !!isValid })
         })
     }
