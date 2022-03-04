@@ -2,7 +2,7 @@
     <v-app class="reset-password">
         <v-container style="height: 100%">
             <div style="height: 100%; display: flex; justify-content: center; align-items: center">
-                <v-card width="400px">
+                <v-card width="400px" v-if="isValidToken">
                     <v-card-title class="primary white--text">Reset Password</v-card-title>
 
                     <v-card-text>
@@ -26,7 +26,7 @@
                                 <validation-provider
                                         v-slot="{ errors }"
                                         name="password"
-                                        rules="required"
+                                        rules="required|password"
                                 >
                                     <v-text-field
                                             v-model="password"
@@ -44,9 +44,9 @@
                                 >
                                     <v-text-field
                                             v-model="confirm_password"
+                                            type="password"
                                             :error-messages="errors"
                                             label="Confirm Password"
-                                            type="password"
                                             required
                                             @keyup.enter="handleSubmit"
                                     ></v-text-field>
@@ -73,7 +73,7 @@
 
 <script>
 
-    import axios from 'axios';
+    import ResetPasswordService from "@scripts/services/crm/ResetPasswordService";
     export default {
         name: 'ResetPasswordPage',
         data() {
@@ -82,26 +82,35 @@
                 password: '',
                 confirm_password: '',
                 snackbar: false,
-                errorMessage: ''
+                errorMessage: '',
+                isValidToken: false,
             }
         },
         methods: {
             async handleSubmit() {
                 try{
-                    const response = await axios.post('/api/reset-password', {
+                    await ResetPasswordService.savePassword({
                         password: this.password,
                         confirm_password: this.confirm_password,
                         token: this.$route.params.token
                     });
                     this.snackbar = true;
-                    // console.log(response);
                     await this.$router.push({name: 'login'})
                 } catch (e){
+                    console.log('error', e);
                     this.errorMessage = true;
                 }
 
+            },
+            async validatedToken() {
+               this.isValidToken = await ResetPasswordService.checkIsValidateToken({token: this.$route.params.token});
+               if(!this.isValidToken) {
+                   await this.$router.push({name: 'login'});
+               }
             }
-
+        },
+       async mounted() {
+           await this.validatedToken();
         }
     }
 </script>

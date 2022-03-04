@@ -50,7 +50,10 @@ class UserInvitationController extends Controller
         try {
 
             $this->validate($request, [
-                'password' => 'required|min:6',
+                'password' => [
+                    'required',
+                    'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!"#$%&\'()*+,-.\/:;<=>?@[\\]^_`{|}~])[A-Za-z\\d!"#$%&\'()*+,-.\/:;<=>?@[\\]^_`{|}~]{8,}$/',
+                ],
                 'token' => 'required',
             ]);
 

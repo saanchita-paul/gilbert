@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/hello', [\App\Http\Controllers\TestControler::class, 'index']);
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 Route::get('/{vue_capture?}', fn() => view('app'))
     ->where('vue_capture', '[\/\w\.-]*');
