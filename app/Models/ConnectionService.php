@@ -141,8 +141,8 @@ class ConnectionService extends Model
         $copyService = $service;
         $nopayCount = 0;
 
-          $result = $service->leftJoin('connection_applications AS CA', 'CA.id', '=',
-              'CS.connection_application_id')
+            $result = $service->leftJoin('connection_applications AS CA', 'CA.id', '=',
+            'CS.connection_application_id')
             ->select(
                 DB::raw("SUM(CASE
             WHEN CA.status = 4 OR CA.status = 2 THEN 1 ELSE 0 END) AS applications"),
@@ -151,16 +151,16 @@ class ConnectionService extends Model
             WHEN CA.status = 6 THEN 1 ELSE 0 END) AS nonpayable"),
 
                 DB::raw("SUM(CASE
-            WHEN CS.service_type = 'power' AND CA.status = 5 THEN 1 ELSE 0 END) AS power"),
+            WHEN CS.service_type = 'power' and CS.status=5 AND CA.status = 4 THEN 1 ELSE 0 END) AS power"),
 
                 DB::raw("SUM(CASE
-            WHEN CS.service_type = 'gas' AND CA.status = 5 THEN 1 ELSE 0 END) AS gas"),
+            WHEN CS.service_type = 'gas' and CS.status=5 AND CA.status = 4 THEN 1 ELSE 0 END) AS gas"),
 
                 DB::raw("SUM(CASE
-            WHEN CS.service_type = 'internet' AND CA.status = 5 THEN 1 ELSE 0 END) AS internet"),
+            WHEN CS.service_type = 'internet' and CS.status = 5 AND CA.status = 4 THEN 1 ELSE 0 END) AS internet"),
 
                 DB::raw("SUM(CASE
-            WHEN CS.service_type = 'water' AND CA.status = 5 THEN 1 ELSE 0 END) AS water")
+            WHEN CS.service_type = 'water' and CS.status = 5 AND CA.status = 4 THEN 1 ELSE 0 END) AS water")
             )
             ->get();
 
