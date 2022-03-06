@@ -1,20 +1,21 @@
 <?php
 
-use App\Http\Controllers\Agency\AgencyController;
-use App\Http\Controllers\Agency\AgentProfileController;
-use App\Http\Controllers\Agency\ApplicationController;
-use App\Http\Controllers\Agency\HoodUserController;
-use App\Http\Controllers\Agency\NoteController;
-use App\Http\Controllers\Agency\OfficeController;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\UserInvitationController;
-use FastConnect\Services\SubmitWaterLeadToFastConnect;
 use Illuminate\Encryption\Encrypter;
-use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
-use OurProperty\Http\Controllers\OurPropertyController;
 use PropertyMe\services\FetchContacts;
+use App\Services\RolePermissionService;
+use Illuminate\Support\Facades\Broadcast;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Agency\NoteController;
 use Reporting\Http\Controllers\ReportController;
+use App\Http\Controllers\Agency\AgencyController;
+use App\Http\Controllers\Agency\OfficeController;
+use App\Http\Controllers\UserInvitationController;
+use App\Http\Controllers\Agency\HoodUserController;
+use App\Http\Controllers\Agency\ApplicationController;
+use FastConnect\Services\SubmitWaterLeadToFastConnect;
+use App\Http\Controllers\Agency\AgentProfileController;
+use OurProperty\Http\Controllers\OurPropertyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,80 +42,121 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     /**
      * Agency, Office Users
      */
-    Route::get('/agencies', [AgencyController::class, 'index']);
-    Route::post('/agencies', [AgencyController::class, 'create']);
-    Route::get('/agencies/get-agency-metrics', [AgencyController::class, 'getAgencyMetrics']);
-    Route::get('/agencies/get-agency-application-metrics', [AgencyController::class, 'getAgencyApplicationMetrics']);
-    Route::get('/agencies/{id}', [AgencyController::class, 'getAgency']);
-    Route::post('/agencies/{id}/update', [AgencyController::class, 'update']);
-    Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index']);
-    // Route::get('/agencies/offices', [OfficeController::class, 'index']);
+    Route::get('/agencies', [AgencyController::class, 'index'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_AGENCY_LIST );
+    Route::post('/agencies', [AgencyController::class, 'create'])
+        ->middleware('permission:' . RolePermissionService::CAN_CREATE_FRANCHISED_AGENCY );
+    Route::get('/agencies/get-agency-metrics', [AgencyController::class, 'getAgencyMetrics']); # not is use
+    Route::get('/agencies/get-agency-application-metrics', [AgencyController::class, 'getAgencyApplicationMetrics'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_METRICS);
+    Route::get('/agencies/{id}', [AgencyController::class, 'getAgency'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_AGENCY_DETAILS);
+    Route::post('/agencies/{id}/update', [AgencyController::class, 'update'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_AGENCY);
+    Route::get('/agencies/{agencyId}/offices', [OfficeController::class, 'index'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
     Route::post('/agencies/{agencyId}/offices', [OfficeController::class, 'createAgencyOffice']);
 
+    Route::post('/independent-agency', [AgencyController::class, 'createIndependentAgency'])
+        ->middleware('permission:' . RolePermissionService::CAN_CREATE_INDEPENDENT_AGENCY);
 
-
-
-    Route::post('/independent-agency', [AgencyController::class, 'createIndependentAgency']);
-
-    Route::post('/offices', [OfficeController::class, 'createOffice']);
+    Route::post('/offices', [OfficeController::class, 'createOffice'])
+        ->middleware('permission:' . RolePermissionService::CAN_CREATE_NEW_OFFICE );
     Route::get('/offices/{id}', [OfficeController::class, 'getOffice']);
-    Route::get('/offices/office/{id}', [OfficeController::class, 'getOnlyOffice']);
-    Route::get('/offices/{id}/get-metrics', [OfficeController::class, 'getMatricsData']);
-    Route::post('/offices/{id}/update', [OfficeController::class, 'updateOffice']);
-    Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index']);
-    Route::get('/offices/{officeId}/agents', [AgentProfileController::class, 'getAgentList']);
-    Route::post('/offices/{officeId}/users', [AgentProfileController::class, 'createAgent']);
+    Route::get('/offices/office/{id}', [OfficeController::class, 'getOnlyOffice'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICE_DETAILS);
+    Route::get('/offices/{id}/get-metrics', [OfficeController::class, 'getMatricsData'])
+         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICE_METRICS);
+    Route::post('/offices/{id}/update', [OfficeController::class, 'updateOffice'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_OFFICE);
+    Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICE_USER_LIST);
+    Route::get('/offices/{officeId}/agents', [AgentProfileController::class, 'getAgentList'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_AGENT_LIST);
+    Route::post('/offices/{officeId}/users', [AgentProfileController::class, 'createAgent'])
+        ->middleware('permission:' . RolePermissionService::CAN_CREATE_OFFICE_USER);
 
     Route::get('/office-agents', [AgentProfileController::class, 'officeAgents']);
-    Route::post('/office-agents/{id}/update', [AgentProfileController::class, 'updateProfile']);
+    Route::post('/office-agents/{id}/update', [AgentProfileController::class, 'updateProfile'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_AGENT_PROFILE);
 
-    Route::post('/office-agents/{id}/update-user-data', [AgentProfileController::class, 'updateUserData']);
-    Route::post('/office-agents/{id}/send-confirm-mail', [AgentProfileController::class, 'sendConfirmMail']);
+    Route::post('/office-agents/{id}/update-user-data', [AgentProfileController::class, 'updateUserData'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_OFFICE_AGENT);
+    Route::post('/office-agents/{id}/send-confirm-mail', [AgentProfileController::class, 'sendConfirmMail'])
+        ->middleware('permission:' . RolePermissionService::CAN_SEND_CONFIRRMATION_MAIL);
 
     Route::post('/office-agents/{id}', [AgentProfileController::class, 'getAgent']);
 
     /**
      * Hood User
      */
-    Route::get('/application-assignees', [HoodUserController::class, 'getAssignee']);
+    Route::get('/application-assignees', [HoodUserController::class, 'getAssignee'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_ASSIGNEE_LIST);
     Route::post('/hood-users', [HoodUserController::class, 'store']);
     Route::get('/hood-users', [HoodUserController::class, 'index']);
 
     /**
      * Applications
      */
-    Route::post('/applications', [ApplicationController::class, 'create']);
-    Route::get('/applications', [ApplicationController::class, 'index']);
+    Route::post('/applications', [ApplicationController::class, 'create'])
+        ->middleware('permission:' . RolePermissionService::CAN_CREATE_NEW_APPLICATION);
+    Route::get('/applications', [ApplicationController::class, 'index'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
     Route::get('/applications/agents', [ApplicationController::class, 'SearchConnectionApplicationAgents']);
-    Route::get('/applications/{application}', [ApplicationController::class, 'view']);
-
-    Route::post('/applications/{id}/submit', [ApplicationController::class, 'submit']);
-    Route::post('/applications/{applicationId}/assign', [ApplicationController::class, 'assignUser']);
-    Route::post('/applications/{applicationId}/escalate', [ApplicationController::class, 'escalate']);
-    Route::post('/applications/{applicationId}/closeApplication', [ApplicationController::class, 'closeApplication']);
-    Route::put('/applications/{applicationId}/update-address', [ApplicationController::class, 'updateAddress']);
-    Route::post('/applications/{applicationId}/draft', [ApplicationController::class, 'saveDraft']);
+    Route::get('/applications/{application}', [ApplicationController::class, 'view'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_DETAILS);
+    Route::post('/applications/{id}/submit', [ApplicationController::class, 'submit'])
+        ->middleware('permission:' . RolePermissionService::CAN_SUBMIT_APPLICATION);
+    Route::post('/applications/{applicationId}/assign', [ApplicationController::class, 'assignUser'])
+        ->middleware('permission:' . RolePermissionService::CAN_ASSIGN_HOOD_USER);
+    Route::post('/applications/{applicationId}/escalate', [ApplicationController::class, 'escalate'])
+        ->middleware('permission:' . RolePermissionService::CAN_ESCALATE_APPLICATION);
+    Route::post('/applications/{applicationId}/closeApplication', [ApplicationController::class, 'closeApplication'])
+        ->middleware('permission:' . RolePermissionService::CAN_CLOSE_APPLICATION);
+    Route::put('/applications/{applicationId}/update-address', [ApplicationController::class, 'updateAddress'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_ADDRESS);
+    Route::post('/applications/{applicationId}/draft', [ApplicationController::class, 'saveDraft'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
     Route::put('/applications/{id}/close', [ApplicationController::class, 'close']);
-    Route::patch('/applications/{applicationId}/providers', [ApplicationController::class, 'providers']);
+    Route::patch('/applications/{applicationId}/providers', [ApplicationController::class, 'providers'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_SERVICE_PROVIDERS);
 
     //todo: make a  separate controller for notes
-    Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes']);
-    Route::post('/applications/{id}/notes', [NoteController::class, 'createConnectionNotes']);
+    Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_NOTES);
+    Route::post('/applications/{id}/notes', [NoteController::class, 'createConnectionNotes'])
+        ->middleware('permission:' . RolePermissionService::CAN_CREATE_NOTES);
 
-    Route::get('/applications-metrics', [ApplicationController::class, 'getMetrics']);
-    Route::get('/applications-metrics-count', [ApplicationController::class, 'getApplicationMetricsCount']);
-    Route::get('/applications/{id}/nmi-mern', [ApplicationController::class, 'getNmiMern']);
-    Route::get('/secondary-contact/{id}', [ApplicationController::class, 'getAuthorizedPerson']);
-    Route::post('/secondary-contact', [ApplicationController::class, 'updateAuthorizedPerson']);
+    Route::get('/applications-metrics', [ApplicationController::class, 'getMetrics'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_LEAD_METRICS);
+    Route::get('/applications-metrics-count', [ApplicationController::class, 'getApplicationMetricsCount'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_METRICS);
+    Route::get('/applications/{id}/nmi-mern', [ApplicationController::class, 'getNmiMern'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_NMI_MERN);
+    Route::get('/secondary-contact/{id}', [ApplicationController::class, 'getAuthorizedPerson'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_AUTHORIZED_PERSON);
+    Route::post('/secondary-contact', [ApplicationController::class, 'updateAuthorizedPerson'])
+        ->middleware('permission:' . RolePermissionService::CAN_SAVE_AUTHORIZED_PERSON);
 
     Route::post('/applications/{application_id}/service/update', [ApplicationController::class, 'updateService']);
-    Route::get('/applications/{id}/get-assigned-hood-user', [ApplicationController::class, 'getAssignedHoodUser']);
+    Route::get('/applications/{id}/get-assigned-hood-user', [ApplicationController::class, 'getAssignedHoodUser'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_ASSIGNED_USER);
 
     //'+id
+
+    /***
+        * Sales Dashboard
+    */
+    Route::get('/sales-dashboard/home', [ReportController::class, 'home'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_OPERATION_REPORT);
+    Route::get('/sales-dashboard/export/submission-report', [ReportController::class, 'submissionReport'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_EXPORT_REPORT);
+    Route::get('/plans-details/{id}/export', [NoteController::class, 'download']);
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+Route::post('/check-is-valid-token', [AuthController::class, 'checkIsValidToken']);
 
 Route::post('/invitation/validation', [UserInvitationController::class, 'validateInvitation']);
 Route::post('/invitation/change-password', [UserInvitationController::class, 'passwordChange']);
@@ -126,13 +168,14 @@ Route::get('/users/is-unique-email-update', [AuthController::class, 'isEmailTake
 Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
 
 
-/***
- * Sales Dashboard
- */
-Route::get('/sales-dashboard/home', [ReportController::class, 'home']);
-Route::get('/sales-dashboard/export/submission-report', [ReportController::class, 'submissionReport']);
-Route::get('/plans-details/{id}/export', [NoteController::class, 'download']);
 
+
+
+
+/**
+ * api's for admin only
+ */
+Route::get('/get-report-access-token', [ReportController::class, 'getReportAccessToken']);
 
 
 

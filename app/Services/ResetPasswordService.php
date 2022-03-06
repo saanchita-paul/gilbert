@@ -20,7 +20,7 @@ class ResetPasswordService
 
     /**
      *
-     * @return $this
+     * @return \Illuminate\Http\JsonResponse
      */
     public function reset(Request $request)
     {
@@ -37,8 +37,14 @@ class ResetPasswordService
 
         $user->password = Hash::make($request->input('password'));
         $user->save();
+        DB::table('password_resets')->where('token', $token)->delete();
 
         return response()->json(['success' => true, 'message' => 'Success']);
     }
 
+    public function checkIsValidToken($token)
+    {
+       $validUser = DB::table('password_resets')->where('token', $token)->first();
+       return !is_null($validUser);
+    }
 }

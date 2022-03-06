@@ -21,5 +21,13 @@ export default {
         } catch (error) {
             return error.data;
         }
+    },
+    getReportAccessToken: async () => {
+        try {
+            const data = await axios.get('/api/get-report-access-token');
+            return data.data.token;
+        } catch (error) {
+            throw new Error(error.data);
+        }
     }
 }
