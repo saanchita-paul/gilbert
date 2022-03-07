@@ -23,8 +23,8 @@ class ExternalLeadController extends Controller
     public function getAccessToken(Request $request) : JsonResponse {
         try {
 
-            $ourPropertyService = new TAppServices();
-            $result =  $ourPropertyService->generateAccessToken($request->toArray());
+            $tAppService = new TAppServices();
+            $result =  $tAppService->generateAccessToken($request->toArray());
             return  response()->json($result , 200);
 
         } catch (\Exception $exception) {

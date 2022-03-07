@@ -10,7 +10,7 @@ use ExternalLead\Models\TApp;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Identification;
-use App\Mail\AgentNotFoundMail;
+use App\Mail\TAppAgentNotFoundMail;
 use App\Models\ConnectionService;
 use App\Jobs\CreateHubspotProperty;
 use Illuminate\Support\Facades\Log;
@@ -79,7 +79,7 @@ class TAppServices
     private function saveAllFieldDump()
     {
         $this->tApp = new TApp;
-        $this->tApp->lead_id = $this->userRequestData->our_property_lead_id ?? null;
+        $this->tApp->lead_id = $this->userRequestData->tapp_lead_id ?? null;
         $this->tApp->all_fields_dump = json_encode($this->userRequestData->toArray());
         $this->tApp->save();
     }
@@ -95,7 +95,7 @@ class TAppServices
         //save allField dump first
         $this->saveAllFieldDump();
 
-        // saving all data to our property table
+        // saving all data to tApp table
         $tApp = $this->storeToTApp();
 
         $this->prepareConnectionApp();
@@ -103,7 +103,7 @@ class TAppServices
         $this->connectionApplicaton->save();
 
 
-        // set the lead id in our property data
+        // set the lead id in tApp data
         $tApp->connection_application_id = $this->connectionApplicaton->id;
         $tApp->save();
 
@@ -134,9 +134,9 @@ class TAppServices
         $agencyData = $this->getAgencyAndOffice();
 
 
-        $this->connectionApplicaton->agency_id = $agencyData["agency"]?->id;
-        $this->connectionApplicaton->office_id = $agencyData["office"]?->id;
-        $this->connectionApplicaton->created_by = $agencyData["agent"]?->id ?? null;
+        $this->connectionApplicaton->agency_id = $agencyData["agency_id"] ?? null;
+        $this->connectionApplicaton->office_id = $agencyData["office_id"] ?? null;
+        $this->connectionApplicaton->created_by = $agencyData["created_by"] ?? null;
         $this->connectionApplicaton->source = ConnectionApplication::SOURCE_T_APP;
 
         //load Our Property
@@ -195,29 +195,40 @@ class TAppServices
      * @return array
      * @throws Exception
      */
-    #[ArrayShape(["agent" => "\App\Models\AgentProfile|null", "agency" => "\App\Models\Agency||null", "office" => "\App\Models\Office|null"])]
     private function getAgencyAndOffice(): array
     {
-        $email = $this->userRequestData->agent_email;
         $res = [
-            "agent" => null,
-            "agency" => null,
-            "office" => null
+            "agency_id" => null,
+            "office_id" => null,
+            "created_by" => null
         ];
         try {
-            $res["agent"] = AgentProfile::whereHas(
-                'user',
-                fn(Builder $user) => $user->where('email', $email)
-            )->first();
-            if ($res["agent"]) {
-                $res["office"] = $res["agent"]->office;
-                $res["agency"] = $res["agent"]->agency;
-            } else {
-                $res['office'] = Office::whereName('Our-Property-Hood-Office')->firstOrFail();
-                $res["agency"] = $res["office"]?->agency;
-                throw  new Exception("No Agent matched for email: $email. falling back to default agency & office mapping.");
+            if ($this->userRequestData->agent_email && $this->userRequestData->agent_email !== null && $this->userRequestData->agent_email !== "") {
+                $agent = AgentProfile::whereHas(
+                    'user',
+                    fn(Builder $user) => $user->where('email', $this->userRequestData->agent_email)
+                )->first();
+                if ($agent) {
+                    $res["agency_id"] = $agent->agency_id;
+                    $res["office_id"] = $agent->office_id;
+                    $res["created_by"] = $agent->id;
+                }
+            } elseif ($this->userRequestData->office_id && $this->userRequestData->office_id !== null && $this->userRequestData->office_id !== "") {
+                $office = Office::find($this->userRequestData->office_id);
+                if ($office) {
+                    $res["agency_id"] = $office->agency_id;
+                    $res["office_id"] = $office->id;
+                    throw new Exception("No Agent found. Lead CreatedBy saved as Null.");
+                }
             }
-
+            else {
+                $office = Office::whereName('TApp-Office')->firstOrFail();
+                if ($office) {
+                    $res['office_id'] = $office->id;
+                    $res["agency_id"] = $office->agency_id;
+                    throw  new Exception("No Agent found. Falling back to default Agency & Office mapping.");
+                }
+            }
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
             Log::error($exception->getTraceAsString());
@@ -243,7 +254,7 @@ class TAppServices
         ];
         $emails = explode(',', config('our_property.support_emails'));
         foreach ($emails as $recipient) {
-            Mail::to($recipient)->queue(new AgentNotFoundMail($dataToBeSent));
+            Mail::to($recipient)->queue(new TAppAgentNotFoundMail($dataToBeSent));
         }
     }
 
