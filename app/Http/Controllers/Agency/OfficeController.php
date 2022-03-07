@@ -7,6 +7,8 @@ use App\Http\Requests\Agency\CreateOfficeRequest;
 use App\Http\Requests\Agency\UpdateOfficeRequest;
 use App\Http\Resources\Agency\AgencyResource;
 use App\Http\Resources\Agency\OfficeResource;
+use App\Models\AgentProfile;
+use App\Models\Office;
 use App\Services\Agency\AgencyService;
 use App\Services\Agency\CreateAgentAndUser;
 use App\Services\Agency\CreateOfficeAndAgency;
@@ -17,6 +19,7 @@ use App\Services\Agency\UpdateOfficeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 
 
 class OfficeController extends Controller
@@ -155,6 +158,13 @@ class OfficeController extends Controller
     {
 
         try {
+            $authUser = Auth::user();
+            $office = Office::find($id);
+            if($authUser->profile_type === AgentProfile::class &&
+                $authUser->profile->agency_id !== $office->agency_id) {
+                return $this->sendUnauthorizedResponse();
+            }
+
             $service = new OfficeService($id);
             return response()->json(['success' => true, 'data' => $service->getOffice()]);
 
