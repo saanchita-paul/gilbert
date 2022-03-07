@@ -115,7 +115,7 @@ class AgencyController extends Controller
     {
         /** @var User  $user */
         $user = auth()->user();
-        if ($user->profile_type === AgentProfile::class && $user->profile->agency_id !== $request->get('agency_id')) {
+        if ($user->profile_type === AgentProfile::class && $user->profile->agency_id !== (int) $request->get('agency_id')) {
             return $this->sendUnauthorizedResponse();
         }
         try {
