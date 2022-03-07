@@ -9,6 +9,7 @@ use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Requests\Agency\ProviderRequest;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationResource;
+use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\User;
@@ -94,6 +95,15 @@ class ApplicationController extends Controller
     public function view(Request $request, ConnectionApplication $application): ApplicationResource|JsonResponse
     {
         try {
+
+            // todo refactor move to code to helper methed
+
+            $authUser = Auth::user();
+            if($authUser->profile_type === AgentProfile::class &&
+                $authUser->profile->agency_id !== $application->agency_id) {
+                return $this->sendUnauthorizedResponse();
+            }
+
             $application->load(['connectionServices.reasons']);
             return new ApplicationResource($application);
 
