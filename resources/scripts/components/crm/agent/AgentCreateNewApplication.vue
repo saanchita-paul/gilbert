@@ -756,7 +756,7 @@
                     </v-col>
 
 
-                    <v-col cols="12" class="pb-0 mt-2">
+                    <v-col cols="12" class="pb-0 mt-2" v-if="!showSearchFields">
                                 <v-menu offset-y v-model="showMenu">
                                     <template v-slot:activator="{ on }">
                                         <v-text-field
@@ -778,68 +778,106 @@
                                             <v-list-item-title v-text="place.description">
                                             </v-list-item-title>
                                         </v-list-item>
+                                        <v-list-item>
+                                        <v-list-item-title>
+                                            <div class="mannualAddress" @click="toggleSearch"> Enter my address manually </div>
+                                        </v-list-item-title>
+                                        </v-list-item>
                                     </v-list>
                                 </v-menu>
                     </v-col>
 
-                    <v-col cols="6" class="py-0">
-                        <ValidationProvider name="Address" rules="required"  v-slot="{ errors }">
-                            <v-text-field
-                                label="Address*"
-                                outlined
-                                dense
-                                placeholder="2/56, Bradman Drive"
-                                v-model="application.street_address"
-                                :error-messages=" errors[0]"
-                            ></v-text-field>
-                        </ValidationProvider>
-
+                    <v-col cols="12" v-if="showSearchFields">
+                        <v-row>
+                            <v-col cols="3" class="py-0">
+                                <ValidationProvider name="UnitNo" rules="required"  v-slot="{ errors }">
+                                    <v-text-field
+                                        label="Unit No.*"
+                                        outlined
+                                        dense
+                                        placeholder="2/56, Bradman Drive"
+                                        v-model="application.street_address"
+                                        :error-messages=" errors[0]"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                            <v-col cols="3" class="py-0">
+                                <ValidationProvider name="StreetNo" rules="required"  v-slot="{ errors }">
+                                    <v-text-field
+                                        label="Street No.*"
+                                        outlined
+                                        dense
+                                        placeholder="2/56, Bradman Drive"
+                                        v-model="application.street_address"
+                                        :error-messages=" errors[0]"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                                <ValidationProvider name="StreetName" rules="required"  v-slot="{ errors }">
+                                    <v-text-field
+                                        label="Street Name.*"
+                                        outlined
+                                        dense
+                                        placeholder="2/56, Bradman Drive"
+                                        v-model="application.street_address"
+                                        :error-messages=" errors[0]"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                            <v-col cols="3" class="py-0">
+                                <ValidationProvider name="Street Type" rules="required"  v-slot="{ errors }">
+                                    <v-text-field
+                                        label="Street Type*"
+                                        outlined
+                                        dense
+                                        placeholder="2/56, Bradman Drive"
+                                        v-model="application.street_address"
+                                        :error-messages=" errors[0]"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                                <ValidationProvider name="City/Suburb" rules="required"  v-slot="{ errors }">
+                                    <v-text-field
+                                        label="City/Suburb*"
+                                        outlined
+                                        dense
+                                        placeholder="Sunbury"
+                                        v-model="application.city"
+                                        :error-messages=" errors[0]"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                                <ValidationProvider name="State/Territory" rules="required"  v-slot="{ errors }">
+                                    <v-select outlined dense
+                                              v-model="application.state"
+                                              :items="states"
+                                              label="State/Territory*"
+                                              :error-messages=" errors[0]"
+                                              placeholder="Please Select">
+                                    </v-select>
+                                </ValidationProvider>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                                <ValidationProvider name="Postcode" rules="required"  v-slot="{ errors }">
+                                    <v-text-field
+                                        label="Postcode*"
+                                        outlined
+                                        dense
+                                        placeholder="3429"
+                                        v-model="application.postcode"
+                                        :error-messages=" errors[0]"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                        </v-row>
                     </v-col>
 
-                    <v-col cols="6" class="py-0">
-                        <ValidationProvider name="City/Suburb" rules="required"  v-slot="{ errors }">
-                            <v-text-field
-                                label="City/Suburb*"
-                                outlined
-                                dense
-                                placeholder="Sunbury"
-                                v-model="application.city"
-                                :error-messages=" errors[0]"
-                            ></v-text-field>
-                        </ValidationProvider>
-
+                    <v-col cols="12" class="py-0" v-if="showSearchFields">
+                        <p class="newAddress" @click="toggleSearch"> I want to search for a new address </p>
                     </v-col>
-
-                    <v-col cols="6" class="py-0">
-
-                        <ValidationProvider name="State/Territory" rules="required"  v-slot="{ errors }">
-                            <v-select outlined dense
-                                      v-model="application.state"
-                                      :items="states"
-                                      label="State/Territory*"
-                                      :error-messages=" errors[0]"
-                                      placeholder="Please Select">
-                            </v-select>
-                        </ValidationProvider>
-                    </v-col>
-
-
-                    <v-col cols="6" class="py-0">
-
-                        <ValidationProvider name="Postcode" rules="required"  v-slot="{ errors }">
-                            <v-text-field
-                                label="Postcode*"
-                                outlined
-                                dense
-                                placeholder="3429"
-                                v-model="application.postcode"
-                                :error-messages=" errors[0]"
-                            ></v-text-field>
-                        </ValidationProvider>
-                    </v-col>
-
-
-
 
                     <v-col cols="12" class="pb-0">
                         <p class="sub-title mb-0">Service Interests</p>
@@ -1024,6 +1062,7 @@ export default {
             },
             loadSubmit: false,
             user: null,
+            showSearchFields: false,
         }
 
     },
@@ -1053,6 +1092,18 @@ export default {
         },
     },
     methods: {
+        toggleSearch(){
+            this.showSearchFields = !this.showSearchFields;
+        },
+        selectAddress(){
+            this.showSearchFields = true;
+        },
+        selectMannual(){
+            
+        },
+        newAddress(){
+            this.showSearchFields = false;
+        },
         onAddressSelected(place) {
             GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
                 .then((data) => {
@@ -1069,6 +1120,8 @@ export default {
                     if(!isNull( data.unit_number)) {
                         this.application.street_address = data.unit_number +'/'+ data.street;
                     }
+
+                    this.toggleSearch();
 
                 });
         },
@@ -1176,7 +1229,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
     .enabled {
       font-size: 18px;
       font-style: normal;
@@ -1206,4 +1259,17 @@ export default {
       border-radius: 8px !important;
     }
 
+    .mannualAddress{
+        font-weight: bold;
+        &:hover{
+            cursor: pointer;
+        }
+    }
+    .newAddress{
+        font-weight: bold;
+        text-decoration: underline;
+        &:hover{
+            cursor: pointer;
+        }
+    }
 </style>
