@@ -6,6 +6,7 @@ use App\Http\Requests\Agency\CreateAgentProfileRequest;
 use App\Http\Resources\Agency\AgencyResource;
 use App\Http\Resources\Agency\AgentListResource;
 use App\Http\Resources\Agency\AgentProfileResource;
+use App\Models\AgentProfile;
 use App\Models\Office;
 use App\Services\Agency\AgencyUserService;
 use App\Services\Agency\CreateAgentAndUser;
