@@ -24,4 +24,15 @@ class Controller extends BaseController
 
         return response()->json(['success' => false, 'message' => $err->getMessage()]);
     }
+
+
+    /**
+     * @param string $mgs
+     *
+     * @return JsonResponse
+     */
+    protected function sendUnauthorizedResponse(string $mgs = "Unauthorized"): JsonResponse
+    {
+        return response()->json(['success' => false, 'message' => $mgs], 403);
+    }
 }
