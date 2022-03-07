@@ -8,6 +8,8 @@ use App\Http\Requests\Agency\CreateIndependentAgencyRequest;
 use App\Http\Requests\Agency\UpdateAgencyRequest;
 use App\Http\Resources\Agency\AgencyResource;
 use App\Http\Resources\Agency\IndependentAgencyResource;
+use App\Models\AgentProfile;
+use App\Models\Office;
 use App\Services\Agency\AgencyMetricByApplication;
 use App\Services\Agency\AgencyMetricService;
 use App\Services\Agency\AgencyService;
@@ -16,6 +18,7 @@ use App\Services\Agency\SearchAgencyService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 
 class AgencyController extends Controller
 {
@@ -83,6 +86,13 @@ class AgencyController extends Controller
     public function getAgency(int $id)
     {
         try {
+
+            $authUser = Auth::user();
+            if($authUser->profile_type === AgentProfile::class &&
+                $authUser->profile->agency_id !== $id) {
+                return $this->sendUnauthorizedResponse();
+            }
+
             $service = new AgencyService();
             return AgencyResource::make($service->getAgency($id));
         } catch (\Exception $exception) {
