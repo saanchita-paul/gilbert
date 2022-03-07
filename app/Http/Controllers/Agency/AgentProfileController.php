@@ -6,6 +6,8 @@ use App\Http\Requests\Agency\CreateAgentProfileRequest;
 use App\Http\Resources\Agency\AgencyResource;
 use App\Http\Resources\Agency\AgentListResource;
 use App\Http\Resources\Agency\AgentProfileResource;
+use App\Models\AgentProfile;
+use App\Models\Office;
 use App\Services\Agency\AgencyUserService;
 use App\Services\Agency\CreateAgentAndUser;
 use App\Services\Agency\SearchAgentProfileService;
@@ -121,6 +123,15 @@ class AgentProfileController extends Controller
     public function getAgentList(Request $request, int $officeId): AnonymousResourceCollection | JsonResponse
     {
         try {
+
+            $authUser = Auth::user();
+            $office = Office::find($officeId);
+            if($authUser->profile_type === AgentProfile::class &&
+                $authUser->profile->agency_id !== $office->agency_id) {
+                return $this->sendUnauthorizedResponse();
+            }
+
+
             $service = new SearchAgentProfileService($request->toArray());
             return AgentListResource::collection($service->getAgentList($officeId));
         } catch ( \Exception $exception) {
