@@ -10,6 +10,7 @@ use App\Http\Resources\Agency\AgencyResource;
 use App\Http\Resources\Agency\IndependentAgencyResource;
 use App\Models\AgentProfile;
 use App\Models\Office;
+use App\Models\User;
 use App\Services\Agency\AgencyMetricByApplication;
 use App\Services\Agency\AgencyMetricService;
 use App\Services\Agency\AgencyService;
@@ -112,6 +113,11 @@ class AgencyController extends Controller
 
     public function getAgencyApplicationMetrics(Request $request)
     {
+        /** @var User  $user */
+        $user = auth()->user();
+        if ($user->profile_type === AgentProfile::class && $user->profile->agency_id !== $request->get('agency_id')) {
+            return $this->sendUnauthorizedResponse();
+        }
         try {
             $service = new AgencyMetricByApplication($request->toArray());
             return response()->json(['success' => true, 'data' => $service->getAgencyMetrics()]);
