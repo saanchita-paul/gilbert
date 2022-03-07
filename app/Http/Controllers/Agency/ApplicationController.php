@@ -9,6 +9,7 @@ use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Requests\Agency\ProviderRequest;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationResource;
+use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\User;
@@ -245,6 +246,12 @@ class ApplicationController extends Controller
      */
     public function getApplicationMetricsCount(Request $request)
     {
+
+        /** @var User  $user */
+        $user = auth()->user();
+        if ($user->profile_type === AgentProfile::class && $user->profile->agency_id !== $request->get('agency_id')) {
+            return $this->sendUnauthorizedResponse();
+        }
         try {
             $user = auth()->user();
             $service = new ConnectionService();
