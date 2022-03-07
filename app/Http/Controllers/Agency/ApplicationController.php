@@ -255,6 +255,12 @@ class ApplicationController extends Controller
      */
     public function getApplicationMetricsCount(Request $request)
     {
+
+        /** @var User  $user */
+        $user = auth()->user();
+        if ($user->profile_type === AgentProfile::class && $user->profile->agency_id !== $request->get('agency_id')) {
+            return $this->sendUnauthorizedResponse();
+        }
         try {
             $user = auth()->user();
             $service = new ConnectionService();
