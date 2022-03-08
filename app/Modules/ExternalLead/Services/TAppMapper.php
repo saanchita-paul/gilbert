@@ -19,11 +19,27 @@ class TAppMapper
 
     public function mapPhoneType($phoneType)
     {
-        if($phoneType === 'mobile') {
-            return 1;
-        } else {
-            return 2;
-        }
+        return match ($phoneType) {
+            'mobile' => 1,
+            'international mobile' => 3,
+            default => 2,
+        };
+    }
+
+    public function mapPhone($phoneType, $phoneNumber)
+    {
+        return match ($phoneType) {
+            'mobile' => $phoneNumber,
+            default => null,
+        };
+    }
+
+    public function mapInternationalPhone($phoneType, $phoneNumber)
+    {
+        return match ($phoneType) {
+            'international mobile' => $phoneNumber,
+            default => null,
+        };
     }
 
     public function mapYesNoToBool($isAggree)

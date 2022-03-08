@@ -136,6 +136,7 @@ class ConnectionApplication extends Model
         'last_name',
         'email',
         'phone',
+        'international_phone',
         'homephone',
         'phone_type',
         'tenancy_type',

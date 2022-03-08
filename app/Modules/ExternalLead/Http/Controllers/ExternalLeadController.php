@@ -7,8 +7,6 @@ use ExternalLead\Services\TAppServices;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use OurProperty\Services\CreateOurPropertyService;
-
 
 class ExternalLeadController extends Controller
 {

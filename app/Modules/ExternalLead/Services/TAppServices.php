@@ -148,7 +148,10 @@ class TAppServices
         $this->connectionApplicaton->dob = $this->userRequestData->tenancy_dob ?? null;
         $this->connectionApplicaton->phone_type = $this->userRequestData->tenancy_phone_type ?
             $mapperService->mapPhoneType($this->userRequestData->tenancy_phone_type) : null;
-        $this->connectionApplicaton->phone = $this->userRequestData->tenancy_phone_number ?? null;
+        $this->connectionApplicaton->phone = $mapperService->mapPhone(
+            $this->userRequestData->tenancy_phone_type, $this->userRequestData->tenancy_phone_number) ?? null;
+        $this->connectionApplicaton->international_phone = $mapperService->mapInternationalPhone(
+            $this->userRequestData->tenancy_phone_type, $this->userRequestData->tenancy_phone_number) ?? null;
         $this->connectionApplicaton->homephone = $this->userRequestData->tenancy_homephone ?? null;
         $this->connectionApplicaton->email = $this->userRequestData->tenancy_email ?? null;
         $this->connectionApplicaton->tenancy_type = $this->userRequestData->tenancy_type ?

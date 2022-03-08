@@ -158,7 +158,7 @@
         </div>
       </div>
 
-      <div class="crm-text-field" v-if="person_details.phone_type == 1">
+      <div class="crm-text-field" v-if="person_details.phone_type === 1">
         <div class="field-label">
           <span>Mobile *</span>
         </div>
@@ -181,7 +181,7 @@
         </div>
       </div>
 
-      <div class="crm-text-field" v-else>
+      <div class="crm-text-field" v-if="person_details.phone_type === 2">
         <div class="field-label">
           <span>Homephone *</span>
         </div>
@@ -201,6 +201,29 @@
               @blur="saveDraft('homephone', person_details.homephone)"
             ></v-text-field>
             <!-- TODO check save draft -->
+          </ValidationProvider>
+        </div>
+      </div>
+
+      <div class="crm-text-field" v-if="person_details.phone_type === 3">
+        <div class="field-label">
+          <span>International Mobile Number *</span>
+        </div>
+        <div class="text-field">
+          <ValidationProvider
+            name="International Mobile Number"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <v-text-field
+              v-model="person_details.international_phone"
+              @input="updateLeads"
+              outlined
+              dense
+              :error-messages="errors[0]"
+              hide-details="auto"
+              @blur="saveDraft('international_phone', person_details.international_phone)"
+            ></v-text-field>
           </ValidationProvider>
         </div>
       </div>
@@ -1109,6 +1132,10 @@ export default {
           text: "Homephone",
           value: 2,
         },
+        {
+          text: "International Mobile Number",
+          value: 3,
+        },
       ],
       familyViolanceTypeDD: [
         {
@@ -1293,6 +1320,7 @@ export default {
       // this.person_details.dob = this.lead.dob;
       this.person_details.email = this.lead.email;
       this.person_details.phone = this.lead.phone;
+      this.person_details.international_phone = this.lead.international_phone;
       this.person_details.tenancy_type = this.lead.tenancy_type;
       this.person_details.phone_type = this.lead.phone_type;
       this.person_details.homephone = this.lead.homephone;
