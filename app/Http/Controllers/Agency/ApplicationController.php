@@ -273,7 +273,7 @@ class ApplicationController extends Controller
             return ApplicationMetricsResource::make($data);
 
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -297,7 +297,7 @@ class ApplicationController extends Controller
             return response()->json(['success' => true, 'data' => $res]);
 
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -309,7 +309,7 @@ class ApplicationController extends Controller
             return response()->json(['success' => true, 'data' => $res]);
 
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -322,7 +322,7 @@ class ApplicationController extends Controller
             return response()->json(['success' => true, 'data' => $res]);
 
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -334,7 +334,7 @@ class ApplicationController extends Controller
             $res = $service->closeApplicationWithReason($request->toArray(), $id, $user);
             return response()->json(['success' => true, 'data' => $res]);
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -352,8 +352,8 @@ class ApplicationController extends Controller
             else return response(['status' => true ,
                 "message" => "Service id: {$data['id']} updated successfully", 'service'=> $new_service] , 200);
 
-        } catch (\Throwable $th) {
-            return response(['status' => false] , 409);
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -365,7 +365,7 @@ class ApplicationController extends Controller
             return response()->json(['success' => true, 'message' => 'providers updated successfully']);
 
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -376,7 +376,7 @@ class ApplicationController extends Controller
             return response()->json(['success' => true, 'data' => $res]);
 
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 }

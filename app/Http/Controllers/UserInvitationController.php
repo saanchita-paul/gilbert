@@ -64,7 +64,7 @@ class UserInvitationController extends Controller
 
             return response()->json(['success' => true, 'message' => "Password successfully updated."]);
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 }
