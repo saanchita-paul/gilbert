@@ -28,7 +28,7 @@ class Controller extends BaseController
         return response()->json([
             'success' => false,
             'message' => $message,
-            'exception' => get_class($err)
+//            'exception' => get_class($err)
         ]);
     }
 
