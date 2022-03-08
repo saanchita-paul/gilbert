@@ -187,6 +187,9 @@ export default {
     },
 
     mapMadecareDateToServer(dt, isDatabaseFormat = true) {
+        if (dt === null) {
+            return null;
+        }
         let siltedData = dt.split('/');
         let fullMonthYear = siltedData[0] + '/' + '20' + siltedData[1];
         let fullDateMonthYear = dayjs(fullMonthYear, 'MM/YYYY').daysInMonth() + '/' + fullMonthYear;
