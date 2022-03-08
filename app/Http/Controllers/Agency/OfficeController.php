@@ -39,7 +39,7 @@ class OfficeController extends Controller
             return OfficeResource::collection($service->get($agencyId));
 
         } catch ( \Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -58,7 +58,7 @@ class OfficeController extends Controller
             return OfficeResource::collection($service->get());
 
         } catch ( \Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -96,7 +96,7 @@ class OfficeController extends Controller
             return AgencyResource::make($office);
 
         } catch ( \Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -138,7 +138,7 @@ class OfficeController extends Controller
 
             return AgencyResource::make($office);
         } catch ( \Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -150,7 +150,7 @@ class OfficeController extends Controller
             return response()->json(['success' => false, 'message' => $service->updateOffice($request->toArray())]);
 
         } catch ( \Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -169,7 +169,7 @@ class OfficeController extends Controller
             return response()->json(['success' => true, 'data' => $service->getOffice()]);
 
         } catch ( \Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -180,7 +180,7 @@ class OfficeController extends Controller
             return response()->json(['success' => true, 'data' => $service->getOnlyOffice()]);
 
         } catch ( \Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -191,7 +191,7 @@ class OfficeController extends Controller
             $data = $service->get();
             return response()->json(['success' => true, 'data' => $data]);
         } catch ( \Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 }

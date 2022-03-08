@@ -62,7 +62,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/offices', [OfficeController::class, 'createOffice'])
         ->middleware('permission:' . RolePermissionService::CAN_CREATE_NEW_OFFICE );
-    Route::get('/offices/{id}', [OfficeController::class, 'getOffice']);
+    Route::get('/offices/{id}', [OfficeController::class, 'getOffice'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICE_DETAILS);
     Route::get('/offices/office/{id}', [OfficeController::class, 'getOnlyOffice'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICE_DETAILS);
     Route::get('/offices/{id}/get-metrics', [OfficeController::class, 'getMatricsData'])
