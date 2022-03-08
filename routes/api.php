@@ -87,13 +87,21 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/office-agents/{id}', [AgentProfileController::class, 'getAgent']);
 
+    Route::get('/alloffices', [OfficeController::class, 'allOffices'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
+
     /**
      * Hood User
      */
     Route::get('/application-assignees', [HoodUserController::class, 'getAssignee'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_ASSIGNEE_LIST);
-    Route::post('/hood-users', [HoodUserController::class, 'store']);
-    Route::get('/hood-users', [HoodUserController::class, 'index']);
+    // Route::post('/hood-users', [HoodUserController::class, 'store']);  # Not used
+    Route::get('/hood-users', [HoodUserController::class, 'index'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
+
+    Route::get('/users/is-unique-email', [AuthController::class, 'isEmailValid']);
+    Route::get('/users/is-unique-email-update', [AuthController::class, 'isEmailTaken'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_OFFICE_AGENT);
 
     /**
      * Applications
@@ -162,8 +170,6 @@ Route::post('/invitation/validation', [UserInvitationController::class, 'validat
 Route::post('/invitation/change-password', [UserInvitationController::class, 'passwordChange']);
 
 Route::post('/register/email-validation', [AuthController::class, 'isValidUser']);
-Route::get('/users/is-unique-email', [AuthController::class, 'isEmailValid']);
-Route::get('/users/is-unique-email-update', [AuthController::class, 'isEmailTaken']);
 
 Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
 
@@ -222,9 +228,6 @@ Route::get("/karan/sales-status", function () {
         }
     return "success";
 });
-
-Route::get('/alloffices', [OfficeController::class, 'allOffices']);
-
 
 Route::get('country_test', function () {
     //  return SubmitWaterLeadToFastConnect::mapLengthOfCountry[2];
