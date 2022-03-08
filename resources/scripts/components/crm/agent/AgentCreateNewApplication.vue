@@ -362,7 +362,7 @@
                                                 item-value="value"
                                                 v-model="authorized_person.role"
                                                 :error-messages=" errors[0]"
-                                                placeholder="Role">
+                                                placeholder="Role*">
                                             </v-select>
                                         </ValidationProvider>
                                     </v-col>
@@ -385,7 +385,7 @@
                                                       :items="idenficationTypeDD"
                                                       item-text="text"
                                                       item-value="value"
-                                                      :label="`Id Type *`"
+                                                      :label="`Id Type`"
                                                       :error-messages=" errors[0]"
                                                       placeholder="Please select one">
                                             </v-select>
@@ -403,7 +403,7 @@
                                                 outlined
                                                 dense
                                                 placeholder="Medicare Card Number"
-                                                :label="`Medicare Card Number *`"
+                                                :label="`Medicare Card Number`"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </v-col>
@@ -416,7 +416,7 @@
                                             <v-select
                                                 v-model="authorized_person.special_number"
                                                 :error-messages="errors[0]"
-                                                :label="'Special Number *'"
+                                                :label="'Special Number'"
                                                 placeholder="1/2"
                                                 :items="specialNumberDD"
                                                 outlined
@@ -444,7 +444,7 @@
                                                 >
                                                     <v-text-field
                                                         placeholder="MM/YY"
-                                                        :label="'Expiry Date *'"
+                                                        :label="'Expiry Date'"
                                                         outlined
                                                         dense
                                                         v-model="authorized_person.expire_date"
@@ -474,7 +474,7 @@
                                             <v-select
                                                 v-model="authorized_person.card_color"
                                                 placeholder="Yellow"
-                                                :label="'Card Colour *'"
+                                                :label="'Card Colour'"
                                                 item-text="text"
                                                 item-value="value"
                                                 :items="colorDD"
@@ -497,7 +497,7 @@
                                                 outlined
                                                 dense
                                                 placeholder="Passport Number"
-                                                :label="`Passport Number *`"
+                                                :label="`Passport Number`"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </v-col>
@@ -509,7 +509,7 @@
                                                 outlined
                                                 dense
                                                 placeholder="AUS"
-                                                :label="`Issuing Country *`"
+                                                :label="`Issuing Country`"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </v-col>
@@ -530,7 +530,7 @@
                                                 >
                                                     <v-text-field
                                                         placeholder="DD/MM/YYYY"
-                                                        :label="`Expiry Date *`"
+                                                        :label="`Expiry Date`"
                                                         outlined
                                                         dense
                                                         v-model="authorized_person.expire_date"
@@ -554,14 +554,14 @@
                             <v-col v-if="authorized_person.identification_type === 2" cols="12">
                                 <v-row>
                                     <v-col cols="6" class="pb-0">
-                                        <ValidationProvider rules="" name="Driver’s License*" v-slot="{ errors }">
+                                        <ValidationProvider rules="" name="Driver’s License" v-slot="{ errors }">
                                             <v-text-field
                                                 :error-messages="errors[0]"
                                                 v-model="authorized_person.card_number"
                                                 outlined
                                                 dense
                                                 placeholder="License Number"
-                                                :label="'Driver’s License *'"
+                                                :label="'Driver’s License'"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </v-col>
@@ -575,7 +575,7 @@
                                                 :error-messages="errors[0]"
                                                 v-model="authorized_person.state"
                                                 placeholder="Victoria"
-                                                :label="`State *`"
+                                                :label="`State`"
                                                 item-text="text"
                                                 item-value="value"
                                                 :items="states"
@@ -602,7 +602,7 @@
                                                 >
                                                     <v-text-field
                                                         placeholder="DD/MM/YYYY"
-                                                        :label="`Expiry Date *`"
+                                                        :label="`Expiry Date`"
                                                         outlined
                                                         dense
                                                         v-model="authorized_person.expire_date"
