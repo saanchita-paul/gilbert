@@ -258,10 +258,15 @@ class ApplicationController extends Controller
 
         /** @var User  $user */
         $user = auth()->user();
-        // Atikur commented out the code for pen test
-        /*if ($user->profile_type === AgentProfile::class && $user->profile->agency_id !== (int) $request->get('agency_id')) {
+        if (
+            $request->get('agency_id')
+            && $user->profile_type === AgentProfile::class
+            && $user->profile->agency_id !== (int) $request->get('agency_id')
+        ) {
             return $this->sendUnauthorizedResponse();
-        }*/
+        }
+
+
         try {
             $user = auth()->user();
             $service = new ConnectionService();
