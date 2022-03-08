@@ -37,7 +37,7 @@ class AgencyController extends Controller
             return AgencyResource::collection($service->get());
 
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -48,7 +48,7 @@ class AgencyController extends Controller
             return AgencyResource::make($service->createAgency($request->toArray()));
 
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -63,7 +63,7 @@ class AgencyController extends Controller
             $service = new AgencyService();
             return AgencyResource::make($service->updateAgency($request->toArray(), $id));
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -80,7 +80,7 @@ class AgencyController extends Controller
             $independentAgencyService = new IndepentAgencyService();
             return IndependentAgencyResource::make($independentAgencyService->create($request->toArray()));
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -97,7 +97,7 @@ class AgencyController extends Controller
             $service = new AgencyService();
             return AgencyResource::make($service->getAgency($id));
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -107,7 +107,7 @@ class AgencyController extends Controller
             $service = new AgencyMetricService($request->toArray());
             return response()->json(['success' => true, 'data' => $service->getAgencyMetrics()]);
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 
@@ -122,7 +122,7 @@ class AgencyController extends Controller
             $service = new AgencyMetricByApplication($request->toArray());
             return response()->json(['success' => true, 'data' => $service->getAgencyMetrics()]);
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 

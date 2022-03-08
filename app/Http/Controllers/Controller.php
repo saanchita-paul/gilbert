@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -22,7 +23,13 @@ class Controller extends BaseController
         \Log::error($err->getMessage());
         \Log::error($err->getTraceAsString());
 
-        return response()->json(['success' => false, 'message' => $err->getMessage()]);
+        $message = env("APP_DEBUG") === true ? $err->getMessage() : "Server Error";
+
+        return response()->json([
+            'success' => false,
+            'message' => $message,
+//            'exception' => get_class($err)
+        ]);
     }
 
 

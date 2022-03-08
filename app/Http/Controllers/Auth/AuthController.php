@@ -74,7 +74,7 @@ class AuthController extends Controller
         try {
             $user =  User::where('email', $request->email)->where('id', '!=', $request->id)->first();
             return $user;
-            
+
             return response(["status" => !!$user], 200);
         } catch (\Exception $exception) {
             return response('Email already used', 409);
@@ -87,7 +87,7 @@ class AuthController extends Controller
             $service = new ForgotPasswordService();
             return $service = $service->forgot($request);
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);;
         }
     }
 
@@ -97,7 +97,7 @@ class AuthController extends Controller
             $service = new ResetPasswordService();
             return $service = $service->reset($request);
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
     public function checkIsValidToken(Request $request)
@@ -108,7 +108,7 @@ class AuthController extends Controller
             $isValidToken = $service->checkIsValidToken($token);
             return response()->json(['success' => false, 'is_valid_token' => $isValidToken]);
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'is_valid_token' => false, 'message' => $exception->getMessage()]);
+            return $this->sendErrorResponse($exception);
         }
     }
 }
