@@ -55,7 +55,7 @@ export default class ApplicationSummary {
     agency_office = '';
     source= 0;
     created_by_agent = null;
-    after_hour_payee
+    after_hour_payee =  null;
     constructor(
         {
             id = null,
@@ -116,7 +116,7 @@ export default class ApplicationSummary {
             created_by_agent = null,
             is_temporary_connection = 0,
             connection_end_date = null,
-            after_hour_payee
+            after_hour_payee = null,
         }
     ) {
 
