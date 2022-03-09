@@ -790,12 +790,13 @@
                     <v-col cols="12" v-if="showSearchFields">
                         <v-row>
                             <v-col cols="3" class="py-0">
-                                <ValidationProvider name="UnitNo" rules="required"  v-slot="{ errors }">
+                                <ValidationProvider name="UnitNo"  v-slot="{ errors }">
                                     <v-text-field
-                                        label="Unit No.*"
+                                        label="Unit No"
                                         outlined
                                         dense
-                                        placeholder="2/56, Bradman Drive"
+                                        :disabled="!application.mannual_address"
+                                        placeholder="Unit No"
                                         v-model="application.unit_number"
                                         :error-messages=" errors[0]"
                                     ></v-text-field>
@@ -807,6 +808,7 @@
                                         label="Street No.*"
                                         outlined
                                         dense
+                                        :disabled="!application.mannual_address"
                                         placeholder="2/56, Bradman Drive"
                                         v-model="application.street_address"
                                         :error-messages=" errors[0]"
@@ -819,6 +821,7 @@
                                         label="Street Name.*"
                                         outlined
                                         dense
+                                        :disabled="!application.mannual_address"
                                         placeholder="2/56, Bradman Drive"
                                         v-model="application.street_address"
                                         :error-messages=" errors[0]"
@@ -830,6 +833,7 @@
                                     <v-select outlined dense
                                               v-model="application.street_type"
                                               :items="street_type"
+                                              :disabled="!application.mannual_address"
                                               label="Street Type*"
                                               :error-messages=" errors[0]"
                                               placeholder="Please Select">
@@ -842,6 +846,7 @@
                                         label="City/Suburb*"
                                         outlined
                                         dense
+                                        :disabled="!application.mannual_address"
                                         placeholder="Sunbury"
                                         v-model="application.city"
                                         :error-messages=" errors[0]"
@@ -853,6 +858,7 @@
                                     <v-select outlined dense
                                               v-model="application.state"
                                               :items="states"
+                                              :disabled="!application.mannual_address"
                                               label="State/Territory*"
                                               :error-messages=" errors[0]"
                                               placeholder="Please Select">
@@ -865,6 +871,7 @@
                                         label="Postcode*"
                                         outlined
                                         dense
+                                        :disabled="!application.mannual_address"
                                         placeholder="3429"
                                         v-model="application.postcode"
                                         :error-messages=" errors[0]"
