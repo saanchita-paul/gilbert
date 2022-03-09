@@ -96,6 +96,7 @@ export default class ApplicationSummary {
             property_type = null,
             status = null,
             billing_unit_number = null,
+            billing_street_type = null,
             billing_street_number = null,
             billing_street_name = null,
             billing_address_text = null,
@@ -103,7 +104,9 @@ export default class ApplicationSummary {
             billing_street_address = null,
             billing_city = null,
             billing_postcode = null,
-            is_billing_same = null,
+            billing_state = null,
+            billing_mannual_address = false,
+            is_billing_same = true,
             authorizedPersonName = null,
             is_contacted = true,
             agent_name = '',
@@ -163,13 +166,18 @@ export default class ApplicationSummary {
         this.unit_number = unit_number;
         this.street_name = street_name;
         this.authorizedPersonName = authorizedPersonName;
-        this.billing_unit_number = billing_unit_number, this.billing_street_number = billing_street_number,
+        this.billing_unit_number = billing_unit_number, 
+        this.billing_street_number = billing_street_number,
             this.billing_street_name = billing_street_name,
+            this.billing_state = billing_state,
+            this.billing_street_type = billing_street_type,
             this.billing_address_text = billing_address_text,
+            this.billing_street_number = billing_street_number,
             this.billing_address_unit = billing_address_unit,
             this.billing_street_address = billing_street_address,
             this.billing_city = billing_city,
             this.billing_postcode = billing_postcode,
+            this.billing_mannual_address = billing_mannual_address,
             this.is_billing_same = is_billing_same,
             this.is_contacted = is_contacted,
         this.agent_name =    agent_name

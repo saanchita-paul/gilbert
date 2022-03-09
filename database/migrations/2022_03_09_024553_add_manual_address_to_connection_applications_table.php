@@ -16,6 +16,7 @@ class AddManualAddressToConnectionApplicationsTable extends Migration
         Schema::table('connection_applications', function (Blueprint $table) {
             //
             $table->tinyInteger('mannual_address')->nullable();
+            $table->tinyInteger('billing_mannual_address')->nullable();
         });
     }
 
@@ -28,7 +29,7 @@ class AddManualAddressToConnectionApplicationsTable extends Migration
     {
         Schema::table('connection_applications', function (Blueprint $table) {
             //
-            $table->dropColumn('mannual_address');
+            $table->dropColumn(['mannual_address', 'billing_mannual_address']);
         });
     }
 }
