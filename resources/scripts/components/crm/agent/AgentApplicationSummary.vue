@@ -55,11 +55,18 @@
                 <p class="mb-2">{{application.phone}}</p>
             </v-col>
 
-            <v-col v-if="application.phone_type != 1" cols="5"  class="my-0 py-0">
+            <v-col v-if="application.phone_type === 2" cols="5"  class="my-0 py-0">
                 <p class="font-weight-bold  pl-2 mb-2"> Homephone </p>
             </v-col>
-            <v-col v-if="application.phone_type != 1" cols="6" class="my-0 py-0">
+            <v-col v-if="application.phone_type === 2" cols="6" class="my-0 py-0">
                 <p class="mb-2">{{application.homephone}}</p>
+            </v-col>
+
+            <v-col v-if="application.phone_type === 3" cols="5"  class="my-0 py-0">
+                <p class="font-weight-bold  pl-2 mb-2"> I. Mobile Number </p>
+            </v-col>
+            <v-col v-if="application.phone_type === 3" cols="6" class="my-0 py-0">
+                <p class="mb-2">{{application.international_phone}}</p>
             </v-col>
 
             <v-col cols="5" class="my-0 py-0">

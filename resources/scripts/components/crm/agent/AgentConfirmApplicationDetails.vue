@@ -59,7 +59,7 @@
                         </v-col>
 
                         <v-col v-if="application.phone_type === 3" cols="4" class="my-0 py-0  d-flex justify-end">
-                            <p class="font-weight-bold pl-2 mb-1">International Mobile Number:</p>
+                            <p class="font-weight-bold pl-2 mb-1">I. Mobile Number:</p>
                         </v-col>
                         <v-col v-if="application.phone_type === 3" cols="7" class="my-0 py-0 ">
                             <p class="mb-1">

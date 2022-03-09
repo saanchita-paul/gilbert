@@ -64,7 +64,7 @@
            </v-col>
 
            <v-col cols="5" v-if="lead.phone_type === 3"  class="py-0 my-0">
-               <p class="font-weight-bold"> International Mobile Number </p>
+               <p class="font-weight-bold"> I. Mobile Number </p>
            </v-col>
 
            <v-col cols="7" v-if="lead.phone_type === 3"  class="py-0 my-0">

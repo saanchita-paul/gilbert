@@ -207,11 +207,11 @@
 
       <div class="crm-text-field" v-if="person_details.phone_type === 3">
         <div class="field-label">
-          <span>International Mobile Number *</span>
+          <span>I. Mobile Number *</span>
         </div>
         <div class="text-field">
           <ValidationProvider
-            name="International Mobile Number"
+            name="I. Mobile Number"
             rules="required"
             v-slot="{ errors }"
           >
@@ -1133,7 +1133,7 @@ export default {
           value: 2,
         },
         {
-          text: "International Mobile Number",
+          text: "I. Mobile Number",
           value: 3,
         },
       ],

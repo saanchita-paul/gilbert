@@ -299,6 +299,7 @@ class ConnectionApplication extends Model
         self::SOURCE_OUR_PROPERTY => 'Ourproperty',
         self::SOURCE_PROPERTY_ME => 'Propertyme',
         self::SOURCE_HOOD_LEAD => "Hood.ai",
+        self::SOURCE_T_APP => "tApp",
     ];
 
     const PLAN_TYPE_REVERSE_MAPPER = [

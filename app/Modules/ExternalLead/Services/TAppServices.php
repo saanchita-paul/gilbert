@@ -205,6 +205,7 @@ class TAppServices
             "office_id" => null,
             "created_by" => null
         ];
+        // need to fix this method, Bad coding due to time limitation.
         try {
             if ($this->userRequestData->agent_email && $this->userRequestData->agent_email !== null && $this->userRequestData->agent_email !== "") {
                 $agent = AgentProfile::whereHas(
@@ -215,6 +216,21 @@ class TAppServices
                     $res["agency_id"] = $agent->agency_id;
                     $res["office_id"] = $agent->office_id;
                     $res["created_by"] = $agent->id;
+                } elseif ($this->userRequestData->office_id && $this->userRequestData->office_id !== null && $this->userRequestData->office_id !== "") {
+                    $office = Office::find($this->userRequestData->office_id);
+                    if ($office) {
+                        $res["agency_id"] = $office->agency_id;
+                        $res["office_id"] = $office->id;
+                        throw new Exception("No Agent found. Lead CreatedBy saved as Null.");
+                    } else {
+                        $res["agency_id"] = $this->userRequestData->agency_id;
+                        $res["office_id"] = $this->userRequestData->office_id;
+                        throw new Exception("No Agent found. Lead Created with provided agency_id and office_id.");
+                    }
+                } else {
+                    $res["agency_id"] = $this->userRequestData->agency_id;
+                    $res["office_id"] = $this->userRequestData->office_id;
+                    throw new Exception("No Agent found. Lead Created with provided agency_id and office_id.");
                 }
             } elseif ($this->userRequestData->office_id && $this->userRequestData->office_id !== null && $this->userRequestData->office_id !== "") {
                 $office = Office::find($this->userRequestData->office_id);
@@ -234,8 +250,6 @@ class TAppServices
             }
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
-            Log::error($exception->getTraceAsString());
-
             $this->sendAgentNotFoundEmail($exception->getMessage());
         }
 
