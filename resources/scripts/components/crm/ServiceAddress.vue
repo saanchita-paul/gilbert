@@ -32,16 +32,21 @@
                                                                 @keyup.native="onStreetChanged"
                                                             ></v-text-field>
                                                         </template>
-                                                        <v-list>
-                                                            <v-list-item
-                                                                v-for="place in searchResult"
-                                                                :key="place.place_id"
-                                                                @click="onAddressSelected(place)"
-                                                            >
-                                                                <v-list-item-title v-text="place.description">
-                                                                </v-list-item-title>
-                                                            </v-list-item>
-                                                        </v-list>
+                                    <v-list v-if="searchResult.length">
+                                        <v-list-item
+                                            v-for="place in searchResult"
+                                            :key="place.id"
+                                            @click="onAddressSelected(place)"
+                                        >
+                                            <v-list-item-title v-text="place.address_text">
+                                            </v-list-item-title>
+                                        </v-list-item>
+                                        <v-list-item>
+                                        <v-list-item-title >
+                                            <div class="mannualAddress" @click="selectMannual"> Enter my address manually </div>
+                                        </v-list-item-title>
+                                        </v-list-item>
+                                    </v-list>
                                                     </v-menu>
                                                 </v-col>
                                             </v-row>
@@ -229,6 +234,9 @@ import Search from "@scripts/components/crm/Search";
 import debounce from "lodash-es/debounce";
 import GoogleMapService from "@scripts/services/GoogleMapService";
 import {isNull} from "lodash-es";
+import STATES_DD from "@scripts/data/constants/STATES_DD";
+import MapService from "@scripts/services/MapService";
+import { street_type } from "@scripts/data/constants/StreetType"; 
 export default {
   name: "ServiceAddress",
   components: {
@@ -258,6 +266,7 @@ export default {
                 {text: 'ACT', value: 'Australian Capital Territory'},
                 {text: 'WA', value: 'Western Australia'},
             ],
+          showSearchFields: false,
           // inspectionTimes:[
           //   '8AM - 1PM',
           //   '9AM - 2PM',
@@ -271,7 +280,7 @@ export default {
     created() {
         this.onStreetChanged = debounce(() => {
             if (this.propertyDetails.address_text.length > 0) {
-                GoogleMapService.getStreetAddressesByKeyword(this.propertyDetails.address_text)
+                MapService.getStreetAddressesByKeyword(this.propertyDetails.address_text)
                     .then((data) => {
                         this.searchResult = data;
                         this.showMenu = this.searchResult.length > 0
@@ -280,7 +289,7 @@ export default {
         }, 250);
       this.onbilling_StreetChanged = debounce(() => {
         if (this.propertyDetails.billing_address_text.length > 0) {
-          GoogleMapService.getStreetAddressesByKeyword(this.propertyDetails.billing_address_text)
+          MapService.getStreetAddressesByKeyword(this.propertyDetails.billing_address_text)
               .then((data) => {
                 this.searchResult = data;
                 this.showAdditionalMenu = this.searchResult.length > 0
@@ -289,14 +298,46 @@ export default {
       }, 250);
 
     },
+    computed: {
+      street_type(){
+          return street_type;
+      },
+    },
     methods: {
+        selectAddress(){
+            this.showSearchFields = true;
+        },
+        selectMannual(){
+            this.showSearchFields = true;
+
+            this.propertyDetails.address_text = null;
+            this.propertyDetails.street_address = null;
+            this.propertyDetails.city = null;
+            this.propertyDetails.postcode = null;
+            this.propertyDetails.state = null;
+            this.propertyDetails.street_number = null;
+            this.propertyDetails.unit_number = null;
+            this.propertyDetails.street_name = null;
+            this.propertyDetails.street_type = null;
+            this.propertyDetails.mannual_address = true;
+            
+        },
+        newAddress(){
+            this.showSearchFields = false;
+            this.propertyDetails.mannual_address = false;
+            this.propertyDetails.address_text = null;
+            this.searchResult = [];
+        },
         closeServiceAddress() {
             this.$emit('close');
         },
         onAddressSelected(place) {
-            GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
+            console.log("place id" , place)
+            MapService.getAddressDetailsById(place.id)
                 .then((data) => {
-                    this.propertyDetails.address_text = data.formatted_address;
+                    // this.propertyDetails = { ...this.propertyDetails, ...data }
+
+                    this.propertyDetails.address_text = data.address_text;
                     this.propertyDetails.street_address = data.street;
                     this.propertyDetails.city = data.city;
                     this.propertyDetails.postcode = data.postcode;
@@ -304,10 +345,10 @@ export default {
                     this.propertyDetails.street_number = data.street_number?data.street_number:null;
                     this.propertyDetails.unit_number = data.unit_number;
                     this.propertyDetails.street_name = data.street_name;
+                    this.propertyDetails.street_type = data.street_type;
+                    this.propertyDetails.unit_number = data.unit_number;
 
-                    if(!isNull( data.unit_number)) {
-                        this.propertyDetails.street_address = data.unit_number +'/'+ data.street;
-                    }
+                    this.selectAddress();
                 });
         },
 
@@ -359,9 +400,22 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .sticky-bottom{
   position: sticky;
   bottom: 0px;
+}
+
+.mannualAddress{
+    font-weight: bold;
+    &:hover{
+        cursor: pointer;
+    }
+}
+.newAddress{
+    font-weight: bold;
+    &:hover{
+        cursor: pointer;
+    }
 }
 </style>
