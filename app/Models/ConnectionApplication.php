@@ -180,7 +180,9 @@ class ConnectionApplication extends Model
         'source',
         'connection_end_date',
         'is_temporary_connection',
-        'water_next_available_date'
+        'water_next_available_date',
+        'after_hour_payee',
+        'after_hour_flag'
     ];
 
 
@@ -265,6 +267,9 @@ class ConnectionApplication extends Model
     const PHONE_TYPE_MOBILE = 1;
     const PHONE_TYPE_HOMEPHONE = 2;
 
+    const LEAD_SUBMIT_TYPE_ENERGY = 'energy';
+    const LEAD_SUBMIT_TYPE_WATER = 'water';
+
     const PROPERTY_TYPE_MAPPING = [
         'residential' => self::TENANCY_TYPE_RENTER,
         'business' => self::TENANCY_TYPE_HOME_OWNER
@@ -319,9 +324,13 @@ class ConnectionApplication extends Model
 
     ];
 
+    const AFTER_HOUR_PAYEE_HOOD = 'hood';
+    const AFTER_HOUR_PAYEE_APPLICANT = 'applicant';
+
     const AVAILABLE_USER_TITLES = [
         'mr', 'miss', 'dr', 'mrs', 'ms'
     ];
+
 
     /**
      * @return BelongsTo

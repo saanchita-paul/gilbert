@@ -27,12 +27,15 @@ class PostSalesService
     private $accessToken;
     private $chatbotUri;
     private $planType;
+    private $tz = 11;
     public function __construct(int $id)
     {
         $this->chatbotUri = config('bot.root_url');
         $this->connection = ConnectionApplication::with('connectionServices')->where('id', $id)->firstOrFail();
         $this->identification = $this->connection->identification;
         $this->accessToken = (new GetAccessToken())->getAccessToken();
+        $this->tz = config('ea.au_time_zone', 11);
+
     }
 
     public function getPlanType()
@@ -78,7 +81,7 @@ class PostSalesService
             'connectionDate'=>(new Carbon($this->connection->moving_date))->format('Y-m-d'),
             'renovationsSinceDeenergisation'=> false,
             'renovationsInProgressOrPlanned'=> false,
-            'afterHoursServiceOrder' => $this->getAfterHoursServiceOrder($this->connection->moving_date),
+            'afterHoursServiceOrder' => $this->getAfterHoursServiceOrder(),
         ];
 
 
@@ -204,12 +207,74 @@ class PostSalesService
 
     }
 
-    private function getAfterHoursServiceOrder($date): bool
+    private function getAfterHoursServiceOrder(): bool
     {
-        $tz = 11;
-        $maxTime =today($tz)->addHours(11)->addMinutes(30);
-        return Carbon::parse($date, $tz)->isCurrentDay() && now($tz)->greaterThan($maxTime);
+        $eaService = ConnectionService::query()->where('connection_application_id', $this->connection->id)
+            ->where('service_type', ConnectionService::TYPE_ELECTRICITY)
+            ->first();
+        $distributor = null;
+        if(!empty($eaService))
+        {
+            $distributor = $eaService->distributor;
+        }
+
+        $state = $this->stateMap( $this->connection->state);
+
+        $afterHourFlag = false;
+
+        if($this->isSameDayConnection()) {
+            $afterHourFlag = $this->handleSameDayConnection($distributor, $state);
+        }
+
+        if($this->isNextDayConnection()) {
+            $afterHourFlag = $this->handleNextDayConnection($distributor, $state);
+        }
+        $this->connection->update(['after_hour_flag' => $afterHourFlag]);
+        return $afterHourFlag;
+
     }
+
+
+    private function isSameDayConnection():bool
+    {
+        $date = $this->connection->moving_date;
+        return Carbon::parse($date, $this->tz)->isCurrentDay();
+    }
+
+    private function isNextDayConnection():bool
+    {
+        $date = $this->connection->moving_date;
+        $tomorrow = today($this->tz)->addDay(1);
+        return (Carbon::parse($date, $this->tz))->toDateString() === $tomorrow->toDateString();
+    }
+
+    private function handleSameDayConnection($distributor, $state): bool
+    {
+        $maxTime = today($this->tz)->addHours(11)->addMinutes(30);
+        $currentTime = Carbon::now()->timezone($this->tz);
+        if($currentTime->lte($maxTime) && (($state === 'NSW' && $distributor === 'Ausgrid')
+            || ($state === 'VIC' && $distributor === 'AusNet Services')
+            || ($state === 'SA' && $distributor === 'ETSA'))
+        ) {
+            return false;
+        }
+
+        return true;
+
+    }
+
+
+    private function handleNextDayConnection($distributor, $state)
+    {
+        $maxTime = today($this->tz)->addHours(11)->addMinutes(30);
+        $currentTime = Carbon::now()->timezone($this->tz);
+
+        if($currentTime->lte($maxTime)) {
+            return false;
+        }
+        return true;
+    }
+
 
     /**
      * @throws \Exception
@@ -217,7 +282,7 @@ class PostSalesService
     public function processEaData($results)
     {
         Log::info('End Sale API Response');
-        Log::info(json_encode($results));
+        Log::info($results);
         Log::info('Start Sale API Response');
 
         $data = json_decode($results);

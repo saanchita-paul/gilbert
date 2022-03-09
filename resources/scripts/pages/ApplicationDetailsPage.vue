@@ -9,15 +9,21 @@
                                 @closeApplication="closeApplication"
                                 @eacalate="eacalate"
                                 @updateLead="updateLead"
-                                @readMore="readMore" :leadSummary="leadSummary"
-                                @updateAddress="updateAddress" @updateDraft="updateDraft"
+                                @readMore="readMore"
+                                :leadSummary="leadSummary"
+                                @updateAddress="updateAddress"
+                                @updateDraft="updateDraft"
                         ></LeadUserDetails>
                  </ValidationObserver>            <!-- <LeadsDetailsFotter :lifeSupportInfo="infoToPass.lifeSupportInfo"  v-if="leadSummary.status != 1" :login-loading="this.submittedLoader" :isManualChangeFlag="isManualChangeFlag" @submitConnection="submitConnection"></LeadsDetailsFotter> -->
                 <LeadServicesAndNotes
-                                   @updateService="updateService"
-                                   @updatePlan="updatePlan"
-                                   @updateNote= "updateNote"
-                                   :leadSummary="leadSummary" :notes="notes"></LeadServicesAndNotes>
+                    @updateDraft="updateDraft"
+                    @updateService="updateService"
+                    @updatePlan="updatePlan"
+                    @updateNote= "updateNote"
+                    :leadSummary="leadSummary"
+                    :notes="notes">
+
+                </LeadServicesAndNotes>
 
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
             <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" :title="fullName"></EscalationConfirmModal>
@@ -329,8 +335,7 @@ export default {
 
             if(isNull(value)) return;
 
-            if(isDate)
-            {
+            if(isDate) {
                 if(field == 'dob'&& dayjs(value,'DD/MM/YYYY').isSame(this.leadSummary.dob))
                 {
                     return;
@@ -346,11 +351,8 @@ export default {
                    return;
                 }
             }
-
             await LeadApplicationService.saveSoleField(field, value,this.leadId, isDate, identification, false);
-
-                this.isManualChangeFlag = true;
-
+            this.isManualChangeFlag = true;
 
            let [day, month, year] = [];
             if(isDate)
