@@ -55,6 +55,7 @@ export default class ApplicationSummary {
     agency_office = '';
     source= 0;
     created_by_agent = null
+    created_by_agent = null
     constructor(
         {
             id = null,
@@ -114,7 +115,10 @@ export default class ApplicationSummary {
             source = 0,
             created_by_agent = null,
             is_temporary_connection = 0,
-            connection_end_date = null
+            connection_end_date = null,
+            mannual_address = false,
+            street_type = null,
+
         }
     ) {
 
@@ -138,7 +142,6 @@ export default class ApplicationSummary {
         this.is_renovation_on = is_renovation_on;
         this.tenancy_type = tenancy_type;
         this.address_unit = address_unit;
-        this.street_address = street_address;
         this.street_address = street_address;
         this.city = city;
         this.state = state;
@@ -180,6 +183,9 @@ export default class ApplicationSummary {
         this.connection_end_date = connection_end_date
         this.fast_connect_customer_reference = fast_connect_customer_reference
         this.is_auto_water_submit = is_auto_water_submit
+        this.mannual_address = mannual_address
+        this.street_type = street_type
+
 
     }
 

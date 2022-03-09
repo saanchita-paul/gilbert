@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddStreetTypeSuburbToConnectionApplicationsTable extends Migration
+class AddManualAddressToConnectionApplicationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class AddStreetTypeSuburbToConnectionApplicationsTable extends Migration
     {
         Schema::table('connection_applications', function (Blueprint $table) {
             //
-            $table->string('street_type')->nullable();
+            $table->tinyInteger('mannual_address')->nullable();
         });
     }
 
@@ -28,7 +28,7 @@ class AddStreetTypeSuburbToConnectionApplicationsTable extends Migration
     {
         Schema::table('connection_applications', function (Blueprint $table) {
             //
-            $table->dropColumn(['street_type']);
+            $table->dropColumn('mannual_address');
         });
     }
 }

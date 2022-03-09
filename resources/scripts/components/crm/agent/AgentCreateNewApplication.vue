@@ -875,11 +875,11 @@
                     </v-col>
 
                     <v-col cols="12" class="py-0" v-if="showSearchFields">
-                        <p class="newAddress" @click="newAddress"> I want to search for a new address </p>
+                        <p class="newAddress" @click="newAddress">  <v-icon small style="text-decoration: none;  padding-bottom: 4px;"> mdi-plus-circle </v-icon> <span style="text-decoration: underline;"> I want to search for a new address </span> </p>
                     </v-col>
 
                     <v-col cols="12" class="pb-0">
-                        <p class="sub-title mb-0">Service Interests</p>
+                        <p class="sub-title mb-0"> Service Interests </p>
                     </v-col>
 
                     <v-col cols="3">
@@ -1126,11 +1126,14 @@ export default {
             this.application.street_number = null;
             this.application.unit_number = null;
             this.application.street_name = null;
+            this.application.street_type = null;
+            this.application.mannual_address = true;
             
             this.initHarmony()
         },
         newAddress(){
             this.showSearchFields = false;
+            this.application.mannual_address = false;
             this.application.address_text = null;
             this.searchResult = [];
             this.initHarmony()
@@ -1326,7 +1329,6 @@ export default {
     }
     .newAddress{
         font-weight: bold;
-        text-decoration: underline;
         &:hover{
             cursor: pointer;
         }
