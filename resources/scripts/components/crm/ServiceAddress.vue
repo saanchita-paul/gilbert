@@ -51,76 +51,101 @@
                                                 </v-col>
                                             </v-row>
                                         </v-col>
-                                        <v-col cols="6" class="py-0">
-                                            <ValidationProvider name="Address" rules="required"  v-slot="{ errors }">
-                                                <v-text-field
-                                                    label="Address*"
-                                                    outlined
-                                                    dense
-                                                    v-model="propertyDetails.street_address"
-                                                    :error-messages=" errors[0]"
-                                                ></v-text-field>
-                                            </ValidationProvider>
-                                        </v-col>
-                                        <v-col cols="6" class="py-0">
-                                            <ValidationProvider name="City/Suburb" rules="required"  v-slot="{ errors }">
-                                                <v-text-field
-                                                    label="City/Suburb*"
-                                                    outlined
-                                                    dense
-                                                    v-model="propertyDetails.city"
-                                                    :error-messages=" errors[0]"
-                                                ></v-text-field>
-                                            </ValidationProvider>
-                                        </v-col>
-                                        <v-col cols="6" class="py-0">
-                                            <ValidationProvider name="State/Territory" rules="required"  v-slot="{ errors }">
-                                                <v-select outlined dense
-                                                          v-model="propertyDetails.state"
-                                                          :items="states"
-                                                          label="State/Territory*"
-                                                          :error-messages=" errors[0]">
-                                                </v-select>
-                                            </ValidationProvider>
-                                        </v-col>
-                                        <v-col cols="6" class="py-0">
-                                            <ValidationProvider name="Postcode" rules="required"  v-slot="{ errors }">
-                                                <v-text-field
-                                                    label="Postcode*"
-                                                    outlined
-                                                    dense
-                                                    v-model="propertyDetails.postcode"
-                                                    :error-messages=" errors[0]"
-                                                ></v-text-field>
-                                            </ValidationProvider>
-                                        </v-col>
+                                        
+                                                            <v-col cols="12" v-if="showSearchFields">
+                        <v-row>
+                            <v-col cols="3" class="py-0">
+                                <ValidationProvider name="UnitNo"  v-slot="{ errors }">
+                                    <v-text-field
+                                        label="Unit No"
+                                        outlined
+                                        dense
+                                        :disabled="!propertyDetails.mannual_address"
+                                        placeholder="Unit No"
+                                        v-model="propertyDetails.unit_number"
+                                        :error-messages=" errors[0]"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                            <v-col cols="3" class="py-0">
+                                <ValidationProvider name="StreetNo" rules="required"  v-slot="{ errors }">
+                                    <v-text-field
+                                        label="Street No.*"
+                                        outlined
+                                        dense
+                                        :disabled="!propertyDetails.mannual_address"
+                                        placeholder="2/56, Bradman Drive"
+                                        v-model="propertyDetails.street_number"
+                                        :error-messages=" errors[0]"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                                <ValidationProvider name="StreetName" rules="required"  v-slot="{ errors }">
+                                    <v-text-field
+                                        label="Street Name.*"
+                                        outlined
+                                        dense
+                                        :disabled="!propertyDetails.mannual_address"
+                                        placeholder="2/56, Bradman Drive"
+                                        v-model="propertyDetails.street_name"
+                                        :error-messages=" errors[0]"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                             <v-col cols="3" class="py-0">
+                                <ValidationProvider name="StreetType" rules="required"  v-slot="{ errors }">
+                                    <v-select outlined dense
+                                              v-model="propertyDetails.street_type"
+                                              :items="street_type"
+                                              :disabled="!propertyDetails.mannual_address"
+                                              label="Street Type*"
+                                              :error-messages=" errors[0]"
+                                              placeholder="Please Select">
+                                    </v-select>
+                                </ValidationProvider>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                                <ValidationProvider name="City/Suburb" rules="required"  v-slot="{ errors }">
+                                    <v-text-field
+                                        label="City/Suburb*"
+                                        outlined
+                                        dense
+                                        :disabled="!propertyDetails.mannual_address"
+                                        placeholder="Sunbury"
+                                        v-model="propertyDetails.city"
+                                        :error-messages=" errors[0]"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                                <ValidationProvider name="State/Territory" rules="required"  v-slot="{ errors }">
+                                    <v-select outlined dense
+                                              v-model="propertyDetails.state"
+                                              :items="states"
+                                              :disabled="!propertyDetails.mannual_address"
+                                              label="State/Territory*"
+                                              :error-messages=" errors[0]"
+                                              placeholder="Please Select">
+                                    </v-select>
+                                </ValidationProvider>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                                <ValidationProvider name="Postcode" rules="required"  v-slot="{ errors }">
+                                    <v-text-field
+                                        label="Postcode*"
+                                        outlined
+                                        dense
+                                        :disabled="!propertyDetails.mannual_address"
+                                        placeholder="3429"
+                                        v-model="propertyDetails.postcode"
+                                        :error-messages=" errors[0]"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                        </v-row>
+                    </v-col>
 
-                                        <!-- <v-col cols="12" class="mt-n12" v-if="propertyDetails.state == 'Victoria'">
-                                            <v-checkbox
-                                                v-model="propertyDetails.is_renovation_on"
-                                                @change="changeIsBillingSame"
-                                                :label="`Is renovation going on?`"
-                                            ></v-checkbox>
-                                        </v-col>
-
-                                        <v-col cols="12" class="mt-n12" v-if="propertyDetails.state == 'Queensland'">
-                                            <v-checkbox
-                                                v-model="propertyDetails.has_electricity"
-                                                :label="`Is the electricity on at the property?`"
-                                            ></v-checkbox>
-                                        </v-col> -->
-
-                                        <!-- <v-col cols="6" class="py-0 mt-n4" v-if="propertyDetails.state == 'Queensland' && propertyDetails.has_electricity == false">
-                                          <ValidationProvider name="Inspection Time" rules="required"  v-slot="{ errors }">
-                                            <v-select outlined dense
-                                                      v-model="propertyDetails.inspection_time"
-                                                      :items="inspectionTimes"
-                                                      placeholder="Please select"
-                                                      label="Inspection Time*"
-                                                      :error-messages=" errors[0]">
-                                            </v-select>
-                                          </ValidationProvider>
-                                        </v-col> -->
 
                                         <v-col cols="12" class="mt-n12">
                                             <v-checkbox
@@ -266,7 +291,7 @@ export default {
                 {text: 'ACT', value: 'Australian Capital Territory'},
                 {text: 'WA', value: 'Western Australia'},
             ],
-          showSearchFields: false,
+          showSearchFields: true,
           // inspectionTimes:[
           //   '8AM - 1PM',
           //   '9AM - 2PM',
@@ -336,6 +361,7 @@ export default {
             MapService.getAddressDetailsById(place.id)
                 .then((data) => {
                     // this.propertyDetails = { ...this.propertyDetails, ...data }
+                    console.log('print data in' ,  data)
 
                     this.propertyDetails.address_text = data.address_text;
                     this.propertyDetails.street_address = data.street;

@@ -1202,6 +1202,9 @@ export default {
         postcode: "",
         state: "",
         country: "",
+        street_type:"",
+        street_name:"",
+
 
         is_renovation_on: true,
         has_electricity: true,
@@ -1209,7 +1212,6 @@ export default {
 
         unit_number: "",
         street_number: "",
-        street_name: "",
         is_billing_same: true,
         billing_address_text: "",
         billing_street_address: "",
