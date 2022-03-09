@@ -974,7 +974,7 @@ import dayJs from "dayjs";
 import MEDICARE_COLOR_DD from "@scripts/data/constants/MEDICARE_COLOR_DD";
 import IDENTIFICATION_DD from "@scripts/data/constants/IDENTIFICATION_DD";
 import STATES_DD from "@scripts/data/constants/STATES_DD";
-import GBGMapService from "@scripts/services/GBGMapService";
+import MapService from "@scripts/services/MapService";
 import { street_type } from "@scripts/data/constants/StreetType"; 
 
 export default {
@@ -1078,17 +1078,7 @@ export default {
     created() {
         this.onStreetChanged = debounce(() => {
             if (this.application.address_text.length > 0) {
-            // GoogleMapService.getStreetAddressesByKeyword(this.application.address_text)
-            //     .then((data) => {
-            //         this.searchResult = data;
-            //         this.showMenu = this.searchResult.length > 0
-            //     });
-
-            GBGMapService.initialize()
-            // Use the JSONP protocol
-            // Harmony.useProtocol(Harmony.JSONP);
-            // GBGMapService.getStreetAddressesByKeyword()
-            GBGMapService.getStreetAddressesByKeyword(this.application.address_text)
+            MapService.getStreetAddressesByKeyword(this.application.address_text)
                 .then((data)=>{
                     console.log("search result" , data)
                     this.searchResult = data;
@@ -1136,39 +1126,19 @@ export default {
             this.application.street_type = null;
             this.application.mannual_address = true;
             
-            this.initHarmony()
         },
         newAddress(){
             this.showSearchFields = false;
             this.application.mannual_address = false;
             this.application.address_text = null;
             this.searchResult = [];
-            this.initHarmony()
         },
         onAddressSelected(place) {
             console.log("place id" , place)
-            GBGMapService.getAddressDetailsById(place.id)
+            MapService.getAddressDetailsById(place.id)
                 .then((data) => {
-                    console.log("print details" , data)
-                    // this.application.address_text = data.address_text;
-                    // this.application.street_address = data.street_address;
-                    // this.application.city = data.city;
-                    // this.application.postcode = data.postcode;
-                    // this.application.state = data.state;
-                    // this.application.street_number = data.street_number;
-                    // this.application.unit_number = data.unit_number;
-                    // this.application.street_name = data.street_name;
-                    // this.application.street_type = data.street_type;
-                    // this.application.suburb = data.suburb;
-
                     this.application = { ...this.application, ...data }
-
-                    // if(!isNull( data.unit_number)) {
-                    //     this.application.street_address = data.unit_number +'/'+ data.street;
-                    // }
-
                     this.selectAddress();
-
                 });
         },
         onCancel() {
@@ -1239,26 +1209,6 @@ export default {
             console.log('identification type', this.authorized_person.identification_type);
             return this.authorized_person.identification_type === IDENTIFICATION.MEDICARE;
         },
-        initHarmony(){
-            GBGMapService.initialize()
-            // Use the JSONP protocol
-            // Harmony.useProtocol(Harmony.JSONP);
-            // GBGMapService.getStreetAddressesByKeyword()
-            // GBGMapService.getStreetAddressesByKeyword("100 plenty road");
-                // Harmony.v2.find({ fullAddress:"100 plenty road" , country: "au"}, null,
-                //     function(response) {
-                //         var outputText = "";
-                //         console.log('getting response'  , response)
-                //     }
-                // );
-
-                // Harmony.v2.retrieve({ id: "AU|AUPAF|46550005"},
-                //     function(response) {
-                //         console.log('getting response'  , response)
-                //     }
-	            // );
-
-        }
     },
     watch: {
         dob() {
@@ -1291,9 +1241,6 @@ export default {
     },
     async mounted() {
         this.user = await AuthService.getAuthUser();
-
-        GBGMapService.mountGBG()
-
     }
 };
 </script>

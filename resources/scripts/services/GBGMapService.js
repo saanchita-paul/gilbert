@@ -2,7 +2,12 @@
 import isString from "lodash-es/isString";
 import GBGMapMapper from "@scripts/api/mappers/GBGMapMapper";
 
-export default {
+class GBGMapService {
+
+    constructor(){
+        this.mountGBG();
+    }
+
     mountGBG() {
         let recaptchaScript = document.createElement("script");
         recaptchaScript.setAttribute(
@@ -10,7 +15,8 @@ export default {
             "https://common.mastersoftgroup.com/scripts/harmony-2.0.1.min.js"
         );
         document.head.appendChild(recaptchaScript);
-    },
+    }
+
     initialize() {
         Harmony.init(
             "hoodmovetech_test_user",
@@ -33,7 +39,7 @@ export default {
         //         console.log('getting response'  , response)
         //     }
         // );
-    },
+    }
 
     /**
      *
@@ -42,6 +48,7 @@ export default {
      * @returns {Object[] || Promise<unknown>}
      */
     getStreetAddressesByKeyword(keyWord, country = "au") {
+        this.initialize();
         Harmony.useFeatureOptions({ singleLineHitNumber: "5" });
         // keyWord = country === '*' ? keyWord : `${keyWord} ${country}`;
         return new Promise((resolve, reject) => {
@@ -63,7 +70,7 @@ export default {
                 reject(error);
             }
         });
-    },
+    }
     getAddressByKeyword(keyWord, country = "au") {
         return new Promise((resolve, reject) => {
             try {
@@ -84,7 +91,8 @@ export default {
                 reject(error);
             }
         });
-    },
+    }
+
 
     /**
      *
@@ -105,5 +113,7 @@ export default {
                 reject(error);
             }
         });
-    },
+    }
 };
+
+export default GBGMapService
