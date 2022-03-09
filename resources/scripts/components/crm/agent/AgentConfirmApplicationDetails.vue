@@ -49,12 +49,21 @@
                             </p>
                         </v-col>
 
-                        <v-col v-if="application.phone_type !== 1" cols="4" class="my-0 py-0  d-flex ">
+                        <v-col v-if="application.phone_type === 2" cols="4" class="my-0 py-0  d-flex ">
                             <p class="font-weight-bold pl-2 mb-1">Homephone No:</p>
                         </v-col>
-                        <v-col v-if="application.phone_type !== 1" cols="7" class="my-0 py-0 ">
+                        <v-col v-if="application.phone_type === 2" cols="7" class="my-0 py-0 ">
                             <p class="mb-1">
                                 {{ application.homephone}}
+                            </p>
+                        </v-col>
+
+                        <v-col v-if="application.phone_type === 3" cols="4" class="my-0 py-0  d-flex justify-end">
+                            <p class="font-weight-bold pl-2 mb-1">I. Mobile Number:</p>
+                        </v-col>
+                        <v-col v-if="application.phone_type === 3" cols="7" class="my-0 py-0 ">
+                            <p class="mb-1">
+                                {{ application.international_phone }}
                             </p>
                         </v-col>
 
