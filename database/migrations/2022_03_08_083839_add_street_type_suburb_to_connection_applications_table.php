@@ -16,6 +16,7 @@ class AddStreetTypeSuburbToConnectionApplicationsTable extends Migration
         Schema::table('connection_applications', function (Blueprint $table) {
             //
             $table->string('street_type')->nullable();
+            $table->string('billing_street_type')->nullable();
         });
     }
 
@@ -28,7 +29,7 @@ class AddStreetTypeSuburbToConnectionApplicationsTable extends Migration
     {
         Schema::table('connection_applications', function (Blueprint $table) {
             //
-            $table->dropColumn(['street_type']);
+            $table->dropColumn(['street_type', 'billing_street_type']);
         });
     }
 }

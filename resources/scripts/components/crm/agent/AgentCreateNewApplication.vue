@@ -970,7 +970,7 @@
                                         <v-select outlined dense
                                                   v-model="application.billing_street_type"
                                                   :items="street_type"
-                                                  :disabled="!application.mannual_address"
+                                                  :disabled="!application.billing_mannual_address"
                                                   label="Street Type*"
                                                   :error-messages=" errors[0]"
                                                   placeholder="Please Select">
