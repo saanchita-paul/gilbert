@@ -18,10 +18,11 @@
           </div>
 
           <div class="agent-leade">
-              <h3>Non-payable</h3>
+              <h3 class="disabled-text">Non-payable</h3>
               <div class="leade-icon">
-                  <v-icon :color="appMetrics.nonpayable>0?'red':'grey lighten-1'">mdi-link</v-icon>
-                  <span>{{appMetrics.nonpayable}}</span>
+                  <v-icon :color="appMetrics.nonpayable>0?'grey lighten-1':'grey lighten-1'">mdi-link</v-icon>
+                  <!-- <span>{{appMetrics.nonpayable}}</span> -->
+                  <span class="disabled-text">0</span>
               </div>
               <p class="leade-text">Non Connected</p>
           </div>
@@ -45,19 +46,21 @@
           </div>
 
           <div class="agent-leade">
-            <h3>Internet</h3>
+            <h3 class="disabled-text">Internet</h3>
             <div class="leade-icon">
                 <v-icon  :color="appMetrics.internet>0?'grey lighten-1':'grey lighten-1'">mdi-wifi</v-icon>
-                <span>{{appMetrics.internet}}</span>
+                <!-- <span>{{appMetrics.internet}}</span> -->
+                <span class="disabled-text">0</span>
             </div>
             <p class="leade-text">Successfully connected</p>
           </div>
 
           <div class="agent-leade">
-              <h3>Water</h3>
+              <h3 class="disabled-text">Water</h3>
               <div class="leade-icon">
                   <v-icon  :color="appMetrics.water>0?'grey lighten-1':'grey lighten-1'">mdi-water</v-icon>
-                  <span>{{appMetrics.water}}</span>
+                  <!-- <span>{{appMetrics.water}}</span> -->
+                  <span class="disabled-text">0</span>
               </div>
               <p class="leade-text">Successfully connected</p>
           </div>
