@@ -1303,7 +1303,7 @@ export default {
       // this.expire_date = undefined;
       this.expire_date = this.lead.identification?.expire_date;
       // this.property_details.moving_date = this.lead.moving_date;
-      this.property_details.is_billing_same = true;
+      this.property_details.is_billing_same = this.lead.is_billing_same;
       this.property_details.address_text = this.lead.address_text;
       // this.property_details.billing_address = this.lead.billing_address;
       this.property_details.property_type = this.lead.property_type;
@@ -1320,6 +1320,7 @@ export default {
       this.property_details.street_address = this.lead.street_address;
       this.property_details.city = this.lead.city;
       this.property_details.street_number = this.lead.street_number;
+      this.property_details.street_type = this.lead.street_type;
       this.property_details.street_name = this.lead.street_name;
       this.property_details.unit_number = this.lead.unit_number;
       this.property_details.postcode = this.lead.postcode;
@@ -1333,6 +1334,7 @@ export default {
       this.property_details.billing_postcode = this.lead.billing_postcode;
       this.property_details.billing_state = this.lead.billing_state;
       this.property_details.billing_unit_number = this.lead.billing_unit_number;
+      this.property_details.billing_street_type = this.lead.billing_street_type;
       this.property_details.billing_street_number =
         this.lead.billing_street_number;
       this.property_details.billing_street_name = this.lead.billing_street_name;

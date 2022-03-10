@@ -185,6 +185,7 @@ class ConnectionApplication extends Model
         'unit_number',
         'street_type',
         'billing_state',
+        'billing_street_type',
         'mannual_address',
     ];
 

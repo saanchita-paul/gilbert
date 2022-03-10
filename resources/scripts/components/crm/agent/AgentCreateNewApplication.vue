@@ -829,7 +829,7 @@
                                     </ValidationProvider>
                                 </v-col>
                                  <v-col cols="3" class="py-0">
-                                    <ValidationProvider name="StreetType" rules="required"  v-slot="{ errors }">
+                                    <ValidationProvider name="StreetType" v-slot="{ errors }">
                                         <v-select outlined dense
                                                   v-model="application.street_type"
                                                   :items="street_type"

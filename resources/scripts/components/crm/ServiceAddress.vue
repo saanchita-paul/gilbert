@@ -11,11 +11,11 @@
                         <v-row class="section-dialogs">
                             <v-col cols="12">
                                 <div class="dialogs-title">
-                                    <p>Address</p>
+                                    <p>Connection Address</p>
                                 </div>
 
-                                <div class="dialogs-area pt-5">
-                                    <p class="title">Service Address</p>
+                                <div class="dialogs-area pt-1">
+                                    <!-- <p class="title">Service Address</p> -->
                                     <v-row>
                                         <v-col cols="12" class="py-0 mt-4">
                                             <v-row>
@@ -99,7 +99,7 @@
                                               v-model="propertyDetails.street_type"
                                               :items="street_type"
                                               :disabled="!propertyDetails.mannual_address"
-                                              label="Street Type*"
+                                              label="Street Type"
                                               :error-messages=" errors[0]"
                                               placeholder="Please Select">
                                     </v-select>
@@ -147,93 +147,154 @@
                     </v-col>
 
 
-                                        <v-col cols="12" class="mt-n12">
-                                            <v-checkbox
-                                                v-model="propertyDetails.is_billing_same"
-                                                @change="changeIsBillingSame"
-                                                :label="`This is same as my billing address.`"
-                                            ></v-checkbox>
-                                        </v-col>
+                                        
+                    <v-col cols="12" class="py-0" v-if="showSearchFields">
+                        <p class="newAddress" @click="newAddress"> <span style="text-decoration: underline;"> I want to search for a new address </span> </p>
+                    </v-col>
+
+                    <v-col cols="12" class="py-0">
+                        <p class="billingAddress" @click="billingAddress">  <v-icon small style="text-decoration: none;  padding-bottom: 4px;"> mdi-plus-circle </v-icon> <span style="text-decoration: underline;"> {{ propertyDetails.is_billing_same ? 'Add a different billing address' : 'Keep the billing address same as service address' }} </span> </p>
+                    </v-col>
 
 
                                     </v-row>
 
-
-                                  <v-row v-if="!propertyDetails.is_billing_same">
-                                    <p class="title pl-3" >Billing Address</p>
-                                    <v-col cols="12" class="py-0">
-                                      <v-row>
-                                        <v-col cols="12" class="py-0">
-                                          <v-menu offset-y v-model="showAdditionalMenu">
-                                            <template v-slot:activator="{ on }">
-                                              <v-text-field
-                                                  label="Search address"
-                                                  outlined
-                                                  dense
-                                                  placeholder="Type house address here"
-                                                  append-icon="mdi-magnify"
-                                                  v-model="propertyDetails.billing_address_text"
-                                                  @keyup.native="onbilling_StreetChanged"
-                                              ></v-text-field>
-                                            </template>
-                                            <v-list>
-                                              <v-list-item
-                                                  v-for="place in searchResult"
-                                                  :key="place.place_id"
-                                                  @click="onBillingAddressSelected(place)"
-                                              >
-                                                <v-list-item-title v-text="place.description">
+         <!-- billing address starts -->
+                    <template v-if="!propertyDetails.is_billing_same">
+                        <v-col cols="12" class="pb-0 mt-2" v-if="!showSearchFieldsBilling">
+                                    <v-menu offset-y v-model="showMenu">
+                                        <template v-slot:activator="{ on }">
+                                            <v-text-field
+                                                label="Search address"
+                                                outlined
+                                                dense
+                                                placeholder="Type house address here"
+                                                append-icon="mdi-magnify"
+                                                v-model="propertyDetails.billing_address_text"
+                                                @keyup.native="onBillingStreetChanged"
+                                            ></v-text-field>
+                                        </template>
+                                        <v-list v-if="searchResultBilling.length">
+                                            <v-list-item
+                                                v-for="place in searchResultBilling"
+                                                :key="place.id"
+                                                @click="onBillingAddressSelected(place)"
+                                            >
+                                                <v-list-item-title v-text="place.address_text">
                                                 </v-list-item-title>
-                                              </v-list-item>
-                                            </v-list>
-                                          </v-menu>
-                                        </v-col>
-                                      </v-row>
-                                    </v-col>
-                                    <v-col cols="6" class="py-0">
-                                      <ValidationProvider name="Address" rules="required"  v-slot="{ errors }">
+                                            </v-list-item>
+                                            <v-list-item>
+                                            <v-list-item-title >
+                                                <div class="mannualAddress" @click="selectMannualBilling"> Enter my address manually </div>
+                                            </v-list-item-title>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-menu>
+                        </v-col>
+                        <v-col cols="12" v-if="showSearchFieldsBilling">
+                            <v-row>
+                                <v-col cols="3" class="py-0">
+                                    <ValidationProvider name="UnitNo"  v-slot="{ errors }">
                                         <v-text-field
-                                            label="Address*"
+                                            label="Unit No"
                                             outlined
                                             dense
-                                            v-model="propertyDetails.billing_street_address"
+                                            :disabled="!propertyDetails.billing_mannual_address"
+                                            placeholder="Unit No"
+                                            v-model="propertyDetails.billing_unit_number"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
-                                      </ValidationProvider>
-                                    </v-col>
-                                    <v-col cols="6" class="py-0">
-                                      <ValidationProvider name="City/Suburb" rules="required"  v-slot="{ errors }">
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col cols="3" class="py-0">
+                                    <ValidationProvider name="StreetNo" rules="required"  v-slot="{ errors }">
+                                        <v-text-field
+                                            label="Street No.*"
+                                            outlined
+                                            dense
+                                            :disabled="!propertyDetails.billing_mannual_address"
+                                            placeholder="2/56, Bradman Drive"
+                                            v-model="propertyDetails.billing_street_number"
+                                            :error-messages=" errors[0]"
+                                        ></v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col cols="6" class="py-0">
+                                    <ValidationProvider name="StreetName" rules="required"  v-slot="{ errors }">
+                                        <v-text-field
+                                            label="Street Name.*"
+                                            outlined
+                                            dense
+                                            :disabled="!propertyDetails.billing_mannual_address"
+                                            placeholder="2/56, Bradman Drive"
+                                            v-model="propertyDetails.billing_street_name"
+                                            :error-messages=" errors[0]"
+                                        ></v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                                 <v-col cols="3" class="py-0">
+                                    <ValidationProvider name="StreetType"  v-slot="{ errors }">
+                                        <v-select outlined dense
+                                                  v-model="propertyDetails.billing_street_type"
+                                                  :items="street_type"
+                                                  :disabled="!propertyDetails.billing_mannual_address"
+                                                  label="Street Type"
+                                                  :error-messages=" errors[0]"
+                                                  placeholder="Please Select">
+                                        </v-select>
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col cols="6" class="py-0">
+                                    <ValidationProvider name="City/Suburb" rules="required"  v-slot="{ errors }">
                                         <v-text-field
                                             label="City/Suburb*"
                                             outlined
                                             dense
+                                            :disabled="!propertyDetails.billing_mannual_address"
+                                            placeholder="Sunbury"
                                             v-model="propertyDetails.billing_city"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
-                                      </ValidationProvider>
-                                    </v-col>
-                                    <v-col cols="6" class="py-0">
-                                      <ValidationProvider name="State/Territory" rules="required"  v-slot="{ errors }">
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col cols="6" class="py-0">
+                                    <ValidationProvider name="State/Territory" rules="required"  v-slot="{ errors }">
                                         <v-select outlined dense
                                                   v-model="propertyDetails.billing_state"
                                                   :items="states"
+                                                  :disabled="!propertyDetails.billing_mannual_address"
                                                   label="State/Territory*"
-                                                  :error-messages=" errors[0]">
+                                                  :error-messages=" errors[0]"
+                                                  placeholder="Please Select">
                                         </v-select>
-                                      </ValidationProvider>
-                                    </v-col>
-                                    <v-col cols="6" class="py-0">
-                                      <ValidationProvider name="Postcode" rules="required"  v-slot="{ errors }">
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col cols="6" class="py-0">
+                                    <ValidationProvider name="Postcode" rules="required"  v-slot="{ errors }">
                                         <v-text-field
                                             label="Postcode*"
                                             outlined
                                             dense
+                                            :disabled="!propertyDetails.billing_mannual_address"
+                                            placeholder="3429"
                                             v-model="propertyDetails.billing_postcode"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
-                                      </ValidationProvider>
-                                    </v-col>
-                                  </v-row>
+                                    </ValidationProvider>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+                    </template>
+
+                    <v-col cols="12" class="py-0" v-if="showSearchFieldsBilling && !propertyDetails.is_billing_same">
+                        <p class="newAddress" @click="newAddressBilling"> <span style="text-decoration: underline;"> I want to search for a new address </span> </p>
+                    </v-col>
+
+
+                <!-- billing address ends -->    
+
+
+
                                 </div>
                             </v-col>
                           <v-col  cols="12" class="sticky-bottom">
@@ -292,6 +353,9 @@ export default {
                 {text: 'WA', value: 'Western Australia'},
             ],
           showSearchFields: true,
+          searchResultBilling: [],
+          showSearchFieldsBilling: true,
+          isBillingAddressSame: true,
           // inspectionTimes:[
           //   '8AM - 1PM',
           //   '9AM - 2PM',
@@ -312,15 +376,19 @@ export default {
                     });
             }
         }, 250);
-      this.onbilling_StreetChanged = debounce(() => {
-        if (this.propertyDetails.billing_address_text.length > 0) {
-          MapService.getStreetAddressesByKeyword(this.propertyDetails.billing_address_text)
-              .then((data) => {
-                this.searchResult = data;
-                this.showAdditionalMenu = this.searchResult.length > 0
-              });
-        }
-      }, 250);
+
+        this.onBillingStreetChanged = debounce(() => {
+            if (this.propertyDetails.billing_address_text.length > 0) {
+            MapService.getStreetAddressesByKeyword(this.propertyDetails.billing_address_text)
+                .then((data)=>{
+                    console.log("search result" , data)
+                    this.searchResultBilling = data;
+                    this.showMenu = this.searchResultBilling.length > 0
+                });
+                
+            }
+        }, 250);
+
 
     },
     computed: {
@@ -329,8 +397,29 @@ export default {
       },
     },
     methods: {
+        billingAddress(){
+            // this.isBillingAddressSame = !this.isBillingAddressSame;
+            this.propertyDetails.is_billing_same = !this.propertyDetails.is_billing_same;
+        },
         selectAddress(){
             this.showSearchFields = true;
+        },
+        selectBillingAddress(){
+            this.showSearchFieldsBilling = true;
+        },
+        selectMannualBilling(){
+            this.showSearchFieldsBilling = true;
+
+            this.propertyDetails.billing_address_text = null;
+            this.propertyDetails.billing_street_address = null;
+            this.propertyDetails.billing_city = null;
+            this.propertyDetails.billing_postcode = null;
+            this.propertyDetails.billing_state = null;
+            this.propertyDetails.billing_street_number = null;
+            this.propertyDetails.billing_unit_number = null;
+            this.propertyDetails.billing_street_name = null;
+            this.propertyDetails.billing_street_type = null;
+            this.propertyDetails.billing_mannual_address = true;
         },
         selectMannual(){
             this.showSearchFields = true;
@@ -347,6 +436,12 @@ export default {
             this.propertyDetails.mannual_address = true;
             
         },
+        newAddressBilling(){
+            this.showSearchFieldsBilling = false;
+            this.propertyDetails.billing_mannual_address = false;
+            this.propertyDetails.billing_address_text = null;
+            this.searchResultBilling = [];
+        },
         newAddress(){
             this.showSearchFields = false;
             this.propertyDetails.mannual_address = false;
@@ -356,15 +451,35 @@ export default {
         closeServiceAddress() {
             this.$emit('close');
         },
+        onBillingAddressSelected(place) {
+            console.log("place id" , place)
+            this.searchResultBilling = []
+            MapService.getAddressDetailsById(place.id)
+                .then((data) => {
+                        this.propertyDetails.billing_unit_number = data.unit_number, 
+                        this.propertyDetails.billing_street_number = data.street_number,
+                        this.propertyDetails.billing_street_name = data.street_name,
+                        this.propertyDetails.billing_address_text = data.address_text,
+                        this.propertyDetails.billing_state = data.state,
+                        this.propertyDetails.billing_street_type = data.street_type,
+                        this.propertyDetails.billing_street_number = data.street_number,
+                        this.propertyDetails.billing_address_unit = data.address_unit,
+                        this.propertyDetails.billing_street_address = data.street_address,
+                        this.propertyDetails.billing_city = data.city,
+                        this.propertyDetails.billing_postcode = data.postcode,
+                    this.selectBillingAddress();
+                });
+        },
         onAddressSelected(place) {
             console.log("place id" , place)
+            this.searchResult = [];
             MapService.getAddressDetailsById(place.id)
                 .then((data) => {
                     // this.propertyDetails = { ...this.propertyDetails, ...data }
                     console.log('print data in' ,  data)
 
                     this.propertyDetails.address_text = data.address_text;
-                    this.propertyDetails.street_address = data.street;
+                    this.propertyDetails.street_address = data.street_address;
                     this.propertyDetails.city = data.city;
                     this.propertyDetails.postcode = data.postcode;
                     this.propertyDetails.state = data.state;
@@ -377,26 +492,6 @@ export default {
                     this.selectAddress();
                 });
         },
-
-      onBillingAddressSelected(place) {
-        GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
-            .then((data) => {
-              this.propertyDetails.billing_address_text = data.formatted_address;
-              this.propertyDetails.billing_street_address = data.street;
-              this.propertyDetails.billing_city = data.city;
-              this.propertyDetails.billing_postcode = data.postcode;
-              this.propertyDetails.billing_state = data.state;
-              this.propertyDetails.billing_street_number = data.street_number;
-              this.propertyDetails.billing_unit_number = data.unit_number;
-              this.propertyDetails.billing_street_name = data.street_name;
-
-                if(!isNull( data.unit_number)) {
-                    this.propertyDetails.billing_street_address = data.unit_number +'/'+ data.street;
-                }
-
-            });
-      },
-
       changeIsBillingSame()
       {
         this.propertyDetails.billing_address_text = '';
@@ -440,6 +535,11 @@ export default {
 }
 .newAddress{
     font-weight: bold;
+    &:hover{
+        cursor: pointer;
+    }
+}
+.billingAddress{
     &:hover{
         cursor: pointer;
     }

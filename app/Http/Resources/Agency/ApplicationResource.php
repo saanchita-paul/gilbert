@@ -70,6 +70,7 @@ class ApplicationResource extends JsonResource
             'billing_street_address' => $this->billing_street_address,
             'billing_city' => $this->billing_city,
             'billing_state' => $this->billing_state,
+            'billing_street_type' => $this->billing_street_type,
             'billing_postcode' => $this->billing_postcode,
             'is_billing_same' => $this->is_billing_same,
             'is_contacted' => $this->is_contacted,
