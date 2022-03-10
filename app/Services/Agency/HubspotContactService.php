@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Models\ConnectionService;
 
 class HubspotContactService
 {
@@ -332,8 +333,21 @@ class HubspotContactService
     private function getStatus(): string
     {
         return match ($this->application->status) {
-            ConnectionApplication::STATUS_UNASSIGNED => 'NEW',
-            default => 'IN_PROGRESS' //todo: handle default correctly
+            ConnectionApplication::STATUS_SUBMITTED => $this->getSubmittedStatusFromService(),
+            ConnectionApplication::STATUS_UNASSIGNED,
+            '20',
+            ConnectionApplication::STATUS_ASSIGNED => 'NEW',
+            ConnectionApplication::STATUS_CLOSED => 'BAD_TIMING',
+            default => 'OPEN_DEAL'
+        };
+    }
+
+    private function getSubmittedStatusFromService()
+    {
+        return match ($this->application->connectionServices?->pluck('status')) {
+            ConnectionService::STATUS_ACCEPTED => 'CONNECTED',
+            ConnectionService::STATUS_REJECTED => 'UNQUALIFIED',
+            default => 'IN_PROGRESS'
         };
     }
 
