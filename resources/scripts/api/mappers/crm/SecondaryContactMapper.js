@@ -21,8 +21,8 @@ export default {
             identification_type: contact.identification_type === IDENTIFICATION.PASSPORT ?
                 'Passport' : contact.identification_type === IDENTIFICATION.MEDICARE ?
                     'Medicare' : contact.identification_type === IDENTIFICATION.DL? 'Driver\'s License': '',
-            expire_date: contact.identification_type === IDENTIFICATION.MEDICARE ? dayjs(contact.expire_date).format('MM/YY') :
-                dayjs(contact.expire_date).format(DATE_FORMAT.DB_DATE),
+            expire_date: contact.expire_date ? (contact.identification_type === IDENTIFICATION.MEDICARE ? dayjs(contact.expire_date).format('MM/YY') :
+                dayjs(contact.expire_date).format(DATE_FORMAT.DB_DATE)) : null,
             card_title: contact.identification_type === IDENTIFICATION.PASSPORT ?
                 'Passport' : contact.identification_type === IDENTIFICATION.MEDICARE ?
                     'Card' : contact.identification_type === IDENTIFICATION.DL? 'License': ''
