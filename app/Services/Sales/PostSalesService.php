@@ -230,6 +230,14 @@ class PostSalesService
             $afterHourFlag = $this->handleNextDayConnection($distributor, $state);
         }
         $this->connection->update(['after_hour_flag' => $afterHourFlag]);
+
+        Log::info('After Hour Flags ', [
+            'state'=> $state,
+            'distributor'=> $distributor,
+            'connection_date'=> $this->connection->moving_date,
+            'after_hour_flag'=> $afterHourFlag,
+        ]);
+
         return $afterHourFlag;
 
     }

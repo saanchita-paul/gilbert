@@ -176,8 +176,12 @@
                     </v-col>
 
                     <v-col cols="12" v-if="isSameDayOrNextDayConnection">
-                        <p class="my-0">
+                        <p>
                             <span class="font-weight-bold">Important:</span> You are about to submit a same-day connection. Processing same-day connections to Energy Australia will incur same-day connection fee for the customer.
+                        </p>
+
+                        <p class="my-0">
+                            <span class="font-weight-bold">Note:</span> If customer doesn’t consent to pay, a new connection date (at least 2 business days from today) will have to be selected.
                         </p>
 
                         <v-container
