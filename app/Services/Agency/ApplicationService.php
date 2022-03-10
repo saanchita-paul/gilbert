@@ -91,7 +91,8 @@ class ApplicationService
         $existingApplication->street_name = $address['street_name'];
         $existingApplication->unit_number = $address['unit_number'];
         $existingApplication->street_type = $address['street_type'];
-        $existingApplication->street_number = empty($address['street_address']) ? null : $address['street_number'];
+        $existingApplication->street_number = $address['street_number'];
+        // $existingApplication->street_number = empty($address['street_address']) ? null : $address['street_number'];
         // $existingApplication->unit_number = empty($address['street_address']) ? null : $address['unit_number'];
         $existingApplication->city = $address['city'];
         $existingApplication->is_renovation_on = $address['is_renovation_on'];

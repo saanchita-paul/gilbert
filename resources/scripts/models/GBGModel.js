@@ -56,6 +56,7 @@ export default class GBGModel {
             address_text: this.fullAddress,
             street_address : this.street,
             city : this.locality,
+            country : this.country,
             postcode : this.postcode,
             state : this.mapState(),
             street_number : this.streetNumber,
