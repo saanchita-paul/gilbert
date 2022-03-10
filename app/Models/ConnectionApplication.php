@@ -172,6 +172,7 @@ class ConnectionApplication extends Model
         'billing_street_address',
         'billing_city',
         'billing_postcode',
+        'is_billing_same',
         'submitted_by',
         'vendor_id',
         'is_contacted',
@@ -183,7 +184,8 @@ class ConnectionApplication extends Model
         'water_next_available_date',
         'unit_number',
         'street_type',
-        'mannual_address'
+        'billing_state',
+        'mannual_address',
     ];
 
 
