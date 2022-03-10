@@ -18,9 +18,13 @@
                         <p class="item-title">Homephone</p>
                         <p class="item-value">{{ application.homephone }}</p>
                     </div>
-                    <div class="item" v-else>
+                    <div class="item" v-if="application.phone_type === 1">
                         <p class="item-title">Mobile</p>
                         <p class="item-value">{{ application.phone }}</p>
+                    </div>
+                    <div class="item" v-if="application.phone_type === 3">
+                        <p class="item-title">I. Mobile Number</p>
+                        <p class="item-value">{{ application.international_phone }}</p>
                     </div>
                 </div>
                 <div class="item">
