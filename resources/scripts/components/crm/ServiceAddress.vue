@@ -28,7 +28,7 @@
                                                                 dense
                                                                 placeholder="Type house address here"
                                                                 append-icon="mdi-magnify"
-                                                                v-model="propertyDetails.address_text"
+                                                                v-model="search_address_text"
                                                                 @keyup.native="onStreetChanged"
                                                             ></v-text-field>
                                                         </template>
@@ -55,7 +55,7 @@
                     <v-col cols="12" v-if="showSearchFields">
                         <v-row>
                             <v-col cols="3" class="py-0">
-                                <ValidationProvider name="UnitNo"  v-slot="{ errors }">
+                                <ValidationProvider name="Unit No"  v-slot="{ errors }">
                                     <v-text-field
                                         label="Unit No"
                                         outlined
@@ -81,7 +81,7 @@
                                 </ValidationProvider>
                             </v-col>
                             <v-col cols="6" class="py-0">
-                                <ValidationProvider name="StreetName" rules="required"  v-slot="{ errors }">
+                                <ValidationProvider name="Street Name" rules="required"  v-slot="{ errors }">
                                     <v-text-field
                                         label="Street Name.*"
                                         outlined
@@ -94,7 +94,7 @@
                                 </ValidationProvider>
                             </v-col>
                              <v-col cols="3" class="py-0">
-                                <ValidationProvider name="StreetType" rules="required"  v-slot="{ errors }">
+                                <ValidationProvider name="Street Type" rules="required"  v-slot="{ errors }">
                                     <v-select outlined dense
                                               v-model="propertyDetails.street_type"
                                               :items="street_type"
@@ -170,7 +170,7 @@
                                                 dense
                                                 placeholder="Type house address here"
                                                 append-icon="mdi-magnify"
-                                                v-model="propertyDetails.billing_address_text"
+                                                v-model="billing_search_address_text"
                                                 @keyup.native="onBillingStreetChanged"
                                             ></v-text-field>
                                         </template>
@@ -356,6 +356,8 @@ export default {
           searchResultBilling: [],
           showSearchFieldsBilling: true,
           isBillingAddressSame: true,
+          search_address_text: '',
+          billing_search_address_text: '',
           // inspectionTimes:[
           //   '8AM - 1PM',
           //   '9AM - 2PM',
@@ -368,8 +370,8 @@ export default {
     },
     created() {
         this.onStreetChanged = debounce(() => {
-            if (this.propertyDetails.address_text.length > 0) {
-                MapService.getStreetAddressesByKeyword(this.propertyDetails.address_text)
+            if (this.search_address_text.length > 0) {
+                MapService.getStreetAddressesByKeyword(this.search_address_text)
                     .then((data) => {
                         this.searchResult = data;
                         this.showMenu = this.searchResult.length > 0
@@ -378,8 +380,8 @@ export default {
         }, 250);
 
         this.onBillingStreetChanged = debounce(() => {
-            if (this.propertyDetails.billing_address_text.length > 0) {
-            MapService.getStreetAddressesByKeyword(this.propertyDetails.billing_address_text)
+            if (this.billing_search_address_text.length > 0) {
+            MapService.getStreetAddressesByKeyword(this.billing_search_address_text)
                 .then((data)=>{
                     console.log("search result" , data)
                     this.searchResultBilling = data;
@@ -409,8 +411,8 @@ export default {
         },
         selectMannualBilling(){
             this.showSearchFieldsBilling = true;
-
-            this.propertyDetails.billing_address_text = null;
+            this.billing_search_address_text = null
+            // this.propertyDetails.billing_address_text = null;
             this.propertyDetails.billing_street_address = null;
             this.propertyDetails.billing_city = null;
             this.propertyDetails.billing_postcode = null;
@@ -424,7 +426,8 @@ export default {
         selectMannual(){
             this.showSearchFields = true;
 
-            this.propertyDetails.address_text = null;
+            this.search_address_text = null;
+            // this.propertyDetails.address_text = null;
             this.propertyDetails.street_address = null;
             this.propertyDetails.city = null;
             this.propertyDetails.postcode = null;
@@ -445,7 +448,8 @@ export default {
         newAddress(){
             this.showSearchFields = false;
             this.propertyDetails.mannual_address = false;
-            this.propertyDetails.address_text = null;
+            this.search_address_text = null;
+            // this.propertyDetails.address_text = null;
             this.searchResult = [];
         },
         closeServiceAddress() {
@@ -460,6 +464,7 @@ export default {
                         this.propertyDetails.billing_street_number = data.street_number,
                         this.propertyDetails.billing_street_name = data.street_name,
                         this.propertyDetails.billing_address_text = data.address_text,
+                        this.billing_search_address_text = data.address_text,
                         this.propertyDetails.billing_country = data.country,
                         this.propertyDetails.billing_state = data.state,
                         this.propertyDetails.billing_street_type = data.street_type,
@@ -515,12 +520,21 @@ export default {
               this.propertyDetails.billing_address_text = this.propertyDetails.billing_unit_number + ' ' + this.propertyDetails.billing_street_number + ' ' + this.propertyDetails.billing_street_name + ' ' + ' ' + this.propertyDetails.billing_city + this.propertyDetails.billing_state + ' ' + this.propertyDetails.billing_postcode + ' ' + this.propertyDetails.billing_country;
           }
       },
-
+    
+     checkAddressText(){
+        if(this.propertyDetails.address_text  == null){
+            return false;
+        }
+        return true;
+     },
       async onSubmit() {
 
           console.log(this.propertyDetails)
           // return;
           this.setAddressText();
+
+        //   if(!this.checkAddressText()) return;
+
           let v = await this.$refs.edit_address.validate();
           if (v) {
               // console.log()
