@@ -56,11 +56,10 @@
           </div>
 
           <div class="agent-leade">
-              <h3 class="disabled-text">Water</h3>
+              <h3>Water</h3>
               <div class="leade-icon">
-                  <v-icon  :color="appMetrics.water>0?'grey lighten-1':'grey lighten-1'">mdi-water</v-icon>
-                  <!-- <span>{{appMetrics.water}}</span> -->
-                  <span class="disabled-text">0</span>
+                  <v-icon  :color="appMetrics.water>0?'blue':'grey lighten-1'">mdi-water</v-icon>
+                  <span>{{appMetrics.water}}</span>
               </div>
               <p class="leade-text">Successfully connected</p>
           </div>
