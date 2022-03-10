@@ -158,6 +158,11 @@ class EnergyReport
                 $query->where('created_at', '>=', $this->startDate);
                 $query->where('created_at', '<=', $this->endDate);
                 $query->whereNotIn('status', $this->closedType);
+                $query->whereDoesntHave('SugerLead')
+                    ->orWhereHas('SugerLead', function ($q) {
+                        $q->whereNull('compare_connect_id')
+                            ->orWhere('compare_connect_id', 'N/A');
+                    });
             })
             // ->where('updated_at', '>=', $this->startDate)
             // ->where('updated_at', '<=', $this->endDate)
@@ -177,6 +182,11 @@ class EnergyReport
                 $query->where('created_at', '>=', $this->startDate);
                 $query->where('created_at', '<=', $this->endDate);
                 $query->whereNotIn('status', $this->closedType);
+                $query->whereDoesntHave('SugerLead')
+                    ->orWhereHas('SugerLead', function ($q) {
+                        $q->whereNull('compare_connect_id')
+                            ->orWhere('compare_connect_id', 'N/A');
+                    });
             })
             // ->where('updated_at', '>=', $this->startDate)
             // ->where('updated_at', '<=', $this->endDate)
@@ -194,6 +204,11 @@ class EnergyReport
                 $query->where('created_at', '>=', $this->startDate);
                 $query->where('created_at', '<=', $this->endDate);
                 $query->whereNotIn('status', $this->closedType);
+                $query->whereDoesntHave('SugerLead')
+                    ->orWhereHas('SugerLead', function ($q) {
+                        $q->whereNull('compare_connect_id')
+                            ->orWhere('compare_connect_id', 'N/A');
+                    });
             })
             ->count();
     }
@@ -209,6 +224,11 @@ class EnergyReport
                 $query->where('created_at', '>=', $this->startDate);
                 $query->where('created_at', '<=', $this->endDate);
                 $query->whereNotIn('status', $this->closedType);
+                $query->whereDoesntHave('SugerLead')
+                    ->orWhereHas('SugerLead', function ($q) {
+                        $q->whereNull('compare_connect_id')
+                            ->orWhere('compare_connect_id', 'N/A');
+                    });
             })
             // ->where('updated_at', '>=', $this->startDate)
             // ->where('updated_at', '<=', $this->endDate)
@@ -228,6 +248,11 @@ class EnergyReport
                 $query->where('created_at', '>=', $this->startDate);
                 $query->where('created_at', '<=', $this->endDate);
                 $query->whereNotIn('status', $this->closedType);
+                $query->whereDoesntHave('SugerLead')
+                    ->orWhereHas('SugerLead', function ($q) {
+                        $q->whereNull('compare_connect_id')
+                            ->orWhere('compare_connect_id', 'N/A');
+                    });
             })
             // ->where('updated_at', '>=', $this->startDate)
             // ->where('updated_at', '<=', $this->endDate)
@@ -247,6 +272,11 @@ class EnergyReport
                 $query->where('created_at', '>=', $this->startDate);
                 $query->where('created_at', '<=', $this->endDate);
                 $query->whereNotIn('status', $this->closedType);
+                $query->whereDoesntHave('SugerLead')
+                    ->orWhereHas('SugerLead', function ($q) {
+                        $q->whereNull('compare_connect_id')
+                            ->orWhere('compare_connect_id', 'N/A');
+                    });
             })
             // ->where('updated_at', '>=', $this->startDate)
             // ->where('updated_at', '<=', $this->endDate)
@@ -269,6 +299,13 @@ class EnergyReport
                     $q->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS]);
                 });
                 $query->orWhereDoesntHave('connectionServices');
+            })
+            ->where(function ($query) {
+                $query->whereDoesntHave('SugerLead')
+                    ->orWhereHas('SugerLead', function ($q) {
+                        $q->whereNull('compare_connect_id')
+                            ->orWhere('compare_connect_id', 'N/A');
+                    });
             })
             ->groupBy('status', 'source')
             ->get();
