@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Encryption\Encrypter;
+use App\Services\Address\GBGServices;
 use Illuminate\Support\Facades\Route;
 use PropertyMe\services\FetchContacts;
 use App\Services\RolePermissionService;
@@ -227,9 +228,6 @@ Route::get('/alloffices', [OfficeController::class, 'allOffices']);
 
 
 Route::get('country_test', function () {
-    //  return SubmitWaterLeadToFastConnect::mapLengthOfCountry[2];
-    $ser =  new SubmitWaterLeadToFastConnect(1);
-    // return $ser;
-    return $ser->getMappedIdentificationCountry('AX');
-    // return 'got' ;
+    $g = new GBGServices();
+    $g->findAddressByText();
 });
