@@ -320,6 +320,7 @@ import Search from "@scripts/components/crm/Search";
 import debounce from "lodash-es/debounce";
 import GoogleMapService from "@scripts/services/GoogleMapService";
 import {isNull} from "lodash-es";
+import {isEmpty} from "lodash-es";
 import STATES_DD from "@scripts/data/constants/STATES_DD";
 import MapService from "@scripts/services/MapService";
 import { street_type } from "@scripts/data/constants/StreetType"; 
@@ -512,12 +513,18 @@ export default {
         this.propertyDetails.billing_street_name = '';
       },
 
-      setAddressText(){
+      setAddressTextAndStreetAddress(){
+          let unit_number = isEmpty(this.propertyDetails.unit_number) ? "" : this.propertyDetails.unit_number + " /";
+          this.propertyDetails.street_address = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name;
           if(this.propertyDetails.mannual_address){
-              this.propertyDetails.address_text = this.propertyDetails.unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name + ' ' + this.propertyDetails.city + ' ' + this.propertyDetails.state + ' ' + this.propertyDetails.postcode + ' ' + this.propertyDetails.country ;
+              this.propertyDetails.address_text = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name + ' ' + this.propertyDetails.city + ' ' + this.propertyDetails.state + ' ' + this.propertyDetails.postcode + ' ' + this.propertyDetails.country ;
           }
+          
+          unit_number = isEmpty(this.propertyDetails.billing_unit_number) ? "" : this.propertyDetails.billing_unit_number + " /";
+          this.propertyDetails.billing_street_address = unit_number + ' ' + this.propertyDetails.billing_street_number + ' ' + this.propertyDetails.billing_street_name;
           if(this.propertyDetails.billing_mannual_address){
-              this.propertyDetails.billing_address_text = this.propertyDetails.billing_unit_number + ' ' + this.propertyDetails.billing_street_number + ' ' + this.propertyDetails.billing_street_name + ' ' + ' ' + this.propertyDetails.billing_city + this.propertyDetails.billing_state + ' ' + this.propertyDetails.billing_postcode + ' ' + this.propertyDetails.billing_country;
+              let unit_number = isEmpty(this.propertyDetails.billing_unit_number) ? "" : this.propertyDetails.billing_unit_number + " /";
+              this.propertyDetails.billing_address_text = unit_number + ' ' + this.propertyDetails.billing_street_number + ' ' + this.propertyDetails.billing_street_name + ' ' + ' ' + this.propertyDetails.billing_city + this.propertyDetails.billing_state + ' ' + this.propertyDetails.billing_postcode + ' ' + this.propertyDetails.billing_country;
           }
       },
     
@@ -531,7 +538,7 @@ export default {
 
           console.log(this.propertyDetails)
           // return;
-          this.setAddressText();
+          this.setAddressTextAndStreetAddress();
 
         //   if(!this.checkAddressText()) return;
 

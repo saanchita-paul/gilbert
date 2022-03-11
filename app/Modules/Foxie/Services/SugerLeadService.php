@@ -12,10 +12,12 @@ use App\Models\ConnectionService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use App\Models\ConnectionApplication;
+use App\Services\Address\GBGServices;
+// use App\Services\SearchAddress\AddressModel;
 use App\Services\SearchAddress\GeocodeAddress;
 use App\Services\SearchAddress\GeoCodeService;
 use App\Modules\Foxie\Services\LeadStatusMapper;
-use App\Services\SearchAddress\AddressModel;
+use App\Services\Address\AddressModel;
 
 class SugerLeadService
 {
@@ -80,6 +82,25 @@ class SugerLeadService
     }
 
     /**
+     * @throws Exception
+     */
+    public function setGBGToConnectionApplication(Request $request){
+        $addressModel =  new AddressModel(
+            address_text: $request->full_address_c,
+            unit_number: $request->primary_address_unit_c,
+            street_number: $request->primary_address_number_c,
+            street_name: trim($request->primary_address_street . " " . $request->primary_address_suffix_c),
+            postcode: $request->primary_address_postalcode,
+            city: $request->primary_address_city,
+            state: $request->primary_address_state,
+            country: "AUSTRALIA",
+        );
+        $gbgService = new GBGServices();
+        $gbgService->setPayload($addressModel);
+        $this->address = $gbgService->findAddressByText();
+    }
+
+    /**
      * Set attribute for create.
      *
      * @param Request $request
@@ -97,13 +118,14 @@ class SugerLeadService
             ]);
         }
 
-        $this->setGeoCodeToConnectionApplication($request);
+        // $this->setGeoCodeToConnectionApplication($request);
+        $this->setGBGToConnectionApplication($request);
 
         $this->connectionApplication->first_name = $request->first_name ?? null;
         $this->connectionApplication->last_name = $request->last_name ?? null ;
         $this->connectionApplication->source = ConnectionApplication::SOURCE_FOXIE ;
         $this->connectionApplication->email = $request->email1 ?? null;
-        $this->connectionApplication->address_text = $this->address->address_text;
+        $this->connectionApplication->address_text = $this->address->getAddressText();
         $this->connectionApplication->dob = $dob ?? null;
         $this->connectionApplication->moving_date = date("Y-m-d", strtotime($request->move_in_date_c))  ?? null;
         $this->connectionApplication->street_address = $this->address->street_address ?? null;

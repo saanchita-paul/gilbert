@@ -810,7 +810,7 @@
                                             dense
                                             :disabled="!application.mannual_address"
                                             placeholder="2/56, Bradman Drive"
-                                            v-model="application.street_address"
+                                            v-model="application.street_number"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
                                     </ValidationProvider>
@@ -823,7 +823,7 @@
                                             dense
                                             :disabled="!application.mannual_address"
                                             placeholder="2/56, Bradman Drive"
-                                            v-model="application.street_address"
+                                            v-model="application.street_name"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
                                     </ValidationProvider>
@@ -1110,6 +1110,7 @@ import LeadApplicationService from "@scripts/services/crm/LeadApplicationService
 import DayJs from "dayjs";
 import LeadCreateSuccessfulModal from "@scripts/components/crm/modals/LeadCreateSuccessfulModal";
 import {isNull} from "lodash-es";
+import {isEmpty} from "lodash-es";
 import IdentificationDetail from "@scripts/components/crm/agent/IdentificationDetail";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import { tenancyTypeMapper } from '@scripts/data/ConnectionApplicationMapper';
@@ -1322,27 +1323,36 @@ export default {
         },
         onAddressSelected(place) {
             console.log("place id" , place)
+            this.searchResult = []
             MapService.getAddressDetailsById(place.id)
                 .then((data) => {
                     this.application = { ...this.application, ...data }
+                    let unit_number = isEmpty(this.application.unit_number) ? "" : this.application.unit_number + " /";
+                    this.application.street_address = unit_number + ' ' + this.application.street_number + ' ' + this.application.street_name;
                     this.selectAddress();
                 });
         },
         onBillingAddressSelected(place) {
             console.log("place id" , place)
+            this.searchResultBilling = []
             MapService.getAddressDetailsById(place.id)
                 .then((data) => {
-                        this.application.billing_unit_number = data.unit_number, 
-                        this.application.billing_street_number = data.street_number,
-                        this.application.billing_street_name = data.street_name,
-                        this.application.billing_address_text = data.address_text,
-                        this.application.billing_state = data.state,
-                        this.application.billing_street_type = data.street_type,
-                        this.application.billing_street_number = data.street_number,
-                        this.application.billing_address_unit = data.address_unit,
-                        this.application.billing_street_address = data.street_address,
-                        this.application.billing_city = data.city,
-                        this.application.billing_postcode = data.postcode,
+                 
+                    this.application.billing_unit_number = data.unit_number 
+                    this.application.billing_street_number = data.street_number
+                    this.application.billing_street_name = data.street_name
+                    this.application.billing_address_text = data.address_text
+                    this.application.billing_state = data.state
+                    this.application.billing_street_type = data.street_type
+                    this.application.billing_street_number = data.street_number
+                    this.application.billing_address_unit = data.address_unit
+                    this.application.billing_city = data.city
+                    this.application.billing_postcode = data.postcode
+
+                    let unit_number = isEmpty(this.application.unit_number) ? "" : this.application.unit_number + " /";
+                    this.application.billing_street_address = unit_number + ' ' + this.application.billing_street_number + ' ' + this.application.billing_street_name;
+
+
                     this.selectBillingAddress();
                 });
         },

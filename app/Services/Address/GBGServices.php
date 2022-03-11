@@ -18,7 +18,8 @@ class GBGServices
         $this->cleansingUrl = "https://hosted.mastersoftgroup.com/harmony/rest/au/cleanse/address";
     }
 
-    public function setPayload( AddressModel $address ) {
+    public function setPayload( AddressModel $address ) 
+    {
         $this->payload = [
             "payload" => [
                 [
@@ -37,7 +38,8 @@ class GBGServices
         ];
     }
 
-    private function checkException(GBGModel $gbg){
+    private function checkException(GBGModel $gbg)
+    {
         if($gbg?->unknown !== "" || $gbg?->exception !== null )
         {
             throw new Exception("Address not found");
@@ -56,13 +58,12 @@ class GBGServices
             ->post($this->cleansingUrl);
         // echo $response->status();
         $address = json_decode($response->body(), true);
-        // dd($address);
+
+        dd($address);
+
         $gbgModel = new GBGModel($address);
         $this->checkException($gbgModel);
-        // echo $gbgModel->unknown;
-        // echo $gbgModel->exception;
-        // if
-        // echo $gbgModel->getConnectionApplicationVersion()->getUnitNumber();
+        echo $gbgModel->getConnectionApplicationVersion()->getState();
         return $gbgModel->getConnectionApplicationVersion();
     }
 }
