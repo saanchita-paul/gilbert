@@ -19,15 +19,19 @@ class TAppMapper
 
     public function mapPhoneType($phoneType)
     {
+        $phoneType = strtolower($phoneType);
         return match ($phoneType) {
             'mobile' => 1,
-            'international mobile' => 3,
+            'international mobile',
+            'international mobile number',
+            'international phone number' => 3,
             default => 2,
         };
     }
 
     public function mapPhone($phoneType, $phoneNumber)
     {
+        $phoneType = strtolower($phoneType);
         return match ($phoneType) {
             'mobile' => $phoneNumber,
             default => null,
@@ -36,8 +40,11 @@ class TAppMapper
 
     public function mapInternationalPhone($phoneType, $phoneNumber)
     {
+        $phoneType = strtolower($phoneType);
         return match ($phoneType) {
-            'international mobile' => $phoneNumber,
+            'international mobile',
+            'international mobile number',
+            'international phone number' => $phoneNumber,
             default => null,
         };
     }
