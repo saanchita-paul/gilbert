@@ -3,6 +3,7 @@
 use Illuminate\Encryption\Encrypter;
 use App\Services\Address\GBGServices;
 use Illuminate\Support\Facades\Route;
+use App\Services\Address\AddressModel;
 use PropertyMe\services\FetchContacts;
 use App\Services\RolePermissionService;
 use Illuminate\Support\Facades\Broadcast;
@@ -229,5 +230,7 @@ Route::get('/alloffices', [OfficeController::class, 'allOffices']);
 
 Route::get('country_test', function () {
     $g = new GBGServices();
+    $model = new AddressModel(address_text: 'U 101 100 PLENTY RD, PRESTON VIC 3072');
+    $g->setPayload($model);
     $g->findAddressByText();
 });

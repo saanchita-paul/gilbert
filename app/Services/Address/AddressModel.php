@@ -23,7 +23,7 @@ class AddressModel{
     }
     
     public function getAddressText(){
-        return $this->unit_number;
+        return $this->address_text;
     }
 
     public function getStreetNumber(){

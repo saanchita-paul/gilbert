@@ -12,10 +12,10 @@ class GBGModel{
      */
     private $street_number;
 
-    public function __construct(private ?object $gbgRawData = null)
+    public function __construct(private ?array $gbgRawData = null)
     {
         $this->gbgRawData =  $gbgRawData;
-        $this->firstResult    =  $gbgRawData['results'][0] ?? null;
+        $this->firstResult    =  $gbgRawData['payload'][0] ?? null;
         $this->addressArray   =  $this->firstResult ?? null;
 
         if($this->addressArray)
@@ -39,6 +39,8 @@ class GBGModel{
        $this->setValue('streetNumber');
        $this->setValue('streetType');
        $this->setValue('subdwelling');
+       $this->setValue('unknown');
+       $this->setValue('exception');
     }
 
     private function setValue(string $name)
