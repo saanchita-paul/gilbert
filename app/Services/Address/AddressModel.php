@@ -64,6 +64,9 @@ class AddressModel{
         private ?string $country = null,
     ) 
     {
+        $this->street_address = $this->unit_number == null || $this->unit_number == "" ? "" : $this->unit_number . "/". $this->street_number;
+        $this->street_address = trim($this->street_address . " " . $this->street_name . " ");
+
         if ($this->state && strlen($this->state) < 4) 
         {
             $this->state = self::MAP_STATES[strtolower($this->state)] ?? null;
@@ -77,6 +80,10 @@ class AddressModel{
     
     public function getAddressText(){
         return $this->address_text;
+    }
+    
+    public function getStreetAddress(){
+        return $this->street_address;
     }
 
     public function getStreetNumber(){

@@ -59,11 +59,11 @@ class GBGServices
         // echo $response->status();
         $address = json_decode($response->body(), true);
 
-        dd($address);
+        // dd($address);
 
         $gbgModel = new GBGModel($address);
         $this->checkException($gbgModel);
-        echo $gbgModel->getConnectionApplicationVersion()->getState();
+        // echo $gbgModel->getConnectionApplicationVersion()->getState();
         return $gbgModel->getConnectionApplicationVersion();
     }
 }

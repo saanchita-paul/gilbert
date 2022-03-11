@@ -230,7 +230,7 @@ Route::get('/alloffices', [OfficeController::class, 'allOffices']);
 
 Route::get('country_test', function () {
     $g = new GBGServices();
-    $model = new AddressModel(address_text: 'U 101 100 PLENTY RD, PRESTON VIC 3072');
+    $model = new AddressModel(address_text: 'U 101 100 PLENTY RD, PRESTON VIC 3072', unit_number: 103 , city: "PRESTON"  );
     $g->setPayload($model);
     $g->findAddressByText();
 });
