@@ -3,17 +3,25 @@
 namespace App\Services\Agency;
 
 use App\Models\APILog;
-use App\Models\ConnectionApplication;
 use App\Models\Identification;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use App\Models\ConnectionService;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use App\Models\ConnectionApplication;
+use Illuminate\Database\Eloquent\Model;
+use App\Services\Logger\ErrorLogService;
+use Illuminate\Database\Eloquent\Collection;
 
 class HubspotContactService
 {
+    const STATUS_NEW = 'NEW';
+    const STATUS_BAD_TIMING = 'BAD_TIMING';
+    const STATUS_OPEN_DEAL = 'OPEN_DEAL';
+    const STATUS_CONNECTED = 'CONNECTED';
+    const STATUS_UNQUALIFIED = 'UNQUALIFIED';
+    const STATUS_IN_PROGRESS = 'IN_PROGRESS';
+    
     private array|Collection|ConnectionApplication|Model $application;
 
     public function __construct(int $id)
@@ -328,27 +336,52 @@ class HubspotContactService
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    private function getStatus(): string
+    private function getStatus(): ?string
     {
         return match ($this->application->status) {
             ConnectionApplication::STATUS_SUBMITTED => $this->getSubmittedStatusFromService(),
             ConnectionApplication::STATUS_UNASSIGNED,
-            '20',
-            ConnectionApplication::STATUS_ASSIGNED => 'NEW',
-            ConnectionApplication::STATUS_CLOSED => 'BAD_TIMING',
-            default => 'OPEN_DEAL'
+            20,
+            ConnectionApplication::STATUS_ASSIGNED => self::STATUS_NEW,
+            ConnectionApplication::STATUS_CLOSED => self::STATUS_BAD_TIMING,
+            ConnectionApplication::STATUS_ESCALATED,
+            ConnectionApplication::STATUS_EA_PROCESSINF => self::STATUS_OPEN_DEAL,
+            default => $this->noStatusMatchFailScope()
         };
     }
 
-    private function getSubmittedStatusFromService()
+    /**
+     * @return string
+     */
+    private function getSubmittedStatusFromService(): string
     {
-        return match ($this->application->connectionServices?->pluck('status')) {
-            ConnectionService::STATUS_ACCEPTED => 'CONNECTED',
-            ConnectionService::STATUS_REJECTED => 'UNQUALIFIED',
-            default => 'IN_PROGRESS'
+        $serviceStatuses = $this->application->connectionServices?->whereIn('service_type', [
+            ConnectionService::TYPE_ELECTRICITY,
+            ConnectionService::TYPE_GAS,
+            ConnectionService::TYPE_WATER,
+        ])->pluck('status');
+
+        $status = $serviceStatuses->contains(ConnectionService::STATUS_ACCEPTED)
+            ? ConnectionService::STATUS_ACCEPTED
+            : ($serviceStatuses->contains(ConnectionService::STATUS_REJECTED) ? ConnectionService::STATUS_REJECTED : $serviceStatuses->first());
+
+        return match ($status) {
+            ConnectionService::STATUS_ACCEPTED => self::STATUS_CONNECTED,
+            ConnectionService::STATUS_REJECTED => self::STATUS_UNQUALIFIED,
+            default => self::STATUS_IN_PROGRESS
         };
+    }
+
+    /**
+     * @return string|null
+     */
+    private function noStatusMatchFailScope(): ?string
+    {
+        Log::error("[Hubspot Service] No status match for application: {$this->application->id}");
+        ErrorLogService::send('[Hubspot Service] No status matched for application id: ' . $this->application->id , ['taige.alhadweh@hood.ai']);
+        return null;
     }
 
     private function getHoodBusiness()
