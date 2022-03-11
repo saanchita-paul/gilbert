@@ -23,6 +23,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use PropertyMe\services\FetchContacts;
+use App\Services\Agency\HubspotContactService;
 
 class ApplicationController extends Controller
 {
@@ -146,6 +147,9 @@ class ApplicationController extends Controller
                 $request->get('hood_user_id'),
                 $applicationId
             );
+
+            (new HubspotContactService($applicationId))->update();
+
             $autoSubmitService = new WaterAutoSubmitService($applicationId);
             return ApplicationResource::make($data);
 

@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Services\RolePermission;
 use JetBrains\PhpStorm\ArrayShape;
 use TSA\Services\TsaSendAppliationService;
+use App\Services\Agency\HubspotContactService;
 
 class ApplicationService
 {
@@ -303,6 +304,8 @@ class ApplicationService
         $existingApplication->status = ConnectionApplication::STATUS_ESCALATED;
         $existingApplication->save();
 
+        (new HubspotContactService($applicationId))->update();
+
         $allicationNoteService = new ApplicationNoteService($user);
         $eacalateNote = [];
         $eacalateNote['text'] = $application['reason'];
@@ -329,6 +332,7 @@ class ApplicationService
             $existingApplication->closed_by = $user->profile->id;
             $existingApplication->save();
 
+            (new HubspotContactService($applicationId))->update();
 
             $allicationNoteService = new ApplicationNoteService($user);
             $closingeNote = [];

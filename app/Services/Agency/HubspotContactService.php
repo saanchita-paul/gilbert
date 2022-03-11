@@ -64,7 +64,7 @@ class HubspotContactService
 
         $url = str_replace('${id}', $vid, config('hub_spot.update_contact')) . config('hub_spot.api_key');
         $url = APILog::setLoggerQuery($url, APILog::API_HB_UPDATE_CONTACT);
-
+        
         $response = Http::post($url, [
             "properties" => $this->getProperties()
         ]);
@@ -359,8 +359,7 @@ class HubspotContactService
     {
         $serviceStatuses = $this->application->connectionServices?->whereIn('service_type', [
             ConnectionService::TYPE_ELECTRICITY,
-            ConnectionService::TYPE_GAS,
-            ConnectionService::TYPE_WATER,
+            ConnectionService::TYPE_GAS
         ])->pluck('status');
 
         $status = $serviceStatuses->contains(ConnectionService::STATUS_ACCEPTED)
