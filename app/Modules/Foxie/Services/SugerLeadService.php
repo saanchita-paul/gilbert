@@ -64,7 +64,8 @@ class SugerLeadService
      * @throws Exception
      */
     public function setGeoCodeToConnectionApplication(Request $request){
-        if (empty($request->full_address_c)) {
+        if (empty($request->full_address_c)) 
+        {
             $this->address =  new AddressModel(
                 unit_number: $request->primary_address_unit_c,
                 street_number: $request->primary_address_number_c,
@@ -74,7 +75,8 @@ class SugerLeadService
                 state: $request->primary_address_state,
                 country: "AUSTRALIA",
             );
-        } else {
+        } else 
+        {
             $response = GeoCodeService::getAddressFromGeoCode($request->full_address_c);
             $geoCodeData = new GeocodeAddress($response);
             $this->address = $geoCodeData->getConnectionApplicationVersion();
@@ -85,19 +87,34 @@ class SugerLeadService
      * @throws Exception
      */
     public function setGBGToConnectionApplication(Request $request){
-        $addressModel =  new AddressModel(
-            address_text: $request->full_address_c,
-            unit_number: $request->primary_address_unit_c,
-            street_number: $request->primary_address_number_c,
-            street_name: trim($request->primary_address_street . " " . $request->primary_address_suffix_c),
-            postcode: $request->primary_address_postalcode,
-            city: $request->primary_address_city,
-            state: $request->primary_address_state,
-            country: "AUSTRALIA",
-        );
-        $gbgService = new GBGServices();
-        $gbgService->setPayload($addressModel);
-        $this->address = $gbgService->findAddressByText();
+        try
+        {
+            $addressModel =  new AddressModel(
+                address_text: $request->full_address_c,
+                unit_number: $request->primary_address_unit_c,
+                street_number: $request->primary_address_number_c,
+                street_name: trim($request->primary_address_street . " " . $request->primary_address_suffix_c),
+                postcode: $request->primary_address_postalcode,
+                city: $request->primary_address_city,
+                state: $request->primary_address_state,
+                country: "AUSTRALIA",
+            );
+            $gbgService = new GBGServices($addressModel);
+            $appAddress = $gbgService->findAddressByText();
+            if($appAddress->getIsAddressComplete())
+            {
+                $this->address = $appAddress;
+            } 
+            else 
+            {
+                $this->address = $addressModel;
+            }
+        } catch(Exception $exception) 
+        {
+            info("exception in location sugerleads");
+            Log::error( "exception in sugerLeadsService->GBG service", [ "msg" => $exception->getMessage(), "trace" => $exception->getTraceAsString() ] );
+            throw new Exception('Error in GBG Service');
+        }
     }
 
     /**
@@ -133,10 +150,12 @@ class SugerLeadService
         $this->connectionApplication->street_name = $this->address->getStreetName() ?? null;
         $this->connectionApplication->city = $this->address->getCity() ?? null;
         $this->connectionApplication->postcode = $this->address->getPostcode() ?? null;
+        $this->connectionApplication->is_address_complete = $this->address->getIsAddressComplete() ?? null;
         $this->connectionApplication->phone = $request->phone_mobile ?? null;
         $this->connectionApplication->tenancy_type = ConnectionApplication::TENANCY_MAPPING[$request->property_relationship_c] ?? null ;
         $this->connectionApplication->property_type = ConnectionApplication::PROPERTY_TYPE_MAPPING[$request->customer_type_c] ?? null ;
         $this->connectionApplication->state = $this->address->getState() ?? null;
+        $this->connectionApplication->state_short = $this->address->getStateShort() ?? null;
         $this->connectionApplication->country = $this->address->getCountry() ?? null;
         $this->connectionApplication->nmi = $request->electricity_nmi_c ?? null;
         $this->connectionApplication->mirn = $request->gas_mirn_c ?? null;
@@ -180,11 +199,13 @@ class SugerLeadService
             }
             $mappedType = Identification::TYPE_MAP[$request->id_type_c] ?? null;
 
-            if($type == self::TYPE_CREATE){
+            if($type == self::TYPE_CREATE)
+            {
                 $identification->expire_date = $formattedDate ?? null;
                 $identification->type = $mappedType ?? null ;
                 $identification->card_number = $request->id_number_c ?? null ;
-            }else{
+            } else
+            {
                 $request->id_type_c ? $identification->type = $mappedType ?? null : '';
                 $request->id_expiry_c ? $identification->expire_date = $formattedDate : '';
                 $request->id_number_c ? $identification->card_number = $request->id_number_c : '';

@@ -13,24 +13,25 @@ class GBGServices
     /**
      * @var null
      */
-    public function __construct()
+    public function __construct(private AddressModel $addressModelPayload)
     {
         $this->cleansingUrl = "https://hosted.mastersoftgroup.com/harmony/rest/au/cleanse/address";
+        $this->setPayload();
     }
 
-    public function setPayload( AddressModel $address ) 
+    private function setPayload() 
     {
         $this->payload = [
             "payload" => [
                 [
-                    "fullAddress" => $address->getAddressText(),
-                    "flatUnitNumber" => $address->getUnitNumber(),
-                    "streetNumber" => $address->getStreetNumber(),
-                    "streetName" => $address->getStreetName(),
-                    "streetType" => $address->getStreetType(),
-                    "postcode" => $address->getPostcode(),
-                    "locality" => $address->getCity(),
-                    "state" => $address->getState(),
+                    "fullAddress" => $this->addressModelPayload->getAddressText(),
+                    "flatUnitNumber" => $this->addressModelPayload->getUnitNumber(),
+                    "streetNumber" => $this->addressModelPayload->getStreetNumber(),
+                    "streetName" => $this->addressModelPayload->getStreetName(),
+                    "streetType" => $this->addressModelPayload->getStreetType(),
+                    "postcode" => $this->addressModelPayload->getPostcode(),
+                    "locality" => $this->addressModelPayload->getCity(),
+                    "state" => $this->addressModelPayload->getState(),
                     "country" => "AU"
                 ]
             ],
@@ -38,12 +39,14 @@ class GBGServices
         ];
     }
 
-    private function checkException(GBGModel $gbg)
+    private function isAddressValid(GBGModel $gbg)
     {
-        if($gbg?->unknown !== "" || $gbg?->exception !== null )
+        if($gbg?->unknown !== "" || $gbg?->exception !== null || $gbg?->streetName === null || $gbg?->streetName === "" )
         {
-            throw new Exception("Address not found");
-        }
+            return false;
+            // throw new Exception("Address not found");
+        } 
+        return true;
     }
 
     public function findAddressByText(?string $text = null, ?LookUpOptions $options = null): AddressModel
@@ -57,13 +60,28 @@ class GBGServices
             ->withBody(json_encode($this->payload), 'application/json')
             ->post($this->cleansingUrl);
         // echo $response->status();
+
+        if($response->status() == 200)
+        {
+            return $this->setModelAndProperty($response);
+        } 
+        else {
+            $this->addressModelPayload->setIsAddressComplete(false);
+            return $this->addressModelPayload;
+        }
+        
+    }
+
+    private function setModelAndProperty($response){
         $address = json_decode($response->body(), true);
-
         // dd($address);
-
+        info("gbg response data" , [ "gbg data" => $response->body()]);
         $gbgModel = new GBGModel($address);
-        $this->checkException($gbgModel);
         // echo $gbgModel->getConnectionApplicationVersion()->getState();
-        return $gbgModel->getConnectionApplicationVersion();
+        $appAddress = $gbgModel->getConnectionApplicationVersion();
+        $appAddress->setIsAddressComplete( $this->isAddressValid($gbgModel) );
+        // info("is address complete" , )
+        dd($appAddress);
+        return $appAddress;
     }
 }
