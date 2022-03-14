@@ -123,8 +123,6 @@ export default {
     computed: {
 
         afterHourFlag() {
-            console.log('selected plan', this.plan);
-
             return this.plan && EAAfterHourService.calculateAfterHourFlag(this.eaElectricityDistributor, this.leadSummary.moving_date, this.leadSummary.state);
         }
 
@@ -135,7 +133,6 @@ export default {
         {
             if(!isNull(this.plan)) {
                 this.eaElectricityDistributor = await EAAfterHourService.getElectricityDistributor(this.leadSummary.service_interests, this.plan?.key, this.leadSummary?.postcode, this.leadSummary?.state);
-                console.log(' this.eaElectricityDistributor', this.eaElectricityDistributor);
             }
 
         },
@@ -152,12 +149,6 @@ export default {
 
         updatePlan(plan, isManual)
         {
-
-            console.log('plan detail  update', plan, isManual);
-
-            if(this.plan?.key !== plan?.key)
-            {
-            }
 
             //manual click activation plan
             if(isManual) this.isManualChangeFlag = true;
