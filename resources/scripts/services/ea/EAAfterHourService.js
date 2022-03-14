@@ -22,7 +22,6 @@ const SELECTED_STATE_DISTRIBUTOR = [
 function isTodayAfterHourFlag(ea_distributor, state) {
     const selectedState = STATES.find(st => st.value === state);
     const selectedDistributor = SELECTED_STATE_DISTRIBUTOR.find(dis => {
-        return dis.distributor === ea_distributor && dis.state === selectedState.text?.toUpperCase()
         return dis.distributor === ea_distributor && dis.state === selectedState.value?.toUpperCase()
     })
     let  time = parseInt(dayJs().format('Hm'));
