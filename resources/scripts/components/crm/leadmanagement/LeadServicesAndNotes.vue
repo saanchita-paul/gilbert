@@ -1,7 +1,7 @@
 <template>
     <v-row>
         <v-col cols="8" class="mb-8 pb-8">
-                <ServiceApplications @updateDraft="updateDraft" @updateService="updateService" :leadSummary="leadSummary" @updatePlan="updatePlan"></ServiceApplications>
+                <ServiceApplications @updateDraft="updateDraft" @updateService="updateService" :afterHourFlag="afterHourFlag" :leadSummary="leadSummary" @updatePlan="updatePlan"></ServiceApplications>
         </v-col>
         <v-col cols="4" class="mb-8 pb-8">
             <v-card class="hood-card">
@@ -24,6 +24,9 @@ name: "LeadServicesAndNotes",
         },
         leadSummary: {
             require: true
+        },
+        afterHourFlag: {
+            require: false
         }
     },
     components:{

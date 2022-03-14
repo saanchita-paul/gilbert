@@ -175,7 +175,7 @@
                         <v-divider></v-divider>
                     </v-col>
 
-                    <v-col cols="12" v-if="isSameDayOrNextDayConnection">
+                    <v-col cols="12" v-if="selectedPowerProvider === 'ea' && afterHourFlag && selected_plan">
                         <p>
                             <span class="font-weight-bold">Important:</span> You are about to submit a same-day connection. Processing same-day connections to Energy Australia will incur same-day connection fee for the customer.
                         </p>
@@ -336,6 +336,9 @@ export default {
     props: {
         leadSummary: {
             require: true
+        },
+        afterHourFlag: {
+            require: false
         }
     },
 
@@ -432,18 +435,9 @@ export default {
             }
         },
 
-        isSameDayOrNextDayConnection() {
-            let today = dayjs().format('DD-MM-YYYY');
-            let tomorrow = dayjs().add(1, 'day').format('DD-MM-YYYY');
-            let connectionDate = dayjs(this.leadSummary.moving_date).format('DD-MM-YYYY');
-
-            console.log('today or tomorrow', connectionDate, tomorrow, today);
-
-            return (connectionDate === tomorrow || connectionDate === today);
-        },
         isPayeeSelectedForAfterHourSubmission() {
 
-            return this.isSameDayOrNextDayConnection && isNull(this.leadSummary.after_hour_payee);
+            return this.afterHourFlag && isNull(this.leadSummary.after_hour_payee);
         }
 
     },
@@ -490,6 +484,21 @@ export default {
 
     },
     methods: {
+
+        async isSameDayOrNextDayConnection() {
+
+            const afterHourFlag = await EAAfterHourService.calculateAfterHourFlag(
+                this.leadSummary.service_interests,
+                this.selectedPlanType,
+                this.leadSummary.postcode,
+                this.leadSummary.state,
+                this.leadSummary.moving_date
+            );
+
+            return afterHourFlag;
+
+        },
+
         getPlanType() {
             let plan = null;
             switch(this.selectedPowerProvider) {
