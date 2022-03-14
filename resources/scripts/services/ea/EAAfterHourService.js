@@ -23,6 +23,7 @@ function isTodayAfterHourFlag(ea_distributor, state) {
     const selectedState = STATES.find(st => st.value === state);
     const selectedDistributor = SELECTED_STATE_DISTRIBUTOR.find(dis => {
         return dis.distributor === ea_distributor && dis.state === selectedState.text?.toUpperCase()
+        return dis.distributor === ea_distributor && dis.state === selectedState.value?.toUpperCase()
     })
     let  time = parseInt(dayJs().format('Hm'));
 
@@ -47,7 +48,9 @@ function isTomorrowAfterHourFlag() {
 export default {
 
     getElectricityDistributor: async (services, plan, postcode, state) => {
-        if (!plan || !postcode || !state) return  '';
+        if (!plan || !postcode || !state) {
+            return '';
+        }
         try{
             const data = await EAPlanService.getPlanDetailsByPlanType({
                 service_type: services,
@@ -55,7 +58,11 @@ export default {
                 postcode: postcode,
                 state: state
             });
-            return data?.distributor_name?.electricity?.toUpperCase();
+            const electricityPlan = data?.distributor_name?.electricity?.toUpperCase();
+            if(!electricityPlan) {
+                return '';
+            }
+            return electricityPlan;
         }catch (e) {
             console.log('error', e);
             return '';
@@ -63,20 +70,17 @@ export default {
     },
 
     calculateAfterHourFlag: (ea_distributor, movingDate, state) => {
-        if(ea_distributor?.length === 0) {
+        if(!ea_distributor) {
             return false;
         }
 
        let currentDate = parseInt(dayJs().format('D'));
        let givenDate = parseInt(dayJs(movingDate).format('D'));
-        // console.log('calculateAfterHourFlag',currentDate, givenDate, ea_distributor ,state);
 
        if(currentDate === givenDate) {
-           // console.log('today distributor_name', ea_distributor ,state);
            return isTodayAfterHourFlag(ea_distributor, state);
        }
        if(currentDate + 1 === givenDate) {
-           // console.log('tomorrow distributor_name', ea_distributor, state);
             return isTomorrowAfterHourFlag();
         }
        return false;
