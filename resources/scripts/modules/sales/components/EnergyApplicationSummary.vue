@@ -10,7 +10,7 @@
 
         <div class="metrics">
 
-            <!--            Application Created-->
+            <!-- Application Created -->
             <div class="created with-source mx-2">
                 <div class="lead-count">
                     <div class="count-value"><h2>{{ summaryData.source_all.total }}</h2></div>
@@ -27,14 +27,14 @@
             </div>
             <v-divider vertical class="divider"></v-divider>
 
-            <!--            Application unassigned-->
+            <!-- Application unassigned -->
             <div class="unassigned lead-count mx-2">
                 <div class="count-value"><h2>{{ summaryData.source_unassigned.total }}</h2></div>
                 <div class="count-label"><p>Unassigned</p></div>
             </div>
             <v-divider vertical class="divider"></v-divider>
 
-            <!--            Application assigned-->
+            <!-- Application assigned -->
             <div class="assigned lead-count">
                 <div class="count-value"><h2>{{ summaryData.source_assigned.total }}</h2></div>
                 <div class="count-label"><p>Assigned</p></div>
@@ -42,7 +42,7 @@
             <v-divider vertical class="divider"></v-divider>
 
 
-            <!--            Application submitted-->
+            <!-- Application submitted -->
             <div class="submitted with-source mx-2">
                 <div class="lead-count">
                     <div class="count-value"><h2>{{ summaryData.source_submitted.total }}</h2></div>
@@ -60,7 +60,7 @@
             <v-divider vertical class="divider"></v-divider>
 
 
-            <!--            Application conversion-rate-->
+            <!-- Application conversion-rate -->
             <div class="conversion-rate with-source mx-2">
                 <div class="lead-count">
                     <div class="count-value"><h2>{{ summaryData.source_conversation_rate.total }}%</h2></div>
@@ -78,7 +78,7 @@
             <v-divider vertical class="divider"></v-divider>
 
 
-            <!--            Application rea??-->
+            <!-- Application rea?? -->
             <div class="rea lead-count mx-2" style="opacity: 0.2;">
                 <div class="count-value"><h2>{{ summaryData.source_consent_pending.total }}</h2></div>
                 <div class="count-label"><p>Consent Pending </p></div>
@@ -86,10 +86,17 @@
             <v-divider vertical class="divider"></v-divider>
 
 
-            <!--            Application closed-->
+            <!-- Application closed -->
             <div class="closed lead-count mx-2">
                 <div class="count-value"><h2>{{ summaryData.source_closed.total }}</h2></div>
                 <div class="count-label"><p>Closed</p></div>
+            </div>
+            <v-divider vertical class="divider"></v-divider>
+
+            <!-- Application escalated -->
+            <div class="escalated lead-count mx-2">
+                <div class="count-value"><h2>{{ summaryData.source_escalated.total }}</h2></div>
+                <div class="count-label"><p>Escalated</p></div>
             </div>
         </div>
     </v-card>
@@ -139,6 +146,7 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 .lead-sources {

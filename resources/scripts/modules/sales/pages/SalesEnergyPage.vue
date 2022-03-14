@@ -10,15 +10,25 @@
             </div>
             <v-card class="summary-container" v-if="is_laod">
                 <p class="summary-title-text">Summary of Energy Utilities</p>
-                <div style="flex-basis: 30%;">
-                    <ApplicationDashboardStatisticsEnergy title="Utility Submissions" type='submission' :chart-data="chartData.submitted"/>
-                </div>
-                <div style="flex-basis: 30%;">
-                    <ApplicationDashboardStatisticsEnergy title="Connected" type='conversion' :chart-data="chartData.connected"/>
-                </div>
-                <div style="flex-basis: 30%;">
-                    <ApplicationDashboardStatisticsEnergy title="Rejected" type='rejected' :chart-data="chartData.rejected"/>
-                </div>
+
+                <OpsDateTypeToggler
+                    class="toggle-block"
+                    :type="getDateTypeString()"
+                    @changeType="changeDateType"
+                >
+                </OpsDateTypeToggler>
+
+                <div class="summary-inner-container">
+                    <div style="flex-basis: 33%;">
+                        <ApplicationDashboardStatisticsEnergy title="Utility Submissions" type='submission' :chart-data="chartData.submitted"/>
+                    </div>
+                    <div style="flex-basis: 33%;">
+                        <ApplicationDashboardStatisticsEnergy title="Connected" type='conversion' :chart-data="chartData.connected"/>
+                    </div>
+                    <div style="flex-basis: 33%;">
+                        <ApplicationDashboardStatisticsEnergy title="Rejected" type='rejected' :chart-data="chartData.rejected"/>
+                    </div>
+                </div> 
             </v-card>
         </v-row>
     </v-container>
@@ -31,6 +41,7 @@ import EnergyApplicationSummary from "@scripts/modules/sales/components/EnergyAp
 import SalesDashboardService from "@scripts/modules/sales/services/SalesDashboardService";
 import SalesSummaryChart from "@scripts/modules/sales/components/SalesSummaryChart";
 import ApplicationDashboardStatisticsEnergy from "@scripts/modules/sales/pages/ApplicationDashboardStatisticsEnergy";
+import OpsDateTypeToggler from "@scripts/modules/sales/components/OpsDateTypeToggler";
 
 export default {
     name: "SalesEnergyPage",
@@ -39,7 +50,8 @@ export default {
         SalesFilter,
         SalesSummary,
         EnergyApplicationSummary,
-        ApplicationDashboardStatisticsEnergy
+        ApplicationDashboardStatisticsEnergy,
+        OpsDateTypeToggler
     },
     data() {
         return {
@@ -47,23 +59,38 @@ export default {
             is_laod: false,
             data: null,
             chartData: null,
-            dateRange: null
+            dateRange: null,
+            dateType: this.getDateType(),
         }
     },
-
-
     methods: {
-        async load(dateRange) {
-            this.chartData = await SalesDashboardService.loadDashboardEnergyData(dateRange);
+        async load(dateRange, dateType) {
+            this.chartData = await SalesDashboardService.loadDashboardEnergyData(dateRange, dateType);
             this.is_laod = true;
         },
-
         updateDate(dateRange) {
             this.dateRange = dateRange;
-            this.load(dateRange)
+            this.load(dateRange, this.dateType);
+        },
+        getDateTypeString() {
+            return this.$route.query?.type ?
+                this.mapDateType() : 'BasedOnSubmittedDate';
+        },
+        getDateType() {
+            return this.$route.query?.type ? this.$route.query.type : 'submitted_date';
+        },
+        mapDateType() {
+            return this.$route.query.type === 'created_date' ? 'BasedOnCreatedDate' : 'BasedOnSubmittedDate';
+        },
+        changeDateType(type) {
+            this.$router.push({
+                name: 'sales.energy',
+                query: Object.assign({}, this.$route.query, { type: type })
+            });
+            this.dateType = type;
+            this.load(this.dateRange, type);
         }
     },
-
 }
 </script>
 
@@ -75,7 +102,12 @@ export default {
     flex-wrap: wrap;
     padding: 24px;
 }
-
+.summary-inner-container{
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    flex-wrap: wrap;
+}
 .title-style{
     font-family: Roboto;
     font-size: 32px;
@@ -84,11 +116,16 @@ export default {
     line-height: 42px;
     letter-spacing: 0em;
     text-align: left;
-}
+    margin-bottom: 0px;
 
+}
 .summary-title-text{
     flex-basis: 100%;
     @extend .title-style; 
+}
+.toggle-block{
+    flex-basis: 100%;
+    margin-bottom: 20px;
 }
 </style>
 

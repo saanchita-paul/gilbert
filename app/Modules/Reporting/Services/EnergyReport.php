@@ -2,14 +2,15 @@
 
 namespace Reporting\Services;
 
-use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
-use App\Modules\Reporting\Services\CalculateEnergyApplicationSummary;
+use App\Models\ConnectionApplication;
 use App\Modules\Reporting\Services\SetDateRage;
+use App\Modules\Reporting\Services\CalculateEnergyApplicationSummary;
 
 class EnergyReport
 {
     use SetDateRage;
+    private string $dateType;
     private string $startDate;
     private string $endDate;
 
@@ -62,30 +63,11 @@ class EnergyReport
      */
     private MapEnergyReport $mapperService;
 
-    public function __construct(string $startDate, string $endDate)
+    public function __construct(string $dateType, string $startDate, string $endDate)
     {
+        $this->dateType = $dateType;
         $this->setDateRange($startDate, $endDate);
-
         $this->mapperService = new MapEnergyReport();
-
-        $leadBreakDown = [
-            "total" => 0,
-            "ignite" => 0,
-            "our_property" => 0,
-            "property_me" => 0,
-            "foxie" => 0,
-            "hood" => 0,
-            "hood_ai" => 0,
-        ];
-        $data = [
-            "total_application" => $leadBreakDown,
-            "unassigned_application" => $leadBreakDown,
-            "assigned_application" => $leadBreakDown,
-            "submitted_application" => $leadBreakDown,
-            "conversation_rate" => $leadBreakDown,
-            "consent_pending" => $leadBreakDown,
-            "closed" => $leadBreakDown,
-        ];
     }
 
     private function getTotalNewApplication()
@@ -284,7 +266,6 @@ class EnergyReport
             'successful_submission' => $this->mapperService->setEnergyData($this->totalSubmissions())->getReportData(),
             'waiting_for_connection' => $this->mapperService->setEnergyData($this->totalWaitingForConnection())->getReportData(),
             "ac_manual_processing" => $this->getAcManualProcessing(),
-            "manual_processing" => 0,
             'connected' => $this->mapperService->setEnergyData($this->totalConnected())->getReportData(),
             'rejected' => $this->mapperService->setEnergyData($this->totalRejected())->getReportData(),
             'declined' => $this->mapperService->setEnergyData($this->totalDeclined())->getReportData(),
