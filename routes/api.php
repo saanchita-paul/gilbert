@@ -231,7 +231,7 @@ Route::get('/alloffices', [OfficeController::class, 'allOffices']);
 Route::get('country_test', function () {
     // $model = new AddressModel(address_text: "", unit_number: 103 , city: "PRESTON"  );
     $model = new AddressModel(
-        address_text: "UNIT 102,100 PLENTY ROAD,PRESTON VIC 3072",
+        address_text: "UNIT 102,100 PLENTY ROAD,PRESTON VIC 3072 AUSTRALIA",
         unit_number: null,
         street_number: 104,
         street_name: "Halsey " . " Road",

@@ -81,7 +81,7 @@ class GBGServices
         $appAddress = $gbgModel->getConnectionApplicationVersion();
         $appAddress->setIsAddressComplete( $this->isAddressValid($gbgModel) );
         // info("is address complete" , )
-        dd($appAddress);
+        // dd($appAddress);
         return $appAddress;
     }
 }

@@ -69,6 +69,17 @@ class AddressModel{
      *
      */
     const STATE_SHORT_WA = 'wa';
+    /**
+     *
+     */
+    const COUNTRY_AU = 'au';
+
+    /**
+     *
+     */
+    const MAP_COUNTRY = [
+        self::COUNTRY_AU => "AUSTRALIA",
+    ];
 
     /**
      *
@@ -120,11 +131,16 @@ class AddressModel{
         if ($this->state && strlen($this->state) < 4) 
         {
             $this->state_short = $this->state;
-            $this->state = self::MAP_STATES_SHORT_TO_LONG[strtolower($this->state)] ?? null;
+            $this->state = strtoupper( self::MAP_STATES_SHORT_TO_LONG[strtolower($this->state)] ) ?? null;
         } 
         else 
         { 
             $this->state_short = self::MAP_STATES_LONG_TO_SHORT[strtolower($this->state)] ?? null;
+        }
+
+        if ($this->country && strlen($this->country) < 3) 
+        {
+            $this->country = self::MAP_COUNTRY[strtolower($this->country)] ?? null;
         }
     }
     
