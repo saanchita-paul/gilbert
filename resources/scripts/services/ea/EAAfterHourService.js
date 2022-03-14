@@ -1,10 +1,13 @@
-import EnergyApi from "@scripts/api/ea/EnergyApi";
 import EAPlanService from "@scripts/services/ea/EAPlanService";
 import {STATES} from "@scripts/data/constants/STATES";
-import dayJs from "dayjs";
-import * as dayjs from "dayjs";
-const utc = require("dayjs/plugin/utc");
+import dayJs, * as dayjs from "dayjs";
+import utc from "dayjs/plugin/utc"
+
+
 dayjs.extend(utc);
+
+const envTimezone = process.env.MIX_EA_AU_TIME_ZONE || 11;
+
 
 const SELECTED_STATE_DISTRIBUTOR = [
     {
@@ -28,13 +31,9 @@ function isTodayAfterHourFlag(ea_distributor, state) {
         return dis.distributor === ea_distributor && dis.state === selectedState.value?.toUpperCase()
     })
 
-    let envTimezone = process.env.MIX_EA_AU_TIME_ZONE;
-    if(!envTimezone) {
-        envTimezone = 0;
-    }
     let dateTime = dayJs().utcOffset(parseInt(envTimezone) * 60);
     let  time = parseInt(dateTime.format('Hm'));
-    if(selectedDistributor && time <= 1130) {
+    if (selectedDistributor && time <= 1130) {
         return false;
     }
 
@@ -43,10 +42,6 @@ function isTodayAfterHourFlag(ea_distributor, state) {
 }
 
 function isTomorrowAfterHourFlag() {
-    let envTimezone = process.env.MIX_EA_AU_TIME_ZONE;
-    if(!envTimezone) {
-        envTimezone = 0;
-    }
     let dateTime = dayJs().utcOffset(parseInt(envTimezone) * 60);
     const  time = parseInt(dateTime.format('Hm'));
 
@@ -86,7 +81,8 @@ export default {
             return false;
         }
 
-        let currentDate = parseInt(dayJs().format('D'));
+        let currentDate = parseInt(dayJs().utcOffset(parseInt(envTimezone) * 60).format('D'))
+        // let currentDate = parseInt(dayJs().format('D'));
         let givenDate = parseInt(dayJs(movingDate).format('D'));
 
         if(currentDate === givenDate) {
