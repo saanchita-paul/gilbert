@@ -70,65 +70,6 @@ class EnergyReport
         $this->mapperService = new MapEnergyReport();
     }
 
-    private function getTotalNewApplication()
-    {
-        return ConnectionService::whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
-            ->whereHas('connectionApplication', function ($query) {
-                $query->where('created_at', '>=', $this->startDate);
-                $query->where('created_at', '<=', $this->endDate);
-            })
-            // ->whereNotNull('provider_name')
-            // ->where('updated_at', '>=', $this->startDate)
-            // ->where('updated_at', '<=', $this->endDate)
-            ->count();
-    }
-
-    private function getUnassignedApplication()
-    {
-        return ConnectionService::whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
-            ->whereHas('connectionApplication', function ($query) {
-                $query->whereNull('assigned_to');
-                $query->where('created_at', '>=', $this->startDate);
-                $query->where('created_at', '<=', $this->endDate);
-                $query->whereNotIn('status', $this->closedType);
-            })
-            // ->whereNotNull('provider_name')
-            // ->where('updated_at', '>=', $this->startDate)
-            // ->where('updated_at', '<=', $this->endDate)
-            ->whereNotIn('status', $this->notSubmittedType)
-            ->count();
-    }
-
-    private function getAssignedApplication()
-    {
-        return ConnectionService::whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
-            ->whereHas('connectionApplication', function ($query) {
-                $query->whereNotNull('assigned_to');
-                $query->where('created_at', '>=', $this->startDate);
-                $query->where('created_at', '<=', $this->endDate);
-                $query->whereNotIn('status', $this->closedType);
-            })
-            // ->whereNotNull('provider_name')
-            // ->where('updated_at', '>=', $this->startDate)
-            // ->where('updated_at', '<=', $this->endDate)
-            ->whereNotIn('status', $this->notSubmittedType)
-            ->count();
-    }
-
-    private function getTotalClosedApplication()
-    {
-        return ConnectionService::whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
-            ->whereHas('connectionApplication', function ($query) {
-                $query->whereIn('status', $this->closedType);
-                $query->where('created_at', '>=', $this->startDate);
-                $query->where('created_at', '<=', $this->endDate);
-            })
-            // ->whereNotNull('provider_name');
-            // ->where('updated_at', '>=', $this->startDate)
-            // ->where('updated_at', '<=', $this->endDate)
-            ->count();
-    }
-
     public function totalSubmissions()
     {
         return ConnectionService::query()
@@ -177,6 +118,8 @@ class EnergyReport
                 $query->where('created_at', '<=', $this->endDate);
                 $query->whereNotIn('status', $this->closedType);
             })
+            // ->where('updated_at', '>=', $this->startDate)
+            // ->where('updated_at', '<=', $this->endDate)
             ->count();
     }
 
@@ -258,11 +201,6 @@ class EnergyReport
         $appSummary = CalculateEnergyApplicationSummary::getSummary($data->toArray());
 
         return array_merge([
-            "total_new_application" => $this->getTotalNewApplication(), #todo: need to remove this
-            "unassigned_application" => $this->getUnassignedApplication(), #todo: need to remove this
-            "assigned_application" => $this->getAssignedApplication(), #todo: need to remove this
-            "total_consent_pending" => 0, #todo: need to remove this
-            "total_closed" => $this->getTotalClosedApplication(), #todo: need to remove this
             'successful_submission' => $this->mapperService->setEnergyData($this->totalSubmissions())->getReportData(),
             'waiting_for_connection' => $this->mapperService->setEnergyData($this->totalWaitingForConnection())->getReportData(),
             "ac_manual_processing" => $this->getAcManualProcessing(),
