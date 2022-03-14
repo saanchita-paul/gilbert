@@ -79,9 +79,11 @@ export default class ApplicationSummary {
             street_address = null,
             city = null,
             state = null,
+            state_short = null,
             unit_number = null,
             street_number = null,
             street_name = null,
+            street_name_only = null,
             country = 'Australia',
             postcode = null,
             address_text = null,
@@ -193,8 +195,8 @@ export default class ApplicationSummary {
         this.is_auto_water_submit = is_auto_water_submit
         this.mannual_address = mannual_address
         this.street_type = street_type
-
-
+        this.state_short = state_short
+        this.street_name_only = street_name_only
     }
 
     mapStatus(status) {

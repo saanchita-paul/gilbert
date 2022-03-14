@@ -99,7 +99,7 @@
                                               v-model="propertyDetails.street_type"
                                               :items="street_type"
                                               :disabled="!propertyDetails.mannual_address"
-                                              label="Street Type"
+                                              label="Street Type*"
                                               :error-messages=" errors[0]"
                                               placeholder="Please Select">
                                     </v-select>
@@ -233,17 +233,17 @@
                                     </ValidationProvider>
                                 </v-col>
                                  <v-col cols="3" class="py-0">
-                                    <ValidationProvider name="Street Type"  v-slot="{ errors }">
+                                    <ValidationProvider name="Street Type" rules="required" v-slot="{ errors }">
                                         <v-select outlined dense
                                                   v-model="propertyDetails.billing_street_type"
                                                   :items="street_type"
                                                   :disabled="!propertyDetails.billing_mannual_address"
-                                                  label="Street Type"
+                                                  label="Street Type*"
                                                   :error-messages=" errors[0]"
                                                   placeholder="Please Select">
                                         </v-select>
                                     </ValidationProvider>
-                                </v-col>
+                                </v-col*>
                                 <v-col cols="6" class="py-0">
                                     <ValidationProvider name="City/Suburb" rules="required"  v-slot="{ errors }">
                                         <v-text-field
@@ -433,9 +433,11 @@ export default {
             this.propertyDetails.city = null;
             this.propertyDetails.postcode = null;
             this.propertyDetails.state = null;
+            this.propertyDetails.state_short = null;
             this.propertyDetails.street_number = null;
             this.propertyDetails.unit_number = null;
             this.propertyDetails.street_name = null;
+            this.propertyDetails.street_name_only = null;
             this.propertyDetails.street_type = null;
             this.propertyDetails.mannual_address = true;
             
@@ -491,10 +493,12 @@ export default {
                     this.propertyDetails.country = data.country;
                     this.propertyDetails.postcode = data.postcode;
                     this.propertyDetails.state = data.state;
+                    this.propertyDetails.state_short = data.state_short;
                     // this.propertyDetails.street_number = data.street_number?data.street_number:null;
                     this.propertyDetails.unit_number = data.unit_number;
                     this.propertyDetails.street_number = data.street_number;
                     this.propertyDetails.street_name = data.street_name;
+                    this.propertyDetails.street_name_only = data.street_name_only;
                     this.propertyDetails.street_type = data.street_type;
                     this.propertyDetails.unit_number = data.unit_number;
 

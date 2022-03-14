@@ -111,6 +111,7 @@ class AddressModel{
         private ?string $address_text = null,
         private ?string $street_number = null,
         private ?string $street_name = null,
+        private ?string $street_name_only = null,
         private ?string $street_type = null,
         private ?string $postcode = null,
         private ?string $city = null,
@@ -131,16 +132,16 @@ class AddressModel{
         if ($this->state && strlen($this->state) < 4) 
         {
             $this->state_short = $this->state;
-            $this->state = strtoupper( self::MAP_STATES_SHORT_TO_LONG[strtolower($this->state)] ) ?? null;
+            $this->state = ucwords( self::MAP_STATES_SHORT_TO_LONG[strtolower($this->state)] ) ?? null;
         } 
         else 
         { 
-            $this->state_short = self::MAP_STATES_LONG_TO_SHORT[strtolower($this->state)] ?? null;
+            $this->state_short = ucfirst(self::MAP_STATES_LONG_TO_SHORT[strtolower($this->state)]) ?? null;
         }
 
         if ($this->country && strlen($this->country) < 3) 
         {
-            $this->country = self::MAP_COUNTRY[strtolower($this->country)] ?? null;
+            $this->country = ucfirst(self::MAP_COUNTRY[strtolower($this->country)]) ?? null;
         }
     }
     
@@ -168,6 +169,11 @@ class AddressModel{
     public function getStreetName()
     {
         return $this->street_name;
+    }
+
+    public function getStreetNameOnly()
+    {
+        return $this->street_name_only;
     }
 
     public function getStreetType()

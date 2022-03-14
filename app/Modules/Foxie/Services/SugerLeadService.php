@@ -148,6 +148,7 @@ class SugerLeadService
         $this->connectionApplication->street_address = $this->address->getStreetAddress() ?? null;
         $this->connectionApplication->street_number = $this->address->getStreetNumber() ?? null;
         $this->connectionApplication->street_name = $this->address->getStreetName() ?? null;
+        $this->connectionApplication->street_name_only = $this->address->getStreetNameOnly() ?? null;
         $this->connectionApplication->city = $this->address->getCity() ?? null;
         $this->connectionApplication->postcode = $this->address->getPostcode() ?? null;
         $this->connectionApplication->is_address_complete = $this->address->getIsAddressComplete() ?? null;

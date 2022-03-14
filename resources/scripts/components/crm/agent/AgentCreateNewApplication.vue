@@ -829,7 +829,7 @@
                                     </ValidationProvider>
                                 </v-col>
                                  <v-col cols="3" class="py-0">
-                                    <ValidationProvider name="StreetType" v-slot="{ errors }">
+                                    <ValidationProvider name="StreetType" rules="required"  v-slot="{ errors }">
                                         <v-select outlined dense
                                                   v-model="application.street_type"
                                                   :items="street_type"
@@ -1302,9 +1302,11 @@ export default {
             this.application.city = null;
             this.application.postcode = null;
             this.application.state = null;
+            this.application.state_short = null;
             this.application.street_number = null;
             this.application.unit_number = null;
             this.application.street_name = null;
+            this.application.street_name_only = null;
             this.application.street_type = null;
             this.application.mannual_address = true;
             

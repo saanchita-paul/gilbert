@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddIsAddressCompleteStateShortToConnectionApplicationsTable extends Migration
+class AddStreetNameOnlyToConnectionApplicationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,10 +15,8 @@ class AddIsAddressCompleteStateShortToConnectionApplicationsTable extends Migrat
     {
         Schema::table('connection_applications', function (Blueprint $table) {
             //
-            $table->tinyInteger("is_address_complete")->nullable();
-            $table->tinyInteger("billing_is_address_complete")->nullable();
-            $table->string("state_short")->nullable();
-            $table->string("billing_state_short")->nullable();
+            $table->string("street_name_only")->nullable();
+            $table->string("billing_street_name_only")->nullable();
         });
     }
 
@@ -31,7 +29,7 @@ class AddIsAddressCompleteStateShortToConnectionApplicationsTable extends Migrat
     {
         Schema::table('connection_applications', function (Blueprint $table) {
             //
-            $table->dropColumn(["is_address_complete", "state_short","billing_is_address_complete", "billing_state_short"]);
+            $table->dropColumn(["street_name_only", "billing_street_name_only"]);
         });
     }
 }
