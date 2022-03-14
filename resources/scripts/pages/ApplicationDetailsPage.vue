@@ -9,15 +9,22 @@
                                 @closeApplication="closeApplication"
                                 @eacalate="eacalate"
                                 @updateLead="updateLead"
-                                @readMore="readMore" :leadSummary="leadSummary"
-                                @updateAddress="updateAddress" @updateDraft="updateDraft"
+                                @readMore="readMore"
+                                :leadSummary="leadSummary"
+                                @updateAddress="updateAddress"
+                                @updateDraft="updateDraft"
                         ></LeadUserDetails>
                  </ValidationObserver>            <!-- <LeadsDetailsFotter :lifeSupportInfo="infoToPass.lifeSupportInfo"  v-if="leadSummary.status != 1" :login-loading="this.submittedLoader" :isManualChangeFlag="isManualChangeFlag" @submitConnection="submitConnection"></LeadsDetailsFotter> -->
                 <LeadServicesAndNotes
-                                   @updateService="updateService"
-                                   @updatePlan="updatePlan"
-                                   @updateNote= "updateNote"
-                                   :leadSummary="leadSummary" :notes="notes"></LeadServicesAndNotes>
+                    @updateDraft="updateDraft"
+                    @updateService="updateService"
+                    @updatePlan="updatePlan"
+                    @updateNote= "updateNote"
+                    :leadSummary="leadSummary"
+                    :afterHourFlag="afterHourFlag"
+                    :notes="notes">
+
+                </LeadServicesAndNotes>
 
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
             <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" :title="fullName"></EscalationConfirmModal>
@@ -52,6 +59,7 @@ import AssignedToUserEmptyModal from "@scripts/components/crm/modals/AssignedToU
 import * as dayjs from "dayjs";
 import {isNull} from "lodash-es";
 import PreventSubmissionModal from "@scripts/components/crm/modals/PreventSubmissionModal";
+import EAAfterHourService from "@scripts/services/ea/EAAfterHourService";
 
 export default {
     name: "ApplicationDetailsPage",
@@ -72,6 +80,7 @@ export default {
 
     data() {
         return {
+            afterHourEffectedField: ['moving_date', 'plan_type'],
             nmiMernFlag: true,
             leadId: null,
             leadSummary: null,
@@ -96,6 +105,8 @@ export default {
             assignedToDialog: false,
             preventSubmissionFlag: false,
             preventSubmissionMessage: '',
+            ea_service_type: 'electricity_and_gas',
+            eaElectricityDistributor: '',
 
             //$attrs
             infoToPass:{
@@ -106,24 +117,44 @@ export default {
             }
         }
     },
+    watch: {
 
+    },
+    computed: {
+
+        afterHourFlag() {
+            return this.plan && EAAfterHourService.calculateAfterHourFlag(this.eaElectricityDistributor, this.leadSummary.moving_date, this.leadSummary.state);
+        }
+
+    },
     methods: {
+
+        async getElectricityDistributor()
+        {
+            if(!isNull(this.plan)) {
+                this.eaElectricityDistributor = await EAAfterHourService.getElectricityDistributor(this.leadSummary.service_interests, this.plan?.key, this.leadSummary?.postcode, this.leadSummary?.state);
+            }
+
+        },
+
         async loadPlanNoteAndLead()
         {
             this.notes = await LeadApplicationService.loadNote(this.leadId);
             this.leadSummary = await LeadApplicationService.loadUserLead(this.leadId);
             this.lead = this.leadSummary;
             this.services = this.leadSummary?.service_interests;
-
             this.planNoteFlag = true;
         },
 
+
         updatePlan(plan, isManual)
         {
+
             //manual click activation plan
             if(isManual) this.isManualChangeFlag = true;
             this.plan = plan;
             LeadApplicationService.saveSoleField('plan_type', this.plan, this.leadId);
+            this.getElectricityDistributor();
         },
 
         updateNote() {
@@ -203,15 +234,20 @@ export default {
             this.isManualChangeFlag = true;
             let index = this.services.findIndex(svc => svc === service.toLowerCase());
             if(index == -1) {
+
                 this.services.push(service.toLowerCase());
                  LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
                 this.loadPlanNoteAndLead()
-                return;
+
+            } else {
+                this.services.splice(index, 1);
+                LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
+                this.leadSummary.service_types = this.services;
+                console.log('services', service, this.services)
+                this.loadPlanNoteAndLead()
             }
-            this.services.splice(index,1);
-            LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
-            this.leadSummary.service_types = this.services;
-            this.loadPlanNoteAndLead()
+            this.plan = null
+
         },
 
         async submitConnection(submitType) {
@@ -323,14 +359,16 @@ export default {
             this.leadSummary.mirn = response.mirn;
             this.nmiMernFlag = false;
             this.isManualChangeFlag = true;
+
+            await this.getElectricityDistributor();
         },
 
         async updateDraft(field, value, isDate, identification, isManualChangeFlag) {
 
+            // console.log('draft date', field , value);
             if(isNull(value)) return;
 
-            if(isDate)
-            {
+            if(isDate) {
                 if(field == 'dob'&& dayjs(value,'DD/MM/YYYY').isSame(this.leadSummary.dob))
                 {
                     return;
@@ -346,11 +384,8 @@ export default {
                    return;
                 }
             }
-
             await LeadApplicationService.saveSoleField(field, value,this.leadId, isDate, identification, false);
-
-                this.isManualChangeFlag = true;
-
+            this.isManualChangeFlag = true;
 
            let [day, month, year] = [];
             if(isDate)
@@ -373,6 +408,13 @@ export default {
                 return;
             }
             this.leadSummary[field] = value;
+            await this.updateAfterHourFlagMovingDate(field, value)
+        },
+
+        async updateAfterHourFlagMovingDate(field, value){
+            if(field === 'moving_date' || field === 'service_interests') {
+                await this.getElectricityDistributor();
+            }
         },
 
         async updateMernNmi() {
@@ -418,6 +460,7 @@ export default {
 
 
     }
+
 };
 </script>
 

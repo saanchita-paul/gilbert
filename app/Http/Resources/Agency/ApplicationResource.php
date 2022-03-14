@@ -26,6 +26,7 @@ class ApplicationResource extends JsonResource
             'last_name' => $this->last_name,
             'email' => $this->email,
             'phone' => $this->phone,
+            'international_phone' => $this->international_phone,
             'homephone' => $this->homephone,
             'phone_type' => $this->phone_type,
             'tenancy_type' => $this->tenancy_type,
@@ -89,6 +90,7 @@ class ApplicationResource extends JsonResource
             'created_at' => (new Carbon($this->created_at, '11'))->format('d/m/Y h:m a'),
             'submitted_by' => $this->submittedBy(),
             'submitted_at' => $this->submittedAt(),
+            'after_hour_payee' => $this->after_hour_payee
         ];
     }
 

@@ -135,6 +135,7 @@ export default {
                 {text: 'Ignite ', value: 'ignite', icon: '/assets/images/icons/company/ignite.png'},
                 {text: 'Our Property', value: 'our-property', icon: '/assets/images/icons/company/our-property.png'},
                 {text: 'PropertyMe ', value: 'property_me', icon: '/assets/images/icons/company/propertyMe.png'},
+                {text: 'TApp', value: 't_app', icon: '/assets/images/icons/company/tapp.png'},
             ],
             headers:  [
                 {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use ExternalLead\Models\TApp;
 use Foxie\Models\SugerLead;
 use Ignite\Models\IgniteLead;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -135,6 +136,7 @@ class ConnectionApplication extends Model
         'last_name',
         'email',
         'phone',
+        'international_phone',
         'homephone',
         'phone_type',
         'tenancy_type',
@@ -180,7 +182,9 @@ class ConnectionApplication extends Model
         'source',
         'connection_end_date',
         'is_temporary_connection',
-        'water_next_available_date'
+        'water_next_available_date',
+        'after_hour_payee',
+        'after_hour_flag'
     ];
 
 
@@ -251,6 +255,7 @@ class ConnectionApplication extends Model
     const SOURCE_OUR_PROPERTY = 4;
     const SOURCE_PROPERTY_ME = 5;
     const SOURCE_HOOD_LEAD = 10;
+    const SOURCE_T_APP = 11;
 
     const EMAIL_BILLING_EMAIL = 1;
     const EMAIL_BILLING_PAPER = 2;
@@ -264,6 +269,9 @@ class ConnectionApplication extends Model
 
     const PHONE_TYPE_MOBILE = 1;
     const PHONE_TYPE_HOMEPHONE = 2;
+
+    const LEAD_SUBMIT_TYPE_ENERGY = 'energy';
+    const LEAD_SUBMIT_TYPE_WATER = 'water';
 
     const PROPERTY_TYPE_MAPPING = [
         'residential' => self::TENANCY_TYPE_RENTER,
@@ -283,6 +291,7 @@ class ConnectionApplication extends Model
         'our-property' => self::SOURCE_OUR_PROPERTY,
         'property_me' => self::SOURCE_PROPERTY_ME,
         'hood_ai' => self::SOURCE_HOOD_LEAD,
+        't_app' => self::SOURCE_T_APP,
     ];
 
     const PLAN_TYPE_MAPPER = [
@@ -304,6 +313,7 @@ class ConnectionApplication extends Model
         self::SOURCE_OUR_PROPERTY => 'Ourproperty',
         self::SOURCE_PROPERTY_ME => 'Propertyme',
         self::SOURCE_HOOD_LEAD => "Hood.ai",
+        self::SOURCE_T_APP => "tApp",
     ];
 
     const PLAN_TYPE_REVERSE_MAPPER = [
@@ -319,9 +329,13 @@ class ConnectionApplication extends Model
 
     ];
 
+    const AFTER_HOUR_PAYEE_HOOD = 'hood';
+    const AFTER_HOUR_PAYEE_APPLICANT = 'applicant';
+
     const AVAILABLE_USER_TITLES = [
         'mr', 'miss', 'dr', 'mrs', 'ms'
     ];
+
 
     /**
      * @return BelongsTo
@@ -393,6 +407,14 @@ class ConnectionApplication extends Model
     public function ourPropertyLead()
     {
         return $this->hasOne(OurProperty::class, 'connection_application_id');
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function tApp()
+    {
+        return $this->hasOne(TApp::class, 'connection_application_id');
     }
 
     public function propertyMeLead()

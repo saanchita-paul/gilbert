@@ -26,6 +26,9 @@ const medicareRules = function(value) {
 }
 
 const mediExpireDate = function(value) {
+    if (!value || value?.length < 0) {
+        return true;
+    }
     let spilitedData = value.split('/');
     let fullMonthYear = spilitedData[0] + '/' + '20' + spilitedData[1];
     let fullDateMonthYear =   dayjs().daysInMonth() + '/' + fullMonthYear;
@@ -152,6 +155,7 @@ extend('adult', {
 extend('valid-date', {
     message: field => `DD/MM/YYYY is valid format`,
     validate(value) {
+        console.log("dayJs(value, 'DD/MM/YYYY').isValid()", dayJs(value, 'DD/MM/YYYY').isValid())
         return dayJs(value, 'DD/MM/YYYY').isValid();
     }
 });
