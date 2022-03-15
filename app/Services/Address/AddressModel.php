@@ -3,6 +3,8 @@
 
 namespace App\Services\Address;
 
+use App\Models\ConnectionApplication;
+
 class AddressModel{
 
     /**
@@ -119,7 +121,41 @@ class AddressModel{
         private ?string $state_short = null,
         private ?string $country = null,
         private ?bool $is_address_complete = false,
+        private ?int $connection_application_id = null,
     ) 
+    {
+        if(isset($this->connection_application_id))
+        {
+            $this->setFromConnectionApplication();        
+        } else 
+        {
+            $this->setProperties();
+        }
+    }
+    
+    private function setFromConnectionApplication()
+    {
+        try
+        {
+            $application = ConnectionApplication::findOrFail($this->connection_application_id);
+            $this->unit_number = $application->unit_number;
+            $this->address_text = $application->address_text;
+            $this->street_number = $application->street_number;
+            $this->street_name = $application->street_name;
+            $this->street_name_only = $application->street_name_only;
+            $this->street_type = $application->street_type;
+            $this->postcode = $application->postcode;
+            $this->city = $application->city;
+            $this->state = $application->state;
+            $this->state_short = $application->state_short;
+            $this->country = $application->country;
+        } catch(\Exception $exception)
+        {
+            \Log::error( "error in AddressModel" ,  [ 'msg' => $exception->getMessage(), "trace" => $exception->getTraceAsString() ] );
+        }
+    }
+
+    private function setProperties()
     {
         $this->street_address = $this->unit_number == null || $this->unit_number == "" ? "" : $this->unit_number . "/". $this->street_number;
         $this->street_address = trim($this->street_address . " " . $this->street_name . " ");
@@ -144,7 +180,6 @@ class AddressModel{
             $this->country = ucfirst(self::MAP_COUNTRY[strtolower($this->country)]) ?? null;
         }
     }
-    
 
     public function getUnitNumber()
     {

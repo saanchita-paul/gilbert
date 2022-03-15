@@ -1204,6 +1204,7 @@ export default {
         country: "",
         street_type:"",
         street_name:"",
+        street_name_only:"",
 
 
         is_renovation_on: true,
@@ -1222,6 +1223,7 @@ export default {
         billing_unit_number: "",
         billing_street_number: "",
         billing_street_name: "",
+        billing_street_name_only: "",
         connection_end_date: null,
         is_temporary_connection : null,
       },
@@ -1322,6 +1324,7 @@ export default {
       this.property_details.street_number = this.lead.street_number;
       this.property_details.street_type = this.lead.street_type;
       this.property_details.street_name = this.lead.street_name;
+      this.property_details.street_name_only = this.lead.street_name_only;
       this.property_details.unit_number = this.lead.unit_number;
       this.property_details.postcode = this.lead.postcode;
       this.property_details.state = this.lead.state;
@@ -1338,6 +1341,7 @@ export default {
       this.property_details.billing_street_number =
         this.lead.billing_street_number;
       this.property_details.billing_street_name = this.lead.billing_street_name;
+      this.property_details.billing_street_name_only = this.lead.billing_street_name_only;
 
       this.indentification.type = this.lead.identification?.type;
       this.indentification.card_number = this.lead.identification?.card_number;
