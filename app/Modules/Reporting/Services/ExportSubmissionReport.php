@@ -3,13 +3,13 @@ namespace App\Modules\Reporting\Services;
 
 use DB;
 use App\Models\RejectionReason;
+use App\Models\OfficeCommission;
 use App\Models\ConnectionService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Rap2hpoutre\FastExcel\FastExcel;
 use App\Models\ConnectionApplication;
 use Illuminate\Database\Query\Builder;
-use App\Services\Agency\SimpleTokenService;
 use App\Services\Utility\GilbertStatusMapper;
 
 class ExportSubmissionReport
@@ -83,14 +83,16 @@ class ExportSubmissionReport
 
     private function mapData(array $data)
     {
-        //show assigned unassigned// show closed status
         foreach ($data as $datum) {
             $datum->Lead_Source = $this->getLeadSrc($datum->Lead_Source);
-            $datum->Lead_Status = $this->getStatus($datum->Application_Status, $datum->Lead_Status, $datum->Assigned_To);
+            $datum->UI_Status = $this->getUiStatus($datum->Application_Status, $datum->UI_Status, $datum->Assigned_To);
+            $datum->Application_Status = $this->getApplicationStatus($datum->Application_Status);
+            $datum->Utility_Status = $this->getUtilityStatus($datum->Utility_Status);
             $datum->Street_Type = $this->getRoadType($datum->Street_Type);
             $datum->Customer_Type = $this->getCustomerType($datum->Customer_Type);
             $datum->Offer_Type = 'ENE';
             $datum->Tenancy_Type = $this->getTenancyType($datum->Tenancy_Type);
+            $datum->Utility_Commission = $this->getUtilityCommission($datum->Office_Id, $datum->Utility_Service);
             // $datum->Lead_Submitted_Date = $datum->Lead_Submitted_Date ?? 'NULL';
             // $datum->Unit_Number = $datum->Unit_Number ?? 'NULL';
             // $datum->Vendor_ID = $datum->Vendor_ID ?? 'NULL';
@@ -100,13 +102,13 @@ class ExportSubmissionReport
 
             $datum->Rejection_Reason = $this->getRejectionReason($datum->Service_Id, $datum->Utility_Service);
 
-            // unset($datum->Service_Id);
-            // unset($datum->Foxie_Agency_Name);
-            // unset($datum->Foxie_Agent_Name);
+            unset($datum->Office_Id);
+            unset($datum->Foxie_Agency_Name);
+            unset($datum->Foxie_Agent_Name);
             unset($datum->Assigned_To);
-            unset($datum->Application_Status);
+            // unset($datum->Application_Status);
 
-            if($this->allowedForExport($datum->Utility_Provider, $datum->Lead_Status)) {
+            if($this->allowedForExport($datum->Utility_Provider, $datum->UI_Status)) {
                 $this->leadsData[] = $datum;
             }
         }
@@ -127,6 +129,8 @@ class ExportSubmissionReport
                 ca.source as `Lead_Source`,
                 ca.first_name as `Customer_Firstname`,
                 ca.last_name as `Customer_Lastname`,
+                ca.office_id as `Office_Id`,
+                ca.status as `Utility_Commission`,
                 IFNULL(CONVERT_TZ(ca.created_at, '+00:00', '+10:00'), 'NULL') as `Lead_Created_Date`,
                 CONVERT_TZ(ca.moving_date, '+00:00', '+10:00') as `Connection_Date`,
                 IFNULL(CONVERT_TZ(cs.submitted_at, '+00:00', '+10:00'), 'NULL') as `Lead_Submitted_Date`,
@@ -143,16 +147,18 @@ class ExportSubmissionReport
                 IFNULL(ca.property_type,'NULL') as `Customer_Type`,
                 IFNULL(ca.status,'NULL') as `Offer_Type`,
                 IFNULL(ca.assigned_to,'NULL') as `Assigned_To`,
-                IFNULL(ca.status,'NULL') as `Application_Status`,
                 IFNULL(ca.tenancy_type,'NULL') as `Tenancy_Type`,
                 cs.lead_reference as `Lead_Reference`,
                 cs.provider_name as `Utility_Provider`,
                 cs.service_type as `Utility_Service`,
                 cs.plan_type as `Utility_Plan`,
                 cs.quote_reference as `Quote_ID`,
-                cs.status as `Lead_Status`,
                 IFNULL(sl.agency_name, 'NULL') as `Foxie_Agency_Name`,
-                IFNULL(sl.agent_name, 'NULL') as `Foxie_Agent_Name`
+                IFNULL(sl.agent_name, 'NULL') as `Foxie_Agent_Name`,
+                IFNULL(sl.foxie_lead_source_description, 'NULL') as `Foxie_Lead_Description`,
+                cs.status as `UI_Status`,
+                ca.status as `Application_Status`,
+                cs.status as `Utility_Status`
             ")
             ->rightJoin('connection_applications as ca', 'ca.id', '=', 'cs.connection_application_id')
             ->leftJoin('agencies as ag', 'ca.agency_id', '=', 'ag.id')
@@ -269,9 +275,9 @@ class ExportSubmissionReport
         return $state;
     }
 
-    private function getStatus($leadStatus, $serviceStatus, $assignedTo)
+    private function getUiStatus($applicationStatus, $serviceStatus, $assignedTo)
     {
-        if( (int) $leadStatus === ConnectionApplication::STATUS_CLOSED) {
+        if( (int) $applicationStatus === ConnectionApplication::STATUS_CLOSED) {
             return 'CLOSED';
         }
         elseif($serviceStatus === ConnectionService::STATUS_EA_PROCESSINF) {
@@ -280,10 +286,28 @@ class ExportSubmissionReport
         return GilbertStatusMapper::getStatusAsText($serviceStatus);
     }
 
+    private function getApplicationStatus($applicationStatus)
+    {
+        return GilbertStatusMapper::getApplicationStatusAsText($applicationStatus);
+    }
+
+    private function getUtilityStatus($utilityStatus)
+    {
+        return GilbertStatusMapper::getUtilityStatusAsText($utilityStatus);
+    }
+
     private function getRejectionReason($serviceId, $serviceType)
     {
         $reason = RejectionReason::where('connection_service_id', $serviceId)->first();
         return $reason  ?  $reason->reason_text : null;
+    }
+    
+    private function getUtilityCommission($officeId, $serviceType)
+    {
+        $serviceType = OfficeCommission::Type[$serviceType];
+
+        $commission = OfficeCommission::where(['office_id' => $officeId, 'type' => $serviceType])->first();
+        return $commission  ?  $commission->rate : 'NULL';
     }
 
     private function getCustomerType($customerType)
