@@ -304,6 +304,9 @@ class ExportSubmissionReport
     
     private function getUtilityCommission($officeId, $serviceType)
     {
+        if($officeId === null || $serviceType === null) {
+            return 'NULL';
+        }
         $serviceType = OfficeCommission::Type[$serviceType];
 
         $commission = OfficeCommission::where(['office_id' => $officeId, 'type' => $serviceType])->first();
