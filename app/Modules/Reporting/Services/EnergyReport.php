@@ -77,9 +77,19 @@ class EnergyReport
             ->whereNotNull('provider_name')
             ->whereIn('status', $this->submissionType)
             ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
+            ->when($this->dateType === 'submitted_date', function ($query) {
+                $query->where('submitted_at', '>=', $this->startDate);
+                $query->where('submitted_at', '<=', $this->endDate);
+            })
+            ->when($this->dateType === 'created_date', function ($query) {
+                $query->whereHas('connectionApplication', function ($q) {
+                    $q->where('created_at', '>=', $this->startDate);
+                    $q->where('created_at', '<=', $this->endDate);
+                });
+            })
             ->whereHas('connectionApplication', function ($query) {
-                $query->where('created_at', '>=', $this->startDate);
-                $query->where('created_at', '<=', $this->endDate);
+                // $query->where('created_at', '>=', $this->startDate);
+                // $query->where('created_at', '<=', $this->endDate);
                 $query->whereNotIn('status', $this->closedType);
             })
             // ->where('updated_at', '>=', $this->startDate)
@@ -96,9 +106,19 @@ class EnergyReport
             ->whereNotNull('provider_name')
             ->whereIn('status', $this->waitingConnectionType)
             ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
+            ->when($this->dateType === 'submitted_date', function ($query) {
+                $query->where('submitted_at', '>=', $this->startDate);
+                $query->where('submitted_at', '<=', $this->endDate);
+            })
+            ->when($this->dateType === 'created_date', function ($query) {
+                $query->whereHas('connectionApplication', function ($q) {
+                    $q->where('created_at', '>=', $this->startDate);
+                    $q->where('created_at', '<=', $this->endDate);
+                });
+            })
             ->whereHas('connectionApplication', function ($query) {
-                $query->where('created_at', '>=', $this->startDate);
-                $query->where('created_at', '<=', $this->endDate);
+                // $query->where('created_at', '>=', $this->startDate);
+                // $query->where('created_at', '<=', $this->endDate);
                 $query->whereNotIn('status', $this->closedType);
             })
             // ->where('updated_at', '>=', $this->startDate)
@@ -113,9 +133,19 @@ class EnergyReport
         return ConnectionService::whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
             ->whereNotNull('provider_name')
             ->whereIn('status', $this->acManualProcessing)
+            ->when($this->dateType === 'submitted_date', function ($query) {
+                $query->where('submitted_at', '>=', $this->startDate);
+                $query->where('submitted_at', '<=', $this->endDate);
+            })
+            ->when($this->dateType === 'created_date', function ($query) {
+                $query->whereHas('connectionApplication', function ($q) {
+                    $q->where('created_at', '>=', $this->startDate);
+                    $q->where('created_at', '<=', $this->endDate);
+                });
+            })
             ->whereHas('connectionApplication', function ($query) {
-                $query->where('created_at', '>=', $this->startDate);
-                $query->where('created_at', '<=', $this->endDate);
+                // $query->where('created_at', '>=', $this->startDate);
+                // $query->where('created_at', '<=', $this->endDate);
                 $query->whereNotIn('status', $this->closedType);
             })
             // ->where('updated_at', '>=', $this->startDate)
@@ -130,9 +160,19 @@ class EnergyReport
             ->whereNotNull('provider_name')
             ->whereIn('status', $this->connectedType)
             ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
+            ->when($this->dateType === 'submitted_date', function ($query) {
+                $query->where('submitted_at', '>=', $this->startDate);
+                $query->where('submitted_at', '<=', $this->endDate);
+            })
+            ->when($this->dateType === 'created_date', function ($query) {
+                $query->whereHas('connectionApplication', function ($q) {
+                    $q->where('created_at', '>=', $this->startDate);
+                    $q->where('created_at', '<=', $this->endDate);
+                });
+            })
             ->whereHas('connectionApplication', function ($query) {
-                $query->where('created_at', '>=', $this->startDate);
-                $query->where('created_at', '<=', $this->endDate);
+                // $query->where('created_at', '>=', $this->startDate);
+                // $query->where('created_at', '<=', $this->endDate);
                 $query->whereNotIn('status', $this->closedType);
             })
             // ->where('updated_at', '>=', $this->startDate)
@@ -149,9 +189,19 @@ class EnergyReport
             ->whereNotNull('provider_name')
             ->whereIn('status', $this->rejectedType)
             ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
+            ->when($this->dateType === 'submitted_date', function ($query) {
+                $query->where('submitted_at', '>=', $this->startDate);
+                $query->where('submitted_at', '<=', $this->endDate);
+            })
+            ->when($this->dateType === 'created_date', function ($query) {
+                $query->whereHas('connectionApplication', function ($q) {
+                    $q->where('created_at', '>=', $this->startDate);
+                    $q->where('created_at', '<=', $this->endDate);
+                });
+            })
             ->whereHas('connectionApplication', function ($query) {
-                $query->where('created_at', '>=', $this->startDate);
-                $query->where('created_at', '<=', $this->endDate);
+                // $query->where('created_at', '>=', $this->startDate);
+                // $query->where('created_at', '<=', $this->endDate);
                 $query->whereNotIn('status', $this->closedType);
             })
             // ->where('updated_at', '>=', $this->startDate)
@@ -168,9 +218,19 @@ class EnergyReport
             ->whereNotNull('provider_name')
             ->whereIn('status', $this->rejectedType)
             ->whereIn('service_type', [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])
+            ->when($this->dateType === 'submitted_date', function ($query) {
+                $query->where('submitted_at', '>=', $this->startDate);
+                $query->where('submitted_at', '<=', $this->endDate);
+            })
+            ->when($this->dateType === 'created_date', function ($query) {
+                $query->whereHas('connectionApplication', function ($q) {
+                    $q->where('created_at', '>=', $this->startDate);
+                    $q->where('created_at', '<=', $this->endDate);
+                });
+            })
             ->whereHas('connectionApplication', function ($query) {
-                $query->where('created_at', '>=', $this->startDate);
-                $query->where('created_at', '<=', $this->endDate);
+                // $query->where('created_at', '>=', $this->startDate);
+                // $query->where('created_at', '<=', $this->endDate);
                 $query->whereNotIn('status', $this->closedType);
             })
             // ->where('updated_at', '>=', $this->startDate)
