@@ -108,7 +108,8 @@ class ExportSubmissionReport
             unset($datum->Assigned_To);
             // unset($datum->Application_Status);
 
-            if($this->allowedForExport($datum->Utility_Provider, $datum->UI_Status)) {
+            if($this->allowedForExport($datum->Utility_Provider, $datum->UI_Status, $datum->Foxie_Connect_Id)) {
+                unset($datum->Foxie_Connect_Id);
                 $this->leadsData[] = $datum;
             }
         }
@@ -156,6 +157,7 @@ class ExportSubmissionReport
                 IFNULL(sl.agency_name, 'NULL') as `Foxie_Agency_Name`,
                 IFNULL(sl.agent_name, 'NULL') as `Foxie_Agent_Name`,
                 IFNULL(sl.foxie_lead_source_description, 'NULL') as `Foxie_Lead_Description`,
+                IFNULL(sl.compare_connect_id, 'NULL') as `Foxie_Connect_Id`,
                 cs.status as `UI_Status`,
                 ca.status as `Application_Status`,
                 cs.status as `Utility_Status`
@@ -333,11 +335,14 @@ class ExportSubmissionReport
         }
     }
 
-    private function allowedForExport($serviceProvider, $serviceStatus)
+    private function allowedForExport($serviceProvider, $serviceStatus, $foxieConnectID)
     {
         $nonEmptyProviders = ['IN_PROGRESS', 'MANUAL_PROCESSING', 'ACCEPTED', 'REJECTED'];
 
         if(in_array($serviceStatus, $nonEmptyProviders) && $serviceProvider === null) {
+            return false;
+        }
+        if($foxieConnectID !== null && $foxieConnectID !== 'NULL' && $foxieConnectID !== 'N/A') {
             return false;
         }
         return true;
