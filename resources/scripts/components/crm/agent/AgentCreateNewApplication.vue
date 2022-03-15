@@ -823,7 +823,7 @@
                                             dense
                                             :disabled="!application.mannual_address"
                                             placeholder="2/56, Bradman Drive"
-                                            v-model="application.street_name"
+                                            v-model="application.street_name_only"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
                                     </ValidationProvider>
@@ -960,7 +960,7 @@
                                             dense
                                             :disabled="!application.billing_mannual_address"
                                             placeholder="2/56, Bradman Drive"
-                                            v-model="application.billing_street_name"
+                                            v-model="application.billing_street_name_only"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
                                     </ValidationProvider>
@@ -1290,6 +1290,7 @@ export default {
             this.application.billing_state = null;
             this.application.billing_street_number = null;
             this.application.billing_unit_number = null;
+            this.application.billing_street_name_only = null;
             this.application.billing_street_name = null;
             this.application.billing_street_type = null;
             this.application.billing_mannual_address = true;
@@ -1305,8 +1306,8 @@ export default {
             this.application.state_short = null;
             this.application.street_number = null;
             this.application.unit_number = null;
-            this.application.street_name = null;
             this.application.street_name_only = null;
+            this.application.street_name = null;
             this.application.street_type = null;
             this.application.mannual_address = true;
             
@@ -1330,7 +1331,7 @@ export default {
                 .then((data) => {
                     this.application = { ...this.application, ...data }
                     let unit_number = isEmpty(this.application.unit_number) ? "" : this.application.unit_number + " /";
-                    this.application.street_address = unit_number + ' ' + this.application.street_number + ' ' + this.application.street_name;
+                    this.application.street_address = unit_number + ' ' + this.application.street_number + ' ' + this.application.street_name_only;
                     this.selectAddress();
                 });
         },
@@ -1342,7 +1343,7 @@ export default {
                  
                     this.application.billing_unit_number = data.unit_number 
                     this.application.billing_street_number = data.street_number
-                    this.application.billing_street_name = data.street_name
+                    this.application.billing_street_name_only = data.street_name_only
                     this.application.billing_address_text = data.address_text
                     this.application.billing_state = data.state
                     this.application.billing_street_type = data.street_type
@@ -1352,7 +1353,7 @@ export default {
                     this.application.billing_postcode = data.postcode
 
                     let unit_number = isEmpty(this.application.unit_number) ? "" : this.application.unit_number + " /";
-                    this.application.billing_street_address = unit_number + ' ' + this.application.billing_street_number + ' ' + this.application.billing_street_name;
+                    this.application.billing_street_address = unit_number + ' ' + this.application.billing_street_number + ' ' + this.application.billing_street_name_only;
 
 
                     this.selectBillingAddress();

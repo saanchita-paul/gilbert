@@ -88,7 +88,7 @@
                                         dense
                                         :disabled="!propertyDetails.mannual_address"
                                         placeholder="2/56, Bradman Drive"
-                                        v-model="propertyDetails.street_name"
+                                        v-model="propertyDetails.street_name_only"
                                         :error-messages=" errors[0]"
                                     ></v-text-field>
                                 </ValidationProvider>
@@ -227,7 +227,7 @@
                                             dense
                                             :disabled="!propertyDetails.billing_mannual_address"
                                             placeholder="2/56, Bradman Drive"
-                                            v-model="propertyDetails.billing_street_name"
+                                            v-model="propertyDetails.billing_street_name_only"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
                                     </ValidationProvider>
@@ -421,6 +421,7 @@ export default {
             this.propertyDetails.billing_street_number = null;
             this.propertyDetails.billing_unit_number = null;
             this.propertyDetails.billing_street_name = null;
+            this.propertyDetails.billing_street_name_only = null;
             this.propertyDetails.billing_street_type = null;
             this.propertyDetails.billing_mannual_address = true;
         },
@@ -466,6 +467,7 @@ export default {
                         this.propertyDetails.billing_unit_number = data.unit_number, 
                         this.propertyDetails.billing_street_number = data.street_number,
                         this.propertyDetails.billing_street_name = data.street_name,
+                        this.propertyDetails.billing_street_name_only = data.street_name_only,
                         this.propertyDetails.billing_address_text = data.address_text,
                         this.billing_search_address_text = data.address_text,
                         this.propertyDetails.billing_country = data.country,
@@ -515,20 +517,21 @@ export default {
         this.propertyDetails.billing_street_number = '';
         this.propertyDetails.billing_unit_number ='';
         this.propertyDetails.billing_street_name = '';
+        this.propertyDetails.billing_street_name_only = '';
       },
 
       setAddressTextAndStreetAddress(){
           let unit_number = isEmpty(this.propertyDetails.unit_number) ? "" : this.propertyDetails.unit_number + " /";
-          this.propertyDetails.street_address = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name;
+          this.propertyDetails.street_address = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name_only;
           if(this.propertyDetails.mannual_address){
-              this.propertyDetails.address_text = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name + ' ' + this.propertyDetails.city + ' ' + this.propertyDetails.state + ' ' + this.propertyDetails.postcode + ' ' + this.propertyDetails.country ;
+              this.propertyDetails.address_text = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name_only + ' ' + this.propertyDetails.city + ' ' + this.propertyDetails.state + ' ' + this.propertyDetails.postcode + ' ' + this.propertyDetails.country ;
           }
           
           unit_number = isEmpty(this.propertyDetails.billing_unit_number) ? "" : this.propertyDetails.billing_unit_number + " /";
-          this.propertyDetails.billing_street_address = unit_number + ' ' + this.propertyDetails.billing_street_number + ' ' + this.propertyDetails.billing_street_name;
+          this.propertyDetails.billing_street_address = unit_number + ' ' + this.propertyDetails.billing_street_number + ' ' + this.propertyDetails.billing_street_name_only;
           if(this.propertyDetails.billing_mannual_address){
               let unit_number = isEmpty(this.propertyDetails.billing_unit_number) ? "" : this.propertyDetails.billing_unit_number + " /";
-              this.propertyDetails.billing_address_text = unit_number + ' ' + this.propertyDetails.billing_street_number + ' ' + this.propertyDetails.billing_street_name + ' ' + ' ' + this.propertyDetails.billing_city + this.propertyDetails.billing_state + ' ' + this.propertyDetails.billing_postcode + ' ' + this.propertyDetails.billing_country;
+              this.propertyDetails.billing_address_text = unit_number + ' ' + this.propertyDetails.billing_street_number + ' ' + this.propertyDetails.billing_street_name_only + ' ' + ' ' + this.propertyDetails.billing_city + this.propertyDetails.billing_state + ' ' + this.propertyDetails.billing_postcode + ' ' + this.propertyDetails.billing_country;
           }
       },
     

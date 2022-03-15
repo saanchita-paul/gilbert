@@ -62,6 +62,7 @@ export default class GBGModel {
             street_number : this.streetNumber,
             unit_number : this.flatUnitNumber,
             street_name : this.streetName,
+            street_name_only : this.streetName,
             street_type : this.streetType,
         }
     }
