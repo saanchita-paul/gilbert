@@ -394,14 +394,16 @@
           <span>Billing Address</span>
         </div>
         <div class="text-field">
-          <span>Same as my billing address</span>
-          <!--                    <ValidationProvider name="Billing Address" rules="required"  v-slot="{ errors }">-->
-          <!--                        <v-text-field v-model="property_details.billing_address" @input="updateLeads"-->
-          <!--                        outlined-->
-          <!--                        dense-->
-          <!--                        hide-details="auto" :error-messages=" errors[0]"-->
-          <!--                    ></v-text-field>-->
-          <!--                    </ValidationProvider>-->
+          <!-- <span>Same as my billing address</span> -->
+          <ValidationProvider name="Billing Address"  v-slot="{ errors }">
+              <v-textarea :value="billingAddressMsg"
+              @click="openServiceAddress"
+              outlined
+              dense
+              readonly
+              hide-details="auto" :error-messages=" errors[0]"
+          ></v-textarea>
+          </ValidationProvider> 
         </div>
       </div>
       <div class="crm-text-field">
@@ -1426,6 +1428,9 @@ export default {
   },
 
     computed: {
+      billingAddressMsg(){
+        return this.property_details.is_billing_same ? "Same as service address" : this.property_details.billing_address_text;
+      },
       isNMIRequired() {
         return  ( Array.isArray(this.services) && this.services.some(n=>n=='power') ) ?
                 true : false ;
