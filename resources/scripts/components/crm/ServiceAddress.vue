@@ -60,7 +60,7 @@
                                         label="Unit No"
                                         outlined
                                         dense
-                                        :disabled="!propertyDetails.mannual_address"
+                                        :readonly="!propertyDetails.mannual_address"
                                         placeholder="Unit No"
                                         v-model="propertyDetails.unit_number"
                                         :error-messages=" errors[0]"
@@ -73,7 +73,7 @@
                                         label="Street No.*"
                                         outlined
                                         dense
-                                        :disabled="!propertyDetails.mannual_address"
+                                        :readonly="!propertyDetails.mannual_address"
                                         placeholder="Street Number"
                                         v-model="propertyDetails.street_number"
                                         :error-messages=" errors[0]"
@@ -86,7 +86,7 @@
                                         label="Street Name.*"
                                         outlined
                                         dense
-                                        :disabled="!propertyDetails.mannual_address"
+                                        :readonly="!propertyDetails.mannual_address"
                                         placeholder="2/56, Bradman Drive"
                                         v-model="propertyDetails.street_name_only"
                                         :error-messages=" errors[0]"
@@ -98,7 +98,7 @@
                                     <v-select outlined dense
                                               v-model="propertyDetails.street_type"
                                               :items="street_type"
-                                              :disabled="!propertyDetails.mannual_address"
+                                              :readonly="!propertyDetails.mannual_address"
                                               label="Street Type*"
                                               :error-messages=" errors[0]"
                                               placeholder="Please Select">
@@ -111,7 +111,7 @@
                                         label="City/Suburb*"
                                         outlined
                                         dense
-                                        :disabled="!propertyDetails.mannual_address"
+                                        :readonly="!propertyDetails.mannual_address"
                                         placeholder="Sunbury"
                                         v-model="propertyDetails.city"
                                         :error-messages=" errors[0]"
@@ -123,7 +123,7 @@
                                     <v-select outlined dense
                                               v-model="propertyDetails.state"
                                               :items="states"
-                                              :disabled="!propertyDetails.mannual_address"
+                                              :readonly="!propertyDetails.mannual_address"
                                               label="State/Territory*"
                                               :error-messages=" errors[0]"
                                               placeholder="Please Select">
@@ -136,7 +136,7 @@
                                         label="Postcode*"
                                         outlined
                                         dense
-                                        :disabled="!propertyDetails.mannual_address"
+                                        :readonly="!propertyDetails.mannual_address"
                                         placeholder="3429"
                                         v-model="propertyDetails.postcode"
                                         :error-messages=" errors[0]"
@@ -199,7 +199,7 @@
                                             label="Unit No"
                                             outlined
                                             dense
-                                            :disabled="!propertyDetails.billing_mannual_address"
+                                            :readonly="!propertyDetails.billing_mannual_address"
                                             placeholder="Unit No"
                                             v-model="propertyDetails.billing_unit_number"
                                             :error-messages=" errors[0]"
@@ -212,7 +212,7 @@
                                             label="Street No.*"
                                             outlined
                                             dense
-                                            :disabled="!propertyDetails.billing_mannual_address"
+                                            :readonly="!propertyDetails.billing_mannual_address"
                                             placeholder="Street No"
                                             v-model="propertyDetails.billing_street_number"
                                             :error-messages=" errors[0]"
@@ -225,7 +225,7 @@
                                             label="Street Name.*"
                                             outlined
                                             dense
-                                            :disabled="!propertyDetails.billing_mannual_address"
+                                            :readonly="!propertyDetails.billing_mannual_address"
                                             placeholder="2/56, Bradman Drive"
                                             v-model="propertyDetails.billing_street_name_only"
                                             :error-messages=" errors[0]"
@@ -237,7 +237,7 @@
                                         <v-select outlined dense
                                                   v-model="propertyDetails.billing_street_type"
                                                   :items="street_type"
-                                                  :disabled="!propertyDetails.billing_mannual_address"
+                                                  :readonly="!propertyDetails.billing_mannual_address"
                                                   label="Street Type*"
                                                   :error-messages=" errors[0]"
                                                   placeholder="Please Select">
@@ -250,7 +250,7 @@
                                             label="City/Suburb*"
                                             outlined
                                             dense
-                                            :disabled="!propertyDetails.billing_mannual_address"
+                                            :readonly="!propertyDetails.billing_mannual_address"
                                             placeholder="Sunbury"
                                             v-model="propertyDetails.billing_city"
                                             :error-messages=" errors[0]"
@@ -262,7 +262,7 @@
                                         <v-select outlined dense
                                                   v-model="propertyDetails.billing_state"
                                                   :items="states"
-                                                  :disabled="!propertyDetails.billing_mannual_address"
+                                                  :readonly="!propertyDetails.billing_mannual_address"
                                                   label="State/Territory*"
                                                   :error-messages=" errors[0]"
                                                   placeholder="Please Select">
@@ -275,7 +275,7 @@
                                             label="Postcode*"
                                             outlined
                                             dense
-                                            :disabled="!propertyDetails.billing_mannual_address"
+                                            :readonly="!propertyDetails.billing_mannual_address"
                                             placeholder="3429"
                                             v-model="propertyDetails.billing_postcode"
                                             :error-messages=" errors[0]"
@@ -445,6 +445,7 @@ export default {
         },
         newAddressBilling(){
             this.showSearchFieldsBilling = false;
+            this.billing_search_address_text = null;
             this.propertyDetails.billing_mannual_address = false;
             this.propertyDetails.billing_address_text = null;
             this.searchResultBilling = [];
@@ -520,28 +521,68 @@ export default {
         this.propertyDetails.billing_street_name_only = '';
       },
 
-      setAddressTextAndStreetAddress(){
-          let unit_number = isEmpty(this.propertyDetails.unit_number) ? "" : this.propertyDetails.unit_number + " /";
-          this.propertyDetails.street_address = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name_only;
-          if(this.propertyDetails.mannual_address){
-              this.propertyDetails.address_text = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name_only + ' ' + this.propertyDetails.city + ' ' + this.propertyDetails.state + ' ' + this.propertyDetails.postcode + ' ' + this.propertyDetails.country ;
+      checkIfAddressIsValid(){
+
+          if(!this.propertyDetails.is_billing_same && 
+            (
+              this.propertyDetails.billing_street_number == null || this.propertyDetails.billing_street_number == "" || 
+              this.propertyDetails.billing_street_name_only == null || this.propertyDetails.billing_street_name_only == "" ||
+              this.propertyDetails.billing_street_type == null || this.propertyDetails.billing_street_type == "" ||
+              this.propertyDetails.billing_state == null || this.propertyDetails.billing_state == "" ||
+              this.propertyDetails.billing_city == null || this.propertyDetails.billing_city == "" ||
+              this.propertyDetails.billing_postcode == null || this.propertyDetails.billing_postcode == ""
+            ))
+          {
+              return false;
+          } else if(
+              this.propertyDetails.street_number == null || this.propertyDetails.street_number == "" || 
+              this.propertyDetails.street_name_only == null || this.propertyDetails.street_name_only == "" ||
+              this.propertyDetails.street_type == null || this.propertyDetails.street_type == "" ||
+              this.propertyDetails.state == null || this.propertyDetails.state == "" ||
+              this.propertyDetails.city == null || this.propertyDetails.city == "" ||
+              this.propertyDetails.postcode == null || this.propertyDetails.postcode == ""
+             )
+          {
+             return false;
           }
-          
-          unit_number = isEmpty(this.propertyDetails.billing_unit_number) ? "" : this.propertyDetails.billing_unit_number + " /";
+          return true;
+      },
+
+      setAddressTextAndStreetAddress()
+      {
+
+          if(!this.checkIfAddressIsValid())
+          {
+              console.log("invalid address");
+             this.propertyDetails.address_text = "";
+             return;
+          }
+
+          let unit_number = isEmpty(this.propertyDetails.billing_unit_number) ? "" : this.propertyDetails.billing_unit_number + " /";
           this.propertyDetails.billing_street_address = unit_number + ' ' + this.propertyDetails.billing_street_number + ' ' + this.propertyDetails.billing_street_name_only;
-          if(this.propertyDetails.billing_mannual_address){
+          if(this.propertyDetails.billing_mannual_address || this.propertyDetails.billing_address_text == "" )
+          {
               let unit_number = isEmpty(this.propertyDetails.billing_unit_number) ? "" : this.propertyDetails.billing_unit_number + " /";
               this.propertyDetails.billing_address_text = unit_number + ' ' + this.propertyDetails.billing_street_number + ' ' + this.propertyDetails.billing_street_name_only + ' ' + ' ' + this.propertyDetails.billing_city + this.propertyDetails.billing_state + ' ' + this.propertyDetails.billing_postcode + ' ' + this.propertyDetails.billing_country;
           }
+          unit_number = isEmpty(this.propertyDetails.unit_number) ? "" : this.propertyDetails.unit_number + " /";
+          this.propertyDetails.street_address = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name_only;
+          if(this.propertyDetails.mannual_address || this.propertyDetails.address_text == "" ){
+              this.propertyDetails.address_text = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name_only + ' ' + this.propertyDetails.city + ' ' + this.propertyDetails.state + ' ' + this.propertyDetails.postcode + ' ' + this.propertyDetails.country ;
+          }
+          
+          
       },
     
-     checkAddressText(){
+     checkAddressText()
+     {
         if(this.propertyDetails.address_text  == null){
             return false;
         }
         return true;
      },
-      async onSubmit() {
+      async onSubmit() 
+      {
 
           console.log(this.propertyDetails)
           // return;

@@ -303,7 +303,7 @@ export default {
 
         async updateAddress(address) {
             console.log('comes to update address' , address);
-            if(this.leadSummary.address_text == address.address_text && this.leadSummary.billing_address_text == address.billing_address_text ) return;
+            // if(this.leadSummary.address_text == address.address_text && this.leadSummary.billing_address_text == address.billing_address_text ) return;
             console.log('entered')
             this.leadSummary.address_text = address.address_text
             this.leadSummary.street_address = address.street_address
