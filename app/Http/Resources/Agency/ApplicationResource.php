@@ -91,6 +91,12 @@ class ApplicationResource extends JsonResource
             'street_type' => $this->street_type,
             'mannual_address' => $this->mannual_address,
 
+            'billing_mannual_address' => $this->billing_mannual_address,
+            'billing_state_short' => $this->billing_state_short,
+            'billing_street_name_only' => $this->billing_street_name_only,
+            'is_address_complete' => $this->is_address_complete,
+            'billing_is_address_complete' => $this->billing_is_address_complete,
+
             #todo: set timezone dynamically based on daylight saving
             'created_at' => (new Carbon($this->created_at, '11'))->format('d/m/Y h:m a'),
             'submitted_by' => $this->submittedBy(),

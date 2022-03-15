@@ -123,6 +123,10 @@ export default class ApplicationSummary {
             connection_end_date = null,
             mannual_address = false,
             street_type = null,
+            billing_state_short = null,
+            billing_street_name_only = null,
+            is_address_complete = null,
+            billing_is_address_complete = null,
 
         }
     ) {
@@ -197,11 +201,17 @@ export default class ApplicationSummary {
         this.street_type = street_type
         this.state_short = state_short
         this.street_name_only = street_name_only
+
+        this.billing_state_short = billing_state_short
+        this.billing_street_name_only = billing_street_name_only
+        this.is_address_complete = is_address_complete
+        this.billing_is_address_complete = billing_is_address_complete
     }
 
     mapStatus(status) {
         status = status - 1;
         if (status < 0) return '';
+
         const statusList = ['Unassigned', 'Assigned', 'Escalated', 'Submitted', 'Accepted', 'Rejected', 'Inprogress', 'Closed'];
         return statusList[status];
     }

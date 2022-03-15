@@ -189,6 +189,12 @@ class ConnectionApplication extends Model
         'billing_state',
         'billing_street_type',
         'mannual_address',
+
+        'billing_mannual_address',
+        'billing_state_short',
+        'billing_street_name_only',
+        'is_address_complete',
+        'billing_is_address_complete',
     ];
 
 
