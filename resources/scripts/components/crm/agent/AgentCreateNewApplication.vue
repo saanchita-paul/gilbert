@@ -795,7 +795,7 @@
                                             label="Unit No"
                                             outlined
                                             dense
-                                            :disabled="!application.mannual_address"
+                                            :readonly="!application.mannual_address"
                                             placeholder="Unit No"
                                             v-model="application.unit_number"
                                             :error-messages=" errors[0]"
@@ -808,7 +808,7 @@
                                             label="Street No.*"
                                             outlined
                                             dense
-                                            :disabled="!application.mannual_address"
+                                            :readonly="!application.mannual_address"
                                             placeholder="2/56, Bradman Drive"
                                             v-model="application.street_number"
                                             :error-messages=" errors[0]"
@@ -821,7 +821,7 @@
                                             label="Street Name.*"
                                             outlined
                                             dense
-                                            :disabled="!application.mannual_address"
+                                            :readonly="!application.mannual_address"
                                             placeholder="2/56, Bradman Drive"
                                             v-model="application.street_name_only"
                                             :error-messages=" errors[0]"
@@ -833,7 +833,7 @@
                                         <v-select outlined dense
                                                   v-model="application.street_type"
                                                   :items="street_type"
-                                                  :disabled="!application.mannual_address"
+                                                  :readonly="!application.mannual_address"
                                                   label="Street Type*"
                                                   :error-messages=" errors[0]"
                                                   placeholder="Please Select">
@@ -846,7 +846,7 @@
                                             label="City/Suburb*"
                                             outlined
                                             dense
-                                            :disabled="!application.mannual_address"
+                                            :readonly="!application.mannual_address"
                                             placeholder="Sunbury"
                                             v-model="application.city"
                                             :error-messages=" errors[0]"
@@ -858,7 +858,7 @@
                                         <v-select outlined dense
                                                   v-model="application.state"
                                                   :items="states"
-                                                  :disabled="!application.mannual_address"
+                                                  :readonly="!application.mannual_address"
                                                   label="State/Territory*"
                                                   :error-messages=" errors[0]"
                                                   placeholder="Please Select">
@@ -871,7 +871,7 @@
                                             label="Postcode*"
                                             outlined
                                             dense
-                                            :disabled="!application.mannual_address"
+                                            :readonly="!application.mannual_address"
                                             placeholder="3429"
                                             v-model="application.postcode"
                                             :error-messages=" errors[0]"
@@ -932,7 +932,7 @@
                                             label="Unit No"
                                             outlined
                                             dense
-                                            :disabled="!application.billing_mannual_address"
+                                            :readonly="!application.billing_mannual_address"
                                             placeholder="Unit No"
                                             v-model="application.billing_unit_number"
                                             :error-messages=" errors[0]"
@@ -945,7 +945,7 @@
                                             label="Street No.*"
                                             outlined
                                             dense
-                                            :disabled="!application.billing_mannual_address"
+                                            :readonly="!application.billing_mannual_address"
                                             placeholder="2/56, Bradman Drive"
                                             v-model="application.billing_street_number"
                                             :error-messages=" errors[0]"
@@ -958,7 +958,7 @@
                                             label="Street Name.*"
                                             outlined
                                             dense
-                                            :disabled="!application.billing_mannual_address"
+                                            :readonly="!application.billing_mannual_address"
                                             placeholder="2/56, Bradman Drive"
                                             v-model="application.billing_street_name_only"
                                             :error-messages=" errors[0]"
@@ -970,7 +970,7 @@
                                         <v-select outlined dense
                                                   v-model="application.billing_street_type"
                                                   :items="street_type"
-                                                  :disabled="!application.billing_mannual_address"
+                                                  :readonly="!application.billing_mannual_address"
                                                   label="Street Type*"
                                                   :error-messages=" errors[0]"
                                                   placeholder="Please Select">
@@ -983,7 +983,7 @@
                                             label="City/Suburb*"
                                             outlined
                                             dense
-                                            :disabled="!application.billing_mannual_address"
+                                            :readonly="!application.billing_mannual_address"
                                             placeholder="Sunbury"
                                             v-model="application.billing_city"
                                             :error-messages=" errors[0]"
@@ -995,7 +995,7 @@
                                         <v-select outlined dense
                                                   v-model="application.billing_state"
                                                   :items="states"
-                                                  :disabled="!application.billing_mannual_address"
+                                                  :readonly="!application.billing_mannual_address"
                                                   label="State/Territory*"
                                                   :error-messages=" errors[0]"
                                                   placeholder="Please Select">
@@ -1008,7 +1008,7 @@
                                             label="Postcode*"
                                             outlined
                                             dense
-                                            :disabled="!application.billing_mannual_address"
+                                            :readonly="!application.billing_mannual_address"
                                             placeholder="3429"
                                             v-model="application.billing_postcode"
                                             :error-messages=" errors[0]"
@@ -1040,28 +1040,28 @@
                     <v-col cols="3">
                         <div class="leade-badge text-center service-radius" :class="service_types.power ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('power')">
                             <h4 :class="service_types.power ? 'enabled' : 'disabled'">Power</h4>
-                            <v-icon :disabled="!service_types.power" color="yellow">mdi-flash</v-icon>
+                            <v-icon :readonly="!service_types.power" color="yellow">mdi-flash</v-icon>
                         </div>
                     </v-col>
 
                     <v-col cols="3">
                         <div class="leade-badge text-center service-radius" :class="service_types.gas ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('gas')">
                             <h4 :class="service_types.gas ? 'enabled' : 'disabled'">Gas</h4>
-                            <v-icon :disabled="!service_types.gas" color="orange">mdi-fire</v-icon>
+                            <v-icon :readonly="!service_types.gas" color="orange">mdi-fire</v-icon>
                         </div>
                     </v-col>
 
                     <v-col cols="3">
                         <div class="leade-badge text-center service-radius" :class="service_types.water ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('water')">
                             <h4 :class="service_types.water ? 'enabled' : 'disabled'">Water</h4>
-                            <v-icon :disabled="!service_types.water" color="blue">mdi-water</v-icon>
+                            <v-icon :readonly="!service_types.water" color="blue">mdi-water</v-icon>
                         </div>
                     </v-col>
 
                     <v-col cols="3">
                         <div class="leade-badge text-center service-radius" :class="service_types.internet ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('internet')">
                             <h4 :class="service_types.internet ? 'enabled' : 'disabled'">Internet</h4>
-                            <v-icon :disabled="!service_types.internet" color="#9C27B0">mdi-wifi</v-icon>
+                            <v-icon :readonly="!service_types.internet" color="#9C27B0">mdi-wifi</v-icon>
                         </div>
                     </v-col>
 
@@ -1078,7 +1078,7 @@
 
                     <v-col cols="12">
                         <div class="d-flex  flex-row-reverse">
-                            <v-btn @click="onSubmit" :disabled="isUserActive" :loading="loadSubmit" color="primary">Submit</v-btn>
+                            <v-btn @click="onSubmit" :readonly="isUserActive" :loading="loadSubmit" color="primary">Submit</v-btn>
                             <v-btn @click="onCancel" class="mx-4">Cancel</v-btn>
                         </div>
                     </v-col>
