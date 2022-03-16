@@ -29,9 +29,10 @@
                                     outlined
                                     dense
                                     :items="titlesDD"
+                                    label="Title*"
                                     v-model="application.title"
                                     :error-messages="errors[0]"
-                                    placeholder="Please choose one"
+                                    placeholder="Please select"
                             >
                             </v-select>
                         </ValidationProvider>
@@ -385,7 +386,7 @@
                                                       :items="idenficationTypeDD"
                                                       item-text="text"
                                                       item-value="value"
-                                                      :label="`Id Type`"
+                                                      :label="`Identifcation Type`"
                                                       :error-messages=" errors[0]"
                                                       placeholder="Please select one">
                                             </v-select>
@@ -840,7 +841,7 @@
 
 
 
-
+<!-- 
                     <v-col cols="12" class="pb-0">
                         <p class="sub-title mb-0">Service Interests</p>
                     </v-col>
@@ -871,7 +872,7 @@
                             <h4 :class="service_types.internet ? 'enabled' : 'disabled'">Internet</h4>
                             <v-icon :disabled="!service_types.internet" color="#9C27B0">mdi-wifi</v-icon>
                         </div>
-                    </v-col>
+                    </v-col> -->
 
                     <v-col cols="12" class="pb-0">
                         <p class="sub-title  mt-5">Additional Instructions</p>

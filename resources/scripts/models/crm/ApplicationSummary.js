@@ -70,7 +70,7 @@ export default class ApplicationSummary {
             homephone = null,
             inspection_time = null,
             has_electricity = 1,
-            phone_type = 1,
+            phone_type = null,
             email = null,
             moving_date = null,
             family_violance = 3,
