@@ -409,12 +409,21 @@
 
 
 
-<!-- 
+
                         <v-col cols="12">
                             <v-row>
                                 <v-col cols="10">
                                     <p class="font-weight-bold mb-0">Service Interests</p>
                                     <v-row>
+
+<!--                                        <v-col cols="3">-->
+<!--                                            <div class="leade-badge text-center service-radius" :class="application.service_interests.includes('power') ? 'div_enabled' : 'div_disabled' ">-->
+<!--                                                <h4 :class="application.service_interests.includes('power') ? 'enabled' : 'disabled'">Power</h4>-->
+<!--                                                <v-icon :disabled="!application.service_interests.includes('power')" color="yellow">mdi-flash</v-icon>-->
+<!--                                            </div>-->
+<!--                                        </v-col>-->
+
+
 
                                         <v-col cols="3" class="px-1">
                                             <div class="leade-badge text-center elevation-3"
@@ -459,7 +468,7 @@
                                 </v-col>
                             </v-row>
 
-                        </v-col> -->
+                        </v-col>
 
                     </v-row>
                 </v-col>
