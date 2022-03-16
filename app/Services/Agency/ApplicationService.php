@@ -89,6 +89,7 @@ class ApplicationService
         $existingApplication->address_text = $address['address_text'];
         $existingApplication->street_address = $address['street_address'];
         $existingApplication->street_name = $address['street_name'];
+        $existingApplication->street_name_only = $address['street_name_only'];
         $existingApplication->unit_number = $address['unit_number'];
         $existingApplication->street_type = $address['street_type'];
         $existingApplication->street_number = $address['street_number'];
@@ -112,7 +113,8 @@ class ApplicationService
             $existingApplication->billing_unit_number = $address['billing_unit_number'];
             $existingApplication->billing_street_type = $address['billing_street_type'];
             $existingApplication->billing_street_address = $address['billing_street_address'];
-            $existingApplication->billing_street_name = $address['billing_street_name_only'];
+            $existingApplication->billing_street_name = $address['billing_street_name'];
+            $existingApplication->billing_street_name_only = $address['billing_street_name_only'];
             $existingApplication->billing_street_number = empty($address['billing_street_address']) ? null : $address['billing_street_number'];
             $existingApplication->billing_city = empty($address['billing_city']) ? null : $address['billing_city'];
             $existingApplication->billing_postcode = empty($address['billing_postcode']) ? null : $address['billing_postcode'];
