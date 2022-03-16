@@ -649,7 +649,7 @@
                     </v-col>
 
 
-                            <v-col cols="12" class="py-0" v-if="application.is_temporary_connection">
+                            <!-- <v-col cols="12" class="py-0" v-if="application.is_temporary_connection">
                                 <v-row>
                                     <v-col cols="6" class="py-0">
                                         <v-menu
@@ -714,10 +714,10 @@
                                         </v-menu>
                                     </v-col>
                                 </v-row>
-                            </v-col>
+                            </v-col> -->
 <!-- temporary end here -->
 
-                    <v-col cols="12" class="pb-0" v-if="!application.is_temporary_connection">
+                    <v-col cols="12" class="pb-0">
                         <v-row>
                             <v-col cols="6" class="py-0">
                                 <v-menu
