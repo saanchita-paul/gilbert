@@ -117,14 +117,13 @@ export default {
             };
         }
 
-        function getSubmittedData(data, waitingForConnectionData, acManualProcessing, manualProcessing) {
+        function getSubmittedData(data, waitingForConnectionData, acManualProcessing) {
             return {
                 gasChartData: getGasData(data),
                 powerChartData: getPowerData(data),
                 total: data.total,
                 waitingForConnection: waitingForConnectionData.total,
-                acManualProcessing: acManualProcessing,
-                manualProcessing: manualProcessing
+                acManualProcessing: acManualProcessing
             }
         }
 
@@ -162,12 +161,8 @@ export default {
             source_conversation_rate: new DashboardSourceModel(response.application_summary.conversation_rate),
             source_submitted: new DashboardSourceModel(response.application_summary.submitted),
             source_unassigned: new DashboardSourceModel(response.application_summary.unassigned),
-            total_new_application: response.total_new_application,
-            total_unassigned: response.unassigned_application,
-            total_assigned: response.assigned_application,
-            total_consent_pending: response.total_consent_pending,
-            total_closed: response.total_closed,
-            submitted: getSubmittedData(response.successful_submission, response.waiting_for_connection, response.ac_manual_processing, response.manual_processing),
+            source_escalated: new DashboardSourceModel(response.application_summary.escalated),
+            submitted: getSubmittedData(response.successful_submission, response.waiting_for_connection, response.ac_manual_processing),
             connected: getConnectedData(response.connected, response.successful_submission, response.rejected),
             rejected: getRejectedData(response.rejected, response.declined),
         };

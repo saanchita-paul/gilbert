@@ -1,12 +1,11 @@
-import AgencyAPI from "@scripts/api/crm/AgencyAPI";
-import SalesDashboradAPI from "@scripts/modules/sales/api/SalesDashboradAPI";
+import SalesDashboardAPI from "@scripts/modules/sales/api/SalesDashboardAPI";
 
 export default {
-    loadDashboardEnergyData: (dateRange)=> SalesDashboradAPI.loadEnergyData(dateRange),
-    loadDashboardWaterData: (dateRange)=> SalesDashboradAPI.loadWaterData(dateRange),
+    loadDashboardEnergyData: (dateRange, dateType)=> SalesDashboardAPI.loadEnergyData(dateRange, dateType),
+    loadDashboardWaterData: (dateRange)=> SalesDashboardAPI.loadWaterData(dateRange),
     getReportAccessToken: async ()=> {
         try {
-            const data = await SalesDashboradAPI.getReportAccessToken();
+            const data = await SalesDashboardAPI.getReportAccessToken();
             return data;
         } catch (error) {
             return false;

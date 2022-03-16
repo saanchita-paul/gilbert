@@ -19,28 +19,27 @@ class OfficeMatricsService
     private function calculateApplicationMetrics($connectionServiceData)
     {
 
-        $submittedStatuses = [ConnectionService::STATUS_SUBMITTED, ConnectionService::STATUS_ESCALATED, ConnectionService::STATUS_REJECTED, ConnectionService::STATUS_CLOSED];
-
+        $submittedStatuses = [ConnectionService::STATUS_SUBMITTED, ConnectionService::STATUS_ENERGY_SUBMIT, ConnectionService::STATUS_ACCEPTED, ConnectionService::AC_MANUAL_PROCESSING, ConnectionService::STATUS_REJECTED];
 
         $connectionServiceData->power_submitted = $this->getDBBuilder()->whereHas('connectionServices', function($query) use ($submittedStatuses){
             $query->whereIn('status' , $submittedStatuses)->where('service_type', 'power');
         })->count();
 
-        $connectionServiceData->power_connected = $this->getDBBuilder()->where('status', ConnectionApplication::STATUS_SUBMITTED )->whereHas('connectionServices', function($query){
+        $connectionServiceData->power_connected = $this->getDBBuilder()->whereHas('connectionServices', function($query){
             $query->where('status' , ConnectionService::STATUS_ACCEPTED)->where('service_type', 'power');
         })->count();
 
-        $connectionServiceData->power_submitted =(int) $connectionServiceData->power_submitted - (int)$connectionServiceData->power_connected;
+        // $connectionServiceData->power_submitted =(int) $connectionServiceData->power_submitted - (int)$connectionServiceData->power_connected;
 
         $connectionServiceData->gas_submitted = $this->getDBBuilder()->whereHas('connectionServices', function($query) use ($submittedStatuses){
             $query->whereIn('status' , $submittedStatuses)->where('service_type', 'gas');
         })->count();
 
-        $connectionServiceData->gas_connected = $this->getDBBuilder()->where('status', ConnectionApplication::STATUS_SUBMITTED)->whereHas('connectionServices', function($query){
+        $connectionServiceData->gas_connected = $this->getDBBuilder()->whereHas('connectionServices', function($query){
             $query->where('status' , ConnectionService::STATUS_ACCEPTED)->where('service_type', 'gas');
         })->count();
 
-        $connectionServiceData->gas_submitted =(int) $connectionServiceData->gas_submitted - (int)$connectionServiceData->gas_connected;
+        // $connectionServiceData->gas_submitted =(int) $connectionServiceData->gas_submitted - (int)$connectionServiceData->gas_connected;
 
 
         return $connectionServiceData;
@@ -106,7 +105,7 @@ class OfficeMatricsService
                     $result['app_closed'] = (int) $datum?->total;
                     break;
                 case ConnectionService::STATUS_SUBMITTED:
-                    $result['app_submitted'] = (int) $datum?->total - (int) $totalConnectedApplication?->total;
+                    $result['app_submitted'] = (int) $datum?->total;
                     break;
                 case ConnectionService::STATUS_UNASSIGNED:
                 case ConnectionService::STATUS_ASSIGNED:

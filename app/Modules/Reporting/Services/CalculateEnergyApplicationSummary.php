@@ -33,6 +33,7 @@ class CalculateEnergyApplicationSummary
         "conversation_rate" => self::LEAD_BREAKDOWN,
         "consent_pending" => self::LEAD_BREAKDOWN,
         "closed" => self::LEAD_BREAKDOWN,
+        "escalated" => self::LEAD_BREAKDOWN,
     ];
 
     /**
@@ -76,6 +77,7 @@ class CalculateEnergyApplicationSummary
                 ConnectionApplication::STATUS_SUBMITTED => $this->calculateCount('submitted', $datum),
                 20 => $this->calculateCount('consent_pending', $datum), #todo: replace with proper constant when merging to consent_tracker branch
                 ConnectionApplication::STATUS_CLOSED => $this->calculateCount('closed', $datum),
+                ConnectionApplication::STATUS_ESCALATED => $this->calculateCount('escalated', $datum),
                 default => self::LEAD_BREAKDOWN
             };
         }

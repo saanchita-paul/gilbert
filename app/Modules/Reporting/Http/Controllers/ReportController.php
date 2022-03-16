@@ -15,6 +15,7 @@ class ReportController extends Controller
     public function home(Request $request)
     {
         $energy =  (new EnergyReport(
+            $request->get('dateType'),
             $request->get('start'),
             $request->get('end')
         ))->getEnergyReport();
