@@ -51,7 +51,7 @@ class WaterServiceListener implements ShouldQueue
         if (!$this->validateAddress($event->applicationId)) 
         {
             info("Water Service Listener: Address is not complete");
-            return;
+            // return;
         }
 
         if (isset($event->submitType) && $event->submitType == 'water') {

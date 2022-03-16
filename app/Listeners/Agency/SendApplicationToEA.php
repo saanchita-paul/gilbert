@@ -47,7 +47,7 @@ class SendApplicationToEA implements ShouldQueue
         if (!$this->validateAddress($event->applicationId)) 
         {
             info("Send Application To EA: Address is not complete");
-            return;
+            // return;
         }
 
         $submitType = $event->submitType;
