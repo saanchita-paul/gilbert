@@ -90,7 +90,7 @@ class ExportWaterSubmissionReport
             unset($datum->Foxie_Agent_Name);
             unset($datum->Assigned_To);
 
-            if($this->allowedForExport($datum->Utility_Provider, $datum->UI_Status, $datum->Foxie_Connect_Id)) {
+            if($this->allowedForExport($datum->Foxie_Connect_Id)) {
                 unset($datum->Foxie_Connect_Id);
                 $this->leadsData[] = $datum;
             }
@@ -281,13 +281,8 @@ class ExportWaterSubmissionReport
         }
     }
 
-    private function allowedForExport($serviceProvider, $serviceStatus, $foxieConnectID)
+    private function allowedForExport($foxieConnectID)
     {
-        $nonEmptyProviders = ['IN_PROGRESS', 'MANUAL_PROCESSING', 'ACCEPTED', 'REJECTED'];
-
-        if(in_array($serviceStatus, $nonEmptyProviders) && $serviceProvider === null) {
-            return false;
-        }
         if($foxieConnectID !== null && $foxieConnectID !== 'NULL' && $foxieConnectID !== 'N/A') {
             return false;
         }
