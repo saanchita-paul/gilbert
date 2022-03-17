@@ -175,7 +175,7 @@
                                                     v-model="authorized_person.card_number"
                                                     outlined
                                                     dense
-                                                    placeholder="Medicare Card Number"
+                                                    placeholder=" "
                                                     :label="`Medicare Card Number`"
                                                     hide-details="auto"
                                                 ></v-text-field>
@@ -191,7 +191,7 @@
                                                     v-model="authorized_person.special_number"
                                                     :error-messages="errors[0]"
                                                     :label="`Special Number`"
-                                                    placeholder="1/2"
+                                                    placeholder="Please select"
                                                     :items="specialNumberDD"
                                                     outlined
                                                     dense
@@ -248,7 +248,7 @@
                                             >
                                                 <v-select
                                                     v-model="authorized_person.card_color"
-                                                    placeholder="Yellow"
+                                                    placeholder="Please select"
                                                     :label="`Card Colour`"
                                                     item-text="text"
                                                     item-value="value"
@@ -269,7 +269,7 @@
                                                     v-model="authorized_person.card_number"
                                                     outlined
                                                     dense
-                                                    placeholder="Passport Number"
+                                                    placeholder=" "
                                                     hide-details="auto"
                                                     :label="`Passport Number`"
                                                 ></v-text-field>
@@ -282,7 +282,7 @@
                                                     v-model="authorized_person.country"
                                                     outlined
                                                     dense
-                                                    placeholder="AUS"
+                                                    placeholder=" "
                                                     hide-details="auto"
                                                     :label="`Issuing Country`"
                                                 ></v-text-field>
@@ -335,7 +335,7 @@
                                                     v-model="authorized_person.card_number"
                                                     outlined
                                                     dense
-                                                    placeholder="License Number"
+                                                    placeholder=" "
                                                     hide-details="auto"
                                                     :label="`Driver’s License`"
                                                 ></v-text-field>
@@ -349,7 +349,7 @@
                                             >
                                                 <v-select
                                                     v-model="authorized_person.state"
-                                                    placeholder="Victoria"
+                                                    placeholder="Please select"
                                                     :label="`State`"
                                                     item-text="text"
                                                     item-value="value"
