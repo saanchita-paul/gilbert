@@ -102,28 +102,30 @@
                     </v-col>
 
                     <v-col cols="6" class="py-0" v-if="application.phone_type == 1">
-                    <ValidationProvider name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                    <ValidationProvider name="Mobile number" rules="required|cv-phone|length:12"  v-slot="{ errors }">
                         <v-text-field
                             label="Mobile number*"
-                            :maxlength="10"
+                            :maxlength="12"
                             outlined
                             dense
                             placeholder="04XX XXX XXX"
                             v-model="application.phone"
+                            v-mask="'#### ### ###'"
                             :error-messages=" errors[0]"
                         ></v-text-field>
                     </ValidationProvider>
                     </v-col>
 
                     <v-col cols="6" class="py-0" v-else>
-                    <ValidationProvider name="Homephone number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                    <ValidationProvider name="Homephone number" rules="required|cv-phone|length:12"  v-slot="{ errors }">
                         <v-text-field
                             label="Homephone number*"
-                            :maxlength="10"
+                            :maxlength="12"
                             outlined
                             dense
-                            placeholder="XXXX XXX XXX"
+                            placeholder="XX XXXX XXXX"
                             v-model="application.homephone"
+                            v-mask="'## #### ####'"
                             :error-messages=" errors[0]"
                         ></v-text-field>
                     </ValidationProvider>

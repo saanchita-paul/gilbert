@@ -67,11 +67,11 @@ extend("password", {
     }
 });
 
-extend('cv-phone', {
-    message: field => `${field} should contain only number`,
+extend("cv-phone", {
+    message: field => `${field} should contain only numbers`,
     validate: value =>  {
         return new Promise(resolve => {
-            let isValid = value.match('^[+]*[-\\s0-9]*$');
+            let isValid = value.match('^[+]*[-\\s0-9 ]*$');
             resolve({ valid: !!isValid })
         })
     }
