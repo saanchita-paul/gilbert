@@ -76,6 +76,10 @@ export default {
             text: 'External Customer Representative',
             value: 'hood_external_customer_rep'
         },
+        {
+            text: 'External Admin',
+            value: 'hood_external_admin'
+        },
     ]
 }
 

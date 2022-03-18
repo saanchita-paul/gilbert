@@ -21,5 +21,11 @@ export default [
             'hood_external_customer_rep',
         ],
         route_name: 'applications'
+    },
+    {
+        roles: [
+            'hood_external_admin',
+        ],
+        route_name: 'sales.energy'
     }
 ]
