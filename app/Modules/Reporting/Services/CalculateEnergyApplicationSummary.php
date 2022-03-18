@@ -20,6 +20,7 @@ class CalculateEnergyApplicationSummary
         "foxie" => 0,
         "hood" => 0,
         "hood_ai" => 0,
+        "t_app" => 0,
     ];
 
     /**
@@ -125,6 +126,7 @@ class CalculateEnergyApplicationSummary
             ConnectionApplication::SOURCE_OUR_PROPERTY => 'our_property',
             ConnectionApplication::SOURCE_PROPERTY_ME => 'property_me',
             10 => 'hood_ai', #todo: replace with proper constant
+            11 => 't_app', #todo: replace with proper constant after merging tApp branch
             default => null,
         };
     }

@@ -23,6 +23,7 @@
                     <p class="lead-source-value"><span>{{ summaryData.source_all.foxie }}</span> Foxie</p>
                     <p class="lead-source-value"><span>{{ summaryData.source_all.hood }}</span> Hood</p>
                     <p class="lead-source-value"><span>{{ summaryData.source_all.hood_ai }}</span> Hood.ai</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_all.hood_ai }}</span> tApp</p>
                 </div>
             </div>
             <v-divider vertical class="divider"></v-divider>
@@ -55,6 +56,7 @@
                     <p class="lead-source-value"><span>{{ summaryData.source_submitted.foxie }}</span> Foxie</p>
                     <p class="lead-source-value"><span>{{ summaryData.source_submitted.hood }}</span> Hood</p>
                     <p class="lead-source-value"><span>{{ summaryData.source_submitted.hood_ai }}</span> Hood.ai</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_submitted.hood_ai }}</span> tApp</p>
                 </div>
             </div>
             <v-divider vertical class="divider"></v-divider>
@@ -73,6 +75,7 @@
                     <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.foxie }}%</span> Foxie</p>
                     <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.hood }}%</span> Hood</p>
                     <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.hood_ai }}%</span> Hood.ai</p>
+                    <p class="lead-source-value"><span>{{ summaryData.source_conversation_rate.hood_ai }}%</span> tApp</p>
                 </div>
             </div>
             <v-divider vertical class="divider"></v-divider>
