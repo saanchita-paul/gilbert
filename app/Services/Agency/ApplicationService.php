@@ -2,6 +2,7 @@
 
 namespace App\Services\Agency;
 
+use App\Jobs\UpdateHubspotContactJob;
 use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
@@ -12,7 +13,6 @@ use App\Models\User;
 use App\Services\RolePermission;
 use JetBrains\PhpStorm\ArrayShape;
 use TSA\Services\TsaSendAppliationService;
-use App\Services\Agency\HubspotContactService;
 
 class ApplicationService
 {
@@ -304,7 +304,7 @@ class ApplicationService
         $existingApplication->status = ConnectionApplication::STATUS_ESCALATED;
         $existingApplication->save();
 
-        (new HubspotContactService($applicationId))->update();
+        UpdateHubspotContactJob::dispatch($applicationId);
 
         $allicationNoteService = new ApplicationNoteService($user);
         $eacalateNote = [];
@@ -332,7 +332,7 @@ class ApplicationService
             $existingApplication->closed_by = $user->profile->id;
             $existingApplication->save();
 
-            (new HubspotContactService($applicationId))->update();
+            UpdateHubspotContactJob::dispatch($applicationId);
 
             $allicationNoteService = new ApplicationNoteService($user);
             $closingeNote = [];

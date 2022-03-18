@@ -9,6 +9,7 @@ use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Requests\Agency\ProviderRequest;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationResource;
+use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
@@ -23,7 +24,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use PropertyMe\services\FetchContacts;
-use App\Services\Agency\HubspotContactService;
 
 class ApplicationController extends Controller
 {
@@ -148,7 +148,7 @@ class ApplicationController extends Controller
                 $applicationId
             );
 
-            (new HubspotContactService($applicationId))->update();
+            UpdateHubspotContactJob::dispatch($applicationId);
 
             $autoSubmitService = new WaterAutoSubmitService($applicationId);
             return ApplicationResource::make($data);
