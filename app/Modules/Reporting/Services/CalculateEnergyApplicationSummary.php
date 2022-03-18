@@ -126,7 +126,7 @@ class CalculateEnergyApplicationSummary
             ConnectionApplication::SOURCE_OUR_PROPERTY => 'our_property',
             ConnectionApplication::SOURCE_PROPERTY_ME => 'property_me',
             10 => 'hood_ai', #todo: replace with proper constant
-            11 => 't_app', #todo: replace with proper constant after merging tApp branch
+            ConnectionApplication::SOURCE_T_APP => 't_app',
             default => null,
         };
     }
