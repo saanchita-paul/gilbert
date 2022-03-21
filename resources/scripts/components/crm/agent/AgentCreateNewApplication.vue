@@ -29,9 +29,10 @@
                                     outlined
                                     dense
                                     :items="titlesDD"
+                                    label="Title*"
                                     v-model="application.title"
                                     :error-messages="errors[0]"
-                                    placeholder="Please choose one"
+                                    placeholder="Please select"
                             >
                             </v-select>
                         </ValidationProvider>
@@ -101,28 +102,30 @@
                     </v-col>
 
                     <v-col cols="6" class="py-0" v-if="application.phone_type == 1">
-                    <ValidationProvider name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                    <ValidationProvider name="Mobile number" rules="required|cv-phone|length:12"  v-slot="{ errors }">
                         <v-text-field
                             label="Mobile number*"
-                            :maxlength="10"
+                            :maxlength="12"
                             outlined
                             dense
                             placeholder="04XX XXX XXX"
                             v-model="application.phone"
+                            v-mask="'#### ### ###'"
                             :error-messages=" errors[0]"
                         ></v-text-field>
                     </ValidationProvider>
                     </v-col>
 
                     <v-col cols="6" class="py-0" v-else>
-                    <ValidationProvider name="Homephone number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                    <ValidationProvider name="Homephone number" rules="required|cv-phone|length:12"  v-slot="{ errors }">
                         <v-text-field
                             label="Homephone number*"
-                            :maxlength="10"
+                            :maxlength="12"
                             outlined
                             dense
-                            placeholder="XXXX XXX XXX"
+                            placeholder="XX XXXX XXXX"
                             v-model="application.homephone"
+                            v-mask="'## #### ####'"
                             :error-messages=" errors[0]"
                         ></v-text-field>
                     </ValidationProvider>
@@ -385,7 +388,7 @@
                                                       :items="idenficationTypeDD"
                                                       item-text="text"
                                                       item-value="value"
-                                                      :label="`Id Type`"
+                                                      :label="`Identifcation Type`"
                                                       :error-messages=" errors[0]"
                                                       placeholder="Please select one">
                                             </v-select>
@@ -402,7 +405,7 @@
                                                 v-model="authorized_person.card_number"
                                                 outlined
                                                 dense
-                                                placeholder="Medicare Card Number"
+                                                placeholder=" "
                                                 :label="`Medicare Card Number`"
                                             ></v-text-field>
                                         </ValidationProvider>
@@ -417,7 +420,7 @@
                                                 v-model="authorized_person.special_number"
                                                 :error-messages="errors[0]"
                                                 :label="'Special Number'"
-                                                placeholder="1/2"
+                                                placeholder="Please select"
                                                 :items="specialNumberDD"
                                                 outlined
                                                 dense
@@ -473,7 +476,7 @@
                                         >
                                             <v-select
                                                 v-model="authorized_person.card_color"
-                                                placeholder="Yellow"
+                                                placeholder="Please select"
                                                 :label="'Card Colour'"
                                                 item-text="text"
                                                 item-value="value"
@@ -496,7 +499,7 @@
                                                 v-model="authorized_person.card_number"
                                                 outlined
                                                 dense
-                                                placeholder="Passport Number"
+                                                placeholder=" "
                                                 :label="`Passport Number`"
                                             ></v-text-field>
                                         </ValidationProvider>
@@ -508,7 +511,7 @@
                                                 v-model="authorized_person.country"
                                                 outlined
                                                 dense
-                                                placeholder="AUS"
+                                                placeholder=" "
                                                 :label="`Issuing Country`"
                                             ></v-text-field>
                                         </ValidationProvider>
@@ -560,7 +563,7 @@
                                                 v-model="authorized_person.card_number"
                                                 outlined
                                                 dense
-                                                placeholder="License Number"
+                                                placeholder=" "
                                                 :label="'Driver’s License'"
                                             ></v-text-field>
                                         </ValidationProvider>
@@ -574,7 +577,7 @@
                                             <v-select
                                                 :error-messages="errors[0]"
                                                 v-model="authorized_person.state"
-                                                placeholder="Victoria"
+                                                placeholder="Please select"
                                                 :label="`State`"
                                                 item-text="text"
                                                 item-value="value"
@@ -648,7 +651,7 @@
                     </v-col>
 
 
-                            <v-col cols="12" class="py-0" v-if="application.is_temporary_connection">
+                            <!-- <v-col cols="12" class="py-0" v-if="application.is_temporary_connection">
                                 <v-row>
                                     <v-col cols="6" class="py-0">
                                         <v-menu
@@ -713,10 +716,10 @@
                                         </v-menu>
                                     </v-col>
                                 </v-row>
-                            </v-col>
+                            </v-col> -->
 <!-- temporary end here -->
 
-                    <v-col cols="12" class="pb-0" v-if="!application.is_temporary_connection">
+                    <v-col cols="12" class="pb-0">
                         <v-row>
                             <v-col cols="6" class="py-0">
                                 <v-menu
@@ -840,7 +843,7 @@
 
 
 
-
+<!-- 
                     <v-col cols="12" class="pb-0">
                         <p class="sub-title mb-0">Service Interests</p>
                     </v-col>
@@ -871,7 +874,7 @@
                             <h4 :class="service_types.internet ? 'enabled' : 'disabled'">Internet</h4>
                             <v-icon :disabled="!service_types.internet" color="#9C27B0">mdi-wifi</v-icon>
                         </div>
-                    </v-col>
+                    </v-col> -->
 
                     <v-col cols="12" class="pb-0">
                         <p class="sub-title  mt-5">Additional Instructions</p>

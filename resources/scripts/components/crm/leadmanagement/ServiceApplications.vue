@@ -96,50 +96,50 @@
             </v-menu>
 
             </v-col>
-            <v-col cols="1" class="pt-5">  To  </v-col>
-            <v-col cols="4" >
 
-            <v-menu
-              v-model="connection_end_date_menu"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <ValidationProvider
-                  name="Connection End Date"
-                  rules="valid-date"
-                  v-slot="{ errors }"
+            <v-col cols="1" v-if="false" class="pt-5">  To  </v-col>
+            <v-col cols="4" v-if="false">
+                <v-menu
+                    v-model="connection_end_date_menu"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
                 >
-                  <v-text-field
-                    placeholder="DD/MM/YYYY"
-                    outlined
-                    dense
-                    append-icon="mdi-calendar"
-                    v-model="modified_connection_end_date"
-                    v-bind="attrs"
-                    :error-messages="errors[0]"
-                    hide-details="auto"
-                    @input="syncConnectionEndDate"
-                  >
-                    <template slot="append">
-                      <v-icon v-on="on">mdi-calendar</v-icon>
+                    <template v-slot:activator="{ on, attrs }">
+                        <ValidationProvider
+                        name="Connection End Date"
+                        rules="valid-date"
+                        v-slot="{ errors }"
+                        >
+                        <v-text-field
+                            placeholder="DD/MM/YYYY"
+                            outlined
+                            dense
+                            append-icon="mdi-calendar"
+                            v-model="modified_connection_end_date"
+                            v-bind="attrs"
+                            :error-messages="errors[0]"
+                            hide-details="auto"
+                            @input="syncConnectionEndDate"
+                        >
+                            <template slot="append">
+                            <v-icon v-on="on">mdi-calendar</v-icon>
+                            </template>
+                        </v-text-field>
+                        </ValidationProvider>
                     </template>
-                  </v-text-field>
+                    <v-date-picker
+                        v-model="connection_end_date"
+                        :min="moving_date"
+                        @input="updateConnectionEndDate"
+                    ></v-date-picker>
+                </v-menu>
+                <ValidationProvider name="h_state">
+                    <v-text-field v-model="leadSummary.state" v-show="false" />
                 </ValidationProvider>
-              </template>
-              <v-date-picker
-                v-model="connection_end_date"
-                :min="moving_date"
-                @input="updateConnectionEndDate"
-              ></v-date-picker>
-            </v-menu>
-            <ValidationProvider name="h_state">
-                <v-text-field v-model="leadSummary.state" v-show="false" />
-            </ValidationProvider>
-                        </v-col>
+            </v-col>
 
                     </v-row>
                 </v-col>
