@@ -55,6 +55,8 @@ name: "LeadServicesAndNotes",
 
     },
     mounted() {
+        console.log("printing lead summary")
+        console.log(this.leadSummary)
     }
 }
 </script>
