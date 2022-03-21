@@ -29,10 +29,9 @@
                                     outlined
                                     dense
                                     :items="titlesDD"
-                                    label="Title*"
                                     v-model="application.title"
                                     :error-messages="errors[0]"
-                                    placeholder="Please select"
+                                    placeholder="Please choose one"
                             >
                             </v-select>
                         </ValidationProvider>
@@ -388,7 +387,7 @@
                                                       :items="idenficationTypeDD"
                                                       item-text="text"
                                                       item-value="value"
-                                                      :label="`Identifcation Type`"
+                                                      :label="`Id Type`"
                                                       :error-messages=" errors[0]"
                                                       placeholder="Please select one">
                                             </v-select>
@@ -651,7 +650,7 @@
                     </v-col>
 
 
-                            <!-- <v-col cols="12" class="py-0" v-if="application.is_temporary_connection">
+                            <v-col cols="12" class="py-0" v-if="application.is_temporary_connection">
                                 <v-row>
                                     <v-col cols="6" class="py-0">
                                         <v-menu
@@ -716,10 +715,10 @@
                                         </v-menu>
                                     </v-col>
                                 </v-row>
-                            </v-col> -->
+                            </v-col>
 <!-- temporary end here -->
 
-                    <v-col cols="12" class="pb-0">
+                    <v-col cols="12" class="pb-0" v-if="!application.is_temporary_connection">
                         <v-row>
                             <v-col cols="6" class="py-0">
                                 <v-menu
@@ -843,7 +842,7 @@
 
 
 
-<!-- 
+
                     <v-col cols="12" class="pb-0">
                         <p class="sub-title mb-0">Service Interests</p>
                     </v-col>
@@ -874,7 +873,7 @@
                             <h4 :class="service_types.internet ? 'enabled' : 'disabled'">Internet</h4>
                             <v-icon :disabled="!service_types.internet" color="#9C27B0">mdi-wifi</v-icon>
                         </div>
-                    </v-col> -->
+                    </v-col>
 
                     <v-col cols="12" class="pb-0">
                         <p class="sub-title  mt-5">Additional Instructions</p>

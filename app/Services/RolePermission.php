@@ -10,6 +10,7 @@ class RolePermission {
 
     const ROLE_EXTERNAL_HOOD_TEAM_LEAD = 'hood_external_team_lead';
     const ROLE_EXTERNAL_HOOD_CUSTOMER_REP= 'hood_external_customer_rep';
+    const ROLE_EXTERNAL_ADMIN= 'hood_external_admin';
 
     const ROLE_AGENCY_AGENT = 'agency_agent';
     const ROLE_AGENCY_OFFICE_ALLOCATOR = 'agency_office_allocator';
@@ -32,6 +33,7 @@ class RolePermission {
 
     const P_HOOD_EXTERNAL_TEAM_LEAD_CORE = 'hood_external_team_lead_core';
     const P_HOOD_EXTERNAL_CUSTOMER_REP_CORE = 'hood_external_customer_rep_core';
+    const P_HOOD_EXTERNAL_ADMIN_CORE = 'hood_external_admin_core';
 
     const P_AGENCY_AGENT_CORE = 'agency_agent_core';
     const P_AGENCY_AGENT_OFFICE_ALLOCATOR_CORE = 'agency_office_allocator_core';

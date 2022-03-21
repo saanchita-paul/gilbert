@@ -227,7 +227,8 @@ const router = new VueRouter({
                                     'hood_admin',
                                     'hood_agent',
                                     'hood_customer_rep',
-                                    'hood_team_lead'
+                                    'hood_team_lead',
+                                    'hood_external_admin'
                                 ],
 
                             }
@@ -243,7 +244,8 @@ const router = new VueRouter({
                                     'hood_admin',
                                     'hood_agent',
                                     'hood_customer_rep',
-                                    'hood_team_lead'
+                                    'hood_team_lead',
+                                    'hood_external_admin'
                                 ],
                             },
                             props: true
@@ -255,7 +257,8 @@ const router = new VueRouter({
                             'hood_admin',
                             'hood_agent',
                             'hood_customer_rep',
-                            'hood_team_lead'
+                            'hood_team_lead',
+                            'hood_external_admin'
                         ],
                     }
                 },
