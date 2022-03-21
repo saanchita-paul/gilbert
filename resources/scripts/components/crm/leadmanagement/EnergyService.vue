@@ -130,7 +130,7 @@ export default {
 }
 .fontStyleStatus{
     font-family: Roboto;
-    font-size: 10px;
+    font-size: 12px;
     font-style: normal;
     font-weight: 400;
     line-height: 13px;
