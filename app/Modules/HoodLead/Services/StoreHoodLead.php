@@ -5,7 +5,7 @@ namespace HoodLead\Services;
 use App\Models\ConnectionApplication;
 use App\Models\Office;
 use HoodLead\HoodLead;
-
+use App\Models\ConnectionService;
 /**
  *
  */
@@ -55,6 +55,15 @@ class StoreHoodLead
             'postcode' => $this->requestData['postcode'] ?? null,
         ]);
         $app->save();
+
+        // auto adding water service to connection application
+        if ($app->id) {
+            $connectionService = new ConnectionService();
+            $connectionService->service_type = 'water';
+            $connectionService->status = ConnectionService::STATUS_EA_PROCESSINF;
+            $connectionService->connection_application_id = $app->id;
+            $connectionService->save();
+        }
 
         return $app->id;
     }

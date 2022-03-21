@@ -289,6 +289,15 @@ class TAppServices
             $connectionService->connection_application_id = $leadId;
             $connectionService->save();
         }
+        //if tAppServices doesn't contain water then auto create water service
+        $tAppLowerServices = array_map('strtolower', $tAppServices);
+        if (!in_array('water', $tAppLowerServices)) {
+            $connectionService = new ConnectionService();
+            $connectionService->service_type = 'water';
+            $connectionService->status = ConnectionService::STATUS_EA_PROCESSINF;
+            $connectionService->connection_application_id = $leadId;
+            $connectionService->save();
+        }
     }
 
     public function createAuthorizedPerson($leadId)

@@ -114,7 +114,9 @@ class IgniteLeadService
         $services     = [] ;
         if(in_array( 'all' ,  $serviceTypes )){
             $services = [ 'gas' , 'power' , 'internet' , 'water' ] ;
-        }else if($this->connectionApplication->state == 'vic' && !in_array( 'all' ,  $serviceTypes )){
+        } else if($this->isStateVic($this->connectionApplication->state) && !in_array( 'all' ,  $serviceTypes )){
+            $services = ['water'];
+        } else if(in_array( 'water' ,  $serviceTypes )){
             $services = ['water'];
         }
 
@@ -135,6 +137,10 @@ class IgniteLeadService
         }
     }
 
+    private function isStateVic($state) : bool
+    {
+        return strtolower($state) === 'vic' || strtolower($state) === 'victoria'; 
+    }
 
     /**
      * Set office and agency id for connection_application table.
@@ -176,7 +182,7 @@ class IgniteLeadService
             $this->connectionApplication->status = ConnectionApplication::STATUS_UNASSIGNED;
             $this->connectionApplication->save();
 
-            $this->setServiceTypeTable($leadInfo['utilityConnectionsAllowed'] ?? []);
+            $this->setServiceTypeTable($leadInfo['utilityConnectionsAllowed'] ?? ['water']);
 
             $this->lead->all_fields_dump = json_encode($leadInfo);
             $this->lead->connection_application_id = $this->connectionApplication->id;
