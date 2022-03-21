@@ -90,6 +90,7 @@ class ApplicationResource extends JsonResource
             'created_at' => (new Carbon($this->created_at, '11'))->format('d/m/Y h:m a'),
             'submitted_by' => $this->submittedBy(),
             'submitted_at' => $this->submittedAt(),
+            'after_hour_payee' => $this->after_hour_payee
         ];
     }
 

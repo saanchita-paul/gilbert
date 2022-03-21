@@ -171,11 +171,46 @@
 
                     </div>
                 </v-col>
+                    <v-col cols="12">
+                        <v-divider></v-divider>
+                    </v-col>
+
+                    <v-col cols="12" v-if="selectedPowerProvider === 'ea' && afterHourFlag && selected_plan">
+                        <p>
+                            <span class="font-weight-bold">Important:</span> You are about to submit a same-day connection. Processing same-day connections to Energy Australia will incur same-day connection fee for the customer.
+                        </p>
+
+                        <p class="my-0">
+                            <span class="font-weight-bold">Note:</span> If customer doesn’t consent to pay, a new connection date (at least 2 business days from today) will have to be selected.
+                        </p>
+
+                        <v-container
+                            class="px-0"
+                            fluid
+                        >
+                            <p>Does the applicant consent to pay for the additional fees?</p>
+                            <v-radio-group v-model="leadSummary.after_hour_payee" @change="changeAfterHourPayee">
+                                <v-radio
+                                    label="Yes, applicant consents to pay"
+                                    value="applicant"
+                                ></v-radio>
+                                <v-radio
+                                    label="Hood will pay for the same-day connection fee"
+                                    value="hood"
+                                ></v-radio>
+                            </v-radio-group>
+                        </v-container>
+                    </v-col>
+
+
                 <v-col cols="12">
                     <v-divider></v-divider>
                 </v-col>
+
                 <v-col cols="12" ref="provider">
                     <p class="sub-title" v-if="selectPlanTitle.length > 0">Select a plan for {{selectPlanTitle}}</p>
+
+
 
                     <div class="d-flex" v-if="plansFlag && selectedPowerProvider === 'ea'">
                             <EnergyPlan
@@ -283,7 +318,7 @@ import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
 import InternetPlanDetails from "@scripts/components/ea/InternetPlanDetails";
 import WaterService from "@scripts/components/crm/leadmanagement/WaterService";
 import InternetService from "@scripts/components/crm/leadmanagement/InternetService";
-import { isNull } from "lodash-es";
+import {isNull, now} from "lodash-es";
 import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
 import SumoPlan from "@scripts/components/crm/leadmanagement/SumoPlan";
 import ServiceProvideres from "@scripts/data/ServiceProvideres";
@@ -294,12 +329,16 @@ import Spinner from "@scripts/plugins/Spinner";
 import dayJs from "dayjs";
 import { formatDate } from "@scripts/services/others/DateService"
 import leadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import dayjs from "dayjs";
 export default {
     name: "ServiceApplications",
     components: { SumoPlan, SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails, SoleDetails},
     props: {
         leadSummary: {
             require: true
+        },
+        afterHourFlag: {
+            require: false
         }
     },
 
@@ -347,6 +386,7 @@ export default {
             modified_moving_date: null,
             modified_connection_end_date: null,
             isWaterFailed: false,
+            who_pay: 'hood'
         }
     },
     computed: {
@@ -394,16 +434,12 @@ export default {
                 'Internet' : 2,
             }
         },
-        // modified_moving_date(){
-        //     const date         =  dayJs(this.moving_date, 'YYYY-MM-DD');
-        //     return date.isValid() ? date.format('DD/MM/YYYY'): null;
 
-        // },
-        // modified_connection_end_date(){
-        //      const date         =  dayJs(this.connection_end_date, 'YYYY-MM-DD');
-        //      return date.isValid() ? date.format('DD/MM/YYYY'): null;
-        //     // return dayJs(this.connection_end_date).format("DD/MM/YYYY");
-        // }
+        isPayeeSelectedForAfterHourSubmission() {
+
+            return this.afterHourFlag && isNull(this.leadSummary.after_hour_payee);
+        }
+
     },
     watch: {
         'leadSummary.service_interests'() {
@@ -448,6 +484,21 @@ export default {
 
     },
     methods: {
+
+        async isSameDayOrNextDayConnection() {
+
+            const afterHourFlag = await EAAfterHourService.calculateAfterHourFlag(
+                this.leadSummary.service_interests,
+                this.selectedPlanType,
+                this.leadSummary.postcode,
+                this.leadSummary.state,
+                this.leadSummary.moving_date
+            );
+
+            return afterHourFlag;
+
+        },
+
         getPlanType() {
             let plan = null;
             switch(this.selectedPowerProvider) {
@@ -468,7 +519,9 @@ export default {
                 case this.tabMapper.Water:
                     return !LeadApplicationService.canSubmitWater(this.leadSummary.connection_services)
                 case this.tabMapper.Energy:
-                    return !LeadApplicationService.canSubmitEnergy(this.leadSummary.connection_services) || isNull(this.selectedPowerProvider) || !this.selected_plan;
+                    return !LeadApplicationService.canSubmitEnergy(this.leadSummary.connection_services)
+                        || isNull(this.selectedPowerProvider)
+                        || !this.selected_plan || this.isPayeeSelectedForAfterHourSubmission
                 default:
                     return true;
             }
@@ -589,16 +642,6 @@ export default {
 
             return statustext;
         },
-
-        updateService1(service) {
-            this.activeService = service;
-        },
-
-        isServiceActive(service) {
-            if(this.activeService === service) return true;
-            return  false;
-        },
-
         onSelectProvider(providerId) {
             this.resetSelectedPlan()
             this.selectedPowerProvider = providerId;
@@ -659,7 +702,6 @@ export default {
         updateStatus(text) {
             this.waterStatus = text;
         },
-
         selectPlan(plan, provider = null) {
           if( this.selectedPowerProvider === 'ea') {
             this.activeEaPlan =  plan.name;
@@ -695,7 +737,6 @@ export default {
             }, true);
 
         },
-
         loadSelectedPowerProvider() {
             const connectionService = this.leadSummary.connection_services.find(data => data.service_type === 'power' || data.service_type === 'gas');
 
@@ -721,7 +762,6 @@ export default {
             }
 
         },
-
         submit(){
             let subType = 'energy';
             if(this.tabMapper.Energy === this.tab){
@@ -739,13 +779,6 @@ export default {
             this.modified_moving_date = formatDate(this.moving_date)
             this.$eventBus.$emit("update_moving_date", this.modified_moving_date)
         },
-        syncConnectionDate(value){
-            this.updateConnecitionEndNullDate();
-            this.modified_moving_date = formatDate(value) ? formatDate(value) :
-                                        this.modified_moving_date ;
-            this.connection_end_date_menu = false;
-            this.$eventBus.$emit("update_moving_date", this.modified_moving_date)
-        },
         updateConnecitionEndNullDate(){
             this.modified_connection_end_date = null;
             this.connection_end_date = null;
@@ -761,7 +794,7 @@ export default {
                 this.$eventBus.$emit("update_connection_end_date", this.modified_connection_end_date)
             }
         },
-         syncConnectionEndDate(value){
+        syncConnectionEndDate(value){
             this.connection_end_date_menu = false;
             this.modified_connection_end_date = formatDate(value) ? formatDate(value) :
                                                 this.modified_connection_end_date ;
@@ -772,6 +805,11 @@ export default {
                 this.$eventBus.$emit("update_connection_end_date", this.modified_connection_end_date)
             }
         },
+        changeAfterHourPayee() {
+            this.$emit('updateDraft',  'after_hour_payee', this.leadSummary.after_hour_payee, false, null, false )
+        },
+
+
      }
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
     <v-row>
         <v-col cols="8" class="mb-8 pb-8">
-                <ServiceApplications @updateService="updateService" :leadSummary="leadSummary" @updatePlan="updatePlan"></ServiceApplications>
+                <ServiceApplications @updateDraft="updateDraft" @updateService="updateService" :afterHourFlag="afterHourFlag" :leadSummary="leadSummary" @updatePlan="updatePlan"></ServiceApplications>
         </v-col>
         <v-col cols="4" class="mb-8 pb-8">
             <v-card class="hood-card">
@@ -24,6 +24,9 @@ name: "LeadServicesAndNotes",
         },
         leadSummary: {
             require: true
+        },
+        afterHourFlag: {
+            require: false
         }
     },
     components:{
@@ -31,6 +34,10 @@ name: "LeadServicesAndNotes",
         ApplicationNotes
     },
     methods: {
+
+      updateDraft( field, value, isDate, identification, isManualChangeFlag) {
+        this.$emit('updateDraft', field, value, isDate, identification, isManualChangeFlag );
+      },
         updatePlan(plan, isManual)
         {
             this.$emit('updatePlan', plan, isManual);

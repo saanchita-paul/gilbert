@@ -55,7 +55,8 @@ export default class ApplicationSummary {
     agent_name = '';
     agency_office = '';
     source= 0;
-    created_by_agent = null
+    created_by_agent = null;
+    after_hour_payee =  null;
     constructor(
         {
             id = null,
@@ -116,7 +117,8 @@ export default class ApplicationSummary {
             source = 0,
             created_by_agent = null,
             is_temporary_connection = 0,
-            connection_end_date = null
+            connection_end_date = null,
+            after_hour_payee = null,
         }
     ) {
 
@@ -183,6 +185,7 @@ export default class ApplicationSummary {
         this.connection_end_date = connection_end_date
         this.fast_connect_customer_reference = fast_connect_customer_reference
         this.is_auto_water_submit = is_auto_water_submit
+        this.after_hour_payee = after_hour_payee
 
     }
 

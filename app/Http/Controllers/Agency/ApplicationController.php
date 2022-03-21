@@ -17,6 +17,7 @@ use App\Services\Agency\ApplicationService;
 use App\Services\Agency\WaterAutoSubmitService;
 use App\Services\Application\ApplicationsMetricsService;
 use App\Services\Application\SearchConnectionApplication;
+use App\Services\Ea\SetEaDistributorService;
 use App\Services\FastConnectService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -192,12 +193,17 @@ class ApplicationController extends Controller
 
         $res = $service->submit($requestArray, $id);
         $authUser = Auth::user();
-
         $ea_services_id = $service->getNotSubmittedEaService($id);
-
         $options = ['auth_user'=>$authUser, 'services_id'=> $ea_services_id];
+        $submitType =  data_get($requestArray, 'lead.submit_type');
 
-        SubmitApplicationEvent::dispatch($id, data_get($requestArray, 'lead.submit_type'), $options);
+        if($submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_ENERGY) {
+            $setEaDistributorService = new SetEaDistributorService($res, $ea_services_id);
+            $setEaDistributorService->setDistributor();
+        }
+
+
+        SubmitApplicationEvent::dispatch($id, $submitType, $options);
 
         return ApplicationResource::make($res);
     } catch (\Exception $exception) {
