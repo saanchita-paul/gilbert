@@ -9,7 +9,7 @@
                            v-model="identification.card_number"
                            outlined
                            dense
-                           placeholder="Medicare Card Number"
+                           placeholder=" "
                            :label="`Medicare Card Number${isTenancyHomeOwner?'':'*'}`"
                            @change="updateIdentification"
                        ></v-text-field>
@@ -25,7 +25,7 @@
                                v-model="identification.special_number"
                                :error-messages="errors[0]"
                                :label="`Special Number${isTenancyHomeOwner?'':'*'}`"
-                               placeholder="1/2"
+                               placeholder="Please select"
                                :items="specialNumberDD"
                                outlined
                                dense
@@ -81,7 +81,7 @@
                    >
                        <v-select
                            v-model="identification.card_color"
-                           placeholder="Yellow"
+                           placeholder="Please select"
                            :label="`Card Colour${isTenancyHomeOwner?'':'*'}`"
                            item-text="text"
                            item-value="value"
@@ -105,7 +105,7 @@
                             v-model="identification.card_number"
                             outlined
                             dense
-                            placeholder="Passport Number"
+                            placeholder=" "
                             :label="`Passport Number${isTenancyHomeOwner?'':'*'}`"
                             @change="updateIdentification"
                         ></v-text-field>
@@ -118,7 +118,7 @@
                             v-model="identification.country"
                             outlined
                             dense
-                            placeholder="AUS"
+                            placeholder="Issuing Country"
                             :label="`Issuing Country${isTenancyHomeOwner?'':'*'}`"
                             @change="updateIdentification"
                         ></v-text-field>
@@ -172,7 +172,7 @@
                             v-model="identification.card_number"
                             outlined
                             dense
-                            placeholder="License Number"
+                            placeholder=" "
                             :label="`Driver’s License${isTenancyHomeOwner?'':'*'}`"
                             @change="updateIdentification"
                         ></v-text-field>
@@ -186,8 +186,8 @@
                     >
                         <v-select
                             v-model="identification.state"
-                            placeholder="Victoria"
                             :label="`State${isTenancyHomeOwner?'':'*'}`"
+                            placeholder="Please select"
                             item-text="text"
                             item-value="value"
                             :items="statesDD"
