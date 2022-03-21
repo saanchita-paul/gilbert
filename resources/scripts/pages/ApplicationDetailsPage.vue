@@ -39,7 +39,9 @@
                                :readmore="additionalInstruction"
                                @close="closeReadMore"> </LeadReadMoreModal>
 
-            <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" secondaryContact="secondaryContact" v-if="showSubmitModal" @saveData="saveData" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
+        <AssignedToUserEmptyModal v-if="assignedToDialog" :dialog="assignedToDialog" @closeMessage="closeAssignedToEmptyModal"></AssignedToUserEmptyModal>
+
+        <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" secondaryContact="secondaryContact" v-if="showSubmitModal" @saveData="saveData" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
             <PreventSubmissionModal v-if="preventSubmissionFlag" :message="preventSubmissionMessage" :dialog="preventSubmissionFlag" @closeMessage="closePreventSubmissionModal"></PreventSubmissionModal>
     </v-container>
 </template>
@@ -257,6 +259,7 @@ export default {
             let assignedHoodUser = await this.getAssignedHoodUser();
             if(!assignedHoodUser) {
                 this.assignedToDialog = true;
+                return true;
             }
             if(this.isWaterUnavailable(submitType, this.lead?.property_details?.state, this.lead?.person_details?.tenancy_type))
             {
