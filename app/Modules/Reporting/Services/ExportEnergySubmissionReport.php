@@ -12,7 +12,7 @@ use App\Models\ConnectionApplication;
 use Illuminate\Database\Query\Builder;
 use App\Services\Utility\GilbertStatusMapper;
 
-class ExportSubmissionReport
+class ExportEnergySubmissionReport
 {
     use SetDateRage;
 
@@ -54,10 +54,6 @@ class ExportSubmissionReport
 
     public function run()
     {
-        // $accessToken = (new SimpleTokenService())->verifyAccessToken($this->token);
-        // if (!$accessToken) {
-        //     throw new \Exception('Invalid token');
-        // }
         $this->mapData($this->fetchData());
         return $this->export();
     }
@@ -67,11 +63,7 @@ class ExportSubmissionReport
     }
 
     public function verifyAccessToken(){
-        // $token = 'token';
-
-        // if($token === 'token'){
-             $this->run();
-        // }
+        $this->run();
     }
 
     private function export()
@@ -93,9 +85,6 @@ class ExportSubmissionReport
             $datum->Offer_Type = 'ENE';
             $datum->Tenancy_Type = $this->getTenancyType($datum->Tenancy_Type);
             $datum->Utility_Commission = $this->getUtilityCommission($datum->Office_Id, $datum->Utility_Service);
-            // $datum->Lead_Submitted_Date = $datum->Lead_Submitted_Date ?? 'NULL';
-            // $datum->Unit_Number = $datum->Unit_Number ?? 'NULL';
-            // $datum->Vendor_ID = $datum->Vendor_ID ?? 'NULL';
             // $datum->Source_Code = $this->getSourceCode($datum->Utility_Service, $datum->State, $datum->Utility_Plan, $datum->Postcode);
 
             $this->setAgencyName($datum);

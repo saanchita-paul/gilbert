@@ -8,14 +8,16 @@ use Reporting\Services\WaterReport;
 use App\Http\Controllers\Controller;
 use Reporting\Services\EnergyReport;
 use App\Services\Agency\SimpleTokenService;
-use App\Modules\Reporting\Services\ExportSubmissionReport;
+use App\Modules\Reporting\Services\ExportEnergySubmissionReport;
+use App\Modules\Reporting\Services\ExportWaterSubmissionReport;
 
 class ReportController extends Controller
 {
     public function home(Request $request)
     {
+        $dateType = $request->get('dateType') ?? 'submitted_date';
         $energy =  (new EnergyReport(
-            $request->get('dateType'),
+            $dateType,
             $request->get('start'),
             $request->get('end')
         ))->getEnergyReport();
@@ -35,13 +37,19 @@ class ReportController extends Controller
     public function submissionReport(Request $request)
     {
         try {
-            return (
-                new ExportSubmissionReport(
+            if($request->get('type') === 'energy') {
+                return (new ExportEnergySubmissionReport(
                     $request->get('type'),
                     $request->get('start'),
                     $request->get('end')
-                    )
-            )->run();
+                ))->run();
+            } else {
+                return (new ExportWaterSubmissionReport(
+                    $request->get('type'),
+                    $request->get('start'),
+                    $request->get('end')
+                ))->run();
+            }
         } catch (\Exception $exception) {
             return  response([ 'status' => false, 'msg' => 'Unathenticated'] , 401);
         }
