@@ -310,15 +310,16 @@
 import EnergyService from "@scripts/components/crm/leadmanagement/EnergyService";
 import ServiceProvider from "@scripts/components/crm/leadmanagement/ServiceProvider";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import leadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
 import InternetPlan from "@scripts/components/crm/leadmanagement/InternetPlan";
 import EAPlanService from "@scripts/services/ea/EAPlanService";
-import {EA_PLAN_TYPES, PLAN_TYPE_TOTAL} from "@scripts/models/ea/EnergyPlan";
+import {PLAN_TYPE_TOTAL} from "@scripts/models/ea/EnergyPlan";
 import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
 import InternetPlanDetails from "@scripts/components/ea/InternetPlanDetails";
 import WaterService from "@scripts/components/crm/leadmanagement/WaterService";
 import InternetService from "@scripts/components/crm/leadmanagement/InternetService";
-import {isNull, now} from "lodash-es";
+import {isNull} from "lodash-es";
 import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
 import SumoPlan from "@scripts/components/crm/leadmanagement/SumoPlan";
 import ServiceProvideres from "@scripts/data/ServiceProvideres";
@@ -326,10 +327,8 @@ import SumoService from '@scripts/services/crm/SumoService';
 import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails"
 import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
 import Spinner from "@scripts/plugins/Spinner";
-import dayJs from "dayjs";
-import { formatDate } from "@scripts/services/others/DateService"
-import leadApplicationService from "@scripts/services/crm/LeadApplicationService";
-import dayjs from "dayjs";
+import {formatDate} from "@scripts/services/others/DateService"
+
 export default {
     name: "ServiceApplications",
     components: { SumoPlan, SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails, SoleDetails},
@@ -354,7 +353,7 @@ export default {
             viewPlanDialog: false,
             planTypeForDetails: null,
             activeService: 'energy',
-            tab: null,
+            // tab: null,
             origin: [ {text: 'Origin Go', bg: 'red', active: true, type: 'origin' },
                 { text: 'Origin Go Variable', bg: 'blue', actSumoPlanDetailsive: false, type: 'origin' },
                 {text: 'Origin Basic', bg: 'orange', active: false , type: 'origin'}],
@@ -390,6 +389,14 @@ export default {
         }
     },
     computed: {
+        tab: {
+            get() {
+                return LeadApplicationService.getActiveServiceTab()
+            },
+            set(value) {
+                leadApplicationService.setActiveServiceTab(value)
+            }
+        },
         sumoPlanName(){
             if(this.sumoPlanDetails){
                 return this.sumoPlanDetails?.plan_name ?? "";
@@ -462,7 +469,6 @@ export default {
          // this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
         this.loadSelectedPowerProvider();
 
-        console.log("print lead summary" , this.leadSummary);
 
         const updateAddress = address => {
             if (this.selectedPowerProvider === 'sumo') {
