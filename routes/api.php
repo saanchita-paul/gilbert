@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use PropertyMe\services\FetchContacts;
 use App\Services\RolePermissionService;
 use Illuminate\Support\Facades\Broadcast;
+use TSA\Services\TsaSendAppliationService;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Agency\NoteController;
 use Reporting\Http\Controllers\ReportController;
@@ -232,8 +233,7 @@ Route::get("/karan/sales-status", function () {
 
 Route::get('country_test', function () {
     //  return SubmitWaterLeadToFastConnect::mapLengthOfCountry[2];
-    $ser =  new SubmitWaterLeadToFastConnect(1);
-    // return $ser;
-    return $ser->getMappedIdentificationCountry('AX');
-    // return 'got' ;
+    $s = new TsaSendAppliationService(12);
+    $s->getCallHistory();
+
 });
