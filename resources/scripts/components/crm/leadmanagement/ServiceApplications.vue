@@ -456,7 +456,7 @@ export default {
         this.modified_connection_end_date = formatDate(this.leadSummary.connection_end_date)
         this.connection_end_date =  this.leadSummary.connection_end_date;
 
-        this.providerSpinner = new Spinner(this.$refs.provider, {autoStart: true})
+        // this.providerSpinner = new Spinner(this.$refs.provider, {autoStart: true})
         this.loadServiceProvider();
         this.loadPlan();
          // this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
@@ -652,7 +652,7 @@ export default {
             this.sumoOptions.isError = false;
             // this.sumoOptions.isError = true;
             this.sumoOptions.errorMsg = "";
-            this.providerSpinner.start()
+            // this.providerSpinner.start()
             try {
                 // this.isSumoLoading = true;
                 let address = this.leadSummary.street_address + ' ' + this.leadSummary.city + ' ' + this.leadSummary.state + ' ' + this.leadSummary.postcode;
@@ -661,7 +661,7 @@ export default {
                 this.actionOnSelectProvider(name)
                 this.isSumoLoading = false;
                 // this.isSumoLoading = false;
-                this.providerSpinner.stop()
+                // this.providerSpinner.stop()
                 return 0;
             } catch (error) {
                 this.sumoOptions.isError = true;

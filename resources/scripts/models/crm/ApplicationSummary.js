@@ -11,6 +11,7 @@ export default class ApplicationSummary {
     phone = null;
     inspection_time = null;
     has_electricity = 1;
+    international_phone = null;
     homephone = null;
     phone_type = 1;
     email = null;
@@ -65,6 +66,7 @@ export default class ApplicationSummary {
             last_name = '',
             date_of_birth = null, //dob
             phone = null,
+            international_phone = null,
             homephone = null,
             inspection_time = null,
             has_electricity = 1,
@@ -130,6 +132,7 @@ export default class ApplicationSummary {
         this.has_electricity = has_electricity;
         this.dob = date_of_birth;
         this.phone = phone;
+        this.international_phone = international_phone;
         this.homephone = homephone;
         this.phone_type = phone_type;
         this.email = email;
