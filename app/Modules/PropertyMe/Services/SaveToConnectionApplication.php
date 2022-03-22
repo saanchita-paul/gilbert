@@ -15,6 +15,7 @@ use Notification;
 use PropertyMe\PropertyMeLead;
 use App\Modules\PropertyMe\Services\DobIdentificationService;
 use App\Models\ApplicationNote;
+use App\Models\ConnectionService;
 
 class SaveToConnectionApplication
 {
@@ -77,6 +78,15 @@ class SaveToConnectionApplication
             'billing_address_text' => $this->extractContact($leadData, 'PostalAddress.Text'),
 
         ]);
+
+        // auto adding water service to connection application
+        if ($application->id) {
+            $connectionService = new ConnectionService();
+            $connectionService->service_type = 'water';
+            $connectionService->status = ConnectionService::STATUS_EA_PROCESSINF;
+            $connectionService->connection_application_id = $application->id;
+            $connectionService->save();
+        }
 
         if ($this->extractNoteData($note_data, 'person.identification.type') !== null
             && $this->extractNoteData($note_data, 'person.identification.card_number') !== null

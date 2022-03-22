@@ -12,7 +12,7 @@ use App\Models\ConnectionApplication;
 use Illuminate\Database\Query\Builder;
 use App\Services\Utility\GilbertStatusMapper;
 
-class ExportSubmissionReport
+class ExportWaterSubmissionReport
 {
     use SetDateRage;
 
@@ -21,16 +21,13 @@ class ExportSubmissionReport
     private $timezone;
     private $serviceType;
     private $type;
-    private $chatbotUri;
-
-    private array $energyType = [
-        ConnectionService::TYPE_ELECTRICITY,
-        ConnectionService::TYPE_GAS
-    ];
 
     private array $waterType = [
         ConnectionService::TYPE_WATER,
     ];
+
+    private array $acceptedWaterStates = ['Victoria', 'VIC'];
+    private array $acceptedTenancyType = [ConnectionApplication::TENANCY_TYPE_RENTER];
 
     const STATUES_TO_KEEP = [
         ConnectionService::STATUS_EA_PROCESSINF, //Not submitted
@@ -39,25 +36,21 @@ class ExportSubmissionReport
         ConnectionService::STATUS_ACCEPTED, //Accepted
         ConnectionService::STATUS_REJECTED, //Rejected
         ConnectionService::AC_MANUAL_PROCESSING, //MANUAL_PROCESSING
-        ConnectionService::STATUS_CANT_CONNECT, //Failed
+        ConnectionService::STATUS_CANT_CONNECT, //Can't connect
+        ConnectionService::STATUS_FAILED, //Failed
     ];
 
     public function __construct(string $type, string $start, string $end)
     {
         $this->setDateRange($start, $end);
         $this->type = $type;
-        $this->serviceType = $type === 'energy' ? $this->energyType : $this->waterType;
-        $this->chatbotUri = config('bot.root_url');
+        $this->serviceType = $this->waterType;
     }
 
     private array $leadsData = [];
 
     public function run()
     {
-        // $accessToken = (new SimpleTokenService())->verifyAccessToken($this->token);
-        // if (!$accessToken) {
-        //     throw new \Exception('Invalid token');
-        // }
         $this->mapData($this->fetchData());
         return $this->export();
     }
@@ -67,11 +60,7 @@ class ExportSubmissionReport
     }
 
     public function verifyAccessToken(){
-        // $token = 'token';
-
-        // if($token === 'token'){
-             $this->run();
-        // }
+        $this->run();
     }
 
     private function export()
@@ -89,14 +78,9 @@ class ExportSubmissionReport
             $datum->Application_Status = $this->getApplicationStatus($datum->Application_Status);
             $datum->Utility_Status = $this->getUtilityStatus($datum->Utility_Status);
             $datum->Street_Type = $this->getRoadType($datum->Street_Type);
-            $datum->Customer_Type = $this->getCustomerType($datum->Customer_Type);
-            $datum->Offer_Type = 'ENE';
             $datum->Tenancy_Type = $this->getTenancyType($datum->Tenancy_Type);
             $datum->Utility_Commission = $this->getUtilityCommission($datum->Office_Id, $datum->Utility_Service);
-            // $datum->Lead_Submitted_Date = $datum->Lead_Submitted_Date ?? 'NULL';
-            // $datum->Unit_Number = $datum->Unit_Number ?? 'NULL';
-            // $datum->Vendor_ID = $datum->Vendor_ID ?? 'NULL';
-            // $datum->Source_Code = $this->getSourceCode($datum->Utility_Service, $datum->State, $datum->Utility_Plan, $datum->Postcode);
+            $datum->Water_Only_Application = $this->isWaterOnlyApplication($datum->Water_Only_Application);
 
             $this->setAgencyName($datum);
 
@@ -106,19 +90,17 @@ class ExportSubmissionReport
             unset($datum->Foxie_Agency_Name);
             unset($datum->Foxie_Agent_Name);
             unset($datum->Assigned_To);
-            // unset($datum->Application_Status);
 
-            if($this->allowedForExport($datum->Utility_Provider, $datum->UI_Status, $datum->Foxie_Connect_Id)) {
+            if($this->allowedForExport($datum->Foxie_Connect_Id)) {
                 unset($datum->Foxie_Connect_Id);
                 $this->leadsData[] = $datum;
             }
         }
     }
 
-    // Offer_Type, Source_Code is faked assigned just to place the data in the right order
     private function fetchData() : array
     {
-        $energyType = $this->energyType;
+        $waterType = $this->waterType;
         $builder = DB::table('connection_services as cs')
             ->selectRaw("
                 ca.id as `App_id`,
@@ -142,22 +124,19 @@ class ExportSubmissionReport
                 IFNULL(ca.city,'NULL') as `Suburb`,
                 IFNULL(ca.state,'NULL') as `State`,
                 IFNULL(ca.postcode,'NULL') as `Postcode`,
-                IFNULL(ca.vendor_id,'NULL') as `Vendor_ID`,
                 IFNULL(ca.nmi,'NULL') as `NMI`,
                 IFNULL(ca.mirn,'NULL') as `MIRN`,
-                IFNULL(ca.property_type,'NULL') as `Customer_Type`,
-                IFNULL(ca.status,'NULL') as `Offer_Type`,
                 IFNULL(ca.assigned_to,'NULL') as `Assigned_To`,
                 IFNULL(ca.tenancy_type,'NULL') as `Tenancy_Type`,
-                cs.lead_reference as `Lead_Reference`,
                 cs.provider_name as `Utility_Provider`,
                 cs.service_type as `Utility_Service`,
-                cs.plan_type as `Utility_Plan`,
-                cs.quote_reference as `Quote_ID`,
                 IFNULL(sl.agency_name, 'NULL') as `Foxie_Agency_Name`,
                 IFNULL(sl.agent_name, 'NULL') as `Foxie_Agent_Name`,
                 IFNULL(sl.foxie_lead_source_description, 'NULL') as `Foxie_Lead_Description`,
                 IFNULL(sl.compare_connect_id, 'NULL') as `Foxie_Connect_Id`,
+                IFNULL(cs.distributor, 'NULL') as `Water_Distributor`,
+                IFNULL(ca.fast_connect_customer_reference, 'NULL') as `Fast_Connect_Reference_Id`,
+                IFNULL(ca.id, 'NULL') as `Water_Only_Application`,
                 cs.status as `UI_Status`,
                 ca.status as `Application_Status`,
                 cs.status as `Utility_Status`
@@ -168,8 +147,10 @@ class ExportSubmissionReport
             ->leftJoin('offices as ofs', 'ofs.id', '=', 'ca.office_id')
             ->leftJoin('users as u', 'ca.submitted_by', '=', 'u.id')
             ->leftJoin('suger_leads as sl', 'ca.id', '=', 'sl.connection_application_id')
-            ->where( function($q) use ($energyType) { $q->whereIn('cs.service_type', $energyType)->orWhereNull('cs.service_type'); } );
-            // ->whereNotNull('cs.provider_name');
+            ->where( function($q) use ($waterType) { $q->whereIn('cs.service_type', $waterType)->orWhereNull('cs.service_type'); } )
+            ->where( function($q) { $q->whereIn('ca.state', $this->acceptedWaterStates)->orWhereNull('ca.state'); } )
+            ->where( function($q) { $q->whereIn('ca.tenancy_type', $this->acceptedTenancyType)->orWhereNull('ca.tenancy_type'); } );
+
         $builder = $this->applyStatusFilter($builder);
         $tempBuilder = clone $builder;
         $filterWithCreatedDate = $this->filterWithCreatedDate($tempBuilder)->get()->toArray();
@@ -180,6 +161,20 @@ class ExportSubmissionReport
             $filterWithCreatedDate,
             $filterWithSubmittedDate,
         );
+    }
+
+    private function isWaterOnlyApplication($applicationId) : string
+    {
+        $connectionApplication = ConnectionApplication::with('connectionServices')->find($applicationId);
+        $serviceArray = $connectionApplication->connectionServices?->pluck('service_type')->toArray();
+
+        $newServiceArray = [];
+        foreach ($serviceArray as $service) {
+            if ($service !== ConnectionService::TYPE_INTERNET && $service !== ConnectionService::TYPE_WATER) {
+                $newServiceArray[] = $service;
+            }
+        }
+        return count($newServiceArray) === 0 ? 'Yes' : 'No';
     }
 
     private function applyStatusFilter(Builder $builder): Builder
@@ -245,38 +240,6 @@ class ExportSubmissionReport
         return $data[sizeof($data) - 1];
     }
 
-    // Not using this function anymore, can delete
-    private function getSourceCode($service, $state, $plan, $postcode)
-    {
-        $state = $this->stateMap($state);
-
-        try {
-            $source_url = $service === 'power' ? 'ele-source-code' : 'gas-source-code';
-            $response = Http::withoutVerifying()->post("$this->chatbotUri/api/$source_url", ['plan' => $plan, 'state' => $state, 'postcode' => $postcode]);
-            if ($response->status() == 200) {
-                return json_decode($response->body())->source_code;
-            }
-        } catch (\Exception $e) {
-            Log::error("[ExportEnergyReport:getElectricitySourceCode] ->  " . $e->getMessage());
-            Log::error($e->getTraceAsString());
-            return  '';
-        }
-
-        return  '';
-    }
-
-    private function stateMap($state)
-    {
-        $stateList = [
-            'New South Wales' => 'NSW', 'Victoria' => 'VIC', 'Queensland' => 'QLD',
-            'South Australia' => 'SA', 'Northern Territory' => 'NT', 'TAS' => 'Tasmania', 'ACT' => 'Australian Capital Territory', 'WA' => 'Western Australia'
-        ];
-        if (array_key_exists($state, $stateList)) {
-            return $stateList[$state];
-        }
-        return $state;
-    }
-
     private function getUiStatus($applicationStatus, $serviceStatus, $assignedTo)
     {
         if( (int) $applicationStatus === ConnectionApplication::STATUS_CLOSED) {
@@ -315,33 +278,19 @@ class ExportSubmissionReport
         return $commission  ?  $commission->rate : 'NULL';
     }
 
-    private function getCustomerType($customerType)
-    {
-        return match ($customerType) {
-            1 => 'RESI',
-            2 => 'SME',
-            default => null
-        };
-    }
-
     private function setAgencyName(object $datum)
     {
-        if( $datum->Foxie_Agency_Name && $datum->Foxie_Agency_Name !== 'null') {
+        if( $datum->Foxie_Agency_Name && $datum->Foxie_Agency_Name !== 'NULL') {
             $datum->Agency_Name = $datum->Foxie_Agency_Name;
         }
 
-        if( $datum->Foxie_Agent_Name && $datum->Foxie_Agent_Name !== 'null') {
+        if( $datum->Foxie_Agent_Name && $datum->Foxie_Agent_Name !== 'NULL') {
             $datum->Agent_Name = $datum->Foxie_Agent_Name;
         }
     }
 
-    private function allowedForExport($serviceProvider, $serviceStatus, $foxieConnectID)
+    private function allowedForExport($foxieConnectID)
     {
-        $nonEmptyProviders = ['IN_PROGRESS', 'MANUAL_PROCESSING', 'ACCEPTED', 'REJECTED'];
-
-        if(in_array($serviceStatus, $nonEmptyProviders) && $serviceProvider === null) {
-            return false;
-        }
         if($foxieConnectID !== null && $foxieConnectID !== 'NULL' && $foxieConnectID !== 'N/A') {
             return false;
         }

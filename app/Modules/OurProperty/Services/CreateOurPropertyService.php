@@ -279,6 +279,15 @@ class CreateOurPropertyService
             $connectionService->connection_application_id = $leadId;
             $connectionService->save();
         }
+        //if OurProperty doesn't contain water then auto create water service
+        $ourPropertyLowerServices = array_map('strtolower', $ourPropertyServices);
+        if (!in_array('water', $ourPropertyLowerServices)) {
+            $connectionService = new ConnectionService();
+            $connectionService->service_type = 'water';
+            $connectionService->status = ConnectionService::STATUS_EA_PROCESSINF;
+            $connectionService->connection_application_id = $leadId;
+            $connectionService->save();
+        }
     }
 
     public function createAuthorizedPerson($leadId)
