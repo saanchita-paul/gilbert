@@ -461,12 +461,12 @@ export default {
             this.$eventBus.$off("busWaterSubmit", busWaterSubmitEvent);
         });
 
-
+      await this.loadNextBusinessDay();
       this.leadId = this.$route.params.id;
       await this.loadPlanNoteAndLead();
       await this.updateMernNmi();
       this.nmiMernFlag = false;
-      await this.loadNextBusinessDay();
+
 
 
     }
