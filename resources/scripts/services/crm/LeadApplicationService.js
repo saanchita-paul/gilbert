@@ -4,6 +4,7 @@ import {
     STATUSES_FOR_ENERGY_SUBMIT,
     STATUSES_FOR_WATER_SUBMIT
 } from "@scripts/data/ConnectionApplicationMapper";
+import Store from "@scripts/store";
 
 export default {
     loadMetrics: (data) => LeadApplicationAPI.getMetrics(data),
@@ -120,5 +121,6 @@ export default {
         }
     },
 
-
+    getActiveServiceTab: () => Store.getters["application/activeServiceTab"],
+    setActiveServiceTab: currentTab => Store.commit("application/setActiveServiceTab", currentTab),
 }
