@@ -7,7 +7,7 @@
 
             <v-textarea v-model ="note.text"
                 outlined
-                        hide-details="auto"
+                hide-details="auto"
                 placeholder="Notes goes here."
             ></v-textarea>
             </ValidationProvider>

@@ -62,31 +62,35 @@ class TsaSendAppliationService
     {
         $callHistory = json_decode($callHistories, true);
         $attemps = $callHistory['attempts'];
-
+ 
         info('cuhnkk', [$callHistory['attempts']]);
+        
         foreach ($attemps as $key => $value) {
-            # code...
-            $tsaCallHistory = new TSACallHistory();
-            $tsaCallHistory->all_fields_dump = $callHistories;
-            $tsaCallHistory->connection_application_id = $this->application->id;
-            $tsaCallHistory->tsa_id = $callHistory['import_id'];
-            $tsaCallHistory->lead_status = $callHistory['lead_status'];
-            $tsaCallHistory->num_attempts = $callHistory['num_attempts'];
-
-            $tsaCallHistory->attempts_id = $value['attempt_id'];
-            $tsaCallHistory->attempts_assigned_timestamp = Carbon::parse($value['assigned_timestamp'])->format("Y-m-d H:i:s")  ;
-            $tsaCallHistory->attempts_initiated_timestamp = Carbon::parse($value['initiated_timestamp'])->format("Y-m-d H:i:s");
-            $tsaCallHistory->attempts_connected_timestamp = Carbon::parse($value['connected_timestamp'])->format("Y-m-d H:i:s");
-            $tsaCallHistory->attempts_disconnected_timestamp = Carbon::parse($value['disconnected_timestamp'])->format("Y-m-d H:i:s");
-            $tsaCallHistory->attempts_disposed_timestamp = Carbon::parse($value['disposed_timestamp'])->format("Y-m-d H:i:s");
-            $tsaCallHistory->attempts_outcome = $value['outcome'];
-            $tsaCallHistory->attempts_disposition_code = $value['disposition_code'];
-            $tsaCallHistory->attempts_disposition_sub_code = $value['disposition_sub_code'];
+            try {
+                TSACallHistory::where('attempt_id', $value['attempt_id'])->firstOrFail();
+            } catch (\Exception $exception) {
+                $tsaCallHistory = new TSACallHistory();
+                $tsaCallHistory->all_fields_dump = $callHistories;
+                $tsaCallHistory->connection_application_id = $this->application->id;
+                $tsaCallHistory->tsa_id = $callHistory['import_id'];
+                $tsaCallHistory->lead_status = $callHistory['lead_status'];
+                $tsaCallHistory->num_attempts = $callHistory['num_attempts'];
+    
+                $tsaCallHistory->attempts_id = $value['attempt_id'];
+                $tsaCallHistory->attempts_assigned_timestamp = Carbon::parse($value['assigned_timestamp'])->format("Y-m-d H:i:s")  ;
+                $tsaCallHistory->attempts_initiated_timestamp = Carbon::parse($value['initiated_timestamp'])->format("Y-m-d H:i:s");
+                $tsaCallHistory->attempts_connected_timestamp = Carbon::parse($value['connected_timestamp'])->format("Y-m-d H:i:s");
+                $tsaCallHistory->attempts_disconnected_timestamp = Carbon::parse($value['disconnected_timestamp'])->format("Y-m-d H:i:s");
+                $tsaCallHistory->attempts_disposed_timestamp = Carbon::parse($value['disposed_timestamp'])->format("Y-m-d H:i:s");
+                $tsaCallHistory->attempts_outcome = $value['outcome'];
+                $tsaCallHistory->attempts_disposition_code = $value['disposition_code'];
+                $tsaCallHistory->attempts_disposition_sub_code = $value['disposition_sub_code'];
+                
+                $tsaCallHistory->save();
+            }
             
-            $tsaCallHistory->save();
         }
 
-        // info("print call history", [$callHistory]);
     }
 
     private function saveTSAId($tsaData)

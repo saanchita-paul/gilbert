@@ -4,6 +4,7 @@ use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Route;
 use PropertyMe\services\FetchContacts;
 use App\Services\RolePermissionService;
+use TSA\Services\TsaCallHistoryService;
 use Illuminate\Support\Facades\Broadcast;
 use TSA\Services\TsaSendAppliationService;
 use App\Http\Controllers\Auth\AuthController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Agency\HoodUserController;
 use App\Http\Controllers\Agency\ApplicationController;
 use FastConnect\Services\SubmitWaterLeadToFastConnect;
 use App\Http\Controllers\Agency\AgentProfileController;
+use App\Models\ConnectionApplication;
 use OurProperty\Http\Controllers\OurPropertyController;
 
 /*
@@ -233,7 +235,8 @@ Route::get("/karan/sales-status", function () {
 
 Route::get('country_test', function () {
     //  return SubmitWaterLeadToFastConnect::mapLengthOfCountry[2];
-    $s = new TsaSendAppliationService(12);
-    $s->getCallHistory();
+    $s = new TsaCallHistoryService();
+    // ConnectionApplication::find(12)
+    $s->saveCallHistory(ConnectionApplication::find(12));
 
 });
