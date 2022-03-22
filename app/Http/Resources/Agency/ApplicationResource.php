@@ -42,6 +42,7 @@ class ApplicationResource extends JsonResource
             'address_text' => $this->address_text,
             'services' => $this->getConnectionServices($this->connectionServices),
             'connection_services' => $this->mapService($this->connectionServices),
+            'tsa_call_histories' => $this->mapTsaService($this->tsaCallHistories),
             'identification' => $this->identification,
             'family_violance' => isset($this->family_violance) ? $this->family_violance : 3,
             'is_renovation_on' => isset($this->is_renovation_on) ? $this->is_renovation_on : 1,
@@ -103,6 +104,18 @@ class ApplicationResource extends JsonResource
             array_push($service_array, $services[$i]['service_type']);
         }
         return $service_array;
+    }
+
+    private function mapTsaService($callHistories)
+    {
+        $callHistoryArray = [];
+        $count = sizeof($callHistories);
+        for ($i = 0; $i < $count; $i++) {
+            $callHistoryArray[$i]['attempt_outcome'] = $callHistories[$i]['attempt_outcome'];
+            $callHistoryArray[$i]['initiated_timestamp'] = $callHistories[$i]['initiated_timestamp'];
+            $callHistoryArray[$i]['attempt_id'] = $callHistories[$i]['attempt_id'];
+        }
+        return $callHistoryArray;
     }
 
     public function mapService($service)

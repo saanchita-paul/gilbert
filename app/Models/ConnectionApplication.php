@@ -383,7 +383,7 @@ class ConnectionApplication extends Model
      */
     public function tsaCallHistories()
     {
-        return $this->hasMany(ConnectionService::class , 'connection_application_id');
+        return $this->hasMany(TSACallHistory::class , 'connection_application_id')->orderBy('attempt_id');
     }
 
     /**

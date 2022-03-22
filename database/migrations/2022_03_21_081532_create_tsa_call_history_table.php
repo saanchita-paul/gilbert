@@ -24,17 +24,17 @@ class CreateTsaCallHistoryTable extends Migration
             
             $table->string("num_attempts")->nullable();
             $table->string("lead_status")->nullable();
-            $table->string("attempts_outcome")->nullable();
-            $table->string("attempts_disposition_code")->nullable();
-            $table->string("attempts_disposition_sub_code")->nullable();
+            $table->string("attempt_outcome")->nullable();
+            $table->string("attempt_disposition_code")->nullable();
+            $table->string("attempt_disposition_sub_code")->nullable();
             $table->string("tsa_id")->nullable();
             
-            $table->string("attempts_id")->nullable();
-            $table->dateTime("attempts_assigned_timestamp")->nullable();
-            $table->dateTime("attempts_initiated_timestamp")->nullable();
-            $table->dateTime("attempts_connected_timestamp")->nullable();
-            $table->dateTime("attempts_disconnected_timestamp")->nullable();
-            $table->dateTime("attempts_disposed_timestamp")->nullable();
+            $table->string("attempt_id")->nullable();
+            $table->dateTime("attempt_assigned_timestamp")->nullable();
+            $table->dateTime("attempt_initiated_timestamp")->nullable();
+            $table->dateTime("attempt_connected_timestamp")->nullable();
+            $table->dateTime("attempt_disconnected_timestamp")->nullable();
+            $table->dateTime("attempt_disposed_timestamp")->nullable();
 
 
             $table->timestamps();
