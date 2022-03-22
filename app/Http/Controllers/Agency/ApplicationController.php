@@ -9,6 +9,7 @@ use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Requests\Agency\ProviderRequest;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationResource;
+use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
@@ -147,6 +148,9 @@ class ApplicationController extends Controller
                 $request->get('hood_user_id'),
                 $applicationId
             );
+
+            UpdateHubspotContactJob::dispatch($applicationId);
+
             $autoSubmitService = new WaterAutoSubmitService($applicationId);
             return ApplicationResource::make($data);
 

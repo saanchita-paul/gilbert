@@ -37,7 +37,7 @@
             <br>
             <p>Hello,</p>
             <br>
-            <p>An error occured!</p>
+            <p>An error occurred!</p>
             <br>
             <p>Error Message: {!! nl2br($data) !!}</p>
             <br>
