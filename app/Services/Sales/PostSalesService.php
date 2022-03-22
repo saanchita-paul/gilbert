@@ -211,6 +211,24 @@ class PostSalesService
     {
         $afterHourFlag = $this->connection->getAfterHourPayee();
         $this->connection->update(['after_hour_flag' => $afterHourFlag]);
+
+        $eaService = ConnectionService::query()->where('connection_application_id', $this->connection->id)
+            ->where('service_type', ConnectionService::TYPE_ELECTRICITY)
+            ->first();
+        $distributor = null;
+        if(!empty($eaService))
+        {
+            $distributor = $eaService->distributor;
+        }
+
+        $state = $this->stateMap( $this->connection->state);
+        Log::info('After Hour Flags ', [
+            'state'=> $state,
+            'distributor'=> $distributor,
+            'connection_date'=> $this->connection->moving_date,
+            'after_hour_flag'=> $afterHourFlag,
+        ]);
+
         return $afterHourFlag;
 
 
