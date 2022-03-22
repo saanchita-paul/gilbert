@@ -13,7 +13,7 @@ class CreateTsaCallHistoryTable extends Migration
      */
     public function up()
     {
-        Schema::create('tsa_call_history', function (Blueprint $table) {
+        Schema::create('tsa_call_histories', function (Blueprint $table) {
             $table->id();
             $table->json("all_fields_dump")->nullable();
             $table->unsignedBigInteger("connection_application_id")->nullable();
@@ -48,6 +48,6 @@ class CreateTsaCallHistoryTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tsa_call_history');
+        Schema::dropIfExists('tsa_call_histories');
     }
 }

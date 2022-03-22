@@ -50,6 +50,8 @@ class TsaCallHistoryService
 
         $callHistory = json_decode($callHistoryJsonString, true);
         
+        $connection_application->update(['tsa_call_status' => $callHistory['lead_status'] ]); 
+
         $attemps = $callHistory['attempts'];
         
         foreach ($attemps as $key => $value) {

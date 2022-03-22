@@ -27,6 +27,18 @@
                     </v-timeline-item>
              </v-timeline>
         </v-col>
+
+        <v-col cols="12" class="notes-container">
+                <v-timeline
+                    dense
+            >
+                    <v-timeline-item color="primary" small>
+                        <div style="font-weight: bold;"> Attemp 1 </div>
+                        <div> okay </div>
+                        <div> okay </div>
+                    </v-timeline-item>
+             </v-timeline>
+        </v-col>
     </v-row>
 </template>
 

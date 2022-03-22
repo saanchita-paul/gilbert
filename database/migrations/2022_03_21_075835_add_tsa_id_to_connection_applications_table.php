@@ -16,6 +16,7 @@ class AddTsaIdToConnectionApplicationsTable extends Migration
         Schema::table('connection_applications', function (Blueprint $table) {
             //
             $table->string('tsa_id')->nullable();
+            $table->string('tsa_call_status')->nullable();
         });
     }
 
@@ -28,7 +29,7 @@ class AddTsaIdToConnectionApplicationsTable extends Migration
     {
         Schema::table('connection_applications', function (Blueprint $table) {
             //
-            $table->dropColumn('tsa_id');
+            $table->dropColumn(['tsa_id', 'tsa_call_status']);
         });
     }
 }

@@ -18,7 +18,8 @@ class TSACallHistory extends Model
      * @var array
      */
 
-    protected $table = 'tsa_call_history';
+    protected $table = 'tsa_call_histories';
+    
     protected $fillable = [
         'all_fields_dump',
         'connection_application_id',
