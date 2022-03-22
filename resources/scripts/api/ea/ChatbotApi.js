@@ -14,9 +14,15 @@ export default {
      */
     getNextBusinessDay: async state => {
 
-        state = getStateKey(state)
-        const data = (await axios.get(`${ROOT}/next-business-day`, {params: {state: state}})).data;
-       return data?.next_business_day;
+        try {
+            state = getStateKey(state)
+            const data = (await axios.get(`${ROOT}/next-business-day`, {params: {state: state}})).data;
+            return data?.next_business_day;
+        } catch (error) {
+            console.log('error', error);
+            return null;
+
+        }
     },
 
 }
