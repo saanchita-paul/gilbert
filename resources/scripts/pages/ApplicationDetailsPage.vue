@@ -62,6 +62,7 @@ import * as dayjs from "dayjs";
 import {isNull} from "lodash-es";
 import PreventSubmissionModal from "@scripts/components/crm/modals/PreventSubmissionModal";
 import EAAfterHourService from "@scripts/services/ea/EAAfterHourService";
+import ChatbotService from "@scripts/services/crm/ChatbotService";
 
 export default {
     name: "ApplicationDetailsPage",
@@ -116,7 +117,8 @@ export default {
                     value: false,
                     errorMsg: false,
                 }
-            }
+            },
+            nextBusinessDay: null,
         }
     },
     watch: {
@@ -125,7 +127,8 @@ export default {
     computed: {
 
         afterHourFlag() {
-            return this.plan && EAAfterHourService.calculateAfterHourFlag(this.eaElectricityDistributor, this.leadSummary.moving_date, this.leadSummary.state);
+            return this.plan && EAAfterHourService.calculateAfterHourFlag(this.eaElectricityDistributor,
+                this.leadSummary.moving_date, this.leadSummary.state, this.nextBusinessDay);
         }
 
     },
@@ -134,7 +137,8 @@ export default {
         async getElectricityDistributor()
         {
             if(!isNull(this.plan)) {
-                this.eaElectricityDistributor = await EAAfterHourService.getElectricityDistributor(this.leadSummary.service_interests, this.plan?.key, this.leadSummary?.postcode, this.leadSummary?.state);
+                this.eaElectricityDistributor = await EAAfterHourService.getElectricityDistributor(this.leadSummary.service_interests,
+                    this.plan?.key, this.leadSummary?.postcode, this.leadSummary?.state);
             }
 
         },
@@ -364,6 +368,7 @@ export default {
             this.isManualChangeFlag = true;
 
             await this.getElectricityDistributor();
+            await this.loadNextBusinessDay();
         },
 
         async updateDraft(field, value, isDate, identification, isManualChangeFlag) {
@@ -430,10 +435,14 @@ export default {
 
         closeAssignedToEmptyModal(){
             this.assignedToDialog = false;
+        },
+        async loadNextBusinessDay() {
+            this.nextBusinessDay = await ChatbotService.getNextBusinessDay(this.leadSummary?.state);
         }
     },
 
   async  mounted() {
+
         const validateEvent = async (callback) => {
               let v = await this.validateLead();
               if(!v) return;
@@ -458,8 +467,10 @@ export default {
 
       this.leadId = this.$route.params.id;
       await this.loadPlanNoteAndLead();
+      await this.loadNextBusinessDay();
       await this.updateMernNmi();
       this.nmiMernFlag = false;
+
 
 
     }

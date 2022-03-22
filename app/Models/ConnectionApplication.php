@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use OurProperty\Models\OurProperty;
+use phpDocumentor\Reflection\Utils;
 use PropertyMe\PropertyMeLead;
 
 /**
@@ -495,6 +496,15 @@ class ConnectionApplication extends Model
     public function submittedByUser()
     {
         return $this->belongsTo(User::class, 'submitted_by');
+    }
+
+    public function getAfterHourPayee()
+    {
+        $afterHourFlag = false;
+        if(!empty($this->after_hour_payee)) {
+            $afterHourFlag = true;
+        }
+        return $afterHourFlag;
     }
 
 }
