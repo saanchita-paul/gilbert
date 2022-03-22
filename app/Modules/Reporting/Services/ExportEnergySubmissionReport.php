@@ -315,11 +315,11 @@ class ExportEnergySubmissionReport
 
     private function setAgencyName(object $datum)
     {
-        if( $datum->Foxie_Agency_Name && $datum->Foxie_Agency_Name !== 'null') {
+        if( $datum->Foxie_Agency_Name && $datum->Foxie_Agency_Name !== 'NULL') {
             $datum->Agency_Name = $datum->Foxie_Agency_Name;
         }
 
-        if( $datum->Foxie_Agent_Name && $datum->Foxie_Agent_Name !== 'null') {
+        if( $datum->Foxie_Agent_Name && $datum->Foxie_Agent_Name !== 'NULL') {
             $datum->Agent_Name = $datum->Foxie_Agent_Name;
         }
     }

@@ -36,7 +36,8 @@ class ExportWaterSubmissionReport
         ConnectionService::STATUS_ACCEPTED, //Accepted
         ConnectionService::STATUS_REJECTED, //Rejected
         ConnectionService::AC_MANUAL_PROCESSING, //MANUAL_PROCESSING
-        ConnectionService::STATUS_CANT_CONNECT, //Failed
+        ConnectionService::STATUS_CANT_CONNECT, //Can't connect
+        ConnectionService::STATUS_FAILED, //Failed
     ];
 
     public function __construct(string $type, string $start, string $end)
@@ -165,8 +166,15 @@ class ExportWaterSubmissionReport
     private function isWaterOnlyApplication($applicationId) : string
     {
         $connectionApplication = ConnectionApplication::with('connectionServices')->find($applicationId);
-        $serviceArray = $connectionApplication->connectionServices?->pluck('id')->toArray();
-        return (count($serviceArray) === 1) ? 'Yes' : 'No';
+        $serviceArray = $connectionApplication->connectionServices?->pluck('service_type')->toArray();
+
+        $newServiceArray = [];
+        foreach ($serviceArray as $service) {
+            if ($service !== ConnectionService::TYPE_INTERNET && $service !== ConnectionService::TYPE_WATER) {
+                $newServiceArray[] = $service;
+            }
+        }
+        return count($newServiceArray) === 0 ? 'Yes' : 'No';
     }
 
     private function applyStatusFilter(Builder $builder): Builder
@@ -272,11 +280,11 @@ class ExportWaterSubmissionReport
 
     private function setAgencyName(object $datum)
     {
-        if( $datum->Foxie_Agency_Name && $datum->Foxie_Agency_Name !== 'null') {
+        if( $datum->Foxie_Agency_Name && $datum->Foxie_Agency_Name !== 'NULL') {
             $datum->Agency_Name = $datum->Foxie_Agency_Name;
         }
 
-        if( $datum->Foxie_Agent_Name && $datum->Foxie_Agent_Name !== 'null') {
+        if( $datum->Foxie_Agent_Name && $datum->Foxie_Agent_Name !== 'NULL') {
             $datum->Agent_Name = $datum->Foxie_Agent_Name;
         }
     }
