@@ -16,8 +16,6 @@ class TsaCallHistoryService
     private function getCallHistory($connection_application)
     {
         try {
-            // $this->application = ConnectionApplication::where('id', $connection_application_id)->whereNotNull('tsa_id')->firstOrFail();
-
             $url = \config('tsa.root_url') . \config('tsa.call_history') . $connection_application->tsa_id;
             $url = APILog::setLoggerQuery($url, APILog::API_TSA_INSERT_DATA, false);
             
@@ -27,7 +25,6 @@ class TsaCallHistoryService
                 'X-API-Token' => \config('tsa.x_api_token')
             ])
                 ->get($url);
-            info("status" , [$response->status()]);
             
             if($response->status() == 200) {
                 return $response->body();
@@ -45,23 +42,22 @@ class TsaCallHistoryService
     public function saveCallHistory($connection_application)
     {
         
-        $callHistoryString = $this->getCallHistory($connection_application);
+        $callHistoryJsonString = $this->getCallHistory($connection_application);
         
-        if(!$callHistoryString) {
+        if(!$callHistoryJsonString) {
             return false;
         }
 
-        $callHistory = json_decode($callHistoryString, true);
-        info('TSA Call History', [$callHistory]);
+        $callHistory = json_decode($callHistoryJsonString, true);
+        
         $attemps = $callHistory['attempts'];
- 
         
         foreach ($attemps as $key => $value) {
             try {
                 TSACallHistory::where('attempt_id', $value['attempt_id'])->firstOrFail();
             } catch (\Exception $exception) {
                 $tsaCallHistory = new TSACallHistory();
-                $tsaCallHistory->all_fields_dump = $callHistoryString;
+                $tsaCallHistory->all_fields_dump = $callHistoryJsonString;
                 $tsaCallHistory->connection_application_id = $this->application->id;
                 $tsaCallHistory->tsa_id = $callHistory['import_id'];
                 $tsaCallHistory->lead_status = $callHistory['lead_status'];
