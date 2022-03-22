@@ -847,24 +847,28 @@
                     <v-col cols="12" class="pb-0">
                         <p class="sub-title mb-0">Service Interests</p>
                     </v-col>
+
                     <v-col cols="3">
                         <div class="leade-badge text-center service-radius" :class="service_types.power ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('power')">
                             <h4 :class="service_types.power ? 'enabled' : 'disabled'">Power</h4>
                             <v-icon :disabled="!service_types.power" color="yellow">mdi-flash</v-icon>
                         </div>
                     </v-col>
+
                     <v-col cols="3">
                         <div class="leade-badge text-center service-radius" :class="service_types.gas ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('gas')">
                             <h4 :class="service_types.gas ? 'enabled' : 'disabled'">Gas</h4>
                             <v-icon :disabled="!service_types.gas" color="orange">mdi-fire</v-icon>
                         </div>
                     </v-col>
+
                     <v-col cols="3">
                         <div class="leade-badge text-center service-radius" :class="service_types.water ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('water')">
                             <h4 :class="service_types.water ? 'enabled' : 'disabled'">Water</h4>
                             <v-icon :disabled="!service_types.water" color="blue">mdi-water</v-icon>
                         </div>
                     </v-col>
+
                     <v-col cols="3">
                         <div class="leade-badge text-center service-radius" :class="service_types.internet ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('internet')">
                             <h4 :class="service_types.internet ? 'enabled' : 'disabled'">Internet</h4>
@@ -921,6 +925,7 @@ import IdentificationDetail from "@scripts/components/crm/agent/IdentificationDe
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import { tenancyTypeMapper } from '@scripts/data/ConnectionApplicationMapper';
 import { formatDate } from "@scripts/services/others/DateService"
+
 import AuthService from '@scripts/services/AuthService';
 import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
 import SPECIAL_NUMBER from "@scripts/data/constants/SPECIAL_NUMBER";
@@ -1023,6 +1028,7 @@ export default {
             loadSubmit: false,
             user: null,
         }
+
     },
     created() {
         this.onStreetChanged = debounce(() => {
@@ -1034,6 +1040,7 @@ export default {
                     });
             }
         }, 250);
+
     },
     computed:{
         tenancyTypeMapper(){
@@ -1052,6 +1059,7 @@ export default {
         onAddressSelected(place) {
             GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
                 .then((data) => {
+
                     this.application.address_text = data.formatted_address;
                     this.application.street_address = data.street;
                     this.application.city = data.city;
@@ -1060,9 +1068,11 @@ export default {
                     this.application.street_number = data.street_number;
                     this.application.unit_number = data.unit_number;
                     this.application.street_name = data.street_name;
+
                     if(!isNull( data.unit_number)) {
                         this.application.street_address = data.unit_number +'/'+ data.street;
                     }
+
                 });
         },
         onCancel() {
@@ -1103,6 +1113,7 @@ export default {
                 this.service_types[item] = false;
             }
         },
+
         done() {
             this.$router.push({name: 'agent.application.dashboard'});
         },
@@ -1137,6 +1148,7 @@ export default {
         dob() {
             this.application.date_of_birth = (new DayJs(this.dob).format('DD/MM/YYYY'));
         },
+
         moving_date() {
             this.connection_end_date = null;
             this.application.connection_end_date = null;
@@ -1148,6 +1160,7 @@ export default {
         authorized_person_dob() {
             this.authorized_person.dob = (new DayJs(this.authorized_person_dob).format('DD/MM/YYYY'));
         },
+
         expire_date() {
             if (isNull(this.expire_date)) return;
             if(this.isSecondaryIdMedicare()) {
@@ -1158,6 +1171,7 @@ export default {
                 );
             }
         },
+
     },
     async mounted() {
         this.user = await AuthService.getAuthUser();
@@ -1194,4 +1208,5 @@ export default {
     .service-radius{
       border-radius: 8px !important;
     }
+
 </style>

@@ -415,6 +415,7 @@
                                 <v-col cols="10">
                                     <p class="font-weight-bold mb-0">Service Interests</p>
                                     <v-row>
+
                                         <v-col cols="3" class="px-1">
                                             <div class="leade-badge text-center elevation-3"
                                                  :class="application.service_interests.includes('power') ? 'div_enabled' : 'div_disabled' ">
@@ -424,6 +425,7 @@
                                                 <v-icon :disabled="!application.service_interests.includes('power')" color="yellow">mdi-flash</v-icon>
                                             </div>
                                         </v-col>
+
                                         <v-col cols="3" class="px-1">
                                             <div class="leade-badge text-center elevation-3"
                                                  :class="application.service_interests.includes('gas') ? 'div_enabled' : 'div_disabled' ">
@@ -433,6 +435,7 @@
                                                 <v-icon :disabled="!application.service_interests.includes('gas')" color="red">mdi-fire</v-icon>
                                             </div>
                                         </v-col>
+
                                         <v-col cols="3" class="px-1">
                                             <div class="leade-badge text-center elevation-3"
                                                  :class="application.service_interests.includes('water') ? 'div_enabled' : 'div_disabled' ">
@@ -442,6 +445,7 @@
                                                 <v-icon :disabled="!application.service_interests.includes('water')" color="blue">mdi-water</v-icon>
                                             </div>
                                         </v-col>
+
                                         <v-col cols="3" class="px-1">
                                             <div class="leade-badge text-center elevation-3"
                                                  :class="application.service_interests.includes('internet') ? 'div_enabled' : 'div_disabled' ">
@@ -454,6 +458,7 @@
                                     </v-row>
                                 </v-col>
                             </v-row>
+
                         </v-col> -->
 
                     </v-row>
@@ -501,6 +506,7 @@ export default {
                     + ' ' + this.application.last_name:
                     this.application.title + ' ' + this.application.first_name + ' ' + this.application.last_name;
             },
+
             authorised_full_name(){
                 return this.authorisedPerson.middle_name?
                     this.authorisedPerson.title + ' ' +
@@ -523,6 +529,7 @@ export default {
         .large-title1{
             font-size: 24px;
         }
+
     .div_enabled {
         border-color: transparent;
         cursor: pointer;
@@ -555,4 +562,5 @@ export default {
         .gray-background > p {
             color: #7E8A8F;
         }
+
 </style>
