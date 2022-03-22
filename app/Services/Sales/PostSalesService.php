@@ -207,11 +207,11 @@ class PostSalesService
 
     }
 
-    private function getAfterHoursServiceOrder(): bool
+    private function logFlagDetails(?bool $flag)
     {
-        $afterHourFlag = $this->connection->getAfterHourPayee();
-        $this->connection->update(['after_hour_flag' => $afterHourFlag]);
-
+        if (app()->environment('production')) {
+            return;
+        }
         $eaService = ConnectionService::query()->where('connection_application_id', $this->connection->id)
             ->where('service_type', ConnectionService::TYPE_ELECTRICITY)
             ->first();
@@ -226,8 +226,16 @@ class PostSalesService
             'state'=> $state,
             'distributor'=> $distributor,
             'connection_date'=> $this->connection->moving_date,
-            'after_hour_flag'=> $afterHourFlag,
+            'after_hour_flag'=> $flag,
         ]);
+    }
+
+    private function getAfterHoursServiceOrder(): bool
+    {
+        $afterHourFlag = $this->connection->getAfterHourPayee();
+        $this->connection->update(['after_hour_flag' => $afterHourFlag]);
+
+        $this->logFlagDetails($afterHourFlag);
 
         return $afterHourFlag;
 
