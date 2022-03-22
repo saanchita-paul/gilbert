@@ -13,7 +13,7 @@ export default class ApplicationSummary {
     has_electricity = 1;
     international_phone = null;
     homephone = null;
-    phone_type = 1;
+    phone_type = null;
     email = null;
     moving_date = null;
     email_billing = null; //is_email_billing

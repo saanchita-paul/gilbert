@@ -58,7 +58,7 @@
                             </p>
                         </v-col>
 
-                        <v-col v-if="application.phone_type === 3" cols="4" class="my-0 py-0  d-flex ">
+                        <v-col v-if="application.phone_type === 3" cols="4" class="my-0 py-0  d-flex justify-end">
                             <p class="font-weight-bold pl-2 mb-1">I. Mobile Number:</p>
                         </v-col>
                         <v-col v-if="application.phone_type === 3" cols="7" class="my-0 py-0 ">
@@ -409,22 +409,12 @@
 
 
 
-
+<!-- 
                         <v-col cols="12">
                             <v-row>
                                 <v-col cols="10">
                                     <p class="font-weight-bold mb-0">Service Interests</p>
                                     <v-row>
-
-<!--                                        <v-col cols="3">-->
-<!--                                            <div class="leade-badge text-center service-radius" :class="application.service_interests.includes('power') ? 'div_enabled' : 'div_disabled' ">-->
-<!--                                                <h4 :class="application.service_interests.includes('power') ? 'enabled' : 'disabled'">Power</h4>-->
-<!--                                                <v-icon :disabled="!application.service_interests.includes('power')" color="yellow">mdi-flash</v-icon>-->
-<!--                                            </div>-->
-<!--                                        </v-col>-->
-
-
-
                                         <v-col cols="3" class="px-1">
                                             <div class="leade-badge text-center elevation-3"
                                                  :class="application.service_interests.includes('power') ? 'div_enabled' : 'div_disabled' ">
@@ -434,7 +424,6 @@
                                                 <v-icon :disabled="!application.service_interests.includes('power')" color="yellow">mdi-flash</v-icon>
                                             </div>
                                         </v-col>
-
                                         <v-col cols="3" class="px-1">
                                             <div class="leade-badge text-center elevation-3"
                                                  :class="application.service_interests.includes('gas') ? 'div_enabled' : 'div_disabled' ">
@@ -444,7 +433,6 @@
                                                 <v-icon :disabled="!application.service_interests.includes('gas')" color="red">mdi-fire</v-icon>
                                             </div>
                                         </v-col>
-
                                         <v-col cols="3" class="px-1">
                                             <div class="leade-badge text-center elevation-3"
                                                  :class="application.service_interests.includes('water') ? 'div_enabled' : 'div_disabled' ">
@@ -454,7 +442,6 @@
                                                 <v-icon :disabled="!application.service_interests.includes('water')" color="blue">mdi-water</v-icon>
                                             </div>
                                         </v-col>
-
                                         <v-col cols="3" class="px-1">
                                             <div class="leade-badge text-center elevation-3"
                                                  :class="application.service_interests.includes('internet') ? 'div_enabled' : 'div_disabled' ">
@@ -467,8 +454,7 @@
                                     </v-row>
                                 </v-col>
                             </v-row>
-
-                        </v-col>
+                        </v-col> -->
 
                     </v-row>
                 </v-col>
@@ -515,7 +501,6 @@ export default {
                     + ' ' + this.application.last_name:
                     this.application.title + ' ' + this.application.first_name + ' ' + this.application.last_name;
             },
-
             authorised_full_name(){
                 return this.authorisedPerson.middle_name?
                     this.authorisedPerson.title + ' ' +
@@ -538,7 +523,6 @@ export default {
         .large-title1{
             font-size: 24px;
         }
-
     .div_enabled {
         border-color: transparent;
         cursor: pointer;
@@ -571,5 +555,4 @@ export default {
         .gray-background > p {
             color: #7E8A8F;
         }
-
 </style>
