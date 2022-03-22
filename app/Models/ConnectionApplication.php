@@ -184,7 +184,8 @@ class ConnectionApplication extends Model
         'is_temporary_connection',
         'water_next_available_date',
         'after_hour_payee',
-        'after_hour_flag'
+        'after_hour_flag',
+        'tsa_call_status'
     ];
 
 
@@ -375,6 +376,14 @@ class ConnectionApplication extends Model
     public function connectionServices()
     {
         return $this->hasMany(ConnectionService::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function tsaCallHistories()
+    {
+        return $this->hasMany(ConnectionService::class , 'connection_application_id');
     }
 
     /**

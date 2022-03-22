@@ -74,6 +74,7 @@ class ApplicationResource extends JsonResource
             'billing_postcode' => $this->billing_postcode,
             'is_billing_same' => $this->is_billing_same,
             'is_contacted' => $this->is_contacted,
+            'tsa_call_status' => $this->tsa_call_status,
             'is_auto_water_submit' => $this->is_auto_water_submit,
             'fast_connect_customer_reference' => $this->fast_connect_customer_reference,
             'authorizedPersonName' => $this->getAuthoizedPersonName(),
