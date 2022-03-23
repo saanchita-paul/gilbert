@@ -403,29 +403,30 @@ class SubmitWaterLeadToFastConnect
         };
     }
 
-        private function secondaryContactIdentification($secondaryContact)
-        {
-            $expireDate = (new Carbon($secondaryContact->expire_date))->format('Y-m-d');
-            $identification = [
-                'number' => $secondaryContact->card_number,
-                'expiry' => $expireDate,
-                'identification_profile_item_id' => $this->getMappedIdentificationType($secondaryContact->identification_type),
-            ];
+    private function secondaryContactIdentification($secondaryContact)
+    {
+        $expireDate = (new Carbon($secondaryContact->expire_date))->format('Y-m-d');
+        $identification = [
+            'number' => $secondaryContact->card_number,
+            'expiry' => $expireDate,
+            'identification_profile_item_id' => $this->getMappedIdentificationType($secondaryContact->identification_type),
+        ];
 
-            $data = match($secondaryContact?->identification_type) {
-                Identification::TYPE_PASSPORT => ['issuer_country_id' => $this->getMappedIdentificationCountry($secondaryContact->country)],
-                Identification::TYPE_MEDICARE => [
-                        'medicare_color' => $secondaryContact?->card_color,
-                        'medicare_irn' => (int) $secondaryContact->special_number,
-                    ],
+        $data = match ($secondaryContact?->identification_type) {
+            Identification::TYPE_PASSPORT => ['issuer_country_id' => $this->getMappedIdentificationCountry($secondaryContact->country)],
+            Identification::TYPE_MEDICARE => [
+                'medicare_color' => $secondaryContact?->card_color,
+                'medicare_irn' => (int) $secondaryContact->special_number,
+                'issuer_country_id' => 13
+            ],
 
-                Identification::TYPE_DRIVING_LICENCE => [
-                        'issuer_state_id' => $this->getMappedIdentificationState($secondaryContact->state),
-                    ],
-                default => []
-            };
-            return array_merge($identification, $data);
-        }
+            Identification::TYPE_DRIVING_LICENCE => [
+                'issuer_state_id' => $this->getMappedIdentificationState($secondaryContact->state),
+            ],
+            default => []
+        };
+        return array_merge($identification, $data);
+    }
     /**
      * get ConnectionService builder
      *
