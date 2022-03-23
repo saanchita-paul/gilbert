@@ -28,7 +28,7 @@
              </v-timeline>
         </v-col>
 
-        <v-col cols="12" class="notes-container">
+        <v-col cols="12" class="notes-container" v-if="leadSummary.tsa_call_histories.length">
             <div class="text-center font-weight-bold text-h5"> Call Log </div>
                 <v-timeline
                     dense
