@@ -1,6 +1,6 @@
 import DayJs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
-import {isNull} from "lodash-es";
+import {isNull, sortBy} from "lodash-es";
 
 export default class ApplicationSummary {
     id = null;
@@ -119,6 +119,7 @@ export default class ApplicationSummary {
             is_temporary_connection = 0,
             connection_end_date = null,
             after_hour_payee = null,
+            tsa_call_histories = [],
         }
     ) {
 
@@ -186,8 +187,15 @@ export default class ApplicationSummary {
         this.fast_connect_customer_reference = fast_connect_customer_reference
         this.is_auto_water_submit = is_auto_water_submit
         this.after_hour_payee = after_hour_payee
+        this.tsa_call_histories = this.sortCallHistory(tsa_call_histories)
 
     }
+
+    
+    sortCallHistory(tsa_call_histories){
+        return sortBy(tsa_call_histories, ['attempt_id'])
+    }
+
 
     mapStatus(status) {
         status = status - 1;

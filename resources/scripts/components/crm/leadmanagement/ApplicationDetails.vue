@@ -2,7 +2,7 @@
    <v-card class="hood-card" v-if="lead">
         <h3 class="page-title">{{lead.applicant_name}}</h3>
         <IdCopyToClipboard :applicationId="lead.id"/>
-        <p class="sub-title mt-4 mb-2">Personal Details</p>
+        <p class="sub-title mt-4 mb-4">Personal Details</p>
 <!--        <table  class="application-info layout-fixed-table">-->
 <!--            <tr>-->
 <!--                <td class="font-weight-bold">Date of Birth</td>-->
@@ -40,6 +40,13 @@
 
 
        <v-row>
+
+           <v-col cols="5" class="py-0 my-0">
+                   <p class="font-weight-bold">Call Status</p>
+           </v-col>
+           <v-col cols="7"  class="py-0 my-0">
+               <p>{{lead.tsa_call_status}}</p>
+           </v-col>
 
            <v-col cols="5" class="py-0 my-0">
                    <p class="font-weight-bold">Date of Birth</p>

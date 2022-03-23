@@ -29,13 +29,14 @@
         </v-col>
 
         <v-col cols="12" class="notes-container">
+            <div class="text-center font-weight-bold text-h5"> Call Log </div>
                 <v-timeline
                     dense
             >
-                    <v-timeline-item color="primary" small>
-                        <div style="font-weight: bold;"> Attemp 1 </div>
-                        <div> okay </div>
-                        <div> okay </div>
+                    <v-timeline-item color="primary" small v-for="(nt, index) in leadSummary.tsa_call_histories" :key="nt.attempt_id">
+                        <div style="font-weight: bold;"> Attempt {{index+1}} </div>
+                        <div> {{nt.attempt_initiated_timestamp}} </div>
+                        <div> {{nt.attempt_outcome}} </div>
                     </v-timeline-item>
              </v-timeline>
         </v-col>
@@ -52,7 +53,10 @@ export default {
     props: {
       notes: {
           require: true
-      }
+      },
+      leadSummary: {
+          require: true
+      },
     },
     data() {
       return {

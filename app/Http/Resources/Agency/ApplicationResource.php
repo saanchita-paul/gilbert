@@ -112,7 +112,7 @@ class ApplicationResource extends JsonResource
         $count = sizeof($callHistories);
         for ($i = 0; $i < $count; $i++) {
             $callHistoryArray[$i]['attempt_outcome'] = $callHistories[$i]['attempt_outcome'];
-            $callHistoryArray[$i]['initiated_timestamp'] = $callHistories[$i]['initiated_timestamp'];
+            $callHistoryArray[$i]['attempt_initiated_timestamp'] = $callHistories[$i]['attempt_initiated_timestamp'];
             $callHistoryArray[$i]['attempt_id'] = $callHistories[$i]['attempt_id'];
         }
         return $callHistoryArray;
