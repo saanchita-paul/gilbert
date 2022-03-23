@@ -25,6 +25,7 @@ class GilbertStatusMapper
             ConnectionService::STATUS_REJECTED => 'REJECTED',
             ConnectionService::STATUS_CANT_CONNECT => 'FAILED',
             ConnectionService::AC_MANUAL_PROCESSING => 'MANUAL_PROCESSING',
+            ConnectionService::STATUS_FAILED => 'FAILED',
             default => 'NULL',
         };
     }
