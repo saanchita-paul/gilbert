@@ -89,6 +89,7 @@
                            outlined
                            dense
                            @change="updateIdentification"
+                           :error-messages="errors[0]"
                        >
                        </v-select>
                    </ValidationProvider>
@@ -194,6 +195,7 @@
                             outlined
                             dense
                             @change="updateIdentification"
+                            :error-messages="errors[0]"
                         >
                         </v-select>
                     </ValidationProvider>
