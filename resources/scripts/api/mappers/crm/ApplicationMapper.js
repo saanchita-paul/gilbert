@@ -112,10 +112,13 @@ export default {
         });
 
         data.application.service_interests = commission;
+        console.log(data.application);
        return {
            ...data.application,
            identification: this.mapIdentification(data.identification),
            dob: this.mapDateToServer(data.application.date_of_birth),
+           phone: this.mapPhoneToServer(data.application.phone),
+           homephone: this.mapPhoneToServer(data.application.homephone),
            moving_date: this.mapDateToServer(data.application.moving_date),
            connection_end_date: this.mapDateToServer(data.application.connection_end_date),
            is_email_billing: data.application.email_billing?data.application.email_billing:0,
@@ -126,6 +129,13 @@ export default {
            }
 
        }
+    },
+
+    mapPhoneToServer(phone) {
+        if(phone) {
+            return phone.replace(/\s/g, '');
+        }
+        return null;
     },
 
     mapIdentification(identification) {

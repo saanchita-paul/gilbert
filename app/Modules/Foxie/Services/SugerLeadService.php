@@ -35,6 +35,7 @@ class SugerLeadService
     const TYPE_SERVICE = [
         'gas' => 'gas',
         'electricity' => 'power',
+        'water' => 'water'
     ];
 
     const MAP_STATE_NSW = 'New South Wales';
@@ -177,13 +178,14 @@ class SugerLeadService
     }
 
     private function setServiceTypeTable(Request $request , $type){
-        // SERVICETYPE TABLE
-        info('checking service_c1');
-        if(!isset($request->service_c)) return;
+        // SERVICE TYPE TABLE
+        if(!isset($request->service_c)) {
+            $services = ['water'];
+        };
         info('checking service_c');
         // expected format example Electricity_Gas
         $services = explode("_", strtolower($request->service_c));
-
+        array_push($services, 'water'); // Water will be always added to the service
         try {
             if($type == self::TYPE_UPDATE) $this->connectionApplication->connectionServices()->delete();
             foreach ($services as $value) {

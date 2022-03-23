@@ -16,6 +16,7 @@ use App\Http\Controllers\Agency\ApplicationController;
 use FastConnect\Services\SubmitWaterLeadToFastConnect;
 use App\Http\Controllers\Agency\AgentProfileController;
 use OurProperty\Http\Controllers\OurPropertyController;
+use App\Services\RolePermission;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,7 +97,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::get('/application-assignees', [HoodUserController::class, 'getAssignee'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_ASSIGNEE_LIST);
-    // Route::post('/hood-users', [HoodUserController::class, 'store']);  # Not used
+    Route::post('/hood-users', [HoodUserController::class, 'store'])
+        ->middleware('permission:' . RolePermission::P_HOOD_ADMIN_CORE);
     Route::get('/hood-users', [HoodUserController::class, 'index'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
 

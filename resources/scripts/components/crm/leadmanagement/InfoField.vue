@@ -252,12 +252,12 @@
       </div>
       <div class="crm-text-field">
         <div class="field-label">
-          <span>Email Billing *</span>
+          <span>Email Billing {{isWaterTabFocused ? '': "*"}}</span>
         </div>
         <div class="text-field">
           <ValidationProvider
             name="Email Billing"
-            rules="required"
+            :rules="isWaterTabFocused ? '' : 'required'"
             v-slot="{ errors }"
           >
             <v-select
@@ -481,12 +481,12 @@
       </div>
       <div class="crm-text-field">
         <div class="field-label">
-          <span>Solar Power *</span>
+          <span>Solar Power {{isWaterTabFocused ? '' : '*'}} </span>
         </div>
         <div class="text-field">
           <ValidationProvider
             name="Solar Power"
-            rules="required"
+            :rules="isWaterTabFocused ? '' : 'required'"
             v-slot="{ errors }"
           >
             <v-select
@@ -1024,16 +1024,15 @@
 import ServiceAddress from "@scripts/components/crm/ServiceAddress";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import DayJs from "dayjs";
-import { isNull } from "lodash-es";
+import dayJs, * as dayjs from "dayjs";
+import {isNull} from "lodash-es";
 import AuthorizedPersonForm from "@scripts/components/crm/leadmanagement/AuthorizedPersonForm";
 import SPECIAL_NUMBER from "@scripts/data/constants/SPECIAL_NUMBER";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
-import dayJs from "dayjs";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
-import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
-import { medicareRules, mediExpireDate } from '@scripts/plugins/VeeValidate';
-import { tenancyTypeMapper } from '@scripts/data/ConnectionApplicationMapper';
-import * as dayjs from "dayjs";
+import {titlesMapperForDropdown} from "@scripts/data/titleMapper";
+import {medicareRules, mediExpireDate} from '@scripts/plugins/VeeValidate';
+import {tenancyTypeMapper} from '@scripts/data/ConnectionApplicationMapper';
 
 export default {
   name: "InfoField",
@@ -1446,22 +1445,23 @@ export default {
   },
 
     computed: {
-      isNMIRequired() {
-        return  ( Array.isArray(this.services) && this.services.some(n=>n=='power') ) ?
-                true : false ;
-      },
-      isMERNRequired() {
-        return  ( Array.isArray(this.services) && this.services.some(n=>n=='gas') ) ?
-                true : false ;
-
-          },
-      tenancyTypeMapper(){
-          return tenancyTypeMapper;
+        isNMIRequired() {
+            return !this.isWaterTabFocused && !!(Array.isArray(this.services) && this.services.some(n => n === 'power'));
         },
-      isTenancyHomeOwner(){
-          // return this.person_details.tenancy_type===tenancyTypeMapper.HomeOwner;
-          return false;
-      }
+        isMERNRequired() {
+            return !this.isWaterTabFocused && !!(Array.isArray(this.services) && this.services.some(n => n === 'gas'));
+
+        },
+        tenancyTypeMapper() {
+            return tenancyTypeMapper;
+        },
+        isTenancyHomeOwner() {
+            // return this.person_details.tenancy_type===tenancyTypeMapper.HomeOwner;
+            return false;
+        },
+        isWaterTabFocused() {
+            return LeadApplicationService.getActiveServiceTab() === 1;
+        }
     },
 
   watch: {

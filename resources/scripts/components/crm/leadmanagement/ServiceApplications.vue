@@ -96,50 +96,50 @@
             </v-menu>
 
             </v-col>
-            <v-col cols="1" class="pt-5">  To  </v-col>
-            <v-col cols="4" >
 
-            <v-menu
-              v-model="connection_end_date_menu"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <ValidationProvider
-                  name="Connection End Date"
-                  rules="valid-date"
-                  v-slot="{ errors }"
+            <v-col cols="1" v-if="false" class="pt-5">  To  </v-col>
+            <v-col cols="4" v-if="false">
+                <v-menu
+                    v-model="connection_end_date_menu"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
                 >
-                  <v-text-field
-                    placeholder="DD/MM/YYYY"
-                    outlined
-                    dense
-                    append-icon="mdi-calendar"
-                    v-model="modified_connection_end_date"
-                    v-bind="attrs"
-                    :error-messages="errors[0]"
-                    hide-details="auto"
-                    @input="syncConnectionEndDate"
-                  >
-                    <template slot="append">
-                      <v-icon v-on="on">mdi-calendar</v-icon>
+                    <template v-slot:activator="{ on, attrs }">
+                        <ValidationProvider
+                        name="Connection End Date"
+                        rules="valid-date"
+                        v-slot="{ errors }"
+                        >
+                        <v-text-field
+                            placeholder="DD/MM/YYYY"
+                            outlined
+                            dense
+                            append-icon="mdi-calendar"
+                            v-model="modified_connection_end_date"
+                            v-bind="attrs"
+                            :error-messages="errors[0]"
+                            hide-details="auto"
+                            @input="syncConnectionEndDate"
+                        >
+                            <template slot="append">
+                            <v-icon v-on="on">mdi-calendar</v-icon>
+                            </template>
+                        </v-text-field>
+                        </ValidationProvider>
                     </template>
-                  </v-text-field>
+                    <v-date-picker
+                        v-model="connection_end_date"
+                        :min="moving_date"
+                        @input="updateConnectionEndDate"
+                    ></v-date-picker>
+                </v-menu>
+                <ValidationProvider name="h_state">
+                    <v-text-field v-model="leadSummary.state" v-show="false" />
                 </ValidationProvider>
-              </template>
-              <v-date-picker
-                v-model="connection_end_date"
-                :min="moving_date"
-                @input="updateConnectionEndDate"
-              ></v-date-picker>
-            </v-menu>
-            <ValidationProvider name="h_state">
-                <v-text-field v-model="leadSummary.state" v-show="false" />
-            </ValidationProvider>
-                        </v-col>
+            </v-col>
 
                     </v-row>
                 </v-col>
@@ -310,15 +310,16 @@
 import EnergyService from "@scripts/components/crm/leadmanagement/EnergyService";
 import ServiceProvider from "@scripts/components/crm/leadmanagement/ServiceProvider";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import leadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
 import InternetPlan from "@scripts/components/crm/leadmanagement/InternetPlan";
 import EAPlanService from "@scripts/services/ea/EAPlanService";
-import {EA_PLAN_TYPES, PLAN_TYPE_TOTAL} from "@scripts/models/ea/EnergyPlan";
+import {PLAN_TYPE_TOTAL} from "@scripts/models/ea/EnergyPlan";
 import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
 import InternetPlanDetails from "@scripts/components/ea/InternetPlanDetails";
 import WaterService from "@scripts/components/crm/leadmanagement/WaterService";
 import InternetService from "@scripts/components/crm/leadmanagement/InternetService";
-import {isNull, now} from "lodash-es";
+import {isNull} from "lodash-es";
 import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
 import SumoPlan from "@scripts/components/crm/leadmanagement/SumoPlan";
 import ServiceProvideres from "@scripts/data/ServiceProvideres";
@@ -326,10 +327,8 @@ import SumoService from '@scripts/services/crm/SumoService';
 import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails"
 import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
 import Spinner from "@scripts/plugins/Spinner";
-import dayJs from "dayjs";
-import { formatDate } from "@scripts/services/others/DateService"
-import leadApplicationService from "@scripts/services/crm/LeadApplicationService";
-import dayjs from "dayjs";
+import {formatDate} from "@scripts/services/others/DateService"
+
 export default {
     name: "ServiceApplications",
     components: { SumoPlan, SolePlan, InternetService, WaterService, EnergyPlan , InternetPlan , ServiceProvider, EnergyService, EnergyPlanDetails , InternetPlanDetails, SoleDetails},
@@ -354,7 +353,7 @@ export default {
             viewPlanDialog: false,
             planTypeForDetails: null,
             activeService: 'energy',
-            tab: null,
+            // tab: null,
             origin: [ {text: 'Origin Go', bg: 'red', active: true, type: 'origin' },
                 { text: 'Origin Go Variable', bg: 'blue', actSumoPlanDetailsive: false, type: 'origin' },
                 {text: 'Origin Basic', bg: 'orange', active: false , type: 'origin'}],
@@ -390,6 +389,14 @@ export default {
         }
     },
     computed: {
+        tab: {
+            get() {
+                return LeadApplicationService.getActiveServiceTab()
+            },
+            set(value) {
+                leadApplicationService.setActiveServiceTab(value)
+            }
+        },
         sumoPlanName(){
             if(this.sumoPlanDetails){
                 return this.sumoPlanDetails?.plan_name ?? "";
@@ -456,13 +463,12 @@ export default {
         this.modified_connection_end_date = formatDate(this.leadSummary.connection_end_date)
         this.connection_end_date =  this.leadSummary.connection_end_date;
 
-        this.providerSpinner = new Spinner(this.$refs.provider, {autoStart: true})
+        // this.providerSpinner = new Spinner(this.$refs.provider, {autoStart: true})
         this.loadServiceProvider();
         this.loadPlan();
          // this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
         this.loadSelectedPowerProvider();
 
-        console.log("print lead summary" , this.leadSummary);
 
         const updateAddress = address => {
             if (this.selectedPowerProvider === 'sumo') {
@@ -652,7 +658,7 @@ export default {
             this.sumoOptions.isError = false;
             // this.sumoOptions.isError = true;
             this.sumoOptions.errorMsg = "";
-            this.providerSpinner.start()
+            // this.providerSpinner.start()
             try {
                 // this.isSumoLoading = true;
                 let address = this.leadSummary.street_address + ' ' + this.leadSummary.city + ' ' + this.leadSummary.state + ' ' + this.leadSummary.postcode;
@@ -661,7 +667,7 @@ export default {
                 this.actionOnSelectProvider(name)
                 this.isSumoLoading = false;
                 // this.isSumoLoading = false;
-                this.providerSpinner.stop()
+                // this.providerSpinner.stop()
                 return 0;
             } catch (error) {
                 this.sumoOptions.isError = true;

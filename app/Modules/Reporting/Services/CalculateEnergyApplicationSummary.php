@@ -20,6 +20,7 @@ class CalculateEnergyApplicationSummary
         "foxie" => 0,
         "hood" => 0,
         "hood_ai" => 0,
+        "t_app" => 0,
     ];
 
     /**
@@ -33,6 +34,7 @@ class CalculateEnergyApplicationSummary
         "conversation_rate" => self::LEAD_BREAKDOWN,
         "consent_pending" => self::LEAD_BREAKDOWN,
         "closed" => self::LEAD_BREAKDOWN,
+        "escalated" => self::LEAD_BREAKDOWN,
     ];
 
     /**
@@ -76,6 +78,7 @@ class CalculateEnergyApplicationSummary
                 ConnectionApplication::STATUS_SUBMITTED => $this->calculateCount('submitted', $datum),
                 20 => $this->calculateCount('consent_pending', $datum), #todo: replace with proper constant when merging to consent_tracker branch
                 ConnectionApplication::STATUS_CLOSED => $this->calculateCount('closed', $datum),
+                ConnectionApplication::STATUS_ESCALATED => $this->calculateCount('escalated', $datum),
                 default => self::LEAD_BREAKDOWN
             };
         }
@@ -123,6 +126,7 @@ class CalculateEnergyApplicationSummary
             ConnectionApplication::SOURCE_OUR_PROPERTY => 'our_property',
             ConnectionApplication::SOURCE_PROPERTY_ME => 'property_me',
             10 => 'hood_ai', #todo: replace with proper constant
+            ConnectionApplication::SOURCE_T_APP => 't_app',
             default => null,
         };
     }

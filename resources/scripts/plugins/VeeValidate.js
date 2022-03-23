@@ -67,11 +67,11 @@ extend("password", {
     }
 });
 
-extend('cv-phone', {
-    message: field => `${field} should contain only number`,
+extend("cv-phone", {
+    message: field => `${field} should contain only numbers`,
     validate: value =>  {
         return new Promise(resolve => {
-            let isValid = value.match('^[+]*[-\\s0-9]*$');
+            let isValid = value.match('^[+]*[-\\s0-9 ]*$');
             resolve({ valid: !!isValid })
         })
     }
@@ -193,5 +193,30 @@ extend('passport-expire', {
         return pattern.test(value);
     }
 })
+
+extend('required-medicare', {
+    ...rules.required,
+    message: field => `Medicare Card Number is required`,
+});
+
+extend('required-driving', {
+    ...rules.required,
+    message: field => `Driver’s License is required`,
+});
+
+extend('required-passport', {
+    ...rules.required,
+    message: field => `Passport Number is required`,
+});
+
+extend('required-special-number', {
+    ...rules.required,
+    message: field => `Special Number is required`,
+});
+
+extend('required-issuing-country', {
+    ...rules.required,
+    message: field => `Issuing Country is required`,
+});
 
 export { medicareRules , mediExpireDate }

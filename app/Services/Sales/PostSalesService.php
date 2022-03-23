@@ -207,8 +207,11 @@ class PostSalesService
 
     }
 
-    private function getAfterHoursServiceOrder(): bool
+    private function logFlagDetails(?bool $flag)
     {
+        if (app()->environment('production')) {
+            return;
+        }
         $eaService = ConnectionService::query()->where('connection_application_id', $this->connection->id)
             ->where('service_type', ConnectionService::TYPE_ELECTRICITY)
             ->first();
@@ -219,26 +222,54 @@ class PostSalesService
         }
 
         $state = $this->stateMap( $this->connection->state);
-
-        $afterHourFlag = false;
-
-        if($this->isSameDayConnection()) {
-            $afterHourFlag = $this->handleSameDayConnection($distributor, $state);
-        }
-
-        if($this->isNextDayConnection()) {
-            $afterHourFlag = $this->handleNextDayConnection($distributor, $state);
-        }
-        $this->connection->update(['after_hour_flag' => $afterHourFlag]);
-
         Log::info('After Hour Flags ', [
             'state'=> $state,
             'distributor'=> $distributor,
             'connection_date'=> $this->connection->moving_date,
-            'after_hour_flag'=> $afterHourFlag,
+            'after_hour_flag'=> $flag,
         ]);
+    }
+
+    private function getAfterHoursServiceOrder(): bool
+    {
+        $afterHourFlag = $this->connection->getAfterHourPayee();
+        $this->connection->update(['after_hour_flag' => $afterHourFlag]);
+
+        $this->logFlagDetails($afterHourFlag);
 
         return $afterHourFlag;
+
+
+//        $eaService = ConnectionService::query()->where('connection_application_id', $this->connection->id)
+//            ->where('service_type', ConnectionService::TYPE_ELECTRICITY)
+//            ->first();
+//        $distributor = null;
+//        if(!empty($eaService))
+//        {
+//            $distributor = $eaService->distributor;
+//        }
+//
+//        $state = $this->stateMap( $this->connection->state);
+//
+//        $afterHourFlag = false;
+//
+//        if($this->isSameDayConnection()) {
+//            $afterHourFlag = $this->handleSameDayConnection($distributor, $state);
+//        }
+//
+//        if($this->isNextDayConnection()) {
+//            $afterHourFlag = $this->handleNextDayConnection($distributor, $state);
+//        }
+//        $this->connection->update(['after_hour_flag' => $afterHourFlag]);
+//
+//        Log::info('After Hour Flags ', [
+//            'state'=> $state,
+//            'distributor'=> $distributor,
+//            'connection_date'=> $this->connection->moving_date,
+//            'after_hour_flag'=> $afterHourFlag,
+//        ]);
+//
+//        return $afterHourFlag;
 
     }
 

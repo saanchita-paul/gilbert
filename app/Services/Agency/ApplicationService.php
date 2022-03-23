@@ -2,6 +2,7 @@
 
 namespace App\Services\Agency;
 
+use App\Jobs\UpdateHubspotContactJob;
 use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
@@ -303,6 +304,8 @@ class ApplicationService
         $existingApplication->status = ConnectionApplication::STATUS_ESCALATED;
         $existingApplication->save();
 
+        UpdateHubspotContactJob::dispatch($applicationId);
+
         $allicationNoteService = new ApplicationNoteService($user);
         $eacalateNote = [];
         $eacalateNote['text'] = $application['reason'];
@@ -329,6 +332,7 @@ class ApplicationService
             $existingApplication->closed_by = $user->profile->id;
             $existingApplication->save();
 
+            UpdateHubspotContactJob::dispatch($applicationId);
 
             $allicationNoteService = new ApplicationNoteService($user);
             $closingeNote = [];

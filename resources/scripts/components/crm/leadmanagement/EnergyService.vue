@@ -1,11 +1,19 @@
 <template>
         <div class="service-box" :class="{active: isActive(title), 'not-editable': !isServiceEditable }">
-            <p class="mb-0 font-weight-bold"><v-icon :color="getColor(title)">{{icon}}</v-icon> {{title}}</p>
+            <p class="mb-0 font-weight-bold text-center"><v-icon :color="getColor(title)">{{icon}}</v-icon> {{title}}</p>
             <p
                 v-if="this.statusObj"
-                class="ma-0"
+                class="ma-0 fontStyleStatus text-center"
                 :style="{color: this.statusObj.color}"
             >{{this.statusObj.text}}
+            <p
+                v-else
+                class="ma-0 fontStyleStatus text-center"
+            > -
+            </p>
+            <p
+                class="ma-0 fontStyleStatus text-center"
+            >Quote ID: {{ this.quoteReference }}   
             </p>
             <p class="reason ma-0" v-for="reason in reasons" :key="reason">
                 {{reason}}
@@ -40,6 +48,9 @@ export default {
                 return this.leadSummary.connection_services?.find(service => service.service_type === this.title.toLowerCase())
             }
             return null
+        },
+        quoteReference(){
+            return this.service?.quote_reference ? this.service.quote_reference : '-'
         },
         reasons() {
             const reasons = this.service?.reasons;
@@ -101,6 +112,8 @@ export default {
 
     mounted() {
         this.setIcon(this.title);
+        console.log("service printing ..... ")
+        console.log(this.leadSummary.connection_services)
     }
 }
 </script>
@@ -114,5 +127,14 @@ export default {
 }
 .status {
 
+}
+.fontStyleStatus{
+    font-family: Roboto;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 13px;
+    letter-spacing: 0em;
+    text-align: center;
 }
 </style>

@@ -35,18 +35,10 @@
                             </div>
                         </div>
                         <div class="sideDesign">
-
-                           <div class="d-flex mb-2 align-center">
-                               <div class=" mb-2 mr-1"><span class="font-weight-bold">{{ chartData.manualProcessing }}</span> </div>
-                               <div class="messageFont">Manual Processing</div>
-                           </div> 
-
                            <div class="d-flex align-center">
                                <div class=" mb-2 mr-1"><span class="font-weight-bold">{{ chartData.acManualProcessing }}</span> </div>
-                               <div class="messageFont">AC Manual Processing</div>
+                               <div class="messageFont">Accepted for Manual Processing</div>
                            </div>
-                           
-                           <!-- <div class="messageFont "><span class="font-weight-bold">20</span> AC Manual Processing</div> -->
                         </div>
                     </div>
                 </template>

@@ -31,6 +31,7 @@
         "lodash-es": "^4.17.15",
         "pusher-js": "^7.0.0",
         "spin.js": "^4.1.0",
+        "v-mask": "^2.3.0",
         "vee-validate": "^3.4.1",
         "vue": "^2.6.12",
         "vue-infinite-loading": "^2.4.5",

@@ -12,8 +12,10 @@ import '@scripts/directives';
 import '@scripts/filters';
 import '@scripts/plugins/DayJs'
 import {EventBusPlugin} from "@scripts/plugins/EventBus";
+import VueMask from "v-mask";
 
 Vue.use(EventBusPlugin);
+Vue.use(VueMask);
 /**
  * initializing GoogleMapService
  */
