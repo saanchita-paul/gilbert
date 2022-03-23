@@ -5,6 +5,13 @@ use Laravel\Telescope\Watchers;
 
 return [
 
+
+
+    'authorized_emails' => env("TELESCOPE_AUTHORIZED_EMAILS", "admin@hood.ai"),
+
+
+
+
     /*
     |--------------------------------------------------------------------------
     | Telescope Domain
