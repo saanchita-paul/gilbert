@@ -3,22 +3,23 @@
 
 namespace ExternalLead\Services;
 
-use App\Models\AgentProfile;
-use App\Models\Office;
 use Exception;
-use ExternalLead\Models\TApp;
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\Office;
+use App\Models\AgentProfile;
 use Illuminate\Http\Request;
+use ExternalLead\Models\TApp;
 use App\Models\Identification;
-use App\Mail\TAppAgentNotFoundMail;
 use App\Models\ConnectionService;
-use App\Jobs\CreateHubspotProperty;
-use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
+use App\Jobs\CreateHubspotProperty;
+use App\Mail\TAppAgentNotFoundMail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Models\ConnectionApplication;
 use App\Services\AddressMapperService;
+use Illuminate\Database\Eloquent\Builder;
 use App\Services\AuthService\JwtAuthService;
+use App\Services\SearchAddress\AddressModel;
 use App\Models\ConnectionApplicationSecondaryACC as AuthorisedPerson;
 
 class TAppServices
@@ -158,8 +159,8 @@ class TAppServices
             $mapperService->mapTenancy($this->userRequestData->tenancy_type) : null;
         $this->connectionApplicaton->moving_date = $this->userRequestData->tenancy_moving_date ?? null;
         $this->connectionApplicaton->additional_instruction = $this->userRequestData->additional_instruction ?? null;
-        $this->connectionApplicaton->street_address = $this->userRequestData->tenancy_street_address ?? null;
-        $this->connectionApplicaton->city = $this->userRequestData->tenancy_city ?? null;
+
+        $this->connectionApplicaton->city = $this->userRequestData->tenancy_suburb ?? null;
         $this->connectionApplicaton->postcode = $this->userRequestData->tenancy_postcode ?? null;
         $this->connectionApplicaton->state = $this->userRequestData->tenancy_state ?
             $addressService->mapState($this->userRequestData->tenancy_state) : null;
@@ -192,6 +193,26 @@ class TAppServices
         $this->connectionApplicaton->billing_postcode = $this->userRequestData->tenancy_billing_postcode ?? null;
         $this->connectionApplicaton->is_renovation_on = $this->userRequestData->tenancy_is_renovation_on ?
             $mapperService->mapYesNoToBool($this->userRequestData->tenancy_is_renovation_on) : null;
+
+        $this->setStreetAddress();
+        
+        // $this->connectionApplicaton->street_address = $this->userRequestData->tenancy_street_address ?? null;
+    }
+
+    private function setStreetAddress()
+    {
+        $address = new AddressModel( 
+            $this->connectionApplicaton->unit_number,
+            $this->connectionApplicaton->street_number,
+            $this->connectionApplicaton->street_name,
+            $this->connectionApplicaton->postcode,
+            $this->connectionApplicaton->city,
+            $this->connectionApplicaton->state,
+            $this->connectionApplicaton->country,
+         );
+
+        $this->connectionApplicaton->street_address = $address->street_address;
+        
     }
 
     /**
