@@ -760,15 +760,18 @@
                         <v-col cols="12" class="pb-0 mt-2" v-if="!showSearchFields">
                                     <v-menu offset-y v-model="showMenu">
                                         <template v-slot:activator="{ on }">
+                                        <ValidationProvider name="Service Address" rules="required"  v-slot="{ errors }">
                                             <v-text-field
                                                 label="Search address"
                                                 outlined
                                                 dense
                                                 placeholder="Type house address here"
                                                 append-icon="mdi-magnify"
+                                                :error-messages=" errors[0]"
                                                 v-model="application.address_text"
                                                 @keyup.native="onStreetChanged"
                                             ></v-text-field>
+                                        </ValidationProvider>
                                         </template>
                                         <v-list v-if="searchResult.length">
                                             <v-list-item
@@ -897,15 +900,18 @@
                         <v-col cols="12" class="pb-0 mt-2" v-if="!showSearchFieldsBilling">
                                     <v-menu offset-y v-model="showMenu">
                                         <template v-slot:activator="{ on }">
+                                        <ValidationProvider name="Billing Address" rules="required"  v-slot="{ errors }">
                                             <v-text-field
                                                 label="Search address"
                                                 outlined
                                                 dense
+                                                :error-messages=" errors[0]"
                                                 placeholder="Type house address here"
                                                 append-icon="mdi-magnify"
                                                 v-model="application.billing_address_text"
                                                 @keyup.native="onBillingStreetChanged"
                                             ></v-text-field>
+                                        </ValidationProvider>
                                         </template>
                                         <v-list v-if="searchResultBilling.length">
                                             <v-list-item
