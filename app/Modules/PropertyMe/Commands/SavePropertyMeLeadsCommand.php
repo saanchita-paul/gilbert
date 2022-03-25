@@ -41,8 +41,11 @@ class SavePropertyMeLeadsCommand extends Command
      */
     public function handle()
     {
-        \Http::timeout(600);
-        ini_set('memory_limit','1024M');
+        $time_out = env('SERVER_TIMEOUT', 600);
+        $memory_limit = env('SERVER_MEMORY_LIMIT', '1024M');
+
+        \Http::timeout($time_out);
+        ini_set('memory_limit', $memory_limit );
 
         $linkedOffice = Office::query()
             ->whereNotNull('property_me_refresh_token')
