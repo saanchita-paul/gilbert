@@ -1029,7 +1029,7 @@
                         </v-col>
                     </template>
 
-                    <v-col cols="12" class="py-0" v-if="showSearchFieldsBilling && showSearchFields">
+                    <v-col cols="12" class="py-0" v-if="showSearchFieldsBilling || showSearchFields">
                         <p class="newAddress" @click="newAddressBilling"> <span style="text-decoration: underline;"> I want to search for a new address </span> </p>
                     </v-col>
 
@@ -1304,9 +1304,7 @@ export default {
         selectBillingAddress(){
             this.showSearchFieldsBilling = true;
         },
-        selectMannualBilling(){
-            this.showSearchFieldsBilling = true;
-
+        clearBillingAddress(){
             this.application.billing_address_text = null;
             this.application.billing_street_address = null;
             this.application.billing_city = null;
@@ -1319,22 +1317,28 @@ export default {
             this.application.billing_street_type = null;
             this.application.billing_mannual_address = true;
         },
-        selectMannual(){
-            this.showSearchFields = true;
+        selectMannualBilling(){
+            this.showSearchFieldsBilling = true;
 
+            this.clearBillingAddress()
+        },
+        clearServiceAddress(){
             this.application.address_text = null;
             this.application.street_address = null;
             this.application.city = null;
             this.application.postcode = null;
             this.application.state = null;
-            this.application.state_short = null;
             this.application.street_number = null;
             this.application.unit_number = null;
             this.application.street_name_only = null;
             this.application.street_name = null;
             this.application.street_type = null;
             this.application.mannual_address = true;
-            
+        },
+        selectMannual(){
+            this.showSearchFields = true;
+
+            this.clearServiceAddress()
         },
         newAddress(){
             this.showSearchFields = false;
@@ -1453,6 +1457,12 @@ export default {
         },
     },
     watch: {
+        showSearchFields(value){
+            if(!value){
+                this.clearServiceAddress()
+                this.clearBillingAddress()
+            }
+        },
         dob() {
             this.application.date_of_birth = (new DayJs(this.dob).format('DD/MM/YYYY'));
         },
