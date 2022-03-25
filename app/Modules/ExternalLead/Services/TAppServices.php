@@ -166,7 +166,7 @@ class TAppServices
             $addressService->mapState($this->userRequestData->tenancy_state) : null;
         $this->connectionApplicaton->country = $this->userRequestData->tenancy_country ?
             $addressService->mapCountry($this->userRequestData->tenancy_country) : null;
-        $this->connectionApplicaton->address_text = $this->userRequestData->tenancy_address_text ?? null;
+        // $this->connectionApplicaton->address_text = $this->userRequestData->tenancy_address_text ?? null;
         $this->connectionApplicaton->is_email_billing = $this->userRequestData->is_email_billing ?
             $mapperService->mapYesNoToBool($this->userRequestData->is_email_billing) : null;
         $this->connectionApplicaton->property_type = $this->userRequestData->tenancy_property_type ?
@@ -186,7 +186,7 @@ class TAppServices
         $this->connectionApplicaton->billing_street_number = $this->userRequestData->tenancy_billing_street_number ?? null;
         $this->connectionApplicaton->billing_street_name = $this->userRequestData->tenancy_billing_street_name ?? null;
         $this->connectionApplicaton->billing_address_text = $this->userRequestData->tenancy_billing_address_text ?? null;
-        $this->connectionApplicaton->billing_street_address = $this->userRequestData->tenancy_billing_street_address ?? null;;
+        // $this->connectionApplicaton->billing_street_address = $this->userRequestData->tenancy_billing_street_address ?? null;;
         $this->connectionApplicaton->billing_city = $this->userRequestData->tenancy_billing_city ?? null;
         $this->connectionApplicaton->billing_state = $this->userRequestData->tenancy_billing_state ?
             $addressService->mapState($this->userRequestData->tenancy_billing_state) : null;
@@ -194,12 +194,12 @@ class TAppServices
         $this->connectionApplicaton->is_renovation_on = $this->userRequestData->tenancy_is_renovation_on ?
             $mapperService->mapYesNoToBool($this->userRequestData->tenancy_is_renovation_on) : null;
 
-        $this->setStreetAddress();
+        $this->setStreetAddressAndAddressText();
         
         // $this->connectionApplicaton->street_address = $this->userRequestData->tenancy_street_address ?? null;
     }
 
-    private function setStreetAddress()
+    private function setStreetAddressAndAddressText()
     {
         $address = new AddressModel( 
             $this->connectionApplicaton->unit_number,
@@ -211,7 +211,21 @@ class TAppServices
             $this->connectionApplicaton->country,
          );
 
+        $billingAddress = new AddressModel( 
+            $this->connectionApplicaton->billing_unit_number,
+            $this->connectionApplicaton->billing_street_number,
+            $this->connectionApplicaton->billing_street_name,
+            $this->connectionApplicaton->billing_postcode,
+            $this->connectionApplicaton->billing_city,
+            $this->connectionApplicaton->billing_state,
+            $this->connectionApplicaton->billing_country,
+         );
+
         $this->connectionApplicaton->street_address = $address->street_address;
+        $this->connectionApplicaton->address_text = $address->address_text;
+        
+        $this->connectionApplicaton->billing_street_address = $billingAddress->street_address;
+        $this->connectionApplicaton->billing_address_text = $billingAddress->address_text;
         
     }
 
