@@ -765,6 +765,8 @@
                                                 label="Search address"
                                                 outlined
                                                 dense
+                                                @focus="serviceSearchFocusOn"
+                                                @blur="serviceSearchFocusOff"
                                                 placeholder="Type house address here"
                                                 append-icon="mdi-magnify"
                                                 :error-messages=" errors[0]"
@@ -905,6 +907,8 @@
                                                 label="Search address"
                                                 outlined
                                                 dense
+                                                @focus="billingSearchFocusOn"
+                                                @blur="billingSearchFocusOff"
                                                 :error-messages=" errors[0]"
                                                 placeholder="Type house address here"
                                                 append-icon="mdi-magnify"
@@ -1230,6 +1234,8 @@ export default {
             showSearchFieldsBilling: false,
             isBillingAddressSame: true,
             searchResultBilling: [],
+            searchFocus: false,
+            billingSearchFocus: false, 
         }
 
     },
@@ -1276,6 +1282,18 @@ export default {
         },
     },
     methods: {
+        serviceSearchFocusOn(){
+            this.searchFocus = true;
+        },
+        serviceSearchFocusOff(){
+            this.searchFocus = false;
+        },
+        billingSearchFocusOn(){
+            this.billingSearchFocus = true;
+        },
+        billingSearchFocusOff(){
+            this.billingSearchFocus = false;
+        },
         billingAddress(){
             // this.isBillingAddressSame = !this.isBillingAddressSame;
             this.application.is_billing_same = !this.application.is_billing_same;
