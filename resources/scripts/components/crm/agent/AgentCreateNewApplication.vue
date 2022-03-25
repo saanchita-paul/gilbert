@@ -886,14 +886,14 @@
                         <p class="newAddress" @click="newAddress"> <span style="text-decoration: underline;"> I want to search for a new address </span> </p>
                     </v-col>
 
-                    <v-col cols="12" class="py-0">
+                    <v-col cols="12" class="py-0" v-if="showSearchFields">
                         <p class="billingAddress" @click="billingAddress">  <v-icon small style="text-decoration: none;  padding-bottom: 4px;"> mdi-plus-circle </v-icon> <span style="text-decoration: underline;"> {{ application.is_billing_same ? 'Add a different billing address' : 'Keep the billing address same as service address' }} </span> </p>
                     </v-col>
 
 
 
                     <!-- billing address starts -->
-                    <template v-if="!application.is_billing_same">
+                    <template v-if="!application.is_billing_same && showSearchFields">
                         <v-col cols="12" class="pb-0 mt-2" v-if="!showSearchFieldsBilling">
                                     <v-menu offset-y v-model="showMenu">
                                         <template v-slot:activator="{ on }">
@@ -924,7 +924,7 @@
                                         </v-list>
                                     </v-menu>
                         </v-col>
-                        <v-col cols="12" v-if="showSearchFieldsBilling">
+                        <v-col cols="12" v-if="showSearchFieldsBilling && showSearchFields">
                             <v-row>
                                 <v-col cols="3" class="py-0">
                                     <ValidationProvider name="UnitNo"  v-slot="{ errors }">
@@ -1019,7 +1019,7 @@
                         </v-col>
                     </template>
 
-                    <v-col cols="12" class="py-0" v-if="showSearchFieldsBilling">
+                    <v-col cols="12" class="py-0" v-if="showSearchFieldsBilling && showSearchFields">
                         <p class="newAddress" @click="newAddressBilling"> <span style="text-decoration: underline;"> I want to search for a new address </span> </p>
                     </v-col>
 
