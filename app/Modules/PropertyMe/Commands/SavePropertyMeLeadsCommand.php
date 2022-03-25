@@ -41,6 +41,9 @@ class SavePropertyMeLeadsCommand extends Command
      */
     public function handle()
     {
+        \Http::timeout(600);
+        ini_set('memory_limit','1024M');
+
         $linkedOffice = Office::query()
             ->whereNotNull('property_me_refresh_token')
             ->with('agency')
@@ -57,16 +60,21 @@ class SavePropertyMeLeadsCommand extends Command
 
     private function saveLead(Office $office): void
     {
+
+        $this->line("[$office->name] START");
+
         $pm = new SaveContacts($office->property_me_refresh_token);
         $leads = $pm->fetch()->createLead()->getSavedLeads();
         $tenancies = $pm->getTenancies();
 
-        $this->info("New Lead: " . sizeof($leads));
+        $this->line("[$office->name]  Saved in property_me_leads: " . sizeof($leads));
 
         $saveService = new SaveToConnectionApplication($office, $tenancies);
 
         foreach ($leads as $lead) {
             $saveService->run($lead);
         }
+
+        $this->info("[$office->name] Complete");
     }
 }
