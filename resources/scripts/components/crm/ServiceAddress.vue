@@ -534,6 +534,7 @@ export default {
 
       checkIfAddressIsValid(){
 
+          //if billings address same not same and other required fields are not empty
           if(!this.propertyDetails.is_billing_same && 
             (
               this.propertyDetails.billing_street_number == null || this.propertyDetails.billing_street_number == "" || 
@@ -573,20 +574,25 @@ export default {
 
           this.propertyDetails.billing_street_address = unit_number + ' ' + this.propertyDetails.billing_street_number + ' ' + this.propertyDetails.billing_street_name_only;
 
-          if(this.propertyDetails.billing_mannual_address || this.propertyDetails.billing_address_text == "" )
+          console.log("property details1" , this.propertyDetails)
+          
+          if(this.propertyDetails.billing_mannual_address || this.propertyDetails.billing_address_text == "" || this.propertyDetails.billing_address_text == null )
           {
               let unit_number = isEmpty(this.propertyDetails.billing_unit_number) ? "" : this.propertyDetails.billing_unit_number + " /";
+
               this.propertyDetails.billing_address_text = unit_number + ' ' + this.propertyDetails.billing_street_number + ' ' + this.propertyDetails.billing_street_name_only + ' ' + ' ' + this.propertyDetails.billing_city + this.propertyDetails.billing_state + ' ' + this.propertyDetails.billing_postcode + ' ' + this.propertyDetails.billing_country;
+
           }
           
           unit_number = isEmpty(this.propertyDetails.unit_number) ? "" : this.propertyDetails.unit_number + " /";
 
           this.propertyDetails.street_address = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name_only;
 
-          if(this.propertyDetails.mannual_address || this.propertyDetails.address_text == "" ){
+          if(this.propertyDetails.mannual_address || this.propertyDetails.address_text == "" || this.propertyDetails.address_text == null ){
               this.propertyDetails.address_text = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name_only + ' ' + this.propertyDetails.city + ' ' + this.propertyDetails.state + ' ' + this.propertyDetails.postcode + ' ' + this.propertyDetails.country ;
           }
           
+          console.log("property details2" , this.propertyDetails)
       },
     
      checkAddressText()
@@ -602,7 +608,6 @@ export default {
           console.log(this.propertyDetails)
           // return;
           this.setAddressTextAndStreetAddress();
-
         //   if(!this.checkAddressText()) return;
 
           let v = await this.$refs.edit_address.validate();
