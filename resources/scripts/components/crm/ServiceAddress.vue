@@ -22,15 +22,18 @@
                                                 <v-col cols="12" class="py-0">
                                                     <v-menu offset-y v-model="showMenu">
                                                         <template v-slot:activator="{ on }">
-                                                            <v-text-field
-                                                                label="Search address"
-                                                                outlined
-                                                                dense
-                                                                placeholder="Type house address here"
-                                                                append-icon="mdi-magnify"
-                                                                v-model="search_address_text"
-                                                                @keyup.native="onStreetChanged"
-                                                            ></v-text-field>
+                                                            <ValidationProvider name="Service Address" rules="required"  v-slot="{ errors }">
+                                                                <v-text-field
+                                                                    label="Search address"
+                                                                    outlined
+                                                                    dense
+                                                                    placeholder="Type house address here"
+                                                                    append-icon="mdi-magnify"
+                                                                    :error-messages=" errors[0]"
+                                                                    v-model="search_address_text"
+                                                                    @keyup.native="onStreetChanged"
+                                                                ></v-text-field>
+                                                            </ValidationProvider>
                                                         </template>
                                     <v-list v-if="searchResult.length">
                                         <v-list-item
@@ -152,7 +155,7 @@
                         <p class="newAddress" @click="newAddress"> <span style="text-decoration: underline;"> I want to search for a new address </span> </p>
                     </v-col>
 
-                    <v-col cols="12" class="py-0 pb-4">
+                    <v-col cols="12" class="py-0 pb-4" v-if="showSearchFields">
                         <p class="billingAddress" @click="billingAddress">  <v-icon small style="text-decoration: none;  padding-bottom: 4px;"> mdi-plus-circle </v-icon> <span style="text-decoration: underline;"> {{ propertyDetails.is_billing_same ? 'Add a different billing address' : 'Keep the billing address same as service address' }} </span> </p>
                     </v-col>
 
@@ -160,19 +163,21 @@
                                     </v-row>
 
          <!-- billing address starts -->
-                    <template v-if="!propertyDetails.is_billing_same">
+                    <template v-if="!propertyDetails.is_billing_same && showSearchFields">
                         <v-col  style="margin: 0px; padding: 0px;" cols="12" class="pb-0 mt-2 mx-0" v-if="!showSearchFieldsBilling">
                                     <v-menu offset-y v-model="showMenu">
                                         <template v-slot:activator="{ on }">
-                                            <v-text-field
-                                                label="Search address"
-                                                outlined
-                                                dense
-                                                placeholder="Type house address here"
-                                                append-icon="mdi-magnify"
-                                                v-model="billing_search_address_text"
-                                                @keyup.native="onBillingStreetChanged"
-                                            ></v-text-field>
+                                            <ValidationProvider name="Billing Address" rules="required"  v-slot="{ errors }">
+                                                <v-text-field
+                                                    label="Search address"
+                                                    outlined
+                                                    dense
+                                                    placeholder="Type house address here"
+                                                    append-icon="mdi-magnify"
+                                                    v-model="billing_search_address_text"
+                                                    @keyup.native="onBillingStreetChanged"
+                                                ></v-text-field>
+                                            </ValidationProvider>
                                         </template>
                                         <v-list v-if="searchResultBilling.length">
                                             <v-list-item

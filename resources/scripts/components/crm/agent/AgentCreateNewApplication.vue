@@ -1029,7 +1029,7 @@
                         </v-col>
                     </template>
 
-                    <v-col cols="12" class="py-0" v-if="showSearchFieldsBilling || showSearchFields">
+                    <v-col cols="12" class="py-0" v-if="showSearchFieldsBilling && showSearchFields">
                         <p class="newAddress" @click="newAddressBilling"> <span style="text-decoration: underline;"> I want to search for a new address </span> </p>
                     </v-col>
 
