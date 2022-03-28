@@ -8,10 +8,17 @@ use PropertyMe\PropertyMeLead;
 
 Route::prefix('property-me')->group(function () {
     Route::get('/authorize', [AuthController::class, "authorizeWithCode"]);
-    Route::post('/lead', [PropertyMeController::class, "store"])
-        ->middleware('permission:' . RolePermission::P_HOOD_ADMIN_CORE );
 });
 Route::get("/property-me/callback", [AuthController::class, "callback"]);
+
+
+/**
+ * API Routes
+ */
+Route::prefix('/property-me/api')->middleware(['api', 'auth:sanctum'])->group(function () {
+    Route::post('/leads', [PropertyMeController::class, "store"])
+        ->middleware('permission:' . RolePermission::P_HOOD_ADMIN_CORE );
+});
 
 
 /**

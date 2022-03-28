@@ -3,6 +3,7 @@
 namespace PropertyMe\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\PropertyMe\Services\ManuallyStoreLead;
 use App\Modules\PropertyMe\Services\SaveToConnectionApplication;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,23 +23,15 @@ class PropertyMeController extends Controller
         return response()->json(['pm_connected' => \Cache::get('pm_connected')]);
     }
 
+    /**
+     * @param CreatePropertyMeLeadRequest $request
+     * @return JsonResponse
+     */
     public function store(CreatePropertyMeLeadRequest $request): JsonResponse
     {
         try {
-            $service = new SaveContacts($request->get('refresh_token'));
-
-            $leads = $service->setLeads([$request->get('lead_data')])
-                ->loadTenancies()
-                ->createLead()
-                ->getSavedLeads();
-
-            $saveService = new SaveToConnectionApplication($office, $tenancies);
-
-            foreach ($leads as $lead) {
-                $saveService->run($lead);
-            }
-
-            return response()->json(['success' => true]);
+            $applications = ManuallyStoreLead::run($request->get('office_id'), $request->get('leads_data'));
+            return response()->json(['success' => true, 'applications' => $applications]);
         } catch ( \Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

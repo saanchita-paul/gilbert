@@ -24,8 +24,8 @@ class CreatePropertyMeLeadRequest extends FormRequest
     public function rules()
     {
         return [
-            'lead_data' => 'required|object',
-            'refresh_token' => 'required|string',
+            'leads_data' => 'required|array',
+            'office_id' => 'required|integer|exists:offices,id',
         ];
     }
 }
