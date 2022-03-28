@@ -175,6 +175,7 @@
                                                     placeholder="Type house address here"
                                                     append-icon="mdi-magnify"
                                                     v-model="billing_search_address_text"
+                                                    :error-messages=" errors[0]"
                                                     @keyup.native="onBillingStreetChanged"
                                                 ></v-text-field>
                                             </ValidationProvider>
@@ -463,6 +464,11 @@ export default {
             this.searchResult = [];
         },
         closeServiceAddress() {
+            if(!this.checkIfAddressIsValid())
+            {
+                console.log("invalid address");
+                this.propertyDetails.address_text = "";
+            }
             this.$emit('close');
         },
         onBillingAddressSelected(place) {

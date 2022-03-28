@@ -1,6 +1,7 @@
 import DayJs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import {isNull} from "lodash-es";
+import { street_type } from "@scripts/data/constants/StreetType"; 
 
 export default class ApplicationSummary {
     id = null;
@@ -206,6 +207,16 @@ export default class ApplicationSummary {
         this.billing_street_name_only = billing_street_name_only
         this.is_address_complete = is_address_complete
         this.billing_is_address_complete = billing_is_address_complete
+    }
+
+    mapStreetType(type){
+        let streetType = ''
+        street_type.forEach(element => {
+            if(element.text == type.toUpperCase()){
+                streetType = element.value
+            }
+        })
+        return streetType;
     }
 
     mapStatus(status) {
