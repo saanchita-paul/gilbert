@@ -1478,8 +1478,6 @@ export default {
           if(this.application.mannual_address || this.application.address_text == "" ){
               this.application.address_text = unit_number + ' ' + this.application.street_number + ' ' + this.application.street_name_only + ' ' + this.application.city + ' ' + this.application.state + ' ' + this.application.postcode + ' ' + this.application.country ;
           }
-          
-          
       },
     },
     watch: {
