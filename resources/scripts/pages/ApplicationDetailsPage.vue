@@ -312,6 +312,10 @@ export default {
             // this.leadSummary.is_renovation_on = address.is_renovation_on
             // this.leadSummary.has_electricity = address.has_electricity
             // this.leadSummary.inspection_time = address.inspection_time
+
+            this.leadSummary.billing_address_text = address.billing_address_text
+            this.leadSummary.billing_street_address = address.billing_street_address
+
             this.leadSummary.postcode = address.postcode
             this.leadSummary.state = address.state
             this.leadSummary.street_number = address.street_number
