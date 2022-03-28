@@ -177,7 +177,7 @@ export default class ApplicationSummary {
         this.billing_street_number = billing_street_number,
             this.billing_street_name = billing_street_name,
             this.billing_state = billing_state,
-            this.billing_street_type = billing_street_type,
+            this.billing_street_type = this.mapStreetType(billing_street_type),
             this.billing_address_text = billing_address_text,
             this.billing_street_number = billing_street_number,
             this.billing_address_unit = billing_address_unit,
@@ -199,7 +199,7 @@ export default class ApplicationSummary {
         this.fast_connect_customer_reference = fast_connect_customer_reference
         this.is_auto_water_submit = is_auto_water_submit
         this.mannual_address = mannual_address
-        this.street_type = street_type
+        this.street_type = this.mapStreetType(street_type)
         this.state_short = state_short
         this.street_name_only = street_name_only
 
@@ -210,13 +210,14 @@ export default class ApplicationSummary {
     }
 
     mapStreetType(type){
-        let streetType = ''
+        console.log("street type" , type)
+        let streetType = null
         street_type.forEach(element => {
-            if(element.text == type.toUpperCase()){
+            if(element.text == type){
                 streetType = element.value
             }
         })
-        return streetType;
+        return streetType ?? type;
     }
 
     mapStatus(status) {

@@ -1391,6 +1391,7 @@ export default {
             this.$router.push({name: 'agent.application.dashboard'});
         },
         async onSubmit() {
+            this.setAddressTextAndStreetAddress()
             let v = await this.$refs.create_application.validate();
             if (v) {
                 this.confirmApplicationModal = true;
@@ -1455,6 +1456,31 @@ export default {
             console.log('identification type', this.authorized_person.identification_type);
             return this.authorized_person.identification_type === IDENTIFICATION.MEDICARE;
         },
+      setAddressTextAndStreetAddress()
+      {
+
+        //   if(!this.checkIfAddressIsValid())
+        //   {
+        //     console.log("invalid address");
+        //     this.propertyDetails.address_text = "";
+        //     return;
+        //   }
+
+          let unit_number = isEmpty(this.application.billing_unit_number) ? "" : this.application.billing_unit_number + " /";
+          this.application.billing_street_address = unit_number + ' ' + this.application.billing_street_number + ' ' + this.application.billing_street_name_only;
+          if(this.application.billing_mannual_address || this.application.billing_address_text == "" )
+          {
+              let unit_number = isEmpty(this.application.billing_unit_number) ? "" : this.application.billing_unit_number + " /";
+              this.application.billing_address_text = unit_number + ' ' + this.application.billing_street_number + ' ' + this.application.billing_street_name_only + ' ' + ' ' + this.application.billing_city + this.application.billing_state + ' ' + this.application.billing_postcode + ' ' + this.application.billing_country;
+          }
+          unit_number = isEmpty(this.application.unit_number) ? "" : this.application.unit_number + " /";
+          this.application.street_address = unit_number + ' ' + this.application.street_number + ' ' + this.application.street_name_only;
+          if(this.application.mannual_address || this.application.address_text == "" ){
+              this.application.address_text = unit_number + ' ' + this.application.street_number + ' ' + this.application.street_name_only + ' ' + this.application.city + ' ' + this.application.state + ' ' + this.application.postcode + ' ' + this.application.country ;
+          }
+          
+          
+      },
     },
     watch: {
         showSearchFields(value){
