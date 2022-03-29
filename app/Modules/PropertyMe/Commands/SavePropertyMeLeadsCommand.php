@@ -4,9 +4,11 @@ namespace App\Modules\PropertyMe\Commands;
 
 use App\Models\Office;
 use App\Modules\PropertyMe\Services\SaveToConnectionApplication;
+use App\Notifications\ErrorLogNotification;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use PropertyMe\Services\SaveContacts;
 
 class SavePropertyMeLeadsCommand extends Command
@@ -148,7 +150,8 @@ class SavePropertyMeLeadsCommand extends Command
         if (sizeof($this->failedLeads) > 0) {
             $this->error("the following leads failed to save in connection_applications");
             dump($this->failedLeads);
-            #todo: send email to admin
+            Log::error("PropertyMe leads that failed to save in connection_applications", $this->failedLeads);
+            $this->sendErrorNotification();
         }
     }
 
@@ -162,5 +165,22 @@ class SavePropertyMeLeadsCommand extends Command
 
         \Http::timeout($time_out);
         ini_set('memory_limit', $memory_limit );
+    }
+
+    private function sendErrorNotification()
+    {
+        $ids = collect($this->failedLeads)->pluck('property_me_lead_id')->implode(', ');
+        $mgs = "System is failed to save some leads in connection_applications"
+            . "\n\n"
+            . "\n[Properties for debugging]\n"
+            . "\nServer url: " . config('app.url')
+            . "\nServer Time: " . now()->toDateTimeString()
+            . "\nTable: property_me_leads"
+            . "\nColumn: id"
+            ."\nValues: <strong>[{$ids}]<strong>";
+
+        $emails = explode(',', config('property_me.support_emails'));
+
+        Notification::route('mail', $emails)->notify(new ErrorLogNotification($mgs, "Failed to save PropertyMe leads"));
     }
 }
