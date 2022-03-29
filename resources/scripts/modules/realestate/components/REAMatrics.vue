@@ -13,6 +13,18 @@
             <v-col class="text-right  pb-0">
                 <v-btn  outlined @click="viewOfficeProfile">Office Profile</v-btn>
             </v-col>
+            <v-col class="pb-0 report-button">
+                <v-btn outlined @click="onClickDownloadReport">
+                    Report
+                    <v-icon right>mdi-download</v-icon>
+                </v-btn>
+            </v-col>
+            <ReaReportModal
+                v-if="showReportModal"
+                :dialog="showReportModal"
+                :dateRange="dateRange"
+                @close="onCloseModal"
+            />
         </v-row>
         <v-row>
             <v-col>
@@ -20,7 +32,6 @@
                     <v-col cols="12" class="pa-0 ma-0">
                         <p class="mb-0 matrics-header">Applications Data</p>
                     </v-col>
-
                     <v-col>
                         <AppMetric :data = "matrics.application_metrics.app_created"></AppMetric>
                     </v-col>
@@ -36,8 +47,6 @@
                     <v-col>
                         <AppMetric  :data = "matrics.application_metrics.app_closed"></AppMetric>
                     </v-col>
-
-
                 </v-row>
             </v-col>
             <v-col cols="1" class="text-center px-0">
@@ -62,16 +71,23 @@
 import LeadMetrics from "@scripts/components/crm/LeadMetrics";
 import AppMetric from "@scripts/modules/realestate/components/AppMatric";
 import ServiceMetrics from "@scripts/modules/realestate/components/ServiceMetrics";
+import ReaReportModal from "@scripts/components/widgets/ReaReportModal";
+import {getTodayString} from '@scripts/services/DateRangeService';
 
 export default {
     name: "REAMatrics",
     components: {
-        AppMetric, LeadMetrics, ServiceMetrics
+        AppMetric, LeadMetrics, ServiceMetrics, ReaReportModal
     },
     props: ['agency', 'matrics', 'office'],
     data(){
         return {
-            buttonLabel: 'Performance Operation'
+            buttonLabel: 'Performance Operation',
+            showReportModal: false,
+            dateRange: {
+                start: getTodayString(),
+                end: getTodayString()
+            },
         }
     },
     methods: {
@@ -104,7 +120,13 @@ export default {
             } else{
                 this.buttonLabel = 'Performance Operation'
             }
-        }
+        },
+        onClickDownloadReport() {
+            this.showReportModal = true;
+        },
+        onCloseModal() {
+            this.showReportModal = false;
+        },
     },
     mounted(){
         this.setLabelOfBackButton(this.$route.query?.type);
@@ -142,6 +164,10 @@ export default {
 .matrics-header {
     font-size: 1em;
     font-weight: 700;
+}
+
+.report-button {
+    max-width: 150px;
 }
 
 </style>
