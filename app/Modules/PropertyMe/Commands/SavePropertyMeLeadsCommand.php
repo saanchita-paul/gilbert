@@ -6,6 +6,7 @@ use App\Models\Office;
 use App\Modules\PropertyMe\Services\SaveToConnectionApplication;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use PropertyMe\Services\SaveContacts;
 
 class SavePropertyMeLeadsCommand extends Command
@@ -15,7 +16,7 @@ class SavePropertyMeLeadsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'property_me:save_contact';
+    protected $signature = 'property_me:save_contact {--office=}';
     /**
      * The console command description.
      *
@@ -28,6 +29,15 @@ class SavePropertyMeLeadsCommand extends Command
      *
      * @return void
      */
+
+    /**
+     * leads that are saved in property_me_leads table,
+     * but failed to save in connection_application table.
+     *
+     * @var array
+     */
+    protected array $failedLeads = [];
+
     public function __construct()
     {
         parent::__construct();
@@ -41,15 +51,46 @@ class SavePropertyMeLeadsCommand extends Command
      */
     public function handle()
     {
-        $time_out = env('SERVER_TIMEOUT', 600);
-        $memory_limit = env('SERVER_MEMORY_LIMIT', '1024M');
+        $this->overwriteConfigs();
 
-        \Http::timeout($time_out);
-        ini_set('memory_limit', $memory_limit );
+        if ($this->option('office') !== null) {
+           $this->fetchForSelectedOffice();
+        } else {
+            $this->fetchForAllOffices();
+        }
 
+        $this->handleFailedLeads();
+    }
+
+
+    /**
+     * @throws Exception
+     */
+    private function fetchForSelectedOffice()
+    {
+        $office = Office::where('id', $this->option('office'))
+            ->whereNotNull('property_me_refresh_token')
+            ->first();
+
+
+        if (!$office) {
+            $this->error("No PropertyMe connected office found with id: {$this->option('office')}");
+            die();
+        }
+
+        $this->saveLead($office);
+    }
+
+    /** Fetching leads for all offices
+     *
+     * @throws Exception
+     */
+    private function fetchForAllOffices()
+    {
         $linkedOffice = Office::query()
             ->whereNotNull('property_me_refresh_token')
             ->with('agency')
+//            ->orderBy('id', 'desc')->limit(2)
             ->get();
 
         foreach ($linkedOffice as $office) {
@@ -58,6 +99,10 @@ class SavePropertyMeLeadsCommand extends Command
     }
 
     /**
+     * saving leads to connection_applications
+     *
+     * @param Office $office
+     *
      * @throws Exception
      */
 
@@ -75,9 +120,47 @@ class SavePropertyMeLeadsCommand extends Command
         $saveService = new SaveToConnectionApplication($office, $tenancies);
 
         foreach ($leads as $lead) {
-            $saveService->run($lead);
-        }
+            try {
+                $saveService->run($lead);
+            } catch (Exception $e) {
+                Log::error($e->getMessage());
+                Log::error($e->getTraceAsString());
 
+                $this->failedLeads[] = [
+                    'property_me_lead_id' => $lead->id,
+                    'office_name' => $office->name,
+                    'office_id' => $office->id,
+                    'errMessage' => $e->getMessage(),
+                ];
+            }
+        }
         $this->info("[$office->name] Complete");
+    }
+
+
+    /**
+     * handling failed to save leads
+     *
+     * @return void
+     */
+    public function handleFailedLeads()
+    {
+        if (sizeof($this->failedLeads) > 0) {
+            $this->error("the following leads failed to save in connection_applications");
+            dump($this->failedLeads);
+            #todo: send email to admin
+        }
+    }
+
+    /**
+     * Overwrite the configs
+     */
+    private function overwriteConfigs()
+    {
+        $time_out = env('SERVER_TIMEOUT', 600);
+        $memory_limit = env('SERVER_MEMORY_LIMIT', '1024M');
+
+        \Http::timeout($time_out);
+        ini_set('memory_limit', $memory_limit );
     }
 }
