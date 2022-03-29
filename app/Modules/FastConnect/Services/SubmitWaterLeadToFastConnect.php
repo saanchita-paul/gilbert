@@ -243,7 +243,7 @@ class SubmitWaterLeadToFastConnect
                     // "lot_number" => "1",
                     "street_number" => $lead->street_number,
                     "street_name" => $lead->street_name,
-                    "street_type" => $lead->billing_street_type,
+                    "street_type" => $lead->street_type,
                     "suburb" => $lead->city,
                     "state" => $this->getMappedState($lead->state),
                     "post_code" => $lead->postcode,
