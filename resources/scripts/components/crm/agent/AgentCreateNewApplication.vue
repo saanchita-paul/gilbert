@@ -795,7 +795,7 @@
                         <v-col cols="12" v-if="showSearchFields">
                             <v-row>
                                 <v-col cols="3" class="py-0">
-                                    <ValidationProvider name="UnitNo"  v-slot="{ errors }">
+                                    <ValidationProvider name="Unit No"  v-slot="{ errors }">
                                         <v-text-field
                                             label="Unit No"
                                             outlined
@@ -808,7 +808,7 @@
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="3" class="py-0">
-                                    <ValidationProvider name="StreetNo" rules="required"  v-slot="{ errors }">
+                                    <ValidationProvider name="Street No" rules="required"  v-slot="{ errors }">
                                         <v-text-field
                                             label="Street No.*"
                                             outlined
@@ -821,7 +821,7 @@
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="6" class="py-0">
-                                    <ValidationProvider name="StreetName" rules="required"  v-slot="{ errors }">
+                                    <ValidationProvider name="Street Name" rules="required"  v-slot="{ errors }">
                                         <v-text-field
                                             label="Street Name.*"
                                             outlined
@@ -834,7 +834,7 @@
                                     </ValidationProvider>
                                 </v-col>
                                  <v-col cols="3" class="py-0">
-                                    <ValidationProvider name="StreetType" rules="required"  v-slot="{ errors }">
+                                    <ValidationProvider name="Street Type" rules="required"  v-slot="{ errors }">
                                         <v-select outlined dense
                                                   v-model="application.street_type"
                                                   :items="street_type"
@@ -937,7 +937,7 @@
                         <v-col cols="12" v-if="showSearchFieldsBilling && showSearchFields">
                             <v-row>
                                 <v-col cols="3" class="py-0">
-                                    <ValidationProvider name="UnitNo"  v-slot="{ errors }">
+                                    <ValidationProvider name="Unit No"  v-slot="{ errors }">
                                         <v-text-field
                                             label="Unit No"
                                             outlined
@@ -963,7 +963,7 @@
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="6" class="py-0">
-                                    <ValidationProvider name="StreetName" rules="required"  v-slot="{ errors }">
+                                    <ValidationProvider name="Street Name" rules="required"  v-slot="{ errors }">
                                         <v-text-field
                                             label="Street Name.*"
                                             outlined
@@ -976,7 +976,7 @@
                                     </ValidationProvider>
                                 </v-col>
                                  <v-col cols="3" class="py-0">
-                                    <ValidationProvider name="StreetType" rules="required"  v-slot="{ errors }">
+                                    <ValidationProvider name="Street Type" rules="required"  v-slot="{ errors }">
                                         <v-select outlined dense
                                                   v-model="application.billing_street_type"
                                                   :items="street_type"
