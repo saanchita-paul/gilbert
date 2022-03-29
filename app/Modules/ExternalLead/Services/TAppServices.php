@@ -86,7 +86,6 @@ class TAppServices
 
     public function create(Request $requestData)
     {
-
         $this->connectionApplicaton = new ConnectionApplication();
 
         // preparing connection app for T-APp
@@ -102,28 +101,22 @@ class TAppServices
         $this->connectionApplicaton->status = ConnectionApplication::STATUS_UNASSIGNED;
         $this->connectionApplicaton->save();
 
-
         // set the lead id in tApp data
         $tApp->connection_application_id = $this->connectionApplicaton->id;
         $tApp->save();
-
 
         try {
             $this->createIdentification($this->connectionApplicaton->id);
             $this->createService($requestData->tenancy_service_type, $this->connectionApplicaton->id);
             $this->createAuthorizedPerson($this->connectionApplicaton->id);
             CreateHubspotProperty::dispatch($this->connectionApplicaton->id);
-
-
         } catch (Exception $ex) {
             \Log::error("Lead create successful, Identification or Service or Authorization creation fail");
             \Log::error($ex->getMessage());
             \Log::error($ex->getTraceAsString());
         }
 
-
         return $tApp;
-
     }
 
     private function prepareConnectionApp()
@@ -282,6 +275,15 @@ class TAppServices
 
     public function createService($tAppServices, $leadId)
     {
+        if (!$tAppServices) {
+            $connectionService = new ConnectionService();
+            $connectionService->service_type = 'water';
+            $connectionService->status = ConnectionService::STATUS_EA_PROCESSINF;
+            $connectionService->connection_application_id = $leadId;
+            $connectionService->save();
+            return;
+        }
+        
         foreach ($tAppServices as $service) {
             $connectionService = new ConnectionService();
             $connectionService->service_type = strtolower($service);

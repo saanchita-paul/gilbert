@@ -184,14 +184,16 @@ class SugerLeadService
         };
         info('checking service_c');
         // expected format example Electricity_Gas
-        $services = explode("_", strtolower($request->service_c));
-        array_push($services, 'water'); // Water will be always added to the service
+        if($request->service_c) {
+            $services = explode("_", strtolower($request->service_c));
+            array_push($services, 'water'); // Water will be always added to the service
+        }
         try {
             if($type == self::TYPE_UPDATE) $this->connectionApplication->connectionServices()->delete();
             foreach ($services as $value) {
                 $this->connectionApplication->connectionServices()->create(
                     [
-                        'service_type' => self::TYPE_SERVICE[ $value ] ,
+                        'service_type' => self::TYPE_SERVICE[$value] ,
                         'status' => ConnectionService::WATER_STATUS_IN_PROGRESS ,
                     ]
                 );

@@ -80,7 +80,7 @@ class OfficeMatricsService
                 '=' , 'ca.id')
             ->where('ca.office_id', $this->officeId)
             ->where('connection_services.status', ConnectionService::STATUS_ACCEPTED)
-            ->where('ca.status', ConnectionService::STATUS_SUBMITTED)
+            // ->where('ca.status', ConnectionService::STATUS_SUBMITTED)
             ->selectRaw('count(distinct connection_services.connection_application_id) as total')
             ->groupBy('ca.status','connection_services.status')
             ->first();
@@ -101,14 +101,16 @@ class OfficeMatricsService
         foreach($caCountedApp as $datum)
         {
             switch ($datum->status) {
-                case ConnectionService::STATUS_CLOSED:
+                case ConnectionApplication::STATUS_CLOSED:
                     $result['app_closed'] = (int) $datum?->total;
                     break;
-                case ConnectionService::STATUS_SUBMITTED:
-                    $result['app_submitted'] = (int) $datum?->total;
+                case ConnectionApplication::STATUS_SUBMITTED:
+                case ConnectionApplication::STATUS_ACCEPTED:
+                case ConnectionApplication::STATUS_REJECTED:
+                    $result['app_submitted'] = $result['app_submitted'] + (int) $datum?->total;
                     break;
-                case ConnectionService::STATUS_UNASSIGNED:
-                case ConnectionService::STATUS_ASSIGNED:
+                case ConnectionApplication::STATUS_UNASSIGNED:
+                case ConnectionApplication::STATUS_ASSIGNED:
                     $result['app_waiting_tenant'] = $result['app_waiting_tenant'] + (int)$datum?->total;
                     break;
 
