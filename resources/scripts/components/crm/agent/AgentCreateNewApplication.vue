@@ -762,7 +762,7 @@
                                         <template v-slot:activator="{ on }">
                                         <ValidationProvider name="Service Address" rules="required"  v-slot="{ errors }">
                                             <v-text-field
-                                                label="Search address"
+                                                label="Search address*"
                                                 outlined
                                                 dense
                                                 @focus="serviceSearchFocusOn"
@@ -1465,6 +1465,11 @@ export default {
         //     this.propertyDetails.address_text = "";
         //     return;
         //   }
+        if(!this.showSearchFields){
+                this.application.address_text = ""
+                this.application.billing_address_text = ""
+                return;
+            }
 
           let unit_number = isEmpty(this.application.billing_unit_number) ? "" : this.application.billing_unit_number + " /";
           this.application.billing_street_address = unit_number + ' ' + this.application.billing_street_number + ' ' + this.application.billing_street_name_only;
@@ -1473,6 +1478,11 @@ export default {
               let unit_number = isEmpty(this.application.billing_unit_number) ? "" : this.application.billing_unit_number + " /";
               this.application.billing_address_text = unit_number + ' ' + this.application.billing_street_number + ' ' + this.application.billing_street_name_only + ' ' + ' ' + this.application.billing_city + this.application.billing_state + ' ' + this.application.billing_postcode + ' ' + this.application.billing_country;
           }
+
+          if(!this.application.is_billing_same && !this.showSearchFieldsBilling){
+              this.application.billing_address_text = ""
+          }            
+
           unit_number = isEmpty(this.application.unit_number) ? "" : this.application.unit_number + " /";
           this.application.street_address = unit_number + ' ' + this.application.street_number + ' ' + this.application.street_name_only;
           if(this.application.mannual_address || this.application.address_text == "" ){
