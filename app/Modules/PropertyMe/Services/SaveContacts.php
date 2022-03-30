@@ -43,8 +43,13 @@ class SaveContacts
     {
 
         $this->leads = $this->getNewHoodLeadOnly($this->apiService->fetchContacts()->getContacts());
-        $this->tenancies = $this->apiService->fetchTenancies()->getTenancies();
+        $this->loadTenancies();
+        return $this;
+    }
 
+    public function loadTenancies()
+    {
+        $this->tenancies = $this->apiService->fetchTenancies()->getTenancies();
         return $this;
     }
 
@@ -114,6 +119,19 @@ class SaveContacts
             ->filter(fn($value) => data_get($value, 'ContactId') === $contactId)
             ->pluck('LotId')
             ->first();
+    }
+
+    /**
+     * Manually set leads data. it's used for manual lead creation
+     *
+     * @param array $leads
+     *
+     * @return static
+     */
+    public function setLeads(array $leads): static
+    {
+        $this->leads = $leads;
+        return $this;
     }
 
 }
