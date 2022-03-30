@@ -129,6 +129,8 @@ class SaveToConnectionApplication
 
         $this->saveApplicationId($application->id, $lead);
         CreateHubspotProperty::dispatch($application->id);
+
+        return $application;
     }
 
 
