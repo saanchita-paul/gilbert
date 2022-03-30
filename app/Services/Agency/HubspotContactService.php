@@ -72,7 +72,7 @@ class HubspotContactService
         if (!$response->successful()) {
             Log::info('[HubspotContactService]: response body');
             Log::info($response->body());
-            throw new \Exception('[HubspotContactService] Contact update failed, check log.');
+            throw new \Exception('[HubspotContactService] Contact update failed, check api_logs for details.');
         }
     }
 
@@ -137,7 +137,7 @@ class HubspotContactService
             ],
             [
                 "property" => "connection_date",
-                "value" => $this->getTimestamp($this->application->created_at)
+                "value" => $this->getTimestamp($this->application->moving_date)
             ],
             [
                 "property" => "hood_address_unit",
@@ -410,6 +410,6 @@ class HubspotContactService
      */
     public function getTimestamp($date): int|null
     {
-        return $date ? $date->timestamp * 1000 : null;
+        return $date ? Carbon::parse($date)->timestamp * 1000 : null;
     }
 }
