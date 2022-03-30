@@ -3,11 +3,11 @@ namespace App\Modules\Reporting\Services;
 
 use DB;
 
-use App\Models\ConnectionService;
+use Illuminate\Support\Facades\Log;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 
-class ExportTempReaReport
+class ExportReaOfficeReport
 {
     use SetDateRage;
 
@@ -32,7 +32,7 @@ class ExportTempReaReport
     private function export()
     {
         $date = now()->format('d_m_Y');
-        $name = 'Rea_pdf_'.$date.'.csv';
+        $name = 'OFFICE_REPORT_'.$date.'.csv';
         return (new FastExcel($this->leadsData))->download($name);
     }
 
@@ -44,7 +44,7 @@ class ExportTempReaReport
             
             
 
-            $this->leadsData[] = $datum;
+            $this->leadsData[] = $datum[0];
         }
     }
 
@@ -70,6 +70,8 @@ class ExportTempReaReport
             ->where('ca.created_by', '!=', null);
             // where office id matches with current office id
 
-        return $builder->get()->toArray();
+        Log::info($builder->get()->groupBy('agent_id')->toArray());
+
+        return $builder->get()->groupBy('agent_id')->toArray();
     }
 }
