@@ -137,7 +137,7 @@ class HubspotContactService
             ],
             [
                 "property" => "connection_date",
-                "value" => $this->application->moving_date
+                "value" => $this->getTimestamp($this->application->created_at)
             ],
             [
                 "property" => "hood_address_unit",
@@ -404,4 +404,12 @@ class HubspotContactService
         };
     }
 
+    /**
+     * @param $date
+     * @return int|null
+     */
+    public function getTimestamp($date): int|null
+    {
+        return $date ? $date->timestamp * 1000 : null;
+    }
 }
