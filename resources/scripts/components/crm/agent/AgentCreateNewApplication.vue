@@ -1392,7 +1392,13 @@ export default {
         },
         async onSubmit() {
             this.setAddressTextAndStreetAddress()
+
             let v = await this.$refs.create_application.validate();
+            
+            if(this.application.address_text == '' || this.application.address_text == null){
+                return;
+            }
+
             if (v) {
                 this.confirmApplicationModal = true;
             }
