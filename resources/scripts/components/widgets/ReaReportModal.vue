@@ -2,59 +2,65 @@
     <v-dialog
         v-model="dialog"
         persistent
-        max-width="550px"
+        max-width="800px"
     >
         <v-card>
+            <v-toolbar color="primary" dark>
+                <v-toolbar-title>Report Download</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn depressed right color="primary" @click="dialog = false">
+                    Close
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
             <section class="pa-4">
                 <v-row>
-                    <v-col cols="12">
-                        <p>
-                            <span class='header-title'>From: </span>
-                            <span class='header-value'>{{getFromDate}}</span>
-                            <span class='header-title ml-2'>To: </span>
-                            <span class='header-value'>{{getToDate}}</span>
-                        </p>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="4" class="py-0">
-                        <v-card
-                            class="mx-auto mt-3"
-                            max-width="300"
-                            elevation="0"
-                        >
-                            <v-list>
-                                <v-subheader >Presets</v-subheader>
-                                <v-list-item-group
-                                    v-model="selectedPreset"
+                    <v-col cols="7">
+                        <p>Select date</p>
+                        <v-row>
+                            <v-col cols="4">
+                                <v-card
+                                    class="mx-auto mt-3"
+                                    max-width="300"
+                                    elevation="0"
                                 >
-                                    <v-list-item
-                                        v-for="(item, i) in presetItems"
-                                        :key="i"
-                                    >
-                                    <v-list-item-content>
-                                        <v-list-item-title v-text="item"></v-list-item-title>
-                                    </v-list-item-content>
-                                    </v-list-item>
-                                </v-list-item-group>
-                            </v-list>
-                        </v-card>
+                                    <v-list>
+                                        <v-subheader >Presets</v-subheader>
+                                        <v-list-item-group
+                                            v-model="selectedPreset"
+                                        >
+                                            <v-list-item
+                                                v-for="(item, i) in presetItems"
+                                                :key="i"
+                                            >
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="item"></v-list-item-title>
+                                            </v-list-item-content>
+                                            </v-list-item>
+                                        </v-list-item-group>
+                                    </v-list>
+                                </v-card>
+                            </v-col>
+                            <v-col cols="8" class="calender-view py-0">
+                                <v-text-field
+                                    class="date-range-field"
+                                    v-model="dateRangeText"
+                                    label="Date range (YYYY/MM/DD)"
+                                    prepend-icon="mdi-calendar"
+                                    readonly
+                                ></v-text-field>
+                                <v-date-picker
+                                    class="date-range-picker"
+                                    v-model="dates"
+                                    range
+                                    no-title
+                                    elevation="1"
+                                ></v-date-picker>
+                            </v-col>
+                        </v-row>
                     </v-col>
-                    <v-col cols="8" class="calender-view py-0">
-                        <v-text-field
-                            class="date-range-field"
-                            v-model="dateRangeText"
-                            label="Date range (YYYY/MM/DD)"
-                            prepend-icon="mdi-calendar"
-                            readonly
-                        ></v-text-field>
-                        <v-date-picker
-                            class="date-range-picker"
-                            v-model="dates"
-                            range
-                            no-title
-                            elevation="1"
-                        ></v-date-picker>
+                    <v-col cols="5">
+                        <p>Select the report type</p>
                     </v-col>
                 </v-row>
             </section>
