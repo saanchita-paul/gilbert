@@ -8,7 +8,7 @@ use Reporting\Services\WaterReport;
 use App\Http\Controllers\Controller;
 use Reporting\Services\EnergyReport;
 use App\Services\Agency\SimpleTokenService;
-use App\Modules\Reporting\Services\ExportEnergySubmissionReport;
+use App\Modules\Reporting\Services\ExportReaOfficeReport;
 use App\Modules\Reporting\Services\ExportWaterSubmissionReport;
 
 class ReportController extends Controller
@@ -38,7 +38,7 @@ class ReportController extends Controller
     {
         try {
             if($request->get('type') === 'energy') {
-                return (new ExportEnergySubmissionReport(
+                return (new ExportReaOfficeReport(
                     $request->get('type'),
                     $request->get('start'),
                     $request->get('end')
