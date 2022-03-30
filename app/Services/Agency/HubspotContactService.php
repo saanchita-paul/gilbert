@@ -21,7 +21,7 @@ class HubspotContactService
     const STATUS_CONNECTED = 'CONNECTED';
     const STATUS_UNQUALIFIED = 'UNQUALIFIED';
     const STATUS_IN_PROGRESS = 'IN_PROGRESS';
-    
+
     private array|Collection|ConnectionApplication|Model $application;
 
     public function __construct(int $id)
@@ -64,7 +64,7 @@ class HubspotContactService
 
         $url = str_replace('${id}', $vid, config('hub_spot.update_contact')) . config('hub_spot.api_key');
         $url = APILog::setLoggerQuery($url, APILog::API_HB_UPDATE_CONTACT);
-        
+
         $response = Http::post($url, [
             "properties" => $this->getProperties()
         ]);
@@ -136,7 +136,7 @@ class HubspotContactService
                 "value" => $this->application->dob
             ],
             [
-                "property" => "hood_moving_date",
+                "property" => "connection_date",
                 "value" => $this->application->moving_date
             ],
             [
