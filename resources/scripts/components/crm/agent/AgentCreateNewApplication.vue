@@ -970,6 +970,7 @@
                                         <v-select outlined dense
                                                   v-model="application.billing_street_type"
                                                   :items="street_type"
+                                                  label="Street Type*"
                                                   :readonly="!application.billing_mannual_address"
                                                   :error-messages=" errors[0]"
                                                   placeholder="Please Select">
@@ -1347,6 +1348,7 @@ export default {
                     this.application = { ...this.application, ...data }
                     let unit_number = isEmpty(this.application.unit_number) ? "" : this.application.unit_number + " /";
                     this.application.street_address = unit_number + ' ' + this.application.street_number + ' ' + this.application.street_name_only;
+                    this.application.mannual_address = false;
                     this.selectAddress();
                 });
         },
@@ -1370,6 +1372,7 @@ export default {
                     let unit_number = isEmpty(this.application.unit_number) ? "" : this.application.unit_number + " /";
                     this.application.billing_street_address = unit_number + ' ' + this.application.billing_street_number + ' ' + this.application.billing_street_name_only;
 
+                    this.application.billing_mannual_address = false;
 
                     this.selectBillingAddress();
                 });
