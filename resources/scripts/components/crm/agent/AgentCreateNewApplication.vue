@@ -29,9 +29,10 @@
                                     outlined
                                     dense
                                     :items="titlesDD"
+                                    label="Title*"
                                     v-model="application.title"
                                     :error-messages="errors[0]"
-                                    placeholder="Please choose one"
+                                    placeholder="Please select"
                             >
                             </v-select>
                         </ValidationProvider>
@@ -101,28 +102,30 @@
                     </v-col>
 
                     <v-col cols="6" class="py-0" v-if="application.phone_type == 1">
-                    <ValidationProvider name="Mobile number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                    <ValidationProvider name="Mobile number" rules="required|cv-phone|length:12"  v-slot="{ errors }">
                         <v-text-field
                             label="Mobile number*"
-                            :maxlength="10"
+                            :maxlength="12"
                             outlined
                             dense
                             placeholder="04XX XXX XXX"
                             v-model="application.phone"
+                            v-mask="'#### ### ###'"
                             :error-messages=" errors[0]"
                         ></v-text-field>
                     </ValidationProvider>
                     </v-col>
 
                     <v-col cols="6" class="py-0" v-else>
-                    <ValidationProvider name="Homephone number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                    <ValidationProvider name="Homephone number" rules="required|cv-phone|length:12"  v-slot="{ errors }">
                         <v-text-field
                             label="Homephone number*"
-                            :maxlength="10"
+                            :maxlength="12"
                             outlined
                             dense
-                            placeholder="XXXX XXX XXX"
+                            placeholder="XX XXXX XXXX"
                             v-model="application.homephone"
+                            v-mask="'## #### ####'"
                             :error-messages=" errors[0]"
                         ></v-text-field>
                     </ValidationProvider>
@@ -174,7 +177,7 @@
                     </v-col>
 
 
-                    <v-col cols="12" class="pb-0">
+                    <v-col v-show="false" cols="12" class="pb-0">
                         <v-row class="my-0 py-0">
                             <v-col class="my-0 py-0">
                                 <v-checkbox
@@ -362,7 +365,7 @@
                                                 item-value="value"
                                                 v-model="authorized_person.role"
                                                 :error-messages=" errors[0]"
-                                                placeholder="Role">
+                                                placeholder="Role*">
                                             </v-select>
                                         </ValidationProvider>
                                     </v-col>
@@ -379,13 +382,13 @@
                             <v-col cols="12">
                                 <v-row>
                                     <v-col cols="6" class="py-0">
-                                        <ValidationProvider name="Title" rules="required" v-slot="{ errors }">
+                                        <ValidationProvider name="Id Type" rules="" v-slot="{ errors }">
                                             <v-select outlined dense
                                                       v-model="authorized_person.identification_type"
                                                       :items="idenficationTypeDD"
                                                       item-text="text"
                                                       item-value="value"
-                                                      :label="`Id Type *`"
+                                                      :label="`Identifcation Type`"
                                                       :error-messages=" errors[0]"
                                                       placeholder="Please select one">
                                             </v-select>
@@ -396,28 +399,28 @@
                             <v-col v-if="authorized_person.identification_type === 3" cols="12">
                                 <v-row>
                                     <v-col cols="6" class="pb-0">
-                                        <ValidationProvider :rules="'required'" name="Medicare Card Number" v-slot="{ errors }">
+                                        <ValidationProvider rules="" name="Medicare Card Number" v-slot="{ errors }">
                                             <v-text-field
                                                 :error-messages="errors[0]"
                                                 v-model="authorized_person.card_number"
                                                 outlined
                                                 dense
-                                                placeholder="Medicare Card Number"
-                                                :label="`Medicare Card Number *`"
+                                                placeholder=" "
+                                                :label="`Medicare Card Number`"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </v-col>
                                     <v-col cols="6" class="pb-0">
                                         <ValidationProvider
                                             name="Special Number"
-                                            :rules="'required'"
+                                            rules=""
                                             v-slot="{ errors }"
                                         >
                                             <v-select
                                                 v-model="authorized_person.special_number"
                                                 :error-messages="errors[0]"
-                                                :label="'Special Number *'"
-                                                placeholder="1/2"
+                                                :label="'Special Number'"
+                                                placeholder="Please select"
                                                 :items="specialNumberDD"
                                                 outlined
                                                 dense
@@ -439,12 +442,12 @@
                                             <template v-slot:activator="{ on, attrs }">
                                                 <ValidationProvider
                                                     name="Expiry Date"
-                                                    :rules="'required|medicare-date|medi-expire'"
+                                                    rules="medicare-date|medi-expire"
                                                     v-slot="{ errors }"
                                                 >
                                                     <v-text-field
                                                         placeholder="MM/YY"
-                                                        :label="'Expiry Date *'"
+                                                        :label="'Expiry Date'"
                                                         outlined
                                                         dense
                                                         v-model="authorized_person.expire_date"
@@ -468,13 +471,13 @@
                                     <v-col cols="6" class="pb-0">
                                         <ValidationProvider
                                             name="Card Colour"
-                                            :rules="'required'"
+                                            rules=""
                                             v-slot="{ errors }"
                                         >
                                             <v-select
                                                 v-model="authorized_person.card_color"
-                                                placeholder="Yellow"
-                                                :label="'Card Colour *'"
+                                                placeholder="Please select"
+                                                :label="'Card Colour'"
                                                 item-text="text"
                                                 item-value="value"
                                                 :items="colorDD"
@@ -490,26 +493,26 @@
                             <v-col v-if="authorized_person.identification_type === 1" cols="12">
                                 <v-row>
                                     <v-col cols="6" class="pb-0">
-                                        <ValidationProvider :rules="`required`" name="Passport Number" v-slot="{ errors }">
+                                        <ValidationProvider rules="" name="Passport Number" v-slot="{ errors }">
                                             <v-text-field
                                                 :error-messages="errors[0]"
                                                 v-model="authorized_person.card_number"
                                                 outlined
                                                 dense
-                                                placeholder="Passport Number"
-                                                :label="`Passport Number *`"
+                                                placeholder=" "
+                                                :label="`Passport Number`"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </v-col>
                                     <v-col cols="6" class="pb-0">
-                                        <ValidationProvider :rules="'required'" name="Issuing Country" v-slot="{ errors }">
+                                        <ValidationProvider rules="" name="Issuing Country" v-slot="{ errors }">
                                             <v-text-field
                                                 :error-messages="errors[0]"
                                                 v-model="authorized_person.country"
                                                 outlined
                                                 dense
-                                                placeholder="AUS"
-                                                :label="`Issuing Country *`"
+                                                placeholder=" "
+                                                :label="`Issuing Country`"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </v-col>
@@ -525,12 +528,12 @@
                                             <template v-slot:activator="{ on, attrs }">
                                                 <ValidationProvider
                                                     name="Expiry Date"
-                                                    :rules="`required|valid-date`"
+                                                    rules="valid-date"
                                                     v-slot="{ errors }"
                                                 >
                                                     <v-text-field
                                                         placeholder="DD/MM/YYYY"
-                                                        :label="`Expiry Date *`"
+                                                        :label="`Expiry Date`"
                                                         outlined
                                                         dense
                                                         v-model="authorized_person.expire_date"
@@ -554,28 +557,28 @@
                             <v-col v-if="authorized_person.identification_type === 2" cols="12">
                                 <v-row>
                                     <v-col cols="6" class="pb-0">
-                                        <ValidationProvider :rules="'required'" name="Driver’s License*" v-slot="{ errors }">
+                                        <ValidationProvider rules="" name="Driver’s License" v-slot="{ errors }">
                                             <v-text-field
                                                 :error-messages="errors[0]"
                                                 v-model="authorized_person.card_number"
                                                 outlined
                                                 dense
-                                                placeholder="License Number"
-                                                :label="'Driver’s License *'"
+                                                placeholder=" "
+                                                :label="'Driver’s License'"
                                             ></v-text-field>
                                         </ValidationProvider>
                                     </v-col>
                                     <v-col cols="6" class="pb-0">
                                         <ValidationProvider
                                             name="State"
-                                            :rules="'required'"
+                                            rules=""
                                             v-slot="{ errors }"
                                         >
                                             <v-select
                                                 :error-messages="errors[0]"
                                                 v-model="authorized_person.state"
-                                                placeholder="Victoria"
-                                                :label="`State *`"
+                                                placeholder="Please select"
+                                                :label="`State`"
                                                 item-text="text"
                                                 item-value="value"
                                                 :items="states"
@@ -597,12 +600,12 @@
                                             <template v-slot:activator="{ on, attrs }">
                                                 <ValidationProvider
                                                     name="Expiry Date"
-                                                    :rules="`required`"
+                                                    rules="valid-date"
                                                     v-slot="{ errors }"
                                                 >
                                                     <v-text-field
                                                         placeholder="DD/MM/YYYY"
-                                                        :label="`Expiry Date *`"
+                                                        :label="`Expiry Date`"
                                                         outlined
                                                         dense
                                                         v-model="authorized_person.expire_date"
@@ -648,7 +651,7 @@
                     </v-col>
 
 
-                            <v-col cols="12" class="py-0" v-if="application.is_temporary_connection">
+                            <!-- <v-col cols="12" class="py-0" v-if="application.is_temporary_connection">
                                 <v-row>
                                     <v-col cols="6" class="py-0">
                                         <v-menu
@@ -713,10 +716,10 @@
                                         </v-menu>
                                     </v-col>
                                 </v-row>
-                            </v-col>
+                            </v-col> -->
 <!-- temporary end here -->
 
-                    <v-col cols="12" class="pb-0" v-if="!application.is_temporary_connection">
+                    <v-col cols="12" class="pb-0">
                         <v-row>
                             <v-col cols="6" class="py-0">
                                 <v-menu
@@ -1017,7 +1020,7 @@
                         </v-col>
                     </template>
 
-                    <v-col cols="12" class="py-0" v-if="showSearchFieldsBilling && showSearchFields">
+                    <v-col cols="12" class="py-0" v-if="showSearchFieldsBilling && showSearchFields && !application.is_billing_same">
                         <p class="newAddress" @click="newAddressBilling"> <span style="text-decoration: underline;"> I want to search for a new address </span> </p>
                     </v-col>
 
@@ -1030,7 +1033,7 @@
 
 
 
-
+<!-- 
                     <v-col cols="12" class="pb-0">
                         <p class="sub-title mb-0"> Service Interests </p>
                     </v-col>
@@ -1061,7 +1064,7 @@
                             <h4 :class="service_types.internet ? 'enabled' : 'disabled'">Internet</h4>
                             <v-icon :readonly="!service_types.internet" color="#9C27B0">mdi-wifi</v-icon>
                         </div>
-                    </v-col>
+                    </v-col> -->
 
                     <v-col cols="12" class="pb-0">
                         <p class="sub-title  mt-5">Additional Instructions</p>
@@ -1349,6 +1352,8 @@ export default {
                     let unit_number = isEmpty(this.application.unit_number) ? "" : this.application.unit_number + " /";
                     this.application.street_address = unit_number + ' ' + this.application.street_number + ' ' + this.application.street_name_only;
                     this.application.mannual_address = false;
+                    this.application.street_name = this.application.street_name_only;
+
                     this.selectAddress();
                 });
         },
@@ -1361,6 +1366,7 @@ export default {
                     this.application.billing_unit_number = data.unit_number 
                     this.application.billing_street_number = data.street_number
                     this.application.billing_street_name_only = data.street_name_only
+                    this.application.billing_street_name = data.street_name_only
                     this.application.billing_address_text = data.address_text
                     this.application.billing_state = data.state
                     this.application.billing_street_type = data.street_type
@@ -1391,9 +1397,13 @@ export default {
 
             return true;
         },
+        mapAddress(){
+            this.application.street_name = this.application.street_name_only;
+            this.application.billing_street_name = this.application.billing_street_name_only;
+        },  
         async onSubmit() {
             this.setAddressTextAndStreetAddress()
-
+            this.mapAddress()
             let v = await this.$refs.create_application.validate();
 
             if (v && this.checkAddressText()) {
