@@ -64,7 +64,6 @@
                                         outlined
                                         dense
                                         :readonly="!propertyDetails.mannual_address"
-                                        placeholder="Unit No"
                                         v-model="propertyDetails.unit_number"
                                         :error-messages=" errors[0]"
                                     ></v-text-field>
@@ -77,7 +76,6 @@
                                         outlined
                                         dense
                                         :readonly="!propertyDetails.mannual_address"
-                                        placeholder="Street Number"
                                         v-model="propertyDetails.street_number"
                                         :error-messages=" errors[0]"
                                     ></v-text-field>
@@ -90,7 +88,6 @@
                                         outlined
                                         dense
                                         :readonly="!propertyDetails.mannual_address"
-                                        placeholder="2/56, Bradman Drive"
                                         v-model="propertyDetails.street_name_only"
                                         :error-messages=" errors[0]"
                                     ></v-text-field>
@@ -115,7 +112,6 @@
                                         outlined
                                         dense
                                         :readonly="!propertyDetails.mannual_address"
-                                        placeholder="Sunbury"
                                         v-model="propertyDetails.city"
                                         :error-messages=" errors[0]"
                                     ></v-text-field>
@@ -140,7 +136,6 @@
                                         outlined
                                         dense
                                         :readonly="!propertyDetails.mannual_address"
-                                        placeholder="3429"
                                         v-model="propertyDetails.postcode"
                                         :error-messages=" errors[0]"
                                     ></v-text-field>
@@ -405,6 +400,17 @@ export default {
           return street_type;
       },
     },
+    watch:{
+           propertyDetails: {
+            handler(newValue, oldValue) {
+                console.log(newValue)
+                // Note: `newValue` will be equal to `oldValue` here
+                // on nested mutations as long as the object itself
+                // hasn't been replaced.
+            },
+            deep: true
+            }
+    },
     methods: {
         billingAddress(){
             // this.isBillingAddressSame = !this.isBillingAddressSame;
@@ -594,7 +600,10 @@ export default {
           
           console.log("property details2" , this.propertyDetails)
       },
-    
+     mapStreetName(){
+         this.propertyDetails.street_name = this.propertyDetails.street_name_only;
+         this.propertyDetails.billing_street_name = this.propertyDetails.billing_street_name_only;
+     },
      checkAddressText()
      {
         if(this.propertyDetails.address_text  == null){
@@ -604,11 +613,11 @@ export default {
      },
       async onSubmit() 
       {
-
-          console.log(this.propertyDetails)
           // return;
           this.setAddressTextAndStreetAddress();
-        //   if(!this.checkAddressText()) return;
+          this.mapStreetName();
+          console.log("CHECKING IT ON SUBMIT" , this.propertyDetails)
+          // if(!this.checkAddressText()) return;
 
           let v = await this.$refs.edit_address.validate();
           if (v) {

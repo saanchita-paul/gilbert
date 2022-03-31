@@ -320,7 +320,12 @@ export default {
             this.leadSummary.state = address.state
             this.leadSummary.street_number = address.street_number
             this.leadSummary.unit_number = address.unit_number
-            this.leadSummary.street_name = address.street_name
+            this.leadSummary.street_type = address.street_type
+            this.leadSummary.billing_street_type = address.billing_street_type
+            this.leadSummary.street_name = address.street_name_only
+            this.leadSummary.street_name_only = address.street_name_only
+            this.leadSummary.billing_street_name = address.billing_street_name_only
+            this.leadSummary.billing_street_name_only = address.billing_street_name_only
             this.leadSummary.billing_unit_number = address.billing_unit_number
             this.nmiMernFlag = true;
             this.leadSummary.nmi = '';
