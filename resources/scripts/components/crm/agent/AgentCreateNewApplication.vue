@@ -1390,16 +1390,23 @@ export default {
         onCancel() {
             this.$router.push({name: 'agent.application.dashboard'});
         },
+        checkAddressText(){
+            if(this.application.address_text == '' || this.application.address_text == null){
+                return false;
+            }
+
+            if(!this.application.is_billing_same && ( this.application.billing_address_text == '' || this.application.billing_address_text == null ) ){
+                return false
+            }
+
+            return true;
+        },
         async onSubmit() {
             this.setAddressTextAndStreetAddress()
 
             let v = await this.$refs.create_application.validate();
-            
-            if(this.application.address_text == '' || this.application.address_text == null){
-                return;
-            }
 
-            if (v) {
+            if (v && this.checkAddressText()) {
                 this.confirmApplicationModal = true;
             }
             return v;
