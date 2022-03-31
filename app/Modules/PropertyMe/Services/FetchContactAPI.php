@@ -37,7 +37,7 @@ class FetchContactAPI extends BasePropertyMeAPI
     public function fetchLots(): static
     {
         $url = config('property_me.api_root_url') . config('property_me.get_lots_url');
-        $query = "?Timestamp=" . $this->getTimestamp(-100);
+        $query = "?Timestamp=" . $this->getTimestampTicks(-100);
 
         try {
             $response = Http::withHeaders([
@@ -58,7 +58,7 @@ class FetchContactAPI extends BasePropertyMeAPI
     public function fetchTenancies(): static
     {
         $url = config('property_me.api_root_url') . config('property_me.get_tenancies_url');
-        $query = "?Timestamp=" . $this->getTimestamp(-100);
+        $query = "?Timestamp=" . $this->getTimestampTicks(-100);
 
         try {
             $response = Http::withHeaders([
@@ -85,7 +85,7 @@ class FetchContactAPI extends BasePropertyMeAPI
             . "/"
             . "members";
 
-        $query = "?Timestamp=" . $this->getTimestamp(-100);
+        $query = "?Timestamp=" . $this->getTimestampTicks(-100);
 
         try {
             $response = Http::withHeaders([
@@ -111,7 +111,8 @@ class FetchContactAPI extends BasePropertyMeAPI
     public function fetchContacts(): static
     {
         $url = config('property_me.api_root_url') . config('property_me.get_contact_url');
-        $query = "?Timestamp=" . $this->getTimestamp();
+        $query = "?Timestamp=" . $this->getTimestampTicks();
+        dump( $query);
 
         try {
             $response = Http::withHeaders([

@@ -18,7 +18,7 @@ class SavePropertyMeLeadsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'property_me:save_contact {--office=}';
+    protected $signature = 'property_me:save_contact {--office=} {--days=}';
     /**
      * The console command description.
      *
@@ -165,6 +165,12 @@ class SavePropertyMeLeadsCommand extends Command
 
         \Http::timeout($time_out);
         ini_set('memory_limit', $memory_limit );
+
+
+        $days = $this->option('days');
+        if ($days) {
+            config(['property_me.days' => $days]);
+        }
     }
 
     private function sendErrorNotification()
