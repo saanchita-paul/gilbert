@@ -8,7 +8,7 @@ use Reporting\Services\WaterReport;
 use App\Http\Controllers\Controller;
 use Reporting\Services\EnergyReport;
 use App\Services\Agency\SimpleTokenService;
-use App\Modules\Reporting\Services\ExportReaOfficeReport;
+use App\Services\Agency\Report\ExportReaOfficeReport;
 use App\Modules\Reporting\Services\ExportWaterSubmissionReport;
 
 class ReportController extends Controller

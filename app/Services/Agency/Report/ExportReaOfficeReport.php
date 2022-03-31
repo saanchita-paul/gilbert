@@ -1,10 +1,10 @@
 <?php
-namespace App\Modules\Reporting\Services;
+namespace App\Services\Agency\Report;
 
 use DB;
 
 use Illuminate\Support\Facades\Log;
-use Rap2hpoutre\FastExcel\FastExcel;
+use App\Modules\Reporting\Services\SetDateRage;
 use App\Models\ConnectionApplication;
 
 class ExportReaOfficeReport
@@ -15,6 +15,7 @@ class ExportReaOfficeReport
     private string $endDate;
     private string $officeId;
     private string $reportType;
+    private array $officeReport = [];
 
     public function __construct(string $reportType, string $start, string $end)
     {
@@ -22,8 +23,6 @@ class ExportReaOfficeReport
         // $this->officeId = $officeId;
         // $this->reportType = $reportType;
     }
-
-    private array $detailedCount = [];
 
     public function run()
     {
@@ -33,19 +32,27 @@ class ExportReaOfficeReport
 
     private function export()
     {
-        $date = now()->format('d_m_Y');
-        $name = 'OFFICE_REPORT_'.$date.'.csv';
-        return (new FastExcel($this->detailedCount))->download($name);
+        // create PDF here
+        Log::info('Exporting report', $this->officeReport);
+
     }
 
     private function mapData(array $data)
     {
+        $detailedCount = [];
         $totalCount = [
             'total_applications_created' => 0,
             'applications_with_minimum_submitted' => 0,
             'successful_water_connections' => 0,
             'awaiting_confirmation' => 0,
             'conversion_rate' => 0
+        ];
+
+        $submittedUtilityCount = [
+            'electricity' => 0,
+            'gas' => 0,
+            'water' => 0,
+            'total_energy' => 0,
         ];
 
         foreach ($data as $datum) {
@@ -59,7 +66,7 @@ class ExportReaOfficeReport
             ];
             $count['conversion_rate'] = $this->getConversionRate($count['total_applications_created'], $count['applications_with_minimum_submitted'], $count['awaiting_confirmation']);
             
-            $this->detailedCount[] = $count;
+            $detailedCount[] = $count;
 
             $totalCount['total_applications_created'] += $count['total_applications_created'];
             $totalCount['applications_with_minimum_submitted'] += $count['applications_with_minimum_submitted'];
@@ -67,6 +74,11 @@ class ExportReaOfficeReport
             $totalCount['awaiting_confirmation'] += $count['awaiting_confirmation'];
             $totalCount['conversion_rate'] = $this->getConversionRate($totalCount['total_applications_created'], $totalCount['applications_with_minimum_submitted'], $totalCount['awaiting_confirmation']);
 
+            $this->officeReport = [
+                "detailedCount" => $detailedCount,
+                "totalCount" => $totalCount,
+                "submittedUtilityCount" => $submittedUtilityCount
+            ];
         }
     }
 
