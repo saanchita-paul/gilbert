@@ -6,8 +6,6 @@ use DB;
 use Illuminate\Support\Facades\Log;
 use Rap2hpoutre\FastExcel\FastExcel;
 use App\Models\ConnectionApplication;
-use App\Models\ConnectionService;
-use App\Models\Office;
 
 class ExportReaOfficeReport
 {
@@ -15,15 +13,17 @@ class ExportReaOfficeReport
 
     private string $startDate;
     private string $endDate;
+    private string $officeId;
+    private string $reportType;
 
-    private array $agentReport = [];
-
-    public function __construct(string $type, string $start, string $end)
+    public function __construct(string $reportType, string $start, string $end)
     {
         $this->setDateRange($start, $end);
+        // $this->officeId = $officeId;
+        // $this->reportType = $reportType;
     }
 
-    private array $leadsData = [];
+    private array $detailedCount = [];
 
     public function run()
     {
@@ -35,24 +35,38 @@ class ExportReaOfficeReport
     {
         $date = now()->format('d_m_Y');
         $name = 'OFFICE_REPORT_'.$date.'.csv';
-        return (new FastExcel($this->leadsData))->download($name);
+        return (new FastExcel($this->detailedCount))->download($name);
     }
 
     private function mapData(array $data)
     {
+        $totalCount = [
+            'total_applications_created' => 0,
+            'applications_with_minimum_submitted' => 0,
+            'successful_water_connections' => 0,
+            'awaiting_confirmation' => 0,
+            'conversion_rate' => 0
+        ];
+
         foreach ($data as $datum) {
 
-            $newData = [
+            $count = [
                 "agent_name" => $this->getAgentName($datum[0]['agent_id']),
-                "applications_created" => count($datum),
-                "applications_minimum_submitted" => 0,
-                "successful_water" => 0,
-                "successful_water" => 0,
-                "awaiting_confirmation" => 0,
-                "conversion_rate" => 0,
+                "total_applications_created" => count($datum),
+                "applications_with_minimum_submitted" => $this->getMinimumSubmitted($datum),
+                "successful_water_connections" => $this->getSuccessfulWaterConnection($datum),
+                "awaiting_confirmation" => $this->getAwaitingConfirmation($datum),
             ];
+            $count['conversion_rate'] = $this->getConversionRate($count['total_applications_created'], $count['applications_with_minimum_submitted'], $count['awaiting_confirmation']);
             
-            $this->leadsData[] = $newData;
+            $this->detailedCount[] = $count;
+
+            $totalCount['total_applications_created'] += $count['total_applications_created'];
+            $totalCount['applications_with_minimum_submitted'] += $count['applications_with_minimum_submitted'];
+            $totalCount['successful_water_connections'] += $count['successful_water_connections'];
+            $totalCount['awaiting_confirmation'] += $count['awaiting_confirmation'];
+            $totalCount['conversion_rate'] = $this->getConversionRate($totalCount['total_applications_created'], $totalCount['applications_with_minimum_submitted'], $totalCount['awaiting_confirmation']);
+
         }
     }
 
@@ -96,8 +110,7 @@ class ExportReaOfficeReport
                 ->where('created_at', '>=', $this->startDate)
                 ->where('created_at', '<=', $this->endDate)
                 ->where('created_by', '!=', null);
-
-        Log::info($builder->get()->groupBy('agent_id')->toArray());
+                // ->where('office_id', $this->officeId);
 
         return $builder->get()->groupBy('agent_id')->toArray();
     }
@@ -109,5 +122,63 @@ class ExportReaOfficeReport
             ->where('id', $id)
             ->first();
         return $agentProfile->first_name.' '.$agentProfile->last_name;
+    }
+
+    private function getMinimumSubmitted(array $applications) : int
+    {
+        $submitted = 0;
+        foreach ($applications as $application) {
+            foreach ($application['connection_services'] as $service) {
+                if ($service['utility_type'] !== 'water' && (
+                    $service['utility_status'] === 4 ||
+                    $service['utility_status'] === 5 ||
+                    $service['utility_status'] === 6
+                    )
+                ) {
+                    $submitted++;
+                    break;
+                }
+            }
+        }
+        return $submitted;
+    }
+
+    private function getSuccessfulWaterConnection(array $applications) : int
+    {
+        $submitted = 0;
+        foreach ($applications as $application) {
+            foreach ($application['connection_services'] as $service) {
+                if ($service['utility_type'] === 'water' && (
+                    $service['utility_status'] === 4 ||
+                    $service['utility_status'] === 5 ||
+                    $service['utility_status'] === 6
+                    )
+                ) {
+                    $submitted++;
+                    break;
+                }
+            }
+        }
+        return $submitted;
+    }
+
+    private function getAwaitingConfirmation(array $applications) : int
+    {
+        $awaiting = 0;
+        foreach ($applications as $application) {
+            if($application['application_status'] === 1 || $application['application_status'] === 2) {
+                $awaiting++;
+            }
+        }
+        return $awaiting;
+    }
+
+    private function getConversionRate(int $total, int $minimum, int $awaiting) : float
+    {
+        $conversionRate = 0;
+        if ($total > 0) {
+            $conversionRate = (($minimum / $total) - $awaiting);
+        }
+        return $conversionRate;
     }
 }
