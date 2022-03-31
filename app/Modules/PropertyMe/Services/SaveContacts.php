@@ -81,6 +81,8 @@ class SaveContacts
             $lead = new PropertyMeLead();
             $lead->all_fields_dump = json_encode($leadData);
             $lead->lead_id = $leadId;
+            $lead->created_at = now()->toDateTimeString();
+            $lead->updated_at = now()->toDateTimeString();
 
             if ($lotId = $this->getLotId($leadId) ) {
                 $lotMembers = $this->apiService->fetchTLotMembers($lotId);
