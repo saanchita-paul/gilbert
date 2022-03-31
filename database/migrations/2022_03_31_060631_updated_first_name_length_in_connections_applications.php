@@ -17,6 +17,7 @@ class UpdatedFirstNameLengthInConnectionsApplications extends Migration
             $table->string('first_name', 200)->change();
             $table->string('middle_name', 200)->change();
             $table->string('last_name', 200)->change();
+            $table->string('phone', 100)->change();
         });
     }
 
