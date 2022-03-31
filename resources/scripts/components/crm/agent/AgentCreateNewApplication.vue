@@ -767,7 +767,6 @@
                                                 dense
                                                 @focus="serviceSearchFocusOn"
                                                 @blur="serviceSearchFocusOff"
-                                                placeholder="Type house address here"
                                                 append-icon="mdi-magnify"
                                                 :error-messages=" errors[0]"
                                                 v-model="application.address_text"
@@ -801,7 +800,6 @@
                                             outlined
                                             dense
                                             :readonly="!application.mannual_address"
-                                            placeholder="Unit No"
                                             v-model="application.unit_number"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
@@ -814,7 +812,6 @@
                                             outlined
                                             dense
                                             :readonly="!application.mannual_address"
-                                            placeholder="2/56, Bradman Drive"
                                             v-model="application.street_number"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
@@ -827,7 +824,6 @@
                                             outlined
                                             dense
                                             :readonly="!application.mannual_address"
-                                            placeholder="2/56, Bradman Drive"
                                             v-model="application.street_name_only"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
@@ -852,7 +848,6 @@
                                             outlined
                                             dense
                                             :readonly="!application.mannual_address"
-                                            placeholder="Sunbury"
                                             v-model="application.city"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
@@ -877,7 +872,6 @@
                                             outlined
                                             dense
                                             :readonly="!application.mannual_address"
-                                            placeholder="3429"
                                             v-model="application.postcode"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
@@ -910,7 +904,6 @@
                                                 @focus="billingSearchFocusOn"
                                                 @blur="billingSearchFocusOff"
                                                 :error-messages=" errors[0]"
-                                                placeholder="Type house address here"
                                                 append-icon="mdi-magnify"
                                                 v-model="application.billing_address_text"
                                                 @keyup.native="onBillingStreetChanged"
@@ -943,7 +936,6 @@
                                             outlined
                                             dense
                                             :readonly="!application.billing_mannual_address"
-                                            placeholder="Unit No"
                                             v-model="application.billing_unit_number"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
@@ -956,7 +948,6 @@
                                             outlined
                                             dense
                                             :readonly="!application.billing_mannual_address"
-                                            placeholder="2/56, Bradman Drive"
                                             v-model="application.billing_street_number"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
@@ -969,7 +960,6 @@
                                             outlined
                                             dense
                                             :readonly="!application.billing_mannual_address"
-                                            placeholder="2/56, Bradman Drive"
                                             v-model="application.billing_street_name_only"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
@@ -981,7 +971,6 @@
                                                   v-model="application.billing_street_type"
                                                   :items="street_type"
                                                   :readonly="!application.billing_mannual_address"
-                                                  label="Street Type*"
                                                   :error-messages=" errors[0]"
                                                   placeholder="Please Select">
                                         </v-select>
@@ -994,7 +983,6 @@
                                             outlined
                                             dense
                                             :readonly="!application.billing_mannual_address"
-                                            placeholder="Sunbury"
                                             v-model="application.billing_city"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
@@ -1019,7 +1007,6 @@
                                             outlined
                                             dense
                                             :readonly="!application.billing_mannual_address"
-                                            placeholder="3429"
                                             v-model="application.billing_postcode"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
