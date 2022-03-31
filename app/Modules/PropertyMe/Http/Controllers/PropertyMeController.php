@@ -33,7 +33,12 @@ class PropertyMeController extends Controller
             $applications = ManuallyStoreLead::run($request->get('office_id'), $request->get('leads_data'));
             return response()->json(['success' => true, 'applications' => $applications]);
         } catch ( \Exception $exception) {
-            return $this->sendErrorResponse($exception);
+            #return $this->sendErrorResponse($exception);
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString()
+            ]);
         }
     }
 }
