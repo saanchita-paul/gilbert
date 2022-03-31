@@ -474,6 +474,7 @@ class ConnectionApplication extends Model
             ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agency_name,
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agency_name,
             ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agency_name,
+            ConnectionApplication::SOURCE_T_APP => $this->tApp?->agency_name,
             default => ''
         };
     }
@@ -486,6 +487,7 @@ class ConnectionApplication extends Model
             ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agent_name,
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agent_name,
             ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agent_name,
+            ConnectionApplication::SOURCE_T_APP => $this->createdBy?->first_name.' '. $this->createdBy?->last_name,
             default => ''
         };
     }
