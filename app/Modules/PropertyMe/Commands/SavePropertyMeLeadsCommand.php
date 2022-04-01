@@ -149,7 +149,7 @@ class SavePropertyMeLeadsCommand extends Command
     {
         if (sizeof($this->failedLeads) > 0) {
             $this->error("the following leads failed to save in connection_applications");
-            dump($this->failedLeads);
+            $this->table(['property_me_lead_id', 'office_name', 'office_id', 'errMessage'], $this->failedLeads);
             Log::error("PropertyMe leads that failed to save in connection_applications", $this->failedLeads);
             $this->sendErrorNotification();
         }
