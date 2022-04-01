@@ -1,11 +1,11 @@
 <?php
 namespace App\Services\Agency\Report;
 
-use DB;
-
+use App\Models\AgentProfile;
 use Illuminate\Support\Facades\Log;
 use App\Modules\Reporting\Services\SetDateRage;
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
 
 class ExportReaOfficeReport
 {
@@ -16,6 +16,28 @@ class ExportReaOfficeReport
     private string $officeId;
     private string $reportType;
     private array $officeReport = [];
+
+    private array $submissionType = [
+        ConnectionService::STATUS_SUBMITTED,
+        ConnectionService::STATUS_ACCEPTED,
+        ConnectionService::STATUS_REJECTED,
+        ConnectionService::STATUS_CLOSED,
+        ConnectionService::AC_MANUAL_PROCESSING,
+        ConnectionService::STATUS_ENERGY_SUBMIT
+    ];
+
+    private array $energyType = [
+        ConnectionService::TYPE_ELECTRICITY,
+        ConnectionService::TYPE_GAS
+    ];
+
+    private array $WaterType = [ConnectionService::TYPE_WATER];
+
+    private array $awaitingConfirmationType = [
+        ConnectionApplication::STATUS_UNASSIGNED,
+        ConnectionApplication::STATUS_ASSIGNED,
+        ConnectionApplication::STATUS_ESCALATED
+    ];
 
     public function __construct(string $reportType, string $start, string $end)
     {
@@ -74,36 +96,21 @@ class ExportReaOfficeReport
             $totalCount['awaiting_confirmation'] += $count['awaiting_confirmation'];
             $totalCount['conversion_rate'] = $this->getConversionRate($totalCount['total_applications_created'], $totalCount['applications_with_minimum_submitted'], $totalCount['awaiting_confirmation']);
 
-            $this->officeReport = [
-                "detailedCount" => $detailedCount,
-                "totalCount" => $totalCount,
-                "submittedUtilityCount" => $submittedUtilityCount
-            ];
+            $submittedUtilityCount['electricity'] += $this->getSubmittedUtilityCount($datum, 'power');
+            $submittedUtilityCount['gas'] += $this->getSubmittedUtilityCount($datum, 'gas');
+            $submittedUtilityCount['water'] += $this->getSubmittedUtilityCount($datum, 'water');
         }
+        $submittedUtilityCount['total_energy'] = $submittedUtilityCount['electricity'] + $submittedUtilityCount['gas'];
+
+        $this->officeReport = [
+            "detailedCount" => $detailedCount,
+            "totalCount" => $totalCount,
+            "submittedUtilityCount" => $submittedUtilityCount
+        ];
     }
 
     private function fetchData() : array
     {
-        // $builder = DB::table('connection_services as cs')
-        //     ->selectRaw("
-        //         ca.office_id as `office_id`,
-        //         ca.created_by as `agent_id`,
-        //         concat(ap.first_name, ap.last_name) as `agent_name`,
-        //         ca.id as `application_id`,
-        //         ca.status as `application_status`,
-        //         cs.id as `utility_id`,
-        //         cs.status as `utility_status`,
-        //         cs.service_type as `utility_type`,
-        //         ca.created_at as `created_date`,
-        //         cs.submitted_at as `submitted_date`
-        //     ")
-        //     ->leftJoin('connection_applications as ca', 'ca.id', '=', 'cs.connection_application_id')
-        //     ->leftJoin('agent_profiles as ap', 'ap.id', '=', 'ca.created_by')
-        //     ->where('ca.created_at', '>=', $this->startDate)
-        //     ->where('ca.created_at', '<=', $this->endDate)
-        //     ->where('ca.created_by', '!=', null);
-          
-
         $builder = ConnectionApplication::selectRaw("
             office_id as `office_id`,
             created_by as `agent_id`,
@@ -129,56 +136,50 @@ class ExportReaOfficeReport
 
     private function getAgentName(int $id) : string
     {
-        $agentProfile = DB::table('agent_profiles')
-            ->select('first_name', 'last_name')
-            ->where('id', $id)
-            ->first();
+        $agentProfile = AgentProfile::selectRaw("id, first_name, last_name")->where('id', $id)->first();
         return $agentProfile->first_name.' '.$agentProfile->last_name;
     }
 
     private function getMinimumSubmitted(array $applications) : int
     {
-        $submitted = 0;
+        $energySubmitted = 0;
+
         foreach ($applications as $application) {
             foreach ($application['connection_services'] as $service) {
-                if ($service['utility_type'] !== 'water' && (
-                    $service['utility_status'] === 4 ||
-                    $service['utility_status'] === 5 ||
-                    $service['utility_status'] === 6
-                    )
+                if (
+                    in_array($service['utility_type'], $this->energyType) &&
+                    in_array($service['utility_status'], $this->submissionType)
                 ) {
-                    $submitted++;
+                    $energySubmitted++;
                     break;
                 }
             }
         }
-        return $submitted;
+        return $energySubmitted;
     }
 
     private function getSuccessfulWaterConnection(array $applications) : int
     {
-        $submitted = 0;
+        $waterSubmitted = 0;
         foreach ($applications as $application) {
             foreach ($application['connection_services'] as $service) {
-                if ($service['utility_type'] === 'water' && (
-                    $service['utility_status'] === 4 ||
-                    $service['utility_status'] === 5 ||
-                    $service['utility_status'] === 6
-                    )
+                if (
+                    in_array($service['utility_type'], $this->WaterType) &&
+                    in_array($service['utility_status'], $this->submissionType)
                 ) {
-                    $submitted++;
+                    $waterSubmitted++;
                     break;
                 }
             }
         }
-        return $submitted;
+        return $waterSubmitted;
     }
 
     private function getAwaitingConfirmation(array $applications) : int
     {
         $awaiting = 0;
         foreach ($applications as $application) {
-            if($application['application_status'] === 1 || $application['application_status'] === 2) {
+            if(in_array($application['application_status'], $this->awaitingConfirmationType )) {
                 $awaiting++;
             }
         }
@@ -188,9 +189,26 @@ class ExportReaOfficeReport
     private function getConversionRate(int $total, int $minimum, int $awaiting) : float
     {
         $conversionRate = 0;
-        if ($total > 0) {
-            $conversionRate = (($minimum / $total) - $awaiting);
+        if ($total > 0 && ($total - $awaiting > 0)) {
+            $conversionRate = ($minimum / ($total - $awaiting)) * 100;
         }
         return $conversionRate;
+    }
+
+    private function getSubmittedUtilityCount(array $applications, string $utilityType) : int
+    {
+        $count = 0;
+        foreach ($applications as $application) {
+            foreach ($application['connection_services'] as $service) {
+                if (
+                    $service['utility_type'] === $utilityType &&
+                    in_array($service['utility_status'], $this->submissionType)
+                ) {
+                    $count++;
+                    break;
+                }
+            }
+        }
+        return $count;
     }
 }
