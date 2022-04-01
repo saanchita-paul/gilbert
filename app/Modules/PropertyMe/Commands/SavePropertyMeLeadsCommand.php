@@ -115,11 +115,11 @@ class SavePropertyMeLeadsCommand extends Command
 
         $pm = new SaveContacts($office->property_me_refresh_token);
         $leads = $pm->fetch()->createLead()->getSavedLeads();
-        $tenancies = $pm->getTenancies();
+
 
         $this->line("[$office->name]  Saved in property_me_leads: " . sizeof($leads));
 
-        $saveService = new SaveToConnectionApplication($office, $tenancies);
+        $saveService = new SaveToConnectionApplication($office);
 
         foreach ($leads as $lead) {
             try {
@@ -169,7 +169,7 @@ class SavePropertyMeLeadsCommand extends Command
 
         $days = $this->option('days');
         if ($days) {
-            config(['property_me.days' => $days]);
+            config(['property_me.no_of_days' => $days]);
         }
     }
 

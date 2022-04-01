@@ -10,6 +10,7 @@ use App\Models\Identification;
 use App\Models\Office;
 use App\Notifications\ErrorLogNotification;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Notification;
 use PropertyMe\PropertyMeLead;
@@ -20,9 +21,7 @@ use App\Models\ConnectionService;
 class SaveToConnectionApplication
 {
 
-    public function __construct(private Office $office, private array $tenancies)
-    {
-    }
+    public function __construct(private Office $office) {}
 
     public function run(PropertyMeLead $lead)
     {
@@ -36,6 +35,9 @@ class SaveToConnectionApplication
             $this->extractContact($leadData, 'LastName')
         );
 
+        $movingDate = data_get($lead, 'movingDate');
+        unset($lead->movingDate);
+
         $application = ConnectionApplication::query()->create([
             'source' => ConnectionApplication::SOURCE_PROPERTY_ME,
             'office_id' => $this->office->id,
@@ -43,7 +45,7 @@ class SaveToConnectionApplication
             'created_by' => $this->getCreatedById($lead),
             'status' => ConnectionApplication::STATUS_UNASSIGNED,
 
-            'moving_date' => $this->getMovingDate(data_get($leadData, 'Id')),
+            'moving_date' => $movingDate,
 
             'first_name' => $this->extractContact($leadData, 'FirstName'),
             'title' => $this->getUserTitle($this->extractContact($leadData, 'Salutation')),
@@ -204,17 +206,17 @@ class SaveToConnectionApplication
     }
 
 
-    /**
-     * @param string $id
-     * @return string|null
-     */
-    private function getMovingDate(string $id): ?string
-    {
-        return collect($this->tenancies)
-            ->filter(fn($value) => data_get($value, 'ContactId') === $id)
-            ->pluck('TenancyStart')
-            ->first();
-    }
+//    /**
+//     * @param string $id
+//     * @return string|null
+//     */
+//    private function getMovingDate(string $id): ?string
+//    {
+//        return collect($this->tenancies)
+//            ->filter(fn($value) => data_get($value, 'ContactId') === $id)
+//            ->pluck('TenancyStart')
+//            ->first();
+//    }
 
 
     /**
