@@ -70,10 +70,12 @@ class WaterAutoSubmitService
         if($connectionApplcation->tenancy_type === ConnectionApplication::TENANCY_TYPE_HOME_OWNER) {
             throw new Exception('Water Service is not available for Tenancy Type HomeOwner');
         }
-        
+
         if (
             !empty($connectionApplcation->street_number) &&
-            !empty($connectionApplcation->street_name) &&
+            !empty($connectionApplcation->street_name_only) &&
+            !empty($connectionApplcation->street_type) &&
+            !empty($connectionApplcation->state) &&
             !empty($connectionApplcation->city) &&
             !empty($connectionApplcation->postcode) &&
             !empty($connectionApplcation->first_name) &&
@@ -81,7 +83,6 @@ class WaterAutoSubmitService
             !empty($connectionApplcation->dob) &&
             !empty($connectionApplcation->email) &&
             !empty($connectionApplcation->phone) &&
-            !empty($connectionApplcation->state) &&
             !empty($connectionApplcation->title) &&
             !empty($connectionApplcation->tenancy_type) &&
             !empty($connectionApplcation->identification)
