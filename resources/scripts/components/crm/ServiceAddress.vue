@@ -54,7 +54,7 @@
                                                 </v-col>
                                             </v-row>
                                         </v-col>
-                                        
+
                     <v-col cols="12" v-if="showSearchFields">
                         <v-row>
                             <v-col cols="3" class="py-0">
@@ -145,7 +145,7 @@
                     </v-col>
 
 
-                                        
+
                     <v-col cols="12" class="py-0" v-if="showSearchFields">
                         <p class="newAddress" @click="newAddress"> <span style="text-decoration: underline;"> I want to search for a new address </span> </p>
                     </v-col>
@@ -292,7 +292,7 @@
                     </v-col>
 
 
-                <!-- billing address ends -->    
+                <!-- billing address ends -->
 
 
 
@@ -320,11 +320,11 @@
 import Search from "@scripts/components/crm/Search";
 import debounce from "lodash-es/debounce";
 import GoogleMapService from "@scripts/services/GoogleMapService";
-import {isNull} from "lodash-es";
+import {isNull, merge} from "lodash-es";
 import {isEmpty} from "lodash-es";
 import STATES_DD from "@scripts/data/constants/STATES_DD";
 import MapService from "@scripts/services/MapService";
-import { street_type } from "@scripts/data/constants/StreetType"; 
+import { street_type } from "@scripts/data/constants/StreetType";
 export default {
   name: "ServiceAddress",
   components: {
@@ -340,6 +340,7 @@ export default {
     },
     data () {
         return {
+            currentAddress: {},
             checkbox: true,
             showMenu: false,
             showAdditionalMenu: false,
@@ -389,7 +390,7 @@ export default {
                     this.searchResultBilling = data;
                     this.showMenu = this.searchResultBilling.length > 0
                 });
-                
+
             }
         }, 250);
 
@@ -410,6 +411,9 @@ export default {
             },
             deep: true
             }
+    },
+    mounted() {
+        this.currentAddress = {...this.propertyDetails} ;
     },
     methods: {
         billingAddress(){
@@ -453,7 +457,7 @@ export default {
             this.propertyDetails.street_name_only = null;
             this.propertyDetails.street_type = null;
             this.propertyDetails.mannual_address = true;
-            
+
         },
         newAddressBilling(){
             this.showSearchFieldsBilling = false;
@@ -472,9 +476,9 @@ export default {
         closeServiceAddress() {
             if(!this.checkIfAddressIsValid())
             {
-                console.log("invalid address");
                 this.propertyDetails.address_text = "";
             }
+            merge(this.propertyDetails, this.currentAddress);
             this.$emit('close');
         },
         onBillingAddressSelected(place) {
@@ -482,7 +486,7 @@ export default {
             this.searchResultBilling = []
             MapService.getAddressDetailsById(place.id)
                 .then((data) => {
-                        this.propertyDetails.billing_unit_number = data.unit_number, 
+                        this.propertyDetails.billing_unit_number = data.unit_number,
                         this.propertyDetails.billing_street_number = data.street_number,
                         this.propertyDetails.billing_street_name = data.street_name,
                         this.propertyDetails.billing_street_name_only = data.street_name_only,
@@ -541,9 +545,9 @@ export default {
       checkIfAddressIsValid(){
 
           //if billings address same not same and other required fields are not empty
-          if(!this.propertyDetails.is_billing_same && 
+          if(!this.propertyDetails.is_billing_same &&
             (
-              this.propertyDetails.billing_street_number == null || this.propertyDetails.billing_street_number == "" || 
+              this.propertyDetails.billing_street_number == null || this.propertyDetails.billing_street_number == "" ||
               this.propertyDetails.billing_street_name_only == null || this.propertyDetails.billing_street_name_only == "" ||
               this.propertyDetails.billing_street_type == null || this.propertyDetails.billing_street_type == "" ||
               this.propertyDetails.billing_state == null || this.propertyDetails.billing_state == "" ||
@@ -553,7 +557,7 @@ export default {
           {
               return false;
           } else if(
-              this.propertyDetails.street_number == null || this.propertyDetails.street_number == "" || 
+              this.propertyDetails.street_number == null || this.propertyDetails.street_number == "" ||
               this.propertyDetails.street_name_only == null || this.propertyDetails.street_name_only == "" ||
               this.propertyDetails.street_type == null || this.propertyDetails.street_type == "" ||
               this.propertyDetails.state == null || this.propertyDetails.state == "" ||
@@ -581,7 +585,7 @@ export default {
           this.propertyDetails.billing_street_address = unit_number + ' ' + this.propertyDetails.billing_street_number + ' ' + this.propertyDetails.billing_street_name_only;
 
           console.log("property details1" , this.propertyDetails)
-          
+
           if(this.propertyDetails.billing_mannual_address || this.propertyDetails.billing_address_text == "" || this.propertyDetails.billing_address_text == null )
           {
               let unit_number = isEmpty(this.propertyDetails.billing_unit_number) ? "" : this.propertyDetails.billing_unit_number + " /";
@@ -589,7 +593,7 @@ export default {
               this.propertyDetails.billing_address_text = unit_number + ' ' + this.propertyDetails.billing_street_number + ' ' + this.propertyDetails.billing_street_name_only + ' ' + ' ' + this.propertyDetails.billing_city + this.propertyDetails.billing_state + ' ' + this.propertyDetails.billing_postcode + ' ' + this.propertyDetails.billing_country;
 
           }
-          
+
           unit_number = isEmpty(this.propertyDetails.unit_number) ? "" : this.propertyDetails.unit_number + " /";
 
           this.propertyDetails.street_address = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name_only;
@@ -597,7 +601,7 @@ export default {
           if(this.propertyDetails.mannual_address || this.propertyDetails.address_text == "" || this.propertyDetails.address_text == null ){
               this.propertyDetails.address_text = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name_only + ' ' + this.propertyDetails.city + ' ' + this.propertyDetails.state + ' ' + this.propertyDetails.postcode + ' ' + this.propertyDetails.country ;
           }
-          
+
           console.log("property details2" , this.propertyDetails)
       },
      mapStreetName(){
@@ -611,7 +615,7 @@ export default {
         }
         return true;
      },
-      async onSubmit() 
+      async onSubmit()
       {
           // return;
           this.setAddressTextAndStreetAddress();
