@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Log;
 use App\Modules\Reporting\Services\SetDateRage;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use PDF;
 
 class ExportReaOfficeReport
 {
@@ -39,11 +40,11 @@ class ExportReaOfficeReport
         ConnectionApplication::STATUS_ESCALATED
     ];
 
-    public function __construct(string $reportType, string $start, string $end)
+    public function __construct(string $officeId, string $reportType, string $start, string $end)
     {
         $this->setDateRange($start, $end);
-        // $this->officeId = $officeId;
-        // $this->reportType = $reportType;
+        $this->officeId = $officeId;
+        $this->reportType = $reportType;
     }
 
     public function run()
@@ -56,6 +57,9 @@ class ExportReaOfficeReport
     {
         // create PDF here
         Log::info('Exporting report', $this->officeReport);
+        $data = ['image' => 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png'];
+        $pdf = PDF::loadView('pdf.invoice_office', $data);
+        return $pdf->inline();
 
     }
 
@@ -128,8 +132,8 @@ class ExportReaOfficeReport
                 }])
                 ->where('created_at', '>=', $this->startDate)
                 ->where('created_at', '<=', $this->endDate)
-                ->where('created_by', '!=', null);
-                // ->where('office_id', $this->officeId);
+                ->where('created_by', '!=', null)
+                ->where('office_id', $this->officeId);
 
         return $builder->get()->groupBy('agent_id')->toArray();
     }

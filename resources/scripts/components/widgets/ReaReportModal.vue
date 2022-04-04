@@ -8,7 +8,7 @@
             <v-toolbar color="primary" dark>
                 <v-toolbar-title>Report Download</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn depressed right color="primary" @click="dialog = false">
+                <v-btn depressed right color="primary" @click="close">
                     Close
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
@@ -16,7 +16,7 @@
             <section class="pa-4">
                 <v-row>
                     <v-col cols="7">
-                        <p>Select date</p>
+                        <p class="subtitle-1 font-weight-bold">Select date</p>
                         <v-row>
                             <v-col cols="4">
                                 <v-card
@@ -59,28 +59,37 @@
                             </v-col>
                         </v-row>
                     </v-col>
-                    <v-col cols="5">
-                        <p>Select the report type</p>
+                    <v-col cols="5" class="report-type">
+                        <p class="subtitle-1 font-weight-bold">Select the report type</p>
+                        <div class="d-flex justify-space-around">
+                            <div
+                                class="cursor-pointer custom-button"
+                                :class="getButtonClass('office')"
+                                @click="changeType('office')"
+                            >
+                                <v-icon color="black"> mdi-account-multiple-plus </v-icon> Office
+                            </div>
+                            <div
+                                class="cursor-pointer custom-button"
+                                :class="getButtonClass('individual')"
+                                @click="changeType('individual')"
+                            >
+                                <v-icon color="black"> mdi-account </v-icon> Individual
+                            </div>
+                        </div>
+                        <v-divider class="mt-5"></v-divider>
+                        <div class="spacer"></div>
+                        <v-btn
+                            class="mt-2"
+                            block
+                            color="primary"
+                            @click="select"
+                        >
+                            Export
+                        </v-btn>
                     </v-col>
                 </v-row>
             </section>
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                    color="blue darken-1"
-                    text
-                    @click="close"
-                >
-                    Cancel
-                </v-btn>
-                <v-btn
-                    color="blue darken-1"
-                    text
-                    @click="select"
-                >
-                    Apply
-                </v-btn>
-            </v-card-actions>
         </v-card>
     </v-dialog>
 </template>
@@ -92,7 +101,7 @@ import {
 } from '@scripts/services/DateRangeService';
 
 export default {
-    name: "DatePickerModal",
+    name: "ReaReportModal",
     props:{
         dialog: {
             require: true,
@@ -106,6 +115,7 @@ export default {
             presetItems: ['Today', 'Yesterday'],
             dates: this.getDates(this.dateRange),
             selectedPreset: this.getPresetIndex(this.dateRange),
+            selectedType: 'office',
         }
     },
     computed: {
@@ -142,6 +152,9 @@ export default {
         }
     },
     methods: {
+        getButtonClass(name){
+            return this.selectedType === name ? 'buttonActive' : 'buttonInactive';
+        },
         getDates(dateRange) {
             return dateRange.start ?
                 [getFormattedDateString(dateRange.start), getFormattedDateString(dateRange.end)]
@@ -186,11 +199,14 @@ export default {
             } else {
                 selectedDate.start = this.dates[0], selectedDate.end = this.dates[0]
             }
-            this.$emit('select', selectedDate);
+            this.$emit('select', selectedDate, this.selectedType);
         },
         getFormattedDateRange(date1, date2) {
             return getFormattedDBDate(date1) + ' - ' + getFormattedDBDate(date2)
-        }
+        },
+        changeType(type) {
+            this.selectedType = type;
+        },
     },
     watch: {
         dates(dates) {
@@ -235,4 +251,24 @@ export default {
      margin-left: 40px !important;
      width: 80%;
  }
+ .report-type {
+    border-left: 1px solid #E5E5E5;
+ }
+ .custom-button {
+    padding: 5px 25px;
+    border-radius: 6px;
+ }
+.buttonActive {
+    background-color: #FFFFFF;
+    color:  #542E89 !important;
+    border: 3px solid #542E89;
+}
+.buttonInactive {
+    background-color: #E0E0E0;
+    color:  black !important;
+    border: none;
+}
+.spacer {
+    height: 240px;
+}
 </style>

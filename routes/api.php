@@ -17,6 +17,7 @@ use FastConnect\Services\SubmitWaterLeadToFastConnect;
 use App\Http\Controllers\Agency\AgentProfileController;
 use OurProperty\Http\Controllers\OurPropertyController;
 use App\Services\RolePermission;
+use App\Http\Controllers\Agency\ReaExtractsReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -163,6 +164,10 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/sales-dashboard/export/submission-report', [ReportController::class, 'submissionReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_EXPORT_REPORT);
     Route::get('/plans-details/{id}/export', [NoteController::class, 'download']);
+
+    // REA extracts report
+    Route::get('/rea-extract/office-report', [ReaExtractsReportController::class, 'officeReport'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
@@ -233,9 +238,11 @@ Route::get("/karan/sales-status", function () {
 });
 
 Route::get('country_test', function () {
-    //  return SubmitWaterLeadToFastConnect::mapLengthOfCountry[2];
-    $ser =  new SubmitWaterLeadToFastConnect(1);
-    // return $ser;
-    return $ser->getMappedIdentificationCountry('AX');
-    // return 'got' ;
+    // $pdf = App::make('snappy.pdf.wrapper');
+    // $pdf->loadHTML('<h1>Test</h1>');
+    // return $pdf->inline();
+
+    $data = ['image' => 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png'];
+    $pdf = PDF::loadView('pdf.invoice_office', $data);
+    return $pdf->inline();
 });

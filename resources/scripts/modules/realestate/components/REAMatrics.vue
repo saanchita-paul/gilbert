@@ -24,6 +24,7 @@
                 :dialog="showReportModal"
                 :dateRange="dateRange"
                 @close="onCloseModal"
+                @select="onClickExport"
             />
         </v-row>
         <v-row>
@@ -73,6 +74,7 @@ import AppMetric from "@scripts/modules/realestate/components/AppMatric";
 import ServiceMetrics from "@scripts/modules/realestate/components/ServiceMetrics";
 import ReaReportModal from "@scripts/components/widgets/ReaReportModal";
 import {getTodayString} from '@scripts/services/DateRangeService';
+import ReportService from "@scripts/services/ReportService";
 
 export default {
     name: "REAMatrics",
@@ -127,6 +129,11 @@ export default {
         onCloseModal() {
             this.showReportModal = false;
         },
+        onClickExport(dateRange, reportType) {
+            let officeId = this.$route.params?.officeId;
+            console.log(dateRange, reportType, officeId);
+            ReportService.officeReport(officeId, reportType, dateRange);
+        }
     },
     mounted(){
         this.setLabelOfBackButton(this.$route.query?.type);
