@@ -177,7 +177,7 @@
                     </v-col>
 
 
-                    <v-col cols="12" class="pb-0">
+                    <v-col v-show="false" cols="12" class="pb-0">
                         <v-row class="my-0 py-0">
                             <v-col class="my-0 py-0">
                                 <v-checkbox
@@ -759,120 +759,313 @@
                     </v-col>
 
 
-                    <v-col cols="12" class="pb-0 mt-2">
-                                <v-menu offset-y v-model="showMenu">
-                                    <template v-slot:activator="{ on }">
+                    <template>
+                        <v-col cols="12" class="pb-0 mt-2" v-if="!showSearchFields">
+                                    <v-menu offset-y v-model="showMenu">
+                                        <template v-slot:activator="{ on }">
+                                        <ValidationProvider name="Service Address" rules="required"  v-slot="{ errors }">
+                                            <v-text-field
+                                                label="Search address*"
+                                                outlined
+                                                dense
+                                                @focus="serviceSearchFocusOn"
+                                                @blur="serviceSearchFocusOff"
+                                                append-icon="mdi-magnify"
+                                                :error-messages=" errors[0]"
+                                                v-model="application.address_text"
+                                                @keyup.native="onStreetChanged"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                        </template>
+                                        <v-list v-if="searchResult.length">
+                                            <v-list-item
+                                                v-for="place in searchResult"
+                                                :key="place.id"
+                                                @click="onAddressSelected(place)"
+                                            >
+                                                <v-list-item-title v-text="place.address_text">
+                                                </v-list-item-title>
+                                            </v-list-item>
+                                            <v-list-item>
+                                            <v-list-item-title >
+                                                <div class="mannualAddress" @click="selectMannual"> Enter my address manually </div>
+                                            </v-list-item-title>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-menu>
+                        </v-col>
+                        <v-col cols="12" v-if="showSearchFields">
+                            <v-row>
+                                <v-col cols="3" class="py-0">
+                                    <ValidationProvider name="Unit No"  v-slot="{ errors }">
                                         <v-text-field
-                                            label="Search address"
+                                            label="Unit No"
                                             outlined
                                             dense
-                                            placeholder="Type house address here"
-                                            append-icon="mdi-magnify"
-                                            v-model="application.address_text"
-                                            @keyup.native="onStreetChanged"
+                                            :readonly="!application.mannual_address"
+                                            v-model="application.unit_number"
+                                            :error-messages=" errors[0]"
                                         ></v-text-field>
-                                    </template>
-                                    <v-list>
-                                        <v-list-item
-                                            v-for="place in searchResult"
-                                            :key="place.place_id"
-                                            @click="onAddressSelected(place)"
-                                        >
-                                            <v-list-item-title v-text="place.description">
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col cols="3" class="py-0">
+                                    <ValidationProvider name="Street No" rules="required"  v-slot="{ errors }">
+                                        <v-text-field
+                                            label="Street No.*"
+                                            outlined
+                                            dense
+                                            :readonly="!application.mannual_address"
+                                            v-model="application.street_number"
+                                            :error-messages=" errors[0]"
+                                        ></v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col cols="6" class="py-0">
+                                    <ValidationProvider name="Street Name" rules="required"  v-slot="{ errors }">
+                                        <v-text-field
+                                            label="Street Name.*"
+                                            outlined
+                                            dense
+                                            :readonly="!application.mannual_address"
+                                            v-model="application.street_name_only"
+                                            :error-messages=" errors[0]"
+                                        ></v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                                 <v-col cols="3" class="py-0">
+                                    <ValidationProvider name="Street Type" rules="required"  v-slot="{ errors }">
+                                        <v-select outlined dense
+                                                  v-model="application.street_type"
+                                                  :items="street_type"
+                                                  :readonly="!application.mannual_address"
+                                                  label="Street Type*"
+                                                  :error-messages=" errors[0]"
+                                                  placeholder="Please Select">
+                                        </v-select>
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col cols="6" class="py-0">
+                                    <ValidationProvider name="City/Suburb" rules="required"  v-slot="{ errors }">
+                                        <v-text-field
+                                            label="City/Suburb*"
+                                            outlined
+                                            dense
+                                            :readonly="!application.mannual_address"
+                                            v-model="application.city"
+                                            :error-messages=" errors[0]"
+                                        ></v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col cols="6" class="py-0">
+                                    <ValidationProvider name="State/Territory" rules="required"  v-slot="{ errors }">
+                                        <v-select outlined dense
+                                                  v-model="application.state"
+                                                  :items="states"
+                                                  :readonly="!application.mannual_address"
+                                                  label="State/Territory*"
+                                                  :error-messages=" errors[0]"
+                                                  placeholder="Please Select">
+                                        </v-select>
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col cols="6" class="py-0">
+                                    <ValidationProvider name="Postcode" rules="required"  v-slot="{ errors }">
+                                        <v-text-field
+                                            label="Postcode*"
+                                            outlined
+                                            dense
+                                            :readonly="!application.mannual_address"
+                                            v-model="application.postcode"
+                                            :error-messages=" errors[0]"
+                                        ></v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+                    </template>
+
+                    <v-col cols="12" class="py-0" v-if="showSearchFields">
+                        <p class="newAddress" @click="newAddress"> <span style="text-decoration: underline;"> I want to search for a new address </span> </p>
+                    </v-col>
+
+                    <v-col cols="12" class="py-0" v-if="showSearchFields">
+                        <p class="billingAddress" @click="billingAddress">  <v-icon small style="text-decoration: none;  padding-bottom: 4px;"> mdi-plus-circle </v-icon> <span style="text-decoration: underline;"> {{ application.is_billing_same ? 'Add a different billing address' : 'Keep the billing address same as service address' }} </span> </p>
+                    </v-col>
+
+
+
+                    <!-- billing address starts -->
+                    <template v-if="!application.is_billing_same && showSearchFields">
+                        <v-col cols="12" class="pb-0 mt-2" v-if="!showSearchFieldsBilling">
+                                    <v-menu offset-y v-model="showMenu">
+                                        <template v-slot:activator="{ on }">
+                                        <ValidationProvider name="Billing Address" rules="required"  v-slot="{ errors }">
+                                            <v-text-field
+                                                label="Search address"
+                                                outlined
+                                                dense
+                                                @focus="billingSearchFocusOn"
+                                                @blur="billingSearchFocusOff"
+                                                :error-messages=" errors[0]"
+                                                append-icon="mdi-magnify"
+                                                v-model="application.billing_address_text"
+                                                @keyup.native="onBillingStreetChanged"
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                        </template>
+                                        <v-list v-if="searchResultBilling.length">
+                                            <v-list-item
+                                                v-for="place in searchResultBilling"
+                                                :key="place.id"
+                                                @click="onBillingAddressSelected(place)"
+                                            >
+                                                <v-list-item-title v-text="place.address_text">
+                                                </v-list-item-title>
+                                            </v-list-item>
+                                            <v-list-item>
+                                            <v-list-item-title >
+                                                <div class="mannualAddress" @click="selectMannualBilling"> Enter my address manually </div>
                                             </v-list-item-title>
-                                        </v-list-item>
-                                    </v-list>
-                                </v-menu>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-menu>
+                        </v-col>
+                        <v-col cols="12" v-if="showSearchFieldsBilling && showSearchFields">
+                            <v-row>
+                                <v-col cols="3" class="py-0">
+                                    <ValidationProvider name="Unit No"  v-slot="{ errors }">
+                                        <v-text-field
+                                            label="Unit No"
+                                            outlined
+                                            dense
+                                            :readonly="!application.billing_mannual_address"
+                                            v-model="application.billing_unit_number"
+                                            :error-messages=" errors[0]"
+                                        ></v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col cols="3" class="py-0">
+                                    <ValidationProvider name="StreetNo" rules="required"  v-slot="{ errors }">
+                                        <v-text-field
+                                            label="Street No.*"
+                                            outlined
+                                            dense
+                                            :readonly="!application.billing_mannual_address"
+                                            v-model="application.billing_street_number"
+                                            :error-messages=" errors[0]"
+                                        ></v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col cols="6" class="py-0">
+                                    <ValidationProvider name="Street Name" rules="required"  v-slot="{ errors }">
+                                        <v-text-field
+                                            label="Street Name.*"
+                                            outlined
+                                            dense
+                                            :readonly="!application.billing_mannual_address"
+                                            v-model="application.billing_street_name_only"
+                                            :error-messages=" errors[0]"
+                                        ></v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                                 <v-col cols="3" class="py-0">
+                                    <ValidationProvider name="Street Type" rules="required"  v-slot="{ errors }">
+                                        <v-select outlined dense
+                                                  v-model="application.billing_street_type"
+                                                  :items="street_type"
+                                                  label="Street Type*"
+                                                  :readonly="!application.billing_mannual_address"
+                                                  :error-messages=" errors[0]"
+                                                  placeholder="Please Select">
+                                        </v-select>
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col cols="6" class="py-0">
+                                    <ValidationProvider name="City/Suburb" rules="required"  v-slot="{ errors }">
+                                        <v-text-field
+                                            label="City/Suburb*"
+                                            outlined
+                                            dense
+                                            :readonly="!application.billing_mannual_address"
+                                            v-model="application.billing_city"
+                                            :error-messages=" errors[0]"
+                                        ></v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col cols="6" class="py-0">
+                                    <ValidationProvider name="State/Territory" rules="required"  v-slot="{ errors }">
+                                        <v-select outlined dense
+                                                  v-model="application.billing_state"
+                                                  :items="states"
+                                                  :readonly="!application.billing_mannual_address"
+                                                  label="State/Territory*"
+                                                  :error-messages=" errors[0]"
+                                                  placeholder="Please Select">
+                                        </v-select>
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col cols="6" class="py-0">
+                                    <ValidationProvider name="Postcode" rules="required"  v-slot="{ errors }">
+                                        <v-text-field
+                                            label="Postcode*"
+                                            outlined
+                                            dense
+                                            :readonly="!application.billing_mannual_address"
+                                            v-model="application.billing_postcode"
+                                            :error-messages=" errors[0]"
+                                        ></v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+                    </template>
+
+                    <v-col cols="12" class="py-0" v-if="showSearchFieldsBilling && showSearchFields && !application.is_billing_same">
+                        <p class="newAddress" @click="newAddressBilling"> <span style="text-decoration: underline;"> I want to search for a new address </span> </p>
                     </v-col>
 
-                    <v-col cols="6" class="py-0">
-                        <ValidationProvider name="Address" rules="required"  v-slot="{ errors }">
-                            <v-text-field
-                                label="Address*"
-                                outlined
-                                dense
-                                placeholder="2/56, Bradman Drive"
-                                v-model="application.street_address"
-                                :error-messages=" errors[0]"
-                            ></v-text-field>
-                        </ValidationProvider>
 
-                    </v-col>
-
-                    <v-col cols="6" class="py-0">
-                        <ValidationProvider name="City/Suburb" rules="required"  v-slot="{ errors }">
-                            <v-text-field
-                                label="City/Suburb*"
-                                outlined
-                                dense
-                                placeholder="Sunbury"
-                                v-model="application.city"
-                                :error-messages=" errors[0]"
-                            ></v-text-field>
-                        </ValidationProvider>
-
-                    </v-col>
-
-                    <v-col cols="6" class="py-0">
-
-                        <ValidationProvider name="State/Territory" rules="required"  v-slot="{ errors }">
-                            <v-select outlined dense
-                                      v-model="application.state"
-                                      :items="states"
-                                      label="State/Territory*"
-                                      :error-messages=" errors[0]"
-                                      placeholder="Please Select">
-                            </v-select>
-                        </ValidationProvider>
-                    </v-col>
-
-
-                    <v-col cols="6" class="py-0">
-
-                        <ValidationProvider name="Postcode" rules="required"  v-slot="{ errors }">
-                            <v-text-field
-                                label="Postcode*"
-                                outlined
-                                dense
-                                placeholder="3429"
-                                v-model="application.postcode"
-                                :error-messages=" errors[0]"
-                            ></v-text-field>
-                        </ValidationProvider>
-                    </v-col>
+                <!-- billing address ends -->
 
 
 
-<!-- 
+
+
+
+<<<<<<< HEAD
+=======
+
+>>>>>>> HCO_512_address_validation
+<!--
                     <v-col cols="12" class="pb-0">
-                        <p class="sub-title mb-0">Service Interests</p>
+                        <p class="sub-title mb-0"> Service Interests </p>
                     </v-col>
 
                     <v-col cols="3">
                         <div class="leade-badge text-center service-radius" :class="service_types.power ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('power')">
                             <h4 :class="service_types.power ? 'enabled' : 'disabled'">Power</h4>
-                            <v-icon :disabled="!service_types.power" color="yellow">mdi-flash</v-icon>
+                            <v-icon :readonly="!service_types.power" color="yellow">mdi-flash</v-icon>
                         </div>
                     </v-col>
 
                     <v-col cols="3">
                         <div class="leade-badge text-center service-radius" :class="service_types.gas ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('gas')">
                             <h4 :class="service_types.gas ? 'enabled' : 'disabled'">Gas</h4>
-                            <v-icon :disabled="!service_types.gas" color="orange">mdi-fire</v-icon>
+                            <v-icon :readonly="!service_types.gas" color="orange">mdi-fire</v-icon>
                         </div>
                     </v-col>
 
                     <v-col cols="3">
                         <div class="leade-badge text-center service-radius" :class="service_types.water ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('water')">
                             <h4 :class="service_types.water ? 'enabled' : 'disabled'">Water</h4>
-                            <v-icon :disabled="!service_types.water" color="blue">mdi-water</v-icon>
+                            <v-icon :readonly="!service_types.water" color="blue">mdi-water</v-icon>
                         </div>
                     </v-col>
 
                     <v-col cols="3">
                         <div class="leade-badge text-center service-radius" :class="service_types.internet ? 'div_enabled' : 'div_disabled' " @click="serviceInsert('internet')">
                             <h4 :class="service_types.internet ? 'enabled' : 'disabled'">Internet</h4>
-                            <v-icon :disabled="!service_types.internet" color="#9C27B0">mdi-wifi</v-icon>
+                            <v-icon :readonly="!service_types.internet" color="#9C27B0">mdi-wifi</v-icon>
                         </div>
                     </v-col> -->
 
@@ -889,7 +1082,7 @@
 
                     <v-col cols="12">
                         <div class="d-flex  flex-row-reverse">
-                            <v-btn @click="onSubmit" :disabled="isUserActive" :loading="loadSubmit" color="primary">Submit</v-btn>
+                            <v-btn @click="onSubmit" :readonly="isUserActive" :loading="loadSubmit" color="primary">Submit</v-btn>
                             <v-btn @click="onCancel" class="mx-4">Cancel</v-btn>
                         </div>
                     </v-col>
@@ -921,6 +1114,7 @@ import LeadApplicationService from "@scripts/services/crm/LeadApplicationService
 import DayJs from "dayjs";
 import LeadCreateSuccessfulModal from "@scripts/components/crm/modals/LeadCreateSuccessfulModal";
 import {isNull} from "lodash-es";
+import {isEmpty} from "lodash-es";
 import IdentificationDetail from "@scripts/components/crm/agent/IdentificationDetail";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import { tenancyTypeMapper } from '@scripts/data/ConnectionApplicationMapper';
@@ -933,6 +1127,9 @@ import dayJs from "dayjs";
 import MEDICARE_COLOR_DD from "@scripts/data/constants/MEDICARE_COLOR_DD";
 import IDENTIFICATION_DD from "@scripts/data/constants/IDENTIFICATION_DD";
 import STATES_DD from "@scripts/data/constants/STATES_DD";
+import MapService from "@scripts/services/MapService";
+import { street_type } from "@scripts/data/constants/StreetType";
+
 export default {
     name: "AgentCreateNewApplication",
     components: {
@@ -1027,22 +1224,45 @@ export default {
             },
             loadSubmit: false,
             user: null,
+            showSearchFields: false,
+            showSearchFieldsBilling: false,
+            isBillingAddressSame: true,
+            searchResultBilling: [],
+            searchFocus: false,
+            billingSearchFocus: false,
         }
 
     },
     created() {
         this.onStreetChanged = debounce(() => {
             if (this.application.address_text.length > 0) {
-                GoogleMapService.getStreetAddressesByKeyword(this.application.address_text)
-                    .then((data) => {
-                        this.searchResult = data;
-                        this.showMenu = this.searchResult.length > 0
-                    });
+            MapService.getStreetAddressesByKeyword(this.application.address_text)
+                .then((data)=>{
+                    console.log("search result" , data)
+                    this.searchResult = data;
+                    this.showMenu = this.searchResult.length > 0
+                });
+
+            }
+        }, 250);
+
+        this.onBillingStreetChanged = debounce(() => {
+            if (this.application.billing_address_text.length > 0) {
+            MapService.getStreetAddressesByKeyword(this.application.billing_address_text)
+                .then((data)=>{
+                    console.log("search result" , data)
+                    this.searchResultBilling = data;
+                    this.showMenu = this.searchResultBilling.length > 0
+                });
+
             }
         }, 250);
 
     },
     computed:{
+        street_type(){
+            return street_type;
+        },
         tenancyTypeMapper(){
             return tenancyTypeMapper;
         },
@@ -1056,31 +1276,140 @@ export default {
         },
     },
     methods: {
+        serviceSearchFocusOn(){
+            this.searchFocus = true;
+        },
+        serviceSearchFocusOff(){
+            this.searchFocus = false;
+        },
+        billingSearchFocusOn(){
+            this.billingSearchFocus = true;
+        },
+        billingSearchFocusOff(){
+            this.billingSearchFocus = false;
+        },
+        billingAddress(){
+            // this.isBillingAddressSame = !this.isBillingAddressSame;
+            this.application.is_billing_same = !this.application.is_billing_same;
+        },
+        selectAddress(){
+            this.showSearchFields = true;
+        },
+        selectBillingAddress(){
+            this.showSearchFieldsBilling = true;
+        },
+        clearBillingAddress(){
+            this.application.billing_address_text = null;
+            this.application.billing_street_address = null;
+            this.application.billing_city = null;
+            this.application.billing_postcode = null;
+            this.application.billing_state = null;
+            this.application.billing_street_number = null;
+            this.application.billing_unit_number = null;
+            this.application.billing_street_name_only = null;
+            this.application.billing_street_name = null;
+            this.application.billing_street_type = null;
+            this.application.billing_mannual_address = true;
+        },
+        selectMannualBilling(){
+            this.showSearchFieldsBilling = true;
+
+            this.clearBillingAddress()
+        },
+        clearServiceAddress(){
+            this.application.address_text = null;
+            this.application.street_address = null;
+            this.application.city = null;
+            this.application.postcode = null;
+            this.application.state = null;
+            this.application.street_number = null;
+            this.application.unit_number = null;
+            this.application.street_name_only = null;
+            this.application.street_name = null;
+            this.application.street_type = null;
+            this.application.mannual_address = true;
+        },
+        selectMannual(){
+            this.showSearchFields = true;
+
+            this.clearServiceAddress()
+        },
+        newAddress(){
+            this.showSearchFields = false;
+            this.application.mannual_address = false;
+            this.application.address_text = null;
+            this.searchResult = [];
+        },
+        newAddressBilling(){
+            this.showSearchFieldsBilling = false;
+            this.application.billing_mannual_address = false;
+            this.application.billing_address_text = null;
+            this.searchResultBilling = [];
+        },
         onAddressSelected(place) {
-            GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
+            console.log("place id" , place)
+            this.searchResult = []
+            MapService.getAddressDetailsById(place.id)
+                .then((data) => {
+                    this.application = { ...this.application, ...data }
+                    let unit_number = isEmpty(this.application.unit_number) ? "" : this.application.unit_number + " /";
+                    this.application.street_address = unit_number + ' ' + this.application.street_number + ' ' + this.application.street_name_only;
+                    this.application.mannual_address = false;
+                    this.application.street_name = this.application.street_name_only;
+
+                    this.selectAddress();
+                });
+        },
+        onBillingAddressSelected(place) {
+            console.log("place id" , place)
+            this.searchResultBilling = []
+            MapService.getAddressDetailsById(place.id)
                 .then((data) => {
 
-                    this.application.address_text = data.formatted_address;
-                    this.application.street_address = data.street;
-                    this.application.city = data.city;
-                    this.application.postcode = data.postcode;
-                    this.application.state = data.state;
-                    this.application.street_number = data.street_number;
-                    this.application.unit_number = data.unit_number;
-                    this.application.street_name = data.street_name;
+                    this.application.billing_unit_number = data.unit_number
+                    this.application.billing_street_number = data.street_number
+                    this.application.billing_street_name_only = data.street_name_only
+                    this.application.billing_street_name = data.street_name_only
+                    this.application.billing_address_text = data.address_text
+                    this.application.billing_state = data.state
+                    this.application.billing_street_type = data.street_type
+                    this.application.billing_street_number = data.street_number
+                    this.application.billing_address_unit = data.address_unit
+                    this.application.billing_city = data.city
+                    this.application.billing_postcode = data.postcode
 
-                    if(!isNull( data.unit_number)) {
-                        this.application.street_address = data.unit_number +'/'+ data.street;
-                    }
+                    let unit_number = isEmpty(this.application.unit_number) ? "" : this.application.unit_number + " /";
+                    this.application.billing_street_address = unit_number + ' ' + this.application.billing_street_number + ' ' + this.application.billing_street_name_only;
 
+                    this.application.billing_mannual_address = false;
+
+                    this.selectBillingAddress();
                 });
         },
         onCancel() {
             this.$router.push({name: 'agent.application.dashboard'});
         },
+        checkAddressText(){
+            if(this.application.address_text == '' || this.application.address_text == null){
+                return false;
+            }
+
+            if(!this.application.is_billing_same && ( this.application.billing_address_text == '' || this.application.billing_address_text == null ) ){
+                return false
+            }
+
+            return true;
+        },
+        mapAddress(){
+            this.application.street_name = this.application.street_name_only;
+            this.application.billing_street_name = this.application.billing_street_name_only;
+        },
         async onSubmit() {
+            this.setAddressTextAndStreetAddress()
+            this.mapAddress()
             let v = await this.$refs.create_application.validate();
-            if (v) {
+
+            if (v && this.checkAddressText()) {
                 this.confirmApplicationModal = true;
             }
             return v;
@@ -1142,9 +1471,48 @@ export default {
         isSecondaryIdMedicare() {
             console.log('identification type', this.authorized_person.identification_type);
             return this.authorized_person.identification_type === IDENTIFICATION.MEDICARE;
-        }
+        },
+      setAddressTextAndStreetAddress()
+      {
+
+        //   if(!this.checkIfAddressIsValid())
+        //   {
+        //     console.log("invalid address");
+        //     this.propertyDetails.address_text = "";
+        //     return;
+        //   }
+        if(!this.showSearchFields){
+                this.application.address_text = ""
+                this.application.billing_address_text = ""
+                return;
+            }
+
+          let unit_number = isEmpty(this.application.billing_unit_number) ? "" : this.application.billing_unit_number + " /";
+          this.application.billing_street_address = unit_number + ' ' + this.application.billing_street_number + ' ' + this.application.billing_street_name_only;
+          if(this.application.billing_mannual_address || this.application.billing_address_text == "" )
+          {
+              let unit_number = isEmpty(this.application.billing_unit_number) ? "" : this.application.billing_unit_number + " /";
+              this.application.billing_address_text = unit_number + ' ' + this.application.billing_street_number + ' ' + this.application.billing_street_name_only + ' ' + ' ' + this.application.billing_city + this.application.billing_state + ' ' + this.application.billing_postcode + ' ' + this.application.billing_country;
+          }
+
+          if(!this.application.is_billing_same && !this.showSearchFieldsBilling){
+              this.application.billing_address_text = ""
+          }
+
+          unit_number = isEmpty(this.application.unit_number) ? "" : this.application.unit_number + " /";
+          this.application.street_address = unit_number + ' ' + this.application.street_number + ' ' + this.application.street_name_only;
+          if(this.application.mannual_address || this.application.address_text == "" ){
+              this.application.address_text = unit_number + ' ' + this.application.street_number + ' ' + this.application.street_name_only + ' ' + this.application.city + ' ' + this.application.state + ' ' + this.application.postcode + ' ' + this.application.country ;
+          }
+      },
     },
     watch: {
+        showSearchFields(value){
+            if(!value){
+                this.clearServiceAddress()
+                this.clearBillingAddress()
+            }
+        },
         dob() {
             this.application.date_of_birth = (new DayJs(this.dob).format('DD/MM/YYYY'));
         },
@@ -1179,7 +1547,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
     .enabled {
       font-size: 18px;
       font-style: normal;
@@ -1209,4 +1577,21 @@ export default {
       border-radius: 8px !important;
     }
 
+    .mannualAddress{
+        font-weight: bold;
+        &:hover{
+            cursor: pointer;
+        }
+    }
+    .newAddress{
+        font-weight: bold;
+        &:hover{
+            cursor: pointer;
+        }
+    }
+    .billingAddress{
+        &:hover{
+            cursor: pointer;
+        }
+    }
 </style>

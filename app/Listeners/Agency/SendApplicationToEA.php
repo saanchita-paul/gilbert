@@ -4,6 +4,8 @@ namespace App\Listeners\Agency;
 
 use App\Events\Agency\SubmitApplicationEvent;
 use App\Models\ConnectionApplication;
+use App\Services\Address\AddressModel;
+use App\Services\Address\GBGServices;
 use App\Services\Agency\HubspotContactService;
 use App\Services\Sales\PostSalesService;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -20,6 +22,20 @@ class SendApplicationToEA implements ShouldQueue
         //
     }
 
+    private function validateAddress($applicationId) : bool 
+    {
+        $addressModel = new AddressModel(connection_application_id: $applicationId);
+        $gbgService = new GBGServices($addressModel);
+        $address = $gbgService->findAddressByText();
+        if ($address->getIsAddressComplete()) 
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
+    }
+
     /**
      * Handle the event.
      *
@@ -28,6 +44,12 @@ class SendApplicationToEA implements ShouldQueue
      */
     public function handle(SubmitApplicationEvent $event)
     {
+        if (!$this->validateAddress($event->applicationId)) 
+        {
+            info("Send Application To EA: Address is not complete");
+            // return;
+        }
+
         $submitType = $event->submitType;
         $application = ConnectionApplication::with('connectionServices')->where('id', $event->applicationId)->firstOrFail();
 

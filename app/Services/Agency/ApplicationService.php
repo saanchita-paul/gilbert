@@ -90,8 +90,12 @@ class ApplicationService
         $existingApplication->address_text = $address['address_text'];
         $existingApplication->street_address = $address['street_address'];
         $existingApplication->street_name = $address['street_name'];
-        $existingApplication->street_number = empty($address['street_address']) ? null : $address['street_number'];
-        $existingApplication->unit_number = empty($address['street_address']) ? null : $address['unit_number'];
+        $existingApplication->street_name_only = $address['street_name_only'];
+        $existingApplication->unit_number = $address['unit_number'];
+        $existingApplication->street_type = $address['street_type'];
+        $existingApplication->street_number = $address['street_number'];
+        // $existingApplication->street_number = empty($address['street_address']) ? null : $address['street_number'];
+        // $existingApplication->unit_number = empty($address['street_address']) ? null : $address['unit_number'];
         $existingApplication->city = $address['city'];
         $existingApplication->is_renovation_on = $address['is_renovation_on'];
         $existingApplication->has_electricity = $address['has_electricity'];
@@ -101,13 +105,17 @@ class ApplicationService
         $existingApplication->country = $address['country'];
         $existingApplication->mirn = $address['mirn'];
         $existingApplication->nmi = $address['nmi'];
-//        $existingApplication->is_billing_same = $address['is_billing_same'];
+        $existingApplication->is_billing_same = $address['is_billing_same'];
 
 
         if (!$address['is_billing_same']) {
             $existingApplication->billing_address_text = $address['billing_address_text'];
+            $existingApplication->billing_state = $address['billing_state'];
+            $existingApplication->billing_unit_number = $address['billing_unit_number'];
+            $existingApplication->billing_street_type = $address['billing_street_type'];
             $existingApplication->billing_street_address = $address['billing_street_address'];
             $existingApplication->billing_street_name = $address['billing_street_name'];
+            $existingApplication->billing_street_name_only = $address['billing_street_name_only'];
             $existingApplication->billing_street_number = empty($address['billing_street_address']) ? null : $address['billing_street_number'];
             $existingApplication->billing_city = empty($address['billing_city']) ? null : $address['billing_city'];
             $existingApplication->billing_postcode = empty($address['billing_postcode']) ? null : $address['billing_postcode'];
