@@ -227,7 +227,7 @@
                                             outlined
                                             dense
                                             :readonly="!propertyDetails.billing_mannual_address"
-                                            placeholder="2/56, Bradman Drive"
+                                            placeholder="Street Name*"
                                             v-model="propertyDetails.billing_street_name_only"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
@@ -252,7 +252,7 @@
                                             outlined
                                             dense
                                             :readonly="!propertyDetails.billing_mannual_address"
-                                            placeholder="Sunbury"
+                                            placeholder="City/Suburb*"
                                             v-model="propertyDetails.billing_city"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
@@ -277,7 +277,7 @@
                                             outlined
                                             dense
                                             :readonly="!propertyDetails.billing_mannual_address"
-                                            placeholder="3429"
+                                            placeholder="Postcode*"
                                             v-model="propertyDetails.billing_postcode"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
