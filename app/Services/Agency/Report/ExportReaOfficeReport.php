@@ -66,7 +66,12 @@ class ExportReaOfficeReport
         
         $officeName = Office::find($this->officeId)->name;
 
-        $data = ['officeName' => $officeName, 'startDate' => $this->stringStartDate, 'endDate' => $this->stringEndDate, 'report' => $this->officeReport];
+        $data = [
+            'officeName' => $officeName,
+            'startDate' => $this->stringStartDate,
+            'endDate' => $this->stringEndDate,
+            'report' => $this->officeReport
+        ];
         $pdf = PDF::loadView('pdf.invoice_office', $data);
         return $pdf->inline();
 
@@ -74,6 +79,7 @@ class ExportReaOfficeReport
 
     private function mapData(array $data)
     {
+        $agentIds = [];
         $detailedCount = [];
         $totalCount = [
             'total_applications_created' => 0,
@@ -92,6 +98,7 @@ class ExportReaOfficeReport
 
         foreach ($data as $datum) {
 
+            $agentIds[] = $datum[0]['agent_id'];
             $count = [
                 "agent_name" => $this->getAgentName($datum[0]['agent_id']),
                 "total_applications_created" => count($datum),
@@ -114,6 +121,24 @@ class ExportReaOfficeReport
             $submittedUtilityCount['water'] += $this->getSubmittedUtilityCount($datum, 'water');
         }
         $submittedUtilityCount['total_energy'] = $submittedUtilityCount['electricity'] + $submittedUtilityCount['gas'];
+
+        
+        $agentProfiles = AgentProfile::selectRaw("id, first_name, last_name")
+            ->whereNotIn('id', $agentIds)
+            ->where('office_id', $this->officeId)
+            ->get();
+
+        foreach ($agentProfiles as $agentProfile) {
+            $count = [
+                "agent_name" => $agentProfile->first_name.' '.$agentProfile->last_name,
+                "total_applications_created" => 0,
+                "applications_with_minimum_submitted" => 0,
+                "successful_water_connections" => 0,
+                "awaiting_confirmation" => 0,
+                "conversion_rate" => 0,
+            ];
+            $detailedCount[] = $count;
+        }
 
         $this->officeReport = [
             "detailedCount" => $detailedCount,
