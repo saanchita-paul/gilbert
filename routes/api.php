@@ -19,6 +19,7 @@ use FastConnect\Services\SubmitWaterLeadToFastConnect;
 use App\Http\Controllers\Agency\AgentProfileController;
 use OurProperty\Http\Controllers\OurPropertyController;
 use App\Services\RolePermission;
+use App\Http\Controllers\Agency\ReaExtractsReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -165,6 +166,10 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/sales-dashboard/export/submission-report', [ReportController::class, 'submissionReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_EXPORT_REPORT);
     Route::get('/plans-details/{id}/export', [NoteController::class, 'download']);
+
+    // REA extracts report
+    Route::get('/rea-extract/office-report', [ReaExtractsReportController::class, 'officeReport'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
@@ -234,19 +239,3 @@ Route::get("/karan/sales-status", function () {
     return "success";
 });
 
-Route::get('country_test', function () {
-    // $model = new AddressModel(address_text: "", unit_number: 103 , city: "PRESTON"  );
-    $model = new AddressModel(
-        address_text: "UNIT 102,100 PLENTY ROAD,PRESTON VIC 3072 AUSTRALIA",
-        unit_number: null,
-        street_number: 104,
-        street_name: "Halsey " . " Road",
-        postcode: 3042,
-        city: "AIRPORT WEST",
-        state: "VIC",
-        country: "AUSTRALIA",
-    );
-    $g = new GBGServices($model);
-    // $g->setPayload($model);
-    $g->findAddressByText();
-});
