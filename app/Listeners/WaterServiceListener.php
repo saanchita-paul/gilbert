@@ -45,9 +45,14 @@ class WaterServiceListener implements ShouldQueue
                 throw new \Exception('Water Service is not available for Tenancy Type HomeOwner');
             }
 
+            if($ca->is_water_manual_submitting) {
+                throw new \Exception('Water submit skipped as manual submit is already in progress');
+            }
+
             $this->validateCAAddress($ca);
 
             $ca->update(['is_auto_water_submit' => 0]);
+            $ca->update(['is_water_manual_submitting' => 1]);
 
             $service = new SubmitWaterLeadToFastConnect($event->applicationId);
             $result = $service->submitWaterLead();
@@ -71,6 +76,7 @@ class WaterServiceListener implements ShouldQueue
             // Saving Failed reason and set Water status as Failed
             $service->saveRejectionReason($exception->getMessage(), $event->applicationId, 'water');
             $service->setStatusFailed($event->applicationId, 'water');
+            $this->application->update(['is_water_manual_submitting' => 0]);
 
             // $this->sendEmail($exception->getMessage());
             WaterEmailService::sendEmailWhenSubmissionFails($exception->getMessage() , $event->applicationId);
