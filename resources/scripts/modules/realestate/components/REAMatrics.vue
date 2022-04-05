@@ -74,7 +74,6 @@ import AppMetric from "@scripts/modules/realestate/components/AppMatric";
 import ServiceMetrics from "@scripts/modules/realestate/components/ServiceMetrics";
 import ReaReportModal from "@scripts/components/widgets/ReaReportModal";
 import {getTodayString} from '@scripts/services/DateRangeService';
-import ReportService from "@scripts/services/ReportService";
 
 export default {
     name: "REAMatrics",
@@ -131,8 +130,10 @@ export default {
         },
         onClickExport(dateRange, reportType) {
             let officeId = this.$route.params?.officeId;
-            console.log(dateRange, reportType, officeId);
-            ReportService.officeReport(officeId, reportType, dateRange);
+            window.open(
+                '/api/rea-extract/office-report?officeId='+officeId+'&reportType='+reportType+'&start='+dateRange.start+'&end='+dateRange.end,
+                '_blank'
+            );
         }
     },
     mounted(){

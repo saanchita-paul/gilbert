@@ -237,12 +237,3 @@ Route::get("/karan/sales-status", function () {
     return "success";
 });
 
-Route::get('country_test', function () {
-    // $pdf = App::make('snappy.pdf.wrapper');
-    // $pdf->loadHTML('<h1>Test</h1>');
-    // return $pdf->inline();
-
-    $data = ['image' => 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png'];
-    $pdf = PDF::loadView('pdf.invoice_office', $data);
-    return $pdf->inline();
-});

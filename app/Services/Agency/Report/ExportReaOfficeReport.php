@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Log;
 use App\Modules\Reporting\Services\SetDateRage;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use App\Models\Office;
 use PDF;
+use Carbon\Carbon;
 
 class ExportReaOfficeReport
 {
@@ -14,6 +16,8 @@ class ExportReaOfficeReport
 
     private string $startDate;
     private string $endDate;
+    private string $stringStartDate;
+    private string $stringEndDate;
     private string $officeId;
     private string $reportType;
     private array $officeReport = [];
@@ -45,6 +49,9 @@ class ExportReaOfficeReport
         $this->setDateRange($start, $end);
         $this->officeId = $officeId;
         $this->reportType = $reportType;
+        $this->stringStartDate = Carbon::parse($start)->format('M d Y');
+        $this->stringEndDate = Carbon::parse($end)->format('M d Y');
+
     }
 
     public function run()
@@ -55,9 +62,11 @@ class ExportReaOfficeReport
 
     private function export()
     {
-        // create PDF here
-        Log::info('Exporting report', $this->officeReport);
-        $data = ['image' => 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png'];
+        Log::info('REA Office report', $this->officeReport);
+        
+        $officeName = Office::find($this->officeId)->name;
+
+        $data = ['officeName' => $officeName, 'startDate' => $this->stringStartDate, 'endDate' => $this->stringEndDate, 'report' => $this->officeReport];
         $pdf = PDF::loadView('pdf.invoice_office', $data);
         return $pdf->inline();
 
@@ -196,7 +205,7 @@ class ExportReaOfficeReport
         if ($total > 0 && ($total - $awaiting > 0)) {
             $conversionRate = ($minimum / ($total - $awaiting)) * 100;
         }
-        return $conversionRate;
+        return round($conversionRate, 1);
     }
 
     private function getSubmittedUtilityCount(array $applications, string $utilityType) : int

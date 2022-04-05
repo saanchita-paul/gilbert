@@ -22,7 +22,8 @@ class ReaExtractsReportController extends Controller
                 ))->run();
             } else {
                 // return (new ExportReaOfficeReport(
-                //     $request->get('type'),
+                //     $request->get('officeId'),
+                //     $request->get('reportType'),
                 //     $request->get('start'),
                 //     $request->get('end')
                 // ))->run();

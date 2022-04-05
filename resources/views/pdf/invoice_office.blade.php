@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Office Report</title>
 </head>
 
 <body>
-    <div style="background-color: #620088; height: 300px; width: 100%; position: relative;">
+    <div style="background-color: #532B87; height: 300px; width: 100%; position: relative;">
 
 
         <div style="float: left; padding-top: 65px; margin-left: 30%; margin-right: 10px;">
@@ -29,47 +29,47 @@
         <div style="clear: both;"></div>
 
         <div style="color: white; font-size: 24px; text-align: center;">
-            HOOD REA Corporate Report
+            HOOD REA Office Report
         </div>
 
         <div style="color: white; font-size: 24px; text-align: center; margin-top: 40px;">
-            Woodards (March 1 2022 to March 25 2022)
+            {{ $officeName }} ({{ $startDate }} to {{ $endDate }})
         </div>
 
     </div>
 
-    <div style="border: 5px solid gray; margin-top: 20px; font-weight: bold; width: 45%; float: left; margin-right: 7%;">
-        <div style="background-color: #620088; color: white; padding: 0px 3px; font-size: 20px;">
+    <div style="border: 3px solid gray; margin-top: 20px; font-weight: bold; width: 45%; float: left; margin-right: 7%;">
+        <div style="background-color: #532B87; color: white; padding: 0px 3px; font-size: 20px;">
             Your Office Application at a Glance
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 20px; font-weight: normal; width: 100%; border: 1px solid gray;">
             <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Number of Applications Submitted</div>
-            <div style="text-align: center; float: left; color: #620088; font-weight: bold; width: 20%; ">948</div>
+            <div style="text-align: center; float: left; color: #532B87; font-weight: bold; width: 20%; ">{{ $report['totalCount']['total_applications_created'] }}</div>
             <div style="clear: both;"></div>
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 20px; font-weight: normal; width: 100%; border: 1px solid gray;">
             <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Number of Applications with atleast one service connected (other than water)</div>
-            <div style="text-align: center; float: left; color: #620088; font-weight: bold; width: 20%; ">948</div>
+            <div style="text-align: center; float: left; color: #532B87; font-weight: bold; width: 20%; ">{{ $report['totalCount']['applications_with_minimum_submitted'] }}</div>
             <div style="clear: both;"></div>
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 20px; font-weight: normal; width: 100%; border: 1px solid gray;">
             <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Number of successful water connections</div>
-            <div style="text-align: center; float: left; color: #620088; font-weight: bold; width: 20%; ">948</div>
+            <div style="text-align: center; float: left; color: #532B87; font-weight: bold; width: 20%; ">{{ $report['totalCount']['successful_water_connections'] }}</div>
             <div style="clear: both;"></div>
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 20px; font-weight: normal; width: 100%; border: 1px solid gray;">
             <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Awaiting Confirmation</div>
-            <div style="text-align: center; float: left; color: #620088; font-weight: bold; width: 20%; ">948</div>
+            <div style="text-align: center; float: left; color: #532B87; font-weight: bold; width: 20%; ">{{ $report['totalCount']['awaiting_confirmation'] }}</div>
             <div style="clear: both;"></div>
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 20px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Sub/Apps</div>
-            <div style="text-align: center; float: left; color: #620088; font-weight: bold; width: 20%; ">0%</div>
+            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Conversion Rate (Succesful Elec Sub/Apps)</div>
+            <div style="text-align: center; float: left; color: #532B87; font-weight: bold; width: 20%; ">{{ $report['totalCount']['conversion_rate'] }}%</div>
             <div style="clear: both;"></div>
         </div>
 
@@ -77,32 +77,31 @@
 
     </div>
 
-    <div style="border: 5px solid gray; margin-top: 20px; font-weight: bold; width: 45%; float: left; ">
-        <div style="background-color: #620088; color: white; padding: 5px 3px; font-size: 20px;">
+    <div style="border: 3px solid gray; margin-top: 20px; font-weight: bold; width: 45%; float: left; ">
+        <div style="background-color: #532B87; color: white; padding: 5px 3px; font-size: 20px;">
             Utility submitted
         </div>
         <div style="color: black; padding: 0px 0px; font-size: 20px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 32%; padding-left: 3px; border: 1px solid gray;"></div>
-
-            <div style="display: inline; width: 33%; float:  left; border: 1px solid gray; text-align: center;">Electricity</div>
-
-            <div style="display: inline; width: 33%; float: left; border: 1px solid gray; text-align: center;">Gas</div>
+            <div style="display: inline; float: left; width: 25%; padding-left: 3px; border: 1px solid gray;"></div>
+            <div style="display: inline; width: 25%; float:  left; border: 1px solid gray; text-align: center;">Electricity</div>
+            <div style="display: inline; width: 24%; float: left; border: 1px solid gray; text-align: center;">Gas</div>
+            <div style="display: inline; width: 23%; float: left; border: 1px solid gray; text-align: center;">Water</div>
             <div style="clear: both;"></div>
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 20px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 32%; padding-left: 3px; border: 1px solid gray; text-align: center; padding-top: 10px; padding-bottom: 10px;">Total</div>
-
-            <div style="display: inline; width: 33%; float:  left; border: 1px solid gray; text-align: center; padding-top: 10px; padding-bottom: 10px; font-weight: bold; color: #620088; ">365</div>
-
-            <div style="display: inline; width: 33%; float: left; border: 1px solid gray; text-align: center; padding-top: 10px; padding-bottom: 10px; font-weight: bold; color: #620088; ">365</div>
+            <div style="display: inline; float: left; width: 25%; padding-left: 3px; border: 1px solid gray; text-align: center; padding-top: 10px; padding-bottom: 10px;">Total</div>
+            <div style="display: inline; width: 25%; float:  left; border: 1px solid gray; text-align: center; padding-top: 10px; padding-bottom: 10px; font-weight: bold; color: #620088; ">{{ $report['submittedUtilityCount']['electricity'] }}</div>
+            <div style="display: inline; width: 24%; float: left; border: 1px solid gray; text-align: center; padding-top: 10px; padding-bottom: 10px; font-weight: bold; color: #620088; ">{{ $report['submittedUtilityCount']['gas'] }}</div>
+            <div style="display: inline; width: 23%; float: left; border: 1px solid gray; text-align: center; padding-top: 10px; padding-bottom: 10px; font-weight: bold; color: #620088; ">{{ $report['submittedUtilityCount']['water'] }}</div>
             <div style="clear: both;"></div>
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 20px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 32%; padding-left: 3px; border: 1px solid gray; text-align: center;">Total Fuels</div>
+            <div style="display: inline; float: left; width: 25%; padding-left: 3px; border: 1px solid gray; text-align: center;">Total Fuels</div>
 
-            <div style="display: inline; width: 66%; float:  left; border: 1px solid gray; text-align: center; font-weight: bold; color: #620088;  ">422</div>
+            <div style="display: inline; width: 49%; float:  left; border: 1px solid gray; text-align: center; font-weight: bold; color: #620088; ">{{ $report['submittedUtilityCount']['total_energy'] }}</div>
+            <div style="display: inline; width: 23%; float:  left; border: 1px solid gray; text-align: center; font-weight: bold; color: #620088; "> - </div>
 
             <div style="clear: both;"></div>
         </div>
@@ -115,84 +114,97 @@
 
 
 
-    <div style="border: 5px solid gray; margin-top: 20px; font-weight: bold; ">
-        <div style="background-color: #620088; color: white; padding: 5px 3px; font-size: 20px;">
+    <div style="border: 3px solid gray; margin-top: 20px; font-weight: bold; ">
+        <div style="background-color: #532B87; color: white; padding: 5px 3px; font-size: 20px;">
             Detailed view of agents in the office
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 20px; font-weight: normal; width: 100%; border: 1px solid gray;">
 
-            <div style="width: 25%; height: 100px; padding-left: 0px; float: left; border: 1px solid gray;">
-                <div style="color: #620088; font-weight: bold;">
+            <div style="width: 25%; height: 120px; padding-left: 0px; float: left; border: 1px solid gray;">
+                <div style="color: #532B87; font-weight: bold;">
                     Agent Name
                 </div>
             </div>
 
-            <div style="width: 15%; height: 100px; padding-left: 0px; float: left; border: 1px solid gray;">
-                <div style="color: #620088; font-weight: bold; word-wrap: break-word; text-align: center;">
+            <div style="width: 14%; height: 120px; padding-left: 0px; float: left; border: 1px solid gray;">
+                <div style="color: #532B87; font-weight: bold; word-wrap: break-word; text-align: center;">
                     Applications Submitted
                 </div>
             </div>
 
-            <div style="width: 20%; height: 100px; padding-left: 0px; float: left; border: 1px solid gray;">
-                <div style="color: #620088; font-weight: bold; text-align: center;">
-                    Applications with at least one service connected
+            <div style="width: 18%; height: 120px; padding-left: 0px; float: left; border: 1px solid gray;">
+                <div style="color: #532B87; font-weight: bold; text-align: center;">
+                    Applications with at least one service connected (other than water)
                 </div>
             </div>
 
-            <div style="width: 20%; height: 100px; padding-left: 0px; float: left; border: 1px solid gray;">
-                <div style="color: #620088; font-weight: bold; text-align: center;">
+            <div style="width: 14%; height: 120px; padding-left: 0px; float: left; border: 1px solid gray;">
+                <div style="color: #532B87; font-weight: bold; text-align: center;">
                     Successful Water Connection
                 </div>
             </div>
 
-            <div style="width: 19%; height: 100px; padding-left: 0px; float: left; border: 1px solid gray;">
-                <div style="color: #620088; font-weight: bold; text-align: center;">
-                    Waiting Confirmation
+            <div style="width: 14%; height: 120px; padding-left: 0px; float: left; border: 1px solid gray;">
+                <div style="color: #532B87; font-weight: bold; text-align: center;">
+                    Awaiting Confirmation
+                </div>
+            </div>
+
+            <div style="width: 13%; height: 120px; padding-left: 0px; float: left; border: 1px solid gray;">
+                <div style="color: #532B87; font-weight: bold; text-align: center;">
+                    Conversion Rate (Succesful Elec Sub/Apps)
                 </div>
             </div>
 
             <div style="clear: both;"></div>
         </div>
 
+        @foreach ($report['detailedCount'] as $agent)
         <div style="color: black; padding: 0px 0px; font-size: 20px; font-weight: normal; width: 100%; border: 1px solid gray;">
 
             <div style="width: 25%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: black;">
-                    Jake Peralta
+                    {{$agent['agent_name']}}
                 </div>
             </div>
 
-            <div style="width: 15%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray;">
+            <div style="width: 14%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: black;  text-align: center;">
-                    15
+                    {{$agent['total_applications_created']}}
                 </div>
             </div>
 
-            <div style="width: 20%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray;">
+            <div style="width: 18%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: black;  text-align: center;">
-                    15
+                    {{$agent['applications_with_minimum_submitted']}}
                 </div>
             </div>
 
-            <div style="width: 20%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray;">
+            <div style="width: 14%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: black;  text-align: center;">
-                    15
+                    {{$agent['successful_water_connections']}}
                 </div>
             </div>
 
-            <div style="width: 19%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray;">
+            <div style="width: 14%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: black;  text-align: center;">
-                    15
+                    {{$agent['awaiting_confirmation']}}
+                </div>
+            </div>
+
+            <div style="width: 13%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray;">
+                <div style="color: black;  text-align: center;">
+                    {{$agent['conversion_rate']}}%
                 </div>
             </div>
 
             <div style="clear: both;"></div>
         </div>
+        @endforeach
 
-        {{-- <div style="color: white; padding: 5px 3px; font-size: 20px;"> 
-                Detailed view of each office and agency 
-            </div> --}}
+
+
     </div>
 
     </div>
