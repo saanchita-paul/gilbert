@@ -1027,15 +1027,6 @@
 
                 <!-- billing address ends -->
 
-
-
-
-
-
-<<<<<<< HEAD
-=======
-
->>>>>>> HCO_512_address_validation
 <!--
                     <v-col cols="12" class="pb-0">
                         <p class="sub-title mb-0"> Service Interests </p>
