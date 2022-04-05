@@ -3,11 +3,13 @@ namespace App\Listeners;
 
 
 use App\Models\ConnectionApplication;
-use App\Services\Agency\UpdatedWaterStatus;
+use App\Services\Address\GBGServices;
+use App\Services\Address\AddressModel;
 use App\Services\Agency\WaterEmailService;
+use App\Services\Agency\UpdatedWaterStatus;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Services\Utility\AddressValidationService;
 use FastConnect\Services\SubmitWaterLeadToFastConnect;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class WaterServiceListener implements ShouldQueue
 {
@@ -21,6 +23,21 @@ class WaterServiceListener implements ShouldQueue
         //
     }
 
+    private function validateAddress($applicationId) : bool 
+    {
+        $addressModel = new AddressModel(connection_application_id: $applicationId);
+        $gbgService = new GBGServices($addressModel);
+        $address = $gbgService->findAddressByText();
+        if ($address->getIsAddressComplete()) 
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
+    }
+
+
     /**
      * Handle the event.
      *
@@ -30,6 +47,13 @@ class WaterServiceListener implements ShouldQueue
     public function handle($event)
     {
         try {
+
+        if (!$this->validateAddress($event->applicationId)) 
+        {
+            info("Water Service Listener: Address is not complete");
+            // return;
+        }
+
         if (isset($event->submitType) && $event->submitType == 'water') {
 
             $ca = ConnectionApplication::query()->where('id', $event->applicationId)->firstOrFail();

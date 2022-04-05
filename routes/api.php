@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Encryption\Encrypter;
+use App\Services\Address\GBGServices;
 use Illuminate\Support\Facades\Route;
+use App\Services\Address\AddressModel;
 use PropertyMe\services\FetchContacts;
 use App\Services\RolePermissionService;
 use Illuminate\Support\Facades\Broadcast;
@@ -233,9 +235,18 @@ Route::get("/karan/sales-status", function () {
 });
 
 Route::get('country_test', function () {
-    //  return SubmitWaterLeadToFastConnect::mapLengthOfCountry[2];
-    $ser =  new SubmitWaterLeadToFastConnect(1);
-    // return $ser;
-    return $ser->getMappedIdentificationCountry('AX');
-    // return 'got' ;
+    // $model = new AddressModel(address_text: "", unit_number: 103 , city: "PRESTON"  );
+    $model = new AddressModel(
+        address_text: "UNIT 102,100 PLENTY ROAD,PRESTON VIC 3072 AUSTRALIA",
+        unit_number: null,
+        street_number: 104,
+        street_name: "Halsey " . " Road",
+        postcode: 3042,
+        city: "AIRPORT WEST",
+        state: "VIC",
+        country: "AUSTRALIA",
+    );
+    $g = new GBGServices($model);
+    // $g->setPayload($model);
+    $g->findAddressByText();
 });

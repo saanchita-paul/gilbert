@@ -345,18 +345,31 @@ export default {
         },
 
         async updateAddress(address) {
-            if(this.leadSummary.address_text == address.address_text ) return;
+            console.log('comes to update address' , address);
+            // if(this.leadSummary.address_text == address.address_text && this.leadSummary.billing_address_text == address.billing_address_text ) return;
+            console.log('entered')
             this.leadSummary.address_text = address.address_text
             this.leadSummary.street_address = address.street_address
             this.leadSummary.city = address.city
+            this.leadSummary.is_billing_same = address.is_billing_same
             // this.leadSummary.is_renovation_on = address.is_renovation_on
             // this.leadSummary.has_electricity = address.has_electricity
             // this.leadSummary.inspection_time = address.inspection_time
+
+            this.leadSummary.billing_address_text = address.billing_address_text
+            this.leadSummary.billing_street_address = address.billing_street_address
+
             this.leadSummary.postcode = address.postcode
             this.leadSummary.state = address.state
             this.leadSummary.street_number = address.street_number
             this.leadSummary.unit_number = address.unit_number
-            this.leadSummary.street_name = address.street_name
+            this.leadSummary.street_type = address.street_type
+            this.leadSummary.billing_street_type = address.billing_street_type
+            this.leadSummary.street_name = address.street_name_only
+            this.leadSummary.street_name_only = address.street_name_only
+            this.leadSummary.billing_street_name = address.billing_street_name_only
+            this.leadSummary.billing_street_name_only = address.billing_street_name_only
+            this.leadSummary.billing_unit_number = address.billing_unit_number
             this.nmiMernFlag = true;
             this.leadSummary.nmi = '';
             this.leadSummary.mirn = '';

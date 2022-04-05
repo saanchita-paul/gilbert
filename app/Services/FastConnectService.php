@@ -86,7 +86,8 @@ class FastConnectService
 
     public static function makeAddressPayload($address = [])
     {
-        $streetType = self::getStreetType($address['street_name']);
+        // $streetType = self::getStreetType($address['street_name']);
+        $streetType = self::getStreetType($address['street_name_only']);
 
         return [
             'search_lookup_types' => [
@@ -100,7 +101,8 @@ class FastConnectService
             ],
 
             'address' => [
-                'street_name' => self::getStreetName($address['street_name'], $streetType),
+                // 'street_name' => self::getStreetName($address['street_name'], $streetType),
+                'street_name' => self::getStreetName($address['street_name_only'], $streetType),
                 'street_type' => $streetType,
                 'suburb' => $address['city'] ?? '',
                 'post_code' => $address['postcode'] ?? '',

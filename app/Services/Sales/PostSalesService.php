@@ -92,8 +92,9 @@ class PostSalesService
             'address'=> [
                 'unitNumber'=> $this->connection->unit_number,
                 'streetNumber'=> $this->connection->street_number,
-                'streetName'=> $this->connection->street_address,
-                'streetType'=> $streetType,
+                // 'streetName'=> $this->connection->street_address,
+                'streetName'=> $this->connection->street_name_only,
+                'streetType'=> $this->connection->street_type,
                 'suburb'=> $this->connection->city,
                 'state'=> $this->stateMap($this->connection->state),
                 'postcode'=> $this->connection->postcode,
@@ -109,8 +110,9 @@ class PostSalesService
         $streetMailingAddress = [
             'unitNumber'=> $this->connection->unit_number,
             'streetNumber'=> $this->connection->street_number,
-            'streetName'=> $this->connection->street_address,
-            'streetType'=> $streetType,
+            // 'streetName'=> $this->connection->street_address,
+            'streetName'=> $this->connection->street_name_only,
+            'streetType'=> $this->connection->street_type,
             'suburb'=> $this->connection->city,
             'state'=> $this->stateMap($this->connection->state),
             'postcode'=> $this->connection->postcode,

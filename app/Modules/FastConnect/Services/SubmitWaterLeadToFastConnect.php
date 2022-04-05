@@ -194,7 +194,7 @@ class SubmitWaterLeadToFastConnect
                 "move_in_address" => [
                     "street_number" => $lead->street_number,
                     "street_name" => $lead->street_name,
-                    "street_type" => $lead->getRoadType(),
+                    "street_type" => $lead->street_type,
                     "suburb" => $lead->city,
                     "state" => $this->getMappedState($lead->state),
                     "post_code" => $lead->postcode,
@@ -241,7 +241,7 @@ class SubmitWaterLeadToFastConnect
                     // "lot_number" => "1",
                     "street_number" => $lead->street_number,
                     "street_name" => $lead->street_name,
-                    "street_type" => $lead->getRoadType(),
+                    "street_type" => $lead->street_type,
                     "suburb" => $lead->city,
                     "state" => $this->getMappedState($lead->state),
                     "post_code" => $lead->postcode,
@@ -349,7 +349,7 @@ class SubmitWaterLeadToFastConnect
                 = $lead->billing_postcode : null;
             !is_null($lead->billing_street_name) ?
                 $data['billing_location']['connection']['address']['street_type']
-                = $lead->getbillingRoadType() : null;
+                = $lead->billing_street_type : null;
         }
 
 
