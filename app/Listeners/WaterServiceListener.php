@@ -46,7 +46,8 @@ class WaterServiceListener implements ShouldQueue
             }
 
             if($ca->is_water_manual_submitting) {
-                throw new \Exception('Water submit skipped as manual submit is already in progress');
+                info("Water submit skipped as manual submit is already in progress");
+                return false;
             }
 
             $this->validateCAAddress($ca);

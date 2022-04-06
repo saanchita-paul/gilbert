@@ -185,7 +185,8 @@ class ConnectionApplication extends Model
         'is_temporary_connection',
         'water_next_available_date',
         'after_hour_payee',
-        'after_hour_flag'
+        'after_hour_flag',
+        'is_water_manual_submitting'
     ];
 
 
