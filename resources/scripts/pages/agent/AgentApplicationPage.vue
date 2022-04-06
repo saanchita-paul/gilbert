@@ -3,15 +3,24 @@
         <v-row class="mt-0">
             <v-col cols="12">
                 <v-card  class="hood-card">
-                    <h3 v-if="user" class="page-title">Hi {{ user.profile.first_name }}, <small class="font-weight">here is a
-                        summary of your applications.</small>
-                    </h3>
-                    <span v-if="!pm_connected" class="link-prop">
-                        <v-btn @click="onLinkPropertyMe" small>🔗 Link PropertyMe</v-btn>
-                    </span>
-                    <span v-else class="link-prop">
-                        <v-btn disabled x-small>🔗 PropertyMe is linked</v-btn>
-                    </span>
+                    <div class="d-flex align-center">
+                        <h3 v-if="user" class="page-title">Hi {{ user.profile.first_name }}, <small class="font-weight">here is a
+                            summary of your applications.</small>
+                        </h3>
+                        <v-spacer></v-spacer>
+                        <span v-if="!pm_connected" class="link-prop">
+                            <v-btn @click="onLinkPropertyMe" small>🔗 Link PropertyMe</v-btn>
+                        </span>
+                        <span v-else class="link-prop">
+                            <v-btn disabled x-small>🔗 PropertyMe is linked</v-btn>
+                        </span>
+                        <span class="mx-3">
+                            <v-btn outlined @click="onClickDownloadReport">
+                                Report
+                                <v-icon right>mdi-download</v-icon>
+                            </v-btn>
+                        </span>
+                    </div>
                     <AgentLeadMetrics></AgentLeadMetrics>
                 </v-card>
                 <AgentApplicationTable
@@ -55,6 +64,14 @@
             </v-card>
         </v-dialog>
 
+        <ReaReportModal
+            v-if="showReportModal"
+            :dialog="showReportModal"
+            :dateRange="dateRange"
+            @close="onCloseModal"
+            @select="onClickExport"
+        />
+
     </v-container>
 </template>
 
@@ -64,13 +81,16 @@ import AgentApplicationTable from "@scripts/components/crm/agent/AgentApplicatio
 import AgentApplicationSummary from "@scripts/components/crm/agent/AgentApplicationSummary";
 import AuthService from "@scripts/services/AuthService";
 import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
+import ReaReportModal from "@scripts/components/widgets/ReaReportModal";
+import {getTodayString} from '@scripts/services/DateRangeService';
 
 export default {
     name: "AgentApplicationPage",
     components: {
         AgentApplicationTable,
         AgentLeadMetrics,
-        AgentApplicationSummary
+        AgentApplicationSummary,
+        ReaReportModal
     },
     data() {
         return {
@@ -88,6 +108,11 @@ export default {
             totalItem: null,
             options: {},
             isLoaded: false,
+            showReportModal: false,
+            dateRange: {
+                start: getTodayString(),
+                end: getTodayString()
+            },
         }
     },
 
@@ -134,6 +159,20 @@ export default {
         dismiss() {
             this.dialog = false;
             this.$router.push({name: this.$route.name, query: {}})
+        },
+        onClickDownloadReport() {
+            this.showReportModal = true;
+        },
+        onCloseModal() {
+            this.showReportModal = false;
+        },
+        onClickExport(dateRange, reportType) {
+            console.log(this.office?.id);
+            let officeId = this.office?.id;
+            window.open(
+                '/api/rea-extract/office-report?officeId='+officeId+'&reportType='+reportType+'&start='+dateRange.start+'&end='+dateRange.end,
+                '_blank'
+            );
         }
     },
 
