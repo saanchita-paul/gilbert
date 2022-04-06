@@ -7,6 +7,8 @@ use App\Models\APILog;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use App\Models\ConnectionApplication;
+use Exception;
+
 
 class TsaSendAppliationService
 {
@@ -94,5 +96,32 @@ class TsaSendAppliationService
     private function getConnectionDate($movingDate): string
     {
         return date(DATE_ATOM, strtotime($movingDate));
+    }
+
+
+    public function getTsaLeadId()
+    {
+        try {
+            $url = \config('tsa.root_url') . \config('tsa.tsa_lead_id') . '?external_id='.  $this->application->id;
+            // $url = 'https://hood.tsagroup-tech.com/api/campaign/lead/search?external_id=H0010';
+            
+            $response = Http::withHeaders([
+                'content-type' => 'application/json',
+                'X-API-Service' => \config('tsa.x_api_service_name'),
+                'X-API-Token' => \config('tsa.x_api_token')
+            ])->get($url);
+        
+            if($response->status() == 200) {
+                $responseData = json_decode($response->body(), true);
+                return $responseData[0]['lead_id'];
+            }
+            throw new Exception("no call history found");
+
+        } catch (\Exception $exception) {
+            \Log::error($exception->getMessage());
+            \Log::error($exception->getTraceAsString());
+            return false;
+        }
+        
     }
 }

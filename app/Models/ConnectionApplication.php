@@ -185,7 +185,8 @@ class ConnectionApplication extends Model
         'water_next_available_date',
         'after_hour_payee',
         'after_hour_flag',
-        'tsa_call_status'
+        'tsa_call_status',
+        'tsa_lead_id'
     ];
 
 

@@ -98,31 +98,6 @@ class TsaCallHistoryService
         }
     }
 
-    public function getCallHistoryByID($connection_application)
-    {
-        try {
-            $url = \config('tsa.root_url') . \config('tsa.call_history') . $connection_application->tsa_id;
-
-            $url = APILog::setLoggerQuery($url, APILog::API_TSA_INSERT_DATA, false);
-            
-            $response = Http::withHeaders([
-                'content-type' => 'application/json',
-                'X-API-Service' => \config('tsa.x_api_service_name'),
-                'X-API-Token' => \config('tsa.x_api_token')
-            ])
-                ->get($url);
-            
-            if($response->status() == 200) {
-                return $response->body();
-            }
-            throw new Exception("no call history found");
-
-        } catch (\Exception $exception) {
-            \Log::error($exception->getMessage());
-            \Log::error($exception->getTraceAsString());
-            return false;
-        }
-        
-    }
+    
 
 }

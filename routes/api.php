@@ -99,7 +99,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::get('/application-assignees', [HoodUserController::class, 'getAssignee'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_ASSIGNEE_LIST);
-    // Route::post('/hood-users', [HoodUserController::class, 'store']);  # Not used
+    // Route::post('/hood-users', [HoodUserController::class, 'store']);
     Route::get('/hood-users', [HoodUserController::class, 'index'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
 

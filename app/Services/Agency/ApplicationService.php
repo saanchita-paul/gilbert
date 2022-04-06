@@ -10,6 +10,7 @@ use App\Models\HoodProfile;
 use App\Models\Identification;
 use App\Models\User;
 use App\Services\RolePermission;
+use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use TSA\Services\TsaSendAppliationService;
 
@@ -126,7 +127,13 @@ class ApplicationService
 
         if (in_array(HoodProfile::find($agentId)->user->roles->first()?->name,
             [RolePermission::ROLE_EXTERNAL_HOOD_TEAM_LEAD])) {
-            (new TsaSendAppliationService($applicationId))->sendApplication();
+            // (new TsaSendAppliationService($applicationId))->sendApplication();            
+            $tsaService = new TsaSendAppliationService($applicationId);
+            $tsaService->sendApplication();
+            $tsa_lead_id = $tsaService->getTsaLeadId();
+            $existingApplication = ConnectionApplication::find($applicationId);
+            $existingApplication->tsa_lead_id = $tsa_lead_id;
+            $existingApplication->save();
         }
         return $this->findApplications($applicationId);
     }
@@ -321,6 +328,7 @@ class ApplicationService
      */
     public function closeApplicationWithReason(array $application, int $applicationId, User $user)
     {
+
         try {
             $existingApplication = ConnectionApplication::find($applicationId);
             $existingApplication->closing_reason = $application['closing_reason'];
