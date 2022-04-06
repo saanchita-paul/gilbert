@@ -169,7 +169,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
 
     // REA extracts report
     Route::get('/rea-extract/office-report', [ReaExtractsReportController::class, 'officeReport'])
-        ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
