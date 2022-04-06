@@ -125,7 +125,7 @@ export default {
         },
         onAddressSelected(place)
         {
-            GoogleMapService.getAddressDetailsByPlaceId(place.description)
+            GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
                 .then((data) => {
                     this.office.address = data.formatted_address;
                 });
