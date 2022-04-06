@@ -43,7 +43,7 @@ class SaveContacts
     {
 
         $this->leads = $this->getNewHoodLeadOnly($this->apiService->fetchContacts()->getContacts());
-        $this->loadTenancies();
+//        $this->loadTenancies();
         return $this;
     }
 
@@ -81,14 +81,21 @@ class SaveContacts
             $lead = new PropertyMeLead();
             $lead->all_fields_dump = json_encode($leadData);
             $lead->lead_id = $leadId;
+            $lead->created_at = now()->toDateTimeString();
+            $lead->updated_at = now()->toDateTimeString();
 
-            if ($lotId = $this->getLotId($leadId) ) {
-                $lotMembers = $this->apiService->fetchTLotMembers($lotId);
+            $tenancy = optional($this->apiService->getTenancy($leadId))[0];
+
+            if ($tenancy && data_get($tenancy, 'LotId')) {
+                $lotId = data_get($tenancy, 'LotId');
+                $lotMembers = $this->apiService->getLotMembers($lotId);
                 $lead->lot_id = $lotId;
                 $lead->agent_email = data_get($lotMembers, 'RegisteredEmail');
             }
 
+
             $lead->save();
+            $lead->movingDate  = data_get($tenancy, 'TenancyStart');
             $this->savedLead[] = $lead;
         }
 

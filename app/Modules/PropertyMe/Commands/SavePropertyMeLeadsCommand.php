@@ -18,7 +18,7 @@ class SavePropertyMeLeadsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'property_me:save_contact {--office=}';
+    protected $signature = 'property_me:save_contact {--office=} {--days=}';
     /**
      * The console command description.
      *
@@ -115,11 +115,11 @@ class SavePropertyMeLeadsCommand extends Command
 
         $pm = new SaveContacts($office->property_me_refresh_token);
         $leads = $pm->fetch()->createLead()->getSavedLeads();
-        $tenancies = $pm->getTenancies();
+
 
         $this->line("[$office->name]  Saved in property_me_leads: " . sizeof($leads));
 
-        $saveService = new SaveToConnectionApplication($office, $tenancies);
+        $saveService = new SaveToConnectionApplication($office);
 
         foreach ($leads as $lead) {
             try {
@@ -149,7 +149,7 @@ class SavePropertyMeLeadsCommand extends Command
     {
         if (sizeof($this->failedLeads) > 0) {
             $this->error("the following leads failed to save in connection_applications");
-            dump($this->failedLeads);
+            $this->table(['property_me_lead_id', 'office_name', 'office_id', 'errMessage'], $this->failedLeads);
             Log::error("PropertyMe leads that failed to save in connection_applications", $this->failedLeads);
             $this->sendErrorNotification();
         }
@@ -165,6 +165,12 @@ class SavePropertyMeLeadsCommand extends Command
 
         \Http::timeout($time_out);
         ini_set('memory_limit', $memory_limit );
+
+
+        $days = $this->option('days');
+        if ($days) {
+            config(['property_me.no_of_days' => $days]);
+        }
     }
 
     private function sendErrorNotification()

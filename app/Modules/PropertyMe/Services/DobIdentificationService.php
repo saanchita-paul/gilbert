@@ -37,51 +37,59 @@ class DobIdentificationService
 
     public function get()
     {
-        if(trim($this->data) === null || trim($this->data) === '') {
-            Log::error('PropertyMe (Save Contact): Note is empty');
-            $this->sendEmptyEmail();
-            return null;
-        }
+        try {
+            if (trim($this->data) === null || trim($this->data) === '') {
+                Log::error('PropertyMe (Save Contact): Note is empty');
+                $this->sendEmptyEmail();
+                return null;
+            }
 
-        $single_n_data = preg_replace("/[\r\n]+/", "\n", $this->data);
-        $data_array = array_chunk(explode("\n", $single_n_data), 2);
+            $single_n_data = preg_replace("/[\r\n]+/", "\n", $this->data);
+            $data_array = array_chunk(explode("\n", $single_n_data), 2);
 
-        $raw_person_data = array_key_exists(0, $data_array) ? $data_array[0] : null;
-        $raw_authorised_person_data = array_key_exists(1, $data_array) ? $data_array[1] : null;
+            $raw_person_data = array_key_exists(0, $data_array) ? $data_array[0] : null;
+            $raw_authorised_person_data = array_key_exists(1, $data_array) ? $data_array[1] : null;
 
-        if($this->validatePersonData($raw_person_data)){
-            $person_data = $this->getPersonData($raw_person_data, 'person');
-        } else {
-            $person_data = null;
-            Log::error('PropertyMe (Save Contact): Note data is invalid', [$this->data]);
-            $this->validationType = 'person';
-            // $this->sendInvalidEmail();
-        }
-
-        if (is_array($raw_authorised_person_data) && count($raw_authorised_person_data) >= 1) {
-            if($this->validateAuthorizedPersonData($raw_authorised_person_data)){
-                $authorised_person_data = $this->getPersonData($raw_authorised_person_data, 'authorised_person');
+            if ($this->validatePersonData($raw_person_data)) {
+                $person_data = $this->getPersonData($raw_person_data, 'person');
             } else {
-                $authorised_person_data = null;
-                Log::error('PropertyMe (Save Contact): Note data for Authorized person is invalid', [$this->data]);
-                $this->validationType = $this->validationType === 'person' ? 'both' : 'authorised_person';
+                $person_data = null;
+                Log::error('PropertyMe (Save Contact): Note data is invalid', [$this->data]);
+                $this->validationType = 'person';
                 // $this->sendInvalidEmail();
             }
-        }
-        else {
-            $authorised_person_data = null;
-        }
 
-        if($this->validationType !== null){
-            $this->invalidNoteData = $single_n_data;
-            $this->sendInvalidEmail();
-        }
+            if (is_array($raw_authorised_person_data) && count($raw_authorised_person_data) > 1) {
+                if ($this->validateAuthorizedPersonData($raw_authorised_person_data)) {
+                    $authorised_person_data = $this->getPersonData($raw_authorised_person_data, 'authorised_person');
+                } else {
+                    $authorised_person_data = null;
+                    Log::error('PropertyMe (Save Contact): Note data for Authorized person is invalid', [$this->data]);
+                    $this->validationType = $this->validationType === 'person' ? 'both' : 'authorised_person';
+                    // $this->sendInvalidEmail();
+                }
+            } else {
+                $authorised_person_data = null;
+            }
 
-        return [
-            'person' => $person_data,
-            'authorised_person' => $authorised_person_data,
-            'invalid_note_data' => $this->invalidNoteData
-        ];
+            if ($this->validationType !== null) {
+                $this->invalidNoteData = $single_n_data;
+                $this->sendInvalidEmail();
+            }
+
+            return [
+                'person' => $person_data,
+                'authorised_person' => $authorised_person_data,
+                'invalid_note_data' => $this->invalidNoteData
+            ];
+        } catch (\Exception $e) {
+            Log::error('PropertyMe (Save Contact): '. $e->getMessage());
+            return [
+                'person' => null,
+                'authorised_person' => null,
+                'invalid_note_data' => $single_n_data
+            ];
+        }
     }
 
     private function getPersonData(?array $data, ?string $type)
