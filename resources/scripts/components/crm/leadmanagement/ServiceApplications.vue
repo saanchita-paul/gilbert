@@ -610,7 +610,7 @@ export default {
             this.providerSpinner.start()
             try {
                 // this.isSumoLoading = true;
-                let address = this.leadSummary.street_address + ' ' + this.leadSummary.city + ' ' + this.leadSummary.state + ' ' + this.leadSummary.postcode;
+                let address = `${this.leadSummary.street_number} ${this.leadSummary.street_name_only} ${this.leadSummary.street_type} ${this.leadSummary.city} ${this.leadSummary.state} ${this.leadSummary.postcode}`;
                 this.sumoPlanDetails =
                     await SumoService.getPlans(address, this.leadSummary.service_interests, this.leadSummary?.created_by_agent, this.leadSummary);
                 this.actionOnSelectProvider(name)
