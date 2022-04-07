@@ -827,7 +827,6 @@ export default {
         },
         async loadAuthorisedPersonPerson() {
             let unMappedSecondaryContact = await LeadApplicationService.loadAuthorizedPerson(this.$route.params.id);
-            console.log('unMappedSecondaryContact', unMappedSecondaryContact);
             if(isNull(unMappedSecondaryContact)) {
                 this.isAuthorizedPersonExist = false;
                 return;

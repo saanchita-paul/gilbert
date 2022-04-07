@@ -539,7 +539,6 @@ name: "AuthorizedPersonProfileForm",
         },
 
         isSecondaryIdMedicare() {
-            console.log('identification type', this.authorized_person.identification_type);
             return this.authorized_person.identification_type === IDENTIFICATION.MEDICARE;
         }
     },

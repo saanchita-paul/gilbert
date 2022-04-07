@@ -260,7 +260,6 @@ export default {
     methods: {
       async loadMetrics() {
           this.isSearchEmpty = (new AgencyFilter(this.$route.query)).isSearchEmpty();
-          console.log("agency filter" , this.agencyFilter)
           const allMetrics = await LeadApplicationService.loadAgencyMetricsByApplication(this.agencyFilter);
           this.appMetrics = allMetrics
 

@@ -23,4 +23,5 @@ export const street_type = [
     { text: 'SQUARE', value: 'SQ' },
     { text: 'STREET', value: 'ST' },
     { text: 'TERRACE', value: 'TCE' },
+    { text: 'PARADE', value: 'PDE' },
 ];

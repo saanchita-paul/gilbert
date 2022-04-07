@@ -171,7 +171,6 @@ export default {
         async load() {
             this.utilityDashboardData = await UtilityDashboardService.getUtilityDashboardData();
             this.connectionSummary = await UtilityDashboardService.getConnectionSummary();
-            console.log(this.utilityDashboardData.lead_overview.total_assistance_needed);
             this.isLoaded = true;
         }
     }

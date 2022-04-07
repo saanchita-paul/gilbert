@@ -469,7 +469,6 @@ export default {
          // this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
         this.loadSelectedPowerProvider();
 
-
         const updateAddress = address => {
             if (this.selectedPowerProvider === 'sumo') {
                 this.$eventBus.$emit("validate", this.setSumoDetailsData)
@@ -723,7 +722,6 @@ export default {
 
             this.activeOriginPlan = plan.name;
                 //todo update provider array for sumo plan
-                console.log('plan provider click' , plan);
                 let payload = {
                     service_type: this.leadSummary?.service_interests,
                     provider_name: this.selectedPowerProvider,

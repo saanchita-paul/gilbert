@@ -161,7 +161,6 @@ export default {
         async manualInterventionToggle() {
             let manualInterventionRequire = this.customer.manualInterventionIsActive ? 1 : 0;
             const response = await CustomerService.toggleManualIntervention(this.customer.id, manualInterventionRequire);
-            console.log(response);
             this.snacbarStatus = true;
             if(response.status === 200)
             {

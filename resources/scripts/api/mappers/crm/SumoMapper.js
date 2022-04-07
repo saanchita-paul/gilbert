@@ -26,8 +26,6 @@ export default {
     },
     planMapper: (plansList)=>{
         let plans = new SumoDataPlanMapper();
-        console.log('plan list')
-        console.log(plansList)
         plans.is_elec_available = Array.isArray(plansList?.electricityProducts) && plansList?.electricityProducts.length > 0
         plans.elec_plan_name = plansList?.electricityProducts[0]?.electricityPlanName;
         plans.elec_distributor_name = plansList?.electricityProducts[0]?.distributor;
