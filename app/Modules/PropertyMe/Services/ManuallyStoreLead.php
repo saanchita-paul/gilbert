@@ -28,13 +28,11 @@ class ManuallyStoreLead
 
         $service = new SaveContacts($office->property_me_refresh_token);
         $leads = $service->setLeads($leadsData)
-            ->loadTenancies()
             ->createLead()
             ->getSavedLeads();
-        $tenancies = $service->getTenancies();
 
 
-        $saveService = new SaveToConnectionApplication($office, $tenancies);
+        $saveService = new SaveToConnectionApplication($office);
 
         $savedApplications = [];
         foreach ($leads as $lead) {

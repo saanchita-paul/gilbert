@@ -442,7 +442,6 @@ export default {
     async saveAuthorizedPerson(secondaryAuthority) {
         try {
             let mappedDate = SecondaryContactMapper.mapContactToServer(secondaryAuthority);
-            console.log(mappedDate, secondaryAuthority);
             const data = await axios.post('/api/secondary-contact',{...mappedDate});
             return data.data.data;
 

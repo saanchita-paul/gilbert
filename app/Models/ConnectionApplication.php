@@ -148,6 +148,7 @@ class ConnectionApplication extends Model
         'city',
         'postcode',
         'state',
+        'state_short',
         'country',
         'additional_instruction',
         'address_text',
@@ -166,6 +167,7 @@ class ConnectionApplication extends Model
         'unit_number',
         'street_number',
         'street_name',
+        'street_name_only',
         'hubspot_contact_id',
         'billing_unit_number',
         'billing_street_number',
@@ -175,6 +177,7 @@ class ConnectionApplication extends Model
         'billing_street_address',
         'billing_city',
         'billing_postcode',
+        'is_billing_same',
         'submitted_by',
         'vendor_id',
         'is_contacted',
@@ -185,7 +188,19 @@ class ConnectionApplication extends Model
         'is_temporary_connection',
         'water_next_available_date',
         'after_hour_payee',
-        'after_hour_flag'
+        'after_hour_flag',
+        'unit_number',
+        'street_type',
+        'billing_state',
+        'billing_street_type',
+        'mannual_address',
+
+        'billing_mannual_address',
+        'billing_state_short',
+        'billing_street_name_only',
+        'is_address_complete',
+        'billing_is_address_complete',
+        'is_water_manual_submitting'
     ];
 
 

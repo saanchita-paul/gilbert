@@ -104,8 +104,6 @@ export default class SumoPlanMapper {
     }
 
     getMonthlyGasCost(){
-        console.log('gas charge' , this.gas_charge_supply)
-        
         if(this.is_gas_available)
         {
             return this.gas_charge_supply[0]?.incGST * 30;
@@ -120,7 +118,6 @@ export default class SumoPlanMapper {
 
     getMonthlyElectricityCost(){
         // elec_charge_supply
-        console.log('gas charge' , this.elec_charge_supply)
 
         if(this.is_elec_available){
             return this.elec_charge_supply[0]?.incGST * 30;

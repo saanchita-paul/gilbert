@@ -128,7 +128,6 @@ export default {
         },
 
         openProfile(id) {
-            console.log('id', id);
             this.$router.push({name: `customer.details`, params: {id: id}})
         },
     },

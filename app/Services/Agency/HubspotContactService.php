@@ -21,7 +21,7 @@ class HubspotContactService
     const STATUS_CONNECTED = 'CONNECTED';
     const STATUS_UNQUALIFIED = 'UNQUALIFIED';
     const STATUS_IN_PROGRESS = 'IN_PROGRESS';
-    
+
     private array|Collection|ConnectionApplication|Model $application;
 
     public function __construct(int $id)
@@ -64,7 +64,7 @@ class HubspotContactService
 
         $url = str_replace('${id}', $vid, config('hub_spot.update_contact')) . config('hub_spot.api_key');
         $url = APILog::setLoggerQuery($url, APILog::API_HB_UPDATE_CONTACT);
-        
+
         $response = Http::post($url, [
             "properties" => $this->getProperties()
         ]);
@@ -72,7 +72,7 @@ class HubspotContactService
         if (!$response->successful()) {
             Log::info('[HubspotContactService]: response body');
             Log::info($response->body());
-            throw new \Exception('[HubspotContactService] Contact update failed, check log.');
+            throw new \Exception('[HubspotContactService] Contact update failed, check api_logs for details.');
         }
     }
 
@@ -136,8 +136,8 @@ class HubspotContactService
                 "value" => $this->application->dob
             ],
             [
-                "property" => "hood_moving_date",
-                "value" => $this->application->moving_date
+                "property" => "connection_date",
+                "value" => $this->getTimestamp($this->application->moving_date)
             ],
             [
                 "property" => "hood_address_unit",
@@ -404,4 +404,12 @@ class HubspotContactService
         };
     }
 
+    /**
+     * @param $date
+     * @return int|null
+     */
+    public function getTimestamp($date): int|null
+    {
+        return $date ? Carbon::parse($date)->timestamp * 1000 : null;
+    }
 }

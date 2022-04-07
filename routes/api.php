@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Encryption\Encrypter;
+use App\Services\Address\GBGServices;
 use Illuminate\Support\Facades\Route;
+use App\Services\Address\AddressModel;
 use PropertyMe\services\FetchContacts;
 use App\Services\RolePermissionService;
 use Illuminate\Support\Facades\Broadcast;
@@ -17,6 +19,7 @@ use FastConnect\Services\SubmitWaterLeadToFastConnect;
 use App\Http\Controllers\Agency\AgentProfileController;
 use OurProperty\Http\Controllers\OurPropertyController;
 use App\Services\RolePermission;
+use App\Http\Controllers\Agency\ReaExtractsReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -163,6 +166,10 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/sales-dashboard/export/submission-report', [ReportController::class, 'submissionReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_EXPORT_REPORT);
     Route::get('/plans-details/{id}/export', [NoteController::class, 'download']);
+
+    // REA extracts report
+    Route::get('/rea-extract/office-report', [ReaExtractsReportController::class, 'officeReport'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
@@ -232,10 +239,3 @@ Route::get("/karan/sales-status", function () {
     return "success";
 });
 
-Route::get('country_test', function () {
-    //  return SubmitWaterLeadToFastConnect::mapLengthOfCountry[2];
-    $ser =  new SubmitWaterLeadToFastConnect(1);
-    // return $ser;
-    return $ser->getMappedIdentificationCountry('AX');
-    // return 'got' ;
-});

@@ -3,11 +3,13 @@ namespace App\Listeners;
 
 
 use App\Models\ConnectionApplication;
-use App\Services\Agency\UpdatedWaterStatus;
+use App\Services\Address\GBGServices;
+use App\Services\Address\AddressModel;
 use App\Services\Agency\WaterEmailService;
+use App\Services\Agency\UpdatedWaterStatus;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Services\Utility\AddressValidationService;
 use FastConnect\Services\SubmitWaterLeadToFastConnect;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class WaterServiceListener implements ShouldQueue
 {
@@ -21,6 +23,21 @@ class WaterServiceListener implements ShouldQueue
         //
     }
 
+    private function validateAddress($applicationId) : bool 
+    {
+        $addressModel = new AddressModel(connection_application_id: $applicationId);
+        $gbgService = new GBGServices($addressModel);
+        $address = $gbgService->findAddressByText();
+        if ($address->getIsAddressComplete()) 
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
+    }
+
+
     /**
      * Handle the event.
      *
@@ -30,6 +47,13 @@ class WaterServiceListener implements ShouldQueue
     public function handle($event)
     {
         try {
+
+        if (!$this->validateAddress($event->applicationId)) 
+        {
+            info("Water Service Listener: Address is not complete");
+            // return;
+        }
+
         if (isset($event->submitType) && $event->submitType == 'water') {
 
             $ca = ConnectionApplication::query()->where('id', $event->applicationId)->firstOrFail();
@@ -45,9 +69,15 @@ class WaterServiceListener implements ShouldQueue
                 throw new \Exception('Water Service is not available for Tenancy Type HomeOwner');
             }
 
+            if($ca->is_water_manual_submitting) {
+                info("Water submit skipped as manual submit is already in progress");
+                return false;
+            }
+
             $this->validateCAAddress($ca);
 
             $ca->update(['is_auto_water_submit' => 0]);
+            $ca->update(['is_water_manual_submitting' => 1]);
 
             $service = new SubmitWaterLeadToFastConnect($event->applicationId);
             $result = $service->submitWaterLead();
@@ -71,6 +101,7 @@ class WaterServiceListener implements ShouldQueue
             // Saving Failed reason and set Water status as Failed
             $service->saveRejectionReason($exception->getMessage(), $event->applicationId, 'water');
             $service->setStatusFailed($event->applicationId, 'water');
+            $this->application->update(['is_water_manual_submitting' => 0]);
 
             // $this->sendEmail($exception->getMessage());
             WaterEmailService::sendEmailWhenSubmissionFails($exception->getMessage() , $event->applicationId);

@@ -417,14 +417,16 @@
           <span>Billing Address</span>
         </div>
         <div class="text-field">
-          <span>Same as my billing address</span>
-          <!--                    <ValidationProvider name="Billing Address" rules="required"  v-slot="{ errors }">-->
-          <!--                        <v-text-field v-model="property_details.billing_address" @input="updateLeads"-->
-          <!--                        outlined-->
-          <!--                        dense-->
-          <!--                        hide-details="auto" :error-messages=" errors[0]"-->
-          <!--                    ></v-text-field>-->
-          <!--                    </ValidationProvider>-->
+          <!-- <span>Same as my billing address</span> -->
+          <ValidationProvider name="Billing Address"  v-slot="{ errors }">
+              <v-textarea :value="billingAddressMsg"
+              @click="openServiceAddress"
+              outlined
+              dense
+              readonly
+              hide-details="auto" :error-messages=" errors[0]"
+          ></v-textarea>
+          </ValidationProvider>
         </div>
       </div>
       <div class="crm-text-field">
@@ -1228,6 +1230,10 @@ export default {
         postcode: "",
         state: "",
         country: "",
+        street_type:"",
+        street_name:"",
+        street_name_only:"",
+
 
         is_renovation_on: true,
         has_electricity: true,
@@ -1235,7 +1241,6 @@ export default {
 
         unit_number: "",
         street_number: "",
-        street_name: "",
         is_billing_same: true,
         billing_address_text: "",
         billing_street_address: "",
@@ -1246,6 +1251,7 @@ export default {
         billing_unit_number: "",
         billing_street_number: "",
         billing_street_name: "",
+        billing_street_name_only: "",
         connection_end_date: null,
         is_temporary_connection : null,
       },
@@ -1328,7 +1334,7 @@ export default {
       // this.expire_date = undefined;
       this.expire_date = this.lead.identification?.expire_date;
       // this.property_details.moving_date = this.lead.moving_date;
-      this.property_details.is_billing_same = true;
+      this.property_details.is_billing_same = this.lead.is_billing_same;
       this.property_details.address_text = this.lead.address_text;
       // this.property_details.billing_address = this.lead.billing_address;
       this.property_details.property_type = this.lead.property_type;
@@ -1345,7 +1351,9 @@ export default {
       this.property_details.street_address = this.lead.street_address;
       this.property_details.city = this.lead.city;
       this.property_details.street_number = this.lead.street_number;
+      this.property_details.street_type = this.lead.street_type;
       this.property_details.street_name = this.lead.street_name;
+      this.property_details.street_name_only = this.lead.street_name_only;
       this.property_details.unit_number = this.lead.unit_number;
       this.property_details.postcode = this.lead.postcode;
       this.property_details.state = this.lead.state;
@@ -1358,9 +1366,11 @@ export default {
       this.property_details.billing_postcode = this.lead.billing_postcode;
       this.property_details.billing_state = this.lead.billing_state;
       this.property_details.billing_unit_number = this.lead.billing_unit_number;
+      this.property_details.billing_street_type = this.lead.billing_street_type;
       this.property_details.billing_street_number =
         this.lead.billing_street_number;
       this.property_details.billing_street_name = this.lead.billing_street_name;
+      this.property_details.billing_street_name_only = this.lead.billing_street_name_only;
 
       this.indentification.type = this.lead.identification?.type;
       this.indentification.card_number = this.lead.identification?.card_number;
@@ -1435,11 +1445,9 @@ export default {
     },
     updateExpireDateMedicare(){
       if( medicareRules(this.indentification.medicare_expire_date) && mediExpireDate(this.indentification.medicare_expire_date) && this.indentification.type == 3 ){
-        console.log("true medical")
         // let dateMonth =  this.indentification.medicare_expire_date.split('/');
         // this.expire_date = '04/' + '/' + dateMonth[0] + '/20' + dateMonth[1] ;
         this.expire_date = ApplicationMapper.mapMadecareDateToServer(this.indentification.medicare_expire_date) ;
-        console.log(this.expire_date)
       }
     }
   },
@@ -1450,7 +1458,9 @@ export default {
         },
         isMERNRequired() {
             return !this.isWaterTabFocused && !!(Array.isArray(this.services) && this.services.some(n => n === 'gas'));
-
+        },
+        billingAddressMsg() {
+            return this.property_details.is_billing_same ? "Same as service address" : this.property_details.billing_address_text;
         },
         tenancyTypeMapper() {
             return tenancyTypeMapper;
@@ -1531,7 +1541,6 @@ export default {
     await this.updateLeads();
 
     const update_moving_date = (date)=>{
-      console.log("change moving date" , date);
       this.property_details.moving_date = date;
       this.$emit(
         "updateDraft",
@@ -1544,7 +1553,6 @@ export default {
     }
 
     const update_connection_end_date = (date)=>{
-      console.log("change moving date" , date);
       this.property_details.connection_end_date = date;
       this.$emit(
         "updateDraft",

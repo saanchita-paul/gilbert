@@ -469,7 +469,6 @@ export default {
          // this.planSelect(EA_PLAN_TYPES.find(p => p.key === PLAN_TYPE_TOTAL))
         this.loadSelectedPowerProvider();
 
-
         const updateAddress = address => {
             if (this.selectedPowerProvider === 'sumo') {
                 this.$eventBus.$emit("validate", this.setSumoDetailsData)
@@ -661,7 +660,7 @@ export default {
             // this.providerSpinner.start()
             try {
                 // this.isSumoLoading = true;
-                let address = this.leadSummary.street_address + ' ' + this.leadSummary.city + ' ' + this.leadSummary.state + ' ' + this.leadSummary.postcode;
+                let address = `${this.leadSummary.street_number} ${this.leadSummary.street_name_only} ${this.leadSummary.street_type} ${this.leadSummary.city} ${this.leadSummary.state} ${this.leadSummary.postcode}`;
                 this.sumoPlanDetails =
                     await SumoService.getPlans(address, this.leadSummary.service_interests, this.leadSummary?.created_by_agent, this.leadSummary);
                 this.actionOnSelectProvider(name)
@@ -723,7 +722,6 @@ export default {
 
             this.activeOriginPlan = plan.name;
                 //todo update provider array for sumo plan
-                console.log('plan provider click' , plan);
                 let payload = {
                     service_type: this.leadSummary?.service_interests,
                     provider_name: this.selectedPowerProvider,

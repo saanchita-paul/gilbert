@@ -180,7 +180,7 @@
             }
         },
         mounted() {
-            console.log('sumo plan details in modal' , this.sumoPlanDetails)
+            // console.log('sumo plan details in modal' , this.sumoPlanDetails)
         // this.$eventBus.$on("address_updated", address => {
         //     console.log("EventBus: ", address)
         // });

@@ -27,7 +27,7 @@ export default {
     name: "PageHeader",
     props: ['title', 'breadcrumbs'],
     mounted() {
-        console.log(this.getBreadcrumbs)
+        // console.log(this.getBreadcrumbs)
     },
     computed: {
         getBreadcrumbs() {

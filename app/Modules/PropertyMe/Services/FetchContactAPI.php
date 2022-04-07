@@ -18,6 +18,7 @@ class FetchContactAPI extends BasePropertyMeAPI
     private array $lotMembers = [];
 
 
+
     public function __construct(private string $refreshToken)
     {
     }
@@ -37,7 +38,7 @@ class FetchContactAPI extends BasePropertyMeAPI
     public function fetchLots(): static
     {
         $url = config('property_me.api_root_url') . config('property_me.get_lots_url');
-        $query = "?Timestamp=" . $this->getTimestamp(-100);
+        $query = "?Timestamp=" . $this->getTimestampTicks(-100);
 
         try {
             $response = Http::withHeaders([
@@ -55,10 +56,10 @@ class FetchContactAPI extends BasePropertyMeAPI
         return $this;
     }
 
-    public function fetchTenancies(): static
+    public function fetchTenancies(?string $contactId = null): static
     {
         $url = config('property_me.api_root_url') . config('property_me.get_tenancies_url');
-        $query = "?Timestamp=" . $this->getTimestamp(-100);
+        $query = $contactId ?  "?ContactId=" . $contactId : "" ;
 
         try {
             $response = Http::withHeaders([
@@ -67,7 +68,7 @@ class FetchContactAPI extends BasePropertyMeAPI
             ])->get($url . $query);
 
             $this->tenancies = json_decode($response->body(), true);
-//            Log::info('PropertyMe: Fetch Tenancies: ', [$this->tenancies]);
+
         } catch (\Exception $exception) {
             \Log::error("[FetchContactAPI:fetchTenancies] " . $exception->getMessage());
             \Log::error($exception->getTraceAsString());
@@ -85,13 +86,11 @@ class FetchContactAPI extends BasePropertyMeAPI
             . "/"
             . "members";
 
-        $query = "?Timestamp=" . $this->getTimestamp(-100);
-
         try {
             $response = Http::withHeaders([
                 "Accept" => "application/json",
                 "Authorization" => $this->getAccessToken($this->refreshToken),
-            ])->get($url . $query);
+            ])->get($url);
 
             return json_decode($response->body(), true);
 //            Log::info('PropertyMe: Fetch Tenancies: ', [$this->tenancies]);
@@ -111,7 +110,7 @@ class FetchContactAPI extends BasePropertyMeAPI
     public function fetchContacts(): static
     {
         $url = config('property_me.api_root_url') . config('property_me.get_contact_url');
-        $query = "?Timestamp=" . $this->getTimestamp();
+        $query = "?Timestamp=" . $this->getTimestampTicks();
 
         try {
             $response = Http::withHeaders([
@@ -143,6 +142,19 @@ class FetchContactAPI extends BasePropertyMeAPI
      */
     public function getTenancies(): array
     {
+        return $this->tenancies;
+    }
+
+    /**
+     * Getting tenancy for a contact.
+     *
+     * @param string|null $contactId
+     *
+     * @return array
+     */
+    public function getTenancy(?string $contactId): array
+    {
+        $this->fetchTenancies($contactId);
         return $this->tenancies;
     }
 

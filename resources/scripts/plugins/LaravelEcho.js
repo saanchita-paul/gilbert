@@ -12,7 +12,6 @@ export const initializeBroadcasting = (userId) => {
         authorizer: (channel, options) => {
             return {
                 authorize: (socketId, callback) => {
-                    console.log('CHANNEL', channel.name, socketId)
                     axios.post('/api/broadcasting/auth', {
                         socket_id: socketId,
                         channel_name: channel.name

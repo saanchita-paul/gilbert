@@ -8,3 +8,5 @@ export default [
     {text: 'ACT', value: 'Australian Capital Territory'},
     {text: 'WA', value: 'Western Australia'},
 ];
+
+

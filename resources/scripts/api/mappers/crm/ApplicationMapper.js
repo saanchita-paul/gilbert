@@ -186,7 +186,6 @@ export default {
             default:
                 break;
         }
-        console.log(type, expire_date, mappedDate);
         return mappedDate;
 
     },
