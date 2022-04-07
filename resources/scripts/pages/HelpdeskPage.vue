@@ -178,7 +178,6 @@ export default {
         },
         closePanel() {
             this.activeModel = null;
-            console.log('CLOSE PANEL', this.activeModel)
         },
         async infiniteHandler($state) {
             if (this.pagination.page < this.pagination.page_count) {

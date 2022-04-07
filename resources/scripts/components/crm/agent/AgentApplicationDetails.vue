@@ -240,7 +240,7 @@ export default {
         }
     },
     mounted(){
-        console.log("applicaiton", this.application)
+        // console.log("application", this.application)
     }
 };
 </script>

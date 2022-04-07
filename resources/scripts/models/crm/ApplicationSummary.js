@@ -210,7 +210,6 @@ export default class ApplicationSummary {
     }
 
     mapStreetType(type){
-        console.log("street type" , type)
         let streetType = null
         street_type.forEach(element => {
             if(element.text == type){

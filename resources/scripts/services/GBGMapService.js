@@ -58,11 +58,9 @@ class GBGMapService {
                     null,
                     function (response) {
                         var outputText = "";
-                        console.log("getting response", response);
                         let mapper = GBGMapMapper.mapAddressList(
                             response.payload
                         );
-                        console.log("getting response", mapper);
                         resolve(mapper);
                     }
                 );
@@ -101,12 +99,10 @@ class GBGMapService {
      */
     getAddressDetailsById(id) {
         // keyWord = country === '*' ? keyWord : `${keyWord} ${country}`;
-        console.log("id printing" , id)
         return new Promise((resolve, reject) => {
             try {
                 Harmony.v2.retrieve({  id: id }, function (response) {
                     let address = GBGMapMapper.mapSingleAddress( response.payload[0] );
-                    console.log(address)
                     resolve( address )
                 });
             } catch (error) {

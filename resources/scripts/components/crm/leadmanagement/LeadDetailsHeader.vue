@@ -141,7 +141,6 @@ name: "LeadDetailsHeader",
         },
 
         closeApplicationWithReason() {
-            console.log("close Application");
             this.$emit('closeApplicationWithReason');
         },
 
@@ -189,7 +188,7 @@ name: "LeadDetailsHeader",
         }
     },
     mounted() {
-         console.log('load_summary_he', this.leadSummary);
+        // console.log('load_summary_he', this.leadSummary);
     }
 }
 </script>

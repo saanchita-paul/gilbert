@@ -8,7 +8,7 @@ export default {
 
     mounted() {
         this.$eventBus.$on("address_updated", address => {
-            console.log("EventBus: ", address)
+            // console.log("EventBus: ", address)
         });
     },
 //     beforeDestroy(){

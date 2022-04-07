@@ -1418,11 +1418,9 @@ export default {
     },
     updateExpireDateMedicare(){
       if( medicareRules(this.indentification.medicare_expire_date) && mediExpireDate(this.indentification.medicare_expire_date) && this.indentification.type == 3 ){
-        console.log("true medical")
         // let dateMonth =  this.indentification.medicare_expire_date.split('/');
         // this.expire_date = '04/' + '/' + dateMonth[0] + '/20' + dateMonth[1] ;
         this.expire_date = ApplicationMapper.mapMadecareDateToServer(this.indentification.medicare_expire_date) ;
-        console.log(this.expire_date)
       }
     }
   },
@@ -1516,7 +1514,6 @@ export default {
     await this.updateLeads();
 
     const update_moving_date = (date)=>{
-      console.log("change moving date" , date);
       this.property_details.moving_date = date;
       this.$emit(
         "updateDraft",
@@ -1529,7 +1526,6 @@ export default {
     }
 
     const update_connection_end_date = (date)=>{
-      console.log("change moving date" , date);
       this.property_details.connection_end_date = date;
       this.$emit(
         "updateDraft",

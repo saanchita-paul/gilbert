@@ -1235,7 +1235,6 @@ export default {
             if (this.application.address_text.length > 0) {
             MapService.getStreetAddressesByKeyword(this.application.address_text)
                 .then((data)=>{
-                    console.log("search result" , data)
                     this.searchResult = data;
                     this.showMenu = this.searchResult.length > 0
                 });
@@ -1247,7 +1246,6 @@ export default {
             if (this.application.billing_address_text.length > 0) {
             MapService.getStreetAddressesByKeyword(this.application.billing_address_text)
                 .then((data)=>{
-                    console.log("search result" , data)
                     this.searchResultBilling = data;
                     this.showMenu = this.searchResultBilling.length > 0
                 });
@@ -1344,7 +1342,6 @@ export default {
             this.searchResultBilling = [];
         },
         onAddressSelected(place) {
-            console.log("place id" , place)
             this.searchResult = []
             MapService.getAddressDetailsById(place.id)
                 .then((data) => {
@@ -1358,7 +1355,6 @@ export default {
                 });
         },
         onBillingAddressSelected(place) {
-            console.log("place id" , place)
             this.searchResultBilling = []
             MapService.getAddressDetailsById(place.id)
                 .then((data) => {
@@ -1466,7 +1462,6 @@ export default {
             this.indentification = identification;
         },
         isSecondaryIdMedicare() {
-            console.log('identification type', this.authorized_person.identification_type);
             return this.authorized_person.identification_type === IDENTIFICATION.MEDICARE;
         },
       setAddressTextAndStreetAddress()
