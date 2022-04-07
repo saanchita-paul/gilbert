@@ -127,7 +127,6 @@ class ApplicationService
 
         if (in_array(HoodProfile::find($agentId)->user->roles->first()?->name,
             [RolePermission::ROLE_EXTERNAL_HOOD_TEAM_LEAD])) {
-            // (new TsaSendAppliationService($applicationId))->sendApplication();            
             $tsaService = new TsaSendAppliationService($applicationId);
             $tsaService->sendApplication();
             $tsa_lead_id = $tsaService->getTsaLeadId();

@@ -12,22 +12,22 @@ use Exception;
 
 class TsaCallHistoryService
 {
-    
+
     public function getCallHistory($connection_application)
     {
         try {
             // $url = \config('tsa.root_url') . \config('tsa.call_history') . 12;
-            $url = \config('tsa.root_url') . \config('tsa.call_history') . $connection_application->tsa_id;
+            $url = \config('tsa.root_url') . \config('tsa.call_history') . $connection_application->tsa_lead_id;
 
             $url = APILog::setLoggerQuery($url, APILog::API_TSA_INSERT_DATA, false);
-            
+
             $response = Http::withHeaders([
                 'content-type' => 'application/json',
                 'X-API-Service' => \config('tsa.x_api_service_name'),
                 'X-API-Token' => \config('tsa.x_api_token')
             ])
                 ->get($url);
-            
+
             if($response->status() == 200) {
                 return $response->body();
             }
@@ -38,24 +38,23 @@ class TsaCallHistoryService
             \Log::error($exception->getTraceAsString());
             return false;
         }
-        
+
     }
 
     public function saveCallHistory($connection_application)
     {
-        
         $callHistoryJsonString = $this->getCallHistory($connection_application);
-        
+
         if(!$callHistoryJsonString) {
             return false;
         }
 
         $callHistory = json_decode($callHistoryJsonString, true);
-        
-        $connection_application->update(['tsa_call_status' => $callHistory['lead_status'] ]); 
+
+        $connection_application->update(['tsa_call_status' => $callHistory['lead_status'] ]);
 
         $attemps = $callHistory['attempts'];
-        
+
         foreach ($attemps as $key => $value) {
             try {
                 TSACallHistory::where('attempt_id', $value['attempt_id'])->firstOrFail();
@@ -66,7 +65,7 @@ class TsaCallHistoryService
                 $tsaCallHistory->tsa_id = $callHistory['import_id'];
                 $tsaCallHistory->lead_status = $callHistory['lead_status'];
                 $tsaCallHistory->num_attempts = $callHistory['num_attempts'];
-    
+
                 $tsaCallHistory->attempt_id = $value['attempt_id'];
                 $tsaCallHistory->attempt_assigned_timestamp = Carbon::parse($value['assigned_timestamp'])->format("Y-m-d H:i:s")  ;
                 $tsaCallHistory->attempt_initiated_timestamp = Carbon::parse($value['initiated_timestamp'])->format("Y-m-d H:i:s");
@@ -76,10 +75,10 @@ class TsaCallHistoryService
                 $tsaCallHistory->attempt_outcome = $value['outcome'];
                 $tsaCallHistory->attempt_disposition_code = $value['disposition_code'];
                 $tsaCallHistory->attempt_disposition_sub_code = $value['disposition_sub_code'];
-                
+
                 $tsaCallHistory->save();
             }
-            
+
         }
 
     }
@@ -91,13 +90,15 @@ class TsaCallHistoryService
             ConnectionApplication::STATUS_REJECTED,
             ConnectionApplication::STATUS_SUBMITTED,
         ])
-        ->whereNotNull('tsa_id')
+        ->whereNotNull('tsa_lead_id')
         ->get();
+
+//      dump($connection_applications);
         foreach ($connection_applications as $connection_application) {
             $this->saveCallHistory($connection_application);
         }
     }
 
-    
+
 
 }
