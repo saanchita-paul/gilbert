@@ -28,6 +28,15 @@ class ExportReaOfficeReport
         ConnectionService::STATUS_REJECTED,
         ConnectionService::STATUS_CLOSED,
         ConnectionService::AC_MANUAL_PROCESSING,
+        ConnectionService::STATUS_ENERGY_SUBMIT,
+        ConnectionService::STATUS_CANT_CONNECT
+    ];
+
+    private array $nonRejectedSubmissionType = [
+        ConnectionService::STATUS_SUBMITTED,
+        ConnectionService::STATUS_ACCEPTED,
+        ConnectionService::STATUS_CLOSED,
+        ConnectionService::AC_MANUAL_PROCESSING,
         ConnectionService::STATUS_ENERGY_SUBMIT
     ];
 
@@ -240,7 +249,7 @@ class ExportReaOfficeReport
             foreach ($application['connection_services'] as $service) {
                 if (
                     $service['utility_type'] === $utilityType &&
-                    in_array($service['utility_status'], $this->submissionType)
+                    in_array($service['utility_status'], $this->nonRejectedSubmissionType)
                 ) {
                     $count++;
                     break;
