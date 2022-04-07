@@ -92,9 +92,6 @@ class UpdateHubspotContacts extends Command
      */
     private function update(ConnectionApplication $app)
     {
-        if ($app->id % 20 === 0) {
-            throw new Exception('Manual Error for testing');
-        }
         $hubspotContactService = new HubspotContactService($app->id);
         $hubspotContactService->update();
     }
