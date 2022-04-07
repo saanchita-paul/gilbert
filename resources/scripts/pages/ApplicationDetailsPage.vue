@@ -171,7 +171,6 @@ export default {
             this.escalateLead = true;
         },
         closeApplicationWithReason(){
-            console.log("closeApplicationWithReason");
             this.closeLead = true;
         },
         cancelClose(){
@@ -179,8 +178,6 @@ export default {
         },
        async sucessSaveClose(closing_reason){
             // this.closeLead = false;
-            console.log("do sth for closing1");
-            console.log(closing_reason);
 
             // try {
             //     const data = await axios.post('api/applications/'+this.leadId+'/closeApplication' , {closing_reason});
@@ -192,9 +189,7 @@ export default {
             // }
 
             try {
-                console.log("do sth for closing1 try");
                 await LeadApplicationService.closeApplicationWithReason(this.leadId , closing_reason);
-                console.log("do sth for closing1 try end");
                 this.closeLead = false;
                 this.closeConfirm = true;
                 // this.$router.push({name:'applications'});
@@ -345,9 +340,7 @@ export default {
         },
 
         async updateAddress(address) {
-            console.log('comes to update address' , address);
             // if(this.leadSummary.address_text == address.address_text && this.leadSummary.billing_address_text == address.billing_address_text ) return;
-            console.log('entered')
             this.leadSummary.address_text = address.address_text
             this.leadSummary.street_address = address.street_address
             this.leadSummary.city = address.city

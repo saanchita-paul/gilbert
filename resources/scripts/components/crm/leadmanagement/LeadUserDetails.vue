@@ -41,7 +41,6 @@ name: "LeadUserDetails",
             this.$emit('readMore');
         },
         updateAddress(address) {
-            console.log("address printing" , address)
             this.$emit('updateAddress', address);
         },
         updateDraft(field, value, isDate, identification,isManualChangeFlag = false) {

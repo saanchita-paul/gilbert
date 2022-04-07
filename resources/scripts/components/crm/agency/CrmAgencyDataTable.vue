@@ -204,7 +204,6 @@ name: "CrmAgencyDataTable",
                 sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: '',
             }
             const data =  await AgencyService.loadAgencyData(meta);
-            console.log("DIDADA", data)
             this.agencies = data.agencies;
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;

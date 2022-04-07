@@ -25,7 +25,6 @@ export default {
                 }
 
                 // let plans;
-                console.log('frontend distributor' ,  distributorData[0])
                 // if(distributorData[0].electricityDistributors.distributor){
                 let plans =  await SumoAPI.products(distributorData[0] , service_type , agent_name , lead.id);
                 return plans;

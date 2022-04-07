@@ -164,7 +164,6 @@ props: {
         },
 
         onSelectProvider(providerId) {
-            console.log(providerId)
             this.selectedProviderId = providerId
 
             const selectedProvider = this.providers.find(dt=> {

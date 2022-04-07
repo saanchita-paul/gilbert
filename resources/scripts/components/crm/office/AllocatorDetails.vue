@@ -91,7 +91,6 @@ export default {
 
         updateWithProps()
         {
-            console.log(this.data);
             this.allocator = this.data?.allocator;
         },
 

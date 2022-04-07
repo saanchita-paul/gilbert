@@ -124,7 +124,6 @@ export default {
             if (!(await AuthService.login(this.form))) {
                 this.isLoginFailed = true;
             } else {
-                console.log('Successfully Logged In');
                 //await this.$router.push({name: 'dashboard.utility'})
             }
             this.loginLoading = false;

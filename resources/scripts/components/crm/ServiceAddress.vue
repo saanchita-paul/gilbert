@@ -227,7 +227,7 @@
                                             outlined
                                             dense
                                             :readonly="!propertyDetails.billing_mannual_address"
-                                            placeholder="2/56, Bradman Drive"
+                                            placeholder="Street Name*"
                                             v-model="propertyDetails.billing_street_name_only"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
@@ -252,7 +252,7 @@
                                             outlined
                                             dense
                                             :readonly="!propertyDetails.billing_mannual_address"
-                                            placeholder="Sunbury"
+                                            placeholder="City/Suburb*"
                                             v-model="propertyDetails.billing_city"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
@@ -277,7 +277,7 @@
                                             outlined
                                             dense
                                             :readonly="!propertyDetails.billing_mannual_address"
-                                            placeholder="3429"
+                                            placeholder="Postcode*"
                                             v-model="propertyDetails.billing_postcode"
                                             :error-messages=" errors[0]"
                                         ></v-text-field>
@@ -386,7 +386,6 @@ export default {
             if (this.billing_search_address_text.length > 0) {
             MapService.getStreetAddressesByKeyword(this.billing_search_address_text)
                 .then((data)=>{
-                    console.log("search result" , data)
                     this.searchResultBilling = data;
                     this.showMenu = this.searchResultBilling.length > 0
                 });
@@ -404,7 +403,6 @@ export default {
     watch:{
            propertyDetails: {
             handler(newValue, oldValue) {
-                console.log(newValue)
                 // Note: `newValue` will be equal to `oldValue` here
                 // on nested mutations as long as the object itself
                 // hasn't been replaced.
@@ -482,7 +480,6 @@ export default {
             this.$emit('close');
         },
         onBillingAddressSelected(place) {
-            console.log("place id" , place)
             this.searchResultBilling = []
             MapService.getAddressDetailsById(place.id)
                 .then((data) => {
@@ -504,12 +501,10 @@ export default {
                 });
         },
         onAddressSelected(place) {
-            console.log("place id" , place)
             this.searchResult = [];
             MapService.getAddressDetailsById(place.id)
                 .then((data) => {
                     // this.propertyDetails = { ...this.propertyDetails, ...data }
-                    console.log('print data in' ,  data)
 
                     this.propertyDetails.address_text = data.address_text;
                     this.propertyDetails.street_address = data.street_address;
@@ -575,7 +570,6 @@ export default {
 
           if(!this.checkIfAddressIsValid())
           {
-             console.log("invalid address");
              this.propertyDetails.address_text = "";
              return;
           }
@@ -584,7 +578,6 @@ export default {
 
           this.propertyDetails.billing_street_address = unit_number + ' ' + this.propertyDetails.billing_street_number + ' ' + this.propertyDetails.billing_street_name_only;
 
-          console.log("property details1" , this.propertyDetails)
 
           if(this.propertyDetails.billing_mannual_address || this.propertyDetails.billing_address_text == "" || this.propertyDetails.billing_address_text == null )
           {
@@ -602,7 +595,6 @@ export default {
               this.propertyDetails.address_text = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name_only + ' ' + this.propertyDetails.city + ' ' + this.propertyDetails.state + ' ' + this.propertyDetails.postcode + ' ' + this.propertyDetails.country ;
           }
 
-          console.log("property details2" , this.propertyDetails)
       },
      mapStreetName(){
          this.propertyDetails.street_name = this.propertyDetails.street_name_only;
@@ -620,7 +612,6 @@ export default {
           // return;
           this.setAddressTextAndStreetAddress();
           this.mapStreetName();
-          console.log("CHECKING IT ON SUBMIT" , this.propertyDetails)
           // if(!this.checkAddressText()) return;
 
           let v = await this.$refs.edit_address.validate();

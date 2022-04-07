@@ -232,7 +232,7 @@ export default {
     },
   watch: {
     applications(val){
-      console.log(val)
+      // console.log(val)
     },
     options: {
       handler () {
