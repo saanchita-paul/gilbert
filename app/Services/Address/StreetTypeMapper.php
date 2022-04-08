@@ -2,8 +2,14 @@
 
 namespace App\Services\Address;
 
+/**
+ *
+ */
 class StreetTypeMapper
 {
+    /**
+     *
+     */
     CONST STREET_TYPES  = [
         "ACCS" => "ACCESS",
         "ALLY" => "ALLEY",
@@ -210,8 +216,27 @@ class StreetTypeMapper
         "YARD"=> "YARD",
     ];
 
-    public function getShortForm(?string $short)
+    /**
+     * @param string|null $type
+     * @return string|null
+     */
+    public static function getFullForm(?string $type): ?string
     {
+        if ($type) {
+            return self::STREET_TYPES[strtoupper($type)] ?? null;
+        }
+        return null;
+    }
 
+    /**
+     * @param string|null $type
+     * @return string|null
+     */
+    public static function  getShortForm(?string $type): ?string
+    {
+        if ($type) {
+            return array_search(strtoupper($type), self::STREET_TYPES);
+        }
+        return null;
     }
 }
