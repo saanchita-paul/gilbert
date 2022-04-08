@@ -183,6 +183,7 @@ Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWate
 
 
 
+Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
 
 
 

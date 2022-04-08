@@ -17,5 +17,12 @@ Route::get('/hello', [\App\Http\Controllers\TestControler::class, 'index']);
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
+Route::get('/agent-report', function () {
+    return view('pdf/agent_report');
+});
+
 Route::get('/{vue_capture?}', fn() => view('app'))
     ->where('vue_capture', '[\/\w\.-]*');
+
+
+
