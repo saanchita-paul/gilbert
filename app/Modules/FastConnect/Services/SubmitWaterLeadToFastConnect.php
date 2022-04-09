@@ -194,7 +194,7 @@ class SubmitWaterLeadToFastConnect
             "address" => [
                 "move_in_address" => [
                     "street_number" => $lead->street_number,
-                    "street_name" => $lead->street_name,
+                    "street_name" => $lead->street_name_only,
                     "street_type" => $lead->street_type,
                     "suburb" => $lead->city,
                     "state" => $this->getMappedState($lead->state),

@@ -19,7 +19,7 @@ class GBGServices
         $this->setPayload();
     }
 
-    private function setPayload() 
+    private function setPayload()
     {
         $this->payload = [
             "payload" => [
@@ -41,11 +41,12 @@ class GBGServices
 
     private function isAddressValid(GBGModel $gbg)
     {
+
         if($gbg?->unknown !== "" || $gbg?->exception !== null || $gbg?->streetName === null || $gbg?->streetName === "" )
         {
             return false;
             // throw new Exception("Address not found");
-        } 
+        }
         return true;
     }
 
@@ -64,12 +65,12 @@ class GBGServices
         if($response->status() == 200)
         {
             return $this->setModelAndProperty($response);
-        } 
+        }
         else {
             $this->addressModelPayload->setIsAddressComplete(false);
             return $this->addressModelPayload;
         }
-        
+
     }
 
     private function setModelAndProperty($response){
@@ -81,7 +82,6 @@ class GBGServices
         $appAddress = $gbgModel->getConnectionApplicationVersion();
         $appAddress->setIsAddressComplete( $this->isAddressValid($gbgModel) );
         // info("is address complete" , )
-        // dd($appAddress);
         return $appAddress;
     }
 }

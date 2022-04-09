@@ -2,6 +2,7 @@
 
 namespace Foxie\Services;
 
+use App\Services\Address\StreetTypeMapper;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Agency;
@@ -65,7 +66,7 @@ class SugerLeadService
      * @throws Exception
      */
     public function setGeoCodeToConnectionApplication(Request $request){
-        if (empty($request->full_address_c)) 
+        if (empty($request->full_address_c))
         {
             $this->address =  new AddressModel(
                 unit_number: $request->primary_address_unit_c,
@@ -76,7 +77,7 @@ class SugerLeadService
                 state: $request->primary_address_state,
                 country: "AUSTRALIA",
             );
-        } else 
+        } else
         {
             $response = GeoCodeService::getAddressFromGeoCode($request->full_address_c);
             $geoCodeData = new GeocodeAddress($response);
@@ -105,12 +106,12 @@ class SugerLeadService
             if($appAddress->getIsAddressComplete())
             {
                 $this->address = $appAddress;
-            } 
-            else 
+            }
+            else
             {
                 $this->address = $addressModel;
             }
-        } catch(Exception $exception) 
+        } catch(Exception $exception)
         {
             info("exception in location sugerleads");
             Log::error( "exception in sugerLeadsService->GBG service", [ "msg" => $exception->getMessage(), "trace" => $exception->getTraceAsString() ] );
@@ -150,6 +151,7 @@ class SugerLeadService
         $this->connectionApplication->street_number = $this->address->getStreetNumber() ?? null;
         $this->connectionApplication->street_name = $this->address->getStreetName() ?? null;
         $this->connectionApplication->street_name_only = $this->address->getStreetNameOnly() ?? null;
+        $this->connectionApplication->street_type = StreetTypeMapper::getShortForm($this->address->getStreetType());
         $this->connectionApplication->city = $this->address->getCity() ?? null;
         $this->connectionApplication->postcode = $this->address->getPostcode() ?? null;
         $this->connectionApplication->is_address_complete = $this->address->getIsAddressComplete() ?? null;
@@ -166,7 +168,6 @@ class SugerLeadService
         // $this->connectionApplication->created_at = now();
         $this->connectionApplication->title = $request->salutation ?? null;
         // $this->connectionApplication->title = 'Mr';
-
         //SUGER LEADS TABLE
         $this->lead->service_address = $request->full_address_c ?? null;
         $this->lead->foxie_lead_source = $request->lead_source ?? null;
