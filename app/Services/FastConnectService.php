@@ -23,11 +23,10 @@ class FastConnectService
         return $this;
     }
 
-    public function searchAddress($body = [], $applicaionFlag = false, $id = null)
+    public function searchAddress($body = [], $applicationFlag = false, $id = null)
     {
-
        try{
-           if($applicaionFlag)
+           if($applicationFlag)
            {
                $body = ConnectionApplication::find($id)->toArray();
            }
@@ -63,7 +62,7 @@ class FastConnectService
                throw new \ErrorException($error);
            }
 
-           if($applicaionFlag) {
+           if($applicationFlag) {
                $connectionApp = ConnectionApplication::find($id);
                $connectionApp->nmi = $nmi;
                $connectionApp->mirn = $mirn;
@@ -86,9 +85,6 @@ class FastConnectService
 
     public static function makeAddressPayload($address = [])
     {
-        // $streetType = self::getStreetType($address['street_name']);
-        $streetType = self::getStreetType($address['street_name_only']);
-
         return [
             'search_lookup_types' => [
                 [
@@ -101,9 +97,8 @@ class FastConnectService
             ],
 
             'address' => [
-                // 'street_name' => self::getStreetName($address['street_name'], $streetType),
-                'street_name' => self::getStreetName($address['street_name_only'], $streetType),
-                'street_type' => $streetType,
+                'street_name' => $address['street_name_only'],
+                'street_type' => $address['street_type'],
                 'suburb' => $address['city'] ?? '',
                 'post_code' => $address['postcode'] ?? '',
                 'state' => $address['state'] ? self::stateMap($address['state']): '',
@@ -115,8 +110,15 @@ class FastConnectService
 
     public static function stateMap($state)
     {
-        $stateList = ['New South Wales'=>'NSW','Victoria'=>'VIC','Queensland'=>'QLD',
-            'South Australia'=>'SA','Northern Territory'=>'NT','TAS'=>'Tasmania','ACT'=>'Australian Capital Territory', 'WA'=>'Western Australia'];
+        $stateList = [
+            'New South Wales'=>'NSW',
+            'Victoria'=>'VIC',
+            'Queensland'=>'QLD',
+            'South Australia'=>'SA',
+            'Northern Territory'=>'NT',
+            'TAS'=>'Tasmania',
+            'ACT'=>'Australian Capital Territory',
+            'WA'=>'Western Australia'];
         if(array_key_exists($state, $stateList))
         {
             return $stateList[$state];
@@ -124,16 +126,4 @@ class FastConnectService
         return $state;
 
     }
-
-    private static function getStreetName(string $fullStreetAddress, string $type): string
-    {
-        return  trim(str_replace($type, '', $fullStreetAddress));
-    }
-
-    private static function getStreetType(string $streetAddress): string
-    {
-        $data = explode(' ', $streetAddress);
-        return $data[sizeof($data) - 1];
-    }
-
 }

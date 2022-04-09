@@ -51,15 +51,16 @@ class GBGModel{
     public function getConnectionApplicationVersion(): AddressModel
     {
         return new AddressModel(
-            address_text: $this->fullAddress,
-            country: $this->country,
             unit_number: $this->flatUnitNumber,
+            address_text: $this->fullAddress,
             street_number: $this->streetNumber,
             street_name: $this->streetName,
             street_type: $this->streetType,
             postcode: $this->postcode,
             city: $this->locality,
             state: $this->state,
+            country: $this->country,
+            street_name_only: $this->streetName,
         );
     }
 
