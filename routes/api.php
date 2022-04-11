@@ -166,7 +166,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/plans-details/{id}/export', [NoteController::class, 'download']);
 
     // REA extracts report
-    Route::get('/rea-extract/office-report', [ReaExtractsReportController::class, 'officeReport'])
+    Route::get('/rea-extract/report', [ReaExtractsReportController::class, 'getReaReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 });
 
