@@ -78,7 +78,47 @@
                             </div>
                         </div>
                         <v-divider class="mt-5"></v-divider>
-                        <div class="spacer"></div>
+                         <div v-if="selectedType=='office'" class="spacer"></div>
+                        <div v-else>
+                            <div class="mx-auto mt-3 pb-3 font-weight-bold" >Select a team member</div>
+                            <div>
+                                <v-text-field
+                                    label="Search"
+                                    outlined
+                                    dense
+                                    prepend-inner-icon="mdi-magnify"
+                                    hide-details="auto"
+                                    v-model="search"
+                                    @input="changeInput"
+                                    clearable
+                                >
+                                </v-text-field>
+
+                                <div style="max-height: 200px; overflow-y: auto">
+                                    <v-list>
+                                        <v-list-item >
+                                            <v-list-item-title >Temp Data 01</v-list-item-title>
+                                        </v-list-item>
+                                        <v-list-item >
+                                            <v-list-item-title >Temp Data 02</v-list-item-title>
+                                        </v-list-item>
+                                        <v-list-item >
+                                            <v-list-item-title >Temp Data 03</v-list-item-title>
+                                        </v-list-item>
+                                        <v-list-item >
+                                            <v-list-item-title >Temp Data 04</v-list-item-title>
+                                        </v-list-item>
+                                        <v-list-item >
+                                            <v-list-item-title >Temp Data 05</v-list-item-title>
+                                        </v-list-item>
+                                        <v-list-item >
+                                            <v-list-item-title >Temp Data 06</v-list-item-title>
+                                        </v-list-item>
+                                    </v-list>
+                                </div>
+                            </div>
+                        </div>
+
                         <v-btn
                             class="mt-2"
                             block
@@ -95,7 +135,7 @@
 </template>
 
 <script>
-import { 
+import {
     getTodayString, getYesterdayString, getToday, isBefore, isAfter,
     getYesterday, getFormattedDateString, getFormattedDBDate, isSame
 } from '@scripts/services/DateRangeService';
