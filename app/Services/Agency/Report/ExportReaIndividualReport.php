@@ -8,6 +8,8 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use PDF;
 use Carbon\Carbon;
+use App\Models\Office;
+use App\Services\Utility\GilbertStatusMapper;
 
 class ExportReaIndividualReport
 {
@@ -67,18 +69,20 @@ class ExportReaIndividualReport
     public function run()
     {
         $this->mapData($this->fetchData());
-        // return $this->export();
+        return $this->export();
     }
 
     private function export()
     {
         Log::info('REA Individual report', $this->individualReport);
-        
+
+        $officeName = Office::find($this->officeId)->name;
         $agent = AgentProfile::find($this->agentId);
         $agentName = $agent->first_name . ' ' . $agent->last_name;
 
         $data = [
             'agentName' => $agentName,
+            'officeName' => $officeName,
             'startDate' => $this->stringStartDate,
             'endDate' => $this->stringEndDate,
             'report' => $this->individualReport
@@ -108,36 +112,35 @@ class ExportReaIndividualReport
 
         foreach ($data as $datum) {
             $count = [
-                "app_id" => 1,
-                "lead_source" => 1,
-                "customer_name" => 'name',
-                "created_date" => '2/6/2022',
-                "connection_date" => '2/9/2022',
-                "full_address" => 'address here',
+                "app_id" => $datum['id'],
+                "lead_source" => $this->getLeadSource($datum['lead_source']),
+                "customer_name" => $datum['customer_first_name'] . ' ' . $datum['customer_last_name'],
+                "created_date" => Carbon::parse($datum['created_date'])->format('m/d/y'),
+                "connection_date" => Carbon::parse($datum['connection_date'])->format('m/d/y'),
+                "full_address" => $datum['full_address'],
                 "rejection_reason" => 'reason here',
-                "customer_type" => 'type here',
-                "is_electricity_submitted" => 1,
-                "electricity_status" => 'submitted',
-                "is_gas_submitted" => 0,
-                "gas_status" => 'assigned',
-                "is_water_submitted" => 1,
-                "water_status" => 'rejected'
+                "customer_type" => $this->getCustomerType($datum['customer_type']),
+                "is_electricity_submitted" => $this->checkIfUtilitySubmitted($datum['connection_services'], 'power'),
+                "electricity_status" => $this->getUtilityStatus($datum['connection_services'], 'power'),
+                "is_gas_submitted" => $this->checkIfUtilitySubmitted($datum['connection_services'], 'gas'),
+                "gas_status" => $this->getUtilityStatus($datum['connection_services'], 'gas'),
+                "is_water_submitted" => $this->checkIfUtilitySubmitted($datum['connection_services'], 'water'),
+                "water_status" => $this->getUtilityStatus($datum['connection_services'], 'water')
             ];
             
             $detailedCount[] = $count;
-
-
-            $totalCount['total_applications_created'] = 12;
-            $totalCount['applications_with_minimum_submitted'] = 13;
-            $totalCount['successful_water_connections'] = 14;
-            $totalCount['awaiting_confirmation'] = 15;
-            $totalCount['conversion_rate'] = 16;
-
-            $submittedUtilityCount['electricity'] = 6;
-            $submittedUtilityCount['gas'] = 7;
-            $submittedUtilityCount['water'] = 8;
         }
-        $submittedUtilityCount['total_energy'] = 12;
+
+        $totalCount['total_applications_created'] = count($data);
+        $totalCount['applications_with_minimum_submitted'] = $this->getMinimumSubmitted($data);
+        $totalCount['successful_water_connections'] = $this->getSuccessfulWaterConnection($data);
+        $totalCount['awaiting_confirmation'] = $this->getAwaitingConfirmation($data);
+        $totalCount['conversion_rate'] = $this->getConversionRate($totalCount['total_applications_created'], $totalCount['applications_with_minimum_submitted'], $totalCount['awaiting_confirmation']);
+
+        $submittedUtilityCount['electricity'] = $this->getSubmittedUtilityCount($data, 'power');
+        $submittedUtilityCount['gas'] = $this->getSubmittedUtilityCount($data, 'gas');
+        $submittedUtilityCount['water'] = $this->getSubmittedUtilityCount($data, 'water');
+        $submittedUtilityCount['total_energy'] = $submittedUtilityCount['electricity'] + $submittedUtilityCount['gas'];
 
         $this->individualReport = [
             "detailedCount" => $detailedCount,
@@ -183,14 +186,36 @@ class ExportReaIndividualReport
                 ->where('created_at', '<=', $this->endDate)
                 ->where('created_by', '!=', null)
                 ->where('office_id', $this->officeId);
+                // ->where('created_by', $this->agentId);
 
         return $builder->get()->toArray();
     }
 
-    private function getAgentName(int $id) : string
+    private function getLeadSource(?int $src): string
     {
-        $agentProfile = AgentProfile::selectRaw("id, first_name, last_name")->where('id', $id)->first();
-        return $agentProfile->first_name.' '.$agentProfile->last_name;
+        $res = array_search($src, ConnectionApplication::SOURCE_MAPPING);
+        return $res ?: "null";
+    }
+
+    private function getCustomerType(?int $type): string
+    {
+        $res = array_search($type, ConnectionApplication::TENANCY_MAPPING);
+        return $res ?: "null";
+    }
+
+    private function checkIfUtilitySubmitted(?array $services, string $type) : int
+    {
+        return array_filter($services, function ($service) use ($type) {
+            return $service['utility_type'] === $type && in_array($service['utility_status'], $this->nonRejectedSubmissionType);
+        })? 1 : 0;
+    }
+
+    private function getUtilityStatus(?array $services, string $type): string
+    {
+        $utility = array_filter($services, function ($service) use ($type) {
+            return $service['utility_type'] === $type;
+        });
+        return 'Not selected';
     }
 
     private function getMinimumSubmitted(array $applications) : int

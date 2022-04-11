@@ -78,7 +78,8 @@
                             </div>
                         </div>
                         <v-divider class="mt-5"></v-divider>
-                         <div v-if="selectedType=='office'" class="spacer"></div>
+                        
+                        <div v-if="selectedType=='office'" class="spacer"></div>
                         <div v-else>
                             <div class="mx-auto mt-3 pb-3 font-weight-bold" >Select a team member</div>
                             <div>
