@@ -183,10 +183,6 @@ Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWate
 
 
 
-Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
-
-
-
 /**
  * api's for admin only
  */
