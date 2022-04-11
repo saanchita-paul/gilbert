@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Log;
 use App\Modules\Reporting\Services\SetDateRage;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
-use App\Models\Office;
 use PDF;
 use Carbon\Carbon;
 
@@ -21,7 +20,7 @@ class ExportReaIndividualReport
     private string $officeId;
     private string $agentId;
     private string $reportType;
-    private array $officeReport = [];
+    private array $individualReport = [];
 
     private array $submissionType = [
         ConnectionService::STATUS_SUBMITTED,
@@ -68,29 +67,29 @@ class ExportReaIndividualReport
     public function run()
     {
         $this->mapData($this->fetchData());
-        return $this->export();
+        // return $this->export();
     }
 
     private function export()
     {
-        Log::info('REA Office report', $this->officeReport);
+        Log::info('REA Individual report', $this->individualReport);
         
-        $officeName = Office::find($this->officeId)->name;
+        $agent = AgentProfile::find($this->agentId);
+        $agentName = $agent->first_name . ' ' . $agent->last_name;
 
         $data = [
-            'officeName' => $officeName,
+            'agentName' => $agentName,
             'startDate' => $this->stringStartDate,
             'endDate' => $this->stringEndDate,
-            'report' => $this->officeReport
+            'report' => $this->individualReport
         ];
-        $pdf = PDF::loadView('pdf.invoice_office', $data);
+        $pdf = PDF::loadView('pdf.report_individual', $data);
         return $pdf->inline();
 
     }
 
     private function mapData(array $data)
     {
-        $agentIds = [];
         $detailedCount = [];
         $totalCount = [
             'total_applications_created' => 0,
@@ -108,54 +107,45 @@ class ExportReaIndividualReport
         ];
 
         foreach ($data as $datum) {
-
-            $agentIds[] = $datum[0]['agent_id'];
             $count = [
-                "agent_name" => $this->getAgentName($datum[0]['agent_id']),
-                "total_applications_created" => count($datum),
-                "applications_with_minimum_submitted" => $this->getMinimumSubmitted($datum),
-                "successful_water_connections" => $this->getSuccessfulWaterConnection($datum),
-                "awaiting_confirmation" => $this->getAwaitingConfirmation($datum),
+                "app_id" => 1,
+                "lead_source" => 1,
+                "customer_name" => 'name',
+                "created_date" => '2/6/2022',
+                "connection_date" => '2/9/2022',
+                "full_address" => 'address here',
+                "rejection_reason" => 'reason here',
+                "customer_type" => 'type here',
+                "is_electricity_submitted" => 1,
+                "electricity_status" => 'submitted',
+                "is_gas_submitted" => 0,
+                "gas_status" => 'assigned',
+                "is_water_submitted" => 1,
+                "water_status" => 'rejected'
             ];
-            $count['conversion_rate'] = $this->getConversionRate($count['total_applications_created'], $count['applications_with_minimum_submitted'], $count['awaiting_confirmation']);
             
             $detailedCount[] = $count;
 
-            $totalCount['total_applications_created'] += $count['total_applications_created'];
-            $totalCount['applications_with_minimum_submitted'] += $count['applications_with_minimum_submitted'];
-            $totalCount['successful_water_connections'] += $count['successful_water_connections'];
-            $totalCount['awaiting_confirmation'] += $count['awaiting_confirmation'];
-            $totalCount['conversion_rate'] = $this->getConversionRate($totalCount['total_applications_created'], $totalCount['applications_with_minimum_submitted'], $totalCount['awaiting_confirmation']);
 
-            $submittedUtilityCount['electricity'] += $this->getSubmittedUtilityCount($datum, 'power');
-            $submittedUtilityCount['gas'] += $this->getSubmittedUtilityCount($datum, 'gas');
-            $submittedUtilityCount['water'] += $this->getSubmittedUtilityCount($datum, 'water');
+            $totalCount['total_applications_created'] = 12;
+            $totalCount['applications_with_minimum_submitted'] = 13;
+            $totalCount['successful_water_connections'] = 14;
+            $totalCount['awaiting_confirmation'] = 15;
+            $totalCount['conversion_rate'] = 16;
+
+            $submittedUtilityCount['electricity'] = 6;
+            $submittedUtilityCount['gas'] = 7;
+            $submittedUtilityCount['water'] = 8;
         }
-        $submittedUtilityCount['total_energy'] = $submittedUtilityCount['electricity'] + $submittedUtilityCount['gas'];
+        $submittedUtilityCount['total_energy'] = 12;
 
-        
-        $agentProfiles = AgentProfile::selectRaw("id, first_name, last_name")
-            ->whereNotIn('id', $agentIds)
-            ->where('office_id', $this->officeId)
-            ->get();
-
-        foreach ($agentProfiles as $agentProfile) {
-            $count = [
-                "agent_name" => $agentProfile->first_name.' '.$agentProfile->last_name,
-                "total_applications_created" => 0,
-                "applications_with_minimum_submitted" => 0,
-                "successful_water_connections" => 0,
-                "awaiting_confirmation" => 0,
-                "conversion_rate" => 0,
-            ];
-            $detailedCount[] = $count;
-        }
-
-        $this->officeReport = [
+        $this->individualReport = [
             "detailedCount" => $detailedCount,
             "totalCount" => $totalCount,
             "submittedUtilityCount" => $submittedUtilityCount
         ];
+
+        Log::info('REA Individual report', $this->individualReport);
     }
 
     private function fetchData() : array
@@ -164,23 +154,37 @@ class ExportReaIndividualReport
             office_id as `office_id`,
             created_by as `agent_id`,
             id,
+            source as `lead_source`,
+            first_name as `customer_first_name`,
+            last_name as `customer_last_name`,
             status as `application_status`,
-            created_at as `created_date`")
+            CONVERT_TZ(created_at, '+00:00', '+10:00') as `created_date`,
+            CONVERT_TZ(moving_date, '+00:00', '+10:00') as `connection_date`,
+            address_text as `full_address`,
+            property_type as `customer_type`
+            ")
                 ->with(['connectionServices' => function ($query) {
                     $query->selectRaw("
-                            id as `utility_id`,
-                            connection_application_id,
-                            status as `utility_status`,
-                            service_type as `utility_type`,
-                            submitted_at as `submitted_date`
+                        id,
+                        connection_application_id,
+                        status as `utility_status`,
+                        service_type as `utility_type`
+                    ")
+                    ->with(['reasons' => function ($query) {
+                        $query->selectRaw("
+                            id as `rejection_id`,
+                            connection_service_id,
+                            reason_text as `rejection_reason`,
+                            created_at as `created_date`
                         ");
+                    }]);
                 }])
                 ->where('created_at', '>=', $this->startDate)
                 ->where('created_at', '<=', $this->endDate)
                 ->where('created_by', '!=', null)
                 ->where('office_id', $this->officeId);
 
-        return $builder->get()->groupBy('agent_id')->toArray();
+        return $builder->get()->toArray();
     }
 
     private function getAgentName(int $id) : string

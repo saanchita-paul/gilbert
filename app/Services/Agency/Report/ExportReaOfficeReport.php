@@ -81,7 +81,7 @@ class ExportReaOfficeReport
             'endDate' => $this->stringEndDate,
             'report' => $this->officeReport
         ];
-        $pdf = PDF::loadView('pdf.invoice_office', $data);
+        $pdf = PDF::loadView('pdf.report_office', $data);
         return $pdf->inline();
 
     }
