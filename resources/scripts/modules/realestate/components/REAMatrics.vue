@@ -130,8 +130,9 @@ export default {
         },
         onClickExport(dateRange, reportType) {
             let officeId = this.$route.params?.officeId;
+            let agentId = 1;
             window.open(
-                '/api/rea-extract/office-report?officeId='+officeId+'&reportType='+reportType+'&start='+dateRange.start+'&end='+dateRange.end,
+                '/api/rea-extract/report?officeId='+officeId+'&agentId='+agentId+'&reportType='+reportType+'&start='+dateRange.start+'&end='+dateRange.end,
                 '_blank'
             );
         }
