@@ -138,6 +138,12 @@ export default {
         },
         dateRange: {
             require: true,
+        },
+        agencyId: {
+            require: true,
+        },
+        officeId: {
+            require: true,
         }
     },
     data() {
@@ -254,10 +260,14 @@ export default {
                 is_descending: false,
                 sort_by: ""
             };
+            console.log('bn', this.officeId);
             const data = await CrmUserService.loadUserData(
                 meta,
-                this.$route.params.id,
-                this.$route.params.officeId
+                // this.$route.params.id,
+                // this.$route.params.officeId
+                this.agencyId,
+                this.officeId
+
             );
             this.agentList = data?.usersAgency;
         },

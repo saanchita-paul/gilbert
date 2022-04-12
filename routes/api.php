@@ -73,7 +73,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/offices/{id}/update', [OfficeController::class, 'updateOffice'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_OFFICE);
     Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index'])
-        ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICE_USER_LIST);
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
     Route::get('/offices/{officeId}/agents', [AgentProfileController::class, 'getAgentList'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_AGENT_LIST);
     Route::post('/offices/{officeId}/users', [AgentProfileController::class, 'createAgent'])
