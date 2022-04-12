@@ -159,7 +159,7 @@ class ExportReaIndividualReport
             CONVERT_TZ(created_at, '+00:00', '+10:00') as `created_date`,
             CONVERT_TZ(moving_date, '+00:00', '+10:00') as `connection_date`,
             address_text as `full_address`,
-            property_type as `customer_type`
+            tenancy_type as `customer_type`
             ")
                 ->with(['connectionServices' => function ($query) {
                     $query->selectRaw("
@@ -179,14 +179,12 @@ class ExportReaIndividualReport
 
     private function getLeadSource(?int $src): string
     {
-        $res = array_search($src, ConnectionApplication::SOURCE_MAPPING);
-        return $res ?: 'null';
+        return ConnectionApplication::SOURCE_NAME_MAPPING[$src] ?? 'null';
     }
 
     private function getCustomerType(?int $type): string
     {
-        $res = array_search($type, ConnectionApplication::TENANCY_MAPPING);
-        return $res ?: 'null';
+        return ConnectionApplication::TENANCY_NAME_MAPPING[$type] ?? 'null';
     }
 
     private function checkIfUtilitySubmitted(?array $services, string $type) : int
