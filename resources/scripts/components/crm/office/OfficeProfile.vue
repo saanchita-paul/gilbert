@@ -92,7 +92,7 @@
                     ></v-text-field>
                     </ValidationProvider>
 
-                    <ValidationProvider name="Rent Roll" rules="required|numeric"  v-slot="{ errors }">
+                    <ValidationProvider name="Rent Roll" rules="numeric"  v-slot="{ errors }">
                         <v-text-field
                             label="Rent Roll*"
                             outlined
@@ -156,7 +156,7 @@
                         :error-messages=" errors[0]"
                     ></v-text-field>
                     </ValidationProvider>
-                    <ValidationProvider name="Phone Number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                    <ValidationProvider name="Phone Number" rules="cv-phone|length:10"  v-slot="{ errors }">
                     <v-text-field
                         label="Phone Number"
                         v-model="agent.phone"
@@ -263,7 +263,7 @@
 <!--                           <div class="leade-icon pb-2">-->
 <!--                               <v-icon color="green">mdi-wifi</v-icon>-->
 <!--                               <span class="mr-4">$</span>-->
-                               <ValidationProvider name="Sponsorship" rules="numeric|required"  v-slot="{ errors }">
+                               <ValidationProvider name="Sponsorship" rules="numeric"  v-slot="{ errors }">
                                    <v-text-field
                                        v-model.number="commission.sponsorship"
                                        outlined
