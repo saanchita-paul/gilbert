@@ -97,7 +97,7 @@
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%;">
-            <div style="display: inline; float: left; width: 25%; padding-left: 3px; border: 1px solid gray; text-align: center;">Total Fules</div>
+            <div style="display: inline; float: left; width: 25%; padding-left: 3px; border: 1px solid gray; text-align: center;">Total Fuels</div>
             <div style="display: inline; width: 49%; float: left; padding-left: 3px; border: 1px solid gray; text-align: center; font-weight: bold; color: #620088; ">{{ $report['submittedUtilityCount']['total_energy'] }}</div>
             <div style="display: inline; width: 23%; float:  left; border: 1px solid gray; text-align: center; font-weight: bold; color: #620088; "> - </div>
             <div style="clear: both;"> </div>
