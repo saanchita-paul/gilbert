@@ -128,9 +128,8 @@ export default {
         onCloseModal() {
             this.showReportModal = false;
         },
-        onClickExport(dateRange, reportType) {
+        onClickExport(dateRange, reportType, agentId) {
             let officeId = this.$route.params?.officeId;
-            let agentId = 1;
             window.open(
                 '/api/rea-extract/report?officeId='+officeId+'&agentId='+agentId+'&reportType='+reportType+'&start='+dateRange.start+'&end='+dateRange.end,
                 '_blank'

@@ -185,8 +185,8 @@ class ExportReaIndividualReport
                 ->where('created_at', '>=', $this->startDate)
                 ->where('created_at', '<=', $this->endDate)
                 ->where('created_by', '!=', null)
-                ->where('office_id', $this->officeId);
-                // ->where('created_by', $this->agentId);
+                ->where('office_id', $this->officeId)
+                ->where('created_by', $this->agentId);
 
         return $builder->get()->toArray();
     }
