@@ -94,7 +94,7 @@
 
                     <ValidationProvider name="Rent Roll" rules="numeric"  v-slot="{ errors }">
                         <v-text-field
-                            label="Rent Roll*"
+                            label="Rent Roll"
                             outlined
                             dense
                             v-model="office.rent_roll"
