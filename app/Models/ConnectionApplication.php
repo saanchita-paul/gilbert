@@ -284,6 +284,11 @@ class ConnectionApplication extends Model
         'home_owner' => self::TENANCY_TYPE_HOME_OWNER
     ];
 
+    const TENANCY_NAME_MAPPING = [
+        self::TENANCY_TYPE_RENTER => 'Renter',
+        self::TENANCY_TYPE_HOME_OWNER => 'Owner'
+    ];
+
     const SOURCE_MAPPING = [
         'all' => self::SOURCE_ALL,
         'hood' => self::SOURCE_HOOD,

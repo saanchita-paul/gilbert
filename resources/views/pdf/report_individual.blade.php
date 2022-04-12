@@ -29,11 +29,11 @@
         <div style="clear: both;"></div>
 
         <div style="color: white; font-size: 28px; text-align: center; font-weight: bold; margin-top: 25px;">
-            HOOD RE Agent Report -	{{ $agentName }}
+            HOOD REA Agent Report - {{ $agentName }}
         </div>
 
         <div style="color: white; font-size: 24px; text-align: center; margin-top: 30px;">
-            Office Name-({{ $startDate }} to {{ $endDate }})
+            {{ $officeName }} ({{ $startDate }} to {{ $endDate }})
         </div>
 
     </div>
@@ -50,7 +50,7 @@
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Number of Applications with atleast	one	service	connected(other	than water)</div>
+            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Number of Applications with atleast one service connected(other than water)</div>
             <div style="text-align: center; float: left; color: #532B87; font-weight: bold; width: 20%; ">{{ $report['totalCount']['applications_with_minimum_submitted'] }}</div>
             <div style="clear: both;"></div>
         </div>
@@ -77,7 +77,7 @@
 
     <div style="margin-top: 20px; font-weight: bold; width: 45%; float: left; ">
         <div style="background-color: #532B87; color: white; padding: 5px 3px; font-size: 20px;">
-        Utilities submitted to retailer
+            Utilities submitted to retailer
         </div>
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%; ">
             <div style="display: inline;  width: 26%; float: left; border: 1px solid gray; text-align:center">&nbsp;</div>
@@ -90,13 +90,13 @@
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%; ">
             <div style="display: inline; float: left; width: 25%; padding-left: 4px; border: 1px solid gray; text-align: center; padding-top: 10px; padding-bottom: 10px;">Total</div>
             <div style="display: inline; width: 25%; float: left; border: 1px solid gray; text-align: center; padding-top: 10px; padding-bottom: 10px; font-weight: bold; color: #620088; ">{{ $report['submittedUtilityCount']['electricity'] }}</div>
-            <div style="display: inline; width: 23%; float: left; padding-left: 5px; border: 1px solid gray; text-align: center; padding-top: 10px; padding-bottom: 10px; font-weight: bold; color: #620088; ">{{ $report['submittedUtilityCount']['gas'] }}</div>
+            <div style="display: inline; width: 23%; float: left; padding-left: 3px; border: 1px solid gray; text-align: center; padding-top: 10px; padding-bottom: 10px; font-weight: bold; color: #620088; ">{{ $report['submittedUtilityCount']['gas'] }}</div>
             <div style="display: inline; width: 23%; float: left; border: 1px solid gray; text-align: center; padding-top: 10px; padding-bottom: 10px; font-weight: bold; color: #620088; ">{{ $report['submittedUtilityCount']['water'] }}</div>
             <div style="clear: both;"></div>
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%;">
-            <div style="display: inline; float: left; width: 25%; padding-left: 3px; border: 1px solid gray; text-align: center;">Total Fules</div>
+            <div style="display: inline; float: left; width: 25%; padding-left: 3px; border: 1px solid gray; text-align: center;">Total Fuels</div>
             <div style="display: inline; width: 49%; float: left; padding-left: 3px; border: 1px solid gray; text-align: center; font-weight: bold; color: #620088; ">{{ $report['submittedUtilityCount']['total_energy'] }}</div>
             <div style="display: inline; width: 23%; float:  left; border: 1px solid gray; text-align: center; font-weight: bold; color: #620088; "> - </div>
             <div style="clear: both;"> </div>
@@ -109,7 +109,7 @@
 
     <div style="margin-top: 20px; font-weight: bold; ">
         <div style="background-color: #532B87; color: white; padding: 5px 3px; font-size: 20px;">
-        Detailed view of your applications
+            Detailed view of your applications
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 16px; font-weight: normal; width: 100%; ">
@@ -122,25 +122,25 @@
 
             <div style="width: 8%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: #532B87; font-weight: bold; word-wrap: break-word; text-align: center;">
-                Lead Source
+                    Lead Source
                 </div>
             </div>
 
             <div style="width: 12%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: #532B87; font-weight: bold; text-align: center;">
-                Customer Name
+                    Customer Name
                 </div>
             </div>
 
             <div style="width: 10%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: #532B87; font-weight: bold; text-align: center;">
-                Created	Date
+                    Created Date
                 </div>
             </div>
 
             <div style="width: 11%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: #532B87; font-weight: bold; text-align: center;">
-                Connection Date
+                    Connection Date
                 </div>
             </div>
 
@@ -149,47 +149,26 @@
                     Full Address
                 </div>
             </div>
-            <!-- <div style="width: 6%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray;">
-                <div style="color: #532B87; font-weight: bold; text-align: center;">
-                Rejection Reason
-                </div>
-            </div> -->
             <div style="width: 10%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: #532B87; font-weight: bold; text-align: center;">
-                Customer Type
+                    Customer Type
                 </div>
             </div>
             <div style="width: 8%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: #532B87; font-weight: bold; text-align: center; word-wrap: break-word">
-                Elec (1,0)
+                    Elec &nbsp; (1,0)
                 </div>
             </div>
-            <!-- <div style="width: 7%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray;">
-                <div style="color: #532B87; font-weight: bold; text-align: center;">
-                Elec Status
-                </div>
-            </div> -->
             <div style="width: 8%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: #532B87; font-weight: bold; text-align: center; word-wrap: break-word;">
-                Water (1,0)
+                    Water &nbsp; (1,0)
                 </div>
             </div>
-            <!-- <div style="width: 6%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray;">
-                <div style="color: #532B87; font-weight: bold; text-align: center;">
-                Water Status
-                </div>
-            </div> -->
             <div style="width: 8%; height: 40px; padding-left: 3px; float: left; border: 1px solid gray;">
                 <div style="color: #532B87; font-weight: bold; text-align: center; word-wrap: break-word">
-                Gas (1,0)
+                    Gas &nbsp; (1,0)
                 </div>
             </div>
-            <!-- <div style="width: 6%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray;">
-                <div style="color: #532B87; font-weight: bold; text-align: center;">
-                Gas	Status
-                </div>
-            </div> -->
-            
 
             <div style="clear: both;"></div>
         </div>
@@ -233,47 +212,29 @@
                 </div>
             </div>
 
-            <!-- <div style="width: 6%; height: 70px; padding-left: 0px; float: left; border: 1px solid gray;">
-                <div style="color: black;  text-align: center;">
-                    {{ $individual['rejection_reason']}}
-                </div>
-            </div> -->
-
             <div style="width: 10%; height: 70px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: black;  text-align: center;">
                     {{ $individual['customer_type']}}
                 </div>
             </div>
+
             <div style="width: 8%; height: 70px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: black;  text-align: center;">
-                    {{ $individual['is_electricity_submitted']}}       
+                    {{ $individual['is_electricity_submitted']}}
                 </div>
             </div>
-            <!-- <div style="width: 7%; height: 70px; padding-left: 0px; float: left; border: 1px solid gray;">
-                <div style="color: black;  text-align: center;">
-                    {{ $individual['electricity_status']}}       
-                </div>
-            </div> -->
+
             <div style="width: 8%; height: 70px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: black;  text-align: center;">
-                    {{ $individual['is_water_submitted']}}       
+                    {{ $individual['is_water_submitted']}}
                 </div>
             </div>
-            <!-- <div style="width: 6%; height: 70px; padding-left: 0px; float: left; border: 1px solid gray;">
-                <div style="color: black;  text-align: center;">
-                    {{ $individual['water_status']}}       
-                </div>
-            </div> -->
+
             <div style="width: 8%; height: 70px; padding-left: 3px; float: left; border: 1px solid gray;">
                 <div style="color: black;  text-align: center;">
-                    {{ $individual['is_gas_submitted']}}       
+                    {{ $individual['is_gas_submitted']}}
                 </div>
             </div>
-            <!-- <div style="width: 6%; height: 70px; padding-left: 0px; float: left; border: 1px solid gray;">
-                <div style="color: black;  text-align: center;">
-                    {{ $individual['gas_status']}}       
-                </div>
-            </div> -->
 
             <div style="clear: both;"></div>
         </div>

@@ -45,7 +45,7 @@
                                 <v-text-field
                                     class="date-range-field"
                                     v-model="dateRangeText"
-                                    label="Date range (YYYY/MM/DD)"
+                                    label="Date range (DD/MM/YYYY)"
                                     prepend-icon="mdi-calendar"
                                     readonly
                                 ></v-text-field>
