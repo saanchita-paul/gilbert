@@ -9,7 +9,6 @@ use App\Models\ConnectionService;
 use PDF;
 use Carbon\Carbon;
 use App\Models\Office;
-use App\Services\Utility\GilbertStatusMapper;
 
 class ExportReaIndividualReport
 {
@@ -118,14 +117,10 @@ class ExportReaIndividualReport
                 "created_date" => Carbon::parse($datum['created_date'])->format('m/d/y'),
                 "connection_date" => Carbon::parse($datum['connection_date'])->format('m/d/y'),
                 "full_address" => $datum['full_address'],
-                "rejection_reason" => 'reason here',
                 "customer_type" => $this->getCustomerType($datum['customer_type']),
-                "is_electricity_submitted" => $this->checkIfUtilitySubmitted($datum['connection_services'], 'power'),
-                "electricity_status" => $this->getUtilityStatus($datum['connection_services'], 'power'),
-                "is_gas_submitted" => $this->checkIfUtilitySubmitted($datum['connection_services'], 'gas'),
-                "gas_status" => $this->getUtilityStatus($datum['connection_services'], 'gas'),
-                "is_water_submitted" => $this->checkIfUtilitySubmitted($datum['connection_services'], 'water'),
-                "water_status" => $this->getUtilityStatus($datum['connection_services'], 'water')
+                "is_electricity_submitted" => $this->checkIfUtilitySubmitted($datum['connection_services'], ConnectionService::TYPE_ELECTRICITY),
+                "is_gas_submitted" => $this->checkIfUtilitySubmitted($datum['connection_services'], ConnectionService::TYPE_GAS),
+                "is_water_submitted" => $this->checkIfUtilitySubmitted($datum['connection_services'], ConnectionService::TYPE_WATER),
             ];
             
             $detailedCount[] = $count;
@@ -137,9 +132,9 @@ class ExportReaIndividualReport
         $totalCount['awaiting_confirmation'] = $this->getAwaitingConfirmation($data);
         $totalCount['conversion_rate'] = $this->getConversionRate($totalCount['total_applications_created'], $totalCount['applications_with_minimum_submitted'], $totalCount['awaiting_confirmation']);
 
-        $submittedUtilityCount['electricity'] = $this->getSubmittedUtilityCount($data, 'power');
-        $submittedUtilityCount['gas'] = $this->getSubmittedUtilityCount($data, 'gas');
-        $submittedUtilityCount['water'] = $this->getSubmittedUtilityCount($data, 'water');
+        $submittedUtilityCount['electricity'] = $this->getSubmittedUtilityCount($data, ConnectionService::TYPE_ELECTRICITY);
+        $submittedUtilityCount['gas'] = $this->getSubmittedUtilityCount($data, ConnectionService::TYPE_GAS);
+        $submittedUtilityCount['water'] = $this->getSubmittedUtilityCount($data, ConnectionService::TYPE_WATER);
         $submittedUtilityCount['total_energy'] = $submittedUtilityCount['electricity'] + $submittedUtilityCount['gas'];
 
         $this->individualReport = [
@@ -172,19 +167,10 @@ class ExportReaIndividualReport
                         connection_application_id,
                         status as `utility_status`,
                         service_type as `utility_type`
-                    ")
-                    ->with(['reasons' => function ($query) {
-                        $query->selectRaw("
-                            id as `rejection_id`,
-                            connection_service_id,
-                            reason_text as `rejection_reason`,
-                            created_at as `created_date`
-                        ");
-                    }]);
+                    ");
                 }])
                 ->where('created_at', '>=', $this->startDate)
                 ->where('created_at', '<=', $this->endDate)
-                ->where('created_by', '!=', null)
                 ->where('office_id', $this->officeId)
                 ->where('created_by', $this->agentId);
 
@@ -194,13 +180,13 @@ class ExportReaIndividualReport
     private function getLeadSource(?int $src): string
     {
         $res = array_search($src, ConnectionApplication::SOURCE_MAPPING);
-        return $res ?: "null";
+        return $res ?: 'null';
     }
 
     private function getCustomerType(?int $type): string
     {
         $res = array_search($type, ConnectionApplication::TENANCY_MAPPING);
-        return $res ?: "null";
+        return $res ?: 'null';
     }
 
     private function checkIfUtilitySubmitted(?array $services, string $type) : int
@@ -210,13 +196,13 @@ class ExportReaIndividualReport
         })? 1 : 0;
     }
 
-    private function getUtilityStatus(?array $services, string $type): string
-    {
-        $utility = array_filter($services, function ($service) use ($type) {
-            return $service['utility_type'] === $type;
-        });
-        return 'Not selected';
-    }
+    // private function getUtilityStatus(?array $services, string $type): string
+    // {
+    //     $utility = array_filter($services, function ($service) use ($type) {
+    //         return $service['utility_type'] === $type;
+    //     });
+    //     return 'Not selected';
+    // }
 
     private function getMinimumSubmitted(array $applications) : int
     {
