@@ -91,7 +91,7 @@
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%; ">
             <div style="display: inline; float: left; width: 25%; padding-left: 4px; border: 1px solid gray; text-align: center; padding-top: 10px; padding-bottom: 10px;">Total</div>
             <div style="display: inline; width: 25%; float: left; border: 1px solid gray; text-align: center; padding-top: 10px; padding-bottom: 10px; font-weight: bold; color: #620088; ">{{ $report['submittedUtilityCount']['electricity'] }}</div>
-            <div style="display: inline; width: 23%; float: left; padding-left: 5px; border: 1px solid gray; text-align: center; padding-top: 10px; padding-bottom: 10px; font-weight: bold; color: #620088; ">{{ $report['submittedUtilityCount']['gas'] }}</div>
+            <div style="display: inline; width: 23%; float: left; padding-left: 3px; border: 1px solid gray; text-align: center; padding-top: 10px; padding-bottom: 10px; font-weight: bold; color: #620088; ">{{ $report['submittedUtilityCount']['gas'] }}</div>
             <div style="display: inline; width: 23%; float: left; border: 1px solid gray; text-align: center; padding-top: 10px; padding-bottom: 10px; font-weight: bold; color: #620088; ">{{ $report['submittedUtilityCount']['water'] }}</div>
             <div style="clear: both;"></div>
         </div>
