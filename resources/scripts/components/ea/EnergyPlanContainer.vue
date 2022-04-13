@@ -36,9 +36,12 @@
                                 </v-icon>
                             </div>
                             <div>
-                                <p class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.electricity }} </span>
+                                
+                                <p v-if="planDetails.state_distributor_discount.elec_credit_amount === '' || planDetails.state_distributor_discount.elec_credit_amount === null || planDetails.state_distributor_discount.elec_credit_amount === '0'" class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.electricity }}</span>
                                 </p>
-                                <p v-if="plan === 'total_plan'">guaranteed</p>
+                                <p v-else class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.electricity }}  + ${{ planDetails.state_distributor_discount.elec_credit_amount}} credit </span>
+                                </p>
+                                <p v-if="plan === 'total_plan'">guaranteed </p>
                                 <p v-if="plan === 'no_frills'">Simplified energy pricing</p>
                             </div>
                         </div>
@@ -53,7 +56,8 @@
                                 </v-icon>
                             </div>
                             <div>
-                                <p class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.gas  }}</span></p>
+                                <p v-if="planDetails.state_distributor_discount.gas_credit_amount === '' || planDetails.state_distributor_discount.gas_credit_amount === null || planDetails.state_distributor_discount.gas_credit_amount === '0'" class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.gas  }}</span></p>
+                                <p v-else class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.gas }}  + ${{ planDetails.state_distributor_discount.gas_credit_amount}} credit </span></p>
                                 <p v-if="plan === 'total_plan'">guaranteed</p>
                                 <p v-if="plan === 'no_frills'">Simplified energy pricing</p>
                             </div>
@@ -368,6 +372,11 @@ export default {
             // const plan = this.customer.plan.which_utility;
             // return plan === ENERGY_PLANS.ELECTRICITY || plan === ENERGY_PLANS.ELECTRICITY_AND_GAS
         },
+        // hasCreditAmount() {
+        //     if(this.planDetails.state_distributor_discount.gas_credit_amount) {
+        //         return this.planDetails.state_distributor_discount;
+        //     }
+        // },
     },
 
     filters: {
