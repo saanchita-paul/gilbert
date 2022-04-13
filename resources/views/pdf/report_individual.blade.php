@@ -12,8 +12,8 @@
     <div style="background-color: #532B87; height: 300px; width: 100%; position: relative;">
 
 
-        <div style="float: left; padding-top: 65px; margin-left: 40%; margin-right: 10px;">
-            <img style="height: 80px; width: 80px;" src="{{ asset('assets/images/logo/hood-small.png' )}}" />
+        <div style="float: left; padding-top: 65px; margin-left: 36%; margin-right: 10px;">
+            <img style="height: 80px; width: 80px;" src="{{ asset('assets/images/logo/hood-border-logo.png' )}}" />
         </div>
 
         <div style="padding-top: 75px; text-align: center; float: left;">
