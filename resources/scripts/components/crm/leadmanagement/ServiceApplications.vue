@@ -168,13 +168,17 @@
 
                         <ServiceProvider @onSelectProvider="onSelectProvider1(provider.name)" v-if="serviceProviderFlag" v-for="provider in providers"
                                          :key="provider.name" :selectedProvider="selectedPowerProvider" :provider="provider"></ServiceProvider>
+                    </div>
 
+                    <div class="d-flex">
+                        <v-checkbox
+                            v-if="selectedPowerProvider === 'ea'"
+                            v-model="leadSummary.ea_go_neutral"
+                            @change="changeGoNeutral">
+                        </v-checkbox>
+                        <p class="neutral-checkbox-text">Customer opts in for <span class="font-weight-bold">Go Neutral</span>.</p>
                     </div>
                 </v-col>
-                    <v-col cols="12">
-                        <v-divider></v-divider>
-                    </v-col>
-
                     <v-col cols="12" v-if="selectedPowerProvider === 'ea' && afterHourFlag && selected_plan">
                         <p>
                             <span class="font-weight-bold">Important:</span> You are about to submit a same-day connection. Processing same-day connections to Energy Australia will incur same-day connection fee for the customer.
@@ -812,7 +816,9 @@ export default {
         changeAfterHourPayee() {
             this.$emit('updateDraft',  'after_hour_payee', this.leadSummary.after_hour_payee, false, null, false )
         },
-
+        async changeGoNeutral() {
+            await LeadApplicationService.saveSoleField('ea_go_neutral', this.leadSummary.ea_go_neutral, this.leadSummary.id);
+        },
 
      }
 };
@@ -838,6 +844,9 @@ export default {
 }
 .dangerText {
     color: red;
+}
+.neutral-checkbox-text {
+    margin-top: 20px;
 }
 
 </style>
