@@ -234,3 +234,9 @@ Route::get("/karan/sales-status", function () {
     return "success";
 });
 
+
+Route::get('report_corporate', function () {
+    $data = ['image' => ''];
+    $pdf = PDF::loadView('pdf.report_corporate', $data);
+    return $pdf->inline();
+});
