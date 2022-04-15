@@ -402,7 +402,7 @@ export default {
                 postcode: this.postcode,
                 state: this.state
             }))
-            console.log("checking-",this.planDetails);
+            // console.log("checking-",this.planDetails);
 
         },
         goToSearch() {
