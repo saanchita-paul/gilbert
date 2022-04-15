@@ -359,7 +359,6 @@ export default {
       async loadOffice() {
           this.data = await OfficeService.loadOfficeById(this.activeOffice);
           await this.syncData();
-          // console.log(this.office);
           this.isLoaded = true;
       },
 
@@ -415,9 +414,8 @@ export default {
                       this.commission.internet = parseInt(dt.rate);
                       break;
                   case 'sponsorship':
-                      this.commission.sponsorship = parseInt(dt.rate);
+                      this.commission.sponsorship = dt.rate === null ? null : parseInt(dt.rate);
                       break;
-
               }
           });
         },
