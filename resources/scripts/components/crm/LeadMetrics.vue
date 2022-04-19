@@ -33,10 +33,19 @@
                        @click:append="showDatePickerModal = true"
                    ></v-text-field>
                </div>
+
                <div v-if="isModeEdit" class="py-0 mr-2 LeadMatics123 justify-end" style="flex-basis: 123px;">
                    <!-- <v-btn outlined >Edit Agency</v-btn> -->
                    <slot name="editButton"/>
+
+                   <v-col class="pb-0 report-button">
+                        <v-btn outlined @click="onClickDownloadReport">
+                            Report
+                            <v-icon right>mdi-download</v-icon>
+                        </v-btn>
+                    </v-col>
                </div>
+                
 
 
                <div v-if="!isModeEdit" class="py-0 mr-2 LeadMatics123" style="flex-basis: 90px;">
@@ -364,6 +373,12 @@ export default {
             this.hood_user = parseInt(this.$route?.query?.account_manager_id);
             this.selectedOffice = parseInt(this.$route?.query?.office_id);
             this.selectedAgency = parseInt(this.$route?.query?.agency_id);
+        },
+        async onClickDownloadReport() {
+             window.open(
+                '/api/rea-extract/corporate-report?agencyId='+this.agency_id+'&start='+this.dateRange.start+'&end='+this.dateRange.end,
+                '_blank'
+            );
         }
     },
 

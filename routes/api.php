@@ -168,6 +168,9 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     // REA extracts report
     Route::get('/rea-extract/report', [ReaExtractsReportController::class, 'getReaReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
+    
+    Route::get('/rea-extract/corporate-report', [ReaExtractsReportController::class, 'getReaCorporateReport'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
@@ -235,8 +238,8 @@ Route::get("/karan/sales-status", function () {
 });
 
 
-Route::get('report_corporate', function () {
-    $data = ['image' => ''];
-    $pdf = PDF::loadView('pdf.report_corporate', $data);
-    return $pdf->inline();
-});
+// Route::get('report_corporate', function () {
+//     $data = ['image' => ''];
+//     $pdf = PDF::loadView('pdf.report_corporate', $data);
+//     return $pdf->inline();
+// });
