@@ -63,6 +63,7 @@ import {isNull} from "lodash-es";
 import PreventSubmissionModal from "@scripts/components/crm/modals/PreventSubmissionModal";
 import EAAfterHourService from "@scripts/services/ea/EAAfterHourService";
 import ChatbotService from "@scripts/services/crm/ChatbotService";
+import Store from '@scripts/store/index';
 
 export default {
     name: "ApplicationDetailsPage",
@@ -253,7 +254,11 @@ export default {
 
         async submitConnection(submitType) {
             let v = await this.validateLead();
-            if(!v) return;
+            let isProperAddress = await this.isProperAddress();
+
+            if(!isProperAddress) Store.commit('setInvalidAddress', true);
+
+            if(!v || !isProperAddress) return;
 
             let assignedHoodUser = await this.getAssignedHoodUser();
             if(!assignedHoodUser) {
@@ -444,7 +449,18 @@ export default {
         },
         async loadNextBusinessDay() {
             this.nextBusinessDay = await ChatbotService.getNextBusinessDay(this.leadSummary?.state);
-        }
+        },
+        isProperAddress() {
+            if( this.leadSummary.street_number == null
+                || this.leadSummary.street_name_only == null
+                || this.leadSummary.street_type == null
+                || this.leadSummary.state == null
+                || this.leadSummary.city == null
+                || this.leadSummary.postcode == null) {
+                return false;
+            }
+            return true;
+        },
     },
 
   async  mounted() {
@@ -457,7 +473,6 @@ export default {
         const busWaterSubmitEvent = async (type) => {
               await this.submitConnection(type);
           }
-
 
         this.$eventBus.$on("validate", validateEvent);
         this.$eventBus.$on("busWaterSubmit", busWaterSubmitEvent);
@@ -476,8 +491,6 @@ export default {
       await this.loadNextBusinessDay();
       await this.updateMernNmi();
       this.nmiMernFlag = false;
-
-
 
     }
 
