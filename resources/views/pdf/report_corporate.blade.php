@@ -12,7 +12,7 @@
 
     <div style="float: left; padding-top: 65px; margin-left: 30%; margin-right: 10px;">
         <img style="height: 100px; width: 100px;"
-            src="{{ $image }}"
+        src="{{ asset('assets/images/logo/hood-small.png') }}"
         />
     </div>
 
@@ -33,7 +33,7 @@
    </div>
     
     <div style="color: white; font-size: 24px; text-align: center; margin-top: 40px;">
-        Woodards (March 1 2022 to March 25 2022)
+       {{ $agentName }} ({{ $startDate }} to {{ $endDate }})
     </div>
 
     </div>

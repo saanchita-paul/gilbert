@@ -19,6 +19,7 @@ class ExportReaCorporateReport
     private string $stringStartDate;
     private string $stringEndDate;
     private string $agencyId;
+    private string $officeId;
 
     private array $submissionType = [
         ConnectionService::STATUS_SUBMITTED,
@@ -88,6 +89,7 @@ class ExportReaCorporateReport
     {
         $agentIds = [];
         $detailedCount = [];
+        $officeIds=[];
         $totalCount = [
             'total_applications_created' => 0,
             'applications_with_minimum_submitted' => 0,
@@ -100,14 +102,15 @@ class ExportReaCorporateReport
             'electricity' => 0,
             'gas' => 0,
             'water' => 0,
-            'total_energy' => 0,
+            // 'total_energy' => 0,
         ];
 
         foreach ($data as $datum) {
 
             $agentIds[] = $datum[0]['agent_id'];
+            $officeIds[] = $datum[0]['office_id'];
             $count = [
-                "agent_name" => $this->getAgentName($datum[0]['agent_id']),
+                "office_name" => $this->getOfficeName($datum[0]['office_id']),
                 "total_applications_created" => count($datum),
                 "applications_with_minimum_submitted" => $this->getMinimumSubmitted($datum),
                 "successful_water_connections" => $this->getSuccessfulWaterConnection($datum),
@@ -129,12 +132,11 @@ class ExportReaCorporateReport
             $submittedUtilityCount['gas'] += $this->getSubmittedUtilityCount($datum, 'gas');
             $submittedUtilityCount['water'] += $this->getSubmittedUtilityCount($datum, 'water');
         }
-        $submittedUtilityCount['total_energy'] = $submittedUtilityCount['electricity'] + $submittedUtilityCount['gas'];
+        // $submittedUtilityCount['total_energy'] = $submittedUtilityCount['electricity'] + $submittedUtilityCount['gas'];
 
         
         $agentProfiles = AgentProfile::selectRaw("id, first_name, last_name")
             ->whereNotIn('id', $agentIds)
-            ->where('office_id', $this->officeId)
             ->get();
 
         foreach ($agentProfiles as $agentProfile) {
@@ -149,7 +151,7 @@ class ExportReaCorporateReport
             $detailedCount[] = $count;
         }
 
-        $this->officeReport = [
+        $this->corporateReport = [
             "detailedCount" => $detailedCount,
             "totalCount" => $totalCount,
             "submittedUtilityCount" => $submittedUtilityCount
@@ -175,8 +177,10 @@ class ExportReaCorporateReport
                 }])
                 ->where('created_at', '>=', $this->startDate)
                 ->where('created_at', '<=', $this->endDate)
-                ->where('created_by', '!=', null)
+                ->where('office_id', '!=', null)
                 ->where('agency_id', $this->agencyId);
+
+        Log::info('REA Corporate report test', $builder->get()->groupBy('office_id')->toArray());
 
         return $builder->get()->groupBy('office_id')->toArray();
     }
@@ -185,6 +189,12 @@ class ExportReaCorporateReport
     {
         $agentProfile = AgentProfile::selectRaw("id, first_name, last_name")->where('id', $id)->first();
         return $agentProfile->first_name.' '.$agentProfile->last_name;
+    }
+
+    private function getOfficeName(int $id) : string
+    {
+        $officeProfile = Office::selectRaw("id, name")->where('id', $id)->first();
+        return $officeProfile->name;
     }
 
     private function getMinimumSubmitted(array $applications) : int
@@ -259,9 +269,11 @@ class ExportReaCorporateReport
         return $count;
     }
 
-    private function getCancelledApplication(array $applications) : int
+    private function getCancelledApplication(array $applications)
     {
         $cancelledCount = 0;
+
+        return $cancelledCount;
         
     }
 }
