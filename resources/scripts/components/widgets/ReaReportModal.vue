@@ -45,7 +45,7 @@
                                 <v-text-field
                                     class="date-range-field"
                                     v-model="dateRangeText"
-                                    label="Date range (YYYY/MM/DD)"
+                                    label="Date range (DD/MM/YYYY)"
                                     prepend-icon="mdi-calendar"
                                     readonly
                                 ></v-text-field>
@@ -78,12 +78,41 @@
                             </div>
                         </div>
                         <v-divider class="mt-5"></v-divider>
-                        <div class="spacer"></div>
+                        
+                        <div v-if="selectedType=='office'" class="spacer"></div>
+                        <div v-else>
+                            <div class="mx-auto mt-3 pb-3 font-weight-bold">Select a team member</div>
+                            <div>
+                                <v-text-field
+                                    label="Search"
+                                    outlined
+                                    dense
+                                    prepend-inner-icon="mdi-magnify"
+                                    hide-details="auto"
+                                    v-model="searchText"
+                                    @input="changeInput"
+                                    clearable
+                                >
+                                </v-text-field>
+
+                                <div style="max-height: 200px; overflow-y: auto">
+                                    <v-list>
+                                        <div v-for="item in agentList" :key="item.name">
+                                            <v-list-item @click="selectAgent(item.id)" :class="{ active: selectedAgentId === item.id }">
+                                                <v-list-item-title >{{ item.first_name + ' ' + item.last_name }}</v-list-item-title>
+                                            </v-list-item>
+                                        </div>        
+                                    </v-list>
+                                </div>
+                            </div>
+                        </div>
+
                         <v-btn
                             class="mt-2"
                             block
                             color="primary"
-                            @click="select"
+                            @click="onExport"
+                            :disabled="selectedType === 'individual' && !selectedAgentId"
                         >
                             Export
                         </v-btn>
@@ -95,10 +124,11 @@
 </template>
 
 <script>
-import { 
+import {
     getTodayString, getYesterdayString, getToday, isBefore, isAfter,
     getYesterday, getFormattedDateString, getFormattedDBDate, isSame
 } from '@scripts/services/DateRangeService';
+import CrmUserService from "@scripts/services/crm/CrmUserService";
 
 export default {
     name: "ReaReportModal",
@@ -108,6 +138,12 @@ export default {
         },
         dateRange: {
             require: true,
+        },
+        agencyId: {
+            require: true,
+        },
+        officeId: {
+            require: true,
         }
     },
     data() {
@@ -116,6 +152,10 @@ export default {
             dates: this.getDates(this.dateRange),
             selectedPreset: this.getPresetIndex(this.dateRange),
             selectedType: 'office',
+            searchText: '',
+            agentList: [],
+            selectedAgentId: null,
+            agentNotSelected: false,
         }
     },
     computed: {
@@ -187,7 +227,7 @@ export default {
         close() {
             this.$emit('close');
         },
-        select() {
+        onExport() {
             let selectedDate = {
                 start: getTodayString(),
                 end: getTodayString()
@@ -199,7 +239,12 @@ export default {
             } else {
                 selectedDate.start = this.dates[0], selectedDate.end = this.dates[0]
             }
-            this.$emit('select', selectedDate, this.selectedType);
+
+            if(this.selectedType === 'individual' && this.selectedAgentId === null) {
+                this.agentNotSelected = true;
+                return;
+            }
+            this.$emit('select', selectedDate, this.selectedType, this.selectedAgentId);
         },
         getFormattedDateRange(date1, date2) {
             return getFormattedDBDate(date1) + ' - ' + getFormattedDBDate(date2)
@@ -207,6 +252,34 @@ export default {
         changeType(type) {
             this.selectedType = type;
         },
+        async loadUserData() {
+            const meta = {
+                search: this.searchText,
+                page: 1,
+                per_page: 15,
+                is_descending: false,
+                sort_by: ""
+            };
+            console.log('bn', this.officeId);
+            const data = await CrmUserService.loadUserData(
+                meta,
+                // this.$route.params.id,
+                // this.$route.params.officeId
+                this.agencyId,
+                this.officeId
+
+            );
+            this.agentList = data?.usersAgency;
+        },
+        changeInput() {
+            this.loadUserData();
+        },
+        selectAgent(id) {
+            this.selectedAgentId = id;
+        }
+    },
+    async mounted() {
+        await this.loadUserData();
     },
     watch: {
         dates(dates) {
@@ -270,5 +343,8 @@ export default {
 }
 .spacer {
     height: 240px;
+}
+.active {
+    background-color: #91BAFF;
 }
 </style>
