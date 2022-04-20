@@ -160,6 +160,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'solar' => $utilityData->has_solar == 1 ? 'Y' : 'N',
                     'tariff_code' =>  '',
                     'buyback_rate' =>  $this->getBuyBackRate($utilityData->has_solar, $utilityData->state),
+                    'ea_go_neutral' => $utilityData->ea_go_neutral === 1 ? '1' : '0',
                 ];
             }
         );
@@ -265,6 +266,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
             'Solar Y/N',
             'Tariff Code',
             'Buyback Rate',
+            'Go Neutral',
         ];
     }
 

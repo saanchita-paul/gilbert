@@ -200,7 +200,8 @@ class ConnectionApplication extends Model
         'billing_street_name_only',
         'is_address_complete',
         'billing_is_address_complete',
-        'is_water_manual_submitting'
+        'is_water_manual_submitting',
+        'ea_go_neutral'
     ];
 
 
