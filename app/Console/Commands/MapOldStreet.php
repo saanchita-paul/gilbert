@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Services\SeparateStreetNameService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class MapOldStreet extends Command
 {
@@ -38,16 +39,30 @@ class MapOldStreet extends Command
      */
     public function handle()
     {
+        ini_set('memory_limit', "1024m" );
 
         $service = new SeparateStreetNameService();
         $result = $service->updateOldData();
 
-        $this->line('Failing Address Street Mapping');
-        $this->table(['Lead id', 'street name'], $result['failingLeads']);
-        $this->newLine(2);
-        $this->line('Successfully Street Mapped connections id');
-        $this->line(implode(', ', $result['successesStreetMappedLeads']));
-
+        foreach (array_chunk($result['failingLeads'], 100) as $key => $chunk) {
+            $this->log("Failed chunk ${key}: ", $chunk);
+        }
+//        $this->table(['Lead id', 'street name'], $result['failingLeads']);
+        $this->newLine();
+        $this->info('Success Count: ' .  sizeof($result['successesStreetMappedLeads']));
+        $this->newLine();
+        $this->error('Failed Count: ' .  sizeof($result['failingLeads']));
+        $this->info("Check storage/logs/custom/street_mapping.log for more details.");
         return 0;
     }
+
+
+    public function log(?string $message, $extra = [])
+    {
+        Log::build([
+            'driver' => 'single',
+            'path' => storage_path('logs/custom/street_mapping.log'),
+        ])->info($message, $extra);
+    }
+
 }

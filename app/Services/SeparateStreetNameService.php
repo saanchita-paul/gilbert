@@ -6,11 +6,15 @@ namespace App\Services;
 
 use App\Models\ConnectionApplication;
 use App\Services\Address\StreetTypeMapper;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class SeparateStreetNameService
 {
 
+    /**
+     * @var $leads ConnectionApplication
+     */
     private $leads;
 
     private $failingLeads = [];
@@ -21,14 +25,19 @@ class SeparateStreetNameService
     {
         $this->leads = ConnectionApplication::query()
             ->whereNull(['street_name_only', 'street_type'])
+            ->whereNotNull(['street_name'])
             ->get();
     }
 
     private function updateStreet()
     {
+        $progressBar = $this->getProgress($this->leads->count());
+        $progressBar->start();
 
         foreach ($this->leads as $lead)
         {
+            $progressBar->advance();
+
             $fullStreetName = $this->separateStreetName($lead->street_name);
             $lead->street_name_only = $fullStreetName['street_name_only'];
             $lead->street_type = $fullStreetName['street_type'];
@@ -41,6 +50,8 @@ class SeparateStreetNameService
             $this->successedStreetMappedLeads[] = $lead->id;
             $lead->save();
         }
+
+        $progressBar->finish();
     }
 
     private function separateStreetName($street_name): array
@@ -75,6 +86,16 @@ class SeparateStreetNameService
         info('mapped old street name ', $result);
 
         return $result;
+    }
+
+    private function getProgress($items = 0): ProgressBar
+    {
+        $out = new ConsoleOutput();
+        $out->writeln('<info>Separating street name and type</info>');
+        $p = new ProgressBar($out, $items);
+        $p->setFormat('<comment>%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%  %memory:6s%</comment>');
+
+        return $p;
     }
 
 
