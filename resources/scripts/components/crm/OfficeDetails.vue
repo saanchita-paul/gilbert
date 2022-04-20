@@ -15,30 +15,32 @@
                       :error-messages=" errors[0]"
                     ></v-text-field>
                   </ValidationProvider>
-                  <ValidationProvider name="address" rules="required"  v-slot="{ errors }">
-                      <v-menu offset-y v-model="showMenu">
-                          <template v-slot:activator="{ on }">
-                        <v-text-field label="Office Address*"
-                                      @input="updateOffice"
-                                      v-model = "office.address"
-                                      :error-messages=" errors[0]"
-                                      outlined dense
-                                      @keyup.native="onStreetChanged"
 
-                        ></v-text-field>
-                          </template>
-                          <v-list>
-                              <v-list-item
-                                  v-for="place in searchResult"
-                                  :key="place.place_id"
-                                  @click="onAddressSelected(place)"
-                              >
-                                  <v-list-item-title v-text="place.description">
-                                  </v-list-item-title>
-                              </v-list-item>
-                          </v-list>
-                      </v-menu>
-                  </ValidationProvider>
+                  <v-menu offset-y v-model="showMenu">
+                      <template v-slot:activator="{ on }">
+                        <ValidationProvider name="address" rules="required"  v-slot="{ errors }">
+                          <v-text-field
+                              label="Office Address*"
+                              @input="updateOffice"
+                              v-model = "office.address"
+                              :error-messages=" errors[0]"
+                              outlined dense
+                              @keyup.native="onStreetChanged"
+                          ></v-text-field>
+                        </ValidationProvider>
+                      </template>
+                      <v-list>
+                          <v-list-item
+                              v-for="place in searchResult"
+                              :key="place.place_id"
+                              @click="onAddressSelected(place)"
+                          >
+                              <v-list-item-title v-text="place.description">
+                              </v-list-item-title>
+                          </v-list-item>
+                      </v-list>
+                  </v-menu>
+                  
                   <ValidationProvider name="Contact" rules="required|cv-phone|length:10"  v-slot="{ errors }">
                       <v-text-field
                         v-model = "office.contact"
