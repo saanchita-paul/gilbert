@@ -5,6 +5,8 @@ namespace App\Modules\PropertyMe\Commands;
 use Exception;
 use Illuminate\Console\Command;
 use PropertyMe\Services\SaveAgentEmailService;
+use App\Notifications\ErrorLogNotification;
+use Illuminate\Support\Facades\Notification;
 
 class SetPropertyMeAgentEmailCommand extends Command
 {
@@ -22,6 +24,7 @@ class SetPropertyMeAgentEmailCommand extends Command
     protected $description = '';
 
     private $saveAgentEmailService;
+    protected array $noAgentLeads = [];
 
     /**
      * Create a new command instance.
@@ -45,6 +48,7 @@ class SetPropertyMeAgentEmailCommand extends Command
 
         $this->saveAgentEmailService = new SaveAgentEmailService();
         $this->getLeads();
+        $this->handleNoAgentLeads();
     }
 
     /** Fetching leads for all offices
@@ -100,6 +104,13 @@ class SetPropertyMeAgentEmailCommand extends Command
             $this->saveAgentEmailService->saveAgentId(data_get($lead, 'connection_application_id'), $agentId);
         } else {
             $this->line("No Agent ID found with Email: $agentEmail");
+            $this->noAgentLeads[] = [
+                'office_id' => data_get($lead, 'office_id'),
+                'Property_me_lead_id' => data_get($lead, 'property_me_id'),
+                'connection_application_id' => data_get($lead, 'connection_application_id'),
+                'lot_id' => data_get($lead, 'lot_id'),
+                'agent_email' => $agentEmail,
+            ];
         }
 
         $this->line(" ");
@@ -115,5 +126,33 @@ class SetPropertyMeAgentEmailCommand extends Command
 
         \Http::timeout($time_out);
         ini_set('memory_limit', $memory_limit );
+    }
+
+    /**
+     * handling failed to save leads
+     *
+     * @return void
+     */
+    public function handleNoAgentLeads()
+    {
+        if (sizeof($this->noAgentLeads) > 0) {
+            $this->sendErrorNotification();
+        }
+    }
+
+    private function sendErrorNotification()
+    {
+        $error_message = "";
+        foreach ($this->noAgentLeads as $lead) {
+            $error_message .= "Office: " . $lead['office_id'] . ", PropertyMe Id: " . $lead['Property_me_lead_id'] . ", Application Id: " . $lead['connection_application_id'] . ", Agent Email: " . $lead['agent_email'] . "\n";
+        }
+
+        $mgs = "The following Leads do not have any Agent associated with Provided email"
+        . "\n\n"
+            . "\n{$error_message}";
+
+        $emails = explode(',', config('property_me.support_emails'));
+
+        Notification::route('mail', $emails)->notify(new ErrorLogNotification($mgs, "PropertyMe leads without Agent"));
     }
 }
