@@ -170,9 +170,8 @@
                                          :key="provider.name" :selectedProvider="selectedPowerProvider" :provider="provider"></ServiceProvider>
                     </div>
 
-                    <div class="d-flex">
+                    <div v-if="selectedPowerProvider === 'ea'" class="d-flex">
                         <v-checkbox
-                            v-if="selectedPowerProvider === 'ea'"
                             v-model="leadSummary.ea_go_neutral"
                             @change="changeGoNeutral">
                         </v-checkbox>
