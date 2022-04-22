@@ -8,6 +8,7 @@ use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use App\Models\Identification;
 use App\Models\RejectionReason;
+use App\Services\Utility\StateMapService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -275,7 +276,8 @@ class SubmitWaterLeadToFastConnect
 
     private function getMappedState($state): string
     {
-        return $state ? SubmitWaterLeadToFastConnect::MAP_STATE[$state] : "";
+        // return $state ? SubmitWaterLeadToFastConnect::MAP_STATE[$state] : "";
+        return $state ? StateMapService::getShortName($state): "";
     }
 
     private function getMappedIdentificationType($type): int

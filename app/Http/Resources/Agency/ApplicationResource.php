@@ -5,6 +5,7 @@ namespace App\Http\Resources\Agency;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\User;
+use App\Services\Utility\StateMapService;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -36,7 +37,7 @@ class ApplicationResource extends JsonResource
             'street_address' => $this->street_address,
             'city' => $this->city,
             'postcode' => $this->postcode,
-            'state' => $this->state,
+            'state' => $this->getStateFull($this->state),
             'state_short' => $this->state_short,
             'country' => $this->country,
             'additional_instruction' => $this->additional_instruction,
@@ -72,7 +73,7 @@ class ApplicationResource extends JsonResource
             'billing_address_unit' => $this->billing_address_unit,
             'billing_street_address' => $this->billing_street_address,
             'billing_city' => $this->billing_city,
-            'billing_state' => $this->billing_state,
+            'billing_state' =>$this->getStateFull($this->billing_state),
             'billing_street_type' => $this->billing_street_type,
             'billing_postcode' => $this->billing_postcode,
             'is_billing_same' => $this->is_billing_same,
@@ -194,5 +195,22 @@ class ApplicationResource extends JsonResource
 
     private function submittedAt(){
         return $this->connectionServices?->pluck('submitted_at')?->sort()?->first();
+    }
+
+    /**
+     * Getting Full form of STATE
+     *
+     * @param string|null $state
+     *
+     * @return string|null
+     */
+    private function getStateFull(?string $state): ?string
+    {
+        try {
+            return StateMapService::getFullName($state);
+        } catch (\Exception $e) {
+            \Log::error("ApplicationResource " . $e->getMessage());
+            return null;
+        }
     }
 }
