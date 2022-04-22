@@ -4,6 +4,7 @@ namespace App\Modules\PropertyMe\Services;
 
 use App\Jobs\CreateHubspotProperty;
 use App\Models\AgentProfile;
+use App\Models\User;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\Identification;
@@ -108,7 +109,7 @@ class SaveToConnectionApplication
         {
             ApplicationNote::query()->create([
                 'connection_application_id' => $application->id,
-                'created_by' => $this->getCreatedById($lead) ?? 1,
+                'created_by' => $this->getCreatedByUserId($lead),
                 'text' => $this->extractNoteData($note_data, 'invalid_note_data'),
                 'type' => 'invalid_property_me_note',
                 'title' => 'Invalid PropertyMe Note',
@@ -240,6 +241,23 @@ class SaveToConnectionApplication
 
             $this->sendErrorNotification($lead->lead_id);
 
+            return null;
+        }
+    }
+
+    /**
+     * @param PropertyMeLead $lead
+     * @return int|null
+     */
+    private function getCreatedByUserId(PropertyMeLead $lead): ?int
+    {
+        try {
+            $user = User::where('email', $lead->agent_email)->firstOrFail();
+            return $user->id;
+        } catch (\Exception $exception) {
+            Log::error('PropertyMe: No Hood Agent exists with the email', [
+                'mgs' => $exception->getMessage(),
+            ]);
             return null;
         }
     }

@@ -9,6 +9,7 @@ use App\Modules\PropertyMe\Commands\SyncAgent;
 use Ignite\Commands\IgniteFetchCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Modules\PropertyMe\Commands\SetPropertyMeAgentEmailCommand;
 
 class Kernel extends ConsoleKernel
 {
@@ -23,6 +24,7 @@ class Kernel extends ConsoleKernel
         GetSellStatusCommand::class,
         UploadConnectionDataToSFTPCommand::class,
         IgniteFetchCommand::class,
+        SetPropertyMeAgentEmailCommand::class,
     ];
 
     /**

@@ -2,6 +2,7 @@
 
 namespace PropertyMe\Services;
 
+use App\Models\Office;
 use Exception;
 use Illuminate\Support\Facades\Http;
 
@@ -10,18 +11,20 @@ use Illuminate\Support\Facades\Http;
  */
 class AuthService
 {
+
     /**
      * @param array $states
      * @return string
      */
     public static function getOAuthUrl(array $states = []): string
     {
+        $version = config('property_me.client_version');
         $queries = [
             'response_type' => 'code',
             'state' => json_encode($states),
 //            'redirect_uri' => url('/home/callback'),
             'redirect_uri' => config('property_me.o_auth_callback_uri'),
-            'client_id' => config('property_me.client_id'),
+            'client_id' => config("property_me.client_id_${version}"),
             'scope' => 'activity:read communication:read contact:read property:read transaction:read offline_access'
         ];
 
@@ -41,8 +44,9 @@ class AuthService
 
         try {
             $response = Http::asForm()->withHeaders([
-                "Authorization" => static::getBasicAuth(),
+                "Authorization" => static::getDynamicBasicAuth($refreshToken),
             ])->post($url, $data);
+
             return data_get(json_decode($response->body(), true), 'access_token');
         } catch (Exception $exception) {
             throw new Exception("[AuthService:refreshToken] " . $exception->getMessage());
@@ -54,7 +58,11 @@ class AuthService
      */
     public static function getBasicAuth(): string
     {
-        return "Basic " . base64_encode(config('property_me.client_id') . ":" . config('property_me.client_secret'));
+        $version = config('property_me.client_version', "v2");
+        $id = config("property_me.client_id_${version}");
+        $secret = config("property_me.client_secret_${version}");
+
+        return "Basic " . base64_encode($id . ":" . $secret);
     }
 
 
@@ -72,5 +80,21 @@ class AuthService
                 'code' => $authCode
             ]);
         return json_decode($response->body())?->refresh_token;
+    }
+
+    /**
+     * Getting dynamic Basic Auth based property_me_client_version from Office
+     *
+     * @param string $refreshToken
+     *
+     * @return string
+     */
+    public static function getDynamicBasicAuth(string $refreshToken): string
+    {
+        $version = Office::where('property_me_refresh_token', $refreshToken)->first()?->property_me_client_version;
+        $id = config("property_me.client_id_${version}");
+        $secret = config("property_me.client_secret_${version}");
+
+        return "Basic " . base64_encode($id . ":" . $secret);
     }
 }
