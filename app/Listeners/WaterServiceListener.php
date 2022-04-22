@@ -23,12 +23,12 @@ class WaterServiceListener implements ShouldQueue
         //
     }
 
-    private function validateAddress($applicationId) : bool 
+    private function validateAddress($applicationId) : bool
     {
         $addressModel = new AddressModel(connection_application_id: $applicationId);
         $gbgService = new GBGServices($addressModel);
         $address = $gbgService->findAddressByText();
-        if ($address->getIsAddressComplete()) 
+        if ($address->getIsAddressComplete())
         {
             return true;
         } else
@@ -48,7 +48,7 @@ class WaterServiceListener implements ShouldQueue
     {
         try {
 
-        if (!$this->validateAddress($event->applicationId)) 
+        if (!$this->validateAddress($event->applicationId))
         {
             info("Water Service Listener: Address is not complete");
             // return;
@@ -96,12 +96,15 @@ class WaterServiceListener implements ShouldQueue
             }
         }
         } catch (\Exception $exception) {
-            ConnectionApplication::where('id', $event->applicationId)->update(['is_auto_water_submit' => 0 ]);
+            ConnectionApplication::where('id', $event->applicationId)->update([
+                'is_auto_water_submit' => 0,
+                'is_water_manual_submitting' => 0
+            ]);
 
             // Saving Failed reason and set Water status as Failed
+            $service = new SubmitWaterLeadToFastConnect($event->applicationId);
             $service->saveRejectionReason($exception->getMessage(), $event->applicationId, 'water');
             $service->setStatusFailed($event->applicationId, 'water');
-            $this->application->update(['is_water_manual_submitting' => 0]);
 
             // $this->sendEmail($exception->getMessage());
             WaterEmailService::sendEmailWhenSubmissionFails($exception->getMessage() , $event->applicationId);
@@ -137,7 +140,6 @@ class WaterServiceListener implements ShouldQueue
 
             // throw new \Exception('Water submission failed, Due to address issue');
         }
-
 
     }
 }
