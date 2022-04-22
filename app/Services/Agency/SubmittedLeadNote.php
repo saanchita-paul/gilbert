@@ -41,7 +41,8 @@ class SubmittedLeadNote
            'services' => $submittedService,
            'first_name' => $this->existLead?->first_name,
            'last_name' => $this->existLead?->last_name,
-           'application_id' => $this->existLead?->id
+           'application_id' => $this->existLead?->id,
+           'ea_go_neutral' => $this->existLead?->ea_go_neutral,
         ];
 
        return json_encode($leadData);

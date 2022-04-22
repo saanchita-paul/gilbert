@@ -17,6 +17,7 @@
         <p class="title mt-3">NMI:  <span class="note-data">{{note.leads.nmi}}</span></p>
         <p class="title">MIRN: <span class="note-data">{{note.leads.mirn}}</span></p>
         <p class="title mt-3">Supplier Name: <span class="note-data">{{note.leads.supplier}}</span></p>
+        <p class="title mt-3"> Go Neutral: <span class="note-data">{{ note.leads.ea_go_neutral === 1 ? "Yes" : "No" }}</span></p>
 
         <v-btn  outlined small
                 color="indigo" class="my-4" @click="showPlan">show Plan</v-btn>
