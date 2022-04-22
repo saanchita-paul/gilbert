@@ -46,7 +46,7 @@ class AuthService
             $response = Http::asForm()->withHeaders([
                 "Authorization" => static::getDynamicBasicAuth($refreshToken),
             ])->post($url, $data);
-            dump($response->json());
+
             return data_get(json_decode($response->body(), true), 'access_token');
         } catch (Exception $exception) {
             throw new Exception("[AuthService:refreshToken] " . $exception->getMessage());
@@ -94,7 +94,7 @@ class AuthService
         $version = Office::where('property_me_refresh_token', $refreshToken)->first()?->property_me_client_version;
         $id = config("property_me.client_id_${version}");
         $secret = config("property_me.client_secret_${version}");
-        dump($id, $secret);
+
         return "Basic " . base64_encode($id . ":" . $secret);
     }
 }
