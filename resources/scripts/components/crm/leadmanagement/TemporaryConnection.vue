@@ -1,12 +1,12 @@
 <template>
-    <div>
-        <v-col cols="12" v-if="leadSummary.is_temporary_connection">
+    <div v-if="leadSummary.is_temporary_connection">
+        <v-col cols="12">
             <b>
                 There is a request for temporary connection for this property.
             </b>
         </v-col>
-        <ValidationObserver ref="endConnection">
-            <v-col cols="12" v-if="leadSummary.is_temporary_connection">
+        <ValidationObserver ref="temporaryConnection">
+            <v-col cols="12">
                 <v-row>
                     <v-col cols="3" class="pt-5">
                         <b>Temp Connection</b>
@@ -55,6 +55,7 @@
 </template>
 
 <script>
+import { formatDate } from "@scripts/services/others/DateService";
 
 export default {
     name: "TemporaryConnection",
@@ -62,21 +63,34 @@ export default {
         leadSummary: {
             require: true
         },
-        modified_moving_date: {
-            require: true
-        },
-        connection_date_menu: {
-            require: true
-        },
-        moving_date: {
-            require: true
-        },
-
     },
     data() {
         return {
-             
+             connection_date_menu: false,
+             moving_date: null,
+             modified_moving_date: null,
         };
+    },
+    mounted() {
+        this.modified_moving_date = formatDate(this.leadSummary.moving_date);
+        this.moving_date = this.leadSummary.moving_date;
+
+        const updateMovingDate = async value => {
+            this.modified_moving_date = formatDate(value);
+            await this.$refs.temporaryConnection?.validate();
+        };
+
+        this.$eventBus.$on("update_temporary_date", updateMovingDate);
+        this.$once("hook:beforeDestroy", () => {
+            this.$eventBus.$off("update_temporary_date", updateMovingDate);
+        });
+    },
+    methods: {
+        updateMovingDate(value) {
+            this.connection_date_menu = false;
+            this.modified_moving_date = formatDate(this.moving_date)
+            this.$eventBus.$emit("update_moving_date", this.modified_moving_date)
+        },
     },
 };
 </script>

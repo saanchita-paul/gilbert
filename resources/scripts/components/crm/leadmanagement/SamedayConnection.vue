@@ -1,8 +1,5 @@
 <template>
-    <v-col
-        cols="12"
-        v-if="selectedPowerProvider === 'ea' && afterHourFlag && selected_plan"
-    >
+    <div>
         <p>
             <span class="font-weight-bold">Important:</span> You
             are about to submit a same-day connection.
@@ -36,17 +33,22 @@
                 ></v-radio>
             </v-radio-group>
         </v-container>
-    </v-col>
+    </div>             
 </template>
 
 <script>
 
 export default {
     name: "SameDayConnection",
-    data() {
-        return {
-
-        };
+    props: {
+        leadSummary: {
+            require: true
+        },
+    },
+    methods: {
+        changeAfterHourPayee() {
+            this.$emit("changeAfterHourPayee");
+        }
     }
 };
 </script>

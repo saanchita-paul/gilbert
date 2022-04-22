@@ -25,7 +25,7 @@
                         class="py-0 my-0 pl-4 service-status active-power-subtitle"
                         :class="{ dangerText: isWaterFailed }"
                     >
-                        {{ getwaterServiceStatus.text }}
+                        {{ getWaterServiceStatus.text }}
                     </p>
                 </v-card>
             </v-tab>
@@ -40,112 +40,14 @@
                         <p
                             class="py-0 my-0 pl-4 service-status active-power-subtitle active-power-subtitle"
                         >
-                            {{ getinternetServiceStatus }}
+                            {{ getInternetServiceStatus }}
                         </p>
                     </div>
                 </v-card>
             </v-tab>
 
             <v-tab-item>
-                <v-col cols="12" v-if="leadSummary.is_temporary_connection">
-                    <b>There is a request for temporary connection for this property.</b>
-                </v-col>
-                <ValidationObserver ref="endConnection">
-                    <v-col cols="12" v-if="leadSummary.is_temporary_connection">
-                        <v-row>
-                            <v-col cols="3" class="pt-5">
-                                <b>Temp Connection</b>
-                            </v-col>
-                            <v-col cols="4">
-                                <v-menu
-                                    v-model="connection_date_menu"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    transition="scale-transition"
-                                    offset-y
-                                    min-width="290px"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <ValidationProvider
-                                            name="Connection Date"
-                                            rules="required|valid-date|not-holiday:@h_state"
-                                            v-slot="{ errors }"
-                                        >
-                                            <v-text-field
-                                                placeholder="DD/MM/YYYY"
-                                                outlined
-                                                dense
-                                                v-bind="attrs"
-                                                append-icon="mdi-calendar"
-                                                v-model="modified_moving_date"
-                                                :error-messages="errors[0]"
-                                                hide-details="auto"
-                                            >
-                                                <template slot="append">
-                                                    <v-icon v-on="on">mdi-calendar</v-icon>
-                                                </template>
-                                            </v-text-field>
-                                        </ValidationProvider>
-                                    </template>
-                                    <v-date-picker
-                                        v-model="moving_date"
-                                        @input="updateMovingDate"
-                                    ></v-date-picker>
-                                </v-menu>
-                            </v-col>
-
-                            <v-col cols="1" v-if="false" class="pt-5">
-                                To
-                            </v-col>
-                            <v-col cols="4" v-if="false">
-                                <v-menu
-                                    v-model="connection_end_date_menu"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    transition="scale-transition"
-                                    offset-y
-                                    min-width="290px"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <ValidationProvider
-                                            name="Connection End Date"
-                                            rules="valid-date"
-                                            v-slot="{ errors }"
-                                        >
-                                            <v-text-field
-                                                placeholder="DD/MM/YYYY"
-                                                outlined
-                                                dense
-                                                append-icon="mdi-calendar"
-                                                v-model="modified_connection_end_date"
-                                                v-bind="attrs"
-                                                :error-messages="errors[0]"
-                                                hide-details="auto"
-                                                @input="syncConnectionEndDate"
-                                            >
-                                                <template slot="append">
-                                                    <v-icon v-on="on">mdi-calendar</v-icon>
-                                                </template>
-                                            </v-text-field>
-                                        </ValidationProvider>
-                                    </template>
-                                    <v-date-picker
-                                        v-model="connection_end_date"
-                                        :min="moving_date"
-                                        @input="updateConnectionEndDate"
-                                    ></v-date-picker>
-                                </v-menu>
-                                <ValidationProvider name="h_state">
-                                    <v-text-field
-                                        v-model="leadSummary.state"
-                                        v-show="false"
-                                    />
-                                </ValidationProvider>
-                            </v-col>
-                        </v-row>
-                    </v-col>
-                </ValidationObserver>
-
+                <TemporaryConnection :leadSummary="leadSummary" />
                 <v-card>
                     <p class="sub-title ml-4 pt-5 mb-2">Service Applications</p>
                     <p class="ml-4 mb-0">Energy</p>
@@ -191,43 +93,8 @@
                         <v-divider></v-divider>
                     </v-col>
 
-                    <v-col
-                        cols="12"
-                        v-if="selectedPowerProvider === 'ea' && afterHourFlag && selected_plan"
-                    >
-                        <p>
-                            <span class="font-weight-bold">Important:</span> You
-                            are about to submit a same-day connection.
-                            Processing same-day connections to Energy Australia
-                            will incur same-day connection fee for the customer.
-                        </p>
-
-                        <p class="my-0">
-                            <span class="font-weight-bold">Note:</span> If
-                            customer doesn’t consent to pay, a new connection
-                            date (at least 2 business days from today) will have
-                            to be selected.
-                        </p>
-
-                        <v-container class="px-0" fluid>
-                            <p>
-                                Does the applicant consent to pay for the
-                                additional fees?
-                            </p>
-                            <v-radio-group
-                                v-model="leadSummary.after_hour_payee"
-                                @change="changeAfterHourPayee"
-                            >
-                                <v-radio
-                                    label="Yes, applicant consents to pay"
-                                    value="applicant"
-                                ></v-radio>
-                                <v-radio
-                                    label="Hood will pay for the same-day connection fee"
-                                    value="hood"
-                                ></v-radio>
-                            </v-radio-group>
-                        </v-container>
+                    <v-col cols="12" v-if="selectedPowerProvider === 'ea' && afterHourFlag && selected_plan">
+                       <SameDayConnection :leadSummary="leadSummary" @changeAfterHourPayee="changeAfterHourPayee" />
                     </v-col>
 
                     <v-col cols="12">
@@ -396,8 +263,8 @@ import ServiceProvideres from "@scripts/data/ServiceProvideres";
 import SumoService from "@scripts/services/crm/SumoService";
 import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails";
 import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
-import Spinner from "@scripts/plugins/Spinner";
-import { formatDate } from "@scripts/services/others/DateService";
+import TemporaryConnection from "@scripts/components/crm/leadmanagement/TemporaryConnection";
+import SameDayConnection from "@scripts/components/crm/leadmanagement/SameDayConnection";
 
 export default {
     name: "ServiceApplications",
@@ -412,7 +279,9 @@ export default {
         EnergyService,
         EnergyPlanDetails,
         InternetPlanDetails,
-        SoleDetails
+        SoleDetails,
+        TemporaryConnection,
+        SameDayConnection
     },
     props: {
         leadSummary: {
@@ -484,14 +353,8 @@ export default {
                 isError: false,
                 errorMsg: ""
             },
-
             connection_date_menu: false,
-            connection_end_date_menu: false,
-            connection_end_date: null,
-            moving_date: null,
             minConnectionDate: null,
-            modified_moving_date: null,
-            modified_connection_end_date: null,
             isWaterFailed: false,
             who_pay: "hood"
         };
@@ -534,7 +397,7 @@ export default {
                 ? this.sumo
                 : [];
         },
-        getwaterServiceStatus() {
+        getWaterServiceStatus() {
             const status = LeadApplicationService.mapStatus(
                 leadApplicationService.getServiceObj(
                     this.leadSummary.connection_services,
@@ -546,10 +409,7 @@ export default {
                 : (this.isWaterFailed = false);
             return status;
         },
-        getenegryServiceStatus() {
-            return this.getServiceStatus("energy");
-        },
-        getinternetServiceStatus() {
+        getInternetServiceStatus() {
             return this.getServiceStatus("internet");
         },
         providers() {
@@ -577,14 +437,6 @@ export default {
         }
     },
     mounted() {
-        this.modified_moving_date = formatDate(this.leadSummary.moving_date);
-        this.moving_date = this.leadSummary.moving_date;
-
-        this.modified_connection_end_date = formatDate(
-            this.leadSummary.connection_end_date
-        );
-        this.connection_end_date = this.leadSummary.connection_end_date;
-
         this.loadServiceProvider();
         this.loadPlan();
         this.loadSelectedPowerProvider();
@@ -594,16 +446,9 @@ export default {
                 this.$eventBus.$emit("validate", this.setSumoDetailsData);
             }
         };
-        const updateMovingDate = async value => {
-            this.modified_moving_date = formatDate(value);
-            await this.$refs.endConnection?.validate();
-        };
-
         this.$eventBus.$on("address_updated", updateAddress);
-        this.$eventBus.$on("update_temporary_date", updateMovingDate);
         this.$once("hook:beforeDestroy", () => {
             this.$eventBus.$off("address_updated", updateAddress);
-            this.$eventBus.$off("update_temporary_date", updateMovingDate);
         });
     },
     methods: {
@@ -764,28 +609,28 @@ export default {
             return "Connected";
         },
         mapStatus(statusCode) {
-            let statustext = "";
+            let statusText = "";
             switch (statusCode) {
                 case 4:
-                    statustext = "Submitted";
+                    statusText = "Submitted";
                     break;
                 case 5:
-                    statustext = "Connected";
+                    statusText = "Connected";
                     break;
                 case 7:
-                    statustext = "In Progress";
+                    statusText = "In Progress";
                     break;
                 case 9:
-                    statustext = "Can not Connect";
+                    statusText = "Can not Connect";
                     break;
                 case 10:
-                    statustext = "Needs more info";
+                    statusText = "Needs more info";
                     break;
                 default:
                     break;
             }
 
-            return statustext;
+            return statusText;
         },
         onSelectProvider(providerId) {
             this.resetSelectedPlan();
@@ -921,64 +766,8 @@ export default {
             }
             this.$eventBus.$emit("busWaterSubmit", subType);
         },
-        updateMovingDate(value) {
-            this.updateConnecitionEndNullDate();
-            this.connection_date_menu = false;
-            this.modified_moving_date = formatDate(this.moving_date);
-            this.$eventBus.$emit(
-                "update_moving_date",
-                this.modified_moving_date
-            );
-        },
-        updateConnecitionEndNullDate() {
-            this.modified_connection_end_date = null;
-            this.connection_end_date = null;
-            LeadApplicationService.updateConnecitionEndNullDate(
-                this.leadSummary.id
-            );
-        },
-        updateConnectionEndDate(value) {
-            this.modified_connection_end_date = formatDate(
-                this.connection_end_date
-            );
-            this.connection_end_date_menu = false;
-            if (
-                !formatDate(this.connection_end_date) &&
-                this.connection_end_date == ""
-            ) {
-                this.updateConnecitionEndNullDate();
-            }
-            if (formatDate(this.connection_end_date)) {
-                this.$eventBus.$emit(
-                    "update_connection_end_date",
-                    this.modified_connection_end_date
-                );
-            }
-        },
-        syncConnectionEndDate(value) {
-            this.connection_end_date_menu = false;
-            this.modified_connection_end_date = formatDate(value)
-                ? formatDate(value)
-                : this.modified_connection_end_date;
-            if (!formatDate(value) && value == "") {
-                this.updateConnecitionEndNullDate();
-            }
-            if (formatDate(value)) {
-                this.$eventBus.$emit(
-                    "update_connection_end_date",
-                    this.modified_connection_end_date
-                );
-            }
-        },
         changeAfterHourPayee() {
-            this.$emit(
-                "updateDraft",
-                "after_hour_payee",
-                this.leadSummary.after_hour_payee,
-                false,
-                null,
-                false
-            );
+            this.$emit("updateDraft", "after_hour_payee", this.leadSummary.after_hour_payee, false, null, false);
         }
     }
 };
