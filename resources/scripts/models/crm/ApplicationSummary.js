@@ -57,7 +57,8 @@ export default class ApplicationSummary {
     agency_office = '';
     source= 0;
     after_hour_payee =  null;
-    created_by_agent = null
+    created_by_agent = null;
+    ea_go_neutral = null;
     constructor(
         {
             id = null,
@@ -131,6 +132,7 @@ export default class ApplicationSummary {
             billing_street_name_only = null,
             is_address_complete = null,
             billing_is_address_complete = null,
+            ea_go_neutral = null,
         }
     ) {
 
@@ -210,6 +212,7 @@ export default class ApplicationSummary {
         this.billing_street_name_only = billing_street_name_only
         this.is_address_complete = is_address_complete
         this.billing_is_address_complete = billing_is_address_complete
+        this.ea_go_neutral = ea_go_neutral
     }
 
     mapStreetType(type){

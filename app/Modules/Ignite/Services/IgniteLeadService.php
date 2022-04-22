@@ -9,6 +9,7 @@ use App\Models\Agency;
 use Ignite\Models\IgniteLead;
 use Illuminate\Support\Facades\Log;
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
 
 class IgniteLeadService
 {
@@ -126,7 +127,7 @@ class IgniteLeadService
                 $this->connectionApplication->connectionServices()->create(
                     [
                         'service_type' => $value ,
-                        'status'       => ConnectionApplication::STATUS_UNASSIGNED ,
+                        'status'       => ConnectionService::STATUS_EA_PROCESSINF,
                     ]
                 );
             }

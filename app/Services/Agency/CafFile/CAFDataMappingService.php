@@ -156,10 +156,10 @@ class CAFDataMappingService implements FromCollection, WithHeadings
                     'gas_reason' => '',
                     'quote_id_elec' => '',
                     'quote_id_gas' => '',
-                    'go_neutral' => 'N',
                     'solar' => $utilityData->has_solar == 1 ? 'Y' : 'N',
                     'tariff_code' =>  '',
                     'buyback_rate' =>  $this->getBuyBackRate($utilityData->has_solar, $utilityData->state),
+                    'ea_go_neutral' => $utilityData->ea_go_neutral === 1 ? '1' : '0',
                 ];
             }
         );
@@ -261,10 +261,10 @@ class CAFDataMappingService implements FromCollection, WithHeadings
             'Gas  Reason',
             'Quote ID - Elec',
             'Quote ID - Gas',
-            'Go NeuTral',
             'Solar Y/N',
             'Tariff Code',
             'Buyback Rate',
+            'Go Neutral',
         ];
     }
 

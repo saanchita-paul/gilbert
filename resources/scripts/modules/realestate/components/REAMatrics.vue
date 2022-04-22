@@ -23,6 +23,8 @@
                 v-if="showReportModal"
                 :dialog="showReportModal"
                 :dateRange="dateRange"
+                :agencyId="agencyId"
+                :officeId="officeId"
                 @close="onCloseModal"
                 @select="onClickExport"
             />
@@ -89,6 +91,8 @@ export default {
                 start: getTodayString(),
                 end: getTodayString()
             },
+            officeId: this.$route.params.officeId,
+            agencyId: this.$route.params.id
         }
     },
     methods: {
@@ -128,10 +132,9 @@ export default {
         onCloseModal() {
             this.showReportModal = false;
         },
-        onClickExport(dateRange, reportType) {
-            let officeId = this.$route.params?.officeId;
+        onClickExport(dateRange, reportType, agentId) {
             window.open(
-                '/api/rea-extract/office-report?officeId='+officeId+'&reportType='+reportType+'&start='+dateRange.start+'&end='+dateRange.end,
+                '/api/rea-extract/report?officeId='+this.officeId+'&agentId='+agentId+'&reportType='+reportType+'&start='+dateRange.start+'&end='+dateRange.end,
                 '_blank'
             );
         }

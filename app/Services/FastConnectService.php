@@ -15,8 +15,10 @@ class FastConnectService
         $response = Http::withHeaders([
             'content-type' => 'application/json',
             'authorization' => \config('fastconnect.base64_key'),
+            // 'authorization' => "Basic bGl2ZV8ycUMxMU1ZTW9ZZURqeGlLMVJRc0hrU2o6SWRYNHZnUXoyMDZ0OWNjcFJqMlRvbTN4UU1MS0IzUXRWTDJxQ3d2NnE3SGx4OHQ1",
         ])
             ->post( \config('fastconnect.root_url') . \config('fastconnect.get_token_uri'));
+            // ->post("https://api.fastconnect.net.au/oauth/token?grant_type=client_credentials&scope=datafind");
 
         $this->accessToken = json_decode($response->body(), true)['access_token'];
 
@@ -42,7 +44,8 @@ class FastConnectService
                'authorization' => $authorization,
            ])
                ->withBody(json_encode($payload), 'application/json')
-               ->post(\config('fastconnect.root_url') . \config('fastconnect.search_nmi_mirn_uri'));
+               ->post(\config('fastconnect.root_url') . \config('fastconnect.search_nmi_mirn_uri')); //CHANGE
+            // ->post("https://api.fastconnect.net.au/api/datafind/address");
 
            $response_decoded = json_decode($response->body(), true);
            $mirn = NULL;
@@ -51,9 +54,9 @@ class FastConnectService
                $mirn = $response_decoded['mirn']['result'][0]['mirn'];
            }
 
-           if (!empty($response_decoded['nmi']['result'])) {
-               $nmi = $response_decoded['nmi']['result'][0]['nmi'];
-           }
+            if (!empty($response_decoded['nmi']['result']) && count($response_decoded['nmi']['result']) == 1) {
+                $nmi = $response_decoded['nmi']['result'][0]['nmi'];
+            }
 
            $error = $response_decoded['mirn']['error'] ?? $response_decoded['nmi']['error'];
            $no_result = empty($nmi) && empty($mirn);
