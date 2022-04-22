@@ -28,7 +28,7 @@ export default {
     methods:{
         submit(){
             // * this will ber fired on ApplicationDetailsPage
-            this.$eventBus.$emit("busWaterSubmit", 'water')
+            this.$eventBus.$emit("busUtilitySubmit", 'water')
         }
     },
     computed:{

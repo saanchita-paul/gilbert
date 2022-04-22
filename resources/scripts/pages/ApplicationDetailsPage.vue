@@ -454,20 +454,20 @@ export default {
               if(!v) return;
               callback('sumo');
           };
-        const busWaterSubmitEvent = async (type) => {
+        const busUtilitySubmitEvent = async (type) => {
               await this.submitConnection(type);
           }
 
 
         this.$eventBus.$on("validate", validateEvent);
-        this.$eventBus.$on("busWaterSubmit", busWaterSubmitEvent);
+        this.$eventBus.$on("busUtilitySubmit", busUtilitySubmitEvent);
 
         this.$once("hook:beforeDestroy", () => {
             this.$eventBus.$off("validate", validateEvent );
         });
 
         this.$once("hook:beforeDestroy", () => {
-            this.$eventBus.$off("busWaterSubmit", busWaterSubmitEvent);
+            this.$eventBus.$off("busUtilitySubmit", busUtilitySubmitEvent);
         });
 
 

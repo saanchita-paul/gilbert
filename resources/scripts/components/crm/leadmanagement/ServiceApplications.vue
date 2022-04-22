@@ -21,8 +21,7 @@
                             <v-icon color="blue">mdi-water</v-icon>Water
                         </span>
                     </p>
-                    <p
-                        class="py-0 my-0 pl-4 service-status active-power-subtitle"
+                    <p class="py-0 my-0 pl-4 service-status active-power-subtitle"
                         :class="{ dangerText: isWaterFailed }"
                     >
                         {{ getWaterServiceStatus.text }}
@@ -37,10 +36,9 @@
                                 <v-icon color="red">mdi-wifi</v-icon>Internet
                             </span>
                         </p>
-                        <p
-                            class="py-0 my-0 pl-4 service-status active-power-subtitle active-power-subtitle"
+                        <p class="py-0 my-0 pl-4 service-status active-power-subtitle"
                         >
-                            {{ getInternetServiceStatus }}
+                            {{ getInternetServiceStatus() }}
                         </p>
                     </div>
                 </v-card>
@@ -97,19 +95,14 @@
                        <SameDayConnection :leadSummary="leadSummary" @changeAfterHourPayee="changeAfterHourPayee" />
                     </v-col>
 
-                    <v-col cols="12">
-                        <v-divider></v-divider>
-                    </v-col>
+                    <v-divider></v-divider>
 
                     <v-col cols="12" ref="provider">
                         <p class="sub-title" v-if="selectPlanTitle.length > 0">
                             Select a plan for {{ selectPlanTitle }}
                         </p>
 
-                        <div
-                            class="d-flex"
-                            v-if="plansFlag && selectedPowerProvider === 'ea'"
-                        >
+                        <div class="d-flex" v-if="plansFlag && selectedPowerProvider === 'ea'">
                             <EnergyPlan
                                 v-for="plan in plans"
                                 :key="plan.key"
@@ -121,10 +114,7 @@
                             ></EnergyPlan>
                         </div>
 
-                        <div
-                            class="d-flex"
-                            v-if="plansFlag && selectedPowerProvider !== 'ea'"
-                        >
+                        <div class="d-flex" v-if="plansFlag && selectedPowerProvider !== 'ea'">
                             <div
                                 v-if="isSumoLoading"
                                 class="sumo-loading-container"
@@ -207,20 +197,15 @@
             <v-tab-item>
                 <WaterService
                     :leadSummary="leadSummary"
-                    @updateStatus="updateStatus"
                 ></WaterService>
             </v-tab-item>
             <v-tab-item>
                 <InternetService
                     :leadSummary="leadSummary"
-                    @updateStatus="updateStatus"
                 ></InternetService>
             </v-tab-item>
         </v-tabs>
-        <div
-            class="d-flex justify-end py-4 px-4"
-            style="width: 100%; background-color: white;"
-        >
+        <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
             <v-btn
                 :disabled="isDisable()"
                 color="#542E89"
@@ -409,9 +394,6 @@ export default {
                 : (this.isWaterFailed = false);
             return status;
         },
-        getInternetServiceStatus() {
-            return this.getServiceStatus("internet");
-        },
         providers() {
             return ServiceProvideres.filter(dt => {
                 return dt.service_type === "energy";
@@ -592,20 +574,7 @@ export default {
             this.planTypeForDetails = plan.key;
             this.viewPlanDialog = true;
         },
-        getServiceStatus(status) {
-            if (status === "water") {
-                const newServices = this.leadSummary?.connection_services?.find(
-                    svc => {
-                        return svc.service_type === "water";
-                    }
-                );
-
-                if (newServices) {
-                    return this.mapStatus(newServices.status);
-                }
-                return "Not Selected";
-            }
-
+        getInternetServiceStatus() {
             return "Connected";
         },
         mapStatus(statusCode) {
@@ -684,9 +653,6 @@ export default {
             this.origin2 = providerData.plans;
             this.selectedProviderId = name;
         },
-        updateStatus(text) {
-            this.waterStatus = text;
-        },
         selectPlan(plan, provider = null) {
             if (this.selectedPowerProvider === "ea") {
                 this.activeEaPlan = plan.name;
@@ -764,7 +730,7 @@ export default {
             } else {
                 subType = "internet";
             }
-            this.$eventBus.$emit("busWaterSubmit", subType);
+            this.$eventBus.$emit("busUtilitySubmit", subType);
         },
         changeAfterHourPayee() {
             this.$emit("updateDraft", "after_hour_payee", this.leadSummary.after_hour_payee, false, null, false);

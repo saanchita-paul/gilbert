@@ -775,7 +775,7 @@ export default {
             } else {
                 subType = 'internet';
             }
-            this.$eventBus.$emit("busWaterSubmit", subType)
+            this.$eventBus.$emit("busUtilitySubmit", subType)
         },
         updateMovingDate(value){
             this.updateConnecitionEndNullDate();
