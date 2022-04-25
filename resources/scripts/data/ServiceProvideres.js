@@ -2,6 +2,14 @@ import ProviderPlan from "@scripts/models/crm/ProviderPlan";
 
 export default [
     {
+        name: 'ea',
+        formatted_name: 'EA',
+        service_type: 'energy',
+        default_plan: null,
+        plans: [],
+        logo: '/assets/images/EA.png'
+    },
+    {
         name: 'origin',
         formatted_name: 'Origin',
         service_type: 'energy',

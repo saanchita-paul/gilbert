@@ -24,7 +24,7 @@
                     <p class="py-0 my-0 pl-4 service-status active-power-subtitle"
                         :class="{ dangerText: isWaterFailed }"
                     >
-                        {{ getWaterServiceStatus.text }}
+                        {{ getWaterStatus }}
                     </p>
                 </v-card>
             </v-tab>
@@ -38,7 +38,7 @@
                         </p>
                         <p class="py-0 my-0 pl-4 service-status active-power-subtitle"
                         >
-                            {{ getInternetServiceStatus() }}
+                            {{ getInternetStatus }}
                         </p>
                     </div>
                 </v-card>
@@ -47,9 +47,6 @@
             <v-tab-item>
                 <TemporaryConnection :leadSummary="leadSummary" />
                 <v-card>
-                    <p class="sub-title ml-4 pt-5 mb-2">Service Applications</p>
-                    <p class="ml-4 mb-0">Energy</p>
-
                     <v-col cols="12" class="service-box-area">
                         <div v-for="service in services" :key="service">
                             <EnergyService
@@ -70,16 +67,6 @@
                         <div class="d-flex align-content-lg-space-around mt-2">
                             <ServiceProvider
                                 @onSelectProvider="onSelectProvider(provider.name)"
-                                v-if="serviceProviderFlag"
-                                v-for="provider in serviceProvider"
-                                :key="provider.id"
-                                :selectedProvider="selectedPowerProvider"
-                                :provider="provider"
-                            ></ServiceProvider>
-
-                            <ServiceProvider
-                                @onSelectProvider="onSelectProvider1(provider.name)"
-                                v-if="serviceProviderFlag"
                                 v-for="provider in providers"
                                 :key="provider.name"
                                 :selectedProvider="selectedPowerProvider"
@@ -138,7 +125,7 @@
                             <div
                                 v-else
                                 class="d-flex"
-                                v-for="plan in origin2"
+                                v-for="plan in originPlans"
                                 :key="plan.name"
                             >
                                 <SumoPlan
@@ -280,56 +267,18 @@ export default {
         return {
             providerSpinner: null,
             services: ["Power", "Gas"],
-            serviceProviderFlag: false,
-            serviceProvider: [],
             plans: [],
             plansFlag: false,
             selectedPlanType: PLAN_TYPE_TOTAL,
             viewPlanDialog: false,
             planTypeForDetails: null,
             activeService: "energy",
-            origin: [
-                { text: "Origin Go", bg: "red", active: true, type: "origin" },
-                {
-                    text: "Origin Go Variable",
-                    bg: "blue",
-                    actSumoPlanDetailsive: false,
-                    type: "origin"
-                },
-                {
-                    text: "Origin Basic",
-                    bg: "orange",
-                    active: false,
-                    type: "origin"
-                }
-            ],
-            sumo: [
-                {
-                    text: "Sumo Saver",
-                    bg: "purple",
-                    active: true,
-                    type: "sumo"
-                },
-                {
-                    text: "Sumo ASSURE",
-                    bg: "blue",
-                    active: false,
-                    type: "sumo"
-                },
-                {
-                    text: "Sumo SELECT",
-                    bg: "green",
-                    active: false,
-                    type: "sumo"
-                }
-            ],
-            servicesNew: ["Energy", "Water", "NVN"],
             selectedProviderId: 1,
             selectedPowerProvider: "",
             activeOriginPlan: "",
             activeEaPlan: "",
             waterStatus: null,
-            origin2: null,
+            originPlans: null,
             selected_plan: null,
             solePlanDialog: false,
             sumoPlanDetails: new SumoPlanDetails({}),
@@ -338,10 +287,7 @@ export default {
                 isError: false,
                 errorMsg: ""
             },
-            connection_date_menu: false,
-            minConnectionDate: null,
-            isWaterFailed: false,
-            who_pay: "hood"
+            isWaterFailed: false
         };
     },
     computed: {
@@ -375,24 +321,18 @@ export default {
                 ? "Power"
                 : "";
         },
-        otherPlans() {
-            return this.selectedProviderId === 2
-                ? this.origin
-                : this.selectedProviderId === 3
-                ? this.sumo
-                : [];
-        },
-        getWaterServiceStatus() {
+        getWaterStatus() {
             const status = LeadApplicationService.mapStatus(
                 leadApplicationService.getServiceObj(
                     this.leadSummary.connection_services,
                     "water"
                 )?.status
             );
-            status.text === "Failed"
-                ? (this.isWaterFailed = true)
-                : (this.isWaterFailed = false);
-            return status;
+            status.text === "Failed" ? (this.isWaterFailed = true) : (this.isWaterFailed = false);
+            return status.text;
+        },
+        getInternetStatus() {
+            return 'Connected';
         },
         providers() {
             return ServiceProvideres.filter(dt => {
@@ -419,7 +359,6 @@ export default {
         }
     },
     mounted() {
-        this.loadServiceProvider();
         this.loadPlan();
         this.loadSelectedPowerProvider();
 
@@ -434,17 +373,6 @@ export default {
         });
     },
     methods: {
-        async isSameDayOrNextDayConnection() {
-            const afterHourFlag = await EAAfterHourService.calculateAfterHourFlag(
-                this.leadSummary.service_interests,
-                this.selectedPlanType,
-                this.leadSummary.postcode,
-                this.leadSummary.state,
-                this.leadSummary.moving_date
-            );
-
-            return afterHourFlag;
-        },
         getPlanType() {
             let plan = null;
             switch (this.selectedPowerProvider) {
@@ -452,7 +380,7 @@ export default {
                     plan = this.plans.find(p => p.key === this.activeEaPlan);
                     break;
                 case "origin":
-                    plan = this.origin2.find(
+                    plan = this.originPlans.find(
                         p => p.name === this.activeOriginPlan
                     );
                     break;
@@ -521,19 +449,6 @@ export default {
                 ? true
                 : false;
         },
-        async loadServiceProvider() {
-            this.serviceProvider = await LeadApplicationService.loadServiceProvider(
-                {
-                    service: {
-                        power: this.activePower,
-                        gas: this.activeGas,
-                        internet: this.activeInternet,
-                        water: this.activeWater
-                    }
-                }
-            );
-            this.serviceProviderFlag = true;
-        },
         async loadPlan() {
             const services = this.leadSummary.service_interests;
             if (services.includes("gas") || services.includes("power")) {
@@ -561,7 +476,7 @@ export default {
                     (service === "Gas" || service === "Power") &&
                     this.selectedPowerProvider === "sumo"
                 ) {
-                    this.onSelectProvider1("sumo");
+                    this.onSelectProvider("sumo");
                 }
 
                 this.$emit("updateService", service);
@@ -573,9 +488,6 @@ export default {
         view(plan) {
             this.planTypeForDetails = plan.key;
             this.viewPlanDialog = true;
-        },
-        getInternetServiceStatus() {
-            return "Connected";
         },
         mapStatus(statusCode) {
             let statusText = "";
@@ -600,10 +512,6 @@ export default {
             }
 
             return statusText;
-        },
-        onSelectProvider(providerId) {
-            this.resetSelectedPlan();
-            this.selectedPowerProvider = providerId;
         },
         async setSumoDetailsData(name) {
             this.isSumoLoading = true;
@@ -633,11 +541,11 @@ export default {
         resetSelectedPlan() {
             this.selected_plan = null;
         },
-        async onSelectProvider1(name) {
+        async onSelectProvider(name) {
             this.selectedPowerProvider = name;
             this.resetSelectedPlan();
-            // TODO need to decide if provider is
-            if (name === "sumo") {
+            if(name === "ea") {}
+            else if (name === "sumo") {
                 //listening on ApplicationDetailsPage component
                 this.$eventBus.$emit("validate", this.setSumoDetailsData);
                 // await this.setSumoDetailsData(name);
@@ -650,7 +558,7 @@ export default {
             const providerData = this.providers.find(pl => {
                 return pl.name === name;
             });
-            this.origin2 = providerData.plans;
+            this.originPlans = providerData.plans;
             this.selectedProviderId = name;
         },
         selectPlan(plan, provider = null) {
