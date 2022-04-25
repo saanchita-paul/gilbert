@@ -107,8 +107,9 @@ class ApplicationService
         $existingApplication->nmi = $address['nmi'];
         $existingApplication->is_billing_same = $address['is_billing_same'];
 
+      
 
-        if (!$address['is_billing_same']) {
+        if ($address['is_billing_same'] == 0 || $address['is_billing_same'] == null) {
             $existingApplication->billing_address_text = $address['billing_address_text'];
             $existingApplication->billing_state = $address['billing_state'];
             $existingApplication->billing_unit_number = $address['billing_unit_number'];
@@ -121,7 +122,18 @@ class ApplicationService
             $existingApplication->billing_postcode = empty($address['billing_postcode']) ? null : $address['billing_postcode'];
 ////            $existingApplication->billing_state = empty($address['billing_state']) ? null : $address['billing_state'] ;
 //            $existingApplication->billing_country = empty($address['billing_country']) ? null : $address['billing_country'] ;
-        }
+        } else {
+            $existingApplication->billing_address_text = $address['address_text'];
+            $existingApplication->billing_state = $address['state'];
+            $existingApplication->billing_unit_number = $address['unit_number'];
+            $existingApplication->billing_street_type = $address['street_type'];
+            $existingApplication->billing_street_address = $address['street_address'];
+            // $existingApplication->billing_street_name = $address['street_name'];
+            $existingApplication->billing_street_name_only = $address['street_name_only'];
+            $existingApplication->billing_street_number = empty($address['street_address']) ? null : $address['street_number'];
+            $existingApplication->billing_city = empty($address['city']) ? null : $address['city'];
+            $existingApplication->billing_postcode = empty($address['postcode']) ? null : $address['postcode'];
+        };
         $existingApplication->save();
 
         return $existingApplication;

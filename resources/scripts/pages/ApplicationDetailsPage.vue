@@ -289,9 +289,12 @@ export default {
         },
 
         isWaterUnavailable($submitType, $state, $tenantType) {
+
+            // console.log("I am checking ->", $state, $submitType)
+            
             const rightState = ['vic', 'victoria'].includes($state?.toLowerCase());
 
-            if($submitType === 'water' && rightState) {
+            if($submitType === 'water' && !rightState) {
                 this.preventSubmissionMessage = 'Water is not available outside Victoria';
                 return true;
             }
