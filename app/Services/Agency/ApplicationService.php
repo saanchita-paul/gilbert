@@ -12,7 +12,6 @@ use App\Models\Identification;
 use App\Models\User;
 use App\Services\RolePermission;
 use JetBrains\PhpStorm\ArrayShape;
-use Log;
 use TSA\Services\TsaSendAppliationService;
 
 class ApplicationService
@@ -111,7 +110,6 @@ class ApplicationService
       
 
         if ($address['is_billing_same'] == 0 || $address['is_billing_same'] == null) {
-            // Log::info("its 0 or null");
             $existingApplication->billing_address_text = $address['billing_address_text'];
             $existingApplication->billing_state = $address['billing_state'];
             $existingApplication->billing_unit_number = $address['billing_unit_number'];
