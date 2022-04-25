@@ -125,7 +125,7 @@
                             <div
                                 v-else
                                 class="d-flex"
-                                v-for="plan in originPlans"
+                                v-for="plan in nonEaPlans"
                                 :key="plan.name"
                             >
                                 <SumoPlan
@@ -265,7 +265,6 @@ export default {
     },
     data() {
         return {
-            providerSpinner: null,
             services: ["Power", "Gas"],
             eaPlans: [],
             plansFlag: false,
@@ -277,7 +276,7 @@ export default {
             selectedPowerProvider: "",
             activePlan: "",
             waterStatus: null,
-            originPlans: null,
+            nonEaPlans: null,
             selected_plan: null,
             solePlanDialog: false,
             sumoPlanDetails: new SumoPlanDetails({}),
@@ -412,7 +411,7 @@ export default {
                     plan = this.eaPlans.find(p => p.key === this.activePlan);
                     break;
                 case "origin":
-                    plan = this.originPlans.find( p => p.name === this.activePlan);
+                    plan = this.nonEaPlans.find( p => p.name === this.activePlan);
                     break;
                 default:
                     console.log("getPlanType:defaultCase",this.selectedPowerProvider);
@@ -553,7 +552,7 @@ export default {
             const providerData = this.providers.find(pl => {
                 return pl.name === name;
             });
-            this.originPlans = providerData.plans;
+            this.nonEaPlans = providerData.plans;
             this.selectedProviderId = name;
         },
         selectPlan(plan, provider = null) {

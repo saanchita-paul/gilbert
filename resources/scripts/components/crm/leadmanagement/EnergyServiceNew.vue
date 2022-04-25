@@ -1,140 +1,482 @@
 <template>
-        <div class="service-box" :class="{active: isActive(title), 'not-editable': !isServiceEditable }">
-            <p class="mb-0 font-weight-bold text-center"><v-icon :color="getColor(title)">{{icon}}</v-icon> {{title}}</p>
-            <p
-                v-if="this.statusObj"
-                class="ma-0 fontStyleStatus text-center"
-                :style="{color: this.statusObj.color}"
-            >{{this.statusObj.text}}
-            <p
-                v-else
-                class="ma-0 fontStyleStatus text-center"
-            > -
-            </p>
-            <p
-                class="ma-0 fontStyleStatus text-center"
-            >Quote ID: {{ this.quoteReference }}   
-            </p>
-            <p class="reason ma-0" v-for="reason in reasons" :key="reason">
-                {{reason}}
-            </p>
-        </div>
+    <div>
+        <TemporaryConnection :leadSummary="leadSummary" />
+        <v-card>
+            <v-col cols="12" class="service-box-area">
+                <div v-for="service in services" :key="service">
+                    <EnergyService
+                        @click.native="updateService(service)"
+                        :title="service"
+                        :lead-summary="leadSummary"
+                    >
+                    </EnergyService>
+                </div>
+            </v-col>
+            <v-col cols="12">
+                <v-divider></v-divider>
+            </v-col>
+            <v-col cols="12">
+                <p class="mb-0 sub-title">
+                    Which supplier would you like to connect with?
+                </p>
+                <div class="d-flex align-content-lg-space-around mt-2">
+                    <ServiceProvider
+                        @onSelectProvider="onSelectProvider(provider.name)"
+                        v-for="provider in providers"
+                        :key="provider.name"
+                        :selectedProvider="selectedPowerProvider"
+                        :provider="provider"
+                    ></ServiceProvider>
+                </div>
+            </v-col>
+            <v-col cols="12">
+                <v-divider></v-divider>
+            </v-col>
+
+            <v-col cols="12" v-if="selectedPowerProvider === 'ea' && afterHourFlag && selected_plan">
+                <SameDayConnection :leadSummary="leadSummary" @changeAfterHourPayee="changeAfterHourPayee" />
+            </v-col>
+
+            <v-divider></v-divider>
+
+            <v-col cols="12" ref="provider">
+                <p class="sub-title" v-if="selectedPlanTitle.length > 0">
+                    Select a plan for {{ selectedPlanTitle }}
+                </p>
+
+                <div class="d-flex" v-if="plansFlag && selectedPowerProvider === 'ea'">
+                    <EnergyPlan
+                        v-for="plan in eaPlans"
+                        :key="plan.key"
+                        :plan="plan"
+                        :selectedPlan="selected_plan"
+                        @selectPlan="planSelect"
+                        @view="view"
+                        @click.native="planSelect(plan, true)"
+                    ></EnergyPlan>
+                </div>
+
+                <div class="d-flex" v-if="plansFlag && selectedPowerProvider !== 'ea'">
+                    <div
+                        v-if="isSumoLoading"
+                        class="sumo-loading-container"
+                    >
+                        <v-progress-circular
+                            indeterminate
+                            color="primary"
+                        ></v-progress-circular>
+                    </div>
+                    <div
+                        v-else-if="sumoOptions.isError"
+                        class="d-flex justify-center"
+                        style="width: 100%"
+                    >
+                        <div
+                            class="text-center font-weight-bold red--text"
+                        >
+                            Something went wrong, Please retry.
+                        </div>
+                    </div>
+                    <div
+                        v-else
+                        class="d-flex"
+                        v-for="plan in nonEaPlans"
+                        :key="plan.name"
+                    >
+                        <SumoPlan
+                            :sumoPlanDetails="sumoPlanDetails"
+                            v-if="plan.name === 'sumo_saver'"
+                            :plan="plan"
+                            @soleDialog="soleDialog"
+                            @click.native="
+                                selectPlan(
+                                    {
+                                        ...plan,
+                                        ...{ name: sumoPlanName }
+                                    },
+                                    'sumo'
+                                )
+                            "
+                            :isActive="selected_plan"
+                        >
+                        </SumoPlan>
+                        <SolePlan
+                            v-else
+                            :plan="plan"
+                            @soleDialog="soleDialog"
+                            @click.native="selectPlan(plan)"
+                            :isActive="selected_plan"
+                        ></SolePlan>
+                    </div>
+                </div>
+            </v-col>
+            <v-dialog
+                v-model="viewPlanDialog"
+                max-width="500"
+                v-if="viewPlanDialog && planTypeForDetails"
+            >
+                <v-card>
+                    <EnergyPlanDetails
+                        :plan="planTypeForDetails"
+                        :postcode="leadSummary.postcode"
+                        :services="leadSummary.service_interests"
+                        :state="leadSummary.state"
+                    />
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="green darken-1"
+                            text
+                            @click="viewPlanDialog = false"
+                        >
+                            Close
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-card>
+    </div>
 </template>
 
 <script>
+import EnergyService from "@scripts/components/crm/leadmanagement/EnergyService";
+import ServiceProvider from "@scripts/components/crm/leadmanagement/ServiceProvider";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
+import EAPlanService from "@scripts/services/ea/EAPlanService";
+import { PLAN_TYPE_TOTAL } from "@scripts/models/ea/EnergyPlan";
+import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
+import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
+import SumoPlan from "@scripts/components/crm/leadmanagement/SumoPlan";
+import ServiceProvideres from "@scripts/data/ServiceProvideres";
+import SumoService from "@scripts/services/crm/SumoService";
+import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails";
+import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
+import TemporaryConnection from "@scripts/components/crm/leadmanagement/TemporaryConnection";
+import SameDayConnection from "@scripts/components/crm/leadmanagement/SameDayConnection";
 
 export default {
-    name: "EnergyService",
+    name: "EnergyServiceNew",
+    components: {
+        SumoPlan,
+        SolePlan,
+        EnergyPlan,
+        ServiceProvider,
+        EnergyService,
+        EnergyPlanDetails,
+        SoleDetails,
+        TemporaryConnection,
+        SameDayConnection
+    },
     props: {
-        title: {
-            require: true,
-        },
         leadSummary: {
+            require: true
+        },
+        afterHourFlag: {
             require: true
         }
     },
     data() {
         return {
-            icon: null,
-        }
+            services: ["Power", "Gas"],
+            eaPlans: [],
+            plansFlag: false,
+            selectedPlanType: PLAN_TYPE_TOTAL,
+            viewPlanDialog: false,
+            planTypeForDetails: null,
+            selectedProviderId: 1,
+            selectedPowerProvider: "",
+            activePlan: "",
+            nonEaPlans: null,
+            selected_plan: null,
+            solePlanDialog: false,
+            sumoPlanDetails: new SumoPlanDetails({}),
+            isSumoLoading: false,
+            sumoOptions: {
+                isError: false,
+                errorMsg: ""
+            },
+        };
     },
     computed: {
-        statusObj() {
-            return this.title && this.service ? LeadApplicationService.mapStatus(this.service.status) : null
-        },
-        service() {
-            if(this.title) {
-                return this.leadSummary.connection_services?.find(service => service.service_type === this.title.toLowerCase())
+        sumoPlanName() {
+            if (this.sumoPlanDetails) {
+                return this.sumoPlanDetails?.plan_name ?? "";
+            } else {
+                return "";
             }
-            return null
         },
-        quoteReference(){
-            return this.service?.quote_reference ? this.service.quote_reference : '-'
-        },
-        reasons() {
-            const reasons = this.service?.reasons;
-
-            if (Array.isArray(reasons)) {
-                return reasons.map(reason => reason?.reason_text || '')
+        selectedPlanTitle() {
+            const services = this.leadSummary.service_interests;
+            if (
+                services &&
+                services.includes("gas") &&
+                services.includes("power")
+            ) {
+                return "Power & Gas";
             }
-            return []
+            return services && services.includes("gas")
+                ? "Gas"
+                : services && services.includes("power")
+                ? "Power"
+                : "";
         },
-        isServiceEditable() {
-            return LeadApplicationService.canEditService(this.leadSummary.connection_services, this.title?.toLowerCase())
+        providers() {
+            return ServiceProvideres.filter(dt => {
+                return dt.service_type === "energy";
+            });
         },
-
     },
-    methods: {
-
-        isActive(service) {
-            return this.leadSummary.service_interests.includes(service.toLowerCase());
-        },
-
-        getColor(service) {
-            if (this.isActive(service)) {
-                if (service.toLowerCase() === 'power') {
-                    return 'yellow';
-                }
-                if (service.toLowerCase() === 'gas') {
-                    return 'orange';
-                }
-                if (service.toLowerCase() === 'internet') {
-                    return '#9C27B0';
-                }
-                if (service.toLowerCase() === 'water') {
-                    return 'blue';
-                }
-            }
-            return 'grey lighten-1';
-        },
-
-        setIcon(service) {
-            if (service.toLowerCase() === 'power') {
-                this.icon = 'mdi-flash'
-            }
-            if (service.toLowerCase() === 'gas') {
-                this.icon = 'mdi-fire'
-            }
-            if (service.toLowerCase() === 'internet') {
-                this.icon = 'mdi-wifi'
-            }
-            if (service.toLowerCase() === 'water') {
-                this.icon = 'mdi-water'
-            }
-        },
-
-        updateService(service) {
-            this.$emit('updateService', service);
+    watch: {
+        "leadSummary.service_interests"() {
+            this.loadPlan();
         }
     },
-
-
     mounted() {
-        this.setIcon(this.title);
-        console.log("service printing ..... ")
-        console.log(this.leadSummary.connection_services)
+        this.loadPlan();
+        this.loadSelectedPowerProvider();
+
+        const updateAddress = address => {
+            if (this.selectedPowerProvider === "sumo") {
+                this.$eventBus.$emit("validate", this.setSumoDetailsData);
+            }
+        };
+        this.$eventBus.$on("address_updated", updateAddress);
+        this.$once("hook:beforeDestroy", () => {
+            this.$eventBus.$off("address_updated", updateAddress);
+        });
+    },
+    methods: {
+        async loadPlan() {
+            const services = this.leadSummary.service_interests;
+            if (services.includes("gas") || services.includes("power")) {
+                this.eaPlans = await EAPlanService.getAllPlans({
+                    service_type: this.leadSummary.service_interests,
+                    postcode: this.leadSummary.postcode,
+                    state: this.leadSummary.state
+                });
+                this.plansFlag = true;
+                this.getPlanType();
+            } else {
+                this.plansFlag = false;
+            }
+        },
+        getPlanType() {
+            let plan = null;
+            switch (this.selectedPowerProvider) {
+                case "ea":
+                    plan = this.eaPlans.find(p => p.key === this.activePlan);
+                    break;
+                case "origin":
+                    plan = this.nonEaPlans.find( p => p.name === this.activePlan);
+                    break;
+                default:
+                    console.log("getPlanType:defaultCase",this.selectedPowerProvider);
+            }
+            this.$emit(
+                "updatePlan",
+                {
+                    ...plan,
+                    provider: this.selectedPowerProvider,
+                    service_area: "energy"
+                },
+                false
+            );
+        },
+        soleDialog() {
+            this.solePlanDialog = !this.solePlanDialog;
+        },
+        planSelect(plan, isManual = false) {
+            this.selectedPlanType = plan?.key;
+            this.activePlan = plan?.key;
+            let newPlan = {
+                name: plan.key,
+                service_area: "energy"
+            };
+            this.selectedProviderId = "ea";
+            this.selectPlan(newPlan);
+            this.selectedPlanType = plan?.key;
+            this.$emit(
+                "updatePlan",
+                {
+                    ...plan,
+                    provider: this.selectedProviderId,
+                    service_area: "energy"
+                },
+                isManual
+            );
+        },
+        isActive(service) {
+            return this.leadSummary.service_types.includes(
+                service.toLowerCase()
+            )
+                ? true
+                : false;
+        },
+        isServiceEditable(service) {
+            return LeadApplicationService.canEditService(
+                this.leadSummary.connection_services,
+                service?.toLowerCase()
+            );
+        },
+        updateService(service) {
+            this.resetSelectedPlan();
+            if (this.isServiceEditable(service)) {
+                if (
+                    (service === "Gas" || service === "Power") &&
+                    this.selectedPowerProvider === "sumo"
+                ) {
+                    this.onSelectProvider("sumo");
+                }
+
+                this.$emit("updateService", service);
+                if (this.selectedPowerProvider === "sumo") {
+                    this.$eventBus.$emit("validate", this.setSumoDetailsData);
+                }
+            }
+        },
+        view(plan) {
+            this.planTypeForDetails = plan.key;
+            this.viewPlanDialog = true;
+        },
+        mapStatus(statusCode) {
+            let statusText = "";
+            switch (statusCode) {
+                case 4:
+                    statusText = "Submitted";
+                    break;
+                case 5:
+                    statusText = "Connected";
+                    break;
+                case 7:
+                    statusText = "In Progress";
+                    break;
+                case 9:
+                    statusText = "Can not Connect";
+                    break;
+                case 10:
+                    statusText = "Needs more info";
+                    break;
+                default:
+                    break;
+            }
+
+            return statusText;
+        },
+        async setSumoDetailsData(name) {
+            this.isSumoLoading = true;
+            this.sumoPlanDetails = new SumoPlanDetails({});
+            this.sumoOptions.isError = false;
+            this.sumoOptions.errorMsg = "";
+            try {
+                let address = `${this.leadSummary.street_number} ${this.leadSummary.street_name_only} ${this.leadSummary.street_type} ${this.leadSummary.city} ${this.leadSummary.state} ${this.leadSummary.postcode}`;
+                this.sumoPlanDetails = await SumoService.getPlans(
+                    address,
+                    this.leadSummary.service_interests,
+                    this.leadSummary?.created_by_agent,
+                    this.leadSummary
+                );
+                this.actionOnSelectProvider(name);
+                this.isSumoLoading = false;
+                return 0;
+            } catch (error) {
+                this.sumoOptions.isError = true;
+                console.log("sumo fetch went wrong");
+                this.sumoOptions.errorMsg = "Something went wrong, retry";
+                this.sumoPlanDetails = new SumoPlanDetails();
+            } finally {
+                this.isSumoLoading = false;
+            }
+        },
+        resetSelectedPlan() {
+            this.selected_plan = null;
+        },
+        async onSelectProvider(name) {
+            this.selectedPowerProvider = name;
+            this.resetSelectedPlan();
+            if(name === "ea") {}
+            else if (name === "sumo") {
+                //listening on ApplicationDetailsPage component
+                this.$eventBus.$emit("validate", this.setSumoDetailsData);
+            } else {
+                this.isSumoLoading = false;
+                this.actionOnSelectProvider(name);
+            }
+        },
+        actionOnSelectProvider(name) {
+            const providerData = this.providers.find(pl => {
+                return pl.name === name;
+            });
+            this.nonEaPlans = providerData.plans;
+            this.selectedProviderId = name;
+        },
+        selectPlan(plan, provider = null) {
+            this.selected_plan = plan.name;
+            this.activePlan = plan.name;
+            //todo update provider array for sumo plan
+            let payload = {
+                service_type: this.leadSummary?.service_interests,
+                provider_name: this.selectedPowerProvider,
+                plan_type: plan.name,
+                service_area: "energy"
+            };
+
+            if (this.selectedPowerProvider !== "") {
+                LeadApplicationService.updateApplicationProviders(
+                    payload,
+                    this.leadSummary.id
+                );
+            }
+            this.$emit(
+                "updatePlan",
+                {
+                    active: false,
+                    key: plan.name,
+                    title: plan.title,
+                    provider: this.selectedProviderId
+                },
+                true
+            );
+        },
+        loadSelectedPowerProvider() {
+            const connectionService = this.leadSummary.connection_services.find(
+                data =>
+                    data.service_type === "power" || data.service_type === "gas"
+            );
+
+            this.selectedPowerProvider = connectionService?.provider_name;
+            this.selected_plan = connectionService?.plan_type;
+
+            if (this.selectedPowerProvider === "sumo") {
+                setTimeout(
+                    () =>
+                        this.$eventBus.$emit(
+                            "validate",
+                            this.setSumoDetailsData
+                        ),
+                    600
+                );
+            }
+
+            if (this.selectedPowerProvider === "ea") {
+                this.activePlan = connectionService?.plan_type;
+            }
+
+            if (this.selectedPowerProvider === "origin") {
+                this.activePlan = connectionService?.plan_type;
+                this.actionOnSelectProvider("origin");
+            }
+        },
+        changeAfterHourPayee() {
+            this.$emit("updateDraft", "after_hour_payee", this.leadSummary.after_hour_payee, false, null, false);
+        }
     }
-}
+};
 </script>
 
 <style scoped>
-.not-editable {
-    cursor: not-allowed;
-}
-.reason {
-    font-size: .8em;
-}
-.status {
-
-}
-.fontStyleStatus{
-    font-family: Roboto;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 13px;
-    letter-spacing: 0em;
+.sumo-loading-container {
+    flex: 1;
     text-align: center;
 }
 </style>
