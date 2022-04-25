@@ -85,13 +85,13 @@
                     <v-divider></v-divider>
 
                     <v-col cols="12" ref="provider">
-                        <p class="sub-title" v-if="selectPlanTitle.length > 0">
-                            Select a plan for {{ selectPlanTitle }}
+                        <p class="sub-title" v-if="selectedPlanTitle.length > 0">
+                            Select a plan for {{ selectedPlanTitle }}
                         </p>
 
                         <div class="d-flex" v-if="plansFlag && selectedPowerProvider === 'ea'">
                             <EnergyPlan
-                                v-for="plan in plans"
+                                v-for="plan in eaPlans"
                                 :key="plan.key"
                                 :plan="plan"
                                 :selectedPlan="selected_plan"
@@ -267,7 +267,7 @@ export default {
         return {
             providerSpinner: null,
             services: ["Power", "Gas"],
-            plans: [],
+            eaPlans: [],
             plansFlag: false,
             selectedPlanType: PLAN_TYPE_TOTAL,
             viewPlanDialog: false,
@@ -275,8 +275,7 @@ export default {
             activeService: "energy",
             selectedProviderId: 1,
             selectedPowerProvider: "",
-            activeOriginPlan: "",
-            activeEaPlan: "",
+            activePlan: "",
             waterStatus: null,
             originPlans: null,
             selected_plan: null,
@@ -306,7 +305,7 @@ export default {
                 return "";
             }
         },
-        selectPlanTitle() {
+        selectedPlanTitle() {
             const services = this.leadSummary.service_interests;
             if (
                 services &&
@@ -373,33 +372,6 @@ export default {
         });
     },
     methods: {
-        getPlanType() {
-            let plan = null;
-            switch (this.selectedPowerProvider) {
-                case "ea":
-                    plan = this.plans.find(p => p.key === this.activeEaPlan);
-                    break;
-                case "origin":
-                    plan = this.originPlans.find(
-                        p => p.name === this.activeOriginPlan
-                    );
-                    break;
-                default:
-                    console.log(
-                        "getPlanType:defaultCase",
-                        this.selectedPowerProvider
-                    );
-            }
-            this.$emit(
-                "updatePlan",
-                {
-                    ...plan,
-                    provider: this.selectedPowerProvider,
-                    service_area: "energy"
-                },
-                false
-            );
-        },
         isDisable() {
             switch (this.tab) {
                 case this.tabMapper.Water:
@@ -419,12 +391,50 @@ export default {
                     return true;
             }
         },
+        async loadPlan() {
+            const services = this.leadSummary.service_interests;
+            if (services.includes("gas") || services.includes("power")) {
+                this.eaPlans = await EAPlanService.getAllPlans({
+                    service_type: this.leadSummary.service_interests,
+                    postcode: this.leadSummary.postcode,
+                    state: this.leadSummary.state
+                });
+                this.plansFlag = true;
+                this.getPlanType();
+            } else {
+                this.plansFlag = false;
+            }
+        },
+        getPlanType() {
+            let plan = null;
+            switch (this.selectedPowerProvider) {
+                case "ea":
+                    plan = this.eaPlans.find(p => p.key === this.activePlan);
+                    break;
+                case "origin":
+                    plan = this.originPlans.find( p => p.name === this.activePlan);
+                    break;
+                default:
+                    console.log("getPlanType:defaultCase",this.selectedPowerProvider);
+            }
+            this.$emit(
+                "updatePlan",
+                {
+                    ...plan,
+                    provider: this.selectedPowerProvider,
+                    service_area: "energy"
+                },
+                false
+            );
+        },
+
+
         soleDialog() {
             this.solePlanDialog = !this.solePlanDialog;
         },
         planSelect(plan, isManual = false) {
             this.selectedPlanType = plan?.key;
-            this.activeEaPlan = plan?.key;
+            this.activePlan = plan?.key;
             let newPlan = {
                 name: plan.key,
                 service_area: "energy"
@@ -448,20 +458,6 @@ export default {
             )
                 ? true
                 : false;
-        },
-        async loadPlan() {
-            const services = this.leadSummary.service_interests;
-            if (services.includes("gas") || services.includes("power")) {
-                this.plans = await EAPlanService.getAllPlans({
-                    service_type: this.leadSummary.service_interests,
-                    postcode: this.leadSummary.postcode,
-                    state: this.leadSummary.state
-                });
-                this.plansFlag = true;
-                this.getPlanType();
-            } else {
-                this.plansFlag = false;
-            }
         },
         isServiceEditable(service) {
             return LeadApplicationService.canEditService(
@@ -531,8 +527,8 @@ export default {
                 return 0;
             } catch (error) {
                 this.sumoOptions.isError = true;
-                console.log("sumo sth went wrong");
-                this.sumoOptions.errorMsg = "Something weng wrong, retry";
+                console.log("sumo fetch went wrong");
+                this.sumoOptions.errorMsg = "Something went wrong, retry";
                 this.sumoPlanDetails = new SumoPlanDetails();
             } finally {
                 this.isSumoLoading = false;
@@ -548,7 +544,6 @@ export default {
             else if (name === "sumo") {
                 //listening on ApplicationDetailsPage component
                 this.$eventBus.$emit("validate", this.setSumoDetailsData);
-                // await this.setSumoDetailsData(name);
             } else {
                 this.isSumoLoading = false;
                 this.actionOnSelectProvider(name);
@@ -562,18 +557,8 @@ export default {
             this.selectedProviderId = name;
         },
         selectPlan(plan, provider = null) {
-            if (this.selectedPowerProvider === "ea") {
-                this.activeEaPlan = plan.name;
-                this.activeOriginPlan = "";
-            }
-
-            if (this.selectedPowerProvider === "origin") {
-                this.activeOriginPlan = plan.name;
-                this.activeEaPlan = "";
-            }
             this.selected_plan = plan.name;
-
-            this.activeOriginPlan = plan.name;
+            this.activePlan = plan.name;
             //todo update provider array for sumo plan
             let payload = {
                 service_type: this.leadSummary?.service_interests,
@@ -583,7 +568,6 @@ export default {
             };
 
             if (this.selectedPowerProvider !== "") {
-                this.activeOriginPlan = plan.name;
                 LeadApplicationService.updateApplicationProviders(
                     payload,
                     this.leadSummary.id
@@ -621,11 +605,11 @@ export default {
             }
 
             if (this.selectedPowerProvider === "ea") {
-                this.activeEaPlan = connectionService?.plan_type;
+                this.activePlan = connectionService?.plan_type;
             }
 
             if (this.selectedPowerProvider === "origin") {
-                this.activeOriginPlan = connectionService?.plan_type;
+                this.activePlan = connectionService?.plan_type;
                 this.actionOnSelectProvider("origin");
             }
         },
