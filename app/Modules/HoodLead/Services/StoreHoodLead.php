@@ -86,18 +86,17 @@ class StoreHoodLead
     private function saveApplication()
     {
         $office = Office::where('name', HoodLead::DEFAULT_OFFICE)->firstOrFail();
-
-        \Log::info("jamil", $this->requestData);
+        
         $app = new ConnectionApplication([
             'office_id' => $office->id,
             'agency_id' => $office->agency_id,
             'source' => ConnectionApplication::SOURCE_HOOD_LEAD,
             'status' => ConnectionApplication::STATUS_UNASSIGNED,
-            'first_name' => $this->requestData['first_name'] ?? null,
-            'last_name' => $this->requestData['last_name'] ?? null,
-            'phone' => $this->requestData['phone'] ?? null,
-            'email' => $this->requestData['email'] ?? null,
-            'postcode' => $this->requestData['postcode'] ?? null,
+            'first_name' => $this->requestData['properties']['firstname']['value'] ?? null,
+            'last_name' => $this->requestData['properties']['lastname']['value'] ?? null,
+            'phone' => $this->requestData['properties']['phone']['value'] ?? null,
+            'email' => $this->requestData['properties']['email']['value'] ?? null,
+            'postcode' => $this->requestData['properties']['postcode']['value'] ?? null,
         ]);
         $app->save();
 
