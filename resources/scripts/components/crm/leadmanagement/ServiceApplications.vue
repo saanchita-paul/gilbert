@@ -5,13 +5,24 @@
             height="75px"
             style="min-width: 200px !important;"
         >
-            <v-tab class="px-0 py-3 tab-capital-case">
+            <v-tab :class="{'not-editable': !isServiceEditable('Power') }" class="px-0 py-3 tab-capital-case">
                 <v-card class="hood-card" width="100%">
                     <p class="pt-2 pb-1 mb-0 services service-title">
                         <span class="ml-1">
-                            <v-icon color="yellow">mdi-flash</v-icon>Energy
+                            <v-icon color="yellow">mdi-flash</v-icon>Power
                         </span>
                     </p>
+                    <EnergyStatus :leadSummary="leadSummary" title="Power"/>
+                </v-card>
+            </v-tab>
+            <v-tab :class="{'not-editable': !isServiceEditable('Gas') }" class="px-0 py-3 tab-capital-case">
+                <v-card class="hood-card" width="100%">
+                    <p class="pt-2 pb-1 mb-0 services service-title">
+                        <span class="ml-1">
+                            <v-icon color="red">mdi-fire</v-icon>Gas
+                        </span>
+                    </p>
+                    <EnergyStatus :leadSummary="leadSummary" title="Gas"/>
                 </v-card>
             </v-tab>
             <v-tab class="px-0 py-3 tab-capital-case">
@@ -47,7 +58,7 @@
             <v-tab-item>
                 <TemporaryConnection :leadSummary="leadSummary" />
                 <v-card>
-                    <v-col cols="12" class="service-box-area">
+                    <!-- <v-col cols="12" class="service-box-area">
                         <div v-for="service in services" :key="service">
                             <EnergyService
                                 @click.native="updateService(service)"
@@ -56,7 +67,7 @@
                             >
                             </EnergyService>
                         </div>
-                    </v-col>
+                    </v-col> -->
                     <v-col cols="12">
                         <v-divider></v-divider>
                     </v-col>
@@ -182,6 +193,12 @@
                 </v-card>
             </v-tab-item>
             <v-tab-item>
+                <TemporaryConnection :leadSummary="leadSummary" />
+                <GasService
+                    :leadSummary="leadSummary"
+                ></GasService>
+            </v-tab-item>
+            <v-tab-item>
                 <WaterService
                     :leadSummary="leadSummary"
                 ></WaterService>
@@ -216,7 +233,6 @@
 </template>
 
 <script>
-import EnergyService from "@scripts/components/crm/leadmanagement/EnergyService";
 import ServiceProvider from "@scripts/components/crm/leadmanagement/ServiceProvider";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import leadApplicationService from "@scripts/services/crm/LeadApplicationService";
@@ -237,6 +253,8 @@ import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails";
 import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
 import TemporaryConnection from "@scripts/components/crm/leadmanagement/TemporaryConnection";
 import SameDayConnection from "@scripts/components/crm/leadmanagement/SameDayConnection";
+import EnergyStatus from "@scripts/components/crm/leadmanagement/EnergyStatus";
+import GasService from "@scripts/components/crm/leadmanagement/GasService";
 
 export default {
     name: "ServiceApplications",
@@ -248,12 +266,13 @@ export default {
         EnergyPlan,
         InternetPlan,
         ServiceProvider,
-        EnergyService,
         EnergyPlanDetails,
         InternetPlanDetails,
         SoleDetails,
         TemporaryConnection,
-        SameDayConnection
+        SameDayConnection,
+        EnergyStatus,
+        GasService
     },
     props: {
         leadSummary: {
@@ -265,7 +284,6 @@ export default {
     },
     data() {
         return {
-            services: ["Power", "Gas"],
             eaPlans: [],
             plansFlag: false,
             selectedPlanType: PLAN_TYPE_TOTAL,
@@ -339,7 +357,8 @@ export default {
         },
         tabMapper() {
             return {
-                Energy: 0,
+                Power: 0,
+                Gas: 0,
                 Water: 1,
                 Internet: 2
             };
@@ -377,7 +396,16 @@ export default {
                     return !LeadApplicationService.canSubmitWater(
                         this.leadSummary.connection_services
                     );
-                case this.tabMapper.Energy:
+                case this.tabMapper.Power:
+                    return (
+                        !LeadApplicationService.canSubmitEnergy(
+                            this.leadSummary.connection_services
+                        ) ||
+                        isNull(this.selectedPowerProvider) ||
+                        !this.selected_plan ||
+                        this.isPayeeSelectedForAfterHourSubmission
+                    );
+                case this.tabMapper.Gas:
                     return (
                         !LeadApplicationService.canSubmitEnergy(
                             this.leadSummary.connection_services
@@ -465,19 +493,17 @@ export default {
             );
         },
         updateService(service) {
-            this.resetSelectedPlan();
-            if (this.isServiceEditable(service)) {
-                if (
-                    (service === "Gas" || service === "Power") &&
-                    this.selectedPowerProvider === "sumo"
-                ) {
-                    this.onSelectProvider("sumo");
-                }
+            //call store set plan null
+            if (
+                (service === "Gas" || service === "Power") &&
+                this.selectedPowerProvider === "sumo"
+            ) {
+                this.onSelectProvider("sumo");
+            }
 
-                this.$emit("updateService", service);
-                if (this.selectedPowerProvider === "sumo") {
-                    this.$eventBus.$emit("validate", this.setSumoDetailsData);
-                }
+            this.$emit("updateService", service);
+            if (this.selectedPowerProvider === "sumo") {
+                this.$eventBus.$emit("validate", this.setSumoDetailsData);
             }
         },
         view(plan) {
@@ -614,9 +640,11 @@ export default {
         },
         submit() {
             let subType = "energy";
-            if (this.tabMapper.Energy === this.tab) {
+            if (this.tabMapper.Power === this.tab) {
                 subType = "energy";
-            } else if (this.tabMapper.Water === this.tab) {
+            } else if (this.tabMapper.Gas === this.tab) {
+                subType = "energy";
+            }  else if (this.tabMapper.Water === this.tab) {
                 subType = "water";
             } else {
                 subType = "internet";
@@ -649,5 +677,8 @@ export default {
 }
 .dangerText {
     color: red;
+}
+.not-editable {
+    cursor: not-allowed;
 }
 </style>
