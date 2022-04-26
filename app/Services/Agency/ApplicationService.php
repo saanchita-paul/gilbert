@@ -31,6 +31,33 @@ class ApplicationService
         $application['status'] = ConnectionApplication::STATUS_UNASSIGNED;
         $authizedPerson = $application['authorized_person'];
 
+        if($application['is_billing_same'] == 0 || $application['is_billing_same'] == null ) {
+
+            $application['billing_unit_number'] = $application['billing_unit_number'];
+            $application['billing_street_number'] = $application['billing_street_number'];
+            $application['billing_street_name_only'] = $application['billing_street_name_only'];
+            $application['billing_address_text'] = $application['billing_address_text'];
+            $application['billing_address_unit'] = $application['billing_address_unit'];
+            $application['billing_street_address'] = $application['billing_street_address'];
+            $application['billing_street_type'] = $application['billing_street_type'];
+            $application['billing_city'] = $application['billing_city'];
+            $application['billing_postcode'] = $application['billing_postcode'];
+            $application['billing_state'] = $application['billing_state'];
+            $application['billing_address_unit'] = $application['billing_address_unit'];
+        }
+        else {
+            $application['billing_unit_number'] = $application['unit_number'];
+            $application['billing_street_number'] = $application['street_number'];
+            $application['billing_street_name_only'] = $application['street_name_only'];
+            $application['billing_address_text'] = $application['address_text'];
+            $application['billing_address_unit'] = $application['address_unit'];
+            $application['billing_street_address'] = $application['street_address'];
+            $application['billing_street_type'] = $application['street_type'];
+            $application['billing_city'] = $application['city'];
+            $application['billing_postcode'] = $application['postcode'];
+            $application['billing_state'] = $application['state'];
+            $application['billing_address_unit'] = $application['address_unit'];
+        }
 
         /** @var $newApplication ConnectionApplication */
         $newApplication = ConnectionApplication::create($application);
