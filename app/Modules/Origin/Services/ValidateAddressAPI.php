@@ -49,10 +49,12 @@ class ValidateAddressAPI extends BaseOriginAPI
         if(empty($responseData))
             return false;
 
+        $validateData = $responseData['ValidateSupplyAddressesByExtID'];
+
         $formattedData = [
-            'addressID' => $responseData['OrderAddressID'],
-            'addressInfo' => $responseData['Address'],
-            'status' => self::MAP_ADDRESS_STATUS[$responseData['Status']] ?? 'invalid'
+            'addressID' => $validateData['OrderAddressID'],
+            'addressInfo' => $validateData['Address'],
+            'status' => self::MAP_ADDRESS_STATUS[$validateData['Status']] ?? 'invalid'
         ];
 
         return $formattedData;

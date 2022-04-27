@@ -52,9 +52,16 @@ class GetProductInfoAPI extends BaseOriginAPI
         if(empty($responseData))
             return false;
 
+        $productInfos = [];    
+        foreach($responseData['results'] as $info){
+            $productInfos[] = [
+                'productID' => $info['ProductID'],
+                'description' => $info['Description']    
+            ];
+        }
+
         $formattedData = [
-            'productID' => $responseData['ProductID'],
-            'description' => $responseData['Description']
+            'productInfos' => $productInfos,
         ];
 
         return $formattedData;

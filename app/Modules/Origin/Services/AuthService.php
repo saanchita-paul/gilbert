@@ -21,4 +21,21 @@ class AuthService
         return "Basic " . base64_encode($username . ":" . $password);
     }
 
+    /**
+     * @param string $authCode
+     * @return string|null
+     */
+    public static function getXCSRFToken(): ?string
+    {
+        $url = config('origin.endpoints.get_xcsrf_token');
+        $response = Http::withHeaders([
+                "Authorization" => static::getBasicAuth(),
+                "Accept" => "application/json",
+                "X-CSRF-Token" => "Fetch",
+            ])
+            ->get($url);
+
+        return $response->header('x-csrf-token') ?? null;
+    }
+
 }

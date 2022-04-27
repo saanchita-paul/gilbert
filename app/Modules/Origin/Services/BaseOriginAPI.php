@@ -49,7 +49,7 @@ class BaseOriginAPI
             Log::info(sprintf('Origin GET:%s - Success with response data:', $methodName));
             Log::info($responseData);
 
-            return $responseData;
+            return $responseData['d'];
         } catch (Exception $exception) {
             Log::error(sprintf('Origin GET:%s - FAILED (%s)', $methodName, $exception->getMessage()));
             Log::error($exception->getTraceAsString());
