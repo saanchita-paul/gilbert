@@ -2,10 +2,15 @@
     <v-app>
         <div fluid>
             <v-container fluid>
-               <v-card>
-                   <p> Test </p>
+               <v-card class="card-section">
+                   <div class="plan-title">
+                       <p> Origin Go </p>
+                       <hr class="orange-line">
+                       <p class="plan-text">Rates guaranteed for 12 months, simplified pricing, Everyday Rewards points</p>
+                   </div>
+                    <hr class="devider-hr">
+                   
                </v-card>
-
             </v-container>
 
         </div>
@@ -14,45 +19,46 @@
 
 <script>
 
-import AuthService from "@scripts/services/AuthService";
-
 export default {
     data() {
         return {
-            form: {
-                email: '',
-                password: '',
-                remember_me: false,
-            },
-            loginLoading: false,
-            isLoginFailed: false,
-            errors: null,
         }
     },
     mounted() {
-        console.log("AUTH", AuthService.isAuthenticated())
     },
 
     methods: {
-        async onLogin() {
-            this.isLoginFailed = false;
-            this.loginLoading = true;
-            if (!(await AuthService.login(this.form))) {
-                this.isLoginFailed = true;
-            } else {
-                //await this.$router.push({name: 'dashboard.utility'})
-            }
-            this.loginLoading = false;
-        },
-        async onSubmit() {
-            if (await this.$refs.observer.validate()) {
-                await this.onLogin()
-            }
-        }
     },
 }
 </script>
 
 <style scoped>
+.card-section {
+    width: 25%;
+}
+.plan-title {
+    padding-top: 8%;
+    padding-left: 6%;
+}
+hr.orange-line {
+      border-top: 4px solid red;
+      width: 20%;
+      margin-bottom: 4%;
+}
+hr.devider-hr {
+    width: 90%;
+    margin-left: 6%;
+    margin-right: 6%;
+}
+.plan-text {
+    color: #505050;
+    display: block;
+    font-size: 14px;
+    font-family: sans-serif;
+    line-height: 24px;
+    text-rendering: optimizeLegibility;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+}
 
 </style>
