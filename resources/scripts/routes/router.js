@@ -5,6 +5,8 @@ import NewDashboardLayout from "@scripts/layouts/DashboardLayout";
 
 import LoginPage from "@scripts/pages/auth/LoginPage";
 
+import OriginView from "@scripts/pages/auth/OriginView";
+
 import ForgotPasswordPage from "@scripts/pages/auth/ForgotPasswordPage";
 
 import ResetPasswordPage from "@scripts/pages/auth/ResetPasswordPage";
@@ -296,7 +298,15 @@ const router = new VueRouter({
            meta: {
                isProtected: false
            }
-        }
+        },
+        {
+            path: '/origin-view',
+            component: OriginView,
+            name: 'origin',
+            meta: {
+                isProtected: false
+            }
+        },
     ]
 })
 
