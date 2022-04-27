@@ -9,10 +9,48 @@
                        <p class="plan-text">Rates guaranteed for 12 months, simplified pricing, Everyday Rewards points</p>
                    </div>
                     <hr class="devider-hr">
-                   
+
+                    <div class="plan-title">
+                       <p class="font-weight-bold"> Electricity </p>
+                       <div class="pb-2">
+                           <p class="font-weight-bold orangeColor">13% off</p>
+                           <p class="plan-content">the reference price</p>
+                       </div>
+                       <div class="pb-2">
+                           <p class="font-weight-bold orangeColor">$1,212/year</p>
+                           <p class="plan-content">Estimated cost inc GST for an average household using 3900 kWh / yearly on a flat rate tariff in the Ausgrid network.</p>
+                       </div>
+                   </div>
+                    <hr class="devider-hr">
+
+                    <div class="plan-title">
+                       <p class="font-weight-bold"> Natural gas </p>
+                       <div class="pb-2">
+                           <p class="font-weight-bold orangeColor">Our 12 month fixed rates</p>
+                           <p class="font-weight-bold orangeColor">$827/year</p>
+                           <p class="plan-content">Estimated cost inc GST for a household using 20000 MJ / yearly in the Jemena network.</p>
+                       </div>
+                       <div class="pb-2">
+                           <p class="font-weight-bold orangeColor">$1,212/year</p>
+                           <p class="plan-content">Estimated cost inc GST for an average household using 3900 kWh / yearly on a flat rate tariff in the Ausgrid network.</p>
+                       </div>
+                   </div>
+                    <hr class="devider-hr">
+
+                    <div class="reward-card">
+                        <v-row>
+                            <v-col class="section-dialogs" cols="12">
+                                <div class="p-6 d-flex">
+                                    <p class="font-weight-bold sans-serif">Origin Everyday Rewards Plan</p>
+                                    <img class="width-25" src="https://res.cloudinary.com/originenergy/image/upload/v1606344623/43faa35315f4347eb9962d54418ce63f924a0150.png">
+                                </div>
+                            </v-col>
+                        </v-row>
+                        <p class="reward-card-text">Add your Everyday Rewards number to get 10k bonus points if you get both electricity and natural gas – that’s up to $50 off a future shop at Woolworths, BWS, Big W and more. Plus, ongoing points, 25% GreenPower and 100% Green Gas.</p>
+                    </div>
+
                </v-card>
             </v-container>
-
         </div>
     </v-app>
 </template>
@@ -34,21 +72,12 @@ export default {
 
 <style scoped>
 .card-section {
-    width: 25%;
+    width: 22%;
+    border-radius: 2%;
 }
 .plan-title {
     padding-top: 8%;
-    padding-left: 6%;
-}
-hr.orange-line {
-      border-top: 4px solid red;
-      width: 20%;
-      margin-bottom: 4%;
-}
-hr.devider-hr {
-    width: 90%;
-    margin-left: 6%;
-    margin-right: 6%;
+    padding-left: 8%;
 }
 .plan-text {
     color: #505050;
@@ -59,6 +88,43 @@ hr.devider-hr {
     text-rendering: optimizeLegibility;
     text-transform: none;
     -webkit-font-smoothing: antialiased;
+}
+.plan-content {
+    color: #505050;
+    font-size: 14px;
+    font-family: sans-serif;
+    margin-top: 0%;
+    padding-top: 0%;
+
+}
+hr.orange-line {
+      border-top: 4px solid red;
+      width: 20%;
+      margin-bottom: 4%;
+}
+hr.devider-hr {
+    width: 86%;
+    margin-left: 8%;
+    margin-right: 5%;
+    margin-top: 8%;
+    border-top: 1px solid #dfdfdf;
+}
+.orangeColor{
+    color: orangered;
+}
+img{
+    height: 20%;
+    width: 35%;
+}
+.reward-card{
+    background-color: rgb(252, 233, 240);
+    margin: 8%;
+    padding: 3%;
+}
+.reward-card-text {
+    padding-left: 4%;
+    word-wrap: normal;
+
 }
 
 </style>
