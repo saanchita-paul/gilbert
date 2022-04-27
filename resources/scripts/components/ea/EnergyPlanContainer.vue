@@ -19,6 +19,15 @@
                             <small>{{planDetails.disclaimer}}</small>
                         </p>
 
+                        <p  v-if="(plan === 'total_plan' || plan === 'no_frills')" class="pt-2 mb-4 small-text">
+                            <span  class="font-weight-bold">* If credit is offered </span> - This is 25% less than the reference price, Which includes the credit of $25)
+                            <span style="display: block" class="">
+                                This is just an estimate and your bills will be based on your actual usage over the year and your tariff type.
+                            </span>
+                        </p>
+
+
+
                     </div>
                     <v-divider></v-divider>
                     <p class="title font-weight-bold mt-3 mb-2">{{ planDetails.promotion_title }}</p>
@@ -36,7 +45,7 @@
                                 </v-icon>
                             </div>
                             <div>
-                                
+
                                 <p v-if="planDetails.state_distributor_discount.elec_credit_amount === '' || planDetails.state_distributor_discount.elec_credit_amount === null || planDetails.state_distributor_discount.elec_credit_amount === '0'" class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.electricity }}</span>
                                 </p>
                                 <p v-else class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.electricity }}  + ${{ planDetails.state_distributor_discount.elec_credit_amount}} credit </span>
