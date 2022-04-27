@@ -42,7 +42,7 @@ class ApplicationService
             $application['billing_city'] = $application['billing_city'];
             $application['billing_postcode'] = $application['billing_postcode'];
             $application['billing_state'] = $application['billing_state'];
-            $application['billing_address_unit'] = $application['billing_unit_number'] ?? null;
+            $application['billing_address_unit'] = $application['billing_unit_number'] ? $application['billing_unit_number'] : null;
         }
         else {
             $application['billing_unit_number'] = $application['unit_number'];
@@ -54,7 +54,7 @@ class ApplicationService
             $application['billing_city'] = $application['city'];
             $application['billing_postcode'] = $application['postcode'];
             $application['billing_state'] = $application['state'];
-            $application['billing_address_unit'] = $application['unit_number'] ?? null;
+            $application['billing_address_unit'] = $application['unit_number'] ? $application['unit_number'] : null;
         }
 
         /** @var $newApplication ConnectionApplication */
