@@ -45,6 +45,7 @@
                     :plan="plan"
                     :selectedPlan="selectedPlan"
                     @selectPlan="selectEAPlan"
+                    @view="openEaPlanDetails"
                     @click.native="selectEAPlan(plan, true)"
                 ></EnergyPlan>
             </div>
@@ -56,6 +57,7 @@
                     :plan="plan"
                     @click.native="selectPlan(plan)"
                     :isActive="selectedPlan"
+                    @soleDialog="toggleViewPlanDetails"
                 ></SolePlan>
             </div>
 
@@ -81,12 +83,42 @@
                         :sumoPlanDetails="sumoPlans"
                         :plan="plan"
                         :isActive="selectedPlan"
+                        @soleDialog="toggleViewPlanDetails"
                         @click.native="selectPlan({...plan, ...{ name: sumoPlanName }})"
                     >
                     </SumoPlan>
                 </div>
             </div>
         </v-col>
+
+        <v-dialog v-model="viewEaPlanDetails" max-width="500"
+            v-if="viewEaPlanDetails && eaPlanForDetails"
+        >
+            <v-card>
+                <EnergyPlanDetails
+                    :plan="eaPlanForDetails"
+                    :postcode="leadSummary.postcode"
+                    :services="leadSummary.service_interests"
+                    :state="leadSummary.state"
+                />
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" text @click="closeEaPlanDetails">
+                        Close
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="viewPlanDetails" max-width="1200">
+            <v-card>
+                <SoleDetails
+                    @soleDialog="toggleViewPlanDetails"
+                    :sumoPlanDetails="sumoPlans"
+                    :selectedPowerProvider="selectedProvider"
+                />
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
@@ -102,6 +134,8 @@ import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
 import SumoPlan from "@scripts/components/crm/leadmanagement/SumoPlan";
 import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
+import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails";
 
 export default {
     name: "GasService",
@@ -119,7 +153,9 @@ export default {
         SameDayConnection,
         EnergyPlan,
         SumoPlan,
-        SolePlan
+        SolePlan,
+        EnergyPlanDetails,
+        SoleDetails
     },
     data() {
         return {
@@ -128,10 +164,13 @@ export default {
             selectedPlan: null,
             eaPlans: [],
             isEaPlansLoaded: false,
+            viewEaPlanDetails: false,
+            eaPlanForDetails: null,
             sumoTemporaryPlans: [],
             sumoPlans: new SumoPlanDetails({}),
             isSumoPlansLoading: true,
             isSumoPlansLoadError: false,
+            viewPlanDetails: false,
             originPlans: [],
         };
     },
@@ -278,6 +317,16 @@ export default {
                 },
                 isManual
             );
+        },
+        openEaPlanDetails(plan) {
+            this.eaPlanForDetails = plan.key;
+            this.viewEaPlanDetails = true;
+        },
+        closeEaPlanDetails() {
+            this.viewEaPlanDetails = false;
+        },
+        toggleViewPlanDetails() {
+            this.viewPlanDetails = !this.viewPlanDetails;
         },
         changeAfterHourPayee() {
             this.$emit("changeAfterHourPayee");

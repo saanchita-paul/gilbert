@@ -180,11 +180,7 @@
                             />
                             <v-card-actions>
                                 <v-spacer></v-spacer>
-                                <v-btn
-                                    color="green darken-1"
-                                    text
-                                    @click="viewPlanDialog = false"
-                                >
+                                <v-btn color="green darken-1" text @click="viewPlanDialog = false">
                                     Close
                                 </v-btn>
                             </v-card-actions>
@@ -193,7 +189,6 @@
                 </v-card>
             </v-tab-item>
             <v-tab-item>
-                <TemporaryConnection :leadSummary="leadSummary" />
                 <GasService
                     :leadSummary="leadSummary"
                     :afterHourFlag="afterHourFlag"
