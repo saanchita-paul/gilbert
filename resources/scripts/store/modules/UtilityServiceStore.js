@@ -1,18 +1,14 @@
 export default {
     state: {
-        energyServices: [],
-        isBothServiceSelected: false,
+        isBothEnergySelected: false,
         powerProvider: null,
         gasProvider: null,
         powerPlan: null,
         gasPlan: null
     },
     getters: {
-        energyService: state => {
-            return state.energyService;
-        },
-        isBothServiceSelected: state => {
-            return state.isBothServiceSelected;
+        isBothEnergySelected: state => {
+            return state.isBothEnergySelected;
         },
         powerProvider: state => {
             return state.powerProvider;
@@ -28,11 +24,8 @@ export default {
         }
     },
     mutations: {
-        setEnergyService(state, service) {
-            state.energyService = service;
-        },
-        setIsBothServiceSelected(state, value) {
-            state.isBothServiceSelected = value;
+        isBothEnergySelected(state, value) {
+            state.isBothEnergySelected = value;
         },
         setPowerProvider(state, provider) {
             state.powerProvider = provider;

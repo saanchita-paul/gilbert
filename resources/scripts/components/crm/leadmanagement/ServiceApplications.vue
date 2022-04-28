@@ -58,7 +58,7 @@
             <v-tab-item>
                 <TemporaryConnection :leadSummary="leadSummary" />
                 <v-card>
-                    <!-- <v-col cols="12" class="service-box-area">
+                    <v-col cols="12" class="service-box-area">
                         <div v-for="service in services" :key="service">
                             <EnergyService
                                 @click.native="updateService(service)"
@@ -67,7 +67,7 @@
                             >
                             </EnergyService>
                         </div>
-                    </v-col> -->
+                    </v-col>
                     <v-col cols="12">
                         <v-divider></v-divider>
                     </v-col>
@@ -196,6 +196,9 @@
                 <TemporaryConnection :leadSummary="leadSummary" />
                 <GasService
                     :leadSummary="leadSummary"
+                    :afterHourFlag="afterHourFlag"
+                    @updatePlan="updatePlan"
+                    @changeAfterHourPayee="changeAfterHourPayee"
                 ></GasService>
             </v-tab-item>
             <v-tab-item>
@@ -255,6 +258,7 @@ import TemporaryConnection from "@scripts/components/crm/leadmanagement/Temporar
 import SameDayConnection from "@scripts/components/crm/leadmanagement/SameDayConnection";
 import EnergyStatus from "@scripts/components/crm/leadmanagement/EnergyStatus";
 import GasService from "@scripts/components/crm/leadmanagement/GasService";
+import EnergyService from "@scripts/components/crm/leadmanagement/EnergyService";
 
 export default {
     name: "ServiceApplications",
@@ -272,7 +276,8 @@ export default {
         TemporaryConnection,
         SameDayConnection,
         EnergyStatus,
-        GasService
+        GasService,
+        EnergyService
     },
     props: {
         leadSummary: {
@@ -303,7 +308,8 @@ export default {
                 isError: false,
                 errorMsg: ""
             },
-            isWaterFailed: false
+            isWaterFailed: false,
+            services: ['Power', 'Gas'],
         };
     },
     computed: {
@@ -493,7 +499,7 @@ export default {
             );
         },
         updateService(service) {
-            //call store set plan null
+            this.resetSelectedPlan();
             if (
                 (service === "Gas" || service === "Power") &&
                 this.selectedPowerProvider === "sumo"
@@ -653,6 +659,11 @@ export default {
         },
         changeAfterHourPayee() {
             this.$emit("updateDraft", "after_hour_payee", this.leadSummary.after_hour_payee, false, null, false);
+        },
+        // New ones
+        updatePlan(plan, isManual) {
+            console.log('updatePlan', plan);
+            this.$emit('updatePlan', plan, isManual);
         }
     }
 };

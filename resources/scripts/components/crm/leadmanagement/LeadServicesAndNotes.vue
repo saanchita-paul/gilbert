@@ -34,29 +34,24 @@ name: "LeadServicesAndNotes",
         ApplicationNotes
     },
     methods: {
-
-      updateDraft( field, value, isDate, identification, isManualChangeFlag) {
-        this.$emit('updateDraft', field, value, isDate, identification, isManualChangeFlag );
-      },
+        updateDraft( field, value, isDate, identification, isManualChangeFlag) {
+            this.$emit('updateDraft', field, value, isDate, identification, isManualChangeFlag );
+        },
         updatePlan(plan, isManual)
         {
             this.$emit('updatePlan', plan, isManual);
         },
-
         async saveNote(note) {
-          await LeadApplicationService.saveNote(note, this.leadSummary.id);
-          this.$emit('updateNote');
+            await LeadApplicationService.saveNote(note, this.leadSummary.id);
+            this.$emit('updateNote');
         },
         updateService(service)
         {
             this.$emit('updateService',service);
         }
-
-
     },
     mounted() {
-        console.log("printing lead summary")
-        console.log(this.leadSummary)
+        console.log("Lead summary", this.leadSummary)
     }
 }
 </script>
