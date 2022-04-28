@@ -17,7 +17,12 @@
                            <p class="plan-content">the reference price</p>
                        </div>
                        <div class="pb-2">
-                           <p class="font-weight-bold orangeColor">$1,212/year</p>
+                           <div class="d-flex">
+                               <p class="font-weight-bold orangeColor">$1,212/year</p>
+                                <v-icon aria-hidden="false" class="pl-2 pb-4">
+                                    mdi-alert-circle
+                                </v-icon>
+                           </div>
                            <p class="plan-content">Estimated cost inc GST for an average household using 3900 kWh / yearly on a flat rate tariff in the Ausgrid network.</p>
                        </div>
                    </div>
@@ -26,12 +31,15 @@
                     <div class="plan-title">
                        <p class="font-weight-bold"> Natural gas </p>
                        <div class="pb-2">
-                           <p class="font-weight-bold orangeColor">Our 12 month fixed rates</p>
-                           <p class="font-weight-bold orangeColor">$827/year</p>
-                           <p class="plan-content">Estimated cost inc GST for a household using 20000 MJ / yearly in the Jemena network.</p>
+                           <p class="orangeColor">Our 12 month fixed rates</p>
                        </div>
                        <div class="pb-2">
-                           <p class="font-weight-bold orangeColor">$1,212/year</p>
+                           <div class="d-flex">
+                               <p class="font-weight-bold orangeColor">$827/year</p>
+                                <v-icon aria-hidden="false" class="pl-1 pb-4">
+                                    mdi-alert-circle
+                                </v-icon>
+                           </div>
                            <p class="plan-content">Estimated cost inc GST for an average household using 3900 kWh / yearly on a flat rate tariff in the Ausgrid network.</p>
                        </div>
                    </div>
@@ -47,7 +55,52 @@
                             </v-col>
                         </v-row>
                         <p class="reward-card-text">Add your Everyday Rewards number to get 10k bonus points if you get both electricity and natural gas – that’s up to $50 off a future shop at Woolworths, BWS, Big W and more. Plus, ongoing points, 25% GreenPower and 100% Green Gas.</p>
+                        <div class="d-flex">
+                            <p class="pl-2">More on Everyday Rewards</p>
+                            <v-icon aria-hidden="false" class="pl-1 pb-4">
+                                mdi-alert-circle
+                            </v-icon>
+                        </div>
                     </div>
+                    <hr class="devider-hr">
+                    
+                    <v-expansion-panels>
+                            <v-expansion-panel color="red">
+                                 <v-expansion-panel-header class="font-weight-bold">
+                                    See electricity prices
+                                    <template v-slot:actions><v-icon color="orange">mdi-menu-down</v-icon></template> 
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <p class="plan-text">Showing rates for postcode 2000. For more accurate rates, enter your address.</p>
+                                    <div class="d-flex">
+                                        <p class="font-weight-bold">Supply Charge</p>
+                                        <v-icon aria-hidden="false" class="pl-1 pb-4">
+                                            mdi-progress-question
+                                        </v-icon>
+                                    </div>
+
+                                    <div class="d-flex">
+                                        <p class="plan-text">Daily Supply Charge</p>
+                                        <p class="pl-14 plan-text">76.99 c/day</p>
+                                    </div>
+
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                    </v-expansion-panels>
+                    <!-- <hr class="devider-hr"> -->
+                    
+                    <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    See natural gas prices
+                                    <template v-slot:actions><v-icon color="orange">mdi-menu-down</v-icon></template> 
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                    </v-expansion-panels>
+                    <!-- <hr> -->
 
                </v-card>
             </v-container>
@@ -118,13 +171,12 @@ img{
 }
 .reward-card{
     background-color: rgb(252, 233, 240);
-    margin: 8%;
-    padding: 3%;
+    margin: 8% 8% 12% 8%;
+    padding: 3% 3% 3% 3%;
 }
 .reward-card-text {
     padding-left: 4%;
     word-wrap: normal;
-
 }
 
 </style>
