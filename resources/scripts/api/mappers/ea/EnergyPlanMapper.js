@@ -48,6 +48,8 @@ export default {
         planDetails.plan_details = data.plan_details;
         planDetails.solar_buy_pack_rate = {...planDetails.solar_buy_pack_rate, ...data.solar_buy_pack_rate}
 
+        planDetails.state_distributor_discount = data.state_distributor_discount;
+
         return planDetails
     }
 }
