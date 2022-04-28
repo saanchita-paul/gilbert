@@ -22,12 +22,11 @@ class AuthService
     }
 
     /**
-     * @param string $authCode
      * @return string|null
      */
     public static function getXCSRFToken(): ?string
     {
-        $url = config('origin.endpoints.get_xcsrf_token');
+        $url = config('origin.baseurl') . config('origin.endpoints.get_xcsrf_token');
         $response = Http::withHeaders([
                 "Authorization" => static::getBasicAuth(),
                 "Accept" => "application/json",

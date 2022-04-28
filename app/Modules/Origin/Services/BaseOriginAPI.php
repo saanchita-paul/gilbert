@@ -57,13 +57,4 @@ class BaseOriginAPI
 
         return [];
     }
-
-    /**
-     *
-     */
-    protected function getTimestampTicks(int $day = null): string
-    {
-        $noOfDays = $day ?? (int) config('property_me.no_of_days');
-        return (now()->addDays(- $noOfDays)->timestamp * 10000000) + 621355968000000000;
-    }
 }

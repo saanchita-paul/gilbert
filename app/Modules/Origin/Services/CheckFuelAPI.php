@@ -28,6 +28,7 @@ class CheckFuelAPI extends BaseOriginAPI
 
     /**
      * @var string $option
+     * @var string $addressID
      */
     public function __construct(private string $option, private string $addressID)
     {
@@ -40,7 +41,7 @@ class CheckFuelAPI extends BaseOriginAPI
     /**
      * Check fuel availability from origin for an address 
      * 
-     * @return void
+     * @return array
      * 
      */
     public function fetch(){

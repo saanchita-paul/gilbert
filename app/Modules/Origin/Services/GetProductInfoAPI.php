@@ -36,7 +36,7 @@ class GetProductInfoAPI extends BaseOriginAPI
     /**
      * Get product info from origin 
      * 
-     * @return void
+     * @return array
      * 
      */
     public function fetch(){

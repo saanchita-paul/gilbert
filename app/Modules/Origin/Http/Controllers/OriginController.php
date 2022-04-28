@@ -13,6 +13,15 @@ use Origin\Services\CheckFuelAPI;
 
 class OriginController extends Controller
 {
+    /**
+     * Get product info from Origin
+     * 
+     * @param Request
+     * inputs:
+     * - option
+     * 
+     * @return JSON
+     */
     public function getProductInfo(Request $request) : JsonResponse{
         $option = $request->option ?? null;
         $validator = Validator::make($request->all(), [
@@ -55,6 +64,16 @@ class OriginController extends Controller
         }
     }
 
+    /**
+     * Validate address and get address ID from Origin
+     * 
+     * @param Request
+     * inputs:
+     * - option
+     * - number
+     * 
+     * @return JSON
+     */
     public function validateAddress(Request $request) : JsonResponse{
         $option = $request->option ?? null;
         $number = $request->number ?? null;
@@ -100,6 +119,16 @@ class OriginController extends Controller
         }
     }
 
+    /**
+     * Check fuel availability for an address
+     * 
+     * @param Request
+     * inputs :
+     * - option
+     * - addressid
+     * 
+     * @return JSON
+     */
     public function checkFuel(Request $request) : JsonResponse{
         $option = $request->option ?? null;
         $addressID = $request->addressid ?? null;

@@ -21,6 +21,7 @@ class ValidateAddressAPI extends BaseOriginAPI
 
     /**
      * @var string $option
+     * @var string $num_val
      */
     public function __construct(private string $option, private string $num_val)
     {
@@ -33,7 +34,7 @@ class ValidateAddressAPI extends BaseOriginAPI
     /**
      * Validate address from origin 
      * 
-     * @return void
+     * @return address
      * 
      */
     public function fetch(){
