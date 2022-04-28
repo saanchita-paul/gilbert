@@ -5,21 +5,28 @@ namespace Origin\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Origin\Services\GetProductInfoAPI;
+use Origin\Services\ValidateAddressAPI;
+use Origin\Services\CheckFuelAPI;
 
 class OriginController extends Controller
 {
     public function getProductInfo(Request $request) : JsonResponse{
         $option = $request->option ?? null;
+        $validator = Validator::make($request->all(), [
+            'option' => 'required|in:'.implode(",", array_keys(GetProductInfoAPI::MAP_PRODUCT_TYPE)),
+        ]);
 
-        if(empty($option)){
+        if($validator->fails()){
             $response = [
                 'status' => 'fail',
-                'message' => 'Please input your option [electricity || gas]',
+                'message' => $validator->errors()->messages(),
             ];
-            response()->json($response, 300);
+            return response()->json($response, 300);
         }
+
         try {
             $productInfo = new GetProductInfoAPI($option);
             $response = $productInfo->fetch();
@@ -27,11 +34,11 @@ class OriginController extends Controller
             if(!$response){
                 $response = [
                     'status' => 'fail',
-                    'message' => 'Invalid option or no exisiting product from Origin'
+                    'message' => 'No exisiting product from Origin'
                 ];
                 response()->json($response, 400);
             }
-
+            
             $response['status'] = 'success';
             $response['message'] = 'Get Product Info Successful';
 
@@ -39,6 +46,96 @@ class OriginController extends Controller
 
         } catch (\Exception $exception) {
             Log::error( "Error in OriginController, getProductInfo method" , [ 'message' => $exception->getMessage()]);
+            Log::error($exception->getTraceAsString());
+            $response =  [
+                'status' => 'fail',
+                'message' => "Oops please try again"
+            ];
+            return response()->json($response , 500);
+        }
+    }
+
+    public function validateAddress(Request $request) : JsonResponse{
+        $option = $request->option ?? null;
+        $number = $request->number ?? null;
+
+        $validator = Validator::make($request->all(), [
+            'option' => 'required|in:'.implode(",", array_keys(ValidateAddressAPI::MAP_VALIDATE_TYPE)),
+            'number' => 'required|integer'
+        ]);
+
+        if($validator->fails()){
+            $response = [
+                'status' => 'fail',
+                'message' => $validator->errors()->messages(),
+            ];
+            return response()->json($response, 300);
+        }
+
+        try {
+            $validateAddress = new ValidateAddressAPI($option, $number);
+            $response = $validateAddress->fetch();
+
+            if(!$response){
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'Address is not valid'
+                ];
+                response()->json($response, 400);
+            }
+
+            $response['status'] = 'success';
+            $response['message'] = 'Validate Address Successful';
+
+            return response()->json($response, 200);
+
+        } catch (\Exception $exception) {
+            Log::error( "Error in OriginController, ValidateAddress method" , [ 'message' => $exception->getMessage()]);
+            Log::error($exception->getTraceAsString());
+            $response =  [
+                'status' => 'fail',
+                'message' => "Oops please try again"
+            ];
+            return response()->json($response , 500);
+        }
+    }
+
+    public function checkFuel(Request $request) : JsonResponse{
+        $option = $request->option ?? null;
+        $addressID = $request->addressid ?? null;
+
+        $validator = Validator::make($request->all(), [
+            'option' => 'required|in:'.implode(",", array_keys(CheckFuelAPI::MAP_CUSTOMER_TYPE)),
+            'addressid' => 'required'
+        ]);
+
+        if($validator->fails()){
+            $response = [
+                'status' => 'fail',
+                'message' => $validator->errors()->messages(),
+            ];
+            return response()->json($response, 300);
+        }
+
+        try {
+            $checkFuel = new CheckFuelAPI($option, $addressID);
+            $response = $checkFuel->fetch();
+
+            if(!$response){
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'Fuel for address is not available'
+                ];
+                return response()->json($response, 400);
+            }
+
+            $response['status'] = 'success';
+            $response['message'] = 'Check Fuel Availability Successful';
+
+            return response()->json($response, 200);
+
+        } catch (\Exception $exception) {
+            Log::error( "Error in OriginController, CheckFuel method" , [ 'message' => $exception->getMessage()]);
             Log::error($exception->getTraceAsString());
             $response =  [
                 'status' => 'fail',

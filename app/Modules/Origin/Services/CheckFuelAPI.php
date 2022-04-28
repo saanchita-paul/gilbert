@@ -31,7 +31,8 @@ class CheckFuelAPI extends BaseOriginAPI
      */
     public function __construct(private string $option, private string $addressID)
     {
-        if(in_array($this->option, self::MAP_CUSTOMER_TYPE)){
+        parent::__construct();
+        if(in_array($this->option, array_keys(self::MAP_CUSTOMER_TYPE))){
             $this->option = self::MAP_CUSTOMER_TYPE[$this->option];
         } 
     }
@@ -48,8 +49,8 @@ class CheckFuelAPI extends BaseOriginAPI
         
         $url = config('origin.baseurl') . config('origin.endpoints.check_fuel');
         $params = [
-            'CustomerTypeID' => $this->option,
-            'OrderAddressID' => $this->addressID,
+            'CustomerTypeID' => sprintf('\'%s\'', $this->option),
+            'OrderAddressID' => sprintf('\'%s\'', $this->addressID),
         ];
 
         $responseData = $this->getApi($url, $params, self::METHODNAME);
@@ -60,13 +61,12 @@ class CheckFuelAPI extends BaseOriginAPI
         $fuelOffers = [];    
         foreach($responseData['results'] as $fuel){
             $fuelOffers[] = [
-                'fuelType' => self::MAP_FUEL_TYPE[$fuel['DivisionID']],
+                'fuelType' => self::MAP_FUEL_TYPE[$fuel['DivisionID']] ?? 'Unknown',
                 'fuelSequenceNumber' => $fuel['DivisionSequence'],
-                'status' => self::MAP_ELIGIBILITY_TYPE[$fuel['EligibilityStatusID']],
-                'errorReason' => $fuel['Reason'],
+                'status' => self::MAP_ELIGIBILITY_TYPE[$fuel['EligibilityStatusID']] ?? 'Unknown',
+                'errorReason' => $fuel['Reason'] ?? '',
             ];
         }
-
         $formattedData = [
             'fuelOffers' => $fuelOffers,
         ];

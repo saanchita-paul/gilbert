@@ -22,9 +22,10 @@ class ValidateAddressAPI extends BaseOriginAPI
     /**
      * @var string $option
      */
-    public function __construct(private string $option, private string $id_value)
+    public function __construct(private string $option, private string $num_val)
     {
-        if(in_array($this->option, self::MAP_VALIDATE_TYPE)){
+        parent::__construct();
+        if(in_array($this->option, array_keys(self::MAP_VALIDATE_TYPE))){
             $this->option = self::MAP_VALIDATE_TYPE[$this->option];
         } 
     }
@@ -36,12 +37,12 @@ class ValidateAddressAPI extends BaseOriginAPI
      * 
      */
     public function fetch(){
-        if(empty($this->option) || empty($this->id_value))
+        if(empty($this->option) || empty($this->num_val))
             return false;
         
         $url = config('origin.baseurl') . config('origin.endpoints.validate_address_nmi_mirn');
         $params = [
-            $this->option => $this->id_value
+            $this->option => sprintf('\'%s\'', $this->num_val)
         ];
 
         $responseData = $this->getApi($url, $params, self::METHODNAME);
@@ -54,7 +55,7 @@ class ValidateAddressAPI extends BaseOriginAPI
         $formattedData = [
             'addressID' => $validateData['OrderAddressID'],
             'addressInfo' => $validateData['Address'],
-            'status' => self::MAP_ADDRESS_STATUS[$validateData['Status']] ?? 'invalid'
+            'validateStatus' => self::MAP_ADDRESS_STATUS[$validateData['Status']] ?? 'invalid'
         ];
 
         return $formattedData;

@@ -25,7 +25,8 @@ class GetProductInfoAPI extends BaseOriginAPI
      */
     public function __construct(private string $option)
     {
-        if(in_array($this->option, self::MAP_PRODUCT_TYPE)){
+        parent::__construct();
+        if(in_array($this->option, array_keys(self::MAP_PRODUCT_TYPE))){
             $type = self::MAP_PRODUCT_TYPE[$this->option];
             $this->product_code = $type['product_code'];
             $this->campaign_id = $type['campaign_id'];
@@ -41,7 +42,6 @@ class GetProductInfoAPI extends BaseOriginAPI
     public function fetch(){
         if(empty($this->product_code) || empty($this->campaign_id))
             return false;
-        
         $url = config('origin.baseurl') . config('origin.endpoints.get_product_info');
         $params = [
             '$filter' => sprintf("CampaignID eq '%s' and ProductCode eq '%s'", $this->campaign_id, $this->product_code)
