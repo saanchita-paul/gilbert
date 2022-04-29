@@ -6,6 +6,7 @@
             ></v-checkbox>
             <p class="checkbox-text">Submit both Power and Gas</p>
         </v-col>
+        <TemporaryConnection :leadSummary="leadSummary" />
         <v-col cols="12">
             <v-divider></v-divider>
         </v-col>
@@ -25,6 +26,9 @@
         </v-col>
         <v-col cols="12">
             <v-divider></v-divider>
+        </v-col>
+        <v-col cols="12" v-if="selectedProvider === 'ea' && afterHourFlag && selectedPlan">
+            <SameDayConnection :leadSummary="leadSummary" @changeAfterHourPayee="changeAfterHourPayee" />
         </v-col>
 
         <v-divider></v-divider>
@@ -134,7 +138,7 @@ import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
 import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails";
 
 export default {
-    name: "GasService",
+    name: "PowerService",
     props: {
         leadSummary: {
             require: true
@@ -324,6 +328,9 @@ export default {
         toggleViewPlanDetails() {
             this.viewPlanDetails = !this.viewPlanDetails;
         },
+        changeAfterHourPayee() {
+            this.$emit("changeAfterHourPayee");
+        }
     },
 };
 </script>
