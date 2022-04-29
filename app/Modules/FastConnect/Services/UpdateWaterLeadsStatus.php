@@ -9,7 +9,6 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Services\Agency\UpdatedWaterStatus;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class UpdateWaterLeadsStatus
@@ -38,9 +37,8 @@ class UpdateWaterLeadsStatus
             ->whereHas('connectionApplication', function (Builder $lead) {
                 $lead->whereNotNull('fast_connect_customer_reference');
             })
-//            ->where('CS.status','=', ConnectionService::WATER_STATUS_IN_PROGRESS)
+            ->where('status', '!=',  ConnectionService::WATER_STATUS_CONNECTED)
             ->get();
-
         info("[GetWaterService:getAllSubmittedWaterLead] Water leads", $leads->pluck('connection_application_id')->toArray());
 
 
