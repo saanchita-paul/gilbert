@@ -11,7 +11,10 @@
                        <p class="font-weight-bold" style="font-size:20px">Great rates that wont change over 12 months</p>
                        <p class="pb-4">Rates guaranteed for 12 months, simplified pricing, Everyday Rewards points</p>
                    </div>
-                    <div class="plan-details">
+
+                   <ElectricityPlan></ElectricityPlan>
+
+                    <!-- <div class="plan-details">
                         <div class="d-flex">
                             <v-icon color="yellow" size="20" class="pb-4 pr-2">mdi-flash</v-icon>
                             <p class="font-weight-bold"> Electricity </p>
@@ -34,7 +37,7 @@
                                             mdi-progress-question
                                         </v-icon>
                                     </div>
-                                    <div class="d-flex">
+                                    <div class="price-list">
                                         <p class="pr-12 plan-text" style="font-size:14px">Daily Supply Charge
                                             <span>(c/day)</span>
                                         </p>
@@ -47,18 +50,18 @@
                                             mdi-progress-question
                                         </v-icon>
                                     </div>
-                                    <div class="d-flex">
-                                        <p class="pr-15 plan-text" style="font-size:14px">Peak Usage
+                                    <div class="price-list">
+                                        <p class="plan-text" style="font-size:14px">Peak Usage
                                             <span>(c/kWh)</span>
                                         </p>
-                                        <p class="pl-16 plan-text">23.87 </p>
+                                        <p class="plan-text">23.87 </p>
                                     </div>
                                     <p class="plan-text">We’ve already included any discounts in the rates above. All prices are inclusive of GST.</p>
                                     <p class="plan-text">Rates are rounded up to the nearest 2 decimal places where applicable.</p>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
-                    </v-expansion-panels>
-                    </div>
+                        </v-expansion-panels>
+                    </div> -->
 
                     <div class="plan-details">
                         <div class="d-flex">
@@ -83,7 +86,7 @@
                                             mdi-progress-question
                                         </v-icon>
                                     </div>
-                                    <div class="d-flex">
+                                    <div class="price-list">
                                         <p class="pr-12 plan-text" style="font-size:14px">Daily Supply Charge
                                             <span>(c/day)</span>
                                         </p>
@@ -96,13 +99,13 @@
                                             mdi-progress-question
                                         </v-icon>
                                     </div>
-                                    <div class="d-flex">
+                                    <div class="price-list">
                                         <p class="pr-15 plan-text" style="font-size:14px">Peak Usage
                                             <span>(c/MJ)</span>
                                         </p>
                                         <p class="pl-16 plan-text">22.87 </p>
                                     </div>
-                                    <div class="d-flex">
+                                    <div class="price-list">
                                         <p class="pr-15 plan-text" style="font-size:14px">Off Peak Usage
                                             <span>(c/MJ)</span>
                                         </p>
@@ -112,11 +115,11 @@
                                     <p class="plan-text">Rates are rounded up to the nearest 2 decimal places where applicable.</p>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
-                    </v-expansion-panels>
+                        </v-expansion-panels>
                     </div>
 
                     <div class="pl-8 pr-8">
-                        <p style="font-weight-bold font-size:14px">Inlcuded in your plan</p>
+                        <p class="font-weight-bold" style="font-size:14px">Inlcuded in your plan</p>
                         <div class="d-flex">
                             <p class="font-weight-bold mb-0" style="font-size:14px;">Rates: </p>
                             <div class="d-flex">
@@ -145,13 +148,7 @@
                         </div>
                     </div>
 
-                    <v-btn block class="selectButton" color="#cd5b32">Select Plan</v-btn>
-                    <v-btn
-                    depressed
-                    color="primary"
-                    >
-                    Primary
-                    </v-btn>
+                    <v-btn class="selectButton" color="#cd5b32">Select Plan</v-btn>
                
                </v-card>
             </v-container>
@@ -160,8 +157,12 @@
 </template>
 
 <script>
+import {ElectricityPlan} from "@scripts/components/origin/ElectricityPlan";
 
 export default {
+    components: {
+       ElectricityPlan
+    },
     data() {
         return {
             value : 100
@@ -177,8 +178,10 @@ export default {
 
 <style scoped>
 .card-section {
-    width: 26%;
+    max-width: 400px;
+    margin: 0px auto;
     border-radius: 2%;
+    padding-bottom: 15px;
 }
 .plan-title-header {
     background-color: #cd5b32;
@@ -224,13 +227,24 @@ hr.orange-line {
     font-weight: bold;
     font-size: 16px;
     width: 80%;
+    padding-bottom: 4px;
+    border-radius: 8px;
 }
-
+.v-size--default {
+    height: 50px !important;
+    min-width: 64px !important;
+    padding: 0 16px !important;
+    margin: 10px auto !important;
+    display: block !important;
+}
 .plan-details .v-expansion-panel::before {
     box-shadow: none !important;
 }
 .plan-details .v-expansion-panel-header {
     padding-left: 6px;
 }
-
+.price-list {
+    display: flex;
+    justify-content: space-between;
+}
 </style>

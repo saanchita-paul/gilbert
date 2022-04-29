@@ -5,7 +5,7 @@ import NewDashboardLayout from "@scripts/layouts/DashboardLayout";
 
 import LoginPage from "@scripts/pages/auth/LoginPage";
 
-import OriginView from "@scripts/pages/auth/OriginView";
+import OriginView from "@scripts/pages/OriginView";
 
 import ForgotPasswordPage from "@scripts/pages/auth/ForgotPasswordPage";
 
