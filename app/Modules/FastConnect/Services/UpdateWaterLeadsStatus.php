@@ -22,8 +22,10 @@ class UpdateWaterLeadsStatus
     private array $leads = [];
     private int $totalChunks;
     private int $chunkSize = 500;
-    private int $concurrency = 50;
+    private int $concurrency = 100;
     private int $currentChunk = 0;
+
+    private array $failedLeadIds = [];
 
     public function __construct()
     {
@@ -44,6 +46,8 @@ class UpdateWaterLeadsStatus
             $this->updateStatusConcurrently();
             $this->currentChunk++;
         }
+
+        dump($this->failedLeadIds);
     }
 
     private function fetchTotalChunk(): void
@@ -110,8 +114,7 @@ class UpdateWaterLeadsStatus
     private function handleError(RequestException $e, $index): void
     {
         $leadId = $this->leads[$index]['id'] ?? null;
-        dump("Failed ID: {$leadId}", $e->getMessage());
-
+        $this->failedLeadIds[$leadId] = $e->getMessage();
         \Log::error("ERROR ID: {$leadId}", [$e->getMessage()]);
     }
 
