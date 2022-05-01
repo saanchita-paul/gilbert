@@ -8,15 +8,146 @@ use App\Jobs\WaterStatusUpdateJob;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Services\Agency\UpdatedWaterStatus;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Pool;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Http;
 
 class UpdateWaterLeadsStatus
 {
-    private $accessToken;
-    public function __construct() {
+    private ?string $accessToken;
+    private array $leads = [];
+    private int $totalChunks;
+    private int $chunkSize = 500;
+    private int $concurrency = 50;
+    private int $currentChunk = 0;
+
+    public function __construct()
+    {
+        $this->fetchTotalChunk();
         $this->authenticate();
     }
+
+    public static function run(): void
+    {
+        $self = new static();
+        $self->start();
+    }
+    public function start(): void
+    {
+        while ($this->currentChunk <= $this->totalChunks) {
+            $this->fetchLeads();
+            dump(collect($this->leads)->pluck('id')->toArray());
+            $this->updateStatusConcurrently();
+            $this->currentChunk++;
+        }
+    }
+
+    private function fetchTotalChunk(): void
+    {
+        $total = $this->getLeadsBuilder()->count();
+        $this->totalChunks = ceil($total / $this->chunkSize);
+    }
+
+    private function getLeadsBuilder(): Builder
+    {
+        return ConnectionApplication::query()
+            ->select('id', 'fast_connect_customer_reference')
+            ->whereHas('connectionServices', function (Builder $query) {
+                $query->whereNotIn('status', [ConnectionService::WATER_STATUS_CONNECTED])
+                    ->where('service_type', ConnectionService::TYPE_WATER);
+            })
+            ->whereNotNull('fast_connect_customer_reference');
+    }
+
+    private function fetchLeads(): void
+    {
+        $this->leads = $this->getLeadsBuilder()
+            ->skip($this->currentChunk * $this->chunkSize)
+            ->take($this->chunkSize)
+            ->get()
+            ->toArray();
+    }
+
+
+
+    private function updateStatusConcurrently(): void
+    {
+        $client = new Client([
+            'headers' => [
+                'content-type' => 'application/json',
+                'accept' => 'application/json',
+                'authorization' => 'Bearer ' . $this->accessToken
+            ],
+        ]);
+        $requests = function ($leads) {
+            foreach ($leads as $lead) {
+                yield new Request('GET', $this->getURL($lead['fast_connect_customer_reference']));
+            }
+        };
+
+        $pool = new Pool($client, $requests($this->leads), [
+            'concurrency' => $this->concurrency,
+            'fulfilled' => fn(Response $response, $index) => $this->handleSuccess($response, $index),
+            'rejected' => fn(RequestException $e, $index) => $this->handleError($e, $index),
+        ]);
+
+        $pool->promise()->wait();
+    }
+
+
+    private function getURL(string $customerReference): string
+    {
+        return config('fastconnect.root_url')
+            . config('fastconnect.submitted_water_status_lead_url')
+            . '/'
+            . $customerReference;
+    }
+
+    private function handleError(RequestException $e, $index): void
+    {
+        $leadId = $this->leads[$index]['id'] ?? null;
+        dump("Failed ID: {$leadId}", $e->getMessage());
+
+        \Log::error("ERROR ID: {$leadId}", [$e->getMessage()]);
+    }
+
+    private function handleSuccess(Response $response, $index): void
+    {
+        $data = json_decode($response->getBody()->getContents(), true);
+        $status = $this->getParsedStatus($data);
+        $leadId = $this->leads[$index]['id'] ?? null;
+        dump("SUCCESS ID: {$leadId}");
+
+        if ($leadId) {
+            $this->updateWaterStatus($leadId, $status);
+        } else {
+            \Log::error("fuck");
+        }
+    }
+
+    private function getParsedStatus(array $data): ?string
+    {
+        #todo: HCO-808 -> handle multiple statuses
+        return data_get($data, 'products.0.status');
+    }
+
+
+    /**
+     * @param int $id
+     * @param string|null $status
+     */
+    public function updateWaterStatus(int $id, ?string $status): void
+    {
+        $statusAssoc = UpdatedWaterStatus::mapFromFCStatus($status);
+        if ($statusAssoc) {
+            UpdatedWaterStatus::updateStatus($id, $statusAssoc['status'], $statusAssoc['reason']);
+        }
+    }
+
     public function authenticate(): static
     {
         $response = Http::withHeaders([
@@ -30,6 +161,10 @@ class UpdateWaterLeadsStatus
         return $this;
     }
 
+    /**
+     * @deprecated
+     * @return void
+     */
     public function getAllSubmittedWaterLead() {
         $leads = ConnectionService::query()
             ->with('connectionApplication')
@@ -53,15 +188,20 @@ class UpdateWaterLeadsStatus
 
     }
 
-    public function getSubmittedDetails($id, $fast_connect_customer_reference) {
-        $lead = ConnectionApplication::find($id);
-        $url = config('fastconnect.root_url') . config('fastconnect.submitted_water_status_lead_url').'/'.$fast_connect_customer_reference;
+    /**
+     * @Deprecated
+     */
+    public function getSubmittedDetails($id, $fast_connect_customer_reference)
+    {
+        $url = config('fastconnect.root_url')
+            . config('fastconnect.submitted_water_status_lead_url')
+            .'/'.$fast_connect_customer_reference;
+
         $response = Http::withHeaders([
             'content-type' => 'application/json',
             'accept' => 'application/json',
-            'authorization' => $authorization = 'Bearer ' . $this->accessToken
+            'authorization' => 'Bearer ' . $this->accessToken
         ])->get($url);
-
 
 
         $body = json_decode($response->body(), true);
@@ -82,11 +222,5 @@ class UpdateWaterLeadsStatus
 
     }
 
-    public function updateWaterStatus($id, $status)
-    {
-        $statusAssoc = UpdatedWaterStatus::mapFromFCStatus($status);
-        if ($statusAssoc) {
-            UpdatedWaterStatus::updateStatus($id, $statusAssoc['status'], $statusAssoc['reason']);
-        }
-    }
+
 }
