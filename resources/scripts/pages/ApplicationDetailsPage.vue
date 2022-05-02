@@ -155,8 +155,6 @@ export default {
 
         updatePlan(plan, isManual)
         {
-
-            //manual click activation plan
             if(isManual) this.isManualChangeFlag = true;
             this.plan = plan;
             LeadApplicationService.saveSoleField('plan_type', this.plan, this.leadId);
@@ -177,22 +175,10 @@ export default {
             this.closeLead = false;
         },
        async sucessSaveClose(closing_reason){
-            // this.closeLead = false;
-
-            // try {
-            //     const data = await axios.post('api/applications/'+this.leadId+'/closeApplication' , {closing_reason});
-            //     console.log(data)
-            //     return true;
-            // } catch (error) {
-            //     console.log(error)
-            //     return false;
-            // }
-
             try {
                 await LeadApplicationService.closeApplicationWithReason(this.leadId , closing_reason);
                 this.closeLead = false;
                 this.closeConfirm = true;
-                // this.$router.push({name:'applications'});
             } catch (error) {
                 console.log('closeApplication error' , error);
             }

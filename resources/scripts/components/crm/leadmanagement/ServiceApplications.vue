@@ -5,7 +5,7 @@
             height="75px"
             style="min-width: 200px !important;"
         >
-            <v-tab :class="{'not-editable': !isServiceEditable('Power') }" class="px-0 py-3 tab-capital-case">
+            <v-tab class="px-0 py-3 tab-capital-case">
                 <v-card class="hood-card" width="100%">
                     <p class="pt-2 pb-1 mb-0 services service-title">
                         <span class="ml-1">
@@ -15,7 +15,7 @@
                     <EnergyStatus :leadSummary="leadSummary" title="Power"/>
                 </v-card>
             </v-tab>
-            <v-tab :class="{'not-editable': !isServiceEditable('Gas') }" class="px-0 py-3 tab-capital-case">
+            <v-tab class="px-0 py-3 tab-capital-case">
                 <v-card class="hood-card" width="100%">
                     <p class="pt-2 pb-1 mb-0 services service-title">
                         <span class="ml-1">
@@ -55,32 +55,33 @@
                 </v-card>
             </v-tab>
 
-            <v-tab-item>
-                <PowerService
-                    :leadSummary="leadSummary"
-                    :afterHourFlag="afterHourFlag"
-                    @updatePlan="updatePlan"
-                    @changeAfterHourPayee="changeAfterHourPayee"
-                ></PowerService>
-            </v-tab-item>
-            <v-tab-item>
-                <GasService
-                    :leadSummary="leadSummary"
-                    :afterHourFlag="afterHourFlag"
-                    @updatePlan="updatePlan"
-                    @changeAfterHourPayee="changeAfterHourPayee"
-                ></GasService>
-            </v-tab-item>
-            <v-tab-item>
-                <WaterService
-                    :leadSummary="leadSummary"
-                ></WaterService>
-            </v-tab-item>
-            <v-tab-item>
-                <InternetService
-                    :leadSummary="leadSummary"
-                ></InternetService>
-            </v-tab-item>
+            <v-tabs-items v-model="tab">
+                <v-tab-item>
+                    <PowerService
+                        :leadSummary="leadSummary"
+                        :afterHourFlag="afterHourFlag"
+                        @updatePlan="updatePlan"
+                        @changeAfterHourPayee="changeAfterHourPayee"
+                    ></PowerService>
+                </v-tab-item>
+                <v-tab-item>
+                    <GasService
+                        :leadSummary="leadSummary"
+                        :afterHourFlag="afterHourFlag"
+                        @updatePlan="updatePlan"
+                    ></GasService>
+                </v-tab-item>
+                <v-tab-item>
+                    <WaterService
+                        :leadSummary="leadSummary"
+                    ></WaterService>
+                </v-tab-item>
+                <v-tab-item>
+                    <InternetService
+                        :leadSummary="leadSummary"
+                    ></InternetService>
+                </v-tab-item>
+            </v-tabs-items>
         </v-tabs>
         <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
             <v-btn
@@ -97,8 +98,6 @@
 
 <script>
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
-import InternetPlan from "@scripts/components/crm/leadmanagement/InternetPlan";
-import InternetPlanDetails from "@scripts/components/ea/InternetPlanDetails";
 import WaterService from "@scripts/components/crm/leadmanagement/WaterService";
 import InternetService from "@scripts/components/crm/leadmanagement/InternetService";
 import { isNull } from "lodash-es";
@@ -109,13 +108,11 @@ import GasService from "@scripts/components/crm/leadmanagement/GasService";
 export default {
     name: "ServiceApplications",
     components: {
-        InternetService,
-        WaterService,
-        InternetPlan,
-        InternetPlanDetails,
-        EnergyStatus,
         PowerService,
-        GasService
+        GasService,
+        WaterService,
+        InternetService,
+        EnergyStatus
     },
     props: {
         leadSummary: {
@@ -127,9 +124,7 @@ export default {
     },
     data() {
         return {
-            selectedProviderId: 1,
             selectedPowerProvider: "",
-            waterStatus: null,
             selected_plan: null,
             isWaterFailed: false,
         };
@@ -146,9 +141,9 @@ export default {
         tabMapper() {
             return {
                 Power: 0,
-                Gas: 0,
-                Water: 1,
-                Internet: 2
+                Gas: 1,
+                Water: 2,
+                Internet: 3
             };
         },
         getWaterStatus() {
@@ -170,18 +165,11 @@ export default {
             );
         }
     },
-    // watch: {
-    //     "leadSummary.service_interests"() {
-    //         this.loadPlan();
-    //     }
-    // },
     methods: {
+        //todo disable submit if already submitted
+        //todo disable submit if isBothSelected but for one of them provider/plan is not selected
         isDisable() {
             switch (this.tab) {
-                case this.tabMapper.Water:
-                    return !LeadApplicationService.canSubmitWater(
-                        this.leadSummary.connection_services
-                    );
                 case this.tabMapper.Power:
                     return (
                         !LeadApplicationService.canSubmitEnergy(
@@ -200,34 +188,15 @@ export default {
                         !this.selected_plan ||
                         this.isPayeeSelectedForAfterHourSubmission
                     );
+                case this.tabMapper.Water:
+                    return !LeadApplicationService.canSubmitWater(
+                        this.leadSummary.connection_services
+                    );
                 default:
                     return true;
             }
         },
-        isServiceEditable(service) {
-            return LeadApplicationService.canEditService(
-                this.leadSummary.connection_services,
-                service?.toLowerCase()
-            );
-        },
-        updateService(service) {
-            this.resetSelectedPlan();
-            if (
-                (service === "Gas" || service === "Power") &&
-                this.selectedPowerProvider === "sumo"
-            ) {
-                this.onSelectProvider("sumo");
-            }
-
-            this.$emit("updateService", service);
-            if (this.selectedPowerProvider === "sumo") {
-                this.$eventBus.$emit("validate", this.setSumoDetailsData);
-            }
-        },
-        updatePlan(plan, isManual) {
-            console.log('updatePlan', plan);
-            this.$emit('updatePlan', plan, isManual);
-        },
+        //todo before submit check if single service or both selected, then submit base on that
         submit() {
             let subType = "energy";
             if (this.tabMapper.Power === this.tab) {
@@ -241,9 +210,28 @@ export default {
             }
             this.$eventBus.$emit("busUtilitySubmit", subType);
         },
+        //todo modify to add new service (Power, Gas) to application
+        updateService(service) {
+            // this.resetSelectedPlan();
+            // if (
+            //     (service === "Gas" || service === "Power") &&
+            //     this.selectedPowerProvider === "sumo"
+            // ) {
+            //     this.onSelectProvider("sumo");
+            // }
+
+            // this.$emit("updateService", service);
+            // if (this.selectedPowerProvider === "sumo") {
+            //     this.$eventBus.$emit("validate", this.setSumoDetailsData);
+            // }
+        },
+        updatePlan(plan, isManual) {
+            console.log('updatePlan', plan);
+            this.$emit('updatePlan', plan, isManual);
+        },
         changeAfterHourPayee() {
             this.$emit("updateDraft", "after_hour_payee", this.leadSummary.after_hour_payee, false, null, false);
-        },
+        }
     }
 };
 </script>

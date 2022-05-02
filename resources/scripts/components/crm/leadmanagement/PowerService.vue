@@ -138,15 +138,9 @@ import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
 import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails";
 
 export default {
+    //todo reset plan and provider if isBothEnergySubmit is selected after selecting provider/plan
+    //todo hide isBothEnergySubmit if one of the service is submitted, not rejected
     name: "PowerService",
-    props: {
-        leadSummary: {
-            require: true
-        },
-        afterHourFlag: {
-            require: false
-        }
-    },
     components: {
         ServiceProvider,
         TemporaryConnection,
@@ -156,6 +150,14 @@ export default {
         SolePlan,
         EnergyPlanDetails,
         SoleDetails
+    },
+    props: {
+        leadSummary: {
+            require: true
+        },
+        afterHourFlag: {
+            require: false
+        }
     },
     data() {
         return {
@@ -181,11 +183,7 @@ export default {
             });
         },
         selectedServiceTitle() {
-            const services = this.leadSummary.service_interests;
-            if ( services && services.includes("gas") && services.includes("power")) {
-                return "Power & Gas";
-            }
-            return services && services.includes("gas") ? "Gas" : "Power";
+            return this.isBothEnergySubmit ? "Power & Gas" : "Power";
         },
         sumoPlanName() {
             if (this.sumoPlans) {
@@ -213,7 +211,7 @@ export default {
     methods: {
         loadSelectedProvider() {
             const connectionService = this.leadSummary.connection_services.find(
-                data => data.service_type === "power" || data.service_type === "gas"
+                data => data.service_type === "power"
             );
 
             this.selectedProvider = connectionService?.provider_name;
@@ -225,7 +223,7 @@ export default {
         },
         async fetchEaPlans() {
             const services = this.leadSummary.service_interests;
-            if (services.includes("gas") || services.includes("power")) { //todo keep any one
+            if (services.includes("power")) {
                 this.eaPlans = await EAPlanService.getAllPlans({
                     service_type: this.leadSummary.service_interests,
                     postcode: this.leadSummary.postcode,
@@ -233,7 +231,6 @@ export default {
                 });
                 this.isEaPlansLoaded = true;
                 console.log("eaPlans", this.eaPlans);
-                // this.getPlanType(); //todo check if needed
             } else {
                 this.isEaPlansLoaded = false;
             }
@@ -300,7 +297,7 @@ export default {
                 service_type: this.leadSummary?.service_interests,
                 provider_name: this.selectedProvider,
                 plan_type: plan.name,
-                service_area: "energy"
+                service_area: this.isBothEnergySubmit ? "energy" : "power"
             };
 
             if (this.selectedProvider !== "" && this.selectedProvider !== null) {
@@ -316,6 +313,13 @@ export default {
                     service_area: "energy"
                 },
                 isManual
+            );
+        },
+        //todo will be used to prevent changing plan after submission and not rejected
+        isServiceEditable(service) {
+            return LeadApplicationService.canEditService(
+                this.leadSummary.connection_services,
+                service?.toLowerCase()
             );
         },
         openEaPlanDetails(plan) {

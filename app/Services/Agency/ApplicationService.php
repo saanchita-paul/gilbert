@@ -444,16 +444,15 @@ class ApplicationService
 
     public function providers(array $data, $applicationId)
     {
-        $connectionApplication = ConnectionApplication::find($applicationId);
-
         $services = [];
         $provider_service_type = $data['service_area'] ?? '';
-        if ($provider_service_type === 'energy') {
-            $services = [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY];
-        } elseif ($provider_service_type === 'internet') {
-            $services = [ConnectionService::TYPE_INTERNET];
-        }
 
+        $services = match ($provider_service_type) {
+            'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
+            'power' => [ConnectionService::TYPE_ELECTRICITY],
+            'gas' => [ConnectionService::TYPE_GAS],
+            'internet' => [ConnectionService::TYPE_INTERNET]
+        };
 
         foreach ($services as $service) {
             $connectionService = ConnectionService::where('connection_application_id', $applicationId)
