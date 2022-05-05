@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Origin\Services\GetProductInfoAPI;
 use Origin\Services\ValidateAddressAPI;
 use Origin\Services\CheckFuelAPI;
+use Origin\Services\SubmitOrderAPI;
 
 class OriginController extends Controller
 {
@@ -165,6 +166,35 @@ class OriginController extends Controller
 
         } catch (\Exception $exception) {
             Log::error( "Error in OriginController, CheckFuel method" , [ 'message' => $exception->getMessage()]);
+            Log::error($exception->getTraceAsString());
+            $response =  [
+                'status' => 'fail',
+                'message' => "Oops please try again"
+            ];
+            return response()->json($response , 500);
+        }
+    }
+
+    public function submitOrder(Request $request){
+        try {
+            $newOrder = new SubmitOrderAPI([]);
+            $response = $newOrder->submit();
+
+            if(!$response){
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'Submit order is not available'
+                ];
+                return response()->json($response, 400);
+            }
+
+            $response['status'] = 'success';
+            $response['message'] = 'Submit Order Successful';
+
+            return response()->json($response, 200);
+
+        } catch (\Exception $exception) {
+            Log::error( "Error in OriginController, submitOrder method" , [ 'message' => $exception->getMessage()]);
             Log::error($exception->getTraceAsString());
             $response =  [
                 'status' => 'fail',

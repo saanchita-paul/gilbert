@@ -9,5 +9,6 @@ return [
         'validate_address_nmi_mirn' => '/sap/opu/odata/sap/SALES/ValidateSupplyAddressesByExtID',
         'check_fuel' => '/sap/opu/odata/sap/PRODUCT_CATALOG/GetOfferedDivisionByAddress',
         'get_xcsrf_token' => '/sap/opu/odata/sap/SALES/OrderHeaders',
+        'submit_order' => '/sap/opu/odata/sap/SALES/OrderHeaders',
     ],
 ];

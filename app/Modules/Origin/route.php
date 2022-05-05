@@ -10,6 +10,8 @@ use Origin\Http\Controllers\OriginController;
 Route::get('/productinfo', [OriginController::class, "getProductInfo"]);
 Route::get('/validateaddress', [OriginController::class, "validateAddress"]);
 Route::get('/checkfuel', [OriginController::class, "checkFuel"]);
+
+Route::get('/submit', [OriginController::class, "submitOrder"]);
  
 Route::prefix('/origin/api')->middleware(['api', 'auth:sanctum'])->group(function () {
 
