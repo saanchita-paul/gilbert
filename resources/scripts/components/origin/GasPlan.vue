@@ -1,18 +1,18 @@
 <template>
 	<div class="plan-details">
 		<div class="d-flex">
-			<v-icon color="yellow" size="20" class="pb-4 pr-2">mdi-flash</v-icon>
-			<p class="font-weight-bold">Electricity</p>
+			<v-icon color="#FF5722" size="20" class="pb-4 pr-2">mdi-fire</v-icon>
+			<p class="font-weight-bold">Natural Gas</p>
 		</div>
 		<div class="pb-2">
-			<p class="font-weight-bold" style="font-size:26px">$1,212/year</p>
-			<p class="font-weight-bold" style="font-size:14px">70% off the Victorian Default Offer Reference Price</p>
+			<p class="font-weight-bold" style="font-size:26px">$1,437/year</p>
+			<p class="font-weight-bold" style="font-size:14px">Our 12month fixed rates</p>
 			<p class="plan-content">Estimated cost inc GST for an average household using 3900 kWh/yearly on a flat rate tariff in the Ausgrid network.</p>
 		</div>
 		<v-expansion-panels>
 			<v-expansion-panel color="red">
 				<v-expansion-panel-header class="font-weight-bold">
-					See electricity prices
+					See natural gas prices
 					<template v-slot:actions><v-icon color="orange">mdi-menu-down</v-icon></template>
 				</v-expansion-panel-header>
 				<v-expansion-panel-content>
@@ -37,11 +37,18 @@
 						</v-icon>
 					</div>
 					<div class="price-list">
-						<p class="plan-text" style="font-size:14px">
+						<p class="pr-15 plan-text" style="font-size:14px">
 							Peak Usage
-							<span>(c/kWh)</span>
+							<span>(c/MJ)</span>
 						</p>
-						<p class="plan-text">23.87</p>
+						<p class="pl-16 plan-text">22.87</p>
+					</div>
+					<div class="price-list">
+						<p class="pr-15 plan-text" style="font-size:14px">
+							Off Peak Usage
+							<span>(c/MJ)</span>
+						</p>
+						<p class="pl-16 plan-text">{{ value }}</p>
 					</div>
 					<p class="plan-text">We’ve already included any discounts in the rates above. All prices are inclusive of GST.</p>
 					<p class="plan-text">Rates are rounded up to the nearest 2 decimal places where applicable.</p>
