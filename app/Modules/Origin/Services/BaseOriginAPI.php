@@ -3,7 +3,6 @@
 namespace Origin\Services;
 
 use Exception;
-use GuzzleHttp\Cookie\CookieJar;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
