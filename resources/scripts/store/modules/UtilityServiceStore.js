@@ -24,7 +24,7 @@ export default {
         }
     },
     mutations: {
-        isBothEnergySelected(state, value) {
+        setIsBothEnergySelected(state, value) {
             state.isBothEnergySelected = value;
         },
         setPowerProvider(state, provider) {
@@ -33,10 +33,22 @@ export default {
         setGasProvider(state, provider) {
             state.gasProvider = provider;
         },
+        setBothProvider(state, provider) {
+            state.powerProvider = provider;
+            state.gasProvider = provider;
+        },
         setPowerPlan(state, plan) {
             state.powerPlan = plan;
         },
         setGasPlan(state, plan) {
+            state.gasPlan = plan;
+        },
+        setBothProvider(state, provider) {
+            state.powerProvider = provider;
+            state.gasProvider = provider;
+        },
+        setBothPlan(state, plan) {
+            state.powerPlan = plan;
             state.gasPlan = plan;
         }
     }

@@ -3,6 +3,7 @@
         <v-col cols="12" class="d-flex pb-0">
             <v-checkbox
                 v-model="isBothEnergySubmit"
+                @change="changeIsBothEnergySubmit"
             ></v-checkbox>
             <p class="checkbox-text">Submit both Power and Gas</p>
         </v-col>
@@ -136,10 +137,14 @@ import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
 import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails";
+import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
 export default {
-    //todo reset plan and provider if isBothEnergySubmit is selected after selecting provider/plan
     //todo hide isBothEnergySubmit if one of the service is submitted, not rejected
+    //todo talk with Jamil and merge plan details branch
+    //todo reduce emit functions
+    //todo disable all select options if already submitted and not rejected 
+
     name: "PowerService",
     components: {
         ServiceProvider,
@@ -161,9 +166,6 @@ export default {
     },
     data() {
         return {
-            isBothEnergySubmit: false,
-            selectedProvider: null,
-            selectedPlan: null,
             eaPlans: [],
             isEaPlansLoaded: false,
             viewEaPlanDetails: false,
@@ -192,12 +194,40 @@ export default {
                 return "";
             }
         },
+        selectedProvider: {
+            get() {
+                return UtilityStoreService.getPowerProvider();
+            },
+            set(value) {
+                this.isBothEnergySubmit === true ?
+                    UtilityStoreService.setBothProvider(value)
+                    : UtilityStoreService.setPowerProvider(value);
+            }
+        },
+        selectedPlan: {
+            get() {
+                return UtilityStoreService.getPowerPlan();
+            },
+            set(value) {
+                this.isBothEnergySubmit === true ?
+                    UtilityStoreService.setBothPlan(value)
+                    : UtilityStoreService.setPowerPlan(value); 
+            }
+        },
+        isBothEnergySubmit: {
+            get() {
+                return UtilityStoreService.getIsBothEnergySelected();
+            },
+            set(value) {
+                UtilityStoreService.setIsBothEnergySelected(value);
+            }
+        }
     },
     mounted() {
         this.fetchEaPlans();
         this.fetchOriginPlans();
         this.fetchTemporarySumoPlans();
-        this.loadSelectedProvider();
+        this.loadSelectedProviderAndPlan();
 
         // On address change refetch Sumo Plan Details
         const updateAddress = address => {
@@ -209,7 +239,7 @@ export default {
         });
     },
     methods: {
-        loadSelectedProvider() {
+        loadSelectedProviderAndPlan() {
             const connectionService = this.leadSummary.connection_services.find(
                 data => data.service_type === "power"
             );
@@ -334,6 +364,20 @@ export default {
         },
         changeAfterHourPayee() {
             this.$emit("changeAfterHourPayee");
+        },
+        changeIsBothEnergySubmit(value) {
+            if(value) {
+                UtilityStoreService.setBothProvider(this.selectedProvider);
+                UtilityStoreService.setBothPlan(this.selectedPlan);
+
+                let payload = {
+                    service_type: this.leadSummary?.service_interests,
+                    provider_name: this.selectedProvider,
+                    plan_type: this.selectedPlan,
+                    service_area: this.isBothEnergySubmit ? "energy" : "power"
+                };
+                LeadApplicationService.updateApplicationProviders(payload, this.leadSummary.id);
+            }
         }
     },
 };
