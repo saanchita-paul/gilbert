@@ -1,5 +1,5 @@
 <template>
-	<v-app>
+	<v-app v-if="originPlanDetails">
 		<div fluid>
 			<v-container fluid>
 				<v-card class="card-section">
@@ -8,20 +8,20 @@
 						<p style="font-size:20px">Electricity & Gas</p>
 					</div>
 					<div class="pl-6 pt-8">
-						<p class="font-weight-bold" style="font-size:20px">Great rates that wont change over 12 months</p>
-						<p class="pb-4">Rates guaranteed for 12 months, simplified pricing, Everyday Rewards points</p>
+						<p class="font-weight-bold" style="font-size:20px">{{ originPlanDetails.title }}</p>
+						<p class="pb-4">{{ originPlanDetails.short_des }}</p>
 					</div>
 
-					<ElectricityPlan></ElectricityPlan>
+					<ElectricityPlan :planData = "electricityPlanData"></ElectricityPlan>
 
-					<GasPlan></GasPlan>
+					<GasPlan :planData = "gasPlanData"></GasPlan>
 
 					<div class="pl-8 pr-8">
 						<p class="font-weight-bold" style="font-size:14px">Inlcuded in your plan</p>
 						<div class="d-flex">
 							<p class="font-weight-bold mb-0" style="font-size:14px;">Rates:</p>
 							<div class="d-flex">
-								<p class="pl-2 mb-0" style="font-size:14px;">Guarranteed</p>
+								<p class="pl-2 mb-0" style="font-size:14px;">{{ originPlanDetails.rates }}</p>
 								<v-icon aria-hidden="false" class="pl-1 mb-0" size="80%">
 									mdi-progress-question
 								</v-icon>
@@ -29,14 +29,14 @@
 						</div>
 						<div class="d-flex">
 							<p class="font-weight-bold mb-0" style="font-size:14px;">Exit Fees:</p>
-							<p class="pl-2 mb-0" style="font-size:14px;">No</p>
+							<p class="pl-2 mb-0" style="font-size:14px;">{{ originPlanDetails.exit_fees }}</p>
 						</div>
 						<div class="d-flex">
 							<p class="font-weight-bold mb-0" style="font-size:14px;">Benefit Period:</p>
-							<p class="pl-2 mb-0" style="font-size:14px;">12 months</p>
+							<p class="pl-2 mb-0" style="font-size:14px;">{{ originPlanDetails.benefit_period }}</p>
 						</div>
 						<p class="font-weight-bold mb-0" style="font-size:14px;">Green options</p>
-						<p class="plan-text mt-0" style="font-size:14px;">Everyday Rewards members enjoy 25% GreenPower and 100% Green Gas for nothing extra</p>
+						<p class="plan-text mt-0" style="font-size:14px;">{{ originPlanDetails.green_options }}</p>
 						<hr class="mb-4" style="width:95%" />
 
 						<div class="pb-6" style="font-size:14px; text-decoration: underline;">
@@ -56,7 +56,8 @@
 <script>
 import ElectricityPlan from "@scripts/components/origin/ElectricityPlan"
 import GasPlan from "@scripts/components/origin/GasPlan"
-import OriginService from "@scripts/services/OriginService"
+import OriginService from "@scripts/modules/origin/services/OriginService"
+import OriginPlanDetails from "@scripts/modules/origin/models/OriginPlanDetails"
 
 export default {
 	name: "OriginView",
@@ -66,30 +67,33 @@ export default {
 	},
 	data() {
 		return {
-			title: null,
-			charge: null,
-			slogan: null,
-			planDetails: null,
-			priceList: {
-				listTitle: null,
-				title: null,
-				value: null,
-				description: null,
-			},
-			rates: null,
-			exitFees: null,
-			benefitPeriod: null,
-			greenOptions: null,
+			originPlanDetails: null,
 		}
 	},
 	mounted() {
 		this.getOriginData()
 	},
+	computed: {
+		electricityPlanData() {
+			return this.originPlanDetails.plan.map(plan => {
+				if(plan.title == "Electricity") {
+					return plan
+				}
+			})
+		},
 
+		gasPlanData() {
+			return this.originPlanDetails.plan.map(plan => {
+				if(plan.title == "Gas") {
+					return plan
+				}
+			})
+		},
+	},
 	methods: {
 		async getOriginData() {
-			let data = await OriginService.getOriginData()
-			// data will be here
+			this.originPlanDetails = await OriginService.getOriginData()
+			// console.log("console here", this.originPlanDetails)
 		},
 	},
 }

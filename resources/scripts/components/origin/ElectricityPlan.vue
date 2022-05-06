@@ -2,12 +2,12 @@
 	<div class="plan-details">
 		<div class="d-flex">
 			<v-icon color="yellow" size="20" class="pb-4 pr-2">mdi-flash</v-icon>
-			<p class="font-weight-bold">Electricity</p>
+			<p class="font-weight-bold">{{ planData[0].title }}</p>
 		</div>
 		<div class="pb-2">
-			<p class="font-weight-bold" style="font-size:26px">$1,212/year</p>
-			<p class="font-weight-bold" style="font-size:14px">70% off the Victorian Default Offer Reference Price</p>
-			<p class="plan-content">Estimated cost inc GST for an average household using 3900 kWh/yearly on a flat rate tariff in the Ausgrid network.</p>
+			<p class="font-weight-bold" style="font-size:26px">{{ planData[0].charge }}</p>
+			<p class="font-weight-bold" style="font-size:14px">{{ planData[0].slogan }}</p>
+			<p class="plan-content">{{ planData[0].details }}</p>
 		</div>
 		<v-expansion-panels>
 			<v-expansion-panel color="red">
@@ -22,12 +22,11 @@
 							mdi-progress-question
 						</v-icon>
 					</div>
-					<div class="price-list">
+					<div v-for="(item, index) in planData[0].supply_charge" :key="index" class="price-list">
 						<p class="pr-12 plan-text" style="font-size:14px">
-							Daily Supply Charge
-							<span>(c/day)</span>
+							{{ item.title }}
 						</p>
-						<p class="pl-14 plan-text">76.99</p>
+						<p class="pl-14 plan-text">{{ item.value }}</p>
 					</div>
 
 					<div class="d-flex">
@@ -36,12 +35,11 @@
 							mdi-progress-question
 						</v-icon>
 					</div>
-					<div class="price-list">
+					<div v-for="(item, index) in planData[0].usage_charge" :key="index"  class="price-list">
 						<p class="plan-text" style="font-size:14px">
-							Peak Usage
-							<span>(c/kWh)</span>
+							{{ item.title }}
 						</p>
-						<p class="plan-text">23.87</p>
+						<p class="plan-text">{{ item.value }}</p>
 					</div>
 					<p class="plan-text">We’ve already included any discounts in the rates above. All prices are inclusive of GST.</p>
 					<p class="plan-text">Rates are rounded up to the nearest 2 decimal places where applicable.</p>
@@ -53,10 +51,16 @@
 
 <script>
 export default {
+	props: {
+		planData: {
+            type: Array,
+        },
+    },
 	data() {
-		return {}
+		return {
+		}
 	},
-	props: {},
+	
 }
 </script>
 
