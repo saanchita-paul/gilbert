@@ -2,22 +2,22 @@
     <v-row class="ml-0">
         <v-tabs
             v-model="tab"
-            height="75px"
-            style="min-width: 200px !important;"
+            height="80px"
+            
         >
-            <v-tab class="px-0 py-3 tab-capital-case">
+            <v-tab class="px-0 tab-capital-case">
                 <v-card class="hood-card" width="100%">
-                    <p class="pt-2 pb-1 mb-0 services service-title">
-                        <span class="ml-1">
+                    <p class="pt-1 pb-1 mb-0 services service-title">
+                        <span>
                             <v-icon color="yellow">mdi-flash</v-icon>Power
                         </span>
                     </p>
                     <EnergyStatus :leadSummary="leadSummary" title="Power"/>
                 </v-card>
             </v-tab>
-            <v-tab class="px-0 py-3 tab-capital-case">
+            <v-tab class="px-0 tab-capital-case">
                 <v-card class="hood-card" width="100%">
-                    <p class="pt-2 pb-1 mb-0 services service-title">
+                    <p class="pt-1 pb-1 mb-0 services service-title">
                         <span class="ml-1">
                             <v-icon color="red">mdi-fire</v-icon>Gas
                         </span>
@@ -25,29 +25,29 @@
                     <EnergyStatus :leadSummary="leadSummary" title="Gas"/>
                 </v-card>
             </v-tab>
-            <v-tab class="px-0 py-3 tab-capital-case">
+            <v-tab class="px-0 tab-capital-case">
                 <v-card class="hood-card" width="100%">
-                    <p class="pt-2 pb-1 mb-0 services service-title">
+                    <p class="pt-1 pb-1 mb-0 services service-title">
                         <span class="ml-1">
                             <v-icon color="blue">mdi-water</v-icon>Water
                         </span>
                     </p>
-                    <p class="py-0 my-0 pl-4 service-status active-power-subtitle"
+                    <p class="py-0 my-0 text-center active-power-subtitle"
                         :class="{ dangerText: isWaterFailed }"
                     >
                         {{ getWaterStatus }}
                     </p>
                 </v-card>
             </v-tab>
-            <v-tab class="py-3 px-0 tab-capital-case">
+            <v-tab class="px-0 tab-capital-case">
                 <v-card class="hood-card" width="100%">
                     <div>
-                        <p class="pt-2 pb-1 mb-0 services service-title">
+                        <p class="pt-1 pb-1 mb-0 services service-title">
                             <span class="ml-1">
                                 <v-icon color="red">mdi-wifi</v-icon>Internet
                             </span>
                         </p>
-                        <p class="py-0 my-0 pl-4 service-status active-power-subtitle"
+                        <p class="py-0 my-0 text-center active-power-subtitle"
                         >
                             {{ getInternetStatus }}
                         </p>
@@ -243,7 +243,7 @@ export default {
 
 .tab-capital-case {
     text-transform: capitalize !important;
-    width: 180px !important;
+    width: 190px !important;
 }
 .service-title {
     font-size: 16px;

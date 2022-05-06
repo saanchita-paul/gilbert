@@ -15,7 +15,6 @@
 import ServiceApplications from "@scripts/components/crm/leadmanagement/ServiceApplications";
 import ApplicationNotes from "@scripts/components/crm/leadmanagement/ApplicationNotes";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
-import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
 export default {
 name: "LeadServicesAndNotes",
@@ -50,33 +49,7 @@ name: "LeadServicesAndNotes",
         {
             this.$emit('updateService',service);
         },
-        setUtilityServicesToStore(services)
-        {
-            const powerService = services.find(
-                data => data.service_type === "power"
-            );
-            const gasService = services.find(
-                data => data.service_type === "gas"
-            );
-
-            UtilityStoreService.setPowerProvider(powerService?.provider_name);
-            UtilityStoreService.setPowerPlan(powerService?.plan_type);
-            UtilityStoreService.setGasProvider(gasService?.provider_name);
-            UtilityStoreService.setGasPlan(gasService?.plan_type);
-
-            if(powerService?.provider_name === gasService?.provider_name
-                && powerService?.plan_type === gasService?.plan_type
-                && powerService?.plan_type !== null
-                && LeadApplicationService.canSubmitEnergy(services)
-            ) {
-                UtilityStoreService.setIsBothEnergySelected(true);
-            }
-        }
     },
-    mounted() {
-        console.log("Lead summary", this.leadSummary);
-        this.setUtilityServicesToStore(this.leadSummary.connection_services);
-    }
 }
 </script>
 

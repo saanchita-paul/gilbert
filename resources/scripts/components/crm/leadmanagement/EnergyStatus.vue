@@ -2,13 +2,13 @@
     <div>
         <p
             v-if="this.status"
-            class="py-0 my-0 pl-4 service-status active-power-subtitle"
+            class="py-0 my-0 text-center active-power-subtitle"
             :style="{color: this.status.color}"
         >
             {{this.status.text}}
         <p
             v-else
-            class="py-0 my-0 pl-4 service-status active-power-subtitle"
+            class="py-0 my-0 text-center active-power-subtitle"
         >
             -
         </p>

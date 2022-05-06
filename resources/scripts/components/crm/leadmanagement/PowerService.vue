@@ -145,7 +145,7 @@ export default {
     //todo shift variables to vuex store and use from there
     //todo disable all select options if already submitted and not rejected
     //todo create a service if not exists after plan select
-    //todo move store set values to a proper place
+    //todo shift submit function to each component and call different functions
     name: "PowerService",
     components: {
         ServiceProvider,
@@ -258,18 +258,13 @@ export default {
             }
         },
         async fetchEaPlans() {
-            const services = this.leadSummary.service_interests;
-            if (services.includes("power")) {
-                this.eaPlans = await EAPlanService.getAllPlans({
-                    service_type: this.leadSummary.service_interests,
-                    postcode: this.leadSummary.postcode,
-                    state: this.leadSummary.state
-                });
-                this.isEaPlansLoaded = true;
-                console.log("eaPlans", this.eaPlans);
-            } else {
-                this.isEaPlansLoaded = false;
-            }
+            this.eaPlans = await EAPlanService.getAllPlans({
+                service_type: this.isBothEnergySubmit ? ['power', 'gas'] : ['power'],
+                postcode: this.leadSummary.postcode,
+                state: this.leadSummary.state
+            });
+            this.isEaPlansLoaded = true;
+            console.log("eaPlans", this.eaPlans);
         },
         async fetchOriginPlans() {
             const originProvider = this.providers.find(pl => {
@@ -376,13 +371,15 @@ export default {
                 UtilityStoreService.setBothProvider(this.selectedProvider);
                 UtilityStoreService.setBothPlan(this.selectedPlan);
 
-                let payload = {
-                    service_type: this.leadSummary?.service_interests,
-                    provider_name: this.selectedProvider,
-                    plan_type: this.selectedPlan,
-                    service_area: this.isBothEnergySubmit ? "energy" : "power"
-                };
-                LeadApplicationService.updateApplicationProviders(payload, this.leadSummary.id);
+                if(this.selectedProvider && this.selectedPlan) {
+                    let payload = {
+                        service_type: this.leadSummary?.service_interests,
+                        provider_name: this.selectedProvider,
+                        plan_type: this.selectedPlan,
+                        service_area: this.isBothEnergySubmit ? "energy" : "power"
+                    };
+                    LeadApplicationService.updateApplicationProviders(payload, this.leadSummary.id);
+                }
             }
         }
     },
