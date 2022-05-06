@@ -64,9 +64,9 @@ name: "LeadServicesAndNotes",
             UtilityStoreService.setGasProvider(gasService?.provider_name);
             UtilityStoreService.setGasPlan(gasService?.plan_type);
 
-            if(powerService.provider_name === gasService.provider_name
-                && powerService.plan_type === gasService.plan_type
-                && powerService.plan_type !== null
+            if(powerService?.provider_name === gasService?.provider_name
+                && powerService?.plan_type === gasService?.plan_type
+                && powerService?.plan_type !== null
                 && LeadApplicationService.canSubmitEnergy(services)
             ) {
                 UtilityStoreService.setIsBothEnergySelected(true);

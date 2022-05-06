@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-col cols="12" class="d-flex pb-0">
+        <v-col v-if="canShowBothEnergySubmitCheckbox" cols="12" class="d-flex pb-0">
             <v-checkbox
                 v-model="isBothEnergySubmit"
                 @change="changeIsBothEnergySubmit"
@@ -140,11 +140,12 @@ import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
 export default {
-    //todo hide isBothEnergySubmit if one of the service is submitted, not rejected
     //todo talk with Jamil and merge plan details branch
     //todo reduce emit functions
-    //todo disable all select options if already submitted and not rejected 
-
+    //todo shift variables to vuex store and use from there
+    //todo disable all select options if already submitted and not rejected
+    //todo create a service if not exists after plan select
+    //todo move store set values to a proper place
     name: "PowerService",
     components: {
         ServiceProvider,
@@ -221,7 +222,12 @@ export default {
             set(value) {
                 UtilityStoreService.setIsBothEnergySelected(value);
             }
-        }
+        },
+        canShowBothEnergySubmitCheckbox: {
+            get() {
+                return LeadApplicationService.canShowBothEnergySubmitCheckbox(this.leadSummary.connection_services);
+            }
+        },
     },
     mounted() {
         this.fetchEaPlans();

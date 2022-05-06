@@ -73,6 +73,20 @@ export default {
     },
 
     /**
+     * checking if we can submit both Power and Gas
+     *
+     * @param {Object[]} services
+     *
+     * @return boolean
+     */
+    canShowBothEnergySubmitCheckbox: (services) => {
+        const energyServices = services.filter(service => service.service_type === 'power' || service.service_type === 'gas');
+        return energyServices.every(service =>
+            STATUSES_FOR_ENERGY_SUBMIT.includes(service.status)
+        );
+    },
+
+    /**
      * checking if we can submit water
      *
      * @param {Object[]} services
