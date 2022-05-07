@@ -37,6 +37,7 @@
 
             <div class="d-flex" v-if="isEaPlansLoaded && selectedProvider === 'ea'">
                 <EnergyPlan
+                    :class="{'not-editable': !isServiceEditable }"
                     v-for="plan in eaPlans"
                     :key="plan.key"
                     :plan="plan"
@@ -49,6 +50,7 @@
 
             <div class="d-flex" v-if="selectedProvider === 'origin'">
                 <SolePlan
+                    :class="{'not-editable': !isServiceEditable }"
                     v-for="plan in originPlans"
                     :key="plan.name"
                     :plan="plan"
@@ -77,6 +79,7 @@
                     :key="plan.name"
                 >
                     <SumoPlan
+                        :class="{'not-editable': !isServiceEditable }"
                         :sumoPlanDetails="sumoPlans"
                         :plan="plan"
                         :isActive="selectedPlan"
@@ -139,8 +142,6 @@ export default {
     //todo talk with Jamil and merge plan details branch
     //todo reduce emit functions
     //todo shift variables to vuex store and use from there
-    //todo disable all select options if already submitted and not rejected
-    //todo create a service if not exists after plan select
     //todo shift submit function to each component and call different functions
     name: "GasService",
     components: {
@@ -224,6 +225,11 @@ export default {
                 return LeadApplicationService.canShowBothEnergySubmitCheckbox(this.leadSummary.connection_services);
             }
         },
+        isServiceEditable() {
+            return LeadApplicationService.canEditService(
+                UtilityStoreService.getPowerStatus()
+            );
+        },
     },
     mounted() {
         this.fetchEaPlans();
@@ -292,6 +298,7 @@ export default {
                 console.log("sumoPlans", this.sumoPlans);
                 return 0;
             } catch (error) {
+                console.log('Sumo Error', error);
                 this.isSumoPlansLoadError = true;
                 this.sumoPlans = new SumoPlanDetails();
             } finally {
@@ -310,7 +317,6 @@ export default {
             }
         },
         selectEAPlan(plan, isManual = false) {
-            this.selectedPlan = plan?.key;
             let planObj = {
                 name: plan.key,
                 service_area: "energy",
@@ -319,6 +325,7 @@ export default {
             this.selectPlan(planObj, isManual);
         },
         selectPlan(plan, isManual = true) {
+            if(!this.isServiceEditable) return;
             this.selectedPlan = plan.name;
             let payload = {
                 service_type: this.leadSummary?.service_interests,
@@ -335,13 +342,6 @@ export default {
         async reloadUtilityStore() {
             let leadSummary = await LeadApplicationService.loadUserLead(this.leadSummary.id);
             UtilityStoreService.setUtilityDetails(leadSummary.connection_services);
-        },
-        //todo will be used to prevent changing plan after submission and not rejected
-        isServiceEditable(service) {
-            return LeadApplicationService.canEditService(
-                this.leadSummary.connection_services,
-                service?.toLowerCase()
-            );
         },
         openEaPlanDetails(plan) {
             this.eaPlanForDetails = plan.key;
@@ -381,5 +381,8 @@ export default {
 .sumo-loading-container {
     flex: 1;
     text-align: center;
+}
+.not-editable {
+    cursor: not-allowed;
 }
 </style>

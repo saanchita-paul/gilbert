@@ -208,21 +208,6 @@ export default {
             }
             this.$eventBus.$emit("busUtilitySubmit", subType);
         },
-        //todo modify to add new service (Power, Gas) to application
-        updateService(service) {
-            // this.resetSelectedPlan();
-            // if (
-            //     (service === "Gas" || service === "Power") &&
-            //     this.selectedPowerProvider === "sumo"
-            // ) {
-            //     this.onSelectProvider("sumo");
-            // }
-
-            // this.$emit("updateService", service);
-            // if (this.selectedPowerProvider === "sumo") {
-            //     this.$eventBus.$emit("validate", this.setSumoDetailsData);
-            // }
-        },
         changeAfterHourPayee() {
             this.$emit("updateDraft", "after_hour_payee", this.leadSummary.after_hour_payee, false, null, false);
         }

@@ -17,8 +17,6 @@
                  </ValidationObserver>
                 <LeadServicesAndNotes
                     @updateDraft="updateDraft"
-                    @updateService="updateService"
-                    @updatePlan="updatePlan"
                     @updateNote= "updateNote"
                     :leadSummary="leadSummary"
                     :afterHourFlag="afterHourFlag"
@@ -66,7 +64,6 @@ import ChatbotService from "@scripts/services/crm/ChatbotService";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
 export default {
-    //todo remove updateService from here and make functional in separate component, reactivity
     //todo shift afterHourFlag, nextBusinessDay, getElectricityDistributor to powerService
     name: "ApplicationDetailsPage",
     components: {
@@ -143,6 +140,7 @@ export default {
             this.planNoteFlag = true;
             UtilityStoreService.setUtilityDetails(this.leadSummary.connection_services);
         },
+        //todo get the functionality and remove it
         updatePlan(plan, isManual)
         {
             this.plan = plan;
@@ -196,22 +194,6 @@ export default {
         updateLead(lead) {
             this.fullName = lead.person_details.first_name +' '+ lead.person_details.last_name;
             this.lead = lead;
-        },
-        updateService(service) {
-            let index = this.services.findIndex(svc => svc === service.toLowerCase());
-            if(index == -1) {
-                this.services.push(service.toLowerCase());
-                 LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
-                this.loadPlanNoteAndLead()
-            } else {
-                this.services.splice(index, 1);
-                LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
-                this.leadSummary.service_types = this.services;
-                console.log('services', service, this.services)
-                this.loadPlanNoteAndLead()
-            }
-            this.plan = null
-
         },
         async submitConnection(submitType) {
             let v = await this.validateLead();

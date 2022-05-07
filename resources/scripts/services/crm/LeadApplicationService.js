@@ -67,9 +67,8 @@ export default {
      * @param {string} serviceName
      * @return boolean
      */
-    canEditService: (services, serviceName) => {
-        const service = services.find(service => service.service_type === serviceName)
-        return service ? STATUSES_FOR_ENERGY_SUBMIT.includes(service.status) : true
+    canEditService: (status) => {
+        return status ? STATUSES_FOR_ENERGY_SUBMIT.includes(status) : true;
     },
 
     /**
