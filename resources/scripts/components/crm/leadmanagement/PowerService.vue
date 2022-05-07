@@ -331,20 +331,14 @@ export default {
                 service_area: this.isBothEnergySubmit ? "energy" : "power"
             };
 
-            if (this.selectedProvider !== "" && this.selectedProvider !== null) {
+            if (this.selectedProvider !== null) {
                 LeadApplicationService.updateApplicationProviders(payload, this.leadSummary.id);
+                this.reloadUtilityStore();
             }
-            this.$emit(
-                "updatePlan",
-                {
-                    active: false,
-                    key: plan.name,
-                    title: plan.title,
-                    provider: this.selectedProvider,
-                    service_area: "energy"
-                },
-                isManual
-            );
+        },
+        async reloadUtilityStore() {
+            let leadSummary = await LeadApplicationService.loadUserLead(this.leadSummary.id);
+            UtilityStoreService.setUtilityDetails(leadSummary.connection_services);
         },
         //todo will be used to prevent changing plan after submission and not rejected
         isServiceEditable(service) {

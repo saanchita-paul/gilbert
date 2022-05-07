@@ -332,13 +332,11 @@ export default {
 
    async saveLead(lead, leadId) {
         try {
-
             lead.moving_date = ApplicationMapper.mapDateToServer(lead.moving_date);
             lead.dob = ApplicationMapper.mapDateToServer(lead.dob);
             lead.identification.expire_date = ApplicationMapper.mapDateToServer(lead.identification.expire_date);
             const data = await axios.post('/api/applications/'+leadId+'/submit',{lead});
             return data;
-
         } catch (error) {
             console.log(error);
             return error.data;

@@ -12,7 +12,7 @@
                             <v-icon color="yellow">mdi-flash</v-icon>Power
                         </span>
                     </p>
-                    <EnergyStatus :leadSummary="leadSummary" title="Power"/>
+                    <EnergyStatus :leadSummary="leadSummary" type="power"/>
                 </v-card>
             </v-tab>
             <v-tab class="px-0 tab-capital-case">
@@ -22,7 +22,7 @@
                             <v-icon color="red">mdi-fire</v-icon>Gas
                         </span>
                     </p>
-                    <EnergyStatus :leadSummary="leadSummary" title="Gas"/>
+                    <EnergyStatus :leadSummary="leadSummary" type="gas"/>
                 </v-card>
             </v-tab>
             <v-tab class="px-0 tab-capital-case">
@@ -60,7 +60,6 @@
                     <PowerService
                         :leadSummary="leadSummary"
                         :afterHourFlag="afterHourFlag"
-                        @updatePlan="updatePlan"
                         @changeAfterHourPayee="changeAfterHourPayee"
                     ></PowerService>
                 </v-tab-item>
@@ -68,7 +67,6 @@
                     <GasService
                         :leadSummary="leadSummary"
                         :afterHourFlag="afterHourFlag"
-                        @updatePlan="updatePlan"
                     ></GasService>
                 </v-tab-item>
                 <v-tab-item>
@@ -224,10 +222,6 @@ export default {
             // if (this.selectedPowerProvider === "sumo") {
             //     this.$eventBus.$emit("validate", this.setSumoDetailsData);
             // }
-        },
-        updatePlan(plan, isManual) {
-            console.log('updatePlan', plan);
-            this.$emit('updatePlan', plan, isManual);
         },
         changeAfterHourPayee() {
             this.$emit("updateDraft", "after_hour_payee", this.leadSummary.after_hour_payee, false, null, false);

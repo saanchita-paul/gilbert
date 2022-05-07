@@ -463,22 +463,15 @@ class ApplicationService
                 $connectionService->plan_type = $data['plan_type'];
                 $connectionService->save();
             } else {
-                $connectionServices =  ConnectionService::where('connection_application_id', $applicationId)->get();
-                $dataToSave = [];
-                $currentServices = $connectionServices->pluck('service_type')->toArray();
-                foreach ($services as $service) {
-                    if (!in_array($service, $currentServices)) {
-                        $serviceData = [
-                            'service_type' => $service,
-                            'connection_application_id' => $applicationId,
-                            'status' => ConnectionService::STATUS_EA_PROCESSINF,
-                            'provider_name' => $data['provider_name'],
-                            'plan_type' => $data['plan_type'],
-                        ];
-                        $dataToSave[] = $serviceData;
-                    }
-                }
-                ConnectionService::insert($dataToSave);
+                ConnectionService::create(
+                    [
+                        'service_type' => $service,
+                        'connection_application_id' => $applicationId,
+                        'status' => ConnectionService::STATUS_EA_PROCESSINF,
+                        'provider_name' => $data['provider_name'],
+                        'plan_type' => $data['plan_type'],
+                    ]
+                );
             }
         }
     }

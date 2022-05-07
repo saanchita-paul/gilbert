@@ -13,9 +13,21 @@
             -
         </p>
         <p
+            v-if="false"
             class="ma-0 fontStyleQuote text-center"
         >
-            Quote ID: {{ this.quoteReference }}   
+            Supplier: {{ this.provider }}
+        </p>
+        <p
+            v-if="false"
+            class="ma-0 fontStyleQuote text-center"
+        >
+            Plan: {{ this.plan }}
+        </p>
+        <p
+            class="ma-0 fontStyleQuote text-center"
+        >
+            Quote ID: {{ this.quoteReference }}
         </p>
         <p
             class="reason ma-0" v-for="reason in reasons" :key="reason">
@@ -26,11 +38,12 @@
 
 <script>
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
 export default {
     name: "EnergyStatus",
     props: {
-        title: {
+        type: {
             require: true,
         },
         leadSummary: {
@@ -39,13 +52,13 @@ export default {
     },
     computed: {
         status() {
-            return this.title && this.service ? LeadApplicationService.mapStatus(this.service.status) : null
+            let utilityStatus = this.type === 'power' ?
+                UtilityStoreService.getPowerStatus()
+                : UtilityStoreService.getGasStatus();
+            return utilityStatus ? LeadApplicationService.mapStatus(utilityStatus) : null
         },
         service() {
-            if(this.title) {
-                return this.leadSummary.connection_services?.find(service => service.service_type === this.title.toLowerCase())
-            }
-            return null
+            return this.leadSummary.connection_services?.find(service => service.service_type === this.type);
         },
         quoteReference(){
             return this.service?.quote_reference ? this.service.quote_reference : '-'
@@ -56,6 +69,12 @@ export default {
                 return reasons.map(reason => reason?.reason_text || '')
             }
             return []
+        },
+        provider() {
+            return this.type === 'power' ? UtilityStoreService.getPowerProvider() : UtilityStoreService.getGasProvider();
+        },
+        plan() {
+            return this.type === 'power' ? UtilityStoreService.getPowerPlan() : UtilityStoreService.getGasPlan();
         }
     }
 }

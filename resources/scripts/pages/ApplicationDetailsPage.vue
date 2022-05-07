@@ -14,7 +14,7 @@
                                 @updateAddress="updateAddress"
                                 @updateDraft="updateDraft"
                         ></LeadUserDetails>
-                 </ValidationObserver>            <!-- <LeadsDetailsFotter :lifeSupportInfo="infoToPass.lifeSupportInfo"  v-if="leadSummary.status != 1" :login-loading="this.submittedLoader" :isManualChangeFlag="isManualChangeFlag" @submitConnection="submitConnection"></LeadsDetailsFotter> -->
+                 </ValidationObserver>
                 <LeadServicesAndNotes
                     @updateDraft="updateDraft"
                     @updateService="updateService"
@@ -66,7 +66,8 @@ import ChatbotService from "@scripts/services/crm/ChatbotService";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
 export default {
-    //todo remove updateService and UpdatePlan from here and make functional in separate component, reactivity
+    //todo remove updateService from here and make functional in separate component, reactivity
+    //todo shift afterHourFlag, nextBusinessDay, getElectricityDistributor to powerService
     name: "ApplicationDetailsPage",
     components: {
         LeadReadMoreModal,
@@ -104,7 +105,6 @@ export default {
             payload: null,
             fullName: null,
             submittedLoader: false,
-            isManualChangeFlag: false,
             submitType: null,
             assignedToDialog: false,
             preventSubmissionFlag: false,
@@ -145,7 +145,6 @@ export default {
         },
         updatePlan(plan, isManual)
         {
-            if(isManual) this.isManualChangeFlag = true;
             this.plan = plan;
             LeadApplicationService.saveSoleField('plan_type', this.plan, this.leadId);
             this.getElectricityDistributor();
@@ -199,7 +198,6 @@ export default {
             this.lead = lead;
         },
         updateService(service) {
-            this.isManualChangeFlag = true;
             let index = this.services.findIndex(svc => svc === service.toLowerCase());
             if(index == -1) {
                 this.services.push(service.toLowerCase());
@@ -313,12 +311,10 @@ export default {
             this.nmiMernFlag = true;
             this.leadSummary.nmi = '';
             this.leadSummary.mirn = '';
-            this.isManualChangeFlag = false;
             let response = await LeadApplicationService.updateAddress(address, this.leadId);
             this.leadSummary.nmi = response.nmi;
             this.leadSummary.mirn = response.mirn;
             this.nmiMernFlag = false;
-            this.isManualChangeFlag = true;
 
             await this.getElectricityDistributor();
             await this.loadNextBusinessDay();
@@ -344,7 +340,6 @@ export default {
                 }
             }
             await LeadApplicationService.saveSoleField(field, value,this.leadId, isDate, identification, false);
-            this.isManualChangeFlag = true;
 
            let [day, month, year] = [];
             if(isDate)
