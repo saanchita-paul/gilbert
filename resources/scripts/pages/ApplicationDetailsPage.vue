@@ -39,7 +39,7 @@
 
         <AssignedToUserEmptyModal v-if="assignedToDialog" :dialog="assignedToDialog" @closeMessage="closeAssignedToEmptyModal"></AssignedToUserEmptyModal>
 
-        <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" secondaryContact="secondaryContact" v-if="showSubmitModal" @saveData="saveData" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
+        <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" secondaryContact="secondaryContact" v-if="showSubmitModal" @confirmSubmitLead="confirmSubmitLead" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
             <PreventSubmissionModal v-if="preventSubmissionFlag" :message="preventSubmissionMessage" :dialog="preventSubmissionFlag" @closeMessage="closePreventSubmissionModal"></PreventSubmissionModal>
     </v-container>
 </template>
@@ -121,7 +121,22 @@ export default {
         afterHourFlag() {
             return this.plan && EAAfterHourService.calculateAfterHourFlag(this.eaElectricityDistributor,
                 this.leadSummary.moving_date, this.leadSummary.state, this.nextBusinessDay);
-        }
+        },
+        isBothEnergySubmit() {
+            return UtilityStoreService.getIsBothEnergySelected();
+        },
+        powerProvider() {
+            return UtilityStoreService.getPowerProvider();
+        },
+        gasProvider() {
+            return UtilityStoreService.getGasProvider();
+        },
+        powerPlan() {
+            return UtilityStoreService.getPowerPlan();
+        },
+        gasPlan() {
+            return UtilityStoreService.getGasPlan();
+        },
     },
     methods: {
         async getElectricityDistributor()
@@ -212,9 +227,8 @@ export default {
             this.submitType = submitType;
             this.payload = { ...this.lead.property_details,
                 ...this.lead.person_details,
-                service_interests: this.services,
-                supplier: 1,
-                plan_type: this.plan,
+                selectedProvider: (submitType === 'energy' || submitType === 'power') ? this.powerProvider : this.gasProvider,
+                selectedPlan: (submitType === 'energy' || submitType === 'power') ? this.powerPlan : this.gasPlan,
                 submitType,
                 identification: this.lead.identification,
             };
@@ -243,7 +257,7 @@ export default {
         async validateLead() {
           return await this.$refs.submit_lead.validate()
         },
-        async saveData() {
+        async confirmSubmitLead() {
             this.showSubmitModal = false;
             let payload = null;
             if(this.lead.property_details === undefined)
@@ -263,9 +277,9 @@ export default {
                     supplier: 1,
                     plan_type: this.plan?.key,
                     submit_type: this.submitType
-
                 };
             }
+            console.log('payload', payload);
             this.submittedLoader = true;
             let response = await LeadApplicationService.saveLead(payload, this.leadId);
             this.$router.push({name:'applications'});

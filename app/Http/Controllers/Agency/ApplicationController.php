@@ -206,7 +206,6 @@ class ApplicationController extends Controller
             $setEaDistributorService->setDistributor();
         }
 
-
         SubmitApplicationEvent::dispatch($id, $submitType, $options);
 
         return ApplicationResource::make($res);

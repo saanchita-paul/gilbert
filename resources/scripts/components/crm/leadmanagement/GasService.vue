@@ -73,18 +73,15 @@
                     </div>
                 </div>
                 <div
-                    v-else
+                    v-else-if="sumoPlans"
                     class="d-flex"
-                    v-for="plan in sumoTemporaryPlans"
-                    :key="plan.name"
                 >
                     <SumoPlan
                         :class="{'not-editable': !isServiceEditable }"
                         :sumoPlanDetails="sumoPlans"
-                        :plan="plan"
                         :isActive="selectedPlan"
                         @soleDialog="toggleViewPlanDetails"
-                        @click.native="selectPlan({...plan, ...{ name: sumoPlanName }})"
+                        @click.native="selectPlan({...sumoPlans, ...{ name: sumoPlans.plan_name }})"
                     >
                     </SumoPlan>
                 </div>
@@ -168,9 +165,8 @@ export default {
             isEaPlansLoaded: false,
             viewEaPlanDetails: false,
             eaPlanForDetails: null,
-            sumoTemporaryPlans: [],
-            sumoPlans: new SumoPlanDetails({}),
-            isSumoPlansLoading: true,
+            sumoPlans: null,
+            isSumoPlansLoading: false,
             isSumoPlansLoadError: false,
             viewPlanDetails: false,
             originPlans: [],
@@ -184,13 +180,6 @@ export default {
         },
         selectedServiceTitle() {
             return this.isBothEnergySubmit ? "Power & Gas" : "Gas";
-        },
-        sumoPlanName() {
-            if (this.sumoPlans) {
-                return this.sumoPlans?.plan_name ?? "";
-            } else {
-                return "";
-            }
         },
         selectedProvider: {
             get() {
@@ -234,7 +223,6 @@ export default {
     mounted() {
         this.fetchEaPlans();
         this.fetchOriginPlans();
-        this.fetchTemporarySumoPlans();
         this.loadSelectedProviderAndPlan();
 
         // On address change refetch Sumo Plan Details
@@ -275,17 +263,10 @@ export default {
             this.originPlans = originProvider.plans;
             console.log("originPlans", this.originPlans);
         },
-        async fetchTemporarySumoPlans() {
-            const sumoProvider = this.providers.find(pl => {
-                return pl.name === 'sumo';
-            });
-            this.sumoTemporaryPlans = sumoProvider.plans;
-            console.log("sumoTemporaryPlans", this.sumoTemporaryPlans);
-        },
         async fetchSumoPlans(name) {
             this.isSumoPlansLoading = true;
             this.isSumoPlansLoadError = false;
-            this.sumoPlans = new SumoPlanDetails({});
+            this.sumoPlans = null;
             try {
                 let address = `${this.leadSummary.street_number} ${this.leadSummary.street_name_only} ${this.leadSummary.street_type} ${this.leadSummary.city} ${this.leadSummary.state} ${this.leadSummary.postcode}`;
                 this.sumoPlans = await SumoService.getPlans(
@@ -300,7 +281,7 @@ export default {
             } catch (error) {
                 console.log('Sumo Error', error);
                 this.isSumoPlansLoadError = true;
-                this.sumoPlans = new SumoPlanDetails();
+                this.sumoPlans = null;
             } finally {
                 this.isSumoPlansLoading = false;
             }
