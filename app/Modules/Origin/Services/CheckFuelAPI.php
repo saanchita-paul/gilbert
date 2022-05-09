@@ -27,14 +27,14 @@ class CheckFuelAPI extends BaseOriginAPI
 
 
     /**
-     * @var string $option
+     * @var string $customerType
      * @var string $addressID
      */
-    public function __construct(private string $option, private string $addressID)
+    public function __construct(private string $customerType, private string $addressID)
     {
         parent::__construct();
-        if(in_array($this->option, array_keys(self::MAP_CUSTOMER_TYPE))){
-            $this->option = self::MAP_CUSTOMER_TYPE[$this->option];
+        if(in_array($this->customerType, array_keys(self::MAP_CUSTOMER_TYPE))){
+            $this->customerType = self::MAP_CUSTOMER_TYPE[$this->customerType];
         } 
     }
 
@@ -45,12 +45,12 @@ class CheckFuelAPI extends BaseOriginAPI
      * 
      */
     public function fetch(){
-        if(empty($this->option) || empty($this->addressID))
+        if(empty($this->customerType) || empty($this->addressID))
             return false;
         
         $url = config('origin.baseurl') . config('origin.endpoints.check_fuel');
         $params = [
-            'CustomerTypeID' => sprintf('\'%s\'', $this->option),
+            'CustomerTypeID' => sprintf('\'%s\'', $this->customerType),
             'OrderAddressID' => sprintf('\'%s\'', $this->addressID),
         ];
 

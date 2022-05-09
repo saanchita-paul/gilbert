@@ -530,4 +530,39 @@ class ConnectionApplication extends Model
         return $afterHourFlag;
     }
 
+    /**
+     * Converts 10-digit MIRN to 11-digit MIRN which appends checksum at the end of string
+     * 
+     * @param string 
+     * 
+     * @return string
+     */
+    public function getMirnChecksumAttribute(){
+        if(!empty($this->mirn) && count(str_split($this->mirn)) == 10){
+            $arr = str_split($this->mirn);
+            $isDouble = true;
+            $totalSum = 0;
+            
+            for($i=count($arr)-1; $i>=0; $i--){
+                $asciiVal = intval(ord($arr[$i]));
+                if($isDouble)
+                    $asciiVal *= 2;
+                $isDouble = !$isDouble;
+                $split  = array_map('intval', str_split($asciiVal));
+                $sum = 0;
+                foreach($split as $digit){
+                    $sum += $digit;
+                }
+                
+                $totalSum+= $sum;
+            }
+            
+            $nextHighest = ceil($totalSum / 10) * 10;
+            $checkSum = ($nextHighest - $totalSum) % 10;
+            return $this->mirn . strval($checkSum);
+        }
+
+        return $this->mirn ?? '';
+
+    }
 }

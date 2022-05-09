@@ -11,23 +11,48 @@ class GetProductInfoAPI extends BaseOriginAPI
 
     const MAP_PRODUCT_TYPE = [
         "electricity" => [
-            "product_code" => "ELE_LWFZR_0002",
-            "campaign_id" => "C-00078334"
+            "basic" => [
+                "product_code" => "ELE_FLEXI_0002",
+                "campaign_id" => "C-00074893"
+            ],
+            "advantage" => [
+                "product_code" => "ELE_LWFZR_0002",
+                "campaign_id" => "C-00078334"
+            ],
+            "solarboost" => [
+                "product_code" => "ELE_DSAVE_0002",
+                "campaign_id" => "C-00076271"
+            ],
+            "businessgo" => [
+                "product_code" => "ELE_LWFZB_0002",
+                "campaign_id" => "C-00074894"
+            ],
         ],
         "gas" => [
-            "product_code" => "GAS_LWFZR_0001",
-            "campaign_id" => "C-00078334"
+            "basic" => [
+                "product_code" => "GAS_FLEXI_0001",
+                "campaign_id" => "C-00074893"
+            ],
+            "advantage" => [
+                "product_code" => "GAS_LWFZR_0001",
+                "campaign_id" => "C-00078334"
+            ],
+            "businessgo" => [
+                "product_code" => "GAS_LWFZB_0001",
+                "campaign_id" => "C-00074894"
+            ],
         ],
     ];
 
     /**
-     * @var string $option
+     * @var string $fuel
+     * @var string $product
      */
-    public function __construct(private string $option)
+    public function __construct(private string $fuel, private string $product)
     {
         parent::__construct();
-        if(in_array($this->option, array_keys(self::MAP_PRODUCT_TYPE))){
-            $type = self::MAP_PRODUCT_TYPE[$this->option];
+        if(in_array($this->fuel, array_keys(self::MAP_PRODUCT_TYPE)) && in_array($this->product, array_keys(self::MAP_PRODUCT_TYPE[$this->fuel]))){
+            $type = self::MAP_PRODUCT_TYPE[$this->fuel][$this->product];
             $this->product_code = $type['product_code'];
             $this->campaign_id = $type['campaign_id'];
         } 
@@ -56,14 +81,22 @@ class GetProductInfoAPI extends BaseOriginAPI
         foreach($responseData['results'] as $info){
             $productInfos[] = [
                 'productID' => $info['ProductID'],
-                'description' => $info['Description']    
+                'description' => $info['Description'],
+                'divisionID' => $info['DivisionID'],
+                'customerTypeID' => $info['CustomerTypeID'], 
             ];
         }
 
-        $formattedData = [
-            'productInfos' => $productInfos,
-        ];
-
+        if(count($productInfos) > 1){
+            $formattedData = [
+                'productInfo' => $productInfos,
+            ];
+        }
+        else{
+            $formattedData = [
+                'productInfo' => $productInfos[0],
+            ];
+        }
         return $formattedData;
     }
 

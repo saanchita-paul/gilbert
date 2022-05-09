@@ -19,14 +19,17 @@ class OriginController extends Controller
      * 
      * @param Request
      * inputs:
-     * - option
+     * - fuel
+     * - product
      * 
      * @return JSON
      */
     public function getProductInfo(Request $request) : JsonResponse{
-        $option = $request->option ?? null;
+        $fuel = $request->fuel ?? null;
+        $product = $request->product ?? null;
+        
         $validator = Validator::make($request->all(), [
-            'option' => 'required|in:'.implode(",", array_keys(GetProductInfoAPI::MAP_PRODUCT_TYPE)),
+            'fuel' => 'required|in:'.implode(",", array_keys(GetProductInfoAPI::MAP_PRODUCT_TYPE)),
         ]);
 
         if($validator->fails()){
@@ -36,9 +39,22 @@ class OriginController extends Controller
             ];
             return response()->json($response, 300);
         }
+        else {
+            $validator = Validator::make($request->all(), [
+                'product' => 'required|in:'.implode(",", array_keys(GetProductInfoAPI::MAP_PRODUCT_TYPE[$fuel])),
+            ]);
+
+            if($validator->fails()){
+                $response = [
+                    'status' => 'fail',
+                    'message' => $validator->errors()->messages(),
+                ];
+                return response()->json($response, 300);
+            }
+        }
 
         try {
-            $productInfo = new GetProductInfoAPI($option);
+            $productInfo = new GetProductInfoAPI($fuel, $product);
             $response = $productInfo->fetch();
 
             if(!$response){
@@ -70,18 +86,18 @@ class OriginController extends Controller
      * 
      * @param Request
      * inputs:
-     * - option
-     * - number
+     * - validateBy
+     * - numberValue
      * 
      * @return JSON
      */
     public function validateAddress(Request $request) : JsonResponse{
-        $option = $request->option ?? null;
-        $number = $request->number ?? null;
+        $validateBy = $request->validateBy ?? null;
+        $numberValue = $request->numberValue ?? null;
 
         $validator = Validator::make($request->all(), [
-            'option' => 'required|in:'.implode(",", array_keys(ValidateAddressAPI::MAP_VALIDATE_TYPE)),
-            'number' => 'required|integer'
+            'validateBy' => 'required|in:'.implode(",", array_keys(ValidateAddressAPI::MAP_VALIDATE_TYPE)),
+            'numberValue' => 'required|integer'
         ]);
 
         if($validator->fails()){
@@ -93,7 +109,7 @@ class OriginController extends Controller
         }
 
         try {
-            $validateAddress = new ValidateAddressAPI($option, $number);
+            $validateAddress = new ValidateAddressAPI($validateBy, $numberValue);
             $response = $validateAddress->fetch();
 
             if(!$response){
@@ -125,18 +141,18 @@ class OriginController extends Controller
      * 
      * @param Request
      * inputs :
-     * - option
-     * - addressid
+     * - customerType
+     * - addressID
      * 
      * @return JSON
      */
     public function checkFuel(Request $request) : JsonResponse{
-        $option = $request->option ?? null;
-        $addressID = $request->addressid ?? null;
+        $customerType = $request->customerType ?? null;
+        $addressID = $request->addressId ?? null;
 
         $validator = Validator::make($request->all(), [
-            'option' => 'required|in:'.implode(",", array_keys(CheckFuelAPI::MAP_CUSTOMER_TYPE)),
-            'addressid' => 'required'
+            'customerType' => 'required|in:'.implode(",", array_keys(CheckFuelAPI::MAP_CUSTOMER_TYPE)),
+            'addressId' => 'required'
         ]);
 
         if($validator->fails()){
@@ -148,7 +164,7 @@ class OriginController extends Controller
         }
 
         try {
-            $checkFuel = new CheckFuelAPI($option, $addressID);
+            $checkFuel = new CheckFuelAPI($customerType, $addressID);
             $response = $checkFuel->fetch();
 
             if(!$response){
@@ -178,6 +194,15 @@ class OriginController extends Controller
     public function submitOrder(Request $request){
         try {
             $newOrder = new SubmitOrderAPI([]);
+            // $errors = $newOrder->hasError();
+            // if($errors){
+            //     $response = [
+            //         'status' => 'fail',
+            //         'message' => $newOrder->hasError(),
+            //     ];
+            //     return response()->json($response, 300);
+            // }
+            
             $response = $newOrder->submit();
 
             if(!$response){
