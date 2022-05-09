@@ -5,6 +5,7 @@ import {
     STATUSES_FOR_WATER_SUBMIT
 } from "@scripts/data/ConnectionApplicationMapper";
 import Store from "@scripts/store";
+import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
 export default {
     loadMetrics: (data) => LeadApplicationAPI.getMetrics(data),
@@ -55,9 +56,13 @@ export default {
      * @param energyServices
      * @return boolean
      */
-    canSubmitEnergy: (services, energyServices = ['power', 'gas']) => services.some(service => (
-        STATUSES_FOR_ENERGY_SUBMIT.includes(service.status) && energyServices.includes(service.service_type)
-    )),
+    // canSubmitEnergy: (services, energyServices = ['power', 'gas']) => services.some(service => (
+    //     STATUSES_FOR_ENERGY_SUBMIT.includes(service.status) && energyServices.includes(service.service_type)
+    // )),
+    canSubmitEnergy: (type) => {
+        let status = type === 'power' ? UtilityStoreService.getPowerStatus() : UtilityStoreService.getGasStatus();
+        return STATUSES_FOR_ENERGY_SUBMIT.includes(status)
+    },
 
     /**
      * checking if we can submit energy

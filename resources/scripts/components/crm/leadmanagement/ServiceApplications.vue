@@ -81,16 +81,6 @@
                 </v-tab-item>
             </v-tabs-items>
         </v-tabs>
-        <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
-            <v-btn
-                :disabled="isDisable()"
-                color="#542E89"
-                @click="submit"
-                class="white--text"
-            >
-                Submit for connection
-            </v-btn>
-        </div>
     </v-row>
 </template>
 
@@ -98,7 +88,6 @@
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import WaterService from "@scripts/components/crm/leadmanagement/WaterService";
 import InternetService from "@scripts/components/crm/leadmanagement/InternetService";
-import { isNull } from "lodash-es";
 import EnergyStatus from "@scripts/components/crm/leadmanagement/EnergyStatus";
 import PowerService from "@scripts/components/crm/leadmanagement/PowerService";
 import GasService from "@scripts/components/crm/leadmanagement/GasService";
@@ -136,14 +125,6 @@ export default {
                 LeadApplicationService.setActiveServiceTab(value);
             }
         },
-        tabMapper() {
-            return {
-                Power: 0,
-                Gas: 1,
-                Water: 2,
-                Internet: 3
-            };
-        },
         getWaterStatus() {
             const status = LeadApplicationService.mapStatus(
                 LeadApplicationService.getServiceObj(
@@ -157,57 +138,8 @@ export default {
         getInternetStatus() {
             return 'Connected';
         },
-        isPayeeSelectedForAfterHourSubmission() {
-            return (
-                this.afterHourFlag && isNull(this.leadSummary.after_hour_payee)
-            );
-        }
     },
     methods: {
-        //todo disable submit if already submitted
-        //todo disable submit if isBothSelected but for one of them provider/plan is not selected
-        isDisable() {
-            switch (this.tab) {
-                case this.tabMapper.Power:
-                    return (
-                        !LeadApplicationService.canSubmitEnergy(
-                            this.leadSummary.connection_services
-                        ) ||
-                        isNull(this.selectedPowerProvider) ||
-                        !this.selected_plan ||
-                        this.isPayeeSelectedForAfterHourSubmission
-                    );
-                case this.tabMapper.Gas:
-                    return (
-                        !LeadApplicationService.canSubmitEnergy(
-                            this.leadSummary.connection_services
-                        ) ||
-                        isNull(this.selectedPowerProvider) ||
-                        !this.selected_plan ||
-                        this.isPayeeSelectedForAfterHourSubmission
-                    );
-                case this.tabMapper.Water:
-                    return !LeadApplicationService.canSubmitWater(
-                        this.leadSummary.connection_services
-                    );
-                default:
-                    return true;
-            }
-        },
-        //todo before submit check if single service or both selected, then submit base on that
-        submit() {
-            let subType = "energy";
-            if (this.tabMapper.Power === this.tab) {
-                subType = "energy";
-            } else if (this.tabMapper.Gas === this.tab) {
-                subType = "energy";
-            }  else if (this.tabMapper.Water === this.tab) {
-                subType = "water";
-            } else {
-                subType = "internet";
-            }
-            this.$eventBus.$emit("busUtilitySubmit", subType);
-        },
         changeAfterHourPayee() {
             this.$emit("updateDraft", "after_hour_payee", this.leadSummary.after_hour_payee, false, null, false);
         }

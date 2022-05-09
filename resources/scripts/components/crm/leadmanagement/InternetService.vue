@@ -32,6 +32,18 @@
                 </div>
             </div>
         </v-col>
+        <v-col cols="12">
+            <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
+                <v-btn
+                    :disabled="isDisable()"
+                    color="#542E89"
+                    @click="submit"
+                    class="white--text"
+                >
+                    Submit for connection
+                </v-btn>
+            </div>
+        </v-col>
 
         <v-dialog
             v-model="viewPlanDialog"
@@ -85,7 +97,13 @@ props: {
         },
         selectPlan(plan){
            this.selectedPlan = plan.name;
-        }
+        },
+        isDisable() {
+            return true;
+        },
+        submit() {
+            this.$eventBus.$emit("busUtilitySubmit", "internet");
+        },
     },
     computed:{
         providers() {

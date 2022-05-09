@@ -5,7 +5,7 @@
                 v-model="isBothEnergySubmit"
                 @change="changeIsBothEnergySubmit"
             ></v-checkbox>
-            <p class="checkbox-text">Submit both Power and Gas</p>
+            <p class="checkbox-text">Submit elec and gas to same retailer for same plan</p>
         </v-col>
         <v-col cols="12">
             <v-divider></v-divider>
@@ -87,6 +87,18 @@
                 </div>
             </div>
         </v-col>
+        <v-col cols="12">
+            <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
+                <v-btn
+                    :disabled="isDisable()"
+                    color="#542E89"
+                    @click="submit"
+                    class="white--text"
+                >
+                    Submit {{ selectedServiceTitle }}
+                </v-btn>
+            </div>
+        </v-col>
 
         <v-dialog v-model="viewEaPlanDetails" max-width="500"
             v-if="viewEaPlanDetails && eaPlanForDetails"
@@ -126,7 +138,6 @@ import TemporaryConnection from "@scripts/components/crm/leadmanagement/Temporar
 import SameDayConnection from "@scripts/components/crm/leadmanagement/SameDayConnection";
 import EAPlanService from "@scripts/services/ea/EAPlanService";
 import SumoService from "@scripts/services/crm/SumoService";
-import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
 import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
 import SumoPlan from "@scripts/components/crm/leadmanagement/SumoPlan";
 import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
@@ -219,6 +230,9 @@ export default {
                 UtilityStoreService.getPowerStatus()
             );
         },
+        isPayeeSelectedForAfterHourSubmission() {
+            return this.afterHourFlag && isNull(this.leadSummary.after_hour_payee);
+        }
     },
     mounted() {
         this.fetchEaPlans();
@@ -349,7 +363,19 @@ export default {
                     LeadApplicationService.updateApplicationProviders(payload, this.leadSummary.id);
                 }
             }
-        }
+        },
+        isDisable() {
+            return (
+                !LeadApplicationService.canSubmitEnergy('gas') ||
+                !this.selectedProvider ||
+                !this.selectedPlan ||
+                this.isPayeeSelectedForAfterHourSubmission
+            );
+        },
+        submit() {
+            let subType = this.isBothEnergySubmit ? "energy" : "gas";
+            this.$eventBus.$emit("busUtilitySubmit", subType);
+        },
     },
 };
 </script>

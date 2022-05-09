@@ -13,10 +13,22 @@
         <div class="d-flex ml-6 regularFontSize">
             <div :class="{ errorColor: isError }">{{ connectionStatusReason }}</div>
         </div>
+        <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
+            <v-btn
+                :disabled="isDisable()"
+                color="#542E89"
+                @click="submit"
+                class="white--text"
+            >
+                Submit for connection
+            </v-btn>
+        </div>
     </v-card>
 </template>
 
 <script>
+import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+
 export default {
     name: "WaterService",
     props:['connection_id', 'leadSummary'],
@@ -26,10 +38,12 @@ export default {
         }
     },
     methods:{
-        submit(){
-            // * this will ber fired on ApplicationDetailsPage
-            this.$eventBus.$emit("busUtilitySubmit", 'water')
-        }
+        isDisable() {
+            return !LeadApplicationService.canSubmitWater(this.leadSummary.connection_services);
+        },
+        submit() {
+            this.$eventBus.$emit("busUtilitySubmit", "water");
+        },
     },
     computed:{
         connectionStatusReason(){
@@ -48,8 +62,7 @@ export default {
                    this.leadSummary.is_auto_water_submit  &&
                    this.leadSummary.fast_connect_customer_reference !== null ? 
                    "Your application has been submitted automatically. Please wait while we process." :
-                   "We are processing your application..." 
-                   
+                   "We are processing your application..."    
         }
     }
 }
