@@ -190,7 +190,7 @@ class ApplicationController extends Controller
      * @return ApplicationResource|JsonResponse
      */
     public function submit(Request $request, $id)
-{
+    {
     try {
         $service = new ApplicationService();
         $requestArray = $request->toArray();

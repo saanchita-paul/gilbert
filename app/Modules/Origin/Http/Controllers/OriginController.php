@@ -11,6 +11,9 @@ use Origin\Services\GetProductInfoAPI;
 use Origin\Services\ValidateAddressAPI;
 use Origin\Services\CheckFuelAPI;
 use Origin\Services\SubmitOrderAPI;
+use Origin\Services\CheckOrderAPI;
+
+use App\Models\ConnectionApplication;
 
 class OriginController extends Controller
 {
@@ -226,6 +229,79 @@ class OriginController extends Controller
                 'message' => "Oops please try again"
             ];
             return response()->json($response , 500);
+        }
+    }
+
+    /**
+     * Check order info and status after submission
+     * 
+     * @param Request
+     * inputs :
+     * - hoodReferenceNumber
+     * 
+     * @return JSON
+     */
+    public function checkOrder(Request $request) : JsonResponse{
+        $partnerRefNum = $request->hoodReferenceNumber ?? null;
+
+        $validator = Validator::make($request->all(), [
+            'hoodReferenceNumber' => 'required'
+        ]);
+
+        if($validator->fails()){
+            $response = [
+                'status' => 'fail',
+                'message' => $validator->errors()->messages(),
+            ];
+            return response()->json($response, 300);
+        }
+
+        try {
+            $checkOrder = new CheckOrderAPI($partnerRefNum);
+            $response = $checkOrder->fetch();
+
+            if(!$response){
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'Order info is not available'
+                ];
+                return response()->json($response, 400);
+            }
+
+            $response['status'] = 'success';
+            $response['message'] = 'Check Order Info Successful';
+
+            return response()->json($response, 200);
+
+        } catch (\Exception $exception) {
+            Log::error( "Error in OriginController, CheckOrder method" , [ 'message' => $exception->getMessage()]);
+            Log::error($exception->getTraceAsString());
+            $response =  [
+                'status' => 'fail',
+                'message' => "Oops please try again"
+            ];
+            return response()->json($response , 500);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $application = $request->application_id ? ConnectionApplication::find($request->application_id) : null;
+        $data = $request->data;
+
+        try {
+            // $applications = ManuallyStoreLead::run($request->get('office_id'), $request->get('leads_data'));
+            // return response()->json(['success' => true, 'applications' => $applications]);
+        } catch ( \Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString()
+            ]);
         }
     }
 }

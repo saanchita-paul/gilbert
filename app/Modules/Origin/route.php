@@ -12,6 +12,10 @@ Route::get('/validateaddress', [OriginController::class, "validateAddress"]);
 Route::get('/checkfuel', [OriginController::class, "checkFuel"]);
 
 Route::get('/submit', [OriginController::class, "submitOrder"]);
+
+Route::get('/checkorder', [OriginController::class, "checkOrder"]);
+
+Route::post('/leads', [OriginController::class, "store"]);
  
 Route::prefix('/origin/api')->middleware(['api', 'auth:sanctum'])->group(function () {
 

@@ -10,5 +10,6 @@ return [
         'check_fuel' => '/sap/opu/odata/sap/PRODUCT_CATALOG/GetOfferedDivisionByAddress',
         'get_xcsrf_token' => '/sap/opu/odata/sap/SALES/OrderHeaders',
         'submit_order' => '/sap/opu/odata/sap/SALES/OrderHeaders',
+        'check_order' => '/sap/opu/odata/sap/SALES/OrderItemStatuses',
     ],
 ];
