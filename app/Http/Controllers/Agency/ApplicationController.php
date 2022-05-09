@@ -197,12 +197,14 @@ class ApplicationController extends Controller
 
         $res = $service->submit($requestArray, $id);
         $authUser = Auth::user();
-        $ea_services_id = $service->getNotSubmittedEaService($id);
-        $options = ['auth_user'=>$authUser, 'services_id'=> $ea_services_id];
         $submitType =  data_get($requestArray, 'lead.submit_type');
+        $ea_service_ids = $service->getNotSubmittedEaService($id, $submitType);
+        $options = ['auth_user'=>$authUser, 'services_id'=> $ea_service_ids];
 
-        if($submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_ENERGY) {
-            $setEaDistributorService = new SetEaDistributorService($res, $ea_services_id);
+        if($submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_ENERGY
+            || $submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_POWER
+            || $submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_GAS) {
+            $setEaDistributorService = new SetEaDistributorService($res, $ea_service_ids, $submitType);
             $setEaDistributorService->setDistributor();
         }
 

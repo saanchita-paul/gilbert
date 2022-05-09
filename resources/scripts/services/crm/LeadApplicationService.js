@@ -22,7 +22,7 @@ export default {
     saveNote: (note, leadId) => LeadApplicationAPI.saveNote(note, leadId),
     eacalate: (leadId) => LeadApplicationAPI.eacalate(leadId),
     saveEscalateReason: (reason, leadId) => LeadApplicationAPI.saveEscalateReason(reason, leadId),
-    saveLead: (lead, leadId) => LeadApplicationAPI.saveLead(lead, leadId),
+    confirmSubmitLead: (lead, leadId) => LeadApplicationAPI.confirmSubmitLead(lead, leadId),
     updateAddress: (address, leadId) => LeadApplicationAPI.updateAddress(address, leadId),
     assignUser: (leadId, agentProfileId) => LeadApplicationAPI.assignUser(leadId, agentProfileId),
     saveSoleField: (field, value, leadId, isDate, identification = false, isService = false) => LeadApplicationAPI.saveSoleField(field, value, leadId, isDate, identification, isService),

@@ -260,6 +260,7 @@ export default {
         async confirmSubmitLead() {
             this.showSubmitModal = false;
             let payload = null;
+            console.log('lead', this.lead);
             if(this.lead.property_details === undefined)
             {
                 payload = {...this.lead};
@@ -275,13 +276,13 @@ export default {
                     'service_interests':this.services,
                     'identification': this.lead.identification,
                     supplier: 1,
-                    plan_type: this.plan?.key,
+                    plan_type: (this.submitType === 'energy' || submitType === 'power') ? this.powerPlan : this.gasPlan,
                     submit_type: this.submitType
                 };
             }
             console.log('payload', payload);
             this.submittedLoader = true;
-            let response = await LeadApplicationService.saveLead(payload, this.leadId);
+            let response = await LeadApplicationService.confirmSubmitLead(payload, this.leadId);
             this.$router.push({name:'applications'});
         },
         async updateAddress(address) {

@@ -287,6 +287,8 @@ class ConnectionApplication extends Model
     const PHONE_TYPE_HOMEPHONE = 2;
 
     const LEAD_SUBMIT_TYPE_ENERGY = 'energy';
+    const LEAD_SUBMIT_TYPE_POWER = 'power';
+    const LEAD_SUBMIT_TYPE_GAS = 'gas';
     const LEAD_SUBMIT_TYPE_WATER = 'water';
 
     const PROPERTY_TYPE_MAPPING = [

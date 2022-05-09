@@ -11,7 +11,7 @@ use App\Services\Utility\StateMapService;
 class SetEaDistributorService
 {
 
-    public function __construct(public ConnectionApplication $connectionApplication, public array $servicesId)
+    public function __construct(public ConnectionApplication $connectionApplication, public array $servicesId, public $submitType)
     {
 
     }
@@ -22,8 +22,12 @@ class SetEaDistributorService
         $eleDistributor = data_get($eaResponse, 'distributor_name.electricity', null);
         $gasDistributor = data_get($eaResponse, 'distributor_name.gas', null);
 
-        $this->updateService(ConnectionService::TYPE_ELECTRICITY, $eleDistributor);
-        $this->updateService(ConnectionService::TYPE_GAS, $gasDistributor);
+        match ($this->submitType) {
+            'energy' => $this->updateService(ConnectionService::TYPE_ELECTRICITY, $eleDistributor) && $this->updateService(ConnectionService::TYPE_GAS, $gasDistributor),
+            'power' =>  $this->updateService(ConnectionService::TYPE_ELECTRICITY, $eleDistributor),
+            'gas' => $this->updateService(ConnectionService::TYPE_GAS, $gasDistributor),
+            default => null,
+        };
     }
 
     private function updateService($service, $distributor)

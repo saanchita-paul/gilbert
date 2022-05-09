@@ -330,15 +330,15 @@ export default {
         }
     },
 
-   async saveLead(lead, leadId) {
+   async confirmSubmitLead(lead, leadId) {
         try {
             lead.moving_date = ApplicationMapper.mapDateToServer(lead.moving_date);
             lead.dob = ApplicationMapper.mapDateToServer(lead.dob);
             lead.identification.expire_date = ApplicationMapper.mapDateToServer(lead.identification.expire_date);
-            const data = await axios.post('/api/applications/'+leadId+'/submit',{lead});
+            const data = await axios.post('/api/applications/'+leadId+'/submit', {lead});
             return data;
         } catch (error) {
-            console.log(error);
+            console.log('Submit error', error);
             return error.data;
         }
     },

@@ -18,7 +18,6 @@ class EaPlanDetailsService
         public string $postcode,
         public int $leadId,
         public array $servicesId
-
     )
     {
         $this->chatbotUri = config('bot.root_url');
@@ -56,13 +55,14 @@ class EaPlanDetailsService
 
         $eleService = ConnectionService::query()
             ->where('connection_application_id',  $this->leadId )
+            ->where('provider_name', ConnectionService::PROVIDER_EA)
             ->where('service_type', ConnectionService::TYPE_ELECTRICITY)
-            ->where('provider_name', ConnectionService::PROVIDER_EA )
             ->whereIn('id', $this->servicesId)
             ->first();
 
         $powerFlag = false;
         $gasFlag = false;
+
         if(!is_null($gasService)) {
             $this->plan_type = $gasService->plan_type;
             $gasFlag = true;

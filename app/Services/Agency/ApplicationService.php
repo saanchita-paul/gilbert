@@ -261,16 +261,14 @@ class ApplicationService
     public function setSubmittedAtByServiceType(int $applicationId, string $type, array $service_interests = []): bool
     {
         try {
+            $services = match ($type) {
+                'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
+                'power' => [ConnectionService::TYPE_ELECTRICITY],
+                'gas' => [ConnectionService::TYPE_GAS],
+                'water' => [ConnectionService::TYPE_WATER],
+            };
             $query = ConnectionService::where('connection_application_id', $applicationId);
-
-            if ($type == "energy") {
-                $servicesInterests = array_filter(array_unique($service_interests), function ($var) {
-                    return ($var == 'power' || $var == 'gas');
-                });
-                $query = $query->whereIn('service_type', $servicesInterests);
-            } else {
-                $query = $query->where('service_type', strtolower($type));
-            }
+            $query = $query->whereIn('service_type', $services);
             $query->update(["submitted_at" => now()]);
 
             return true;
@@ -476,11 +474,18 @@ class ApplicationService
         }
     }
 
-    public function getNotSubmittedEaService($id): array
+    public function getNotSubmittedEaService($id, $submitType): array
     {
+        $services = match ($submitType) {
+            'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
+            'power' => [ConnectionService::TYPE_ELECTRICITY],
+            'gas' => [ConnectionService::TYPE_GAS],
+        };
+
         return ConnectionService::query()->where('connection_application_id',$id )
             ->where('provider_name', ConnectionService::PROVIDER_EA )
             ->whereNull('lead_reference')
+            ->whereIn('service_type', $services)
             ->pluck('id')->toArray();
     }
 
