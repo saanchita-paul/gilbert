@@ -276,7 +276,7 @@ export default {
                     'service_interests':this.services,
                     'identification': this.lead.identification,
                     supplier: 1,
-                    plan_type: (this.submitType === 'energy' || submitType === 'power') ? this.powerPlan : this.gasPlan,
+                    plan_type: (this.submitType === 'energy' || this.submitType === 'power') ? this.powerPlan : this.gasPlan,
                     submit_type: this.submitType
                 };
             }

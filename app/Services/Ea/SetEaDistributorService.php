@@ -7,7 +7,7 @@ namespace App\Services\Ea;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Services\Utility\StateMapService;
-
+use Illuminate\Support\Facades\Log;
 class SetEaDistributorService
 {
 
@@ -19,6 +19,7 @@ class SetEaDistributorService
     public function setDistributor()
     {
         $eaResponse = json_decode($this->getPlanDetails());
+        Log::info("EA Response: ", [$eaResponse]);
         $eleDistributor = data_get($eaResponse, 'distributor_name.electricity', null);
         $gasDistributor = data_get($eaResponse, 'distributor_name.gas', null);
 

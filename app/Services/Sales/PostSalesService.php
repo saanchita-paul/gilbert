@@ -38,18 +38,26 @@ class PostSalesService
 
     }
 
-    public function getPlanType()
+    public function getPlanType($submitType)
     {
-        foreach ($this->connection->connectionServices as $service)
-        {
-            if($service->provider_name === 'ea') {
-                return $service->plan_type;
-            }
+        $services = match ($submitType) {
+            'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
+            'power' => [ConnectionService::TYPE_ELECTRICITY],
+            'gas' => [ConnectionService::TYPE_GAS]
+        };
+
+        $connectionService = ConnectionService::where('connection_application_id', $this->connection->id)
+            ->whereIn('service_type', $services)
+            ->where('provider_name', '=', 'ea')
+            ->first();
+        
+        if($connectionService) {
+            return $connectionService->plan_type;
         }
         return throw new \Exception('[PostSalesService:getPlanType] plan type not found');
     }
 
-    public function postToEa()
+    public function postToEa($submitType)
     {
 
         $id = $this->getId();
@@ -104,7 +112,7 @@ class PostSalesService
             ]
         ];
 
-        $offers = $this->prepareOffer();
+        $offers = $this->prepareOffer($submitType);
         $mailingAddressType = 'STREET';
 
         $streetMailingAddress = [
@@ -406,10 +414,9 @@ class PostSalesService
     /**
      * @throws \Exception
      */
-    private function prepareOffer()
+    private function prepareOffer($submitType)
     {
-//        Log::info('show Prepare call is called');
-        $plan = $this->getPlanType();
+        $plan = $this->getPlanType($submitType);
         $state = $this->stateMap( $this->connection->state);
         $gasPlanSourceCode = '';
         $elePlanSourceCode = '';
@@ -443,7 +450,7 @@ class PostSalesService
             ->first();
 
 
-        if(!is_null($gasService)) {
+        if(!is_null($gasService) && ($submitType === 'energy' || $submitType === 'gas')) {
             $servicePlan[] = [
                 "fuel"=> "GAS",
                 "planId" => $plan_id.'-G'.$state[0],
@@ -451,7 +458,7 @@ class PostSalesService
             ];
         }
 
-        if($eleService) {
+        if($eleService && ($submitType === 'energy' || $submitType === 'power')) {
             $servicePlan[] = [
                 "fuel"=> "ELE",
                 "planId" => $plan_id.'-E'.$state[0],

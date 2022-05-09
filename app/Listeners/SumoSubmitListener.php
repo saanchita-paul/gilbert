@@ -32,14 +32,12 @@ class SumoSubmitListener implements ShouldQueue
         $application = ConnectionApplication::whereId($event->applicationId)->with("connectionServices")->firstOrFail();
         if ($this->isProviderSumo($application) && $event->submitType === "energy") {
             $res = (new SumoService())->storeCustomerData($event->applicationId);
-            info("Sumo response body");
-            info("no response 1");
+            info("Sumo response body 1");
             \Log::info($res['status']);
             (new SumoService())->saveStatus($event->applicationId, $res['status'] , $res['creditCheck']);
             ConnectionApplication::where('id' , $event->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
             info(json_encode($res));
-            info("no response 2");
-            info("Sumo response body");
+            info("Sumo response body 2");
         }
 
     }

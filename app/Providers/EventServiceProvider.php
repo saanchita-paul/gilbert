@@ -35,7 +35,6 @@ class EventServiceProvider extends ServiceProvider
          */
         SubmitApplicationEvent::class => [
             SendApplicationToEA::class,
-//            SendNotificationToSupportListener::class,
             SumoSubmitListener::class,
             UpdateHubSpotContact::class,
             WaterServiceListener::class,

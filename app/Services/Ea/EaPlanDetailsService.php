@@ -35,6 +35,7 @@ class EaPlanDetailsService
 
         try{
             $response = Http::get($this->chatbotUri.'/hood-dashboard/api/ea-plans/'.$this->plan_type, $query);
+            Log::info("EA Plan Response: ", [json_encode(json_decode($response->body())->data)]);
             return json_encode(json_decode($response->body())->data);
         } catch (\Exception $e)
         {

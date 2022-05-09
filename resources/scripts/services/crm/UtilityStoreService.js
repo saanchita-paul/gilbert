@@ -40,7 +40,7 @@ export default {
             powerService?.plan_type !== null &&
             powerService?.provider_name === gasService?.provider_name &&
             powerService?.plan_type === gasService?.plan_type &&
-            LeadApplicationService.canSubmitEnergy(services)
+            LeadApplicationService.canSubmitAnyEnergy(services)
         ) {
             UtilityStoreService.setIsBothEnergySelected(true);
         }

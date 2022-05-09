@@ -56,9 +56,10 @@ export default {
      * @param energyServices
      * @return boolean
      */
-    // canSubmitEnergy: (services, energyServices = ['power', 'gas']) => services.some(service => (
-    //     STATUSES_FOR_ENERGY_SUBMIT.includes(service.status) && energyServices.includes(service.service_type)
-    // )),
+    canSubmitAnyEnergy: (services, energyServices = ['power', 'gas']) => services.some(service => (
+        STATUSES_FOR_ENERGY_SUBMIT.includes(service.status) && energyServices.includes(service.service_type)
+    )),
+
     canSubmitEnergy: (type) => {
         let status = type === 'power' ? UtilityStoreService.getPowerStatus() : UtilityStoreService.getGasStatus();
         return STATUSES_FOR_ENERGY_SUBMIT.includes(status)
