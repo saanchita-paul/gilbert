@@ -19,13 +19,16 @@ use App\Models\ConnectionApplication;
 
 class OriginController extends Controller
 {
+    /**
+     * Get list of origin plans
+     */
     public function getOriginPlans(Request $request){
         $fuel_type = $request->fuel_type ?? null;
         $customer_type = $request->customer_type ?? null;
 
         $plans = GetPlans::getActivePlans($fuel_type, $customer_type);
 
-        if(count($plans) > 0){
+        if(count($plans['plans']) > 0){
             return response()->json($plans, 200);
         }
 
