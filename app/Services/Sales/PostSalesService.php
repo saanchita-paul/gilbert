@@ -124,7 +124,7 @@ class PostSalesService
 
         $eaData = [
             "id"=> $id,
-            "getVendorCode"=> $vendorCode,
+            "vendorCode"=> $vendorCode,
             "version"=> $version,
             "saleDate"=> $saleDate,
             "customerType"=> $customerType,
