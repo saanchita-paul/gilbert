@@ -482,8 +482,8 @@ class ApplicationService
             'gas' => [ConnectionService::TYPE_GAS],
         };
 
-        return ConnectionService::query()->where('connection_application_id',$id )
-            ->where('provider_name', ConnectionService::PROVIDER_EA )
+        return ConnectionService::query()->where('connection_application_id', $id)
+            ->where('provider_name', ConnectionService::PROVIDER_EA)
             ->whereNull('lead_reference')
             ->whereIn('service_type', $services)
             ->pluck('id')->toArray();

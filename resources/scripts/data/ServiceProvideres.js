@@ -31,7 +31,7 @@ export default [
                 bgColor: 'orange',
             }),
         ],
-        logo: '/assets/images/logo/providers/origin.png'
+        logo: '/assets/images/logo/providers/origin_new.png'
     },
     {
         name: 'sumo',

@@ -1,11 +1,22 @@
 <template>
     <div>
+        <v-col cols="12" class="pb-0">
+            <p class="py-0 mb-1 title-text">
+                Status: <span class="value-text ml-1" :style="{color: this.status.color}">{{ this.status.text }}</span>
+            </p>
+            <p class="py-0 mb-1 title-text" v-if="reasons">
+                Rejection reason: <span class="value-text ml-1">{{ reasons }}</span>
+            </p>
+            <p class="py-0 mb-1 title-text">
+                Quote ID: <span class="value-text ml-1">{{ this.quoteReference }}</span>
+            </p>
+        </v-col>
         <v-col v-if="canShowBothEnergySubmitCheckbox" cols="12" class="d-flex pb-0">
             <v-checkbox
                 v-model="isBothEnergySubmit"
                 @change="changeIsBothEnergySubmit"
             ></v-checkbox>
-            <p class="checkbox-text">Submit elec and gas to same retailer for same plan</p>
+            <p class="checkbox-text">Submit elec and gas to same retailer for same plan.</p>
         </v-col>
         <TemporaryConnection :leadSummary="leadSummary" />
         <v-col cols="12">
@@ -236,7 +247,24 @@ export default {
         },
         isPayeeSelectedForAfterHourSubmission() {
             return this.afterHourFlag && isNull(this.leadSummary.after_hour_payee);
-        }
+        },
+        status() {
+            let utilityStatus = UtilityStoreService.getPowerStatus();
+            return utilityStatus ? LeadApplicationService.mapStatus(utilityStatus) : null;
+        },
+        service() {
+            return this.leadSummary.connection_services?.find(service => service.service_type === 'power');
+        },
+        quoteReference() {
+            return this.service?.quote_reference ? this.service.quote_reference : '-'
+        },
+        reasons() {
+            const reasons = this.service?.reasons;
+            if (Array.isArray(reasons)) {
+                return reasons.map(reason => reason.reason_text).join(', ');
+            }
+            return null;
+        },
     },
     mounted() {
         this.fetchEaPlans();
@@ -397,5 +425,13 @@ export default {
 }
 .not-editable {
     cursor: not-allowed;
+}
+.title-text {
+    font-size: 16px;
+    font-weight: 700;
+}
+.value-text {
+    font-size: 16px;
+    font-weight: 400;
 }
 </style>
