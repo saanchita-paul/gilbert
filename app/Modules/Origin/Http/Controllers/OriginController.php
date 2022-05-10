@@ -3,6 +3,7 @@
 namespace Origin\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\OriginPlan;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -12,11 +13,25 @@ use Origin\Services\ValidateAddressAPI;
 use Origin\Services\CheckFuelAPI;
 use Origin\Services\SubmitOrderAPI;
 use Origin\Services\CheckOrderAPI;
+use Origin\Services\GetPlans;
 
 use App\Models\ConnectionApplication;
 
 class OriginController extends Controller
 {
+    public function getOriginPlans(Request $request){
+        $fuel_type = $request->fuel_type ?? null;
+        $customer_type = $request->customer_type ?? null;
+
+        $plans = GetPlans::getActivePlans($fuel_type, $customer_type);
+
+        if(count($plans) > 0){
+            return response()->json($plans, 200);
+        }
+
+        return response()->json('No Plans Available', 200);
+    }
+
     /**
      * Get product info from Origin
      * 

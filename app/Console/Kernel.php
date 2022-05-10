@@ -10,6 +10,7 @@ use Ignite\Commands\IgniteFetchCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Modules\PropertyMe\Commands\SetPropertyMeAgentEmailCommand;
+use Origin\Commands\OriginStorePlanCommand;
 
 class Kernel extends ConsoleKernel
 {
@@ -25,6 +26,7 @@ class Kernel extends ConsoleKernel
         UploadConnectionDataToSFTPCommand::class,
         IgniteFetchCommand::class,
         SetPropertyMeAgentEmailCommand::class,
+        OriginStorePlanCommand::class,
     ];
 
     /**

@@ -6,6 +6,7 @@ use Origin\Http\Controllers\OriginController;
 /**
  * API Routes
  */
+Route::get('/getplans', [OriginController::class, "getOriginPlans"])->name('origin.plans.get');
 
 Route::get('/productinfo', [OriginController::class, "getProductInfo"]);
 Route::get('/validateaddress', [OriginController::class, "validateAddress"]);
