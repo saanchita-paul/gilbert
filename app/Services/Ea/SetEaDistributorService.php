@@ -19,7 +19,6 @@ class SetEaDistributorService
     public function setDistributor()
     {
         $eaResponse = json_decode($this->getPlanDetails());
-        Log::info("EA Response: ", [$eaResponse]);
         $eleDistributor = data_get($eaResponse, 'distributor_name.electricity', null);
         $gasDistributor = data_get($eaResponse, 'distributor_name.gas', null);
 
