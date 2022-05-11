@@ -238,7 +238,7 @@ export default {
         },
         isServiceEditable() {
             return LeadApplicationService.canEditService(
-                UtilityStoreService.getPowerStatus()
+                UtilityStoreService.getGasStatus()
             );
         },
         isPayeeSelectedForAfterHourSubmission() {
