@@ -244,7 +244,9 @@ export default {
             case planTypeNameMapper.PLAN_SUMO_FREEDOM:
                 return "Sumo Freedom";
             case planTypeNameMapper.PLAN_SUMO_SELECT:
-                return "Sumo Select";
+                return  "Sumo Select";
+            default:
+                return null;
         }
     },
 
