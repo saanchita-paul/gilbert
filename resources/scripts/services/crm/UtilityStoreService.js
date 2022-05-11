@@ -25,6 +25,7 @@ export default {
     setBothPlan: plan => Store.commit("setBothPlan", plan),
 
     setUtilityDetails: services => {
+        console.log('I am always called');
         let powerService = services.find(data => data.service_type === "power");
         let gasService = services.find(data => data.service_type === "gas");
 
