@@ -30,6 +30,7 @@ import SalesEnergyPage from "@scripts/modules/sales/pages/SalesEnergyPage";
 import SalesWaterPage from "@scripts/modules/sales/pages/SalesWaterPage";
 import ApplicationSearchList from '@scripts/pages/ApplicationSearchList'
 import agent_routes from "@scripts/routes/agent_routes";
+import EnergyPlans from "@scripts/components/plans/EnergyPlans";
 
 
 Vue.use(VueRouter);
@@ -53,7 +54,7 @@ const router = new VueRouter({
                 },
                 {
                     path: '/chatbot',
-                    component: UtilityAnalyticPage,
+                    component: EnergyPlans,
                     name: 'chatbot',
                     meta: {
                         isProtected: true,
