@@ -25,7 +25,6 @@ export default {
     setBothPlan: plan => Store.commit("setBothPlan", plan),
 
     setUtilityDetails: services => {
-        console.log('I am always called');
         let powerService = services.find(data => data.service_type === "power");
         let gasService = services.find(data => data.service_type === "gas");
 
@@ -36,14 +35,14 @@ export default {
         UtilityStoreService.setGasProvider(gasService?.provider_name);
         UtilityStoreService.setGasPlan(gasService?.plan_type);
 
-        if (
-            powerService !== null &&
-            powerService?.plan_type !== null &&
-            powerService?.provider_name === gasService?.provider_name &&
-            powerService?.plan_type === gasService?.plan_type &&
-            LeadApplicationService.canSubmitAnyEnergy(services)
-        ) {
-            UtilityStoreService.setIsBothEnergySelected(true);
-        }
+        // if (
+        //     powerService !== null &&
+        //     powerService?.plan_type !== null &&
+        //     powerService?.provider_name === gasService?.provider_name &&
+        //     powerService?.plan_type === gasService?.plan_type &&
+        //     LeadApplicationService.canSubmitAnyEnergy(services)
+        // ) {
+        //     UtilityStoreService.setIsBothEnergySelected(true);
+        // }
     }
 };

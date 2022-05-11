@@ -350,7 +350,7 @@ export default {
             };
             this.selectPlan(planObj, isManual);
         },
-        selectPlan(plan, isManual = true) {
+        async selectPlan(plan, isManual = true) {
             if(!this.isServiceEditable) return;
             this.selectedPlan = plan.name;
             let payload = {
@@ -361,7 +361,7 @@ export default {
             };
 
             if (this.selectedProvider !== null) {
-                LeadApplicationService.updateApplicationProviders(payload, this.leadSummary.id);
+                await LeadApplicationService.updateApplicationProviders(payload, this.leadSummary.id);
                 this.reloadUtilityStore();
             }
         },
