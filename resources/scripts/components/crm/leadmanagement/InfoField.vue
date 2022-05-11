@@ -1470,7 +1470,7 @@ export default {
             return false;
         },
         isWaterTabFocused() {
-            return LeadApplicationService.getActiveServiceTab() === 1;
+            return LeadApplicationService.getActiveServiceTab() === 2;
         }
     },
 
