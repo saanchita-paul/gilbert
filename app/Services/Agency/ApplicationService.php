@@ -9,6 +9,7 @@ use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use App\Models\HoodProfile;
 use App\Models\Identification;
+use App\Models\Office;
 use App\Models\User;
 use App\Services\RolePermission;
 use JetBrains\PhpStorm\ArrayShape;
@@ -132,7 +133,7 @@ class ApplicationService
         $existingApplication->nmi = $address['nmi'];
         $existingApplication->is_billing_same = $address['is_billing_same'];
 
-      
+
 
         if ($address['is_billing_same'] == 0 || $address['is_billing_same'] == null) {
             $existingApplication->billing_address_text = $address['billing_address_text'];
@@ -145,7 +146,7 @@ class ApplicationService
             $existingApplication->billing_street_number = empty($address['billing_street_address']) ? null : $address['billing_street_number'];
             $existingApplication->billing_city = empty($address['billing_city']) ? null : $address['billing_city'];
             $existingApplication->billing_postcode = empty($address['billing_postcode']) ? null : $address['billing_postcode'];
-            $existingApplication->billing_address_unit = $address['billing_unit_number'] ? $address['billing_unit_number'] : null;     
+            $existingApplication->billing_address_unit = $address['billing_unit_number'] ? $address['billing_unit_number'] : null;
         } else {
             $existingApplication->billing_address_text = $address['address_text'];
             $existingApplication->billing_state = $address['state'];
@@ -261,15 +262,16 @@ class ApplicationService
     public function submit(array $applications, $id)
     {
 
+        $existLead = ConnectionApplication::query()->where('id', $id)->firstOrFail();
+
         $lead = $applications['lead'];
-        $vendorId = $this->calculateVendorId($id);
+        $vendorId = $this->calculateVendorId($existLead);
         $lead = array_merge($lead, [
             'plan_type' => null,
             'submitted_by' => auth()->id(),
             'vendor_id' => $vendorId
         ]);
 
-        $existLead = ConnectionApplication::findOrFail($id);
 
         $existLead->update($lead);
 
@@ -441,9 +443,11 @@ class ApplicationService
 
     }
 
-    private function calculateVendorId($id)
+    private function calculateVendorId($lead)
     {
-        return 'HD2_CRM' . str_pad($id, 10, "0", STR_PAD_LEFT);
+        /** @var Office $office */
+        $office = $lead->office;
+        return $office->getVendorCode() . '_CRM' . str_pad($lead->id, 10, "0", STR_PAD_LEFT);
     }
 
     public function closeApplication($id)
