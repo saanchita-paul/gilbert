@@ -8,15 +8,14 @@ use App\Models\APILog;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\Identification;
+use App\Models\Office;
 use App\Services\Logger\LogSalesService;
 use Carbon\Carbon;
 use GraphQL\Client;
 use GraphQL\Mutation;
 use GraphQL\Variable;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use PHPUnit\Util\Exception;
 
 class PostSalesService
 {
@@ -33,7 +32,7 @@ class PostSalesService
         $this->chatbotUri = config('bot.root_url');
         $this->connection = ConnectionApplication::with('connectionServices')->where('id', $id)->firstOrFail();
         $this->identification = $this->connection->identification;
-        $this->accessToken = (new GetAccessToken())->getAccessToken();
+        $this->accessToken = (new GetAccessToken())->getAccessToken($id);
         $this->tz = config('ea.au_time_zone', 11);
 
     }
@@ -52,8 +51,9 @@ class PostSalesService
     public function postToEa()
     {
 
-        $id = $this->getId();
-        $vendorCode= "HD2";
+        $vendorCode= $this->getVendorCode();
+        $id = $vendorCode . $this->connection->id . time ();
+
         $version = "1";
         $saleDate = (new Carbon($this->connection->updated_at))->toIso8601String();
         $customerType =  "RES";
@@ -374,9 +374,11 @@ class PostSalesService
         }
     }
 
-    private function getId()
+    private function getVendorCode(): string
     {
-        return 'HD2'.$this->connection->id.time();
+        /** @var Office $office */
+        $office = $this->connection->office;
+        return $office->getVendorCode();
     }
 
     private function stateMap($state)
