@@ -2,7 +2,7 @@
     <div>
         <v-col cols="12" class="pb-0">
             <p class="py-0 mb-1 title-text">
-                Status: <span class="value-text ml-1" :style="{color: this.status.color}">{{ this.status.text }}</span>
+                Status: <span v-if="this.status" class="value-text ml-1" :style="{color: this.status.color}">{{ this.status.text }}</span>
             </p>
             <p class="py-0 mb-1 title-text" v-if="reasons">
                 Rejection reason: <span class="value-text ml-1">{{ reasons }}</span>

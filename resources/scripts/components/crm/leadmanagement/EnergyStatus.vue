@@ -1,10 +1,10 @@
 <template>
     <div>
         <p class="ma-0 pb-1 active-title text-center">
-            {{ this.getProvider.provider }}
+            {{ this.getProvider }}
         </p>
         <p class="ma-0 active-subtitle text-center">
-            {{ this.getPlan.plan }}
+            {{ this.getPlan }}
         </p>
     </div>
 </template>

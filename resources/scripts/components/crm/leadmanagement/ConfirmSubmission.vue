@@ -354,7 +354,7 @@
                                         outlined
                                         dense
                                         hide-details="auto"
-                                        :value="getProvider.provider"
+                                        :value="getProvider"
                                     ></v-text-field>
                                 </div>
                             </div>
@@ -367,7 +367,7 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    :value="selectedPlan.plan"
+                                    :value="selectedPlan"
                                     readonly
                                 ></v-text-field>
                                 </div>

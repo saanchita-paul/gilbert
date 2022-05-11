@@ -152,11 +152,13 @@ export default {
      mapProvider: name => {
         switch (name) {
             case providerNameMapper.PROVIDER_EA:
-                return {provider: 'Energy Australia'};
+                return 'Energy Australia';
             case providerNameMapper.PROVIDER_SUMO:
-                return {provider: 'Sumo'};
+                return 'Sumo';
             case providerNameMapper.PROVIDER_ORIGIN:
-                return {provider: 'Origin'};
+                return 'Origin';
+            default:
+                return null;
         }
     },
 
@@ -168,23 +170,23 @@ export default {
      mapPlan: type => {
         switch (type) {
             case planTypeNameMapper.PLAN_BASIC:
-                return {plan: 'Basic Plan'};
+                return  'Basic Plan';
             case planTypeNameMapper.PLAN_NO_FRILLS:
-                return {plan: 'No Frills'};
+                return  'No Frills';
             case planTypeNameMapper.PLAN_TOTAL_PLAN:
-                return {plan: 'Total Plan'};
+                return  'Total Plan';
             case planTypeNameMapper.PLAN_ORIGIN_BASIC:
-                return {plan: 'Origin Basic'};
+                return  'Origin Basic';
             case planTypeNameMapper.PLAN_ORIGIN_GO:
-                return {plan: 'Origin Go'};
+                return  'Origin Go';
             case planTypeNameMapper.PLAN_ORIGIN_GO_VARIABLE:
-                return {plan: 'Origin Go Variable'};
+                return  'Origin Go Variable';
             case planTypeNameMapper.PLAN_SUMO_SAVER:
-                return {plan: 'Sumo Saver'};
+                return  'Sumo Saver';
             case planTypeNameMapper.PLAN_SUMO_FREEDOM:
-                return {plan: 'Sumo Freedom'};
+                return  'Sumo Freedom';
             case planTypeNameMapper.PLAN_SUMO_SELECT:
-                return {plan: 'Sumo Select'};
+                return  'Sumo Select';
         }
     },
 
