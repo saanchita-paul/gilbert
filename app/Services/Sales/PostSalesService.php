@@ -330,9 +330,8 @@ class PostSalesService
      */
     public function processEaData($results)
     {
-        Log::info('End Sale API Response');
+        Log::info('Sale API Response');
         Log::info($results);
-        Log::info('Start Sale API Response');
 
         $data = json_decode($results);
         $submitSallData = $data?->data?->submitSale;
