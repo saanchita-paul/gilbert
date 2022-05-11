@@ -1,5 +1,9 @@
 import LeadApplicationAPI from "@scripts/api/crm/LeadApplicationAPI";
 import {
+    providerNameMapper,
+    planTypeNameMapper
+} from "@scripts/data/ProviderAndPlanNameMapper";
+import {
     connectionServicesMapper,
     STATUSES_FOR_ENERGY_SUBMIT,
     STATUSES_FOR_WATER_SUBMIT
@@ -137,6 +141,50 @@ export default {
                     text: 'Not Selected',
                     color: 'black'
                 };
+        }
+    },
+
+    /**
+     *
+     * @param name
+     * @return {{name: string}}
+     */
+     mapProvider: name => {
+        switch (name) {
+            case providerNameMapper.PROVIDER_EA:
+                return {provider: 'Energy Australia'};
+            case providerNameMapper.PROVIDER_SUMO:
+                return {provider: 'Sumo'};
+            case providerNameMapper.PROVIDER_ORIGIN:
+                return {provider: 'Origin'};
+        }
+    },
+
+    /**
+     *
+     * @param  type
+     * @return {{type: string}}
+     */
+     mapPlan: type => {
+        switch (type) {
+            case planTypeNameMapper.PLAN_BASIC:
+                return {plan: 'Basic Plan'};
+            case planTypeNameMapper.PLAN_NO_FRILLS:
+                return {plan: 'No Frills'};
+            case planTypeNameMapper.PLAN_TOTAL_PLAN:
+                return {plan: 'Total Plan'};
+            case planTypeNameMapper.PLAN_ORIGIN_BASIC:
+                return {plan: 'Origin Basic'};
+            case planTypeNameMapper.PLAN_ORIGIN_GO:
+                return {plan: 'Origin Go'};
+            case planTypeNameMapper.PLAN_ORIGIN_GO_VARIABLE:
+                return {plan: 'Origin Go Variable'};
+            case planTypeNameMapper.PLAN_SUMO_SAVER:
+                return {plan: 'Sumo Saver'};
+            case planTypeNameMapper.PLAN_SUMO_FREEDOM:
+                return {plan: 'Sumo Freedom'};
+            case planTypeNameMapper.PLAN_SUMO_SELECT:
+                return {plan: 'Sumo Select'};
         }
     },
 

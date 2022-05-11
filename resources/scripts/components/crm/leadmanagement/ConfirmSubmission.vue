@@ -354,7 +354,7 @@
                                         outlined
                                         dense
                                         hide-details="auto"
-                                        v-model="provider"
+                                        :value="getProvider.provider"
                                     ></v-text-field>
                                 </div>
                             </div>
@@ -367,7 +367,7 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    :value="selectedPlan"
+                                    :value="selectedPlan.plan"
                                     readonly
                                 ></v-text-field>
                                 </div>
@@ -771,8 +771,12 @@ export default {
            return this.is_temp_condition  && this.is_life_support;
         },
         selectedPlan() {
-            this.provider = this.data.selectedProvider; 
-            return this.data.selectedPlan;
+            
+            return this.data.selectedPlan = LeadApplicationService.mapPlan(this.data.selectedPlan);
+        },
+        getProvider() {
+            let providerData = this.data.selectedProvider;
+            return this.provider = LeadApplicationService.mapProvider(providerData);
         },
         expire_date() {
             if(this.data.identification.type === IDENTIFICATION.MEDICARE) {
