@@ -80,5 +80,11 @@ export default class EnergyPlan {
         peak_c_kwh: null,
         shoulder_c_kwh: null,
         off_peak_c_kwh: null,
-    }
+    };
+    state_distributor_discount= {
+        electricity: null,
+        elec_credit_amount: null,
+        gas: null,
+        gas_credit_amount: null
+    };
 }
