@@ -17,7 +17,7 @@ class SubmitOrderAPI extends BaseOriginAPI
     ];
 
     const MAP_CUSTOMER_TYPE = [
-        "residential" => "0001",
+        "resident" => "0001",
         "business" => "0002",
     ];
 
@@ -60,36 +60,36 @@ class SubmitOrderAPI extends BaseOriginAPI
      */
     public function hasError(){
         $validator = Validator::make($this->data, [
-            "Connection" => 'required|in:' . implode(',', array_keys(self::MAP_CONNECTION_TYPE)),
-            "SaleDate" => 'required',
-            "ConnectionDate" => 'required',
-            "IsExistingCustomer" => 'required|boolean',
-            'IsEmailBilling' => 'required|boolean',
-            'NMI_MIRN' => 'required|boolean',
-            "ProductInfo" => 'required|array',
-            "ProductInfo.productID" => 'required',
-            "ProductInfo.customerTypeID" => 'required|in:' . implode(',', array_keys(self::MAP_CUSTOMER_TYPE)),
-            "ProductInfo.divisionID" => 'required',
-            "AddressInfo" => 'required|array',
-            "AddressInfo.addressInfo" => 'required|array',
-            "AddressInfo.addressID" => 'required',
-            "ResidentialCustomerInfo" => 'required|array',
-            "ResidentialCustomerInfo.title" => 'required',
-            "ResidentialCustomerInfo.firstname" => 'required',
-            "ResidentialCustomerInfo.lastname" => 'required',
-            "ResidentialCustomerInfo.dob" => 'required',
-            "ResidentialCustomerInfo.phone" => 'required',
-            "ResidentialCustomerInfo.phonetype" => 'required|in:' . implode(',', array_keys(self::MAP_PHONE_TYPE)),
-            "ResidentialCustomerInfo.email" => 'required|email:rfc,dns',
+            "connection" => 'in:' . implode(',', array_keys(self::MAP_CONNECTION_TYPE)),
+            // "SaleDate" => 'required',
+            "connectionDate" => 'required',
+            "isExistingCustomer" => 'required|boolean',
+            'isEmailBilling' => 'required|boolean',
+            'nmi_mirn' => 'required',
+            "productInfo" => 'required|array',
+            "productInfo.productId" => 'required',
+            "productInfo.customerTypeId" => 'required|in:'.implode(',', self::MAP_CUSTOMER_TYPE),
+            "productInfo.divisionId" => 'required',
+            "addressInfo" => 'required|array',
+            "addressInfo.addressInfo" => 'required|array',
+            "addressInfo.addressId" => 'required',
+            "residentialCustomerInfo" => 'required|array',
+            "residentialCustomerInfo.title" => 'required',
+            "residentialCustomerInfo.firstname" => 'required',
+            "residentialCustomerInfo.lastname" => 'required',
+            "residentialCustomerInfo.dob" => 'required',
+            "residentialCustomerInfo.phone" => 'required',
+            "residentialCustomerInfo.phonetype" => 'required|in:' . implode(',', array_keys(self::MAP_PHONE_TYPE)),
+            "residentialCustomerInfo.email" => 'required|email:rfc,dns',
             // "ConcessionCardInfo" => 'array',
-            "ContactPersonInfo" => 'array',
-            "ContactPersonInfo.title" => 'required',
-            "ContactPersonInfo.firstname" => 'required',
-            "ContactPersonInfo.lastname" => 'required',
-            "ContactPersonInfo.dob" => 'required',
-            "ContactPersonInfo.phone" => 'required',
-            "ContactPersonInfo.phonetype" => 'required',
-            "ContactPersonInfo.email" => 'required|email:rfc,dns',
+            "contactPersonInfo" => 'array',
+            "contactPersonInfo.title" => 'required_with:contactPersonInfo',
+            "contactPersonInfo.firstname" => 'required_with:contactPersonInfo',
+            "contactPersonInfo.lastname" => 'required_with:contactPersonInfo',
+            "contactPersonInfo.dob" => 'required_with:contactPersonInfo',
+            "contactPersonInfo.phone" => 'required_with:contactPersonInfo',
+            "contactPersonInfo.phonetype" => 'required_with:contactPersonInfo',
+            "contactPersonInfo.email" => 'required_with:contactPersonInfo|email:rfc,dns',
         ]);
 
         if($validator->fails()){
@@ -99,16 +99,22 @@ class SubmitOrderAPI extends BaseOriginAPI
         return false;
     }
 
+    // TODO:
+    // submit GAS || ELECTRICITY
+
     /**
      * Get product info from origin 
      * 
      * @return array
      * 
+     * if fail: save error in error table, then return string message
+     * 
      */
-    public function submit(){
+    public function submit()
+    {
         $url = config('origin.baseurl') . config('origin.endpoints.submit_order');
-        // $body = $this->data ?? [];
-        $body = $this->getDummyData(); // test data
+        $body = $this->getFormattedData($this->data);
+        // $body = $this->getDummyData(); // test data
 
         $responseData = $this->postApi($url, $body, self::METHODNAME . 'CustomerMoveIn');
 
@@ -149,32 +155,31 @@ class SubmitOrderAPI extends BaseOriginAPI
      * @return array
      */
     private function getFormattedData() : array{
-        return [
+        $formatted = [
             "OrderType" => "Contract",
-            "ConnectionScenarioID" => self::MAP_CONNECTION_TYPE[$this->data['Connection']],
+            "ConnectionScenarioID" => self::MAP_CONNECTION_TYPE[$this->data['connection'] ?? 'move'],
             "OrderStatus" => "Submitted",
             "PartnerReferenceNumber" => $this->getPartnerReferenceNumber(),
-            "DateOfSale" => $this->data['SaleDate'],
+            "DateOfSale" => Carbon::now()->setTimezone('Australia/Melbourne')->toDateTimeLocalString(), // "2022-05-05T16:22:00",
             "CancellationReason" => "",
-            "CustomerTypeID" => $this->data['ProductInfo']['customerTypeID'] ?? "0001",
-            "IsExistingCustomer" => $this->data['IsExistingCustomer'],
+            "CustomerTypeID" => $this->data['productInfo']['customerTypeId'],
+            "IsExistingCustomer" => $this->data['isExistingCustomer'],
             "OrderItems" => [
                 [
                     "OrderItemType" => "MoveIn", // check again
-                    "NMI_MIRN" => $this->data['NMI_MIRN'],
-                    "ProductID" => $this->data['ProductInfo']['productID'],
-                    "EffectiveFromDate" => $this->data['ConnectionDate'],
+                    "NMI_MIRN" => $this->data['nmi_mirn'],
+                    "ProductID" => $this->data['productInfo']['productId'],
+                    "EffectiveFromDate" => $this->data['connectionDate'],
                     "SPAppointmentID" => "",
-                    "OrderAddressID" => $this->data['AddressInfo']['addressID'],
-                    "DivisionID" => $this->data['ProductInfo']['divisionID'],
-                    "IsEmailBilling" => $this->data['IsEmailBilling'],
-                    ""
+                    "OrderAddressID" => $this->data['addressInfo']['addressId'],
+                    "DivisionID" => $this->data['productInfo']['divisionId'],
+                    "IsEmailBilling" => $this->data['isEmailBilling'],
                 ],
             ],
             "OrderAddresses" => [
                 [
-                    "Address" => array_diff_key($this->data["AddressInfo"]["addressInfo"], array_flip(["__metadata"])),
-                    "OrderAddressID" => $this->data["AddressInfo"]['addressID'],
+                    "Address" => array_diff_key($this->data["addressInfo"]["addressInfo"], array_flip(["__metadata"])),
+                    "OrderAddressID" => $this->data["addressInfo"]['addressId'],
                     "IsPrimaryResidence" => true, 
                     "IsAccessRequirement" => false, 
                     "IsUnrestrainedAnimal" => false, 
@@ -185,14 +190,14 @@ class SubmitOrderAPI extends BaseOriginAPI
                 ],
             ],
             "CustomerInfo" => [
-                "Type" => $this->data['ProductInfo']['customerTypeID'] ?? "0001", 
+                "Type" => $this->data['productInfo']['customerTypeID'] ?? "0001", 
                 "IsEmailPrefCorrChannel" => true, // check again
                 "EnableMarketingOffers" => false, //check again
                 "ResidentialCustomerInfo" => [
-                    "Title" => self::MAP_TITLE_TYPE[$this->data['ResidentialCustomerInfo']['title']], 
-                    "FirstName" => $this->data['ResidentialCustomerInfo']['firstname'], 
-                    "LastName" => $this->data['ResidentialCustomerInfo']['lastname'], 
-                    "DateOfBirth" => $this->data['ResidentialCustomerInfo']['dob'], 
+                    "Title" => self::MAP_TITLE_TYPE[$this->data['residentialCustomerInfo']['title']], 
+                    "FirstName" => $this->data['residentialCustomerInfo']['firstname'], 
+                    "LastName" => $this->data['residentialCustomerInfo']['lastname'], 
+                    "DateOfBirth" => $this->data['residentialCustomerInfo']['dob'], 
                 ], 
                 "ConcessionCardInfo" => [
                     "CardTypeID" => "", 
@@ -202,39 +207,44 @@ class SubmitOrderAPI extends BaseOriginAPI
                 ], 
                 "PhoneNumbers" => [
                     [
-                        "PhoneNumber" => $this->data['ResidentialCustomerInfo']['phone'], 
-                        "TypeID" => self::MAP_PHONE_TYPE[$this->data['ResidentialCustomerInfo']['phonetype']], 
+                        "PhoneNumber" => $this->data['residentialCustomerInfo']['phone'], 
+                        "TypeID" => self::MAP_PHONE_TYPE[$this->data['residentialCustomerInfo']['phonetype']], 
                         "IsDefault" => true, 
                     ], 
                 ], 
                 "Emails" => [
                     [
-                        "Email" => $this->data['ResidentialCustomerInfo']['email'], 
+                        "Email" => $this->data['residentialCustomerInfo']['email'], 
                         "IsDefault" => true, 
                     ], 
                 ], 
                 "ContactPersons" => [
                     [
-                        "Title" => self::MAP_TITLE_TYPE[$this->data['ResidentialCustomerInfo']['title']],
-                        "FirstName" => $this->data['ResidentialCustomerInfo']['firstname'], 
-                        "LastName" => $this->data['ResidentialCustomerInfo']['lastname'],
+                        "Title" => self::MAP_TITLE_TYPE[$this->data['residentialCustomerInfo']['title']],
+                        "FirstName" => $this->data['residentialCustomerInfo']['firstname'], 
+                        "LastName" => $this->data['residentialCustomerInfo']['lastname'],
                         "HomePhone" => "", 
-                        "Mobile" => $this->data['ResidentialCustomerInfo']['phone'], 
-                        "DateOfBirth" => $this->data['ResidentialCustomerInfo']['dob'],
+                        "Mobile" => $this->data['residentialCustomerInfo']['phone'], 
+                        "DateOfBirth" => $this->data['residentialCustomerInfo']['dob'],
                         "FunctionTypeID" => self::MAP_CONTACT_TYPE['primary'], 
-                    ],
-                    [
-                        "Title" => self::MAP_TITLE_TYPE[$this->data['ContactPersonInfo']['title']],
-                        "FirstName" => $this->data['ContactPersonInfo']['firstname'],
-                        "LastName" => $this->data['ContactPersonInfo']['lastname'], 
-                        "HomePhone" => "", 
-                        "Mobile" => $this->data['ContactPersonInfo']['phone'], 
-                        "DateOfBirth" => $this->data['ContactPersonInfo']['dob'], 
-                        "FunctionTypeID" => self::MAP_CONTACT_TYPE['authorized'], 
-                    ], 
+                    ] 
                 ],
             ],
         ]; 
+
+        if(isset($this->data['contactPersonInfo'])){
+            $formatted['CustomerInfo']['ContactPersons'][] = [
+                "Title" => self::MAP_TITLE_TYPE[$this->data['contactPersonInfo']['title']],
+                "FirstName" => $this->data['contactPersonInfo']['firstname'],
+                "LastName" => $this->data['contactPersonInfo']['lastname'], 
+                "HomePhone" => "", 
+                "Mobile" => $this->data['contactPersonInfo']['phone'], 
+                "DateOfBirth" => $this->data['contactPersonInfo']['dob'], 
+                "FunctionTypeID" => self::MAP_CONTACT_TYPE['authorized'],
+            ];
+        }
+
+        return $formatted;
     }
 
     /**

@@ -25,6 +25,11 @@ class CheckFuelAPI extends BaseOriginAPI
         "04" => 'Unknown'
     ];
 
+    const ELIGIBLE_STATUSES = [
+        "01",
+        "04",
+    ];
+
 
     /**
      * @var string $customerType
@@ -35,6 +40,9 @@ class CheckFuelAPI extends BaseOriginAPI
         parent::__construct();
         if(in_array($this->customerType, array_keys(self::MAP_CUSTOMER_TYPE))){
             $this->customerType = self::MAP_CUSTOMER_TYPE[$this->customerType];
+        }
+        else if(!in_array($this->customerType, self::MAP_CUSTOMER_TYPE)){
+            $this->customerType = null;
         } 
     }
 
@@ -64,6 +72,7 @@ class CheckFuelAPI extends BaseOriginAPI
             $fuelOffers[] = [
                 'fuelType' => self::MAP_FUEL_TYPE[$fuel['DivisionID']] ?? 'Unknown',
                 'fuelSequenceNumber' => $fuel['DivisionSequence'],
+                'statusCode' => $fuel['EligibilityStatusID'],
                 'status' => self::MAP_ELIGIBILITY_TYPE[$fuel['EligibilityStatusID']] ?? 'Unknown',
                 'errorReason' => $fuel['Reason'] ?? '',
             ];

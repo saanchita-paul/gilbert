@@ -107,8 +107,10 @@ class BaseOriginAPI
             Log::info($responseData);
 
             return $responseData['d'];
-        } catch (\GuzzleHttp\Exception\ClientException $e){
-            Log::error(sprintf('Origin POST:%s - FAILED (%s)', $methodName, $e->getResponse()->getBody()));
+        } catch (\Illuminate\Http\Client\RequestException $e){
+            $responseJson = $e->response->json();
+            $errorMessage = $responseJson['error'] ? $responseJson['error']['message']['value'] : $e->response->body();
+            Log::error(sprintf('Origin POST:%s - FAILED (%s)', $methodName, $errorMessage));
         } catch (Exception $e) {
             Log::error(sprintf('Origin POST:%s - FAILED (%s)', $methodName, $e->getMessage()));
         }
