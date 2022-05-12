@@ -8,6 +8,7 @@ use App\Jobs\CheckSaleApiLeadData;
 use App\Models\APILog;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use App\Models\Office;
 use App\Services\Logger\LogSalesService;
 use Carbon\Carbon;
 use GraphQL\Client;
@@ -127,10 +128,12 @@ class GetSalesRequestStaus
 
     public function getSalesStatus($salesId, $leadId)
     {
+        /** @var Office $office */
+        $office = ConnectionApplication::with('office')->where('id', $leadId)->first()->office;
         $logSalesService = new LogSalesService();
         $da = ['data' =>
             [
-                'getVendorCode' => "HD2",
+                'vendorCode' => $office->getVendorCode(),
                 'id' => $salesId
             ]
 
