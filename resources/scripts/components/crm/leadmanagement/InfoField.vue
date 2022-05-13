@@ -678,9 +678,9 @@
             v-slot="{ errors }"
           >
             <v-select
-              v-model="property_details.is_access_requirement"
+              v-model="property_details.is_access_require"
               @blur="
-                saveDraft('is_access_requirement', property_details.is_access_requirement)
+                saveDraft('is_access_require', property_details.is_access_require)
               "
               :items="accessRequirement"
               item-text="text"
@@ -1058,9 +1058,9 @@
             v-slot="{ errors }"
           >
             <v-select
-              v-model="person_details.concession_card"
+              v-model="person_details.concession_card_type"
               @blur="
-                saveDraft('concession_card', person_details.concession_card)
+                saveDraft('concession_card_type', person_details.concession_card_type)
               "
               :items="concessionCard"
               item-text="text"
@@ -1549,7 +1549,9 @@ export default {
         connection_end_date: null,
         is_temporary_connection : null,
 
-        is_access_requirement: null,
+        is_access_require: null,
+        is_gas_life_support: null,
+        is_any_unrestrained_animal: null,
       },
       person_details: {
         title: "",
@@ -1566,7 +1568,7 @@ export default {
         tenancy_type: "",
         family_violance: "",
         additional_instruction: "",
-        concession_card: null,
+        concession_card_type: null,
         concession_card_number: null,
         concession_start_date: null,
         concession_end_date: null,
