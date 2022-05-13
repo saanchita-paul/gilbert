@@ -200,7 +200,15 @@ class ConnectionApplication extends Model
         'billing_street_name_only',
         'is_address_complete',
         'billing_is_address_complete',
-        'is_water_manual_submitting'
+        'is_water_manual_submitting',
+        'is_email_marketing',
+        'is_access_require',
+        'is_gas_life_support',
+        'is_any_unrestrained_animal',
+        'concession_card_type',
+        'concession_card_number',
+        'concession_start_date',
+        'concession_end_date'
     ];
 
 

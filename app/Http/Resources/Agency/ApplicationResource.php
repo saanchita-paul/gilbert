@@ -102,7 +102,16 @@ class ApplicationResource extends JsonResource
             'created_at' => (new Carbon($this->created_at, '11'))->format('d/m/Y h:m a'),
             'submitted_by' => $this->submittedBy(),
             'submitted_at' => $this->submittedAt(),
-            'after_hour_payee' => $this->after_hour_payee
+            'after_hour_payee' => $this->after_hour_payee,
+
+            'is_email_marketing' => $this->is_email_marketing,
+            'is_access_require' => $this->is_access_require,
+            'is_gas_life_support' => $this->is_gas_life_support,
+            'is_any_unrestrained_animal' => $this->is_any_unrestrained_animal,
+            'concession_card_type' => $this->concession_card_type,
+            'concession_card_number' => $this->concession_card_number,
+            'concession_start_date' => $this->concession_start_date,
+            'concession_end_date' => $this->concession_end_date,
         ];
     }
 
