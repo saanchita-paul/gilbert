@@ -21,11 +21,15 @@ class OriginService
         'water' => '03'
     ];
 
+    public function __construct(private int $applicationId)
+    {
+    }
+
     /**
      * @throws exception
      */
-    public function storeElectricity(int $applicationId){
-        $application = ConnectionApplication::findOrFail($applicationId);
+    public function storeElectricity(){
+        $application = ConnectionApplication::findOrFail($this->applicationId);
         $application->load(['connectionServices', 'authorizedPerson']);
         
         $authorized = $application->authorizedPerson;
@@ -58,6 +62,7 @@ class OriginService
         if(!$response || $response['validateStatus'] != 'Valid'){
             // skip due to address validation error
             Log::error('Origin Submit Service: Fail - Invalid address for service id '. $service->id);
+            $this->saveRejectedStatus($service->id);
             return;
         }
 
@@ -87,6 +92,7 @@ class OriginService
                 ];
                 // skip due to fuel is not available for address
                 Log::error('ORIGIN Submit service: Fail - Fuel is not available for service id ' . $service->id);
+                $this->saveRejectedStatus($service->id);
                 return; 
             }
         }
@@ -148,11 +154,23 @@ class OriginService
             ];
             // skip due to some error when submit handled by SubmitOrderAPI
             Log::error('ORIGIN Submit service: Fail - Unable to submit order for service ' . $service->id);
+            $this->saveRejectedStatus($service->id);
             return;
         }
+
+        if(!empty($response['HoodReferenceNumber'])){
+            $this->saveSubmittedStatus($service->id, $response['HoodReferenceNumber']);
+        } 
+        else {
+            Log::error('ORIGIN Submit service: Fail - Missing hood reference number for service ' . $service->id);
+            $this->saveRejectedStatus($service->id);
+        }
+
+        return;
     }
 
-    public function saveSubmittedStatus($serviceId, $reference)
+
+    private function saveSubmittedStatus($serviceId, $reference)
     {
         ConnectionService::where([
             ['id' => $serviceId]
@@ -163,7 +181,7 @@ class OriginService
         );
     }
 
-    public function saveRejectedStatus($serviceId)
+    private function saveRejectedStatus($serviceId)
     {
         ConnectionService::where([
             ['id' => $serviceId]

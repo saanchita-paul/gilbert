@@ -2,6 +2,7 @@
 
 namespace Origin\Services;
 
+use App\Models\ConnectionService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
@@ -132,23 +133,39 @@ class SubmitOrderAPI extends BaseOriginAPI
 
     /**
      * @return string
+     * 
+     * NOT COMPLETE! MAX COUNT CURRENTLY = 25999999
      */
     private function getPartnerReferenceNumber(){
-        // $alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $numeric = '0123456789';
-        // $alphaLength = 4;
-        $numericLength = 6;
-        $string = 'ORGN';
-
-        // for ($i = 0; $i < $alphaLength; $i++) {
-        //     $string .= $alpha[mt_rand(0, strlen($alpha) - 1)];
-        // }
-
-        for ($i = 0; $i < $numericLength; $i++) {
-            $string .= $numeric[mt_rand(0, strlen($numeric) - 1)];
+        $count = ConnectionService::where('provider_name', ConnectionService::PROVIDER_ORIGIN)
+                    ->whereNotNull('lead_reference')
+                    ->count();
+                    
+        $strLen = 4;
+        $digitLen = 6;
+        $extra = 0;
+        $str = '';
+        
+        if($count >= 1000000){
+            $extra = (int) $count / 1000000;
+    
+            $count = $count % 1000000;
+    
+            for($i=$strLen; $i>0; $i--){
+                $add = $extra % 26;
+                $char = chr(ord('A') + $add);
+                $str = $char . $str;
+                $extra = max($extra - 26, 0);
+            }
         }
+        
+        $str = str_pad($str, $strLen, "A", STR_PAD_LEFT);
+        
+        $digit = str_pad(strval($count), $digitLen, "0", STR_PAD_LEFT);
+        
+        $result = $str . $digit;
 
-        return $string; 
+        return $result; 
     }
 
     /**
