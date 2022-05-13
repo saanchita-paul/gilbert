@@ -36,8 +36,8 @@ class StoreProductInfoAPI extends BaseOriginAPI
 
         if(empty($responseData) || empty($responseData['results'])){
             $originPlan = OriginPlan::where([
-                ['product_code' => $this->product_code],
-                ['campaign_id' => $this->campaign_id] 
+                ['product_code', $this->product_code],
+                ['campaign_id', $this->campaign_id] 
             ])->first();
 
             if(!$originPlan){

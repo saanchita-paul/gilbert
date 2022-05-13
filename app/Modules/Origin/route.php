@@ -17,6 +17,8 @@ Route::get('/submit', [OriginController::class, "submitOrder"]);
 Route::get('/checkorder', [OriginController::class, "checkOrder"]);
 
 Route::post('/leads', [OriginController::class, "store"]);
+
+Route::post('/submit/v2', [OriginController::class, "submitOrderV2"]);
  
 Route::prefix('/origin/api')->middleware(['api', 'auth:sanctum'])->group(function () {
 

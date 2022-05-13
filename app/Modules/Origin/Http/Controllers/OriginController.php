@@ -14,6 +14,7 @@ use Origin\Services\CheckFuelAPI;
 use Origin\Services\SubmitOrderAPI;
 use Origin\Services\CheckOrderAPI;
 use Origin\Services\GetPlans;
+use Origin\Services\OriginService;
 use Carbon\Carbon;
 
 use App\Models\ConnectionApplication;
@@ -444,5 +445,15 @@ class OriginController extends Controller
                 'trace' => $exception->getTraceAsString()
             ]);
         }
+    }
+
+    public function submitOrderV2(Request $request){
+        $applicationId = $request->id ?? 3427;
+
+        $newOriginService = new OriginService($applicationId);
+        $newOriginService->storeElectricity();
+
+        return response()->json('Done', 200);
+
     }
 }

@@ -186,7 +186,7 @@ class SubmitOrderAPI extends BaseOriginAPI
                     "OrderItemType" => "MoveIn", // check again
                     "NMI_MIRN" => $this->data['nmi_mirn'],
                     "ProductID" => $this->data['productInfo']['productId'],
-                    "EffectiveFromDate" => $this->data['connectionDate'],
+                    "EffectiveFromDate" => Carbon::parse($this->data['connectionDate'])->toDateTimeLocalString(),
                     "SPAppointmentID" => "",
                     "OrderAddressID" => $this->data['addressInfo']['addressId'],
                     "DivisionID" => $this->data['productInfo']['divisionId'],
