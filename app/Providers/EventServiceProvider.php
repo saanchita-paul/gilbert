@@ -17,6 +17,7 @@ use App\Listeners\Agency\UpdateHubSpotContact;
 use App\Listeners\Agency\SendNotificationToSupportListener;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use App\Listeners\OriginSubmitListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -35,6 +36,7 @@ class EventServiceProvider extends ServiceProvider
          */
         SubmitApplicationEvent::class => [
             SendApplicationToEA::class,
+            OriginSubmitListener::class,
             SumoSubmitListener::class,
             UpdateHubSpotContact::class,
             WaterServiceListener::class,
