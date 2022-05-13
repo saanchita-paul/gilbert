@@ -6,7 +6,7 @@ use App\Events\Agency\SubmitApplicationEvent;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use Illuminate\Contracts\Queue\ShouldQueue;
-// use Origin\Services\OriginService;
+use Origin\Services\OriginService;
 
 class OriginSubmitListener implements ShouldQueue
 {
@@ -23,13 +23,12 @@ class OriginSubmitListener implements ShouldQueue
         if (($submitType === 'energy' || $submitType === 'power' || $submitType === 'gas')
             && $this->isValidForOrigin($event->applicationId, $submitType))
         {
-            // $originService = new OriginService();
-            // match ($submitType) {
-            //     'energy' => $originService->storeElectricity($event->applicationId) && $originService->storeGas($event->applicationId),
-            //     'power' => $originService->storeElectricity($event->applicationId),
-            //     'gas' => $originService->storeGas($event->applicationId),
-            // };
-            ConnectionApplication::where('id' , $event->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
+            $originService = new OriginService($event->applicationId);
+            match ($submitType) {
+                'energy' => $originService->storeElectricity() && $originService->storeGas(),
+                'power' => $originService->storeElectricity(),
+                'gas' => $originService->storeGas(),
+            };
         } else {
             info("Skipping Origin Submit", [
                 'submit_type' => $submitType,

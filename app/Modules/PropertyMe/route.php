@@ -11,6 +11,10 @@ Route::prefix('property-me')->group(function () {
 });
 Route::get("/property-me/callback", [AuthController::class, "callback"]);
 
+if (app()->environment() === 'local') {
+    Route::get("/home/callback", [AuthController::class, "callback"]);
+}
+
 
 /**
  * API Routes

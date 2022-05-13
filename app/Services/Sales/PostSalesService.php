@@ -145,6 +145,7 @@ class PostSalesService
             "streetMailingAddress"=> $streetMailingAddress,
             "billDeliveryMethod"=> $billDeliveryMethod,
             "lifeSupport"=> $lifeSupport,
+            "carbonNeutralOptIn" => $this->connection->ea_go_neutral === 1 ? true : false,
         ];
 
         $variables= [

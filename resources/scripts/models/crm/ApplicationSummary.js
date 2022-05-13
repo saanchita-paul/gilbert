@@ -67,6 +67,7 @@ export default class ApplicationSummary {
     concession_card_number = null;
     concession_start_date = null;
     concession_end_date = null;
+    ea_go_neutral = null;
     constructor(
         {
             id = null,
@@ -151,6 +152,7 @@ export default class ApplicationSummary {
             concession_end_date = null,
 
             
+            ea_go_neutral = null,
         }
     ) {
 
@@ -239,6 +241,7 @@ export default class ApplicationSummary {
         this.concession_card_number = concession_card_number
         this.concession_start_date = concession_start_date
         this.concession_end_date = concession_end_date        
+        this.ea_go_neutral = ea_go_neutral
     }
 
     mapStreetType(type){

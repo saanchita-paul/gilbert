@@ -118,7 +118,7 @@ class FetchContactAPI extends BasePropertyMeAPI
                 "Authorization" => $this->getAccessToken($this->refreshToken),
             ])->get($url . $query);
 
-            $this->contacts = json_decode($response->body(), true);
+            $this->contacts = json_decode($response->body(), true) ?? [];
 //            Log::info('PropertyMe: Fetch Contacts: ', [$this->contacts]);
         } catch (\Exception $exception) {
             \Log::error($exception->getMessage());

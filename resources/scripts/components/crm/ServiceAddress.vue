@@ -325,6 +325,8 @@ import {isEmpty} from "lodash-es";
 import STATES_DD from "@scripts/data/constants/STATES_DD";
 import MapService from "@scripts/services/MapService";
 import { street_type } from "@scripts/data/constants/StreetType";
+import Store from '@scripts/store/index';
+
 export default {
   name: "ServiceAddress",
   components: {
@@ -618,7 +620,8 @@ export default {
           if (v) {
               // console.log()
               this.$emit('saveAddress', this.propertyDetails);
-              this.$eventBus.$emit("address_updated", this.propertyDetails)
+              this.$eventBus.$emit("address_updated", this.propertyDetails);
+              Store.commit('setInvalidAddress', false);
           }
           return v;
       },
