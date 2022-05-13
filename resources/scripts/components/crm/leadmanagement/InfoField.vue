@@ -252,6 +252,33 @@
       </div>
       <div class="crm-text-field">
         <div class="field-label">
+          <span>Email Marketing</span>
+        </div>
+        <div class="text-field">
+          <ValidationProvider
+            name="Email Marketing"
+            v-slot="{ errors }"
+          >
+            <v-select
+              v-model="person_details.is_email_marketing"
+              @blur="
+                saveDraft('is_email_marketing', person_details.is_email_marketing)
+              "
+              :items="emailMarketingDD"
+              item-text="text"
+              item-value="value"
+              @input="updateLeads"
+              :error-messages="errors[0]"
+              outlined
+              dense
+              hide-details="auto"
+            >
+            </v-select>
+          </ValidationProvider>
+        </div>
+      </div>
+      <div class="crm-text-field">
+        <div class="field-label">
           <span>Email Billing {{isWaterTabFocused ? '': "*"}}</span>
         </div>
         <div class="text-field">
@@ -620,8 +647,6 @@
             </div>
         </div>
 
-
-
       <div class="crm-text-field" v-if="property_details.state == 'Victoria'">
         <div class="field-label">
           <span>Is renovation going on? *</span>
@@ -637,6 +662,34 @@
               dense
               hide-details="auto"
               @change="saveDraft('is_renovation_on', property_details.is_renovation_on)"
+            >
+            </v-select>
+          </ValidationProvider>
+        </div>
+      </div>
+
+      <div class="crm-text-field">
+        <div class="field-label">
+          <span>Access requirement</span>
+        </div>
+        <div class="text-field">
+          <ValidationProvider
+            name="Access requirement"
+            v-slot="{ errors }"
+          >
+            <v-select
+              v-model="property_details.is_access_require"
+              @blur="
+                saveDraft('is_access_require', property_details.is_access_require)
+              "
+              :items="accessRequirement"
+              item-text="text"
+              item-value="value"
+              @input="updateLeads"
+              :error-messages="errors[0]"
+              outlined
+              dense
+              hide-details="auto"
             >
             </v-select>
           </ValidationProvider>
@@ -664,7 +717,7 @@
         </div>
       </div>
 
-      <div class="crm-text-field" v-if="property_details.state == 'Queensland' && property_details.has_electricity == false">
+      <div class="crm-text-field" v-if="(property_details.state == 'Queensland' || property_details.state == 'New South Wales') && property_details.has_electricity == false">
         <div class="field-label">
           <span>Inspection Time *</span>
         </div>
@@ -672,7 +725,7 @@
           <ValidationProvider name="Family Violance" v-slot="{ errors }">
             <v-select
               v-model="property_details.inspection_time"
-              :items="inspectionTimes"
+              :items=" property_details.state == 'Queensland' ? inspectionTimeQLD : inspectionTimeNSW"
               :error-messages="errors[0]"
               @input="updateLeads"
               outlined
@@ -699,6 +752,25 @@
         </div>
       </div>
 
+      <div class="crm-text-field mt-n6">
+        <div class="field-label">
+        </div>
+        <div class="text-field">
+          <v-checkbox
+              label="Does anyone in the household require the use of gas for life support?">
+          </v-checkbox>
+        </div>
+      </div>
+
+      <div class="crm-text-field mt-n6">
+        <div class="field-label">
+        </div>
+        <div class="text-field">
+          <v-checkbox
+              label="Is there unrestrained animal in the property?">
+          </v-checkbox>
+        </div>
+      </div>
 
     </v-col>
 
@@ -976,6 +1048,155 @@
         </div>
       </div>
 
+      <div class="crm-text-field">
+        <div class="field-label">
+          <span>Concession Card</span>
+        </div>
+        <div class="text-field">
+          <ValidationProvider
+            name="Concession Card"
+            v-slot="{ errors }"
+          >
+            <v-select
+              v-model="person_details.concession_card_type"
+              @blur="
+                saveDraft('concession_card_type', person_details.concession_card_type)
+              "
+              :items="concessionCard"
+              item-text="text"
+              item-value="value"
+              @input="updateLeads"
+              :error-messages="errors[0]"
+              outlined
+              dense
+              hide-details="auto"
+            >
+            </v-select>
+          </ValidationProvider>
+        </div>
+      </div>
+
+      <div class="crm-text-field">
+        <div class="field-label">
+          <span>Card Number</span>
+        </div>
+        <div class="text-field">
+          <ValidationProvider
+            name="Card Number"
+            v-slot="{ errors }"
+          >
+            <v-text-field
+              v-model="person_details.concession_card_number"
+              @input="updateLeads"
+              @blur="saveDraft('concession_card_number', person_details.concession_card_number)"
+              outlined
+              dense
+              hide-details="auto"
+              placeholder="Card Number"
+              :error-messages="errors[0]"
+            ></v-text-field>
+          </ValidationProvider>
+        </div>
+      </div>
+
+      <div class="crm-text-field">
+        <div class="field-label">
+          <span>Start Date</span>
+        </div>
+        <div class="text-field">
+          <ValidationProvider
+            name="Start Date"
+            v-slot="{ errors }"
+          >
+            <v-menu
+              v-model="concession_startDate"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <ValidationProvider
+                  name="Start Date"
+                  v-slot="{ errors }"
+                >
+                  <v-text-field
+                    placeholder="DD/MM/YYYY"
+                    outlined
+                    dense
+                    append-icon="mdi-calendar"
+                    v-model="person_details.concession_start_date"
+                    v-bind="attrs"
+                    :error-messages="errors[0]"
+                    hide-details="auto"
+                    @input="updateLeads"
+                    @change="updateConcessionStartDatePicker"
+                  >
+                    <template slot="append">
+                      <v-icon v-on="on">mdi-calendar</v-icon>
+                    </template>
+                  </v-text-field>
+                </ValidationProvider>
+              </template>
+              <v-date-picker
+                v-model="concession_start_date"
+                @input="concession_startDate = false"
+              ></v-date-picker>
+            </v-menu>
+          </ValidationProvider>
+        </div>
+      </div>
+
+      <div class="crm-text-field">
+        <div class="field-label">
+          <span>End Date</span>
+        </div>
+        <div class="text-field">
+          <ValidationProvider
+            name="End Date"
+            v-slot="{ errors }"
+          >
+            <v-menu
+              v-model="concession_endDate"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <ValidationProvider
+                  name="End Date"
+                  v-slot="{ errors }"
+                >
+                  <v-text-field
+                    placeholder="DD/MM/YYYY"
+                    outlined
+                    dense
+                    append-icon="mdi-calendar"
+                    v-model="person_details.concession_end_date"
+                    v-bind="attrs"
+                    :error-messages="errors[0]"
+                    hide-details="auto"
+                    @input="updateLeads"
+                    @change="updateConcessionEndDatePicker"
+                  >
+                    <template slot="append">
+                      <v-icon v-on="on">mdi-calendar</v-icon>
+                    </template>
+                  </v-text-field>
+                </ValidationProvider>
+              </template>
+              <v-date-picker
+                v-model="concession_end_date"
+                @input="concession_endDate = false"
+              ></v-date-picker>
+            </v-menu>
+          </ValidationProvider>
+        </div>
+      </div>
+
       <v-row>
         <v-col cols="8">
           <p class="sub-title mt-5">Agent’s Additional Instructions</p>
@@ -1060,6 +1281,16 @@ export default {
       titlesDD: titlesMapperForDropdown,
       minConnectionDate: LeadApplicationService.getMinConnectionDate(),
       minExpiredate: new Date().toISOString(),
+      emailMarketingDD: [
+        {
+          text: "Yes",
+          value: 1,
+        },
+        {
+          text: "No",
+          value: 2,
+        },
+      ],
       emailBillingDD: [
         {
           text: "Yes",
@@ -1070,14 +1301,14 @@ export default {
           value: 2,
         },
       ],
-      inspectionTimes:[
-        '8:00am - 1:00pm',
-        '9:00am - 2:00pm',
-        '10:00am - 3:00pm',
-        '11:00am - 4:00pm',
-        '12:00pm - 5:00pm',
-        '1:00pm - 6:00pm',
-      ],
+      // inspectionTimes:[
+      //   '8:00am - 1:00pm',
+      //   '9:00am - 2:00pm',
+      //   '10:00am - 3:00pm',
+      //   '11:00am - 4:00pm',
+      //   '12:00pm - 5:00pm',
+      //   '1:00pm - 6:00pm',
+      // ],
       statesDD: [
         { text: "NSW", value: "New South Wales" },
         { text: "VIC", value: "Victoria" },
@@ -1157,6 +1388,52 @@ export default {
           value: 2,
         },
       ],
+      accessRequirement: [
+        {
+          text: "Yes",
+          value: 1,
+        },
+        {
+          text: "No",
+          value: 0,
+        },
+      ],
+      inspectionTimeNSW : [
+        {
+          text: "8AM - 12PM (ENERGYAP)",
+          value: "8:00am - 12:00pm"
+        },
+        {
+          text: "1PM - 5PM (ENERGYAP)",
+          value: "1:00pm - 5:00pm",
+        },
+      ],
+      inspectionTimeQLD : [
+        {
+          text: "8AM - 1PM (ENERGYXP)",
+          value: "8:00am - 1:00pm",
+        },
+        {
+          text: "9AM - 2PM (ENERGYXP)",
+          value: "9:00am - 2:00pm",
+        },
+        {
+          text: "10AM - 3PM  (ENERGYXP)",
+          value: "10:00am - 3:00pm",
+        },
+        {
+          text: "11AM - 4PM (ENERGYXP)",
+          value: "11:00am - 4:00pm",
+        },
+        {
+          text: "12PM - 5PM (ENERGYXP)",
+          value: "12:00pm - 5:00pm",
+        },
+        {
+          text: "1PM - 6PM (ENERGYXP)",
+          value: "1:00pm - 6:00pm",
+        },
+      ],
       lifeSupportDD: [
         {
           text: "Yes",
@@ -1191,6 +1468,24 @@ export default {
           value: 3,
         },
       ],
+      concessionCard: [
+        {
+          text: "DVA Health",
+          value: "DVA Health",
+        },
+        {
+          text: "Health Care Card",
+          value: "Health Care Card",
+        },
+        {
+          text: "Pensioner Concession",
+          value: "Pensioner Concession",
+        },
+        {
+          text: "Qeensland Seniors",
+          value: "Qeensland Seniors",
+        },
+      ],
       specialNumberDD: SPECIAL_NUMBER,
       colorDD: [
         {
@@ -1214,7 +1509,7 @@ export default {
           card_color: "",
           state: "",
           country: "",
-          medicare_expire_date: ""
+          medicare_expire_date: "",
       },
       property_details: {
         moving_date: "",
@@ -1234,10 +1529,9 @@ export default {
         street_name:"",
         street_name_only:"",
 
-
         is_renovation_on: true,
         has_electricity: true,
-        inspection_time: "",
+        inspection_time: null,
 
         unit_number: "",
         street_number: "",
@@ -1254,6 +1548,10 @@ export default {
         billing_street_name_only: "",
         connection_end_date: null,
         is_temporary_connection : null,
+
+        is_access_require: null,
+        is_gas_life_support: null,
+        is_any_unrestrained_animal: null,
       },
       person_details: {
         title: "",
@@ -1266,16 +1564,25 @@ export default {
         phone_type: "",
         email: "",
         is_email_billing: "",
+        is_email_marketing: null,
         tenancy_type: "",
         family_violance: "",
         additional_instruction: "",
+        concession_card_type: null,
+        concession_card_number: null,
+        concession_start_date: null,
+        concession_end_date: null,
       },
         dob: null,
         moving_date: null,
+        concession_start_date: null,
+        concession_end_date: null,
         expire_date: null,
         medicare_expire_date: null,
         showMovingDate: false,
         connection_date: false,
+        concession_startDate: false,
+        concession_endDate: false,
         showDateOfBirth: false,
         serviceAddressFlag: false,
     };
@@ -1431,6 +1738,22 @@ export default {
       if (DayJs(this.property_details.moving_date, "DD/MM/YYYY").isValid()) {
         this.moving_date = DayJs(
           this.property_details.moving_date,
+          "DD/MM/YYYY"
+        ).format("YYYY-MM-DD");
+      }
+    },
+    updateConcessionStartDatePicker() {
+      if (DayJs(this.person_details.concession_start_date, "DD/MM/YYYY").isValid()) {
+        this.concession_start_date = DayJs(
+          this.person_details.concession_start_date,
+          "DD/MM/YYYY"
+        ).format("YYYY-MM-DD");
+      }
+    },
+     updateConcessionEndDatePicker() {
+      if (DayJs(this.person_details.concession_end_date, "DD/MM/YYYY").isValid()) {
+        this.concession_end_date = DayJs(
+          this.person_details.concession_end_date,
           "DD/MM/YYYY"
         ).format("YYYY-MM-DD");
       }
