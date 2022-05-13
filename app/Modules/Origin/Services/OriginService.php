@@ -39,8 +39,8 @@ class OriginService
         ])->firstOrFail();
 
         $service_type = self::MAP_SERVICE_TYPE[$service->service_type];
-        $service_plan = $service->plan_type;
-        $connection_date = $service->connection_date;
+        $service_plan =  'Origin Advantage'; //todo make a mapper to map with actual plan type
+        $connection_date = $application->moving_date;
         $plan = OriginPlan::where([
             ['division_id', $service_type],
             ['description', $service_plan]
@@ -183,8 +183,8 @@ class OriginService
         ])->firstOrFail();
 
         $service_type = self::MAP_SERVICE_TYPE[$service->service_type];
-        $service_plan = $service->plan_type;
-        $connection_date = $service->connection_date;
+        $service_plan = "Origin Advantage"; //todo make a mapper to map with actual plan type
+        $connection_date = $application->moving_date;
         $plan = OriginPlan::where([
             ['division_id', $service_type],
             ['description', $service_plan]
@@ -320,8 +320,9 @@ class OriginService
         $service->status = ConnectionService::STATUS_SUBMITTED;
         $service->lead_reference = $reference;
         $service->submitted_at = Carbon::now();
+        $service->save();
 
-        return $service->save();
+        ConnectionApplication::where('id', $this->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
     }
 
     private function saveRejectedStatus($serviceId)

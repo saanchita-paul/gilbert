@@ -426,7 +426,6 @@
             v-slot="{ errors }"
           >
             <v-textarea
-              :class="{ 'required-field': isInvalidAddress }"
               @click="openServiceAddress"
               v-model="property_details.address_text"
               style="min-height: 56px !important;"
