@@ -52,7 +52,7 @@ class OriginSubmitListener implements ShouldQueue
 
         $connectionService = ConnectionService::where('connection_application_id', $applicationId)
             ->whereIn('service_type', $services)
-            ->where('provider_name' , '=', 'sumo')
+            ->where('provider_name' , '=', 'origin')
             ->whereNotNull('plan_type')
             ->first();
 
