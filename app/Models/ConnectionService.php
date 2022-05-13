@@ -61,6 +61,7 @@ class ConnectionService extends Model
 
     const PROVIDER_SUMO = 'sumo';
     const PROVIDER_EA = 'ea';
+    const PROVIDER_ORIGIN = 'origin';
 
 
     const STATUS_MAPPING = [

@@ -68,6 +68,8 @@
             v-if="showReportModal"
             :dialog="showReportModal"
             :dateRange="dateRange"
+            :agencyId="office.agency_id"
+            :officeId="office.id"
             @close="onCloseModal"
             @select="onClickExport"
         />
@@ -166,11 +168,10 @@ export default {
         onCloseModal() {
             this.showReportModal = false;
         },
-        onClickExport(dateRange, reportType) {
-            console.log(this.office?.id);
+        onClickExport(dateRange, reportType, agentId) {
             let officeId = this.office?.id;
             window.open(
-                '/api/rea-extract/office-report?officeId='+officeId+'&reportType='+reportType+'&start='+dateRange.start+'&end='+dateRange.end,
+                '/api/rea-extract/report?officeId='+officeId+'&agentId='+agentId+'&reportType='+reportType+'&start='+dateRange.start+'&end='+dateRange.end,
                 '_blank'
             );
         }

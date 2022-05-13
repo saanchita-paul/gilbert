@@ -426,6 +426,7 @@
             v-slot="{ errors }"
           >
             <v-textarea
+              :class="{ 'required-field': isInvalidAddress }"
               @click="openServiceAddress"
               v-model="property_details.address_text"
               style="min-height: 56px !important;"
@@ -1256,6 +1257,7 @@ import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import {titlesMapperForDropdown} from "@scripts/data/titleMapper";
 import {medicareRules, mediExpireDate} from '@scripts/plugins/VeeValidate';
 import {tenancyTypeMapper} from '@scripts/data/ConnectionApplicationMapper';
+import { mapGetters } from "vuex";
 
 export default {
   name: "InfoField",
@@ -1902,5 +1904,8 @@ export default {
 <style scoped>
 .min-height-56 textarea {
     min-height: 132px !important;
+}
+.required-field {
+    border: 2px solid red;
 }
 </style>

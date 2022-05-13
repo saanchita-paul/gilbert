@@ -163,7 +163,4 @@ export default {
 .dangerText {
     color: red;
 }
-.not-editable {
-    cursor: not-allowed;
-}
 </style>

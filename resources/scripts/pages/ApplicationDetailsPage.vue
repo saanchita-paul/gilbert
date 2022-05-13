@@ -62,6 +62,7 @@ import PreventSubmissionModal from "@scripts/components/crm/modals/PreventSubmis
 import EAAfterHourService from "@scripts/services/ea/EAAfterHourService";
 import ChatbotService from "@scripts/services/crm/ChatbotService";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
+import Store from '@scripts/store/index';
 
 export default {
     //todo shift afterHourFlag, nextBusinessDay, getElectricityDistributor to powerService
@@ -212,7 +213,11 @@ export default {
         },
         async submitConnection(submitType) {
             let v = await this.validateLead();
-            if(!v) return;
+            let isProperAddress = await this.isProperAddress();
+
+            if(!isProperAddress) Store.commit('setInvalidAddress', true);
+
+            if(!v || !isProperAddress) return;
 
             let assignedHoodUser = await this.getAssignedHoodUser();
             if(!assignedHoodUser) {
@@ -378,7 +383,18 @@ export default {
         },
         async loadNextBusinessDay() {
             this.nextBusinessDay = await ChatbotService.getNextBusinessDay(this.leadSummary?.state);
-        }
+        },
+        isProperAddress() {
+            if( this.leadSummary.street_number == null
+                || this.leadSummary.street_name_only == null
+                || this.leadSummary.street_type == null
+                || this.leadSummary.state == null
+                || this.leadSummary.city == null
+                || this.leadSummary.postcode == null) {
+                return false;
+            }
+            return true;
+        },
     },
 
   async  mounted() {

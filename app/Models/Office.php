@@ -125,6 +125,9 @@ class Office extends Model
      */
     public static function linkWithPropertyMe(int $officeId, string $refreshToken): void
     {
-        static::where('id', $officeId)->update(['property_me_refresh_token' => $refreshToken]);
+        static::where('id', $officeId)->update([
+            'property_me_refresh_token' => $refreshToken,
+            'property_me_client_version' => config('property_me.client_version', 'v2')
+        ]);
     }
 }
