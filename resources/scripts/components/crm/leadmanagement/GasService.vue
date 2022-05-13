@@ -158,10 +158,8 @@ import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
 export default {
-    //todo talk with Jamil and merge plan details branch
     //todo reduce emit functions
-    //todo shift variables to vuex store and use from there
-    //todo shift submit function to each component and call different functions
+    //todo shift all lead variables to vuex store
     name: "GasService",
     components: {
         ServiceProvider,
