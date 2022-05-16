@@ -140,6 +140,7 @@
                     @toggleDialog="toggleOriginPlanDetails"
                     :serviceType="isBothEnergySubmit ? 'energy' : 'power'"
                     :selectedPlan="selectedPlan"
+                    :leadSummary="leadSummary"
                 />
             </v-card>
         </v-dialog>

@@ -4,10 +4,10 @@ import OriginMapper from "@scripts/modules/origin/api/mappers/OriginMapper";
 const ROOT = `${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api`;
 
 export default {
-    getOriginData: async () => {
+    getOriginData: async params => {
         try {
-            // const planDetails = (await axios.get(`${ROOT}/origin-power-plan-details`, { params: '3044' })).data.data;
-            // return mapAllPlan(data)
+            // const planDetails = (await axios.get(`${ROOT}/origin-plan-details`, params)).data.data;
+            // return OriginMapper.mapOriginData(planDetails);
 
             let data = {
                 title: "Great rates that wont change over 12 months",
@@ -66,7 +66,8 @@ export default {
                 rates: "Guaranteed",
                 exit_fees: "No",
                 benefit_period: "12 months",
-                green_options: "Everyday Rewards members enjoy 25% GreenPower and 100% Green Gas for nothing extra.",
+                green_options:
+                    "Everyday Rewards members enjoy 25% GreenPower and 100% Green Gas for nothing extra.",
                 bpid_links: [
                     {
                         title: "Energy Fact Sheet (Electricity)",
@@ -83,9 +84,8 @@ export default {
                 ]
             };
             return OriginMapper.mapOriginData(data);
-
         } catch (error) {
-            console.log('Origin Plan Details Fetch Error', error);
+            console.log("Origin Plan Details Fetch Error", error);
             return error.data;
         }
     }

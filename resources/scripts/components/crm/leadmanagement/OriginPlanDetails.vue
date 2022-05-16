@@ -76,7 +76,10 @@ export default {
         },
         selectedPlan: {
             require: false
-        }
+        },
+        leadSummary: {
+            require: true
+        },
     },
 	data() {
 		return {
@@ -84,7 +87,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.getOriginData()
+		this.getOriginData();
 	},
 	computed: {
         getServiceText() {
@@ -109,8 +112,12 @@ export default {
 	},
 	methods: {
 		async getOriginData() {
-			this.planDetails = await OriginService.getOriginData()
-			console.log("console here", this.planDetails)
+            let params = {
+                service_type: this.serviceType,
+                postcode: this.leadSummary.postcode,
+            }
+			this.planDetails = await OriginService.getOriginData(params);
+			console.log("Origin Plan Details Response", this.planDetails)
 		},
         closeDialog(){
             this.$emit('toggleDialog')

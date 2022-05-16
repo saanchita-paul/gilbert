@@ -136,6 +136,7 @@
                     @toggleDialog="toggleOriginPlanDetails"
                     :serviceType="isBothEnergySubmit ? 'energy' : 'gas'"
                     :selectedPlan="selectedPlan"
+                    :leadSummary="leadSummary"
                 />
             </v-card>
         </v-dialog>
@@ -321,7 +322,10 @@ export default {
             this.isSumoPlansLoadError = false;
             this.sumoPlans = null;
             try {
-                let address = `${this.leadSummary.street_number} ${this.leadSummary.street_name_only} ${this.leadSummary.street_type} ${this.leadSummary.city} ${this.leadSummary.state} ${this.leadSummary.postcode}`;
+                let address = this.leadSummary.unit_number ?
+                    `${this.leadSummary.unit_number}  ${this.leadSummary.street_number} ${this.leadSummary.street_name_only} ${this.leadSummary.street_type} ${this.leadSummary.city} ${this.leadSummary.state} ${this.leadSummary.postcode}`
+                    : `${this.leadSummary.street_number} ${this.leadSummary.street_name_only} ${this.leadSummary.street_type} ${this.leadSummary.city} ${this.leadSummary.state} ${this.leadSummary.postcode}`;
+
                 this.sumoPlans = await SumoService.getPlans(
                     address,
                     this.leadSummary.service_interests,
