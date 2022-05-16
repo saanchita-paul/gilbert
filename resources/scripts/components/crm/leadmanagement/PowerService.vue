@@ -325,13 +325,26 @@ export default {
             this.isSumoPlansLoadError = false;
             this.sumoPlans = null;
             try {
-                let address = `${this.leadSummary.street_number} ${this.leadSummary.street_name_only} ${this.leadSummary.street_type} ${this.leadSummary.city} ${this.leadSummary.state} ${this.leadSummary.postcode}`;
+                if(this.leadSummary.unit_number) {
+                    let address = `${this.leadSummary.unit_number}  ${this.leadSummary.street_number} ${this.leadSummary.street_name_only} ${this.leadSummary.street_type} ${this.leadSummary.city} ${this.leadSummary.state} ${this.leadSummary.postcode}`;
+
                 this.sumoPlans = await SumoService.getPlans(
-                    address,
-                    this.leadSummary.service_interests,
-                    this.leadSummary?.created_by_agent,
-                    this.leadSummary
-                );
+                        address,
+                        this.leadSummary.service_interests,
+                        this.leadSummary?.created_by_agent,
+                        this.leadSummary
+                    );
+                } else {
+                    let address = `${this.leadSummary.street_number} ${this.leadSummary.street_name_only} ${this.leadSummary.street_type} ${this.leadSummary.city} ${this.leadSummary.state} ${this.leadSummary.postcode}`;
+
+                    this.sumoPlans = await SumoService.getPlans(
+                        address,
+                        this.leadSummary.service_interests,
+                        this.leadSummary?.created_by_agent,
+                        this.leadSummary
+                    );
+                }
+
                 this.isSumoPlansLoading = false;
                 console.log("sumoPlans", this.sumoPlans);
                 return 0;
