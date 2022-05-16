@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\Agency\SubmitApplicationEvent;
-use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Origin\Services\OriginService;
@@ -25,7 +24,7 @@ class OriginSubmitListener implements ShouldQueue
         {
             $originService = new OriginService($event->applicationId);
             match ($submitType) {
-                'energy' => $originService->storeElectricity() && $originService->storeGas(),
+                'energy' => $this->storeBothElectricityAndGas($originService),
                 'power' => $originService->storeElectricity(),
                 'gas' => $originService->storeGas(),
             };
@@ -35,6 +34,13 @@ class OriginSubmitListener implements ShouldQueue
                 'is_services_valid' => $this->isValidForOrigin($event->applicationId, $submitType)
             ]);
         }
+    }
+
+    private function storeBothElectricityAndGas($originService)
+    {
+        info("Submitting both Power and Gas to Origin");
+        $originService->storeElectricity();
+        $originService->storeGas();
     }
 
     /**
