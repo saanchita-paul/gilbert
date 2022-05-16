@@ -44,30 +44,18 @@
                 </v-btn>
             </div>
         </v-col>
-
-        <v-dialog
-            v-model="viewPlanDialog"
-            max-width="700"
-        >
-            <v-card>
-                <SoleDetails
-                    @soleDialog="soleDialog"
-                />
-            </v-card>
-        </v-dialog>
     </v-card>
 </template>
 
 <script>
 import ServiceProvider from "@scripts/components/crm/leadmanagement/ServiceProvider";
 import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
-import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails";
 import ServiceProvideres from "@scripts/data/ServiceProvideres";
 
 export default {
 name: "InternetService.",
 components:
-    {SolePlan, SoleDetails, ServiceProvider},
+    {SolePlan, ServiceProvider},
 props: {
     leadSummary: {
         require: true
