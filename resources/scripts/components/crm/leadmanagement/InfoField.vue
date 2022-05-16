@@ -1633,6 +1633,7 @@ export default {
       this.lead.additional_instruction;
 
       this.dob = this.lead.dob;
+      // console.log('moving date->' , this.lead.moving_date)
       this.moving_date = this.lead.moving_date;
       // console.log('identifcation' , this.lead.identification)
       // this.expire_date = undefined;
@@ -1689,8 +1690,9 @@ export default {
       this.person_details.is_email_marketing = this.lead?.is_email_marketing;
       this.person_details.concession_card_type = this.lead?.concession_card_type;
       this.person_details.concession_card_number = this.lead?.concession_card_number;
-      this.person_details.concession_start_date = this.lead?.concession_start_date;
-      this.person_details.concession_end_date = this.lead?.concession_end_date;
+      // console.log("concession date ->", this.lead.concession_start_date);
+      this.concession_start_date = this.lead?.concession_start_date;
+      this.concession_end_date = this.lead?.concession_end_date;
       this.property_details.is_access_require = this.lead?.is_access_require;
       this.property_details.is_gas_life_support = this.lead?.is_gas_life_support;
       this.property_details.is_any_unrestrained_animal = this.lead?.is_any_unrestrained_animal;
@@ -1868,14 +1870,14 @@ export default {
     },
 
     concession_start_date() {
-      this.property_details.concession_start_date = new DayJs(this.concession_start_date).format(
+      this.person_details.concession_start_date = new DayJs(this.concession_start_date).format(
         "DD/MM/YYYY"
       );
 
       this.$emit(
         "updateDraft",
         "concession_start_date",
-        this.property_details.concession_start_date,
+        this.person_details.concession_start_date,
         true,
         false,
         false,
@@ -1883,14 +1885,14 @@ export default {
     },
 
     concession_end_date() {
-      this.property_details.concession_end_date = new DayJs(this.concession_end_date).format(
+      this.person_details.concession_end_date = new DayJs(this.concession_end_date).format(
         "DD/MM/YYYY"
       );
 
       this.$emit(
         "updateDraft",
         "concession_end_date",
-        this.property_details.concession_end_date,
+        this.person_details.concession_end_date,
         true,
         false,
         false,
