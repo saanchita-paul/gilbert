@@ -43,7 +43,7 @@ class CheckFuelAPI extends BaseOriginAPI
         }
         else if(!in_array($this->customerType, self::MAP_CUSTOMER_TYPE)){
             $this->customerType = null;
-        } 
+        }
     }
 
     /**
@@ -51,11 +51,12 @@ class CheckFuelAPI extends BaseOriginAPI
      * 
      * @return array
      * 
+     * @throws exception
      */
     public function fetch(){
         if(empty($this->customerType) || empty($this->addressID))
-            return false;
-        
+            throw new \Exception(sprintf('Origin GET:%s - FAILED (Missing customer type or address id from connection application)', self::METHODNAME));
+
         $url = config('origin.baseurl') . config('origin.endpoints.check_fuel');
         $params = [
             'CustomerTypeID' => sprintf('\'%s\'', $this->customerType),
@@ -65,7 +66,7 @@ class CheckFuelAPI extends BaseOriginAPI
         $responseData = $this->getApi($url, $params, self::METHODNAME);
 
         if(empty($responseData))
-            return false;
+            throw new \Exception(sprintf('Origin GET:%s - FAILED (Empty response from Origin)', self::METHODNAME));
 
         $fuelOffers = [];    
         foreach($responseData['results'] as $fuel){

@@ -30,7 +30,7 @@ class CheckOrderAPI extends BaseOriginAPI
      */
     public function fetch(){
         if(empty($this->partnerReferenceNumber))
-            return false;
+            throw new \Exception(sprintf('Origin GET:%s - FAILED (Missing partner reference number)', self::METHODNAME));
         $url = config('origin.baseurl') . config('origin.endpoints.check_order');
         $params = [
             '$filter' => sprintf("PartnerReferenceNumber eq '%s'", $this->partnerReferenceNumber)
@@ -39,7 +39,7 @@ class CheckOrderAPI extends BaseOriginAPI
         $responseData = $this->getApi($url, $params, self::METHODNAME);
 
         if(empty($responseData))
-            return false;
+            throw new \Exception(sprintf('Origin GET:%s - FAILED (Empty response from Origin)', self::METHODNAME));
 
         $orderInfo = $responseData['results'][0];
 

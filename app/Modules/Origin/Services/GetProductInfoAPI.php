@@ -63,10 +63,11 @@ class GetProductInfoAPI extends BaseOriginAPI
      * 
      * @return array
      * 
+     * @throws exception
      */
     public function fetch(){
         if(empty($this->product_code) || empty($this->campaign_id))
-            return false;
+            throw new \Exception(sprintf('Origin GET:%s - FAILED (Missing product code/campaign_id)', self::METHODNAME));
         $url = config('origin.baseurl') . config('origin.endpoints.get_product_info');
         $params = [
             '$filter' => sprintf("CampaignID eq '%s' and ProductCode eq '%s'", $this->campaign_id, $this->product_code)
@@ -75,7 +76,7 @@ class GetProductInfoAPI extends BaseOriginAPI
         $responseData = $this->getApi($url, $params, self::METHODNAME);
 
         if(empty($responseData))
-            return false;
+            throw new \Exception(sprintf('Origin GET:%s - FAILED (Empty response from Origin)', self::METHODNAME));
 
         $productInfos = [];    
         foreach($responseData['results'] as $info){

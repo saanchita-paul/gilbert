@@ -120,7 +120,7 @@ class SubmitOrderAPI extends BaseOriginAPI
         $responseData = $this->postApi($url, $body, self::METHODNAME . 'CustomerMoveIn');
 
         if(empty($responseData))
-            return false;
+            throw new \Exception(sprintf('Origin POST:%s - FAILED (Empty response from Origin)', self::METHODNAME));
 
         $formattedData = [
             'OrderHeaderID' => $responseData['OrderHeaderID'],
@@ -137,35 +137,54 @@ class SubmitOrderAPI extends BaseOriginAPI
      * NOT COMPLETE! MAX COUNT CURRENTLY = 25999999
      */
     private function getPartnerReferenceNumber(){
-        $count = ConnectionService::where('provider_name', ConnectionService::PROVIDER_ORIGIN)
-                    ->whereNotNull('lead_reference')
-                    ->count();
-                    
-        $strLen = 4;
-        $digitLen = 6;
-        $extra = 0;
-        $str = '';
-        
-        if($count >= 1000000){
-            $extra = (int) $count / 1000000;
-    
-            $count = $count % 1000000;
-    
-            for($i=$strLen; $i>0; $i--){
-                $add = $extra % 26;
-                $char = chr(ord('A') + $add);
-                $str = $char . $str;
-                $extra = max($extra - 26, 0);
+        $result = '';
+
+        if(config('origin.isTestReferenceNumber') || config('app.env') == 'local'){
+            $digits = '0123456789';
+            $alphas = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $alphaLen = 4;
+            $digitLen = 6;
+
+            $result = '';
+            for($i = 0; $i < $alphaLen; $i++) {
+                $random_character = $alphas[mt_rand(0, strlen($alphas) - 1)];
+                $result .= $random_character;
+            }
+            for($i = 0; $i < $digitLen; $i++) {
+                $random_character = $digits[mt_rand(0, strlen($digits) - 1)];
+                $result .= $random_character;
             }
         }
+        else{
+            $count = ConnectionService::where('provider_name', ConnectionService::PROVIDER_ORIGIN)
+                        ->whereNotNull('lead_reference')
+                        ->count();
+                        
+            $strLen = 4;
+            $digitLen = 6;
+            $extra = 0;
+            $str = '';
+            
+            if($count >= 1000000){
+                $extra = (int) $count / 1000000;
         
-        $str = str_pad($str, $strLen, "A", STR_PAD_LEFT);
+                $count = $count % 1000000;
         
-        $digit = str_pad(strval($count), $digitLen, "0", STR_PAD_LEFT);
-        
-        $result = $str . $digit;
-
-        return $result; 
+                for($i=$strLen; $i>0; $i--){
+                    $add = $extra % 26;
+                    $char = chr(ord('A') + $add);
+                    $str = $char . $str;
+                    $extra = max($extra - 26, 0);
+                }
+            }
+            
+            $str = str_pad($str, $strLen, "A", STR_PAD_LEFT);
+            
+            $digit = str_pad(strval($count), $digitLen, "0", STR_PAD_LEFT);
+            
+            $result = $str . $digit;
+        } 
+        return $result;
     }
 
     /**

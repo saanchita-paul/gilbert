@@ -43,8 +43,7 @@ class BaseOriginAPI
      */
     protected function getApi(string $url, array $params = [], string $methodName = 'getOriginAPI'){
         try {
-            Log::info(sprintf('Origin GET:%s - Attempting with request data:', $methodName));
-            Log::info($params);
+            Log::info(sprintf('Origin GET:%s - Attempting with request data:', $methodName), $params);
 
             $response = Http::withHeaders([
                 "Accept" => "application/json",
@@ -55,13 +54,11 @@ class BaseOriginAPI
             
             $responseData = json_decode($response->body(), true);
 
-            Log::info(sprintf('Origin GET:%s - Success with response data:', $methodName));
-            Log::info($responseData);
+            Log::info(sprintf('Origin GET:%s - Success with response data:', $methodName), $responseData);
 
             return $responseData['d'];
         } catch (Exception $exception) {
-            Log::error(sprintf('Origin GET:%s - FAILED (%s)', $methodName, $exception->getMessage()));
-            Log::error($exception->getTraceAsString());
+            throw new \Exception(sprintf('Origin GET:%s - FAILED (%s)', $methodName, $exception->getMessage()));
         }
 
         return [];
@@ -80,8 +77,7 @@ class BaseOriginAPI
      */
     protected function postApi(string $url, array $body = [], string $methodName = 'postOriginAPI'){
         try {
-            Log::info(sprintf('Origin POST:%s - Attempting with request data:', $methodName));
-            Log::info($body);
+            Log::info(sprintf('Origin POST:%s - Attempting with request data:', $methodName), $body);
             
             $this->getAccessToken();
 
@@ -103,16 +99,15 @@ class BaseOriginAPI
 
             $responseData = json_decode($response->getBody(), true);
 
-            Log::info(sprintf('Origin POST:%s - Success with response data:', $methodName));
-            Log::info($responseData);
+            Log::info(sprintf('Origin POST:%s - Success with response data:', $methodName), $responseData);
 
             return $responseData['d'];
-        } catch (\Illuminate\Http\Client\RequestException $e){
-            $responseJson = $e->response->json();
-            $errorMessage = $responseJson['error'] ? $responseJson['error']['message']['value'] : $e->response->body();
-            Log::error(sprintf('Origin POST:%s - FAILED (%s)', $methodName, $errorMessage));
-        } catch (Exception $e) {
-            Log::error(sprintf('Origin POST:%s - FAILED (%s)', $methodName, $e->getMessage()));
+        } catch (\Illuminate\Http\Client\RequestException $exception){
+            $responseJson = $exception->response->json();
+            $errorMessage = $responseJson['error'] ? $responseJson['error']['message']['value'] : $exception->response->body();
+            throw new \Exception(sprintf('Origin POST:%s - FAILED (%s)', $methodName, $errorMessage));
+        } catch (Exception $exception) {
+            throw new \Exception(sprintf('Origin POST:%s - FAILED (%s)', $methodName, $exception->getMessage()));
         }
     }
 }

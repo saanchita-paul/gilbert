@@ -19,6 +19,10 @@ class ValidateAddressAPI extends BaseOriginAPI
         '04' => 'Invalid',
     ];
 
+    const AVAILABLE_STATUSES = [
+        '01',
+    ];
+
     /**
      * @var string $validateType
      * @var string $num_val
@@ -36,10 +40,11 @@ class ValidateAddressAPI extends BaseOriginAPI
      * 
      * @return address
      * 
+     * @throws exception
      */
     public function fetch(){
         if(empty($this->validateType) || empty($this->num_val))
-            return false;
+            throw new \Exception(sprintf('Origin GET:%s - FAILED (Missing nmi_mirn from connection application)', self::METHODNAME));
         
         $url = config('origin.baseurl') . config('origin.endpoints.validate_address_nmi_mirn');
         $params = [
@@ -49,9 +54,13 @@ class ValidateAddressAPI extends BaseOriginAPI
         $responseData = $this->getApi($url, $params, self::METHODNAME);
 
         if(empty($responseData))
-            return false;
+            throw new \Exception(sprintf('Origin GET:%s - FAILED (Empty response from Origin)', self::METHODNAME));
 
         $validateData = $responseData['ValidateSupplyAddressesByExtID'];
+
+        if(!in_array($validateData['Status'], self::AVAILABLE_STATUSES)){
+            throw new \Exception(sprintf('Origin GET:%s - FAILED (Invalid address status "%s")', self::METHODNAME, self::MAP_ADDRESS_STATUS[$validateData['Status']] ?? 'invalid'));
+        }
 
         $formattedData = [
             'addressID' => $validateData['OrderAddressID'],

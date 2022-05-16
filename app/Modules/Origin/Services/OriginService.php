@@ -18,7 +18,7 @@ class OriginService
     const MAP_SERVICE_TYPE = [
         'power' => '01',
         'gas' => '02',
-        'water' => '03'
+        // 'water' => '03'
     ];
 
     public function __construct(private int $applicationId)
@@ -29,290 +29,132 @@ class OriginService
      * @throws exception
      */
     public function storeElectricity(){
-        $application = ConnectionApplication::findOrFail($this->applicationId);
-        $application->load(['connectionServices', 'authorizedPerson']);
-        
-        $authorized = $application->authorizedPerson;
-        $service = $application->connectionServices()->where([
-            ['service_type', ConnectionService::TYPE_ELECTRICITY],
-            ['provider_name', 'origin']
-        ])->firstOrFail();
-
-        $service_type = self::MAP_SERVICE_TYPE[$service->service_type];
-        $service_plan =  'Origin Advantage'; //todo make a mapper to map with actual plan type
-        $connection_date = $application->moving_date;
-        $plan = OriginPlan::where([
-            ['division_id', $service_type],
-            ['description', $service_plan]
-        ])->firstOrFail();
-
-        $validateBy = 'nmi';
-        $nmiValue = $application->nmi;
-
-        if(empty($nmiValue)){
-            // skip connection due to no nmi
-            Log::error('ORIGIN Submit Service: Fail - Skip due to missing nmi for service id '. $service->id);
-            return;
-        }
-
-        // 1. validate address
-        $validateAddress = new ValidateAddressAPI($validateBy, $nmiValue);
-        $response = $validateAddress->fetch();
-
-        if(!$response || $response['validateStatus'] != 'Valid'){
-            // skip due to address validation error
-            Log::error('Origin Submit Service: Fail - Invalid address for service id '. $service->id);
-            $this->saveRejectedStatus($service->id);
-            return;
-        }
-
-        $addressInfo = $response['addressInfo'];
-        $addressID = $response['addressID'];
-
-        // 2. validate fuel availability
-        $customerType = $plan->customer_type_id;
-        $checkFuel = new CheckFuelAPI($customerType, $addressID);
-        $response = $checkFuel->fetch();
-
-        if(!$response){
-            $response = [
-                'status' => 'fail',
-                'message' => 'Fuel for address is not available'
-            ];
-            // skip due to fuel check failed
-            Log::error('ORIGIN Submit service: Fail - Unable to check fuel for address' . $service->id);
-            return;
-        }
-
-        foreach($response['fuelOffers'] as $fuelOffer){
-            if(strtolower($fuelOffer['fuelType']) == $plan->fuel_type && !in_array($fuelOffer['statusCode'], CheckFuelAPI::ELIGIBLE_STATUSES)){
-                $response = [
-                    'status' => 'fail',
-                    'message' => 'Fuel for address is not available: ' . $fuelOffer['errorReason'],
-                ];
-                // skip due to fuel is not available for address
-                Log::error('ORIGIN Submit service: Fail - Fuel is not available for service id ' . $service->id);
-                $this->saveRejectedStatus($service->id);
-                return; 
-            }
-        }
-
-        // 3. submit order
-        $data = [
-            "connection" => 'move',
-            "connectionDate" => $connection_date,
-            "isExistingCustomer" => false,
-            'isEmailBilling' => $application->is_email_billing == 1,
-            'nmi_mirn' => $nmiValue,
-            "productInfo" => [
-                'productId' => $plan->product_id,
-                'customerTypeId' => $plan->customer_type_id,
-                'divisionId' => $plan->division_id
-            ],
-            "addressInfo" => [
-                'addressInfo' => $addressInfo,
-                'addressId' => $addressID
-            ],
-            "residentialCustomerInfo" => [
-                'title' => $application->title,
-                'firstname' => $application->first_name,
-                'lastname' => $application->last_name,
-                'dob' => Carbon::parse($application->dob)->toDateTimeLocalString(),
-                'phone' => $application->phone, // todo
-                'phonetype' => 'mobile', // todo
-                'email' => $application->email,
-            ],
-        ];
-        
-        if(!empty($authorized->phone))
-        {
-            $data['contactPersonInfo'] = [
-                'title' => $authorized->title,
-                'firstname' => $authorized->first_name,
-                'lastname' => $authorized->last_name,
-                'dob' => Carbon::parse($authorized->dob)->toDateTimeLocalString(),
-                'phone' => $authorized->phone, // todo
-                'phonetype' => 'mobile', // todo
-                'email' => $authorized->email,
-            ];
-        }
-
-        $newOrder = new SubmitOrderAPI($data);
-        $errors = $newOrder->hasError();
-        if($errors){
-            // skip due to server invalid input
-            Log::error('ORIGIN Submit service: Fail - Invalid inputs to submit order for service id ' . $service->id, $errors);
-            return;
-        }
-
-        $response = $newOrder->submit();
-
-        if(!$response){
-            $response = [
-                'status' => 'fail',
-                'message' => 'Submit order is not available'
-            ];
-            // skip due to some error when submit handled by SubmitOrderAPI
-            Log::error('ORIGIN Submit service: Fail - Unable to submit order for service ' . $service->id);
-            $this->saveRejectedStatus($service->id);
-            return;
-        }
-
-        if(!empty($response['HoodReferenceNumber'])){
-            $this->saveSubmittedStatus($service->id, $response['HoodReferenceNumber']);
-        } 
-        else {
-            Log::error('ORIGIN Submit service: Fail - Missing hood reference number for service ' . $service->id);
-            $this->saveRejectedStatus($service->id);
-        }
-
-        return;
+        $this->initiate('power');
     }
 
     /**
      * @throws exception
      */
     public function storeGas(){
-        $application = ConnectionApplication::findOrFail($this->applicationId);
-        $application->load(['connectionServices', 'authorizedPerson']);
-        
-        $authorized = $application->authorizedPerson;
-        $service = $application->connectionServices()->where([
-            ['service_type', ConnectionService::TYPE_GAS],
-            ['provider_name', 'origin']
-        ])->firstOrFail();
-
-        $service_type = self::MAP_SERVICE_TYPE[$service->service_type];
-        $service_plan = "Origin Advantage"; //todo make a mapper to map with actual plan type
-        $connection_date = $application->moving_date;
-        $plan = OriginPlan::where([
-            ['division_id', $service_type],
-            ['description', $service_plan]
-        ])->firstOrFail();
-
-        $validateBy = 'mirn';
-        $mirnValue = $application->mirn_checksum;
-
-        if(empty($mirnValue)){
-            // skip connection due to no mirn
-            Log::error('ORIGIN Submit Service: Fail - Skip due to missing mirn for service id '. $service->id);
-            return;
-        }
-
-        // 1. validate address
-        $validateAddress = new ValidateAddressAPI($validateBy, $mirnValue);
-        $response = $validateAddress->fetch();
-
-        if(!$response || $response['validateStatus'] != 'Valid'){
-            // skip due to address validation error
-            Log::error('Origin Submit Service: Fail - Invalid address for service id '. $service->id);
-            $this->saveRejectedStatus($service->id);
-            return;
-        }
-
-        $addressInfo = $response['addressInfo'];
-        $addressID = $response['addressID'];
-
-        // 2. validate fuel availability
-        $customerType = $plan->customer_type_id;
-        $checkFuel = new CheckFuelAPI($customerType, $addressID);
-        $response = $checkFuel->fetch();
-
-        if(!$response){
-            $response = [
-                'status' => 'fail',
-                'message' => 'Fuel for address is not available'
-            ];
-            // skip due to fuel check failed
-            Log::error('ORIGIN Submit service: Fail - Unable to check fuel for address' . $service->id);
-            return;
-        }
-
-        foreach($response['fuelOffers'] as $fuelOffer){
-            if(strtolower($fuelOffer['fuelType']) == $plan->fuel_type && !in_array($fuelOffer['statusCode'], CheckFuelAPI::ELIGIBLE_STATUSES)){
-                $response = [
-                    'status' => 'fail',
-                    'message' => 'Fuel for address is not available: ' . $fuelOffer['errorReason'],
-                ];
-                // skip due to fuel is not available for address
-                Log::error('ORIGIN Submit service: Fail - Fuel is not available for service id ' . $service->id);
-                $this->saveRejectedStatus($service->id);
-                return; 
-            }
-        }
-
-        // 3. submit order
-        $data = [
-            "connection" => 'move',
-            "connectionDate" => $connection_date,
-            "isExistingCustomer" => false,
-            'isEmailBilling' => $application->is_email_billing == 1,
-            'nmi_mirn' => $mirnValue,
-            "productInfo" => [
-                'productId' => $plan->product_id,
-                'customerTypeId' => $plan->customer_type_id,
-                'divisionId' => $plan->division_id
-            ],
-            "addressInfo" => [
-                'addressInfo' => $addressInfo,
-                'addressId' => $addressID
-            ],
-            "residentialCustomerInfo" => [
-                'title' => $application->title,
-                'firstname' => $application->first_name,
-                'lastname' => $application->last_name,
-                'dob' => Carbon::parse($application->dob)->toDateTimeLocalString(),
-                'phone' => $application->phone, // todo
-                'phonetype' => 'mobile', // todo
-                'email' => $application->email,
-            ],
-        ];
-        
-        if(!empty($authorized->phone))
-        {
-            $data['contactPersonInfo'] = [
-                'title' => $authorized->title,
-                'firstname' => $authorized->first_name,
-                'lastname' => $authorized->last_name,
-                'dob' => Carbon::parse($authorized->dob)->toDateTimeLocalString(),
-                'phone' => $authorized->phone, // todo
-                'phonetype' => 'mobile', // todo
-                'email' => $authorized->email,
-            ];
-        }
-
-        $newOrder = new SubmitOrderAPI($data);
-        $errors = $newOrder->hasError();
-        if($errors){
-            // skip due to server invalid input
-            Log::error('ORIGIN Submit service: Fail - Invalid inputs to submit order for service id ' . $service->id, $errors);
-            return;
-        }
-
-        $response = $newOrder->submit();
-
-        if(!$response){
-            $response = [
-                'status' => 'fail',
-                'message' => 'Submit order is not available'
-            ];
-            // skip due to some error when submit handled by SubmitOrderAPI
-            Log::error('ORIGIN Submit service: Fail - Unable to submit order for service ' . $service->id);
-            $this->saveRejectedStatus($service->id);
-            return;
-        }
-
-        if(!empty($response['HoodReferenceNumber'])){
-            $this->saveSubmittedStatus($service->id, $response['HoodReferenceNumber']);
-        } 
-        else {
-            Log::error('ORIGIN Submit service: Fail - Missing hood/partner reference number for service ' . $service->id);
-            $this->saveRejectedStatus($service->id);
-        }
-
-        return;
+        $this->initiate('gas');
     }
 
+    private function initiate($type){
+        try {
+            if(!in_array($type, array_keys(self::MAP_SERVICE_TYPE))){
+                throw new \Exception(sprintf('%s:FAILED (Invalid type for lead submission)', self::class));
+            }
+            
+            $application = ConnectionApplication::findOrFail($this->applicationId);
+            $application->load(['connectionServices', 'authorizedPerson']);
+            
+            $authorized = $application->authorizedPerson;
+            $service = $application->connectionServices()->where([
+                ['service_type', $type],
+                ['provider_name', 'origin']
+            ])->firstOrFail();
+    
+            $service_type = self::MAP_SERVICE_TYPE[$service->service_type];
+            $service_plan =  'Origin Advantage'; //todo make a mapper to map with actual plan type
+            $connection_date = $application->moving_date;
+            $plan = OriginPlan::where([
+                ['division_id', $service_type],
+                ['description', $service_plan]
+            ])->firstOrFail();
+    
+            if($type == 'power'){
+                $validateBy = 'nmi';
+                $nmi_mirn = $application->nmi;
+            }
+            else{
+                $validateBy = 'mirn';
+                $nmi_mirn = $application->mirn_checksum;
+            }
+            
+            if(empty($nmi_mirn)){
+                // skip connection due to no nmi
+                throw new \Exception(sprintf('%s:FAILED (Skip due to missing nmi/mirn for service id %u)', self::class, $service->id));
+            }
+    
+            // 1. validate address
+            $validateAddress = new ValidateAddressAPI($validateBy, $nmi_mirn);
+            $response = $validateAddress->fetch();
+    
+            $addressInfo = $response['addressInfo'];
+            $addressID = $response['addressID'];
+    
+            // 2. validate fuel availability
+            $customerType = $plan->customer_type_id;
+            $checkFuel = new CheckFuelAPI($customerType, $addressID);
+            $response = $checkFuel->fetch();
+    
+            foreach($response['fuelOffers'] as $fuelOffer){
+                if(strtolower($fuelOffer['fuelType']) == $plan->fuel_type && !in_array($fuelOffer['statusCode'], CheckFuelAPI::ELIGIBLE_STATUSES)){
+                    // skip due to fuel is not available for address
+                    throw new \Exception(sprintf('%s:FAILED (Fuel is not available for service id %u due to %s)', self::class, $service->id, $fuelOffer['errorReason']));
+                }
+            }
+    
+            // 3. submit order
+            $data = [
+                "connection" => 'move',
+                "connectionDate" => $connection_date,
+                "isExistingCustomer" => false,
+                'isEmailBilling' => $application->is_email_billing == 1,
+                'nmi_mirn' => $nmi_mirn,
+                "productInfo" => [
+                    'productId' => $plan->product_id,
+                    'customerTypeId' => $plan->customer_type_id,
+                    'divisionId' => $plan->division_id
+                ],
+                "addressInfo" => [
+                    'addressInfo' => $addressInfo,
+                    'addressId' => $addressID
+                ],
+                "residentialCustomerInfo" => [
+                    'title' => $application->title,
+                    'firstname' => $application->first_name,
+                    'lastname' => $application->last_name,
+                    'dob' => Carbon::parse($application->dob)->toDateTimeLocalString(),
+                    'phone' => $application->phone, // todo
+                    'phonetype' => 'mobile', // todo
+                    'email' => $application->email,
+                ],
+            ];
+            
+            if(!empty($authorized->phone))
+            {
+                $data['contactPersonInfo'] = [
+                    'title' => $authorized->title,
+                    'firstname' => $authorized->first_name,
+                    'lastname' => $authorized->last_name,
+                    'dob' => Carbon::parse($authorized->dob)->toDateTimeLocalString(),
+                    'phone' => $authorized->phone, // todo
+                    'phonetype' => 'mobile', // todo
+                    'email' => $authorized->email,
+                ];
+            }
+    
+            $newOrder = new SubmitOrderAPI($data);
+            $errors = $newOrder->hasError();
+            if($errors){
+                // skip due to server invalid input
+                throw new \Exception(sprintf('%s:FAILED (Invalid inputs to submit order for service id %u)', self::class, $service->id));
+            }
+    
+            $response = $newOrder->submit();
+    
+            if(!empty($response['HoodReferenceNumber'])){
+                $this->saveSubmittedStatus($service->id, $response['HoodReferenceNumber']);
+                return;
+            }
+        }
+        catch (Exception $exception){
+            $this->saveRejectedStatus($service->id);
+            Log::error($exception->getMessage());
+            throw new \Exception($exception->getMessage());
+        }
+    }
 
     private function saveSubmittedStatus($serviceId, $reference)
     {
