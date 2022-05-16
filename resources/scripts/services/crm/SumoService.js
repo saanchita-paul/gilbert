@@ -14,7 +14,8 @@ export default {
                 }else {
                     throw 'plan not selected';
                 }
-
+            console.log("address ->", address);
+                
                 let distributorData =  await SumoAPI.qualifyAddress(address , lead.id);
 
                 let agent_name = '';
