@@ -9,6 +9,7 @@ export default class OriginPlanDetails {
      * @param {string} exit_fees
      * @param {integer} benefit_period
      * @param {string} green_options
+     * @param {array} bpid_links
      */
     constructor({
         title,
@@ -18,17 +19,19 @@ export default class OriginPlanDetails {
         exit_fees,
         benefit_period,
         green_options,
+        bpid_links
 
     } = {}) {
         this.title = title;
         this.short_des = short_des;
-        this.plan = plans.map(plan => {
+        this.plans = plans.map(plan => {
             return new OriginPlan(plan);
         })
         this.rates = rates;
         this.exit_fees = exit_fees;
         this.benefit_period = benefit_period;
         this.green_options = green_options;
+        this.bpid_links = bpid_links;
     }
 
 }

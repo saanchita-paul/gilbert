@@ -11,7 +11,6 @@ export default {
     qualifyAddress: async (address , leadId) => {
         try {
             let meta = SumoMapper.mapAddress(address , leadId);
-            console.log("asddfasdf", address);
             const data = await sumoAxios.get('/qualification/address',{params: meta});
             return data.data;
         } catch (error) {

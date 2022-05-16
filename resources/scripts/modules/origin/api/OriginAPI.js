@@ -63,11 +63,24 @@ export default {
                         ]
                     }
                 ],
-                rates: "Guarranteed",
+                rates: "Guaranteed",
                 exit_fees: "No",
-                benefit_period: "12months",
-                green_options:
-                    "Everyday Rewards members enjoy 25% GreenPower and 100% Green Gas for nothing extra."
+                benefit_period: "12 months",
+                green_options: "Everyday Rewards members enjoy 25% GreenPower and 100% Green Gas for nothing extra.",
+                bpid_links: [
+                    {
+                        title: "Energy Fact Sheet (Electricity)",
+                        url: "https://google.com"
+                    },
+                    {
+                        title: "Energy Fact Sheet (Gas)",
+                        url: "https://google.com"
+                    },
+                    {
+                        title: "Terms and conditions",
+                        url: "https://google.com"
+                    }
+                ]
             };
             return OriginMapper.mapOriginData(data);
 

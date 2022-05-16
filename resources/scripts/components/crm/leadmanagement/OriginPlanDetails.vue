@@ -1,5 +1,5 @@
 <template>
-	<v-app v-if="originPlanDetails">
+	<v-app v-if="planDetails">
 		<div fluid>
 			<v-container class="container-box">
 				<v-card class="card-section">
@@ -14,21 +14,21 @@
                             </v-icon>
                         </div>
                     </div>
-					<div class="pl-6 pt-8">
-						<p class="font-weight-bold" style="font-size:20px">{{ originPlanDetails.title }}</p>
-						<p class="pb-4">{{ originPlanDetails.short_des }}</p>
-					</div>
+					<!-- <div class="pl-6 pt-8">
+						<p class="font-weight-bold" style="font-size:20px">{{ planDetails.title }}</p>
+						<p class="pb-4">{{ planDetails.short_des }}</p>
+					</div> -->
 
-					<ElectricityPlan :planData = "electricityPlanData"></ElectricityPlan>
+					<ElectricityPlan :plan="electricityPlan"></ElectricityPlan>
 
-					<GasPlan :planData = "gasPlanData"></GasPlan>
+					<GasPlan :plan="gasPlan"></GasPlan>
 
 					<div class="pl-8 pr-8">
-						<p class="font-weight-bold" style="font-size:14px">Inlcuded in your plan</p>
+						<p class="font-weight-bold" style="font-size:14px">Included in your plan</p>
 						<div class="d-flex">
 							<p class="font-weight-bold mb-0" style="font-size:14px;">Rates:</p>
 							<div class="d-flex">
-								<p class="pl-2 mb-0" style="font-size:14px;">{{ originPlanDetails.rates }}</p>
+								<p class="pl-2 mb-0" style="font-size:14px;">{{ planDetails.rates }}</p>
 								<v-icon aria-hidden="false" class="pl-1 mb-0" size="80%">
 									mdi-progress-question
 								</v-icon>
@@ -36,20 +36,18 @@
 						</div>
 						<div class="d-flex">
 							<p class="font-weight-bold mb-0" style="font-size:14px;">Exit Fees:</p>
-							<p class="pl-2 mb-0" style="font-size:14px;">{{ originPlanDetails.exit_fees }}</p>
+							<p class="pl-2 mb-0" style="font-size:14px;">{{ planDetails.exit_fees }}</p>
 						</div>
 						<div class="d-flex">
 							<p class="font-weight-bold mb-0" style="font-size:14px;">Benefit Period:</p>
-							<p class="pl-2 mb-0" style="font-size:14px;">{{ originPlanDetails.benefit_period }}</p>
+							<p class="pl-2 mb-0" style="font-size:14px;">{{ planDetails.benefit_period }}</p>
 						</div>
 						<p class="font-weight-bold mb-0" style="font-size:14px;">Green options</p>
-						<p class="plan-text mt-0" style="font-size:14px;">{{ originPlanDetails.green_options }}</p>
+						<p class="plan-text mt-0" style="font-size:14px;">{{ planDetails.green_options }}</p>
 						<hr class="mb-4" style="width:95%" />
 
-						<div class="pb-6" style="font-size:14px; text-decoration: underline;">
-							<p class="mb-1">Energy Fact Sheet (Electricity)</p>
-							<p class="mb-1">Energy Fact Sheet (Gas)</p>
-							<p class="mb-1">Terms and conditions</p>
+						<div v-for="item in planDetails.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
+                            <a :href="item.url" target="_blank">{{ item.title }}</a>
 						</div>
 					</div>
 
@@ -82,7 +80,7 @@ export default {
     },
 	data() {
 		return {
-			originPlanDetails: null,
+			planDetails: null,
 		}
 	},
 	mounted() {
@@ -102,26 +100,17 @@ export default {
         getPlanText() {
             return LeadApplicationService.mapPlan(this.selectedPlan);
         },
-		electricityPlanData() {
-			return this.originPlanDetails.plan.map(plan => {
-				if(plan.title == "Electricity") {
-					return plan
-				}
-			})
+		electricityPlan() {
+            return this.planDetails.plans.find(plan => plan.title === "Electricity");
 		},
-
-		gasPlanData() {
-			return this.originPlanDetails.plan.map(plan => {
-				if(plan.title == "Gas") {
-					return plan
-				}
-			})
+		gasPlan() {
+            return this.planDetails.plans.find(plan => plan.title === "Gas");
 		},
 	},
 	methods: {
 		async getOriginData() {
-			this.originPlanDetails = await OriginService.getOriginData()
-			// console.log("console here", this.originPlanDetails)
+			this.planDetails = await OriginService.getOriginData()
+			console.log("console here", this.planDetails)
 		},
         closeDialog(){
             this.$emit('toggleDialog')
@@ -160,6 +149,7 @@ export default {
 	font-size: 16px;
 	width: 80%;
 	padding-bottom: 4px;
+	padding-top: 10px;
 	border-radius: 8px;
 }
 .v-size--default {

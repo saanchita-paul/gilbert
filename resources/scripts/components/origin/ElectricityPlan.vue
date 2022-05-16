@@ -2,12 +2,12 @@
 	<div class="plan-details">
 		<div class="d-flex">
 			<v-icon color="yellow" size="20" class="pb-4 pr-2">mdi-flash</v-icon>
-			<p class="font-weight-bold">{{ planData[0].title }}</p>
+			<p class="font-weight-bold">{{ plan.title }}</p>
 		</div>
 		<div class="pb-2">
-			<p class="font-weight-bold" style="font-size:26px">{{ planData[0].charge }}</p>
-			<p class="font-weight-bold" style="font-size:14px">{{ planData[0].slogan }}</p>
-			<p class="plan-content">{{ planData[0].details }}</p>
+			<p class="font-weight-bold" style="font-size:26px">{{ plan.charge }}</p>
+			<p class="font-weight-bold" style="font-size:14px">{{ plan.slogan }}</p>
+			<p class="plan-content">{{ plan.details }}</p>
 		</div>
 		<v-expansion-panels>
 			<v-expansion-panel color="red">
@@ -22,11 +22,11 @@
 							mdi-progress-question
 						</v-icon>
 					</div>
-					<div v-for="(item, index) in planData[0].supply_charge" :key="index" class="price-list">
-						<p class="pr-12 plan-text" style="font-size:14px">
+					<div v-for="item in plan.supply_charge" :key="item.title" class="price-list">
+						<div class="pr-12 plan-text" style="font-size:14px">
 							{{ item.title }}
-						</p>
-						<p class="pl-14 plan-text">{{ item.value }}</p>
+						</div>
+						<div class="pl-14 plan-text">{{ item.value }}</div>
 					</div>
 
 					<div class="d-flex">
@@ -35,13 +35,13 @@
 							mdi-progress-question
 						</v-icon>
 					</div>
-					<div v-for="(item, index) in planData[0].usage_charge" :key="index"  class="price-list">
-						<p class="plan-text" style="font-size:14px">
+					<div v-for="item in plan.usage_charge" :key="item.title"  class="price-list">
+						<div class="plan-text" style="font-size:14px">
 							{{ item.title }}
-						</p>
-						<p class="plan-text">{{ item.value }}</p>
+						</div>
+						<div class="plan-text">{{ item.value }}</div>
 					</div>
-					<p class="plan-text">We’ve already included any discounts in the rates above. All prices are inclusive of GST.</p>
+					<p class="plan-text mt-2">We’ve already included any discounts in the rates above. All prices are inclusive of GST.</p>
 					<p class="plan-text">Rates are rounded up to the nearest 2 decimal places where applicable.</p>
 				</v-expansion-panel-content>
 			</v-expansion-panel>
@@ -52,15 +52,10 @@
 <script>
 export default {
 	props: {
-		planData: {
-            type: Array,
+		plan: {
+			require: true,
         },
     },
-	data() {
-		return {
-		}
-	},
-	
 }
 </script>
 
@@ -97,5 +92,6 @@ export default {
 .price-list {
 	display: flex;
 	justify-content: space-between;
+	margin-bottom: 5px;
 }
 </style>
