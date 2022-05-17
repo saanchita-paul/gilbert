@@ -13,6 +13,8 @@ export const planTypeNameMapper = {
     'PLAN_ORIGIN_BASIC'        : 'origin_basic',
     'PLAN_ORIGIN_GO'           : 'origin_go',
     'PLAN_ORIGIN_GO_VARIABLE'  : 'origin_go_variable',
+    'PLAN_ORIGIN_HOME_ASSIST'  : 'origin_home_assist',
+    'PLAN_ORIGIN_ADVANTAGE_VARIABLE'  : 'origin_advantage_variable',
 
     'PLAN_SUMO_FREEDOM'    : 'Sumo Freedom',
     'PLAN_SUMO_SAVER'      : 'sumo_saver',

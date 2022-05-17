@@ -251,6 +251,8 @@ class ConnectionApplication extends Model
     const PLAN_TYPE_ORIGIN_GO = 'origin_go';
     const PLAN_TYPE_ORIGIN_VARIABLE = 'origin_go_variable';
     const PLAN_TYPE_ORIGIN_BASIC = 'origin_basic';
+    const PLAN_TYPE_ORIGIN_HOME_ASSIST = 'origin_home_assist';
+    const PLAN_TYPE_ORIGIN_ADVANTAGE_VARIABLE = 'origin_advantage_variable';
 
     const PLAN_TYPE_SUMO_SAVER = 'sumo_saver';
     const PLAN_TYPE_SUMO_ASSURE = 'sumo_assure';
@@ -265,6 +267,8 @@ class ConnectionApplication extends Model
     const PLAN_TYPE_ORIGIN_GO_INDEX = 4;
     const PLAN_TYPE_ORIGIN_VARIABLE_INDEX = 5;
     const PLAN_TYPE_ORIGIN_BASIC_INDEX = 6;
+    const PLAN_TYPE_ORIGIN_HOME_ASSIST_INDEX = 10;
+    const PLAN_TYPE_ORIGIN_ADVANTAGE_VARIABLE_INDEX = 11;
 
 
     const PLAN_TYPE_SUMO_SAVER_INDEX = 7;
@@ -333,6 +337,8 @@ class ConnectionApplication extends Model
         self::PLAN_TYPE_ORIGIN_GO => 4,
         self::PLAN_TYPE_ORIGIN_VARIABLE => 5,
         self::PLAN_TYPE_ORIGIN_BASIC => 6,
+        self::PLAN_TYPE_ORIGIN_HOME_ASSIST => 10,
+        self::PLAN_TYPE_ORIGIN_ADVANTAGE_VARIABLE => 11,
         self::PLAN_TYPE_SUMO_SAVER => 7,
         self::PLAN_TYPE_SUMO_ASSURE => 8,
         self::PLAN_TYPE_SUMO_SELECT => 9
@@ -355,6 +361,8 @@ class ConnectionApplication extends Model
         self::PLAN_TYPE_ORIGIN_GO_INDEX => self::PLAN_TYPE_ORIGIN_GO,
         self::PLAN_TYPE_ORIGIN_VARIABLE_INDEX =>  self::PLAN_TYPE_ORIGIN_VARIABLE,
         self::PLAN_TYPE_ORIGIN_BASIC_INDEX => self::PLAN_TYPE_ORIGIN_BASIC,
+        self::PLAN_TYPE_ORIGIN_HOME_ASSIST_INDEX => self::PLAN_TYPE_ORIGIN_HOME_ASSIST,
+        self::PLAN_TYPE_ORIGIN_ADVANTAGE_VARIABLE_INDEX => self::PLAN_TYPE_ORIGIN_ADVANTAGE_VARIABLE,
         self::PLAN_TYPE_SUMO_SAVER_INDEX => self::PLAN_TYPE_SUMO_SAVER,
         self::PLAN_TYPE_SUMO_ASSURE_INDEX => self::PLAN_TYPE_SUMO_ASSURE,
         self::PLAN_TYPE_SUMO_SELECT_INDEX =>  self::PLAN_TYPE_SUMO_SELECT

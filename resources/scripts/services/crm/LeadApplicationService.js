@@ -239,6 +239,10 @@ export default {
                 return "Origin Go";
             case planTypeNameMapper.PLAN_ORIGIN_GO_VARIABLE:
                 return "Origin Go Variable";
+            case planTypeNameMapper.PLAN_ORIGIN_ADVANTAGE_VARIABLE:
+                return "Origin Advantage Variable";
+            case planTypeNameMapper.PLAN_ORIGIN_HOME_ASSIST:
+                return "Origin Home Assist";
             case planTypeNameMapper.PLAN_SUMO_SAVER:
                 return "Sumo Saver";
             case planTypeNameMapper.PLAN_SUMO_FREEDOM:
