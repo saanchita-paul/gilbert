@@ -113,6 +113,8 @@ class ApplicationResource extends JsonResource
             'concession_start_date' => $this->concession_start_date,
             'concession_end_date' => $this->concession_end_date,
             'ea_go_neutral' => $this->ea_go_neutral,
+
+            'additional_access_information' => $this->additional_access_information,
         ];
     }
 

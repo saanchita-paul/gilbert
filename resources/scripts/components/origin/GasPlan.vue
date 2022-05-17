@@ -41,6 +41,16 @@
 						</div>
 						<div class="pl-16 plan-text">{{ item.value }}</div>
 					</div>
+
+					<div class="d-flex">
+						<p class="font-weight-bold" style="font-size:14px; margin-bottom: 2%">Fees</p>
+					</div>
+					<div v-for="item in plan.fees" :key="item.title"  class="price-list">
+						<div class="plan-text" style="font-size:14px">
+							{{ item.title }}
+						</div>
+						<div class="plan-text">{{ item.value }}</div>
+					</div>
 					<p class="plan-text mt-3">We’ve already included any discounts in the rates above. All prices are inclusive of GST.</p>
 					<p class="plan-text">Rates are rounded up to the nearest 2 decimal places where applicable.</p>
 				</v-expansion-panel-content>
