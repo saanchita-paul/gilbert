@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class BaseOriginAPI
 {
+    const CODE_REJECT = 4; 
 
     /**
      * @var string|null $basicAuth
@@ -57,7 +58,20 @@ class BaseOriginAPI
             Log::info(sprintf('Origin GET:%s - Success with response data:', $methodName), $responseData);
 
             return $responseData['d'];
-        } catch (Exception $exception) {
+        } catch (\Illuminate\Http\Client\RequestException $exception){
+            $statusCode = $exception->response->status();
+            $responseJson = $exception->response->json();
+            $errorCode = $responseJson['error'] ? $responseJson['error']['code'] : '';
+            $errorMessage = $responseJson['error'] ? $responseJson['error']['message']['value'] : $exception->response->body();
+
+            if($statusCode == 400){
+                throw new \Exception(sprintf('Origin GET:%s - FAILED [%s](%s)', $methodName, $errorCode, $errorMessage), self::CODE_REJECT);
+            }
+            else {
+                throw new \Exception(sprintf('Origin GET:%s - FAILED (%s)', $methodName, $errorMessage));
+            }
+        }
+        catch (Exception $exception) {
             throw new \Exception(sprintf('Origin GET:%s - FAILED (%s)', $methodName, $exception->getMessage()));
         }
 
@@ -103,9 +117,17 @@ class BaseOriginAPI
 
             return $responseData['d'];
         } catch (\Illuminate\Http\Client\RequestException $exception){
+            $statusCode = $exception->response->status();
             $responseJson = $exception->response->json();
+            $errorCode = $responseJson['error'] ? $responseJson['error']['code'] : '';
             $errorMessage = $responseJson['error'] ? $responseJson['error']['message']['value'] : $exception->response->body();
-            throw new \Exception(sprintf('Origin POST:%s - FAILED (%s)', $methodName, $errorMessage));
+            
+            if($statusCode == 400){
+                throw new \Exception(sprintf('Origin POST:%s - FAILED [%s](%s)', $methodName, $errorCode, $errorMessage), self::CODE_REJECT);
+            }
+            else {
+                throw new \Exception(sprintf('Origin POST:%s - FAILED (%s)', $methodName, $errorMessage));
+            }
         } catch (Exception $exception) {
             throw new \Exception(sprintf('Origin POST:%s - FAILED (%s)', $methodName, $exception->getMessage()));
         }

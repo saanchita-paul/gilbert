@@ -10,6 +10,7 @@ use App\Models\ConnectionApplication;
 
 use App\Models\ConnectionService;
 use App\Models\OriginPlan;
+use App\Models\RejectionReason;
 
 class OriginService
 {
@@ -85,15 +86,8 @@ class OriginService
     
             // 2. validate fuel availability
             $customerType = $plan->customer_type_id;
-            $checkFuel = new CheckFuelAPI($customerType, $addressID);
+            $checkFuel = new CheckFuelAPI($customerType, $addressID, $plan->division_id);
             $response = $checkFuel->fetch();
-    
-            foreach($response['fuelOffers'] as $fuelOffer){
-                if(strtolower($fuelOffer['fuelType']) == $plan->fuel_type && !in_array($fuelOffer['statusCode'], CheckFuelAPI::ELIGIBLE_STATUSES)){
-                    // skip due to fuel is not available for address
-                    throw new \Exception(sprintf('%s:FAILED (Fuel is not available for service id %u due to %s)', self::class, $service->id, $fuelOffer['errorReason']));
-                }
-            }
     
             // 3. submit order
             $data = [
@@ -150,13 +144,18 @@ class OriginService
             }
         }
         catch (Exception $exception){
-            $this->saveRejectedStatus($service->id);
-            Log::error($exception->getMessage());
+            if($exception->getCode() == BaseOriginAPI::CODE_REJECT){
+                $message = $exception->getMessage();
+                preg_match('/\[([^\)]*)\]/', $message, $codeMatch);
+                preg_match('/\(([^\)]*)\)/', $message, $messageMatch);
+                $this->saveRejectedStatus($service->id, $codeMatch[1], $messageMatch[1]);
+            }
+            Log::error($message);
             throw new \Exception($exception->getMessage());
         }
     }
 
-    private function saveSubmittedStatus($serviceId, $reference)
+    public static function saveSubmittedStatus($serviceId, $reference)
     {
         $service = ConnectionService::findOrFail($serviceId);
         $service->status = ConnectionService::STATUS_SUBMITTED;
@@ -164,16 +163,30 @@ class OriginService
         $service->submitted_at = Carbon::now();
         $service->save();
 
-        ConnectionApplication::where('id', $this->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
+        $application = $service->connectionApplication;
+        $application->status = ConnectionApplication::STATUS_SUBMITTED;
+        $application->save();
     }
 
-    private function saveRejectedStatus($serviceId)
+    public static function saveRejectedStatus($serviceId, $errorCode = '', $errorMessage = '')
     {
+        
         $service = ConnectionService::findOrFail($serviceId);
         $service->status = ConnectionService::STATUS_REJECTED;
         $service->rejected_at = Carbon::now();
 
-        return $service->save();
+        $service->save();
+        
+        if(!empty($errorCode) && !empty($errorMessage)){
+            $newRejectReason = new RejectionReason();
+            $newRejectReason->connection_service_id = $service->id;
+            $newRejectReason->connection_application_id = $service->connection_application_id;
+            $newRejectReason->service_type = $service->service_type;
+            $newRejectReason->reason_code = $errorCode;
+            $newRejectReason->reason_text = $errorMessage;
+
+            $newRejectReason->save();
+        }
     }
 
 }

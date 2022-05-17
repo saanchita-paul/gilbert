@@ -59,7 +59,7 @@ class ValidateAddressAPI extends BaseOriginAPI
         $validateData = $responseData['ValidateSupplyAddressesByExtID'];
 
         if(!in_array($validateData['Status'], self::AVAILABLE_STATUSES)){
-            throw new \Exception(sprintf('Origin GET:%s - FAILED (Invalid address status "%s")', self::METHODNAME, self::MAP_ADDRESS_STATUS[$validateData['Status']] ?? 'invalid'));
+            throw new \Exception(sprintf('Origin GET:%s - FAILED [%s](Invalid address status "%s")', self::METHODNAME, $validateData['Status'], self::MAP_ADDRESS_STATUS[$validateData['Status']] ?? 'invalid'), self::CODE_REJECT);
         }
 
         $formattedData = [

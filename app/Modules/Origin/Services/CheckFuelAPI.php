@@ -35,7 +35,7 @@ class CheckFuelAPI extends BaseOriginAPI
      * @var string $customerType
      * @var string $addressID
      */
-    public function __construct(private string $customerType, private string $addressID)
+    public function __construct(private string $customerType, private string $addressID, private string $divisionID = '')
     {
         parent::__construct();
         if(in_array($this->customerType, array_keys(self::MAP_CUSTOMER_TYPE))){
@@ -57,6 +57,9 @@ class CheckFuelAPI extends BaseOriginAPI
         if(empty($this->customerType) || empty($this->addressID))
             throw new \Exception(sprintf('Origin GET:%s - FAILED (Missing customer type or address id from connection application)', self::METHODNAME));
 
+        if(!empty($this->divisionID) && !in_array($this->divisionID, array_keys(self::MAP_FUEL_TYPE)))
+            throw new \Exception(sprintf('Origin GET:%s - FAILED (Invalid division ID to validate fuel type)', self::METHODNAME));
+
         $url = config('origin.baseurl') . config('origin.endpoints.check_fuel');
         $params = [
             'CustomerTypeID' => sprintf('\'%s\'', $this->customerType),
@@ -70,6 +73,9 @@ class CheckFuelAPI extends BaseOriginAPI
 
         $fuelOffers = [];    
         foreach($responseData['results'] as $fuel){
+            if(!empty($this->divisionID) && $fuel['DivisionID'] == $this->divisionID && !in_array($fuel['EligibilityStatusID'], self::ELIGIBLE_STATUSES)){
+                throw new \Exception(sprintf('Origin GET:%s - FAILED [%s](%s is not available for the address due to %s)', self::METHODNAME, $fuel['EligibilityStatusID'], self::MAP_FUEL_TYPE[$this->divisionID], $fuel['errorReason']), self::CODE_REJECT);
+            }
             $fuelOffers[] = [
                 'fuelType' => self::MAP_FUEL_TYPE[$fuel['DivisionID']] ?? 'Unknown',
                 'fuelSequenceNumber' => $fuel['DivisionSequence'],
