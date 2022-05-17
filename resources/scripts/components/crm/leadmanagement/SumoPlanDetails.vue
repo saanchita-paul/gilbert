@@ -167,7 +167,7 @@
     import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
 
     export default {
-        name: "SoleDetails",
+        name: "SumoPlanDetails",
         props:['sumoPlanDetails' , 'selectedPowerProvider'],
         data() {
             return {
@@ -176,15 +176,9 @@
         },
         methods:{
             closeDialog(){
-                this.$emit('soleDialog')
+                this.$emit('toggleDialog')
             }
-        },
-        mounted() {
-            // console.log('sumo plan details in modal' , this.sumoPlanDetails)
-        // this.$eventBus.$on("address_updated", address => {
-        //     console.log("EventBus: ", address)
-        // });
-    }
+        }
     }
 </script>
 

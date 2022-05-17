@@ -14,7 +14,7 @@ name: "SumoPlan",
     methods:{
         reviewPlan()
         {
-            this.$emit('soleDialog');
+            this.$emit('toggleDialog');
         }
     },
     computed:{

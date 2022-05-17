@@ -13,23 +13,13 @@ export default [
         name: 'origin',
         formatted_name: 'Origin',
         service_type: 'energy',
-        default_plan: 'origin_go',
+        default_plan: 'origin_home_assist',
         plans: [
             new ProviderPlan({
-                title:'Origin Go',
-                name: 'origin_go',
+                title:'Origin Home Assist',
+                name: 'origin_home_assist',
                 bgColor: 'red',
-            }),
-            new ProviderPlan({
-                title:'Origin Go Variable',
-                name: 'origin_go_variable',
-                bgColor: 'blue',
-            }),
-            new ProviderPlan({
-                title:'Origin Basic',
-                name: 'origin_basic',
-                bgColor: 'orange',
-            }),
+            })
         ],
         logo: '/assets/images/logo/providers/origin_new.png'
     },

@@ -64,15 +64,15 @@
             </div>
 
             <div class="d-flex" v-if="selectedProvider === 'origin'">
-                <SolePlan
+                <OriginPlan
                     :class="{'not-editable': !isServiceEditable }"
                     v-for="plan in originPlans"
                     :key="plan.name"
                     :plan="plan"
                     @click.native="selectPlan(plan)"
                     :isActive="selectedPlan"
-                    @soleDialog="toggleViewPlanDetails"
-                ></SolePlan>
+                    @toggleDialog="toggleOriginPlanDetails"
+                ></OriginPlan>
             </div>
 
             <div class="d-flex" v-if="selectedProvider === 'sumo'">
@@ -95,7 +95,7 @@
                         :class="{'not-editable': !isServiceEditable }"
                         :sumoPlanDetails="sumoPlans"
                         :isActive="selectedPlan"
-                        @soleDialog="toggleViewPlanDetails"
+                        @toggleDialog="toggleSumoPlanDetails"
                         @click.native="selectPlan({...sumoPlans, ...{ name: sumoPlans.plan_name }})"
                     >
                     </SumoPlan>
@@ -134,10 +134,21 @@
             </v-card>
         </v-dialog>
 
-        <v-dialog v-model="viewPlanDetails" max-width="1200">
+        <v-dialog v-model="originPlanDetails" max-width="450">
             <v-card>
-                <SoleDetails
-                    @soleDialog="toggleViewPlanDetails"
+                <OriginPlanDetails
+                    @toggleDialog="toggleOriginPlanDetails"
+                    :serviceType="isBothEnergySubmit ? 'energy' : 'power'"
+                    :selectedPlan="selectedPlan"
+                    :leadSummary="leadSummary"
+                />
+            </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="sumoPlanDetails" max-width="1200">
+            <v-card>
+                <SumoPlanDetails
+                    @toggleDialog="toggleSumoPlanDetails"
                     :sumoPlanDetails="sumoPlans"
                     :selectedPowerProvider="selectedProvider"
                 />
@@ -155,10 +166,11 @@ import EAPlanService from "@scripts/services/ea/EAPlanService";
 import SumoService from "@scripts/services/crm/SumoService";
 import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
 import SumoPlan from "@scripts/components/crm/leadmanagement/SumoPlan";
-import SolePlan from "@scripts/components/crm/leadmanagement/SolePlan";
+import OriginPlan from "@scripts/components/crm/leadmanagement/OriginPlan";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
-import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails";
+import OriginPlanDetails from "@scripts/components/crm/leadmanagement/OriginPlanDetails";
+import SumoPlanDetails from "@scripts/components/crm/leadmanagement/SumoPlanDetails";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
 export default {
@@ -171,9 +183,10 @@ export default {
         SameDayConnection,
         EnergyPlan,
         SumoPlan,
-        SolePlan,
+        OriginPlan,
         EnergyPlanDetails,
-        SoleDetails
+        OriginPlanDetails,
+        SumoPlanDetails,
     },
     props: {
         leadSummary: {
@@ -192,8 +205,9 @@ export default {
             sumoPlans: null,
             isSumoPlansLoading: false,
             isSumoPlansLoadError: false,
-            viewPlanDetails: false,
+            sumoPlanDetails: false,
             originPlans: [],
+            originPlanDetails: false,
         };
     },
     computed: {
@@ -312,25 +326,16 @@ export default {
             this.isSumoPlansLoadError = false;
             this.sumoPlans = null;
             try {
-                if(this.leadSummary.unit_number) {
-                    let address = `${this.leadSummary.unit_number}  ${this.leadSummary.street_number} ${this.leadSummary.street_name_only} ${this.leadSummary.street_type} ${this.leadSummary.city} ${this.leadSummary.state} ${this.leadSummary.postcode}`;
+                let address = this.leadSummary.unit_number ?
+                    `${this.leadSummary.unit_number}  ${this.leadSummary.street_number} ${this.leadSummary.street_name_only} ${this.leadSummary.street_type} ${this.leadSummary.city} ${this.leadSummary.state} ${this.leadSummary.postcode}`
+                    : `${this.leadSummary.street_number} ${this.leadSummary.street_name_only} ${this.leadSummary.street_type} ${this.leadSummary.city} ${this.leadSummary.state} ${this.leadSummary.postcode}`;
 
                 this.sumoPlans = await SumoService.getPlans(
-                        address,
-                        this.leadSummary.service_interests,
-                        this.leadSummary?.created_by_agent,
-                        this.leadSummary
-                    );
-                } else {
-                    let address = `${this.leadSummary.street_number} ${this.leadSummary.street_name_only} ${this.leadSummary.street_type} ${this.leadSummary.city} ${this.leadSummary.state} ${this.leadSummary.postcode}`;
-
-                    this.sumoPlans = await SumoService.getPlans(
-                        address,
-                        this.leadSummary.service_interests,
-                        this.leadSummary?.created_by_agent,
-                        this.leadSummary
-                    );
-                }
+                    address,
+                    this.leadSummary.service_interests,
+                    this.leadSummary?.created_by_agent,
+                    this.leadSummary
+                );
 
                 this.isSumoPlansLoading = false;
                 console.log("sumoPlans", this.sumoPlans);
@@ -387,8 +392,11 @@ export default {
         closeEaPlanDetails() {
             this.viewEaPlanDetails = false;
         },
-        toggleViewPlanDetails() {
-            this.viewPlanDetails = !this.viewPlanDetails;
+        toggleOriginPlanDetails() {
+            this.originPlanDetails = !this.originPlanDetails;
+        },
+        toggleSumoPlanDetails() {
+            this.sumoPlanDetails = !this.sumoPlanDetails;
         },
         changeAfterHourPayee() {
             this.$emit("changeAfterHourPayee");
