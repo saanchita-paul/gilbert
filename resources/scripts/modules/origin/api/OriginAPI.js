@@ -36,6 +36,16 @@ export default {
                                 title: "Temporary Peak Usage (c/kWh)",
                                 value: "23.87"
                             }
+                        ],
+                        fees: [
+                            {
+                                title: "Standard Connection Fee",
+                                value: "$293.00"
+                            },
+                            {
+                                title: "Same Day Connection Fee",
+                                value: "$293.00"
+                            }
                         ]
                     },
                     {
@@ -60,6 +70,12 @@ export default {
                                 title: "Peak Usage (c/kWh)",
                                 value: "12.13"
                             }
+                        ],
+                        fees: [
+                            {
+                                title: "Standard Connection Fee",
+                                value: "$293.00"
+                            },
                         ]
                     }
                 ],

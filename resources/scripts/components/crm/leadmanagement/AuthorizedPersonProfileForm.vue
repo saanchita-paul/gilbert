@@ -486,6 +486,10 @@ name: "AuthorizedPersonProfileForm",
               {
                   value: 3,
                   text:'Financially Responsible'
+              },
+              {
+                  value: 4,
+                  text:'Joint Account Holder'
               }
           ],
           authorized_person_dob:  (new DayJs((new Date()).setFullYear(2000))).format('YYYY-MM-DD'),

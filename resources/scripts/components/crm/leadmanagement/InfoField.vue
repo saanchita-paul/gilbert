@@ -696,6 +696,27 @@
         </div>
       </div>
 
+      <div class="crm-text-field" v-if="property_details.is_access_require == true">
+        <div class="field-label">
+          <span>Additional Access informantion</span>
+        </div>
+        <div class="text-field">
+          <ValidationProvider name="Additional Access informantion" v-slot="{ errors }">
+            <v-select
+              v-model="property_details.additional_access_information"
+              :items="additional_access_information"
+              :error-messages="errors[0]"
+              @input="updateLeads"
+              outlined
+              dense
+              hide-details="auto"
+              @change="saveDraft('additional_access_information', property_details.additional_access_information)"
+            >
+            </v-select>
+          </ValidationProvider>
+        </div>
+      </div>
+
       <div class="crm-text-field" v-if="isStateNswQld">
         <div class="field-label">
           <span>Is the electricity on at the property? *</span>
@@ -1403,6 +1424,20 @@ export default {
           value: "1:00pm - 5:00pm",
         },
       ],
+      additional_access_information: [
+        {
+          text: "Customer on site",
+          value: "Customer on site",
+        },
+        {
+          text: "Keys in meter box",
+          value: "Keys in meter box",
+        },
+        {
+          text: "Keys in letter box",
+          value: "Keys in letter box",
+        },
+      ],
       inspectionTimeQLD : [
         {
           text: "8AM - 1PM (ENERGYXP)",
@@ -1547,6 +1582,7 @@ export default {
         is_access_require: null,
         is_gas_life_support: null,
         is_any_unrestrained_animal: null,
+        additional_access_information: null,
 
       },
       person_details: {
@@ -1696,6 +1732,8 @@ export default {
       this.property_details.is_access_require = this.lead?.is_access_require;
       this.property_details.is_gas_life_support = this.lead?.is_gas_life_support;
       this.property_details.is_any_unrestrained_animal = this.lead?.is_any_unrestrained_animal;
+      this.property_details.additional_access_information = this.lead?.additional_access_information;
+
 
     },
 

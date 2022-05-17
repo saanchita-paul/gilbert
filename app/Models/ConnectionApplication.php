@@ -209,7 +209,8 @@ class ConnectionApplication extends Model
         'concession_card_number',
         'concession_start_date',
         'concession_end_date',
-        'ea_go_neutral'
+        'ea_go_neutral',
+        'additional_access_information'
     ];
 
 
