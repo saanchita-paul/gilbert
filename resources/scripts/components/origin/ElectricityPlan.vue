@@ -41,7 +41,7 @@
 						</div>
 						<div class="plan-text">{{ item.value }}</div>
 					</div>
-					<p class="plan-text mt-2">We’ve already included any discounts in the rates above. All prices are inclusive of GST.</p>
+					<p class="plan-text mt-3">We’ve already included any discounts in the rates above. All prices are inclusive of GST.</p>
 					<p class="plan-text">Rates are rounded up to the nearest 2 decimal places where applicable.</p>
 				</v-expansion-panel-content>
 			</v-expansion-panel>
