@@ -24,9 +24,7 @@ export default class OriginPlanDetails {
     } = {}) {
         this.title = title;
         this.short_des = short_des;
-        this.plans = plans.map(plan => {
-            return new OriginPlan(plan);
-        })
+        this.plans = plans;
         this.rates = rates;
         this.exit_fees = exit_fees;
         this.benefit_period = benefit_period;
