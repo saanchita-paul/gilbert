@@ -95,6 +95,12 @@ class OriginService
                 "connectionDate" => $connection_date,
                 "isExistingCustomer" => false,
                 'isEmailBilling' => $application->is_email_billing == 1,
+                "isAccessRequirement" => $application->is_access_require == 1, 
+                "isUnrestrainedAnimal" => $application->is_any_unrestrained_animal == 1, 
+                "isLifeSupport" => $application->has_life_support == 1, 
+                "isLifeSupportGas" => $application->is_gas_life_support == 1, 
+                "isElectricalWork" => $application->is_renovation_on == 1, 
+                "isEnableMarketing" => $application->is_email_marketing == 1,
                 'nmi_mirn' => $nmi_mirn,
                 "productInfo" => [
                     'productId' => $plan->product_id,
@@ -127,6 +133,19 @@ class OriginService
                     'phonetype' => 'mobile', // todo
                     'email' => $authorized->email,
                 ];
+            }
+
+            if(!empty($application->concession_card_type)){
+                $data['concessionCardInfo'] = [
+                    'type' => $application->concession_card_type,
+                    'number' => $application->concession_card_number,
+                    'startDate' => Carbon::parse($application->concession_start_date)->toDateTimeLocalString(),
+                    'endDate' => Carbon::parse($application->concession_end_date)->toDateTimeLocalString()
+                ];
+            }
+
+            if(!empty($application->inspection_time)){
+                $data["appointmentTime"] = $application->inspection_time;
             }
     
             $newOrder = new SubmitOrderAPI($data);

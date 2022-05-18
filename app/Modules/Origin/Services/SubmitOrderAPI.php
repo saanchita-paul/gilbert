@@ -52,6 +52,23 @@ class SubmitOrderAPI extends BaseOriginAPI
         "primary" => "6",
     ];
 
+    const MAP_CONCESSION_TYPE = [
+        'DVA' => 'Dept. of Veteran Affairs',
+        'HCC' => 'Health Care',
+        'PCC' => 'Pensioner Concession',
+        'QSC' => 'Queensland Seniors'
+    ];
+
+    const MAP_APPOINTMENT_ID = [
+        '8:00am - 1:00pm' => '#0800#',
+        '9:00am - 2:00pm' => '#0900#',
+        '10:00am - 3:00pm' => '#1000#',
+        '11:00am - 4:00pm' => '#1100#',
+        '12:00pm - 5:00pm' => '#1200#',
+        '1:00pm - 6:00pm' => '#1300#',
+        '8:00am - 12:00pm' =>'AM',
+        '1:00pm - 5:00pm' => 'PM', 
+    ];
 
     /**
      * @var array $data
@@ -70,7 +87,14 @@ class SubmitOrderAPI extends BaseOriginAPI
             // "SaleDate" => 'required',
             "connectionDate" => 'required',
             "isExistingCustomer" => 'required|boolean',
-            'isEmailBilling' => 'required|boolean',
+            'isEmailBilling' => 'required|boolean', 
+            "isAccessRequirement" => 'required|boolean', 
+            "isUnrestrainedAnimal" => 'required|boolean', 
+            "isLifeSupport" => 'required|boolean', 
+            "isLifeSupportGas" => 'required|boolean', 
+            "isElectricalWork" => 'required|boolean',
+            "isEnableMarketing" => 'required|boolean',
+            "appointmentTime" => 'in:' . implode(',', array_keys(self::MAP_APPOINTMENT_ID)), //check
             'nmi_mirn' => 'required',
             "productInfo" => 'required|array',
             "productInfo.productId" => 'required',
@@ -79,6 +103,7 @@ class SubmitOrderAPI extends BaseOriginAPI
             "addressInfo" => 'required|array',
             "addressInfo.addressInfo" => 'required|array',
             "addressInfo.addressId" => 'required',
+            // "AdditionalAccessInformation" => "",
             "residentialCustomerInfo" => 'required|array',
             "residentialCustomerInfo.title" => 'required',
             "residentialCustomerInfo.firstname" => 'required',
@@ -87,7 +112,11 @@ class SubmitOrderAPI extends BaseOriginAPI
             "residentialCustomerInfo.phone" => 'required',
             "residentialCustomerInfo.phonetype" => 'required|in:' . implode(',', array_keys(self::MAP_PHONE_TYPE)),
             "residentialCustomerInfo.email" => 'required|email:rfc,dns',
-            // "ConcessionCardInfo" => 'array',
+            "concessionCardInfo" => 'array',
+            "concessionCardInfo.type" => 'required_with:concessionCardInfo|in:'. implode(',', array_keys(self::MAP_CONCESSION_TYPE)),
+            "concessionCardInfo.number" => 'required_with:concessionCardInfo',
+            "concessionCardInfo.startDate" => 'required_with:concessionCardInfo',
+            "concessionCardInfo.endDate" => 'required_with:concessionCardInfo',
             "contactPersonInfo" => 'array',
             "contactPersonInfo.title" => 'required_with:contactPersonInfo',
             "contactPersonInfo.firstname" => 'required_with:contactPersonInfo',
@@ -212,7 +241,7 @@ class SubmitOrderAPI extends BaseOriginAPI
                     "NMI_MIRN" => $this->data['nmi_mirn'],
                     "ProductID" => $this->data['productInfo']['productId'],
                     "EffectiveFromDate" => Carbon::parse($this->data['connectionDate'])->toDateTimeLocalString(),
-                    "SPAppointmentID" => "",
+                    "SPAppointmentID" => !empty($this->data['appointmentTime']) ? self::MAP_APPOINTMENT_ID[$this->data['appointmentTime']] : "",
                     "OrderAddressID" => $this->data['addressInfo']['addressId'],
                     "DivisionID" => $this->data['productInfo']['divisionId'],
                     "IsEmailBilling" => $this->data['isEmailBilling'],
@@ -223,30 +252,24 @@ class SubmitOrderAPI extends BaseOriginAPI
                     "Address" => array_diff_key($this->data["addressInfo"]["addressInfo"], array_flip(["__metadata"])),
                     "OrderAddressID" => $this->data["addressInfo"]['addressId'],
                     "IsPrimaryResidence" => true, 
-                    "IsAccessRequirement" => false, 
-                    "IsUnrestrainedAnimal" => false, 
-                    "IsLifeSupport" => false, 
-                    "IsLifeSupportGas" => false, 
-                    "IsElectricalWork" => false, 
-                    "AdditionalAccessInformation" => "",
+                    "IsAccessRequirement" => $this->data['isAccessRequirement'], 
+                    "IsUnrestrainedAnimal" => $this->data['isUnrestrainedAnimal'], 
+                    "IsLifeSupport" => $this->data['isLifeSupport'], 
+                    "IsLifeSupportGas" => $this->data['isLifeSupportGas'], 
+                    "IsElectricalWork" => $this->data['isElectricalWork'], 
+                    "AdditionalAccessInformation" => "", // TODO
                 ],
             ],
             "CustomerInfo" => [
                 "Type" => $this->data['productInfo']['customerTypeID'] ?? "0001", 
-                "IsEmailPrefCorrChannel" => true, // check again
-                "EnableMarketingOffers" => false, //check again
+                "IsEmailPrefCorrChannel" => $this->data['isEmailBilling'], // check again
+                "EnableMarketingOffers" => $this->data['isEnableMarketing'],
                 "ResidentialCustomerInfo" => [
                     "Title" => self::MAP_TITLE_TYPE[$this->data['residentialCustomerInfo']['title']], 
                     "FirstName" => $this->data['residentialCustomerInfo']['firstname'], 
                     "LastName" => $this->data['residentialCustomerInfo']['lastname'], 
                     "DateOfBirth" => $this->data['residentialCustomerInfo']['dob'], 
-                ], 
-                "ConcessionCardInfo" => [
-                    "CardTypeID" => "", 
-                    "CardNumber" => "", 
-                    "StartDate" => null, 
-                    "EndDate" => null, 
-                ], 
+                ],
                 "PhoneNumbers" => [
                     [
                         "PhoneNumber" => $this->data['residentialCustomerInfo']['phone'], 
@@ -272,7 +295,16 @@ class SubmitOrderAPI extends BaseOriginAPI
                     ] 
                 ],
             ],
-        ]; 
+        ];
+        
+        if(isset($this->data['concessionCardInfo'])){
+            $formatted['CustomerInfo']['ConcessionCardInfo'] = [
+                "CardTypeID" => $this->data['concessionCardInfo']['type'], 
+                "CardNumber" => $this->data['concessionCardInfo']['number'], 
+                "StartDate" => $this->data['concessionCardInfo']['startDate'], 
+                "EndDate" => $this->data['concessionCardInfo']['endDate'],
+            ];
+        }
 
         if(isset($this->data['contactPersonInfo'])){
             $formatted['CustomerInfo']['ContactPersons'][] = [
