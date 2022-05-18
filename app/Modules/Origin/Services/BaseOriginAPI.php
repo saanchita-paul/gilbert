@@ -5,6 +5,7 @@ namespace Origin\Services;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Models\APILog;
 
 class BaseOriginAPI
 {
@@ -45,11 +46,21 @@ class BaseOriginAPI
     protected function getApi(string $url, array $params = [], string $methodName = 'getOriginAPI'){
         try {
             Log::info(sprintf('Origin GET:%s - Attempting with request data:', $methodName), $params);
+            $url = APILog::setLoggerQuery($url, $this->toSnakeCase('Origin'.$methodName), false);
 
-            $response = Http::withHeaders([
+            foreach($params as $key => $value){
+                $url = $url . '&' . $key . '=' . $value;
+            }
+
+            $headers = [
                 "Accept" => "application/json",
                 "Authorization" => $this->basicAuth,
-            ])->get($url, $params);
+            ];
+
+            $response = Http::withOptions([
+                "headers" => $headers,
+                // "query" => $params,
+            ])->get($url);
 
             $response->throw();
             
@@ -92,6 +103,7 @@ class BaseOriginAPI
     protected function postApi(string $url, array $body = [], string $methodName = 'postOriginAPI'){
         try {
             Log::info(sprintf('Origin POST:%s - Attempting with request data:', $methodName), $body);
+            $url = APILog::setLoggerQuery($url, $this->toSnakeCase('Origin'.$methodName), false);
             
             $this->getAccessToken();
 
@@ -104,7 +116,7 @@ class BaseOriginAPI
 
             $response = Http::withOptions([
                 'headers' => $headers,
-                'cookies' => $this->cookiejar,
+                'cookies' => $this->cookiejar
             ])
             ->withBody(json_encode($body), "application/json")
             ->post($url);
@@ -131,5 +143,9 @@ class BaseOriginAPI
         } catch (Exception $exception) {
             throw new \Exception(sprintf('Origin POST:%s - FAILED (%s)', $methodName, $exception->getMessage()));
         }
+    }
+
+    protected function toSnakeCase($string, $seperator = '_'){
+        return strtolower(preg_replace('/(?<=\d)(?=[A-Za-z])|(?<=[A-Za-z])(?=\d)|(?<=[a-z])(?=[A-Z])/', $seperator, $string));
     }
 }

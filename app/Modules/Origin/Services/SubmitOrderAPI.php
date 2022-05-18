@@ -8,7 +8,12 @@ use Illuminate\Support\Facades\Validator;
 
 class SubmitOrderAPI extends BaseOriginAPI
 {
-    const METHODNAME = 'SubmitOrder:'; 
+    const METHODNAME = 'Submit'; 
+
+    const MAP_SUBMIT_TYPE = [
+        'move' => 'CustomerMoveIn',
+        // 'cancel' => 'CustomerCancel',
+    ];
 
     const MAP_CONNECTION_TYPE = [
         "move" => "CUST_MOVE",
@@ -116,11 +121,12 @@ class SubmitOrderAPI extends BaseOriginAPI
         $url = config('origin.baseurl') . config('origin.endpoints.submit_order');
         $body = $this->getFormattedData($this->data);
         // $body = $this->getDummyData(); // test data
+        $methodname = self::METHODNAME . self::MAP_CONNECTION_TYPE[$this->data['connection']];
 
         $responseData = $this->postApi($url, $body, self::METHODNAME . 'CustomerMoveIn');
 
         if(empty($responseData))
-            throw new \Exception(sprintf('Origin POST:%s - FAILED (Empty response from Origin)', self::METHODNAME));
+            throw new \Exception(sprintf('Origin POST:%s - FAILED (Empty response from Origin)', $methodname));
 
         $formattedData = [
             'OrderHeaderID' => $responseData['OrderHeaderID'],

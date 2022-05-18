@@ -5,7 +5,7 @@ namespace Origin\Services;
 class CheckFuelAPI extends BaseOriginAPI
 {
 
-    const METHODNAME = 'CheckingFuelAvailability';
+    const METHODNAME = 'CheckFuel';
 
     const MAP_CUSTOMER_TYPE = [
         "resident" => '0001',

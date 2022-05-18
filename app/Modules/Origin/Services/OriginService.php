@@ -144,8 +144,8 @@ class OriginService
             }
         }
         catch (Exception $exception){
+            $message = $exception->getMessage();
             if($exception->getCode() == BaseOriginAPI::CODE_REJECT){
-                $message = $exception->getMessage();
                 preg_match('/\[([^\)]*)\]/', $message, $codeMatch);
                 preg_match('/\(([^\)]*)\)/', $message, $messageMatch);
                 $this->saveRejectedStatus($service->id, $codeMatch[1], $messageMatch[1]);
