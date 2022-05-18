@@ -19,9 +19,9 @@
 						<p class="pb-4">{{ planDetails.short_des }}</p>
 					</div> -->
 
-					<ElectricityPlan :plan="electricityPlan"></ElectricityPlan>
+					<ElectricityPlan :plan="planDetails.plans.electricity_plan"></ElectricityPlan>
 
-					<GasPlan :plan="gasPlan"></GasPlan>
+					<GasPlan :plan="planDetails.plans.gas_plan"></GasPlan>
 
 					<div class="pl-8 pr-8">
 						<p class="font-weight-bold" style="font-size:14px">Included in your plan</p>
@@ -46,8 +46,14 @@
 						<p class="plan-text mt-0" style="font-size:14px;">{{ planDetails.green_options }}</p>
 						<hr class="mb-4" style="width:95%" />
 
-						<div v-for="item in planDetails.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
-                            <a :href="item.url" target="_blank">{{ item.title }}</a>
+						<div v-for="item in planDetails.plans.electricity_plan.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
+                            <a :href="item.link" target="_blank">{{ item.offer_name }}</a>
+						</div>
+						<div v-for="item in planDetails.plans.gas_plan.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
+                            <a :href="item.link" target="_blank">{{ item.offer_name }}</a>
+						</div>
+						<div class="pb-2" style="font-size:14px;">
+                            <a href="https://google.com" target="_blank">Terms and conditions</a>
 						</div>
 					</div>
 
@@ -103,12 +109,12 @@ export default {
         getPlanText() {
             return LeadApplicationService.mapPlan(this.selectedPlan);
         },
-		electricityPlan() {
-            return this.planDetails.plans.find(plan => plan.title === "Electricity");
-		},
-		gasPlan() {
-            return this.planDetails.plans.find(plan => plan.title === "Gas");
-		},
+		// electricityPlan() {
+        //     return this.planDetails.plans.find(plan => plan.title === "Electricity");
+		// },
+		// gasPlan() {
+        //     return this.planDetails.plans.find(plan => plan.title === "Gas");
+		// },
 	},
 	methods: {
 		async getOriginData() {
