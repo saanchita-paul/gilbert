@@ -101,6 +101,7 @@ class OriginService
                 "isLifeSupportGas" => $application->is_gas_life_support == 1, 
                 "isElectricalWork" => $application->is_renovation_on == 1, 
                 "isEnableMarketing" => $application->is_email_marketing == 1,
+                "additionalAccessInformation" => $application->additional_access_information ?? '',
                 'nmi_mirn' => $nmi_mirn,
                 "productInfo" => [
                     'productId' => $plan->product_id,
@@ -148,7 +149,7 @@ class OriginService
                 $data["appointmentTime"] = $application->inspection_time;
             }
     
-            $newOrder = new SubmitOrderAPI($data);
+            $newOrder = new SubmitOrderAPI($data, $service->id);
             $errors = $newOrder->hasError();
             if($errors){
                 // skip due to server invalid input
