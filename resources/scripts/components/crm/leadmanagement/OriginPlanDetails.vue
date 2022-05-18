@@ -112,11 +112,11 @@ export default {
 	},
 	methods: {
 		async getOriginData() {
-            let params = {
+            let query = {
                 service_type: this.serviceType,
                 postcode: this.leadSummary.postcode,
             }
-			this.planDetails = await OriginService.getOriginData(params);
+			this.planDetails = await OriginService.getOriginData(query);
 			console.log("Origin Plan Details Response", this.planDetails)
 		},
         closeDialog(){

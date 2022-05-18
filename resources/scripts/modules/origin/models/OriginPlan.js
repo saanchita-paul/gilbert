@@ -13,7 +13,8 @@ export default class OriginPlan {
         slogan,
         details,
         supply_charge,
-        usage_charge
+        usage_charge,
+        fees
 
     } = {}) {
         this.title = title;
@@ -22,6 +23,7 @@ export default class OriginPlan {
         this.details = details;
         this.supply_charge = supply_charge;
         this.usage_charge = usage_charge;
+        this.fees = fees;
     }
 
 }

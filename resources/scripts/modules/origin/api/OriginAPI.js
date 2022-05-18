@@ -4,9 +4,9 @@ import OriginMapper from "@scripts/modules/origin/api/mappers/OriginMapper";
 const ROOT = `${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api`;
 
 export default {
-    getOriginData: async params => {
+    getOriginData: async query => {
         try {
-            // const planDetails = (await axios.get(`${ROOT}/origin-plan-details`, params)).data.data;
+            // const planDetails = (await axios.get(`${ROOT}/origin-plan-details`, { params: query })).data.data;
             // return OriginMapper.mapOriginData(planDetails);
 
             let data = {
@@ -36,6 +36,16 @@ export default {
                                 title: "Temporary Peak Usage (c/kWh)",
                                 value: "23.87"
                             }
+                        ],
+                        fees: [
+                            {
+                                title: "Standard Connection Fee",
+                                value: "$293.00"
+                            },
+                            {
+                                title: "Same Day Connection Fee",
+                                value: "$293.00"
+                            }
                         ]
                     },
                     {
@@ -60,6 +70,12 @@ export default {
                                 title: "Peak Usage (c/kWh)",
                                 value: "12.13"
                             }
+                        ],
+                        fees: [
+                            {
+                                title: "Standard Connection Fee",
+                                value: "$293.00"
+                            },
                         ]
                     }
                 ],
