@@ -1,5 +1,4 @@
 import Store from "@scripts/store";
-import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
 export default {
@@ -23,6 +22,7 @@ export default {
 
     setBothProvider: provider => Store.commit("setBothProvider", provider),
     setBothPlan: plan => Store.commit("setBothPlan", plan),
+
 
     setUtilityDetails: services => {
         let powerService = services.find(data => data.service_type === "power");

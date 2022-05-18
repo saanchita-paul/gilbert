@@ -766,7 +766,7 @@
         </div>
         <div class="text-field">
           <v-checkbox
-              :rules="[v=>{ if(v && !isOriginProvider) return `Sorry you cannot submit connection application for this customer`; else return true }]"
+              :rules="[v=>{ if(v && isAnyProviderEA) return `Sorry you cannot submit connection application for this customer`; else return true }]"
               v-model="$attrs.value.lifeSupportInfo.value"
               :label="`Does anyone in the household require the use of power for life support?`">
           </v-checkbox>
@@ -1279,6 +1279,7 @@ import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import {titlesMapperForDropdown} from "@scripts/data/titleMapper";
 import {medicareRules, mediExpireDate} from '@scripts/plugins/VeeValidate';
 import {tenancyTypeMapper} from '@scripts/data/ConnectionApplicationMapper';
+import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
 export default {
   name: "InfoField",
@@ -1634,10 +1635,6 @@ export default {
     },
 
     updateLeads() {
-      // console.log('updated leads')
-      // console.log("hahahaha", this.property_details);
-      // console.log(this.lead);
-
       this.$emit("updateLead", {
         identification: this.indentification,
         property_details: this.property_details,
@@ -1824,10 +1821,12 @@ export default {
 
     computed: {
         isNMIRequired() {
-            return !this.isWaterTabFocused && !!(Array.isArray(this.services) && this.services.some(n => n === 'power'));
+            return !this.isWaterTabFocused && (this.isPowerTabFocused || this.isBothEnergySubmit);
+            // return !this.isWaterTabFocused && !!(Array.isArray(this.services) && this.services.some(n => n === 'power'));
         },
         isMERNRequired() {
-            return !this.isWaterTabFocused && !!(Array.isArray(this.services) && this.services.some(n => n === 'gas'));
+            return !this.isWaterTabFocused && (this.isGasTabFocused || this.isBothEnergySubmit);
+            // return !this.isWaterTabFocused && !!(Array.isArray(this.services) && this.services.some(n => n === 'gas'));
         },
         billingAddressMsg() {
             return this.property_details.is_billing_same ? "Same as service address" : this.property_details.billing_address_text;
@@ -1839,12 +1838,33 @@ export default {
             // return this.person_details.tenancy_type===tenancyTypeMapper.HomeOwner;
             return false;
         },
+        isPowerTabFocused() {
+            return LeadApplicationService.getActiveServiceTab() === 0;
+        },
+        isGasTabFocused() {
+            return LeadApplicationService.getActiveServiceTab() === 1;
+        },
         isWaterTabFocused() {
             return LeadApplicationService.getActiveServiceTab() === 2;
         },
         isStateNswQld() {
           return this.property_details.state == 'Queensland' || this.property_details.state == 'New South Wales';
-        }
+        },
+        isBothEnergySubmit() {
+            return UtilityStoreService.getIsBothEnergySelected();
+        },
+        powerProvider() {
+            console.log(UtilityStoreService.getPowerProvider());
+            return UtilityStoreService.getPowerProvider();
+        },
+        gasProvider() {
+            return UtilityStoreService.getGasProvider();
+        },
+        isAnyProviderEA() {
+            return (this.isPowerTabFocused && this.powerProvider == 'ea')
+            || (this.isGasTabFocused && this.gasProvider == 'ea')
+            || (this.isBothEnergySubmit && (this.powerProvider == 'ea' || this.gasProvider == 'ea'));
+        },
     },
 
   watch: {
