@@ -668,7 +668,7 @@
         </div>
       </div>
 
-      <div class="crm-text-field">
+      <div class="crm-text-field" v-if="isStateNswQld">
         <div class="field-label">
           <span>Access requirement</span>
         </div>
@@ -696,9 +696,9 @@
         </div>
       </div>
 
-      <div class="crm-text-field" v-if="property_details.is_access_require == true">
+      <div class="crm-text-field" v-if="isStateNswQld">
         <div class="field-label">
-          <span>Additional Access informantion</span>
+          <span>Additional Access information</span>
         </div>
         <div class="text-field">
           <ValidationProvider name="Additional Access informantion" v-slot="{ errors }">
@@ -719,7 +719,7 @@
 
       <div class="crm-text-field" v-if="isStateNswQld">
         <div class="field-label">
-          <span>Is the electricity on at the property? *</span>
+          <span>Is the electricity on at the property?</span>
         </div>
         <div class="text-field">
           <ValidationProvider name="has_electricity" v-slot="{ errors }">
@@ -738,9 +738,9 @@
         </div>
       </div>
 
-      <div class="crm-text-field" v-if="isStateNswQld && property_details.has_electricity == false">
+      <div class="crm-text-field" v-if="isStateNswQld">
         <div class="field-label">
-          <span>Inspection Time *</span>
+          <span>Inspection Time</span>
         </div>
         <div class="text-field">
           <ValidationProvider name="Family Violance" v-slot="{ errors }">
@@ -766,9 +766,9 @@
         </div>
         <div class="text-field">
           <v-checkbox
-              :rules="[v=>{ if(v) return `Sorry you cannot submit connection application for this customer`; else return true }]"
+              :rules="[v=>{ if(v && !isOriginProvider) return `Sorry you cannot submit connection application for this customer`; else return true }]"
               v-model="$attrs.value.lifeSupportInfo.value"
-              :label="`Does anyone in the household require the use of medical equipment for life support? `">
+              :label="`Does anyone in the household require the use of power for life support?`">
           </v-checkbox>
         </div>
       </div>
@@ -1279,7 +1279,6 @@ import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import {titlesMapperForDropdown} from "@scripts/data/titleMapper";
 import {medicareRules, mediExpireDate} from '@scripts/plugins/VeeValidate';
 import {tenancyTypeMapper} from '@scripts/data/ConnectionApplicationMapper';
-import { mapGetters } from "vuex";
 
 export default {
   name: "InfoField",
@@ -1427,15 +1426,15 @@ export default {
       additional_access_information: [
         {
           text: "Customer on site",
-          value: "Customer on site",
+          value: "CUST ON SITE",
         },
         {
           text: "Keys in meter box",
-          value: "Keys in meter box",
+          value: "KEYS IN METER BOX",
         },
         {
           text: "Keys in letter box",
-          value: "Keys in letter box",
+          value: "KEYS IN LETTER BOX",
         },
       ],
       inspectionTimeQLD : [
@@ -1501,19 +1500,19 @@ export default {
       concessionCard: [
         {
           text: "DVA Health",
-          value: "DVA Health",
+          value: "DVA",
         },
         {
           text: "Health Care Card",
-          value: "Health Care Card",
+          value: "HCC",
         },
         {
           text: "Pensioner Concession",
-          value: "Pensioner Concession",
+          value: "PCC",
         },
         {
-          text: "Qeensland Seniors",
-          value: "Qeensland Seniors",
+          text: "Queensland Seniors",
+          value: "QSC",
         },
       ],
       specialNumberDD: SPECIAL_NUMBER,

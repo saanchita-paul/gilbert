@@ -51,7 +51,7 @@
 						</div>
 					</div>
 
-					<v-btn class="selectButton" color="#cd5b32">Select Plan</v-btn>
+					<v-btn class="selectButton" color="#cd5b32" @click="closeDialog">Select Plan</v-btn>
 				</v-card>
 			</v-container>
 		</div>
