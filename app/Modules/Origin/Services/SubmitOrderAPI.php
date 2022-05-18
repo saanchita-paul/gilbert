@@ -73,7 +73,7 @@ class SubmitOrderAPI extends BaseOriginAPI
     /**
      * @var array $data
      */
-    public function __construct(private array $data)
+    public function __construct(private array $data, private int $service_id)
     {
         parent::__construct();
     }
@@ -88,7 +88,8 @@ class SubmitOrderAPI extends BaseOriginAPI
             "connectionDate" => 'required',
             "isExistingCustomer" => 'required|boolean',
             'isEmailBilling' => 'required|boolean', 
-            "isAccessRequirement" => 'required|boolean', 
+            "isAccessRequirement" => 'required|boolean',
+            "additionalAccessInformation" => 'required_with:isAccessRequirement',
             "isUnrestrainedAnimal" => 'required|boolean', 
             "isLifeSupport" => 'required|boolean', 
             "isLifeSupportGas" => 'required|boolean', 
@@ -103,7 +104,6 @@ class SubmitOrderAPI extends BaseOriginAPI
             "addressInfo" => 'required|array',
             "addressInfo.addressInfo" => 'required|array',
             "addressInfo.addressId" => 'required',
-            // "AdditionalAccessInformation" => "",
             "residentialCustomerInfo" => 'required|array',
             "residentialCustomerInfo.title" => 'required',
             "residentialCustomerInfo.firstname" => 'required',
@@ -169,7 +169,6 @@ class SubmitOrderAPI extends BaseOriginAPI
     /**
      * @return string
      * 
-     * NOT COMPLETE! MAX COUNT CURRENTLY = 25999999
      */
     private function getPartnerReferenceNumber(){
         $result = '';
@@ -191,34 +190,9 @@ class SubmitOrderAPI extends BaseOriginAPI
             }
         }
         else{
-            $count = ConnectionService::where('provider_name', ConnectionService::PROVIDER_ORIGIN)
-                        ->whereNotNull('lead_reference')
-                        ->count();
-                        
-            $strLen = 4;
-            $digitLen = 6;
-            $extra = 0;
-            $str = '';
-            
-            if($count >= 1000000){
-                $extra = (int) $count / 1000000;
-        
-                $count = $count % 1000000;
-        
-                for($i=$strLen; $i>0; $i--){
-                    $add = $extra % 26;
-                    $char = chr(ord('A') + $add);
-                    $str = $char . $str;
-                    $extra = max($extra - 26, 0);
-                }
-            }
-            
-            $str = str_pad($str, $strLen, "A", STR_PAD_LEFT);
-            
-            $digit = str_pad(strval($count), $digitLen, "0", STR_PAD_LEFT);
-            
-            $result = $str . $digit;
-        } 
+            $result = 'HD'.strval($this->service_id);
+        }
+         
         return $result;
     }
 
@@ -257,7 +231,7 @@ class SubmitOrderAPI extends BaseOriginAPI
                     "IsLifeSupport" => $this->data['isLifeSupport'], 
                     "IsLifeSupportGas" => $this->data['isLifeSupportGas'], 
                     "IsElectricalWork" => $this->data['isElectricalWork'], 
-                    "AdditionalAccessInformation" => "", // TODO
+                    "AdditionalAccessInformation" => $this->data['isAccessRequirement'] ? $this->data['additionalAccessInformation'] : '',
                 ],
             ],
             "CustomerInfo" => [
