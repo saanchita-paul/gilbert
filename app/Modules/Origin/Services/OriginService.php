@@ -117,8 +117,8 @@ class OriginService
                     'firstname' => $application->first_name,
                     'lastname' => $application->last_name,
                     'dob' => Carbon::parse($application->dob)->toDateTimeLocalString(),
-                    'phone' => $application->phone, // todo
-                    'phonetype' => 'mobile', // todo
+                    'phone' => $application->phone_type == ConnectionApplication::PHONE_TYPE_HOMEPHONE ? $application->homephone : ($application->phone ?? $application->international_phone),
+                    'phonetype' => $application->phone_type == ConnectionApplication::PHONE_TYPE_HOMEPHONE ? 'landline' : 'mobile',
                     'email' => $application->email,
                 ],
             ];

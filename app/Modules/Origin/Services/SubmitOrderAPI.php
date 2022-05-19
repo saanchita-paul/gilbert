@@ -70,6 +70,13 @@ class SubmitOrderAPI extends BaseOriginAPI
         '1:00pm - 5:00pm' => 'PM', 
     ];
 
+    const MAP_ADDITIONAL_INFO = [
+        'CUST ON SITE',
+        'KEYS IN METER BOX',
+        'KEYS IN LETTER BOX',
+        'Customer Consultation',
+    ];
+
     /**
      * @var array $data
      */
@@ -89,7 +96,7 @@ class SubmitOrderAPI extends BaseOriginAPI
             "isExistingCustomer" => 'required|boolean',
             'isEmailBilling' => 'required|boolean', 
             "isAccessRequirement" => 'required|boolean',
-            "additionalAccessInformation" => 'required_with:isAccessRequirement',
+            "additionalAccessInformation" => 'in:'. implode(',', self::MAP_ADDITIONAL_INFO),
             "isUnrestrainedAnimal" => 'required|boolean', 
             "isLifeSupport" => 'required|boolean', 
             "isLifeSupportGas" => 'required|boolean', 
