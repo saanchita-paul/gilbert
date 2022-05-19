@@ -117,8 +117,8 @@ class OriginService
                     'firstname' => $application->first_name,
                     'lastname' => $application->last_name,
                     'dob' => Carbon::parse($application->dob)->toDateTimeLocalString(),
-                    'phone' => $application->phone, // todo
-                    'phonetype' => 'mobile', // todo
+                    'phone' => $application->phone_type == ConnectionApplication::PHONE_TYPE_HOMEPHONE ? $application->homephone : ($application->phone ?? $application->international_phone),
+                    'phonetype' => $application->phone_type == ConnectionApplication::PHONE_TYPE_HOMEPHONE ? 'landline' : 'mobile',
                     'email' => $application->email,
                 ],
             ];
@@ -153,6 +153,7 @@ class OriginService
             $errors = $newOrder->hasError();
             if($errors){
                 // skip due to server invalid input
+                Log::error('Invalid inputs to submit order API', $errors);
                 throw new \Exception(sprintf('%s:FAILED (Invalid inputs to submit order for service id %u)', self::class, $service->id));
             }
     
