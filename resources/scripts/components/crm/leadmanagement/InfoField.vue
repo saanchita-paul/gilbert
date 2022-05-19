@@ -668,7 +668,7 @@
         </div>
       </div>
 
-      <div class="crm-text-field" v-if="isStateNswQld">
+      <div class="crm-text-field" v-if="isStateNswQldSa">
         <div class="field-label">
           <span>Access requirement</span>
         </div>
@@ -696,7 +696,7 @@
         </div>
       </div>
 
-      <div class="crm-text-field" v-if="isStateNswQld">
+      <div class="crm-text-field" v-if="isStateNswQldSa">
         <div class="field-label">
           <span>Additional Access information</span>
         </div>
@@ -704,7 +704,7 @@
           <ValidationProvider name="Additional Access informantion" v-slot="{ errors }">
             <v-select
               v-model="property_details.additional_access_information"
-              :items="additional_access_information"
+              :items=" property_details.state == 'South Australia' ? additional_access_information_sa : additional_access_information"
               :error-messages="errors[0]"
               @input="updateLeads"
               outlined
@@ -1438,6 +1438,12 @@ export default {
           value: "KEYS IN LETTER BOX",
         },
       ],
+      additional_access_information_sa: [
+        {
+          text: "Customer consultation",
+          value: "Customer Consultation",
+        }
+      ],
       inspectionTimeQLD : [
         {
           text: "8AM - 1PM (ENERGYXP)",
@@ -1849,6 +1855,11 @@ export default {
         },
         isStateNswQld() {
           return this.property_details.state == 'Queensland' || this.property_details.state == 'New South Wales';
+        },
+        isStateNswQldSa() {
+          return this.property_details.state == 'Queensland'
+            || this.property_details.state == 'New South Wales'
+            || this.property_details.state == 'South Australia';
         },
         isBothEnergySubmit() {
             return UtilityStoreService.getIsBothEnergySelected();
