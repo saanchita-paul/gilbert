@@ -264,17 +264,17 @@ class SubmitOrderAPI extends BaseOriginAPI
                         "IsDefault" => true, 
                     ], 
                 ], 
-                "ContactPersons" => [
-                    [
-                        "Title" => self::MAP_TITLE_TYPE[$this->data['residentialCustomerInfo']['title']],
-                        "FirstName" => $this->data['residentialCustomerInfo']['firstname'], 
-                        "LastName" => $this->data['residentialCustomerInfo']['lastname'],
-                        "HomePhone" => "", 
-                        "Mobile" => $this->data['residentialCustomerInfo']['phone'], 
-                        "DateOfBirth" => $this->data['residentialCustomerInfo']['dob'],
-                        "FunctionTypeID" => self::MAP_CONTACT_TYPE['primary'], 
-                    ] 
-                ],
+                // "ContactPersons" => [
+                //     [
+                //         "Title" => self::MAP_TITLE_TYPE[$this->data['residentialCustomerInfo']['title']],
+                //         "FirstName" => $this->data['residentialCustomerInfo']['firstname'], 
+                //         "LastName" => $this->data['residentialCustomerInfo']['lastname'],
+                //         "HomePhone" => "", 
+                //         "Mobile" => $this->data['residentialCustomerInfo']['phone'], 
+                //         "DateOfBirth" => $this->data['residentialCustomerInfo']['dob'],
+                //         "FunctionTypeID" => self::MAP_CONTACT_TYPE['primary'], 
+                //     ] 
+                // ],
             ],
         ];
         
