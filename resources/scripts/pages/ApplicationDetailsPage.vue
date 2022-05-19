@@ -120,7 +120,7 @@ export default {
     },
     computed: {
         afterHourFlag() {
-            return this.plan && EAAfterHourService.calculateAfterHourFlag(this.eaElectricityDistributor,
+            return this.powerPlan && EAAfterHourService.calculateAfterHourFlag(this.eaElectricityDistributor,
                 this.leadSummary.moving_date, this.leadSummary.state, this.nextBusinessDay);
         },
         isBothEnergySubmit() {
@@ -142,9 +142,9 @@ export default {
     methods: {
         async getElectricityDistributor()
         {
-            if(!isNull(this.plan)) {
+            if(!isNull(this.powerPlan) && this.powerProvider === 'ea') {
                 this.eaElectricityDistributor = await EAAfterHourService.getElectricityDistributor(this.leadSummary.service_interests,
-                    this.plan?.key, this.leadSummary?.postcode, this.leadSummary?.state);
+                    this.powerPlan, this.leadSummary?.postcode, this.leadSummary?.state);
             }
         },
         async loadPlanNoteAndLead()
@@ -155,13 +155,6 @@ export default {
             this.services = this.leadSummary?.service_interests;
             this.planNoteFlag = true;
             UtilityStoreService.setUtilityDetails(this.leadSummary.connection_services);
-        },
-        //todo get the functionality and remove it
-        updatePlan(plan, isManual)
-        {
-            this.plan = plan;
-            LeadApplicationService.saveSoleField('plan_type', this.plan, this.leadId);
-            this.getElectricityDistributor();
         },
         updateNote() {
             this.loadPlanNoteAndLead();
@@ -396,8 +389,15 @@ export default {
             return true;
         },
     },
-
-  async  mounted() {
+    watch: {
+        powerPlan: {
+            handler() {
+                this.getElectricityDistributor();
+            },
+            deep: true,
+        },
+    },
+    async  mounted() {
         const validateEvent = async (callback) => {
               let v = await this.validateLead();
               if(!v) return;
