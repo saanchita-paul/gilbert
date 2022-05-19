@@ -153,6 +153,7 @@ class OriginService
             $errors = $newOrder->hasError();
             if($errors){
                 // skip due to server invalid input
+                Log::error('Invalid inputs to submit order API', $errors);
                 throw new \Exception(sprintf('%s:FAILED (Invalid inputs to submit order for service id %u)', self::class, $service->id));
             }
     
