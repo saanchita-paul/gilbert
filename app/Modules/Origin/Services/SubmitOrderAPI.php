@@ -80,7 +80,7 @@ class SubmitOrderAPI extends BaseOriginAPI
     /**
      * @var array $data
      */
-    public function __construct(private array $data, private int $service_id)
+    public function __construct(private array $data, private int $service_id = 0)
     {
         parent::__construct();
     }
@@ -180,7 +180,7 @@ class SubmitOrderAPI extends BaseOriginAPI
     private function getPartnerReferenceNumber(){
         $result = '';
 
-        if(config('origin.isTestReferenceNumber') || config('app.env') == 'local'){
+        if($this->service_id != 0 && (config('origin.isTestReferenceNumber') || config('app.env') == 'local')){
             $digits = '0123456789';
             $alphas = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             $alphaLen = 4;
@@ -264,17 +264,17 @@ class SubmitOrderAPI extends BaseOriginAPI
                         "IsDefault" => true, 
                     ], 
                 ], 
-                "ContactPersons" => [
-                    [
-                        "Title" => self::MAP_TITLE_TYPE[$this->data['residentialCustomerInfo']['title']],
-                        "FirstName" => $this->data['residentialCustomerInfo']['firstname'], 
-                        "LastName" => $this->data['residentialCustomerInfo']['lastname'],
-                        "HomePhone" => "", 
-                        "Mobile" => $this->data['residentialCustomerInfo']['phone'], 
-                        "DateOfBirth" => $this->data['residentialCustomerInfo']['dob'],
-                        "FunctionTypeID" => self::MAP_CONTACT_TYPE['primary'], 
-                    ] 
-                ],
+                // "ContactPersons" => [
+                //     [
+                //         "Title" => self::MAP_TITLE_TYPE[$this->data['residentialCustomerInfo']['title']],
+                //         "FirstName" => $this->data['residentialCustomerInfo']['firstname'], 
+                //         "LastName" => $this->data['residentialCustomerInfo']['lastname'],
+                //         "HomePhone" => "", 
+                //         "Mobile" => $this->data['residentialCustomerInfo']['phone'], 
+                //         "DateOfBirth" => $this->data['residentialCustomerInfo']['dob'],
+                //         "FunctionTypeID" => self::MAP_CONTACT_TYPE['primary'], 
+                //     ] 
+                // ],
             ],
         ];
         

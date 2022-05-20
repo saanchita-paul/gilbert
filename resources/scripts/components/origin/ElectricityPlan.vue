@@ -5,9 +5,9 @@
 			<p class="font-weight-bold">Electricity</p>
 		</div>
 		<div class="pb-2">
-			<p class="font-weight-bold" style="font-size:26px">${{ plan.vdo_dmo_amount }}/Year</p>
-			<p class="font-weight-bold" style="font-size:14px">{{ plan.vdo_dmo_percentage }}% off the Victorian Default Offer Reference Price</p>
-			<p class="plan-content">Estimated cost inc GST for an average household using {{ plan.condumtions }}kWh/yearly on a {{ plan.tarif }} tariff in the {{ plan.distributor_name }} network.</p>
+			<p class="font-weight-bold" style="font-size:26px">${{ plan.vdo.vdo_dmo_amount }}/Year</p>
+			<p class="font-weight-bold" style="font-size:14px">{{ plan.vdo.vdo_dmo_percentage }}% off the Victorian Default Offer Reference Price</p>
+			<p class="plan-content">Estimated cost inc GST for an average household using {{ plan.vdo.condumtions }}kWh/yearly on a {{ plan.tarif }} tariff in the {{ plan.distributor_name }} network.</p>
 		</div>
 		<v-expansion-panels>
 			<v-expansion-panel color="red">
@@ -24,9 +24,9 @@
 					</div>
 					<div v-for="item in plan.supply_charge" :key="item.title" class="price-list">
 						<div class="pr-12 plan-text" style="font-size:14px">
-							{{ item.price_description }} ({{ item.price_unit }})
+							{{ item.description }} ({{ item.unit }})
 						</div>
-						<div class="pl-14 plan-text">{{ item.gst_inc }}</div>
+						<div class="pl-14 plan-text">{{ item.gst_inc_round_2 }}</div>
 					</div>
 
 					<div class="d-flex">
@@ -37,9 +37,9 @@
 					</div>
 					<div v-for="item in plan.usage_charge" :key="item.title"  class="price-list">
 						<div class="plan-text" style="font-size:14px">
-							{{ item.price_description }} ({{ item.price_unit }})
+							{{ item.description }} ({{ item.unit }})
 						</div>
-						<div class="plan-text">{{ item.gst_inc }}</div>
+						<div class="plan-text">{{ item.gst_inc_round_2 }}</div>
 					</div>
 
 					<div class="d-flex">
@@ -49,7 +49,13 @@
 						<div class="plan-text" style="font-size:14px">
 							Standard Connection Fee
 						</div>
-						<div class="plan-text">$293.00</div>
+						<div class="plan-text">{{ plan.fees.standard_connection_fee }}</div>
+					</div>
+					<div class="price-list">
+						<div class="plan-text" style="font-size:14px">
+							Same Day Connection Fee
+						</div>
+						<div class="plan-text">{{ plan.fees.same_day_connection_fee }}</div>
 					</div>
 
 					<p class="plan-text mt-3">We’ve already included any discounts in the rates above. All prices are inclusive of GST.</p>
