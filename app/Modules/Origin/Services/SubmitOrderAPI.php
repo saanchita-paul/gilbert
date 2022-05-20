@@ -80,7 +80,7 @@ class SubmitOrderAPI extends BaseOriginAPI
     /**
      * @var array $data
      */
-    public function __construct(private array $data, private int $service_id)
+    public function __construct(private array $data, private int $service_id = 0)
     {
         parent::__construct();
     }
@@ -180,7 +180,7 @@ class SubmitOrderAPI extends BaseOriginAPI
     private function getPartnerReferenceNumber(){
         $result = '';
 
-        if(config('origin.isTestReferenceNumber') || config('app.env') == 'local'){
+        if($this->service_id != 0 && (config('origin.isTestReferenceNumber') || config('app.env') == 'local')){
             $digits = '0123456789';
             $alphas = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             $alphaLen = 4;
