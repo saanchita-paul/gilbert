@@ -94,13 +94,13 @@ class OriginService
                 "connection" => 'move',
                 "connectionDate" => $connection_date,
                 "isExistingCustomer" => false,
-                'isEmailBilling' => $application->is_email_billing == 1,
-                "isAccessRequirement" => $application->is_access_require == 1, 
-                "isUnrestrainedAnimal" => $application->is_any_unrestrained_animal == 1, 
-                "isLifeSupport" => $application->has_life_support == 1, 
-                "isLifeSupportGas" => $application->is_gas_life_support == 1, 
-                "isElectricalWork" => $application->is_renovation_on == 1, 
-                "isEnableMarketing" => $application->is_email_marketing == 1,
+                'isEmailBilling' => !empty($application->is_email_billing) ? $application->is_email_billing == 1 : false,
+                "isAccessRequirement" => !empty($application->is_access_require) ? $application->is_access_require == 1 : false, 
+                "isUnrestrainedAnimal" => !empty($application->is_any_unrestrained_animal) ? $application->is_any_unrestrained_animal == 1 : false, 
+                "isLifeSupport" => !empty($application->has_life_support) ? $application->has_life_support == 1 : false, 
+                "isLifeSupportGas" => !empty($application->is_gas_life_support) ? $application->is_gas_life_support == 1 : false, 
+                "isElectricalWork" => !empty($application->is_renovation_on) ? $application->is_renovation_on == 1 : false, 
+                "isEnableMarketing" => !empty($application->is_email_marketing) ? $application->is_email_marketing == 1 : false,
                 "additionalAccessInformation" => $application->additional_access_information ?? '',
                 'nmi_mirn' => $nmi_mirn,
                 "productInfo" => [
@@ -117,8 +117,8 @@ class OriginService
                     'firstname' => $application->first_name,
                     'lastname' => $application->last_name,
                     'dob' => Carbon::parse($application->dob)->toDateTimeLocalString(),
-                    'phone' => $application->phone, // todo
-                    'phonetype' => 'mobile', // todo
+                    'phone' => $application->phone_type == ConnectionApplication::PHONE_TYPE_HOMEPHONE ? $application->homephone : ($application->phone ?? $application->international_phone),
+                    'phonetype' => $application->phone_type == ConnectionApplication::PHONE_TYPE_HOMEPHONE ? 'landline' : 'mobile',
                     'email' => $application->email,
                 ],
             ];
@@ -153,6 +153,7 @@ class OriginService
             $errors = $newOrder->hasError();
             if($errors){
                 // skip due to server invalid input
+                Log::error('Invalid inputs to submit order API', $errors);
                 throw new \Exception(sprintf('%s:FAILED (Invalid inputs to submit order for service id %u)', self::class, $service->id));
             }
     

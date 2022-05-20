@@ -168,6 +168,7 @@ import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
 import OriginPlanDetails from "@scripts/components/crm/leadmanagement/OriginPlanDetails";
 import SumoPlanDetails from "@scripts/components/crm/leadmanagement/SumoPlanDetails";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
+import {isNull} from "lodash-es";
 
 export default {
     //todo reduce emit functions
@@ -254,6 +255,7 @@ export default {
             );
         },
         isPayeeSelectedForAfterHourSubmission() {
+
             return this.afterHourFlag && isNull(this.leadSummary.after_hour_payee);
         },
         status() {
@@ -415,7 +417,7 @@ export default {
                 !LeadApplicationService.canSubmitEnergy('gas') ||
                 !this.selectedProvider ||
                 !this.selectedPlan ||
-                this.isPayeeSelectedForAfterHourSubmission
+                (this.isBothEnergySubmit && this.isPayeeSelectedForAfterHourSubmission)
             );
         },
         submit() {
