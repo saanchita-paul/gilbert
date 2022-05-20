@@ -11,6 +11,7 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\OriginPlan;
 use App\Models\RejectionReason;
+use App\Models\ConnectionApplicationSecondaryACC;
 
 class OriginService
 {
@@ -95,7 +96,7 @@ class OriginService
                 "connectionDate" => $connection_date,
                 "isExistingCustomer" => false,
                 'isEmailBilling' => !empty($application->is_email_billing) ? $application->is_email_billing == 1 : false,
-                "isAccessRequirement" => !empty($application->is_access_require) ? $application->is_access_require == 1 : false, 
+                "isAccessRequirement" => !empty($application->is_access_require) ? $application->is_access_require == 1 : !empty($application->additional_access_information), 
                 "isUnrestrainedAnimal" => !empty($application->is_any_unrestrained_animal) ? $application->is_any_unrestrained_animal == 1 : false, 
                 "isLifeSupport" => !empty($application->has_life_support) ? $application->has_life_support == 1 : false, 
                 "isLifeSupportGas" => !empty($application->is_gas_life_support) ? $application->is_gas_life_support == 1 : false, 
@@ -133,6 +134,7 @@ class OriginService
                     'phone' => $authorized->phone, // todo
                     'phonetype' => 'mobile', // todo
                     'email' => $authorized->email,
+                    'type' => $authorized->role == ConnectionApplicationSecondaryACC::JOINT_ACCOUNT_HOLDER_STATUS ? 'joint' : 'authorized',
                 ];
             }
 
@@ -175,6 +177,28 @@ class OriginService
             throw new \Exception($exception->getMessage());
         }
     }
+
+    // public static function checkStatus(){
+    //     $services = ConnectionService::where('provider_name', ConnectionService::PROVIDER_ORIGIN)
+    //                 ->whereNotNull('lead_reference')
+    //                 ->where('status', '<>', ConnectionService::STATUS_CANCELLED)
+    //                 ->get();
+
+    //     foreach($services as $service){
+    //         $checkOrder = new CheckOrderAPI($service->lead_reference);
+    //         $response = $checkOrder->fetch();
+    //         if($response['orderStatus'] != CheckOrderAPI::STATUS_IN_PROGRESS){
+    //             $application = $service->connectionApplication;
+    //             if($response['orderStatus'] == CheckOrderAPI::STATUS_COMPLETE){
+    //                 $service->status = ConnectionService::STATUS_ACCEPTED;
+    //                 $application->status = ConnectionApplication::STATUS_ACCEPTED;
+    //             }
+    //             if($response['orderStatus'] == CheckOrderAPI::STATUS_CANCELLED){
+                    
+    //             }
+    //         }
+    //     }
+    // }
 
     public static function saveSubmittedStatus($serviceId, $reference)
     {

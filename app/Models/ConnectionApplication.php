@@ -377,6 +377,17 @@ class ConnectionApplication extends Model
         'mr', 'miss', 'dr', 'mrs', 'ms'
     ];
 
+    const ACCESS_ON_SITE = 'CUST ON SITE';
+    const ACCESS_KEYS_METER = "KEYS IN METER BOX";
+    const ACCESS_KEYS_LETTER = "KEYS IN LETTER BOX";
+    const ACCESS_CUSTOMER_CONSULTATION = "Customer Consultation";
+
+    const AVAILABLE_ADDITIONAL_INFO = [
+        self::ACCESS_ON_SITE,
+        self::ACCESS_KEYS_METER,
+        self::ACCESS_KEYS_LETTER,
+        self::ACCESS_CUSTOMER_CONSULTATION
+    ];
 
     /**
      * @return BelongsTo
