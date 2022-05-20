@@ -40,7 +40,7 @@
 					<div class="d-flex">
 						<p class="font-weight-bold" style="font-size:14px; margin-bottom: 2%">Fees</p>
 					</div>
-					<div class="price-list">
+					<div  v-if="plan.fees" class="price-list">
 						<div class="plan-text" style="font-size:14px">
 							Standard Connection Fee
 						</div>
