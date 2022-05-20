@@ -17,6 +17,9 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 
+use Illuminate\Support\Str;
+
+
 class SumoService
 {
     private array|Collection|ConnectionApplication|Model $application;
@@ -81,6 +84,16 @@ class SumoService
         \Log::info( 'printing sercondary contact for ' , $this->getCustomerData());
 
         return json_decode($response->body(), true);
+    }
+
+    public function getSumoUuid() {
+        
+        $sumoUuid = Str::uuid()->toString();
+        $application->sumo_uuid = $sumoUuid;
+
+        return $sumoUuid;
+
+
     }
 
     private function getCustomerData(): array
