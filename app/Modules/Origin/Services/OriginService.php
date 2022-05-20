@@ -134,7 +134,7 @@ class OriginService
                     'phone' => $authorized->phone, // todo
                     'phonetype' => 'mobile', // todo
                     'email' => $authorized->email,
-                    'type' => $authorized->role == ConnectionApplicationSecondaryACC::JOINT_ACCOUNT_HOLDER_STATUS ? 'joint' : 'authorized',
+                    'type' => $authorized->role == ConnectionApplicationSecondaryACC::FULLY_AUTHORISED_STATUS ? 'authorized' : 'joint',
                 ];
             }
 
@@ -177,7 +177,7 @@ class OriginService
             throw new \Exception($exception->getMessage());
         }
     }
-    
+
     public static function saveSubmittedStatus($serviceId, $reference)
     {
         $service = ConnectionService::findOrFail($serviceId);
