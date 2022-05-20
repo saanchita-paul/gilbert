@@ -191,7 +191,7 @@ export default {
 			}
             
 			this.planDetails = await OriginService.getOriginData(query);
-			console.log("Origin Plan Details Response", this.planDetails.data)
+			// console.log("Origin Plan Details Response", this.planDetails)
 		},
         closeDialog(){
             this.$emit('toggleDialog')

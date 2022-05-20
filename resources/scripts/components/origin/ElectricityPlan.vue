@@ -4,10 +4,10 @@
 			<v-icon color="yellow" size="20" class="pb-4 pr-2">mdi-flash</v-icon>
 			<p class="font-weight-bold">Electricity</p>
 		</div>
-		<div class="pb-2">
+		<div v-if="plan.vdo" class="pb-2">
 			<p class="font-weight-bold" style="font-size:26px">${{ plan.vdo.vdo_dmo_amount }}/Year</p>
 			<p class="font-weight-bold" style="font-size:14px">{{ plan.vdo.vdo_dmo_percentage }}% off the Victorian Default Offer Reference Price</p>
-			<p class="plan-content">Estimated cost inc GST for an average household using {{ plan.vdo.condumtions }}kWh/yearly on a {{ plan.tarif }} tariff in the {{ plan.distributor_name }} network.</p>
+			<p class="plan-content">Estimated cost inc GST for an average household using {{ plan.vdo.consumption }}kWh/yearly on a {{ plan.tarif }} tariff in the {{ plan.distributor_name }} network.</p>
 		</div>
 		<v-expansion-panels>
 			<v-expansion-panel color="red">
@@ -45,13 +45,13 @@
 					<div class="d-flex">
 						<p class="font-weight-bold" style="font-size:14px; margin-bottom: 2%">Fees</p>
 					</div>
-					<div class="price-list">
+					<div v-if="plan.fees" class="price-list">
 						<div class="plan-text" style="font-size:14px">
 							Standard Connection Fee
 						</div>
-						<div class="plan-text">{{ plan.fees.standard_connection_fee }}</div>
+						<div  class="plan-text">{{ plan.fees.standard_connection_fee }}</div>
 					</div>
-					<div class="price-list">
+					<div v-if="plan.fees" class="price-list">
 						<div class="plan-text" style="font-size:14px">
 							Same Day Connection Fee
 						</div>
