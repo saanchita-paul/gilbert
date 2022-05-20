@@ -129,9 +129,9 @@ class SubmitOrderAPI extends BaseOriginAPI
             "contactPersonInfo.firstname" => 'required_with:contactPersonInfo',
             "contactPersonInfo.lastname" => 'required_with:contactPersonInfo',
             "contactPersonInfo.dob" => 'required_with:contactPersonInfo',
-            "contactPersonInfo.phone" => 'required_with:contactPersonInfo',
-            "contactPersonInfo.phonetype" => 'required_with:contactPersonInfo',
-            "contactPersonInfo.email" => 'required_with:contactPersonInfo|email:rfc,dns',
+            // "contactPersonInfo.phone" => 'required_with:contactPersonInfo',
+            // "contactPersonInfo.phonetype" => 'required_with:contactPersonInfo',
+            // "contactPersonInfo.email" => 'required_with:contactPersonInfo|email:rfc,dns',
             "contactPersonInfo.type" => 'required_with:contactPersonInfo|in:'. implode(',', array_keys(self::MAP_CONTACT_TYPE)),
         ]);
 
@@ -282,8 +282,9 @@ class SubmitOrderAPI extends BaseOriginAPI
                 "Title" => self::MAP_TITLE_TYPE[$this->data['contactPersonInfo']['title']],
                 "FirstName" => $this->data['contactPersonInfo']['firstname'],
                 "LastName" => $this->data['contactPersonInfo']['lastname'], 
-                "HomePhone" => "", 
-                "Mobile" => $this->data['contactPersonInfo']['phone'], 
+                // "HomePhone" => "", 
+                // "Mobile" => $this->data['contactPersonInfo']['phone'],
+                "Email" => $this->data['contactPersonInfo']['email'] ?? '', 
                 "DateOfBirth" => $this->data['contactPersonInfo']['dob'], 
                 "FunctionTypeID" => self::MAP_CONTACT_TYPE[$this->data['contactPersonInfo']['type']],
             ];

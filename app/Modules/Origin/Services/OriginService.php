@@ -131,9 +131,9 @@ class OriginService
                     'firstname' => $authorized->first_name,
                     'lastname' => $authorized->last_name,
                     'dob' => Carbon::parse($authorized->dob)->toDateTimeLocalString(),
-                    'phone' => $authorized->phone, // todo
-                    'phonetype' => 'mobile', // todo
-                    'email' => $authorized->email,
+                    // 'phone' => $authorized->phone, // todo
+                    // 'phonetype' => 'mobile', // todo
+                    'email' => $authorized->email ?? '',
                     'type' => $authorized->role == ConnectionApplicationSecondaryACC::FULLY_AUTHORISED_STATUS ? 'authorized' : 'joint',
                 ];
             }
