@@ -14,6 +14,10 @@ class CheckOrderAPI extends BaseOriginAPI
         '03' => 'hot water'
     ];
 
+    const STATUS_IN_PROGRESS = "In Progress";
+    const STATUS_COMPLETE = "Complete";
+    const STATUS_CANCELLED = "Cancelled";
+
     /**
      * @var string $partnerReferenceNumber
      */

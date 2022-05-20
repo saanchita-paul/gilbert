@@ -254,6 +254,8 @@ export default {
         }
     },
 
+    clearConcessionDetails: id => LeadApplicationAPI.clearConcessionDetails(id),
+
     getActiveServiceTab: () => Store.getters["application/activeServiceTab"],
     setActiveServiceTab: currentTab =>
         Store.commit("application/setActiveServiceTab", currentTab)

@@ -49,7 +49,7 @@ class SubmitOrderAPI extends BaseOriginAPI
     const MAP_CONTACT_TYPE = [
         "joint" => "1",
         "authorized" => "2",
-        "primary" => "6",
+        // "primary" => "6",
     ];
 
     const MAP_CONCESSION_TYPE = [
@@ -132,6 +132,7 @@ class SubmitOrderAPI extends BaseOriginAPI
             "contactPersonInfo.phone" => 'required_with:contactPersonInfo',
             "contactPersonInfo.phonetype" => 'required_with:contactPersonInfo',
             "contactPersonInfo.email" => 'required_with:contactPersonInfo|email:rfc,dns',
+            "contactPersonInfo.type" => 'required_with:contactPersonInfo|in:'. implode(',', array_keys(self::MAP_CONTACT_TYPE)),
         ]);
 
         if($validator->fails()){
@@ -263,18 +264,7 @@ class SubmitOrderAPI extends BaseOriginAPI
                         "Email" => $this->data['residentialCustomerInfo']['email'], 
                         "IsDefault" => true, 
                     ], 
-                ], 
-                // "ContactPersons" => [
-                //     [
-                //         "Title" => self::MAP_TITLE_TYPE[$this->data['residentialCustomerInfo']['title']],
-                //         "FirstName" => $this->data['residentialCustomerInfo']['firstname'], 
-                //         "LastName" => $this->data['residentialCustomerInfo']['lastname'],
-                //         "HomePhone" => "", 
-                //         "Mobile" => $this->data['residentialCustomerInfo']['phone'], 
-                //         "DateOfBirth" => $this->data['residentialCustomerInfo']['dob'],
-                //         "FunctionTypeID" => self::MAP_CONTACT_TYPE['primary'], 
-                //     ] 
-                // ],
+                ],
             ],
         ];
         
@@ -295,7 +285,7 @@ class SubmitOrderAPI extends BaseOriginAPI
                 "HomePhone" => "", 
                 "Mobile" => $this->data['contactPersonInfo']['phone'], 
                 "DateOfBirth" => $this->data['contactPersonInfo']['dob'], 
-                "FunctionTypeID" => self::MAP_CONTACT_TYPE['authorized'],
+                "FunctionTypeID" => self::MAP_CONTACT_TYPE[$this->data['contactPersonInfo']['type']],
             ];
         }
 

@@ -1087,6 +1087,7 @@
               @blur="
                 saveDraft('concession_card_type', person_details.concession_card_type)
               "
+              @change="clearConcessionDetails"
               :items="concessionCard"
               item-text="text"
               item-value="value"
@@ -1094,6 +1095,7 @@
               outlined
               dense
               hide-details="auto"
+              clearable
             >
             </v-select>
           </ValidationProvider>
@@ -1822,7 +1824,16 @@ export default {
         // this.expire_date = '04/' + '/' + dateMonth[0] + '/20' + dateMonth[1] ;
         this.expire_date = ApplicationMapper.mapMadecareDateToServer(this.indentification.medicare_expire_date) ;
       }
-    }
+    },
+    async clearConcessionDetails(value) {
+      if (value === null || value === undefined) {
+        this.person_details.concession_card_type = null;
+        this.person_details.concession_card_number = null;
+        this.person_details.concession_start_date = null;
+        this.person_details.concession_end_date = null;
+        await LeadApplicationService.clearConcessionDetails(this.lead.id);
+      }
+    },
   },
 
     computed: {
