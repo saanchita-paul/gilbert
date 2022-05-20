@@ -390,4 +390,15 @@ class ApplicationController extends Controller
             return $this->sendErrorResponse($exception);
         }
     }
+
+    public function clearConcession(Request $request, $id)
+    {
+        try {
+            $service = new ApplicationService();
+            $res = $service->clearConcession($id);
+            return response(['success' => true, 'message' => 'Concession cleared successfully']);
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
 }
