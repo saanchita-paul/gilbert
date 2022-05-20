@@ -13,21 +13,42 @@ export default {
         }
     },
 
+    // todo need to refactor Sazzad's code
     mapServerData(contact) {
         return {
             ...contact,
             dob: dayjs(contact.dob).format(DATE_FORMAT.DB_DATE),
-            role: contact.role === 1? 'Enquiry Only': contact.role === 2? 'Fully Authorised':contact.role === 3? 'Financially Responsible' : '',
-            identification_type: contact.identification_type === IDENTIFICATION.PASSPORT ?
-                'Passport' : contact.identification_type === IDENTIFICATION.MEDICARE ?
-                    'Medicare' : contact.identification_type === IDENTIFICATION.DL? 'Driver\'s License': '',
-            expire_date: contact.expire_date ? (contact.identification_type === IDENTIFICATION.MEDICARE ? dayjs(contact.expire_date).format('MM/YY') :
-                dayjs(contact.expire_date).format(DATE_FORMAT.DB_DATE)) : null,
-            card_title: contact.identification_type === IDENTIFICATION.PASSPORT ?
-                'Passport' : contact.identification_type === IDENTIFICATION.MEDICARE ?
-                    'Card' : contact.identification_type === IDENTIFICATION.DL? 'License': ''
-
-
-        }
+            role:
+                contact.role === 1
+                    ? "Enquiry Only"
+                    : contact.role === 2
+                    ? "Fully Authorised"
+                    : contact.role === 3
+                    ? "Financially Responsible"
+                    : contact.role === 4
+                    ? "Joint Account Holder"
+                    : "",
+            identification_type:
+                contact.identification_type === IDENTIFICATION.PASSPORT
+                    ? "Passport"
+                    : contact.identification_type === IDENTIFICATION.MEDICARE
+                    ? "Medicare"
+                    : contact.identification_type === IDENTIFICATION.DL
+                    ? "Driver's License"
+                    : "",
+            expire_date: contact.expire_date
+                ? contact.identification_type === IDENTIFICATION.MEDICARE
+                    ? dayjs(contact.expire_date).format("MM/YY")
+                    : dayjs(contact.expire_date).format(DATE_FORMAT.DB_DATE)
+                : null,
+            card_title:
+                contact.identification_type === IDENTIFICATION.PASSPORT
+                    ? "Passport"
+                    : contact.identification_type === IDENTIFICATION.MEDICARE
+                    ? "Card"
+                    : contact.identification_type === IDENTIFICATION.DL
+                    ? "License"
+                    : ""
+        };
     }
 }
