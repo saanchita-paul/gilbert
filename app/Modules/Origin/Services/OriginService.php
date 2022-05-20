@@ -124,7 +124,7 @@ class OriginService
                 ],
             ];
             
-            if(!empty($authorized->phone))
+            if(!empty($authorized->role))
             {
                 $data['contactPersonInfo'] = [
                     'title' => $authorized->title,
