@@ -507,4 +507,8 @@ export default {
             return error.data;
         }
     },
+
+    async clearConcessionDetails(id) {
+        await axios.post('/api/applications/'+id+'/clear-concession-details');
+    },
 }

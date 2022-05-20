@@ -495,4 +495,18 @@ class ApplicationService
         return $existingApplication->assigned_to;
     }
 
+    public function clearConcession($id)
+    {
+        $existLead = ConnectionApplication::findOrFail($id);
+
+        $existLead->update([
+            'concession_card_type' => null,
+            'concession_card_number' => null,
+            'concession_start_date' => null,
+            'concession_end_date' => null
+        ]);
+
+        return $existLead->refresh();
+    }
+
 }
