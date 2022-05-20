@@ -131,10 +131,10 @@ class OriginService
                     'firstname' => $authorized->first_name,
                     'lastname' => $authorized->last_name,
                     'dob' => Carbon::parse($authorized->dob)->toDateTimeLocalString(),
-                    'phone' => $authorized->phone, // todo
-                    'phonetype' => 'mobile', // todo
-                    'email' => $authorized->email,
-                    'type' => $authorized->role == ConnectionApplicationSecondaryACC::JOINT_ACCOUNT_HOLDER_STATUS ? 'joint' : 'authorized',
+                    // 'phone' => $authorized->phone, // todo
+                    // 'phonetype' => 'mobile', // todo
+                    'email' => $authorized->email ?? '',
+                    'type' => $authorized->role == ConnectionApplicationSecondaryACC::FULLY_AUTHORISED_STATUS ? 'authorized' : 'joint',
                 ];
             }
 
@@ -177,28 +177,6 @@ class OriginService
             throw new \Exception($exception->getMessage());
         }
     }
-
-    // public static function checkStatus(){
-    //     $services = ConnectionService::where('provider_name', ConnectionService::PROVIDER_ORIGIN)
-    //                 ->whereNotNull('lead_reference')
-    //                 ->where('status', '<>', ConnectionService::STATUS_CANCELLED)
-    //                 ->get();
-
-    //     foreach($services as $service){
-    //         $checkOrder = new CheckOrderAPI($service->lead_reference);
-    //         $response = $checkOrder->fetch();
-    //         if($response['orderStatus'] != CheckOrderAPI::STATUS_IN_PROGRESS){
-    //             $application = $service->connectionApplication;
-    //             if($response['orderStatus'] == CheckOrderAPI::STATUS_COMPLETE){
-    //                 $service->status = ConnectionService::STATUS_ACCEPTED;
-    //                 $application->status = ConnectionApplication::STATUS_ACCEPTED;
-    //             }
-    //             if($response['orderStatus'] == CheckOrderAPI::STATUS_CANCELLED){
-                    
-    //             }
-    //         }
-    //     }
-    // }
 
     public static function saveSubmittedStatus($serviceId, $reference)
     {
