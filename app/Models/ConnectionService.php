@@ -50,8 +50,6 @@ class ConnectionService extends Model
     const STATUS_NEEDS_MORE_INFO = 10;
     const AC_MANUAL_PROCESSING = 11;
     const STATUS_FAILED = 13;
-    const STATUS_CANCELLED = 14;
-
 
     // Do not use these statuese
     const WATER_STATUS_IN_PROGRESS = 7; // initial status
@@ -79,7 +77,6 @@ class ConnectionService extends Model
         self::STATUS_NEEDS_MORE_INFO => 'need_more_info',
         self::AC_MANUAL_PROCESSING => 'ac_manual_precessing',
         self::STATUS_FAILED => 'failed',
-        self::STATUS_CANCELLED => 'cancelled',
     ];
 
     public const ENERGY_AUSTRALIA_BASIC_PLAN = 'Basic - Home';
