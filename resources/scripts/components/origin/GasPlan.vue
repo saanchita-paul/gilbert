@@ -19,9 +19,9 @@
 					</div>
 					<div v-for="item in plan.supply_charge" :key="item.title"  class="price-list">
 						<div class="pr-12 plan-text" style="font-size:14px">
-							{{ item.price_description }} ({{ item.price_unit }})
+							{{ item.description }} ({{ item.unit }})
 						</div>
-						<div class="pl-14 plan-text">{{ item.gst_inc }}</div>
+						<div class="pl-14 plan-text">{{ item.gst_inc_round_2 }}</div>
 					</div>
 
 					<div class="d-flex">
@@ -32,9 +32,9 @@
 					</div>
 					<div v-for="item in plan.usage_charge" :key="item.title" class="price-list">
 						<div class="pr-15 plan-text" style="font-size:14px">
-							{{ item.price_description }} ({{ item.price_unit }})
+							{{ item.description }} ({{ item.unit }})
 						</div>
-						<div class="pl-16 plan-text">{{ item.gst_inc }}</div>
+						<div class="pl-16 plan-text">{{ item.gst_inc_round_2 }}</div>
 					</div>
 
 					<div class="d-flex">
@@ -44,7 +44,7 @@
 						<div class="plan-text" style="font-size:14px">
 							Standard Connection Fee
 						</div>
-						<div class="plan-text">$293.00</div>
+						<div class="plan-text">{{ plan.fees.standard_connection_fee }}</div>
 					</div>
 					<p class="plan-text mt-3">We’ve already included any discounts in the rates above. All prices are inclusive of GST.</p>
 					<p class="plan-text">Rates are rounded up to the nearest 2 decimal places where applicable.</p>

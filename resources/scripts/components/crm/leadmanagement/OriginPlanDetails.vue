@@ -14,14 +14,14 @@
                             </v-icon>
                         </div>
                     </div>
-					<!-- <div class="pl-6 pt-8">
+					<div class="pl-6 pt-8">
 						<p class="font-weight-bold" style="font-size:20px">{{ planDetails.title }}</p>
 						<p class="pb-4">{{ planDetails.short_des }}</p>
-					</div> -->
+					</div>
 
-					<ElectricityPlan :plan="planDetails.plans.electricity_plan"></ElectricityPlan>
+					<ElectricityPlan v-if="willShowELectricity" :plan="planDetails.plans.electricity"></ElectricityPlan>
 
-					<GasPlan :plan="planDetails.plans.gas_plan"></GasPlan>
+					<GasPlan v-if="willShowGas" :plan="planDetails.plans.gas"></GasPlan>
 
 					<div class="pl-8 pr-8">
 						<p class="font-weight-bold" style="font-size:14px">Included in your plan</p>
@@ -46,13 +46,26 @@
 						<p class="plan-text mt-0" style="font-size:14px;">{{ planDetails.green_options }}</p>
 						<hr class="mb-4" style="width:95%" />
 
-						<div v-for="item in planDetails.plans.electricity_plan.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
-                            <a :href="item.link" target="_blank">{{ item.offer_name }}</a>
+						<p class="plan-text mt-0" style="font-size:14px;">Your meter details will be verified with the distributor, and your charges may charge if any details are incorrect.
+							Origin will confirm these once they’ve identified your meter type and processed your application and will notify
+							you by letter about any such change.
+						</p>
+
+						<div v-if="willShowELectricity">
+							<span class="font-weight-bold mb-0" style="font-size:14px;">Electricity</span>
+							<div v-for="item in planDetails.plans.electricity.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
+								<a :href="item.file_url" target="_blank">{{ planDetails.plans.electricity.distributor_name }} - {{ item.offer_name }}</a>
+							</div>
 						</div>
-						<div v-for="item in planDetails.plans.gas_plan.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
-                            <a :href="item.link" target="_blank">{{ item.offer_name }}</a>
+						
+						<div v-if="willShowGas">
+							<span class="font-weight-bold mb-0" style="font-size:14px;">Gas</span>
+							<div v-for="item in planDetails.plans.gas.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
+								<a :href="item.file_url" target="_blank">{{ planDetails.plans.gas.distributor_name }} - {{ item.offer_name }}</a>
+							</div>
 						</div>
-						<div class="pb-2" style="font-size:14px;">
+						
+						<div class="pt-8 pb-2" style="font-size:14px;">
                             <a href="https://google.com" target="_blank">Terms and conditions</a>
 						</div>
 					</div>
@@ -69,6 +82,7 @@ import ElectricityPlan from "@scripts/components/origin/ElectricityPlan"
 import GasPlan from "@scripts/components/origin/GasPlan"
 import OriginService from "@scripts/modules/origin/services/OriginService"
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
 export default {
 	name: "OriginPlanDetails",
@@ -92,9 +106,6 @@ export default {
 			planDetails: null,
 		}
 	},
-	mounted() {
-		this.getOriginData();
-	},
 	computed: {
         getServiceText() {
             switch(this.serviceType) {
@@ -115,19 +126,77 @@ export default {
 		// gasPlan() {
         //     return this.planDetails.plans.find(plan => plan.title === "Gas");
 		// },
+		isBothEnergySubmit() {
+                return UtilityStoreService.getIsBothEnergySelected();
+        },
+		willShowELectricity() {
+			return this.planDetails?.plans?.electricity && (this.serviceType == "power" || this.isBothEnergySubmit);
+		},
+		willShowGas() {
+			return this.planDetails?.plans?.gas && (this.serviceType == "gas" || this.isBothEnergySubmit);
+		},
+		service_Type() {
+			switch(this.serviceType) {
+                case "power":
+                    return "electricity"
+                case "gas":
+                    return "gas"
+				default:
+					return null
+            }
+		},
+		state() {
+			switch(this.leadSummary.state) {
+				case "New South Wales":
+					return 'nsw'
+				case "Victoria": 
+					return 'vic'
+				case "Queensland": 
+					return 'qld'
+				case "South Australia": 
+					return 'sa'
+				case "Northern Territory": 
+					return 'nt'
+				case "Tasmania":
+					return 'tas'
+				case "Australian Capital Territory": 
+					return 'act'
+				case 'Western Australia': 
+					return 'wa'
+			}
+		},
+	},
+	watch: {
+		isBothEnergySubmit() {
+			this.getOriginData()
+		}
+	},
+	mounted() {
+		this.getOriginData();
 	},
 	methods: {
 		async getOriginData() {
-            let query = {
-                service_type: this.serviceType,
-                postcode: this.leadSummary.postcode,
-            }
+			let query = null;
+			if(this.isBothEnergySubmit) {
+				 query = {
+					state: this.state,
+					postcode: this.leadSummary.postcode,
+				}
+			} else {
+				 query = {
+					service_type: this.service_Type,
+					state: this.state,
+					postcode: this.leadSummary.postcode,
+				}
+			}
+            
 			this.planDetails = await OriginService.getOriginData(query);
-			console.log("Origin Plan Details Response", this.planDetails)
+			console.log("Origin Plan Details Response", this.planDetails.data)
 		},
         closeDialog(){
             this.$emit('toggleDialog')
         }
+
 	},
 }
 </script>
