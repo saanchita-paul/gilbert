@@ -636,7 +636,7 @@
                     <v-col cols="12">
                         <v-checkbox v-model="is_temp_condition" label='I have asked the applicant "Do you understand and agree with everything we have discussed today"?'></v-checkbox>
                     </v-col>
-                    <p v-if="isLifeSupportAndEA" class="life-support">Sorry you cannot submit connection application for this customer.</p>
+                    <p v-if="isLifeSupportAndEA" class="life-support">Life Support Applications cannot be submitted to EA</p>
                 </v-row>
             </section>
 

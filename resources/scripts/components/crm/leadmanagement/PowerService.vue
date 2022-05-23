@@ -4,8 +4,8 @@
             <p class="py-0 mb-1 title-text">
                 Status: <span v-if="this.status" class="value-text ml-1" :style="{color: this.status.color}">{{ this.status.text }}</span>
             </p>
-            <p class="py-0 mb-1 title-text" v-if="reasons">
-                Rejection reason: <span class="value-text ml-1">{{ reasons }}</span>
+            <p class="py-0 mb-1 title-text" v-if="reason && rejectedStatus">
+                Rejection reason: <span class="value-text ml-1">{{ reason }}</span>
             </p>
             <p class="py-0 mb-1 title-text">
                 Quote ID: <span class="value-text ml-1">{{ this.quoteReference }}</span>
@@ -173,6 +173,7 @@ import OriginPlanDetails from "@scripts/components/crm/leadmanagement/OriginPlan
 import SumoPlanDetails from "@scripts/components/crm/leadmanagement/SumoPlanDetails";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import {isNull } from "lodash-es";
+import {connectionServicesMapper} from "@scripts/data/ConnectionApplicationMapper";
 
 export default {
     //todo reduce emit functions
@@ -271,12 +272,19 @@ export default {
         quoteReference() {
             return this.service?.quote_reference ? this.service.quote_reference : '-'
         },
-        reasons() {
+         reason() {
             const reasons = this.service?.reasons;
-            if (Array.isArray(reasons)) {
-                return reasons.map(reason => reason.reason_text).join(', ');
+            if (Array.isArray(reasons) && reasons.length > 0) {
+                return reasons.sort((a, b) => {
+                    return new Date(b.created_at) - new Date(a.created_at);
+                })[0].reason_text;
+                // return reasons.map(reason => reason.reason_text).join(', ');
             }
             return null;
+        },
+        rejectedStatus() {
+            return UtilityStoreService.getPowerStatus() === connectionServicesMapper.STATUS_REJECTED
+            || UtilityStoreService.getPowerStatus() === connectionServicesMapper.STATUS_CANT_CONNECT;
         },
     },
     mounted() {
