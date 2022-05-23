@@ -86,15 +86,6 @@ class SumoService
         return json_decode($response->body(), true);
     }
 
-    public function getSumoUuid() {
-        
-        $sumoUuid = Str::uuid()->toString();
-        $application->sumo_uuid = $sumoUuid;
-
-        return $sumoUuid;
-
-
-    }
 
     private function getCustomerData(): array
     {
@@ -117,7 +108,7 @@ class SumoService
             'nmi' => $this->application->nmi,
             'proposedMovingDate' => $this->getMappedDate($this->application->moving_date),
             'prospectType' => $this->getMappedPropertyType($this->application->property_type),
-            'quoteNumber' => 'hood_'.$this->application->id,
+            'quoteNumber' => $this->application->sumo_uuid,
             'secondaryCustomerEmail' =>  $this->application->authorizedPerson?->email,
             'secondaryCustomerFirstName' => $this->application->authorizedPerson?->first_name,
             'secondaryCustomerLastName' => $this->application->authorizedPerson?->last_name,

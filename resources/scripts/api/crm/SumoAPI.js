@@ -8,10 +8,9 @@ const sumoAxios = axios.create({
 })
 
 export default {
-    qualifyAddress: async (address , leadId) => {
+    qualifyAddress: async (address , sumoUuid) => {
         try {
-            let meta = SumoMapper.mapAddress(address , leadId);
-            
+            let meta = SumoMapper.mapAddress(address , sumoUuid);
             const data = await sumoAxios.get('/qualification/address',{params: meta});
             return data.data;
         } catch (error) {
@@ -20,10 +19,10 @@ export default {
             throw error.data;
         }
     },
-    products: async (sumoInfo , service_type , agent_name, lead_id) => {
+    products: async (sumoInfo , service_type , agent_name, sumoUuid) => {
         try {
-
-            let meta   = SumoMapper.mapProduct(sumoInfo , service_type, agent_name, lead_id);
+            
+            let meta   = SumoMapper.mapProduct(sumoInfo , service_type, agent_name, sumoUuid);
             const data = await sumoAxios.get('/products',{params: meta});
             let a = SumoMapper.planMapper(data.data);
             return SumoMapper.planMapper(data.data);
@@ -32,5 +31,14 @@ export default {
             console.log(error)
             throw 'failed';
         }
-    }
+    },
+    getSumoUuid: async (id) => {
+        try {
+            const data = await axios.get('/api/sumo/generate-uuid/'+id);
+            return data.data;
+
+        } catch (error) {
+            return error.data;
+        }
+    },
 }
