@@ -1,8 +1,8 @@
 import axios from "axios";
 import OriginMapper from "@scripts/modules/origin/api/mappers/OriginMapper";
 
-// const ROOT = `${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api`;
-const ROOT = "https://demo.chatbot.hood.ai/hood-dashboard/api"
+const ROOT = `${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api`;
+// const ROOT = "https://demo.chatbot.hood.ai/hood-dashboard/api"
 
 export default {
     getOriginData: async query => {
