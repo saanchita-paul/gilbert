@@ -210,7 +210,8 @@ class ConnectionApplication extends Model
         'concession_start_date',
         'concession_end_date',
         'ea_go_neutral',
-        'additional_access_information'
+        'additional_access_information',
+        'is_power_life_support',
     ];
 
 

@@ -766,8 +766,8 @@
         </div>
         <div class="text-field">
           <v-checkbox
-              :rules="[v=>{ if(v && isAnyProviderEA) return `Sorry you cannot submit connection application for this customer`; else return true }]"
-              v-model="$attrs.value.lifeSupportInfo.value"
+              v-model="property_details.is_power_life_support"
+              @change="saveDraft('is_power_life_support', property_details.is_power_life_support)"
               :label="`Does anyone in the household require the use of power for life support?`">
           </v-checkbox>
         </div>
@@ -1591,6 +1591,7 @@ export default {
         is_gas_life_support: null,
         is_any_unrestrained_animal: null,
         additional_access_information: null,
+        is_power_life_support: null,
 
       },
       person_details: {
@@ -1737,8 +1738,7 @@ export default {
       this.property_details.is_gas_life_support = this.lead?.is_gas_life_support;
       this.property_details.is_any_unrestrained_animal = this.lead?.is_any_unrestrained_animal;
       this.property_details.additional_access_information = this.lead?.additional_access_information;
-
-
+      this.property_details.is_power_life_support = this.lead?.is_power_life_support;
     },
 
     saveDraft(field, value, isDate = false, identification = false) {
@@ -1881,12 +1881,7 @@ export default {
         },
         gasProvider() {
             return UtilityStoreService.getGasProvider();
-        },
-        isAnyProviderEA() {
-            return (this.isPowerTabFocused && this.powerProvider == 'ea')
-            || (this.isGasTabFocused && this.gasProvider == 'ea')
-            || (this.isBothEnergySubmit && (this.powerProvider == 'ea' || this.gasProvider == 'ea'));
-        },
+        }
     },
 
   watch: {

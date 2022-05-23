@@ -69,6 +69,7 @@ export default class ApplicationSummary {
     concession_end_date = null;
     ea_go_neutral = null;
     additional_access_information = null;
+    is_power_life_support = null;
     constructor(
         {
             id = null,
@@ -155,6 +156,7 @@ export default class ApplicationSummary {
             
             ea_go_neutral = null,
             additional_access_information = null,
+            is_power_life_support = null,
         }
     ) {
 
@@ -245,6 +247,7 @@ export default class ApplicationSummary {
         this.concession_end_date = concession_end_date        
         this.ea_go_neutral = ea_go_neutral
         this.additional_access_information = additional_access_information
+        this.is_power_life_support = is_power_life_support
     }
 
     mapStreetType(type){

@@ -636,6 +636,7 @@
                     <v-col cols="12">
                         <v-checkbox v-model="is_temp_condition" label='I have asked the applicant "Do you understand and agree with everything we have discussed today"?'></v-checkbox>
                     </v-col>
+                    <p v-if="isLifeSupportAndEA" class="life-support">Sorry you cannot submit connection application for this customer.</p>
                 </v-row>
             </section>
 
@@ -768,7 +769,7 @@ export default {
     },
     computed: {
         allOk() {
-           return this.is_temp_condition  && this.is_life_support;
+           return this.is_temp_condition  && this.is_life_support && !this.isLifeSupportAndEA;
         },
         selectedPlan() {
             
@@ -785,6 +786,10 @@ export default {
                 return this.data.identification.expire_date;
             }
         },
+        isLifeSupportAndEA() {
+            return this.data.selectedProvider === 'ea'
+               && (this.data.is_gas_life_support || this.data.is_power_life_support);
+        }
     },
     methods: {
         backToEdit() {
@@ -808,3 +813,10 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.life-support {
+    color: red;
+    margin-left: 18px;
+}
+</style>

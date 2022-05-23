@@ -115,6 +115,7 @@ class ApplicationResource extends JsonResource
             'ea_go_neutral' => $this->ea_go_neutral,
 
             'additional_access_information' => $this->additional_access_information,
+            'is_power_life_support' => $this->is_power_life_support,
         ];
     }
 
