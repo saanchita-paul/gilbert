@@ -23,6 +23,8 @@ class MapEnergyReport
         'ea_power_basic_plan' => 0,
         'sumo_power_freedom' => 0,
         'sumo_gas_freedom' => 0,
+        'origin_power_home_assist' => 0,
+        'origin_gas_home_assist' => 0,
     ];
 
     /**
@@ -85,6 +87,7 @@ class MapEnergyReport
             ConnectionApplication::PLAN_TYPE_TOTAL => $this->reportData["ea_power_total_plan"] += $data['total'],
             ConnectionApplication::PLAN_TYPE_NO_FRILLS => $this->reportData["ea_power_no_frills"] += $data['total'],
             'Sumo Freedom' => $this->reportData["sumo_power_freedom"] += $data['total'],
+            'origin_home_assist' => $this->reportData["origin_power_home_assist"] += $data['total'],
             default => null
         };
     }
@@ -101,6 +104,7 @@ class MapEnergyReport
             ConnectionApplication::PLAN_TYPE_TOTAL => $this->reportData["ea_gas_total_plan"] += $data['total'],
             ConnectionApplication::PLAN_TYPE_NO_FRILLS => $this->reportData["ea_gas_no_frills"] += $data['total'],
             'Sumo Freedom' => $this->reportData["sumo_gas_freedom"] += $data['total'],
+            'origin_home_assist' => $this->reportData["origin_gas_home_assist"] += $data['total'],
             default => null
         };
     }

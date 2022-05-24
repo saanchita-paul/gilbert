@@ -156,8 +156,8 @@ class ExportEnergySubmissionReport
             ->leftJoin('agent_profiles as ap', 'ap.id', '=', 'ca.created_by')
             ->leftJoin('offices as ofs', 'ofs.id', '=', 'ca.office_id')
             ->leftJoin('users as u', 'ca.submitted_by', '=', 'u.id')
-            ->leftJoin('suger_leads as sl', 'ca.id', '=', 'sl.connection_application_id')
-            ->where( function($q) use ($energyType) { $q->whereIn('cs.service_type', $energyType)->orWhereNull('cs.service_type'); } );
+            ->leftJoin('suger_leads as sl', 'ca.id', '=', 'sl.connection_application_id');
+            // ->where( function($q) use ($energyType) { $q->whereIn('cs.service_type', $energyType)->orWhereNull('cs.service_type'); } );
             // ->whereNotNull('cs.provider_name');
         $builder = $this->applyStatusFilter($builder);
         $tempBuilder = clone $builder;
