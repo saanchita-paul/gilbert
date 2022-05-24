@@ -1,5 +1,18 @@
 <template>
-	<div class="plan-details">
+	<div>
+		<div class="plan-title-header pt-4 pl-4 pr-4 pb-2 d-flex justify-space-between">
+			<div>
+				<p class="font-weight-bold mb-0" style="font-size:24px">Origin Home Assist </p>
+				<p style="font-size:20px">Electricity</p>
+			</div>
+			<div class="pt-4" style="cursor:pointer" @click="closeDialog">
+				<v-icon aria-hidden="false" color="white">
+					mdi-close
+				</v-icon>
+			</div>
+		</div>
+
+		<div class="plan-details">
 		<div class="d-flex">
 			<v-icon color="yellow" size="20" class="pb-4 pr-2">mdi-flash</v-icon>
 			<p class="font-weight-bold">Electricity</p>
@@ -64,6 +77,8 @@
 			</v-expansion-panel>
 		</v-expansion-panels>
 	</div>
+	</div>
+	
 </template>
 
 <script>
@@ -73,6 +88,11 @@ export default {
 			require: true,
         },
     },
+	methods : {
+		closeDialog(){
+            this.$emit('toggleDialog')
+        }
+	}
 }
 </script>
 
@@ -111,4 +131,9 @@ export default {
 	justify-content: space-between;
 	margin-bottom: 5px;
 }
+.plan-title-header {
+	background-color: #cd5b32;
+	color: white;
+}
+
 </style>
