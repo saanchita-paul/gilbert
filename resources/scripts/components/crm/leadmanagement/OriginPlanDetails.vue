@@ -3,21 +3,6 @@
 		<div fluid>
 			<v-container class="container-box">
 				<v-card class="card-section">
-                    <div class="plan-title-header pt-4 pl-4 pr-4 pb-2 d-flex justify-space-between">
-                        <div>
-                            <p class="font-weight-bold mb-0" style="font-size:24px">Origin Plan - {{ getPlanText }}</p>
-                            <p style="font-size:20px">{{ getServiceText }}</p>
-                        </div>
-                        <div class="pt-4" style="cursor:pointer" @click="closeDialog">
-                            <v-icon aria-hidden="false" color="white">
-                                mdi-close
-                            </v-icon>
-                        </div>
-                    </div>
-					<div class="pl-6 pt-8">
-						<p class="font-weight-bold" style="font-size:20px">{{ planDetails.title }}</p>
-						<p class="pb-4">{{ planDetails.short_des }}</p>
-					</div>
 
 					<ElectricityPlan v-if="willShowELectricity" :plan="planDetails.plans.electricity"></ElectricityPlan>
 
@@ -211,10 +196,7 @@ export default {
 	border-radius: 2%;
 	padding-bottom: 15px;
 }
-.plan-title-header {
-	background-color: #cd5b32;
-	color: white;
-}
+
 .plan-text {
 	color: #505050;
 	display: block;
