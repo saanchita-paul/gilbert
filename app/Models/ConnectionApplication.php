@@ -375,7 +375,7 @@ class ConnectionApplication extends Model
     const AFTER_HOUR_PAYEE_APPLICANT = 'applicant';
 
     const AVAILABLE_USER_TITLES = [
-        'mr', 'miss', 'dr', 'mrs', 'ms'
+        'Mr', 'Miss', 'Dr', 'Mrs', 'Ms'
     ];
 
     const ACCESS_ON_SITE = 'CUST ON SITE';
