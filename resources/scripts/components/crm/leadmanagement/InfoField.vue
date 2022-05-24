@@ -1567,7 +1567,7 @@ export default {
         street_name:"",
         street_name_only:"",
 
-        is_renovation_on: true,
+        is_renovation_on: false,
         has_electricity: true,
         inspection_time: null,
 

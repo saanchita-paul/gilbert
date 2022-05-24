@@ -89,6 +89,7 @@ class SubmitOrderAPI extends BaseOriginAPI
      * @return array|boolean=false
      */
     public function hasError(){
+        info('Attempt submit data to generate lead:', $this->data);
         $validator = Validator::make($this->data, [
             "connection" => 'in:' . implode(',', array_keys(self::MAP_CONNECTION_TYPE)),
             // "SaleDate" => 'required',
@@ -112,7 +113,7 @@ class SubmitOrderAPI extends BaseOriginAPI
             "addressInfo.addressInfo" => 'required|array',
             "addressInfo.addressId" => 'required',
             "residentialCustomerInfo" => 'required|array',
-            "residentialCustomerInfo.title" => 'required',
+            "residentialCustomerInfo.title" => 'required|in:'.implode(',', array_keys(self::MAP_TITLE_TYPE)),
             "residentialCustomerInfo.firstname" => 'required',
             "residentialCustomerInfo.lastname" => 'required',
             "residentialCustomerInfo.dob" => 'required',
@@ -125,7 +126,7 @@ class SubmitOrderAPI extends BaseOriginAPI
             "concessionCardInfo.startDate" => 'required_with:concessionCardInfo',
             "concessionCardInfo.endDate" => 'required_with:concessionCardInfo',
             "contactPersonInfo" => 'array',
-            "contactPersonInfo.title" => 'required_with:contactPersonInfo',
+            "contactPersonInfo.title" => 'required_with:contactPersonInfo|in:'.implode(',', array_keys(self::MAP_TITLE_TYPE)),
             "contactPersonInfo.firstname" => 'required_with:contactPersonInfo',
             "contactPersonInfo.lastname" => 'required_with:contactPersonInfo',
             "contactPersonInfo.dob" => 'required_with:contactPersonInfo',

@@ -45,7 +45,7 @@ class ApplicationResource extends JsonResource
             'connection_services' => $this->mapService($this->connectionServices),
             'identification' => $this->identification,
             'family_violance' => isset($this->family_violance) ? $this->family_violance : 3,
-            'is_renovation_on' => isset($this->is_renovation_on) ? $this->is_renovation_on : 1,
+            'is_renovation_on' => isset($this->is_renovation_on) ? $this->is_renovation_on : 0,
             'has_electricity' => isset($this->has_electricity) ? $this->has_electricity : 1,
             'inspection_time' => $this->inspection_time,
             'is_email_billing' => $this->is_email_billing == 0 ? null : $this->is_email_billing,

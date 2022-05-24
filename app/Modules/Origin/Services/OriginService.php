@@ -57,7 +57,7 @@ class OriginService
             ])->firstOrFail();
     
             $service_type = self::MAP_SERVICE_TYPE[$service->service_type];
-            $service_plan =  'Origin Advantage'; //todo make a mapper to map with actual plan type
+            $service_plan =  'Origin Basic'; //todo make a mapper to map with actual plan type
             $connection_date = $application->moving_date;
             $plan = OriginPlan::where([
                 ['division_id', $service_type],
@@ -98,7 +98,8 @@ class OriginService
                 'isEmailBilling' => !empty($application->is_email_billing) ? $application->is_email_billing == 1 : false,
                 "isAccessRequirement" => !empty($application->is_access_require) ? $application->is_access_require == 1 : !empty($application->additional_access_information), 
                 "isUnrestrainedAnimal" => !empty($application->is_any_unrestrained_animal) ? $application->is_any_unrestrained_animal == 1 : false, 
-                "isLifeSupport" => !empty($application->has_life_support) ? $application->has_life_support == 1 : false, 
+                // "isLifeSupport" => !empty($application->has_life_support) ? $application->has_life_support == 1 : false, 
+                "isLifeSupport" => !empty($application->is_power_life_support) ? $application->is_power_life_support == 1 : false, 
                 "isLifeSupportGas" => !empty($application->is_gas_life_support) ? $application->is_gas_life_support == 1 : false, 
                 "isElectricalWork" => !empty($application->is_renovation_on) ? $application->is_renovation_on == 1 : false, 
                 "isEnableMarketing" => !empty($application->is_email_marketing) ? $application->is_email_marketing == 1 : false,
