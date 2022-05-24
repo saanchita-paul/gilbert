@@ -27,7 +27,7 @@ export default class ApplicationSummary {
     country = 'Australia';
     postcode = null;
     address_text = null;
-    is_renovation_on = 1;
+    is_renovation_on = 0;
     unit_number = null;
     street_number = null;
     service_interests = ['gas', 'power', 'water', 'internet'];
@@ -90,7 +90,7 @@ export default class ApplicationSummary {
             is_email_billing = null, //is_email_billing
             tenancy_type = null,
             address_unit = null,
-            is_renovation_on = 1,
+            is_renovation_on = 0,
             street_address = null,
             city = null,
             state = null,
