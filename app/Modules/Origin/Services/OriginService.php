@@ -57,7 +57,7 @@ class OriginService
             ])->firstOrFail();
     
             $service_type = self::MAP_SERVICE_TYPE[$service->service_type];
-            $service_plan =  'Origin Advantage'; //todo make a mapper to map with actual plan type
+            $service_plan =  'Origin Basic'; //todo make a mapper to map with actual plan type
             $connection_date = $application->moving_date;
             $plan = OriginPlan::where([
                 ['division_id', $service_type],
