@@ -98,7 +98,6 @@ class SubmitOrderAPI extends BaseOriginAPI
             'isEmailBilling' => 'required|boolean',
             'isCorrespondenceEmail' => 'required|boolean', 
             "isAccessRequirement" => 'required|boolean',
-            "additionalAccessInformation" => 'in:'. implode(',', self::MAP_ADDITIONAL_INFO),
             "isUnrestrainedAnimal" => 'required|boolean', 
             "isLifeSupport" => 'required|boolean', 
             "isLifeSupportGas" => 'required|boolean', 
