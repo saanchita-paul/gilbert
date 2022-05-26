@@ -86,7 +86,17 @@ class StoreHoodLead
     private function saveApplication()
     {
         $office = Office::where('name', HoodLead::DEFAULT_OFFICE)->firstOrFail();
-        
+
+        $utm_source = null;
+        $form_details = $this->requestData['form-submissions'];
+        $page_url_array = array_filter($form_details, function ($item) {
+            return array_key_exists('page-url', $item);
+        });
+        if (count($page_url_array) > 0) {
+            $page_url = array_values($page_url_array)[0]['page-url'];
+            $utm_source = $this->getUtmSource($page_url);
+        }
+
         $app = new ConnectionApplication([
             'office_id' => $office->id,
             'agency_id' => $office->agency_id,
@@ -97,6 +107,7 @@ class StoreHoodLead
             'phone' => $this->requestData['properties']['phone']['value'] ?? null,
             'email' => $this->requestData['properties']['email']['value'] ?? null,
             'postcode' => $this->requestData['properties']['postcode']['value'] ?? null,
+            'utm_source' => $utm_source,
         ]);
         $app->save();
 
@@ -110,6 +121,21 @@ class StoreHoodLead
         }
 
         return $app->id;
+    }
+
+    /**
+     * @param string $page_url
+     * @return string|null
+     */
+    private function getUtmSource(string $page_url)
+    {
+        $utm_source = null;
+        $query_string = parse_url($page_url, PHP_URL_QUERY);
+        parse_str($query_string, $query_params);
+        if (array_key_exists('utm_source', $query_params)) {
+            $utm_source = $query_params['utm_source'];
+        }
+        return $utm_source;
     }
 
     /**
