@@ -106,7 +106,7 @@ class OriginService
             // 3. submit order
             $data = [
                 "connection" => 'move',
-                "connectionDate" => $connection_date,
+                "connectionDate" => $type == 'gas'? '2022-06-01' : $connection_date, // TEMPORARY
                 "isExistingCustomer" => false,
                 'isEmailBilling' => !empty($application->is_email_billing) ? $application->is_email_billing == 1 : false,
                 'isCorrespondenceEmail' => !empty($application->is_correspondence_email) ? $application->is_correspondence_email == 1 : false,
