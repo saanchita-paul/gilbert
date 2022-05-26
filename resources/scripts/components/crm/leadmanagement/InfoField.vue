@@ -668,7 +668,7 @@
         </div>
       </div>
 
-      <div class="crm-text-field" v-if="isStateNswQldSa">
+      <div class="crm-text-field" v-if="canShowAccessInfo">
         <div class="field-label">
           <span>Access requirement</span>
         </div>
@@ -696,7 +696,26 @@
         </div>
       </div>
 
-      <div class="crm-text-field" v-if="isStateNswQldSa">
+      <div class="crm-text-field" v-if="isStateWa && canShowAccessInfo">
+        <div class="field-label">
+          <span>Additional Access information</span>
+        </div>
+        <div class="text-field">
+          <ValidationProvider name="Additional Access information" v-slot="{ errors }">
+            <v-text-field
+              @blur="saveDraft('additional_access_information', property_details.additional_access_information)"
+              v-model="property_details.additional_access_information"
+              @input="updateLeads"
+              outlined
+              dense
+              :error-messages="errors[0]"
+              hide-details="auto"
+            ></v-text-field>
+          </ValidationProvider>
+        </div>
+      </div>
+
+      <div class="crm-text-field" v-else-if="canShowAccessInfo">
         <div class="field-label">
           <span>Additional Access information</span>
         </div>
@@ -704,7 +723,7 @@
           <ValidationProvider name="Additional Access informantion" v-slot="{ errors }">
             <v-select
               v-model="property_details.additional_access_information"
-              :items=" property_details.state == 'South Australia' ? additional_access_information_sa : additional_access_information"
+              :items="additionalAccessInformationItems"
               :error-messages="errors[0]"
               @input="updateLeads"
               outlined
@@ -1446,6 +1465,12 @@ export default {
           value: "Customer Consultation",
         }
       ],
+      additional_access_information_act: [
+        {
+          text: "Off Supply",
+          value: "off supply",
+        }
+      ],
       inspectionTimeQLD : [
         {
           text: "8AM - 1PM (ENERGYXP)",
@@ -1867,10 +1892,15 @@ export default {
         isStateNswQld() {
           return this.property_details.state == 'Queensland' || this.property_details.state == 'New South Wales';
         },
-        isStateNswQldSa() {
+        canShowAccessInfo() {
           return this.property_details.state == 'Queensland'
             || this.property_details.state == 'New South Wales'
-            || this.property_details.state == 'South Australia';
+            || this.property_details.state == 'South Australia'
+            || this.property_details.state == 'Western Australia'
+            || this.property_details.state == 'Australian Capital Territory';
+        },
+        isStateWa() {
+          return this.property_details.state == 'Western Australia'
         },
         isBothEnergySubmit() {
             return UtilityStoreService.getIsBothEnergySelected();
@@ -1881,6 +1911,16 @@ export default {
         },
         gasProvider() {
             return UtilityStoreService.getGasProvider();
+        },
+        additionalAccessInformationItems() {
+          switch(this.property_details.state) {
+            case 'South Australia':
+              return this.additional_access_information_sa;
+            case 'Australian Capital Territory':
+              return this.additional_access_information_act;
+            default:
+              return this.additional_access_information;
+          }
         }
     },
 
