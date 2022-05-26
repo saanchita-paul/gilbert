@@ -1,11 +1,13 @@
 export default {
+
     mapEnergyPlan(plans)
     {
+        const ROOT = `${process.env.MIX_BOT_ROOT_URL}/images/static/plan/`;
         return plans.map((data)=> {
-            return {...data, 
-                retailer : "Energy Australia",
-                power_sales : 345,
-                gas_sales : 400
+            return {...data,
+                power_sales : 'NA',
+                gas_sales : 'NA',
+                image: ROOT + '/' + name + '.png'
             }
         })
     }

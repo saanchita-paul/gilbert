@@ -1,51 +1,40 @@
 <template>
     <div v-if="isLoaded">
-        <!-- <draggable v-model="plans"  @start="drag=true" @end="shuffleData">
-            <div v-for="element in plans" :key="element.id">
-               {{element.id}}  {{element.key}}
-            </div>
-            <div slot="header">Plan List</div>
-        </draggable> -->
         <div class="card-body">
             <v-card class="mx-auto" max-width="1024" outlined>
                 <div class="header-text">
                     <h2>Chatbot</h2>
                     <h4>Retailer Plans</h4>
                     <p>Drag the plans to re-arrangee how we display plans in the chatbot</p>
-                    <!-- <v-data-table
-                        :headers="headers"
-                        :items="plans"
-                        class="elevation-1"
-                        hide-default-footer
-                        disable-pagination
-                    >
-                        <template v-slot:item.plan_name="{ item }"> {{ item.key }} </template>
-                        <template v-slot:item.retailer="{ item }"> {{ item.retailer }} </template>
-                        <template v-slot:item.power_sales="{ item }"> {{ item.power_sales }} </template>
-                        <template v-slot:item.gas_sales="{ item }"> {{ item.gas_sales }} </template>
-                    </v-data-table> -->
-                    <table>
-                        <thead>
-                            <tr>
-                                <th >Plan Name</th>
-                                <th >Retailer</th>
-                                <th >Power Sales</th>
-                                <th >Gas Sales</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <draggable v-model="plans"  @start="drag=true" @end="shuffleData">
-                            <div v-for="element in plans" :key="element.id">
-                                <tr>
-                                    <td class="data-style">{{element.key}}</td>
-                                    <td class="data-style">{{ element.retailer }}</td>
-                                    <td class="data-style">{{ element.power_sales }}</td>
-                                    <td class="data-style">{{ element.gas_sales }}</td>
-                                </tr>
-                            </div>
-                            </draggable>
-                        </tbody>
-                    </table>
+
+
+                  <v-row>
+
+                    <v-col cols="12">
+                        <v-row class="bordered-around">
+                          <v-col class="font-weight-bold bordered-right" >Card</v-col>
+                          <v-col class="font-weight-bold bordered-right"> Plan Name</v-col>
+                          <v-col class="font-weight-bold bordered-right"> Retailer</v-col>
+                          <v-col class="font-weight-bold bordered-right"> Power Sales </v-col>
+                          <v-col class="font-weight-bold" > Gas Salse</v-col>
+                        </v-row>
+                      <draggable v-model="plans"  @start="drag=true" @end="shuffleData">
+                      <v-row v-for="element in plans" :key="element.id"  class="bordered-around">
+                          <v-col class="bordered-right">
+                            <v-img style="max-width: 150px" :src="getCardImage(element.key)" ></v-img>
+                          </v-col>
+                          <v-col class="bordered-right">{{element.key}}</v-col>
+                          <v-col  class="bordered-right">{{ element.retailer }}</v-col>
+                          <v-col class="bordered-right">{{ element.power_sales }}</v-col>
+                          <v-col>{{ element.gas_sales }}</v-col>
+
+                      </v-row>
+                      </draggable>
+                    </v-col>
+
+                  </v-row>
+
+
                 </div>
             </v-card>
         </div>
@@ -77,6 +66,29 @@ export default {
         async loadEnergyPlan() {
             this.plans = await EnergyPlanService.getEnergyPlan()
             this.isLoaded = true;
+        },
+
+        getCardImage(key) {
+          let image = '';
+          switch (key)
+          {
+            case 'Total Plan (Home)':
+              image = 'total';
+              break;
+            case 'Basic - Home':
+              image = 'basic_home_new';
+              break;
+            case 'No Frills (Home)':
+              image = 'no_frill_new';
+              break;
+            case 'Origin':
+              image = 'origin_both';
+              break;
+            default:
+              image = 'basic_home_new';
+              break;
+          }
+          return 'https://devbot.hood.ai/images/static/plan/' + image +'.png';
         }
     }
 }
@@ -86,7 +98,7 @@ export default {
 
 .card-body {
     margin-top: 40px;
-    
+
 }
 .card-body .header-text {
     margin: 20px;
@@ -110,4 +122,13 @@ tr:nth-child(even) {
 .data-style {
     width: 20% !important;
 }
+
+.bordered-around {
+  border: 1px solid #dddddd
+}
+.bordered-right {
+  border-right: 1px solid #dddddd
+}
+
+
 </style>
