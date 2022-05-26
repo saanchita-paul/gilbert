@@ -696,7 +696,7 @@
         </div>
       </div>
 
-      <div class="crm-text-field" v-if="isStateWa && canShowAccessInfo">
+      <div class="crm-text-field" v-if="isStateVic && canShowAccessInfo">
         <div class="field-label">
           <span>Additional Access information</span>
         </div>
@@ -1896,11 +1896,11 @@ export default {
           return this.property_details.state == 'Queensland'
             || this.property_details.state == 'New South Wales'
             || this.property_details.state == 'South Australia'
-            || this.property_details.state == 'Western Australia'
+            || this.property_details.state == 'Victoria'
             || this.property_details.state == 'Australian Capital Territory';
         },
-        isStateWa() {
-          return this.property_details.state == 'Western Australia'
+        isStateVic() {
+          return this.property_details.state == 'Victoria'
         },
         isBothEnergySubmit() {
             return UtilityStoreService.getIsBothEnergySelected();
