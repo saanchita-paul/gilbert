@@ -329,7 +329,6 @@ import ServiceProvideres from "@scripts/data/ServiceProvideres";
 import SumoService from '@scripts/services/crm/SumoService';
 import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails"
 import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
-import Spinner from "@scripts/plugins/Spinner";
 import {formatDate} from "@scripts/services/others/DateService"
 
 export default {
@@ -542,6 +541,7 @@ export default {
         },
 
         planSelect(plan, isManual = false) {
+            console.log(plan, 'kaka');
             this.selectedPlanType = plan?.key;
             this.activeEaPlan = plan?.key;
             let newPlan = {

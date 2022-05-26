@@ -4,6 +4,7 @@ import GasRate from "@scripts/models/ea/GasRate";
 export const PLAN_TYPE_TOTAL = 'total_plan';
 export const PLAN_TYPE_NO_FRILLS = 'no_frills';
 export const PLAN_TYPE_BASIC_PLAN = 'basic_plan';
+export const PLAN_TYPE_FLEXI_PLAN = 'flexi_plan';
 
 export const SERVICE_TYPES = {
     GAS: 'gas',
@@ -24,6 +25,7 @@ export const EA_PLAN_TYPES = [
      {value: "Basic - Home", key: PLAN_TYPE_BASIC_PLAN},
      {value: "No Frills (Home)", key: PLAN_TYPE_NO_FRILLS},
      {value: "Total Plan (Home)", key: PLAN_TYPE_TOTAL},
+     {value: "Flexi Plan (Home)", key: PLAN_TYPE_FLEXI_PLAN},
 ]
 
 export default class EnergyPlan {
