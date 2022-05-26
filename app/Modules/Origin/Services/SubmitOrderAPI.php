@@ -95,7 +95,8 @@ class SubmitOrderAPI extends BaseOriginAPI
             // "SaleDate" => 'required',
             "connectionDate" => 'required',
             "isExistingCustomer" => 'required|boolean',
-            'isEmailBilling' => 'required|boolean', 
+            'isEmailBilling' => 'required|boolean',
+            'isCorrespondenceEmail' => 'required|boolean', 
             "isAccessRequirement" => 'required|boolean',
             "additionalAccessInformation" => 'in:'. implode(',', self::MAP_ADDITIONAL_INFO),
             "isUnrestrainedAnimal" => 'required|boolean', 
@@ -245,7 +246,7 @@ class SubmitOrderAPI extends BaseOriginAPI
             ],
             "CustomerInfo" => [
                 "Type" => $this->data['productInfo']['customerTypeID'] ?? "0001", 
-                "IsEmailPrefCorrChannel" => $this->data['isEmailBilling'], // check again
+                "IsEmailPrefCorrChannel" => $this->data['isCorrespondenceEmail'],
                 "EnableMarketingOffers" => $this->data['isEnableMarketing'],
                 "ResidentialCustomerInfo" => [
                     "Title" => self::MAP_TITLE_TYPE[$this->data['residentialCustomerInfo']['title']], 

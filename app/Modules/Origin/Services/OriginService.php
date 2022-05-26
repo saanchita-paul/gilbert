@@ -56,6 +56,19 @@ class OriginService
                 ['provider_name', 'origin']
             ])->firstOrFail();
     
+            // // TODO: separate production and non production get plans
+            // if(config('app.env') !== 'production'){
+            //     $service_type = self::MAP_SERVICE_TYPE[$service->service_type];
+            //     $service_plan =  'Origin Basic'; //todo make a mapper to map with actual plan type
+            //     $connection_date = $application->moving_date;
+            //     $plan = OriginPlan::where([
+            //         ['division_id', $service_type],
+            //         ['description', $service_plan]
+            //     ])->firstOrFail();
+            // } 
+            // else {
+            // }
+
             $service_type = self::MAP_SERVICE_TYPE[$service->service_type];
             $service_plan =  'Origin Basic'; //todo make a mapper to map with actual plan type
             $connection_date = $application->moving_date;
@@ -96,6 +109,7 @@ class OriginService
                 "connectionDate" => $connection_date,
                 "isExistingCustomer" => false,
                 'isEmailBilling' => !empty($application->is_email_billing) ? $application->is_email_billing == 1 : false,
+                'isCorrespondenceEmail' => !empty($application->is_correspondence_email) ? $application->is_correspondence_email == 1 : false,
                 "isAccessRequirement" => !empty($application->is_access_require) ? $application->is_access_require == 1 : !empty($application->additional_access_information), 
                 "isUnrestrainedAnimal" => !empty($application->is_any_unrestrained_animal) ? $application->is_any_unrestrained_animal == 1 : false, 
                 // "isLifeSupport" => !empty($application->has_life_support) ? $application->has_life_support == 1 : false, 
