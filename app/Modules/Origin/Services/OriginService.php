@@ -162,7 +162,7 @@ class OriginService
                 ];
             }
 
-            if(!empty($application->inspection_time)){
+            if($type == 'power' && !empty($application->inspection_time)){
                 $data["appointmentTime"] = $application->inspection_time;
             }
     
