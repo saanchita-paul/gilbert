@@ -16,30 +16,65 @@
             <v-btn class="ma-2 float-right" @click="saveNote">Submit Note</v-btn>
         </v-col>
 
-        <v-col cols="12" class="notes-container">
-                <v-timeline
-                    dense
-            >
-                    <v-timeline-item color="primary" small v-for="nt in notes" :color="getColor(nt.active)" :key="nt.id">
-                        <SubmittedNote v-if="nt.type == 'submitted_connection'" :note="nt"> </SubmittedNote>
-                        <InvalidNote v-else-if="nt.type == 'invalid_property_me_note'" :note="nt"> </InvalidNote>
-                        <Note v-else :note="nt"></Note>
-                    </v-timeline-item>
+        <!-- <v-col cols="12" class="notes-container">
+            <v-timeline dense>
+                <v-timeline-item color="primary" small v-for="nt in notes" :color="getColor(nt.active)" :key="nt.id">
+                    <SubmittedNote v-if="nt.type == 'submitted_connection'" :note="nt"> </SubmittedNote>
+                    <InvalidNote v-else-if="nt.type == 'invalid_property_me_note'" :note="nt"> </InvalidNote>
+                    <Note v-else :note="nt"></Note>
+                </v-timeline-item>
              </v-timeline>
         </v-col>
 
         <v-col cols="12" class="notes-container" v-if="leadSummary.tsa_call_histories.length">
             <div class="text-center font-weight-bold text-h5"> Call Log </div>
-                <v-timeline
-                    dense
-            >
+                <v-timeline dense>
                     <v-timeline-item color="primary" small v-for="(nt, index) in leadSummary.tsa_call_histories" :key="nt.attempt_id">
                         <div style="font-weight: bold;"> Attempt {{index+1}} </div>
                         <div> {{nt.attempt_initiated_timestamp}} </div>
                         <div> {{nt.attempt_outcome}} </div>
                     </v-timeline-item>
              </v-timeline>
-        </v-col>
+        </v-col> -->
+
+        <v-card color="basil">
+            <v-tabs
+            v-model="tab"
+            background-color="transparent"
+            color="basil"
+            grow
+            >
+                <v-tab v-for="item in items" :key="item">{{ item }}</v-tab>
+            </v-tabs>
+
+            <v-tabs-items v-model="tab">
+                <v-tab-item v-for="item in items" :key="item">
+                    
+                    <v-col v-if="item == 'Internal Notes'" cols="12" class="notes-container">
+                        <v-timeline dense>
+                                <v-timeline-item color="primary" small v-for="nt in notes" :color="getColor(nt.active)" :key="nt.id">
+                                    <SubmittedNote v-if="nt.type == 'submitted_connection'" :note="nt"> </SubmittedNote>
+                                    <InvalidNote v-else-if="nt.type == 'invalid_property_me_note'" :note="nt"> </InvalidNote>
+                                    <Note v-else :note="nt"></Note>
+                                </v-timeline-item>
+                        </v-timeline>
+                    </v-col>
+                    
+                    <div v-if="item == 'Call History'">
+                        <v-col cols="12" class="notes-container" v-if="leadSummary.tsa_call_histories.length">
+                            <v-timeline dense>
+                                <v-timeline-item color="primary" small v-for="(nt, index) in leadSummary.tsa_call_histories" :key="nt.attempt_id">
+                                    <div style="font-weight: bold;"> Attempt {{index+1}} </div>
+                                    <div> {{nt.attempt_initiated_timestamp}} </div>
+                                    <div> {{nt.attempt_outcome}} </div>
+                                </v-timeline-item>
+                        </v-timeline>
+                    </v-col>
+                    </div>
+                    
+                </v-tab-item>
+            </v-tabs-items>
+        </v-card>
     </v-row>
 </template>
 
@@ -65,6 +100,11 @@ export default {
               text:'',
               title: '',
           },
+          tab: null,
+          items: [
+              'Internal Notes', 'Call History'
+              ],
+        //   text: 'Lorem ipsm'
       }
     },
     methods: {
@@ -89,5 +129,13 @@ export default {
 .notes-container{
   max-height: 500px;
   overflow-y: auto;
+}
+/* Helper classes */
+.basil {
+  background-color: #FFFBE6 !important;
+}
+.basil--text {
+  color: #356859 !important;
+  font-family: 'Courier New', Courier, monospace
 }
 </style>
