@@ -80,17 +80,24 @@ class OriginService
             if($type == 'power'){
                 $validateBy = 'nmi';
                 $nmi_mirn = $application->nmi;
+                
+                if(empty($nmi_mirn)){
+                    throw new \Exception(sprintf('%s:FAILED (Skip due to missing nmi/mirn for service id %u)', self::class, $service->id));
+                }
+
+                ValidateCutOffTime::isValidElectricityConnection($connection_date, $nmi_mirn, $application->state);
             }
             else{
                 $validateBy = 'mirn';
                 $nmi_mirn = $application->mirn_checksum;
+
+                if(empty($nmi_mirn)){
+                    throw new \Exception(sprintf('%s:FAILED (Skip due to missing nmi/mirn for service id %u)', self::class, $service->id));
+                }
+
+                ValidateCutOffTime::isValidGasConnection($connection_date, $application->state);
             }
             
-            if(empty($nmi_mirn)){
-                // skip connection due to no nmi
-                throw new \Exception(sprintf('%s:FAILED (Skip due to missing nmi/mirn for service id %u)', self::class, $service->id));
-            }
-    
             // 1. validate address
             $validateAddress = new ValidateAddressAPI($validateBy, $nmi_mirn);
             $response = $validateAddress->fetch();
@@ -109,10 +116,10 @@ class OriginService
                 "connectionDate" => $connection_date,
                 "isExistingCustomer" => false,
                 'isEmailBilling' => !empty($application->is_email_billing) ? $application->is_email_billing == 1 : false,
-                'isCorrespondenceEmail' => !empty($application->is_correspondence_email) ? $application->is_correspondence_email == 1 : false,
+                'isCorrespondenceEmail' => !empty($application->is_email_billing) ? $application->is_email_billing == 1 : false,
+                // 'isCorrespondenceEmail' => !empty($application->is_correspondence_email) ? $application->is_correspondence_email == 1 : false,
                 "isAccessRequirement" => !empty($application->is_access_require) ? $application->is_access_require == 1 : !empty($application->additional_access_information), 
-                "isUnrestrainedAnimal" => !empty($application->is_any_unrestrained_animal) ? $application->is_any_unrestrained_animal == 1 : false, 
-                // "isLifeSupport" => !empty($application->has_life_support) ? $application->has_life_support == 1 : false, 
+                "isUnrestrainedAnimal" => !empty($application->is_any_unrestrained_animal) ? $application->is_any_unrestrained_animal == 1 : false,  
                 "isLifeSupport" => !empty($application->is_power_life_support) && $type == 'power' ? $application->is_power_life_support == 1 : false, 
                 "isLifeSupportGas" => !empty($application->is_gas_life_support) && $type == 'gas' ? $application->is_gas_life_support == 1 : false, 
                 "isElectricalWork" => !empty($application->is_renovation_on) ? $application->is_renovation_on == 1 : false, 
