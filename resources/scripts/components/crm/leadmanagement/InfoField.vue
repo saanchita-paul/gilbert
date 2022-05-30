@@ -1110,6 +1110,7 @@
               :items="concessionCard"
               item-text="text"
               item-value="value"
+              :disabled="isStateSA"
               :error-messages="errors[0]"
               outlined
               dense
@@ -1134,6 +1135,7 @@
             <v-text-field
               v-model="person_details.concession_card_number"
               @blur="saveDraft('concession_card_number', person_details.concession_card_number)"
+              :disabled="isStateSA"
               outlined
               dense
               hide-details="auto"
@@ -1177,6 +1179,7 @@
                     :error-messages="errors[0]"
                     hide-details="auto"
                     @change="updateConcessionStartDatePicker"
+                    :disabled="isStateSA"
                   >
                     <template slot="append">
                       <v-icon v-on="on">mdi-calendar</v-icon>
@@ -1225,6 +1228,7 @@
                     :error-messages="errors[0]"
                     hide-details="auto"
                     @change="updateConcessionEndDatePicker"
+                    :disabled="isStateSA"
                   >
                     <template slot="append">
                       <v-icon v-on="on">mdi-calendar</v-icon>
@@ -1921,7 +1925,10 @@ export default {
             default:
               return this.additional_access_information;
           }
-        }
+        },
+        isStateSA() {
+          return this.property_details.state == 'South Australia';
+        },
     },
 
   watch: {
@@ -2011,6 +2018,15 @@ export default {
         false,
         false,
       );
+    },
+
+    property_details: {
+      async handler() {
+        if( this.property_details.state === 'South Australia') {
+          this.clearConcessionDetails(null);
+        }
+      },
+      deep: true,
     },
 
   },
