@@ -237,7 +237,7 @@ class ValidateCutOffTime
         Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
 
         $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]);
-        $availableDate = Carbon::today()->shiftTimezone(self::MAP_STATE_TIMEZONE[$state])->addDays(3); 
+        $availableDate = Carbon::today()->shiftTimezone(self::MAP_STATE_TIMEZONE[$state])->addDays(5); 
 
         while($availableDate->isWeekend()){
             $availableDate->addDay();
