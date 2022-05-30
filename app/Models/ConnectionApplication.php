@@ -202,7 +202,10 @@ class ConnectionApplication extends Model
         'billing_is_address_complete',
         'is_water_manual_submitting',
         'ea_go_neutral',
-        'utm_source'
+        'hood_utm_source',
+        'hood_utm_content',
+        'hood_utm_medium',
+        'hood_hss_channel'
     ];
 
 

@@ -295,10 +295,6 @@ class HubspotContactService
                 "property" => "hood_real_estate_agency",
                 "value" => $this->application->getAgencyName(),
             ],
-            [
-                "property" => "hood_utm_source",
-                "value" => $this->application->utm_source,
-            ],
         ];
     }
 

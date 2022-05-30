@@ -87,14 +87,21 @@ class StoreHoodLead
     {
         $office = Office::where('name', HoodLead::DEFAULT_OFFICE)->firstOrFail();
 
-        $utm_source = null;
+        $hood_utm_source = null;
+        $hood_utm_content = null;
+        $hood_utm_medium = null;
+        $hood_hss_channel = null;
+
         $form_details = $this->requestData['form-submissions'];
         $page_url_array = array_filter($form_details, function ($item) {
             return array_key_exists('page-url', $item);
         });
         if (count($page_url_array) > 0) {
             $page_url = array_values($page_url_array)[0]['page-url'];
-            $utm_source = $this->getUtmSource($page_url);
+            $hood_utm_source = $this->getUtmSource($page_url);
+            $hood_utm_content = $this->getUtmContent($page_url);
+            $hood_utm_medium = $this->getUtmMedium($page_url);
+            $hood_hss_channel = $this->getHssChannel($page_url);
         }
 
         $app = new ConnectionApplication([
@@ -107,7 +114,10 @@ class StoreHoodLead
             'phone' => $this->requestData['properties']['phone']['value'] ?? null,
             'email' => $this->requestData['properties']['email']['value'] ?? null,
             'postcode' => $this->requestData['properties']['postcode']['value'] ?? null,
-            'utm_source' => $utm_source,
+            'hood_utm_source' => $hood_utm_source,
+            'hood_utm_content' => $hood_utm_content,
+            'hood_utm_medium' => $hood_utm_medium,
+            'hood_hss_channel' => $hood_hss_channel,
         ]);
         $app->save();
 
@@ -136,6 +146,51 @@ class StoreHoodLead
             $utm_source = $query_params['utm_source'];
         }
         return $utm_source;
+    }
+
+    /**
+     * @param string $page_url
+     * @return string|null
+     */
+    private function getUtmContent(string $page_url)
+    {
+        $utm_content = null;
+        $query_string = parse_url($page_url, PHP_URL_QUERY);
+        parse_str($query_string, $query_params);
+        if (array_key_exists('utm_content', $query_params)) {
+            $utm_content = $query_params['utm_content'];
+        }
+        return $utm_content;
+    }
+
+    /**
+     * @param string $page_url
+     * @return string|null
+     */
+    private function getUtmMedium(string $page_url)
+    {
+        $utm_medium = null;
+        $query_string = parse_url($page_url, PHP_URL_QUERY);
+        parse_str($query_string, $query_params);
+        if (array_key_exists('utm_medium', $query_params)) {
+            $utm_medium = $query_params['utm_medium'];
+        }
+        return $utm_medium;
+    }
+
+    /**
+     * @param string $page_url
+     * @return string|null
+     */
+    private function getHssChannel(string $page_url)
+    {
+        $hss_channel = null;
+        $query_string = parse_url($page_url, PHP_URL_QUERY);
+        parse_str($query_string, $query_params);
+        if (array_key_exists('hss_channel', $query_params)) {
+            $hss_channel = $query_params['hss_channel'];
+        }
+        return $hss_channel;
     }
 
     /**
