@@ -453,6 +453,9 @@ export default {
     watch: {
         'leadSummary.service_interests'() {
             this.loadPlan();
+        },
+        'leadSummary.postcode'() {
+            this.loadPlan();
         }
     },
     mounted() {
@@ -541,7 +544,6 @@ export default {
         },
 
         planSelect(plan, isManual = false) {
-            console.log(plan, 'kaka');
             this.selectedPlanType = plan?.key;
             this.activeEaPlan = plan?.key;
             let newPlan = {

@@ -83,10 +83,18 @@ export default class EnergyPlan {
         shoulder_c_kwh: null,
         off_peak_c_kwh: null,
     };
+    discounts = {
+        electricity: null,
+        gas: null
+    }
     state_distributor_discount= {
         electricity: null,
         elec_credit_amount: null,
         gas: null,
         gas_credit_amount: null
     };
+
 }
+
+export const isTopEAPlan = (plan) => [PLAN_TYPE_TOTAL, PLAN_TYPE_FLEXI_PLAN].includes(plan)
+
