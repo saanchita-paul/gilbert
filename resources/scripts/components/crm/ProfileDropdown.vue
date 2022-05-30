@@ -23,7 +23,7 @@
                 <v-icon >mdi-dock-top</v-icon><a target=”_blank” href="https://www.hoodrewards.ai/">View MyRewards Points</a>
             </div>
             <div class="button-style" block>
-                <v-icon >mdi-cart</v-icon> <a target=”_blank” href="https://www.google.com/">Shop Using MyRewards Points</a>
+                <v-icon >mdi-cart</v-icon> <a target=”_blank” href="">Shop Using MyRewards Points</a>
             </div>
             <!-- <div class="pa-4">
                 <v-btn outlined block @click="editProfile">
