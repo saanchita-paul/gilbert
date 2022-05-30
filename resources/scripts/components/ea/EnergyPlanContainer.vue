@@ -237,9 +237,12 @@
                         $ {{ planDetails.connection_fees.electricity }} <small>(Incl. GST)</small>
                         <!-- <v-icon small> mdi mdi-alert-circle</v-icon> -->
                     </p>
-                    <p class="mb-2"><span class="font-weight-bold">Rates: </span> {{ planDetails.plan_details.rates }}
+                    <p class="mb-2" v-if="plan !== 'flexi_plan'"><span class="font-weight-bold">Rates: </span> {{ planDetails.plan_details.rates }}
                         <!-- <v-icon small> mdi mdi-alert-circle</v-icon> -->
                     </p>
+        <p class="mb-2" v-if="plan === 'flexi_plan'"><span class="font-weight-bold">Rates: </span> {{ 'Variable' }}
+            <!-- <v-icon small> mdi mdi-alert-circle</v-icon> -->
+        </p>
                     <p class="mb-2"><span class="font-weight-bold">Late Payment Fee:</span>
                         {{ planDetails.plan_details.late_payment_fee }}
                         <!-- <v-icon small> mdi mdi-alert-circle</v-icon> -->
