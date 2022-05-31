@@ -78,12 +78,12 @@ class ExportReaCorporateReport
         $agencyName = Agency::find($this->agencyId)->name;
 
         $data = [
-            'officeName' => $agencyName,
+            'agencyName' => $agencyName,
             'startDate' => $this->stringStartDate,
             'endDate' => $this->stringEndDate,
             'report' => $this->corporateReport
         ];
-        $pdf = PDF::loadView('pdf.report_office', $data);
+        $pdf = PDF::loadView('pdf.report_corporate', $data);
         return $pdf->inline();
 
     }
