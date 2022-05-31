@@ -118,8 +118,8 @@ class PostSalesService
             'postcode'=> $this->connection->postcode,
         ];
 
-
         $billDeliveryMethod = $this->connection->is_email_billing?'EMAIL':'POST';
+
         $lifeSupport = $this->connection->has_life_support?true:false;
 
         $eaData = [

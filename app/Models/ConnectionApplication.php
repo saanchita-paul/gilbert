@@ -205,7 +205,8 @@ class ConnectionApplication extends Model
         'hood_utm_source',
         'hood_utm_content',
         'hood_utm_medium',
-        'hood_hss_channel'
+        'hood_hss_channel',
+        'sumo_uuid'
     ];
 
 
