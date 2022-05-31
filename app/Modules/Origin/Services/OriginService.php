@@ -7,6 +7,7 @@ use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Log;
 use App\Models\ConnectionApplication;
+use App\Services\Address\AddressModel;
 
 use App\Models\ConnectionService;
 use App\Models\OriginPlan;
@@ -145,6 +146,19 @@ class OriginService
                     'email' => $application->email,
                 ],
             ];
+
+            if($application->is_billing_same != 1){
+                $data['correspondenceAddress'] = [
+                    'roomNo' => $application->billing_unit_number ?? '',
+                    'roomType' => $application->billing_unit_number ? 'U' : '', // todo: create new column for unit/room type
+                    'houseNo' => $application->billing_street_number ?? '',
+                    'street' => $application->billing_street_name ?? '',
+                    'streetType' => $application->billing_street_type ?? '',
+                    'city' => $application->billing_city ?? '',
+                    'postcode' => $application->billing_postcode ?? '',
+                    'region' => $application->billing_state ? strtoupper(AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($application->billing_state)]) : '',
+                ];
+            }
             
             if(!empty($authorized->role))
             {
