@@ -329,7 +329,6 @@ import ServiceProvideres from "@scripts/data/ServiceProvideres";
 import SumoService from '@scripts/services/crm/SumoService';
 import SoleDetails from "@scripts/components/crm/leadmanagement/SoleDetails"
 import SumoPlanDetails from "@scripts/modules/sumo/models/SumoPlanDetails";
-import Spinner from "@scripts/plugins/Spinner";
 import {formatDate} from "@scripts/services/others/DateService"
 
 export default {
@@ -453,6 +452,9 @@ export default {
     },
     watch: {
         'leadSummary.service_interests'() {
+            this.loadPlan();
+        },
+        'leadSummary.postcode'() {
             this.loadPlan();
         }
     },
