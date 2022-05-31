@@ -14,6 +14,8 @@ use App\Models\User;
 use App\Services\RolePermission;
 use JetBrains\PhpStorm\ArrayShape;
 use TSA\Services\TsaSendAppliationService;
+use Illuminate\Support\Str;
+
 
 class ApplicationService
 {
@@ -521,6 +523,22 @@ class ApplicationService
     {
         $existingApplication = ConnectionApplication::find($id);
         return $existingApplication->assigned_to;
+    }
+
+    /** generate the uuid and save it to ConnectionApplication Table
+     *
+     * @param int $applicationId
+     * @return string $sumoUuid
+     */
+    public function generateSumoUuid($applicationId)
+    {
+        $sumoUuid = Str::uuid()->toString();
+
+        $existingApplication = ConnectionApplication::find($applicationId);
+        $existingApplication->sumo_uuid = $sumoUuid;
+        $existingApplication->save();
+
+        return $sumoUuid;
     }
 
 }

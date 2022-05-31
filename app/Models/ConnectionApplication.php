@@ -201,7 +201,12 @@ class ConnectionApplication extends Model
         'is_address_complete',
         'billing_is_address_complete',
         'is_water_manual_submitting',
-        'ea_go_neutral'
+        'ea_go_neutral',
+        'hood_utm_source',
+        'hood_utm_content',
+        'hood_utm_medium',
+        'hood_hss_channel',
+        'sumo_uuid'
     ];
 
 
