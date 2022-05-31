@@ -17,6 +17,9 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 
+use Illuminate\Support\Str;
+
+
 class SumoService
 {
     private array|Collection|ConnectionApplication|Model $application;
@@ -83,6 +86,7 @@ class SumoService
         return json_decode($response->body(), true);
     }
 
+
     private function getCustomerData(): array
     {
         return array_merge($this->getIdDetails(), [
@@ -104,7 +108,7 @@ class SumoService
             'nmi' => $this->application->nmi,
             'proposedMovingDate' => $this->getMappedDate($this->application->moving_date),
             'prospectType' => $this->getMappedPropertyType($this->application->property_type),
-            'quoteNumber' => 'hood_'.$this->application->id,
+            'quoteNumber' => $this->application->sumo_uuid,
             'secondaryCustomerEmail' =>  $this->application->authorizedPerson?->email,
             'secondaryCustomerFirstName' => $this->application->authorizedPerson?->first_name,
             'secondaryCustomerLastName' => $this->application->authorizedPerson?->last_name,
