@@ -118,9 +118,8 @@ class PostSalesService
             'postcode'=> $this->connection->postcode,
         ];
 
-
-        //TODO need to fix here HCO-847
         $billDeliveryMethod = $this->connection->is_email_billing?'EMAIL':'POST';
+
         $lifeSupport = $this->connection->has_life_support?true:false;
 
         $eaData = [
