@@ -134,6 +134,8 @@ class SubmitOrderAPI extends BaseOriginAPI
             // "contactPersonInfo.phonetype" => 'required_with:contactPersonInfo',
             // "contactPersonInfo.email" => 'required_with:contactPersonInfo|email:rfc,dns',
             "contactPersonInfo.type" => 'required_with:contactPersonInfo|in:'. implode(',', array_keys(self::MAP_CONTACT_TYPE)),
+            "correspondenceAddress" => 'array',
+            "correspondenceAddress.region" => 'required_with:correspondenceAddress',
         ]);
 
         if($validator->fails()){
@@ -289,6 +291,25 @@ class SubmitOrderAPI extends BaseOriginAPI
                 "DateOfBirth" => $this->data['contactPersonInfo']['dob'], 
                 "FunctionTypeID" => self::MAP_CONTACT_TYPE[$this->data['contactPersonInfo']['type']],
             ];
+        }
+
+        if(isset($this->data['correspondenceAddress'])){
+            $corAddr = [
+              'RoomNo' => $this->data['correspondenceAddress']['roomNo'],
+              'RoomType' => $this->data['correspondenceAddress']['roomType'],
+              'HouseNo' => $this->data['correspondenceAddress']['houseNo'],
+              'Street' => $this->data['correspondenceAddress']['street'],
+              'StreetType' => $this->data['correspondenceAddress']['streetType'],
+              'City' => $this->data['correspondenceAddress']['city'],
+              'PostalCode' => $this->data['correspondenceAddress']['postcode'],
+              'Region' => $this->data['correspondenceAddress']['region'],
+              'CountryID' => 'AU',  
+            ];
+
+            $formatted['CustomerInfo']['CorrespondenceAddress'] = array_filter($corAddr, function($value) { return !empty($value); });
+            for($i=0; $i < count($formatted['OrderItems']); $i++){
+                $formatted['OrderItems'][$i]['UseBPCommunicationAddress'] = true;
+            }
         }
 
         return $formatted;
