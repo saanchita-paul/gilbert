@@ -6,6 +6,7 @@ use App\Modules\Reporting\Services\SetDateRage;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\Office;
+use App\Models\Agency;
 use PDF;
 use Carbon\Carbon;
 
@@ -74,16 +75,16 @@ class ExportReaCorporateReport
     {
         Log::info('REA Corporate report', $this->corporateReport);
         
-        // $officeName = Office::find($this->officeId)->name;
+        $agencyName = Agency::find($this->agencyId)->name;
 
-        // $data = [
-        //     'officeName' => $officeName,
-        //     'startDate' => $this->stringStartDate,
-        //     'endDate' => $this->stringEndDate,
-        //     'report' => $this->corporateReport
-        // ];
-        // $pdf = PDF::loadView('pdf.report_office', $data);
-        // return $pdf->inline();
+        $data = [
+            'officeName' => $agencyName,
+            'startDate' => $this->stringStartDate,
+            'endDate' => $this->stringEndDate,
+            'report' => $this->corporateReport
+        ];
+        $pdf = PDF::loadView('pdf.report_office', $data);
+        return $pdf->inline();
 
     }
 
@@ -97,7 +98,11 @@ class ExportReaCorporateReport
             'successful_water_connections' => 0,
             'awaiting_confirmation' => 0,
             'cancelled_application' => 0,
-            'conversion_rate' => 0
+            'conversion_rate' => 0,
+            'electricityCount' => 0,
+            'gasCount' => 0,
+            'waterCount' => 0,
+            'internetCount' => 0
         ];
 
 
@@ -126,6 +131,10 @@ class ExportReaCorporateReport
             $totalCount['awaiting_confirmation'] += $count['awaiting_confirmation'];
             $totalCount['cancelled_application'] += $count['cancelled_application'];
             $totalCount['conversion_rate'] = $this->getConversionRate($totalCount['total_applications_created'], $totalCount['applications_with_minimum_submitted'], $totalCount['awaiting_confirmation']);
+            $totalCount['electricityCount'] += $count['electricityCount'];
+            $totalCount['gasCount'] += $count['gasCount'];
+            $totalCount['waterCount'] += $count['waterCount'];
+            $totalCount['internetCount'] += $count['internetCount'];
         }
         
         $offices = Office::selectRaw("id, name")
