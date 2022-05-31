@@ -41,4 +41,17 @@ class ReaExtractsReportController extends Controller
             return  response(['status' => false, 'message' => $exception->getMessage()], 500);
         }
     }
+
+    public function getReaCorporateReport(Request $request)
+    {
+        try {
+            return (new ExportReaCorporateReport(
+                $request->get('agencyId'),
+                $request->get('start'),
+                $request->get('end')
+            ))->run();
+        } catch (\Exception $exception) {
+            return  response(['status' => false, 'message' => $exception->getMessage()], 500);
+        }
+    }
 }
