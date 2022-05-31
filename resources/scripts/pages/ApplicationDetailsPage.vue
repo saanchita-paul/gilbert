@@ -226,7 +226,8 @@ export default {
             this.payload = { ...this.lead.property_details,
                 ...this.lead.person_details,
                 selectedProvider: (submitType === 'energy' || submitType === 'power') ? this.powerProvider : this.gasProvider,
-                selectedPlan: (submitType === 'energy' || submitType === 'power') ? this.powerPlan : this.gasPlan,
+                selectedPowerPlan: this.powerPlan,
+                selectedGasPlan: this.gasPlan,
                 submitType,
                 identification: this.lead.identification,
             };

@@ -358,16 +358,30 @@
                                     ></v-text-field>
                                 </div>
                             </div>
-                            <div class="crm-text-field">
+                            <div v-if="data.submitType === 'energy' || data.submitType === 'power'" class="crm-text-field">
                                 <div class="field-label">
-                                    <span>Plan</span>
+                                    <span>Power Plan</span>
                                 </div>
                                 <div class="text-field">
                                     <v-text-field
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    :value="selectedPlan"
+                                    :value="selectedPowerPlan"
+                                    readonly
+                                ></v-text-field>
+                                </div>
+                            </div>
+                            <div v-if="data.submitType === 'energy' || data.submitType === 'gas'" class="crm-text-field">
+                                <div class="field-label">
+                                    <span>Gas Plan</span>
+                                </div>
+                                <div class="text-field">
+                                    <v-text-field
+                                    outlined
+                                    dense
+                                    hide-details="auto"
+                                    :value="selectedGasPlan"
                                     readonly
                                 ></v-text-field>
                                 </div>
@@ -771,9 +785,11 @@ export default {
         allOk() {
            return this.is_temp_condition  && this.is_life_support && !this.isLifeSupportAndEA;
         },
-        selectedPlan() {
-            
-            return this.data.selectedPlan = LeadApplicationService.mapPlan(this.data.selectedPlan);
+        selectedPowerPlan() {
+            return LeadApplicationService.mapPlan(this.data.selectedPowerPlan);
+        },
+        selectedGasPlan() {
+            return LeadApplicationService.mapPlan(this.data.selectedGasPlan);
         },
         getProvider() {
             let providerData = this.data.selectedProvider;

@@ -237,7 +237,7 @@ export default {
             },
             set(value) {
                 this.isBothEnergySubmit === true ?
-                    UtilityStoreService.setBothPlan(value)
+                    UtilityStoreService.setBothPlan(value, this.selectedProvider)
                     : UtilityStoreService.setPowerPlan(value); 
             }
         },
@@ -327,7 +327,10 @@ export default {
             const originProvider = this.providers.find(pl => {
                 return pl.name === 'origin';
             });
-            this.originPlans = originProvider.plans;
+
+            this.originPlans = originProvider.plans.filter(plan => {
+                return plan.type === 'power';
+            });
             console.log("originPlans", this.originPlans);
         },
         async fetchSumoPlans(name) {
@@ -413,7 +416,7 @@ export default {
         changeIsBothEnergySubmit(value) {
             if(value) {
                 UtilityStoreService.setBothProvider(this.selectedProvider);
-                UtilityStoreService.setBothPlan(this.selectedPlan);
+                UtilityStoreService.setBothPlan(this.selectedPlan, this.selectedProvider);
 
                 if(this.selectedProvider && this.selectedPlan) {
                     let payload = {

@@ -19,6 +19,13 @@ export default [
                 title:'Origin Home Assist',
                 name: 'origin_home_assist',
                 bgColor: 'red',
+                type: 'power',
+            }),
+            new ProviderPlan({
+                title:'Origin Advantage Variable',
+                name: 'origin_advantage_variable',
+                bgColor: 'red',
+                type: 'gas',
             })
         ],
         logo: '/assets/images/logo/providers/origin_new.png'
