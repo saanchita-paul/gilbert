@@ -44,32 +44,32 @@
             </div>
             <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;"> 
                 <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Number of Applications Submitted</div>
-                <div style="display: inline; float: left; color: #620088; font-weight: bold;">948</div>
+                <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['total_applications_created']}}</div>
                 <div style="clear: both;"></div>
             </div>
             <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;"> 
                 <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Number of Applications with atleast one service connected (other than water)</div>
-                <div style="display: inline; float: left; color: #620088; font-weight: bold;">948</div>
+                <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['applications_with_minimum_submitted']}}</div>
                 <div style="clear: both;"></div>
             </div>
             <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;"> 
                 <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Number of successful water connections</div>
-                <div style="display: inline; float: left; color: #620088; font-weight: bold;">948</div>
+                <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['successful_water_connections']}}</div>
                 <div style="clear: both;"></div>
             </div>
             <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;"> 
                 <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Awaiting Confirmation</div>
-                <div style="display: inline; float: left; color: #620088; font-weight: bold;">948</div>
+                <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['awaiting_confirmation']}}</div>
                 <div style="clear: both;"></div>
             </div>
             <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;"> 
                 <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Cancelled Applications</div>
-                <div style="display: inline; float: left; color: #620088; font-weight: bold;">948</div>
+                <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['cancelled_application']}}</div>
                 <div style="clear: both;"></div>
             </div>
             <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;"> 
                 <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Conversion Rate (Succesful Elec Sub/Apps)</div>
-                <div style="display: inline; float: left; color: #620088; font-weight: bold;">94%</div>
+                <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['conversion_rate']}}</div>
                 <div style="clear: both;"></div>
             </div>
     </div>
@@ -153,77 +153,78 @@
             </div>
 
             <!-- Dynamic data section -->
+            @foreach ($report['detailedCount'] as $corporate)
             <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%;"> 
                 
                 <div style="width: 16%; height: 30px; padding-left: 14px; float: left; border: 1px solid gray;">
                     <div style="color: black; text-align: left; white-space: nowrap; margin-top: 6px; margin-left: -6px;">
-                        South Yarra
+                    {{ $individual['office_name']}}
                     </div>
                 </div>
 
                 <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray;">
                     <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                       0
+                    {{ $individual['total_applications_created']}}
                     </div>
                 </div>
 
                 <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
                     <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                        0
+                    {{ $individual['electricityCount']}}
                     </div>
                 </div>
 
                 <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
                     <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                        0
+                    {{ $individual['gasCount']}}
                     </div>
                 </div>
 
                 <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
                     <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                        0
+                    {{ $individual['waterCount']}}
                     </div>
                 </div>
 
                 <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
                     <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                        0
+                    0
                     </div>
                 </div>
 
                 <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
                     <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                        0
+                    {{ $individual['internetCount']}}
                     </div>
                 </div>
 
                 <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
                     <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                        0
+                    0
                     </div>
                 </div>
 
                 <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
                     <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                        0
+                    {{ $individual['awaiting_confirmation']}}
                     </div>
                 </div>
 
                 <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
                     <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                        0
+                    {{ $individual['cancelled_application']}}
                     </div>
                 </div>
 
                 <div style="width: 8%; height: 30px; padding-left: 2px; float: left; border: 1px solid gray; ">
                     <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                        0
+                    {{ $individual['conversion_rate']}}
                     </div>
                 </div>
                 
                 <div style="clear: both;"></div>
-                
             </div>
+            @endforeach
 
             <!-- Footer section -->
             <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%;"> 
@@ -297,14 +298,6 @@
                 <div style="clear: both;"></div>
                 
             </div>
-
-
-
-            
-    
     </div>
-
-
-
 </body>
 </html>
