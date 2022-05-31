@@ -21,13 +21,6 @@ class ReaExtractsReportController extends Controller
                     $request->get('start'),
                     $request->get('end')
                 ))->run();
-            } elseif ($request->get('reportType') === 'corporate') {
-                return (new ExportReaCorporateReport(
-                    $request->get('agencyId'),
-                    $request->get('reportType'),
-                    $request->get('start'),
-                    $request->get('end')
-                ))->run();
             } else {
                 return (new ExportReaIndividualReport(
                     $request->get('officeId'),

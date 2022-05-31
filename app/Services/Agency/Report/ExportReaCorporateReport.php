@@ -18,7 +18,6 @@ class ExportReaCorporateReport
     private string $stringStartDate;
     private string $stringEndDate;
     private string $agencyId;
-    private string $reportType;
     private array $corporateReport = [];
 
     private array $submissionType = [
@@ -56,11 +55,10 @@ class ExportReaCorporateReport
         ConnectionService::STATUS_CLOSED,
     ];
 
-    public function __construct(string $agencyId, string $reportType, string $start, string $end)
+    public function __construct(string $agencyId, string $start, string $end)
     {
         $this->setDateRange($start, $end);
         $this->agencyId = $agencyId;
-        $this->reportType = $reportType;
         $this->stringStartDate = Carbon::parse($start)->format('M d Y');
         $this->stringEndDate = Carbon::parse($end)->format('M d Y');
 
@@ -113,10 +111,10 @@ class ExportReaCorporateReport
                 "successful_water_connections" => $this->getSuccessfulWaterConnection($datum),
                 "awaiting_confirmation" => $this->getAwaitingConfirmation($datum),
                 "cancelled_application" => $this->getCancelledApplications($datum),
-                "electricityCount" => $this->getServiceCount($datum, ConnectionService::TYPE_ELECTRICITY),
-                "gasCount" => $this->getServiceCount($datum, ConnectionService::TYPE_GAS),
-                "waterCount" => $this->getServiceCount($datum, ConnectionService::TYPE_WATER),
-                "internetCount" => $this->getServiceCount($datum, ConnectionService::TYPE_INTERNET),
+                "electricityCount" => $this->getServiceCount($datum, [ConnectionService::TYPE_ELECTRICITY]),
+                "gasCount" => $this->getServiceCount($datum, [ConnectionService::TYPE_GAS]),
+                "waterCount" => $this->getServiceCount($datum, [ConnectionService::TYPE_WATER]),
+                "internetCount" => $this->getServiceCount($datum, [ConnectionService::TYPE_INTERNET]),
             ];
             $count['conversion_rate'] = $this->getConversionRate($count['total_applications_created'], $count['applications_with_minimum_submitted'], $count['awaiting_confirmation']);
             
@@ -132,7 +130,7 @@ class ExportReaCorporateReport
         
         $offices = Office::selectRaw("id, name")
             ->whereNotIn('id', $officeIds)
-            ->where('agency_id', $this->agency_id)
+            ->where('agency_id', $this->agencyId)
             ->get();
 
         foreach ($offices as $office) {
@@ -178,7 +176,7 @@ class ExportReaCorporateReport
                 ->where('created_at', '>=', $this->startDate)
                 ->where('created_at', '<=', $this->endDate)
                 ->where('office_id', '!=', null)
-                ->where('agency_id', $this->agency_id);
+                ->where('agency_id', $this->agencyId);
 
         return $builder->get()->groupBy('agency_id')->toArray();
     }
@@ -258,13 +256,13 @@ class ExportReaCorporateReport
         return round($conversionRate, 1);
     }
 
-    private function getServiceCount(array $applications, $type) : float
+    private function getServiceCount(array $applications, array $type) : float
     {
         $count = 0;
         foreach ($applications as $application) {
             foreach ($application['connection_services'] as $service) {
                 if (
-                    in_array($service['utility_type'], $this->type)
+                    in_array($service['utility_type'], $type)
                 ) {
                     $count++;
                     break;
