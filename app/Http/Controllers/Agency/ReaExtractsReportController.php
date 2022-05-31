@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Agency\Report\ExportReaOfficeReport;
 use App\Services\Agency\Report\ExportReaIndividualReport;
+use App\Services\Agency\Report\ExportReaCorporateReport;
 
 class ReaExtractsReportController extends Controller
 {
@@ -16,6 +17,13 @@ class ReaExtractsReportController extends Controller
             if ($request->get('reportType') === 'office') {
                 return (new ExportReaOfficeReport(
                     $request->get('officeId'),
+                    $request->get('reportType'),
+                    $request->get('start'),
+                    $request->get('end')
+                ))->run();
+            } elseif ($request->get('reportType') === 'corporate') {
+                return (new ExportReaCorporateReport(
+                    $request->get('agencyId'),
                     $request->get('reportType'),
                     $request->get('start'),
                     $request->get('end')
