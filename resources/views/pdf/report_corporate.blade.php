@@ -237,7 +237,25 @@
 
                 <div style="width: 8%; height: 30px; padding-left: 5px; float: left; border: 1px solid gray;">
                     <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                       0
+                       {{ $report['totalCount']['total_applications_created']}}
+                    </div>
+                </div>
+
+                <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
+                    <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
+                        {{ $report['totalCount']['electricityCount']}}
+                    </div>
+                </div>
+
+                <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
+                    <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
+                        {{ $report['totalCount']['gasCount']}}
+                    </div>
+                </div>
+
+                <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
+                    <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
+                        {{ $report['totalCount']['waterCount']}}
                     </div>
                 </div>
 
@@ -249,7 +267,7 @@
 
                 <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
                     <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                        0
+                        {{ $report['totalCount']['internetCount']}}
                     </div>
                 </div>
 
@@ -261,31 +279,13 @@
 
                 <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
                     <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                        0
+                        {{ $report['totalCount']['awaiting_confirmation']}}
                     </div>
                 </div>
 
                 <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
                     <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                        0
-                    </div>
-                </div>
-
-                <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                    <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                        0
-                    </div>
-                </div>
-
-                <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                    <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                        0
-                    </div>
-                </div>
-
-                <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                    <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                        0
+                    {{ $report['totalCount']['cancelled_application']}}
                     </div>
                 </div>
 
