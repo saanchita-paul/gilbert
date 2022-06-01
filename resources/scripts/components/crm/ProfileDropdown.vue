@@ -16,6 +16,7 @@
             <div class="my-2">
                 <v-divider></v-divider>
             </div> 
+            
             <div class="button-style" block @click="editProfile">
                  <v-icon >mdi-account-edit</v-icon> Edit My Profile
             </div>
@@ -23,14 +24,9 @@
                 <v-icon >mdi-dock-top</v-icon><a target=”_blank” href="https://www.hoodrewards.ai/">View MyRewards Points</a>
             </div>
             <div class="button-style" block>
-                <v-icon >mdi-cart</v-icon> <a target=”_blank” href="">Shop Using MyRewards Points</a>
+                <v-icon >mdi-cart</v-icon> <a target=”_blank” href="https://www.hoodrewards.ai/Catalogue">Shop Using MyRewards Points</a>
             </div>
-            <!-- <div class="pa-4">
-                <v-btn outlined block @click="editProfile">
-                    Edit My Profile
-                </v-btn>
-            </div> -->
-            <div class="button-style" block @click="onLogout" style="background-color:#ea4b64; color: white" >
+            <div class="button-style" block @click="onLogout" style="background-color:#ea4b64; color: white">
                 Sign out
             </div>
     </v-card>
