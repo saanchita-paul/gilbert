@@ -237,14 +237,17 @@ class ValidateCutOffTime
         Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
 
         $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]);
-        $availableDate = Carbon::today()->shiftTimezone(self::MAP_STATE_TIMEZONE[$state])->addDays(5); 
+        $availableDate = Carbon::today()->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]); 
 
-        while($availableDate->isWeekend()){
+        for($i=0; $i<=self::GAS_BUSINESS_DAYS; $i++){
             $availableDate->addDay();
+            while($availableDate->isWeekend()){
+                $availableDate->addDay();
+            }
         }
 
         if($availableDate->gt($connectionDate)){
-            throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_PAST_CUT_OFF', 'Connection date must be after 3 business days minimum'), BaseOriginAPI::CODE_REJECT);
+            throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_PAST_CUT_OFF', 'Connection date must be after 3 business days minimum which is '. $availableDate->format('d/m/Y')), BaseOriginAPI::CODE_REJECT);
         }
 
         if($connectionDate->isWeekend() || $connectionDate->isHoliday()){
