@@ -71,7 +71,7 @@ class OriginService
             // }
 
             $service_type = self::MAP_SERVICE_TYPE[$service->service_type];
-            $service_plan =  'Origin Basic'; //todo make a mapper to map with actual plan type
+            $service_plan =  $type == 'gas' ? 'Origin Advantage' : 'Origin Basic'; //todo make a mapper to map with actual plan type
             $connection_date = $application->moving_date;
             $plan = OriginPlan::where([
                 ['division_id', $service_type],
@@ -167,7 +167,7 @@ class OriginService
                     'firstname' => $authorized->first_name,
                     'lastname' => $authorized->last_name,
                     'dob' => Carbon::parse($authorized->dob)->toDateTimeLocalString(),
-                    // 'phone' => $authorized->phone, // todo
+                    'phone' => $authorized->phone, // todo
                     // 'phonetype' => 'mobile', // todo
                     'email' => $authorized->email ?? '',
                     'type' => $authorized->role == ConnectionApplicationSecondaryACC::FULLY_AUTHORISED_STATUS ? 'authorized' : 'joint',

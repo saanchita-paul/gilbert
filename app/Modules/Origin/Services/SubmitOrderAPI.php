@@ -286,7 +286,7 @@ class SubmitOrderAPI extends BaseOriginAPI
                 "FirstName" => $this->data['contactPersonInfo']['firstname'],
                 "LastName" => $this->data['contactPersonInfo']['lastname'], 
                 // "HomePhone" => "", 
-                // "Mobile" => $this->data['contactPersonInfo']['phone'],
+                "Mobile" => $this->data['contactPersonInfo']['phone'],
                 "Email" => $this->data['contactPersonInfo']['email'] ?? '', 
                 "DateOfBirth" => $this->data['contactPersonInfo']['dob'], 
                 "FunctionTypeID" => self::MAP_CONTACT_TYPE[$this->data['contactPersonInfo']['type']],
