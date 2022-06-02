@@ -1,16 +1,10 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router'
 import NewDashboardLayout from "@scripts/layouts/DashboardLayout";
-
-
 import LoginPage from "@scripts/pages/auth/LoginPage";
-
 import ForgotPasswordPage from "@scripts/pages/auth/ForgotPasswordPage";
-
 import ResetPasswordPage from "@scripts/pages/auth/ResetPasswordPage";
-
 import {checkRouteAuthentication} from "@scripts/services/AuthService";
-
 import CustomerDetails from "@scripts/pages/CustomerDetails";
 import CustomerListPage from "@scripts/pages/CustomerListTablePage";
 import UtilityAnalyticPage from "@scripts/pages/dashboard/UtilityAnalyticPage";
@@ -20,7 +14,6 @@ import RealStateAgencyPage from "@scripts/pages/RealStateAgencyPage";
 import CrmAgencyDataTable from "@scripts/components/crm/agency/CrmAgencyDataTable";
 import CrmOfficeDataTable from "@scripts/components/crm/office/CrmOfficeDataTable";
 import CrmUserDatatable from "@scripts/components/crm/user/CrmUserDatatable";
-import LeadApplications from "@scripts/components/crm/leadmanagement/LeadApplications";
 import ApplicationPage from "@scripts/pages/ApplicationPage";
 import ApplicationDetailsPage from "@scripts/pages/ApplicationDetailsPage";
 import OfficeProfile from "@scripts/components/crm/office/OfficeProfile";

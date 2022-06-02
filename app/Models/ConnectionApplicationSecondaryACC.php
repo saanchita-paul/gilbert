@@ -15,15 +15,18 @@ class ConnectionApplicationSecondaryACC extends Model
     const ENQUIRY_ONLY_STATUS = 1;
     const FULLY_AUTHORISED_STATUS = 2;
     const FINANCIALLY_RESPONSIBLE_STATUS = 3;
+    const JOINT_ACCOUNT_HOLDER_STATUS = 4;
 
     const ENQUIRY_ONLY = 'enquire_only';
     const FULLY_AUTHORISED = 'fully_authorised';
     const FINANCIALLY_RESPONSIBLE = 'financially_responsible';
+    const JOINT_ACCOUNT_HOLDER = 'joint_account_holder';
 
     const ROLE_TYPE_MAPPER = [
         self::ENQUIRY_ONLY => self::ENQUIRY_ONLY_STATUS,
         self::FULLY_AUTHORISED => self::FULLY_AUTHORISED_STATUS,
-        self::FINANCIALLY_RESPONSIBLE => self::FINANCIALLY_RESPONSIBLE_STATUS
+        self::FINANCIALLY_RESPONSIBLE => self::FINANCIALLY_RESPONSIBLE_STATUS,
+        self::JOINT_ACCOUNT_HOLDER => self::JOINT_ACCOUNT_HOLDER_STATUS
     ];
 
     /**

@@ -25,7 +25,8 @@ class ExportEnergySubmissionReport
 
     private array $energyType = [
         ConnectionService::TYPE_ELECTRICITY,
-        ConnectionService::TYPE_GAS
+        ConnectionService::TYPE_GAS,
+        ConnectionService::TYPE_WATER,
     ];
 
     private array $waterType = [
@@ -51,6 +52,7 @@ class ExportEnergySubmissionReport
     }
 
     private array $leadsData = [];
+    private array $onlyWaterLeadIds = [];
 
     public function run()
     {
@@ -75,6 +77,13 @@ class ExportEnergySubmissionReport
 
     private function mapData(array $data)
     {
+        // collecting water only leads to show them as leads without energy
+        collect($data)->groupBy('App_id')->map(function ($item, $key) {
+            if( $item->count() === 1  && $item->first()->Utility_Service === ConnectionService::TYPE_WATER){
+                $this->onlyWaterLeadIds[] = $item->first()->Service_Id;
+            }
+        });
+
         foreach ($data as $datum) {
             $datum->Lead_Source = $this->getLeadSrc($datum->Lead_Source);
             $datum->UI_Status = $this->getUiStatus($datum->Application_Status, $datum->UI_Status, $datum->Assigned_To);
@@ -87,6 +96,18 @@ class ExportEnergySubmissionReport
             $datum->Utility_Commission = $this->getUtilityCommission($datum->Office_Id, $datum->Utility_Service);
             // $datum->Source_Code = $this->getSourceCode($datum->Utility_Service, $datum->State, $datum->Utility_Plan, $datum->Postcode);
 
+            // if service_Id is in onlyWaterLeadIds, then show it as leads without energy
+            if(in_array($datum->Service_Id, $this->onlyWaterLeadIds)){
+                $datum->Utility_Provider = null;
+                $datum->Utility_Service = null;
+                $datum->Utility_Plan = null;
+                $datum->Lead_Submitted_Date = null;
+                $datum->Lead_Reference = null;
+                $datum->Quote_ID = null;
+                $datum->UI_Status = 'NOT_SELECTED';
+                $datum->Utility_Status = 'NOT_SELECTED';
+            }
+
             $this->setAgencyName($datum);
 
             $datum->Rejection_Reason = $this->getRejectionReason($datum->Service_Id, $datum->Utility_Service);
@@ -97,7 +118,7 @@ class ExportEnergySubmissionReport
             unset($datum->Assigned_To);
             // unset($datum->Application_Status);
 
-            if($this->allowedForExport($datum->Foxie_Connect_Id)) {
+            if($this->allowedForExport($datum->Foxie_Connect_Id) && $datum->Utility_Service !== ConnectionService::TYPE_WATER) {
                 unset($datum->Foxie_Connect_Id);
                 $this->leadsData[] = $datum;
             }

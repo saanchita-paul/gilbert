@@ -190,22 +190,23 @@ class ApplicationController extends Controller
      * @return ApplicationResource|JsonResponse
      */
     public function submit(Request $request, $id)
-{
+    {
     try {
         $service = new ApplicationService();
         $requestArray = $request->toArray();
 
         $res = $service->submit($requestArray, $id);
         $authUser = Auth::user();
-        $ea_services_id = $service->getNotSubmittedEaService($id);
-        $options = ['auth_user'=>$authUser, 'services_id'=> $ea_services_id];
         $submitType =  data_get($requestArray, 'lead.submit_type');
+        $ea_service_ids = $service->getNotSubmittedEaService($id, $submitType);
+        $options = ['auth_user'=>$authUser, 'services_id'=> $ea_service_ids];
 
-        if($submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_ENERGY) {
-            $setEaDistributorService = new SetEaDistributorService($res, $ea_services_id);
+        if($submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_ENERGY
+            || $submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_POWER
+            || $submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_GAS) {
+            $setEaDistributorService = new SetEaDistributorService($res, $ea_service_ids, $submitType);
             $setEaDistributorService->setDistributor();
         }
-
 
         SubmitApplicationEvent::dispatch($id, $submitType, $options);
 
@@ -405,7 +406,17 @@ class ApplicationController extends Controller
             $service = new ApplicationService();
             $res = $service->generateSumoUuid($applicationId);
             return response()->json(['success' => true, 'data' => $res]);
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
 
+    public function clearConcession(Request $request, $id)
+    {
+        try {
+            $service = new ApplicationService();
+            $res = $service->clearConcession($id);
+            return response(['success' => true, 'message' => 'Concession cleared successfully']);
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

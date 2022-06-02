@@ -134,6 +134,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::put('/applications/{id}/close', [ApplicationController::class, 'close']);
     Route::patch('/applications/{applicationId}/providers', [ApplicationController::class, 'providers'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_SERVICE_PROVIDERS);
+    Route::post('/applications/{applicationId}/clear-concession-details', [ApplicationController::class, 'clearConcession'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
 
     //todo: make a  separate controller for notes
     Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes'])
