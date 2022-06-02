@@ -25,10 +25,10 @@
 						</div>
 						<div class="d-flex">
 							<p class="font-weight-bold mb-0" style="font-size:14px;">Benefit Period:</p>
-							<p class="pl-2 mb-0" style="font-size:14px;">{{ planDetails.benefit_period }}</p>
+							<p class="pl-2 pb-2 mb-0" style="font-size:14px;">{{ planDetails.benefit_period }}</p>
 						</div>
-						<p class="font-weight-bold mb-0" style="font-size:14px;">Green options</p>
-						<p class="plan-text mt-0" style="font-size:14px;">{{ planDetails.green_options }}</p>
+						<!-- <p class="font-weight-bold mb-0" style="font-size:14px;">Green options</p>
+						<p class="plan-text mt-0" style="font-size:14px;">{{ planDetails.green_options }}</p> -->
 						<hr class="mb-4" style="width:95%" />
 
 						<p class="plan-text mt-0" style="font-size:14px;">Your meter details will be verified with the distributor, and your charges may charge if any details are incorrect.
