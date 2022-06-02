@@ -30,7 +30,7 @@ class OriginController extends Controller
 
         $plans = GetPlans::getActivePlans($fuel_type, $customer_type);
 
-        if(count($plans['plans']) > 0){
+        if(count($plans) > 0){
             return response()->json($plans, 200);
         }
 

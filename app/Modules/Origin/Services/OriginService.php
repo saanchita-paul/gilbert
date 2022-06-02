@@ -56,27 +56,28 @@ class OriginService
                 ['service_type', $type],
                 ['provider_name', 'origin']
             ])->firstOrFail();
-    
-            // // TODO: separate production and non production get plans
-            // if(config('app.env') !== 'production'){
-            //     $service_type = self::MAP_SERVICE_TYPE[$service->service_type];
-            //     $service_plan =  'Origin Basic'; //todo make a mapper to map with actual plan type
-            //     $connection_date = $application->moving_date;
-            //     $plan = OriginPlan::where([
-            //         ['division_id', $service_type],
-            //         ['description', $service_plan]
-            //     ])->firstOrFail();
-            // } 
-            // else {
-            // }
-
-            $service_type = self::MAP_SERVICE_TYPE[$service->service_type];
-            $service_plan =  $type == 'gas' ? 'Origin Advantage' : 'Origin Basic'; //todo make a mapper to map with actual plan type
+            
             $connection_date = $application->moving_date;
-            $plan = OriginPlan::where([
-                ['division_id', $service_type],
-                ['description', $service_plan]
-            ])->firstOrFail();
+
+            if(config('app.env') !== 'production'){
+                // local/dev fetch origin plan
+                $service_type = self::MAP_SERVICE_TYPE[$service->service_type];
+                $service_plan =  $type == 'gas' ? 'Origin Advantage' : 'Origin Basic'; //todo make a mapper to map with actual plan type
+                $plan = OriginPlan::where([
+                    ['division_id', $service_type],
+                    ['description', $service_plan]
+                ])->firstOrFail();
+                $plan_customer_type_id = $plan->customer_type_id;
+                $plan_division_id = $plan->division_id;
+                $plan_product_id = $plan->product_id;
+            } 
+            else {
+                // production fetch origin plan
+                $plan = GetPlans::getActivePlanByStateFuel(strtoupper(AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($application->state)]), $type == 'power' ? 'electricity': $type);
+                $plan_customer_type_id = $plan->customer_type_id;
+                $plan_division_id = $plan->division_id;
+                $plan_product_id = $plan->product_id;
+            }
     
             if($type == 'power'){
                 $validateBy = 'nmi';
@@ -107,8 +108,7 @@ class OriginService
             $addressID = $response['addressID'];
     
             // 2. validate fuel availability
-            $customerType = $plan->customer_type_id;
-            $checkFuel = new CheckFuelAPI($customerType, $addressID, $plan->division_id);
+            $checkFuel = new CheckFuelAPI($plan_customer_type_id, $addressID, $plan_division_id);
             $response = $checkFuel->fetch();
     
             // 3. submit order
@@ -128,9 +128,9 @@ class OriginService
                 "additionalAccessInformation" => $application->additional_access_information ?? '',
                 'nmi_mirn' => $nmi_mirn,
                 "productInfo" => [
-                    'productId' => $plan->product_id,
-                    'customerTypeId' => $plan->customer_type_id,
-                    'divisionId' => $plan->division_id
+                    'productId' => $plan_product_id,
+                    'customerTypeId' => $plan_customer_type_id,
+                    'divisionId' => $plan_division_id
                 ],
                 "addressInfo" => [
                     'addressInfo' => $addressInfo,
