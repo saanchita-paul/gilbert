@@ -81,7 +81,7 @@ class SumoService
 
         $response = Http::put($url, $this->getCustomerData());
 
-        \Log::info( 'printing sercondary contact for ' , $this->getCustomerData());
+        \Log::info( 'Sumo printing customer data ' , $this->getCustomerData());
 
         return json_decode($response->body(), true);
     }
@@ -100,6 +100,7 @@ class SumoService
             'customerLastName' => $this->application->last_name,
             'customerPhone' => $this->getMappedPhone($this->application->state, $this->application->phone_type, $this->application->phone),
             'customerTitle' => $this->application->title,
+            //todo Why are we sending all services, do we need to check only what is submitted?
             'interestedIn' => $this->getMappedService($this->application->connectionServices?->pluck('service_type')->toArray()),
             'lifeSupport' => false,
             // 'lifeSupportFuel' => "string",
@@ -108,7 +109,7 @@ class SumoService
             'nmi' => $this->application->nmi,
             'proposedMovingDate' => $this->getMappedDate($this->application->moving_date),
             'prospectType' => $this->getMappedPropertyType($this->application->property_type),
-            'quoteNumber' => $this->application->sumo_uuid,
+            'quoteNumber' => 'hood_'.$this->application->sumo_uuid,
             'secondaryCustomerEmail' =>  $this->application->authorizedPerson?->email,
             'secondaryCustomerFirstName' => $this->application->authorizedPerson?->first_name,
             'secondaryCustomerLastName' => $this->application->authorizedPerson?->last_name,
@@ -239,16 +240,22 @@ class SumoService
 
     }
 
-    public function saveStatus($applicationId, $status , $credit)
+    public function saveStatus($applicationId, $status , $credit, $submitType)
     {
+        $services = match ($submitType) {
+            'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
+            'power' => [ConnectionService::TYPE_ELECTRICITY],
+            'gas' => [ConnectionService::TYPE_GAS]
+        };
+
         $status = strtolower($status);
         if($status == 'success'){
-            ConnectionService::whereIn('service_type' , ['gas' , 'power'])
+            ConnectionService::whereIn('service_type' , $services)
             ->where('provider_name', 'sumo')
             ->where('connection_application_id', $applicationId)
             ->update(['status' =>  ConnectionService::STATUS_ENERGY_SUBMIT ]);
         } else if($status == 'failed'){
-            ConnectionService::whereIn('service_type' , ['gas' , 'power'])
+            ConnectionService::whereIn('service_type' , $services)
             ->where('provider_name', 'sumo')
             ->where('connection_application_id', $applicationId)
             ->update(['status' =>  ConnectionService::STATUS_REJECTED, 'rejected_at' => now()]);

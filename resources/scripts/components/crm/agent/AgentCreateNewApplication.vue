@@ -1199,7 +1199,11 @@ export default {
                 {
                     value: 3,
                     text:'Financially Responsible'
-                }
+                },
+                {
+                  value: 4,
+                  text:'Joint Account Holder'
+              }
             ],
             has_authorized: false,
             titlesDD: titlesMapperForDropdown,

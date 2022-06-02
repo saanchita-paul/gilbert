@@ -206,7 +206,18 @@ class ConnectionApplication extends Model
         'hood_utm_content',
         'hood_utm_medium',
         'hood_hss_channel',
-        'sumo_uuid'
+        'sumo_uuid',
+        'is_email_marketing',
+        'is_access_require',
+        'is_gas_life_support',
+        'is_any_unrestrained_animal',
+        'concession_card_type',
+        'concession_card_number',
+        'concession_start_date',
+        'concession_end_date',
+        'ea_go_neutral',
+        'additional_access_information',
+        'is_power_life_support',
     ];
 
 
@@ -248,6 +259,8 @@ class ConnectionApplication extends Model
     const PLAN_TYPE_ORIGIN_GO = 'origin_go';
     const PLAN_TYPE_ORIGIN_VARIABLE = 'origin_go_variable';
     const PLAN_TYPE_ORIGIN_BASIC = 'origin_basic';
+    const PLAN_TYPE_ORIGIN_HOME_ASSIST = 'origin_home_assist';
+    const PLAN_TYPE_ORIGIN_ADVANTAGE_VARIABLE = 'origin_advantage_variable';
 
     const PLAN_TYPE_SUMO_SAVER = 'sumo_saver';
     const PLAN_TYPE_SUMO_ASSURE = 'sumo_assure';
@@ -262,6 +275,8 @@ class ConnectionApplication extends Model
     const PLAN_TYPE_ORIGIN_GO_INDEX = 4;
     const PLAN_TYPE_ORIGIN_VARIABLE_INDEX = 5;
     const PLAN_TYPE_ORIGIN_BASIC_INDEX = 6;
+    const PLAN_TYPE_ORIGIN_HOME_ASSIST_INDEX = 10;
+    const PLAN_TYPE_ORIGIN_ADVANTAGE_VARIABLE_INDEX = 11;
 
 
     const PLAN_TYPE_SUMO_SAVER_INDEX = 7;
@@ -293,6 +308,8 @@ class ConnectionApplication extends Model
     const PHONE_TYPE_HOMEPHONE = 2;
 
     const LEAD_SUBMIT_TYPE_ENERGY = 'energy';
+    const LEAD_SUBMIT_TYPE_POWER = 'power';
+    const LEAD_SUBMIT_TYPE_GAS = 'gas';
     const LEAD_SUBMIT_TYPE_WATER = 'water';
 
     const PROPERTY_TYPE_MAPPING = [
@@ -328,6 +345,8 @@ class ConnectionApplication extends Model
         self::PLAN_TYPE_ORIGIN_GO => 4,
         self::PLAN_TYPE_ORIGIN_VARIABLE => 5,
         self::PLAN_TYPE_ORIGIN_BASIC => 6,
+        self::PLAN_TYPE_ORIGIN_HOME_ASSIST => 10,
+        self::PLAN_TYPE_ORIGIN_ADVANTAGE_VARIABLE => 11,
         self::PLAN_TYPE_SUMO_SAVER => 7,
         self::PLAN_TYPE_SUMO_ASSURE => 8,
         self::PLAN_TYPE_SUMO_SELECT => 9
@@ -350,6 +369,8 @@ class ConnectionApplication extends Model
         self::PLAN_TYPE_ORIGIN_GO_INDEX => self::PLAN_TYPE_ORIGIN_GO,
         self::PLAN_TYPE_ORIGIN_VARIABLE_INDEX =>  self::PLAN_TYPE_ORIGIN_VARIABLE,
         self::PLAN_TYPE_ORIGIN_BASIC_INDEX => self::PLAN_TYPE_ORIGIN_BASIC,
+        self::PLAN_TYPE_ORIGIN_HOME_ASSIST_INDEX => self::PLAN_TYPE_ORIGIN_HOME_ASSIST,
+        self::PLAN_TYPE_ORIGIN_ADVANTAGE_VARIABLE_INDEX => self::PLAN_TYPE_ORIGIN_ADVANTAGE_VARIABLE,
         self::PLAN_TYPE_SUMO_SAVER_INDEX => self::PLAN_TYPE_SUMO_SAVER,
         self::PLAN_TYPE_SUMO_ASSURE_INDEX => self::PLAN_TYPE_SUMO_ASSURE,
         self::PLAN_TYPE_SUMO_SELECT_INDEX =>  self::PLAN_TYPE_SUMO_SELECT
@@ -360,9 +381,20 @@ class ConnectionApplication extends Model
     const AFTER_HOUR_PAYEE_APPLICANT = 'applicant';
 
     const AVAILABLE_USER_TITLES = [
-        'mr', 'miss', 'dr', 'mrs', 'ms'
+        'Mr', 'Miss', 'Dr', 'Mrs', 'Ms'
     ];
 
+    const ACCESS_ON_SITE = 'CUST ON SITE';
+    const ACCESS_KEYS_METER = "KEYS IN METER BOX";
+    const ACCESS_KEYS_LETTER = "KEYS IN LETTER BOX";
+    const ACCESS_CUSTOMER_CONSULTATION = "Customer Consultation";
+
+    const AVAILABLE_ADDITIONAL_INFO = [
+        self::ACCESS_ON_SITE,
+        self::ACCESS_KEYS_METER,
+        self::ACCESS_KEYS_LETTER,
+        self::ACCESS_CUSTOMER_CONSULTATION
+    ];
 
     /**
      * @return BelongsTo
@@ -535,4 +567,39 @@ class ConnectionApplication extends Model
         return $afterHourFlag;
     }
 
+    /**
+     * Converts 10-digit MIRN to 11-digit MIRN which appends checksum at the end of string
+     * 
+     * @param string 
+     * 
+     * @return string
+     */
+    public function getMirnChecksumAttribute(){
+        if(!empty($this->mirn) && count(str_split($this->mirn)) == 10){
+            $arr = str_split($this->mirn);
+            $isDouble = true;
+            $totalSum = 0;
+            
+            for($i=count($arr)-1; $i>=0; $i--){
+                $asciiVal = intval(ord($arr[$i]));
+                if($isDouble)
+                    $asciiVal *= 2;
+                $isDouble = !$isDouble;
+                $split  = array_map('intval', str_split($asciiVal));
+                $sum = 0;
+                foreach($split as $digit){
+                    $sum += $digit;
+                }
+                
+                $totalSum+= $sum;
+            }
+            
+            $nextHighest = ceil($totalSum / 10) * 10;
+            $checkSum = ($nextHighest - $totalSum) % 10;
+            return $this->mirn . strval($checkSum);
+        }
+
+        return $this->mirn ?? '';
+
+    }
 }

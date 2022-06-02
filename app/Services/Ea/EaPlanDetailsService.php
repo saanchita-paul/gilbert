@@ -18,7 +18,6 @@ class EaPlanDetailsService
         public string $postcode,
         public int $leadId,
         public array $servicesId
-
     )
     {
         $this->chatbotUri = config('bot.root_url');
@@ -36,6 +35,7 @@ class EaPlanDetailsService
 
         try{
             $response = Http::get($this->chatbotUri.'/hood-dashboard/api/ea-plans/'.$this->plan_type, $query);
+            Log::info("EA Plan Response: ", [json_encode(json_decode($response->body())->data)]);
             return json_encode(json_decode($response->body())->data);
         } catch (\Exception $e)
         {
@@ -56,13 +56,14 @@ class EaPlanDetailsService
 
         $eleService = ConnectionService::query()
             ->where('connection_application_id',  $this->leadId )
+            ->where('provider_name', ConnectionService::PROVIDER_EA)
             ->where('service_type', ConnectionService::TYPE_ELECTRICITY)
-            ->where('provider_name', ConnectionService::PROVIDER_EA )
             ->whereIn('id', $this->servicesId)
             ->first();
 
         $powerFlag = false;
         $gasFlag = false;
+
         if(!is_null($gasService)) {
             $this->plan_type = $gasService->plan_type;
             $gasFlag = true;

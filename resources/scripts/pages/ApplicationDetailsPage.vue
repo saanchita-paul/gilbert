@@ -14,11 +14,9 @@
                                 @updateAddress="updateAddress"
                                 @updateDraft="updateDraft"
                         ></LeadUserDetails>
-                 </ValidationObserver>            <!-- <LeadsDetailsFotter :lifeSupportInfo="infoToPass.lifeSupportInfo"  v-if="leadSummary.status != 1" :login-loading="this.submittedLoader" :isManualChangeFlag="isManualChangeFlag" @submitConnection="submitConnection"></LeadsDetailsFotter> -->
+                 </ValidationObserver>
                 <LeadServicesAndNotes
                     @updateDraft="updateDraft"
-                    @updateService="updateService"
-                    @updatePlan="updatePlan"
                     @updateNote= "updateNote"
                     :leadSummary="leadSummary"
                     :afterHourFlag="afterHourFlag"
@@ -41,7 +39,7 @@
 
         <AssignedToUserEmptyModal v-if="assignedToDialog" :dialog="assignedToDialog" @closeMessage="closeAssignedToEmptyModal"></AssignedToUserEmptyModal>
 
-        <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" secondaryContact="secondaryContact" v-if="showSubmitModal" @saveData="saveData" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
+        <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" secondaryContact="secondaryContact" v-if="showSubmitModal" @confirmSubmitLead="confirmSubmitLead" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
             <PreventSubmissionModal v-if="preventSubmissionFlag" :message="preventSubmissionMessage" :dialog="preventSubmissionFlag" @closeMessage="closePreventSubmissionModal"></PreventSubmissionModal>
     </v-container>
 </template>
@@ -63,11 +61,12 @@ import {isNull} from "lodash-es";
 import PreventSubmissionModal from "@scripts/components/crm/modals/PreventSubmissionModal";
 import EAAfterHourService from "@scripts/services/ea/EAAfterHourService";
 import ChatbotService from "@scripts/services/crm/ChatbotService";
+import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import Store from '@scripts/store/index';
 
 export default {
+    //todo shift afterHourFlag, nextBusinessDay, getElectricityDistributor to powerService
     name: "ApplicationDetailsPage",
-
     components: {
         LeadReadMoreModal,
         EscalationConfirmModal,
@@ -104,15 +103,12 @@ export default {
             payload: null,
             fullName: null,
             submittedLoader: false,
-            isManualChangeFlag: false,
             submitType: null,
             assignedToDialog: false,
             preventSubmissionFlag: false,
             preventSubmissionMessage: '',
             ea_service_type: 'electricity_and_gas',
             eaElectricityDistributor: '',
-
-            //$attrs
             infoToPass:{
                 lifeSupportInfo: {
                     value: false,
@@ -122,28 +118,35 @@ export default {
             nextBusinessDay: null,
         }
     },
-    watch: {
-
-    },
     computed: {
-
         afterHourFlag() {
-            return this.plan && EAAfterHourService.calculateAfterHourFlag(this.eaElectricityDistributor,
+            return this.powerPlan && EAAfterHourService.calculateAfterHourFlag(this.eaElectricityDistributor,
                 this.leadSummary.moving_date, this.leadSummary.state, this.nextBusinessDay);
-        }
-
+        },
+        isBothEnergySubmit() {
+            return UtilityStoreService.getIsBothEnergySelected();
+        },
+        powerProvider() {
+            return UtilityStoreService.getPowerProvider();
+        },
+        gasProvider() {
+            return UtilityStoreService.getGasProvider();
+        },
+        powerPlan() {
+            return UtilityStoreService.getPowerPlan();
+        },
+        gasPlan() {
+            return UtilityStoreService.getGasPlan();
+        },
     },
     methods: {
-
         async getElectricityDistributor()
         {
-            if(!isNull(this.plan)) {
+            if(!isNull(this.powerPlan) && this.powerProvider === 'ea') {
                 this.eaElectricityDistributor = await EAAfterHourService.getElectricityDistributor(this.leadSummary.service_interests,
-                    this.plan?.key, this.leadSummary?.postcode, this.leadSummary?.state);
+                    this.powerPlan, this.leadSummary?.postcode, this.leadSummary?.state);
             }
-
         },
-
         async loadPlanNoteAndLead()
         {
             this.notes = await LeadApplicationService.loadNote(this.leadId);
@@ -151,23 +154,11 @@ export default {
             this.lead = this.leadSummary;
             this.services = this.leadSummary?.service_interests;
             this.planNoteFlag = true;
+            UtilityStoreService.setUtilityDetails(this.leadSummary.connection_services);
         },
-
-
-        updatePlan(plan, isManual)
-        {
-
-            //manual click activation plan
-            if(isManual) this.isManualChangeFlag = true;
-            this.plan = plan;
-            LeadApplicationService.saveSoleField('plan_type', this.plan, this.leadId);
-            this.getElectricityDistributor();
-        },
-
         updateNote() {
             this.loadPlanNoteAndLead();
         },
-
         eacalate() {
             this.escalateLead = true;
         },
@@ -178,22 +169,10 @@ export default {
             this.closeLead = false;
         },
        async sucessSaveClose(closing_reason){
-            // this.closeLead = false;
-
-            // try {
-            //     const data = await axios.post('api/applications/'+this.leadId+'/closeApplication' , {closing_reason});
-            //     console.log(data)
-            //     return true;
-            // } catch (error) {
-            //     console.log(error)
-            //     return false;
-            // }
-
             try {
                 await LeadApplicationService.closeApplicationWithReason(this.leadId , closing_reason);
                 this.closeLead = false;
                 this.closeConfirm = true;
-                // this.$router.push({name:'applications'});
             } catch (error) {
                 console.log('closeApplication error' , error);
             }
@@ -203,13 +182,10 @@ export default {
             this.escalateLead = false;
             this.escalateLeadConfirm = true;
         },
-
         cancelEscal() {
             this.escalateLead = false;
         },
-
         async closeApplication(lead) {
-
             try {
                 await LeadApplicationService.closeApplication(lead.id);
                 this.$router.push({name:'applications'});
@@ -217,41 +193,17 @@ export default {
                 // console.log('closeApplication error' , erro);
             }
         },
-
         readMore() {
             this.additionalInstruction = this.lead.person_details.additional_instruction;
             this.readMoreFlag = true;
         },
-
         closeReadMore() {
             this.readMoreFlag = false;
         },
-
         updateLead(lead) {
             this.fullName = lead.person_details.first_name +' '+ lead.person_details.last_name;
             this.lead = lead;
-            // console.log('lead3' , this.lead);
         },
-        updateService(service) {
-            this.isManualChangeFlag = true;
-            let index = this.services.findIndex(svc => svc === service.toLowerCase());
-            if(index == -1) {
-
-                this.services.push(service.toLowerCase());
-                 LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
-                this.loadPlanNoteAndLead()
-
-            } else {
-                this.services.splice(index, 1);
-                LeadApplicationService.saveSoleField('service_types', this.services, this.leadId, false, false, true);
-                this.leadSummary.service_types = this.services;
-                console.log('services', service, this.services)
-                this.loadPlanNoteAndLead()
-            }
-            this.plan = null
-
-        },
-
         async submitConnection(submitType) {
             let v = await this.validateLead();
             let isProperAddress = await this.isProperAddress();
@@ -270,28 +222,24 @@ export default {
                 this.preventSubmissionFlag = true;
                 return;
             }
-
             this.submitType = submitType;
             this.payload = { ...this.lead.property_details,
                 ...this.lead.person_details,
-                service_interests: this.services,
-                supplier: 1,
-                plan_type: this.plan,
+                selectedProvider: (submitType === 'energy' || submitType === 'power') ? this.powerProvider : this.gasProvider,
+                selectedPowerPlan: this.powerPlan,
+                selectedGasPlan: this.gasPlan,
                 submitType,
                 identification: this.lead.identification,
             };
-
             this.showSubmitModal = true;
         },
-
         async getAssignedHoodUser() {
             return await LeadApplicationService.getAssignedHoodUser(this.leadId);
         },
-
         isWaterUnavailable($submitType, $state, $tenantType) {
 
             // console.log("I am checking ->", $state, $submitType)
-            
+
             const rightState = ['vic', 'victoria'].includes($state?.toLowerCase());
 
             if($submitType === 'water' && !rightState) {
@@ -305,22 +253,21 @@ export default {
              return false;
         },
 
+        
+
         closePreventSubmissionModal() {
           this.preventSubmissionFlag = false;
         },
-
         backToEdit() {
             this.showSubmitModal = false;
         },
-
         async validateLead() {
           return await this.$refs.submit_lead.validate()
         },
-
-        async saveData() {
-
+        async confirmSubmitLead() {
             this.showSubmitModal = false;
             let payload = null;
+            console.log('lead', this.lead);
             if(this.lead.property_details === undefined)
             {
                 payload = {...this.lead};
@@ -336,27 +283,20 @@ export default {
                     'service_interests':this.services,
                     'identification': this.lead.identification,
                     supplier: 1,
-                    plan_type: this.plan?.key,
+                    plan_type: (this.submitType === 'energy' || this.submitType === 'power') ? this.powerPlan : this.gasPlan,
                     submit_type: this.submitType
-
                 };
             }
-
+            console.log('payload', payload);
             this.submittedLoader = true;
-
-            let response = await LeadApplicationService.saveLead(payload, this.leadId);
-           this.$router.push({name:'applications'});
+            let response = await LeadApplicationService.confirmSubmitLead(payload, this.leadId);
+            this.$router.push({name:'applications'});
         },
-
         async updateAddress(address) {
-            // if(this.leadSummary.address_text == address.address_text && this.leadSummary.billing_address_text == address.billing_address_text ) return;
             this.leadSummary.address_text = address.address_text
             this.leadSummary.street_address = address.street_address
             this.leadSummary.city = address.city
             this.leadSummary.is_billing_same = address.is_billing_same
-            // this.leadSummary.is_renovation_on = address.is_renovation_on
-            // this.leadSummary.has_electricity = address.has_electricity
-            // this.leadSummary.inspection_time = address.inspection_time
 
             this.leadSummary.billing_address_text = address.billing_address_text
             this.leadSummary.billing_street_address = address.billing_street_address
@@ -375,20 +315,16 @@ export default {
             this.nmiMernFlag = true;
             this.leadSummary.nmi = '';
             this.leadSummary.mirn = '';
-            this.isManualChangeFlag = false;
             let response = await LeadApplicationService.updateAddress(address, this.leadId);
             this.leadSummary.nmi = response.nmi;
             this.leadSummary.mirn = response.mirn;
             this.nmiMernFlag = false;
-            this.isManualChangeFlag = true;
 
             await this.getElectricityDistributor();
             await this.loadNextBusinessDay();
         },
 
         async updateDraft(field, value, isDate, identification, isManualChangeFlag) {
-
-            // console.log('draft date', field , value);
             if(isNull(value)) return;
 
             if(isDate) {
@@ -408,7 +344,6 @@ export default {
                 }
             }
             await LeadApplicationService.saveSoleField(field, value,this.leadId, isDate, identification, false);
-            this.isManualChangeFlag = true;
 
            let [day, month, year] = [];
             if(isDate)
@@ -433,13 +368,11 @@ export default {
             this.leadSummary[field] = value;
             await this.updateAfterHourFlagMovingDate(field, value)
         },
-
         async updateAfterHourFlagMovingDate(field, value){
             if(field === 'moving_date' || field === 'service_interests') {
                 await this.getElectricityDistributor();
             }
         },
-
         async updateMernNmi() {
             if(this.leadSummary.nmi == null && this.leadSummary.mirn == null) {
                 const nmiMern = await LeadApplicationService.getNmiMern(this.leadId);
@@ -447,7 +380,6 @@ export default {
                 this.leadSummary.mirn = nmiMern.mirn;
             }
         },
-
         closeAssignedToEmptyModal(){
             this.assignedToDialog = false;
         },
@@ -466,38 +398,40 @@ export default {
             return true;
         },
     },
-
-  async  mounted() {
-
+    watch: {
+        powerPlan: {
+            handler() {
+                this.getElectricityDistributor();
+            },
+            deep: true,
+        },
+    },
+    async  mounted() {
         const validateEvent = async (callback) => {
               let v = await this.validateLead();
               if(!v) return;
               callback('sumo');
           };
-        const busWaterSubmitEvent = async (type) => {
+        const busUtilitySubmitEvent = async (type) => {
               await this.submitConnection(type);
-          }
-
+        }
         this.$eventBus.$on("validate", validateEvent);
-        this.$eventBus.$on("busWaterSubmit", busWaterSubmitEvent);
+        this.$eventBus.$on("busUtilitySubmit", busUtilitySubmitEvent);
 
         this.$once("hook:beforeDestroy", () => {
             this.$eventBus.$off("validate", validateEvent );
         });
 
         this.$once("hook:beforeDestroy", () => {
-            this.$eventBus.$off("busWaterSubmit", busWaterSubmitEvent);
+            this.$eventBus.$off("busUtilitySubmit", busUtilitySubmitEvent);
         });
-
 
       this.leadId = this.$route.params.id;
       await this.loadPlanNoteAndLead();
       await this.loadNextBusinessDay();
       await this.updateMernNmi();
       this.nmiMernFlag = false;
-
     }
-
 };
 </script>
 

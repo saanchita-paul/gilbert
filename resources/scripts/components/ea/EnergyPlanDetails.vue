@@ -1,326 +1,13 @@
 <template>
-        <v-container class="pa-0 " v-if="loaded">
-<!--            <v-row no-gutters>-->
-<!--                <v-col  style="background: white" cols="12" class="mx-auto  outlined">-->
-<!--                    <header class="header-area py-4 px-3 rounded-t">-->
-<!--                        <h2 class="display-1">{{ planDetails.name }}</h2>-->
-<!--                        <p class="subtitle-1">{{ planText }}</p>-->
-<!--                        <p class="body-2 mb-0">{{ planDetails.slogan }}</p>-->
-<!--                    </header>-->
-
-<!--                    <div class="content px-3">-->
-<!--                        <div class="mt-3 mb-2" v-if="isPlanHasElectricity">-->
-<!--                            <p class="mb-1">{{ planDetails.description }}</p>-->
-<!--                            <p class="mb-1">{{ planDetails.gst_inclusive_text }}</p>-->
-<!--                            <p class="mb-1">Customer type:-->
-<!--                                <span class="bold-text">{{ planDetails.customer_type }}</span>-->
-<!--                            </p>-->
-<!--                            <p class="mb-1">Distributor:-->
-<!--                                <span  class="bold-text">{{ planDetails.distributor_name.electricity }}</span>-->
-<!--                            </p>-->
-<!--                            <p class="mb-1 ">-->
-<!--                                <small>{{planDetails.disclaimer}}</small>-->
-<!--                            </p>-->
-
-<!--                        </div>-->
-<!--                        <v-divider></v-divider>-->
-<!--                        <p class="title font-weight-bold mt-3 mb-2">{{ planDetails.promotion_title }}</p>-->
-<!--                        <div v-if="plan === 'basic_plan'">-->
-<!--                            <p class="mb-3"><span class="font-weight-bold">Standard  Plan </span><p/>-->
-<!--                        </div>-->
-<!--                        <div v-if="plan !== 'basic_plan'">-->
-<!--                            <div class="d-flex mb-2" v-if="isPlanHasElectricity">-->
-<!--                                <div class="mx-3 ">-->
-<!--                                    <v-icon-->
-<!--                                        medium-->
-<!--                                        color="blue lighten-1"-->
-<!--                                    >-->
-<!--                                        mdi mdi-lightbulb-cfl-->
-<!--                                    </v-icon>-->
-<!--                                </div>-->
-<!--                                <div>-->
-<!--                                    <p class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.electricity }} </span>-->
-<!--                                    </p>-->
-<!--                                    <p v-if="plan === 'total_plan'">guaranteed</p>-->
-<!--                                    <p v-if="plan === 'no_frills'">Simplified energy pricing</p>-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <div class="d-flex mb-2" v-if="isPlanHasGas">-->
-<!--                                <div class="mx-3">-->
-<!--                                    <v-icon-->
-<!--                                        medium-->
-<!--                                        color="red"-->
-<!--                                    >-->
-<!--                                        mdi mdi-fire-->
-<!--                                    </v-icon>-->
-<!--                                </div>-->
-<!--                                <div>-->
-<!--                                    <p class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.gas  }}</span></p>-->
-<!--                                    <p v-if="plan === 'total_plan'">guaranteed</p>-->
-<!--                                    <p v-if="plan === 'no_frills'">Simplified energy pricing</p>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <v-divider></v-divider>-->
-
-<!--                        <p class="title font-weight-bold mt-3">Features</p>-->
-
-<!--                        <div class="mb-3" v-for="feature in planDetails.features" :key="feature.title">-->
-<!--                            <p class="mb-0 font-weight-bold">{{ feature.title }}</p>-->
-<!--                            <p class="mb-0">{{ feature.description }}</p>-->
-<!--                        </div>-->
-
-<!--                        <p @click="goToSearch" style="cursor: pointer" class="mt-5 text-decoration-underline font-weight-bold green&#45;&#45;text">Basic plan information and energy-->
-<!--                            fact sheets</p>-->
-
-<!--                        <v-divider></v-divider>-->
-
-<!--                        <div class="d-flex justify-space-between mt-4">-->
-<!--                            <div class="title font-weight-bold">Rates:</div>-->
-<!--                            &lt;!&ndash;                            <div class="d-flex align-center">&ndash;&gt;-->
-<!--                            &lt;!&ndash;                                <div class="mx-2">Inc GST</div>&ndash;&gt;-->
-<!--                            &lt;!&ndash;                                <div><v-switch v-model="planDetails.rates.include_gst" color="success" class="mt-0" hide-details></v-switch></div>&ndash;&gt;-->
-<!--                            &lt;!&ndash;                            </div>&ndash;&gt;-->
-<!--                        </div>-->
-<!--                        <div class="my-1">-->
-<!--                            <p>{{ `These ${planText} rates are based on: Postcode ${postcode}` }}</p>-->
-<!--&lt;!&ndash;                            <p class="my-2">Solar feed-in tariffs are under review from 1 February 2021. If this happens,&ndash;&gt;-->
-<!--&lt;!&ndash;                                new rates can be viewed online from this date. More information on rate changes&ndash;&gt;-->
-<!--&lt;!&ndash;                                <a class=" icon green&#45;&#45;text"&ndash;&gt;-->
-<!--&lt;!&ndash;                                   href="https://www.energyaustralia.com.au/home/electricity-and-gas/solar-power/feed-in-tariffs"&ndash;&gt;-->
-<!--&lt;!&ndash;                                   target="_blank"&ndash;&gt;-->
-<!--&lt;!&ndash;                                >here</a>.</p>&ndash;&gt;-->
-<!--                        </div>-->
-<!--                        <div v-if="isVictorian" class="py-3 green&#45;&#45;text text-center">-->
-<!--                            <p>The VDO is the Victorian Government’s regulated electricity offer.</p>-->
-<!--                        </div>-->
-
-<!--                        <div class="my-3">-->
-<!--                            <p v-for="(de, index) in planDetails.rates.description" :key="index">-->
-<!--                                {{ de }}-->
-<!--                            </p>-->
-<!--                        </div>-->
-
-
-<!--                        <v-expansion-panels>-->
-<!--                            <v-expansion-panel v-if="isPlanHasElectricity">-->
-<!--                                <v-expansion-panel-header color="grey lighten-4">-->
-<!--                                    Show electricity rates-->
-<!--                                </v-expansion-panel-header>-->
-<!--                                <v-expansion-panel-content>-->
-<!--                                    <p class=" my-2">-->
-<!--                                        Distributor name:-->
-<!--                                        <span class="font-weight-bold">{{planDetails.distributor_name.electricity}}</span>-->
-<!--                                    </p>-->
-<!--                                    <p class="mb-0 mt-3">{{ planDetails.rates.electricity.daily_supply_charge.title }}-->
-<!--                                        <v-icon small> mdi mdi-alert-circle</v-icon>-->
-<!--                                    </p>-->
-<!--                                    <div v-if="plan === 'total_plan'">-->
-<!--                                        <p><small>Before discount</small></p>-->
-<!--                                        <p>{{ planDetails.rates.electricity.daily_supply_charge.before_discount }}</p>-->
-<!--                                        <p><small>After discount</small></p>-->
-<!--                                        <p>{{ planDetails.rates.electricity.daily_supply_charge.after_discount }}</p>-->
-<!--                                    </div>-->
-<!--                                    <div v-else>-->
-<!--                                        <p>{{ planDetails.rates.electricity.daily_supply_charge.before_discount }}</p>-->
-<!--                                    </div>-->
-<!--                                    <p class="mt-3 mb-1">Usage rates-->
-<!--                                        <v-icon small> mdi mdi-alert-circle</v-icon>-->
-<!--                                    </p>-->
-<!--                                    <div-->
-<!--                                        v-for="(value, key) in planDetails.rates.electricity.usage_rates"-->
-<!--                                        :key="key"-->
-<!--                                        class="outlined pa-3"-->
-<!--                                    >-->
-<!--                                        <p class="font-weight-bold">-->
-<!--                                            {{ value.title }}</p>-->
-<!--                                        <div v-if="plan === 'total_plan'">-->
-<!--                                            <p><small>Before discount</small></p>-->
-<!--                                            <p>-->
-<!--                                                {{-->
-<!--                                                    value.before_discount-->
-<!--                                                        | price_with_4_decimal-->
-<!--                                                }}</p>-->
-<!--                                            <p><small>After discount</small></p>-->
-<!--                                            <p>-->
-<!--                                                {{-->
-<!--                                                    value.after_discount-->
-<!--                                                        | price_with_4_decimal-->
-<!--                                                }}</p>-->
-<!--                                        </div>-->
-<!--                                        <div v-else>-->
-<!--                                            <p>Flat rate</p>-->
-<!--                                            <p>-->
-<!--                                                {{-->
-<!--                                                    value.before_discount-->
-<!--                                                        | price_with_4_decimal-->
-<!--                                                }}</p>-->
-<!--                                        </div>-->
-
-<!--                                    </div>-->
-
-
-<!--                                    <p class="mt-5 pt-5">-->
-<!--                                        All prices listed above included GST.-->
-<!--                                    </p>-->
-<!--                                    <p class="pt-2">-->
-<!--                                        EnergyAustralia’s Basic plan electricity rates for Victoria and solar rates on any plan for all states are under review and may change 1st September. Solar Feed in Tariffs are not fixed and may decrease. Please note that depending on when you sign up, your quoted rates may differ from those on your first bill once these changes come into effect. You will be notified of any applicable changes in your welcome pack or on your first bill. This information will also be available on the EnergyAustralia website.-->
-<!--                                    </p>-->
-<!--                                </v-expansion-panel-content>-->
-<!--                            </v-expansion-panel>-->
-
-<!--                            <v-expansion-panel v-if="isPlanHasGas">-->
-<!--                                <v-expansion-panel-header color="grey lighten-4">-->
-<!--                                    Show gas rates-->
-<!--                                </v-expansion-panel-header>-->
-<!--                                <v-expansion-panel-content>-->
-<!--                                    &lt;!&ndash; <p class=" my-2">-->
-<!--                                        Distributor name:-->
-<!--                                        <span class="font-weight-bold">{{planDetails.distributor_name.electricity}}</span>-->
-<!--                                    </p> &ndash;&gt;-->
-<!--                                    <template  v-if="planDetails.rates.gas.session_all_year">-->
-<!--                                        <DailySupplyCharge-->
-<!--                                            :plan="plan"-->
-<!--                                            :usage_rates="planDetails.rates.gas.usage_rates"-->
-<!--                                        ></DailySupplyCharge>-->
-<!--                                        <GasUsage-->
-<!--                                            :usage_rates="planDetails.rates.gas.usage_rates"-->
-<!--                                            :plan="plan"-->
-<!--                                        ></GasUsage>-->
-<!--                                    </template>-->
-
-<!--                                    <template v-else>-->
-<!--                                        <DailySupplyCharge-->
-<!--                                            :plan="plan"-->
-<!--                                            :usage_rates="planDetails.rates.gas.usage_rates[0].data"-->
-<!--                                        ></DailySupplyCharge>-->
-<!--                                        <GasUsage-->
-<!--                                            class=""-->
-<!--                                            :key="rates.session_description"-->
-<!--                                            v-for="rates in planDetails.rates.gas.usage_rates"-->
-<!--                                            :session_description="rates.session_description"-->
-<!--                                            :plan="plan"-->
-<!--                                            :usage_rates="rates.data"-->
-<!--                                        ></GasUsage>-->
-<!--                                    </template>-->
-<!--                                    <p class="mt-5 pt-5">-->
-<!--                                        All prices listed above included GST.-->
-<!--                                    </p>-->
-<!--                                </v-expansion-panel-content>-->
-<!--                            </v-expansion-panel>-->
-<!--                        </v-expansion-panels>-->
-<!--                        <p class="my-3">{{ planDetails.state_disclaimer }}</p>-->
-<!--                        <p class="title font-weight-bold mt-3 mb-2">Plan details</p>-->
-<!--                        <p class="mb-2"><span class="font-weight-bold ">Benefit period:</span>-->
-<!--                            {{ planDetails.plan_details.benefit_period }}-->
-<!--                            &lt;!&ndash; <v-icon small> mdi mdi-alert-circle</v-icon> &ndash;&gt;-->
-<!--                        </p>-->
-<!--                        <p class="mb-2"><span class="font-weight-bold">Exit Fees: </span> {{ planDetails.plan_details.exit_fees }}-->
-<!--                            &lt;!&ndash; <v-icon small> mdi mdi-alert-circle</v-icon> &ndash;&gt;-->
-<!--                        </p>-->
-<!--                        <p v-if="isPlanHasGas" class="mb-2"><span class="font-weight-bold">Gas Connection Fee: </span>-->
-<!--                            $ {{ planDetails.connection_fees.gas }} <small>(Incl. GST)</small>-->
-<!--                            &lt;!&ndash; <v-icon small> mdi mdi-alert-circle</v-icon> &ndash;&gt;-->
-<!--                        </p>-->
-<!--                        <p v-if="isPlanHasElectricity" class="mb-2"><span class="font-weight-bold">Electricity Connection Fee: </span>-->
-<!--                            $ {{ planDetails.connection_fees.electricity }} <small>(Incl. GST)</small>-->
-<!--                            &lt;!&ndash; <v-icon small> mdi mdi-alert-circle</v-icon> &ndash;&gt;-->
-<!--                        </p>-->
-<!--                        <p class="mb-2"><span class="font-weight-bold">Rates: </span> {{ planDetails.plan_details.rates }}-->
-<!--                            &lt;!&ndash; <v-icon small> mdi mdi-alert-circle</v-icon> &ndash;&gt;-->
-<!--                        </p>-->
-<!--                        <p class="mb-2"><span class="font-weight-bold">Late Payment Fee:</span>-->
-<!--                            {{ planDetails.plan_details.late_payment_fee }}-->
-<!--                            &lt;!&ndash; <v-icon small> mdi mdi-alert-circle</v-icon> &ndash;&gt;-->
-<!--                        </p>-->
-<!--                        <p class="mb-2">Customer type: {{ planDetails.plan_details.customer_type }}-->
-<!--                            &lt;!&ndash; <v-icon small> mdi mdi-alert-circle</v-icon> &ndash;&gt;-->
-<!--                        </p>-->
-
-<!--                        <v-divider></v-divider>-->
-<!--                        <p class="title font-weight-bold mt-3 mb-2">Solar buy back rate</p>-->
-<!--                        &lt;!&ndash; <p class="mb-2"> &ndash;&gt;-->
-<!--                            &lt;!&ndash; Single rate feed-in tariff (excl. GST)^^: &ndash;&gt;-->
-<!--                            &lt;!&ndash; Solar rate feed-in tariff if applicable (Excl. GST):-->
-<!--                            {{ planDetails.solar_buy_pack_rate.single_rate_c_kwh }}c/kwh &ndash;&gt;-->
-<!--                        &lt;!&ndash; </p> &ndash;&gt;-->
-
-<!--                        <p class="font-weight-bold d-inline-flex col-sm-8 col-8 px-0">Solar rate feed-in tariff if applicable (Excl. GST)</p>-->
-<!--                        <p class="col-sm-3 col-3 px-0 d-inline-flex" > <b>: </b> {{ planDetails.solar_buy_pack_rate.single_rate_c_kwh }}c/kwh</p>-->
-
-
-<!--                        &lt;!&ndash; <div v-if="isVictorian"> &ndash;&gt;-->
-<!--                            &lt;!&ndash;                            <p class="mb-2">Time of use feed-in tariff (excl. GST)^^: {{}}</p>&ndash;&gt;-->
-<!--                            &lt;!&ndash; <p >Peak: {{ planDetails.solar_buy_pack_rate.peak_c_kwh }}c/kwh-->
-<!--                                <EnergyTooltip-->
-<!--                                    :value="solarBuyPackInfo.peak_c_kwh"-->
-<!--                                ></EnergyTooltip>-->
-<!--                            </p>-->
-<!--                            <p >Shoulder: {{ planDetails.solar_buy_pack_rate.shoulder_c_kwh }}c/kwh-->
-<!--                                <EnergyTooltip-->
-<!--                                    :value="solarBuyPackInfo.shoulder_c_kwh"-->
-<!--                                ></EnergyTooltip>-->
-<!--                            </p>-->
-<!--                            <p >Off Peak: {{ planDetails.solar_buy_pack_rate.off_peak_c_kwh }}c/kwh-->
-<!--                                <EnergyTooltip-->
-<!--                                    :value="solarBuyPackInfo.off_peak_c_kwh"-->
-<!--                                ></EnergyTooltip>-->
-<!--                            </p>-->
-<!--                        </div> &ndash;&gt;-->
-
-<!--                        <v-divider></v-divider>-->
-<!--&lt;!&ndash;                        <p ref="bdid" class="title font-weight-bold mt-3 mb-2">Search for a Plan Document</p>&ndash;&gt;-->
-<!--&lt;!&ndash;                        <p class="font-weight-bold px-0">Please confirm your postcode</p>&ndash;&gt;-->
-<!--&lt;!&ndash;                        <TarrifSearch&ndash;&gt;-->
-<!--&lt;!&ndash;                            :utility=planText&ndash;&gt;-->
-<!--&lt;!&ndash;                            :planPostcode = getPostcode&ndash;&gt;-->
-<!--&lt;!&ndash;                        >&ndash;&gt;-->
-<!--&lt;!&ndash;                        </TarrifSearch>&ndash;&gt;-->
-
-<!--                        <div class="py-4 policy">-->
-<!--                            <a-->
-<!--                                class="v-btn v-btn&#45;&#45;flat icon green&#45;&#45;text"-->
-<!--                                href="https://www.energyaustralia.com.au/privacy"-->
-<!--                                target="_blank"-->
-<!--                            >-->
-<!--                                <v-icon color="green">mdi-link</v-icon>-->
-<!--                                Privacy and policy</a>-->
-<!--                            <a-->
-<!--                                class="v-btn v-btn&#45;&#45;flat green&#45;&#45;text icon"-->
-<!--                                href="https://www.energyaustralia.com.au/creditstatement"-->
-<!--                                target="_blank"-->
-<!--                            >-->
-<!--                                <v-icon color="green">mdi-link</v-icon>-->
-<!--                                Credit statement</a>-->
-<!--                            <a-->
-<!--                                class="v-btn v-btn&#45;&#45;flat icon green&#45;&#45;text"-->
-<!--                                href="https://www.energyaustralia.com.au/conditions-pricing"-->
-<!--                                target="_blank"-->
-<!--                            >-->
-<!--                                <v-icon color="green">mdi-link</v-icon>-->
-<!--                                Market retail contract</a>-->
-<!--                        </div>-->
-<!--                        &lt;!&ndash;                        <v-btn&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            block&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            class="white&#45;&#45;text mb-2"&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            color="green darken-2 "&ndash;&gt;-->
-<!--                        &lt;!&ndash;                        >&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            Selected&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            <v-icon right>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                                mdi-check-circle&ndash;&gt;-->
-<!--                        &lt;!&ndash;                            </v-icon>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                        </v-btn>&ndash;&gt;-->
-
-<!--                    </div>-->
-<!--                </v-col>-->
-                <EnergyPlanContainer :planDetails="planDetails"
-                                     :postcode="postcode"
-                                     :state="state"
-                                     :plan="plan"
-                                     :services="services"
-                ></EnergyPlanContainer>
-        </v-container>
+    <v-container class="pa-0 " v-if="loaded">
+        <EnergyPlanContainer 
+            :planDetails="planDetails"
+            :postcode="postcode"
+            :state="state"
+            :plan="plan"
+            :services="services"
+        ></EnergyPlanContainer>
+    </v-container>
 </template>
 
 <script>
@@ -334,8 +21,6 @@ import { merge } from 'lodash-es';
 import { SERVICE_TYPES } from "@scripts/models/ea/EnergyPlan";
 import {SOLAR_PACK } from "@scripts/models/ea/EnergyPlan";
 import EnergyPlanContainer from "@scripts/components/ea/EnergyPlanContainer";
-// import TarrifSearch from "@scripts/components/ea/TarrifSearch";
-
 
 export default {
     name: "EnergyPlanDetails",
@@ -346,7 +31,6 @@ export default {
         GasUsage,
         EnergyTooltip,
         DailySupplyCharge,
-        // TarrifSearch
     },
 
     data() {
@@ -372,13 +56,9 @@ export default {
         },
         isPlanHasGas() {
             return  !!this.planDetails.rates.gas;
-            // const plan = this.customer.plan.which_utility;
-            // return plan === ENERGY_PLANS.GAS || plan === ENERGY_PLANS.ELECTRICITY_AND_GAS
         },
         isPlanHasElectricity() {
             return  !!this.planDetails.rates.electricity;
-            // const plan = this.customer.plan.which_utility;
-            // return plan === ENERGY_PLANS.ELECTRICITY || plan === ENERGY_PLANS.ELECTRICITY_AND_GAS
         },
     },
 

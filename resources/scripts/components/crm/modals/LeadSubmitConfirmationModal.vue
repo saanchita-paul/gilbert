@@ -6,16 +6,13 @@
             max-width="70%"
         >
                 <div>
-                  <ConfirmSubmission @backToEdit="backToEdit"  :data="data" @saveData="saveData"></ConfirmSubmission>
+                  <ConfirmSubmission @backToEdit="backToEdit"  :data="data" @confirmSubmitLead="confirmSubmitLead"></ConfirmSubmission>
                 </div>
         </v-dialog>
     </v-row>
 </template>
 
 <script>
-import AgencyDetails from "@scripts/components/crm/AgencyDetails";
-import AgentConfirmApplicationModal from "@scripts/components/crm/modals/agent/AgentConfirmApplicationModal";
-import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import ConfirmSubmission from "@scripts/components/crm/leadmanagement/ConfirmSubmission";
 
 export default {
@@ -36,13 +33,10 @@ export default {
         backToEdit() {
             this.$emit('backToEdit');
         },
-        saveData() {
-            this.$emit('saveData');
+        confirmSubmitLead() {
+            this.$emit('confirmSubmitLead');
         }
-    },
-  mounted() {
-
-  }
+    }
 }
 </script>
 
