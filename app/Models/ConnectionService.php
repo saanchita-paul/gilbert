@@ -84,6 +84,9 @@ class ConnectionService extends Model
     public const ENERGY_AUSTRALIA_TOTAL_PLAN = 'Total Plan (Home)';
     public const ENERGY_AUSTRALIA_TOTAL_PLUS_12_PLAN = 'Total Plan Plus 12 (Home)';
 
+    public const ORIGIN_HOME_ASSIST_PLAN = 'origin_home_assist';
+    public const ORIGIN_ADVANTAGE_VARIABLE_PLAN = 'origin_advantage_variable';
+
     public const ENERGY_PLAN_MAPPER = [
         'basic_plan' => self::ENERGY_AUSTRALIA_BASIC_PLAN,
         'no_frills' => self::ENERGY_AUSTRALIA_NO_FRILLS,

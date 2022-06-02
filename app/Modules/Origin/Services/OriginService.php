@@ -7,6 +7,7 @@ use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Log;
 use App\Models\ConnectionApplication;
+use App\Services\Address\AddressModel;
 
 use App\Models\ConnectionService;
 use App\Models\OriginPlan;
@@ -55,29 +56,50 @@ class OriginService
                 ['service_type', $type],
                 ['provider_name', 'origin']
             ])->firstOrFail();
-    
-            $service_type = self::MAP_SERVICE_TYPE[$service->service_type];
-            $service_plan =  'Origin Basic'; //todo make a mapper to map with actual plan type
+            
             $connection_date = $application->moving_date;
-            $plan = OriginPlan::where([
-                ['division_id', $service_type],
-                ['description', $service_plan]
-            ])->firstOrFail();
+
+            if(config('app.env') !== 'production'){
+                // local/dev fetch origin plan
+                $service_type = self::MAP_SERVICE_TYPE[$service->service_type];
+                $service_plan =  $type == 'gas' ? 'Origin Advantage' : 'Origin Basic'; //todo make a mapper to map with actual plan type
+                $plan = OriginPlan::where([
+                    ['division_id', $service_type],
+                    ['description', $service_plan]
+                ])->firstOrFail();
+                $plan_customer_type_id = $plan->customer_type_id;
+                $plan_division_id = $plan->division_id;
+                $plan_product_id = $plan->product_id;
+            } 
+            else {
+                // production fetch origin plan
+                $plan = GetPlans::getActivePlanByStateFuel(strtoupper(AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($application->state)]), $type == 'power' ? 'electricity': $type);
+                $plan_customer_type_id = $plan->customer_type_id;
+                $plan_division_id = $plan->division_id;
+                $plan_product_id = $plan->product_id;
+            }
     
             if($type == 'power'){
                 $validateBy = 'nmi';
                 $nmi_mirn = $application->nmi;
+                
+                if(empty($nmi_mirn)){
+                    throw new \Exception(sprintf('%s:FAILED (Skip due to missing nmi/mirn for service id %u)', self::class, $service->id));
+                }
+
+                ValidateCutOffTime::isValidElectricityConnection($connection_date, $nmi_mirn, $application->state);
             }
             else{
                 $validateBy = 'mirn';
                 $nmi_mirn = $application->mirn_checksum;
+
+                if(empty($nmi_mirn)){
+                    throw new \Exception(sprintf('%s:FAILED (Skip due to missing nmi/mirn for service id %u)', self::class, $service->id));
+                }
+
+                ValidateCutOffTime::isValidGasConnection($connection_date, $application->state);
             }
             
-            if(empty($nmi_mirn)){
-                // skip connection due to no nmi
-                throw new \Exception(sprintf('%s:FAILED (Skip due to missing nmi/mirn for service id %u)', self::class, $service->id));
-            }
-    
             // 1. validate address
             $validateAddress = new ValidateAddressAPI($validateBy, $nmi_mirn);
             $response = $validateAddress->fetch();
@@ -86,8 +108,7 @@ class OriginService
             $addressID = $response['addressID'];
     
             // 2. validate fuel availability
-            $customerType = $plan->customer_type_id;
-            $checkFuel = new CheckFuelAPI($customerType, $addressID, $plan->division_id);
+            $checkFuel = new CheckFuelAPI($plan_customer_type_id, $addressID, $plan_division_id);
             $response = $checkFuel->fetch();
     
             // 3. submit order
@@ -96,19 +117,20 @@ class OriginService
                 "connectionDate" => $connection_date,
                 "isExistingCustomer" => false,
                 'isEmailBilling' => !empty($application->is_email_billing) ? $application->is_email_billing == 1 : false,
+                'isCorrespondenceEmail' => !empty($application->is_email_billing) ? $application->is_email_billing == 1 : false,
+                // 'isCorrespondenceEmail' => !empty($application->is_correspondence_email) ? $application->is_correspondence_email == 1 : false,
                 "isAccessRequirement" => !empty($application->is_access_require) ? $application->is_access_require == 1 : !empty($application->additional_access_information), 
-                "isUnrestrainedAnimal" => !empty($application->is_any_unrestrained_animal) ? $application->is_any_unrestrained_animal == 1 : false, 
-                // "isLifeSupport" => !empty($application->has_life_support) ? $application->has_life_support == 1 : false, 
-                "isLifeSupport" => !empty($application->is_power_life_support) ? $application->is_power_life_support == 1 : false, 
-                "isLifeSupportGas" => !empty($application->is_gas_life_support) ? $application->is_gas_life_support == 1 : false, 
+                "isUnrestrainedAnimal" => !empty($application->is_any_unrestrained_animal) ? $application->is_any_unrestrained_animal == 1 : false,  
+                "isLifeSupport" => !empty($application->is_power_life_support) && $type == 'power' ? $application->is_power_life_support == 1 : false, 
+                "isLifeSupportGas" => !empty($application->is_gas_life_support) && $type == 'gas' ? $application->is_gas_life_support == 1 : false, 
                 "isElectricalWork" => !empty($application->is_renovation_on) ? $application->is_renovation_on == 1 : false, 
                 "isEnableMarketing" => !empty($application->is_email_marketing) ? $application->is_email_marketing == 1 : false,
                 "additionalAccessInformation" => $application->additional_access_information ?? '',
                 'nmi_mirn' => $nmi_mirn,
                 "productInfo" => [
-                    'productId' => $plan->product_id,
-                    'customerTypeId' => $plan->customer_type_id,
-                    'divisionId' => $plan->division_id
+                    'productId' => $plan_product_id,
+                    'customerTypeId' => $plan_customer_type_id,
+                    'divisionId' => $plan_division_id
                 ],
                 "addressInfo" => [
                     'addressInfo' => $addressInfo,
@@ -124,6 +146,19 @@ class OriginService
                     'email' => $application->email,
                 ],
             ];
+
+            if($application->is_billing_same != 1){
+                $data['correspondenceAddress'] = [
+                    'roomNo' => $application->billing_unit_number ?? '',
+                    'roomType' => $application->billing_unit_number ? 'U' : '', // todo: create new column for unit/room type
+                    'houseNo' => $application->billing_street_number ?? '',
+                    'street' => $application->billing_street_name ?? '',
+                    'streetType' => $application->billing_street_type ?? '',
+                    'city' => $application->billing_city ?? '',
+                    'postcode' => $application->billing_postcode ?? '',
+                    'region' => $application->billing_state ? strtoupper(AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($application->billing_state)]) : '',
+                ];
+            }
             
             if(!empty($authorized->role))
             {
@@ -132,7 +167,7 @@ class OriginService
                     'firstname' => $authorized->first_name,
                     'lastname' => $authorized->last_name,
                     'dob' => Carbon::parse($authorized->dob)->toDateTimeLocalString(),
-                    // 'phone' => $authorized->phone, // todo
+                    'phone' => $authorized->phone, // todo
                     // 'phonetype' => 'mobile', // todo
                     'email' => $authorized->email ?? '',
                     'type' => $authorized->role == ConnectionApplicationSecondaryACC::FULLY_AUTHORISED_STATUS ? 'authorized' : 'joint',
@@ -148,7 +183,7 @@ class OriginService
                 ];
             }
 
-            if(!empty($application->inspection_time)){
+            if($type == 'power' && !empty($application->inspection_time)){
                 $data["appointmentTime"] = $application->inspection_time;
             }
     

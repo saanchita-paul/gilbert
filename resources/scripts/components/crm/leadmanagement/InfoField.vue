@@ -668,7 +668,7 @@
         </div>
       </div>
 
-      <div class="crm-text-field" v-if="isStateNswQldSa">
+      <div class="crm-text-field" v-if="canShowAccessInfo">
         <div class="field-label">
           <span>Access requirement</span>
         </div>
@@ -696,7 +696,26 @@
         </div>
       </div>
 
-      <div class="crm-text-field" v-if="isStateNswQldSa">
+      <div class="crm-text-field" v-if="isStateVic && canShowAccessInfo">
+        <div class="field-label">
+          <span>Additional Access information</span>
+        </div>
+        <div class="text-field">
+          <ValidationProvider name="Additional Access information" v-slot="{ errors }">
+            <v-text-field
+              @blur="saveDraft('additional_access_information', property_details.additional_access_information)"
+              v-model="property_details.additional_access_information"
+              @input="updateLeads"
+              outlined
+              dense
+              :error-messages="errors[0]"
+              hide-details="auto"
+            ></v-text-field>
+          </ValidationProvider>
+        </div>
+      </div>
+
+      <div class="crm-text-field" v-else-if="canShowAccessInfo">
         <div class="field-label">
           <span>Additional Access information</span>
         </div>
@@ -704,7 +723,7 @@
           <ValidationProvider name="Additional Access informantion" v-slot="{ errors }">
             <v-select
               v-model="property_details.additional_access_information"
-              :items=" property_details.state == 'South Australia' ? additional_access_information_sa : additional_access_information"
+              :items="additionalAccessInformationItems"
               :error-messages="errors[0]"
               @input="updateLeads"
               outlined
@@ -1091,6 +1110,7 @@
               :items="concessionCard"
               item-text="text"
               item-value="value"
+              :disabled="isStateSA"
               :error-messages="errors[0]"
               outlined
               dense
@@ -1115,6 +1135,7 @@
             <v-text-field
               v-model="person_details.concession_card_number"
               @blur="saveDraft('concession_card_number', person_details.concession_card_number)"
+              :disabled="isStateSA"
               outlined
               dense
               hide-details="auto"
@@ -1158,6 +1179,7 @@
                     :error-messages="errors[0]"
                     hide-details="auto"
                     @change="updateConcessionStartDatePicker"
+                    :disabled="isStateSA"
                   >
                     <template slot="append">
                       <v-icon v-on="on">mdi-calendar</v-icon>
@@ -1206,6 +1228,7 @@
                     :error-messages="errors[0]"
                     hide-details="auto"
                     @change="updateConcessionEndDatePicker"
+                    :disabled="isStateSA"
                   >
                     <template slot="append">
                       <v-icon v-on="on">mdi-calendar</v-icon>
@@ -1444,6 +1467,12 @@ export default {
         {
           text: "Customer consultation",
           value: "Customer Consultation",
+        }
+      ],
+      additional_access_information_act: [
+        {
+          text: "Off Supply",
+          value: "off supply",
         }
       ],
       inspectionTimeQLD : [
@@ -1867,10 +1896,15 @@ export default {
         isStateNswQld() {
           return this.property_details.state == 'Queensland' || this.property_details.state == 'New South Wales';
         },
-        isStateNswQldSa() {
+        canShowAccessInfo() {
           return this.property_details.state == 'Queensland'
             || this.property_details.state == 'New South Wales'
-            || this.property_details.state == 'South Australia';
+            || this.property_details.state == 'South Australia'
+            || this.property_details.state == 'Victoria'
+            || this.property_details.state == 'Australian Capital Territory';
+        },
+        isStateVic() {
+          return this.property_details.state == 'Victoria'
         },
         isBothEnergySubmit() {
             return UtilityStoreService.getIsBothEnergySelected();
@@ -1881,7 +1915,20 @@ export default {
         },
         gasProvider() {
             return UtilityStoreService.getGasProvider();
-        }
+        },
+        additionalAccessInformationItems() {
+          switch(this.property_details.state) {
+            case 'South Australia':
+              return this.additional_access_information_sa;
+            case 'Australian Capital Territory':
+              return this.additional_access_information_act;
+            default:
+              return this.additional_access_information;
+          }
+        },
+        isStateSA() {
+          return this.property_details.state == 'South Australia';
+        },
     },
 
   watch: {
@@ -1971,6 +2018,15 @@ export default {
         false,
         false,
       );
+    },
+
+    property_details: {
+      async handler() {
+        if( this.property_details.state === 'South Australia') {
+          this.clearConcessionDetails(null);
+        }
+      },
+      deep: true,
     },
 
   },

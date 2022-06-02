@@ -1,5 +1,6 @@
 import Store from "@scripts/store";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
+import {planTypeNameMapper} from "@scripts/data/ProviderAndPlanNameMapper";
 
 export default {
     getIsBothEnergySelected: () => Store.getters.isBothEnergySelected,
@@ -21,8 +22,14 @@ export default {
     setGasPlan: plan => Store.commit("setGasPlan", plan),
 
     setBothProvider: provider => Store.commit("setBothProvider", provider),
-    setBothPlan: plan => Store.commit("setBothPlan", plan),
-
+    setBothPlan: (plan, provider = null) => {
+        if(provider === 'origin' && plan !== null) {
+            Store.commit("setPowerPlan", planTypeNameMapper.PLAN_ORIGIN_HOME_ASSIST);
+            Store.commit("setGasPlan", planTypeNameMapper.PLAN_ORIGIN_ADVANTAGE_VARIABLE);
+        } else {
+            Store.commit("setBothPlan", plan)
+        }
+    },
 
     setUtilityDetails: services => {
         let powerService = services.find(data => data.service_type === "power");
