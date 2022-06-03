@@ -12,5 +12,5 @@ return [
         'submit_order' => '/sap/opu/odata/sap/SALES/OrderHeaders',
         'check_order' => '/sap/opu/odata/sap/SALES/OrderItemStatuses',
     ],
-    'isTestReferenceNumber' => true,
+    'isTestReferenceNumber' => false,
 ];

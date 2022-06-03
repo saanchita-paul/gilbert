@@ -23,7 +23,7 @@
                     <v-divider></v-divider>
                     <p class="title font-weight-bold mt-3 mb-2">{{ planDetails.promotion_title }}</p>
                     <div v-if="plan === 'basic_plan'">
-                        <p class="mb-3"><span class="font-weight-bold">Standard  Plan </span><p/>
+                        <p class="mb-3"><span class="font-weight-bold">Standard  Plan </span></p>
                     </div>
                     <div v-if="plan !== 'basic_plan'">
                         <div class="d-flex mb-2" v-if="isPlanHasElectricity">
