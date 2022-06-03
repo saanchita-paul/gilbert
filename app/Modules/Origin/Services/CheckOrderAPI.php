@@ -2,6 +2,7 @@
 
 namespace Origin\Services;
 
+use App\Models\ConnectionService;
 use Carbon\Carbon;
 
 class CheckOrderAPI extends BaseOriginAPI
@@ -59,6 +60,20 @@ class CheckOrderAPI extends BaseOriginAPI
             'expectedCompletionDate' => Carbon::createFromTimestampMs($orderInfo['ExpectedCompletionDate']),
             'requestedDate' => Carbon::createFromTimestampMs($orderInfo['RequestedCompletionDate']),
         ];
+
+        if($formattedData['orderStatus'] != CheckOrderAPI::STATUS_IN_PROGRESS){
+            $service = ConnectionService::where('lead_reference', $this->partnerReferenceNumber)->firstOrFail();
+            if($formattedData['orderStatus'] == CheckOrderAPI::STATUS_COMPLETE){
+                $service->status = ConnectionService::STATUS_ACCEPTED;
+                $service->accepted_at = Carbon::now();
+            }
+            if($formattedData['orderStatus'] == CheckOrderAPI::STATUS_CANCELLED){
+                $service->status = ConnectionService::STATUS_CLOSED;
+                $service->reason = $formattedData['statusReason'];
+            }
+            $service->save();
+        }
+
         return $formattedData;
     }
 
