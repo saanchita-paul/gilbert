@@ -56,7 +56,7 @@ class SubmittedLeadNote
         $postCode = $this->existLead?->postcode;
 
         $this->doSubmitEaNote($state, $postCode);
-        $this->doSubmitOriginNote($state, $postCode);
+//        $this->doSubmitOriginNote($state, $postCode);
     }
 
     private function doSubmitEaNote($state, $postCode){
