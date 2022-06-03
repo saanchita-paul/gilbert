@@ -3,7 +3,11 @@
 		<div fluid>
 			<v-container class="container-box">
 				<v-card class="card-section">
-
+					<div class="plan-title-header" style="cursor:pointer" @click="closeDialog">
+						<v-icon aria-hidden="false" color="white">
+							mdi-close
+						</v-icon>
+					</div>
 					<ElectricityPlan v-if="willShowELectricity" :plan="planDetails.plans.electricity"></ElectricityPlan>
 
 					<GasPlan v-if="willShowGas" :plan="planDetails.plans.gas"></GasPlan>
@@ -223,4 +227,11 @@ export default {
 	margin: 10px auto !important;
 	display: block !important;
 }
+.plan-title-header {
+	background-color: #cd5b32;
+	color: white;
+	padding-left: 389px;
+	padding-top: 14px;
+}
+
 </style>

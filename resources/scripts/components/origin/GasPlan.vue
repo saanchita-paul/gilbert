@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="plan-title-header pt-4 pl-4 pr-4 pb-2 d-flex justify-space-between">
+		<div class="plan-title-header pt-2 pl-4 pr-4 pb-2 d-flex justify-space-between">
 			<div>
 				<p class="font-weight-bold mb-0" style="font-size:24px">Origin Advantage Variable </p>
 				<p style="font-size:20px">Gas</p>
