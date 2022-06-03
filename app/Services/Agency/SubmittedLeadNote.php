@@ -9,6 +9,7 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Services\Ea\EaPlanDetailsService;
 use App\Services\Utility\StateMapService;
+use Origin\Services\OriginPlanDetailsService;
 use phpDocumentor\Reflection\Utils;
 
 class SubmittedLeadNote
@@ -19,7 +20,7 @@ class SubmittedLeadNote
 
     }
 
-   private function prepareLeadData($planType, $postCode, $state, $submittedService)
+   private function prepareLeadData($planType, $postCode, $state, $submittedService, $provider_name = 'N/A')
     {
        $leadData = [
            'utility_type' => $submittedService === ConnectionService::TYPE_GAS ?
@@ -34,7 +35,7 @@ class SubmittedLeadNote
            'agent_name' => $this->existLead?->getAgentName(),
            'nmi' => $this->existLead?->nmi,
            'mirn' => $this->existLead?->mirn,
-           'supplier' => 'EA',
+           'supplier' => $provider_name,
            'plan_type' => $planType,
            'post_code' => $postCode,
            'state' => $state,
@@ -42,7 +43,7 @@ class SubmittedLeadNote
            'first_name' => $this->existLead?->first_name,
            'last_name' => $this->existLead?->last_name,
            'application_id' => $this->existLead?->id,
-           'ea_go_neutral' => $this->existLead?->ea_go_neutral,
+           'ea_go_neutral' => $this->existLead && $provider_name === 'EA'? $this->existLead->ea_go_neutral : 'N/A',
         ];
 
        return json_encode($leadData);
@@ -53,6 +54,12 @@ class SubmittedLeadNote
         $stateService = new StateMapService();
         $state = $stateService->getShortName($this->existLead?->state);
         $postCode = $this->existLead?->postcode;
+
+        $this->doSubmitEaNote($state, $postCode);
+//        $this->doSubmitOriginNote($state, $postCode);
+    }
+
+    private function doSubmitEaNote($state, $postCode){
         $eaPlanService = new EaPlanDetailsService($state, $postCode, $this->existLead->id, $this->servicesId);
         $plan_type = $eaPlanService->plan_type;
 
@@ -63,9 +70,27 @@ class SubmittedLeadNote
         $noteService = new ApplicationNoteService($this->user);
         $submittedService = $this->getServices($eaPlanService->service_type);
         $planDetails = $eaPlanService->getPlanDetails();
-        $this->leadDetailsJson = $this->prepareLeadData($plan_type, $postCode, $state, $submittedService);
+        $this->leadDetailsJson = $this->prepareLeadData($plan_type, $postCode, $state, $submittedService, 'EA');
         $note = [
             'type' => ApplicationNote::SUBMITTED_CONNECTION,
+            'connection_details' => $this->leadDetailsJson,
+            'plan_details' => $planDetails
+        ];
+        $noteService->createNotes($note, $this->existLead?->id);
+    }
+
+    private function doSubmitOriginNote($state, $postCode){
+        $originPlanService = new OriginPlanDetailsService($state, $postCode, $this->existLead->id, $this->servicesId);
+        $plan_type = $originPlanService->plan_type;
+
+        if(empty($plan_type)) return;
+
+        $noteService = new ApplicationNoteService($this->user);
+        $submittedService = $this->getServices($originPlanService->service_type);
+        $planDetails = $originPlanService->getPlanDetails();
+        $this->leadDetailsJson = $this->prepareLeadData($plan_type, $postCode, $state, $submittedService, 'Origin');
+        $note = [
+            'type' => ApplicationNote::SUBMITTED_ORIGIN,
             'connection_details' => $this->leadDetailsJson,
             'plan_details' => $planDetails
         ];
