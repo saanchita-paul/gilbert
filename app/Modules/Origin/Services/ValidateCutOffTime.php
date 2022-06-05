@@ -186,7 +186,7 @@ class ValidateCutOffTime
         Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
 
         $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]);
-        $nowDate = Carbon::now()->setTimezone(self::MAP_STATE_TIMEZONE[$state]); // check localization  
+        $nowDate = Carbon::now(self::MAP_STATE_TIMEZONE[$state]); // check localization  
 
         $distributor = '';
         $nmi_check = substr($nmi, 0, 2);
@@ -208,7 +208,7 @@ class ValidateCutOffTime
                 throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_PAST_CUT_OFF', 'Distributor does not support same day connection'), BaseOriginAPI::CODE_REJECT);
             }
 
-            $checkDate = Carbon::today()->addHours(intval($elecDist['sdfi_business']))->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]);
+            $checkDate = Carbon::today(self::MAP_STATE_TIMEZONE[$state])->addHours(intval($elecDist['sdfi_business']));
             $pastCutOff = $nowDate->gt($checkDate);
 
             if($pastCutOff){
@@ -216,10 +216,10 @@ class ValidateCutOffTime
             }
         }
         else if ($connectionDate->isTomorrow()){
-            $checkDate = $elecDist['isStandardSameDay'] ? Carbon::tomorrow()->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]) : Carbon::today()->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]);
+            $checkDate = $elecDist['isStandardSameDay'] ? Carbon::tomorrow(self::MAP_STATE_TIMEZONE[$state]) : Carbon::today(self::MAP_STATE_TIMEZONE[$state]);
             $checkDate->addHours(intval($elecDist['standard']));
             $pastCutOff = $nowDate->gt($checkDate);
-            
+
             if($pastCutOff){
                 throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_PAST_CUT_OFF', 'Past Cut-Off time ' . $checkDate->format('g A')), BaseOriginAPI::CODE_REJECT);
             }
@@ -237,7 +237,7 @@ class ValidateCutOffTime
         Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
 
         $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]);
-        $availableDate = Carbon::today()->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]); 
+        $availableDate = Carbon::today(self::MAP_STATE_TIMEZONE[$state]); 
 
         for($i=0; $i<=self::GAS_BUSINESS_DAYS; $i++){
             $availableDate->addDay();
