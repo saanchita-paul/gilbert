@@ -489,6 +489,7 @@ class ApplicationService
             'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
             'power' => [ConnectionService::TYPE_ELECTRICITY],
             'gas' => [ConnectionService::TYPE_GAS],
+            default => []
         };
 
         return ConnectionService::query()->where('connection_application_id', $id)

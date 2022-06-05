@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="plan-title-header pt-4 pl-4 pr-4 pb-2 d-flex justify-space-between">
+		<div class="plan-title-header pt-2 pl-4 pr-4 pb-2 d-flex justify-space-between">
 			<div>
 				<p class="font-weight-bold mb-0" style="font-size:24px">Origin Advantage Variable </p>
 				<p style="font-size:20px">Gas</p>
@@ -54,8 +54,8 @@
 						</div>
 						<div class="plan-text">{{ plan.fees.standard_connection_fee }}</div>
 					</div>
-					<p class="plan-text mt-3">We’ve already included any discounts in the rates above. All prices are inclusive of GST.</p>
-					<p class="plan-text">Rates are rounded up to the nearest 2 decimal places where applicable.</p>
+<!--					<p class="plan-text mt-3">We’ve already included any discounts in the rates above. All prices are inclusive of GST.</p>-->
+					<p class="plan-text">Rates may have been rounded up to the nearest decimal place.</p>
 				</v-expansion-panel-content>
 			</v-expansion-panel>
 		</v-expansion-panels>
