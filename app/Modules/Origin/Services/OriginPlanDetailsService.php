@@ -33,7 +33,9 @@ class OriginPlanDetailsService
         ];
 
         try{
-            $response = Http::get($this->chatbotUri.'/hood-dashboard/api/origin-plan-details', $query);
+            $response = Http::withOptions([
+                "verify" => false,
+            ])->get($this->chatbotUri.'/hood-dashboard/api/origin-plan-details', $query);
             Log::info("Origin Plan Response: ", [json_encode(json_decode($response->body())->data)]);
             return json_encode(json_decode($response->body())->data);
         } catch (\Exception $e)

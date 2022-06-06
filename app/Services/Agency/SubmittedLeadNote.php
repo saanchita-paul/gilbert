@@ -29,7 +29,7 @@ class SubmittedLeadNote
            'address_text' => $this->existLead?->address_text,
            'application_name' => $this->existLead?->first_name . ' ' . $this->existLead?->last_name ,
            'moving_date' => $this->existLead?->moving_date,
-           'is_contacted' => $this->existLead?->is_contacted ? 'Yes': 'No',
+           'is_contacted' => $this->existLead && $provider_name === 'EA'? ($this->existLead->is_contacted ? 'Yes': 'No') : 'N/A',
            'source' => ConnectionApplication::SOURCE_NAME_MAPPING[$this->existLead?->source],
            'agency' => $this->existLead->getAgencyName(),
            'agent_name' => $this->existLead?->getAgentName(),
@@ -56,7 +56,7 @@ class SubmittedLeadNote
         $postCode = $this->existLead?->postcode;
 
         $this->doSubmitEaNote($state, $postCode);
-//        $this->doSubmitOriginNote($state, $postCode);
+        // $this->doSubmitOriginNote($state, $postCode);
     }
 
     private function doSubmitEaNote($state, $postCode){
