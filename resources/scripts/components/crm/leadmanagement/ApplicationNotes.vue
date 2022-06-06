@@ -35,11 +35,11 @@
 import Note from "@scripts/components/crm/leadmanagement/notes/Note";
 import InvalidNote from "@scripts/components/crm/leadmanagement/notes/InvalidNote";
 import SubmittedNote from "@scripts/components/crm/leadmanagement/notes/SubmittedNote";
-// import SubmittedOriginNote from "@scripts/components/crm/leadmanagement/notes/SubmittedOriginNote";
+import SubmittedOriginNote from "@scripts/components/crm/leadmanagement/notes/SubmittedOriginNote";
 
 export default {
   name: "ApplicationNotes",
-    components: {SubmittedNote, Note, InvalidNote},
+    components: {SubmittedNote, Note, InvalidNote, SubmittedOriginNote},
     props: {
       notes: {
           require: true

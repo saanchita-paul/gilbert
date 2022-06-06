@@ -56,7 +56,7 @@ class SubmittedLeadNote
         $postCode = $this->existLead?->postcode;
 
         $this->doSubmitEaNote($state, $postCode);
-        // $this->doSubmitOriginNote($state, $postCode);
+        $this->doSubmitOriginNote($state, $postCode);
     }
 
     private function doSubmitEaNote($state, $postCode){
@@ -80,6 +80,7 @@ class SubmittedLeadNote
     }
 
     private function doSubmitOriginNote($state, $postCode){
+        // \Log::info("debugging the note", [$state, $postCode]);
         $originPlanService = new OriginPlanDetailsService($state, $postCode, $this->existLead->id, $this->servicesId);
         $plan_type = $originPlanService->plan_type;
 
