@@ -1463,6 +1463,12 @@ export default {
           value: "KEYS IN LETTER BOX",
         },
       ],
+      additional_access_information_nsw: [
+        {
+          text: "Customer on site",
+          value: "CUST ON SITE",
+        },
+      ],
       additional_access_information_sa: [
         {
           text: "Customer consultation",
@@ -1922,6 +1928,8 @@ export default {
               return this.additional_access_information_sa;
             case 'Australian Capital Territory':
               return this.additional_access_information_act;
+            case 'New South Wales':
+              return this.additional_access_information_nsw;
             default:
               return this.additional_access_information;
           }
