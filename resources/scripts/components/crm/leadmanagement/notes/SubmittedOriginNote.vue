@@ -17,7 +17,7 @@
         <p class="title mt-3">NMI:  <span class="note-data">{{note.leads.nmi}}</span></p>
         <p class="title">MIRN: <span class="note-data">{{note.leads.mirn}}</span></p>
         <p class="title mt-3">Supplier Name: <span class="note-data">{{note.leads.supplier}}</span></p>
-        <p class="title mt-3">Plan Name: <span class="note-data">{{note.leads.plan_type}}</span></p>
+        <p class="title mt-3">Plan Name: <span class="note-data">{{plan}}</span></p>
         <p class="title mt-3"> Go Neutral: <span class="note-data">{{ note.leads.ea_go_neutral === 1 ? "Yes" : (note.leads.ea_go_neutral === 0 ? "No" : 'N/A') }}</span></p>
 
         <v-btn  outlined small
@@ -26,20 +26,12 @@
 
         <v-dialog
             v-model="dialog"
-            width="500px"
         >
-        <!-- <OriginPlanDetails
-            :serviceType="power"
-            :selectedPlan="selectedPlan"
-            :leadSummary="leadSummary"
-        /> -->
-        <!-- <EnergyPlanContainer
-            :planDetails="planDetails"
-            :postcode="postcode"
-            :state="state"
-            :plan="plan"
-            :services="services">
-        </EnergyPlanContainer> -->
+        <OriginPlanDetails
+            :serviceType="serviceType"
+            :selectedPlan="note.leads.plan_type"
+            :leadSummary="note.plans"
+        />
         </v-dialog>
 
 
@@ -47,11 +39,10 @@
 </template>
 
 <script>
-// import EnergyPlanContainer from "@scripts/components/ea/EnergyPlanContainer";
-import SubmittedNoteService from "@scripts/services/SubmittedNoteService";
 import dayJs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
-import OriginPlanDetails from "../../../../modules/origin/models/OriginPlanDetails";
+import OriginPlanDetails from "@scripts/components/crm/leadmanagement/OriginPlanDetails";
+
 export default {
 name: "SubmittedOriginNote",
     components: {OriginPlanDetails},
@@ -59,7 +50,8 @@ name: "SubmittedOriginNote",
     data() {
         return {
             dialog: false,
-            planDetails: null
+            planDetails: null,
+            serviceType: null,
         }
     },
 
@@ -73,6 +65,22 @@ name: "SubmittedOriginNote",
         },
 
         plan() {
+            // let elecPlan = this.note.plans.plans.electricity? this.note.plans.plans.electricity.vdo.marketing_offer_name : null;
+            // let gasPlan = this.note.plans.plans.gas? this.note.plans.plans.gas.bpid_links[0].offer_name : null;
+            let elecPlan = this.note.plans.plans.electricity? 'Origin Home Assist(Elec)' : null;
+            let gasPlan = this.note.plans.plans.gas? 'Origin Advantage Variable(Gas)' : null;
+
+            if (elecPlan && gasPlan){
+                return elecPlan + '|' + gasPlan;
+            }
+            if (elecPlan && !gasPlan){
+                return elecPlan;
+            }
+            if (!elecPlan && gasPlan)
+            {
+                return gasPlan;
+            }
+
             return this.note.leads.plan_type;
         },
 
@@ -89,8 +97,17 @@ name: "SubmittedOriginNote",
         showPlan() {
             this.dialog = true;
         },
-       async mapPlanDetail() {
-            this.planDetails = await SubmittedNoteService.mapEnergyPlan(this.note.plans, this.note.leads.plan_type);
+        async mapServiceType() {
+            let services = this.note.leads.services.toLowerCase();
+            if(services.indexOf('elec') !== -1 && services.indexOf('gas') !== -1){
+                this.serviceType = 'energy';
+            }
+            else if(y.indexOf('elec') !== -1){
+                this.serviceType = 'power';
+            }
+            else {
+                this.serviceType = 'gas';
+            }
         },
         exportNote(id) {
             window.open(
@@ -102,7 +119,7 @@ name: "SubmittedOriginNote",
     },
 
     async mounted() {
-        await this.mapPlanDetail();
+        await this.mapServiceType();
     }
 }
 </script>
