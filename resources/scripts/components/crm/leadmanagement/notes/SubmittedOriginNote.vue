@@ -26,6 +26,7 @@
 
         <v-dialog
             v-model="dialog"
+            max-width="450px"
         >
         <v-card>
             <OriginPlanDetails
@@ -105,7 +106,7 @@ name: "SubmittedOriginNote",
             if(services.indexOf('elec') !== -1 && services.indexOf('gas') !== -1){
                 this.serviceType = 'energy';
             }
-            else if(y.indexOf('elec') !== -1){
+            else if(services.indexOf('elec') !== -1){
                 this.serviceType = 'power';
             }
             else {
