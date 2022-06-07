@@ -104,7 +104,7 @@ class MapEnergyReport
             ConnectionApplication::PLAN_TYPE_TOTAL => $this->reportData["ea_gas_total_plan"] += $data['total'],
             ConnectionApplication::PLAN_TYPE_NO_FRILLS => $this->reportData["ea_gas_no_frills"] += $data['total'],
             'Sumo Freedom' => $this->reportData["sumo_gas_freedom"] += $data['total'],
-            'origin_home_assist' => $this->reportData["origin_gas_home_assist"] += $data['total'],
+            'origin_advantage_variable' => $this->reportData["origin_gas_home_assist"] += $data['total'],
             default => null
         };
     }
