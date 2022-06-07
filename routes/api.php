@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Agency\AppCloseReasonController;
 use Illuminate\Encryption\Encrypter;
 use App\Services\Address\GBGServices;
 use Illuminate\Support\Facades\Route;
@@ -41,8 +42,8 @@ Route::get('/logout', [AuthController::class, 'logout']);
 /**
  * @Module AGENCY CRM
  */
-Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
-    // Route::namespace('agency')->middleware([])->group(function () {
+//Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
+     Route::namespace('agency')->middleware([])->group(function () {
     /**
      * Agency, Office Users
      */
@@ -170,6 +171,20 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     // REA extracts report
     Route::get('/rea-extract/report', [ReaExtractsReportController::class, 'getReaReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
+
+    /***
+        * Application closing reasons route
+    */
+    // application closing reasons list
+    Route::get('/app-close-reasons', [AppCloseReasonController::class, 'index']);
+    // application closing reasons create
+    Route::post('/app-close-reasons', [AppCloseReasonController::class, 'create']);
+    // application closing reasons show
+    Route::get('/app-close-reasons/{id}', [AppCloseReasonController::class, 'show']);
+    // application closing reasons update
+    Route::put('/app-close-reasons/{id}', [AppCloseReasonController::class, 'update']);
+    // application closing reasons delete
+    Route::delete('/app-close-reasons/{id}', [AppCloseReasonController::class, 'delete']);
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
