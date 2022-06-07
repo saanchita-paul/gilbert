@@ -23,9 +23,7 @@ class SubmittedLeadNote
    private function prepareLeadData($planType, $postCode, $state, $submittedService, $provider_name = 'N/A')
     {
        $leadData = [
-           'utility_type' => $submittedService === ConnectionService::TYPE_GAS ?
-                ucfirst(ConnectionService::TYPE_GAS) : ($submittedService === ConnectionService::TYPE_ELECTRICITY ?
-                    'Elec' : 'Elec & Gas'),
+           'utility_type' => $submittedService,
            'address_text' => $this->existLead?->address_text,
            'application_name' => $this->existLead?->first_name . ' ' . $this->existLead?->last_name ,
            'moving_date' => $this->existLead?->moving_date,
@@ -56,7 +54,7 @@ class SubmittedLeadNote
         $postCode = $this->existLead?->postcode;
 
         $this->doSubmitEaNote($state, $postCode);
-        // $this->doSubmitOriginNote($state, $postCode);
+        $this->doSubmitOriginNote($state, $postCode);
     }
 
     private function doSubmitEaNote($state, $postCode){
@@ -80,6 +78,7 @@ class SubmittedLeadNote
     }
 
     private function doSubmitOriginNote($state, $postCode){
+        // \Log::info("debugging the note", [$state, $postCode]);
         $originPlanService = new OriginPlanDetailsService($state, $postCode, $this->existLead->id, $this->servicesId);
         $plan_type = $originPlanService->plan_type;
 
@@ -100,9 +99,9 @@ class SubmittedLeadNote
     private function getServices($serviceType)
     {
        return match ($serviceType) {
-          ConnectionService::TYPE_GAS => 'gas' ,
-          'electricity' => 'electricity' ,
-          'electricity_and_gas' => 'Electricity & Gas',
+          ConnectionService::TYPE_GAS => 'Gas' ,
+          'electricity' => 'Elec' ,
+          'electricity_and_gas' => 'Elec & Gas',
         };
     }
 
