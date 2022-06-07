@@ -40,7 +40,7 @@
 							you by letter about any such change.
 						</p>
 
-						<div v-if="willShowELectricity">
+						<!-- <div v-if="willShowELectricity">
 							<span class="font-weight-bold mb-0" style="font-size:14px;">Electricity</span>
 							<div v-for="item in planDetails.plans.electricity.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
 								<a :href="item.file_url" target="_blank">{{ planDetails.plans.electricity.distributor_name }} - {{ item.offer_name }}</a>
@@ -51,6 +51,26 @@
 							<span class="font-weight-bold mb-0" style="font-size:14px;">Gas</span>
 							<div v-for="item in planDetails.plans.gas.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
 								<a :href="item.file_url" target="_blank">{{ planDetails.plans.gas.distributor_name }} - {{ item.offer_name }}</a>
+							</div>
+						</div> -->
+
+						<div v-if="willShowELectricity">
+							<span class="font-weight-bold mb-0" style="font-size:14px;">Electricity</span>
+							<div v-if="this.leadSummary.state == 'Victoria'" class="pb-2" style="font-size:14px;">
+								<a href="https://www.originenergy.com.au/vefs/" target="_blank">https://www.originenergy.com.au/vefs/</a>
+							</div>
+							<div v-else class="pb-2" style="font-size:14px;">
+								<a href="https://www.originenergy.com.au/bpidlink/" target="_blank">https://www.originenergy.com.au/bpidlink/</a>
+							</div>
+						</div>
+						
+						<div v-if="willShowGas">
+							<span class="font-weight-bold mb-0" style="font-size:14px;">Gas</span>
+							<div v-if="this.leadSummary.state == 'Victoria'" class="pb-2" style="font-size:14px;">
+								<a href="https://www.originenergy.com.au/vefs/" target="_blank">https://www.originenergy.com.au/vefs/</a>
+							</div>
+							<div v-else class="pb-2" style="font-size:14px;">
+								<a href="https://www.originenergy.com.au/bpidlink/" target="_blank">https://www.originenergy.com.au/bpidlink/</a>
 							</div>
 						</div>
 						
