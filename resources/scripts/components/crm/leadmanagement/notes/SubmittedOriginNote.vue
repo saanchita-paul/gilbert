@@ -21,17 +21,20 @@
         <p class="title mt-3"> Go Neutral: <span class="note-data">{{ note.leads.ea_go_neutral === 1 ? "Yes" : (note.leads.ea_go_neutral === 0 ? "No" : 'N/A') }}</span></p>
 
         <v-btn  outlined small
-                color="indigo" class="my-4" @click="showPlan">show Plan</v-btn>
+                color="indigo" class="my-4" @click="togglePlanDetails">show Plan</v-btn>
 
 
         <v-dialog
             v-model="dialog"
         >
-        <OriginPlanDetails
-            :serviceType="serviceType"
-            :selectedPlan="note.leads.plan_type"
-            :leadSummary="note.plans"
-        />
+        <v-card>
+            <OriginPlanDetails
+                @toggleDialog="togglePlanDetails"
+                :serviceType="serviceType"
+                :selectedPlan="note.leads.plan_type"
+                :leadSummary="note.plans"
+            />
+        </v-card>
         </v-dialog>
 
 
@@ -94,8 +97,8 @@ name: "SubmittedOriginNote",
 
     },
     methods: {
-        showPlan() {
-            this.dialog = true;
+        togglePlanDetails() {
+            this.dialog = !this.dialog;
         },
         async mapServiceType() {
             let services = this.note.leads.services.toLowerCase();
