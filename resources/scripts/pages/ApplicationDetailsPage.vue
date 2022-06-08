@@ -177,7 +177,7 @@ export default {
         cancelClose(){
             this.closeLead = false;
         },
-       async sucessSaveClose(closing_reason){
+       async sucessSaveClose(closeReason){
             // this.closeLead = false;
 
             // try {
@@ -190,7 +190,7 @@ export default {
             // }
 
             try {
-                await LeadApplicationService.closeApplicationWithReason(this.leadId , closing_reason);
+                await LeadApplicationService.closeApplicationWithReason(this.leadId , closeReason);
                 this.closeLead = false;
                 this.closeConfirm = true;
                 // this.$router.push({name:'applications'});
