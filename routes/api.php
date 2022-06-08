@@ -42,8 +42,8 @@ Route::get('/logout', [AuthController::class, 'logout']);
 /**
  * @Module AGENCY CRM
  */
-//Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
-     Route::namespace('agency')->middleware([])->group(function () {
+Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
+//     Route::namespace('agency')->middleware([])->group(function () {
     /**
      * Agency, Office Users
      */
