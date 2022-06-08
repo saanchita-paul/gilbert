@@ -28,6 +28,16 @@
                             </ValidationProvider>
                         </ValidationObserver>
                     </v-col>
+                    <!-- <v-select
+                        outlined
+                        dense
+                        hide-details="auto"
+                        :items="closeReasons"
+                        v-model="close_reason"
+                        :error-messages="errors[0]"
+                        placeholder="Please choose one"
+                        >
+                    </v-select> -->
                     <v-col cols="12">
                         <div class="d-flex justify-space-between">
                             <v-btn @click="cancelClose">Back</v-btn>
@@ -56,7 +66,8 @@ export default {
     },
     data() {
         return {
-            close_reason: ''
+            close_reason: '',
+            closeReasons: null,
         }
     },
     methods: {

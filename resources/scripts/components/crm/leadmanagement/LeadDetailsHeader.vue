@@ -108,6 +108,7 @@ import { connectionApplicationMapper } from '@scripts/data/ConnectionApplication
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import IdCopyToClipboard from '@scripts/components/common/IdCopyToClipboard.vue';
 import leadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import AppCloseReasonService from "@scripts/services/AppCloseReasonService";
 export default {
 name: "LeadDetailsHeader",
     components:{ IdCopyToClipboard },
@@ -119,7 +120,8 @@ name: "LeadDetailsHeader",
 
     data() {
         return {
-           id:10
+           id:10,
+           closeReasons : [],
         };
     },
     computed:{
@@ -140,8 +142,12 @@ name: "LeadDetailsHeader",
             this.$emit('eacalate');
         },
 
-        closeApplicationWithReason() {
+        async closeApplicationWithReason() {
             this.$emit('closeApplicationWithReason');
+
+            this.closeReasons = await AppCloseReasonService.getAppCloseReasonData();
+
+            console.log("I am here checking", this.closeReasons);
         },
 
 
