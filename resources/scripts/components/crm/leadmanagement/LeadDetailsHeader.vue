@@ -108,6 +108,7 @@ import { connectionApplicationMapper } from '@scripts/data/ConnectionApplication
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import IdCopyToClipboard from '@scripts/components/common/IdCopyToClipboard.vue';
 import leadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import AppCloseReasonService from "@scripts/services/AppCloseReasonService";
 export default {
 name: "LeadDetailsHeader",
     components:{ IdCopyToClipboard },
@@ -119,7 +120,8 @@ name: "LeadDetailsHeader",
 
     data() {
         return {
-           id:10
+           id:10,
+           closeReasons : null,
         };
     },
     computed:{
@@ -239,3 +241,4 @@ name: "LeadDetailsHeader",
 
 
 </style>
+
