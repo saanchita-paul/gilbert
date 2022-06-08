@@ -121,7 +121,7 @@ name: "LeadDetailsHeader",
     data() {
         return {
            id:10,
-           closeReasons : [],
+           closeReasons : null,
         };
     },
     computed:{
@@ -142,12 +142,8 @@ name: "LeadDetailsHeader",
             this.$emit('eacalate');
         },
 
-        async closeApplicationWithReason() {
+        closeApplicationWithReason() {
             this.$emit('closeApplicationWithReason');
-
-            this.closeReasons = await AppCloseReasonService.getAppCloseReasonData();
-
-            console.log("I am here checking", this.closeReasons);
         },
 
 
@@ -245,3 +241,4 @@ name: "LeadDetailsHeader",
 
 
 </style>
+

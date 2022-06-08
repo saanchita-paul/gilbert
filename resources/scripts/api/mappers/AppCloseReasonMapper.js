@@ -2,6 +2,12 @@ import AppCloseReason from '@scripts/models/AppCloseReason';
 
 export default {
     mapAppCloseReasonData: (closeReasons) => {
-        return new AppCloseReason(closeReasons);
+
+        let reasons = [];
+        closeReasons.forEach(element=>{ reasons.push(new AppCloseReason(element)) })
+
+        // console.log("mapper", reasons);
+
+        return reasons;
     }
 };

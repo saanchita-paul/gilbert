@@ -1,9 +1,12 @@
 export default class AppCloseReason {
-    /**
-     * @param {string} value
-     */
-    constructor({ value } = {}) {
-        this.value = value;
-    }
 
+    // constructor(data) {
+    //     console.log("Console in model", data);
+    // }
+
+    constructor({ id, value } = {}) {
+        this.value = id;
+        this.text = value;
+            
+    }
 }
