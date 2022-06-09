@@ -289,7 +289,10 @@ class ExportEnergySubmissionReport
 
     private function getRejectionReason($serviceId, $serviceType)
     {
+        \Log::info("serviceId ---->",[$serviceId]);
+        $application = ConnectionApplication::where('id', $serviceId)->get();
         $reason = RejectionReason::where('connection_service_id', $serviceId)->first();
+        \Log::info("application ---->",[$application->app_close_reason_id]);
         return $reason  ?  $reason->reason_text : null;
     }
     
