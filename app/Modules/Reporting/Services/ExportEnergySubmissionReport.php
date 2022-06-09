@@ -1,6 +1,7 @@
 <?php
 namespace App\Modules\Reporting\Services;
 
+use App\Models\AppCloseReason;
 use DB;
 use App\Models\RejectionReason;
 use App\Models\OfficeCommission;
@@ -75,6 +76,7 @@ class ExportEnergySubmissionReport
 
     private function mapData(array $data)
     {
+
         foreach ($data as $datum) {
             $datum->Lead_Source = $this->getLeadSrc($datum->Lead_Source);
             $datum->UI_Status = $this->getUiStatus($datum->Application_Status, $datum->UI_Status, $datum->Assigned_To);
@@ -89,8 +91,10 @@ class ExportEnergySubmissionReport
 
             $this->setAgencyName($datum);
 
-            $datum->Rejection_Reason = $this->getRejectionReason($datum->Service_Id, $datum->Utility_Service);
-
+            $datum->Rejection_Reason = $this->getRejectionReason($datum);
+            
+            unset($datum->closing_reason);
+            unset($datum->acr_value);
             unset($datum->Office_Id);
             unset($datum->Foxie_Agency_Name);
             unset($datum->Foxie_Agent_Name);
@@ -149,12 +153,15 @@ class ExportEnergySubmissionReport
                 IFNULL(sl.compare_connect_id, 'NULL') as `Foxie_Connect_Id`,
                 cs.status as `UI_Status`,
                 ca.status as `Application_Status`,
-                cs.status as `Utility_Status`
+                cs.status as `Utility_Status`,
+                acr.value as `acr_value`,
+                ca.closing_reason as `closing_reason`
             ")
             ->rightJoin('connection_applications as ca', 'ca.id', '=', 'cs.connection_application_id')
             ->leftJoin('agencies as ag', 'ca.agency_id', '=', 'ag.id')
             ->leftJoin('agent_profiles as ap', 'ap.id', '=', 'ca.created_by')
             ->leftJoin('offices as ofs', 'ofs.id', '=', 'ca.office_id')
+            ->leftJoin('app_close_reasons as acr', 'ca.app_close_reason_id', '=', 'acr.id')
             ->leftJoin('users as u', 'ca.submitted_by', '=', 'u.id')
             ->leftJoin('suger_leads as sl', 'ca.id', '=', 'sl.connection_application_id')
             ->where( function($q) use ($energyType) { $q->whereIn('cs.service_type', $energyType)->orWhereNull('cs.service_type'); } );
@@ -287,13 +294,12 @@ class ExportEnergySubmissionReport
         return GilbertStatusMapper::getUtilityStatusAsText($utilityStatus);
     }
 
-    private function getRejectionReason($serviceId, $serviceType)
+    private function getRejectionReason($data)
     {
-        \Log::info("serviceId ---->",[$serviceId]);
-        $application = ConnectionApplication::where('id', $serviceId)->get();
-        $reason = RejectionReason::where('connection_service_id', $serviceId)->first();
-        \Log::info("application ---->",[$application->app_close_reason_id]);
-        return $reason  ?  $reason->reason_text : null;
+        if(!empty($data->acr_value)) {
+            return strtolower($data->acr_value) === "others" ? $data->closing_reason : $data->acr_value;
+        }
+        return 'NULL';
     }
     
     private function getUtilityCommission($officeId, $serviceType)
