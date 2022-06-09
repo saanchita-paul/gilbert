@@ -193,7 +193,8 @@ export default {
             case connectionServicesMapper.STATUS_REJECTED:
                 return { text: "Rejected", color: "red" };
             case connectionServicesMapper.STATUS_FAILED:
-                return { text: "Failed", color: "red" };
+                // return { text: "Failed", color: "red" };
+                return {text: 'Manual Processing', color: 'orange'};
             default:
                 return {
                     text: "Not Selected",
