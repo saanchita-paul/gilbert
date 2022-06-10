@@ -527,12 +527,37 @@ class ApplicationService
         }
     }
 
+    public function getNotSubmittedServices($id, $submitType) : array
+    {
+        $providers = [ConnectionService::PROVIDER_EA, ConnectionService::PROVIDER_ORIGIN];
+
+        $services = match ($submitType) {
+            'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
+            'power' => [ConnectionService::TYPE_ELECTRICITY],
+            'gas' => [ConnectionService::TYPE_GAS],
+            default => []
+        };
+
+        $notSubmitted = [];
+        
+        foreach($providers as $provider){
+            $notSubmitted[$provider] = ConnectionService::query()->where('connection_application_id', $id)
+            ->where('provider_name', $provider)
+            ->whereNull('lead_reference')
+            ->whereIn('service_type', $services)
+            ->pluck('id')->toArray();
+        }
+
+        return $notSubmitted;
+    }
+
     public function getNotSubmittedEaService($id, $submitType): array
     {
         $services = match ($submitType) {
             'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
             'power' => [ConnectionService::TYPE_ELECTRICITY],
             'gas' => [ConnectionService::TYPE_GAS],
+            default => []
         };
 
         return ConnectionService::query()->where('connection_application_id', $id)

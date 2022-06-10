@@ -32,7 +32,7 @@ class ExportPlanNote
     {
         try {
             $mappedConnData = $this->mapConnectionApp($this->connectionDetails);
-            $mappedPlanData = $this->mapPlanDetails($this->planDetails);
+            $mappedPlanData = $this->mapPlanDetails($this->planDetails, $this->noteData->type);
             $this->mappedCSVData = array_merge($mappedConnData, $mappedPlanData);
         }catch ( \Exception $exception)
         {
@@ -55,55 +55,136 @@ class ExportPlanNote
         ];
     }
 
-    private function mapPlanDetails($data)
+    private function mapPlanDetails($data, $submitType)
     {
+        if($submitType == ApplicationNote::SUBMITTED_CONNECTION){
 
-        $mappdata = [
-            'Plan Name' => data_get($data, 'name', ''),
-            'Plan Description' => data_get($data, 'description', ''),
-            'Customer type' => data_get($data, 'customer_type', ''),
-            'Ele Distributor' => data_get($data, 'distributor_name.electricity', ''),
-            'Gas Distributor' => data_get($data, 'distributor_name.gas', ''),
-            'Disclaimer' => data_get($data, 'disclaimer', ''),
-            'State Disclaimer' => data_get($data, 'state_disclaimer', ''),
-            'Ele Connection Fee' => data_get($data, 'connection_fees.electricity', ''),
-            'Gas Connection Fee' => data_get($data, 'connection_fees.gas', ''),
-            'Promotion Title' => data_get($data, 'promotion_title', ''),
-            'Promotion Title Header' => data_get($data, 'promotion.header', ''),
-            'Promotion Lines' => join(' ', data_get($data, 'promotion.lines', [])),
+            $mappdata = [
+                'Plan Name' => data_get($data, 'name', ''),
+                'Plan Description' => data_get($data, 'description', ''),
+                'Customer type' => data_get($data, 'customer_type', ''),
+                'Ele Distributor' => data_get($data, 'distributor_name.electricity', ''),
+                'Gas Distributor' => data_get($data, 'distributor_name.gas', ''),
+                'Disclaimer' => data_get($data, 'disclaimer', ''),
+                'State Disclaimer' => data_get($data, 'state_disclaimer', ''),
+                'Ele Connection Fee' => data_get($data, 'connection_fees.electricity', ''),
+                'Gas Connection Fee' => data_get($data, 'connection_fees.gas', ''),
+                'Promotion Title' => data_get($data, 'promotion_title', ''),
+                'Promotion Title Header' => data_get($data, 'promotion.header', ''),
+                'Promotion Lines' => join(' ', data_get($data, 'promotion.lines', [])),
+    
+    
+                'Ele Daily Supply Charge Rates Title' => data_get($data, 'rates.electricity.daily_supply_charge.title', ''),
+                'Ele Daily Supply Charge Rates (BD)' => data_get($data, 'rates.electricity.daily_supply_charge.before_discount', ''),
+                'Ele Daily Supply Charge Rates (AD)' => data_get($data, 'rates.electricity.daily_supply_charge.after_discount', ''),
+                'Ele Usage Rates Per Day Rates Title' => data_get($data, 'rates.electricity.usage_rates.peak_usage_per_day.title', ''),
+                'Ele Usage Rates Per Day Rates (BD)' => data_get($data, 'rates.electricity.usage_rates.peak_usage_per_day.before_discount', ''),
+                'Ele Usage Rates Per Day Rates  (AD)' => data_get($data, 'rates.electricity.usage_rates.peak_usage_per_day.after_discount', ''),
+    
+                'Plan Details Benefit Period' => data_get($data, 'plan_details.benefit_period', ''),
+                'Plan Details Exit Fees' => data_get($data, 'plan_details.exit_fees', ''),
+                'Plan Details Connection Fees' => data_get($data, 'plan_details.connection_fees', ''),
+                'Plan Details Rates' => data_get($data, 'plan_details.rates', ''),
+                'Plan Details Late Payment Fee' => data_get($data, 'plan_details.late_payment_fee', ''),
+                'Plan Details Customer Type' => data_get($data, 'plan_details.customer_type', ''),
+    
+                'Ele Discount' => data_get($data, 'discounts.electricity', ''),
+                'Gas Discount' => data_get($data, 'discounts.gas', ''),
+    
+                'Ele State Distributor Discount' => data_get($data, 'state_distributor_discount.electricity', ''),
+                'Gas State Distributor Discount' => data_get($data, 'state_distributor_discount.gas', ''),
+    
+                'Solar BuyBack Single Rate c_kwh' => data_get($data, 'solar_buy_pack_rate.single_rate_c_kwh', ''),
+                'Solar BuyBack Peak c_kwh' => data_get($data, 'solar_buy_pack_rate.peak_c_kwh', ''),
+                'Solar BuyBack Shoulder Rate c_kwh' => data_get($data, 'solar_buy_pack_rate.shoulder_c_kwh', ''),
+                'Solar BuyBack Off Peak Rate c_kwh' => data_get($data, 'solar_buy_pack_rate.off_peak_c_kwh',''),
+    
+            ];
+    
+            $gasUsageRate = data_get($data, 'rates.gas.usage_rates', []);
+            $mappedGasRateData = $this->mapGasUsageRate($gasUsageRate);
+            $mappedFeatureData = $this->mapFeature(data_get($data, 'features', []));
+            return array_merge($mappdata, $mappedGasRateData, $mappedFeatureData);
+        }
 
+        if($submitType == ApplicationNote::SUBMITTED_ORIGIN){
+            $mappData = [
+                'Rates' => data_get($data, 'rates', ''),
+                'Exit Fees' => data_get($data, 'exit_fees', ''),
+                'Benefit Period' => data_get($data, 'benefit_period'),
+            ];
 
-            'Ele Daily Supply Charge Rates Title' => data_get($data, 'rates.electricity.daily_supply_charge.title', ''),
-            'Ele Daily Supply Charge Rates (BD)' => data_get($data, 'rates.electricity.daily_supply_charge.before_discount', ''),
-            'Ele Daily Supply Charge Rates (AD)' => data_get($data, 'rates.electricity.daily_supply_charge.after_discount', ''),
-            'Ele Usage Rates Per Day Rates Title' => data_get($data, 'rates.electricity.usage_rates.peak_usage_per_day.title', ''),
-            'Ele Usage Rates Per Day Rates (BD)' => data_get($data, 'rates.electricity.usage_rates.peak_usage_per_day.before_discount', ''),
-            'Ele Usage Rates Per Day Rates  (AD)' => data_get($data, 'rates.electricity.usage_rates.peak_usage_per_day.after_discount', ''),
+            if(!empty($data['plans']['electricity'])){
+                $mapElecData = [
+                    'Ele Plan Name' => 'Origin Home Assist', // static
+                    'Ele Plan Description' => $data['plans']['electricity']['offers'] ? $data['plans']['electricity']['offers']['line_1'] . '. ' . $data['plans']['electricity']['offers']['line_1'] : '',
+                    'Ele Distributor' => $data['plans']['electricity']['distributor_name'] ?? '',
+                    'Ele Connection Fee Per Year' => $data['plans']['electricity']['vdo']['vdo_dmo_amount'] ?? '',
+                    'Ele Discount Rate' => $data['plans']['electricity']['vdo']['vdo_dmo_percentage'] ?? '',
+    
+                    'Standard Connection Fee' => data_get($data, 'plans.electricity.fees.standard_connection_fee', ''),
+                    'Same Day Connection Fee' => data_get($data, 'plans.electricity.fees.same_day_connection_fee', ''),
+                ];
 
-            'Plan Details Benefit Period' => data_get($data, 'plan_details.benefit_period', ''),
-            'Plan Details Exit Fees' => data_get($data, 'plan_details.exit_fees', ''),
-            'Plan Details Connection Fees' => data_get($data, 'plan_details.connection_fees', ''),
-            'Plan Details Rates' => data_get($data, 'plan_details.rates', ''),
-            'Plan Details Late Payment Fee' => data_get($data, 'plan_details.late_payment_fee', ''),
-            'Plan Details Customer Type' => data_get($data, 'plan_details.customer_type', ''),
+                for($i=0; $i<count($data['plans']['electricity']['supply_charge']); $i++){
+                    $supply = $data['plans']['electricity']['supply_charge'][$i];
 
-            'Ele Discount' => data_get($data, 'discounts.electricity', ''),
-            'Gas Discount' => data_get($data, 'discounts.gas', ''),
+                    $mapElecData['Ele Supply Charge #' . $i . ' Description'] = $supply['description'] ?? '';
+                    $mapElecData['Ele Supply Charge #' . $i . ' Unit' ] = $supply['unit'] ?? '';
+                    $mapElecData['Ele Supply Charge #' . $i . ' Total' ] = $supply['gst_inc'] ?? '';
+                }
 
-            'Ele State Distributor Discount' => data_get($data, 'state_distributor_discount.electricity', ''),
-            'Gas State Distributor Discount' => data_get($data, 'state_distributor_discount.gas', ''),
+                for($i=0; $i<count($data['plans']['electricity']['usage_charge']); $i++){
+                    $supply = $data['plans']['electricity']['usage_charge'][$i];
 
-            'Solar BuyBack Single Rate c_kwh' => data_get($data, 'solar_buy_pack_rate.single_rate_c_kwh', ''),
-            'Solar BuyBack Peak c_kwh' => data_get($data, 'solar_buy_pack_rate.peak_c_kwh', ''),
-            'Solar BuyBack Shoulder Rate c_kwh' => data_get($data, 'solar_buy_pack_rate.shoulder_c_kwh', ''),
-            'Solar BuyBack Off Peak Rate c_kwh' => data_get($data, 'solar_buy_pack_rate.off_peak_c_kwh',''),
+                    $mapElecData['Ele Usage Charge #' . $i . ' Description'] = $supply['description'] ?? '';
+                    $mapElecData['Ele Usage Charge #' . $i . ' Unit' ] = $supply['unit'] ?? '';
+                    $mapElecData['Ele Usage Charge #' . $i . ' Total' ] = $supply['gst_inc'] ?? '';
+                }
 
-        ];
+                for($i=0; $i<count($data['plans']['electricity']['bpid_links']); $i++){
+                    $link = $data['plans']['electricity']['bpid_links'][$i];
+                    $mapElecData['Ele Link #' . $i . ' Description'] = $link['offer_name'];
+                    $mapElecData['Ele Link #' . $i . ' URL'] = $link['file_url'];
+                }
 
-        $gasUsageRate = data_get($data, 'rates.gas.usage_rates', []);
-        $mappedGasRateData = $this->mapGasUsageRate($gasUsageRate);
-        $mappedFeatureData = $this->mapFeature(data_get($data, 'features', []));
-        return array_merge($mappdata, $mappedGasRateData, $mappedFeatureData);
+                $mappData = array_merge($mappData, $mapElecData);
+            }
+            if(!empty($data['plans']['gas'])){
+                $mapGasData = [
+                    'Gas Plan Name' => 'Origin Advantage Variable', // static
+                    // 'Plan Description' => $data['plans']['electricity']['offers'] ? $data['plans']['electricity']['offers']['line_1'] . '. ' . $data['plans']['electricity']['offers']['line_1'] : '',
+                    // 'Gas Distributor' => $data['plans']['electricity']['distributor_name'] ?? '',
+                    'Gas Standard Connection Fee' => data_get($data, 'plans.gas.fees.standard_connection_fee', ''),
+                ];
+
+                for($i=0; $i<count($data['plans']['gas']['supply_charge']); $i++){
+                    $supply = $data['plans']['gas']['supply_charge'][$i];
+
+                    $mapGasData['Gas Supply Charge #' . $i . ' Description'] = $supply['description'] ?? '';
+                    $mapGasData['Gas Supply Charge #' . $i . ' Unit' ] = $supply['unit'] ?? '';
+                    $mapGasData['Gas Supply Charge #' . $i . ' Total' ] = $supply['gst_inc'] ?? '';
+                }
+
+                for($i=0; $i<count($data['plans']['gas']['usage_charge']); $i++){
+                    $supply = $data['plans']['gas']['usage_charge'][$i];
+
+                    $mapGasData['Gas Usage Charge #' . $i . ' Description'] = $supply['description'] ?? '';
+                    $mapGasData['Gas Usage Charge #' . $i . ' Unit' ] = $supply['unit'] ?? '';
+                    $mapGasData['Gas Usage Charge #' . $i . ' Total' ] = $supply['gst_inc'] ?? '';
+                }
+
+                for($i=0; $i<count($data['plans']['gas']['bpid_links']); $i++){
+                    $link = $data['plans']['gas']['bpid_links'][$i];
+                    $mapGasData['Gas Link #' . $i . ' Description'] = $link['offer_name'];
+                    $mapGasData['Gas Link #' . $i . ' URL'] = $link['file_url'];
+                }
+
+                $mappData = array_merge($mappData, $mapGasData);
+            }
+    
+            return $mappData;
+        }
 
     }
 

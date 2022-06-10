@@ -152,7 +152,7 @@ class OriginService
                     'roomNo' => $application->billing_unit_number ?? '',
                     'roomType' => $application->billing_unit_number ? 'U' : '', // todo: create new column for unit/room type
                     'houseNo' => $application->billing_street_number ?? '',
-                    'street' => $application->billing_street_name ?? '',
+                    'street' => $application->billing_street_name_only ?? '',
                     'streetType' => $application->billing_street_type ?? '',
                     'city' => $application->billing_city ?? '',
                     'postcode' => $application->billing_postcode ?? '',

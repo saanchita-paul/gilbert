@@ -12,10 +12,12 @@
 			<v-icon color="yellow" size="20" class="pb-4 pr-2">mdi-flash</v-icon>
 			<p class="font-weight-bold">Electricity</p>
 		</div>
-		<div v-if="plan.vdo" class="pb-2">
-			<p class="font-weight-bold" style="font-size:26px">${{ plan.vdo.vdo_dmo_amount }}/Year</p>
-			<p class="font-weight-bold" style="font-size:14px">{{ plan.vdo.vdo_dmo_percentage }}% off the Victorian Default Offer Reference Price</p>
-			<p class="plan-content">Estimated cost inc GST for an average household using {{ plan.vdo.consumption }}kWh/yearly on a {{ plan.tarif }} tariff in the {{ plan.distributor_name }} network.</p>
+		<div v-if="plan.offers" class="pb-2">
+			<p class="font-weight-bold" style="font-size:26px">{{ plan.offers.title }}</p>
+			<p class="font-weight-bold" style="font-size:14px">{{ plan.offers.line_1}}</p>
+			<p class="plan-content">{{plan.offers.line_2}}</p>
+			<p class="plan-content">Guarantee usage and supply charges will not increase for 12 months.</p>
+			<p class="plan-content">Other charges and any solar feed-in tariff may change.</p>
 		</div>
 		<v-expansion-panels>
 			<v-expansion-panel color="red">
@@ -66,14 +68,14 @@
 						<div class="plan-text">{{ plan.fees.same_day_connection_fee }}</div>
 					</div>
 
-					<p class="plan-text mt-3">We’ve already included any discounts in the rates above. All prices are inclusive of GST.</p>
-					<p class="plan-text">Rates are rounded up to the nearest 2 decimal places where applicable.</p>
+<!--					<p class="plan-text mt-3">We’ve already included any discounts in the rates above. All prices are inclusive of GST.</p>-->
+					<p class="plan-text">Rates may have been rounded up to the nearest decimal place.</p>
 				</v-expansion-panel-content>
 			</v-expansion-panel>
 		</v-expansion-panels>
 	</div>
 	</div>
-	
+
 </template>
 
 <script>

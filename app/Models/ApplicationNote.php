@@ -39,7 +39,8 @@ class ApplicationNote extends Model
     const CONFIRM_CONNECTION = 'confirmed_connection';
     const CLOSE_CONNECTION = 'close_connection';
     const REGULAR = 'regular';
-    const SUBMITTED_CONNECTION = 'submitted_connection';
+    const SUBMITTED_CONNECTION = 'submitted_connection'; // SUBMITTED EA
+    const SUBMITTED_ORIGIN = 'submitted_origin';
 
     const NOTETYPE = [
         'escalated' => self::ESCALATED,
@@ -47,6 +48,7 @@ class ApplicationNote extends Model
         'close_connection' => self::CLOSE_CONNECTION,
         'submitted_connection' => self::SUBMITTED_CONNECTION,
         'regular' => self::REGULAR,
+        'submitted_origin' => self::SUBMITTED_ORIGIN,
     ];
 
 

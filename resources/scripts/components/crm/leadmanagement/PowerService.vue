@@ -101,6 +101,13 @@
                     </SumoPlan>
                 </div>
             </div>
+            <div v-if="selectedProvider === 'ea'" class="d-flex mt-1">
+                <v-checkbox
+                    v-model="leadSummary.ea_go_neutral"
+                    @change="changeGoNeutral">
+                </v-checkbox>
+                <p class="neutral-checkbox-text">Customer opts in for <span class="font-weight-bold">Go Neutral</span>.</p>
+            </div>
         </v-col>
         <v-col cols="12">
             <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
@@ -238,7 +245,7 @@ export default {
             set(value) {
                 this.isBothEnergySubmit === true ?
                     UtilityStoreService.setBothPlan(value, this.selectedProvider)
-                    : UtilityStoreService.setPowerPlan(value); 
+                    : UtilityStoreService.setPowerPlan(value);
             }
         },
         isBothEnergySubmit: {
@@ -441,6 +448,9 @@ export default {
             let subType = this.isBothEnergySubmit ? "energy" : "power";
             this.$eventBus.$emit("busUtilitySubmit", subType);
         },
+        async changeGoNeutral() {
+            await LeadApplicationService.saveSoleField('ea_go_neutral', this.leadSummary.ea_go_neutral, this.leadSummary.id);
+        }
     },
 };
 </script>
@@ -464,5 +474,8 @@ export default {
 .value-text {
     font-size: 16px;
     font-weight: 400;
+}
+.neutral-checkbox-text {
+    margin-top: 20px;
 }
 </style>

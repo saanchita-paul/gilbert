@@ -40,7 +40,7 @@
 							you by letter about any such change.
 						</p>
 
-						<div v-if="willShowELectricity">
+						<!-- <div v-if="willShowELectricity">
 							<span class="font-weight-bold mb-0" style="font-size:14px;">Electricity</span>
 							<div v-for="item in planDetails.plans.electricity.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
 								<a :href="item.file_url" target="_blank">{{ planDetails.plans.electricity.distributor_name }} - {{ item.offer_name }}</a>
@@ -51,6 +51,26 @@
 							<span class="font-weight-bold mb-0" style="font-size:14px;">Gas</span>
 							<div v-for="item in planDetails.plans.gas.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
 								<a :href="item.file_url" target="_blank">{{ planDetails.plans.gas.distributor_name }} - {{ item.offer_name }}</a>
+							</div>
+						</div> -->
+
+						<div v-if="willShowELectricity">
+							<span class="font-weight-bold mb-0" style="font-size:14px;">Electricity</span>
+							<div v-if="this.leadSummary.state == 'Victoria'" class="pb-2" style="font-size:14px;">
+								<a href="https://www.originenergy.com.au/vefs/" target="_blank">https://www.originenergy.com.au/vefs/</a>
+							</div>
+							<div v-else class="pb-2" style="font-size:14px;">
+								<a href="https://www.originenergy.com.au/bpidlink/" target="_blank">https://www.originenergy.com.au/bpidlink/</a>
+							</div>
+						</div>
+						
+						<div v-if="willShowGas">
+							<span class="font-weight-bold mb-0" style="font-size:14px;">Gas</span>
+							<div v-if="this.leadSummary.state == 'Victoria'" class="pb-2" style="font-size:14px;">
+								<a href="https://www.originenergy.com.au/vefs/" target="_blank">https://www.originenergy.com.au/vefs/</a>
+							</div>
+							<div v-else class="pb-2" style="font-size:14px;">
+								<a href="https://www.originenergy.com.au/bpidlink/" target="_blank">https://www.originenergy.com.au/bpidlink/</a>
 							</div>
 						</div>
 						
@@ -70,6 +90,7 @@
 import ElectricityPlan from "@scripts/components/origin/ElectricityPlan"
 import GasPlan from "@scripts/components/origin/GasPlan"
 import OriginService from "@scripts/modules/origin/services/OriginService"
+import OriginMapper from "../../../modules/origin/api/mappers/OriginMapper";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
@@ -116,7 +137,7 @@ export default {
         //     return this.planDetails.plans.find(plan => plan.title === "Gas");
 		// },
 		isBothEnergySubmit() {
-                return UtilityStoreService.getIsBothEnergySelected();
+            return UtilityStoreService.getIsBothEnergySelected() || this.serviceType == 'energy';
         },
 		willShowELectricity() {
 			return this.planDetails?.plans?.electricity && (this.serviceType == "power" || this.isBothEnergySubmit);
@@ -161,24 +182,29 @@ export default {
 		}
 	},
 	mounted() {
-		this.getOriginData();
+		if('plans' in this.leadSummary){
+			this.planDetails = OriginMapper.mapOriginData(this.leadSummary);
+		}
+		else{
+			this.getOriginData();
+		}
 	},
 	methods: {
 		async getOriginData() {
 			let query = null;
 			if(this.isBothEnergySubmit) {
-				 query = {
+					query = {
 					state: this.state,
 					postcode: this.leadSummary.postcode,
 				}
 			} else {
-				 query = {
+					query = {
 					service_type: this.service_Type,
 					state: this.state,
 					postcode: this.leadSummary.postcode,
 				}
 			}
-            
+			
 			this.planDetails = await OriginService.getOriginData(query);
 			// console.log("Origin Plan Details Response", this.planDetails)
 		},
