@@ -410,4 +410,22 @@ class ApplicationController extends Controller
             return $this->sendErrorResponse($exception);
         }
     }
+
+    /**
+     * getting the uuid for sumo
+     *
+     * @param integer $applicationId
+     *
+     */
+    public function getTriage($applicationId)
+    {
+        try {
+            $service = new ApplicationService();
+            $res = $service->checkTriageFlag($applicationId);
+            return response()->json(['success' => true, 'data' => $res]);
+
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
 }

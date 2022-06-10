@@ -170,6 +170,9 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     // REA extracts report
     Route::get('/rea-extract/report', [ReaExtractsReportController::class, 'getReaReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
+
+    // check triage flag test
+    Route::get('/check-triage/{id}', [ApplicationController::class, 'getTriage']);
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
