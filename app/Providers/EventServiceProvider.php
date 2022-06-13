@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Listeners\Agency\CreatePlanNoteListener;
+use App\Listeners\Agency\EnergySubmitListener;
 use App\Listeners\SumoSubmitListener;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
@@ -35,11 +36,12 @@ class EventServiceProvider extends ServiceProvider
          *
          */
         SubmitApplicationEvent::class => [
-            SendApplicationToEA::class,
-            OriginSubmitListener::class,
-            SumoSubmitListener::class,
+////            SendApplicationToEA::class,
+////            OriginSubmitListener::class,
+////            SumoSubmitListener::class,
             UpdateHubSpotContact::class,
             WaterServiceListener::class,
+            EnergySubmitListener::class,
             CreatePlanNoteListener::class,
 
         ],

@@ -23,12 +23,12 @@ class SendApplicationToEA implements ShouldQueue
         //
     }
 
-    private function validateAddress($applicationId) : bool 
+    private function validateAddress($applicationId) : bool
     {
         $addressModel = new AddressModel(connection_application_id: $applicationId);
         $gbgService = new GBGServices($addressModel);
         $address = $gbgService->findAddressByText();
-        if ($address->getIsAddressComplete()) 
+        if ($address->getIsAddressComplete())
         {
             return true;
         }else
@@ -45,7 +45,7 @@ class SendApplicationToEA implements ShouldQueue
      */
     public function handle(SubmitApplicationEvent $event)
     {
-        if (!$this->validateAddress($event->applicationId)) 
+        if (!$this->validateAddress($event->applicationId))
         {
             info("Send Application To EA: Address is not complete");
             // return;
@@ -55,9 +55,9 @@ class SendApplicationToEA implements ShouldQueue
         $application = ConnectionApplication::with('connectionServices')->where('id', $event->applicationId)->firstOrFail();
 
         $saleApiOn = config('ea.is_sales_api_on');
-        if ($saleApiOn === "1" &&
-            ($submitType === 'energy' || $submitType === 'power' || $submitType === 'gas')
-            && $this->isValidForSalesApi($application, $submitType) ) {
+
+        $allowedSubmitType = ['energy', 'power', 'gas'];
+        if ($saleApiOn === "1" && in_array($submitType, $allowedSubmitType)) {
                 $postEaService = new PostSalesService($event->applicationId);
                 $postEaService->postToEa($submitType);
                 ConnectionApplication::where('id' , $event->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
@@ -70,8 +70,6 @@ class SendApplicationToEA implements ShouldQueue
                 'is_services_valid' => $this->isValidForSalesApi($application, $submitType)
             ]);
         }
-
-
     }
 
     /**
@@ -96,7 +94,7 @@ class SendApplicationToEA implements ShouldQueue
             return true;
         }
         return  false;
-        
+
         // foreach ($application->connectionServices as $service) {
         //     if ($service->provider_name === 'ea' && is_null($service->lead_reference)) {
         //         return true;

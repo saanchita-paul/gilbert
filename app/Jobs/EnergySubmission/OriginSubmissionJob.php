@@ -1,37 +1,57 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Jobs\EnergySubmission;
 
-use App\Events\Agency\SubmitApplicationEvent;
+use App\thiss\Agency\SubmitApplicationthis;
 use App\Models\ConnectionService;
+use App\Services\Agency\HubspotContactService;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Origin\Services\OriginService;
 
-class OriginSubmitListener implements ShouldQueue
+class OriginSubmissionJob implements ShouldQueue
 {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    private int $applicationId;
+    private string $submitType;
+
     /**
-     * Handle the event.
+     * Create a new job instance.
      *
-     * @param SubmitApplicationEvent $event
      * @return void
      */
-    public function handle(SubmitApplicationEvent $event)
+    public function __construct(int $applicationId, string $submitType)
     {
-        $submitType = $event->submitType;
+        $this->applicationId = $applicationId;
+        $this->submitType = $submitType;
+    }
 
+    /**
+     * Handle the this.
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public function handle()
+    {
         $allowedSubmitType = ['energy', 'power', 'gas'];
-        if (in_array($submitType, $allowedSubmitType) && $this->isValidForOrigin($event->applicationId, $submitType))
+
+        if (in_array($this->submitType, $allowedSubmitType))
         {
-            $originService = new OriginService($event->applicationId);
-            match ($submitType) {
+            $originService = new OriginService($this->applicationId);
+            match ($this->submitType) {
                 'energy' => $this->storeBothElectricityAndGas($originService),
                 'power' => $originService->storeElectricity(),
                 'gas' => $originService->storeGas(),
             };
         } else {
             info("Skipping Origin Submit", [
-                'submit_type' => $submitType,
-                'is_services_valid' => $this->isValidForOrigin($event->applicationId, $submitType)
+                'submit_type' => $this->submitType,
+                'is_services_valid' => $this->isValidForOrigin($this->applicationId, $this->submitType)
             ]);
         }
     }
@@ -51,7 +71,7 @@ class OriginSubmitListener implements ShouldQueue
     }
 
     /**
-     * @param $application
+     * @param $applicationId and $submitType
      * @return bool
      */
     private function isValidForOrigin($applicationId, $submitType): bool
