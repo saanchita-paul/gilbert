@@ -14,7 +14,7 @@ class AddTriageToConnectionApplicationsTable extends Migration
     public function up()
     {
         Schema::table('connection_applications', function (Blueprint $table) {
-            $table->boolean('triage')->nullable()->default(0);
+            $table->tinyInteger('is_triage')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddTriageToConnectionApplicationsTable extends Migration
     public function down()
     {
         Schema::table('connection_applications', function (Blueprint $table) {
-            $table->dropColumn('triage');
+            $table->dropColumn('is_triage');
         });
     }
 }

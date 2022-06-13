@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\Agency\TriageFlagService;
 use Illuminate\Encryption\Encrypter;
 use App\Services\Address\GBGServices;
 use Illuminate\Support\Facades\Route;
@@ -170,9 +171,6 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     // REA extracts report
     Route::get('/rea-extract/report', [ReaExtractsReportController::class, 'getReaReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
-
-    // check triage flag test
-    Route::get('/check-triage/{id}', [ApplicationController::class, 'getTriage']);
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
@@ -208,6 +206,13 @@ Route::get('lnn/bot_token', function () {
 });
 
 
+/**
+ * test routes triage flug field
+ */
+//Route::get('/check-triage/{id}', function ($applicationId) {
+//    $res = TriageFlagService::setTriageFlag($applicationId);
+//    return response()->json(['success' => true, 'data' => $res]);
+//});
 
 
 Route::post('/our-property/token', [OurPropertyController::class, 'getAccessToken']);
