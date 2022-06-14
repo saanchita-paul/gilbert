@@ -388,7 +388,6 @@ class ApplicationController extends Controller
             $service = new ApplicationService();
             $inputData = $request->toArray();
             $service->providers($inputData, $applicationId);
-            dd($service);
             return response()->json(['success' => true, 'message' => 'providers updated successfully']);
 
         } catch (\Exception $exception) {
