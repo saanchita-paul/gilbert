@@ -21,6 +21,13 @@ export default [
                 route_name: 'chatbot',
                 disabled: true,
                 permissions: permissions.P_HOOD_ADMIN_CORE
+            },
+            {
+                type: 'route',
+                title: 'Caf Files',
+                route_name: 'caf.files',
+                disabled: true,
+                permissions: permissions.P_HOOD_ADMIN_CORE
             }
         ]
     },
