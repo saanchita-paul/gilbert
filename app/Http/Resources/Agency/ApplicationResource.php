@@ -46,7 +46,7 @@ class ApplicationResource extends JsonResource
             'connection_services' => $this->mapService($this->connectionServices),
             'identification' => $this->identification,
             'family_violance' => isset($this->family_violance) ? $this->family_violance : 3,
-            'is_renovation_on' => isset($this->is_renovation_on) ? $this->is_renovation_on : 1,
+            'is_renovation_on' => isset($this->is_renovation_on) ? $this->is_renovation_on : 0,
             'has_electricity' => isset($this->has_electricity) ? $this->has_electricity : 1,
             'inspection_time' => $this->inspection_time,
             'is_email_billing' => $this->is_email_billing,
@@ -104,7 +104,19 @@ class ApplicationResource extends JsonResource
             'submitted_by' => $this->submittedBy(),
             'submitted_at' => $this->submittedAt(),
             'after_hour_payee' => $this->after_hour_payee,
+
+            'is_email_marketing' => $this->is_email_marketing,
+            'is_access_require' => $this->is_access_require,
+            'is_gas_life_support' => $this->is_gas_life_support,
+            'is_any_unrestrained_animal' => $this->is_any_unrestrained_animal,
+            'concession_card_type' => $this->concession_card_type,
+            'concession_card_number' => $this->concession_card_number,
+            'concession_start_date' => $this->concession_start_date,
+            'concession_end_date' => $this->concession_end_date,
             'ea_go_neutral' => $this->ea_go_neutral,
+
+            'additional_access_information' => $this->additional_access_information,
+            'is_power_life_support' => $this->is_power_life_support,
         ];
     }
 

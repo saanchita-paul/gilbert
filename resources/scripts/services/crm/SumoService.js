@@ -17,7 +17,7 @@ export default {
                 }
 
                 let sumoUuid = await SumoAPI.getSumoUuid(lead.id)
-                
+
                 // let distributorData =  await SumoAPI.qualifyAddress(address , lead.id);
                 let distributorData =  await SumoAPI.qualifyAddress(address , sumoUuid);
 

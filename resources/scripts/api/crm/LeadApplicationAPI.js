@@ -330,17 +330,17 @@ export default {
         }
     },
 
-   async saveLead(lead, leadId) {
+   async confirmSubmitLead(lead, leadId) {
         try {
-
             lead.moving_date = ApplicationMapper.mapDateToServer(lead.moving_date);
             lead.dob = ApplicationMapper.mapDateToServer(lead.dob);
+            lead.concession_start_date = ApplicationMapper.mapDateToServer(lead.concession_start_date);
+            lead.concession_end_date = ApplicationMapper.mapDateToServer(lead.concession_end_date);
             lead.identification.expire_date = ApplicationMapper.mapDateToServer(lead.identification.expire_date);
-            const data = await axios.post('/api/applications/'+leadId+'/submit',{lead});
+            const data = await axios.post('/api/applications/'+leadId+'/submit', {lead});
             return data;
-
         } catch (error) {
-            console.log(error);
+            console.log('Submit error', error);
             return error.data;
         }
     },
@@ -375,7 +375,7 @@ export default {
 
     async updateApplicationProviders( payload , application_id){
         try {
-            const data = await axios.patch('/api/applications/'+application_id+'/providers',payload);
+            const data = await axios.patch('/api/applications/'+application_id+'/providers', payload);
             return data.data.data;
         } catch (error) {
             return error.data;
@@ -397,18 +397,12 @@ export default {
             value = year + '-'+ month + '-'+ day;
         }
 
-
-        if(field === 'plan_type') {
-
-        }
-
         const payload ={
             [field]: value,
             identification: identification,
             isService: isService
         }
-        // console.log("printing payload from api" , payload)
-        const response = await axios.post('/api/applications/'+leadId+'/draft',payload);
+        const response = await axios.post('/api/applications/'+leadId+'/draft', payload);
     },
     async updateConnecitionEndNullDate(leadId){
         let payload = {
@@ -512,5 +506,9 @@ export default {
         } catch (error) {
             return error.data;
         }
+    },
+
+    async clearConcessionDetails(id) {
+        await axios.post('/api/applications/'+id+'/clear-concession-details');
     },
 }

@@ -19,6 +19,7 @@ use App\Services\Agency\WaterAutoSubmitService;
 use App\Services\Application\ApplicationsMetricsService;
 use App\Services\Application\SearchConnectionApplication;
 use App\Services\Ea\SetEaDistributorService;
+use Origin\Services\SetOriginDistributorService;
 use App\Services\FastConnectService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -190,23 +191,36 @@ class ApplicationController extends Controller
      * @return ApplicationResource|JsonResponse
      */
     public function submit(Request $request, $id)
-{
+    {
     try {
         $service = new ApplicationService();
         $requestArray = $request->toArray();
 
         $res = $service->submit($requestArray, $id);
         $authUser = Auth::user();
-        $ea_services_id = $service->getNotSubmittedEaService($id);
-        $options = ['auth_user'=>$authUser, 'services_id'=> $ea_services_id];
         $submitType =  data_get($requestArray, 'lead.submit_type');
-
-        if($submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_ENERGY) {
-            $setEaDistributorService = new SetEaDistributorService($res, $ea_services_id);
-            $setEaDistributorService->setDistributor();
+        // $ea_service_ids = $service->getNotSubmittedEaService($id, $submitType);
+        $provider_service_ids = $service->getNotSubmittedServices($id, $submitType);
+        $service_ids = [];
+         
+        foreach($provider_service_ids as $key => $ids){
+            $service_ids = array_merge($service_ids, $ids);
+            if($submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_ENERGY
+                || $submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_POWER
+                || $submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_GAS){
+                switch($key){
+                    case ConnectionService::PROVIDER_EA:
+                        $setEaDistributorService = new SetEaDistributorService($res, $ids, $submitType);
+                        $setEaDistributorService->setDistributor();
+                        break;
+                    case ConnectionService::PROVIDER_ORIGIN:
+                        $setOriginDistributorService = new SetOriginDistributorService($res, $ids, $submitType);
+                        $setOriginDistributorService->setDistributor();
+                        break;
+                }
+            }
         }
-
-
+        $options = ['auth_user'=>$authUser, 'services_id'=> $service_ids];
         SubmitApplicationEvent::dispatch($id, $submitType, $options);
 
         return ApplicationResource::make($res);
@@ -405,7 +419,17 @@ class ApplicationController extends Controller
             $service = new ApplicationService();
             $res = $service->generateSumoUuid($applicationId);
             return response()->json(['success' => true, 'data' => $res]);
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
 
+    public function clearConcession(Request $request, $id)
+    {
+        try {
+            $service = new ApplicationService();
+            $res = $service->clearConcession($id);
+            return response(['success' => true, 'message' => 'Concession cleared successfully']);
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

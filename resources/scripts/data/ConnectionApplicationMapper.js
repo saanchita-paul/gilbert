@@ -40,7 +40,6 @@ export const connectionServicesMapper = {
 
 export const STATUSES_FOR_ENERGY_SUBMIT = [
     connectionServicesMapper.STATUS_ASSIGNED,
-    connectionServicesMapper.STATUS_ASSIGNED,
     connectionServicesMapper.STATUS_UNASSIGNED,
     connectionServicesMapper.STATUS_CANT_CONNECT,
     connectionServicesMapper.STATUS_REJECTED,

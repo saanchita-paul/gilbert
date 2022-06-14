@@ -10,6 +10,8 @@ use Ignite\Commands\IgniteFetchCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Modules\PropertyMe\Commands\SetPropertyMeAgentEmailCommand;
+use Origin\Commands\OriginStorePlanCommand;
+use Origin\Commands\OriginCheckStatusCommand;
 
 class Kernel extends ConsoleKernel
 {
@@ -25,6 +27,8 @@ class Kernel extends ConsoleKernel
         UploadConnectionDataToSFTPCommand::class,
         IgniteFetchCommand::class,
         SetPropertyMeAgentEmailCommand::class,
+        OriginStorePlanCommand::class,
+        OriginCheckStatusCommand::class,
     ];
 
     /**
@@ -38,6 +42,7 @@ class Kernel extends ConsoleKernel
          $schedule->command('fetch:submitted-leads')->hourly();
          $schedule->command('ea:upload:lead')->daily();
          $schedule->command('property_me:save_contact')->everyThirtyMinutes();
+         $schedule->command('origin:check')->hourlyAt(45);
 
          if($this->shouldIgniteRun()){
             $schedule->command('ignite:fetch')->everyTenMinutes();
