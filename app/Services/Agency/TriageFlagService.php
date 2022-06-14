@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Log;
 
 class TriageFlagService
 {
-    const MANDATORY_APP_FIELDS_NOT_HOOD_AI = ['title', 'first_name', 'last_name', 'phone', 'email', 'dob', 'address_unit', 'street_address', 'street_number', 'street_name', 'city', 'postcode', 'state', 'country', 'nmi'];
+    const MANDATORY_APP_FIELDS_NOT_HOOD_AI = ['title', 'first_name', 'last_name', 'phone', 'email', 'dob', 'unit_number', 'street_address', 'street_number', 'street_name_only', 'street_type', 'address_text ', 'city', 'postcode', 'state', 'country', 'nmi'];
 
     const IDENTIFICATION_FIELDS_HOOD_AI = ['type', 'card_number'];
 
