@@ -44,19 +44,19 @@
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Number of Applications Submitted</div>
+            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Number of application submitted by REA</div>
             <div style="text-align: center; float: left; color: #532B87; font-weight: bold; width: 20%; ">{{ $report['totalCount']['total_applications_created'] }}</div>
             <div style="clear: both;"></div>
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Number of Applications with atleast one service connected (other than water)</div>
+            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Number of applications with at least one service submitted to retailer</div>
             <div style="text-align: center; float: left; color: #532B87; font-weight: bold; width: 20%; ">{{ $report['totalCount']['applications_with_minimum_submitted'] }}</div>
             <div style="clear: both;"></div>
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Number of successful water connections</div>
+            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Number of successful water submissions</div>
             <div style="text-align: center; float: left; color: #532B87; font-weight: bold; width: 20%; ">{{ $report['totalCount']['successful_water_connections'] }}</div>
             <div style="clear: both;"></div>
         </div>
