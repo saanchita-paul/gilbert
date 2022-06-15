@@ -234,7 +234,6 @@ class OriginService
 
     public static function saveRejectedStatus($applicationId, $serviceId, $errorCode = '', $errorMessage = '')
     {
-
         $service = ConnectionService::findOrFail($serviceId);
         $service->status = ConnectionService::STATUS_REJECTED;
         $service->rejected_at = Carbon::now();
@@ -242,18 +241,14 @@ class OriginService
         $service->save();
 
         if(!empty($errorCode) && !empty($errorMessage)){
-
-            ConnectionApplication::where('id', $applicationId)->update([
-                'is_running_submission' => 0,
-            ]);
-
+            
             $newRejectReason = new RejectionReason();
             $newRejectReason->connection_service_id = $service->id;
             $newRejectReason->connection_application_id = $service->connection_application_id;
             $newRejectReason->service_type = $service->service_type;
             $newRejectReason->reason_code = $errorCode;
             $newRejectReason->reason_text = $errorMessage;
-
+            
             $newRejectReason->save();
         }
     }
