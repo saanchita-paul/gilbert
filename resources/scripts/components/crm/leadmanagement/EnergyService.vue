@@ -125,9 +125,6 @@ export default {
 .reason {
     font-size: .8em;
 }
-.status {
-
-}
 .fontStyleStatus{
     font-family: Roboto;
     font-size: 12px;

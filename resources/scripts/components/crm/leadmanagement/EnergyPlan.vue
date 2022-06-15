@@ -14,8 +14,6 @@
 export default {
 name: "EnergyPlan",
     props:['selectedPlan','plan'],
-
-
     methods: {
         reviewPlan() {
             this.$emit('view', this.plan);
@@ -30,11 +28,9 @@ name: "EnergyPlan",
                 this.selectPlan(this.plan);
             }
         }
-
     },
     mounted() {
-    this.isActive();
-
+        this.isActive();
     }
 }
 </script>

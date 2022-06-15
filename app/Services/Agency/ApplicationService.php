@@ -303,16 +303,14 @@ class ApplicationService
     public function setSubmittedAtByServiceType(int $applicationId, string $type, array $service_interests = []): bool
     {
         try {
+            $services = match ($type) {
+                'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
+                'power' => [ConnectionService::TYPE_ELECTRICITY],
+                'gas' => [ConnectionService::TYPE_GAS],
+                'water' => [ConnectionService::TYPE_WATER],
+            };
             $query = ConnectionService::where('connection_application_id', $applicationId);
-
-            if ($type == "energy") {
-                $servicesInterests = array_filter(array_unique($service_interests), function ($var) {
-                    return ($var == 'power' || $var == 'gas');
-                });
-                $query = $query->whereIn('service_type', $servicesInterests);
-            } else {
-                $query = $query->where('service_type', strtolower($type));
-            }
+            $query = $query->whereIn('service_type', $services);
             $query->update(["submitted_at" => now()]);
 
             return true;
@@ -488,34 +486,84 @@ class ApplicationService
 
     public function providers(array $data, $applicationId)
     {
-        $connectionApplication = ConnectionApplication::find($applicationId);
-
         $services = [];
         $provider_service_type = $data['service_area'] ?? '';
-        if ($provider_service_type === 'energy') {
-            $services = [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY];
-        } elseif ($provider_service_type === 'internet') {
-            $services = [ConnectionService::TYPE_INTERNET];
-        }
 
+        $services = match ($provider_service_type) {
+            'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
+            'power' => [ConnectionService::TYPE_ELECTRICITY],
+            'gas' => [ConnectionService::TYPE_GAS],
+            'internet' => [ConnectionService::TYPE_INTERNET]
+        };
 
         foreach ($services as $service) {
+
+            $plan = $data['plan_type'];
+            if($data['provider_name'] === 'origin' && $data['plan_type'] !== null) {
+                $plan = match ($service) {
+                    ConnectionService::TYPE_ELECTRICITY => ConnectionService::ORIGIN_HOME_ASSIST_PLAN,
+                    ConnectionService::TYPE_GAS => ConnectionService::ORIGIN_ADVANTAGE_VARIABLE_PLAN,
+                };
+            }
+
             $connectionService = ConnectionService::where('connection_application_id', $applicationId)
                 ->where('service_type', $service)
                 ->first();
             if ($connectionService) {
                 $connectionService->provider_name = $data['provider_name'];
-                $connectionService->plan_type = $data['plan_type'];
+                $connectionService->plan_type = $plan;
                 $connectionService->save();
+            } else {
+                ConnectionService::create(
+                    [
+                        'service_type' => $service,
+                        'connection_application_id' => $applicationId,
+                        'status' => ConnectionService::STATUS_EA_PROCESSINF,
+                        'provider_name' => $data['provider_name'],
+                        'plan_type' => $plan,
+                    ]
+                );
             }
         }
     }
 
-    public function getNotSubmittedEaService($id): array
+    public function getNotSubmittedServices($id, $submitType) : array
     {
-        return ConnectionService::query()->where('connection_application_id',$id )
-            ->where('provider_name', ConnectionService::PROVIDER_EA )
+        $providers = [ConnectionService::PROVIDER_EA, ConnectionService::PROVIDER_ORIGIN];
+
+        $services = match ($submitType) {
+            'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
+            'power' => [ConnectionService::TYPE_ELECTRICITY],
+            'gas' => [ConnectionService::TYPE_GAS],
+            default => []
+        };
+
+        $notSubmitted = [];
+        
+        foreach($providers as $provider){
+            $notSubmitted[$provider] = ConnectionService::query()->where('connection_application_id', $id)
+            ->where('provider_name', $provider)
             ->whereNull('lead_reference')
+            ->whereIn('service_type', $services)
+            ->pluck('id')->toArray();
+        }
+
+        return $notSubmitted;
+    }
+
+    public function getNotSubmittedEaService($id, $submitType): array
+    {
+        $services = match ($submitType) {
+            'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
+            'power' => [ConnectionService::TYPE_ELECTRICITY],
+            'gas' => [ConnectionService::TYPE_GAS],
+            default => []
+        };
+
+        return ConnectionService::query()->where('connection_application_id', $id)
+            ->where('provider_name', ConnectionService::PROVIDER_EA)
+            ->whereNull('lead_reference')
+            ->whereIn('service_type', $services)
             ->pluck('id')->toArray();
     }
 
@@ -539,6 +587,19 @@ class ApplicationService
         $existingApplication->save();
 
         return $sumoUuid;
+    }
+    public function clearConcession($id)
+    {
+        $existLead = ConnectionApplication::findOrFail($id);
+
+        $existLead->update([
+            'concession_card_type' => null,
+            'concession_card_number' => null,
+            'concession_start_date' => null,
+            'concession_end_date' => null
+        ]);
+
+        return $existLead->refresh();
     }
 
 }

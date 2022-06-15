@@ -2,28 +2,33 @@ import ProviderPlan from "@scripts/models/crm/ProviderPlan";
 
 export default [
     {
+        name: 'ea',
+        formatted_name: 'EA',
+        service_type: 'energy',
+        default_plan: null,
+        plans: [],
+        logo: '/assets/images/EA.png'
+    },
+    {
         name: 'origin',
         formatted_name: 'Origin',
         service_type: 'energy',
-        default_plan: 'origin_go',
+        default_plan: 'origin_home_assist',
         plans: [
             new ProviderPlan({
-                title:'Origin Go',
-                name: 'origin_go',
+                title:'Origin Home Assist',
+                name: 'origin_home_assist',
                 bgColor: 'red',
+                type: 'power',
             }),
             new ProviderPlan({
-                title:'Origin Go Variable',
-                name: 'origin_go_variable',
-                bgColor: 'blue',
-            }),
-            new ProviderPlan({
-                title:'Origin Basic',
-                name: 'origin_basic',
-                bgColor: 'orange',
-            }),
+                title:'Origin Advantage Variable',
+                name: 'origin_advantage_variable',
+                bgColor: 'red',
+                type: 'gas',
+            })
         ],
-        logo: '/assets/images/logo/providers/origin.png'
+        logo: '/assets/images/logo/providers/origin_new.png'
     },
     {
         name: 'sumo',
@@ -36,16 +41,6 @@ export default [
                 name: 'sumo_saver',
                 bgColor: 'purple',
             }),
-            // new ProviderPlan({
-            //     title:'Sumo ASSURE',
-            //     name: 'sumo_assure',
-            //     bgColor: 'blue',
-            // }),
-            // new ProviderPlan({
-            //     title:'Sumo SELECT',
-            //     name: 'sumo_select',
-            //     bgColor: 'green',
-            // }),
         ],
         logo: '/assets/images/logo/providers/sumo.png'
     },

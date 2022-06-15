@@ -11,6 +11,7 @@
         "php": "^8.0",
         "aws/aws-sdk-php-laravel": "^3.6",
         "barryvdh/laravel-snappy": "^1.0",
+        "cmixin/business-time": "^1.11",
         "doctrine/dbal": "^3.1",
         "fideloper/proxy": "^4.2",
         "firebase/php-jwt": "^5.5",
@@ -66,7 +67,8 @@
             "PropertyMe\\": "app/Modules/PropertyMe",
             "HoodLead\\": "app/Modules/HoodLead",
             "TSA\\": "app/Modules/TSA",
-            "Reporting\\": "app/Modules/Reporting"
+            "Reporting\\": "app/Modules/Reporting",
+            "Origin\\": "app/Modules/Origin"
         }
     },
     "autoload-dev": {
