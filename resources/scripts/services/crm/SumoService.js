@@ -2,6 +2,7 @@ import SumoAPI from "@scripts/api/crm/SumoAPI"
 
 
 export default {
+    
     getPlans: async (address , service_interests , agent , lead) => {
             try {
                 let service_type = '';
@@ -14,9 +15,11 @@ export default {
                 }else {
                     throw 'plan not selected';
                 }
-            console.log("address ->", address);
-                
-                let distributorData =  await SumoAPI.qualifyAddress(address , lead.id);
+
+                let sumoUuid = await SumoAPI.getSumoUuid(lead.id)
+
+                // let distributorData =  await SumoAPI.qualifyAddress(address , lead.id);
+                let distributorData =  await SumoAPI.qualifyAddress(address , sumoUuid);
 
                 let agent_name = '';
                 if(agent){
@@ -27,7 +30,7 @@ export default {
 
                 // let plans;
                 // if(distributorData[0].electricityDistributors.distributor){
-                let plans =  await SumoAPI.products(distributorData[0] , service_type , agent_name , lead.id);
+                let plans =  await SumoAPI.products(distributorData[0] , service_type , agent_name , sumoUuid);
                 return plans;
                 // }
                 // throw 'No plans found'

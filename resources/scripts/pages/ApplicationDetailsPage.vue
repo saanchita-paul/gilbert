@@ -237,7 +237,12 @@ export default {
             return await LeadApplicationService.getAssignedHoodUser(this.leadId);
         },
         isWaterUnavailable($submitType, $state, $tenantType) {
-            if($submitType === 'water' && $state !== 'Victoria') {
+
+            // console.log("I am checking ->", $state, $submitType)
+
+            const rightState = ['vic', 'victoria'].includes($state?.toLowerCase());
+
+            if($submitType === 'water' && !rightState) {
                 this.preventSubmissionMessage = 'Water is not available outside Victoria';
                 return true;
             }
@@ -247,6 +252,9 @@ export default {
             }
              return false;
         },
+
+        
+
         closePreventSubmissionModal() {
           this.preventSubmissionFlag = false;
         },

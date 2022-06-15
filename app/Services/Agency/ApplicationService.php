@@ -9,10 +9,13 @@ use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use App\Models\HoodProfile;
 use App\Models\Identification;
+use App\Models\Office;
 use App\Models\User;
 use App\Services\RolePermission;
 use JetBrains\PhpStorm\ArrayShape;
 use TSA\Services\TsaSendAppliationService;
+use Illuminate\Support\Str;
+
 
 class ApplicationService
 {
@@ -31,6 +34,31 @@ class ApplicationService
         $application['status'] = ConnectionApplication::STATUS_UNASSIGNED;
         $authizedPerson = $application['authorized_person'];
 
+        if($application['is_billing_same'] == 0 || $application['is_billing_same'] == null ) {
+
+            $application['billing_unit_number'] = $application['billing_unit_number'];
+            $application['billing_street_number'] = $application['billing_street_number'];
+            $application['billing_street_name_only'] = $application['billing_street_name_only'];
+            $application['billing_address_text'] = $application['billing_address_text'];
+            $application['billing_street_address'] = $application['billing_street_address'];
+            $application['billing_street_type'] = $application['billing_street_type'];
+            $application['billing_city'] = $application['billing_city'];
+            $application['billing_postcode'] = $application['billing_postcode'];
+            $application['billing_state'] = $application['billing_state'];
+            $application['billing_address_unit'] = $application['billing_unit_number'] ? $application['billing_unit_number'] : null;
+        }
+        else {
+            $application['billing_unit_number'] = $application['unit_number'];
+            $application['billing_street_number'] = $application['street_number'];
+            $application['billing_street_name_only'] = $application['street_name_only'];
+            $application['billing_address_text'] = $application['address_text'];
+            $application['billing_street_address'] = $application['street_address'];
+            $application['billing_street_type'] = $application['street_type'];
+            $application['billing_city'] = $application['city'];
+            $application['billing_postcode'] = $application['postcode'];
+            $application['billing_state'] = $application['state'];
+            $application['billing_address_unit'] = $application['unit_number'] ? $application['unit_number'] : null;
+        }
 
         /** @var $newApplication ConnectionApplication */
         $newApplication = ConnectionApplication::create($application);
@@ -108,20 +136,33 @@ class ApplicationService
         $existingApplication->is_billing_same = $address['is_billing_same'];
 
 
-        if (!$address['is_billing_same']) {
+
+        if ($address['is_billing_same'] == 0 || $address['is_billing_same'] == null) {
             $existingApplication->billing_address_text = $address['billing_address_text'];
             $existingApplication->billing_state = $address['billing_state'];
             $existingApplication->billing_unit_number = $address['billing_unit_number'];
             $existingApplication->billing_street_type = $address['billing_street_type'];
             $existingApplication->billing_street_address = $address['billing_street_address'];
-            $existingApplication->billing_street_name = $address['billing_street_name'];
+            // $existingApplication->billing_street_name = $address['billing_street_name'];
             $existingApplication->billing_street_name_only = $address['billing_street_name_only'];
             $existingApplication->billing_street_number = empty($address['billing_street_address']) ? null : $address['billing_street_number'];
             $existingApplication->billing_city = empty($address['billing_city']) ? null : $address['billing_city'];
             $existingApplication->billing_postcode = empty($address['billing_postcode']) ? null : $address['billing_postcode'];
-////            $existingApplication->billing_state = empty($address['billing_state']) ? null : $address['billing_state'] ;
-//            $existingApplication->billing_country = empty($address['billing_country']) ? null : $address['billing_country'] ;
-        }
+            $existingApplication->billing_address_unit = $address['billing_unit_number'] ? $address['billing_unit_number'] : null;
+        } else {
+            $existingApplication->billing_address_text = $address['address_text'];
+            $existingApplication->billing_state = $address['state'];
+            $existingApplication->billing_unit_number = $address['unit_number'];
+            $existingApplication->billing_street_type = $address['street_type'];
+            $existingApplication->billing_street_address = $address['street_address'];
+            // $existingApplication->billing_street_name = $address['street_name'];
+            $existingApplication->billing_street_name_only = $address['street_name_only'];
+            $existingApplication->billing_street_number = empty($address['street_address']) ? null : $address['street_number'];
+            $existingApplication->billing_city = empty($address['city']) ? null : $address['city'];
+            $existingApplication->billing_postcode = empty($address['postcode']) ? null : $address['postcode'];
+            $existingApplication->billing_address_unit = $address['unit_number'] ? $address['unit_number'] : null;
+
+        };
         $existingApplication->save();
 
         return $existingApplication;
@@ -223,15 +264,16 @@ class ApplicationService
     public function submit(array $applications, $id)
     {
 
+        $existLead = ConnectionApplication::query()->where('id', $id)->firstOrFail();
+
         $lead = $applications['lead'];
-        $vendorId = $this->calculateVendorId($id);
+        $vendorId = $this->calculateVendorId($existLead);
         $lead = array_merge($lead, [
             'plan_type' => null,
             'submitted_by' => auth()->id(),
             'vendor_id' => $vendorId
         ]);
 
-        $existLead = ConnectionApplication::findOrFail($id);
 
         $existLead->update($lead);
 
@@ -401,9 +443,11 @@ class ApplicationService
 
     }
 
-    private function calculateVendorId($id)
+    private function calculateVendorId($lead)
     {
-        return 'HD2_CRM' . str_pad($id, 10, "0", STR_PAD_LEFT);
+        /** @var Office $office */
+        $office = $lead->office;
+        return $office->getVendorCode() . '_CRM' . str_pad($lead->id, 10, "0", STR_PAD_LEFT);
     }
 
     public function closeApplication($id)
@@ -529,6 +573,21 @@ class ApplicationService
         return $existingApplication->assigned_to;
     }
 
+    /** generate the uuid and save it to ConnectionApplication Table
+     *
+     * @param int $applicationId
+     * @return string $sumoUuid
+     */
+    public function generateSumoUuid($applicationId)
+    {
+        $sumoUuid = Str::uuid()->toString();
+
+        $existingApplication = ConnectionApplication::find($applicationId);
+        $existingApplication->sumo_uuid = $sumoUuid;
+        $existingApplication->save();
+
+        return $sumoUuid;
+    }
     public function clearConcession($id)
     {
         $existLead = ConnectionApplication::findOrFail($id);

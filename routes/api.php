@@ -185,6 +185,11 @@ Route::post('/register/email-validation', [AuthController::class, 'isValidUser']
 
 Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
 
+/**
+ * api to get the uuid for sumo
+ */
+Route::get('/sumo/generate-uuid/{id}', [ApplicationController::class, 'getSumoUuid']);
+
 
 
 /**

@@ -362,7 +362,8 @@ class ApplicationController extends Controller
         }
     }
 
-    public function updateService(Request $request , $application_id){
+    public function updateService(Request $request , $application_id)
+    {
         try {
             $service = new ApplicationService();
             $data = $request->all();
@@ -381,7 +382,8 @@ class ApplicationController extends Controller
         }
     }
 
-    public function providers(ProviderRequest $request , $applicationId){
+    public function providers(ProviderRequest $request , $applicationId)
+    {
         try {
             $service = new ApplicationService();
             $inputData = $request->toArray();
@@ -393,12 +395,30 @@ class ApplicationController extends Controller
         }
     }
 
-    public function getAssignedHoodUser($applicationId){
+    public function getAssignedHoodUser($applicationId)
+    {
         try {
             $service = new ApplicationService();
             $res = $service->getAssignedHoodUser($applicationId);
             return response()->json(['success' => true, 'data' => $res]);
 
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    /**
+     * getting the uuid for sumo
+     *
+     * @param integer $applicationId
+     *
+     */
+    public function getSumoUuid($applicationId)
+    {
+        try {
+            $service = new ApplicationService();
+            $res = $service->generateSumoUuid($applicationId);
+            return response()->json(['success' => true, 'data' => $res]);
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

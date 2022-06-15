@@ -8,13 +8,12 @@ use App\Jobs\CheckSaleApiLeadData;
 use App\Models\APILog;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
-use App\Models\RejectionReason;
+use App\Models\Office;
 use App\Services\Logger\LogSalesService;
 use Carbon\Carbon;
 use GraphQL\Client;
 use GraphQL\Query;
 use GraphQL\Variable;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 
 class GetSalesRequestStaus
@@ -25,7 +24,6 @@ class GetSalesRequestStaus
 
     public function __construct()
     {
-        $this->accessToken = (new GetAccessToken())->getAccessToken();
     }
 
     /**
@@ -46,7 +44,7 @@ class GetSalesRequestStaus
 
         $da = ['data' =>
             [
-                'vendorCode' => "HD2",
+                'getVendorCode' => "HD2",
                 'submittedFrom' => $fromDate,
                 'submittedTo' => $todate,
                 'pageable' => [
@@ -127,12 +125,15 @@ class GetSalesRequestStaus
         }
     }
 
+
     public function getSalesStatus($salesId, $leadId)
     {
+        /** @var Office $office */
+        $office = ConnectionApplication::with('office')->where('id', $leadId)->first()->office;
         $logSalesService = new LogSalesService();
         $da = ['data' =>
             [
-                'vendorCode' => "HD2",
+                'vendorCode' => $office->getVendorCode(),
                 'id' => $salesId
             ]
 
@@ -159,7 +160,7 @@ class GetSalesRequestStaus
 
         $url = env('EA_SALES_URL', 'https://apigw-nonprod.energyaustralia.com.au/graphql');
         $XEAEnv = config('ea.x_ea_env');
-        $header = ['Authorization' => $this->accessToken, 'X-EA-Env' => $XEAEnv];
+        $header = ['Authorization' => $this->getAccessToken($leadId), 'X-EA-Env' => $XEAEnv];
         $client = new Client(
             $url,
             $header
@@ -224,5 +225,13 @@ class GetSalesRequestStaus
             CheckSaleApiLeadData::dispatch($service->connection_application_id, $service->lead_reference);
         }
 
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccessToken(int $leadId): string
+    {
+        return (new GetAccessToken())->getAccessToken($leadId);
     }
 }

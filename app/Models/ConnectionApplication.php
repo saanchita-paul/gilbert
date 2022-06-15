@@ -201,6 +201,12 @@ class ConnectionApplication extends Model
         'is_address_complete',
         'billing_is_address_complete',
         'is_water_manual_submitting',
+        'ea_go_neutral',
+        'hood_utm_source',
+        'hood_utm_content',
+        'hood_utm_medium',
+        'hood_hss_channel',
+        'sumo_uuid',
         'is_email_marketing',
         'is_access_require',
         'is_gas_life_support',
@@ -250,6 +256,7 @@ class ConnectionApplication extends Model
     const PLAN_TYPE_TOTAL = 'total_plan';
     const PLAN_TYPE_BASIC = 'basic_plan';
     const PLAN_TYPE_NO_FRILLS = 'no_frills';
+    const PLAN_TYPE_FLEXI_PLAN = 'flexi_plan';
 
     const PLAN_TYPE_ORIGIN_GO = 'origin_go';
     const PLAN_TYPE_ORIGIN_VARIABLE = 'origin_go_variable';
@@ -564,9 +571,9 @@ class ConnectionApplication extends Model
 
     /**
      * Converts 10-digit MIRN to 11-digit MIRN which appends checksum at the end of string
-     * 
-     * @param string 
-     * 
+     *
+     * @param string
+     *
      * @return string
      */
     public function getMirnChecksumAttribute(){
@@ -574,7 +581,7 @@ class ConnectionApplication extends Model
             $arr = str_split($this->mirn);
             $isDouble = true;
             $totalSum = 0;
-            
+
             for($i=count($arr)-1; $i>=0; $i--){
                 $asciiVal = intval(ord($arr[$i]));
                 if($isDouble)
@@ -585,10 +592,10 @@ class ConnectionApplication extends Model
                 foreach($split as $digit){
                     $sum += $digit;
                 }
-                
+
                 $totalSum+= $sum;
             }
-            
+
             $nextHighest = ceil($totalSum / 10) * 10;
             $checkSum = ($nextHighest - $totalSum) % 10;
             return $this->mirn . strval($checkSum);

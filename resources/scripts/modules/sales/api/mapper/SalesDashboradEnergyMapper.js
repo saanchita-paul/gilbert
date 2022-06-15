@@ -29,6 +29,9 @@ export default {
                     },
                     {
                         key: 'Total Plan', value: data?.ea_gas_total_plan,
+                    },
+                    {
+                        key: 'Flexi Plan', value: data?.ea_gas_flexi_plan,
                     }
                 ],
                 [
@@ -43,7 +46,7 @@ export default {
                 ],
             ];
 
-            const totalEaData = data?.ea_gas_no_frills + data?.ea_gas_basic_plan + data?.ea_gas_total_plan;
+            const totalEaData = data?.ea_gas_no_frills + data?.ea_gas_basic_plan + data?.ea_gas_total_plan + data?.ea_gas_flexi_plan;
             const totalSumoData = data?.sumo_gas_freedom;
             const totalOriginData = data?.origin_gas_home_assist;
 
@@ -92,6 +95,9 @@ export default {
                     },
                     {
                         key: 'Total Plan', value: data?.ea_power_total_plan,
+                    },
+                    {
+                        key: 'Flexi Plan', value: data?.ea_power_flexi_plan,
                     }
                 ],
                 [
@@ -106,7 +112,7 @@ export default {
                 ],
             ];
 
-            const totalEaData = data?.ea_power_no_frills + data?.ea_power_basic_plan + data?.ea_power_total_plan;
+            const totalEaData = data?.ea_power_no_frills + data?.ea_power_basic_plan + data?.ea_power_total_plan + data?.ea_power_flexi_plan;
             const totalSumoData = data?.sumo_power_freedom;
             const totalOriginData = data?.origin_power_home_assist;
 

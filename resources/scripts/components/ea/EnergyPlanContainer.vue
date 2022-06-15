@@ -19,6 +19,15 @@
                             <small>{{planDetails.disclaimer}}</small>
                         </p>
 
+                        <!-- <p  v-if="(plan === 'total_plan' || plan === 'no_frills')" class="pt-2 mb-4 small-text">
+                            <span  class="font-weight-bold">* If credit is offered </span> - This is 25% less than the reference price, Which includes the credit of $25)
+                            <span style="display: block" class="">
+                                This is just an estimate and your bills will be based on your actual usage over the year and your tariff type.
+                            </span>
+                        </p> -->
+
+
+
                     </div>
                     <v-divider></v-divider>
                     <p class="title font-weight-bold mt-3 mb-2">{{ planDetails.promotion_title }}</p>
@@ -36,9 +45,12 @@
                                 </v-icon>
                             </div>
                             <div>
-                                <p class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.electricity }} </span>
+
+                                <p v-if="planDetails.state_distributor_discount.elec_credit_amount === '' || planDetails.state_distributor_discount.elec_credit_amount === null || planDetails.state_distributor_discount.elec_credit_amount === 0" class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.electricity }}</span>
                                 </p>
-                                <p v-if="plan === 'total_plan'">guaranteed</p>
+                                <p v-else class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.electricity }}  + ${{ planDetails.state_distributor_discount.elec_credit_amount}} credit </span>
+                                </p>
+                                <p v-if="isTopPlan">guaranteed </p>
                                 <p v-if="plan === 'no_frills'">Simplified energy pricing</p>
                             </div>
                         </div>
@@ -53,8 +65,9 @@
                                 </v-icon>
                             </div>
                             <div>
-                                <p class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.gas  }}</span></p>
-                                <p v-if="plan === 'total_plan'">guaranteed</p>
+                                <p v-if="planDetails.state_distributor_discount.gas_credit_amount === '' || planDetails.state_distributor_discount.gas_credit_amount === null || planDetails.state_distributor_discount.gas_credit_amount === 0" class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.gas  }}</span></p>
+                                <p v-else class="mb-0"><span class="font-weight-bold">{{ planDetails.promotional_texts.gas }}  + ${{ planDetails.state_distributor_discount.gas_credit_amount}} credit </span></p>
+                                <p v-if="isTopPlan">guaranteed</p>
                                 <p v-if="plan === 'no_frills'">Simplified energy pricing</p>
                             </div>
                         </div>
@@ -62,6 +75,12 @@
                     <v-divider></v-divider>
 
                     <p class="title font-weight-bold mt-3">Features</p>
+
+                    <div v-if="plan === 'flexi_plan'" class="mb-3">
+                        <p class="mb-0 font-weight-bold">Discount</p>
+                        <p class="mb-0">{{planDetails.discounts.electricity}}% discount off off total electricity bill. Guaranteed discount that applied to your energy charges</p>
+                        <p class="mb-0">A variable rate, with a total energy bill discount.</p>
+                    </div>
 
                     <div class="mb-3" v-for="feature in planDetails.features" :key="feature.title">
                         <p class="mb-0 font-weight-bold">{{ feature.title }}</p>
@@ -113,7 +132,7 @@
                                 <p class="mb-0 mt-3">{{ planDetails.rates.electricity.daily_supply_charge.title }}
                                     <v-icon small> mdi mdi-alert-circle</v-icon>
                                 </p>
-                                <div v-if="plan === 'total_plan'">
+                                <div v-if="isTopPlan">
                                     <p><small>Before discount</small></p>
                                     <p>{{ planDetails.rates.electricity.daily_supply_charge.before_discount }}</p>
                                     <p><small>After discount</small></p>
@@ -132,7 +151,7 @@
                                 >
                                     <p class="font-weight-bold">
                                         {{ value.title }}</p>
-                                    <div v-if="plan === 'total_plan'">
+                                    <div v-if="isTopPlan">
                                         <p><small>Before discount</small></p>
                                         <p>
                                             {{
@@ -225,7 +244,6 @@
                         <!-- <v-icon small> mdi mdi-alert-circle</v-icon> -->
                     </p>
                     <p class="mb-2"><span class="font-weight-bold">Rates: </span> {{ planDetails.plan_details.rates }}
-                        <!-- <v-icon small> mdi mdi-alert-circle</v-icon> -->
                     </p>
                     <p class="mb-2"><span class="font-weight-bold">Late Payment Fee:</span>
                         {{ planDetails.plan_details.late_payment_fee }}
@@ -315,14 +333,10 @@
 
 <script>
 
-import EAPlanService from "@scripts/services/ea/EAPlanService";
-import EnergyPlan from "@scripts/models/ea/EnergyPlan";
+import {isTopEAPlan, SERVICE_TYPES, SOLAR_PACK} from "@scripts/models/ea/EnergyPlan";
 import GasUsage from "@scripts/components/ea/GasUsage";
 import DailySupplyCharge from "@scripts/components/ea/DailySupplyCharge";
 import EnergyTooltip from "@scripts/components/ea/EnergyTooltip";
-import { merge } from 'lodash-es';
-import { SERVICE_TYPES } from "@scripts/models/ea/EnergyPlan";
-import {SOLAR_PACK } from "@scripts/models/ea/EnergyPlan";
 // import TarrifSearch from "@scripts/components/ea/TarrifSearch";
 
 
@@ -368,6 +382,14 @@ export default {
             // const plan = this.customer.plan.which_utility;
             // return plan === ENERGY_PLANS.ELECTRICITY || plan === ENERGY_PLANS.ELECTRICITY_AND_GAS
         },
+        // hasCreditAmount() {
+        //     if(this.planDetails.state_distributor_discount.gas_credit_amount) {
+        //         return this.planDetails.state_distributor_discount;
+        //     }
+        // },
+        isTopPlan() {
+            return isTopEAPlan(this.plan)
+        }
     },
 
     filters: {

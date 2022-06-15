@@ -1304,6 +1304,7 @@ import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import {titlesMapperForDropdown} from "@scripts/data/titleMapper";
 import {medicareRules, mediExpireDate} from '@scripts/plugins/VeeValidate';
 import {tenancyTypeMapper} from '@scripts/data/ConnectionApplicationMapper';
+import {mapGetters} from "vuex";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
 export default {
@@ -1347,7 +1348,7 @@ export default {
         },
         {
           text: "No",
-          value: 2,
+          value: 0,
         },
       ],
       statesDD: [

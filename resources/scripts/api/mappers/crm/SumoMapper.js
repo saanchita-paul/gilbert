@@ -1,14 +1,15 @@
 import SumoDataPlanMapper from '@scripts/modules/sumo/models/SumoPlanDetails'
 
 export default {
-    mapAddress :(address , applicationId)=>{
+    mapAddress :(address , sumoUuid)=>{
         return {
             // address: '1/309 Cumberland Rd, Pascoe Vale VIC 3044',
             address,
-            quoteNumber: 'hood_'+applicationId,
+            quoteNumber: 'hood_'+sumoUuid.data,
         }
     },
-    mapProduct :(sumoInfo , service_type , agent_name, lead_id)=>{
+    mapProduct :(sumoInfo , service_type , agent_name, sumoUuid)=>{
+        
         let distributorName = sumoInfo?.electricityDistributors[0]?.distributor ??  'electricDistributorNotFound';
 
         return {
@@ -20,7 +21,7 @@ export default {
             nmi: sumoInfo.nmi,
             postcode: sumoInfo.postcode,
             prospectType: 'Residential',
-            quoteNumber: 'hood_'+lead_id,
+            quoteNumber: 'hood_'+sumoUuid.data,
             suburb: sumoInfo.suburbOrPlaceOrLocality,
         }
     },
