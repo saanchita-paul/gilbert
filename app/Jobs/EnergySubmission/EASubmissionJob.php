@@ -56,7 +56,7 @@ class EASubmissionJob implements ShouldQueue
         if ($saleApiOn === "1" &&
             in_array($submitType, $allowedSubmitType)) {
             $postEaService = new PostSalesService($this->applicationId);
-            $postEaService->postToEa($submitType);
+            $postEaService->postToEa($submitType, $this->applicationId);
             ConnectionApplication::where('id' , $this->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
             $hubspotService = new HubspotContactService($this->applicationId);
             $hubspotService->update();

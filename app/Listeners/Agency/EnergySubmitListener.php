@@ -34,18 +34,28 @@ class EnergySubmitListener
      */
     public function handle(SubmitApplicationEvent $event)
     {
-        $connectionServices = $this->getServices($event->applicationId, $event->submitType);
-        switch ($connectionServices->provider_name) {
-            case "origin":
-                OriginSubmissionJob::dispatch($event->applicationId, $event->submitType);
-                break;
-            case "ea":
-                EASubmissionJob::dispatch($event->applicationId, $event->submitType);
-                break;
-            case "sumo":
-                SumoSubmissionJob::dispatch($event->applicationId, $event->submitType);
-                break;
-        }
+        $ca = ConnectionApplication::query()->where('id', $event->applicationId)->firstOrFail();
+        $submitType = $event->submitType;
+        $connectionServices = $this->getServices($event->applicationId, $submitType);
+
+            if($ca->is_running_submission) {
+                throw new \Exception('Submit skipped as another submit is already in progress');
+            };
+            $ca->update(['is_running_submission' => 1]);
+
+            switch ($connectionServices->provider_name) {
+                case "origin":
+                    OriginSubmissionJob::dispatch($event->applicationId, $event->submitType);
+                    break;
+                case "ea":
+                    EASubmissionJob::dispatch($event->applicationId, $event->submitType);
+                    break;
+                case "sumo":
+                    SumoSubmissionJob::dispatch($event->applicationId, $event->submitType);
+                    break;
+            }
+
+
     }
 
     /**
@@ -57,7 +67,9 @@ class EnergySubmitListener
         $services = match ($submitType) {
             'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
             'power' => [ConnectionService::TYPE_ELECTRICITY],
-            'gas' => [ConnectionService::TYPE_GAS]
+            'gas' => [ConnectionService::TYPE_GAS],
+            default => []
+
         };
 
         $connectionService = ConnectionService::where('connection_application_id', $applicationId)

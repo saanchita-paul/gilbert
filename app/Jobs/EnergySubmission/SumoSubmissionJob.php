@@ -42,7 +42,6 @@ class SumoSubmissionJob implements ShouldQueue
      */
     public function handle()
     {
-        dd("Asdfasd");
         $application = ConnectionApplication::whereId($this->applicationId)->with("connectionServices")->firstOrFail();
         $submitType = $this->submitType;
 

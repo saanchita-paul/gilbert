@@ -50,14 +50,14 @@ class PostSalesService
             ->whereIn('service_type', $services)
             ->where('provider_name', '=', 'ea')
             ->first();
-        
+
         if($connectionService) {
             return $connectionService->plan_type;
         }
         return throw new \Exception('[PostSalesService:getPlanType] plan type not found');
     }
 
-    public function postToEa($submitType)
+    public function postToEa($submitType, $applicationId)
     {
 
         $id = $this->getId();
@@ -207,6 +207,10 @@ class PostSalesService
 
         } catch (\Exception $e)
         {
+            ConnectionApplication::where('id', $applicationId)->update([
+                'is_running_submission' => 0,
+            ]);
+
             $logSalesService->updateSalesLog($loggerResponse->key,
                 json_encode($e->getMessage()),
                 json_encode([]),

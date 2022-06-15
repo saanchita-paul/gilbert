@@ -19,8 +19,8 @@ class OriginSubmitListener implements ShouldQueue
     {
         $submitType = $event->submitType;
 
-        $allowedSubmitType = ['energy', 'power', 'gas'];
-        if (in_array($submitType, $allowedSubmitType) && $this->isValidForOrigin($event->applicationId, $submitType))
+        if (($submitType === 'energy' || $submitType === 'power' || $submitType === 'gas')
+            && $this->isValidForOrigin($event->applicationId, $submitType))
         {
             $originService = new OriginService($event->applicationId);
             match ($submitType) {

@@ -55,14 +55,14 @@ class SendApplicationToEA implements ShouldQueue
         $application = ConnectionApplication::with('connectionServices')->where('id', $event->applicationId)->firstOrFail();
 
         $saleApiOn = config('ea.is_sales_api_on');
-
-        $allowedSubmitType = ['energy', 'power', 'gas'];
-        if ($saleApiOn === "1" && in_array($submitType, $allowedSubmitType)) {
-                $postEaService = new PostSalesService($event->applicationId);
-                $postEaService->postToEa($submitType);
-                ConnectionApplication::where('id' , $event->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
-                $hubspotService = new HubspotContactService($event->applicationId);
-                $hubspotService->update();
+        if ($saleApiOn === "1" &&
+            ($submitType === 'energy' || $submitType === 'power' || $submitType === 'gas')
+            && $this->isValidForSalesApi($application, $submitType) ) {
+            $postEaService = new PostSalesService($event->applicationId);
+            $postEaService->postToEa($submitType);
+            ConnectionApplication::where('id' , $event->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
+            $hubspotService = new HubspotContactService($event->applicationId);
+            $hubspotService->update();
         } else {
             info("Skipping EA Submit", [
                 'EA_SALES_API_ON' => $saleApiOn,
@@ -70,6 +70,8 @@ class SendApplicationToEA implements ShouldQueue
                 'is_services_valid' => $this->isValidForSalesApi($application, $submitType)
             ]);
         }
+
+
     }
 
     /**
