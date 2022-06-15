@@ -24,7 +24,7 @@ export default [
             },
             {
                 type: 'route',
-                title: 'Caf Files',
+                title: 'CAF Files',
                 route_name: 'caf.files',
                 disabled: true,
                 permissions: permissions.P_HOOD_ADMIN_CORE
