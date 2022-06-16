@@ -52,10 +52,16 @@ class StoreProductInfoAPI extends BaseOriginAPI
 
         $productInfo = $responseData['results'][0];
 
-        $originPlan = OriginPlan::firstOrNew(
-            ['product_code' => $productInfo['ProductCode']],
-            ['campaign_id' => $productInfo['CampaignID']],
-        );
+        $originPlan = OriginPlan::where('product_code', $productInfo['ProductCode'])
+                        ->where('campaign_id', $productInfo['CampaignID'])
+                        ->first();
+
+        if(!$originPlan) $originPlan = new OriginPlan();
+
+        // $originPlan = OriginPlan::firstOrNew(
+        //     ['product_code' => $productInfo['ProductCode']], 
+        //     ['campaign_id' => $productInfo['CampaignID']], 
+        // );
 
         $originPlan->product_id = $productInfo['ProductID'];
         $originPlan->description = $productInfo['Description'];
