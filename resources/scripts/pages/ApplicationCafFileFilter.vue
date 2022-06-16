@@ -10,7 +10,7 @@
                             outlined
                             dense
                             hide-details="auto"
-                            placeholder="Name"
+                            placeholder="Name Search"
                             style="background-color: white"
                             class="mr-2"
                         />
@@ -24,11 +24,20 @@
                             class="mr-2"
                         />
                         <v-text-field
-                            v-model="phone"
+                            v-model="businessName"
                             outlined
                             dense
                             hide-details="auto"
-                            placeholder="Mobile"
+                            placeholder="Business Name"
+                            style="background-color: white"
+                            class="mr-2"
+                        />
+                        <v-text-field
+                            v-model="abn"
+                            outlined
+                            dense
+                            hide-details="auto"
+                            placeholder="ABN"
                             style="background-color: white"
                             class="mr-2"
                         />
@@ -36,10 +45,11 @@
                             <v-text-field
                                 class='date-select'
                                 dense
-                                placeholder="Date"
+                                placeholder="MM/DD/YYYY - MM/DD/YYYY"
                                 v-model="selectedDate"
                                 append-icon="mdi-calendar-range"
                                 readonly
+
                                 outlined
                                 hide-details
                                 @click="showDatePickerModal = true"
@@ -90,7 +100,8 @@ export default {
         return {
             name: "",
             address: "",
-            phone: "",
+            businessName: "",
+            abn: "",
             selectedDate: null,
             showDatePickerModal: false,
             dateRange: {

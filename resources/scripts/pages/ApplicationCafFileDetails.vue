@@ -1,169 +1,191 @@
 <template>
-    <div v-if="cafFileData" className="containerRootClass">
-        <v-row>
+    <div v-if="cafFileData" class="containerRootClass">
+        <v-row no-gutters>
             <v-col cols="6">
-                <v-icon small color="red">mdi-phone-off-outline</v-icon>
-                Waiting for consent...
+                <h1>{{ cafFileData.name }}</h1>
             </v-col>
             <v-col cols="6" style="text-align:right">
                 <v-btn
+                    v-if="isEdit"
+                    @click="isEdit=false"
+                    small
                     color="teal"
                     outlined
                 >
-                    <v-icon left>
-                        mdi-pencil
-                    </v-icon>
                     Edit
                 </v-btn>
-                <v-btn
-                    color="success"
-                >
-                    <v-icon left>
-                        mdi-checkbox-marked-circle
-                    </v-icon>
-                    Save
-                </v-btn>
-                <v-btn
-                    color="error"
-                >
-                    <v-icon left>
-                        mdi-cancel
-                    </v-icon>
-                    Cancel
-                </v-btn>
+
+                <div v-else>
+                    <v-btn
+                        small
+                        @click="isEdit=true"
+                    >
+                        Cancel
+                    </v-btn>
+
+                    <v-btn
+                        small
+                        color="purple"
+                    >
+                        Save
+                    </v-btn>
+                </div>
+
+
             </v-col>
         </v-row>
 
         <v-row no-gutters>
-            <v-col cols="4">
-                <h4 className="header">Personal Details</h4>
+            <v-col cols="3">
+                <h4 class="header">Personal Details</h4>
                 <div>
-                    <div className="item">
-                        <p className="item-title">Homephone</p>
-                        <p className="item-value"></p>
+                    <div class="item">
+                        <p class="item-title">Title</p>
+                        <p class="item-value" v-if="isEdit">Mr</p>
+                        <v-select
+                            v-else
+                            outlined
+                            dense
+                            :items="title"
+                            class="mr-2 item-value"
+                        ></v-select>
                     </div>
-                    <div className="item">
-                        <p className="item-title">Mobile</p>
-                        <p className="item-value"></p>
+                    <div class="item">
+                        <p class="item-title">First Name</p>
+                        <p class="item-value" v-if="isEdit">Shakil</p>
+                        <v-text-field
+                            v-else
+                            outlined
+                            dense
+                            hide-details="auto"
+                            height="20px"
+                            style="background-color: white"
+                            class="mr-2 item-value"
+                        />
                     </div>
-                    <div className="item">
-                        <p className="item-title">I. Mobile Number</p>
-                        <p className="item-value"></p>
+                    <div class="item">
+                        <p class="item-title">Middle Name</p>
+                        <p class="item-value" v-if="isEdit">-</p>
+                        <v-text-field
+                            v-else
+                            outlined
+                            dense
+                            hide-details="auto"
+                            style="background-color: white"
+                            class="mr-2 item-value"
+                        />
+                    </div>
+                    <div class="item">
+                        <p class="item-title">Last Name</p>
+                        <p class="item-value" v-if="isEdit">Hossain</p>
+                        <v-text-field
+                            v-else
+                            outlined
+                            dense
+                            hide-details="auto"
+                            style="background-color: white"
+                            class="mr-2 item-value"
+                        />
                     </div>
                 </div>
-                <div className="item">
-                    <p className="item-title">Date of Birth</p>
-                    <p className="item-value"></p>
+                <div class="item">
+                    <p class="item-title">Date of Birth</p>
+                    <p class="item-value">{{ date_of_birth }}</p>
                 </div>
-                <div className="item">
-                    <p className="item-title">Email</p>
-                    <p className="item-value"></p>
+                <div class="item">
+                    <p class="item-title">Mobile</p>
+                    <p class="item-value">0120201202</p>
                 </div>
-                <div className="item">
-                    <p className="item-title">Moving Date</p>
-                    <p className="item-value"></p>
+                <div class="item">
+                    <p class="item-title">Email</p>
+                    <p class="item-value">shakil@gmail.com</p>
                 </div>
-                <div className="item">
-                    <p className="item-title">Billing</p>
-                    <p className="item-value"></p>
+                <div class="item">
+                    <p class="item-title">Billing</p>
+                    <p class="item-value">Email/Paper</p>
                 </div>
-                <div className="item">
-                    <p className="item-title">Identification</p>
-                    <p className="item-value">
+            </v-col>
+            <v-col cols="3" class="hr-bar pl-2">
+                <h4 class="header">Property Details</h4>
+                <div class="item">
+                    <p class="item-title">Occupancy Type</p>
+                    <p class="item-value">Renter</p>
+                </div>
+                <div class="item">
+                    <p class="item-title">Service Address</p>
+                    <p class="item-value">10 ROPE WALK, BRUNSWICK VIC 3056</p>
+                </div>
+                <div class="item">
+                    <p class="item-title">Billing Address</p>
+                    <p class="item-value">10 ROPE WALK, BRUNSWICK VIC 3056</p>
+                </div>
+                <div class="item">
+                    <p class="item-title">NMI (Power) *</p>
+                    <p class="item-value" v-if="isEdit">125252525</p>
+                    <v-text-field
+                        v-else
+                        outlined
+                        dense
+                        hide-details="auto"
+                        style="background-color: white"
+                        class="mr-2 item-value"
+                    />
+                </div>
+                <div class="item">
+                    <p class="item-title">MIRN (Gas) *</p>
+                    <p class="item-value" v-if="isEdit">525252590</p>
+                    <v-text-field
+                        v-else
+                        outlined
+                        dense
+                        hide-details="auto"
+                        style="background-color: white"
+                        class="mr-2 item-value"
+                    />
+                </div>
 
-                    </p>
-                </div>
 
             </v-col>
-            <v-col cols="4" className="hr-bar pl-2">
-                <h4 className="header">Property Details</h4>
-                <div className="item">
-                    <p className="item-title">Occupancy Type</p>
-                    <p className="item-value"></p>
+            <v-col cols="3" class="hr-bar pl-2">
+                <h4 class="header">Agent's Additional Instructions</h4>
+                <div class="item">
+                    <p class="item-title">Business Name</p>
+                    <p class="item-value">Ray White PTY LTD</p>
                 </div>
-                <div className="item">
-                    <p className="item-title">Service Address:</p>
-                    <p className="item-value">
-
-                    </p>
+                <div class="item">
+                    <p class="item-title">ABN</p>
+                    <p class="item-value">5298589858</p>
                 </div>
-                <div className="item">
-                    <p className="item-title">Billing Address</p>
-                    <p className="item-value">
-
-                    </p>
+                <div class="item">
+                    <p class="item-title">Agency Office</p>
+                    <p class="item-value">Ray White Camberwell</p>
                 </div>
-
-                <div>
-                    <p className="preferenceTitle mt-4 mb-2">Service Preference</p>
-                    <v-row>
-
-                        <v-col className="my-0 py-0 mx-0">
-                            <p className="pt-2 pb-1 mb-0 services">
-                  <span className="ml-1">
-                      <v-icon color="yellow">mdi-flash</v-icon>Power
-                  </span>
-                            </p>
-                            <p className="py-0 my-0 pl-5 service-status active-power-subtitle"
-                            >
-
-                                <!--                    Connected-->
-                            </p>
-                        </v-col>
-
-                        <v-col className="my-0 py-0 mx-0">
-                            <p className="pt-2 pb-1 mb-0 services">
-                  <span className="ml-1">
-                      <v-icon color="red">mdi-fire</v-icon>Gas
-                  </span>
-                            </p>
-                            <p className="py-0 my-0 pl-5 service-status active-power-subtitle"
-                            >
-
-                                <!--                    Connected-->
-                            </p>
-                        </v-col>
-                        <v-col className="my-0 py-0 mx-0">
-                            <p className="pt-2 pb-1 mb-0 services">
-                  <span className="ml-1">
-                      <v-icon color="blue">mdi-water</v-icon>Water
-                  </span>
-                            </p>
-                            <p className="py-0 my-0 pl-5 service-status "
-                            >
-
-                                <!--                    Connected-->
-                            </p>
-                        </v-col>
-                        <v-col className="my-0 py-0 mx-0">
-                            <p className="pt-2 pb-1 mb-0 services">
-                  <span className="ml-1">
-                       <v-icon color="green">mdi-wifi</v-icon>Internet
-                  </span>
-                            </p>
-                            <p className="py-0 my-0 pl-5 service-status active-power-subtitle"
-                            >
-
-                                <!--                    Connected-->
-                            </p>
-                        </v-col>
-
-
-                    </v-row>
+                <div class="item">
+                    <p class="item-title">Agent Name</p>
+                    <p class="item-value">Shakil Hossain</p>
                 </div>
-
+                <div class="item">
+                    <p class="item-title">Additional Instructions</p>
+                    <p class="item-value">Additional Instructions Go here...</p>
+                </div>
             </v-col>
-            <v-col cols="4" className="hr-bar pl-2">
-                <h4 className="header">Agent's Additional Instructions</h4>
-                <div className="item">
-                    <p className="item-title">Agency Office</p>
-                    <p className="item-value"></p>
+            <v-col cols="3" class="hr-bar pl-2">
+                <h4 class="header">Connection Details</h4>
+                <div class="item">
+                    <p class="item-title">Connection Date</p>
+                    <p class="item-value">05/05/2022</p>
                 </div>
-                <div className="item">
-                    <p className="item-title">Additional Instructions</p>
-                    <p className="item-value">
-
-                    </p>
+                <div class="item">
+                    <p class="item-title">Supplier</p>
+                    <p class="item-value">Energy Australia</p>
+                </div>
+                <div class="item">
+                    <p class="item-title">Service Type</p>
+                    <p class="item-value">Electricity Only</p>
+                </div>
+                <div class="item">
+                    <p class="item-title">Plan</p>
+                    <p class="item-value">Total Home</p>
                 </div>
             </v-col>
         </v-row>
@@ -172,14 +194,26 @@
 
 <script>
 
+import dayjs from "dayjs";
+import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
+
 export default {
     name: "ApplicationCafFileDetails",
     props: ["cafFileData"],
     components: {},
     data() {
-        return {};
+        return {
+            isEdit: true,
+            title: ['Mr', 'Mrs'],
+        };
     },
-    computed: {},
+    computed: {
+        date_of_birth() {
+            return this.cafFileData.date
+                ? dayjs(this.cafFileData.date, 'YYYY-MM-DD').format(DATE_FORMAT.DB_MONTH_FIRST)
+                : null;
+        },
+    },
     methods: {},
     mounted() {
     }
@@ -187,6 +221,9 @@ export default {
 </script>
 
 <style scoped>
+.customClass{
+    min-height: 20px;
+}
 .lead-name {
     font-size: 1.3em;
 }
