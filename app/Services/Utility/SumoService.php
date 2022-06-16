@@ -106,7 +106,7 @@ class SumoService
             'customerTitle' => $this->application->title,
             //todo Why are we sending all services, do we need to check only what is submitted?
             'interestedIn' => $this->getMappedService($this->application->connectionServices?->pluck('service_type')->toArray()),
-            'lifeSupport' => false,
+            'lifeSupport' => $this->application->is_power_life_support,
             // 'lifeSupportFuel' => "string",
             'marketingConcent' => $this->application->is_contacted == 1 ? true : false,
             'mirn' => $this->application->mirn,
