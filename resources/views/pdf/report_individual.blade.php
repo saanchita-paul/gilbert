@@ -44,19 +44,19 @@
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Number of application submitted by REA</div>
+            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Applications Submitted by REA</div>
             <div style="text-align: center; float: left; color: #532B87; font-weight: bold; width: 20%; ">{{ $report['totalCount']['total_applications_created']}}</div>
             <div style="clear: both;"></div>
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Number of applications with at least one service submitted to retailer</div>
+            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Connections Submitted (other than water)</div>
             <div style="text-align: center; float: left; color: #532B87; font-weight: bold; width: 20%; ">{{ $report['totalCount']['applications_with_minimum_submitted'] }}</div>
             <div style="clear: both;"></div>
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Number of successful water submissions</div>
+            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Water Connections Submitted</div>
             <div style="text-align: center; float: left; color: #532B87; font-weight: bold; width: 20%; ">{{ $report['totalCount']['successful_water_connections'] }}</div>
             <div style="clear: both;"></div>
         </div>
@@ -68,7 +68,7 @@
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Conversion Rate (Succesful Elec Sub/Apps)</div>
+            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Conversion Rate</div>
             <div style="text-align: center; float: left; color: #532B87; font-weight: bold; width: 20%; ">{{ $report['totalCount']['conversion_rate'] }}%</div>
             <div style="clear: both;"></div>
         </div>
@@ -105,7 +105,6 @@
     </div>
 
     <div style="clear: both;"></div>
-
 
     <div style="margin-top: 20px; font-weight: bold; ">
         <div style="background-color: #532B87; color: white; padding: 5px 3px; font-size: 20px;">
@@ -239,8 +238,6 @@
             <div style="clear: both;"></div>
         </div>
         @endforeach
-
-    </div>
 
     </div>
 
