@@ -58,11 +58,8 @@ class StoreProductInfoAPI extends BaseOriginAPI
 
         if(!$originPlan) $originPlan = new OriginPlan();
 
-        // $originPlan = OriginPlan::firstOrNew(
-        //     ['product_code' => $productInfo['ProductCode']], 
-        //     ['campaign_id' => $productInfo['CampaignID']], 
-        // );
-
+        $originPlan->product_code = $productInfo['ProductCode'];
+        $originPlan->campaign_id = $productInfo['CampaignID'];
         $originPlan->product_id = $productInfo['ProductID'];
         $originPlan->description = $productInfo['Description'];
         $originPlan->division_id = $productInfo['DivisionID'];
