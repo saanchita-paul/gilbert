@@ -2,7 +2,7 @@
     <div>
         <v-form ref="form" autocomplete="off">
             <v-row>
-                <v-col cols="9">
+                <v-col cols="10">
                     <div class="d-flex">
                         <v-text-field
                             autocomplete="off"
@@ -41,25 +41,25 @@
                             style="background-color: white"
                             class="mr-2"
                         />
-                        <div  class="py-0 mr-2" style="flex-basis: 235px;">
+                        <div  class="py-0 mr-2">
                             <v-text-field
-                                class='date-select'
                                 dense
                                 placeholder="MM/DD/YYYY - MM/DD/YYYY"
                                 v-model="selectedDate"
                                 append-icon="mdi-calendar-range"
-                                readonly
-
                                 outlined
                                 hide-details
+                                style="background-color: white;"
+                                class=""
                                 @click="showDatePickerModal = true"
                                 @click:append="showDatePickerModal = true"
                             ></v-text-field>
                         </div>
 
                         <div
-                            style="display: flex; align-items: center;">
+                            style="display: flex; align-items: center">
                             <v-btn
+                                v-show="!isSearchEmpty"
                                 small
                                 tile
                                 color="#e0e0e0"
@@ -70,8 +70,8 @@
                         </div>
                     </div>
                 </v-col>
-                <v-col cols="3">
-                    <v-btn class="float-right">
+                <v-col cols="2">
+                    <v-btn class="float-right" :disabled="isDisabledCafBtn">
                         Generate CAF File
                     </v-btn>
                 </v-col>
@@ -91,11 +91,11 @@
 <script>
 import DatePickerModal from "@scripts/modules/sales/components/DatePickerModal";
 import {getFormattedDBDate, getToday, getTodayString, getYesterday, isSame} from "@scripts/services/DateRangeService";
-import {isNil} from "lodash-es";
+import {isEmpty, isNil} from "lodash-es";
 export default {
     name: "ApplicationCafFileFilter",
     components: {DatePickerModal},
-    props: [],
+    props: ["selected"],
     data() {
         return {
             name: "",
@@ -112,6 +112,26 @@ export default {
             },
         };
     },
+    computed: {
+        isSearchEmpty() {
+            return isEmpty(this.name) &&
+                isEmpty(this.address) &&
+                isEmpty(this.businessName) &&
+                isEmpty(this.abn) &&
+                isEmpty(this.selectedDate);
+        },
+        isDisabledCafBtn() {
+            return this.selected?.length < 1;
+        }
+    },
+    watch: {
+        dateRange(val) {
+            this.checkDate();
+        },
+    },
+    mounted() {
+
+    },
     methods: {
         onSelectDate(dateRange) {
             this.dateRange = dateRange;
@@ -122,7 +142,6 @@ export default {
             this.agencyFilter.start = this.dateRange.start;
             this.agencyFilter.end = this.dateRange.end;
         },
-
         checkDate() {
             if(isNil(this.$route.query?.start) && isNil(this.$route.query?.end)){
                 return;
@@ -143,11 +162,6 @@ export default {
         },
         clearSearch() {
             this.$refs.form.reset();
-        },
-    },
-    watch: {
-        dateRange(val) {
-            this.checkDate();
         },
     },
 

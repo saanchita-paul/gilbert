@@ -2,7 +2,7 @@
     <div v-if="cafFileData" class="containerRootClass">
         <v-row no-gutters>
             <v-col cols="6">
-                <h1>{{ cafFileData.name }}</h1>
+                <h1>Shakil Hossain</h1>
             </v-col>
             <v-col cols="6" style="text-align:right">
                 <v-btn
@@ -90,7 +90,7 @@
                 </div>
                 <div class="item">
                     <p class="item-title">Date of Birth</p>
-                    <p class="item-value">{{ date_of_birth }}</p>
+                    <p class="item-value">05/05/1990</p>
                 </div>
                 <div class="item">
                     <p class="item-title">Mobile</p>
@@ -143,18 +143,34 @@
                         class="mr-2 item-value"
                     />
                 </div>
-
-
             </v-col>
             <v-col cols="3" class="hr-bar pl-2">
                 <h4 class="header">Agent's Additional Instructions</h4>
+
                 <div class="item">
                     <p class="item-title">Business Name</p>
-                    <p class="item-value">Ray White PTY LTD</p>
+                    <p class="item-value" v-if="isEdit">Ray white camberwell PTY LTD</p>
+                    <v-text-field
+                        v-else
+                        outlined
+                        dense
+                        hide-details="auto"
+                        style="background-color: white"
+                        class="mr-2 item-value"
+                    />
                 </div>
+
                 <div class="item">
                     <p class="item-title">ABN</p>
-                    <p class="item-value">5298589858</p>
+                    <p class="item-value" v-if="isEdit">25256525252</p>
+                    <v-text-field
+                        v-else
+                        outlined
+                        dense
+                        hide-details="auto"
+                        style="background-color: white"
+                        class="mr-2 item-value"
+                    />
                 </div>
                 <div class="item">
                     <p class="item-title">Agency Office</p>
@@ -173,19 +189,69 @@
                 <h4 class="header">Connection Details</h4>
                 <div class="item">
                     <p class="item-title">Connection Date</p>
-                    <p class="item-value">05/05/2022</p>
+                    <p class="item-value" v-if="isEdit">05/05/2022</p>
+                    <div class="text-field" v-else>
+                        <v-menu
+                            v-model="connectionDate"
+                            :close-on-content-click="false"
+                            :nudge-right="40"
+                            transition="scale-transition"
+                            offset-y
+                        >
+                            <template v-slot:activator="{ on, attrs }">
+                                <ValidationProvider
+                                    name="Connection Date"
+                                    v-slot="{ errors }"
+                                >
+                                    <v-text-field
+                                        placeholder="DD/MM/YYYY"
+                                        outlined
+                                        dense
+                                        append-icon="mdi-calendar"
+                                        v-model="connection_date"
+                                        v-bind="attrs"
+                                        :error-messages="errors[0]"
+                                        hide-details="auto"
+                                    >
+                                        <template slot="append">
+                                            <v-icon v-on="on">mdi-calendar</v-icon>
+                                        </template>
+                                    </v-text-field>
+                                </ValidationProvider>
+                            </template>
+                            <v-date-picker
+                                v-model="connection_date"
+                                @input="connectionDate = false"
+                            ></v-date-picker>
+                        </v-menu>
+                    </div>
                 </div>
                 <div class="item">
                     <p class="item-title">Supplier</p>
-                    <p class="item-value">Energy Australia</p>
+                    <p class="item-value" v-if="isEdit">Energy Australia</p>
+                    <p class="" v-else>Energy Australia</p>
                 </div>
                 <div class="item">
                     <p class="item-title">Service Type</p>
-                    <p class="item-value">Electricity Only</p>
+                    <p class="item-value" v-if="isEdit">Electricity Only</p>
+                    <v-select
+                        v-else
+                        outlined
+                        dense
+                        :items="title"
+                        class=""
+                    ></v-select>
                 </div>
                 <div class="item">
                     <p class="item-title">Plan</p>
-                    <p class="item-value">Total Home</p>
+                    <p class="item-value" v-if="isEdit">Total Home</p>
+                    <v-select
+                        v-else
+                        outlined
+                        dense
+                        :items="title"
+                        class=""
+                    ></v-select>
                 </div>
             </v-col>
         </v-row>
@@ -205,14 +271,18 @@ export default {
         return {
             isEdit: true,
             title: ['Mr', 'Mrs'],
+            connectionDate: false,
+            connection_date: null
         };
     },
     computed: {
-        date_of_birth() {
-            return this.cafFileData.date
-                ? dayjs(this.cafFileData.date, 'YYYY-MM-DD').format(DATE_FORMAT.DB_MONTH_FIRST)
-                : null;
-        },
+        // name() {
+        //     let title = this.cafFileData.title ? this.cafFileData.title + ' ' : '';
+        //     let first_name = this.cafFileData.first_name ? this.cafFileData.first_name + ' ' : '';
+        //     let middle_name = this.cafFileData.middle_name ? this.cafFileData.middle_name + ' ' : '';
+        //     let last_name =  this.cafFileData.last_name ? this.cafFileData.last_name : '';
+        //     return title + first_name + middle_name + last_name;
+        // },
     },
     methods: {},
     mounted() {

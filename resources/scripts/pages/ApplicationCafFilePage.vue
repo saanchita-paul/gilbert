@@ -1,137 +1,77 @@
 <template>
     <v-container fluid>
-        <v-row>
-            <v-col>
-                <v-card class="hood-card">
-                    <h3 class="page-title">Chatbot Applications & CAF Files</h3>
+
+        <v-tabs>
+            <v-tab href="#chatbotApplication">
+                <v-icon left>mdi-facebook-messenger</v-icon>
+                Chatbot Application
+            </v-tab>
+
+            <!--  Chatbot Application start-->
+            <v-tab-item value="chatbotApplication">
+                <v-card>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12">
+                                <h3>Filters</h3>
+                                <ApplicationCafFileFilter :selected="selectedCaf"></ApplicationCafFileFilter>
+                            </v-col>
+                            <v-col cols="12">
+                                <ApplicationCafFileTable v-model="selectedCaf" :cafFiles="cafFiles"></ApplicationCafFileTable>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
                 </v-card>
-            </v-col>
-        </v-row>
+            </v-tab-item>
+            <!--  Chatbot Application end-->
 
-
-        <v-row>
-            <v-col>
-                <h5>Filters</h5>
-                <ApplicationCafFileFilter></ApplicationCafFileFilter>
-            </v-col>
-        </v-row>
-
-        <v-row>
-            <v-col>
-                <v-data-table
-                    v-model="selected"
-                    :headers="headers"
-                    :items="desserts"
-                    :single-expand=true
-                    :expanded.sync="expanded"
-                    :item-class="isSelectedClass"
-                    item-key="id"
-                    :items-per-page="50"
-                    show-select
-                    show-expand
-                    class="row-pointer"
-                    @click:row="onRowSelect"
-                >
-                    <template v-slot:expanded-item="{ headers, item }">
-                        <td :colspan="headers.length">
-                            <ApplicationCafFileDetails :cafFileData='item'></ApplicationCafFileDetails>
-                        </td>
-                    </template>
-                </v-data-table>
-            </v-col>
-        </v-row>
+            <!--  Gilbert Application start-->
+            <v-tab href="#gilbertApplication" disabled>
+                <v-icon left>mdi-message-text</v-icon>
+                Gilbert Application
+            </v-tab>
+            <v-tab-item value="gilbertApplication">
+                Gilbert Application Details
+            </v-tab-item>
+            <!--  Gilbert Application end-->
+        </v-tabs>
     </v-container>
 </template>
 
 <script>
 import ApplicationCafFileFilter from '@scripts/pages/ApplicationCafFileFilter';
-import ApplicationCafFileDetails from '@scripts/pages/ApplicationCafFileDetails';
 import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileService";
+import ApplicationCafFileTable from "@scripts/pages/ApplicationCafFileTable";
 
 export default {
     name: "ApplicationCafFilePage",
     components: {
+        ApplicationCafFileTable,
         ApplicationCafFileFilter,
-        ApplicationCafFileDetails
     },
 
     data() {
         return {
-            selected: [],
-            expanded: [],
-            selectedRowId: 0,
-            headers: [
-                {text: 'App ID', align: 'start', sortable: true, value: 'id', class: 'black--text'},
-                {text: 'Name', align: 'start', sortable: true, value: 'name', class: 'black--text'},
-                {text: 'Address', align: 'start', sortable: true, value: 'address', class: 'black--text'},
-                {text: 'Conn Date', align: 'start', sortable: true, value: 'date', class: 'black--text'},
-                {text: 'Service', align: 'start', sortable: true, value: 'service', class: 'black--text'},
-                {text: 'Supplier', align: 'start', sortable: true, value: 'supplier', class: 'black--text'},
-                {text: 'Plan', align: 'start', sortable: true, value: 'plan', class: 'black--text'},
-                {text: 'Business Name', align: 'start', sortable: true, value: 'business_name', class: 'black--text'},
-                {text: 'ABN', align: 'start', sortable: true, value: 'abn', class: 'black--text'},
-                {text: 'Status', align: 'start', sortable: true, value: 'status', class: 'black--text'},
-                {text: '', value: 'data-table-expand', align: 'start', sortable: true},
-                { text: '', value: 'data-table-select' }
-            ],
-            desserts: [
-                {
-                    id: 1,
-                    name: 'Robin',
-                    address: 'Dhaka',
-                    date: '1985/05/05',
-                    service: 'Energy Australia',
-                    supplier: 'Total Plan',
-                    plan: '251525252',
-                    business_name: 'New',
-                    abn: '2515425245',
-                    status: 'Active',
-                },
-                {
-                    id: 2,
-                    name: 'Rakib',
-                    address: 'Dhaka',
-                    date: '2022/05/05',
-                    service: 'Energy Australia',
-                    supplier: 'Total Plan',
-                    plan: '251525252',
-                    business_name: 'New',
-                    abn: '2515425245',
-                    status: 'Inactive',
-                },
-            ],
+            selectedCaf: [],
+            tab: null,
+            cafFiles: [],
         }
     },
 
-    methods: {
-        onRowSelect(item, slot) {
-            this.selectedRowId = item.id;
-            slot.expand(!slot.isExpanded)
-        },
-        isSelectedClass(item) {
-            if (item.id === this.selectedRowId) {
-                return 'selectedRowForAgentTable';
-            }
-        },
-        async getCafFiles () {
-            let data = await ApplicationCafFileService.getApplicationCafFileData();
-            console.log(data);
-
-            data.forEach(dt=> {
-                console.log(dt);
-            })
-        },
+    async mounted() {
+        await this.getCafFiles();
     },
 
-    mounted() {
-        this.getCafFiles();
+    methods: {
+        async getCafFiles() {
+            this.cafFiles = await ApplicationCafFileService.getApplicationCafFileData();
+            console.log(this.cafFiles);
+        },
     },
 }
 </script>
 
 <style scoped>
-.row-pointer >>> tbody tr :hover {
-    cursor: pointer;
-}
+
 </style>
 
