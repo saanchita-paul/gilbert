@@ -24,14 +24,15 @@ class CreateAppClosingReasonRequest extends FormRequest
     public function rules()
     {
         return [
-            'value'=>'required',
+            'value'=>'required|unique:app_close_reasons,value',
         ];
     }
 
     public function messages()
     {
         return [
-            'value.required' => 'Reason Value is required!'
+            'value.required' => 'Reason value is required!',
+            'value.unique' => 'The value already Exists!'
         ];
     }
 }

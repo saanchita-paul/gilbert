@@ -11,12 +11,15 @@ class AppCloseReasonService
      */
     public function getAppClosingReasonList()
     {
-        return AppCloseReason::all();
+        $reasons = AppCloseReason::query()->where('value','!=' , 'Others')->get();
+        $others = AppCloseReason::query()->where('value', 'Others')->get();
+        return $reasons->concat($others);
     }
     /**
      * create closing reason
      */
-    public function createAppClosingReason(array $data) {
+    public function createAppClosingReason(array $data)
+    {
         return AppCloseReason::create($data);
     }
     /**
