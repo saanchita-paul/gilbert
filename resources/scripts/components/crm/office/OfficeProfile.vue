@@ -103,6 +103,12 @@
                         ></v-text-field>
                     </ValidationProvider>
 
+                    <v-checkbox
+                        v-model="office.should_notify_agent"
+                        @input="updateOffice"
+                        :label="`Notify agents when HOOD receives an application`">
+                    </v-checkbox>
+
                 </v-col>
 
                 <v-col cols="12" class="py-0">
@@ -327,6 +333,7 @@ export default {
               rent_roll: null,
               account_manager: null,
               hood_agent_id: null,
+              should_notify_agent: false,
           },
           commission: {
               gas: null,
@@ -392,6 +399,8 @@ export default {
             this.office.agency_id = data.agency_id;
             this.office.rent_roll = data.rent_roll;
             this.office.hood_agent_id = data.hood_agent_id;
+            this.office.hood_agent_id = data.hood_agent_id;
+            this.office.should_notify_agent = data.should_notify_agent;
 
         },
 

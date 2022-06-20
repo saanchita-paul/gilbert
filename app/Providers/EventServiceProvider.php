@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\NotifyAgentAfterLeadCreation;
 use App\Listeners\Agency\CreatePlanNoteListener;
+use App\Listeners\NotifyAgentAfterLeadCreationListener;
 use App\Listeners\SumoSubmitListener;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
@@ -46,6 +48,10 @@ class EventServiceProvider extends ServiceProvider
         CreateApplicationEvent::class => [
             CreateHubSpotContact::class,
         ],
+        NotifyAgentAfterLeadCreation::class => [
+            NotifyAgentAfterLeadCreationListener::class,
+        ],
+
 
         /**
          * API Logging

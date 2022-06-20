@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Agency;
 
 use App\Events\Agency\CreateApplicationEvent;
 use App\Events\Agency\SubmitApplicationEvent;
+use App\Events\NotifyAgentAfterLeadCreation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Requests\Agency\ProviderRequest;
@@ -80,6 +81,7 @@ class ApplicationController extends Controller
         $service = new ApplicationService();
         $application = $service->createApplication($request->toArray(), $user);
         CreateApplicationEvent::dispatch($application->id);
+        NotifyAgentAfterLeadCreation::dispatch($application->id);
 
         return ApplicationResource::make($application);
 
@@ -202,7 +204,7 @@ class ApplicationController extends Controller
         // $ea_service_ids = $service->getNotSubmittedEaService($id, $submitType);
         $provider_service_ids = $service->getNotSubmittedServices($id, $submitType);
         $service_ids = [];
-         
+
         foreach($provider_service_ids as $key => $ids){
             $service_ids = array_merge($service_ids, $ids);
             if($submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_ENERGY
