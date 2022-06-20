@@ -242,8 +242,8 @@ class ExportEnergySubmissionReport
             ->whereNotNull('cs.submitted_at')
 
             ->where('cs.submitted_at', '>=', $this->startDate)
-            ->where('cs.submitted_at', '<=', $this->endDate);
-//            ->whereNotIn('cs.id', $except);
+            ->where('cs.submitted_at', '<=', $this->endDate)
+            ->whereNotIn('cs.id', $except);
 //            ->whereNotBetween('ca.created_at', [$this->startDate, $this->endDate]);
     }
 
