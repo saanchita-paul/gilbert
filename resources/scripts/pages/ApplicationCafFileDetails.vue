@@ -9,7 +9,7 @@
                     v-if="isEdit"
                     @click="isEdit=false"
                     small
-                    color="teal"
+                    style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;"
                     outlined
                 >
                     Edit
@@ -18,6 +18,7 @@
                 <div v-else>
                     <v-btn
                         small
+                        style="height: 25px; min-width: 90px;"
                         @click="isEdit=true"
                     >
                         Cancel
@@ -25,7 +26,7 @@
 
                     <v-btn
                         small
-                        color="purple"
+                        style="height: 25px; min-width: 90px; background: #5c229a; color: white"
                     >
                         Save
                     </v-btn>

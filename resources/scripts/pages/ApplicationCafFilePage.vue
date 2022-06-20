@@ -4,7 +4,7 @@
         <v-tabs>
             <v-tab href="#chatbotApplication">
                 <v-icon left>mdi-facebook-messenger</v-icon>
-                Chatbot Application
+                Chatbot Applications
             </v-tab>
 
             <!--  Chatbot Application start-->
@@ -28,7 +28,7 @@
             <!--  Gilbert Application start-->
             <v-tab href="#gilbertApplication" disabled>
                 <v-icon left>mdi-message-text</v-icon>
-                Gilbert Application
+                Gilbert Applications
             </v-tab>
             <v-tab-item value="gilbertApplication">
                 Gilbert Application Details
@@ -72,6 +72,9 @@ export default {
 </script>
 
 <style scoped>
-
+.v-tab{
+    text-transform: capitalize;
+    font-weight: bold;
+}
 </style>
 
