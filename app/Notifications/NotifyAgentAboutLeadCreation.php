@@ -21,10 +21,10 @@ class NotifyAgentAboutLeadCreation extends Notification
      *
      * @return void
      */
-    public function __construct(ConnectionApplication $connectionApplication)
+    public function __construct(array $data)
     {
         //
-        $this->connectionApplication = $connectionApplication;
+        $this->data = $data;
     }
 
     /**
@@ -49,17 +49,10 @@ class NotifyAgentAboutLeadCreation extends Notification
         return (new MailMessage)
             ->subject("New Lead Submitted")
             ->view('email.notify_agent', [
-                'lead_info' => $this->prepareLeadData(),
+                'lead_info' =>  $this->data,
             ]);
     }
 
-    public function prepareLeadData()
-    {
-        $lead_info = $this->connectionApplication
-            ->only(['id', 'first_name', 'middle_name', 'last_name', 'mirn', 'mni']);
-        $lead_info['submitted_at'] = now();
-        return $lead_info;
-    }
 
     /**
      * Get the array representation of the notification.

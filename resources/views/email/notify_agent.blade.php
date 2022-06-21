@@ -4,14 +4,13 @@
     <title>Email Template</title>
 </head>
 <body>
-
-<p>Hey Sazzad, thank you!</p>
+<p>Hey {{$lead_info['agent_name']}}, thank you!</p>
 <p>HOOD has received your latest referral.</p>
-<p> <b>Referring Agent:</b> [Agency name and Office]<br>
-    <b>Name:</b> [Customer’s Full Name]<br>
-    <b>Address:</b> [Customer’s Full Address]<br>
-    <b>Nominated Move-in Date:</b> [Connection Date]<br>
-    <b>App ID:</b> 0123<br>
+<p> <b>Referring Agent:</b>  {{$lead_info['agent_name'].' '.$lead_info['agent_name']}}<br>
+    <b>Name:</b> {{$lead_info['full_name']}}<br>
+    <b>Address:</b>  {{$lead_info['full_address']}}<br>
+    <b>Nominated Move-in Date:</b> {{$lead_info['connection_date']}}<br>
+    <b>App ID:</b> {{$lead_info['id']}}<br>
 </p>
 <p> One of our HOOD staff will be in touch with your client to arrange utilities connections shortly.
     For enquiries, please contact your HOOD Account Manager.</p>

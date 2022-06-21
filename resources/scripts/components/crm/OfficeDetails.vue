@@ -70,6 +70,7 @@
                   </ValidationProvider>
                   <ValidationProvider name="Rent Roll"   v-slot="{ errors }">
                     <v-text-field  v-model = "office.rent_roll" @input="updateOffice"
+                                   class="v-input--hide-details"
                                    label="Rent Roll"
                                    outlined dense
                                    :error-messages=" errors[0]"

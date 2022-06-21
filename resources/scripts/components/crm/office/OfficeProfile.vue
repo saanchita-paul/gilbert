@@ -67,6 +67,12 @@
                         @onChangeAgent="onChangeAgent" />
                     </ValidationProvider>
 
+                    <v-checkbox
+                        v-model="office.should_notify_agent"
+                        @input="updateOffice"
+                        :label="`Notify agents when HOOD receives an application`">
+                    </v-checkbox>
+
 
                 </v-col>
 
@@ -103,11 +109,7 @@
                         ></v-text-field>
                     </ValidationProvider>
 
-                    <v-checkbox
-                        v-model="office.should_notify_agent"
-                        @input="updateOffice"
-                        :label="`Notify agents when HOOD receives an application`">
-                    </v-checkbox>
+
 
                 </v-col>
 
