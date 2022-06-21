@@ -6,7 +6,7 @@
 <body>
 <p>Hey {{$lead_info['agent_name']}}, thank you!</p>
 <p>HOOD has received your latest referral.</p>
-<p> <b>Referring Agent:</b>  {{$lead_info['agent_name'].' '.$lead_info['agent_name']}}<br>
+<p> <b>Referring Agent:</b>  {{$lead_info['agent_name'].' '.$lead_info['agent_office']}}<br>
     <b>Name:</b> {{$lead_info['full_name']}}<br>
     <b>Address:</b>  {{$lead_info['full_address']}}<br>
     <b>Nominated Move-in Date:</b> {{$lead_info['connection_date']}}<br>
