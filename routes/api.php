@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ConnectionApplication;
 use Illuminate\Encryption\Encrypter;
 use App\Services\Address\GBGServices;
 use Illuminate\Support\Facades\Route;
@@ -243,3 +244,10 @@ Route::get("/karan/sales-status", function () {
     return "success";
 });
 
+
+Route::get('/kaka', function () {
+    $dateTimeZone = new DateTimeZone("Australia/Melbourne");
+    $date = new DateTime(null, $dateTimeZone);
+//    dd($date);
+    return $dateTimeZone->getOffset($date)/60/60;
+});

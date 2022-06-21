@@ -1,6 +1,8 @@
 <?php
 namespace App\Modules\Reporting\Services;
 
+use App\Services\TimeZoneService;
+use Carbon\Carbon;
 use DB;
 use App\Models\RejectionReason;
 use App\Models\OfficeCommission;
@@ -41,6 +43,7 @@ class ExportEnergySubmissionReport
         ConnectionService::STATUS_REJECTED, //Rejected
         ConnectionService::AC_MANUAL_PROCESSING, //MANUAL_PROCESSING
         ConnectionService::STATUS_CANT_CONNECT, //Failed
+        ConnectionService::STATUS_FAILED, //Failed
     ];
 
     public function __construct(string $type, string $start, string $end)
@@ -125,9 +128,12 @@ class ExportEnergySubmissionReport
         }
     }
 
+
     // Offer_Type, Source_Code is faked assigned just to place the data in the right order
     private function fetchData() : array
     {
+        $tz = '+' . TimeZoneService::getTimeZoneInt() . ':00';
+
         $energyType = $this->energyType;
         $builder = DB::table('connection_services as cs')
             ->selectRaw("
@@ -142,9 +148,9 @@ class ExportEnergySubmissionReport
                 ca.last_name as `Customer_Lastname`,
                 ca.office_id as `Office_Id`,
                 ca.status as `Utility_Commission`,
-                IFNULL(CONVERT_TZ(ca.created_at, '+00:00', '+10:00'), 'NULL') as `Lead_Created_Date`,
-                CONVERT_TZ(ca.moving_date, '+00:00', '+10:00') as `Connection_Date`,
-                IFNULL(CONVERT_TZ(cs.submitted_at, '+00:00', '+10:00'), 'NULL') as `Lead_Submitted_Date`,
+                IFNULL(CONVERT_TZ(ca.created_at, '+00:00', '$tz'), 'NULL') as `Lead_Created_Date`,
+                CONVERT_TZ(ca.moving_date, '+00:00', '$tz') as `Connection_Date`,
+                IFNULL(CONVERT_TZ(cs.submitted_at, '+00:00', '$tz'), 'NULL') as `Lead_Submitted_Date`,
                 IFNULL(ca.unit_number, 'NULL') as `Unit_Number`,
                 IFNULL(ca.street_number, 'NULL') as `Street_Number`,
                 IFNULL(ca.street_name, 'NULL') as `Street_Name`,
@@ -182,12 +188,16 @@ class ExportEnergySubmissionReport
             // ->whereNotNull('cs.provider_name');
         $builder = $this->applyStatusFilter($builder);
         $tempBuilder = clone $builder;
-        $filterWithCreatedDate = $this->filterWithCreatedDate($tempBuilder)->get()->toArray();
+        $filterWithCreatedDate = $this->filterWithCreatedDate($tempBuilder)->get();
         $tempBuilder = clone $builder;
-        $filterWithSubmittedDate = $this->filterWithSubmittedDate($tempBuilder)->get()->toArray();
+//        dd();
+        $filterWithSubmittedDate = $this->filterWithSubmittedDate($tempBuilder, $filterWithCreatedDate->pluck('Service_Id')->toArray())->get()->toArray();
+//        dd(ConnectionApplication::with('connectionServices')->where('id', '15385')->first()->toArray());
+//        dd(ConnectionService::whereIn('connection_application_id', [15371,15331,15256,15220])->get()->toArray());
+//        dd(collect($filterWithSubmittedDate)->pluck('App_id')->toArray());
 
         return array_merge(
-            $filterWithCreatedDate,
+            $filterWithCreatedDate->toArray(),
             $filterWithSubmittedDate,
         );
     }
@@ -216,7 +226,7 @@ class ExportEnergySubmissionReport
             ->where('ca.created_at', '<=', $this->endDate);
     }
 
-    private function filterWithSubmittedDate($builder)
+    private function filterWithSubmittedDate(Builder $builder, array $except)
     {
         return $builder
 //            ->whereIn('cs.status', [
@@ -230,9 +240,11 @@ class ExportEnergySubmissionReport
 //                ConnectionService::STATUS_CANT_CONNECT, //Failed
 //            ])
             ->whereNotNull('cs.submitted_at')
+
             ->where('cs.submitted_at', '>=', $this->startDate)
             ->where('cs.submitted_at', '<=', $this->endDate)
-            ->whereNotBetween('ca.created_at', [$this->startDate, $this->endDate]);
+            ->whereNotIn('cs.id', $except);
+//            ->whereNotBetween('ca.created_at', [$this->startDate, $this->endDate]);
     }
 
     private function getLeadSrc(?int $src): string
@@ -313,7 +325,7 @@ class ExportEnergySubmissionReport
         $reason = RejectionReason::where('connection_service_id', $serviceId)->first();
         return $reason  ?  $reason->reason_text : null;
     }
-    
+
     private function getUtilityCommission($officeId, $serviceType)
     {
         if($officeId === null || $serviceType === null) {
