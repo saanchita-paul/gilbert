@@ -2,7 +2,7 @@
     <div v-if="cafFileData" class="containerRootClass">
         <v-row no-gutters>
             <v-col cols="6">
-                <h1>Shakil Hossain</h1>
+                <h1>{{ cafFileData.full_name }}</h1>
             </v-col>
             <v-col cols="6" style="text-align:right">
                 <v-btn
@@ -43,19 +43,19 @@
                 <div>
                     <div class="item">
                         <p class="item-title">Title</p>
-                        <p class="item-value" v-if="isEdit">Mr</p>
+                        <p class="item-value" v-if="isEdit">{{ cafFileData.title }}</p>
                         <v-select
                             v-else
                             outlined
                             dense
-                            :items="titlesDD"
+                            :items="titles"
                             v-model="caf_detail.title"
                             class="mr-2 item-value"
                         ></v-select>
                     </div>
                     <div class="item">
                         <p class="item-title">First Name</p>
-                        <p class="item-value" v-if="isEdit">Shakil</p>
+                        <p class="item-value" v-if="isEdit">{{ cafFileData.first_name }}</p>
                         <v-text-field
                             v-else
                             outlined
@@ -69,7 +69,7 @@
                     </div>
                     <div class="item">
                         <p class="item-title">Middle Name</p>
-                        <p class="item-value" v-if="isEdit">-</p>
+                        <p class="item-value" v-if="isEdit">{{ cafFileData.middle_name == null ? '-' : cafFileData.middle_name }}</p>
                         <v-text-field
                             v-else
                             outlined
@@ -82,7 +82,7 @@
                     </div>
                     <div class="item">
                         <p class="item-title">Last Name</p>
-                        <p class="item-value" v-if="isEdit">Hossain</p>
+                        <p class="item-value" v-if="isEdit">{{ cafFileData.last_name }}</p>
                         <v-text-field
                             v-else
                             outlined
@@ -96,38 +96,38 @@
                 </div>
                 <div class="item">
                     <p class="item-title">Date of Birth</p>
-                    <p class="item-value">05/05/1990</p>
+                    <p class="item-value">{{ date_of_birth }}</p>
                 </div>
                 <div class="item">
                     <p class="item-title">Mobile</p>
-                    <p class="item-value">0120201202</p>
+                    <p class="item-value">{{ cafFileData.phone }}</p>
                 </div>
                 <div class="item">
                     <p class="item-title">Email</p>
-                    <p class="item-value">shakil@gmail.com</p>
+                    <p class="item-value">{{ cafFileData.email }}</p>
                 </div>
                 <div class="item">
                     <p class="item-title">Billing</p>
-                    <p class="item-value">Email/Paper</p>
+                    <p class="item-value">{{ cafFileData.billing_preference ? cafFileData.billing_preference : '' }}</p>
                 </div>
             </v-col>
             <v-col cols="3" class="hr-bar pl-2">
                 <h4 class="header">Property Details</h4>
                 <div class="item">
                     <p class="item-title">Occupancy Type</p>
-                    <p class="item-value">Renter</p>
+                    <p class="item-value">{{ cafFileData.occupancy_type ? cafFileData.occupancy_type : '' }}</p>
                 </div>
                 <div class="item">
                     <p class="item-title">Service Address</p>
-                    <p class="item-value">10 ROPE WALK, BRUNSWICK VIC 3056</p>
+                    <p class="item-value">{{ cafFileData.to_address ? cafFileData.to_address : '' }}</p>
                 </div>
                 <div class="item">
                     <p class="item-title">Billing Address</p>
-                    <p class="item-value">10 ROPE WALK, BRUNSWICK VIC 3056</p>
+                    <p class="item-value">{{ cafFileData.to_address ? cafFileData.to_address : '' }}</p>
                 </div>
                 <div class="item">
                     <p class="item-title">NMI (Power) *</p>
-                    <p class="item-value" v-if="isEdit">125252525</p>
+                    <p class="item-value" v-if="isEdit">{{ cafFileData.nmi ? cafFileData.nmi : '' }}</p>
                     <v-text-field
                         v-else
                         outlined
@@ -140,7 +140,7 @@
                 </div>
                 <div class="item">
                     <p class="item-title">MIRN (Gas) *</p>
-                    <p class="item-value" v-if="isEdit">525252590</p>
+                    <p class="item-value" v-if="isEdit">{{ cafFileData.mirn ? cafFileData.mirn : '' }}</p>
                     <v-text-field
                         v-else
                         outlined
@@ -157,7 +157,7 @@
 
                 <div class="item">
                     <p class="item-title">Business Name</p>
-                    <p class="item-value" v-if="isEdit">Ray white camberwell PTY LTD</p>
+                    <p class="item-value" v-if="isEdit">{{ cafFileData.business_name ? cafFileData.business_name : '' }}</p>
                     <v-text-field
                         v-else
                         outlined
@@ -171,7 +171,7 @@
 
                 <div class="item">
                     <p class="item-title">ABN</p>
-                    <p class="item-value" v-if="isEdit">25256525252</p>
+                    <p class="item-value" v-if="isEdit">{{ cafFileData.abn ? cafFileData.abn : '' }}</p>
                     <v-text-field
                         v-else
                         outlined
@@ -184,15 +184,15 @@
                 </div>
                 <div class="item">
                     <p class="item-title">Agency Office</p>
-                    <p class="item-value">Ray White Camberwell</p>
+                    <p class="item-value"></p>
                 </div>
                 <div class="item">
                     <p class="item-title">Agent Name</p>
-                    <p class="item-value">Shakil Hossain</p>
+                    <p class="item-value"></p>
                 </div>
                 <div class="item">
                     <p class="item-title">Additional Instructions</p>
-                    <p class="item-value">Additional Instructions Go here...</p>
+                    <p class="item-value">{{ cafFileData.additional_instruction ? cafFileData.additional_instruction : '' }}</p>
                 </div>
             </v-col>
             <v-col cols="3" class="hr-bar pl-2">
@@ -248,7 +248,7 @@
                         v-else
                         outlined
                         dense
-                        :items="title"
+                        :items="titles"
                         class=""
                     ></v-select>
                 </div>
@@ -259,7 +259,7 @@
                         v-else
                         outlined
                         dense
-                        :items="title"
+                        :items="titles"
                         class=""
                     ></v-select>
                 </div>
@@ -272,7 +272,7 @@
 
 import dayjs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
-import {titlesMapperForDropdown} from "@scripts/data/titleMapper";
+import dayJs from "dayjs";
 
 export default {
     name: "ApplicationCafFileDetails",
@@ -282,26 +282,49 @@ export default {
     data() {
         return {
             isEdit: true,
-            titlesDD: titlesMapperForDropdown,
+            titles: ['Mr.', 'Mrs.', 'Ms.', 'Miss', 'Dr.'],
             connectionDate: false,
             connection_date: null,
 
             caf_detail: {
                 title: "",
-                first_name: "Md",
-                middle_name: "Shakil",
-                last_name: "Hossain",
-                nmi: "125252525",
-                mirn: "525252590",
-                business_name: "Ray white camberwell PTY LTD",
-                abn: "25256525252",
+                first_name: "",
+                middle_name: "",
+                last_name: "",
+                nmi: "",
+                mirn: "",
+                business_name: "",
+                abn: "",
             },
         };
     },
-    computed: {},
-    mounted() {
+    computed: {
+        date_of_birth() {
+            return dayJs(dayJs(this.cafFileData.dob,'YYYY-MM-DD').format('DD/MM/YYYY')).isValid() ? dayJs(this.cafFileData.dob,'YYYY-MM-DD').format('DD/MM/YYYY') : null;
+        },
+    },
+    watch: {
+        cafFileData: {
+            async handler() {
+                await this.syncData();
+            },
+            deep: true,
+        },
+    },
+    async mounted() {
+        await this.syncData();
     },
     methods: {
+        syncData() {
+            this.caf_detail.title = this.cafFileData.title;
+            this.caf_detail.first_name = this.cafFileData.first_name;
+            this.caf_detail.middle_name = this.cafFileData.middle_name;
+            this.caf_detail.last_name = this.cafFileData.last_name;
+            this.caf_detail.nmi = this.cafFileData.nmi;
+            this.caf_detail.mirn = this.cafFileData.mirn;
+            this.caf_detail.business_name = this.cafFileData.business_name;
+            this.caf_detail.abn = this.cafFileData.abn;
+        },
         updateCafFile() {
 
         }

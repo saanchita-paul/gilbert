@@ -42,6 +42,7 @@
 import ApplicationCafFileFilter from '@scripts/pages/ApplicationCafFileFilter';
 import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileService";
 import ApplicationCafFileTable from "@scripts/pages/ApplicationCafFileTable";
+import ApplicationCafFile from "@scripts/models/caf/ApplicationCafFile";
 
 export default {
     name: "ApplicationCafFilePage",
@@ -65,7 +66,7 @@ export default {
     methods: {
         async getCafFiles() {
             this.cafFiles = await ApplicationCafFileService.getApplicationCafFileData();
-            console.log(this.cafFiles);
+            console.log('Inside page', this.cafFiles);
         },
     },
 }

@@ -3,7 +3,7 @@
         <v-data-table
             v-model="selected"
             :headers="headers"
-            :items="desserts"
+            :items="cafFiles"
             :single-expand=true
             :expanded.sync="expanded"
             :item-class="isSelectedClass"
@@ -30,6 +30,7 @@
 
 <script>
 import ApplicationCafFileDetails from "@scripts/pages/ApplicationCafFileDetails";
+import dayJs from "dayjs";
 
 export default {
     name: "ApplicationCafFileTable",
@@ -42,9 +43,9 @@ export default {
             selectedRowId: 0,
             headers: [
                 {text: 'App ID', align: 'start', sortable: true, value: 'id', class: 'black--text'},
-                {text: 'Name', align: 'start', sortable: true, value: 'name', class: 'black--text'},
-                {text: 'Address', align: 'start', sortable: true, value: 'address', class: 'black--text'},
-                {text: 'Conn Date', align: 'start', sortable: true, value: 'date', class: 'black--text'},
+                {text: 'Name', align: 'start', sortable: true, value: 'full_name', class: 'black--text'},
+                {text: 'Address', align: 'start', sortable: true, value: 'to_address', class: 'black--text'},
+                {text: 'Conn Date', align: 'start', sortable: true, value: 'connection_date', class: 'black--text'},
                 {text: 'Created Date', align: 'start', sortable: true, value: 'created_date', class: 'black--text'},
                 {text: 'Supplier', align: 'start', sortable: true, value: 'supplier', class: 'black--text'},
                 {text: 'Plan', align: 'start', sortable: true, value: 'plan', class: 'black--text'},
@@ -54,36 +55,9 @@ export default {
                 {text: '', value: 'data-table-expand', align: 'start'},
                 {text: '', value: 'data-table-select'}
             ],
-            desserts: [
-                {
-                    id: 1,
-                    name: 'Robin',
-                    address: 'Dhaka',
-                    date: '1985/05/05',
-                    created_date: '2022/05/15',
-                    supplier: 'Total Plan',
-                    plan: '251525252',
-                    business_name: 'New',
-                    abn: '2515425245',
-                    status: 'CAF Submitted',
-                },
-                {
-                    id: 2,
-                    name: 'Rakib',
-                    address: 'Dhaka',
-                    date: '2022/05/05',
-                    created_date: '2022/06/06',
-                    supplier: 'Total Plan',
-                    plan: '251525252',
-                    business_name: 'New',
-                    abn: '2515425245',
-                    status: 'CAF Submitted',
-                },
-            ],
         }
     },
     computed: {
-
     },
     watch: {
         selected(val) {
