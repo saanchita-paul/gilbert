@@ -27,6 +27,7 @@
                     <v-btn
                         small
                         style="height: 25px; min-width: 90px; background: #5c229a; color: white"
+                        @click.prevent="updateCafFile"
                     >
                         Save
                     </v-btn>
@@ -47,7 +48,8 @@
                             v-else
                             outlined
                             dense
-                            :items="title"
+                            :items="titlesDD"
+                            v-model="caf_detail.title"
                             class="mr-2 item-value"
                         ></v-select>
                     </div>
@@ -62,6 +64,7 @@
                             height="20px"
                             style="background-color: white"
                             class="mr-2 item-value"
+                            v-model="caf_detail.first_name"
                         />
                     </div>
                     <div class="item">
@@ -74,6 +77,7 @@
                             hide-details="auto"
                             style="background-color: white"
                             class="mr-2 item-value"
+                            v-model="caf_detail.middle_name"
                         />
                     </div>
                     <div class="item">
@@ -86,6 +90,7 @@
                             hide-details="auto"
                             style="background-color: white"
                             class="mr-2 item-value"
+                            v-model="caf_detail.last_name"
                         />
                     </div>
                 </div>
@@ -130,6 +135,7 @@
                         hide-details="auto"
                         style="background-color: white"
                         class="mr-2 item-value"
+                        v-model="caf_detail.nmi"
                     />
                 </div>
                 <div class="item">
@@ -142,6 +148,7 @@
                         hide-details="auto"
                         style="background-color: white"
                         class="mr-2 item-value"
+                        v-model="caf_detail.mirn"
                     />
                 </div>
             </v-col>
@@ -158,6 +165,7 @@
                         hide-details="auto"
                         style="background-color: white"
                         class="mr-2 item-value"
+                        v-model="caf_detail.business_name"
                     />
                 </div>
 
@@ -171,6 +179,7 @@
                         hide-details="auto"
                         style="background-color: white"
                         class="mr-2 item-value"
+                        v-model="caf_detail.abn"
                     />
                 </div>
                 <div class="item">
@@ -263,38 +272,48 @@
 
 import dayjs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
+import {titlesMapperForDropdown} from "@scripts/data/titleMapper";
 
 export default {
     name: "ApplicationCafFileDetails",
-    props: ["cafFileData"],
     components: {},
+    props: ["cafFileData"],
+
     data() {
         return {
             isEdit: true,
-            title: ['Mr', 'Mrs'],
+            titlesDD: titlesMapperForDropdown,
             connectionDate: false,
-            connection_date: null
+            connection_date: null,
+
+            caf_detail: {
+                title: "",
+                first_name: "Md",
+                middle_name: "Shakil",
+                last_name: "Hossain",
+                nmi: "125252525",
+                mirn: "525252590",
+                business_name: "Ray white camberwell PTY LTD",
+                abn: "25256525252",
+            },
         };
     },
-    computed: {
-        // name() {
-        //     let title = this.cafFileData.title ? this.cafFileData.title + ' ' : '';
-        //     let first_name = this.cafFileData.first_name ? this.cafFileData.first_name + ' ' : '';
-        //     let middle_name = this.cafFileData.middle_name ? this.cafFileData.middle_name + ' ' : '';
-        //     let last_name =  this.cafFileData.last_name ? this.cafFileData.last_name : '';
-        //     return title + first_name + middle_name + last_name;
-        // },
-    },
-    methods: {},
+    computed: {},
     mounted() {
-    }
+    },
+    methods: {
+        updateCafFile() {
+
+        }
+    },
 };
 </script>
 
 <style scoped>
-.customClass{
+.customClass {
     min-height: 20px;
 }
+
 .lead-name {
     font-size: 1.3em;
 }
