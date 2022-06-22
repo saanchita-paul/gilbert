@@ -17,7 +17,7 @@
                                 <ApplicationCafFileFilter :selected="selectedCaf"></ApplicationCafFileFilter>
                             </v-col>
                             <v-col cols="12">
-                                <ApplicationCafFileTable v-model="selectedCaf" :cafFiles="cafFiles"></ApplicationCafFileTable>
+                                <ApplicationCafFileTable v-model="selectedCaf" v-if="isLoaded"></ApplicationCafFileTable>
                             </v-col>
                         </v-row>
                     </v-card-text>
@@ -55,25 +55,28 @@ export default {
         return {
             selectedCaf: [],
             tab: null,
-            cafFiles: [],
+            cafFilesList: [],
+            isLoaded: false,
         }
     },
 
-    async mounted() {
-        await this.getCafFiles();
+    watch: {},
+
+    mounted() {
+        this.getCafFiles();
     },
 
     methods: {
         async getCafFiles() {
-            this.cafFiles = await ApplicationCafFileService.getApplicationCafFileData();
-            console.log('Inside page', this.cafFiles);
+            this.cafFilesList = await ApplicationCafFileService.getApplicationCafFileData();
+            this.isLoaded = true;
         },
     },
 }
 </script>
 
 <style scoped>
-.v-tab{
+.v-tab {
     text-transform: capitalize;
     font-weight: bold;
 }

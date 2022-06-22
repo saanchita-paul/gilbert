@@ -7,6 +7,6 @@ export default {
             values.push(new ApplicationCafFile(item));
         });
 
-        return values;
+        return  values;
     },
 }

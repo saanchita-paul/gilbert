@@ -1,5 +1,5 @@
 export default class ApplicationCafFile {
-    constructor({id, title, first_name, middle_name, last_name, full_name, dob, created_date, occupancy_type, phone, email, abn, nmi, mirn, business_name, billing_preference, to_address, service, additional_instruction} = {}) {
+    constructor({id, title, first_name, middle_name, last_name, full_name, dob, created_at, occupancy_type, phone, email, abn, nmi, mirn, business_name, billing_preference, to_address, service, additional_instruction} = {}) {
         this.id = id;
         this.title = title;
         this.first_name = first_name;
@@ -7,7 +7,7 @@ export default class ApplicationCafFile {
         this.last_name = last_name;
         this.full_name = full_name;
         this.dob = dob;
-        this.created_date = created_date;
+        this.created_date = created_at;
         this.occupancy_type = occupancy_type;
         this.phone = phone;
         this.email = email;

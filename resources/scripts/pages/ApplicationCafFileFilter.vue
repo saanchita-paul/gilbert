@@ -43,14 +43,15 @@
                         />
                         <div  class="py-0 mr-2">
                             <v-text-field
+                                solo
                                 dense
-                                placeholder="MM/DD/YYYY - MM/DD/YYYY"
+                                label="Calender"
+                                placeholder="Today"
                                 v-model="selectedDate"
                                 append-icon="mdi-calendar-range"
-                                outlined
+                                readonly
                                 hide-details
                                 style="background-color: white;"
-                                class=""
                                 @click="showDatePickerModal = true"
                                 @click:append="showDatePickerModal = true"
                             ></v-text-field>
@@ -105,10 +106,8 @@ export default {
             selectedDate: null,
             showDatePickerModal: false,
             dateRange: {
-                start: this.$route.query?.start ?
-                    this.$route.query?.start : getTodayString(),
-                end:  this.$route.query?.end ?
-                    this.$route.query?.end : getTodayString()
+                start: getTodayString(),
+                end: getTodayString()
             },
         };
     },
@@ -117,8 +116,7 @@ export default {
             return isEmpty(this.name) &&
                 isEmpty(this.address) &&
                 isEmpty(this.businessName) &&
-                isEmpty(this.abn) &&
-                isEmpty(this.selectedDate);
+                isEmpty(this.abn);
         },
         isDisabledCafBtn() {
             return this.selected?.length < 1;
@@ -130,23 +128,14 @@ export default {
         },
     },
     mounted() {
-
+        this.checkDate();
     },
     methods: {
         onSelectDate(dateRange) {
             this.dateRange = dateRange;
             this.showDatePickerModal = false;
-            let queries = JSON.parse(JSON.stringify(this.$route.query));
-            queries.start = this.dateRange.start;
-            queries.end = this.dateRange.end;
-            this.agencyFilter.start = this.dateRange.start;
-            this.agencyFilter.end = this.dateRange.end;
         },
         checkDate() {
-            if(isNil(this.$route.query?.start) && isNil(this.$route.query?.end)){
-                return;
-            }
-
             let today = getToday();
             let yesterday = getYesterday();
             if(isSame(this.dateRange.start, today)) {

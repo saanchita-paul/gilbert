@@ -27,7 +27,7 @@
                     <v-btn
                         small
                         style="height: 25px; min-width: 90px; background: #5c229a; color: white"
-                        @click.prevent="updateCafFile"
+                        @click.prevent="updateCafFile(cafFileData.id)"
                     >
                         Save
                     </v-btn>
@@ -199,7 +199,7 @@
                 <h4 class="header">Connection Details</h4>
                 <div class="item">
                     <p class="item-title">Connection Date</p>
-                    <p class="item-value" v-if="isEdit">05/05/2022</p>
+                    <p class="item-value" v-if="isEdit">05-02-2022</p>
                     <div class="text-field" v-else>
                         <v-menu
                             v-model="connectionDate"
@@ -218,7 +218,7 @@
                                         outlined
                                         dense
                                         append-icon="mdi-calendar"
-                                        v-model="connection_date"
+                                        v-model="caf_detail.connection_date"
                                         v-bind="attrs"
                                         :error-messages="errors[0]"
                                         hide-details="auto"
@@ -230,7 +230,7 @@
                                 </ValidationProvider>
                             </template>
                             <v-date-picker
-                                v-model="connection_date"
+                                v-model="caf_detail.connection_date"
                                 @input="connectionDate = false"
                             ></v-date-picker>
                         </v-menu>
@@ -249,7 +249,7 @@
                         outlined
                         dense
                         :items="titles"
-                        class=""
+                        v-model="caf_detail.service_type"
                     ></v-select>
                 </div>
                 <div class="item">
@@ -260,11 +260,13 @@
                         outlined
                         dense
                         :items="titles"
-                        class=""
+                        v-model="caf_detail.plan"
                     ></v-select>
                 </div>
             </v-col>
         </v-row>
+
+        <SuccessfullyUpdateCloseConfirmModal v-if="closeConfirm" :dialog="closeConfirm"></SuccessfullyUpdateCloseConfirmModal>
     </div>
 </template>
 
@@ -273,10 +275,12 @@
 import dayjs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import dayJs from "dayjs";
+import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileService";
+import SuccessfullyUpdateCloseConfirmModal from "@scripts/components/crm/modals/SuccessfullyUpdateCloseConfirmModal";
 
 export default {
     name: "ApplicationCafFileDetails",
-    components: {},
+    components: {SuccessfullyUpdateCloseConfirmModal},
     props: ["cafFileData"],
 
     data() {
@@ -284,7 +288,7 @@ export default {
             isEdit: true,
             titles: ['Mr.', 'Mrs.', 'Ms.', 'Miss', 'Dr.'],
             connectionDate: false,
-            connection_date: null,
+            closeConfirm: false,
 
             caf_detail: {
                 title: "",
@@ -295,6 +299,9 @@ export default {
                 mirn: "",
                 business_name: "",
                 abn: "",
+                connection_date: "",
+                service_type: "",
+                plan: ""
             },
         };
     },
@@ -325,8 +332,9 @@ export default {
             this.caf_detail.business_name = this.cafFileData.business_name;
             this.caf_detail.abn = this.cafFileData.abn;
         },
-        updateCafFile() {
-
+        async updateCafFile(cafId) {
+            let response = await ApplicationCafFileService.updateApplicationCafFileData(cafId, this.caf_detail);
+            this.closeConfirm = true;
         }
     },
 };
