@@ -143,6 +143,7 @@ class ExportEnergySubmissionReport
                 IFNULL(ofs.name, 'NULL') as `Office_Name`,
                 concat(ap.first_name, ap.last_name) as `Agent_Name`,
                 IFNULL(u.email, 'NULL') as `Submitted_User_Email`,
+                IFNULL(user.email, 'NULL') as `Assigned_to`,
                 ca.source as `Lead_Source`,
                 ca.first_name as `Customer_Firstname`,
                 ca.last_name as `Customer_Lastname`,
@@ -183,6 +184,8 @@ class ExportEnergySubmissionReport
             ->leftJoin('agent_profiles as ap', 'ap.id', '=', 'ca.created_by')
             ->leftJoin('offices as ofs', 'ofs.id', '=', 'ca.office_id')
             ->leftJoin('users as u', 'ca.submitted_by', '=', 'u.id')
+            ->leftJoin('agent_profiles as a', 'a.id', '=', 'ca.assigned_to')
+            ->leftJoin('users as user', 'user.profile_id', '=', 'a.id')
             ->leftJoin('suger_leads as sl', 'ca.id', '=', 'sl.connection_application_id')
             ->where( function($q) use ($energyType) { $q->whereIn('cs.service_type', $energyType)->orWhereNull('cs.service_type'); } );
             // ->whereNotNull('cs.provider_name');
