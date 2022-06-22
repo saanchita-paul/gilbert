@@ -13,6 +13,7 @@ use App\Models\ConnectionService;
 use App\Models\Identification;
 use App\Models\Office;
 use App\Modules\OurProperty\Services\OurPropertyMapper;
+use App\Services\Address\StreetTypeMapper;
 use App\Services\AddressMapperService;
 use App\Services\AuthService\JwtAuthService;
 use Exception;
@@ -90,6 +91,7 @@ class CreateOurPropertyService
     {
         $this->connectionApplicaton = new ConnectionApplication();
 
+        // preparing connection app for Our-Property
         // preparing connection app for Our-Property
         $this->userRequestData = $requestData;
 
@@ -172,6 +174,8 @@ class CreateOurPropertyService
         $this->connectionApplicaton->unit_number = $this->userRequestData->tenancy_unit_number ?? null;
         $this->connectionApplicaton->street_number = $this->userRequestData->tenancy_street_number ?? null;
         $this->connectionApplicaton->street_name = $this->getStreetName($this->userRequestData) ?? null;
+        $this->connectionApplicaton->street_name_only = $this->userRequestData->tenancy_street_type ?? null;
+        $this->connectionApplicaton->street_type =  StreetTypeMapper::getShortForm($this->userRequestData->tenancy_street_type) ?? $this->userRequestData->tenancy_street_type;
         $this->connectionApplicaton->billing_unit_number = $this->userRequestData->tenancy_billing_unit_number ?? null;
         $this->connectionApplicaton->billing_street_number = $this->userRequestData->tenancy_billing_street_number ?? null;
         $this->connectionApplicaton->billing_street_name = $this->userRequestData->tenancy_billing_street_name ?? null;
@@ -361,7 +365,7 @@ class CreateOurPropertyService
         }
         $streetName = $this->getStreetName($data);
         $unitStreetNumber = $this->getUnitStreetNumber($data);
-        
+
         return $unitStreetNumber . ', ' . $streetName;
     }
 
