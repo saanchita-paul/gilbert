@@ -840,7 +840,7 @@ export default {
                 const data = await LeadApplicationService.validateCutOff(this.leadId);
                 const { isElecOkay: elec, isGasOkay: gas } = data.data;
                 if (this.submitType === 'power') {
-                    checking = elec; // true = OK false = NO
+                    checking = elec; 
                 }
                 if (this.submitType === 'gas') {
                     checking = gas;
@@ -865,7 +865,7 @@ export default {
     margin-left: 18px;
 }
 .cutoff-note {
-    padding-left: 4px;
+    padding-left: 8px;
     color: red;
 }
 </style>

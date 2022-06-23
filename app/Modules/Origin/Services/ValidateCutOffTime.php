@@ -262,11 +262,10 @@ class ValidateCutOffTime
         
         $existingApplication = ConnectionApplication::find($applicationId);
         
-        // check
         $state = $existingApplication->state ?? 'National';
         $connectionDate = $existingApplication->moving_date;
         $nmi = $existingApplication->nmi;
-        // dd($connectionDate);
+
 
         BusinessTime::enable(Carbon::class);
         Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
@@ -321,8 +320,7 @@ class ValidateCutOffTime
     public static function isValidGasConnect($applicationId){
 
         $existingApplication = ConnectionApplication::find($applicationId);
-        
-        // check
+
         $state = $existingApplication->state ?? 'National';
         $connectionDate = $existingApplication->moving_date;
 
@@ -352,9 +350,9 @@ class ValidateCutOffTime
     }
 
     public static function validateCutOff(int $applicationId) {
-        // dd($applicationId);
-        $elec = self::isValidElecConnect($applicationId); // validate cutoff elec only
-        $gas = self::isValidGasConnect($applicationId); // validate cutoff gas only
+      
+        $elec = self::isValidElecConnect($applicationId); // validate cutoff for elec only
+        $gas = self::isValidGasConnect($applicationId); // validate cutoff for gas only
         return [
             'isElecOkay' => $elec, //true OR false
             'isGasOkay' => $gas, //true OR false
