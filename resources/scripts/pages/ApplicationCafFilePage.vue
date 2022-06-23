@@ -94,6 +94,7 @@ export default {
     methods: {
         async fetchCafFiles() {
             let data = await ApplicationCafFileService.getApplicationCafFileData({...this.sort_search_meta, ...{page: this.page}}, this.advanceSearch);
+            console.log('Inside caf file page', data);
             this.cafFiles = data.data;
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
