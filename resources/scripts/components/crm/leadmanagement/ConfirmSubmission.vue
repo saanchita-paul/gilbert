@@ -652,7 +652,7 @@
                     </v-col>
                     <p v-if="isLifeSupportAndEA" class="life-support">Life Support Applications cannot be submitted to EA</p>
                 </v-row>
-                    <p v-if="validateCutOffTime" class="cutoff-note">Kindly ensure you have received EIC for same day connection charges as you are trying to submit after cutoff time</p>
+                    <p v-if="!isOkayCutOff" class="cutoff-note">Kindly ensure you have received EIC for same day connection charges as you are trying to submit after cutoff time</p>
             </section>
 
             <v-footer  class="text-right">
@@ -681,10 +681,14 @@ export default {
         },
         data: {
             require: true
-        }
+        },
+        submitType: {
+            require: true
+        },
     },
     data() {
       return {
+          isOkayCutOff: true,
           authorizedPerson: null,
           isAuthorizedPersonExist: false,
           is_temp_condition:null,
@@ -813,9 +817,6 @@ export default {
             return this.data.selectedProvider === 'ea'
                && (this.data.is_gas_life_support || this.data.is_power_life_support);
         },
-        async validateCutOffTime() {
-            return await LeadApplicationService.validateCutOff(this.leadId);
-        },
     },
     methods: {
         backToEdit() {
@@ -833,10 +834,28 @@ export default {
             this.authorizedPerson = SecondaryContactMapper.mapServerData(unMappedSecondaryContact);
             this.isAuthorizedPersonExist = true;
         },
+        async validateCutOffTime() {
+            let checking = true;
+            if (this.data.selectedProvider === 'origin'){
+                const data = await LeadApplicationService.validateCutOff(this.leadId);
+                const { isElecOkay: elec, isGasOkay: gas } = data.data;
+                if (this.submitType === 'power') {
+                    checking = elec; // true = OK false = NO
+                }
+                if (this.submitType === 'gas') {
+                    checking = gas;
+                }
+                if (this.submitType === 'energy') {
+                    checking = elec && gas;
+                }
+            }
+            this.isOkayCutOff = checking;
+        },
     },
     mounted() {
+      this.validateCutOffTime();
       this.loadAuthorizedPerson();
-    }
+    },
 };
 </script>
 
