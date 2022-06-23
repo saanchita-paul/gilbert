@@ -40,23 +40,23 @@
 
     <div style="border: 1px solid gray; margin-top: 20px; font-weight: bold; width: 45%; float: left; margin-right: 9%;">
         <div style="background-color: #532B87; color: white; padding: 0px 3px; font-size: 20px;">
-            Your Office applications at a glance
+            Your office applications at a glance
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Number of Applications Submitted</div>
+            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Applications Submitted by REA</div>
             <div style="text-align: center; float: left; color: #532B87; font-weight: bold; width: 20%; ">{{ $report['totalCount']['total_applications_created'] }}</div>
             <div style="clear: both;"></div>
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Number of Applications with atleast one service connected (other than water)</div>
+            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Connections Submitted (other than water)</div>
             <div style="text-align: center; float: left; color: #532B87; font-weight: bold; width: 20%; ">{{ $report['totalCount']['applications_with_minimum_submitted'] }}</div>
             <div style="clear: both;"></div>
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Number of successful water connections</div>
+            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Water Connections Submitted</div>
             <div style="text-align: center; float: left; color: #532B87; font-weight: bold; width: 20%; ">{{ $report['totalCount']['successful_water_connections'] }}</div>
             <div style="clear: both;"></div>
         </div>
@@ -68,7 +68,7 @@
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Conversion Rate (Succesful Elec Sub/Apps)</div>
+            <div style="display: inline; float: left; width: 78%; padding-left: 3px; border-right: 1px solid gray;">Conversion Rate</div>
             <div style="text-align: center; float: left; color: #532B87; font-weight: bold; width: 20%; ">{{ $report['totalCount']['conversion_rate'] }}%</div>
             <div style="clear: both;"></div>
         </div>
@@ -78,7 +78,7 @@
 
     <div style="margin-top: 20px; font-weight: bold; width: 45%; float: left; ">
         <div style="background-color: #532B87; color: white; padding: 5px 3px; font-size: 20px;">
-            Utility submitted
+            Successful Utility Connections
         </div>
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%; ">
             <div style="display: inline;  width: 26%; float: left; border: 1px solid gray; text-align:center">&nbsp;</div>
@@ -110,7 +110,7 @@
 
     <div style="margin-top: 20px; font-weight: bold; ">
         <div style="background-color: #532B87; color: white; padding: 5px 3px; font-size: 18px;">
-            Detailed view of agents in the office
+            Detailed view
         </div>
 
         <div style="color: black; padding: 0px 0px; font-size: 16px; font-weight: normal; width: 100%;">
@@ -129,13 +129,13 @@
 
             <div style="width: 18%; height: 120px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: #532B87; font-weight: bold; text-align: center;">
-                    Applications with at least one service connected (other than water)
+                    Connections Submitted (other than water)
                 </div>
             </div>
 
             <div style="width: 14%; height: 120px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: #532B87; font-weight: bold; text-align: center;">
-                    Successful Water Connection
+                    Water Connections Submitted
                 </div>
             </div>
 
@@ -147,7 +147,7 @@
 
             <div style="width: 13%; height: 120px; padding-left: 2px; float: left; border: 1px solid gray;">
                 <div style="color: #532B87; font-weight: bold; text-align: center;">
-                    Conversion Rate (Successful Elec Sub/Apps)
+                    Conversion Rate
                 </div>
             </div>
 
