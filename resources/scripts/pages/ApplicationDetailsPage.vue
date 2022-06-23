@@ -39,7 +39,7 @@
 
         <AssignedToUserEmptyModal v-if="assignedToDialog" :dialog="assignedToDialog" @closeMessage="closeAssignedToEmptyModal"></AssignedToUserEmptyModal>
 
-        <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" secondaryContact="secondaryContact" v-if="showSubmitModal" @confirmSubmitLead="confirmSubmitLead" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
+        <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" :leadId="leadId" secondaryContact="secondaryContact" v-if="showSubmitModal" @confirmSubmitLead="confirmSubmitLead" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
             <PreventSubmissionModal v-if="preventSubmissionFlag" :message="preventSubmissionMessage" :dialog="preventSubmissionFlag" @closeMessage="closePreventSubmissionModal"></PreventSubmissionModal>
     </v-container>
 </template>
@@ -116,6 +116,7 @@ export default {
                 }
             },
             nextBusinessDay: null,
+
         }
     },
     computed: {
@@ -253,7 +254,7 @@ export default {
              return false;
         },
 
-        
+
 
         closePreventSubmissionModal() {
           this.preventSubmissionFlag = false;

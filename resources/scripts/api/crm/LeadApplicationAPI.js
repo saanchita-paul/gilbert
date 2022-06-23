@@ -511,4 +511,13 @@ export default {
     async clearConcessionDetails(id) {
         await axios.post('/api/applications/'+id+'/clear-concession-details');
     },
+
+    async validateCutOff(id) {
+        try {
+            const data = await axios.get('/api/applications/' + id + '/validate-cutoff');
+            return data.data;
+        } catch (error) {
+            return error.data;
+        }
+    },
 }

@@ -652,6 +652,7 @@
                     </v-col>
                     <p v-if="isLifeSupportAndEA" class="life-support">Life Support Applications cannot be submitted to EA</p>
                 </v-row>
+                    <p v-if="validateCutOffTime" class="cutoff-note">Kindly ensure you have received EIC for same day connection charges as you are trying to submit after cutoff time</p>
             </section>
 
             <v-footer  class="text-right">
@@ -669,11 +670,15 @@ import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import dayJs from "dayjs";
 import { titlesMapperForDropdown } from  "@scripts/data/titleMapper";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+// import ValidateCutOffTime from "@scripts/modules/origin/services/ValidateCutOffTime";
 import SecondaryContactMapper from "@scripts/api/mappers/crm/SecondaryContactMapper";
 import {isNull} from "lodash-es";
 export default {
   name: "ConfirmSubmission",
     props:{
+        leadId: {
+            require: true
+        },
         data: {
             require: true
         }
@@ -778,7 +783,9 @@ export default {
                   value: 'YELLOW'
               }
           ],
-          provider: null
+          provider: null,
+          isValidElecCutOff: null,
+          isValidGasCutOff: null,
       }
     },
     computed: {
@@ -805,7 +812,10 @@ export default {
         isLifeSupportAndEA() {
             return this.data.selectedProvider === 'ea'
                && (this.data.is_gas_life_support || this.data.is_power_life_support);
-        }
+        },
+        async validateCutOffTime() {
+            return await LeadApplicationService.validateCutOff(this.leadId);
+        },
     },
     methods: {
         backToEdit() {
@@ -834,5 +844,9 @@ export default {
 .life-support {
     color: red;
     margin-left: 18px;
+}
+.cutoff-note {
+    padding-left: 4px;
+    color: red;
 }
 </style>

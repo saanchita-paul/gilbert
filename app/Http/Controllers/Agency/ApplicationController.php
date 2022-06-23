@@ -25,6 +25,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Origin\Services\ValidateCutOffTime;
 use PropertyMe\services\FetchContacts;
 
 class ApplicationController extends Controller
@@ -202,7 +203,7 @@ class ApplicationController extends Controller
         // $ea_service_ids = $service->getNotSubmittedEaService($id, $submitType);
         $provider_service_ids = $service->getNotSubmittedServices($id, $submitType);
         $service_ids = [];
-         
+
         foreach($provider_service_ids as $key => $ids){
             $service_ids = array_merge($service_ids, $ids);
             if($submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_ENERGY
@@ -430,6 +431,17 @@ class ApplicationController extends Controller
             $service = new ApplicationService();
             $res = $service->clearConcession($id);
             return response(['success' => true, 'message' => 'Concession cleared successfully']);
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function validateCutOff($applicationId)
+    {
+        try {
+            $res = ValidateCutOffTime::validateCutOff($applicationId);
+            dd($res);
+            return response()->json(['success' => true, 'data' => $res]);
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

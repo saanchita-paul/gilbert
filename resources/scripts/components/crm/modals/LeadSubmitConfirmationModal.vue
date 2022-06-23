@@ -6,7 +6,7 @@
             max-width="70%"
         >
                 <div>
-                  <ConfirmSubmission @backToEdit="backToEdit"  :data="data" @confirmSubmitLead="confirmSubmitLead"></ConfirmSubmission>
+                  <ConfirmSubmission @backToEdit="backToEdit"  :data="data" :leadId="leadId" @confirmSubmitLead="confirmSubmitLead"></ConfirmSubmission>
                 </div>
         </v-dialog>
     </v-row>
@@ -24,6 +24,9 @@ export default {
         },
         leadSummary: {
             require: true,
+        },
+        leadId : {
+            require: true
         },
       data: {
           require: true

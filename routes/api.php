@@ -207,7 +207,10 @@ Route::get('lnn/bot_token', function () {
     return (new Encrypter(config('bot.encryption_key')))->decrypt(\request()->get('bot_token'), true);
 });
 
-
+/**
+ * cutoff routes
+ */
+Route::get('/applications/{id}/validate-cutoff/', [ApplicationController::class, 'validateCutOff']);
 
 
 Route::post('/our-property/token', [OurPropertyController::class, 'getAccessToken']);
