@@ -256,4 +256,27 @@ class ValidateCutOffTime
 
         return true;
     }
+
+    /**
+     * @param string moving date
+     * @param string state DEFAULT == 'National'
+     * 
+     * @return string available date
+     */
+    public static function getNextGasConnectionDate(string $movingDate, string $state = 'National') {
+        BusinessTime::enable(Carbon::class);
+        Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
+
+        $connectionDate = Carbon::parse($movingDate)->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]);
+        $availableDate = Carbon::today(self::MAP_STATE_TIMEZONE[$state]);
+
+        for($i=0; $i<=self::GAS_BUSINESS_DAYS; $i++){
+            $availableDate->addDay();
+            while($availableDate->isWeekend() || $availableDate->isHoliday()){
+                $availableDate->addDay();
+            }
+        }
+
+        return $availableDate->gt($connectionDate) ? $availableDate->format('Y-m-d') : $connectionDate->format('Y-m-d');
+    }
 }
