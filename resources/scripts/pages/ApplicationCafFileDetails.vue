@@ -26,6 +26,7 @@
 
                     <v-btn
                         small
+                        :loading = loading
                         style="height: 25px; min-width: 90px; background: #5c229a; color: white"
                         @click.prevent="updateCafFile(cafFileData.id)"
                     >
@@ -289,6 +290,7 @@ export default {
             titles: ['Mr.', 'Mrs.', 'Ms.', 'Miss', 'Dr.'],
             connectionDate: false,
             closeConfirm: false,
+            loading: false,
 
             caf_detail: {
                 title: "",
@@ -333,8 +335,10 @@ export default {
             this.caf_detail.abn = this.cafFileData.abn;
         },
         async updateCafFile(cafId) {
+            this.loading = true;
             let response = await ApplicationCafFileService.updateApplicationCafFileData(cafId, this.caf_detail);
-            this.closeConfirm = true;
+            // this.loading = false;
+            // this.closeConfirm = true;
         }
     },
 };

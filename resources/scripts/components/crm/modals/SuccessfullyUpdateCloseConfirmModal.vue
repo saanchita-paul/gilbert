@@ -17,7 +17,7 @@
                                 <p class="text-center">Updated Successfully.</p>
                             </div>
                             <div class="d-flex justify-center">
-                                <v-btn @click="done" block
+                                <v-btn @click="done = false" block
                                        color="primary"
                                 >OK
                                 </v-btn>
@@ -33,15 +33,20 @@
 
 <script>
 export default {
-name: "SuccessfullyUpdateCloseConfirmModal",
-    props:{
+    name: "SuccessfullyUpdateCloseConfirmModal",
+    props: {
         dialog: {
             require: true,
         },
     },
+    data() {
+        return {
+
+        }
+    },
     methods: {
         done() {
-            console.log('TEst');
+
         }
     }
 }

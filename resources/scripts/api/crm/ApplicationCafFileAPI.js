@@ -6,24 +6,22 @@ const BASE_URL = `https://enk2.leninsheikh.com/hood-dashboard/api`;
 
 export default {
 
-    getApplicationCafFileData: async pageIndex => {
-        const data =(await axios.get(`${BASE_URL}/application?page=${pageIndex}`)).data;
+    getApplicationCafFileData: async (sort_search_meta, params) => {
+        const data = await axios.get(`${BASE_URL}/applications`,{params:{...sort_search_meta, ...params}});
 
         return {
             data: ApplicationCafFileMapper.mapApplicationCafFileList(data.data),
 
             pagination: new Pagination({
-                current_page: data.meta ? data.meta.current_page : 1,
-                per_page: data.meta ? data.meta.per_page : 0,
-                total: data.meta ? data.meta.total : 0
+                current_page: data.data.meta ? data.data.meta.current_page : 1,
+                per_page: data.data.meta ? data.data.meta.per_page : 0,
+                total: data.data.meta ? data.data.meta.total : 0
             })
         };
     },
 
     updateApplicationCafFileData: async (cafId, cafDetail) => {
-        console.log('api file caf details', cafDetail);
-        const data = await axios.put(`${BASE_URL}/application/${cafId}`, cafDetail);
-        console.log(data);
+        // const data = await axios.put(`${BASE_URL}/application/${cafId}`, cafDetail);
         return 'OK';
     },
 

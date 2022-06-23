@@ -4,9 +4,8 @@
             v-model="selected"
             :headers="headers"
             :items="cafFiles"
-            :page.sync="pagination.current_page"
-            :items-per-page="pagination.per_page"
-            :server-items-length="pagination.total"
+            :server-items-length="totalItem"
+            :options.sync="options"
             :single-expand=true
             :expanded.sync="expanded"
             :item-class="isSelectedClass"
@@ -22,9 +21,9 @@
             </template>
             <!-- create date end-->
             <!-- connection date start-->
-            <template v-slot:item.service.connection_date="{ item }">
-                <span>{{ connection_date(item.service.connection_date) }}</span>
-            </template>
+<!--            <template v-slot:item.service.connection_date="{ item }">-->
+<!--                <span>{{ connection_date(item.service.connection_date) }}</span>-->
+<!--            </template>-->
             <!-- connection date end-->
             <!-- remove select all checkbox from header start-->
             <template v-slot:[`header.data-table-select`]></template>
@@ -43,14 +42,12 @@
 <script>
 import ApplicationCafFileDetails from "@scripts/pages/ApplicationCafFileDetails";
 import Pagination from "@scripts/models/crm/Pagination";
-import {merge} from "lodash-es";
-import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileService";
 import dayJs from "dayjs";
 
 export default {
     name: "ApplicationCafFileTable",
     components: {ApplicationCafFileDetails},
-    props: ["value"],
+    props: ["value", "cafFiles", "totalItem"],
     data() {
         return {
             selected: [],
@@ -60,7 +57,7 @@ export default {
                 {text: 'App ID', align: 'start', sortable: true, value: 'id', class: 'black--text'},
                 {text: 'Name', align: 'start', sortable: true, value: 'full_name', class: 'black--text'},
                 {text: 'Address', align: 'start', sortable: true, value: 'to_address', class: 'black--text'},
-                {text: 'Conn Date', align: 'start', sortable: true, value: 'service.connection_date', class: 'black--text'},
+                {text: 'Conn Date', align: 'start', sortable: true, value: 'connection_date', class: 'black--text'},
                 {text: 'Created Date', align: 'start', sortable: true, value: 'created_date', class: 'black--text'},
                 {text: 'Supplier', align: 'start', sortable: true, value: 'supplier', class: 'black--text'},
                 {text: 'Plan', align: 'start', sortable: true, value: 'plan', class: 'black--text'},
@@ -70,10 +67,13 @@ export default {
                 {text: '', value: 'data-table-expand', sortable: false, align: 'start'},
                 {text: '', value: 'data-table-select', sortable: false}
             ],
-            cafFiles: [],
-            pagination: new Pagination(),
-            current_page: 1,
-            total: 0
+            cafFileSearch: '',
+            options: {
+                itemsPerPage: 10
+            },
+            page: 1,
+            pageCount: 0,
+            itemsPerPage: 10,
         }
     },
     computed: {
@@ -83,16 +83,15 @@ export default {
         selected(val) {
             this.$emit('input', val)
         },
-
-        'pagination.current_page'(pageNew, pageOld) {
-            if (pageNew !== pageOld) {
-                this.load(pageNew)
-            }
-        }
+        options: {
+            handler () {
+                this.loadCafFileList();
+            },
+            deep: true,
+        },
     },
 
-    async mounted() {
-        await this.load(this.pagination.current_page);
+    mounted() {
     },
     methods: {
         onRowSelect(item, slot) {
@@ -104,17 +103,24 @@ export default {
                 return 'selectedRowForAgentTable';
             }
         },
-        async load(page) {
-            let response = await ApplicationCafFileService.getApplicationCafFileData(page);
-            merge(this.pagination, response.pagination)
-            this.cafFiles = response.data;
-        },
+
         created_date(date) {
             return dayJs(date,'YYYY-MM-DD').format('MM/DD/YYYY');
         },
         connection_date(date) {
-            return dayJs(date,'YYYY-MM-DD').format('MM/DD/YYYY');
-        }
+            // return dayJs(date,'YYYY-MM-DD').format('MM/DD/YYYY');
+        },
+
+        loadCafFileList() {
+            const meta = {
+                // search: this.cafFileSearch,
+                page: this.options.page,
+                per_page: this.options.itemsPerPage === -1 ? this.totalItem : this.options.itemsPerPage,
+                // is_descending: this.options.sortDesc.length != 0? this.options.sortDesc[0]: false,
+                // sort_by: this.options.sortBy.length != 0? this.options.sortBy[0]: '',
+            }
+            this.$emit('refreshDataTable', meta);
+        },
     },
 
 }

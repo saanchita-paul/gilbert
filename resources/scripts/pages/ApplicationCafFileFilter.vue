@@ -6,16 +6,16 @@
                     <div class="d-flex">
                         <v-text-field
                             autocomplete="off"
-                            v-model="name"
+                            v-model="$attrs.value.name"
                             outlined
                             dense
                             hide-details="auto"
-                            placeholder="Name Search"
+                            placeholder="Name"
                             style="background-color: white"
                             class="mr-2"
                         />
                         <v-text-field
-                            v-model="address"
+                            v-model="$attrs.value.address"
                             outlined
                             dense
                             hide-details="auto"
@@ -24,7 +24,7 @@
                             class="mr-2"
                         />
                         <v-text-field
-                            v-model="businessName"
+                            v-model="$attrs.value.business_name"
                             outlined
                             dense
                             hide-details="auto"
@@ -33,7 +33,7 @@
                             class="mr-2"
                         />
                         <v-text-field
-                            v-model="abn"
+                            v-model="$attrs.value.abn"
                             outlined
                             dense
                             hide-details="auto"
@@ -96,28 +96,24 @@ import {isEmpty, isNil} from "lodash-es";
 export default {
     name: "ApplicationCafFileFilter",
     components: {DatePickerModal},
-    props: ["selected"],
+    props: ["selected", "isSearchEmpty"],
     data() {
         return {
             name: "",
             address: "",
-            businessName: "",
+            business_name: "",
             abn: "",
             selectedDate: null,
             showDatePickerModal: false,
             dateRange: {
-                start: getTodayString(),
-                end: getTodayString()
+                start: this.$route.query?.start ?
+                    this.$route.query?.start : getTodayString(),
+                end:  this.$route.query?.end ?
+                    this.$route.query?.end : getTodayString()
             },
         };
     },
     computed: {
-        isSearchEmpty() {
-            return isEmpty(this.name) &&
-                isEmpty(this.address) &&
-                isEmpty(this.businessName) &&
-                isEmpty(this.abn);
-        },
         isDisabledCafBtn() {
             return this.selected?.length < 1;
         }
@@ -125,15 +121,21 @@ export default {
     watch: {
         dateRange(val) {
             this.checkDate();
+            this.updateDateRange();
         },
     },
     mounted() {
         this.checkDate();
+        this.updateDateRange();
     },
     methods: {
         onSelectDate(dateRange) {
             this.dateRange = dateRange;
             this.showDatePickerModal = false;
+            let queries = JSON.parse(JSON.stringify(this.$route.query));
+            queries.start = this.dateRange.start;
+            queries.end = this.dateRange.end;
+            this.$router.replace({ query: queries });
         },
         checkDate() {
             let today = getToday();
@@ -151,6 +153,9 @@ export default {
         },
         clearSearch() {
             this.$refs.form.reset();
+        },
+        updateDateRange() {
+            this.$emit('updateDate', this.dateRange)
         },
     },
 
