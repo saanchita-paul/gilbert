@@ -2,6 +2,7 @@
 
 namespace App\Services\Sales;
 
+use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\RejectionReason;
 use Exception;
@@ -25,6 +26,10 @@ trait SalesResponseHandle
                 'status' => SalesStatusMapper::EAToGilbert($quote->status)
             ], $conncetionServiceData);
             $reasons = data_get($quote, 'rejectionReasons') ?? [];
+
+            if (sizeof($reasons) > 0) {
+                $this->resetIsRunningSubmission($leadId);
+            }
 
             if ($quote->fuel === 'GAS') {
                 $this->updateService($leadId, 'gas', $updateData);
@@ -128,5 +133,16 @@ trait SalesResponseHandle
             $service->quote_reference = $quoteReference;
             $service->save();
         }
+    }
+
+    /**
+     * Updating is_running_submission
+     *
+     * @param $leadId
+     */
+    private function resetIsRunningSubmission($leadId)
+    {
+        $application = ConnectionApplication::where('id', $leadId)->first();
+        $application->update(['is_running_submission' => 0]);
     }
 }

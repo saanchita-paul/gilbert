@@ -80,7 +80,11 @@ class SumoService
         $url = APILog::setLoggerQuery($url, APILog::API_SUMO_SUBMIT_LEAD, extend: false);
 
         $response = Http::put($url, $this->getCustomerData());
-
+        if (!$response->successful()) {
+            ConnectionApplication::where('id', $this->application)->update([
+                'is_running_submission' => 0,
+            ]);
+        }
         \Log::info( 'Sumo printing customer data ' , $this->getCustomerData());
 
         return json_decode($response->body(), true);

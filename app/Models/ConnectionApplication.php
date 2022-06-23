@@ -218,6 +218,7 @@ class ConnectionApplication extends Model
         'ea_go_neutral',
         'additional_access_information',
         'is_power_life_support',
+        'is_running_submission',
     ];
 
 
