@@ -251,3 +251,7 @@ Route::get('/kaka', function () {
 //    dd($date);
     return $dateTimeZone->getOffset($date)/60/60;
 });
+
+
+
+
