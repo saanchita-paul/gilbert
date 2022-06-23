@@ -2,7 +2,8 @@ import axios from 'axios';
 import ApplicationCafFileMapper from "@scripts/api/mappers/crm/ApplicationCafFileMapper";
 import Pagination from "@scripts/models/crm/Pagination";
 
-const BASE_URL = `https://enk2.leninsheikh.com/hood-dashboard/api`;
+// const BASE_URL = `https://enk2.leninsheikh.com/hood-dashboard/api`;
+const BASE_URL = `http://192.168.1.13:8001/hood-dashboard/api`;
 
 export default {
 
