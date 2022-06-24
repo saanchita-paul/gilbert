@@ -6,9 +6,10 @@ use App\Models\APILog;
 use App\Models\Identification;
 use Illuminate\Support\Carbon;
 use App\Models\ConnectionService;
+use App\Models\ConnectionApplication;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
-use App\Models\ConnectionApplication;
+use App\Models\HubspotHistory;
 use Illuminate\Database\Eloquent\Model;
 use App\Services\Logger\ErrorLogService;
 use Illuminate\Database\Eloquent\Collection;
@@ -410,5 +411,38 @@ class HubspotContactService
     public function getTimestamp($date): int|null
     {
         return $date ? Carbon::parse($date)->timestamp * 1000 : null;
+    }
+
+    /**
+     * @param contact_id
+     * @param oldApplicationId
+     * @param hubspot_response
+     * 
+     * @return int 
+     */
+    public function saveHistoricalData(string $contact_id = '', int $oldApplicationId = 0, array $hubspot_response){
+        if(!$contact_id && !$oldApplicationId)
+            throw new \Exception("HubspotContactService:saveHistoricalData - ERROR (missing contact_id or oldApplicationId)", 1);
+        
+        if(!$contact_id || !$oldApplicationId){
+            $existingApplication = ConnectionApplication::where('id', $oldApplicationId)
+                                    ->orWhere('hubspot_contact_id', $contact_id)
+                                    ->orderBy('created_at', 'DESC')
+                                    ->firstOrFail();
+
+            $contact_id = $existingApplication->hubspot_contact_id;
+            $oldApplicationId = $existingApplication->id;
+        }
+
+        $newHistory = new HubspotHistory();
+        $newHistory->contact_id = $contact_id;
+        $newHistory->old_connection_application_id = $oldApplicationId;
+        $newHistory->new_connection_application_id = $this->application->id;
+        $newHistory->email = $this->application->email;
+        $newHistory->address_as_text = $this->application->address_text;
+        $newHistory->hubspot_response = json_encode($hubspot_response);
+        $newHistory->save();
+
+        return $newHistory->id;
     }
 }
