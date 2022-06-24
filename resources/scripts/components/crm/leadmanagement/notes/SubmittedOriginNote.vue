@@ -9,7 +9,8 @@
         <p class="title">Utility Type:<span class="note-data">({{note.leads.utility_type}})</span></p>
         <p class="title">Applicant Name: <span class="note-data">{{note.leads.application_name}}</span></p>
         <p class="title">Connection Address: <span class="note-data">{{note.leads.address_text}}</span></p>
-        <p class="title">Connection Date: <span class="note-data">{{connection_data}}</span></p>
+        <p class="title">{{gas_connection_date ? 'Elec ' : ''}}Connection Date: <span class="note-data">{{connection_date}}</span></p>
+        <p v-if="gas_connection_date" class="title">Gas Connection Date: <span class="note-data">{{gas_connection_date}}</span></p>
         <p class="title">Consent to Pay: <span class="note-data">{{note.leads.is_contacted}}</span></p>
         <p class="title mt-3">Lead Source: <span class="note-data">{{note.leads.source}}</span></p>
         <p class="title">Agency: <span class="note-date">{{note.leads.agency}}</span></p>
@@ -91,11 +92,14 @@ name: "SubmittedOriginNote",
         services() {
             return this.note.leads.services;
         },
-        connection_data()
-        {
+        connection_date(){
           return dayJs(this.note.leads.moving_date, DATE_FORMAT.DATE_DASH).format(DATE_FORMAT.DB_DATE);
-        }
-
+        },
+        gas_connection_date(){
+            if (this.note.leads.gas_moving_date)
+                return dayJs(this.note.leads.gas_moving_date, DATE_FORMAT.DATE_DASH).format(DATE_FORMAT.DB_DATE);
+            return '';
+        },
     },
     methods: {
         togglePlanDetails() {

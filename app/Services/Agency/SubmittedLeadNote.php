@@ -46,7 +46,12 @@ class SubmittedLeadNote
         ];
 
         if ($provider_name == 'Origin' && in_array($submittedService, ['Gas', 'Elec & Gas'])){
-            $leadData['gas_moving_date'] = ValidateCutOffTime::getNextGasConnectionDate($this->existLead?->moving_date, $this->existLead?->state);
+            if ($submittedService === 'Gas'){
+                $leadData['moving_date'] = ValidateCutOffTime::getNextGasConnectionDate($this->existLead?->moving_date, $this->existLead?->state);
+            }
+            else if ($submittedService === 'Elec & Gas'){
+                $leadData['gas_moving_date'] = ValidateCutOffTime::getNextGasConnectionDate($this->existLead?->moving_date, $this->existLead?->state);
+            }
         }
 
        return json_encode($leadData);

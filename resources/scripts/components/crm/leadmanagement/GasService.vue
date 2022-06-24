@@ -276,7 +276,7 @@ export default {
             return this.leadSummary.connection_services?.find(service => service.service_type === 'gas');
         },
         quoteReference() {
-            return this.service?.quote_reference ? this.service.quote_reference : '-'
+            return this.service?.quote_reference ? this.service.quote_reference : (this.service?.lead_reference ? this.service.lead_reference : '-');
         },
         reason() {
             const reasons = this.service?.reasons;
