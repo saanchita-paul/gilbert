@@ -1,5 +1,7 @@
 import ApplicationCafFile from "@scripts/models/caf/ApplicationCafFile";
-import COMMISSION from "@scripts/data/constants/COMMISSION";
+import DayJS from "dayjs";
+import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
+import {capitalize} from "lodash-es";
 
 const mapApplicationCafFileList =  data => {
     const values = [];
@@ -9,25 +11,58 @@ const mapApplicationCafFileList =  data => {
     return values;
 }
 
+function getSelectedService(service) {
+    let filterServices = service.filter(svc => {
+        return svc.service_type === 'gas' || svc.service_type === 'electricity';
+    })
+    if(filterServices.length === 2) {
+        return 'both'
+    } else if(filterServices.length === 1) {
+       return  filterServices[0].service_type;
+    }
+    return '';
+
+}
+
 const mapApplicationCafFile = data => {
-    let model = Object.assign(new ApplicationCafFile(), { ...data });
-    model.service_type = mapService(data);
+    let model = new ApplicationCafFile({...data });
+    model.service_type = mapService(model.service);
+    model.supplier = mapProvider(model.service);
+    model.connection_date = mapConnDate(model.service);
+    model.plan = mapPlan(model.service);
+    model.selected_service = getSelectedService(model.service);
     return model;
 }
 
-const mapService = data => {
-    let test = [];
-
-    data.service.forEach(service => {
-        if(service.service_type) {
-            test.push({
-                service_type: 'test'
-            })
-        }
+export const mapService = services => {
+    let service_types = [];
+    services.map(service => {
+        service_types.push(service['service_type']);
     });
-
-    return test;
+    console.log('service type array', services);
+    if (service_types.includes('gas') && service_types.includes('electricity')){
+        return 'Electricity & Gas';
+    }
+    if (service_types.includes('gas')) {
+        return 'Gas Only';
+    }
+    if (service_types.includes('electricity')) {
+        return 'Electricity Only';
+    }
 }
+
+export const mapProvider = services => {
+    return services.length != 0 ? capitalize(services[0]['provider_name']) : '';
+}
+
+export const mapConnDate = services => {
+    return services.length != 0 ? new DayJS(services[0]['connection_date']).format(DATE_FORMAT.DB_DATE) : '';
+}
+
+export const mapPlan = services => {
+    return services.length != 0 ? capitalize(services[0]['plan_type']) : '';
+}
+
 
 export default {
     mapApplicationCafFileList

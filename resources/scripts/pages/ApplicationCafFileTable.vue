@@ -20,18 +20,22 @@
                 <span>{{ created_date(item.created_date) }}</span>
             </template>
             <!-- create date end-->
-            <!-- connection date start-->
-<!--            <template v-slot:item.service.connection_date="{ item }">-->
-<!--                <span>{{ connection_date(item.service.connection_date) }}</span>-->
-<!--            </template>-->
-            <!-- connection date end-->
+
             <!-- remove select all checkbox from header start-->
-            <template v-slot:[`header.data-table-select`]></template>
+<!--            <template v-slot:[`header.data-table-select`]></template>-->
             <!-- remove select all checkbox from header end-->
+            <template v-slot:item.data-table-select="{ item, isSelected, select }">
+                <v-simple-checkbox
+                    :value="isSelected"
+                    :disabled="isDisabled(item)"
+                    @input="select($event)"
+                ></v-simple-checkbox>
+            </template>
+
             <!-- row expend start-->
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length" style="padding: 0">
-                    <ApplicationCafFileDetails :cafFileData='item'></ApplicationCafFileDetails>
+                    <ApplicationCafFileDetails :cafFileData='item' @updateServiceType="updateServiceType"></ApplicationCafFileDetails>
                 </td>
             </template>
             <!-- row expend end-->
@@ -43,6 +47,7 @@
 import ApplicationCafFileDetails from "@scripts/pages/ApplicationCafFileDetails";
 import Pagination from "@scripts/models/crm/Pagination";
 import dayJs from "dayjs";
+import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileService";
 
 export default {
     name: "ApplicationCafFileTable",
@@ -53,6 +58,7 @@ export default {
             selected: [],
             expanded: [],
             selectedRowId: 0,
+            disabledCount: 0,
             headers: [
                 {text: 'App ID', align: 'start', sortable: true, value: 'id', class: 'black--text'},
                 {text: 'Name', align: 'start', sortable: true, value: 'full_name', class: 'black--text'},
@@ -94,6 +100,10 @@ export default {
     mounted() {
     },
     methods: {
+
+        updateServiceType(data, id) {
+            this.$emit('updateServiceType', data, id)
+        },
         onRowSelect(item, slot) {
             this.selectedRowId = item.id;
             slot.expand(!slot.isExpanded)
@@ -105,10 +115,7 @@ export default {
         },
 
         created_date(date) {
-            return dayJs(date,'YYYY-MM-DD').format('MM/DD/YYYY');
-        },
-        connection_date(date) {
-            // return dayJs(date,'YYYY-MM-DD').format('MM/DD/YYYY');
+            return dayJs(date,'YYYY-MM-DD').format('DD/MM/YYYY');
         },
 
         loadCafFileList() {
@@ -121,6 +128,17 @@ export default {
             }
             this.$emit('refreshDataTable', meta);
         },
+
+
+        isDisabled(item) {
+            console.log('item inside caf table', item);
+            return true;
+        }
+
+        // checkedCafKey(service_type, services){
+        //     let key = ApplicationCafFileService.isPossibleToCreateCaf(service_type, services);
+        //     return key;
+        // }
     },
 
 }

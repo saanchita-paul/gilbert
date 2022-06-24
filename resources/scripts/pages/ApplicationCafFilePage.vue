@@ -17,7 +17,15 @@
                                 <ApplicationCafFileFilter :selected="selectedCaf" v-model="advanceSearch" :isSearchEmpty="advanceSearch.isSearchEmpty()" @updateDate="updateDate"></ApplicationCafFileFilter>
                             </v-col>
                             <v-col cols="12">
-                                <ApplicationCafFileTable v-model="selectedCaf" :cafFiles="cafFiles" :totalItem="totalItem" @refreshDataTable="refreshDataTable"></ApplicationCafFileTable>
+                                <ApplicationCafFileTable
+                                    v-model="selectedCaf"
+                                    :cafFiles="cafFiles"
+                                    :totalItem="totalItem"
+                                    @refreshDataTable="refreshDataTable"
+                                    @updateServiceType="updateServiceType"
+                                >
+
+                                </ApplicationCafFileTable>
                             </v-col>
                         </v-row>
                     </v-card-text>
@@ -92,10 +100,20 @@ export default {
 
 
     methods: {
+
+        updateServiceType(service_type, id) {
+            let index = this.cafFiles.findIndex((dt)=> {
+                return dt.id = id;
+            });
+            if(index !== -1) {
+                this.cafFiles[index].selected_service = service_type;
+            }
+        },
+
         async fetchCafFiles() {
             let data = await ApplicationCafFileService.getApplicationCafFileData({...this.sort_search_meta, ...{page: this.page}}, this.advanceSearch);
-            console.log('Inside caf file page', data);
             this.cafFiles = data.data;
+            console.log(this.cafFiles);
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
             this.totalItem = data.pagination.total;

@@ -49,7 +49,7 @@
                             v-else
                             outlined
                             dense
-                            :items="titles"
+                            :items="titlesDropDown"
                             v-model="caf_detail.title"
                             class="mr-2 item-value"
                         ></v-select>
@@ -109,7 +109,7 @@
                 </div>
                 <div class="item">
                     <p class="item-title">Billing</p>
-                    <p class="item-value">{{ cafFileData.billing_preference ? cafFileData.billing_preference : '' }}</p>
+                    <p class="item-value">{{ billing(cafFileData.billing_preference)  }}</p>
                 </div>
             </v-col>
             <v-col cols="3" class="hr-bar pl-2">
@@ -200,7 +200,7 @@
                 <h4 class="header">Connection Details</h4>
                 <div class="item">
                     <p class="item-title">Connection Date</p>
-                    <p class="item-value" v-if="isEdit">05-02-2022</p>
+                    <p class="item-value" v-if="isEdit">{{ cafFileData.connection_date ? cafFileData.connection_date : '' }}</p>
                     <div class="text-field" v-else>
                         <v-menu
                             v-model="connectionDate"
@@ -231,7 +231,7 @@
                                 </ValidationProvider>
                             </template>
                             <v-date-picker
-                                v-model="caf_detail.connection_date"
+                                v-model="connection_date"
                                 @input="connectionDate = false"
                             ></v-date-picker>
                         </v-menu>
@@ -239,28 +239,28 @@
                 </div>
                 <div class="item">
                     <p class="item-title">Supplier</p>
-                    <p class="item-value" v-if="isEdit">Energy Australia</p>
-                    <p class="" v-else>Energy Australia</p>
+                    <p class="item-value">{{ cafFileData.supplier ? cafFileData.supplier : '' }}</p>
                 </div>
                 <div class="item">
                     <p class="item-title">Service Type</p>
-                    <p class="item-value" v-if="isEdit">Electricity Only</p>
+                    <p class="item-value" v-if="isEdit">{{ cafFileData.service_type ? cafFileData.service_type : '' }}</p>
                     <v-select
                         v-else
                         outlined
                         dense
-                        :items="titles"
+                        :items="serviceDropDown"
                         v-model="caf_detail.service_type"
+                        @change="changeServiceType"
                     ></v-select>
                 </div>
                 <div class="item">
                     <p class="item-title">Plan</p>
-                    <p class="item-value" v-if="isEdit">Total Home</p>
+                    <p class="item-value" v-if="isEdit">{{ cafFileData.plan ? cafFileData.plan : '' }}</p>
                     <v-select
                         v-else
                         outlined
                         dense
-                        :items="titles"
+                        :items="planDropDown"
                         v-model="caf_detail.plan"
                     ></v-select>
                 </div>
@@ -273,11 +273,11 @@
 
 <script>
 
-import dayjs from "dayjs";
-import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import dayJs from "dayjs";
 import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileService";
 import SuccessfullyUpdateCloseConfirmModal from "@scripts/components/crm/modals/SuccessfullyUpdateCloseConfirmModal";
+import {capitalize} from "lodash-es";
+import {titlesMapperForDropdown} from "@scripts/data/titleMapper";
 
 export default {
     name: "ApplicationCafFileDetails",
@@ -287,10 +287,35 @@ export default {
     data() {
         return {
             isEdit: true,
-            titles: ['Mr.', 'Mrs.', 'Ms.', 'Miss', 'Dr.'],
+            titlesDropDown: titlesMapperForDropdown,
+            serviceDropDown: [
+                {
+                    text: "Electricity",
+                    value: "electricity",
+                },
+                {
+                    text: "Gas",
+                    value: "gas",
+                },
+                {
+                    text: "Both",
+                    value: "both",
+                },
+            ],
+            planDropDown: [
+                {
+                    text: "Plan 1",
+                    value: "plan1",
+                },
+                {
+                    text: "Plan 2",
+                    value: "plan2",
+                }
+            ],
             connectionDate: false,
             closeConfirm: false,
             loading: false,
+            connection_date: null,
 
             caf_detail: {
                 title: "",
@@ -302,8 +327,17 @@ export default {
                 business_name: "",
                 abn: "",
                 connection_date: "",
+                service: [
+                    {
+                        "id": 1,
+                        "service_type": "gas",
+                        "provider_name": "australia",
+                        "plan_type": "home",
+                        "connection_date": "2022-06-24",
+                    }
+                ],
                 service_type: "",
-                plan: ""
+                // plan: ""
             },
         };
     },
@@ -333,13 +367,28 @@ export default {
             this.caf_detail.mirn = this.cafFileData.mirn;
             this.caf_detail.business_name = this.cafFileData.business_name;
             this.caf_detail.abn = this.cafFileData.abn;
+            this.caf_detail.connection_date = this.cafFileData.connection_date;
+            this.caf_detail.service_type = this.cafFileData.selected_service;
+            // this.caf_detail.plan = this.cafFileData.plan;
+        },
+        billing(value) {
+            return value ? capitalize(value) : '';
         },
         async updateCafFile(cafId) {
-            this.loading = true;
+            // this.loading = true;
             let response = await ApplicationCafFileService.updateApplicationCafFileData(cafId, this.caf_detail);
+            console.log(response);
             // this.loading = false;
             // this.closeConfirm = true;
+        },
+
+        changeServiceType() {
+             this.$emit('updateServiceType', this.caf_detail.service_type, this.cafFileData.id)
         }
+
+        // isDisabled(services) {
+        //    return ApplicationCafFileService.isPossibleToCreateCaf(this.cafFileData.selected_service, services);
+        // }
     },
 };
 </script>
