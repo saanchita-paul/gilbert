@@ -30,11 +30,20 @@ class CreateHubSpotContact implements ShouldQueue
     public function handle(CreateApplicationEvent $event)
     {
         $existLead = ConnectionApplication::findOrFail($event->applicationId);
-        info("CreateHubSpotContact log here ----->", [$existLead]);
-
-        
-
         $hubspotContactService = new HubspotContactService($event->applicationId);
-        $hubspotContactService->create();
+
+        $getContactByEmailData = $hubspotContactService->getContactByEmail($existLead->email);
+
+        info("<----- i am get getContactByEmailData without------>", $getContactByEmailData);
+//        info("<----- i am get body getContactByEmailData ------>", [$getContactByEmailData['body']]);
+
+        if ($getContactByEmailData['exists'] === true ) {
+//            $existLead->update(['hubspot_contact_id' => $getContactByEmailData['body']->vid]);
+            $hubspotContactService->update();
+        } else {
+            info("<----- i am not exists------>", [$getContactByEmailData['exists']]);
+            $hubspotContactService->create();
+        }
     }
+
 }

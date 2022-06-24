@@ -45,10 +45,10 @@ class HubspotContactService
         ]);
         $body = json_decode($response->body(), true);
 
-        if (empty($body['vid'])) {
-            Log::error($response->body());
-            throw new \Exception("[HubspotContactService] failed to create contact");
-        }
+//        if (empty($body['vid'])) {
+//            Log::error($response->body());
+//            throw new \Exception("[HubspotContactService] failed to create contact");
+//        }
 
         $this->application->update(['hubspot_contact_id' => $body['vid']]);
     }
@@ -74,6 +74,26 @@ class HubspotContactService
             Log::info($response->body());
             throw new \Exception('[HubspotContactService] Contact update failed, check api_logs for details.');
         }
+    }
+
+    /**
+     * getting vid
+     *
+     * @throws \Exception
+     */
+    public function getContactByEmail($email)
+    {
+        $url = str_replace('${email}', $email, config('hub_spot.get_contact_by_email')) . config('hub_spot.api_key');
+        $url = APILog::setLoggerQuery($url, APILog::API_HB_GET_CONTACT_BY_EMAIL);
+
+        $response = Http::get($url);
+        $exists = !($response->status() === 404);
+
+        return [
+            'exists' => $exists,
+            'body' => json_decode($response->body(), true)
+        ];
+
     }
 
     private function getProperties(): array
