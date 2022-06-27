@@ -72,7 +72,7 @@
                     </div>
                 </v-col>
                 <v-col cols="2">
-                    <v-btn class="float-right" :disabled="isDisabledCafBtn">
+                    <v-btn class="float-right" :disabled="isDisabledCafBtn" @click.prevent="generateCafFile">
                         Generate CAF File
                     </v-btn>
                 </v-col>
@@ -93,6 +93,7 @@
 import DatePickerModal from "@scripts/modules/sales/components/DatePickerModal";
 import {getFormattedDBDate, getToday, getTodayString, getYesterday, isSame} from "@scripts/services/DateRangeService";
 import {isEmpty, isNil} from "lodash-es";
+import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileService";
 export default {
     name: "ApplicationCafFileFilter",
     components: {DatePickerModal},
@@ -157,6 +158,10 @@ export default {
         updateDateRange() {
             this.$emit('updateDate', this.dateRange)
         },
+        async generateCafFile(){
+            let data = await ApplicationCafFileService.generateCafFile(this.selected);
+            console.log(data);
+        }
     },
 
 };

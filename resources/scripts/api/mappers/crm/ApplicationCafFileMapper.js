@@ -11,12 +11,20 @@ const mapApplicationCafFileList =  data => {
     return values;
 }
 
+function mapServices(data) {
+   return  data.map(dt => {
+       let p  ={...dt, is_selected: false};
+       return p;
+    });
+}
+
 const mapApplicationCafFile = data => {
     let model = new ApplicationCafFile({...data });
     model.service_type = mapService(model.service);
     model.supplier = mapProvider(model.service);
     model.connection_date = mapConnDate(model.service);
     model.plan = mapPlan(model.service);
+    model.services = mapServices(model.service);
     model.selected_service = getSelectedService(model.service);
     model.selected_plan = getSelectedPlan(model.service);
     return model;
@@ -27,7 +35,7 @@ const mapService = services => {
     services.map(service => {
         service_types.push(service['service_type']);
     });
-    console.log('service type array', services);
+    // console.log('service type array', services);
     if (service_types.includes('gas') && service_types.includes('electricity')){
         return 'Electricity & Gas';
     }

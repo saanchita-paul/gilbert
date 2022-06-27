@@ -24,11 +24,12 @@
             <!-- remove select all checkbox from header start-->
 <!--            <template v-slot:[`header.data-table-select`]></template>-->
             <!-- remove select all checkbox from header end-->
-            <template v-slot:item.data-table-select="{ item, isSelected }">
-                <v-simple-checkbox
+            <template v-slot:item.data-table-select="{ item, isSelected, select }">
+                <v-checkbox
                     :value="isSelected"
                     :disabled="isDisabled(item)"
-                ></v-simple-checkbox>
+                    @input="select($event)"
+                ></v-checkbox>
             </template>
 
             <!-- row expend start-->
@@ -97,6 +98,9 @@ export default {
     },
 
     mounted() {
+
+        console.log('table item', this.cafFiles);
+
     },
     methods: {
 
@@ -130,8 +134,7 @@ export default {
 
 
         isDisabled(item) {
-            console.log('item inside caf table', item);
-            return true;
+            return false;
         }
 
         // checkedCafKey(service_type, services){

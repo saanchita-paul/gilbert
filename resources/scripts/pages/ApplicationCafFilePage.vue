@@ -103,16 +103,23 @@ export default {
 
         updateServiceType(service_type, id) {
             let index = this.cafFiles.findIndex((dt)=> {
-                return dt.id = id;
+                return dt.id === id;
             });
-            if(index !== -1) {
-                this.cafFiles[index].selected_service = service_type;
-            }
+            const services = this.cafFiles[index].services;
+            services.map(svc => {
+               if(svc.service_type === service_type) {
+                   svc.is_selected = true;
+               } else {
+                   svc.is_selected = false;
+               }
+            });
+            this.cafFiles[index].services = services;
         },
 
         async fetchCafFiles() {
             let data = await ApplicationCafFileService.getApplicationCafFileData({...this.sort_search_meta, ...{page: this.page}}, this.advanceSearch);
             this.cafFiles = data.data;
+            console.log('caf file data', [this.cafFiles]);
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
             this.totalItem = data.pagination.total;

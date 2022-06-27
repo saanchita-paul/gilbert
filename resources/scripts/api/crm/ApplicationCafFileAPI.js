@@ -4,7 +4,7 @@ import Pagination from "@scripts/models/crm/Pagination";
 
 // const BASE_URL = `https://enk2.leninsheikh.com/hood-dashboard/api`;
 // const BASE_URL = `http://192.168.1.13:8001/hood-dashboard/api`;
-const BASE_URL = `http://192.168.1.13:8888/hood-dashboard/api`;
+const BASE_URL = `http://127.0.0.1:8080/hood-dashboard/api`;
 
 export default {
 
@@ -26,5 +26,10 @@ export default {
         const data = await axios.put(`${BASE_URL}/applications/${cafId}`, cafDetail);
         return data;
     },
+
+    generateCafFile: async (data) => {
+        console.log('inside api file', data);
+        return 'OK';
+    }
 
 }
