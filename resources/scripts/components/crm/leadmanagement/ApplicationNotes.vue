@@ -16,40 +16,6 @@
             <v-btn class="ma-2 float-right" @click="saveNote">Submit Note</v-btn>
         </v-col>
 
-------------------------------------------
-        <!-- <v-col cols="12" class="notes-container">
-            <v-timeline dense>
-                <v-timeline-item color="primary" small v-for="nt in notes" :color="getColor(nt.active)" :key="nt.id">
-                    <SubmittedNote v-if="nt.type == 'submitted_connection'" :note="nt"> </SubmittedNote>
-                    <InvalidNote v-else-if="nt.type == 'invalid_property_me_note'" :note="nt"> </InvalidNote>
-                    <Note v-else :note="nt"></Note>
-                </v-timeline-item>
-----------------------------------------------------
-        <v-col cols="12" class="notes-container">
-                <v-timeline
-                    dense
-            >
-                    <v-timeline-item color="primary" small v-for="nt in notes" :color="getColor(nt.active)" :key="nt.id">
-                        <SubmittedNote v-if="nt.type == 'submitted_connection'" :note="nt"> </SubmittedNote>
-                        <SubmittedOriginNote v-if="nt.type == 'submitted_origin'" :note="nt"> </SubmittedOriginNote>
-                        <InvalidNote v-else-if="nt.type == 'invalid_property_me_note'" :note="nt"> </InvalidNote>
-                        <Note v-else :note="nt"></Note>
-                    </v-timeline-item>
-----------------------------------------------------
-             </v-timeline>
-        </v-col>
-
-        <v-col cols="12" class="notes-container" v-if="leadSummary.tsa_call_histories.length">
-            <div class="text-center font-weight-bold text-h5"> Call Log </div>
-                <v-timeline dense>
-                    <v-timeline-item color="primary" small v-for="(nt, index) in leadSummary.tsa_call_histories" :key="nt.attempt_id">
-                        <div style="font-weight: bold;"> Attempt {{index+1}} </div>
-                        <div> {{nt.attempt_initiated_timestamp}} </div>
-                        <div> {{nt.attempt_outcome}} </div>
-                    </v-timeline-item>
-             </v-timeline>
-        </v-col> -->
-
         <v-card color="basil">
             <v-tabs
             v-model="tab"
@@ -67,6 +33,7 @@
                         <v-timeline dense>
                                 <v-timeline-item color="primary" small v-for="nt in notes" :color="getColor(nt.active)" :key="nt.id">
                                     <SubmittedNote v-if="nt.type == 'submitted_connection'" :note="nt"> </SubmittedNote>
+                                    <SubmittedOriginNote v-if="nt.type == 'submitted_origin'" :note="nt"> </SubmittedOriginNote>
                                     <InvalidNote v-else-if="nt.type == 'invalid_property_me_note'" :note="nt"> </InvalidNote>
                                     <Note v-else :note="nt"></Note>
                                 </v-timeline-item>
