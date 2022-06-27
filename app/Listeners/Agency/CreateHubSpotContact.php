@@ -37,8 +37,10 @@ class CreateHubSpotContact implements ShouldQueue
         info("<----- i am get getContactByEmailData without------>", $getContactByEmailData);
 //        info("<----- i am get body getContactByEmailData ------>", [$getContactByEmailData['body']]);
 
-        if ($getContactByEmailData['exists'] === true ) {
-//            $existLead->update(['hubspot_contact_id' => $getContactByEmailData['body']->vid]);
+        if ($getContactByEmailData['exists'] === true) {
+            $responseData = $getContactByEmailData['body'];
+            $hubspotContactService->setOldApplicationData();
+            $hubspotContactService->saveHistoricalData($responseData);
             $hubspotContactService->update();
         } else {
             info("<----- i am not exists------>", [$getContactByEmailData['exists']]);
