@@ -151,7 +151,7 @@ class CreateOurPropertyService
             $mapperService->mapTenancy($this->userRequestData->tenancy_type) : null;
         $this->connectionApplicaton->moving_date = $this->userRequestData->tenancy_moving_date ?? null;
         $this->connectionApplicaton->additional_instruction = $this->userRequestData->additional_instruction ?? null;
-        $this->connectionApplicaton->street_address = $this->getStreetAddress($this->userRequestData) ?? null;
+//        $this->connectionApplicaton->street_address = $this->getStreetAddress($this->userRequestData) ?? null;
         $this->connectionApplicaton->city = $this->userRequestData->tenancy_city ?? null;
         $this->connectionApplicaton->postcode = $this->userRequestData->tenancy_postcode ?? null;
         $this->connectionApplicaton->state = $this->userRequestData->tenancy_state ?
@@ -173,7 +173,7 @@ class CreateOurPropertyService
         $this->connectionApplicaton->mirn = $this->userRequestData->tenancy_mirn ?? null;
         $this->connectionApplicaton->unit_number = $this->userRequestData->tenancy_unit_number ?? null;
         $this->connectionApplicaton->street_number = $this->userRequestData->tenancy_street_number ?? null;
-        $this->connectionApplicaton->street_name = $this->getStreetName($this->userRequestData) ?? null;
+//        $this->connectionApplicaton->street_name = $this->getStreetName($this->userRequestData) ?? null;
         $this->connectionApplicaton->street_name_only = $this->userRequestData->tenancy_street_name ?? null;
         $this->connectionApplicaton->street_type =  StreetTypeMapper::getShortForm($this->userRequestData->tenancy_street_type) ?? $this->userRequestData->tenancy_street_type;
         $this->connectionApplicaton->billing_unit_number = $this->userRequestData->tenancy_billing_unit_number ?? null;
@@ -340,14 +340,14 @@ class CreateOurPropertyService
         if ($data->tenancy_street_type !== null) {
             return $data->tenancy_street_name . ' ' . $data->tenancy_street_type;
         }
-        return $data->tenancy_street_name;
+        return '';
     }
 
 
     /**
      * @return string
      */
-    private function getUnitStreetNumber($data): string
+    private function getUnitStreetNumber($data): ?string
     {
         if ($data->tenancy_unit_number !== null) {
             return $data->tenancy_unit_number . '/' . $data->tenancy_street_number;
