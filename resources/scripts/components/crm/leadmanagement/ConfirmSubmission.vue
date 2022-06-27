@@ -652,7 +652,9 @@
                     </v-col>
                     <p v-if="isLifeSupportAndEA" class="life-support">Life Support Applications cannot be submitted to EA</p>
                 </v-row>
-                    <p v-if="!isOkayCutOff" class="cutoff-note">Kindly ensure you have received EIC for same day connection charges as you are trying to submit after cutoff time</p>
+                    <p v-if="elecNote" class="cutoff-note">{{ elecNote }}</p>
+                    <p v-if="gasNote" class="cutoff-note">{{ gasNote }}</p>
+
             </section>
 
             <v-footer  class="text-right">
@@ -688,7 +690,8 @@ export default {
     },
     data() {
       return {
-          isOkayCutOff: true,
+          gasNote: '',
+          elecNote: '',
           authorizedPerson: null,
           isAuthorizedPersonExist: false,
           is_temp_condition:null,
@@ -835,21 +838,23 @@ export default {
             this.isAuthorizedPersonExist = true;
         },
         async validateCutOffTime() {
-            let checking = true;
+            const elecText = 'Kindly ensure you have received EIC for same day connection charges as you are trying to submit after cutoff time';
+            const gasText = 'Kindly noted that gas connection needs to be submitted with a minimum of 3 business days';
+
             if (this.data.selectedProvider === 'origin'){
                 const data = await LeadApplicationService.validateCutOff(this.leadId);
-                const { isElecOkay: elec, isGasOkay: gas } = data.data;
-                if (this.submitType === 'power') {
-                    checking = elec; 
+                const { isElecOkay: elecOkay, isGasOkay: gasOkay } = data.data;
+                if (this.submitType === 'power' && !elecOkay) {
+                    this.elecNote = elecText;
                 }
-                if (this.submitType === 'gas') {
-                    checking = gas;
+                if (this.submitType === 'gas' && !gasOkay) {
+                    this.gasNote = gasText;
                 }
                 if (this.submitType === 'energy') {
-                    checking = elec && gas;
+                    this.elecNote = !elecOkay ? elecText : '';
+                    this.gasNote = !gasOkay ? gasText : '';
                 }
             }
-            this.isOkayCutOff = checking;
         },
     },
     mounted() {
