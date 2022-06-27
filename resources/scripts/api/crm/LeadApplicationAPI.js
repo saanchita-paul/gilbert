@@ -219,9 +219,12 @@ export default {
         }
     },
 
-    async closeApplicationWithReason(id, closing_reason){
+    async closeApplicationWithReason(id, closeReason){
         try {
-            const data = await axios.post('/api/applications/'+id+'/closeApplication' , {closing_reason});
+            const data = await axios.post('/api/applications/'+id+'/closeApplication' , {
+                app_close_reason_id: closeReason.reason_id,
+                closing_reason: closeReason.reason_text
+            });
             return true;
         } catch (error) {
             console.log(error)

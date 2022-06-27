@@ -26,7 +26,7 @@
                 <p v-if="leadSummary.is_contacted" class="application-consent mt-5"><v-icon size="14px" color="success" class="mx-2">call</v-icon>Applicant consents to be contacted by HOOD</p>
             </div>
         </v-col>
-        
+
         <div style="width: 100%;" class="mb-4 ml-6 mr-4 pl-2">
             <div class="d-flex justify-space-between" style="width: 100%;">
                 <div class="d-flex">
@@ -95,6 +95,7 @@ import IdCopyToClipboard from '@scripts/components/common/IdCopyToClipboard.vue'
 import leadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
+import AppCloseReasonService from "@scripts/services/AppCloseReasonService";
 export default {
 name: "LeadDetailsHeader",
     components:{ IdCopyToClipboard },
@@ -105,7 +106,8 @@ name: "LeadDetailsHeader",
     },
     data() {
         return {
-           id:10
+           id:10,
+           closeReasons : null,
         };
     },
     computed:{
@@ -238,3 +240,4 @@ name: "LeadDetailsHeader",
         background-color: $buttonBackgroundColor;
     }
 </style>
+

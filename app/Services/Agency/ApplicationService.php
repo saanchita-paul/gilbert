@@ -3,6 +3,7 @@
 namespace App\Services\Agency;
 
 use App\Jobs\UpdateHubspotContactJob;
+use App\Models\AppCloseReason;
 use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
@@ -374,7 +375,8 @@ class ApplicationService
     {
         try {
             $existingApplication = ConnectionApplication::find($applicationId);
-            $existingApplication->closing_reason = $application['closing_reason'];
+            $existingApplication->app_close_reason_id = $application['app_close_reason_id'];
+            $existingApplication->closing_reason = $application['closing_reason'] ?? null;
             $existingApplication->status = ConnectionApplication::STATUS_CLOSED;
             $existingApplication->closed_at = now();
             $existingApplication->closed_by = $user->profile->id;
@@ -382,9 +384,12 @@ class ApplicationService
 
             UpdateHubspotContactJob::dispatch($applicationId);
 
+            // get dropdown reason id text
+            $applicationReasonIdText = AppCloseReason::select('value')->where('id', $application['app_close_reason_id'])->first();
+
             $allicationNoteService = new ApplicationNoteService($user);
             $closingeNote = [];
-            $closingeNote['text'] = $application['closing_reason'];
+            $closingeNote['text'] = $application['closing_reason'] ?? $applicationReasonIdText?->value;
             $closingeNote['type'] = 'close_connection';
 
             $allicationNoteService->createNotes($closingeNote, $applicationId);

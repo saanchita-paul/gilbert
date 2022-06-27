@@ -219,6 +219,7 @@ class ConnectionApplication extends Model
         'additional_access_information',
         'is_power_life_support',
         'is_running_submission',
+        'app_close_reason_id'
     ];
 
 

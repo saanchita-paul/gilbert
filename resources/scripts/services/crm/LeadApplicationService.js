@@ -43,15 +43,6 @@ export default {
     loadServiceProvider: services =>
         LeadApplicationAPI.getServiceProvider(services),
     saveNote: (note, leadId) => LeadApplicationAPI.saveNote(note, leadId),
-    eacalate: leadId => LeadApplicationAPI.eacalate(leadId),
-    saveEscalateReason: (reason, leadId) =>
-        LeadApplicationAPI.saveEscalateReason(reason, leadId),
-    confirmSubmitLead: (lead, leadId) =>
-        LeadApplicationAPI.confirmSubmitLead(lead, leadId),
-    updateAddress: (address, leadId) =>
-        LeadApplicationAPI.updateAddress(address, leadId),
-    assignUser: (leadId, agentProfileId) =>
-        LeadApplicationAPI.assignUser(leadId, agentProfileId),
     saveSoleField: (
         field,
         value,
@@ -68,15 +59,18 @@ export default {
             identification,
             isService
         ),
-    getNmiMern: id => LeadApplicationAPI.getNmiMern(id),
-    loadAuthorizedPerson: leadId =>
-        LeadApplicationAPI.loadAuthorizedPerson(leadId),
-    saveAuthorizedPerson: data => LeadApplicationAPI.saveAuthorizedPerson(data),
-    updateApplicationProviders: (payload, application_id) =>
-        LeadApplicationAPI.updateApplicationProviders(payload, application_id),
-    closeApplicationWithReason: (id, closing_reason) =>
-        LeadApplicationAPI.closeApplicationWithReason(id, closing_reason),
-    getAssignedHoodUser: id => LeadApplicationAPI.getAssignedHoodUser(id),
+
+    eacalate: (leadId) => LeadApplicationAPI.eacalate(leadId),
+    saveEscalateReason: (reason, leadId) => LeadApplicationAPI.saveEscalateReason(reason, leadId),
+    saveLead: (lead, leadId) => LeadApplicationAPI.saveLead(lead, leadId),
+    updateAddress: (address, leadId) => LeadApplicationAPI.updateAddress(address, leadId),
+    assignUser: (leadId, agentProfileId) => LeadApplicationAPI.assignUser(leadId, agentProfileId),
+    getNmiMern: (id) => LeadApplicationAPI.getNmiMern(id),
+    loadAuthorizedPerson: (leadId) => LeadApplicationAPI.loadAuthorizedPerson(leadId),
+    saveAuthorizedPerson: (data) => LeadApplicationAPI.saveAuthorizedPerson(data),
+    updateApplicationProviders: (payload, application_id) => LeadApplicationAPI.updateApplicationProviders(payload, application_id),
+    closeApplicationWithReason: (id, closeReason) => LeadApplicationAPI.closeApplicationWithReason(id, closeReason),
+    getAssignedHoodUser: (id) => LeadApplicationAPI.getAssignedHoodUser(id),
     loadHoodUser: () => LeadApplicationAPI.loadHoodUser(),
     loadAgencies: search => LeadApplicationAPI.loadAgencies(search),
     loadOffices: (agencyId, search) =>

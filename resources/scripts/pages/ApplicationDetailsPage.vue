@@ -168,9 +168,10 @@ export default {
         cancelClose(){
             this.closeLead = false;
         },
-       async sucessSaveClose(closing_reason){
+
+       async sucessSaveClose(closeReason){
             try {
-                await LeadApplicationService.closeApplicationWithReason(this.leadId , closing_reason);
+                await LeadApplicationService.closeApplicationWithReason(this.leadId , closeReason);
                 this.closeLead = false;
                 this.closeConfirm = true;
             } catch (error) {
@@ -253,7 +254,7 @@ export default {
              return false;
         },
 
-        
+
 
         closePreventSubmissionModal() {
           this.preventSubmissionFlag = false;
