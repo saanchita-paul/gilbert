@@ -24,11 +24,10 @@
             <!-- remove select all checkbox from header start-->
 <!--            <template v-slot:[`header.data-table-select`]></template>-->
             <!-- remove select all checkbox from header end-->
-            <template v-slot:item.data-table-select="{ item, isSelected, select }">
+            <template v-slot:item.data-table-select="{ item, isSelected }">
                 <v-simple-checkbox
                     :value="isSelected"
                     :disabled="isDisabled(item)"
-                    @input="select($event)"
                 ></v-simple-checkbox>
             </template>
 

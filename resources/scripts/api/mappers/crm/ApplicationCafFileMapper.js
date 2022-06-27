@@ -11,19 +11,6 @@ const mapApplicationCafFileList =  data => {
     return values;
 }
 
-function getSelectedService(service) {
-    let filterServices = service.filter(svc => {
-        return svc.service_type === 'gas' || svc.service_type === 'electricity';
-    })
-    if(filterServices.length === 2) {
-        return 'both'
-    } else if(filterServices.length === 1) {
-       return  filterServices[0].service_type;
-    }
-    return '';
-
-}
-
 const mapApplicationCafFile = data => {
     let model = new ApplicationCafFile({...data });
     model.service_type = mapService(model.service);
@@ -31,10 +18,11 @@ const mapApplicationCafFile = data => {
     model.connection_date = mapConnDate(model.service);
     model.plan = mapPlan(model.service);
     model.selected_service = getSelectedService(model.service);
+    model.selected_plan = getSelectedPlan(model.service);
     return model;
 }
 
-export const mapService = services => {
+const mapService = services => {
     let service_types = [];
     services.map(service => {
         service_types.push(service['service_type']);
@@ -51,16 +39,38 @@ export const mapService = services => {
     }
 }
 
-export const mapProvider = services => {
+const mapProvider = services => {
     return services.length != 0 ? capitalize(services[0]['provider_name']) : '';
 }
 
-export const mapConnDate = services => {
+const mapConnDate = services => {
     return services.length != 0 ? new DayJS(services[0]['connection_date']).format(DATE_FORMAT.DB_DATE) : '';
 }
 
-export const mapPlan = services => {
+const mapPlan = services => {
     return services.length != 0 ? capitalize(services[0]['plan_type']) : '';
+}
+
+const getSelectedService = (service) => {
+    let filterServices = service.filter(svc => {
+        return svc.service_type === 'gas' || svc.service_type === 'electricity';
+    })
+    if(filterServices.length === 2) {
+        return 'both'
+    } else if(filterServices.length === 1) {
+        return  filterServices[0].service_type;
+    }
+    return '';
+}
+
+const getSelectedPlan = (service) => {
+    let filterPlans = service.filter(svc => {
+        return svc.plan_type;
+    })
+    if (filterPlans.length !== 0) {
+        return filterPlans[0].plan_type;
+    }
+    return '';
 }
 
 

@@ -127,7 +127,7 @@
                     <p class="item-value">{{ cafFileData.to_address ? cafFileData.to_address : '' }}</p>
                 </div>
                 <div class="item">
-                    <p class="item-title">NMI (Power) *</p>
+                    <p class="item-title">NMI (Power)</p>
                     <p class="item-value" v-if="isEdit">{{ cafFileData.nmi ? cafFileData.nmi : '' }}</p>
                     <v-text-field
                         v-else
@@ -140,7 +140,7 @@
                     />
                 </div>
                 <div class="item">
-                    <p class="item-title">MIRN (Gas) *</p>
+                    <p class="item-title">MIRN (Gas)</p>
                     <p class="item-value" v-if="isEdit">{{ cafFileData.mirn ? cafFileData.mirn : '' }}</p>
                     <v-text-field
                         v-else
@@ -287,7 +287,28 @@ export default {
     data() {
         return {
             isEdit: true,
-            titlesDropDown: titlesMapperForDropdown,
+            titlesDropDown: [
+                {
+                    text: "Mr.",
+                    value: "Mr"
+                },
+                {
+                    text: "Mrs.",
+                    value: "Mrs"
+                },
+                {
+                    text: "Ms.",
+                    value: "Ms"
+                },
+                {
+                    text: "Miss",
+                    value: "Miss"
+                },
+                {
+                    text: "Dr.",
+                    value: "Dr"
+                },
+            ],
             serviceDropDown: [
                 {
                     text: "Electricity",
@@ -304,12 +325,8 @@ export default {
             ],
             planDropDown: [
                 {
-                    text: "Plan 1",
-                    value: "plan1",
-                },
-                {
-                    text: "Plan 2",
-                    value: "plan2",
+                    text: "Home",
+                    value: "home",
                 }
             ],
             connectionDate: false,
@@ -337,7 +354,7 @@ export default {
                     }
                 ],
                 service_type: "",
-                // plan: ""
+                plan: ""
             },
         };
     },
@@ -369,7 +386,7 @@ export default {
             this.caf_detail.abn = this.cafFileData.abn;
             this.caf_detail.connection_date = this.cafFileData.connection_date;
             this.caf_detail.service_type = this.cafFileData.selected_service;
-            // this.caf_detail.plan = this.cafFileData.plan;
+            this.caf_detail.plan = this.cafFileData.selected_plan;
         },
         billing(value) {
             return value ? capitalize(value) : '';
