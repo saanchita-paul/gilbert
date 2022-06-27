@@ -8,5 +8,6 @@ export default {
             return svc?.service_type === serviceType
         })
         return filteredService?.enable_caf_file;
-    }
+    },
+    generateCafFile: (data) => ApplicationCafFileAPI.generateCafFile(data)
 }
