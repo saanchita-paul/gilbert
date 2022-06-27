@@ -544,7 +544,7 @@ class ApplicationService
         };
 
         $notSubmitted = [];
-        
+
         foreach($providers as $provider){
             $notSubmitted[$provider] = ConnectionService::query()->where('connection_application_id', $id)
             ->where('provider_name', $provider)
@@ -606,5 +606,4 @@ class ApplicationService
 
         return $existLead->refresh();
     }
-
 }
