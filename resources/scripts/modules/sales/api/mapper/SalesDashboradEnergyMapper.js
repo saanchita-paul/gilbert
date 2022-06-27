@@ -14,8 +14,9 @@ export default {
         function getGasData(data, isRejected = false) {
 
             let lables = [
-                'Energy Australia',
+                'EA',
                 'Sumo',
+                'Origin'
             ];
 
             let toolTips = [
@@ -28,6 +29,9 @@ export default {
                     },
                     {
                         key: 'Total Plan', value: data?.ea_gas_total_plan,
+                    },
+                    {
+                        key: 'Flexi Plan', value: data?.ea_gas_flexi_plan,
                     }
                 ],
                 [
@@ -35,27 +39,35 @@ export default {
                         key: 'Freedom', value: data?.sumo_gas_freedom,
                     },
                 ],
+                [
+                    {
+                        key: 'Home Assist', value: data?.origin_gas_home_assist,
+                    },
+                ],
             ];
 
-            const totalEaData = data?.ea_gas_no_frills + data?.ea_gas_basic_plan + data?.ea_gas_total_plan;
+            const totalEaData = data?.ea_gas_no_frills + data?.ea_gas_basic_plan + data?.ea_gas_total_plan + data?.ea_gas_flexi_plan;
             const totalSumoData = data?.sumo_gas_freedom;
+            const totalOriginData = data?.origin_gas_home_assist;
 
-            const chartData = [totalEaData, totalSumoData];
+            const chartData = [totalEaData, totalSumoData, totalOriginData];
             const backgroundColorList = [
                 '#542E89',
                 '#03A9F4',
+                '#FFC72C',
             ];
 
             const rejectedbackgroundColor = [
                 '#542E89',
-                '#E91E63'
+                '#03A9F4',
+                '#FFC72C',
             ]
 
 
             return {
                 labels: lables,
                 toolTips: toolTips,
-                total: totalEaData + totalSumoData,
+                total: totalEaData + totalSumoData + totalOriginData,
                 datasets: [{
                     label: 'My First Dataset',
                     data: chartData,
@@ -68,8 +80,9 @@ export default {
 
         function getPowerData(data, isRejected) {
             let lables = [
-                'Energy Australia',
+                'EA',
                 'Sumo',
+                'Origin'
             ];
 
             let toolTips = [
@@ -82,6 +95,9 @@ export default {
                     },
                     {
                         key: 'Total Plan', value: data?.ea_power_total_plan,
+                    },
+                    {
+                        key: 'Flexi Plan', value: data?.ea_power_flexi_plan,
                     }
                 ],
                 [
@@ -89,25 +105,33 @@ export default {
                         key: 'Freedom', value: data?.sumo_power_freedom,
                     },
                 ],
+                [
+                    {
+                        key: 'Home Assist', value: data?.origin_power_home_assist,
+                    },
+                ],
             ];
 
-            const totalEaData = data?.ea_power_no_frills + data?.ea_power_basic_plan + data?.ea_power_total_plan;
+            const totalEaData = data?.ea_power_no_frills + data?.ea_power_basic_plan + data?.ea_power_total_plan + data?.ea_power_flexi_plan;
             const totalSumoData = data?.sumo_power_freedom;
+            const totalOriginData = data?.origin_power_home_assist;
 
-            const chartData = [totalEaData, totalSumoData];
+            const chartData = [totalEaData, totalSumoData, totalOriginData];
             const backgroundColorList = [
                 '#542E89',
                 '#03A9F4',
+                '#FFC72C',
             ];
             const rejectedbackgroundColor = [
                 '#542E89',
-                '#E91E63'
+                '#03A9F4',
+                '#FFC72C',
             ];
 
             return {
                 labels: lables,
                 toolTips: toolTips,
-                total: totalEaData + totalSumoData,
+                total: totalEaData + totalSumoData + totalOriginData,
                 datasets: [{
                     label: 'My First Dataset',
                     data: chartData,
@@ -117,14 +141,13 @@ export default {
             };
         }
 
-        function getSubmittedData(data, waitingForConnectionData, acManualProcessing, manualProcessing) {
+        function getSubmittedData(data, waitingForConnectionData, acManualProcessing) {
             return {
                 gasChartData: getGasData(data),
                 powerChartData: getPowerData(data),
                 total: data.total,
                 waitingForConnection: waitingForConnectionData.total,
-                acManualProcessing: acManualProcessing,
-                manualProcessing: manualProcessing
+                acManualProcessing: acManualProcessing
             }
         }
 
@@ -162,12 +185,8 @@ export default {
             source_conversation_rate: new DashboardSourceModel(response.application_summary.conversation_rate),
             source_submitted: new DashboardSourceModel(response.application_summary.submitted),
             source_unassigned: new DashboardSourceModel(response.application_summary.unassigned),
-            total_new_application: response.total_new_application,
-            total_unassigned: response.unassigned_application,
-            total_assigned: response.assigned_application,
-            total_consent_pending: response.total_consent_pending,
-            total_closed: response.total_closed,
-            submitted: getSubmittedData(response.successful_submission, response.waiting_for_connection, response.ac_manual_processing, response.manual_processing),
+            source_escalated: new DashboardSourceModel(response.application_summary.escalated),
+            submitted: getSubmittedData(response.successful_submission, response.waiting_for_connection, response.ac_manual_processing),
             connected: getConnectedData(response.connected, response.successful_submission, response.rejected),
             rejected: getRejectedData(response.rejected, response.declined),
         };

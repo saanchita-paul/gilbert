@@ -76,7 +76,7 @@ export default {
         }
     },
 
-    calculateAfterHourFlag: (ea_distributor, movingDate, state) => {
+    calculateAfterHourFlag: (ea_distributor, movingDate, state, nextBusinessDay) => {
         if(!ea_distributor) {
             return false;
         }
@@ -88,7 +88,8 @@ export default {
         if(currentDate === givenDate) {
             return isTodayAfterHourFlag(ea_distributor, state);
         }
-        if(currentDate + 1 === givenDate) {
+        let nextBusinessDays = parseInt(dayJs(nextBusinessDay).format('D'));
+        if(nextBusinessDays === givenDate) {
             return isTomorrowAfterHourFlag();
         }
         return false;

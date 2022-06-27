@@ -16,6 +16,7 @@
             <v-btn class="ma-2 float-right" @click="saveNote">Submit Note</v-btn>
         </v-col>
 
+------------------------------------------
         <!-- <v-col cols="12" class="notes-container">
             <v-timeline dense>
                 <v-timeline-item color="primary" small v-for="nt in notes" :color="getColor(nt.active)" :key="nt.id">
@@ -23,6 +24,18 @@
                     <InvalidNote v-else-if="nt.type == 'invalid_property_me_note'" :note="nt"> </InvalidNote>
                     <Note v-else :note="nt"></Note>
                 </v-timeline-item>
+----------------------------------------------------
+        <v-col cols="12" class="notes-container">
+                <v-timeline
+                    dense
+            >
+                    <v-timeline-item color="primary" small v-for="nt in notes" :color="getColor(nt.active)" :key="nt.id">
+                        <SubmittedNote v-if="nt.type == 'submitted_connection'" :note="nt"> </SubmittedNote>
+                        <SubmittedOriginNote v-if="nt.type == 'submitted_origin'" :note="nt"> </SubmittedOriginNote>
+                        <InvalidNote v-else-if="nt.type == 'invalid_property_me_note'" :note="nt"> </InvalidNote>
+                        <Note v-else :note="nt"></Note>
+                    </v-timeline-item>
+----------------------------------------------------
              </v-timeline>
         </v-col>
 
@@ -82,9 +95,11 @@
 import Note from "@scripts/components/crm/leadmanagement/notes/Note";
 import InvalidNote from "@scripts/components/crm/leadmanagement/notes/InvalidNote";
 import SubmittedNote from "@scripts/components/crm/leadmanagement/notes/SubmittedNote";
+import SubmittedOriginNote from "@scripts/components/crm/leadmanagement/notes/SubmittedOriginNote";
+
 export default {
   name: "ApplicationNotes",
-    components: {SubmittedNote, Note, InvalidNote},
+    components: {SubmittedNote, Note, InvalidNote, SubmittedOriginNote},
     props: {
       notes: {
           require: true

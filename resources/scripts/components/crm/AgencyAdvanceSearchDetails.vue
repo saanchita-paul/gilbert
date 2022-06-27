@@ -243,7 +243,6 @@ export default {
       try {
         let params = omitBy(this.search, isNil);
         if(!isEqual(this.$route.query , params)){
-          console.log("params" , params)
           this.$router.push({name: 'agent.application.dashboard', query: params })
         }
       } catch (error) {

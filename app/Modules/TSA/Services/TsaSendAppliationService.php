@@ -57,7 +57,6 @@ class TsaSendAppliationService
                     "timezone" => "Australia/Melbourne",
                     "priority" => 1,
                     "start_timestamp" => date(DATE_ATOM),
-                    "expiration_timestamp" => date(DATE_ATOM, strtotime("+7 days")),
                     "endpoints" => [
                         $lead->phone,
                     ],

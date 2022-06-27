@@ -22,7 +22,6 @@ export const login = async form => {
     try {
         await AuthAPI.login(form)
         await authUser();
-        console.log('LOGIN SUCCESS');
 
         const user = getAuthUser();
 

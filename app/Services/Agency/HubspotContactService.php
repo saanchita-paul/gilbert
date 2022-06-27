@@ -3,16 +3,25 @@
 namespace App\Services\Agency;
 
 use App\Models\APILog;
-use App\Models\ConnectionApplication;
 use App\Models\Identification;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
+use App\Models\ConnectionService;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use App\Models\ConnectionApplication;
+use Illuminate\Database\Eloquent\Model;
+use App\Services\Logger\ErrorLogService;
+use Illuminate\Database\Eloquent\Collection;
 
 class HubspotContactService
 {
+    const STATUS_NEW = 'NEW';
+    const STATUS_BAD_TIMING = 'BAD_TIMING';
+    const STATUS_OPEN_DEAL = 'OPEN_DEAL';
+    const STATUS_CONNECTED = 'CONNECTED';
+    const STATUS_UNQUALIFIED = 'UNQUALIFIED';
+    const STATUS_IN_PROGRESS = 'IN_PROGRESS';
+
     private array|Collection|ConnectionApplication|Model $application;
 
     public function __construct(int $id)
@@ -63,7 +72,7 @@ class HubspotContactService
         if (!$response->successful()) {
             Log::info('[HubspotContactService]: response body');
             Log::info($response->body());
-            throw new \Exception('[HubspotContactService] Contact update failed, check log.');
+            throw new \Exception('[HubspotContactService] Contact update failed, check api_logs for details.');
         }
     }
 
@@ -127,8 +136,8 @@ class HubspotContactService
                 "value" => $this->application->dob
             ],
             [
-                "property" => "hood_moving_date",
-                "value" => $this->application->moving_date
+                "property" => "connection_date",
+                "value" => $this->getTimestamp($this->application->moving_date)
             ],
             [
                 "property" => "hood_address_unit",
@@ -286,7 +295,6 @@ class HubspotContactService
                 "property" => "hood_real_estate_agency",
                 "value" => $this->application->getAgencyName(),
             ],
-
         ];
     }
 
@@ -327,14 +335,51 @@ class HubspotContactService
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    private function getStatus(): string
+    private function getStatus(): ?string
     {
         return match ($this->application->status) {
-            ConnectionApplication::STATUS_UNASSIGNED => 'NEW',
-            default => 'IN_PROGRESS' //todo: handle default correctly
+            ConnectionApplication::STATUS_SUBMITTED => $this->getSubmittedStatusFromService(),
+            ConnectionApplication::STATUS_UNASSIGNED,
+            20,
+            ConnectionApplication::STATUS_ASSIGNED => self::STATUS_NEW,
+            ConnectionApplication::STATUS_CLOSED => self::STATUS_BAD_TIMING,
+            ConnectionApplication::STATUS_ESCALATED,
+            ConnectionApplication::STATUS_EA_PROCESSINF => self::STATUS_OPEN_DEAL,
+            default => $this->noStatusMatchFailScope()
         };
+    }
+
+    /**
+     * @return string
+     */
+    private function getSubmittedStatusFromService(): string
+    {
+        $serviceStatuses = $this->application->connectionServices?->whereIn('service_type', [
+            ConnectionService::TYPE_ELECTRICITY,
+            ConnectionService::TYPE_GAS
+        ])->pluck('status');
+
+        $status = $serviceStatuses->contains(ConnectionService::STATUS_ACCEPTED)
+            ? ConnectionService::STATUS_ACCEPTED
+            : ($serviceStatuses->contains(ConnectionService::STATUS_REJECTED) ? ConnectionService::STATUS_REJECTED : $serviceStatuses->first());
+
+        return match ($status) {
+            ConnectionService::STATUS_ACCEPTED => self::STATUS_CONNECTED,
+            ConnectionService::STATUS_REJECTED => self::STATUS_UNQUALIFIED,
+            default => self::STATUS_IN_PROGRESS
+        };
+    }
+
+    /**
+     * @return string|null
+     */
+    private function noStatusMatchFailScope(): ?string
+    {
+        Log::error("[Hubspot Service] No status match for application: {$this->application->id}");
+        ErrorLogService::send('[Hubspot Service] No status matched for application id: ' . $this->application->id , ['taige.alhadweh@hood.ai']);
+        return null;
     }
 
     private function getHoodBusiness()
@@ -358,4 +403,12 @@ class HubspotContactService
         };
     }
 
+    /**
+     * @param $date
+     * @return int|null
+     */
+    public function getTimestamp($date): int|null
+    {
+        return $date ? Carbon::parse($date)->timestamp * 1000 : null;
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace Foxie\Services;
 
+use App\Services\Address\StreetTypeMapper;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Agency;
@@ -12,10 +13,12 @@ use App\Models\ConnectionService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use App\Models\ConnectionApplication;
+use App\Services\Address\GBGServices;
+// use App\Services\SearchAddress\AddressModel;
 use App\Services\SearchAddress\GeocodeAddress;
 use App\Services\SearchAddress\GeoCodeService;
 use App\Modules\Foxie\Services\LeadStatusMapper;
-use App\Services\SearchAddress\AddressModel;
+use App\Services\Address\AddressModel;
 
 class SugerLeadService
 {
@@ -35,6 +38,7 @@ class SugerLeadService
     const TYPE_SERVICE = [
         'gas' => 'gas',
         'electricity' => 'power',
+        'water' => 'water'
     ];
 
     const MAP_STATE_NSW = 'New South Wales';
@@ -62,7 +66,8 @@ class SugerLeadService
      * @throws Exception
      */
     public function setGeoCodeToConnectionApplication(Request $request){
-        if (empty($request->full_address_c)) {
+        if (empty($request->full_address_c))
+        {
             $this->address =  new AddressModel(
                 unit_number: $request->primary_address_unit_c,
                 street_number: $request->primary_address_number_c,
@@ -72,10 +77,45 @@ class SugerLeadService
                 state: $request->primary_address_state,
                 country: "AUSTRALIA",
             );
-        } else {
+        } else
+        {
             $response = GeoCodeService::getAddressFromGeoCode($request->full_address_c);
             $geoCodeData = new GeocodeAddress($response);
             $this->address = $geoCodeData->getConnectionApplicationVersion();
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function setGBGToConnectionApplication(Request $request){
+        try
+        {
+            $addressModel =  new AddressModel(
+                address_text: $request->full_address_c,
+                unit_number: $request->primary_address_unit_c,
+                street_number: $request->primary_address_number_c,
+                street_name: trim($request->primary_address_street . " " . $request->primary_address_suffix_c),
+                postcode: $request->primary_address_postalcode,
+                city: $request->primary_address_city,
+                state: $request->primary_address_state,
+                country: "AUSTRALIA",
+            );
+            $gbgService = new GBGServices($addressModel);
+            $appAddress = $gbgService->findAddressByText();
+            if($appAddress->getIsAddressComplete())
+            {
+                $this->address = $appAddress;
+            }
+            else
+            {
+                $this->address = $addressModel;
+            }
+        } catch(Exception $exception)
+        {
+            info("exception in location sugerleads");
+            Log::error( "exception in sugerLeadsService->GBG service", [ "msg" => $exception->getMessage(), "trace" => $exception->getTraceAsString() ] );
+            throw new Exception('Error in GBG Service');
         }
     }
 
@@ -97,33 +137,37 @@ class SugerLeadService
             ]);
         }
 
-        $this->setGeoCodeToConnectionApplication($request);
+        // $this->setGeoCodeToConnectionApplication($request);
+        $this->setGBGToConnectionApplication($request);
 
         $this->connectionApplication->first_name = $request->first_name ?? null;
         $this->connectionApplication->last_name = $request->last_name ?? null ;
         $this->connectionApplication->source = ConnectionApplication::SOURCE_FOXIE ;
         $this->connectionApplication->email = $request->email1 ?? null;
-        $this->connectionApplication->address_text = $this->address->address_text;
+        $this->connectionApplication->address_text = $this->address->getAddressText();
         $this->connectionApplication->dob = $dob ?? null;
         $this->connectionApplication->moving_date = date("Y-m-d", strtotime($request->move_in_date_c))  ?? null;
-        $this->connectionApplication->street_address = $this->address->street_address ?? null;
-        $this->connectionApplication->street_number = $this->address->street_number ?? null;
-        $this->connectionApplication->street_name = $this->address->street_name ?? null;
-        $this->connectionApplication->city = $this->address->city ?? null;
-        $this->connectionApplication->postcode = $this->address->postcode ?? null;
+        $this->connectionApplication->street_address = $this->address->getStreetAddress() ?? null;
+        $this->connectionApplication->street_number = $this->address->getStreetNumber() ?? null;
+        $this->connectionApplication->street_name = $this->address->getStreetName() ?? null;
+        $this->connectionApplication->street_name_only = $this->address->getStreetNameOnly() ?? null;
+        $this->connectionApplication->street_type = StreetTypeMapper::getShortForm($this->address->getStreetType());
+        $this->connectionApplication->city = $this->address->getCity() ?? null;
+        $this->connectionApplication->postcode = $this->address->getPostcode() ?? null;
+        $this->connectionApplication->is_address_complete = $this->address->getIsAddressComplete() ?? null;
         $this->connectionApplication->phone = $request->phone_mobile ?? null;
         $this->connectionApplication->tenancy_type = ConnectionApplication::TENANCY_MAPPING[$request->property_relationship_c] ?? null ;
         $this->connectionApplication->property_type = ConnectionApplication::PROPERTY_TYPE_MAPPING[$request->customer_type_c] ?? null ;
-        $this->connectionApplication->state = $this->address->state ?? null;
-        $this->connectionApplication->country = $this->address->country ?? null;
+        $this->connectionApplication->state = $this->address->getState() ?? null;
+        $this->connectionApplication->state_short = $this->address->getStateShort() ?? null;
+        $this->connectionApplication->country = $this->address->getCountry() ?? null;
         $this->connectionApplication->nmi = $request->electricity_nmi_c ?? null;
         $this->connectionApplication->mirn = $request->gas_mirn_c ?? null;
-        $this->connectionApplication->unit_number = $this->address->unit_number ?? null;
+        $this->connectionApplication->unit_number = $this->address->getUnitNumber() ?? null;
         $this->connectionApplication->plan_type = $request->meter_plan_type_c ?? '3';
         // $this->connectionApplication->created_at = now();
         $this->connectionApplication->title = $request->salutation ?? null;
         // $this->connectionApplication->title = 'Mr';
-
         //SUGER LEADS TABLE
         $this->lead->service_address = $request->full_address_c ?? null;
         $this->lead->foxie_lead_source = $request->lead_source ?? null;
@@ -158,11 +202,13 @@ class SugerLeadService
             }
             $mappedType = Identification::TYPE_MAP[$request->id_type_c] ?? null;
 
-            if($type == self::TYPE_CREATE){
+            if($type == self::TYPE_CREATE)
+            {
                 $identification->expire_date = $formattedDate ?? null;
                 $identification->type = $mappedType ?? null ;
                 $identification->card_number = $request->id_number_c ?? null ;
-            }else{
+            } else
+            {
                 $request->id_type_c ? $identification->type = $mappedType ?? null : '';
                 $request->id_expiry_c ? $identification->expire_date = $formattedDate : '';
                 $request->id_number_c ? $identification->card_number = $request->id_number_c : '';
@@ -177,19 +223,22 @@ class SugerLeadService
     }
 
     private function setServiceTypeTable(Request $request , $type){
-        // SERVICETYPE TABLE
-        info('checking service_c1');
-        if(!isset($request->service_c)) return;
+        // SERVICE TYPE TABLE
+        if(!isset($request->service_c)) {
+            $services = ['water'];
+        };
         info('checking service_c');
         // expected format example Electricity_Gas
-        $services = explode("_", strtolower($request->service_c));
-
+        if($request->service_c) {
+            $services = explode("_", strtolower($request->service_c));
+            array_push($services, 'water'); // Water will be always added to the service
+        }
         try {
             if($type == self::TYPE_UPDATE) $this->connectionApplication->connectionServices()->delete();
             foreach ($services as $value) {
                 $this->connectionApplication->connectionServices()->create(
                     [
-                        'service_type' => self::TYPE_SERVICE[ $value ] ,
+                        'service_type' => self::TYPE_SERVICE[$value] ,
                         'status' => ConnectionService::WATER_STATUS_IN_PROGRESS ,
                     ]
                 );
@@ -302,6 +351,7 @@ class SugerLeadService
      */
     public function update(Request $request, $id): bool
     {
+        return true;
         try {
             $this->connectionApplication = ConnectionApplication::where('id' , $id)->where('source' , ConnectionApplication::SOURCE_FOXIE)->first();
             $this->lead = $this->connectionApplication->SugerLead;

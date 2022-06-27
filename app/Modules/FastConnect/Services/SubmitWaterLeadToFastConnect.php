@@ -8,6 +8,7 @@ use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use App\Models\Identification;
 use App\Models\RejectionReason;
+use App\Services\Utility\StateMapService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -33,7 +34,7 @@ class SubmitWaterLeadToFastConnect
         'mrs' => 'MRS',
         'ms' => 'MS',
         'dr' => 'DR',
-        'MISS' => 'MISS',
+        'miss' => 'MISS',
     ];
 
     const MAP_IDENTIFICATION_PROFILE_ID = [
@@ -163,17 +164,16 @@ class SubmitWaterLeadToFastConnect
         info($response->body());
         info("Water submit response body");
 
-        if($response->status() === 403)
-        {
+        if($response->status() >= 400) {
             info("Saving Water Failed Response");
             $this->saveRejectionReason($response->body(), $this->application->id, 'water');
             $this->setStatusFailed($this->application->id, 'water');
             $this->application->update(['is_auto_water_submit' => 0 ]);
+            $this->application->update(['is_water_manual_submitting' => 0]);
 
         }
 
-        if($response->status() === 201)
-        {
+        if($response->status() === 201) {
             $this->deleteOldRejectionReasons($this->application->id, 'water');
         }
 
@@ -195,8 +195,8 @@ class SubmitWaterLeadToFastConnect
             "address" => [
                 "move_in_address" => [
                     "street_number" => $lead->street_number,
-                    "street_name" => $lead->street_name,
-                    "street_type" => $lead->getRoadType(),
+                    "street_name" => $lead->street_name_only,
+                    "street_type" => $lead->street_type,
                     "suburb" => $lead->city,
                     "state" => $this->getMappedState($lead->state),
                     "post_code" => $lead->postcode,
@@ -243,7 +243,7 @@ class SubmitWaterLeadToFastConnect
                     // "lot_number" => "1",
                     "street_number" => $lead->street_number,
                     "street_name" => $lead->street_name,
-                    "street_type" => $lead->getRoadType(),
+                    "street_type" => $lead->street_type,
                     "suburb" => $lead->city,
                     "state" => $this->getMappedState($lead->state),
                     "post_code" => $lead->postcode,
@@ -269,13 +269,15 @@ class SubmitWaterLeadToFastConnect
     {
         if ($title && isset(SubmitWaterLeadToFastConnect::MAP_TITLE[strtolower($title)])) {
             return SubmitWaterLeadToFastConnect::MAP_TITLE[strtolower($title)];
+        } else {
+            throw new \Exception("Water Submission: no mapped title found for: $title");
         }
-        return "MR";
     }
 
     private function getMappedState($state): string
     {
-        return $state ? SubmitWaterLeadToFastConnect::MAP_STATE[$state] : "";
+        // return $state ? SubmitWaterLeadToFastConnect::MAP_STATE[$state] : "";
+        return $state ? StateMapService::getShortName($state): "";
     }
 
     private function getMappedIdentificationType($type): int
@@ -322,10 +324,13 @@ class SubmitWaterLeadToFastConnect
               $data['contact']['primary']['identification'][0]['medicare_color'] =
                 $lead->identification->card_color;
               $data['contact']['primary']['identification'][0]['medicare_irn'] =
-                (int)$lead->identification->special_number;
+                (int) $lead->identification->special_number;
               $data['contact']['primary']['identification'][0]['issuer_country_id'] = 13;
               break;
         }
+
+
+
         if($lead->billing_street_address !== null) {
             !is_null($lead->billing_unit_number) ?
                 $data['billing_location']['connection']['address']['unit_number']
@@ -347,7 +352,7 @@ class SubmitWaterLeadToFastConnect
                 = $lead->billing_postcode : null;
             !is_null($lead->billing_street_name) ?
                 $data['billing_location']['connection']['address']['street_type']
-                = $lead->getbillingRoadType() : null;
+                = $lead->billing_street_type : null;
         }
 
 
@@ -401,29 +406,30 @@ class SubmitWaterLeadToFastConnect
         };
     }
 
-        private function secondaryContactIdentification($secondaryContact)
-        {
-            $expireDate = (new Carbon($secondaryContact->expire_date))->format('Y-m-d');
-            $identification = [
-                'number' => $secondaryContact->card_number,
-                'expiry' => $expireDate,
-                'identification_profile_item_id' => $this->getMappedIdentificationType($secondaryContact->identification_type),
-            ];
+    private function secondaryContactIdentification($secondaryContact)
+    {
+        $expireDate = (new Carbon($secondaryContact->expire_date))->format('Y-m-d');
+        $identification = [
+            'number' => $secondaryContact->card_number,
+            'expiry' => $expireDate,
+            'identification_profile_item_id' => $this->getMappedIdentificationType($secondaryContact->identification_type),
+        ];
 
-            $data = match($secondaryContact?->identification_type) {
-                Identification::TYPE_PASSPORT => ['issuer_country_id' => $this->getMappedIdentificationCountry($secondaryContact->country)],
-                Identification::TYPE_MEDICARE => [
-                        'medicare_color' => $secondaryContact?->card_color,
-                        'medicare_irn' => $secondaryContact->special_number,
-                    ],
+        $data = match ($secondaryContact?->identification_type) {
+            Identification::TYPE_PASSPORT => ['issuer_country_id' => $this->getMappedIdentificationCountry($secondaryContact->country)],
+            Identification::TYPE_MEDICARE => [
+                'medicare_color' => $secondaryContact?->card_color,
+                'medicare_irn' => (int) $secondaryContact->special_number,
+                'issuer_country_id' => 13
+            ],
 
-                Identification::TYPE_DRIVING_LICENCE => [
-                        'issuer_state_id' => $this->getMappedIdentificationState($secondaryContact->state),
-                    ],
-                default => []
-            };
-            return array_merge($identification, $data);
-        }
+            Identification::TYPE_DRIVING_LICENCE => [
+                'issuer_state_id' => $this->getMappedIdentificationState($secondaryContact->state),
+            ],
+            default => []
+        };
+        return array_merge($identification, $data);
+    }
     /**
      * get ConnectionService builder
      *

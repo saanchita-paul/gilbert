@@ -1,6 +1,6 @@
 <template>
     <div class="your-plan" :class="{'active':isActive === sumoPlanName}">
-        <p :style="{background: plan.bgColor}">{{ sumoPlanName }}</p>
+        <p class="background-purple">{{ sumoPlanName }}</p>
         <div class="pa-4">
             <v-btn @click="reviewPlan" block outlined class="mb-3">Review Plan Details</v-btn>
         </div>
@@ -14,9 +14,7 @@ name: "SumoPlan",
     methods:{
         reviewPlan()
         {
-            console.log('detail clicked')
-            this.$emit('soleDialog');
-            console.log(this.$attrs)
+            this.$emit('toggleDialog');
         }
     },
     computed:{
@@ -32,5 +30,7 @@ name: "SumoPlan",
 </script>
 
 <style scoped>
-
+.background-purple{
+    background: purple;
+}
 </style>

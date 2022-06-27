@@ -1,7 +1,10 @@
 <?php
 
+use App\Models\ConnectionApplication;
 use Illuminate\Encryption\Encrypter;
+use App\Services\Address\GBGServices;
 use Illuminate\Support\Facades\Route;
+use App\Services\Address\AddressModel;
 use PropertyMe\services\FetchContacts;
 use App\Services\RolePermissionService;
 use TSA\Services\TsaCallHistoryService;
@@ -17,8 +20,9 @@ use App\Http\Controllers\Agency\HoodUserController;
 use App\Http\Controllers\Agency\ApplicationController;
 use FastConnect\Services\SubmitWaterLeadToFastConnect;
 use App\Http\Controllers\Agency\AgentProfileController;
-use App\Models\ConnectionApplication;
 use OurProperty\Http\Controllers\OurPropertyController;
+use App\Services\RolePermission;
+use App\Http\Controllers\Agency\ReaExtractsReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,7 +78,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/offices/{id}/update', [OfficeController::class, 'updateOffice'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_OFFICE);
     Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index'])
-        ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICE_USER_LIST);
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
     Route::get('/offices/{officeId}/agents', [AgentProfileController::class, 'getAgentList'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_AGENT_LIST);
     Route::post('/offices/{officeId}/users', [AgentProfileController::class, 'createAgent'])
@@ -99,7 +103,12 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::get('/application-assignees', [HoodUserController::class, 'getAssignee'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_ASSIGNEE_LIST);
+
     // Route::post('/hood-users', [HoodUserController::class, 'store']);
+
+    Route::post('/hood-users', [HoodUserController::class, 'store'])
+        ->middleware('permission:' . RolePermission::P_HOOD_ADMIN_CORE);
+
     Route::get('/hood-users', [HoodUserController::class, 'index'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
 
@@ -132,6 +141,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::put('/applications/{id}/close', [ApplicationController::class, 'close']);
     Route::patch('/applications/{applicationId}/providers', [ApplicationController::class, 'providers'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_SERVICE_PROVIDERS);
+    Route::post('/applications/{applicationId}/clear-concession-details', [ApplicationController::class, 'clearConcession'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
 
     //todo: make a  separate controller for notes
     Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes'])
@@ -164,6 +175,10 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/sales-dashboard/export/submission-report', [ReportController::class, 'submissionReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_EXPORT_REPORT);
     Route::get('/plans-details/{id}/export', [NoteController::class, 'download']);
+
+    // REA extracts report
+    Route::get('/rea-extract/report', [ReaExtractsReportController::class, 'getReaReport'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
@@ -177,8 +192,10 @@ Route::post('/register/email-validation', [AuthController::class, 'isValidUser']
 
 Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
 
-
-
+/**
+ * api to get the uuid for sumo
+ */
+Route::get('/sumo/generate-uuid/{id}', [ApplicationController::class, 'getSumoUuid']);
 
 
 
@@ -233,11 +250,19 @@ Route::get("/karan/sales-status", function () {
     return "success";
 });
 
+
 Route::get('country_test', function () {
     //  return SubmitWaterLeadToFastConnect::mapLengthOfCountry[2];
     $s = new TsaCallHistoryService();
     // ConnectionApplication::find(12)
     // $s->saveCallHistory(ConnectionApplication::find(12));
     $s->saveCallHistory(ConnectionApplication::find(12));
+});
+
+Route::get('/kaka', function () {
+    $dateTimeZone = new DateTimeZone("Australia/Melbourne");
+    $date = new DateTime(null, $dateTimeZone);
+//    dd($date);
+    return $dateTimeZone->getOffset($date)/60/60;
 
 });

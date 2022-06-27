@@ -43,8 +43,13 @@ class SaveContacts
     {
 
         $this->leads = $this->getNewHoodLeadOnly($this->apiService->fetchContacts()->getContacts());
-        $this->tenancies = $this->apiService->fetchTenancies()->getTenancies();
+//        $this->loadTenancies();
+        return $this;
+    }
 
+    public function loadTenancies()
+    {
+        $this->tenancies = $this->apiService->fetchTenancies()->getTenancies();
         return $this;
     }
 
@@ -76,14 +81,21 @@ class SaveContacts
             $lead = new PropertyMeLead();
             $lead->all_fields_dump = json_encode($leadData);
             $lead->lead_id = $leadId;
+            $lead->created_at = now()->toDateTimeString();
+            $lead->updated_at = now()->toDateTimeString();
 
-            if ($lotId = $this->getLotId($leadId) ) {
+            $tenancy = optional($this->apiService->getTenancy($leadId))[0];
+
+            if ($tenancy && data_get($tenancy, 'LotId')) {
+                $lotId = data_get($tenancy, 'LotId');
                 $lotMembers = $this->apiService->fetchTLotMembers($lotId);
                 $lead->lot_id = $lotId;
                 $lead->agent_email = data_get($lotMembers, 'RegisteredEmail');
             }
 
+
             $lead->save();
+            $lead->movingDate  = data_get($tenancy, 'TenancyStart');
             $this->savedLead[] = $lead;
         }
 
@@ -114,6 +126,19 @@ class SaveContacts
             ->filter(fn($value) => data_get($value, 'ContactId') === $contactId)
             ->pluck('LotId')
             ->first();
+    }
+
+    /**
+     * Manually set leads data. it's used for manual lead creation
+     *
+     * @param array $leads
+     *
+     * @return static
+     */
+    public function setLeads(array $leads): static
+    {
+        $this->leads = $leads;
+        return $this;
     }
 
 }

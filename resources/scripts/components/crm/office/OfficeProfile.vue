@@ -92,9 +92,9 @@
                     ></v-text-field>
                     </ValidationProvider>
 
-                    <ValidationProvider name="Rent Roll" rules="required|numeric"  v-slot="{ errors }">
+                    <ValidationProvider name="Rent Roll" rules="numeric"  v-slot="{ errors }">
                         <v-text-field
-                            label="Rent Roll*"
+                            label="Rent Roll"
                             outlined
                             dense
                             v-model="office.rent_roll"
@@ -156,7 +156,7 @@
                         :error-messages=" errors[0]"
                     ></v-text-field>
                     </ValidationProvider>
-                    <ValidationProvider name="Phone Number" rules="required|cv-phone|length:10"  v-slot="{ errors }">
+                    <ValidationProvider name="Phone Number" rules="cv-phone|length:10"  v-slot="{ errors }">
                     <v-text-field
                         label="Phone Number"
                         v-model="agent.phone"
@@ -263,7 +263,7 @@
 <!--                           <div class="leade-icon pb-2">-->
 <!--                               <v-icon color="green">mdi-wifi</v-icon>-->
 <!--                               <span class="mr-4">$</span>-->
-                               <ValidationProvider name="Sponsorship" rules="numeric|required"  v-slot="{ errors }">
+                               <ValidationProvider name="Sponsorship" rules="numeric"  v-slot="{ errors }">
                                    <v-text-field
                                        v-model.number="commission.sponsorship"
                                        outlined
@@ -273,9 +273,9 @@
                                        :error-messages=" errors[0]"
                                    ></v-text-field>
                                </ValidationProvider>
-<!--                           </div>-->
+                            <!--</div>-->
                            <p class="leade-text pr-5">Per Annum</p>
-<!--                       </div>-->
+                    <!--</div>-->
                    </v-col>
 
                </v-row>
@@ -359,7 +359,6 @@ export default {
       async loadOffice() {
           this.data = await OfficeService.loadOfficeById(this.activeOffice);
           await this.syncData();
-          // console.log(this.office);
           this.isLoaded = true;
       },
 
@@ -415,9 +414,8 @@ export default {
                       this.commission.internet = parseInt(dt.rate);
                       break;
                   case 'sponsorship':
-                      this.commission.sponsorship = parseInt(dt.rate);
+                      this.commission.sponsorship = dt.rate === null ? null : parseInt(dt.rate);
                       break;
-
               }
           });
         },

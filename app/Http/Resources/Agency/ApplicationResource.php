@@ -5,6 +5,8 @@ namespace App\Http\Resources\Agency;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\User;
+use App\Services\TimeZoneService;
+use App\Services\Utility\StateMapService;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -36,7 +38,8 @@ class ApplicationResource extends JsonResource
             'street_address' => $this->street_address,
             'city' => $this->city,
             'postcode' => $this->postcode,
-            'state' => $this->state,
+            'state' => $this->getStateFull($this->state),
+            'state_short' => $this->state_short,
             'country' => $this->country,
             'additional_instruction' => $this->additional_instruction,
             'address_text' => $this->address_text,
@@ -45,10 +48,10 @@ class ApplicationResource extends JsonResource
             'tsa_call_histories' => $this->mapTsaService($this->tsaCallHistories),
             'identification' => $this->identification,
             'family_violance' => isset($this->family_violance) ? $this->family_violance : 3,
-            'is_renovation_on' => isset($this->is_renovation_on) ? $this->is_renovation_on : 1,
+            'is_renovation_on' => isset($this->is_renovation_on) ? $this->is_renovation_on : 0,
             'has_electricity' => isset($this->has_electricity) ? $this->has_electricity : 1,
             'inspection_time' => $this->inspection_time,
-            'is_email_billing' => $this->is_email_billing == 0 ? null : $this->is_email_billing,
+            'is_email_billing' => $this->is_email_billing,
             'nmi' => $this->nmi,
             'mirn' => $this->mirn,
             'property_type' => $this->property_type,
@@ -63,15 +66,17 @@ class ApplicationResource extends JsonResource
             'status' => $this->status,
             'street_number' => $this->street_number,
             'street_name' => $this->street_name,
+            'street_name_only' => $this->street_name_only,
             'unit_number' => $this->unit_number,
             'billing_unit_number' => $this->billing_unit_number,
             'billing_street_number' => $this->billing_street_number,
             'billing_street_name' => $this->billing_street_name,
             'billing_address_text' => $this->billing_address_text,
-            'billing_address_unit' => $this->billing_address_unit,
+            'billing_address_unit' => $this->billing_unit_number,
             'billing_street_address' => $this->billing_street_address,
             'billing_city' => $this->billing_city,
-            'billing_state' => $this->billing_state,
+            'billing_state' =>$this->getStateFull($this->billing_state),
+            'billing_street_type' => $this->billing_street_type,
             'billing_postcode' => $this->billing_postcode,
             'is_billing_same' => $this->is_billing_same,
             'is_contacted' => $this->is_contacted,
@@ -87,12 +92,34 @@ class ApplicationResource extends JsonResource
             'plan_type' => $this->mapPlan($this->plan_type),
             'is_temporary_connection' => $this->is_temporary_connection,
             'connection_end_date' => $this->connection_end_date,
+            'unit_number' => $this->unit_number,
+            'street_type' => $this->street_type,
+            'mannual_address' => $this->mannual_address,
+
+            'billing_mannual_address' => $this->billing_mannual_address,
+            'billing_state_short' => $this->billing_state_short,
+            'billing_street_name_only' => $this->billing_street_name_only,
+            'is_address_complete' => $this->is_address_complete,
+            'billing_is_address_complete' => $this->billing_is_address_complete,
 
             #todo: set timezone dynamically based on daylight saving
-            'created_at' => (new Carbon($this->created_at, '11'))->format('d/m/Y h:m a'),
+            'created_at' => (new Carbon($this->created_at, TimeZoneService::getTimeZoneInt()))->format('d/m/Y h:m a'),
             'submitted_by' => $this->submittedBy(),
             'submitted_at' => $this->submittedAt(),
-            'after_hour_payee' => $this->after_hour_payee
+            'after_hour_payee' => $this->after_hour_payee,
+
+            'is_email_marketing' => $this->is_email_marketing,
+            'is_access_require' => $this->is_access_require,
+            'is_gas_life_support' => $this->is_gas_life_support,
+            'is_any_unrestrained_animal' => $this->is_any_unrestrained_animal,
+            'concession_card_type' => $this->concession_card_type,
+            'concession_card_number' => $this->concession_card_number,
+            'concession_start_date' => $this->concession_start_date,
+            'concession_end_date' => $this->concession_end_date,
+            'ea_go_neutral' => $this->ea_go_neutral,
+
+            'additional_access_information' => $this->additional_access_information,
+            'is_power_life_support' => $this->is_power_life_support,
         ];
     }
 
@@ -195,5 +222,22 @@ class ApplicationResource extends JsonResource
 
     private function submittedAt(){
         return $this->connectionServices?->pluck('submitted_at')?->sort()?->first();
+    }
+
+    /**
+     * Getting Full form of STATE
+     *
+     * @param string|null $state
+     *
+     * @return string|null
+     */
+    private function getStateFull(?string $state): ?string
+    {
+        try {
+            return StateMapService::getFullName($state);
+        } catch (\Exception $e) {
+            \Log::error("ApplicationResource " . $e->getMessage());
+            return null;
+        }
     }
 }

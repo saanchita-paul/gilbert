@@ -4,24 +4,25 @@ namespace App\Modules\PropertyMe\Services;
 
 use App\Jobs\CreateHubspotProperty;
 use App\Models\AgentProfile;
+use App\Models\User;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\Identification;
 use App\Models\Office;
 use App\Notifications\ErrorLogNotification;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Notification;
 use PropertyMe\PropertyMeLead;
 use App\Modules\PropertyMe\Services\DobIdentificationService;
 use App\Models\ApplicationNote;
+use App\Models\ConnectionService;
 
 class SaveToConnectionApplication
 {
 
-    public function __construct(private Office $office, private array $tenancies)
-    {
-    }
+    public function __construct(private Office $office) {}
 
     public function run(PropertyMeLead $lead)
     {
@@ -35,6 +36,9 @@ class SaveToConnectionApplication
             $this->extractContact($leadData, 'LastName')
         );
 
+        $movingDate = data_get($lead, 'movingDate');
+        unset($lead->movingDate);
+
         $application = ConnectionApplication::query()->create([
             'source' => ConnectionApplication::SOURCE_PROPERTY_ME,
             'office_id' => $this->office->id,
@@ -42,7 +46,7 @@ class SaveToConnectionApplication
             'created_by' => $this->getCreatedById($lead),
             'status' => ConnectionApplication::STATUS_UNASSIGNED,
 
-            'moving_date' => $this->getMovingDate(data_get($leadData, 'Id')),
+            'moving_date' => $movingDate,
 
             'first_name' => $this->extractContact($leadData, 'FirstName'),
             'title' => $this->getUserTitle($this->extractContact($leadData, 'Salutation')),
@@ -78,6 +82,15 @@ class SaveToConnectionApplication
 
         ]);
 
+        // auto adding water service to connection application
+        if ($application->id) {
+            $connectionService = new ConnectionService();
+            $connectionService->service_type = 'water';
+            $connectionService->status = ConnectionService::STATUS_EA_PROCESSINF;
+            $connectionService->connection_application_id = $application->id;
+            $connectionService->save();
+        }
+
         if ($this->extractNoteData($note_data, 'person.identification.type') !== null
             && $this->extractNoteData($note_data, 'person.identification.card_number') !== null
             && ($this->extractNoteData($note_data, 'person.identification.state') !== null
@@ -96,7 +109,7 @@ class SaveToConnectionApplication
         {
             ApplicationNote::query()->create([
                 'connection_application_id' => $application->id,
-                'created_by' => $this->getCreatedById($lead) ?? 1,
+                'created_by' => $this->getCreatedByUserId($lead),
                 'text' => $this->extractNoteData($note_data, 'invalid_note_data'),
                 'type' => 'invalid_property_me_note',
                 'title' => 'Invalid PropertyMe Note',
@@ -119,6 +132,8 @@ class SaveToConnectionApplication
 
         $this->saveApplicationId($application->id, $lead);
         CreateHubspotProperty::dispatch($application->id);
+
+        return $application;
     }
 
 
@@ -192,17 +207,17 @@ class SaveToConnectionApplication
     }
 
 
-    /**
-     * @param string $id
-     * @return string|null
-     */
-    private function getMovingDate(string $id): ?string
-    {
-        return collect($this->tenancies)
-            ->filter(fn($value) => data_get($value, 'ContactId') === $id)
-            ->pluck('TenancyStart')
-            ->first();
-    }
+//    /**
+//     * @param string $id
+//     * @return string|null
+//     */
+//    private function getMovingDate(string $id): ?string
+//    {
+//        return collect($this->tenancies)
+//            ->filter(fn($value) => data_get($value, 'ContactId') === $id)
+//            ->pluck('TenancyStart')
+//            ->first();
+//    }
 
 
     /**
@@ -226,6 +241,23 @@ class SaveToConnectionApplication
 
             $this->sendErrorNotification($lead->lead_id);
 
+            return null;
+        }
+    }
+
+    /**
+     * @param PropertyMeLead $lead
+     * @return int|null
+     */
+    private function getCreatedByUserId(PropertyMeLead $lead): ?int
+    {
+        try {
+            $user = User::where('email', $lead->agent_email)->firstOrFail();
+            return $user->id;
+        } catch (\Exception $exception) {
+            Log::error('PropertyMe: No Hood Agent exists with the email', [
+                'mgs' => $exception->getMessage(),
+            ]);
             return null;
         }
     }

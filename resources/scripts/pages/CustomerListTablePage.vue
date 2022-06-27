@@ -36,8 +36,6 @@ export default {
       async loadCustomerData () {
           this.customerList = await CustomerService.getCustomerTableData();
           this.isLoaded = true;
-          console.log(this.customerList);
-
       }
     },
 }

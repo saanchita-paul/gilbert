@@ -32,6 +32,7 @@ class RouteServiceProvider extends ServiceProvider
     protected $namespaceOurProperty = 'OurProperty\\Http\\Controllers';
     protected $namespaceExternalLead = 'ExternalLead\\Http\\Controllers';
     protected $namespacePropertyMe = 'PropertyMe\\Http\\Controllers';
+    protected $namespaceOrigin = 'Origin\\Http\\Controllers';
 
 
     /**
@@ -64,6 +65,10 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespaceOurProperty)
                 ->group(base_path('routes/our-property.php'));
 
+            Route::prefix('api/origin')
+                ->middleware('api')
+                ->namespace($this->namespaceOrigin)
+                ->group(base_path('app/Modules/Origin/route.php'));
 
             Route::prefix('api/v1/external')
                 ->middleware('api')

@@ -1,6 +1,7 @@
 import DayJs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import {isNull, sortBy} from "lodash-es";
+import { street_type } from "@scripts/data/constants/StreetType";
 
 export default class ApplicationSummary {
     id = null;
@@ -13,7 +14,7 @@ export default class ApplicationSummary {
     has_electricity = 1;
     international_phone = null;
     homephone = null;
-    phone_type = 1;
+    phone_type = null;
     email = null;
     moving_date = null;
     email_billing = null; //is_email_billing
@@ -26,7 +27,7 @@ export default class ApplicationSummary {
     country = 'Australia';
     postcode = null;
     address_text = null;
-    is_renovation_on = 1;
+    is_renovation_on = 0;
     unit_number = null;
     street_number = null;
     service_interests = ['gas', 'power', 'water', 'internet'];
@@ -55,8 +56,20 @@ export default class ApplicationSummary {
     agent_name = '';
     agency_office = '';
     source= 0;
-    created_by_agent = null;
     after_hour_payee =  null;
+    created_by_agent = null;
+
+    is_email_marketing = null;
+    is_access_require = null;
+    is_gas_life_support = null;
+    is_any_unrestrained_animal = null;
+    concession_card_type = null;
+    concession_card_number = null;
+    concession_start_date = null;
+    concession_end_date = null;
+    ea_go_neutral = null;
+    additional_access_information = null;
+    is_power_life_support = null;
     constructor(
         {
             id = null,
@@ -77,13 +90,15 @@ export default class ApplicationSummary {
             is_email_billing = null, //is_email_billing
             tenancy_type = null,
             address_unit = null,
-            is_renovation_on = 1,
+            is_renovation_on = 0,
             street_address = null,
             city = null,
             state = null,
+            state_short = null,
             unit_number = null,
             street_number = null,
             street_name = null,
+            street_name_only = null,
             country = 'Australia',
             postcode = null,
             address_text = null,
@@ -98,6 +113,7 @@ export default class ApplicationSummary {
             property_type = null,
             status = null,
             billing_unit_number = null,
+            billing_street_type = null,
             billing_street_number = null,
             billing_street_name = null,
             billing_address_text = null,
@@ -105,7 +121,9 @@ export default class ApplicationSummary {
             billing_street_address = null,
             billing_city = null,
             billing_postcode = null,
-            is_billing_same = null,
+            billing_state = null,
+            billing_mannual_address = false,
+            is_billing_same = true,
             authorizedPersonName = null,
             is_contacted = true,
             agent_name = '',
@@ -120,6 +138,23 @@ export default class ApplicationSummary {
             connection_end_date = null,
             after_hour_payee = null,
             tsa_call_histories = [],
+            mannual_address = false,
+            street_type = null,
+            billing_state_short = null,
+            billing_street_name_only = null,
+            is_address_complete = null,
+            billing_is_address_complete = null,
+            is_email_marketing = null,
+            is_access_require = null,
+            is_gas_life_support = null,
+            is_any_unrestrained_animal = null,
+            concession_card_type = null,
+            concession_card_number = null,
+            concession_start_date = null,
+            concession_end_date = null,
+            ea_go_neutral = null,
+            additional_access_information = null,
+            is_power_life_support = null,
         }
     ) {
 
@@ -145,7 +180,6 @@ export default class ApplicationSummary {
         this.tenancy_type = tenancy_type;
         this.address_unit = address_unit;
         this.street_address = street_address;
-        this.street_address = street_address;
         this.city = city;
         this.state = state;
         this.country = country;
@@ -166,13 +200,18 @@ export default class ApplicationSummary {
         this.unit_number = unit_number;
         this.street_name = street_name;
         this.authorizedPersonName = authorizedPersonName;
-        this.billing_unit_number = billing_unit_number, this.billing_street_number = billing_street_number,
+        this.billing_unit_number = billing_unit_number,
+        this.billing_street_number = billing_street_number,
             this.billing_street_name = billing_street_name,
+            this.billing_state = billing_state,
+            this.billing_street_type = this.mapStreetType(billing_street_type),
             this.billing_address_text = billing_address_text,
+            this.billing_street_number = billing_street_number,
             this.billing_address_unit = billing_address_unit,
             this.billing_street_address = billing_street_address,
             this.billing_city = billing_city,
             this.billing_postcode = billing_postcode,
+            this.billing_mannual_address = billing_mannual_address,
             this.is_billing_same = is_billing_same,
             this.is_contacted = is_contacted,
         this.agent_name =    agent_name
@@ -187,8 +226,40 @@ export default class ApplicationSummary {
         this.fast_connect_customer_reference = fast_connect_customer_reference
         this.is_auto_water_submit = is_auto_water_submit
         this.after_hour_payee = after_hour_payee
+
         this.tsa_call_histories = this.sortCallHistory(tsa_call_histories)
 
+        this.mannual_address = mannual_address
+        this.street_type = this.mapStreetType(street_type)
+        this.state_short = state_short
+        this.street_name_only = street_name_only
+        this.billing_state_short = billing_state_short
+        this.billing_street_name_only = billing_street_name_only
+        this.is_address_complete = is_address_complete
+        this.billing_is_address_complete = billing_is_address_complete
+
+        this.is_email_marketing = is_email_marketing
+        this.is_access_require = is_access_require
+        this.is_gas_life_support = is_gas_life_support
+        this.is_any_unrestrained_animal = is_any_unrestrained_animal
+        this.concession_card_type = concession_card_type
+        this.concession_card_number = concession_card_number
+        this.concession_start_date = concession_start_date
+        this.concession_end_date = concession_end_date        
+        this.ea_go_neutral = ea_go_neutral
+        this.additional_access_information = additional_access_information
+        this.is_power_life_support = is_power_life_support
+    }
+
+
+    mapStreetType(type){
+        let streetType = null
+        street_type.forEach(element => {
+            if(element.text == type){
+                streetType = element.value
+            }
+        })
+        return streetType ?? type;
     }
 
     
@@ -200,6 +271,7 @@ export default class ApplicationSummary {
     mapStatus(status) {
         status = status - 1;
         if (status < 0) return '';
+
         const statusList = ['Unassigned', 'Assigned', 'Escalated', 'Submitted', 'Accepted', 'Rejected', 'Inprogress', 'Closed'];
         return statusList[status];
     }

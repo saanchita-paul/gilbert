@@ -160,21 +160,6 @@
                                     </v-select>
                                 </div>
                             </div>
-<!--                            <div class="crm-text-field">-->
-<!--                                <div class="field-label">-->
-<!--                                    <span>Life Support</span>-->
-<!--                                </div>-->
-<!--                                <div class="text-field">-->
-<!--                                    <v-select readonly outlined placeholder="Yes / No"-->
-<!--                                                :value="data.has_life_support"-->
-<!--                                                item-value="value"-->
-<!--                                                item-text="text"-->
-<!--                                                :items="lifeSupportDD"-->
-
-<!--                                                dense hide-details="auto">-->
-<!--                                    </v-select>-->
-<!--                                </div>-->
-<!--                            </div>-->
                             <div class="crm-text-field">
                                 <div class="field-label">
                                     <span>Solar Power</span>
@@ -339,28 +324,26 @@
                                 <div class="white--text"> Water </div>
                             </div>
                         </div>
-                        <div v-else-if="data.submitType == 'energy'">
-                        <div class="d-flex mb-2">
+                        <div v-else-if="data.submitType == 'energy' || data.submitType === 'power' || data.submitType === 'gas'">
+                            <div class="d-flex mb-2">
+                                <div v-if="data.submitType === 'energy' || data.submitType === 'power'" class="d-flex mx-2">
+                                    <div class="d-flex px-2 py-1" style="background-color: #542E89; border-radius: 5px;">
+                                        <v-icon color="#FFC107" size="15">
+                                            mdi-flash
+                                        </v-icon>
+                                        <div class="white--text font-weight-bold"> Power </div>
+                                    </div>
+                                </div>
 
-
-                            <div v-if="data.service_interests.includes('power')" class="d-flex mx-2">
-                                <div class="d-flex px-2 py-1" style="background-color: #542E89; border-radius: 5px;">
-                                    <v-icon color="#FFC107" size="15">
-                                        mdi-flash
-                                    </v-icon>
-                                    <div class="white--text font-weight-bold"> Power </div>
+                                <div v-if="data.submitType === 'energy' || data.submitType === 'gas'" class="d-flex">
+                                    <div class="d-flex px-2 py-1" style="background-color: #542E89; border-radius: 5px;">
+                                        <v-icon color="#FF5722" size="15">
+                                            mdi-fire
+                                        </v-icon>
+                                        <div class="white--text font-weight-bold"> Gas </div>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div v-if="data.service_interests.includes('gas')" class="d-flex">
-                                <div class="d-flex px-2 py-1" style="background-color: #542E89; border-radius: 5px;">
-                                    <v-icon color="#FF5722" size="15">
-                                        mdi-fire
-                                    </v-icon>
-                                    <div class="white--text font-weight-bold"> Gas </div>
-                                </div>
-                            </div>
-                        </div>
                             <div class="crm-text-field">
                                 <div class="field-label">
                                     <span>Supplier</span>
@@ -371,20 +354,34 @@
                                         outlined
                                         dense
                                         hide-details="auto"
-                                        v-model="provider"
+                                        :value="getProvider"
                                     ></v-text-field>
                                 </div>
                             </div>
-                            <div class="crm-text-field">
+                            <div v-if="data.submitType === 'energy' || data.submitType === 'power'" class="crm-text-field">
                                 <div class="field-label">
-                                    <span>Plan</span>
+                                    <span>Power Plan</span>
                                 </div>
                                 <div class="text-field">
                                     <v-text-field
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    :value="selectedPlan"
+                                    :value="selectedPowerPlan"
+                                    readonly
+                                ></v-text-field>
+                                </div>
+                            </div>
+                            <div v-if="data.submitType === 'energy' || data.submitType === 'gas'" class="crm-text-field">
+                                <div class="field-label">
+                                    <span>Gas Plan</span>
+                                </div>
+                                <div class="text-field">
+                                    <v-text-field
+                                    outlined
+                                    dense
+                                    hide-details="auto"
+                                    :value="selectedGasPlan"
                                     readonly
                                 ></v-text-field>
                                 </div>
@@ -642,33 +639,25 @@
                                     </div>
                                 </div>
                             </v-col>
-
-
                         </v-row>
                     </v-col>
-
                     <v-col cols="12">
                         <v-divider></v-divider>
                     </v-col>
                     <v-col cols="12">
-<!--                        <p class="sub-title">I have asked the applicant "Does anyone in the household require the use of medical equipment for life support?”</p>-->
-                        <v-checkbox v-model="is_life_support" label='I have asked the applicant "Does anyone in the household require the use of medical equipment for life support?”'>
-
-                        </v-checkbox>
+                        <v-checkbox v-model="is_life_support" label='I have asked the applicant "Does anyone in the household require the use of medical equipment for life support?”'></v-checkbox>
                     </v-col>
                     <v-col cols="12">
-<!--                        <p class="sub-title">I have asked the applicant "Do you understand and agree with everything we have discussed today"?</p>-->
                         <v-checkbox v-model="is_temp_condition" label='I have asked the applicant "Do you understand and agree with everything we have discussed today"?'></v-checkbox>
                     </v-col>
-
-
+                    <p v-if="isLifeSupportAndEA" class="life-support">Life Support Applications cannot be submitted to EA</p>
                 </v-row>
             </section>
 
             <v-footer  class="text-right">
                 <v-col class="text-right" cols="12">
                     <v-btn @click="backToEdit">Back to Edit</v-btn>
-                    <v-btn  color="primary" @click="finalConfirmation" :disabled="!allOk">Confirm and Submit</v-btn>
+                    <v-btn  color="primary" @click="confirmSubmit" :disabled="!allOk">Confirm and Submit</v-btn>
                 </v-col>
             </v-footer>
         </v-card>
@@ -700,15 +689,16 @@ export default {
           is_life_support: null,
           row:null,
           titlesDD:titlesMapperForDropdown,
-          emailBillingDD: [ {
-              text: 'Yes',
-              value: 1
-          },
+          emailBillingDD: [
+              {
+                text: 'Yes',
+                value: 1
+              },
               {
                   text: 'No',
                   value: 2
-              }],
-
+              }
+            ],
           statesDD: [
               {text: 'NSW', value: 'New South Wales'},
               {text: 'VIC', value: 'Victoria'},
@@ -729,10 +719,9 @@ export default {
                   value: 2
               }
           ],
-
           propertyTypeDD:[
               {
-                  text: 'Recidential',
+                  text: 'Residential',
                   value: 1
               },
               {
@@ -789,45 +778,44 @@ export default {
                   value: 'YELLOW'
               }
           ],
-          provider: 'ea'
+          provider: null
       }
     },
     computed: {
-      allOk() {
-          // return false;
-           return this.is_temp_condition  && this.is_life_support;
-          },
-        selectedPlan() {
-            this.provider = this.data.plan_type.provider;
-
-            if(this.provider == 'sumo') {
-                return Boolean(this.data.plan_type.title)?this.data.plan_type.key: this.data.plan_type.value;
-            }
-            return Boolean(this.data.plan_type.title)?this.data.plan_type.title: this.data.plan_type.value;
+        allOk() {
+           return this.is_temp_condition  && this.is_life_support && !this.isLifeSupportAndEA;
         },
-
+        selectedPowerPlan() {
+            return LeadApplicationService.mapPlan(this.data.selectedPowerPlan);
+        },
+        selectedGasPlan() {
+            return LeadApplicationService.mapPlan(this.data.selectedGasPlan);
+        },
+        getProvider() {
+            let providerData = this.data.selectedProvider;
+            return this.provider = LeadApplicationService.mapProvider(providerData);
+        },
         expire_date() {
             if(this.data.identification.type === IDENTIFICATION.MEDICARE) {
                 return dayJs(this.data.identification.expire_date,'DD/MM/YYYY').format('MM/YY');
             } else {
                 return this.data.identification.expire_date;
             }
+        },
+        isLifeSupportAndEA() {
+            return this.data.selectedProvider === 'ea'
+               && (this.data.is_gas_life_support || this.data.is_power_life_support);
         }
-
     },
     methods: {
         backToEdit() {
             this.$emit('backToEdit');
         },
-        finalConfirmation() {
-            this.$emit('saveData');
+        confirmSubmit() {
+            this.$emit('confirmSubmitLead');
         },
-        isActive(service) {
-            return this.data.service_interests.includes(service);
-        },
-        async loadAuthorisedPersonPerson() {
+        async loadAuthorizedPerson() {
             let unMappedSecondaryContact = await LeadApplicationService.loadAuthorizedPerson(this.$route.params.id);
-            console.log('unMappedSecondaryContact', unMappedSecondaryContact);
             if(isNull(unMappedSecondaryContact)) {
                 this.isAuthorizedPersonExist = false;
                 return;
@@ -836,14 +824,15 @@ export default {
             this.isAuthorizedPersonExist = true;
         },
     },
-
     mounted() {
-      this.loadAuthorisedPersonPerson();
+      this.loadAuthorizedPerson();
     }
-
-
 };
 </script>
 
 <style scoped>
+.life-support {
+    color: red;
+    margin-left: 18px;
+}
 </style>

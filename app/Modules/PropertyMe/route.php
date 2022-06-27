@@ -1,13 +1,28 @@
 <?php
 
+use App\Services\RolePermission;
 use PropertyMe\Http\Controllers\AuthController;
+use PropertyMe\Http\Controllers\PropertyMeController;
 use PropertyMe\PropertyMeLead;
-use PropertyMe\Services\AuthService;
+
 
 Route::prefix('property-me')->group(function () {
     Route::get('/authorize', [AuthController::class, "authorizeWithCode"]);
 });
 Route::get("/property-me/callback", [AuthController::class, "callback"]);
+
+if (app()->environment() === 'local') {
+    Route::get("/home/callback", [AuthController::class, "callback"]);
+}
+
+
+/**
+ * API Routes
+ */
+Route::prefix('/property-me/api')->middleware(['api', 'auth:sanctum'])->group(function () {
+    Route::post('/leads', [PropertyMeController::class, "store"])
+        ->middleware('permission:' . RolePermission::P_HOOD_ADMIN_CORE );
+});
 
 
 /**

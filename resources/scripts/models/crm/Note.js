@@ -59,6 +59,10 @@ export default class Note {
             case 'submitted_connection':
                 return 'submitted_connection';
                 break;
+            
+            case 'submitted_origin':
+                return 'submitted_origin';
+                break;  
 
             case 'invalid_property_me_note':
                 return 'invalid_property_me_note';

@@ -705,7 +705,18 @@
         "options": [
 
         ]
+    },
+    {
+        "name": "connection_date",
+        "label": "Connection date",
+        "description": "Hood Business",
+        "groupName": "contact_activity",
+        "type": "date",
+        "fieldType": "date",
+        "formField": true,
+        "displayOrder": 6,
+        "options": [
+
+        ]
     }
-
-
 ]

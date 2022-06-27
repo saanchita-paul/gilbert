@@ -8,15 +8,14 @@ use App\Models\APILog;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\Identification;
+use App\Models\Office;
 use App\Services\Logger\LogSalesService;
 use Carbon\Carbon;
 use GraphQL\Client;
 use GraphQL\Mutation;
 use GraphQL\Variable;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use PHPUnit\Util\Exception;
 
 class PostSalesService
 {
@@ -33,27 +32,36 @@ class PostSalesService
         $this->chatbotUri = config('bot.root_url');
         $this->connection = ConnectionApplication::with('connectionServices')->where('id', $id)->firstOrFail();
         $this->identification = $this->connection->identification;
-        $this->accessToken = (new GetAccessToken())->getAccessToken();
+        $this->accessToken = (new GetAccessToken())->getAccessToken($id);
         $this->tz = config('ea.au_time_zone', 11);
 
     }
 
-    public function getPlanType()
+    public function getPlanType($submitType)
     {
-        foreach ($this->connection->connectionServices as $service)
-        {
-            if($service->provider_name === 'ea') {
-                return $service->plan_type;
-            }
+        $services = match ($submitType) {
+            'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
+            'power' => [ConnectionService::TYPE_ELECTRICITY],
+            'gas' => [ConnectionService::TYPE_GAS]
+        };
+
+        $connectionService = ConnectionService::where('connection_application_id', $this->connection->id)
+            ->whereIn('service_type', $services)
+            ->where('provider_name', '=', 'ea')
+            ->first();
+        
+        if($connectionService) {
+            return $connectionService->plan_type;
         }
         return throw new \Exception('[PostSalesService:getPlanType] plan type not found');
     }
 
-    public function postToEa()
+    public function postToEa($submitType)
     {
 
-        $id = $this->getId();
-        $vendorCode= "HD2";
+        $vendorCode= $this->getVendorCode();
+        $id = $vendorCode . $this->connection->id . time ();
+
         $version = "1";
         $saleDate = (new Carbon($this->connection->updated_at))->toIso8601String();
         $customerType =  "RES";
@@ -92,8 +100,9 @@ class PostSalesService
             'address'=> [
                 'unitNumber'=> $this->connection->unit_number,
                 'streetNumber'=> $this->connection->street_number,
-                'streetName'=> $this->connection->street_address,
-                'streetType'=> $streetType,
+                // 'streetName'=> $this->connection->street_address,
+                'streetName'=> $this->connection->street_name_only,
+                'streetType'=> $this->connection->street_type,
                 'suburb'=> $this->connection->city,
                 'state'=> $this->stateMap($this->connection->state),
                 'postcode'=> $this->connection->postcode,
@@ -103,21 +112,22 @@ class PostSalesService
             ]
         ];
 
-        $offers = $this->prepareOffer();
+        $offers = $this->prepareOffer($submitType);
         $mailingAddressType = 'STREET';
 
         $streetMailingAddress = [
             'unitNumber'=> $this->connection->unit_number,
             'streetNumber'=> $this->connection->street_number,
-            'streetName'=> $this->connection->street_address,
-            'streetType'=> $streetType,
+            // 'streetName'=> $this->connection->street_address,
+            'streetName'=> $this->connection->street_name_only,
+            'streetType'=> $this->connection->street_type,
             'suburb'=> $this->connection->city,
             'state'=> $this->stateMap($this->connection->state),
             'postcode'=> $this->connection->postcode,
         ];
 
-
         $billDeliveryMethod = $this->connection->is_email_billing?'EMAIL':'POST';
+
         $lifeSupport = $this->connection->has_life_support?true:false;
 
         $eaData = [
@@ -135,6 +145,7 @@ class PostSalesService
             "streetMailingAddress"=> $streetMailingAddress,
             "billDeliveryMethod"=> $billDeliveryMethod,
             "lifeSupport"=> $lifeSupport,
+            "carbonNeutralOptIn" => $this->connection->ea_go_neutral === 1 ? true : false,
         ];
 
         $variables= [
@@ -207,8 +218,11 @@ class PostSalesService
 
     }
 
-    private function getAfterHoursServiceOrder(): bool
+    private function logFlagDetails(?bool $flag)
     {
+        if (app()->environment('production')) {
+            return;
+        }
         $eaService = ConnectionService::query()->where('connection_application_id', $this->connection->id)
             ->where('service_type', ConnectionService::TYPE_ELECTRICITY)
             ->first();
@@ -219,26 +233,54 @@ class PostSalesService
         }
 
         $state = $this->stateMap( $this->connection->state);
-
-        $afterHourFlag = false;
-
-        if($this->isSameDayConnection()) {
-            $afterHourFlag = $this->handleSameDayConnection($distributor, $state);
-        }
-
-        if($this->isNextDayConnection()) {
-            $afterHourFlag = $this->handleNextDayConnection($distributor, $state);
-        }
-        $this->connection->update(['after_hour_flag' => $afterHourFlag]);
-
         Log::info('After Hour Flags ', [
             'state'=> $state,
             'distributor'=> $distributor,
             'connection_date'=> $this->connection->moving_date,
-            'after_hour_flag'=> $afterHourFlag,
+            'after_hour_flag'=> $flag,
         ]);
+    }
+
+    private function getAfterHoursServiceOrder(): bool
+    {
+        $afterHourFlag = $this->connection->getAfterHourPayee();
+        $this->connection->update(['after_hour_flag' => $afterHourFlag]);
+
+        $this->logFlagDetails($afterHourFlag);
 
         return $afterHourFlag;
+
+
+//        $eaService = ConnectionService::query()->where('connection_application_id', $this->connection->id)
+//            ->where('service_type', ConnectionService::TYPE_ELECTRICITY)
+//            ->first();
+//        $distributor = null;
+//        if(!empty($eaService))
+//        {
+//            $distributor = $eaService->distributor;
+//        }
+//
+//        $state = $this->stateMap( $this->connection->state);
+//
+//        $afterHourFlag = false;
+//
+//        if($this->isSameDayConnection()) {
+//            $afterHourFlag = $this->handleSameDayConnection($distributor, $state);
+//        }
+//
+//        if($this->isNextDayConnection()) {
+//            $afterHourFlag = $this->handleNextDayConnection($distributor, $state);
+//        }
+//        $this->connection->update(['after_hour_flag' => $afterHourFlag]);
+//
+//        Log::info('After Hour Flags ', [
+//            'state'=> $state,
+//            'distributor'=> $distributor,
+//            'connection_date'=> $this->connection->moving_date,
+//            'after_hour_flag'=> $afterHourFlag,
+//        ]);
+//
+//        return $afterHourFlag;
 
     }
 
@@ -289,9 +331,8 @@ class PostSalesService
      */
     public function processEaData($results)
     {
-        Log::info('End Sale API Response');
+        Log::info('Sale API Response');
         Log::info($results);
-        Log::info('Start Sale API Response');
 
         $data = json_decode($results);
         $submitSallData = $data?->data?->submitSale;
@@ -340,9 +381,11 @@ class PostSalesService
         }
     }
 
-    private function getId()
+    private function getVendorCode(): string
     {
-        return 'HD2'.$this->connection->id.time();
+        /** @var Office $office */
+        $office = $this->connection->office;
+        return $office->getVendorCode();
     }
 
     private function stateMap($state)
@@ -373,10 +416,9 @@ class PostSalesService
     /**
      * @throws \Exception
      */
-    private function prepareOffer()
+    private function prepareOffer($submitType)
     {
-//        Log::info('show Prepare call is called');
-        $plan = $this->getPlanType();
+        $plan = $this->getPlanType($submitType);
         $state = $this->stateMap( $this->connection->state);
         $gasPlanSourceCode = '';
         $elePlanSourceCode = '';
@@ -410,7 +452,7 @@ class PostSalesService
             ->first();
 
 
-        if(!is_null($gasService)) {
+        if(!is_null($gasService) && ($submitType === 'energy' || $submitType === 'gas')) {
             $servicePlan[] = [
                 "fuel"=> "GAS",
                 "planId" => $plan_id.'-G'.$state[0],
@@ -418,7 +460,7 @@ class PostSalesService
             ];
         }
 
-        if($eleService) {
+        if($eleService && ($submitType === 'energy' || $submitType === 'power')) {
             $servicePlan[] = [
                 "fuel"=> "ELE",
                 "planId" => $plan_id.'-E'.$state[0],

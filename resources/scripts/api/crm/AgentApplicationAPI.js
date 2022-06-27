@@ -94,7 +94,6 @@ export default {
         try {
             // meta = AgentListMapper.mapMetaData(meta);
             const data = await axios.get('/api/hood-users', {params: {...meta}});
-            console.log("printing data", data)
             // return data.data;
         } catch (error) {
             console.log('Error', error);
