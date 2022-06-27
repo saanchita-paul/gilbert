@@ -76,6 +76,8 @@ class SumoService
         $this->application = ConnectionApplication::findOrFail($id);
         $this->application->load(['identification', 'connectionServices', 'authorizedPerson']);
 
+        info( 'application data ---> ' ,  [$this->application]);
+
         $url = config('sumo.base_url').config('sumo.store_customer_data_url');
         $url = APILog::setLoggerQuery($url, APILog::API_SUMO_SUBMIT_LEAD, extend: false);
 
@@ -85,7 +87,7 @@ class SumoService
                 'is_running_submission' => 0,
             ]);
         }
-        \Log::info( 'Sumo printing customer data ' , $this->getCustomerData());
+        info( 'Sumo printing customer data ---> ' , [$this->getCustomerData()]);
 
         return json_decode($response->body(), true);
     }
@@ -106,7 +108,8 @@ class SumoService
             'customerTitle' => $this->application->title,
             //todo Why are we sending all services, do we need to check only what is submitted?
             'interestedIn' => $this->getMappedService($this->application->connectionServices?->pluck('service_type')->toArray()),
-            'lifeSupport' => $this->application->is_power_life_support,
+//            'lifeSupport' => $this->application->is_power_life_support,
+            'lifeSupport' => $this->getLifeSupport($this->application),
             // 'lifeSupportFuel' => "string",
             'marketingConcent' => $this->application->is_contacted == 1 ? true : false,
             'mirn' => $this->application->mirn,
@@ -264,6 +267,24 @@ class SumoService
             ->where('connection_application_id', $applicationId)
             ->update(['status' =>  ConnectionService::STATUS_REJECTED, 'rejected_at' => now()]);
         }
+    }
+
+    private function getLifeSupport($application): bool
+    {
+        $life_support = false;
+        $connectionService = ConnectionService::where('connection_application_id', $application->id)->firstOrFail();
+
+
+        if ($connectionService->service_type === 'gas'){
+            $life_support =  $application->is_gas_life_support;
+        }
+        elseif ($connectionService->service_type === 'power') {
+            $life_support =  $application->is_power_life_support;
+        }
+        else {
+            $life_support =
+        }
+        return $life_support;
     }
 
 }
