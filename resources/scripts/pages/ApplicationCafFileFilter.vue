@@ -72,7 +72,7 @@
                     </div>
                 </v-col>
                 <v-col cols="2">
-                    <v-btn class="float-right" :disabled="isDisabledCafBtn">
+                    <v-btn class="float-right" :disabled="isDisabledCafBtn" @click="generateCafFIle">
                         Generate CAF File
                     </v-btn>
                 </v-col>
@@ -157,6 +157,19 @@ export default {
         updateDateRange() {
             this.$emit('updateDate', this.dateRange)
         },
+
+        generateCafFIle()
+        {
+
+            let selectedId = this.selected.map(dt => dt.id).join('_');
+            const url = `${process.env.MIX_BOT_ROOT_URL}/api/download-caf-file?leads=`+ selectedId;
+            window.open(
+                url,
+                '_blank'
+            );
+
+        }
+
     },
 
 };

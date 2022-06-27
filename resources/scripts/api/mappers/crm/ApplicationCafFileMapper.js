@@ -11,9 +11,25 @@ const mapApplicationCafFileList =  data => {
     return values;
 }
 
+function mapServices(services) {
+    let availableServices = services.map(svc => {
+        if( (svc.service_type === 'gas' && svc.enable_caf_file )
+            || (svc.service_type === 'electricity' && svc.enable_caf_file)) {
+            return svc.service_type;
+        }
+    });
+
+    if(availableServices.length === 2) {
+        availableServices.push('both');
+    }
+    return availableServices;
+
+}
+
 function getSelectedService(service) {
     let filterServices = service.filter(svc => {
-        return svc.service_type === 'gas' || svc.service_type === 'electricity';
+        return (svc.service_type === 'gas' && svc.enable_caf_file )
+            || (svc.service_type === 'electricity' && svc.enable_caf_file);
     })
     if(filterServices.length === 2) {
         return 'both'
@@ -24,6 +40,11 @@ function getSelectedService(service) {
 
 }
 
+function isPossibleToMakeCaf(service) {
+    if(getSelectedService(service) === '') return false;
+    return true;
+}
+
 const mapApplicationCafFile = data => {
     let model = new ApplicationCafFile({...data });
     model.service_type = mapService(model.service);
@@ -31,6 +52,9 @@ const mapApplicationCafFile = data => {
     model.connection_date = mapConnDate(model.service);
     model.plan = mapPlan(model.service);
     model.selected_service = getSelectedService(model.service);
+    model.service_dropdown = mapServices(model.service);
+    model.is_possible_caf_file = isPossibleToMakeCaf(model.service);
+    model.is_selected = false
     return model;
 }
 

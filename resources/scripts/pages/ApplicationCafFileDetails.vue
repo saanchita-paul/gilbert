@@ -249,7 +249,7 @@
                         outlined
                         dense
                         :items="serviceDropDown"
-                        v-model="caf_detail.service_type"
+                        v-model="selectedService"
                         @change="changeServiceType"
                     ></v-select>
                 </div>
@@ -262,6 +262,7 @@
                         dense
                         :items="planDropDown"
                         v-model="caf_detail.plan"
+                        @change="updateSelelectedService"
                     ></v-select>
                 </div>
             </v-col>
@@ -288,20 +289,7 @@ export default {
         return {
             isEdit: true,
             titlesDropDown: titlesMapperForDropdown,
-            serviceDropDown: [
-                {
-                    text: "Electricity",
-                    value: "electricity",
-                },
-                {
-                    text: "Gas",
-                    value: "gas",
-                },
-                {
-                    text: "Both",
-                    value: "both",
-                },
-            ],
+            serviceDropDown: [],
             planDropDown: [
                 {
                     text: "Plan 1",
@@ -316,6 +304,7 @@ export default {
             closeConfirm: false,
             loading: false,
             connection_date: null,
+            selectedService: '',
 
             caf_detail: {
                 title: "",
@@ -327,15 +316,7 @@ export default {
                 business_name: "",
                 abn: "",
                 connection_date: "",
-                service: [
-                    {
-                        "id": 1,
-                        "service_type": "gas",
-                        "provider_name": "australia",
-                        "plan_type": "home",
-                        "connection_date": "2022-06-24",
-                    }
-                ],
+                service: [],
                 service_type: "",
                 // plan: ""
             },
@@ -350,14 +331,23 @@ export default {
         cafFileData: {
             async handler() {
                 await this.syncData();
+                this.updateServiceDropDown();
             },
             deep: true,
         },
     },
     async mounted() {
         await this.syncData();
+        this.updateServiceDropDown();
     },
     methods: {
+
+        updateServiceDropDown()
+        {
+            this.serviceDropDown = this.cafFileData.service_dropdown;
+            this.selectedService = this.cafFileData.selected_service;
+        },
+
         syncData() {
             this.caf_detail.title = this.cafFileData.title;
             this.caf_detail.first_name = this.cafFileData.first_name;
