@@ -10,9 +10,18 @@
                 Water Application Update
             </div>
         </div>
+
         <div class="d-flex ml-6 regularFontSize">
             <div :class="{ errorColor: isError }">{{ connectionStatusReason }}</div>
         </div>
+
+        <div class="d-flex ml-6 regularFontSize" v-if="customerReference">
+            <div>
+                <span class="text-bolder">Reference Number: </span>
+                <span>{{ customerReference }}</span>
+            </div>
+        </div>
+
         <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
             <v-btn
                 :disabled="isDisable()"
@@ -56,13 +65,17 @@ export default {
 
             return waterService &&
                    waterService.reason !== null &&
-                   waterService.reason !== undefined && 
+                   waterService.reason !== undefined &&
                    waterService.reason !== "" ?
-                   waterService.reason : 
+                   waterService.reason :
                    this.leadSummary.is_auto_water_submit  &&
-                   this.leadSummary.fast_connect_customer_reference !== null ? 
+                   this.leadSummary.fast_connect_customer_reference !== null ?
                    "Your application has been submitted automatically. Please wait while we process." :
-                   "We are processing your application..."    
+                   "We are processing your application..."
+        },
+
+        customerReference(){
+            return this.leadSummary.fast_connect_customer_reference ? this.leadSummary.fast_connect_customer_reference : null;
         }
     }
 }
@@ -96,6 +109,10 @@ export default {
     .buttonBackgroundColor{
         background-color: $buttonBackgroundColor;
     }
-</style> 
+    .text-bolder{
+        font-weight: bold;
+        font-size: 14px;
+    }
+</style>
 
 
