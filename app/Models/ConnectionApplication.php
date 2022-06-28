@@ -218,6 +218,8 @@ class ConnectionApplication extends Model
         'ea_go_neutral',
         'additional_access_information',
         'is_power_life_support',
+        'is_running_submission',
+        'app_close_reason_id'
     ];
 
 
@@ -302,6 +304,8 @@ class ConnectionApplication extends Model
     const TENANCY_TYPE_RENTER = 1;
     const TENANCY_TYPE_HOME_OWNER = 2;
 
+    const TRIAGE = 1;
+
     const PROPERTY_TYPE_RESIDENTIAL = 1;
     const PROPERTY_TYPE_BUSINESS = 2;
 
@@ -321,6 +325,10 @@ class ConnectionApplication extends Model
     const TENANCY_MAPPING = [
         'renter' => self::TENANCY_TYPE_RENTER,
         'home_owner' => self::TENANCY_TYPE_HOME_OWNER
+    ];
+
+    const TRIAGE_MAPPING = [
+        'triage' => self::TRIAGE
     ];
 
     const TENANCY_NAME_MAPPING = [

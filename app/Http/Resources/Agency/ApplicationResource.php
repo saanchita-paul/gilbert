@@ -5,6 +5,7 @@ namespace App\Http\Resources\Agency;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\User;
+use App\Services\TimeZoneService;
 use App\Services\Utility\StateMapService;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -100,7 +101,7 @@ class ApplicationResource extends JsonResource
             'billing_is_address_complete' => $this->billing_is_address_complete,
 
             #todo: set timezone dynamically based on daylight saving
-            'created_at' => (new Carbon($this->created_at, '11'))->format('d/m/Y h:m a'),
+            'created_at' => (new Carbon($this->created_at, TimeZoneService::getTimeZoneInt()))->format('d/m/Y h:m a'),
             'submitted_by' => $this->submittedBy(),
             'submitted_at' => $this->submittedAt(),
             'after_hour_payee' => $this->after_hour_payee,

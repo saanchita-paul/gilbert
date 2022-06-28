@@ -16,6 +16,7 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\User;
 use App\Services\Agency\ApplicationService;
+use App\Services\Agency\TriageFlagService;
 use App\Services\Agency\WaterAutoSubmitService;
 use App\Services\Application\ApplicationsMetricsService;
 use App\Services\Application\SearchConnectionApplication;
@@ -26,6 +27,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Origin\Services\ValidateCutOffTime;
 use PropertyMe\services\FetchContacts;
 
 class ApplicationController extends Controller
@@ -432,6 +434,16 @@ class ApplicationController extends Controller
             $service = new ApplicationService();
             $res = $service->clearConcession($id);
             return response(['success' => true, 'message' => 'Concession cleared successfully']);
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function validateCutOff($applicationId)
+    {
+        try {
+            $res = ValidateCutOffTime::validateCutOff($applicationId);
+            return response()->json(['success' => true, 'data' => $res]);
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

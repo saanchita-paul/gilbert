@@ -39,7 +39,7 @@ class OriginSubmitListener implements ShouldQueue
     private function storeBothElectricityAndGas($originService)
     {
         info("Submitting both Power and Gas to Origin");
-        
+
         try {
             $originService->storeElectricity();
         }

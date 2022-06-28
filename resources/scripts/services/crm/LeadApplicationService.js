@@ -1,7 +1,7 @@
 import LeadApplicationAPI from "@scripts/api/crm/LeadApplicationAPI";
 import {
     providerNameMapper,
-    planTypeNameMapper
+    planTypeNameMapper, planTypeKeyMapper
 } from "@scripts/data/ProviderAndPlanNameMapper";
 import {
     connectionServicesMapper,
@@ -43,15 +43,6 @@ export default {
     loadServiceProvider: services =>
         LeadApplicationAPI.getServiceProvider(services),
     saveNote: (note, leadId) => LeadApplicationAPI.saveNote(note, leadId),
-    eacalate: leadId => LeadApplicationAPI.eacalate(leadId),
-    saveEscalateReason: (reason, leadId) =>
-        LeadApplicationAPI.saveEscalateReason(reason, leadId),
-    confirmSubmitLead: (lead, leadId) =>
-        LeadApplicationAPI.confirmSubmitLead(lead, leadId),
-    updateAddress: (address, leadId) =>
-        LeadApplicationAPI.updateAddress(address, leadId),
-    assignUser: (leadId, agentProfileId) =>
-        LeadApplicationAPI.assignUser(leadId, agentProfileId),
     saveSoleField: (
         field,
         value,
@@ -68,15 +59,18 @@ export default {
             identification,
             isService
         ),
-    getNmiMern: id => LeadApplicationAPI.getNmiMern(id),
-    loadAuthorizedPerson: leadId =>
-        LeadApplicationAPI.loadAuthorizedPerson(leadId),
-    saveAuthorizedPerson: data => LeadApplicationAPI.saveAuthorizedPerson(data),
-    updateApplicationProviders: (payload, application_id) =>
-        LeadApplicationAPI.updateApplicationProviders(payload, application_id),
-    closeApplicationWithReason: (id, closing_reason) =>
-        LeadApplicationAPI.closeApplicationWithReason(id, closing_reason),
-    getAssignedHoodUser: id => LeadApplicationAPI.getAssignedHoodUser(id),
+
+    eacalate: (leadId) => LeadApplicationAPI.eacalate(leadId),
+    saveEscalateReason: (reason, leadId) => LeadApplicationAPI.saveEscalateReason(reason, leadId),
+    saveLead: (lead, leadId) => LeadApplicationAPI.saveLead(lead, leadId),
+    updateAddress: (address, leadId) => LeadApplicationAPI.updateAddress(address, leadId),
+    assignUser: (leadId, agentProfileId) => LeadApplicationAPI.assignUser(leadId, agentProfileId),
+    getNmiMern: (id) => LeadApplicationAPI.getNmiMern(id),
+    loadAuthorizedPerson: (leadId) => LeadApplicationAPI.loadAuthorizedPerson(leadId),
+    saveAuthorizedPerson: (data) => LeadApplicationAPI.saveAuthorizedPerson(data),
+    updateApplicationProviders: (payload, application_id) => LeadApplicationAPI.updateApplicationProviders(payload, application_id),
+    closeApplicationWithReason: (id, closeReason) => LeadApplicationAPI.closeApplicationWithReason(id, closeReason),
+    getAssignedHoodUser: (id) => LeadApplicationAPI.getAssignedHoodUser(id),
     loadHoodUser: () => LeadApplicationAPI.loadHoodUser(),
     loadAgencies: search => LeadApplicationAPI.loadAgencies(search),
     loadOffices: (agencyId, search) =>
@@ -181,19 +175,19 @@ export default {
             case connectionServicesMapper.STATUS_ASSIGNED:
             case connectionServicesMapper.STATUS_ESCALATED:
             case connectionServicesMapper.STATUS_IN_PROGRESS:
-                return { text: "Not Submitted", color: "black" };
+                return {text: "Not Submitted", color: "black"};
             case connectionServicesMapper.STATUS_ACCEPTED:
-                return { text: "Accepted", color: "green" };
+                return {text: "Accepted", color: "green"};
             case connectionServicesMapper.STATUS_SUBMITTED:
             case connectionServicesMapper.STATUS_EA_SUBMIT:
-                return { text: "In Progress", color: "green" };
+                return {text: "In Progress", color: "green"};
             case connectionServicesMapper.STATUS_AC_MANUAL_PROCESSING:
-                return { text: "Manual Processing", color: "orange" };
+                return {text: "Manual Processing", color: "orange"};
             case connectionServicesMapper.STATUS_CANT_CONNECT:
             case connectionServicesMapper.STATUS_REJECTED:
-                return { text: "Rejected", color: "red" };
+                return {text: "Rejected", color: "red"};
             case connectionServicesMapper.STATUS_FAILED:
-                return { text: "Failed", color: "red" };
+                return {text: 'Manual Processing', color: 'orange'};
             default:
                 return {
                     text: "Not Selected",
@@ -222,41 +216,18 @@ export default {
 
     /**
      *
-     * @param  plan
-     * @return {{type: string}}
+     * @param {string | null}  plan
+     * @return {string}
      */
     mapPlan: plan => {
-        switch (plan) {
-            case planTypeNameMapper.PLAN_BASIC:
-                return "Basic Plan";
-            case planTypeNameMapper.PLAN_NO_FRILLS:
-                return "No Frills";
-            case planTypeNameMapper.PLAN_TOTAL_PLAN:
-                return "Total Plan";
-            case planTypeNameMapper.PLAN_ORIGIN_BASIC:
-                return "Origin Basic";
-            case planTypeNameMapper.PLAN_ORIGIN_GO:
-                return "Origin Go";
-            case planTypeNameMapper.PLAN_ORIGIN_GO_VARIABLE:
-                return "Origin Go Variable";
-            case planTypeNameMapper.PLAN_ORIGIN_ADVANTAGE_VARIABLE:
-                return "Origin Advantage Variable";
-            case planTypeNameMapper.PLAN_ORIGIN_HOME_ASSIST:
-                return "Origin Home Assist";
-            case planTypeNameMapper.PLAN_SUMO_SAVER:
-                return "Sumo Saver";
-            case planTypeNameMapper.PLAN_SUMO_FREEDOM:
-                return "Sumo Freedom";
-            case planTypeNameMapper.PLAN_SUMO_SELECT:
-                return  "Sumo Select";
-            default:
-                return null;
-        }
+        return planTypeKeyMapper[plan?.toLowerCase()] || "";
     },
 
     clearConcessionDetails: id => LeadApplicationAPI.clearConcessionDetails(id),
 
     getActiveServiceTab: () => Store.getters["application/activeServiceTab"],
     setActiveServiceTab: currentTab =>
-        Store.commit("application/setActiveServiceTab", currentTab)
+        Store.commit("application/setActiveServiceTab", currentTab),
+
+    validateCutOff: id => LeadApplicationAPI.validateCutOff(id),
 };

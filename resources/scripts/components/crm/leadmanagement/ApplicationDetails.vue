@@ -155,7 +155,7 @@
        <!-- <p class="sub-title py-2">Service Interests
            <span class="mx-2">
               <v-icon :disabled="isServiceAllowed(lead.service_interests, 'power')" color="yellow">mdi-flash</v-icon>
-              
+
           </span>
            <span class="mx-2">
               <v-icon :disabled="isServiceAllowed(lead.service_interests, 'gas')" color="red">mdi-fire</v-icon>
@@ -272,8 +272,10 @@ export default {
                 return 'In Progress';
             } else if(status === 'accepted') {
                 return 'Connected';
+            } else if(status === 'failed') {
+                return 'Manual Processing';
             } else {
-                return (status[0].toUpperCase() + status.slice(1)).replace(/_/g, " ");;
+                return (status[0].toUpperCase() + status.slice(1)).replace(/_/g, " ");
             }
         },
         goToLeadDetails(id) {
@@ -337,7 +339,7 @@ export default {
 }
 
 .flex-wrap-100{
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
     width: 100%;
 }
 </style>
