@@ -34,16 +34,20 @@ class CreateHubSpotContact implements ShouldQueue
 
         $getContactByEmailData = $hubspotContactService->getContactByEmail($existLead->email);
 
-        info("<----- i am get getContactByEmailData without------>", $getContactByEmailData);
-//        info("<----- i am get body getContactByEmailData ------>", [$getContactByEmailData['body']]);
-
         if ($getContactByEmailData['exists'] === true) {
             $responseData = $getContactByEmailData['body'];
-            $hubspotContactService->setOldApplicationData();
-            $hubspotContactService->saveHistoricalData($responseData);
+            $hubspotId = $responseData['vid'];
+
+            $existingApp = $hubspotContactService->getOldApplicationData($hubspotId);
+            if ($existingApp) {
+                $oldAppHubspotService = new HubspotContactService($existingApp->id);
+                $oldAppHubspotService->setOldHubspotFlag();
+                $oldAppHubspotService->saveHistoricalData($responseData);
+            }
+            
+            $hubspotContactService->setContactId($hubspotId);
             $hubspotContactService->update();
         } else {
-            info("<----- i am not exists------>", [$getContactByEmailData['exists']]);
             $hubspotContactService->create();
         }
     }

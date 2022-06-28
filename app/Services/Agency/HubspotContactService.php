@@ -13,6 +13,7 @@ use App\Models\HubspotHistory;
 use Illuminate\Database\Eloquent\Model;
 use App\Services\Logger\ErrorLogService;
 use Illuminate\Database\Eloquent\Collection;
+use PropertyMe\Services\SaveContacts;
 
 class HubspotContactService
 {
@@ -24,7 +25,6 @@ class HubspotContactService
     const STATUS_IN_PROGRESS = 'IN_PROGRESS';
 
     private array|Collection|ConnectionApplication|Model $application;
-    private array|Collection|ConnectionApplication|Model $existingApplication;
 
     public function __construct(int $id)
     {
@@ -53,6 +53,10 @@ class HubspotContactService
 //        }
 
         $this->application->update(['hubspot_contact_id' => $body['vid']]);
+
+        self::saveHistoricalData($body);
+
+        return $body;
     }
 
     /**
@@ -62,11 +66,14 @@ class HubspotContactService
      */
     public function update()
     {
-        if($this->existingApplication && !$this->application->hubspot_contact_id){
-            self::setContactId($this->existingApplication->hubspot_contact_id);
+        if ($this->application->is_skip_hubspot) {
+            throw new \exception(sprintf('HubspotContactService:update SKIP - Application ID %s is flagged skip due to not being latest hubspot details', strval($this->application->id)));
         }
-
         $vid = $this->application->hubspot_contact_id;
+
+        if (empty($vid)) {
+            throw new \exception('HubspotContactService:update FAIL - Application is missing hubspot contact id.');
+        }
 
         $url = str_replace('${id}', $vid, config('hub_spot.update_contact')) . config('hub_spot.api_key');
         $url = APILog::setLoggerQuery($url, APILog::API_HB_UPDATE_CONTACT);
@@ -80,6 +87,20 @@ class HubspotContactService
             Log::info($response->body());
             throw new \Exception('[HubspotContactService] Contact update failed, check api_logs for details.');
         }
+
+        $body = json_decode($response->body(), true);
+        if (empty($body)) {
+            try {
+                $getContactEmail = self::getContactByEmail($this->application->email); 
+                if ($getContactEmail['exists'])
+                    $body = $getContactEmail['body'];
+            } catch (\Exception $e) {
+                Log::error('HubspotContactService:getContactByEmail - FAIL (skipping get hubspot response for updated application)', ['error' => $e->getMessage()]);
+            }
+        }
+        self::saveHistoricalData($body);
+
+        return $body;
     }
 
     /**
@@ -444,18 +465,10 @@ class HubspotContactService
      * 
      * @return int 
      */
-    public function saveHistoricalData(array $hubspot_response){
-        $existingApplication = $this->existingApplication;
-        if(!$existingApplication)
-            throw new \Exception("HubspotContactService:saveHistoricalData - ERROR (Unable to find old application with same email and existing hubspot id)", 1);
-        
-        $contact_id = $existingApplication->hubspot_contact_id;
-        $oldApplicationId = $existingApplication->id;
-    
+    public function saveHistoricalData($hubspot_response = ''){  
         $newHistory = new HubspotHistory();
-        $newHistory->contact_id = $contact_id;
-        $newHistory->old_connection_application_id = $oldApplicationId;
-        $newHistory->new_connection_application_id = $this->application->id;
+        $newHistory->contact_id = $this->application->hubspot_contact_id;
+        $newHistory->connection_application_id = $this->application->id;
         $newHistory->email = $this->application->email;
         $newHistory->address_as_text = $this->application->address_text;
         $newHistory->hubspot_response = json_encode($hubspot_response);
@@ -464,18 +477,21 @@ class HubspotContactService
         return $newHistory->id;
     }
 
-    public function setOldApplicationData() {
-        $this->existingApplication = ConnectionApplication::where('email', $this->application->email)
-                                ->where('id', '<>', $this->application->id)
-                                ->whereNotNull('hubspot_contact_id')
-                                ->orderBy('id', 'DESC')
-                                ->first();
-
-        if (!$this->existingApplication)
-            Log::warning('Hubspot Contact Service:setOldApplicationData - no existing old application');
+    public function getOldApplicationData($hubspot_contact_id = '') {
+        $query = ConnectionApplication::where('email', $this->application->email)
+                                ->where('id', '<>', $this->application->id);
+        
+        if (!empty($hubspot_contact_id)) 
+            $query->where('hubspot_contact_id', $hubspot_contact_id);
+        
+        return $query->orderBy('id', 'DESC')->first();
     }
 
     public function setContactId($contact_id) {
         $this->application->update(['hubspot_contact_id' => $contact_id]);
+    }
+
+    public function setOldHubspotFlag() {
+        $this->application->update(['is_skip_hubspot' => true]);
     }
 }
