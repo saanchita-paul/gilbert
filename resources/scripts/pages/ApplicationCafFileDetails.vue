@@ -377,7 +377,7 @@ export default {
         },
 
         changeServiceType() {
-             this.$emit('updateServiceType', this.caf_detail.service_type, this.cafFileData.id)
+             this.$emit('updateServiceType', this.selectedService, this.cafFileData.id)
         }
 
         // isDisabled(services) {
