@@ -47,9 +47,9 @@ class SumoSubmissionJob implements ShouldQueue
 
         $allowedSubmitType = ['energy', 'power', 'gas'];
         if (in_array($submitType, $allowedSubmitType)) {
-            $res = (new SumoService())->storeCustomerData($this->applicationId);
+            $res = (new SumoService())->storeCustomerData($this->applicationId, $this->submitType);
             info("Sumo response body 1");
-            \Log::info($res['status']);
+//            \Log::info($res['status']);
             (new SumoService())->saveStatus($this->applicationId, $res['status'] , $res['creditCheck'], $submitType);
             ConnectionApplication::where('id' , $this->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
             info(json_encode($res));
