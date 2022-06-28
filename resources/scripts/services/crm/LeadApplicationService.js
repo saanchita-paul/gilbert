@@ -43,6 +43,7 @@ export default {
     loadServiceProvider: services =>
         LeadApplicationAPI.getServiceProvider(services),
     saveNote: (note, leadId) => LeadApplicationAPI.saveNote(note, leadId),
+    confirmSubmitLead: (lead, leadId) => LeadApplicationAPI.confirmSubmitLead(lead, leadId),
     saveSoleField: (
         field,
         value,

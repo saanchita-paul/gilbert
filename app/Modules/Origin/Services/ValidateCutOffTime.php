@@ -266,6 +266,7 @@ class ValidateCutOffTime
         $connectionDate = $existingApplication->moving_date;
         $nmi = $existingApplication->nmi;
 
+        if (empty($nmi)) return true;
 
         BusinessTime::enable(Carbon::class);
         Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
@@ -323,7 +324,9 @@ class ValidateCutOffTime
 
         $state = $existingApplication->state ?? 'National';
         $connectionDate = $existingApplication->moving_date;
+        $mirn = $existingApplication->mirn;
 
+        if (empty($mirn)) return true;
 
         BusinessTime::enable(Carbon::class);
         Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
