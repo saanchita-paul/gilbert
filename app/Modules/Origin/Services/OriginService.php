@@ -97,7 +97,9 @@ class OriginService
                     throw new \Exception(sprintf('%s:FAILED (Skip due to missing nmi/mirn for service id %u)', self::class, $service->id));
                 }
 
-//                $isValidGasCutOff = ValidateCutOffTime::isValidGasConnect($connection_date, $application->state);
+//              $isValidGasCutOff = ValidateCutOffTime::isValidGasConnect($connection_date, $application->state);
+                
+                $connection_date = ValidateCutOffTime::getNextGasConnectionDate($connection_date, $application->state);
             }
 
             // 1. validate address
