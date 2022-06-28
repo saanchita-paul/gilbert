@@ -189,6 +189,11 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::put('/app-close-reasons/{id}', [AppCloseReasonController::class, 'update']);
     // application closing reasons delete
     Route::delete('/app-close-reasons/{id}', [AppCloseReasonController::class, 'delete']);
+
+    
+    Route::get('/rea-extract/corporate-report', [ReaExtractsReportController::class, 'getReaCorporateReport'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
+
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
@@ -264,4 +269,9 @@ Route::get("/karan/sales-status", function () {
 
 
 
+// Route::get('report_corporate', function () {
+//     $data = ['image' => ''];
+//     $pdf = PDF::loadView('pdf.report_corporate', $data);
+//     return $pdf->inline();
+// });
 
