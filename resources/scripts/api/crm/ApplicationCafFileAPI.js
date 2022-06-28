@@ -4,7 +4,8 @@ import Pagination from "@scripts/models/crm/Pagination";
 
 // const BASE_URL = `https://enk2.leninsheikh.com/hood-dashboard/api`;
 // const BASE_URL = `http://192.168.1.13:8001/hood-dashboard/api`;
-const BASE_URL = `http://127.0.0.1:8080/hood-dashboard/api`;
+// const BASE_URL = `http://192.168.1.6:8000/hood-dashboard/api`;
+const BASE_URL = `http://localhost:8001/hood-dashboard/api`;
 
 export default {
 

@@ -135,8 +135,11 @@ export default {
         },
 
         updateDate(dateRange) {
-            this.dateRange = dateRange;
-            this.fetchCafFiles();
+            if (dateRange) {
+                this.advanceSearch.start_date = dateRange.start
+                this.advanceSearch.end_date = dateRange.end
+            }
+
         },
     },
 }
