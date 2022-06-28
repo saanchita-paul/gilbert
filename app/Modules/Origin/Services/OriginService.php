@@ -87,10 +87,9 @@ class OriginService
                     throw new \Exception(sprintf('%s:FAILED (Skip due to missing nmi/mirn for service id %u)', self::class, $service->id));
                 }
 
-                ValidateCutOffTime::isValidElectricityConnection($connection_date, $nmi_mirn, $application->state);
+//                $isValidElecCutOff = ValidateCutOffTime::isValidElecConnect($connection_date, $nmi_mirn, $application->state);
             }
             else{
-                // $type == 'gas'
                 $validateBy = 'mirn';
                 $nmi_mirn = $application->mirn_checksum;
 
@@ -98,7 +97,7 @@ class OriginService
                     throw new \Exception(sprintf('%s:FAILED (Skip due to missing nmi/mirn for service id %u)', self::class, $service->id));
                 }
 
-                // ValidateCutOffTime::isValidGasConnection($connection_date, $application->state);
+//              $isValidGasCutOff = ValidateCutOffTime::isValidGasConnect($connection_date, $application->state);
                 
                 $connection_date = ValidateCutOffTime::getNextGasConnectionDate($connection_date, $application->state);
             }
@@ -244,14 +243,14 @@ class OriginService
         $service->save();
 
         if(!empty($errorCode) && !empty($errorMessage)){
-            
+
             $newRejectReason = new RejectionReason();
             $newRejectReason->connection_service_id = $service->id;
             $newRejectReason->connection_application_id = $service->connection_application_id;
             $newRejectReason->service_type = $service->service_type;
             $newRejectReason->reason_code = $errorCode;
             $newRejectReason->reason_text = $errorMessage;
-            
+
             $newRejectReason->save();
         }
     }
