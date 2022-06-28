@@ -224,13 +224,8 @@ Route::get('lnn/bot_token', function () {
 });
 
 
-/**
- * test routes triage flug field
- */
-//Route::get('/check-triage/{id}', function ($applicationId) {
-//    $res = TriageFlagService::setTriageFlag($applicationId);
-//    return response()->json(['success' => true, 'data' => $res]);
-//});
+
+Route::get('/applications/{id}/validate-cutoff/', [ApplicationController::class, 'validateCutOff']);
 
 
 Route::post('/our-property/token', [OurPropertyController::class, 'getAccessToken']);

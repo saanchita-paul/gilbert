@@ -227,5 +227,7 @@ export default {
 
     getActiveServiceTab: () => Store.getters["application/activeServiceTab"],
     setActiveServiceTab: currentTab =>
-        Store.commit("application/setActiveServiceTab", currentTab)
+        Store.commit("application/setActiveServiceTab", currentTab),
+
+    validateCutOff: id => LeadApplicationAPI.validateCutOff(id),
 };

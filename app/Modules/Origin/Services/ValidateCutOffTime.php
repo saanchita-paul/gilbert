@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Cmixin\BusinessTime;
 use App\Models\APILog;
+use App\Models\ConnectionApplication;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Nette\Utils\Json;
@@ -15,7 +16,7 @@ use App\Models\ConnectionService;
 use Carbon\CarbonInterface;
 
 class ValidateCutOffTime
-{ 
+{
     const MAP_STATE = [
         "New South Wales" => 'NSW',
         "Victoria" => 'VIC',
@@ -176,17 +177,101 @@ class ValidateCutOffTime
 
     /**
      * Assuming check is weekend/holiday is handled in frontend, this function validates same day/next day connection
-     *  
+     *
      * @return boolean
-     * 
+     *
      * @throws exception
      */
-    public static function isValidElectricityConnection(string $connectionDate, string $nmi, string $state = 'National'){
+//    public static function isValidElectricityConnection(string $connectionDate, string $nmi, string $state = 'National'){
+//        BusinessTime::enable(Carbon::class);
+//        Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
+//
+//        $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]);
+//        $nowDate = Carbon::now(self::MAP_STATE_TIMEZONE[$state]); // check localization
+//
+//        $distributor = '';
+//        $nmi_check = substr($nmi, 0, 2);
+//        foreach(self::MAP_NMI_DISTRIBUTOR as $key => $value){
+//            if(in_array($nmi_check, $value)){
+//                $distributor = $key;
+//                break;
+//            }
+//        }
+//
+//        if(empty($distributor)){
+//            throw new \Exception(sprintf('Origin:%s - FAILED (unable to find distributor to validate cutoff time for NMI %s)', __FUNCTION__, $nmi));
+//        }
+//
+//        $elecDist = self::MAP_ELECTRIC_DISTRIBUTOR[$distributor];
+//
+//        if ($connectionDate->isToday()){
+//            if(empty($elecDist['sdfi_business'])){
+//                throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_PAST_CUT_OFF', 'Distributor does not support same day connection'), BaseOriginAPI::CODE_REJECT);
+//            }
+//
+//            $checkDate = Carbon::today(self::MAP_STATE_TIMEZONE[$state])->addHours(intval($elecDist['sdfi_business']));
+//            $pastCutOff = $nowDate->gt($checkDate);
+//
+//            if($pastCutOff){
+//                throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_PAST_CUT_OFF', 'Past Cut-Off time ' . $checkDate->format('g A')), BaseOriginAPI::CODE_REJECT);
+//            }
+//        }
+//        else if ($connectionDate->isTomorrow()){
+//            $checkDate = $elecDist['isStandardSameDay'] ? Carbon::tomorrow(self::MAP_STATE_TIMEZONE[$state]) : Carbon::today(self::MAP_STATE_TIMEZONE[$state]);
+//            $checkDate->addHours(intval($elecDist['standard']));
+//            $pastCutOff = $nowDate->gt($checkDate);
+//
+//            if($pastCutOff){
+//                throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_PAST_CUT_OFF', 'Past Cut-Off time ' . $checkDate->format('g A')), BaseOriginAPI::CODE_REJECT);
+//            }
+//        }
+//
+//        if($connectionDate->isWeekend() || $connectionDate->isHoliday()){
+//            throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_HOLIDAY', 'Connection date selected is not a business day'), BaseOriginAPI::CODE_REJECT);
+//        }
+//
+//        return true;
+//    }
+
+//    public static function isValidGasConnection(string $connectionDate, string $state = 'National'){
+//        BusinessTime::enable(Carbon::class);
+//        Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
+//
+//        $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]);
+//        $availableDate = Carbon::today(self::MAP_STATE_TIMEZONE[$state]);
+//
+//        for($i=0; $i<=self::GAS_BUSINESS_DAYS; $i++){
+//            $availableDate->addDay();
+//            while($availableDate->isWeekend()){
+//                $availableDate->addDay();
+//            }
+//        }
+//
+//        if($availableDate->gt($connectionDate)){
+//            throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_PAST_CUT_OFF', 'Connection date must be after 3 business days minimum which is '. $availableDate->format('d/m/Y')), BaseOriginAPI::CODE_REJECT);
+//        }
+//
+//        if($connectionDate->isWeekend() || $connectionDate->isHoliday()){
+//            throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_HOLIDAY', 'Connection date selected is not a business day'), BaseOriginAPI::CODE_REJECT);
+//        }
+//
+//        return true;
+//    }
+
+    public static function isValidElecConnect($applicationId){
+        
+        $existingApplication = ConnectionApplication::find($applicationId);
+        
+        $state = $existingApplication->state ?? 'National';
+        $connectionDate = $existingApplication->moving_date;
+        $nmi = $existingApplication->nmi;
+
+
         BusinessTime::enable(Carbon::class);
         Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
 
         $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]);
-        $nowDate = Carbon::now(self::MAP_STATE_TIMEZONE[$state]); // check localization  
+        $nowDate = Carbon::now(self::MAP_STATE_TIMEZONE[$state]); // check localization
 
         $distributor = '';
         $nmi_check = substr($nmi, 0, 2);
@@ -212,7 +297,7 @@ class ValidateCutOffTime
             $pastCutOff = $nowDate->gt($checkDate);
 
             if($pastCutOff){
-                throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_PAST_CUT_OFF', 'Past Cut-Off time ' . $checkDate->format('g A')), BaseOriginAPI::CODE_REJECT);
+                return false;
             }
         }
         else if ($connectionDate->isTomorrow()){
@@ -221,7 +306,7 @@ class ValidateCutOffTime
             $pastCutOff = $nowDate->gt($checkDate);
 
             if($pastCutOff){
-                throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_PAST_CUT_OFF', 'Past Cut-Off time ' . $checkDate->format('g A')), BaseOriginAPI::CODE_REJECT);
+                return false;
             }
         }
 
@@ -232,12 +317,19 @@ class ValidateCutOffTime
         return true;
     }
 
-    public static function isValidGasConnection(string $connectionDate, string $state = 'National'){
+    public static function isValidGasConnect($applicationId){
+
+        $existingApplication = ConnectionApplication::find($applicationId);
+
+        $state = $existingApplication->state ?? 'National';
+        $connectionDate = $existingApplication->moving_date;
+
+
         BusinessTime::enable(Carbon::class);
         Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
 
         $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]);
-        $availableDate = Carbon::today(self::MAP_STATE_TIMEZONE[$state]); 
+        $availableDate = Carbon::today(self::MAP_STATE_TIMEZONE[$state]);
 
         for($i=0; $i<=self::GAS_BUSINESS_DAYS; $i++){
             $availableDate->addDay();
@@ -247,7 +339,7 @@ class ValidateCutOffTime
         }
 
         if($availableDate->gt($connectionDate)){
-            throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_PAST_CUT_OFF', 'Connection date must be after 3 business days minimum which is '. $availableDate->format('d/m/Y')), BaseOriginAPI::CODE_REJECT);
+            return false;
         }
 
         if($connectionDate->isWeekend() || $connectionDate->isHoliday()){
@@ -256,4 +348,15 @@ class ValidateCutOffTime
 
         return true;
     }
+
+    public static function validateCutOff(int $applicationId) {
+      
+        $elec = self::isValidElecConnect($applicationId); // validate cutoff for elec only
+        $gas = self::isValidGasConnect($applicationId); // validate cutoff for gas only
+        return [
+            'isElecOkay' => $elec, //true OR false
+            'isGasOkay' => $gas, //true OR false
+        ];
+    }
+
 }
