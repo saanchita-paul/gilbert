@@ -65,31 +65,39 @@ class SumoService
         "Australian Capital Territory" => '02',
         "Western Australia" => '08', // TODO recheck on documentation
     ];
+    private string $submitType;
 
     /**
      * Store customer data in Sumo
      *
      * @throws \Exception
      */
-    public function storeCustomerData(int $id)
+    public function storeCustomerData(int $id, string $submitType)
     {
-        $this->application = ConnectionApplication::findOrFail($id);
-        $this->application->load(['identification', 'connectionServices', 'authorizedPerson']);
+        try {
+            $this->application = ConnectionApplication::findOrFail($id);
+            $this->application->load(['identification', 'connectionServices', 'authorizedPerson']);
+            $this->submitType = $submitType;
 
-        info( 'application data ---> ' ,  [$this->application]);
 
-        $url = config('sumo.base_url').config('sumo.store_customer_data_url');
-        $url = APILog::setLoggerQuery($url, APILog::API_SUMO_SUBMIT_LEAD, extend: false);
+            $url = config('sumo.base_url').config('sumo.store_customer_data_url');
+            $url = APILog::setLoggerQuery($url, APILog::API_SUMO_SUBMIT_LEAD, extend: false);
 
-        $response = Http::put($url, $this->getCustomerData());
-        if (!$response->successful()) {
-            ConnectionApplication::where('id', $this->application)->update([
+            $response = Http::put($url, $this->getCustomerData());
+            if (!$response->successful()) {
+                ConnectionApplication::where('id', $this->application->id)->update([
+                    'is_running_submission' => 0,
+                ]);
+            }
+
+            return json_decode($response->body(), true);
+        } catch (Exception $exception) {
+            ConnectionApplication::where('id', $this->application->id)->update([
                 'is_running_submission' => 0,
             ]);
+            throw new Exception($exception);
         }
-        info( 'Sumo printing customer data ---> ' , [$this->getCustomerData()]);
 
-        return json_decode($response->body(), true);
     }
 
 
@@ -108,8 +116,7 @@ class SumoService
             'customerTitle' => $this->application->title,
             //todo Why are we sending all services, do we need to check only what is submitted?
             'interestedIn' => $this->getMappedService($this->application->connectionServices?->pluck('service_type')->toArray()),
-//            'lifeSupport' => $this->application->is_power_life_support,
-            'lifeSupport' => $this->getLifeSupport($this->application),
+             'lifeSupport' => $this->getLifeSupport($this->submitType),
             // 'lifeSupportFuel' => "string",
             'marketingConcent' => $this->application->is_contacted == 1 ? true : false,
             'mirn' => $this->application->mirn,
@@ -269,22 +276,22 @@ class SumoService
         }
     }
 
-    private function getLifeSupport($application): bool
-    {
-        $life_support = false;
-        $connectionService = ConnectionService::where('connection_application_id', $application->id)->firstOrFail();
+     private function getLifeSupport($submitType)
+     {
+         $life_support = 0;
 
-
-        if ($connectionService->service_type === 'gas'){
-            $life_support =  $application->is_gas_life_support;
-        }
-        elseif ($connectionService->service_type === 'power') {
-            $life_support =  $application->is_power_life_support;
-        }
-        else {
-            $life_support =
-        }
-        return $life_support;
-    }
+         if ($submitType === 'gas'){
+             $life_support =  $this->application->is_gas_life_support;
+         }
+         elseif ($submitType === 'power') {
+             $life_support =  $this->application->is_power_life_support;
+         }
+         elseif ($submitType === 'energy') {
+             if ($this->application->is_power_life_support == 1 || $this->application->is_gas_life_support == 1) {
+                 $life_support = 1;
+             }
+         }
+         return $life_support;
+     }
 
 }
