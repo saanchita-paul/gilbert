@@ -1,7 +1,7 @@
 import ApplicationCafFile from "@scripts/models/caf/ApplicationCafFile";
 import DayJS from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
-import {capitalize} from "lodash-es";
+import {capitalize, forEach, isNull} from "lodash-es";
 
 const mapApplicationCafFileList =  data => {
     const values = [];
@@ -12,12 +12,14 @@ const mapApplicationCafFileList =  data => {
 }
 
 function mapServices(services) {
-    let availableServices = services.map(svc => {
+    let availableServices = [];
+        services.map(svc => {
         if( (svc.service_type === 'gas' && svc.enable_caf_file )
             || (svc.service_type === 'electricity' && svc.enable_caf_file)) {
-            return svc.service_type;
+            availableServices.push(svc.service_type);
         }
     });
+
 
     if(availableServices.length === 2) {
         availableServices.push('both');
@@ -45,6 +47,28 @@ function isPossibleToMakeCaf(service) {
     return true;
 }
 
+function mapServiceStatus(service) {
+    let status = '';
+     service.map(svc => {
+         let serStatus = svc.status;
+         if(isNull(serStatus)) {
+             serStatus = '';
+         }
+        if (svc.service_type === 'gas' ) {
+            status = status + ' Gas: ' + serStatus
+        }
+
+        if (svc.service_type === 'electricity' ) {
+            status = status + ' Electricity: ' + serStatus
+        }
+
+    });
+     return status;
+
+
+
+}
+
 const mapApplicationCafFile = data => {
     let model = new ApplicationCafFile({...data });
     model.service_type = mapService(model.service);
@@ -54,6 +78,7 @@ const mapApplicationCafFile = data => {
     model.selected_service = getSelectedService(model.service);
     model.service_dropdown = mapServices(model.service);
     model.is_possible_caf_file = isPossibleToMakeCaf(model.service);
+    model.status = mapServiceStatus(model.service)
     model.is_selected = false
     return model;
 }
@@ -63,7 +88,7 @@ export const mapService = services => {
     services.map(service => {
         service_types.push(service['service_type']);
     });
-    console.log('service type array', services);
+
     if (service_types.includes('gas') && service_types.includes('electricity')){
         return 'Electricity & Gas';
     }

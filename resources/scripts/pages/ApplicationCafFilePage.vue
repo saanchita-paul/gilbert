@@ -14,7 +14,11 @@
                         <v-row>
                             <v-col cols="12">
                                 <h3>Filters</h3>
-                                <ApplicationCafFileFilter :selected="selectedCaf" v-model="advanceSearch" :isSearchEmpty="advanceSearch.isSearchEmpty()" @updateDate="updateDate"></ApplicationCafFileFilter>
+                                <ApplicationCafFileFilter :selected="selectedCaf"
+                                                          v-model="advanceSearch"
+                                                          :cafFiles="cafFiles"
+                                                          :isSearchEmpty="advanceSearch.isSearchEmpty()"
+                                                          @updateDate="updateDate"></ApplicationCafFileFilter>
                             </v-col>
                             <v-col cols="12">
                                 <ApplicationCafFileTable
@@ -134,12 +138,7 @@ export default {
             });
 
             if(index !== -1) {
-                let services = this.cafFiles[index].services;
-                services = services.map(svc => {
-                    svc.is_active = service_type === svc.service_type;
-                    return svc;
-                })
-                this.cafFiles[index].services = services;
+                this.cafFiles[index].selected_service = service_type;
             }
         },
 

@@ -100,7 +100,6 @@ export default {
         onchangeRow(item)
         {
             this.$emit('selectRowCafFile', item);
-            console.log(item);
         },
 
         updateSelectedService(item)
