@@ -10,7 +10,6 @@
             :expanded.sync="expanded"
             :item-class="isSelectedClass"
             item-key="id"
-            show-select
             show-expand
             class="row-pointer"
             @click:row="onRowSelect"
@@ -25,11 +24,12 @@
 <!--            <template v-slot:[`header.data-table-select`]></template>-->
             <!-- remove select all checkbox from header end-->
             <template v-slot:item.data-table-select="{ item, isSelected, select }">
-                <v-checkbox
-                    :value="isSelected"
-                    :disabled="isDisabled(item)"
-                    @input="select($event)"
-                ></v-checkbox>
+                <v-simple-checkbox
+                    :disabled="getStatus(item)"
+                    v-model="item.is_selected"
+                    @input="onchangeRow(item)"
+
+                ></v-simple-checkbox>
             </template>
 
             <!-- row expend start-->
@@ -82,9 +82,7 @@ export default {
             itemsPerPage: 10,
         }
     },
-    computed: {
 
-    },
     watch: {
         selected(val) {
             this.$emit('input', val)
@@ -97,15 +95,30 @@ export default {
         },
     },
 
-    mounted() {
-
-        console.log('table item', this.cafFiles);
-
-    },
     methods: {
 
+        onchangeRow(item)
+        {
+            this.$emit('selectRowCafFile', item);
+            console.log(item);
+        },
+
+        updateSelectedService(item)
+        {
+          let moving_id = item.id;
+          let services = item.services;
+          let selectedServiceType = '';
+          services.forEach(svc => {
+              if(svc.is_active) {
+                  selectedServiceType = svc.service_type;
+              }
+          });
+
+          this.updateSelectedMovingData(moving_id, selectedServiceType);
+        },
+
         updateServiceType(data, id) {
-            this.$emit('updateServiceType', data, id)
+            this.$emit('updateServiceType', data, id);
         },
         onRowSelect(item, slot) {
             this.selectedRowId = item.id;
@@ -134,13 +147,23 @@ export default {
 
 
         isDisabled(item) {
+
+            console.log('updated item', item);
             return false;
-        }
+        },
 
         // checkedCafKey(service_type, services){
         //     let key = ApplicationCafFileService.isPossibleToCreateCaf(service_type, services);
         //     return key;
         // }
+        updateSelectedMovingData(moving_id, selectedServiceType) {
+
+            this.$emit('updateSelectedMovingData', moving_id, selectedServiceType);
+        },
+
+        getStatus(item) {
+          return !item.is_possible_caf_file;
+        }
     },
 
 }

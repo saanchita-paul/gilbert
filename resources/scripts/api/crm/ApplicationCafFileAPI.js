@@ -5,8 +5,9 @@ import Pagination from "@scripts/models/crm/Pagination";
 // const BASE_URL = `https://enk2.leninsheikh.com/hood-dashboard/api`;
 // const BASE_URL = `http://192.168.1.13:8001/hood-dashboard/api`;
 // const BASE_URL = `http://192.168.1.6:8000/hood-dashboard/api`;
-const BASE_URL = `http://localhost:8001/hood-dashboard/api`;
+// const BASE_URL = `http://localhost:8001/hood-dashboard/api`;
 
+const BASE_URL = `${process.env.MIX_BOT_ROOT_URL}/hood-dashboard/api`;
 export default {
 
     getApplicationCafFileData: async (sort_search_meta, params) => {
@@ -27,10 +28,5 @@ export default {
         const data = await axios.put(`${BASE_URL}/applications/${cafId}`, cafDetail);
         return data;
     },
-
-    generateCafFile: async (data) => {
-        console.log('inside api file', data);
-        return 'OK';
-    }
 
 }

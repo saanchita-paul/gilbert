@@ -23,6 +23,8 @@
                                     :totalItem="totalItem"
                                     @refreshDataTable="refreshDataTable"
                                     @updateServiceType="updateServiceType"
+                                    @updateSelectedMovingData="updateSelectedMovingData"
+                                    @selectRowCafFile="selectRowCafFile"
                                 >
 
                                 </ApplicationCafFileTable>
@@ -51,7 +53,7 @@ import ApplicationCafFileFilter from '@scripts/pages/ApplicationCafFileFilter';
 import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileService";
 import ApplicationCafFileTable from "@scripts/pages/ApplicationCafFileTable";
 import {CafFileSearchFilterModel} from "@scripts/models/CafFileSearchFilterModel";
-import {isEqual, omit} from "lodash-es";
+import {forEach, isEqual, omit} from "lodash-es";
 
 export default {
     name: "ApplicationCafFilePage",
@@ -62,6 +64,8 @@ export default {
 
     data() {
         return {
+
+            selectedMovingData: [],
             selectedCaf: [],
             tab: null,
             cafFiles: [],
@@ -101,25 +105,48 @@ export default {
 
     methods: {
 
+
+        selectRowCafFile(item)
+        {
+          let index = this.selectedCaf.findIndex(dt => dt.id === item.id);
+          if(index === -1) {
+              this.selectedCaf.push(item);
+          } else {
+              this.selectedCaf.splice(index, 1);
+          }
+
+
+        },
+
+        updateSelectedMovingData(id, service_type)
+        {
+            let index = this.selectedMovingData.findIndex(dt => dt.id === id);
+            if(index !== -1) {
+                this.selectedMovingData.splice(index, 1)
+            } else {
+                this.selectedMovingData({id:id, service_type: service_type});
+            }
+        },
+
         updateServiceType(service_type, id) {
             let index = this.cafFiles.findIndex((dt)=> {
                 return dt.id === id;
             });
-            const services = this.cafFiles[index].services;
-            services.map(svc => {
-               if(svc.service_type === service_type) {
-                   svc.is_selected = true;
-               } else {
-                   svc.is_selected = false;
-               }
-            });
-            this.cafFiles[index].services = services;
+
+            if(index !== -1) {
+                let services = this.cafFiles[index].services;
+                services = services.map(svc => {
+                    svc.is_active = service_type === svc.service_type;
+                    return svc;
+                })
+                this.cafFiles[index].services = services;
+            }
         },
 
         async fetchCafFiles() {
             let data = await ApplicationCafFileService.getApplicationCafFileData({...this.sort_search_meta, ...{page: this.page}}, this.advanceSearch);
             this.cafFiles = data.data;
-            console.log('caf file data', [this.cafFiles]);
+            console.log('local loaded data', this.cafFiles);
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
             this.totalItem = data.pagination.total;

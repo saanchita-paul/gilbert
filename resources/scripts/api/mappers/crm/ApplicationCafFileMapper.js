@@ -11,11 +11,38 @@ const mapApplicationCafFileList =  data => {
     return values;
 }
 
-function mapServices(data) {
-   return  data.map(dt => {
-       let p  ={...dt, is_selected: false};
-       return p;
+function mapServices(services) {
+    let availableServices = services.map(svc => {
+        if( (svc.service_type === 'gas' && svc.enable_caf_file )
+            || (svc.service_type === 'electricity' && svc.enable_caf_file)) {
+            return svc.service_type;
+        }
     });
+
+    if(availableServices.length === 2) {
+        availableServices.push('both');
+    }
+    return availableServices;
+
+}
+
+function getSelectedService(service) {
+    let filterServices = service.filter(svc => {
+        return (svc.service_type === 'gas' && svc.enable_caf_file )
+            || (svc.service_type === 'electricity' && svc.enable_caf_file);
+    })
+    if(filterServices.length === 2) {
+        return 'both'
+    } else if(filterServices.length === 1) {
+       return  filterServices[0].service_type;
+    }
+    return '';
+
+}
+
+function isPossibleToMakeCaf(service) {
+    if(getSelectedService(service) === '') return false;
+    return true;
 }
 
 const mapApplicationCafFile = data => {
@@ -24,18 +51,19 @@ const mapApplicationCafFile = data => {
     model.supplier = mapProvider(model.service);
     model.connection_date = mapConnDate(model.service);
     model.plan = mapPlan(model.service);
-    model.services = mapServices(model.service);
     model.selected_service = getSelectedService(model.service);
-    model.selected_plan = getSelectedPlan(model.service);
+    model.service_dropdown = mapServices(model.service);
+    model.is_possible_caf_file = isPossibleToMakeCaf(model.service);
+    model.is_selected = false
     return model;
 }
 
-const mapService = services => {
+export const mapService = services => {
     let service_types = [];
     services.map(service => {
         service_types.push(service['service_type']);
     });
-    // console.log('service type array', services);
+    console.log('service type array', services);
     if (service_types.includes('gas') && service_types.includes('electricity')){
         return 'Electricity & Gas';
     }
@@ -47,38 +75,16 @@ const mapService = services => {
     }
 }
 
-const mapProvider = services => {
+export const mapProvider = services => {
     return services.length != 0 ? capitalize(services[0]['provider_name']) : '';
 }
 
-const mapConnDate = services => {
+export const mapConnDate = services => {
     return services.length != 0 ? new DayJS(services[0]['connection_date']).format(DATE_FORMAT.DB_DATE) : '';
 }
 
-const mapPlan = services => {
+export const mapPlan = services => {
     return services.length != 0 ? capitalize(services[0]['plan_type']) : '';
-}
-
-const getSelectedService = (service) => {
-    let filterServices = service.filter(svc => {
-        return svc.service_type === 'gas' || svc.service_type === 'electricity';
-    })
-    if(filterServices.length === 2) {
-        return 'both'
-    } else if(filterServices.length === 1) {
-        return  filterServices[0].service_type;
-    }
-    return '';
-}
-
-const getSelectedPlan = (service) => {
-    let filterPlans = service.filter(svc => {
-        return svc.plan_type;
-    })
-    if (filterPlans.length !== 0) {
-        return filterPlans[0].plan_type;
-    }
-    return '';
 }
 
 

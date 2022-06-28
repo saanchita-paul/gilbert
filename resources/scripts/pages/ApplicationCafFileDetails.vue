@@ -127,7 +127,7 @@
                     <p class="item-value">{{ cafFileData.to_address ? cafFileData.to_address : '' }}</p>
                 </div>
                 <div class="item">
-                    <p class="item-title">NMI (Power)</p>
+                    <p class="item-title">NMI (Power) *</p>
                     <p class="item-value" v-if="isEdit">{{ cafFileData.nmi ? cafFileData.nmi : '' }}</p>
                     <v-text-field
                         v-else
@@ -140,7 +140,7 @@
                     />
                 </div>
                 <div class="item">
-                    <p class="item-title">MIRN (Gas)</p>
+                    <p class="item-title">MIRN (Gas) *</p>
                     <p class="item-value" v-if="isEdit">{{ cafFileData.mirn ? cafFileData.mirn : '' }}</p>
                     <v-text-field
                         v-else
@@ -249,7 +249,7 @@
                         outlined
                         dense
                         :items="serviceDropDown"
-                        v-model="caf_detail.service_type"
+                        v-model="selectedService"
                         @change="changeServiceType"
                     ></v-select>
                 </div>
@@ -262,6 +262,7 @@
                         dense
                         :items="planDropDown"
                         v-model="caf_detail.plan"
+                        @change="updateSelelectedService"
                     ></v-select>
                 </div>
             </v-col>
@@ -287,52 +288,23 @@ export default {
     data() {
         return {
             isEdit: true,
-            titlesDropDown: [
-                {
-                    text: "Mr.",
-                    value: "Mr"
-                },
-                {
-                    text: "Mrs.",
-                    value: "Mrs"
-                },
-                {
-                    text: "Ms.",
-                    value: "Ms"
-                },
-                {
-                    text: "Miss",
-                    value: "Miss"
-                },
-                {
-                    text: "Dr.",
-                    value: "Dr"
-                },
-            ],
-            serviceDropDown: [
-                {
-                    text: "Electricity",
-                    value: "electricity",
-                },
-                {
-                    text: "Gas",
-                    value: "gas",
-                },
-                {
-                    text: "Both",
-                    value: "both",
-                },
-            ],
+            titlesDropDown: titlesMapperForDropdown,
+            serviceDropDown: [],
             planDropDown: [
                 {
-                    text: "Home",
-                    value: "home",
+                    text: "Plan 1",
+                    value: "plan1",
+                },
+                {
+                    text: "Plan 2",
+                    value: "plan2",
                 }
             ],
             connectionDate: false,
             closeConfirm: false,
             loading: false,
             connection_date: null,
+            selectedService: '',
 
             caf_detail: {
                 title: "",
@@ -344,17 +316,9 @@ export default {
                 business_name: "",
                 abn: "",
                 connection_date: "",
-                service: [
-                    {
-                        "id": 1,
-                        "service_type": "gas",
-                        "provider_name": "australia",
-                        "plan_type": "home",
-                        "connection_date": "2022-06-24",
-                    }
-                ],
+                service: [],
                 service_type: "",
-                plan: ""
+                // plan: ""
             },
         };
     },
@@ -367,14 +331,23 @@ export default {
         cafFileData: {
             async handler() {
                 await this.syncData();
+                this.updateServiceDropDown();
             },
             deep: true,
         },
     },
     async mounted() {
         await this.syncData();
+        this.updateServiceDropDown();
     },
     methods: {
+
+        updateServiceDropDown()
+        {
+            this.serviceDropDown = this.cafFileData.service_dropdown;
+            this.selectedService = this.cafFileData.selected_service;
+        },
+
         syncData() {
             this.caf_detail.title = this.cafFileData.title;
             this.caf_detail.first_name = this.cafFileData.first_name;
@@ -386,7 +359,7 @@ export default {
             this.caf_detail.abn = this.cafFileData.abn;
             this.caf_detail.connection_date = this.cafFileData.connection_date;
             this.caf_detail.service_type = this.cafFileData.selected_service;
-            this.caf_detail.plan = this.cafFileData.selected_plan;
+            // this.caf_detail.plan = this.cafFileData.plan;
         },
         billing(value) {
             return value ? capitalize(value) : '';
