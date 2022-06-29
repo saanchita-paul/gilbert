@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Route;
 use App\Services\Address\AddressModel;
 use PropertyMe\services\FetchContacts;
 use App\Services\RolePermissionService;
+use TSA\Services\TsaCallHistoryService;
 use Illuminate\Support\Facades\Broadcast;
+use TSA\Services\TsaSendAppliationService;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Agency\NoteController;
 use Reporting\Http\Controllers\ReportController;
@@ -103,8 +105,12 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::get('/application-assignees', [HoodUserController::class, 'getAssignee'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_ASSIGNEE_LIST);
+
+    // Route::post('/hood-users', [HoodUserController::class, 'store']);
+
     Route::post('/hood-users', [HoodUserController::class, 'store'])
         ->middleware('permission:' . RolePermission::P_HOOD_ADMIN_CORE);
+
     Route::get('/hood-users', [HoodUserController::class, 'index'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
 
@@ -269,9 +275,27 @@ Route::get("/karan/sales-status", function () {
 
 
 
+
 // Route::get('report_corporate', function () {
 //     $data = ['image' => ''];
 //     $pdf = PDF::loadView('pdf.report_corporate', $data);
 //     return $pdf->inline();
 // });
 
+
+Route::get('country_test', function () {
+    //  return SubmitWaterLeadToFastConnect::mapLengthOfCountry[2];
+    $s = new TsaCallHistoryService();
+    // ConnectionApplication::find(12)
+    // $s->saveCallHistory(ConnectionApplication::find(12));
+    $s->saveCallHistory(ConnectionApplication::find(12));
+});
+
+
+Route::get('/kaka', function () {
+    $dateTimeZone = new DateTimeZone("Australia/Melbourne");
+    $date = new DateTime(null, $dateTimeZone);
+//    dd($date);
+    return $dateTimeZone->getOffset($date)/60/60;
+
+});
