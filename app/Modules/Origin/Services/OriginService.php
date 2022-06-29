@@ -199,8 +199,11 @@ class OriginService
 
             if(!empty($response['HoodReferenceNumber'])){
                 $this->saveSubmittedStatus($service->id, $response['HoodReferenceNumber']);
-                return;
             }
+
+            ConnectionApplication::where('id', $this->applicationId)->update([
+                'is_running_submission' => 0,
+            ]);
         }
         catch (Exception $exception){
 
@@ -241,14 +244,14 @@ class OriginService
         $service->save();
 
         if(!empty($errorCode) && !empty($errorMessage)){
-            
+
             $newRejectReason = new RejectionReason();
             $newRejectReason->connection_service_id = $service->id;
             $newRejectReason->connection_application_id = $service->connection_application_id;
             $newRejectReason->service_type = $service->service_type;
             $newRejectReason->reason_code = $errorCode;
             $newRejectReason->reason_text = $errorMessage;
-            
+
             $newRejectReason->save();
         }
     }

@@ -27,9 +27,7 @@ trait SalesResponseHandle
             ], $conncetionServiceData);
             $reasons = data_get($quote, 'rejectionReasons') ?? [];
 
-            if (sizeof($reasons) > 0) {
-                $this->resetIsRunningSubmission($leadId);
-            }
+
 
             if ($quote->fuel === 'GAS') {
                 $this->updateService($leadId, 'gas', $updateData);
@@ -43,6 +41,10 @@ trait SalesResponseHandle
                 $this->saveRejectionReasons($reasons, $leadId, 'power');
                 $this->updateQuoteReference($leadId, 'power', $quote->id);
             }
+//            if (sizeof($reasons) > 0) {
+                $this->resetIsRunningSubmission($leadId);
+//            }
+
         }
     }
 
