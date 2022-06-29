@@ -221,8 +221,8 @@ extend('required-issuing-country', {
 });
 
 extend('gbg-email-validate', {
-    message: field => `Email not found`,
-    
+    message: field => `Cannot verify email, double check`,
+
     validate: async (value) =>  {
         return new Promise(resolve => {
             GBGService.validateEmail(value)

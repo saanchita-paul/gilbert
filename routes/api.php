@@ -254,11 +254,13 @@ Route::get('/kaka', function () {
 });
 
 
-Route::post('/gbg-validate-email', function() {
+//Route::post('/gbg-validate-email', function() {
+//
+//    $email = "admin@mail.com";
+//    $service = new GBGEmailValidationService();
+//
+//    return $service->validateEmail($email);
+//
+//});
 
-    $email = "admin@mail.com";
-    $service = new GBGEmailValidationService();
-
-    return $service->validateEmail($email);
-
-});
+Route::get('/gbg-validate-email', [ApplicationController::class, 'isGbgValidateEmail']);

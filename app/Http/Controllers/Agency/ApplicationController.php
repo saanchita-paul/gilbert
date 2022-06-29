@@ -19,6 +19,7 @@ use App\Services\Agency\WaterAutoSubmitService;
 use App\Services\Application\ApplicationsMetricsService;
 use App\Services\Application\SearchConnectionApplication;
 use App\Services\Ea\SetEaDistributorService;
+use App\Services\GBGEmailValidationService;
 use Origin\Services\SetOriginDistributorService;
 use App\Services\FastConnectService;
 use Illuminate\Http\JsonResponse;
@@ -202,7 +203,7 @@ class ApplicationController extends Controller
         // $ea_service_ids = $service->getNotSubmittedEaService($id, $submitType);
         $provider_service_ids = $service->getNotSubmittedServices($id, $submitType);
         $service_ids = [];
-         
+
         foreach($provider_service_ids as $key => $ids){
             $service_ids = array_merge($service_ids, $ids);
             if($submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_ENERGY
@@ -430,6 +431,22 @@ class ApplicationController extends Controller
             $service = new ApplicationService();
             $res = $service->clearConcession($id);
             return response(['success' => true, 'message' => 'Concession cleared successfully']);
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function isGbgValidateEmail(Request $request)
+    {
+        try {
+//            $email = "talhadweh@gmail.com";
+            $email = $request->email;
+            $service = new GBGEmailValidationService();
+            $result = $service->validateEmail($email);
+
+            $res = ['success' => true, 'data' => $result];
+
+            return response()->json($res);
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

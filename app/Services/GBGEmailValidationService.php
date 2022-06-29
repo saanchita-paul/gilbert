@@ -15,8 +15,8 @@ class GBGEmailValidationService
      * @throws \Exception
      */
 
-    public function validateEmail($email){
-
+    public function validateEmail($email)
+    {
         $url = config('gbg.base_url') . "/validate/email";
         $sourceOfTruth = 'VE_ALL';
         $locale = 'au';
@@ -26,11 +26,24 @@ class GBGEmailValidationService
             $authorization_header = "Basic aG9vZG1vdmV0ZWNoX3Rlc3RfdXNlcjpmM3NlN04xNEdyQ3hIV1FEZ0FKVHU3d2x1Rnc3akRXOQ==";
             $response = Http::withHeaders([
                 "Authorization" => $authorization_header,
-
             ])
             ->get($url, [ 'address' => $emailTobeChecked, 'sourceOfTruth' => $sourceOfTruth, 'locale' => $locale ]);
 
-            $result = json_decode($response->body(), true);
+            $response = json_decode($response->body(), true);
+
+            $payloadData = $response['payload'];
+            $attributes = $payloadData[0]['attributes'];
+
+            info('hi ', $response);
+            info('hi 2', $payloadData);
+            info('h', [$attributes]);
+            info('hi 3', [$attributes['mailserver_exists']]);
+            info('hi 4', [$attributes['email_exists']]);
+
+            if (!is_null($attributes))
+            {
+                $result = !($attributes['email_valid'] === "INVALID" || $attributes['email_exists'] === "INVALID");
+            }
 
             return $result;
 

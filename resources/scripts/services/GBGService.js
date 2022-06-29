@@ -1,8 +1,6 @@
-import GBGAPI from "../api/GBGAPI";
-
+import GBGAPI from "@scripts/api/GBGAPI";
 
 export default {
 
-    validateEmail: (email) => GBGAPI.getValidateEmail($email),
-
+    validateEmail: (email) => GBGAPI.getValidateEmail(email),
 }
