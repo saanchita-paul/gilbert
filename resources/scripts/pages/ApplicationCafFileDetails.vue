@@ -26,7 +26,7 @@
 
                     <v-btn
                         small
-                        :loading = loading
+                        :loading = "loading"
                         style="height: 25px; min-width: 90px; background: #5c229a; color: white"
                         @click.prevent="updateCafFile(cafFileData.id)"
                     >
@@ -261,7 +261,7 @@
                         outlined
                         dense
                         :items="planDropDown"
-                        v-model="caf_detail.plan"
+                        v-model="selectedPlan"
                         @change="updateSelelectedService"
                     ></v-select>
                 </div>
@@ -279,6 +279,7 @@ import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileS
 import SuccessfullyUpdateCloseConfirmModal from "@scripts/components/crm/modals/SuccessfullyUpdateCloseConfirmModal";
 import {capitalize} from "lodash-es";
 import {titlesMapperForDropdown} from "@scripts/data/titleMapper";
+import DayJs from "dayjs";
 
 export default {
     name: "ApplicationCafFileDetails",
@@ -292,19 +293,24 @@ export default {
             serviceDropDown: [],
             planDropDown: [
                 {
-                    text: "Plan 1",
-                    value: "plan1",
+                    text: "Total Plan(Home)",
+                    value: "total_plan",
                 },
                 {
-                    text: "Plan 2",
-                    value: "plan2",
-                }
+                    text: "Basic Plan(Home)",
+                    value: "basic_plan",
+                },
+                {
+                    text: "Flexi Plan(Home)",
+                    value: "basic_plan",
+                },
             ],
             connectionDate: false,
             closeConfirm: false,
             loading: false,
             connection_date: null,
             selectedService: '',
+            selectedPlan: '',
 
             caf_detail: {
                 title: "",
@@ -316,7 +322,12 @@ export default {
                 business_name: "",
                 abn: "",
                 connection_date: "",
-                service: [],
+                service: {
+                    connection_date: '',
+                    plan: '',
+                    service_type : ''
+
+                },
                 service_type: "",
                 // plan: ""
             },
@@ -335,6 +346,11 @@ export default {
             },
             deep: true,
         },
+
+        connection_date() {
+            this.caf_detail.connection_date = (new DayJs(this.connection_date).format('DD/MM/YYYY'));
+            this.caf_detail.service.connection_date = this.connection_date;
+        }
     },
     async mounted() {
         await this.syncData();
@@ -343,13 +359,15 @@ export default {
     methods: {
 
         updateSelelectedService() {
-
+            this.caf_detail.service.service_type = this.selectedService;
+            this.caf_detail.service.plan = this.selectedPlan;
         },
 
         updateServiceDropDown()
         {
             this.serviceDropDown = this.cafFileData.service_dropdown;
             this.selectedService = this.cafFileData.selected_service;
+
         },
 
         syncData() {
@@ -363,20 +381,28 @@ export default {
             this.caf_detail.abn = this.cafFileData.abn;
             this.caf_detail.connection_date = this.cafFileData.connection_date;
             this.caf_detail.service_type = this.cafFileData.selected_service;
+            this.selectedPlan = this.cafFileData.plan;
+            this.caf_detail.service.plan = this.selectedPlan;
+            this.caf_detail.service.service_type = this.cafFileData.selected_service;
+            this.caf_detail.service.connection_date = dayJs(this.cafFileData.connection_date,'DD/MM/YYYY').format('YYYY-MM-DD');
+
+
+
             // this.caf_detail.plan = this.cafFileData.plan;
         },
         billing(value) {
             return value ? capitalize(value) : '';
         },
         async updateCafFile(cafId) {
-            // this.loading = true;
+             this.loading = true;
             let response = await ApplicationCafFileService.updateApplicationCafFileData(cafId, this.caf_detail);
             console.log(response);
-            // this.loading = false;
+             this.loading = false;
             // this.closeConfirm = true;
         },
 
         changeServiceType() {
+            this.caf_detail.service.service_type = this.selectedService;
              this.$emit('updateServiceType', this.selectedService, this.cafFileData.id)
         }
 

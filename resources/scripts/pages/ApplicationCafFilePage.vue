@@ -102,8 +102,8 @@ export default {
     },
 
     mounted() {
-        this.advanceSearch = new CafFileSearchFilterModel({...this.$route.query});
-        this.fetchCafFiles();
+        // this.advanceSearch = new CafFileSearchFilterModel({...this.$route.query});
+        // this.fetchCafFiles();
     },
 
 
@@ -133,7 +133,6 @@ export default {
         },
 
         updateServiceType(service_type, id) {
-            console.log('selected service');
             let index = this.cafFiles.findIndex((dt)=> {
                 return dt.id === id;
             });

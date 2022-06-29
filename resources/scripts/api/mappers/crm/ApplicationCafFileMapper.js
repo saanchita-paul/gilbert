@@ -79,7 +79,8 @@ const mapApplicationCafFile = data => {
     model.service_dropdown = mapServices(model.service);
     model.is_possible_caf_file = isPossibleToMakeCaf(model.service);
     model.status = mapServiceStatus(model.service)
-    model.is_selected = false
+    model.is_selected = false;
+    model.services = model.service;
     return model;
 }
 
@@ -109,7 +110,7 @@ export const mapConnDate = services => {
 }
 
 export const mapPlan = services => {
-    return services.length != 0 ? capitalize(services[0]['plan_type']) : '';
+    return services.length != 0 ? services[0]['plan_type'] : '';
 }
 
 
