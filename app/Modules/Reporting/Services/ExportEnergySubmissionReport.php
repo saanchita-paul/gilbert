@@ -91,8 +91,8 @@ class ExportEnergySubmissionReport
 
             $this->setAgencyName($datum);
 
-            $datum->Rejection_Reason = $this->getRejectionReason($datum);
-            
+            $datum->Closing_Reason = $this->getRejectionReason($datum);
+
             unset($datum->closing_reason);
             unset($datum->acr_value);
             unset($datum->Office_Id);
@@ -155,7 +155,8 @@ class ExportEnergySubmissionReport
                 ca.status as `Application_Status`,
                 cs.status as `Utility_Status`,
                 acr.value as `acr_value`,
-                ca.closing_reason as `closing_reason`
+                ca.closing_reason as `closing_reason`,
+                (select reason_text from rejection_reasons where connection_service_id=cs.id  limit 1) as Rejection_Reason
             ")
             ->rightJoin('connection_applications as ca', 'ca.id', '=', 'cs.connection_application_id')
             ->leftJoin('agencies as ag', 'ca.agency_id', '=', 'ag.id')
@@ -301,7 +302,7 @@ class ExportEnergySubmissionReport
         }
         return 'NULL';
     }
-    
+
     private function getUtilityCommission($officeId, $serviceType)
     {
         if($officeId === null || $serviceType === null) {
