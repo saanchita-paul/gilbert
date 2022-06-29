@@ -51,7 +51,7 @@ class ReportController extends Controller
                 ))->run();
             }
         } catch (\Exception $exception) {
-            return $exception;
+            return  response([ 'status' => false, 'msg' => $exception->getMessage()] , 401);
         }
     }
 
