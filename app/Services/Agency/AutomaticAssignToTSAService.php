@@ -22,7 +22,6 @@ class AutomaticAssignToTSAService
 
         ConnectionApplication::query()
             ->where('id', $applicationId)
-//            ->update(['assigned_to' => $externalTSAId, 'moving_date' => date('2025-05-05'), 'status' => ConnectionApplication::STATUS_ASSIGNED]);
             ->update(['assigned_to' => $externalTSAId, 'status' => ConnectionApplication::STATUS_ASSIGNED]);
 
         if (in_array(HoodProfile::find($externalTSAId)->user->roles->first()?->name,
