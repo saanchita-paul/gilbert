@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Agency;
 
 use App\Events\Agency\CreateApplicationEvent;
 use App\Events\Agency\SubmitApplicationEvent;
+use App\Events\NotifyAgentAfterLeadCreation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Requests\Agency\ProviderRequest;
@@ -82,6 +83,7 @@ class ApplicationController extends Controller
         $service = new ApplicationService();
         $application = $service->createApplication($request->toArray(), $user);
         CreateApplicationEvent::dispatch($application->id);
+        NotifyAgentAfterLeadCreation::dispatch($application->id);
 
         return ApplicationResource::make($application);
 

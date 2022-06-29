@@ -4,6 +4,7 @@
 namespace OurProperty\Services;
 
 
+use App\Events\NotifyAgentAfterLeadCreation;
 use App\Jobs\CreateHubspotProperty;
 use App\Mail\AgentNotFoundMail;
 use App\Models\AgentProfile;
@@ -113,6 +114,7 @@ class CreateOurPropertyService
             $this->createIdentification($this->connectionApplicaton->id);
             $this->createService($requestData->tenancy_service_type, $this->connectionApplicaton->id);
             $this->createAuthorizedPerson($this->connectionApplicaton->id);
+            NotifyAgentAfterLeadCreation::dispatch($this->connectionApplicaton->id);
             CreateHubspotProperty::dispatch($this->connectionApplicaton->id);
         } catch (Exception $ex) {
             \Log::error("Lead create successful, Identification or Service or Authorization creation fail");
