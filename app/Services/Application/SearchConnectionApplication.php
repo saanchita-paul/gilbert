@@ -91,6 +91,7 @@ class SearchConnectionApplication
         $this->builder = ConnectionApplication::query()
             ->with('connectionServices.reasons')
             ->with('SugerLead')
+            ->with('tsaCallHistories')
             ->with('assignedTo')
             ->with('submittedByUser');
 
