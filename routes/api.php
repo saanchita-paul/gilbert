@@ -21,6 +21,7 @@ use App\Http\Controllers\Agency\AgentProfileController;
 use OurProperty\Http\Controllers\OurPropertyController;
 use App\Services\RolePermission;
 use App\Http\Controllers\Agency\ReaExtractsReportController;
+use App\Services\GBGEmailValidationService;
 
 /*
 |--------------------------------------------------------------------------
@@ -250,4 +251,14 @@ Route::get('/kaka', function () {
     $date = new DateTime(null, $dateTimeZone);
 //    dd($date);
     return $dateTimeZone->getOffset($date)/60/60;
+});
+
+
+Route::post('/gbg-validate-email', function() {
+
+    $email = "admin@mail.com";
+    $service = new GBGEmailValidationService();
+
+    return $service->validateEmail($email);
+
 });
