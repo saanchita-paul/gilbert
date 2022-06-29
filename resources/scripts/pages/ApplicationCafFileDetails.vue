@@ -302,7 +302,7 @@ export default {
                 },
                 {
                     text: "Flexi Plan(Home)",
-                    value: "basic_plan",
+                    value: "flexi_plan",
                 },
             ],
             connectionDate: false,
