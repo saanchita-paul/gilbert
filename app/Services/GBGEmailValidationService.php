@@ -26,26 +26,22 @@ class GBGEmailValidationService
             $authorization_header = "Basic aG9vZG1vdmV0ZWNoX3Rlc3RfdXNlcjpmM3NlN04xNEdyQ3hIV1FEZ0FKVHU3d2x1Rnc3akRXOQ==";
             $response = Http::withHeaders([
                 "Authorization" => $authorization_header,
-            ])
-            ->get($url, [ 'address' => $emailTobeChecked, 'sourceOfTruth' => $sourceOfTruth, 'locale' => $locale ]);
+            ])->get($url, [ 'address' => $emailTobeChecked, 'sourceOfTruth' => $sourceOfTruth, 'locale' => $locale ]);
 
             $response = json_decode($response->body(), true);
 
             $payloadData = $response['payload'];
             $attributes = $payloadData[0]['attributes'];
 
-            info('hi ', $response);
-            info('hi 2', $payloadData);
-            info('h', [$attributes]);
-            info('hi 3', [$attributes['mailserver_exists']]);
-            info('hi 4', [$attributes['email_exists']]);
+            info('attributes data', [$attributes]);
 
-            if (!is_null($attributes))
+            if (!is_null($attributes) && $attributes['email_exists'] !== "UNKNOWN")
             {
                 $result = !($attributes['email_valid'] === "INVALID" || $attributes['email_exists'] === "INVALID");
+                return $result;
+            } else {
+                return false;
             }
-
-            return $result;
 
         } catch (\Exception $exception) {
             \Log::error($exception->getMessage());

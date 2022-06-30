@@ -439,10 +439,8 @@ class ApplicationController extends Controller
     public function isGbgValidateEmail(Request $request)
     {
         try {
-//            $email = "talhadweh@gmail.com";
-            $email = $request->email;
             $service = new GBGEmailValidationService();
-            $result = $service->validateEmail($email);
+            $result = $service->validateEmail($request->email);
 
             $res = ['success' => true, 'data' => $result];
 

@@ -77,7 +77,11 @@
                     </ValidationProvider>
                     </v-col>
                     <v-col cols="6" class="py-0 mt-3">
-                    <ValidationProvider name="Email" rules="required|email"  v-slot="{ errors }">
+                    <ValidationProvider
+                        name="Email"
+                        rules="required|email|validate-lead-email"
+                        v-slot="{ errors }"
+                    >
                         <v-text-field
                             label="Email*"
                             outlined

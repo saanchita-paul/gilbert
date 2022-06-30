@@ -220,14 +220,14 @@ extend('required-issuing-country', {
     message: field => `Issuing Country is required`,
 });
 
-extend('gbg-email-validate', {
-    message: field => `Cannot verify email, double check`,
+extend('validate-lead-email', {
+    message: field => `This is an invalid email address`,
 
     validate: async (value) =>  {
         return new Promise(resolve => {
             GBGService.validateEmail(value)
                 .then( valid => {
-                   valid = !valid;
+                    valid = valid;
                     resolve({ valid })
                 })
         })

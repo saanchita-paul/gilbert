@@ -235,7 +235,7 @@
         <div class="text-field">
           <ValidationProvider
             name="Email"
-            rules="required|email"
+            rules="required|email|validate-lead-email"
             v-slot="{ errors }"
           >
             <v-text-field
@@ -795,7 +795,7 @@
       <div class="crm-text-field mt-n6">
         <div class="field-label">
         </div>
-        <div class="text-field"> 
+        <div class="text-field">
           <v-checkbox
               v-model="property_details.is_gas_life_support"
               @change="saveDraft('is_gas_life_support', property_details.is_gas_life_support)"
