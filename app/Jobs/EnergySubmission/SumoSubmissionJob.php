@@ -58,10 +58,13 @@ class SumoSubmissionJob implements ShouldQueue
                 info("Sumo response body 2");
             } 
             catch (\Exception $e) {
-                $error['message'] = $e->getMessage();
-                $error['file'] = $e->getFile();
-                $error['line'] = $e->getLine();
-                \Log::error('SumoSubmissionJob:handle - FAIL (Refer context for details)', $error);
+                $logError = [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                ];
+                $error = $e;
+                \Log::error('SumoSubmissionJob:handle - FAIL (Refer context for details)', $logError);
             }
             finally {
                 $application->update([
@@ -69,7 +72,7 @@ class SumoSubmissionJob implements ShouldQueue
                 ]);
 
                 if (!empty($error)) {
-                    throw new \Exception($error['message']);
+                    throw $error;
                 }
             }
         } else {

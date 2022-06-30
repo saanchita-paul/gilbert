@@ -64,10 +64,13 @@ class EASubmissionJob implements ShouldQueue
                 $hubspotService->update();
             }
             catch (\Exception $e) {
-                $error['message'] = $e->getMessage();
-                $error['file'] = $e->getFile();
-                $error['line'] = $e->getLine();
-                \Log::error('EASubmissionJob:handle - FAIL (Refer context for details)', $error);
+                $logError = [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                ];
+                $error = $e;
+                \Log::error('EASubmissionJob:handle - FAIL (Refer context for details)', $logError);
             }
             finally {
                 $application->update([
@@ -75,7 +78,7 @@ class EASubmissionJob implements ShouldQueue
                 ]);
 
                 if (!empty($error)) {
-                    throw new \Exception($error['message']);
+                    throw $error;
                 }
             }
         } else {
