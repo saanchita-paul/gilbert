@@ -13,7 +13,7 @@
                                 <p>Thank you!</p>
                             </div>
                             <div class="dialogs-title d-flex justify-center">
-                                <p >{{title}} is added to your applications!</p>
+                                <p >{{title + '\'s'}} application has been submitted!</p>
                             </div>
                             <div class="d-flex justify-center">
                                 <v-btn @click="done"
