@@ -14,7 +14,7 @@ class AddIsEmailValidateToConnectionApplicationsTable extends Migration
     public function up()
     {
         Schema::table('connection_applications', function (Blueprint $table) {
-            $table->boolean('is_email_validate')->nullable();
+            $table->boolean('is_email_validate')->after('email')->nullable();
         });
     }
 

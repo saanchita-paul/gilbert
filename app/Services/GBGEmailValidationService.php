@@ -15,7 +15,7 @@ class GBGEmailValidationService
      * @throws \Exception
      */
 
-    public function validateEmail($email)
+    public static function validateEmail($email)
     {
         $url = config('gbg.base_url') . "/validate/email";
         $sourceOfTruth = 'VE_ALL';
@@ -33,11 +33,11 @@ class GBGEmailValidationService
             $payloadData = $response['payload'];
             $attributes = $payloadData[0]['attributes'];
 
-            info('attributes data', [$attributes]);
+            info('API response data', [$payloadData]);
 
-            if (!is_null($attributes) && $attributes['email_exists'] !== "UNKNOWN")
+            if (!is_null($attributes))
             {
-                $result = !($attributes['email_valid'] === "INVALID" || $attributes['email_exists'] === "INVALID");
+                $result = !($attributes['email_valid'] === "INVALID"|| $attributes['email_exists'] === "INVALID");
                 return $result;
             } else {
                 return false;
