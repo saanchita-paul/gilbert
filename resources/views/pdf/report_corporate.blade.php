@@ -9,192 +9,180 @@
 </head>
 
 <body>
-    <div style="background-color: #620088; height: 300px; width: 100%; position: relative;">
+<div style="background-color: #620088; height: 300px; width: 100%; position: relative;">
 
 
-        <div style="float: left; padding-top: 65px; margin-left: 30%; margin-right: 10px;">
-            <img style="height: 100px; width: 100px;" src="{{ asset('assets/images/logo/hood-small.png') }}" />
+    <div style="float: left; padding-top: 65px; margin-left: 30%; margin-right: 10px;">
+        <img style="height: 100px; width: 100px;" src="{{ asset('assets/images/logo/hood-small.png') }}" />
+    </div>
+
+    <div style="padding-top: 75px; text-align: center; float: left;">
+        <div style="color: white; font-weight: bold; font-size: 30px;  ">
+            HOOD.AI
+        </div>
+        <div style="color: white; font-size: 24px;">
+            It's a Twiddle
         </div>
 
-        <div style="padding-top: 75px; text-align: center; float: left;">
-            <div style="color: white; font-weight: bold; font-size: 30px;  ">
-                HOOD.AI
-            </div>
-            <div style="color: white; font-size: 24px;">
-                It's a Twiddle
-            </div>
+    </div>
 
+    <div style="clear: both;"></div>
+
+    <div style="color: white; font-size: 24px; text-align: center;">
+        HOOD REA Corporate Report
+    </div>
+
+    <div style="color: white; font-size: 24px; text-align: center; margin-top: 40px;">
+        {{ $agencyName }} ({{ $startDate }} to {{ $endDate }})
+    </div>
+
+</div>
+
+<div style="border: 1px solid gray; margin-top: 20px; font-weight: bold; ">
+    <div style="background-color: #620088; color: white; padding: 5px 3px; font-size: 18px;">
+        High Level View at the Agency Level
+    </div>
+    <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
+        <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Applications Submitted by REA</div>
+        <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['totalApplicationCreated']}}</div>
+        <div style="clear: both;"></div>
+    </div>
+    <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
+        <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Connections Submitted (other than water)</div>
+        <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['energyServiceSubmitted']}}</div>
+        <div style="clear: both;"></div>
+    </div>
+    <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
+        <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Water Connections Submitted</div>
+        <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['waterCount']}}</div>
+        <div style="clear: both;"></div>
+    </div>
+    <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
+        <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Awaiting Confirmation</div>
+        <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['awaitingConfirmation']}}</div>
+        <div style="clear: both;"></div>
+    </div>
+    <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
+        <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Cancelled Applications</div>
+        <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['cancelledCount']}}</div>
+        <div style="clear: both;"></div>
+    </div>
+    <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
+        <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Conversion Rate</div>
+        <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['conversionRate']}}%</div>
+        <div style="clear: both;"></div>
+    </div>
+</div>
+
+<div style="margin-top: 20px; font-weight: bold; ">
+    <div style="background-color: #620088; color: white; padding: 5px 3px; font-size: 20px;">
+        Detailed view of each office and agency
+    </div>
+
+    <!-- Data title section -->
+    <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%;">
+
+        <div style="width: 16%; height: 260px; padding-left: 14px; float: left; border: 1px solid gray;">
+            <div style="color: #620088; font-weight: bold; text-align: left; white-space: nowrap; margin-top: 220px; margin-left: -6px">
+                Office Name
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray;">
+            <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
+                Applications received
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
+                Electricity
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
+                Gas
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
+                Water
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
+                Telco
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
+                Internet
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
+                Pay TV
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
+                Awaiting Confirmation
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
+                Cancelled
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 260px; padding-left: 2px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
+                Conversion Rate
+            </div>
         </div>
 
         <div style="clear: both;"></div>
 
-        <div style="color: white; font-size: 24px; text-align: center;">
-            HOOD REA Corporate Report
-        </div>
-
-        <div style="color: white; font-size: 24px; text-align: center; margin-top: 40px;">
-            {{ $agencyName }} ({{ $startDate }} to {{ $endDate }})
-        </div>
-
     </div>
 
-    <div style="border: 1px solid gray; margin-top: 20px; font-weight: bold; ">
-        <div style="background-color: #620088; color: white; padding: 5px 3px; font-size: 18px;">
-            High Level View at the Agency Level
-        </div>
-        <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Number of Applications Submitted</div>
-            <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['total_applications_created']}}</div>
-            <div style="clear: both;"></div>
-        </div>
-        <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Number of Applications with atleast one service connected (other than water)</div>
-            <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['applications_with_minimum_submitted']}}</div>
-            <div style="clear: both;"></div>
-        </div>
-        <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Number of successful water connections</div>
-            <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['successful_water_connections']}}</div>
-            <div style="clear: both;"></div>
-        </div>
-        <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Awaiting Confirmation</div>
-            <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['awaiting_confirmation']}}</div>
-            <div style="clear: both;"></div>
-        </div>
-        <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Cancelled Applications</div>
-            <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['cancelled_application']}}</div>
-            <div style="clear: both;"></div>
-        </div>
-        <div style="color: black; padding: 5px 0px; font-size: 18px; font-weight: normal; width: 100%; border: 1px solid gray;">
-            <div style="display: inline; float: left; width: 80%; padding-left: 3px;">Conversion Rate (Succesful Elec Sub/Apps)</div>
-            <div style="display: inline; float: left; color: #620088; font-weight: bold;">{{ $report['totalCount']['conversion_rate']}}%</div>
-            <div style="clear: both;"></div>
-        </div>
-    </div>
-
-    <div style="margin-top: 20px; font-weight: bold; ">
-        <div style="background-color: #620088; color: white; padding: 5px 3px; font-size: 20px;">
-            Detailed view of each office and agency
-        </div>
-
-        <!-- Data title section -->
-        <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%;">
-
-            <div style="width: 16%; height: 260px; padding-left: 14px; float: left; border: 1px solid gray;">
-                <div style="color: #620088; font-weight: bold; text-align: left; white-space: nowrap; margin-top: 220px; margin-left: -6px">
-                    Office Name
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray;">
-                <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
-                    Applications received
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
-                    Electricity
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
-                    Gas
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
-                    Water
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
-                    Telco
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
-                    Internet
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
-                    Pay TV
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
-                    Awaiting Confirmation
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 260px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
-                    Cancelled
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 260px; padding-left: 2px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; font-weight: bold; -webkit-transform: rotate(90deg); text-align: left; white-space: nowrap; margin-top: 60px; margin-left: -50px;">
-                    Convension Rate
-                </div>
-            </div>
-
-            <div style="clear: both;"></div>
-
-        </div>
-
-        <!-- Dynamic data section -->
-        @foreach ($report['detailedCount'] as $corporate)
+    <!-- Dynamic data section -->
+    @foreach ($report['detailedCount'] as $corporate)
         <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%;">
 
             <div style="width: 16%; height: 40px; padding-left: 14px; float: left; border: 1px solid gray;">
                 <div style="color: black; text-align: left; white-space: wordwrap;  line-height: 80%; margin-top: 6px; margin-left: -6px;">
-                    {{ $corporate['office_name']}}
+                    {{ $corporate->officeName}}
                 </div>
             </div>
 
             <div style="width: 8%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray;">
                 <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    {{ $corporate['total_applications_created']}}
+                    {{ $corporate->totalApplicationCreated}}
                 </div>
             </div>
 
             <div style="width: 8%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray; ">
                 <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    {{ $corporate['electricityCount']}}
+                    {{ $corporate->electricityCount}}
                 </div>
             </div>
 
             <div style="width: 8%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray; ">
                 <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    {{ $corporate['gasCount']}}
+                    {{ $corporate->gasCount}}
                 </div>
             </div>
 
             <div style="width: 8%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray; ">
                 <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    {{ $corporate['waterCount']}}
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    0
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    {{ $corporate['internetCount']}}
+                    {{ $corporate->waterCount}}
                 </div>
             </div>
 
@@ -206,99 +194,112 @@
 
             <div style="width: 8%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray; ">
                 <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    {{ $corporate['awaiting_confirmation']}}
+                    {{ $corporate->internetCount ?? 0}}
                 </div>
             </div>
 
             <div style="width: 8%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray; ">
                 <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    {{ $corporate['cancelled_application']}}
+                    0
+                </div>
+            </div>
+
+            <div style="width: 8%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray; ">
+                <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
+                    {{ $corporate->awaitingConfirmation}}
+                </div>
+            </div>
+
+            <div style="width: 8%; height: 40px; padding-left: 0px; float: left; border: 1px solid gray; ">
+                <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
+                    {{ $corporate->cancelledCount}}
                 </div>
             </div>
 
             <div style="width: 8%; height: 40px; padding-left: 2px; float: left; border: 1px solid gray; ">
                 <div style="color: black; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    {{ $corporate['conversion_rate']}}%
+                    {{ $corporate->conversionRate}}%
                 </div>
             </div>
 
             <div style="clear: both;"></div>
         </div>
-        @endforeach
+    @endforeach
 
-        <!-- Footer section -->
-        <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%;">
+    <!-- Footer section -->
+    <div style="color: black; padding: 0px 0px; font-size: 18px; font-weight: normal; width: 100%;">
 
-            <div style="width: 17%; float: left; border: 1px solid gray;">
-                <div style="color: white; background-color: #620088; height: 30px; text-align: center;">
-                    Total
-                </div>
+        <div style="width: 17%; float: left; border: 1px solid gray;">
+            <div style="color: white; background-color: #620088; height: 30px; text-align: center;">
+                Total
             </div>
-
-            <div style="width: 8%; height: 30px; padding-left: 5px; float: left; border: 1px solid gray;">
-                <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    {{ $report['totalCount']['total_applications_created']}}
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    {{ $report['totalCount']['electricityCount']}}
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    {{ $report['totalCount']['gasCount']}}
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    {{ $report['totalCount']['waterCount']}}
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    0
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    {{ $report['totalCount']['internetCount']}}
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    0
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    {{ $report['totalCount']['awaiting_confirmation']}}
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-                    {{ $report['totalCount']['cancelled_application']}}
-                </div>
-            </div>
-
-            <div style="width: 8%; height: 30px; padding-left: 2px; float: left; border: 1px solid gray; ">
-                <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
-
-                </div>
-            </div>
-
-            <div style="clear: both;"></div>
-
         </div>
+
+        <div style="width: 8%; height: 30px; padding-left: 5px; float: left; border: 1px solid gray;">
+            <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
+                {{ $report['totalCount']['totalApplicationCreated']}}
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
+                {{ $report['totalCount']['electricityCount']}}
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
+                {{ $report['totalCount']['gasCount']}}
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
+                {{ $report['totalCount']['waterCount']}}
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
+                0
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
+                {{ $report['totalCount']['internetCount'] ?? 0}}
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
+                0
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
+                {{ $report['totalCount']['awaitingConfirmation']}}
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 30px; padding-left: 0px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
+                {{ $report['totalCount']['cancelledCount']}}
+            </div>
+        </div>
+
+        <div style="width: 8%; height: 30px; padding-left: 2px; float: left; border: 1px solid gray; ">
+            <div style="color: #620088; text-align: right; white-space: nowrap; margin-top: 6px; padding-right: 4px; ">
+                {{ $report['totalCount']['conversionRate']}}%
+            </div>
+        </div>
+
+        <div style="clear: both;">
+        </div>
+
     </div>
+</div>
 </body>
 
 </html>
