@@ -6,19 +6,21 @@ use App\Models\ConnectionApplication;
 use App\Models\HoodProfile;
 use App\Models\User;
 use App\Services\RolePermission;
-use AWS\CRT\Log;
 use TSA\Services\TsaSendAppliationService;
 
 class AutomaticAssignToTSAService
 {
-    public static function setAutomaticAssignToTSA(int $applicationId)
+    public static function setAutomaticAssignToTSA(int $applicationId): object
     {
         return (new static())->automaticAssignToTSA($applicationId);
     }
 
-    public function automaticAssignToTSA(int $applicationId): bool
+    public function automaticAssignToTSA(int $applicationId): object
     {
-        $externalTSAId = User::where('email', env('EXTERNAL_TL_EMAIL'))->first()->profile?->id;
+        // Get TSA ID
+        $externalTSAId = User::query()
+            ->where('email', env('EXTERNAL_TL_EMAIL'))
+            ->first()->profile?->id;
 
         ConnectionApplication::query()
             ->where('id', $applicationId)
@@ -28,6 +30,14 @@ class AutomaticAssignToTSAService
             [RolePermission::ROLE_EXTERNAL_HOOD_TEAM_LEAD])) {
             (new TsaSendAppliationService($applicationId))->sendApplication();
         }
-        return true;
+        return $this->findApplications($applicationId);
+    }
+
+    private function findApplications(int $applicationId): object
+    {
+        return ConnectionApplication::query()
+            ->where('id', $applicationId)
+            ->with('connectionServices', 'identification')
+            ->first();
     }
 }

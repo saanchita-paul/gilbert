@@ -58,7 +58,7 @@ class StoreHoodLead
         $app = new ConnectionApplication([
             'office_id' => $office->id,
             'agency_id' => $office->agency_id,
-            'moving_date' => date('2025-05-05') ?? null,
+            'moving_date' => $this->requestData['moving_date'] ?? date('2025-05-05'),
             'source' => ConnectionApplication::SOURCE_HOOD_LEAD,
             'status' => ConnectionApplication::STATUS_UNASSIGNED,
             'first_name' => $this->requestData['first_name'] ?? null,
@@ -108,7 +108,7 @@ class StoreHoodLead
         $app = new ConnectionApplication([
             'office_id' => $office->id,
             'agency_id' => $office->agency_id,
-            'moving_date' => date('2025-05-05') ?? null,
+            'moving_date' => $this->requestData['moving_date'] ?? date('2025-05-05'),
             'source' => ConnectionApplication::SOURCE_HOOD_LEAD,
             'status' => ConnectionApplication::STATUS_UNASSIGNED,
             'first_name' => $this->requestData['properties']['firstname']['value'] ?? null,

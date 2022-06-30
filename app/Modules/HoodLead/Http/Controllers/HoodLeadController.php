@@ -16,7 +16,6 @@ class HoodLeadController extends Controller
             $service = new StoreHoodLead($request->toArray());
             $leadId = $service->store();
             CreateApplicationEvent::dispatch($leadId);
-
             // automatic assign to TSA
             AutomaticAssignToTSAService::setAutomaticAssignToTSA($leadId);
 
@@ -37,9 +36,8 @@ class HoodLeadController extends Controller
             $service = new StoreHoodLead($request->toArray());
             $leadId = $service->save();
             CreateApplicationEvent::dispatch($leadId);
-
             // automatic assign to TSA
-            AutomaticAssignToTSAService::setAutomaticAssignToTSA($externalTSAId = 6, $leadId);
+            AutomaticAssignToTSAService::setAutomaticAssignToTSA($leadId);
 
             return response()->json([
                 'success' => true,
