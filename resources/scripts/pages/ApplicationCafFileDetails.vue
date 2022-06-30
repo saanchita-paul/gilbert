@@ -293,16 +293,16 @@ export default {
             serviceDropDown: [],
             planDropDown: [
                 {
-                    text: "Total Plan(Home)",
-                    value: "total_plan",
+                    text: "Total Plan (Home)",
+                    value: "Total Plan (Home)",
                 },
                 {
-                    text: "Basic Plan(Home)",
-                    value: "basic_plan",
+                    text: "Basic - Home",
+                    value: "Basic - Home",
                 },
                 {
-                    text: "Flexi Plan(Home)",
-                    value: "flexi_plan",
+                    text: "Flexi Plan (Home)",
+                    value: "Flexi Plan (Home)",
                 },
             ],
             connectionDate: false,
@@ -396,6 +396,9 @@ export default {
         async updateCafFile(cafId) {
              this.loading = true;
             let response = await ApplicationCafFileService.updateApplicationCafFileData(cafId, this.caf_detail);
+            this.$emit('refreshTable', response);
+
+
             console.log(response);
              this.loading = false;
             // this.closeConfirm = true;

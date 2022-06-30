@@ -115,5 +115,33 @@ export const mapPlan = services => {
 
 
 export default {
-    mapApplicationCafFileList
+    mapApplicationCafFileList,
+    getFullName(response) {
+        if(!isNull(response.middle_name)) {
+            return response.first_name + ' ' + response.middle_name + ' ' + response.last_name;
+        }
+    },
+    mapSingleData(response) {
+        return {
+            ...response,
+            full_name: this.getFullName(response),
+            connection_date: this.getConnectionData(response),
+            plan: this.getServicePlan(response)
+        }
+    },
+
+    getConnectionData(response) {
+       let service = response.service;
+       if(service.length > 0) {
+           let activeService = service.find(svc => svc.enable_caf_file)
+           return DayJS(activeService.connection_date).format(DATE_FORMAT.DB_DATE);
+       }
+    },
+    getServicePlan(response) {
+        let service = response.service;
+        if(service.length > 0) {
+            let activeService = service.find(svc => svc.enable_caf_file)
+            return activeService.plan_type;
+        }
+    }
 }

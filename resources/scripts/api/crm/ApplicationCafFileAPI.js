@@ -25,8 +25,16 @@ export default {
     },
 
     updateApplicationCafFileData: async (cafId, cafDetail) => {
-        const data = await axios.put(`${BASE_URL}/applications/${cafId}`, cafDetail);
-        return data;
+        try{
+            const data = await axios.put(`${BASE_URL}/applications/${cafId}`, cafDetail);
+            let response = data.data.data
+            return ApplicationCafFileMapper.mapSingleData(response)
+        } catch (e) {
+            console.log('updating fail due to below reason')
+            console.log(e);
+            return false;
+        }
+
     },
 
 }

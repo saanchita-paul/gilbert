@@ -35,7 +35,7 @@
             <!-- row expend start-->
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length" style="padding: 0">
-                    <ApplicationCafFileDetails :cafFileData='item' @updateServiceType="updateServiceType"></ApplicationCafFileDetails>
+                    <ApplicationCafFileDetails @refreshTable="updateTableData" :cafFileData='item' @updateServiceType="updateServiceType"></ApplicationCafFileDetails>
                 </td>
             </template>
             <!-- row expend end-->
@@ -96,6 +96,13 @@ export default {
     },
 
     methods: {
+
+
+        updateTableData(data)
+        {
+            console.log('data', data);
+            this.$emit('updateDataTable', data);
+        },
 
         onchangeRow(item)
         {

@@ -25,6 +25,7 @@
                                     v-model="selectedCaf"
                                     :cafFiles="cafFiles"
                                     :totalItem="totalItem"
+                                    @updateDataTable="updateDataTable"
                                     @refreshDataTable="refreshDataTable"
                                     @updateServiceType="updateServiceType"
                                     @updateSelectedMovingData="updateSelectedMovingData"
@@ -57,7 +58,7 @@ import ApplicationCafFileFilter from '@scripts/pages/ApplicationCafFileFilter';
 import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileService";
 import ApplicationCafFileTable from "@scripts/pages/ApplicationCafFileTable";
 import {CafFileSearchFilterModel} from "@scripts/models/CafFileSearchFilterModel";
-import {forEach, isEqual, omit} from "lodash-es";
+import {forEach, isEqual, isNull, omit} from "lodash-es";
 
 export default {
     name: "ApplicationCafFilePage",
@@ -109,6 +110,26 @@ export default {
 
     methods: {
 
+
+        updateDataTable(data)
+        {
+
+            let index = this.cafFiles.findIndex((dt)=> {
+                return dt.id === data.id;
+            });
+
+
+            if(index !== -1) {
+
+                console.log('log', this.cafFiles[index], data);
+
+                this.cafFiles[index].full_name = data.full_name;
+                this.cafFiles[index].business_name = data.business_name;
+                this.cafFiles[index].abn = data.abn;
+                this.cafFiles[index].connection_date = data.connection_date;
+                this.cafFiles[index].plan = data.plan;
+            }
+        },
 
         selectRowCafFile(item)
         {
@@ -167,6 +188,7 @@ export default {
             }
 
         },
+
     },
 }
 </script>
