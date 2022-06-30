@@ -11,6 +11,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Origin\Services\OriginService;
+use App\Models\ConnectionApplication;
 
 class OriginSubmissionJob implements ShouldQueue
 {
@@ -38,16 +39,34 @@ class OriginSubmissionJob implements ShouldQueue
      */
     public function handle()
     {
+        $application = ConnectionApplication::findOrFail($this->applicationId);
         $allowedSubmitType = ['energy', 'power', 'gas'];
-
+        $error = [];
         if (in_array($this->submitType, $allowedSubmitType))
         {
-            $originService = new OriginService($this->applicationId);
-            match ($this->submitType) {
-                'energy' => $this->storeBothElectricityAndGas($originService),
-                'power' => $originService->storeElectricity(),
-                'gas' => $originService->storeGas(),
-            };
+            try {
+                $originService = new OriginService($this->applicationId);
+                match ($this->submitType) {
+                    'energy' => $this->storeBothElectricityAndGas($originService),
+                    'power' => $originService->storeElectricity(),
+                    'gas' => $originService->storeGas(),
+                };
+            }
+            catch (\Exception $e) {
+                $error['message'] = $e->getMessage();
+                $error['file'] = $e->getFile();
+                $error['line'] = $e->getLine();
+                \Log::error('OriginSubmissionJob:handle - FAIL (Refer context for details)', $error);
+            }
+            finally {
+                $application->update([
+                    'is_running_submission' => 0,
+                ]);
+
+                if (!empty($error)) {
+                    throw new \Exception($error['message']);
+                }
+            }
         } else {
             info("Skipping Origin Submit", [
                 'submit_type' => $this->submitType,

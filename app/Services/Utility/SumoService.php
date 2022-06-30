@@ -84,18 +84,18 @@ class SumoService
             $url = APILog::setLoggerQuery($url, APILog::API_SUMO_SUBMIT_LEAD, extend: false);
 
             $response = Http::put($url, $this->getCustomerData());
-            if (!$response->successful()) {
-                ConnectionApplication::where('id', $this->application->id)->update([
-                    'is_running_submission' => 0,
-                ]);
-            }
+            // if (!$response->successful()) {
+            //     ConnectionApplication::where('id', $this->application->id)->update([
+            //         'is_running_submission' => 0,
+            //     ]);
+            // }
 
             return json_decode($response->body(), true);
         } catch (Exception $exception) {
-            ConnectionApplication::where('id', $this->application->id)->update([
-                'is_running_submission' => 0,
-            ]);
-            throw new Exception($exception);
+            // ConnectionApplication::where('id', $this->application->id)->update([
+            //     'is_running_submission' => 0,
+            // ]);
+            throw $exception;
         }
 
     }
