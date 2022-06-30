@@ -588,6 +588,7 @@ class ApplicationService
 
         return $sumoUuid;
     }
+
     public function clearConcession($id)
     {
         $existLead = ConnectionApplication::findOrFail($id);
@@ -601,5 +602,4 @@ class ApplicationService
 
         return $existLead->refresh();
     }
-
 }

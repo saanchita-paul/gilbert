@@ -1,6 +1,8 @@
 <?php
 
+
 use App\Models\ConnectionApplication;
+use App\Services\Agency\TriageFlagService;
 use Illuminate\Encryption\Encrypter;
 use App\Services\Address\GBGServices;
 use Illuminate\Support\Facades\Route;
@@ -209,6 +211,13 @@ Route::get('lnn/bot_token', function () {
 });
 
 
+/**
+ * test routes triage flug field
+ */
+//Route::get('/check-triage/{id}', function ($applicationId) {
+//    $res = TriageFlagService::setTriageFlag($applicationId);
+//    return response()->json(['success' => true, 'data' => $res]);
+//});
 
 
 Route::post('/our-property/token', [OurPropertyController::class, 'getAccessToken']);
@@ -263,4 +272,8 @@ Route::get('/kaka', function () {
 //
 //});
 
+
+/**
+ * api's for email validation
+ */
 Route::get('/gbg-validate-email', [ApplicationController::class, 'isGbgValidateEmail']);
