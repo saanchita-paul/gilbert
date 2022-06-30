@@ -10,12 +10,12 @@ use TSA\Services\TsaSendAppliationService;
 
 class AutomaticAssignToTSAService
 {
-    public static function setAutomaticAssignToTSA(int $applicationId): object
+    public static function setAutomaticAssignToTSA(int $applicationId)
     {
         return (new static())->automaticAssignToTSA($applicationId);
     }
 
-    public function automaticAssignToTSA(int $applicationId): object
+    public function automaticAssignToTSA(int $applicationId): void
     {
         // Get TSA ID
         $externalTSAId = User::query()
@@ -30,14 +30,6 @@ class AutomaticAssignToTSAService
             [RolePermission::ROLE_EXTERNAL_HOOD_TEAM_LEAD])) {
             (new TsaSendAppliationService($applicationId))->sendApplication();
         }
-        return $this->findApplications($applicationId);
     }
 
-    private function findApplications(int $applicationId): object
-    {
-        return ConnectionApplication::query()
-            ->where('id', $applicationId)
-            ->with('connectionServices', 'identification')
-            ->first();
-    }
 }
