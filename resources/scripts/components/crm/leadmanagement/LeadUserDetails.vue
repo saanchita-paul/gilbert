@@ -1,6 +1,6 @@
 <template>
     <v-card class="hood-card mb-5 pt-0">
-       <LeadDetailsHeader @closeApplicationWithReason="closeApplicationWithReason" :leadSummary="leadSummary" @closeApplication="closeApplication" @eacalate="eacalate"></LeadDetailsHeader>
+       <LeadDetailsHeader @closeApplicationWithReason="closeApplicationWithReason" :leadSummary="leadSummary" @closeApplication="closeApplication" @eacalate="eacalate" @sendToChatBot="sendToChatBot" ></LeadDetailsHeader>
         <InfoField v-bind="$attrs" :services="services" @updateLead="updateLead" :nmiMernFlag="nmiMernFlag" :lead="leadSummary" @updateDraft="updateDraft" @readMore="readMore" @updateAddress="updateAddress"></InfoField>
     </v-card>
 </template>
@@ -45,7 +45,9 @@ name: "LeadUserDetails",
         },
         updateDraft(field, value, isDate, identification,isManualChangeFlag = false) {
             this.$emit('updateDraft', field, value, isDate, identification, isManualChangeFlag);
-
+        },
+        sendToChatBot(lead) {
+            this.$emit('sendToChatBot',lead);
         }
     },
     mounted() {

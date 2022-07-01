@@ -7,6 +7,7 @@
                                 :services="services"
                                 @closeApplicationWithReason="closeApplicationWithReason"
                                 @closeApplication="closeApplication"
+                                @sendToChatBot="sendToChatBot"
                                 @eacalate="eacalate"
                                 @updateLead="updateLead"
                                 @readMore="readMore"
@@ -30,6 +31,10 @@
             <CloseApplicationReasonModal v-if="closeLead" :dialog="closeLead" :leadSummary="leadSummary" @closeApplicationWithReason="closeApplicationWithReason" @cancelClose="cancelClose" @sucessSaveClose="sucessSaveClose"></CloseApplicationReasonModal>
 
             <CloseConfirmModal v-if="closeConfirm" :dialog="closeConfirm" :title="fullName"></CloseConfirmModal>
+
+             <SendToChatBotModal v-if="closeSentConfirm" :dialog="closeSentConfirm" :title="fullName" @done="done"></SendToChatBotModal>
+
+            <ChatbotInChargeModal v-if="isChatbotInCharge" :dialog="isChatbotInCharge" :title="fullName"></ChatbotInChargeModal>
 
             <!-- <CloseApplicationModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></CloseApplicationModal> -->
 
@@ -63,11 +68,15 @@ import EAAfterHourService from "@scripts/services/ea/EAAfterHourService";
 import ChatbotService from "@scripts/services/crm/ChatbotService";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import Store from '@scripts/store/index';
+import SendToChatBotModal from "@scripts/components/crm/modals/SendToChatBotModal";
+import ChatbotInChargeModal from "@scripts/components/crm/modals/ChatbotInChargeModal";
 
 export default {
     //todo shift afterHourFlag, nextBusinessDay, getElectricityDistributor to powerService
     name: "ApplicationDetailsPage",
     components: {
+        ChatbotInChargeModal,
+        SendToChatBotModal,
         LeadReadMoreModal,
         EscalationConfirmModal,
         EscalateReasonModal,
@@ -116,6 +125,8 @@ export default {
                 }
             },
             nextBusinessDay: null,
+            closeSentConfirm: false,
+            isChatbotInCharge: false,
         }
     },
     computed: {
@@ -193,6 +204,20 @@ export default {
                 // console.log('closeApplication error' , erro);
             }
         },
+        async sendToChatBot() {
+            try {
+                console.log('isChatbotInCharge in details page:' , this.isChatbotInCharge);
+                await LeadApplicationService.sendToChatBot(this.leadId);
+                // this.isChatbotInCharge = true;
+                this.closeSentConfirm = true;
+                console.log('isChatbotInCharge after api call in details page:' , this.isChatbotInCharge);
+            } catch (error) {
+                console.log('sendToChatBot error' , error);
+            }
+        },
+        done() {
+            this.$router.push({name: 'agent.application.dashboard'});
+        },
         readMore() {
             this.additionalInstruction = this.lead.person_details.additional_instruction;
             this.readMoreFlag = true;
@@ -252,9 +277,6 @@ export default {
             }
              return false;
         },
-
-        
-
         closePreventSubmissionModal() {
           this.preventSubmissionFlag = false;
         },

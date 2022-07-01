@@ -202,7 +202,7 @@ class ApplicationController extends Controller
         // $ea_service_ids = $service->getNotSubmittedEaService($id, $submitType);
         $provider_service_ids = $service->getNotSubmittedServices($id, $submitType);
         $service_ids = [];
-         
+
         foreach($provider_service_ids as $key => $ids){
             $service_ids = array_merge($service_ids, $ids);
             if($submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_ENERGY
@@ -430,6 +430,27 @@ class ApplicationController extends Controller
             $service = new ApplicationService();
             $res = $service->clearConcession($id);
             return response(['success' => true, 'message' => 'Concession cleared successfully']);
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    /**
+     * Updating status to escalate of an application
+     *
+     * @param Request $request
+     * @param int $applicationId
+     *
+     */
+    public function sendToChatBot(Request $request, int $applicationId)
+    {
+        try {
+            $existingApplication = ConnectionApplication::where('id', $applicationId)->firstOrFail();
+            info('existingApplication', [$existingApplication]);
+            $existingApplication->update([
+                'is_sent_to_chatbot' => 1
+            ]);
+            return $existingApplication;
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

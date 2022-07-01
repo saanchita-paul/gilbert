@@ -38,6 +38,7 @@ export default {
         ),
     loadUserLead: id => LeadApplicationAPI.getUserLead(id),
     closeApplication: id => LeadApplicationAPI.closeApplication(id),
+    sendToChatBot: id => LeadApplicationAPI.sendToChatBot(id),
     loadPlan: serviceProvider => LeadApplicationAPI.getPlan(serviceProvider),
     loadNote: leadUser => LeadApplicationAPI.getNote(leadUser),
     loadServiceProvider: services =>

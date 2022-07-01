@@ -281,6 +281,17 @@ export default {
         }
     },
 
+    async sendToChatBot(id) {
+        try {
+            console.log("id in LeadApplicationAPI:", id);
+            const data = await axios.put(`/api/applications/${id}/send-to-chatbot`);
+            console.log("data in LeadApplicationAPI:", data);
+            return data;
+        } catch (error) {
+            return error.data;
+        }
+    },
+
     getPlan(serviceProvider) {
         try {
             // const data = await axios.get('/');
