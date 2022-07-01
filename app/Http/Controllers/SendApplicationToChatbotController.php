@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class SendApplicationToChatbotController extends Controller
 {
-    public function sendApplication(Request $request, int $applicationId): object
+    public function sendApplication(Request $request, int $applicationId)
     {
         try {
             $service = new SendAppGilbertToChatbotService();

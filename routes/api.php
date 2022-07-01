@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SendApplicationToChatbotController;
 use App\Models\ConnectionApplication;
 use Illuminate\Encryption\Encrypter;
 use App\Services\Address\GBGServices;
@@ -251,3 +252,6 @@ Route::get('/kaka', function () {
 //    dd($date);
     return $dateTimeZone->getOffset($date)/60/60;
 });
+
+// test (Shakil)
+Route::get('/send-data/{applicationId}', [SendApplicationToChatbotController::class, 'sendApplication']);
