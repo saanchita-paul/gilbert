@@ -44,16 +44,37 @@ class SumoSubmissionJob implements ShouldQueue
     {
         $application = ConnectionApplication::whereId($this->applicationId)->with("connectionServices")->firstOrFail();
         $submitType = $this->submitType;
+        $error = [];
 
         $allowedSubmitType = ['energy', 'power', 'gas'];
         if (in_array($submitType, $allowedSubmitType)) {
-            $res = (new SumoService())->storeCustomerData($this->applicationId, $this->submitType);
-            info("Sumo response body 1");
-//            \Log::info($res['status']);
-            (new SumoService())->saveStatus($this->applicationId, $res['status'] , $res['creditCheck'], $submitType);
-            ConnectionApplication::where('id' , $this->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
-            info(json_encode($res));
-            info("Sumo response body 2");
+            try {
+                $res = (new SumoService())->storeCustomerData($this->applicationId, $this->submitType);
+                info("Sumo response body 1");
+    //            \Log::info($res['status']);
+                (new SumoService())->saveStatus($this->applicationId, $res['status'] , $res['creditCheck'], $submitType);
+                ConnectionApplication::where('id' , $this->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
+                info(json_encode($res));
+                info("Sumo response body 2");
+            } 
+            catch (\Exception $e) {
+                $logError = [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                ];
+                $error = $e;
+                \Log::error('SumoSubmissionJob:handle - FAIL (Refer context for details)', $logError);
+            }
+            finally {
+                $application->update([
+                    'is_running_submission' => 0,
+                ]);
+
+                if (!empty($error)) {
+                    throw $error;
+                }
+            }
         } else {
             info("Skipping Sumo Submit", [
                 'submit_type' => $submitType,

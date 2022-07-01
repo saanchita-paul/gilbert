@@ -201,23 +201,16 @@ class OriginService
 
             if(!empty($response['HoodReferenceNumber'])){
                 $this->saveSubmittedStatus($service->id, $response['HoodReferenceNumber']);
-                return;
             }
         }
         catch (Exception $exception){
-
-            ConnectionApplication::where('id', $this->applicationId)->update([
-                'is_running_submission' => 0,
-            ]);
-
             $message = $exception->getMessage();
             if($exception->getCode() == BaseOriginAPI::CODE_REJECT){
                 preg_match('/\[([^\)]*)\]/', $message, $codeMatch);
                 preg_match('/\(([^\)]*)\)/', $message, $messageMatch);
                 $this->saveRejectedStatus($this->applicationId, $service->id, $codeMatch[1], $messageMatch[1]);
             }
-            Log::error($message);
-            throw new \Exception($exception->getMessage());
+            throw $exception;
         }
     }
 

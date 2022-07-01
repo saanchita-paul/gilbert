@@ -8,6 +8,7 @@ use App\Services\Sales\PostSalesService;
 use App\thiss\Agency\SubmitApplicationthis;
 use App\Models\ConnectionService;
 use App\Services\Agency\HubspotContactService;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -49,17 +50,37 @@ class EASubmissionJob implements ShouldQueue
     {
         $submitType = $this->submitType;
         $application = ConnectionApplication::with('connectionServices')->where('id', $this->applicationId)->firstOrFail();
-
         $saleApiOn = config('ea.is_sales_api_on');
+        $error = [];
 
         $allowedSubmitType = ['energy', 'power', 'gas'];
         if ($saleApiOn === "1" &&
             in_array($submitType, $allowedSubmitType)) {
-            $postEaService = new PostSalesService($this->applicationId);
-            $postEaService->postToEa($submitType, $this->applicationId);
-            ConnectionApplication::where('id' , $this->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
-            $hubspotService = new HubspotContactService($this->applicationId);
-            $hubspotService->update();
+            try {
+                $postEaService = new PostSalesService($this->applicationId);
+                $postEaService->postToEa($submitType, $this->applicationId);
+                ConnectionApplication::where('id' , $this->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
+                $hubspotService = new HubspotContactService($this->applicationId);
+                $hubspotService->update();
+            }
+            catch (\Exception $e) {
+                $logError = [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                ];
+                $error = $e;
+                \Log::error('EASubmissionJob:handle - FAIL (Refer context for details)', $logError);
+            }
+            finally {
+                $application->update([
+                    'is_running_submission' => 0,
+                ]);
+
+                if (!empty($error)) {
+                    throw $error;
+                }
+            }
         } else {
             info("Skipping EA Submit", [
                 'EA_SALES_API_ON' => $saleApiOn,

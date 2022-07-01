@@ -207,16 +207,17 @@ class PostSalesService
 
         } catch (\Exception $e)
         {
-            ConnectionApplication::where('id', $applicationId)->update([
-                'is_running_submission' => 0,
-            ]);
+            // ConnectionApplication::where('id', $applicationId)->update([
+            //     'is_running_submission' => 0,
+            // ]);
 
             $logSalesService->updateSalesLog($loggerResponse->key,
                 json_encode($e->getMessage()),
                 json_encode([]),
                 400
             );
-            throw new \Exception("EA Sales API ERROR: " . $e->getMessage());
+            // throw new \Exception("EA Sales API ERROR: " . $e->getMessage());
+            throw $e;
         }
 
 
