@@ -120,6 +120,7 @@ export default {
         if(!isNull(response.middle_name)) {
             return response.first_name + ' ' + response.middle_name + ' ' + response.last_name;
         }
+        return response.first_name + ' ' + response.last_name;
     },
     mapSingleData(response) {
         return {
