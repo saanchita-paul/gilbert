@@ -184,12 +184,12 @@ export default {
         },
         date_of_birth() {
           return this.application.date_of_birth
-            ? dayjs(this.application.date_of_birth,'YYYY-MM-DD').format(DATE_FORMAT.DB_MONTH_FIRST)
+            ? dayjs(this.application.date_of_birth,'YYYY-MM-DD').format(DATE_FORMAT.DB_DATE)
             : null;
         },
         moving_date() {
           return this.application.moving_date
-            ? dayjs(this.application.moving_date,'DD/MM/YYYY').format(DATE_FORMAT.DB_MONTH_FIRST)
+            ? dayjs(this.application.moving_date,'DD/MM/YYYY').format(DATE_FORMAT.DB_DATE)
             : null;
         },
         identification_type() {

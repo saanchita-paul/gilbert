@@ -13,7 +13,7 @@
                                 <p>Thank you!</p>
                             </div>
                             <div class="dialogs-title d-flex justify-center">
-                                <p >{{title + '\'s'}} application has been submitted!</p>
+                                <p >{{titleText}} application has been submitted!</p>
                             </div>
                             <div class="d-flex justify-center">
                                 <v-btn @click="done"
@@ -37,6 +37,11 @@ export default {
 name: "LeadCreateSuccessfulModal" ,
     components: {Created},
     props:['dialog','title'],
+    computed: {
+        titleText(){
+            return this.title ? this.title + '’s' : '';
+        }
+    },
     methods: {
         done() {
             this.$emit('done');
