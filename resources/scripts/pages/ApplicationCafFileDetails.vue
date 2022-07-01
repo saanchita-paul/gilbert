@@ -293,10 +293,6 @@ export default {
             serviceDropDown: [],
             planDropDown: [
                 {
-                    text: "Total Plan (Home)",
-                    value: "Total Plan (Home)",
-                },
-                {
                     text: "Basic - Home",
                     value: "Basic - Home",
                 },
