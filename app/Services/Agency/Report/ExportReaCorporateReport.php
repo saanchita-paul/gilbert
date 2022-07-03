@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\Agency\Report;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Log;
 use App\Modules\Reporting\Services\SetDateRage;
 use App\Models\ConnectionApplication;
@@ -10,17 +11,54 @@ use App\Models\Agency;
 use PDF;
 use Carbon\Carbon;
 
+/**
+ *
+ */
 class ExportReaCorporateReport
 {
     use SetDateRage;
 
+    /**
+     * @var string
+     */
     private string $startDate;
+    /**
+     * @var string
+     */
     private string $endDate;
+    /**
+     * @var string
+     */
     private string $stringStartDate;
+    /**
+     * @var string
+     */
     private string $stringEndDate;
+    /**
+     * @var string
+     */
     private string $agencyId;
+    /**
+     * @var array
+     */
     private array $corporateReport = [];
 
+
+    /**
+     *
+     */
+    private const SUBMITTED_STATUSES = [
+        ConnectionService::STATUS_ENERGY_SUBMIT,
+        ConnectionService::STATUS_ACCEPTED,
+        ConnectionService::WATER_STATUS_CONNECTED,
+        ConnectionService::STATUS_ACCEPTED,
+        ConnectionService::STATUS_SUBMITTED,
+        ConnectionService::AC_MANUAL_PROCESSING,
+    ];
+
+    /**
+     * @var array
+     */
     private array $submissionType = [
         ConnectionService::STATUS_SUBMITTED,
         ConnectionService::STATUS_ACCEPTED,
@@ -31,6 +69,9 @@ class ExportReaCorporateReport
         ConnectionService::STATUS_CANT_CONNECT
     ];
 
+    /**
+     * @var array
+     */
     private array $nonRejectedSubmissionType = [
         ConnectionService::STATUS_SUBMITTED,
         ConnectionService::STATUS_ACCEPTED,
@@ -39,23 +80,40 @@ class ExportReaCorporateReport
         ConnectionService::STATUS_ENERGY_SUBMIT
     ];
 
+    /**
+     * @var array
+     */
     private array $energyType = [
         ConnectionService::TYPE_ELECTRICITY,
         ConnectionService::TYPE_GAS
     ];
 
+    /**
+     * @var array
+     */
     private array $WaterType = [ConnectionService::TYPE_WATER];
 
+    /**
+     * @var array
+     */
     private array $awaitingConfirmationType = [
         ConnectionApplication::STATUS_UNASSIGNED,
         ConnectionApplication::STATUS_ASSIGNED,
         ConnectionApplication::STATUS_ESCALATED
     ];
 
+    /**
+     * @var array
+     */
     private array $cancelledType = [
         ConnectionService::STATUS_CLOSED,
     ];
 
+    /**
+     * @param string $agencyId
+     * @param string $start
+     * @param string $end
+     */
     public function __construct(string $agencyId, string $start, string $end)
     {
         $this->setDateRange($start, $end);
@@ -65,16 +123,26 @@ class ExportReaCorporateReport
 
     }
 
+    /**
+     * @return mixed
+     */
     public function run()
     {
-        $this->mapData($this->fetchData());
+        $officeReport = $this->fetchOfficeReport();
+        $this->corporateReport = [
+            "detailedCount" => $this->calculateConversionRate($officeReport),
+            "totalCount" => $this->calculateTotal($officeReport)
+        ];
         return $this->export();
     }
 
+    /**
+     * @return mixed
+     */
     private function export()
     {
         Log::info('REA Corporate report', $this->corporateReport);
-        
+
         $agencyName = Agency::find($this->agencyId)->name;
 
         $data = [
@@ -88,196 +156,127 @@ class ExportReaCorporateReport
 
     }
 
-    private function mapData(array $data)
+    /**
+     * @return array
+     */
+    private function fetchOfficeReport(): array
     {
-        $officeIds = [];
-        $detailedCount = [];
-        $totalCount = [
-            'total_applications_created' => 0,
-            'applications_with_minimum_submitted' => 0,
-            'successful_water_connections' => 0,
-            'awaiting_confirmation' => 0,
-            'cancelled_application' => 0,
-            'conversion_rate' => 0,
+        $canceledStatus = ConnectionApplication::STATUS_CLOSED;
+
+
+        $res = \DB::table('offices as ofc')
+            ->selectSub($this->getAwaitBuilder(), 'awaitingConfirmation')
+            ->selectSub($this->getEnergyServiceSubmittedBuilder(), 'energyServiceSubmitted')
+            ->selectSub($this->getServiceBuilder(ConnectionService::TYPE_ELECTRICITY), 'electricityCount')
+            ->selectSub($this->getServiceBuilder(ConnectionService::TYPE_GAS), 'gasCount')
+            ->selectSub($this->getServiceBuilder(ConnectionService::TYPE_WATER), 'waterCount')
+            ->selectRaw("
+                ofc.id,
+                ofc.name as officeName,
+                (select count(ca.id) from connection_applications as ca where ca.office_id=ofc.id and ca.created_at >= '$this->startDate' and ca.created_at <= '$this->endDate') as totalApplicationCreated,
+                (select count(ca.id) from connection_applications as ca where ca.office_id=ofc.id and ca.status = $canceledStatus) as cancelledCount
+            ")
+            ->where('agency_id', $this->agencyId)->get();
+
+        return $res->toArray();
+    }
+
+    /**
+     * @param array $officeReports
+     * @return array
+     */
+    private function calculateConversionRate(array $officeReports): array
+    {
+        foreach ($officeReports as $index => $report) {
+            if (data_get($report, 'energyServiceSubmitted') === 0 || data_get($report, 'totalApplicationCreated') === 0) {
+                data_set($officeReports, "$index.conversionRate", 0);
+            } else {
+                $rate = data_get($report, 'energyServiceSubmitted')
+                    / (data_get($report, 'totalApplicationCreated') - data_get($report, 'awaitingConfirmation'))
+                    * 100;
+                data_set($officeReports, "$index.conversionRate", round($rate, 2));
+            }
+        }
+
+        return  $officeReports;
+    }
+
+    private function calculateTotal(array $officeReports): array
+    {
+        $total = [
+            'energyServiceSubmitted' => 0,
+            'awaitingConfirmation' => 0,
+            'conversionRate' => 0,
+            'totalApplicationCreated' => 0,
             'electricityCount' => 0,
             'gasCount' => 0,
             'waterCount' => 0,
-            'internetCount' => 0
+            'cancelledCount' => 0,
         ];
-
-
-        foreach ($data as $datum) {
-
-            $officeIds[] = $datum[0]['office_id'];
-            $count = [
-                "office_name" => $this->getOfficeName($datum[0]['office_id']),
-                "total_applications_created" => count($datum),
-                "applications_with_minimum_submitted" => $this->getMinimumSubmitted($datum),
-                "successful_water_connections" => $this->getSuccessfulWaterConnection($datum),
-                "awaiting_confirmation" => $this->getAwaitingConfirmation($datum),
-                "cancelled_application" => $this->getCancelledApplications($datum),
-                "electricityCount" => $this->getServiceCount($datum, [ConnectionService::TYPE_ELECTRICITY]),
-                "gasCount" => $this->getServiceCount($datum, [ConnectionService::TYPE_GAS]),
-                "waterCount" => $this->getServiceCount($datum, [ConnectionService::TYPE_WATER]),
-                "internetCount" => $this->getServiceCount($datum, [ConnectionService::TYPE_INTERNET]),
-            ];
-            $count['conversion_rate'] = $this->getConversionRate($count['total_applications_created'], $count['applications_with_minimum_submitted'], $count['awaiting_confirmation']);
-            
-            $detailedCount[] = $count;
-
-            $totalCount['total_applications_created'] += $count['total_applications_created'];
-            $totalCount['applications_with_minimum_submitted'] += $count['applications_with_minimum_submitted'];
-            $totalCount['successful_water_connections'] += $count['successful_water_connections'];
-            $totalCount['awaiting_confirmation'] += $count['awaiting_confirmation'];
-            $totalCount['cancelled_application'] += $count['cancelled_application'];
-            $totalCount['conversion_rate'] = $this->getConversionRate($totalCount['total_applications_created'], $totalCount['applications_with_minimum_submitted'], $totalCount['awaiting_confirmation']);
-            $totalCount['electricityCount'] += $count['electricityCount'];
-            $totalCount['gasCount'] += $count['gasCount'];
-            $totalCount['waterCount'] += $count['waterCount'];
-            $totalCount['internetCount'] += $count['internetCount'];
-        }
-        
-        $offices = Office::selectRaw("id, name")
-            ->whereNotIn('id', $officeIds)
-            ->where('agency_id', $this->agencyId)
-            ->get();
-
-        foreach ($offices as $office) {
-            $count = [
-                "office_name" => $office->name,
-                "total_applications_created" => 0,
-                "applications_with_minimum_submitted" => 0,
-                "successful_water_connections" => 0,
-                "awaiting_confirmation" => 0,
-                "conversion_rate" => 0,
-                "cancelled_application" => 0,
-                "electricityCount" => 0,
-                "gasCount" => 0,
-                "waterCount" => 0,
-                "internetCount" => 0,
-            ];
-            $detailedCount[] = $count;
+        foreach ($officeReports as $report) {
+            $total['energyServiceSubmitted'] += data_get($report, 'energyServiceSubmitted');
+            $total['awaitingConfirmation'] += data_get($report, 'awaitingConfirmation');
+            $total['conversionRate'] += data_get($report, 'conversionRate');
+            $total['totalApplicationCreated'] += data_get($report, 'totalApplicationCreated');
+            $total['electricityCount'] += data_get($report, 'electricityCount');
+            $total['gasCount'] += data_get($report, 'gasCount');
+            $total['waterCount'] += data_get($report, 'waterCount');
+            $total['cancelledCount'] += data_get($report, 'cancelledCount');
         }
 
-        $this->corporateReport = [
-            "detailedCount" => $detailedCount,
-            "totalCount" => $totalCount
-        ];
+        $total['conversionRate'] = round($total['conversionRate'] / count($officeReports), 2);
+
+        return $total;
     }
 
-    private function fetchData() : array
+
+    /**
+     * @param string $serviceType
+     * @param array $statuses
+     * @return Builder
+     */
+    private function getServiceBuilder(string $serviceType, array $statuses = self::SUBMITTED_STATUSES): Builder
     {
-        $builder = ConnectionApplication::selectRaw("
-            office_id as `office_id`,
-            agency_id as `agency_id`,
-            id,
-            status as `application_status`,
-            created_at as `created_date`")
-                ->with(['connectionServices' => function ($query) {
-                    $query->selectRaw("
-                            id as `utility_id`,
-                            connection_application_id,
-                            status as `utility_status`,
-                            service_type as `utility_type`,
-                            submitted_at as `submitted_date`
-                        ");
-                }])
-                ->where('created_at', '>=', $this->startDate)
-                ->where('created_at', '<=', $this->endDate)
-                ->where('office_id', '!=', null)
-                ->where('agency_id', $this->agencyId);
+        $builder = \DB::table('connection_services as cs')
+            ->selectRaw('count(*)')
+            ->join('connection_applications as ca', 'ca.id', '=', 'cs.connection_application_id')
+            ->whereRaw('ofc.id = ca.office_id')
+            ->where('ca.created_at', '>=', $this->startDate)
+            ->where('ca.created_at', '<=', $this->endDate)
+            ->whereRaw("cs.service_type='$serviceType'");
 
-        return $builder->get()->groupBy('agency_id')->toArray();
-    }
-
-    private function getOfficeName(int $id) : string
-    {
-        $office = Office::selectRaw("id, name")->where('id', $id)->first();
-        return $office->name;
-    }
-
-    private function getMinimumSubmitted(array $applications) : int
-    {
-        $energySubmitted = 0;
-
-        foreach ($applications as $application) {
-            foreach ($application['connection_services'] as $service) {
-                if (
-                    in_array($service['utility_type'], $this->energyType) &&
-                    in_array($service['utility_status'], $this->submissionType)
-                ) {
-                    $energySubmitted++;
-                    break;
-                }
-            }
+        if ($statuses) {
+            $builder->whereIn('cs.status', $statuses);
         }
-        return $energySubmitted;
+
+        return $builder;
     }
 
-    private function getSuccessfulWaterConnection(array $applications) : int
+    /**
+     * @return Builder
+     */
+    private function getAwaitBuilder(): Builder
     {
-        $waterSubmitted = 0;
-        foreach ($applications as $application) {
-            foreach ($application['connection_services'] as $service) {
-                if (
-                    in_array($service['utility_type'], $this->WaterType) &&
-                    in_array($service['utility_status'], $this->submissionType)
-                ) {
-                    $waterSubmitted++;
-                    break;
-                }
-            }
-        }
-        return $waterSubmitted;
+        return \DB::table('connection_applications as ca')
+            ->selectRaw('count(ca.id)')
+            ->whereIn('ca.status', $this->awaitingConfirmationType)
+            ->where('ca.created_at', '>=', $this->startDate)
+            ->where('ca.created_at', '<=', $this->endDate)
+            ->whereRaw('ofc.id = ca.office_id');
     }
 
-    private function getAwaitingConfirmation(array $applications) : int
+    /**
+     * @return Builder
+     */
+    private function getEnergyServiceSubmittedBuilder(): Builder
     {
-        $awaiting = 0;
-        foreach ($applications as $application) {
-            if(in_array($application['application_status'], $this->awaitingConfirmationType )) {
-                $awaiting++;
-            }
-        }
-        return $awaiting;
-    }
-
-    private function getCancelledApplications(array $applications) : int
-    {
-        $cancelled = 0;
-        foreach ($applications as $application) {
-            foreach ($application['connection_services'] as $service) {
-                if (in_array($service['utility_status'], $this->cancelledType)) {
-                    $cancelled++;
-                    break;
-                }
-            }
-        }
-        return $cancelled;
-    }
-
-    private function getConversionRate(int $total, int $minimum, int $awaiting) : float
-    {
-        $conversionRate = 0;
-        if ($total > 0 && ($total - $awaiting > 0)) {
-            $conversionRate = ($minimum / ($total - $awaiting)) * 100;
-        }
-        return round($conversionRate, 1);
-    }
-
-    private function getServiceCount(array $applications, array $type) : float
-    {
-        $count = 0;
-        foreach ($applications as $application) {
-            foreach ($application['connection_services'] as $service) {
-                if (
-                    in_array($service['utility_type'], $type)
-                ) {
-                    $count++;
-                    break;
-                }
-            }
-        }
-        return $count;
+        return \DB::table('connection_services as cs')
+            ->selectRaw('count(distinct ca.id)')
+            ->whereIn('cs.service_type', [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY])
+            ->join('connection_applications as ca', 'ca.id', '=', 'cs.connection_application_id')
+            ->whereIn('cs.status', self::SUBMITTED_STATUSES)
+            ->where('ca.created_at', '>=', $this->startDate)
+            ->where('ca.created_at', '<=', $this->endDate)
+            ->whereRaw('ofc.id = ca.office_id');
     }
 }
