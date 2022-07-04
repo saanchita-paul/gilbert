@@ -10,9 +10,7 @@
                     <v-row>
                     <v-col cols="12">
                         <p class="dialogs-title title-design">Chatbot is in charge...</p>
-                            <v-img class="center-design" src="/assets/images/lock-chatbot.png" max-height="100" max-width="100" />
-
-
+                        <v-img class="center-design" src="/assets/images/lock-chatbot.png" max-width="100" style="margin: 0 auto" />
                     </v-col>
                     <v-col>
                         <div class="justify-center">

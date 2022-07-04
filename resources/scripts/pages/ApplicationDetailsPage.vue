@@ -209,11 +209,11 @@ export default {
             try {
                 let v = await this.validateLead();
                 if (v) {
-                    let assignedHoodUser = await this.getAssignedHoodUser();
-                    if(!assignedHoodUser) {
-                        this.assignedToDialog = true;
-                        return true;
-                    }
+                    // let assignedHoodUser = await this.getAssignedHoodUser();
+                    // if(!assignedHoodUser) {
+                    //     this.assignedToDialog = true;
+                    //     return true;
+                    // }
                     await LeadApplicationService.sendToChatBot(this.leadId);
                     this.closeSentConfirm = true;
                 }
