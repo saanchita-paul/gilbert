@@ -149,6 +149,7 @@ export default {
         gasPlan() {
             return UtilityStoreService.getGasPlan();
         },
+
     },
     methods: {
         async getElectricityDistributor()
@@ -206,17 +207,22 @@ export default {
         },
         async sendToChatBot() {
             try {
-                console.log('isChatbotInCharge in details page:' , this.isChatbotInCharge);
-                await LeadApplicationService.sendToChatBot(this.leadId);
-                // this.isChatbotInCharge = true;
-                this.closeSentConfirm = true;
-                console.log('isChatbotInCharge after api call in details page:' , this.isChatbotInCharge);
+                let v = await this.validateLead();
+                if (v) {
+                    let assignedHoodUser = await this.getAssignedHoodUser();
+                    if(!assignedHoodUser) {
+                        this.assignedToDialog = true;
+                        return true;
+                    }
+                    await LeadApplicationService.sendToChatBot(this.leadId);
+                    this.closeSentConfirm = true;
+                }
             } catch (error) {
                 console.log('sendToChatBot error' , error);
             }
         },
         done() {
-            this.$router.push({name: 'agent.application.dashboard'});
+            this.$router.push({name: 'application.list'});
         },
         readMore() {
             this.additionalInstruction = this.lead.person_details.additional_instruction;
@@ -453,6 +459,12 @@ export default {
       await this.loadNextBusinessDay();
       await this.updateMernNmi();
       this.nmiMernFlag = false;
+
+
+      let isSentToChatBot = await LeadApplicationService.isSentToChatbot(this.leadId);
+      if(isSentToChatBot) {
+          this.isChatbotInCharge = isSentToChatBot;
+      }
     }
 };
 </script>

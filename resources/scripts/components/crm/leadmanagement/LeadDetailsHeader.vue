@@ -191,8 +191,8 @@ name: "LeadDetailsHeader",
             return  LeadApplicationService.mapStatus(status)
         },
         sendToChatBot() {
-            console.log("sendToChatBot in header:");
             this.$emit('sendToChatBot');
+            // this.$eventBus.$emit("busUtilitySubmit", subType);
         },
 
     },
