@@ -436,7 +436,7 @@ class ApplicationController extends Controller
     }
 
     /**
-     * Updating status to escalate of an application
+     * send app to chatbot
      *
      * @param Request $request
      * @param int $applicationId
@@ -446,7 +446,6 @@ class ApplicationController extends Controller
     {
         try {
             $existingApplication = ConnectionApplication::where('id', $applicationId)->firstOrFail();
-            info('existingApplication', [$existingApplication]);
             $existingApplication->update([
                 'is_sent_to_chatbot' => 1
             ]);
@@ -455,4 +454,24 @@ class ApplicationController extends Controller
             return $this->sendErrorResponse($exception);
         }
     }
+
+    /**
+     * get the is_sent_to_chatbot value
+     *
+     * @param int $applicationId
+     *
+     */
+    public function isSentToChatBot($applicationId)
+    {
+        try {
+            $service = new ApplicationService();
+            $res = $service->getIsSentToChatbot($applicationId);
+            return $res;
+
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+
 }

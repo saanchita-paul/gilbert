@@ -34,7 +34,6 @@ name: "SendToChatBotModal" ,
     props:['dialog','title'],
     methods: {
         done() {
-            console.log("click seems ok");
             this.$emit('done');
         }
     },
