@@ -121,11 +121,15 @@ export default {
 
             if(index !== -1) {
 
-                console.log('log', this.cafFiles[index], data);
 
                 this.cafFiles[index].full_name = data.full_name;
                 this.cafFiles[index].business_name = data.business_name;
                 this.cafFiles[index].abn = data.abn;
+                this.cafFiles[index].first_name = data.first_name;
+                this.cafFiles[index].last_name = data.last_name;
+                this.cafFiles[index].last_name = data.last_name;
+                this.cafFiles[index].nmi = data.nmi;
+                this.cafFiles[index].mirn = data.mirn;
 
                 if(!isNull( data.connection_date)) {
                     this.cafFiles[index].connection_date = data.connection_date;
@@ -141,12 +145,12 @@ export default {
 
         selectRowCafFile(item)
         {
-          let index = this.selectedCaf.findIndex(dt => dt.id === item.id);
-          if(index === -1) {
-              this.selectedCaf.push(item);
-          } else {
-              this.selectedCaf.splice(index, 1);
-          }
+            let index = this.selectedCaf.findIndex(dt => dt.id === item.id);
+            if(index === -1) {
+                this.selectedCaf.push(item);
+            } else {
+                this.selectedCaf.splice(index, 1);
+            }
 
 
         },

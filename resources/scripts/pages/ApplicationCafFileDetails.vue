@@ -337,7 +337,7 @@ export default {
     watch: {
         cafFileData: {
             async handler() {
-                // await this.syncData();
+                await this.syncData();
                 this.updateServiceDropDown();
             },
             deep: true,
@@ -390,19 +390,19 @@ export default {
             return value ? capitalize(value) : '';
         },
         async updateCafFile(cafId) {
-             this.loading = true;
+            this.loading = true;
             let response = await ApplicationCafFileService.updateApplicationCafFileData(cafId, this.caf_detail);
             this.$emit('refreshTable', response);
 
 
             console.log(response);
-             this.loading = false;
+            this.loading = false;
             // this.closeConfirm = true;
         },
 
         changeServiceType() {
             this.caf_detail.service.service_type = this.selectedService;
-             this.$emit('updateServiceType', this.selectedService, this.cafFileData.id)
+            this.$emit('updateServiceType', this.selectedService, this.cafFileData.id)
         }
 
         // isDisabled(services) {
