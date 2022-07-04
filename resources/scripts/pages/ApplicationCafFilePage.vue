@@ -130,6 +130,7 @@ export default {
                 this.cafFiles[index].middle_name = data.middle_name;
                 this.cafFiles[index].nmi = data.nmi;
                 this.cafFiles[index].mirn = data.mirn;
+                this.cafFiles[index].title = data.title;
 
                 if(!isNull( data.connection_date)) {
                     this.cafFiles[index].connection_date = data.connection_date;
