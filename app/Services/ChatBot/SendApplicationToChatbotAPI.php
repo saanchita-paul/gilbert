@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\ChatBot;
 
-use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 
 class SendApplicationToChatbotAPI
@@ -11,12 +10,12 @@ class SendApplicationToChatbotAPI
     /**
      * Run POST Http Client
      *
-     * @param object $body
+     * @param object $application
      *
      * @return object
      *
      */
-    public function postApi(object $body)
+    public function postApi(object $application)
     {
         $url = "http://192.168.1.13:8888/api/application-data";
 
@@ -29,7 +28,7 @@ class SendApplicationToChatbotAPI
             $response = Http::withOptions([
                 'headers' => $headers
             ])
-                ->withBody(json_encode($body), "application/json")
+                ->withBody(json_encode($application), "application/json")
                 ->post($url);
 
             $response->throw();

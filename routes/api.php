@@ -1,27 +1,23 @@
 <?php
 
-use App\Http\Controllers\SendApplicationToChatbotController;
-use App\Models\ConnectionApplication;
-use Illuminate\Encryption\Encrypter;
-use App\Services\Address\GBGServices;
-use Illuminate\Support\Facades\Route;
-use App\Services\Address\AddressModel;
-use PropertyMe\services\FetchContacts;
-use App\Services\RolePermissionService;
-use Illuminate\Support\Facades\Broadcast;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Agency\NoteController;
-use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\Agency\AgencyController;
-use App\Http\Controllers\Agency\OfficeController;
-use App\Http\Controllers\UserInvitationController;
-use App\Http\Controllers\Agency\HoodUserController;
-use App\Http\Controllers\Agency\ApplicationController;
-use FastConnect\Services\SubmitWaterLeadToFastConnect;
 use App\Http\Controllers\Agency\AgentProfileController;
-use OurProperty\Http\Controllers\OurPropertyController;
-use App\Services\RolePermission;
+use App\Http\Controllers\Agency\ApplicationController;
+use App\Http\Controllers\Agency\HoodUserController;
+use App\Http\Controllers\Agency\NoteController;
+use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ReaExtractsReportController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
+use App\Http\Controllers\UserInvitationController;
+use App\Services\RolePermission;
+use App\Services\RolePermissionService;
+use Illuminate\Encryption\Encrypter;
+use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Route;
+use OurProperty\Http\Controllers\OurPropertyController;
+use PropertyMe\services\FetchContacts;
+use Reporting\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
