@@ -259,9 +259,9 @@ class ValidateCutOffTime
 //    }
 
     public static function isValidElecConnect($applicationId){
-        
+    
         $existingApplication = ConnectionApplication::find($applicationId);
-        
+
         $state = $existingApplication->state ?? 'National';
         $connectionDate = $existingApplication->moving_date;
         $nmi = $existingApplication->nmi;
@@ -272,7 +272,8 @@ class ValidateCutOffTime
         Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
 
         $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]);
-        $nowDate = Carbon::now(self::MAP_STATE_TIMEZONE[$state]); // check localization
+        $nowDate = Carbon::now(self::MAP_STATE_TIMEZONE[$state]);
+        $nextDate = Carbon::today(self::MAP_STATE_TIMEZONE[$state])->nextBusinessDay();
 
         $distributor = '';
         $nmi_check = substr($nmi, 0, 2);
@@ -300,13 +301,12 @@ class ValidateCutOffTime
             if($pastCutOff){
                 return false;
             }
-        }
-        else if ($connectionDate->isTomorrow()){
-            $checkDate = $elecDist['isStandardSameDay'] ? Carbon::tomorrow(self::MAP_STATE_TIMEZONE[$state]) : Carbon::today(self::MAP_STATE_TIMEZONE[$state]);
+        } else if ($connectionDate->eq($nextDate)){
+            $checkDate = $elecDist['isStandardSameDay'] ? Carbon::parse($nextDate->format('Y-m-d'))->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]) : Carbon::today(self::MAP_STATE_TIMEZONE[$state]);
             $checkDate->addHours(intval($elecDist['standard']));
             $pastCutOff = $nowDate->gt($checkDate);
 
-            if($pastCutOff){
+            if ($pastCutOff) {
                 return false;
             }
         }
@@ -324,9 +324,7 @@ class ValidateCutOffTime
 
         $state = $existingApplication->state ?? 'National';
         $connectionDate = $existingApplication->moving_date;
-        $mirn = $existingApplication->mirn;
 
-        if (empty($mirn)) return true;
 
         BusinessTime::enable(Carbon::class);
         Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
@@ -353,6 +351,7 @@ class ValidateCutOffTime
     }
 
     public static function validateCutOff(int $applicationId) {
+
         $elec = self::isValidElecConnect($applicationId); // validate cutoff for elec only
         $gas = self::isValidGasConnect($applicationId); // validate cutoff for gas only
         return [
@@ -364,7 +363,7 @@ class ValidateCutOffTime
     /**
      * @param string moving date
      * @param string state DEFAULT == 'National'
-     * 
+     *
      * @return string available date
      */
     public static function getNextGasConnectionDate(string $movingDate, string $state = 'National') {
