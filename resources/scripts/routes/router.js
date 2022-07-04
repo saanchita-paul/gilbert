@@ -8,6 +8,7 @@ import {checkRouteAuthentication} from "@scripts/services/AuthService";
 import CustomerDetails from "@scripts/pages/CustomerDetails";
 import CustomerListPage from "@scripts/pages/CustomerListTablePage";
 import UtilityAnalyticPage from "@scripts/pages/dashboard/UtilityAnalyticPage";
+import ApplicationCafFilePage from "@scripts/pages/ApplicationCafFilePage";
 import CustomerList from "@scripts/pages/HelpdeskPage";
 import Test from "@scripts/pages/Test";
 import RealStateAgencyPage from "@scripts/pages/RealStateAgencyPage";
@@ -48,6 +49,16 @@ const router = new VueRouter({
                     path: '/chatbot',
                     component: UtilityAnalyticPage,
                     name: 'chatbot',
+                    meta: {
+                        isProtected: true,
+                        roles: ['hood_admin'],
+
+                    }
+                },
+                {
+                    path: '/caf-files',
+                    component: ApplicationCafFilePage,
+                    name: 'caf.files',
                     meta: {
                         isProtected: true,
                         roles: ['hood_admin'],
