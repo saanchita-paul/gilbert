@@ -127,7 +127,7 @@ export default {
                 this.cafFiles[index].abn = data.abn;
                 this.cafFiles[index].first_name = data.first_name;
                 this.cafFiles[index].last_name = data.last_name;
-                this.cafFiles[index].last_name = data.last_name;
+                this.cafFiles[index].middle_name = data.middle_name;
                 this.cafFiles[index].nmi = data.nmi;
                 this.cafFiles[index].mirn = data.mirn;
 
