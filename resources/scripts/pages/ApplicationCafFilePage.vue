@@ -126,8 +126,16 @@ export default {
                 this.cafFiles[index].full_name = data.full_name;
                 this.cafFiles[index].business_name = data.business_name;
                 this.cafFiles[index].abn = data.abn;
-                this.cafFiles[index].connection_date = data.connection_date;
-                this.cafFiles[index].plan = data.plan;
+
+                if(!isNull( data.connection_date)) {
+                    this.cafFiles[index].connection_date = data.connection_date;
+                }
+                if(!isNull( data.plan)) {
+                    this.cafFiles[index].plan = data.plan;
+                }
+
+
+
             }
         },
 

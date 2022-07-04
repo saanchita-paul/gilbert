@@ -337,7 +337,7 @@ export default {
     watch: {
         cafFileData: {
             async handler() {
-                await this.syncData();
+                // await this.syncData();
                 this.updateServiceDropDown();
             },
             deep: true,

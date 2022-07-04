@@ -13,7 +13,7 @@ const mapApplicationCafFileList =  data => {
 
 function mapServices(services) {
     let availableServices = [];
-        services.map(svc => {
+    services.map(svc => {
         if( (svc.service_type === 'gas' && svc.enable_caf_file )
             || (svc.service_type === 'electricity' && svc.enable_caf_file)) {
             availableServices.push(svc.service_type);
@@ -36,7 +36,7 @@ function getSelectedService(service) {
     if(filterServices.length === 2) {
         return 'both'
     } else if(filterServices.length === 1) {
-       return  filterServices[0].service_type;
+        return  filterServices[0].service_type;
     }
     return '';
 
@@ -49,11 +49,11 @@ function isPossibleToMakeCaf(service) {
 
 function mapServiceStatus(service) {
     let status = '';
-     service.map(svc => {
-         let serStatus = svc.status;
-         if(isNull(serStatus)) {
-             serStatus = '';
-         }
+    service.map(svc => {
+        let serStatus = svc.status;
+        if(isNull(serStatus)) {
+            serStatus = '';
+        }
         if (svc.service_type === 'gas' ) {
             status = status + ' Gas: ' + serStatus
         }
@@ -63,7 +63,7 @@ function mapServiceStatus(service) {
         }
 
     });
-     return status;
+    return status;
 
 
 
@@ -132,17 +132,25 @@ export default {
     },
 
     getConnectionData(response) {
-       let service = response.service;
-       if(service.length > 0) {
-           let activeService = service.find(svc => svc.enable_caf_file)
-           return DayJS(activeService.connection_date).format(DATE_FORMAT.DB_DATE);
-       }
+        let service = response.service;
+        if(service.length > 0) {
+            let activeService = service.find(svc => svc.enable_caf_file);
+            if((activeService)) {
+                return DayJS(activeService.connection_date).format(DATE_FORMAT.DB_DATE);
+            }
+            return null;
+        }
     },
     getServicePlan(response) {
         let service = response.service;
         if(service.length > 0) {
-            let activeService = service.find(svc => svc.enable_caf_file)
-            return activeService.plan_type;
+
+            let activeService = service.find(svc => svc.enable_caf_file);
+            if((activeService)) {
+                return activeService.plan_type;
+            }
+            return null;
+
         }
     }
 }
