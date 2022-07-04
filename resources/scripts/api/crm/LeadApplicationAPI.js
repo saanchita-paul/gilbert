@@ -283,7 +283,7 @@ export default {
 
     async sendToChatBot(id) {
         try {
-            const data = await axios.put(`/api/applications/${id}/send-to-chatbot`);
+            const data = await axios.get(`/api/applications/${id}/send-to-chatbot`);
             return data;
         } catch (error) {
             return error.data;

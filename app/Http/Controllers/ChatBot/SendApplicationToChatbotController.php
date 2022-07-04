@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\ChatBot;
 
 use App\Http\Controllers\Controller;
+use App\Models\ConnectionApplication;
 use App\Services\ChatBot\SendAppGilbertToChatbotService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class SendApplicationToChatbotController extends Controller
 {

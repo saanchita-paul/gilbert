@@ -170,11 +170,11 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     // REA extracts report
     Route::get('/rea-extract/report', [ReaExtractsReportController::class, 'getReaReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
-    
+
     /***
      * Send to chatbot
-    */
-    Route::put('/applications/{id}/send-to-chatbot', [ApplicationController::class, 'sendToChatBot']); 
+     */
+    Route::get('/applications/{id}/send-to-chatbot', [SendApplicationToChatbotController::class, 'sendApplication']);
     Route::get('/applications/{id}/is-sent-to-chatbot', [ApplicationController::class, 'isSentToChatBot']);
 
 });
@@ -255,6 +255,3 @@ Route::get('/kaka', function () {
 //    dd($date);
     return $dateTimeZone->getOffset($date)/60/60;
 });
-
-// test (Shakil)
-Route::get('/send-data/{applicationId}', [SendApplicationToChatbotController::class, 'sendApplication']);

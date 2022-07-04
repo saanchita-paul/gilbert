@@ -19,7 +19,15 @@ class SendAppGilbertToChatbotService
         $application->load(['connectionServices', 'identification', 'authorizedPerson']);
 
         $sendApplication = new SendApplicationToChatbotAPI();
-        return $sendApplication->postApi($application);
+        $response = $sendApplication->postApi($application);
+
+        if ($response){
+            $application->update([
+                'is_sent_to_chatbot' => 1
+            ]);
+        }
+
+        return $response;
     }
 
 }

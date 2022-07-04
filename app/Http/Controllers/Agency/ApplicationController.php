@@ -435,25 +435,25 @@ class ApplicationController extends Controller
         }
     }
 
-    /**
-     * send app to chatbot
-     *
-     * @param Request $request
-     * @param int $applicationId
-     *
-     */
-    public function sendToChatBot(Request $request, int $applicationId)
-    {
-        try {
-            $existingApplication = ConnectionApplication::where('id', $applicationId)->firstOrFail();
-            $existingApplication->update([
-                'is_sent_to_chatbot' => 1
-            ]);
-            return $existingApplication;
-        } catch (\Exception $exception) {
-            return $this->sendErrorResponse($exception);
-        }
-    }
+//    /**
+//     * send app to chatbot
+//     *
+//     * @param Request $request
+//     * @param int $applicationId
+//     *
+//     */
+//    public function sendToChatBot(Request $request, int $applicationId)
+//    {
+//        try {
+//            $existingApplication = ConnectionApplication::where('id', $applicationId)->firstOrFail();
+//            $existingApplication->update([
+//                'is_sent_to_chatbot' => 1
+//            ]);
+//            return $existingApplication;
+//        } catch (\Exception $exception) {
+//            return $this->sendErrorResponse($exception);
+//        }
+//    }
 
     /**
      * get the is_sent_to_chatbot value
@@ -465,8 +465,7 @@ class ApplicationController extends Controller
     {
         try {
             $service = new ApplicationService();
-            $res = $service->getIsSentToChatbot($applicationId);
-            return $res;
+            return $service->getIsSentToChatbot($applicationId);
 
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);

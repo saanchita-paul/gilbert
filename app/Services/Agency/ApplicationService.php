@@ -606,9 +606,7 @@ class ApplicationService
     {
         $existingApplication = ConnectionApplication::where('id', $applicationId)->firstOrFail();
 
-        $isSentToChatBot = $existingApplication->is_sent_to_chatbot;
-
-        return  $isSentToChatBot;
+        return $existingApplication?->is_sent_to_chatbot;
     }
 
 }
