@@ -201,13 +201,13 @@ class OriginService
                 $this->saveSubmittedStatus($service->id, $response['HoodReferenceNumber']);
             }
 
-            ConnectionApplication::where('id', $this->applicationId)->update([
+            ConnectionApplication::where('id', $application->id)->update([
                 'is_running_submission' => 0,
             ]);
         }
         catch (Exception $exception){
 
-            ConnectionApplication::where('id', $this->applicationId)->update([
+            ConnectionApplication::where('id', $application->id)->update([
                 'is_running_submission' => 0,
             ]);
 
