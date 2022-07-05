@@ -202,8 +202,17 @@ class OriginService
             if(!empty($response['HoodReferenceNumber'])){
                 $this->saveSubmittedStatus($service->id, $response['HoodReferenceNumber']);
             }
+
+            ConnectionApplication::where('id', $application->id)->update([
+                'is_running_submission' => 0,
+            ]);
         }
         catch (Exception $exception){
+
+            ConnectionApplication::where('id', $application->id)->update([
+                'is_running_submission' => 0,
+            ]);
+
             $message = $exception->getMessage();
             if($exception->getCode() == BaseOriginAPI::CODE_REJECT){
                 preg_match('/\[([^\)]*)\]/', $message, $codeMatch);
