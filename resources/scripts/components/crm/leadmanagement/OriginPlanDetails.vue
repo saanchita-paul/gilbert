@@ -196,12 +196,14 @@ export default {
 					query = {
 					state: this.state,
 					postcode: this.leadSummary.postcode,
+					nmi_prefix: this.leadSummary.nmi.substr(0, 2),
 				}
 			} else {
 					query = {
 					service_type: this.service_Type,
 					state: this.state,
 					postcode: this.leadSummary.postcode,
+					nmi_prefix: this.leadSummary.nmi.substr(0, 2),
 				}
 			}
 			
