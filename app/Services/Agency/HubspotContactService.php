@@ -470,8 +470,8 @@ class HubspotContactService
         $newHistory->contact_id = $this->application->hubspot_contact_id;
         $newHistory->connection_application_id = $this->application->id;
         $newHistory->email = $this->application->email;
-        $newHistory->address_as_text = $this->application->address_text;
-        $newHistory->hubspot_response = json_encode($hubspot_response);
+        $newHistory->address_as_text = $this->application->address_text ?? '';
+        $newHistory->hubspot_response = json_encode($hubspot_response) ?? '';
         $newHistory->save();
 
         return $newHistory->id;
