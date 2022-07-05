@@ -5,7 +5,7 @@
         </v-col>
         <v-col cols="4" class="mb-8 pb-8">
             <v-card class="hood-card">
-                <ApplicationNotes :notes="notes" @saveNote="saveNote"></ApplicationNotes>
+                <ApplicationNotes :leadSummary="leadSummary" :notes="notes" @saveNote="saveNote"></ApplicationNotes>
             </v-card>
         </v-col>
     </v-row>

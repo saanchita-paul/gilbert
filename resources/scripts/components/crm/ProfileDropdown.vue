@@ -15,15 +15,20 @@
 
             <div class="my-2">
                 <v-divider></v-divider>
+            </div> 
+            
+            <div class="button-style" block @click="editProfile">
+                 <v-icon >mdi-account-edit</v-icon> Edit My Profile
             </div>
-            <div class="pa-4">
-                <v-btn outlined block @click="editProfile">
-                    Edit My Profile
-                </v-btn>
+            <div class="button-style" block>
+                <v-icon >mdi-dock-top</v-icon><a target=”_blank” href="https://www.hoodrewards.ai/">View MyRewards Points</a>
             </div>
-            <v-btn @click="onLogout" color="error" block>
+            <div class="button-style" block>
+                <v-icon >mdi-cart</v-icon> <a target=”_blank” href="https://www.hoodrewards.ai/Catalogue">Shop Using MyRewards Points</a>
+            </div>
+            <div class="button-style" block @click="onLogout" style="background-color:#ea4b64; color: white">
                 Sign out
-            </v-btn>
+            </div>
     </v-card>
 </template>
 
@@ -71,6 +76,21 @@ export default {
     /*letter-spacing: 0em;*/
     /*background: #7E8A8F;*/
     /*text-align: left;*/
+}
+
+.button-style {
+    padding: 10px ;
+    cursor: pointer;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: white;
+}
+.button-style:active {
+  background-color: whitesmoke;
+}
+a:hover, a:visited, a:link, a:active {
+    color: inherit;
+    padding-left: 4px;
+    text-decoration: none
 }
 
 </style>

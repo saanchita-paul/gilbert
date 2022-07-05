@@ -219,9 +219,12 @@ export default {
         }
     },
 
-    async closeApplicationWithReason(id, closing_reason){
+    async closeApplicationWithReason(id, closeReason){
         try {
-            const data = await axios.post('/api/applications/'+id+'/closeApplication' , {closing_reason});
+            const data = await axios.post('/api/applications/'+id+'/closeApplication' , {
+                app_close_reason_id: closeReason.reason_id,
+                closing_reason: closeReason.reason_text
+            });
             return true;
         } catch (error) {
             console.log(error)
@@ -510,5 +513,14 @@ export default {
 
     async clearConcessionDetails(id) {
         await axios.post('/api/applications/'+id+'/clear-concession-details');
+    },
+
+    async validateCutOff(id) {
+        try {
+            const data = await axios.get('/api/applications/' + id + '/validate-cutoff');
+            return data.data;
+        } catch (error) {
+            return error.data;
+        }
     },
 }
