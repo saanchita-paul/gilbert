@@ -46,6 +46,7 @@ class SearchConnectionApplication
      */
     private Builder $builder;
     private ?int $tenancyType;
+    private ?int $triage;
     private $officeId;
 
     private $appId;
@@ -66,6 +67,7 @@ class SearchConnectionApplication
         $this->leadType = optional($request)['active_lead_type'];
         $this->source = !empty($request['source']) ? (ConnectionApplication::SOURCE_MAPPING[$request['source']] ?? null) : null;
         $this->tenancyType = !empty($request['tenancy_type']) ? ConnectionApplication::TENANCY_MAPPING[$request['tenancy_type']] ?? null : null;
+        $this->triage = !empty($request['triage']) ? ConnectionApplication::TRIAGE_MAPPING[$request['triage']] ?? null : null;
         $this->officeId = !empty($request['office_id']) ? $request['office_id'] : null;
         $this->appId = !empty($request['app_id']) ? $request['app_id'] : null;
         $this->agentId = !empty($request['agent_id']) ? $request['agent_id'] : null;
@@ -89,6 +91,7 @@ class SearchConnectionApplication
         $this->builder = ConnectionApplication::query()
             ->with('connectionServices.reasons')
             ->with('SugerLead')
+            ->with('tsaCallHistories')
             ->with('assignedTo')
             ->with('submittedByUser');
 
@@ -99,6 +102,7 @@ class SearchConnectionApplication
             ->applyFilterOfficeId()
             ->applyFilterForFoxie()
             ->applyFilterTenancyType()
+            ->applyFilterTriage()
             ->applyFilterAppId()
             ->applyFilterMovingDate()
             ->applyFilterAgentId()
@@ -224,6 +228,17 @@ class SearchConnectionApplication
     {
         if ($this->tenancyType) {
             $this->builder = $this->builder->where('tenancy_type', $this->tenancyType);
+        }
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    private function applyFilterTriage(): static
+    {
+        if ($this->triage) {
+            $this->builder = $this->builder->where('is_triage', $this->triage);
         }
         return $this;
     }

@@ -19,8 +19,8 @@ class GBGMapService {
 
     initialize() {
         Harmony.init(
-            "hoodmovetech_test_user",
-            "f3se7N14GrCxHWQDgAJTu7wluFw7jDW9",
+            process.env.MIX_GBG_USER_ID,
+            process.env.MIX_GBG_PASSWORD,
             Harmony.AUSTRALIA
         );
 

@@ -23,12 +23,12 @@ class SendApplicationToEA implements ShouldQueue
         //
     }
 
-    private function validateAddress($applicationId) : bool 
+    private function validateAddress($applicationId) : bool
     {
         $addressModel = new AddressModel(connection_application_id: $applicationId);
         $gbgService = new GBGServices($addressModel);
         $address = $gbgService->findAddressByText();
-        if ($address->getIsAddressComplete()) 
+        if ($address->getIsAddressComplete())
         {
             return true;
         }else
@@ -45,7 +45,7 @@ class SendApplicationToEA implements ShouldQueue
      */
     public function handle(SubmitApplicationEvent $event)
     {
-        if (!$this->validateAddress($event->applicationId)) 
+        if (!$this->validateAddress($event->applicationId))
         {
             info("Send Application To EA: Address is not complete");
             // return;
@@ -58,11 +58,11 @@ class SendApplicationToEA implements ShouldQueue
         if ($saleApiOn === "1" &&
             ($submitType === 'energy' || $submitType === 'power' || $submitType === 'gas')
             && $this->isValidForSalesApi($application, $submitType) ) {
-                $postEaService = new PostSalesService($event->applicationId);
-                $postEaService->postToEa($submitType);
-                ConnectionApplication::where('id' , $event->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
-                $hubspotService = new HubspotContactService($event->applicationId);
-                $hubspotService->update();
+            $postEaService = new PostSalesService($event->applicationId);
+            $postEaService->postToEa($submitType);
+            ConnectionApplication::where('id' , $event->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
+            $hubspotService = new HubspotContactService($event->applicationId);
+            $hubspotService->update();
         } else {
             info("Skipping EA Submit", [
                 'EA_SALES_API_ON' => $saleApiOn,
@@ -96,7 +96,7 @@ class SendApplicationToEA implements ShouldQueue
             return true;
         }
         return  false;
-        
+
         // foreach ($application->connectionServices as $service) {
         //     if ($service->provider_name === 'ea' && is_null($service->lead_reference)) {
         //         return true;

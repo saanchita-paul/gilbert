@@ -45,6 +45,7 @@ class ApplicationResource extends JsonResource
             'address_text' => $this->address_text,
             'services' => $this->getConnectionServices($this->connectionServices),
             'connection_services' => $this->mapService($this->connectionServices),
+            'tsa_call_histories' => $this->mapTsaService($this->tsaCallHistories),
             'identification' => $this->identification,
             'family_violance' => isset($this->family_violance) ? $this->family_violance : 3,
             'is_renovation_on' => isset($this->is_renovation_on) ? $this->is_renovation_on : 0,
@@ -79,6 +80,7 @@ class ApplicationResource extends JsonResource
             'billing_postcode' => $this->billing_postcode,
             'is_billing_same' => $this->is_billing_same,
             'is_contacted' => $this->is_contacted,
+            'tsa_call_status' => $this->tsa_call_status,
             'is_auto_water_submit' => $this->is_auto_water_submit,
             'fast_connect_customer_reference' => $this->fast_connect_customer_reference,
             'authorizedPersonName' => $this->getAuthoizedPersonName(),
@@ -129,6 +131,18 @@ class ApplicationResource extends JsonResource
             array_push($service_array, $services[$i]['service_type']);
         }
         return $service_array;
+    }
+
+    private function mapTsaService($callHistories)
+    {
+        $callHistoryArray = [];
+        $count = sizeof($callHistories);
+        for ($i = 0; $i < $count; $i++) {
+            $callHistoryArray[$i]['attempt_outcome'] = $callHistories[$i]['attempt_outcome'];
+            $callHistoryArray[$i]['attempt_initiated_timestamp'] = $callHistories[$i]['attempt_initiated_timestamp'];
+            $callHistoryArray[$i]['attempt_id'] = $callHistories[$i]['attempt_id'];
+        }
+        return $callHistoryArray;
     }
 
     public function mapService($service)

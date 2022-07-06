@@ -3,6 +3,7 @@
 
 namespace ExternalLead\Services;
 
+use App\Events\NotifyAgentAfterLeadCreation;
 use Exception;
 use App\Models\Office;
 use App\Models\AgentProfile;
@@ -110,6 +111,7 @@ class TAppServices
             $this->createIdentification($this->connectionApplicaton->id);
             $this->createService($requestData->tenancy_service_type, $this->connectionApplicaton->id);
             $this->createAuthorizedPerson($this->connectionApplicaton->id);
+            NotifyAgentAfterLeadCreation::dispatch($this->connectionApplicaton->id);
             CreateHubspotProperty::dispatch($this->connectionApplicaton->id);
         } catch (Exception $ex) {
             \Log::error("Lead create successful, Identification or Service or Authorization creation fail");
@@ -188,13 +190,13 @@ class TAppServices
             $mapperService->mapYesNoToBool($this->userRequestData->tenancy_is_renovation_on) : null;
 
         $this->setStreetAddressAndAddressText();
-        
+
         // $this->connectionApplicaton->street_address = $this->userRequestData->tenancy_street_address ?? null;
     }
 
     private function setStreetAddressAndAddressText()
     {
-        $address = new AddressModel( 
+        $address = new AddressModel(
             $this->connectionApplicaton->unit_number,
             $this->connectionApplicaton->street_number,
             $this->connectionApplicaton->street_name,
@@ -204,7 +206,7 @@ class TAppServices
             $this->connectionApplicaton->country,
          );
 
-        $billingAddress = new AddressModel( 
+        $billingAddress = new AddressModel(
             $this->connectionApplicaton->billing_unit_number,
             $this->connectionApplicaton->billing_street_number,
             $this->connectionApplicaton->billing_street_name,
@@ -216,10 +218,10 @@ class TAppServices
 
         $this->connectionApplicaton->street_address = $address->street_address;
         $this->connectionApplicaton->address_text = $address->address_text;
-        
+
         $this->connectionApplicaton->billing_street_address = $billingAddress->street_address;
         $this->connectionApplicaton->billing_address_text = $billingAddress->address_text;
-        
+
     }
 
     /**
@@ -318,7 +320,7 @@ class TAppServices
             $connectionService->save();
             return;
         }
-        
+
         foreach ($tAppServices as $service) {
             $connectionService = new ConnectionService();
             $connectionService->service_type = strtolower($service);

@@ -40,7 +40,7 @@
                           </v-list-item>
                       </v-list>
                   </v-menu>
-                  
+
                   <ValidationProvider name="Contact" rules="required|cv-phone|length:10"  v-slot="{ errors }">
                       <v-text-field
                         v-model = "office.contact"
@@ -70,11 +70,17 @@
                   </ValidationProvider>
                   <ValidationProvider name="Rent Roll"   v-slot="{ errors }">
                     <v-text-field  v-model = "office.rent_roll" @input="updateOffice"
+                                   class="v-input--hide-details"
                                    label="Rent Roll"
                                    outlined dense
                                    :error-messages=" errors[0]"
                     ></v-text-field>
                   </ValidationProvider>
+                  <v-checkbox
+                      v-model="office.should_notify_agent"
+                      @input="updateOffice"
+                      :label="`Notify agents when HOOD receives an application`">
+                  </v-checkbox>
               </div>
             </v-col>
           </v-row>
@@ -90,13 +96,14 @@ export default {
     data() {
       return {
           office: {
-            id: null,
-            title: '',
-            contact: '',
-            email: '',
-            abn: '',
-            address: '',
-            rent_roll: ''
+              id: null,
+              title: '',
+              contact: '',
+              email: '',
+              abn: '',
+              address: '',
+              rent_roll: '',
+              should_notify_agent: false
           },
           showMenu: false,
           searchResult: [],
@@ -140,7 +147,7 @@ export default {
     mounted() {
      // this.updateOffice();
      this.updateWithProps();
-     
+
     },
 
     watch: {

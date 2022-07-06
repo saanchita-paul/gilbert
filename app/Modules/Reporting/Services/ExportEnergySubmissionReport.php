@@ -1,12 +1,15 @@
 <?php
 namespace App\Modules\Reporting\Services;
 
+use App\Models\HoodProfile;
 use App\Services\TimeZoneService;
 use Carbon\Carbon;
+use App\Models\AppCloseReason;
 use DB;
 use App\Models\RejectionReason;
 use App\Models\OfficeCommission;
 use App\Models\ConnectionService;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Rap2hpoutre\FastExcel\FastExcel;
@@ -113,8 +116,10 @@ class ExportEnergySubmissionReport
 
             $this->setAgencyName($datum);
 
-            $datum->Rejection_Reason = $this->getRejectionReason($datum->Service_Id, $datum->Utility_Service);
+            $datum->Closing_Reason = $this->getRejectionReason($datum);
 
+            unset($datum->closing_reason);
+            unset($datum->acr_value);
             unset($datum->Office_Id);
             unset($datum->Foxie_Agency_Name);
             unset($datum->Foxie_Agent_Name);
@@ -143,6 +148,7 @@ class ExportEnergySubmissionReport
                 IFNULL(ofs.name, 'NULL') as `Office_Name`,
                 concat(ap.first_name, ap.last_name) as `Agent_Name`,
                 IFNULL(u.email, 'NULL') as `Submitted_User_Email`,
+                IFNULL(user.email, 'NULL') as `Assigned_to`,
                 ca.source as `Lead_Source`,
                 ca.first_name as `Customer_Firstname`,
                 ca.last_name as `Customer_Lastname`,
@@ -176,16 +182,25 @@ class ExportEnergySubmissionReport
                 IFNULL(sl.compare_connect_id, 'NULL') as `Foxie_Connect_Id`,
                 cs.status as `UI_Status`,
                 ca.status as `Application_Status`,
-                cs.status as `Utility_Status`
+                cs.status as `Utility_Status`,
+                acr.value as `acr_value`,
+                ca.closing_reason as `closing_reason`,
+                (select reason_text from rejection_reasons where connection_service_id=cs.id  limit 1) as Rejection_Reason
             ")
             ->rightJoin('connection_applications as ca', 'ca.id', '=', 'cs.connection_application_id')
             ->leftJoin('agencies as ag', 'ca.agency_id', '=', 'ag.id')
             ->leftJoin('agent_profiles as ap', 'ap.id', '=', 'ca.created_by')
             ->leftJoin('offices as ofs', 'ofs.id', '=', 'ca.office_id')
+            ->leftJoin('app_close_reasons as acr', 'ca.app_close_reason_id', '=', 'acr.id')
             ->leftJoin('users as u', 'ca.submitted_by', '=', 'u.id')
+            ->leftJoin('agent_profiles as aprofile', 'aprofile.id', '=', 'ca.assigned_to')
+            ->leftJoin('users as user', function (JoinClause $clause) {
+                $clause->on('user.profile_id', '=', 'aprofile.id')
+                    ->where('user.profile_type', HoodProfile::class);
+            })
             ->leftJoin('suger_leads as sl', 'ca.id', '=', 'sl.connection_application_id')
             ->where( function($q) use ($energyType) { $q->whereIn('cs.service_type', $energyType)->orWhereNull('cs.service_type'); } );
-            // ->whereNotNull('cs.provider_name');
+        // ->whereNotNull('cs.provider_name');
         $builder = $this->applyStatusFilter($builder);
         $tempBuilder = clone $builder;
         $filterWithCreatedDate = $this->filterWithCreatedDate($tempBuilder)->get();
@@ -320,10 +335,12 @@ class ExportEnergySubmissionReport
         return GilbertStatusMapper::getUtilityStatusAsText($utilityStatus);
     }
 
-    private function getRejectionReason($serviceId, $serviceType)
+    private function getRejectionReason($data)
     {
-        $reason = RejectionReason::where('connection_service_id', $serviceId)->first();
-        return $reason  ?  $reason->reason_text : null;
+        if(!empty($data->acr_value)) {
+            return strtolower($data->acr_value) === "others" ? $data->closing_reason : $data->acr_value;
+        }
+        return 'NULL';
     }
 
     private function getUtilityCommission($officeId, $serviceType)
