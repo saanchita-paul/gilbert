@@ -276,22 +276,22 @@ class SumoService
         }
     }
 
-     private function getLifeSupport($submitType)
-     {
-         $life_support = 0;
+    private function getLifeSupport($submitType)
+    {
+        $life_support = 0;
 
-         if ($submitType === 'gas'){
-             $life_support =  $this->application->is_gas_life_support;
-         }
-         elseif ($submitType === 'power') {
-             $life_support =  $this->application->is_power_life_support;
-         }
-         elseif ($submitType === 'energy') {
-             if ($this->application->is_power_life_support == 1 || $this->application->is_gas_life_support == 1) {
-                 $life_support = 1;
-             }
-         }
-         return $life_support;
-     }
+        if ($submitType === 'gas'){
+            $life_support =  $this->application->is_gas_life_support === 1 ? 1 : 0;
+        }
+        elseif ($submitType === 'power') {
+            $life_support =  $this->application->is_power_life_support === 1 ? 1 : 0;
+        }
+        elseif ($submitType === 'energy') {
+            if ($this->application->is_power_life_support === 1 || $this->application->is_gas_life_support === 1) {
+                $life_support = 1;
+            }
+        }
+        return $life_support;
+    }
 
 }
