@@ -89,7 +89,7 @@ class SubmittedLeadNote
 
     private function doSubmitOriginNote($state, $postCode){
         // \Log::info("debugging the note", [$state, $postCode]);
-        $originPlanService = new OriginPlanDetailsService($state, $postCode, $this->existLead->id, $this->servicesId);
+        $originPlanService = new OriginPlanDetailsService($state, $postCode, $this->existLead->id, $this->servicesId, $this->existLead->nmi ?? '');
         $plan_type = $originPlanService->plan_type;
 
         if(empty($plan_type)) return;
