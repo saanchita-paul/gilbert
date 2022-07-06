@@ -140,7 +140,7 @@ export default {
             return UtilityStoreService.getIsBothEnergySelected() || this.serviceType == 'energy';
         },
 		getNMIPrefix() {
-			return this.leadSummary.nmi.substr(0, 2);
+			return this.leadSummary.nmi?.substr(0, 2) ?? '';
 		},
 		willShowELectricity() {
 			return this.planDetails?.plans?.electricity && (this.serviceType == "power" || this.isBothEnergySubmit);
@@ -200,17 +200,17 @@ export default {
 			let query = null;
 			if(this.isBothEnergySubmit) {
 					query = {
-					state: this.state,
-					postcode: this.leadSummary.postcode,
-					nmi_prefix: this.getNMIPrefix,
-				}
+						state: this.state,
+						postcode: this.leadSummary.postcode,
+						nmi_prefix: this.getNMIPrefix,
+					}
 			} else {
 					query = {
-					service_type: this.service_Type,
-					state: this.state,
-					postcode: this.leadSummary.postcode,
-					nmi_prefix: this.getNMIPrefix,
-				}
+						service_type: this.service_Type,
+						state: this.state,
+						postcode: this.leadSummary.postcode,
+						nmi_prefix: this.getNMIPrefix,
+					}
 			}
 			
 			this.planDetails = await OriginService.getOriginData(query);
