@@ -38,6 +38,9 @@ class EnergySubmitListener
         $submitType = $event->submitType;
         $connectionServices = $this->getServices($event->applicationId, $submitType);
 
+
+        if ($connectionServices)
+        {
             if($ca->is_running_submission) {
                 throw new \Exception('Submit skipped as another submit is already in progress');
             };
@@ -54,7 +57,7 @@ class EnergySubmitListener
                     SumoSubmissionJob::dispatch($event->applicationId, $event->submitType);
                     break;
             }
-
+        }
 
     }
 
@@ -64,6 +67,7 @@ class EnergySubmitListener
      */
     private function getServices($applicationId, $submitType)
     {
+
         $services = match ($submitType) {
             'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
             'power' => [ConnectionService::TYPE_ELECTRICITY],

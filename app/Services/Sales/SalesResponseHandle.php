@@ -31,6 +31,7 @@ trait SalesResponseHandle
             //     $this->resetIsRunningSubmission($leadId);
             // }
 
+
             if ($quote->fuel === 'GAS') {
                 $this->updateService($leadId, 'gas', $updateData);
                 $this->updateExtraDetails($leadId, 'gas', $updateData['status']);
@@ -43,6 +44,10 @@ trait SalesResponseHandle
                 $this->saveRejectionReasons($reasons, $leadId, 'power');
                 $this->updateQuoteReference($leadId, 'power', $quote->id);
             }
+//            if (sizeof($reasons) > 0) {
+                $this->resetIsRunningSubmission($leadId);
+//            }
+
         }
     }
 
