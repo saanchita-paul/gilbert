@@ -9,6 +9,7 @@ use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ReaExtractsReportController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
+use App\Http\Controllers\GilbertLeadAPIController;
 use App\Http\Controllers\UserInvitationController;
 use App\Services\RolePermission;
 use App\Services\RolePermissionService;
@@ -255,3 +256,12 @@ Route::get('/kaka', function () {
 //    dd($date);
     return $dateTimeZone->getOffset($date)/60/60;
 });
+/*
+ * gilbert leads
+ * gilbert to chatbot implementation
+ * */
+Route::get('/gilbert-leads', [GilbertLeadAPIController::class, 'getGilbertLeads']);
+Route::put('/gilbert-leads/{id}', [GilbertLeadAPIController::class, 'updateGilbertLeads']);
+Route::get('/gilbert-finish-step/{step}', [GilbertLeadAPIController::class, 'updateGilbertSteps']);
+Route::put('/gilbert-connection/{id}', [GilbertLeadAPIController::class, 'updateService']);
+Route::put('/gilbert-energy/{id}', [GilbertLeadAPIController::class, 'updateGilbertEnergy']);
