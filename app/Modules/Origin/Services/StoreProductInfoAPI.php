@@ -47,7 +47,7 @@ class StoreProductInfoAPI extends BaseOriginAPI
                 $originPlan->status = 'INACTIVE';
             }
 
-            return false;
+            throw new \Exception(sprintf('Origin GET:%s - FAILED [%s](No Product ID can be found using product code "%s" and campaign ID "%s")', self::METHODNAME, 'INVALID_PLAN' , $this->product_code, $this->campaign_id), self::CODE_REJECT);
         }
 
         $productInfo = $responseData['results'][0];
