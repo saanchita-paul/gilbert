@@ -43,28 +43,24 @@ class GetPlans
      * @return OriginPlan
      */
     public static function getActivePlanByStateFuel($state, $fuel) : OriginPlan {
-        $plans = Cache::rememberForever('origin_plans_'.$state, function () use ($state) {
-            $base = config('bot.root_url');
-            $endpoint = '/hood-dashboard/api/origin-plan-code';
-            $stateParam = 'state=' . $state;
-            $url = $base . $endpoint . '?' . $stateParam;
+        $base = config('bot.root_url');
+        $endpoint = '/hood-dashboard/api/origin-plan-code';
+        $stateParam = 'state=' . $state;
+        $url = $base . $endpoint . '?' . $stateParam;
 
-            $headers = [
-                "Accept" => "application/json",
-            ];
+        $headers = [
+            "Accept" => "application/json",
+        ];
 
-            $response = Http::withOptions([
-                "headers" => $headers,
-                "verify" => false,
-            ])->get($url);
+        $response = Http::withOptions([
+            "headers" => $headers,
+            "verify" => false,
+        ])->get($url);
 
-            $response->throw();
-            
-            $responseData = json_decode($response->body(), true);
-            $planData = $responseData['data'];
-
-            return $planData;
-        });
+        $response->throw();
+        
+        $responseData = json_decode($response->body(), true);
+        $plans = $responseData['data'];
 
         $selectedPlan = [];
         
