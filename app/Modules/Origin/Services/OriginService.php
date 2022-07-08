@@ -61,12 +61,7 @@ class OriginService
 
             if(config('app.env') !== 'production'){
                 // local/dev fetch origin plan
-                $service_type = self::MAP_SERVICE_TYPE[$service->service_type];
-                $service_plan =  $type == 'gas' ? 'Origin Advantage' : 'Origin Basic'; //todo make a mapper to map with actual plan type
-                $plan = OriginPlan::where([
-                    ['division_id', $service_type],
-                    ['description', $service_plan]
-                ])->firstOrFail();
+                $plan = $type == 'gas' ? GetPlans::getDummyGasPlan() : GetPlans::getDummyElecPlan();
                 $plan_customer_type_id = $plan->customer_type_id;
                 $plan_division_id = $plan->division_id;
                 $plan_product_id = $plan->product_id;

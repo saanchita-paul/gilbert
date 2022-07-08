@@ -76,15 +76,48 @@ class GetPlans
 
         $campaign_id = $selectedPlan['campaign_code'];
         $product_code = $selectedPlan['product_id'];
+
+        // ALWAYS FETCH NEW PRODUCT INFO FOR NOW
+        $newProductInfo = new StoreProductInfoAPI($campaign_id, $product_code);
+        $saved = $newProductInfo->fetch();
+        $planDetails = OriginPlan::findOrFail($saved['id']);
         
-        $planDetails = OriginPlan::where('campaign_id', $campaign_id)
-                            ->where('product_code', $product_code)
-                            ->first();
-        if(!$planDetails){
-            $newProductInfo = new StoreProductInfoAPI($campaign_id, $product_code);
-            $saved = $newProductInfo->fetch();
-            $planDetails = OriginPlan::findOrFail($saved['id']);
-        }             
+        // $planDetails = OriginPlan::where('campaign_id', $campaign_id)
+        //                     ->where('product_code', $product_code)
+        //                     ->first();
+        // if(!$planDetails){
+        //     $newProductInfo = new StoreProductInfoAPI($campaign_id, $product_code);
+        //     $saved = $newProductInfo->fetch();
+        //     $planDetails = OriginPlan::findOrFail($saved['id']);
+        // }             
+        
+        return $planDetails;
+    }
+
+    /**
+     * @return OriginPlan
+     */
+    public static function getDummyElecPlan() : OriginPlan {
+        $campaign_id = 'C-00074893';
+        $product_code = 'ELE_FLEXI_0002';
+
+        $newProductInfo = new StoreProductInfoAPI($campaign_id, $product_code);
+        $saved = $newProductInfo->fetch();
+        $planDetails = OriginPlan::findOrFail($saved['id']);             
+        
+        return $planDetails;
+    }
+
+    /**
+     * @return OriginPlan
+     */
+    public static function getDummyGasPlan() : OriginPlan {
+        $campaign_id = 'C-00078334';
+        $product_code = 'GAS_LWFZR_0001';
+        
+        $newProductInfo = new StoreProductInfoAPI($campaign_id, $product_code);
+        $saved = $newProductInfo->fetch();
+        $planDetails = OriginPlan::findOrFail($saved['id']);             
         
         return $planDetails;
     }
