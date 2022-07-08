@@ -96,7 +96,6 @@ class SaveContacts
 
 
             $lead->save();
-            NotifyAgentAfterLeadCreation::dispatch($lead->lead_id);
 
             $lead->movingDate  = data_get($tenancy, 'TenancyStart');
             $this->savedLead[] = $lead;
