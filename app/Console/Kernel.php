@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\GetTsaLeadIdCommand;
 use Ignite\Commands\IgniteFetchCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Console\Commands\GetSellStatusCommand;
@@ -32,6 +33,7 @@ class Kernel extends ConsoleKernel
         SetPropertyMeAgentEmailCommand::class,
         OriginStorePlanCommand::class,
         OriginCheckStatusCommand::class,
+        GetTsaLeadIdCommand::class,
     ];
 
     /**
@@ -54,6 +56,8 @@ class Kernel extends ConsoleKernel
          $this->registerWaterStatusUpdate($schedule);
 
          $this->registerSaveTsaCallHistory($schedule);
+
+        $schedule->command('fetch:get-tsa-lead-id')->everyTenMinutes();
     }
 
     private function registerWaterStatusUpdate(Schedule $schedule)
