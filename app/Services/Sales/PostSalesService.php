@@ -8,15 +8,14 @@ use App\Models\APILog;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\Identification;
+use App\Models\Office;
 use App\Services\Logger\LogSalesService;
 use Carbon\Carbon;
 use GraphQL\Client;
 use GraphQL\Mutation;
 use GraphQL\Variable;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use PHPUnit\Util\Exception;
 
 class PostSalesService
 {
@@ -33,27 +32,36 @@ class PostSalesService
         $this->chatbotUri = config('bot.root_url');
         $this->connection = ConnectionApplication::with('connectionServices')->where('id', $id)->firstOrFail();
         $this->identification = $this->connection->identification;
-        $this->accessToken = (new GetAccessToken())->getAccessToken();
+        $this->accessToken = (new GetAccessToken())->getAccessToken($id);
         $this->tz = config('ea.au_time_zone', 11);
 
     }
 
-    public function getPlanType()
+    public function getPlanType($submitType)
     {
-        foreach ($this->connection->connectionServices as $service)
-        {
-            if($service->provider_name === 'ea') {
-                return $service->plan_type;
-            }
+        $services = match ($submitType) {
+            'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
+            'power' => [ConnectionService::TYPE_ELECTRICITY],
+            'gas' => [ConnectionService::TYPE_GAS]
+        };
+
+        $connectionService = ConnectionService::where('connection_application_id', $this->connection->id)
+            ->whereIn('service_type', $services)
+            ->where('provider_name', '=', 'ea')
+            ->first();
+
+        if($connectionService) {
+            return $connectionService->plan_type;
         }
         return throw new \Exception('[PostSalesService:getPlanType] plan type not found');
     }
 
-    public function postToEa()
+    public function postToEa($submitType, $applicationId)
     {
 
-        $id = $this->getId();
-        $vendorCode= "HD2";
+        $vendorCode= $this->getVendorCode();
+        $id = $vendorCode . $this->connection->id . time ();
+
         $version = "1";
         $saleDate = (new Carbon($this->connection->updated_at))->toIso8601String();
         $customerType =  "RES";
@@ -104,7 +112,7 @@ class PostSalesService
             ]
         ];
 
-        $offers = $this->prepareOffer();
+        $offers = $this->prepareOffer($submitType);
         $mailingAddressType = 'STREET';
 
         $streetMailingAddress = [
@@ -118,8 +126,8 @@ class PostSalesService
             'postcode'=> $this->connection->postcode,
         ];
 
-
         $billDeliveryMethod = $this->connection->is_email_billing?'EMAIL':'POST';
+
         $lifeSupport = $this->connection->has_life_support?true:false;
 
         $eaData = [
@@ -199,12 +207,17 @@ class PostSalesService
 
         } catch (\Exception $e)
         {
+            // ConnectionApplication::where('id', $applicationId)->update([
+            //     'is_running_submission' => 0,
+            // ]);
+
             $logSalesService->updateSalesLog($loggerResponse->key,
                 json_encode($e->getMessage()),
                 json_encode([]),
                 400
             );
-            throw new \Exception("EA Sales API ERROR: " . $e->getMessage());
+            // throw new \Exception("EA Sales API ERROR: " . $e->getMessage());
+            throw $e;
         }
 
 
@@ -323,9 +336,8 @@ class PostSalesService
      */
     public function processEaData($results)
     {
-        Log::info('End Sale API Response');
+        Log::info('Sale API Response');
         Log::info($results);
-        Log::info('Start Sale API Response');
 
         $data = json_decode($results);
         $submitSallData = $data?->data?->submitSale;
@@ -374,9 +386,11 @@ class PostSalesService
         }
     }
 
-    private function getId()
+    private function getVendorCode(): string
     {
-        return 'HD2'.$this->connection->id.time();
+        /** @var Office $office */
+        $office = $this->connection->office;
+        return $office->getVendorCode();
     }
 
     private function stateMap($state)
@@ -407,10 +421,9 @@ class PostSalesService
     /**
      * @throws \Exception
      */
-    private function prepareOffer()
+    private function prepareOffer($submitType)
     {
-//        Log::info('show Prepare call is called');
-        $plan = $this->getPlanType();
+        $plan = $this->getPlanType($submitType);
         $state = $this->stateMap( $this->connection->state);
         $gasPlanSourceCode = '';
         $elePlanSourceCode = '';
@@ -444,7 +457,7 @@ class PostSalesService
             ->first();
 
 
-        if(!is_null($gasService)) {
+        if(!is_null($gasService) && ($submitType === 'energy' || $submitType === 'gas')) {
             $servicePlan[] = [
                 "fuel"=> "GAS",
                 "planId" => $plan_id.'-G'.$state[0],
@@ -452,7 +465,7 @@ class PostSalesService
             ];
         }
 
-        if($eleService) {
+        if($eleService && ($submitType === 'energy' || $submitType === 'power')) {
             $servicePlan[] = [
                 "fuel"=> "ELE",
                 "planId" => $plan_id.'-E'.$state[0],

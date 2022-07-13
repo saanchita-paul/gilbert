@@ -1,4 +1,4 @@
-import EnergyPlan, {EA_PLAN_TYPES, PLAN_TYPE_NO_FRILLS, PLAN_TYPE_TOTAL, SERVICE_TYPES} from "@scripts/models/ea/EnergyPlan";
+import EnergyPlan, {EA_PLAN_TYPES, isTopEAPlan, PLAN_TYPE_NO_FRILLS, SERVICE_TYPES} from "@scripts/models/ea/EnergyPlan";
 import GasRate from "@scripts/models/ea/GasRate";
 import ElectricityRate from "@scripts/models/ea/ElectricityRate";
 
@@ -48,6 +48,9 @@ export default {
         planDetails.plan_details = data.plan_details;
         planDetails.solar_buy_pack_rate = {...planDetails.solar_buy_pack_rate, ...data.solar_buy_pack_rate}
 
+        planDetails.state_distributor_discount = data.state_distributor_discount;
+        planDetails.discounts = data.discounts
+
         return planDetails
     }
 }
@@ -86,7 +89,7 @@ const getGasPromotionalText = (planData, plan) => {
         r = getFloatFromString(r);
         return r.length > 0 ? r + " cents per kWh" : '';
     }
-    if (plan === PLAN_TYPE_TOTAL) {
+    if (isTopEAPlan(plan)) {
         return planData.discounts.gas + '% gas discount';
     }
     return '';
@@ -97,7 +100,7 @@ const getElectricityPromotionalText = (planData, plan) => {
     if (!rate) {
         return ''
     }
-    if (plan === PLAN_TYPE_TOTAL) {
+    if (isTopEAPlan(plan)) {
         return planData.discounts.electricity + '% electricity discount'
     }
     if (plan === PLAN_TYPE_NO_FRILLS  ) {

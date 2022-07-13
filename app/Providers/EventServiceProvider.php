@@ -2,8 +2,15 @@
 
 namespace App\Providers;
 
+use App\Events\NotifyAgentAfterLeadCreation;
 use App\Listeners\Agency\CreatePlanNoteListener;
+use App\Listeners\NotifyAgentAfterLeadCreationListener;
+use App\Listeners\Agency\EnergySubmitListener;
 use App\Listeners\SumoSubmitListener;
+use App\Models\ConnectionApplication;
+use App\Models\Identification;
+use App\Observers\ConnectionApplicationObserver;
+use App\Observers\IdentificationObserver;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use App\Listeners\WaterServiceListener;
@@ -17,6 +24,7 @@ use App\Listeners\Agency\UpdateHubSpotContact;
 use App\Listeners\Agency\SendNotificationToSupportListener;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use App\Listeners\OriginSubmitListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -34,17 +42,22 @@ class EventServiceProvider extends ServiceProvider
          *
          */
         SubmitApplicationEvent::class => [
-            SendApplicationToEA::class,
-//            SendNotificationToSupportListener::class,
-            SumoSubmitListener::class,
+////            SendApplicationToEA::class,
+////            OriginSubmitListener::class,
+////            SumoSubmitListener::class,
             UpdateHubSpotContact::class,
             WaterServiceListener::class,
+            EnergySubmitListener::class,
             CreatePlanNoteListener::class,
 
         ],
         CreateApplicationEvent::class => [
             CreateHubSpotContact::class,
         ],
+        NotifyAgentAfterLeadCreation::class => [
+            NotifyAgentAfterLeadCreationListener::class,
+        ],
+
 
         /**
          * API Logging
@@ -68,5 +81,7 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        ConnectionApplication::observe(ConnectionApplicationObserver::class);
+        Identification::observe(IdentificationObserver::class);
     }
 }

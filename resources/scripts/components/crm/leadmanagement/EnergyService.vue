@@ -50,7 +50,7 @@ export default {
             return null
         },
         quoteReference(){
-            return this.service?.quote_reference ? this.service.quote_reference : '-'
+            return this.service?.quote_reference ? this.service.quote_reference : (this.service?.lead_reference ? this.service.lead_reference : '-');
         },
         reasons() {
             const reasons = this.service?.reasons;
@@ -124,9 +124,6 @@ export default {
 }
 .reason {
     font-size: .8em;
-}
-.status {
-
 }
 .fontStyleStatus{
     font-family: Roboto;

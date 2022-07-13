@@ -74,7 +74,8 @@ class Office extends Model
         'email',
         'hood_agent_id',
         'rent_roll',
-        'property_me_refresh_token'
+        'property_me_refresh_token',
+        'should_notify_agent',
     ];
 
     /**
@@ -129,5 +130,26 @@ class Office extends Model
             'property_me_refresh_token' => $refreshToken,
             'property_me_client_version' => config('property_me.client_version', 'v2')
         ]);
+    }
+
+
+    public function eaClientCredential(): BelongsTo
+    {
+        return $this->belongsTo(EAClientCredential::class, 'ea_client_credential_id');
+    }
+
+    public function getEAClientId(): string
+    {
+        return $this->eaClientCredential?->client_id ?? config('ea.default_client_id');
+    }
+
+    public function getEAClientSecret(): string
+    {
+        return $this->eaClientCredential?->client_secret ?? config('ea.default_client_secret');
+    }
+
+    public function getVendorCode(): string
+    {
+        return $this->eaClientCredential?->vendor_code ?? config('ea.default_vendor_code');
     }
 }

@@ -1,11 +1,11 @@
 <template>
     <v-row>
         <v-col cols="8" class="mb-8 pb-8">
-                <ServiceApplications @updateDraft="updateDraft" @updateService="updateService" :afterHourFlag="afterHourFlag" :leadSummary="leadSummary" @updatePlan="updatePlan"></ServiceApplications>
+                <ServiceApplications @updateDraft="updateDraft" :afterHourFlag="afterHourFlag" :leadSummary="leadSummary"></ServiceApplications>
         </v-col>
         <v-col cols="4" class="mb-8 pb-8">
             <v-card class="hood-card">
-                <ApplicationNotes :notes="notes" @saveNote="saveNote"></ApplicationNotes>
+                <ApplicationNotes :leadSummary="leadSummary" :notes="notes" @saveNote="saveNote"></ApplicationNotes>
             </v-card>
         </v-col>
     </v-row>
@@ -34,30 +34,14 @@ name: "LeadServicesAndNotes",
         ApplicationNotes
     },
     methods: {
-
-      updateDraft( field, value, isDate, identification, isManualChangeFlag) {
-        this.$emit('updateDraft', field, value, isDate, identification, isManualChangeFlag );
-      },
-        updatePlan(plan, isManual)
-        {
-            this.$emit('updatePlan', plan, isManual);
+        updateDraft( field, value, isDate, identification, isManualChangeFlag) {
+            this.$emit('updateDraft', field, value, isDate, identification, isManualChangeFlag );
         },
-
         async saveNote(note) {
-          await LeadApplicationService.saveNote(note, this.leadSummary.id);
-          this.$emit('updateNote');
+            await LeadApplicationService.saveNote(note, this.leadSummary.id);
+            this.$emit('updateNote');
         },
-        updateService(service)
-        {
-            this.$emit('updateService',service);
-        }
-
-
     },
-    mounted() {
-        console.log("printing lead summary")
-        console.log(this.leadSummary)
-    }
 }
 </script>
 

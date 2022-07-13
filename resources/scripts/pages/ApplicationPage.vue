@@ -74,6 +74,7 @@ export default {
                 phone: "",
                 source: "",
                 tenancy_type: "",
+                triage: "",
             },
             advanceSearch: new LeadSearchFilterModel()
         }

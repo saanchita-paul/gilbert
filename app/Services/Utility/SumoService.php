@@ -17,6 +17,9 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 
+use Illuminate\Support\Str;
+
+
 class SumoService
 {
     private array|Collection|ConnectionApplication|Model $application;
@@ -62,26 +65,41 @@ class SumoService
         "Australian Capital Territory" => '02',
         "Western Australia" => '08', // TODO recheck on documentation
     ];
+    private string $submitType;
 
     /**
      * Store customer data in Sumo
      *
      * @throws \Exception
      */
-    public function storeCustomerData(int $id)
+    public function storeCustomerData(int $id, string $submitType)
     {
-        $this->application = ConnectionApplication::findOrFail($id);
-        $this->application->load(['identification', 'connectionServices', 'authorizedPerson']);
+        try {
+            $this->application = ConnectionApplication::findOrFail($id);
+            $this->application->load(['identification', 'connectionServices', 'authorizedPerson']);
+            $this->submitType = $submitType;
 
-        $url = config('sumo.base_url').config('sumo.store_customer_data_url');
-        $url = APILog::setLoggerQuery($url, APILog::API_SUMO_SUBMIT_LEAD, extend: false);
 
-        $response = Http::put($url, $this->getCustomerData());
+            $url = config('sumo.base_url').config('sumo.store_customer_data_url');
+            $url = APILog::setLoggerQuery($url, APILog::API_SUMO_SUBMIT_LEAD, extend: false);
 
-        \Log::info( 'printing sercondary contact for ' , $this->getCustomerData());
+            $response = Http::put($url, $this->getCustomerData());
+            // if (!$response->successful()) {
+            //     ConnectionApplication::where('id', $this->application->id)->update([
+            //         'is_running_submission' => 0,
+            //     ]);
+            // }
 
-        return json_decode($response->body(), true);
+            return json_decode($response->body(), true);
+        } catch (Exception $exception) {
+            // ConnectionApplication::where('id', $this->application->id)->update([
+            //     'is_running_submission' => 0,
+            // ]);
+            throw $exception;
+        }
+
     }
+
 
     private function getCustomerData(): array
     {
@@ -96,15 +114,16 @@ class SumoService
             'customerLastName' => $this->application->last_name,
             'customerPhone' => $this->getMappedPhone($this->application->state, $this->application->phone_type, $this->application->phone),
             'customerTitle' => $this->application->title,
+            //todo Why are we sending all services, do we need to check only what is submitted?
             'interestedIn' => $this->getMappedService($this->application->connectionServices?->pluck('service_type')->toArray()),
-            'lifeSupport' => false,
+             'lifeSupport' => $this->getLifeSupport($this->submitType),
             // 'lifeSupportFuel' => "string",
             'marketingConcent' => $this->application->is_contacted == 1 ? true : false,
             'mirn' => $this->application->mirn,
             'nmi' => $this->application->nmi,
             'proposedMovingDate' => $this->getMappedDate($this->application->moving_date),
             'prospectType' => $this->getMappedPropertyType($this->application->property_type),
-            'quoteNumber' => 'hood_'.$this->application->id,
+            'quoteNumber' => 'hood_'.$this->application->sumo_uuid,
             'secondaryCustomerEmail' =>  $this->application->authorizedPerson?->email,
             'secondaryCustomerFirstName' => $this->application->authorizedPerson?->first_name,
             'secondaryCustomerLastName' => $this->application->authorizedPerson?->last_name,
@@ -235,20 +254,44 @@ class SumoService
 
     }
 
-    public function saveStatus($applicationId, $status , $credit)
+    public function saveStatus($applicationId, $status , $credit, $submitType)
     {
+        $services = match ($submitType) {
+            'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
+            'power' => [ConnectionService::TYPE_ELECTRICITY],
+            'gas' => [ConnectionService::TYPE_GAS]
+        };
+
         $status = strtolower($status);
         if($status == 'success'){
-            ConnectionService::whereIn('service_type' , ['gas' , 'power'])
+            ConnectionService::whereIn('service_type' , $services)
             ->where('provider_name', 'sumo')
             ->where('connection_application_id', $applicationId)
             ->update(['status' =>  ConnectionService::STATUS_ENERGY_SUBMIT ]);
         } else if($status == 'failed'){
-            ConnectionService::whereIn('service_type' , ['gas' , 'power'])
+            ConnectionService::whereIn('service_type' , $services)
             ->where('provider_name', 'sumo')
             ->where('connection_application_id', $applicationId)
             ->update(['status' =>  ConnectionService::STATUS_REJECTED, 'rejected_at' => now()]);
         }
+    }
+
+    private function getLifeSupport($submitType)
+    {
+        $life_support = 0;
+
+        if ($submitType === 'gas'){
+            $life_support =  $this->application->is_gas_life_support === 1 ? 1 : 0;
+        }
+        elseif ($submitType === 'power') {
+            $life_support =  $this->application->is_power_life_support === 1 ? 1 : 0;
+        }
+        elseif ($submitType === 'energy') {
+            if ($this->application->is_power_life_support === 1 || $this->application->is_gas_life_support === 1) {
+                $life_support = 1;
+            }
+        }
+        return $life_support;
     }
 
 }

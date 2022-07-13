@@ -5,6 +5,7 @@ namespace App\Http\Resources\Agency;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Models\User;
+use App\Services\TimeZoneService;
 use App\Services\Utility\StateMapService;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -44,12 +45,13 @@ class ApplicationResource extends JsonResource
             'address_text' => $this->address_text,
             'services' => $this->getConnectionServices($this->connectionServices),
             'connection_services' => $this->mapService($this->connectionServices),
+            'tsa_call_histories' => $this->mapTsaService($this->tsaCallHistories),
             'identification' => $this->identification,
             'family_violance' => isset($this->family_violance) ? $this->family_violance : 3,
-            'is_renovation_on' => isset($this->is_renovation_on) ? $this->is_renovation_on : 1,
+            'is_renovation_on' => isset($this->is_renovation_on) ? $this->is_renovation_on : 0,
             'has_electricity' => isset($this->has_electricity) ? $this->has_electricity : 1,
             'inspection_time' => $this->inspection_time,
-            'is_email_billing' => $this->is_email_billing == 0 ? null : $this->is_email_billing,
+            'is_email_billing' => $this->is_email_billing,
             'nmi' => $this->nmi,
             'mirn' => $this->mirn,
             'property_type' => $this->property_type,
@@ -78,6 +80,7 @@ class ApplicationResource extends JsonResource
             'billing_postcode' => $this->billing_postcode,
             'is_billing_same' => $this->is_billing_same,
             'is_contacted' => $this->is_contacted,
+            'tsa_call_status' => $this->tsa_call_status,
             'is_auto_water_submit' => $this->is_auto_water_submit,
             'fast_connect_customer_reference' => $this->fast_connect_customer_reference,
             'authorizedPersonName' => $this->getAuthoizedPersonName(),
@@ -100,11 +103,23 @@ class ApplicationResource extends JsonResource
             'billing_is_address_complete' => $this->billing_is_address_complete,
 
             #todo: set timezone dynamically based on daylight saving
-            'created_at' => (new Carbon($this->created_at, '11'))->format('d/m/Y h:m a'),
+            'created_at' => (new Carbon($this->created_at, TimeZoneService::getTimeZoneInt()))->format('d/m/Y h:m a'),
             'submitted_by' => $this->submittedBy(),
             'submitted_at' => $this->submittedAt(),
             'after_hour_payee' => $this->after_hour_payee,
+
+            'is_email_marketing' => $this->is_email_marketing,
+            'is_access_require' => $this->is_access_require,
+            'is_gas_life_support' => $this->is_gas_life_support,
+            'is_any_unrestrained_animal' => $this->is_any_unrestrained_animal,
+            'concession_card_type' => $this->concession_card_type,
+            'concession_card_number' => $this->concession_card_number,
+            'concession_start_date' => $this->concession_start_date,
+            'concession_end_date' => $this->concession_end_date,
             'ea_go_neutral' => $this->ea_go_neutral,
+
+            'additional_access_information' => $this->additional_access_information,
+            'is_power_life_support' => $this->is_power_life_support,
         ];
     }
 
@@ -116,6 +131,18 @@ class ApplicationResource extends JsonResource
             array_push($service_array, $services[$i]['service_type']);
         }
         return $service_array;
+    }
+
+    private function mapTsaService($callHistories)
+    {
+        $callHistoryArray = [];
+        $count = sizeof($callHistories);
+        for ($i = 0; $i < $count; $i++) {
+            $callHistoryArray[$i]['attempt_outcome'] = $callHistories[$i]['attempt_outcome'];
+            $callHistoryArray[$i]['attempt_initiated_timestamp'] = $callHistories[$i]['attempt_initiated_timestamp'];
+            $callHistoryArray[$i]['attempt_id'] = $callHistories[$i]['attempt_id'];
+        }
+        return $callHistoryArray;
     }
 
     public function mapService($service)

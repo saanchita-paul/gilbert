@@ -51,7 +51,6 @@ class ConnectionService extends Model
     const AC_MANUAL_PROCESSING = 11;
     const STATUS_FAILED = 13;
 
-
     // Do not use these statuese
     const WATER_STATUS_IN_PROGRESS = 7; // initial status
     const WATER_STATUS_NEED_INFO = 10;
@@ -61,6 +60,7 @@ class ConnectionService extends Model
 
     const PROVIDER_SUMO = 'sumo';
     const PROVIDER_EA = 'ea';
+    const PROVIDER_ORIGIN = 'origin';
 
 
     const STATUS_MAPPING = [
@@ -83,6 +83,9 @@ class ConnectionService extends Model
     public const ENERGY_AUSTRALIA_NO_FRILLS = 'No Frills (Home)';
     public const ENERGY_AUSTRALIA_TOTAL_PLAN = 'Total Plan (Home)';
     public const ENERGY_AUSTRALIA_TOTAL_PLUS_12_PLAN = 'Total Plan Plus 12 (Home)';
+
+    public const ORIGIN_HOME_ASSIST_PLAN = 'origin_home_assist';
+    public const ORIGIN_ADVANTAGE_VARIABLE_PLAN = 'origin_advantage_variable';
 
     public const ENERGY_PLAN_MAPPER = [
         'basic_plan' => self::ENERGY_AUSTRALIA_BASIC_PLAN,

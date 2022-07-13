@@ -13,6 +13,7 @@ class LeadSearchFilterModel {
         active_lead_type,
         agent_id,
         agent_name,
+        triage
     } = {}) {
         this.tenant_name = tenant_name;
         this.source = source ?? null;
@@ -25,6 +26,7 @@ class LeadSearchFilterModel {
         this.active_lead_type = active_lead_type;
         this.agent_id = agent_id;
         this.agent_name = agent_name;
+        this.triage = triage ?? null;
     }
 
     isSearchEmpty() {
@@ -32,7 +34,8 @@ class LeadSearchFilterModel {
             isEmpty(this.source) &&
             isEmpty(this.phone) &&
             isEmpty(this.address) &&
-            isEmpty(this.tenancy_type);
+            isEmpty(this.tenancy_type) &&
+            isEmpty(this.triage);
     }
 
     clear(){
@@ -47,6 +50,7 @@ class LeadSearchFilterModel {
         this.active_lead_type = null;
         this.agent_id = null;
         this.agent_name = null;
+        this.triage = null;
     }
 }
 

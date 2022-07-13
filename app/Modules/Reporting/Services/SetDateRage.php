@@ -2,13 +2,14 @@
 
 namespace App\Modules\Reporting\Services;
 
+use App\Services\TimeZoneService;
 use Carbon\Carbon;
 
 trait SetDateRage
 {
     private function setDateRange(string $start, string $end)
     {
-        $this->timezone = env("TIME_ZONE", 11) ?? 11;
+        $this->timezone = TimeZoneService::getTimeZoneInt();
 
         $this->startDate = Carbon::parse($start, tz: $this->timezone)->setTimezone(0)->toDateTimeString();
         $this->endDate = Carbon::parse($end, tz: $this->timezone)

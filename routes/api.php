@@ -1,12 +1,17 @@
 <?php
 
+use App\Models\ConnectionApplication;
+use App\Http\Controllers\Agency\AppCloseReasonController;
+use App\Services\Agency\TriageFlagService;
 use Illuminate\Encryption\Encrypter;
 use App\Services\Address\GBGServices;
 use Illuminate\Support\Facades\Route;
 use App\Services\Address\AddressModel;
 use PropertyMe\services\FetchContacts;
 use App\Services\RolePermissionService;
+use TSA\Services\TsaCallHistoryService;
 use Illuminate\Support\Facades\Broadcast;
+use TSA\Services\TsaSendAppliationService;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Agency\NoteController;
 use Reporting\Http\Controllers\ReportController;
@@ -42,7 +47,7 @@ Route::get('/logout', [AuthController::class, 'logout']);
  * @Module AGENCY CRM
  */
 Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
-    // Route::namespace('agency')->middleware([])->group(function () {
+//     Route::namespace('agency')->middleware([])->group(function () {
     /**
      * Agency, Office Users
      */
@@ -100,8 +105,12 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::get('/application-assignees', [HoodUserController::class, 'getAssignee'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_ASSIGNEE_LIST);
+
+    // Route::post('/hood-users', [HoodUserController::class, 'store']);
+
     Route::post('/hood-users', [HoodUserController::class, 'store'])
         ->middleware('permission:' . RolePermission::P_HOOD_ADMIN_CORE);
+
     Route::get('/hood-users', [HoodUserController::class, 'index'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
 
@@ -134,6 +143,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::put('/applications/{id}/close', [ApplicationController::class, 'close']);
     Route::patch('/applications/{applicationId}/providers', [ApplicationController::class, 'providers'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_SERVICE_PROVIDERS);
+    Route::post('/applications/{applicationId}/clear-concession-details', [ApplicationController::class, 'clearConcession'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
 
     //todo: make a  separate controller for notes
     Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes'])
@@ -170,6 +181,25 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     // REA extracts report
     Route::get('/rea-extract/report', [ReaExtractsReportController::class, 'getReaReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
+
+    /***
+        * Application closing reasons route
+    */
+    // application closing reasons list
+    Route::get('/app-close-reasons', [AppCloseReasonController::class, 'index']);
+    // application closing reasons create
+    Route::post('/app-close-reasons', [AppCloseReasonController::class, 'create']);
+    // application closing reasons show
+    Route::get('/app-close-reasons/{id}', [AppCloseReasonController::class, 'show']);
+    // application closing reasons update
+    Route::put('/app-close-reasons/{id}', [AppCloseReasonController::class, 'update']);
+    // application closing reasons delete
+    Route::delete('/app-close-reasons/{id}', [AppCloseReasonController::class, 'delete']);
+
+    
+    Route::get('/rea-extract/corporate-report', [ReaExtractsReportController::class, 'getReaCorporateReport'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
+
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
@@ -182,6 +212,11 @@ Route::post('/invitation/change-password', [UserInvitationController::class, 'pa
 Route::post('/register/email-validation', [AuthController::class, 'isValidUser']);
 
 Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWaterLead']);
+
+/**
+ * api to get the uuid for sumo
+ */
+Route::get('/sumo/generate-uuid/{id}', [ApplicationController::class, 'getSumoUuid']);
 
 
 
@@ -200,6 +235,8 @@ Route::get('lnn/bot_token', function () {
 });
 
 
+
+Route::get('/applications/{id}/validate-cutoff/', [ApplicationController::class, 'validateCutOff']);
 
 
 Route::post('/our-property/token', [OurPropertyController::class, 'getAccessToken']);
@@ -236,3 +273,29 @@ Route::get("/karan/sales-status", function () {
     return "success";
 });
 
+
+
+
+// Route::get('report_corporate', function () {
+//     $data = ['image' => ''];
+//     $pdf = PDF::loadView('pdf.report_corporate', $data);
+//     return $pdf->inline();
+// });
+
+
+Route::get('country_test', function () {
+    //  return SubmitWaterLeadToFastConnect::mapLengthOfCountry[2];
+    $s = new TsaCallHistoryService();
+    // ConnectionApplication::find(12)
+    // $s->saveCallHistory(ConnectionApplication::find(12));
+    $s->saveCallHistory(ConnectionApplication::find(12));
+});
+
+
+Route::get('/kaka', function () {
+    $dateTimeZone = new DateTimeZone("Australia/Melbourne");
+    $date = new DateTime(null, $dateTimeZone);
+//    dd($date);
+    return $dateTimeZone->getOffset($date)/60/60;
+
+});

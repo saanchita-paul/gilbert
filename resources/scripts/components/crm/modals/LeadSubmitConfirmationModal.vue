@@ -6,16 +6,13 @@
             max-width="70%"
         >
                 <div>
-                  <ConfirmSubmission @backToEdit="backToEdit"  :data="data" @saveData="saveData"></ConfirmSubmission>
+                  <ConfirmSubmission @backToEdit="backToEdit" :submitType="submitType" :data="data" :leadId="leadId" @confirmSubmitLead="confirmSubmitLead"></ConfirmSubmission>
                 </div>
         </v-dialog>
     </v-row>
 </template>
 
 <script>
-import AgencyDetails from "@scripts/components/crm/AgencyDetails";
-import AgentConfirmApplicationModal from "@scripts/components/crm/modals/agent/AgentConfirmApplicationModal";
-import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import ConfirmSubmission from "@scripts/components/crm/leadmanagement/ConfirmSubmission";
 
 export default {
@@ -28,21 +25,24 @@ export default {
         leadSummary: {
             require: true,
         },
-      data: {
-          require: true
-      }
+        leadId : {
+            require: true
+        },
+        data: {
+            require: true
+        },
+        submitType: {
+            require: true
+        },
     },
     methods: {
         backToEdit() {
             this.$emit('backToEdit');
         },
-        saveData() {
-            this.$emit('saveData');
+        confirmSubmitLead() {
+            this.$emit('confirmSubmitLead');
         }
-    },
-  mounted() {
-
-  }
+    }
 }
 </script>
 

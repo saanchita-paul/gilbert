@@ -3,16 +3,21 @@
 namespace App\Services\Agency;
 
 use App\Jobs\UpdateHubspotContactJob;
+use App\Models\AppCloseReason;
 use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use App\Models\HoodProfile;
 use App\Models\Identification;
+use App\Models\Office;
 use App\Models\User;
 use App\Services\RolePermission;
+use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use TSA\Services\TsaSendAppliationService;
+use Illuminate\Support\Str;
+
 
 class ApplicationService
 {
@@ -132,7 +137,7 @@ class ApplicationService
         $existingApplication->nmi = $address['nmi'];
         $existingApplication->is_billing_same = $address['is_billing_same'];
 
-      
+
 
         if ($address['is_billing_same'] == 0 || $address['is_billing_same'] == null) {
             $existingApplication->billing_address_text = $address['billing_address_text'];
@@ -145,7 +150,7 @@ class ApplicationService
             $existingApplication->billing_street_number = empty($address['billing_street_address']) ? null : $address['billing_street_number'];
             $existingApplication->billing_city = empty($address['billing_city']) ? null : $address['billing_city'];
             $existingApplication->billing_postcode = empty($address['billing_postcode']) ? null : $address['billing_postcode'];
-            $existingApplication->billing_address_unit = $address['billing_unit_number'] ? $address['billing_unit_number'] : null;     
+            $existingApplication->billing_address_unit = $address['billing_unit_number'] ? $address['billing_unit_number'] : null;
         } else {
             $existingApplication->billing_address_text = $address['address_text'];
             $existingApplication->billing_state = $address['state'];
@@ -173,7 +178,12 @@ class ApplicationService
 
         if (in_array(HoodProfile::find($agentId)->user->roles->first()?->name,
             [RolePermission::ROLE_EXTERNAL_HOOD_TEAM_LEAD])) {
-            (new TsaSendAppliationService($applicationId))->sendApplication();
+            $tsaService = new TsaSendAppliationService($applicationId);
+            $tsaService->sendApplication();
+            $tsa_lead_id = $tsaService->getTsaLeadId();
+            $existingApplication = ConnectionApplication::find($applicationId);
+            $existingApplication->tsa_lead_id = $tsa_lead_id;
+            $existingApplication->save();
         }
         return $this->findApplications($applicationId);
     }
@@ -261,15 +271,16 @@ class ApplicationService
     public function submit(array $applications, $id)
     {
 
+        $existLead = ConnectionApplication::query()->where('id', $id)->firstOrFail();
+
         $lead = $applications['lead'];
-        $vendorId = $this->calculateVendorId($id);
+        $vendorId = $this->calculateVendorId($existLead);
         $lead = array_merge($lead, [
             'plan_type' => null,
             'submitted_by' => auth()->id(),
             'vendor_id' => $vendorId
         ]);
 
-        $existLead = ConnectionApplication::findOrFail($id);
 
         $existLead->update($lead);
 
@@ -299,16 +310,14 @@ class ApplicationService
     public function setSubmittedAtByServiceType(int $applicationId, string $type, array $service_interests = []): bool
     {
         try {
+            $services = match ($type) {
+                'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
+                'power' => [ConnectionService::TYPE_ELECTRICITY],
+                'gas' => [ConnectionService::TYPE_GAS],
+                'water' => [ConnectionService::TYPE_WATER],
+            };
             $query = ConnectionService::where('connection_application_id', $applicationId);
-
-            if ($type == "energy") {
-                $servicesInterests = array_filter(array_unique($service_interests), function ($var) {
-                    return ($var == 'power' || $var == 'gas');
-                });
-                $query = $query->whereIn('service_type', $servicesInterests);
-            } else {
-                $query = $query->where('service_type', strtolower($type));
-            }
+            $query = $query->whereIn('service_type', $services);
             $query->update(["submitted_at" => now()]);
 
             return true;
@@ -370,9 +379,11 @@ class ApplicationService
      */
     public function closeApplicationWithReason(array $application, int $applicationId, User $user)
     {
+
         try {
             $existingApplication = ConnectionApplication::find($applicationId);
-            $existingApplication->closing_reason = $application['closing_reason'];
+            $existingApplication->app_close_reason_id = $application['app_close_reason_id'];
+            $existingApplication->closing_reason = $application['closing_reason'] ?? null;
             $existingApplication->status = ConnectionApplication::STATUS_CLOSED;
             $existingApplication->closed_at = now();
             $existingApplication->closed_by = $user->profile->id;
@@ -380,9 +391,12 @@ class ApplicationService
 
             UpdateHubspotContactJob::dispatch($applicationId);
 
+            // get dropdown reason id text
+            $applicationReasonIdText = AppCloseReason::select('value')->where('id', $application['app_close_reason_id'])->first();
+
             $allicationNoteService = new ApplicationNoteService($user);
             $closingeNote = [];
-            $closingeNote['text'] = $application['closing_reason'];
+            $closingeNote['text'] = $application['closing_reason'] ?? $applicationReasonIdText?->value;
             $closingeNote['type'] = 'close_connection';
 
             $allicationNoteService->createNotes($closingeNote, $applicationId);
@@ -441,9 +455,11 @@ class ApplicationService
 
     }
 
-    private function calculateVendorId($id)
+    private function calculateVendorId($lead)
     {
-        return 'HD2_CRM' . str_pad($id, 10, "0", STR_PAD_LEFT);
+        /** @var Office $office */
+        $office = $lead->office;
+        return $office->getVendorCode() . '_CRM' . str_pad($lead->id, 10, "0", STR_PAD_LEFT);
     }
 
     public function closeApplication($id)
@@ -482,34 +498,84 @@ class ApplicationService
 
     public function providers(array $data, $applicationId)
     {
-        $connectionApplication = ConnectionApplication::find($applicationId);
-
         $services = [];
         $provider_service_type = $data['service_area'] ?? '';
-        if ($provider_service_type === 'energy') {
-            $services = [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY];
-        } elseif ($provider_service_type === 'internet') {
-            $services = [ConnectionService::TYPE_INTERNET];
-        }
 
+        $services = match ($provider_service_type) {
+            'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
+            'power' => [ConnectionService::TYPE_ELECTRICITY],
+            'gas' => [ConnectionService::TYPE_GAS],
+            'internet' => [ConnectionService::TYPE_INTERNET]
+        };
 
         foreach ($services as $service) {
+
+            $plan = $data['plan_type'];
+            if($data['provider_name'] === 'origin' && $data['plan_type'] !== null) {
+                $plan = match ($service) {
+                    ConnectionService::TYPE_ELECTRICITY => ConnectionService::ORIGIN_HOME_ASSIST_PLAN,
+                    ConnectionService::TYPE_GAS => ConnectionService::ORIGIN_ADVANTAGE_VARIABLE_PLAN,
+                };
+            }
+
             $connectionService = ConnectionService::where('connection_application_id', $applicationId)
                 ->where('service_type', $service)
                 ->first();
             if ($connectionService) {
                 $connectionService->provider_name = $data['provider_name'];
-                $connectionService->plan_type = $data['plan_type'];
+                $connectionService->plan_type = $plan;
                 $connectionService->save();
+            } else {
+                ConnectionService::create(
+                    [
+                        'service_type' => $service,
+                        'connection_application_id' => $applicationId,
+                        'status' => ConnectionService::STATUS_EA_PROCESSINF,
+                        'provider_name' => $data['provider_name'],
+                        'plan_type' => $plan,
+                    ]
+                );
             }
         }
     }
 
-    public function getNotSubmittedEaService($id): array
+    public function getNotSubmittedServices($id, $submitType) : array
     {
-        return ConnectionService::query()->where('connection_application_id',$id )
-            ->where('provider_name', ConnectionService::PROVIDER_EA )
+        $providers = [ConnectionService::PROVIDER_EA, ConnectionService::PROVIDER_ORIGIN];
+
+        $services = match ($submitType) {
+            'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
+            'power' => [ConnectionService::TYPE_ELECTRICITY],
+            'gas' => [ConnectionService::TYPE_GAS],
+            default => []
+        };
+
+        $notSubmitted = [];
+
+        foreach($providers as $provider){
+            $notSubmitted[$provider] = ConnectionService::query()->where('connection_application_id', $id)
+            ->where('provider_name', $provider)
             ->whereNull('lead_reference')
+            ->whereIn('service_type', $services)
+            ->pluck('id')->toArray();
+        }
+
+        return $notSubmitted;
+    }
+
+    public function getNotSubmittedEaService($id, $submitType): array
+    {
+        $services = match ($submitType) {
+            'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
+            'power' => [ConnectionService::TYPE_ELECTRICITY],
+            'gas' => [ConnectionService::TYPE_GAS],
+            default => []
+        };
+
+        return ConnectionService::query()->where('connection_application_id', $id)
+            ->where('provider_name', ConnectionService::PROVIDER_EA)
+            ->whereNull('lead_reference')
+            ->whereIn('service_type', $services)
             ->pluck('id')->toArray();
     }
 
@@ -519,4 +585,32 @@ class ApplicationService
         return $existingApplication->assigned_to;
     }
 
+    /** generate the uuid and save it to ConnectionApplication Table
+     *
+     * @param int $applicationId
+     * @return string $sumoUuid
+     */
+    public function generateSumoUuid($applicationId)
+    {
+        $sumoUuid = Str::uuid()->toString();
+
+        $existingApplication = ConnectionApplication::find($applicationId);
+        $existingApplication->sumo_uuid = $sumoUuid;
+        $existingApplication->save();
+
+        return $sumoUuid;
+    }
+    public function clearConcession($id)
+    {
+        $existLead = ConnectionApplication::findOrFail($id);
+
+        $existLead->update([
+            'concession_card_type' => null,
+            'concession_card_number' => null,
+            'concession_start_date' => null,
+            'concession_end_date' => null
+        ]);
+
+        return $existLead->refresh();
+    }
 }
