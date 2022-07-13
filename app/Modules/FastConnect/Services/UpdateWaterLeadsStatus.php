@@ -16,28 +16,70 @@ use GuzzleHttp\Psr7\Response;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Http;
 
+/**
+ *
+ */
 class UpdateWaterLeadsStatus
 {
+    /**
+     * @var string|null
+     */
     private ?string $accessToken;
+    /**
+     * @var array
+     */
     private array $leads = [];
+    /**
+     * @var int
+     */
     private int $totalChunks;
+    /**
+     * @var int
+     */
     private int $chunkSize = 500;
+    /**
+     * @var int
+     */
     private int $concurrency = 100;
+    /**
+     * @var int
+     */
     private int $currentChunk = 0;
 
+    /**
+     * @var array
+     */
     private array $failedLeadIds = [];
+    /**
+     * @var false|mixed
+     */
+    private mixed $runAll;
 
-    public function __construct()
+
+    /**
+     * @param array $options
+     */
+    public function __construct(array $options = [])
     {
+        $this->runAll = $options['all'] ?? false;
+
         $this->fetchTotalChunk();
         $this->authenticate();
     }
 
-    public static function run(): void
+    /**
+     * @param array $options
+     * @return void
+     */
+    public static function run(array $options = []): void
     {
-        $self = new static();
+        $self = new static($options);
         $self->start();
     }
+
+    /**
+     * @return void
+     */
     public function start(): void
     {
         while ($this->currentChunk <= $this->totalChunks) {
@@ -50,23 +92,37 @@ class UpdateWaterLeadsStatus
         dump($this->failedLeadIds);
     }
 
+    /**
+     * @return void
+     */
     private function fetchTotalChunk(): void
     {
         $total = $this->getLeadsBuilder()->count();
         $this->totalChunks = ceil($total / $this->chunkSize);
     }
 
+    /**
+     * @return Builder
+     */
     private function getLeadsBuilder(): Builder
     {
+        if ($this->runAll) {
+            $statuses = [];
+        } else {
+            $statuses = ['WATER_STATUS_CONNECTED'];
+        }
         return ConnectionApplication::query()
-            ->select('id', 'fast_connect_customer_reference')
-            ->whereHas('connectionServices', function (Builder $query) {
-                $query->whereNotIn('status', [ConnectionService::WATER_STATUS_CONNECTED])
+            ->select(['id', 'fast_connect_customer_reference'])
+            ->whereHas('connectionServices', function (Builder $query) use ($statuses) {
+                $query->whereNotIn('status', $statuses)
                     ->where('service_type', ConnectionService::TYPE_WATER);
             })
             ->whereNotNull('fast_connect_customer_reference');
     }
 
+    /**
+     * @return void
+     */
     private function fetchLeads(): void
     {
         $this->leads = $this->getLeadsBuilder()
@@ -77,7 +133,9 @@ class UpdateWaterLeadsStatus
     }
 
 
-
+    /**
+     * @return void
+     */
     private function updateStatusConcurrently(): void
     {
         $client = new Client([
@@ -103,6 +161,10 @@ class UpdateWaterLeadsStatus
     }
 
 
+    /**
+     * @param string $customerReference
+     * @return string
+     */
     private function getURL(string $customerReference): string
     {
         return config('fastconnect.root_url')
@@ -111,6 +173,11 @@ class UpdateWaterLeadsStatus
             . $customerReference;
     }
 
+    /**
+     * @param RequestException $e
+     * @param $index
+     * @return void
+     */
     private function handleError(RequestException $e, $index): void
     {
         $leadId = $this->leads[$index]['id'] ?? null;
@@ -118,6 +185,11 @@ class UpdateWaterLeadsStatus
         \Log::error("ERROR ID: {$leadId}", [$e->getMessage()]);
     }
 
+    /**
+     * @param Response $response
+     * @param $index
+     * @return void
+     */
     private function handleSuccess(Response $response, $index): void
     {
         $data = json_decode($response->getBody()->getContents(), true);
@@ -132,6 +204,10 @@ class UpdateWaterLeadsStatus
         }
     }
 
+    /**
+     * @param array $data
+     * @return string|null
+     */
     private function getParsedStatus(array $data): ?string
     {
         #todo: HCO-808 -> handle multiple statuses
@@ -151,6 +227,9 @@ class UpdateWaterLeadsStatus
         }
     }
 
+    /**
+     * @return $this
+     */
     public function authenticate(): static
     {
         $response = Http::withHeaders([

@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\UpdateWaterStatusCommand;
 use Ignite\Commands\IgniteFetchCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Console\Commands\GetSellStatusCommand;
@@ -32,6 +33,7 @@ class Kernel extends ConsoleKernel
         SetPropertyMeAgentEmailCommand::class,
         OriginStorePlanCommand::class,
         OriginCheckStatusCommand::class,
+        UpdateWaterStatusCommand::class,
     ];
 
     /**
@@ -58,8 +60,8 @@ class Kernel extends ConsoleKernel
 
     private function registerWaterStatusUpdate(Schedule $schedule)
     {
-        $schedule->command('fetch:submitted-water-leads')->timezone(11)->dailyAt("0:00");
-        $schedule->command('fetch:submitted-water-leads')->timezone(11)->dailyAt("5:00");
+        $schedule->command('water:update-status')->timezone(11)->dailyAt("0:00");
+        $schedule->command('water:update-status')->timezone(11)->dailyAt("5:00");
     }
 
     private function registerSaveTsaCallHistory(Schedule $schedule)
