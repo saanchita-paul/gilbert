@@ -105,16 +105,13 @@ class UpdateWaterLeadsStatus
      */
     private function getLeadsBuilder(): Builder
     {
-        if ($this->runAll) {
-            $statuses = [];
-        } else {
-            $statuses = ['WATER_STATUS_CONNECTED'];
-        }
         return ConnectionApplication::query()
             ->select(['id', 'fast_connect_customer_reference'])
-            ->whereHas('connectionServices', function (Builder $query) use ($statuses) {
-                $query->whereNotIn('status', $statuses)
-                    ->where('service_type', ConnectionService::TYPE_WATER);
+            ->whereHas('connectionServices', function (Builder $query) {
+                if (!$this->runAll) {
+                    $query->whereIn('status', [ConnectionService::WATER_STATUS_SUBMITTED]);
+                }
+                $query->where('service_type', ConnectionService::TYPE_WATER);
             })
             ->whereNotNull('fast_connect_customer_reference');
     }
