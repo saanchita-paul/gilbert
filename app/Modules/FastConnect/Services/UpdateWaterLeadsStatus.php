@@ -40,7 +40,7 @@ class UpdateWaterLeadsStatus
     /**
      * @var int
      */
-    private int $concurrency = 100;
+    private int $concurrency = 60;
     /**
      * @var int
      */
@@ -84,7 +84,6 @@ class UpdateWaterLeadsStatus
     {
         while ($this->currentChunk <= $this->totalChunks) {
             $this->fetchLeads();
-            dump(collect($this->leads)->pluck('id')->toArray());
             $this->updateStatusConcurrently();
             $this->currentChunk++;
         }
@@ -195,7 +194,7 @@ class UpdateWaterLeadsStatus
         $data = json_decode($response->getBody()->getContents(), true);
         $status = $this->getParsedStatus($data);
         $leadId = $this->leads[$index]['id'] ?? null;
-        dump("SUCCESS ID: {$leadId}");
+        dump("SUCCESS ID: {$leadId}, STATUS: {$status}");
 
         if ($leadId) {
             $this->updateWaterStatus($leadId, $status);
@@ -211,7 +210,7 @@ class UpdateWaterLeadsStatus
     private function getParsedStatus(array $data): ?string
     {
         #todo: HCO-808 -> handle multiple statuses
-        return data_get($data, 'products.0.status');
+        return data_get($data, 'product_group_summary.0.status');
     }
 
 
@@ -241,67 +240,6 @@ class UpdateWaterLeadsStatus
         $this->accessToken = json_decode($response->body(), true)['access_token'];
 
         return $this;
-    }
-
-    /**
-     * @deprecated
-     * @return void
-     */
-    public function getAllSubmittedWaterLead() {
-        $leads = ConnectionService::query()
-            ->with('connectionApplication')
-            ->where('service_type', 'water')
-            ->whereHas('connectionApplication', function (Builder $lead) {
-                $lead->whereNotNull('fast_connect_customer_reference');
-            })
-            ->where('status', '!=',  ConnectionService::WATER_STATUS_CONNECTED)
-            ->get();
-        info("[GetWaterService:getAllSubmittedWaterLead] Water leads", $leads->pluck('connection_application_id')->toArray());
-
-
-
-        foreach ($leads as $lead) {
-
-            if(!is_null($lead->connectionApplication?->fast_connect_customer_reference)) {
-                WaterStatusUpdateJob::dispatch($lead->connection_application_id, $lead->connectionApplication->fast_connect_customer_reference);
-            }
-
-        }
-
-    }
-
-    /**
-     * @Deprecated
-     */
-    public function getSubmittedDetails($id, $fast_connect_customer_reference)
-    {
-        $url = config('fastconnect.root_url')
-            . config('fastconnect.submitted_water_status_lead_url')
-            .'/'.$fast_connect_customer_reference;
-
-        $response = Http::withHeaders([
-            'content-type' => 'application/json',
-            'accept' => 'application/json',
-            'authorization' => 'Bearer ' . $this->accessToken
-        ])->get($url);
-
-
-        $body = json_decode($response->body(), true);
-
-        \Log::debug("Water Status response data", [
-            'response_body' => $body,
-            'success' => $response->successful(),
-            'application_id' => $id,
-            'status' => $response->status(),
-        ]);
-
-        $status = data_get($body, 'products.0.status');
-        if ($status) {
-            $this->updateWaterStatus($id, $status);
-        } else {
-            throw new \Exception("Water Status fetching failed");
-        }
-
     }
 
 
