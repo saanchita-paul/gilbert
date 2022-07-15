@@ -227,6 +227,13 @@ Route::post('/our-property/lead', [OurPropertyController::class, 'createOurPrope
 
 
 
+/**
+ * api's for email validation
+ */
+Route::get('/gbg-validate-email', [ApplicationController::class, 'isGbgValidateEmail']);
+Route::get('/applications/{id}/email-manually-verified', [ApplicationController::class, 'isEmailManuallyVerified']);
+
+
 
 
 Route::get("/karan/sales-status", function () {
@@ -274,9 +281,3 @@ Route::get('/kaka', function () {
 //
 //});
 
-
-/**
- * api's for email validation
- */
-Route::get('/gbg-validate-email', [ApplicationController::class, 'isGbgValidateEmail']);
-Route::get('/applications/{id}/email-manually-verified', [ApplicationController::class, 'isEmailManuallyVerified']);
