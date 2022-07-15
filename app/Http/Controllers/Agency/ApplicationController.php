@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Agency;
 
 use App\Events\Agency\CreateApplicationEvent;
 use App\Events\Agency\SubmitApplicationEvent;
+use App\Events\NotifyAgentAfterLeadCreation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Requests\Agency\ProviderRequest;
@@ -27,6 +28,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Origin\Services\ValidateCutOffTime;
 use PropertyMe\services\FetchContacts;
 
 class ApplicationController extends Controller
@@ -82,6 +84,7 @@ class ApplicationController extends Controller
         $service = new ApplicationService();
         $application = $service->createApplication($request->toArray(), $user);
         CreateApplicationEvent::dispatch($application->id);
+        NotifyAgentAfterLeadCreation::dispatch($application->id);
 
         return ApplicationResource::make($application);
 
@@ -437,6 +440,7 @@ class ApplicationController extends Controller
         }
     }
 
+
     public function isGbgValidateEmail(Request $request)
     {
         try {
@@ -470,6 +474,17 @@ class ApplicationController extends Controller
         try {
             $service = new ApplicationService();
             $res = $service->updateEmailField($request->toArray(), $id);
+            return response()->json(['success' => true, 'data' => $res]);
+
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function validateCutOff($applicationId)
+    {
+        try {
+            $res = ValidateCutOffTime::validateCutOff($applicationId);
             return response()->json(['success' => true, 'data' => $res]);
 
         } catch (\Exception $exception) {

@@ -17,7 +17,8 @@ class OriginPlanDetailsService
         public string $state,
         public string $postcode,
         public int $leadId,
-        public array $servicesId
+        public array $servicesId,
+        public string $nmi = '',
     )
     {
         $this->chatbotUri = config('bot.root_url');
@@ -31,6 +32,10 @@ class OriginPlanDetailsService
             'service_type' => $this->service_type,
             'postcode' => $this->postcode,
         ];
+
+        if (!empty($this->nmi)) {
+            $query['nmi_prefix'] = substr($this->nmi, 0, 2);
+        }
 
         try{
             $response = Http::withOptions([

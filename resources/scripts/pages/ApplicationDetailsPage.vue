@@ -39,7 +39,7 @@
 
         <AssignedToUserEmptyModal v-if="assignedToDialog" :dialog="assignedToDialog" @closeMessage="closeAssignedToEmptyModal"></AssignedToUserEmptyModal>
 
-        <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" secondaryContact="secondaryContact" v-if="showSubmitModal" @confirmSubmitLead="confirmSubmitLead" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
+        <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" :leadId="leadId" secondaryContact="secondaryContact" v-if="showSubmitModal" @confirmSubmitLead="confirmSubmitLead" @backToEdit="backToEdit" :submitType="submitType"> </LeadSubmitConfirmationModal>
             <PreventSubmissionModal v-if="preventSubmissionFlag" :message="preventSubmissionMessage" :dialog="preventSubmissionFlag" @closeMessage="closePreventSubmissionModal"></PreventSubmissionModal>
     </v-container>
 </template>
@@ -116,6 +116,7 @@ export default {
                 }
             },
             nextBusinessDay: null,
+
         }
     },
     computed: {
@@ -168,9 +169,10 @@ export default {
         cancelClose(){
             this.closeLead = false;
         },
-       async sucessSaveClose(closing_reason){
+
+       async sucessSaveClose(closeReason){
             try {
-                await LeadApplicationService.closeApplicationWithReason(this.leadId , closing_reason);
+                await LeadApplicationService.closeApplicationWithReason(this.leadId , closeReason);
                 this.closeLead = false;
                 this.closeConfirm = true;
             } catch (error) {

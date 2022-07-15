@@ -2,6 +2,7 @@
 
 namespace Ignite\Services;
 
+use App\Events\NotifyAgentAfterLeadCreation;
 use App\Jobs\CreateHubspotProperty;
 use Exception;
 use Carbon\Carbon;
@@ -78,8 +79,8 @@ class IgniteLeadService
         $this->connectionApplication->postcode       = $postcode;
         $this->connectionApplication->city           = $city;
         $this->connectionApplication->moving_date    = date("Y-m-d", strtotime(  $leadInfo['property']['moveInDate'] ))  ?? '2021/10/02';
-        
-        $this->connectionApplication->address_text   = $street . ' ' . $city . ' ' . $state  . ' ' . $postcode; 
+
+        $this->connectionApplication->address_text   = $street . ' ' . $city . ' ' . $state  . ' ' . $postcode;
 
         //InginteLeads Table
         $this->lead->lead_id     = $leadInfo['application']['id'] ?? '';
@@ -88,12 +89,12 @@ class IgniteLeadService
         //agency
         $this->lead->agency_id   = $leadInfo['agency']['reaId'] ?? '';
         $this->lead->agency_name = $leadInfo['agency']['name'] ?? '';
-        
+
         //agent
         $this->lead->agent_id    = $leadInfo['agents'][0]['id'] ?? '';
         $this->lead->agent_name  = $leadInfo['agents'][0]['name'] ?? '';
         $this->lead->agent_email = $leadInfo['agents'][0]['email'] ?? '';
-        
+
         //
         $this->lead->connectionProviderName = $leadInfo['connectionProviderName'] ?? '';
     }
@@ -109,7 +110,7 @@ class IgniteLeadService
     private function setServiceTypeTable($serviceTypes = []) : void{
         /**
          * follow docs for details implementation.
-         * 
+         *
          * ? https://partner.realestate.com.au/documentation/api/connection-leads-api/usage/
          */
         $services     = [] ;
@@ -140,7 +141,7 @@ class IgniteLeadService
 
     private function isStateVic($state) : bool
     {
-        return strtolower($state) === 'vic' || strtolower($state) === 'victoria'; 
+        return strtolower($state) === 'vic' || strtolower($state) === 'victoria';
     }
 
     /**
@@ -189,7 +190,10 @@ class IgniteLeadService
             $this->lead->connection_application_id = $this->connectionApplication->id;
             $this->lead->save();
 
+
+
             // hubspot api call for creation
+            NotifyAgentAfterLeadCreation::dispatch($this->lead->id);
             CreateHubspotProperty::dispatch($this->lead->id);
 
             return true;

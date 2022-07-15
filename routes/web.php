@@ -17,5 +17,10 @@ Route::get('/hello', [\App\Http\Controllers\TestControler::class, 'index']);
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
+
+Route::get('/email', function () {
+    return response('hello world');
+});
+
 Route::get('/{vue_capture?}', fn() => view('app'))
     ->where('vue_capture', '[\/\w\.-]*');

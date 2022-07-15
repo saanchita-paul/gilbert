@@ -219,9 +219,12 @@ export default {
         }
     },
 
-    async closeApplicationWithReason(id, closing_reason){
+    async closeApplicationWithReason(id, closeReason){
         try {
-            const data = await axios.post('/api/applications/'+id+'/closeApplication' , {closing_reason});
+            const data = await axios.post('/api/applications/'+id+'/closeApplication' , {
+                app_close_reason_id: closeReason.reason_id,
+                closing_reason: closeReason.reason_text
+            });
             return true;
         } catch (error) {
             console.log(error)
@@ -520,11 +523,21 @@ export default {
                 [field]: value,
             }
             return await axios.post('/api/applications/'+leadId+'/save-email', payload);
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    async validateCutOff(id) {
+        try {
+            const data = await axios.get('/api/applications/' + id + '/validate-cutoff');
+            return data.data;
 
         } catch (error) {
             return error.data;
         }
     },
+
 
     async isEmailManuallyVerified(id) {
         try {

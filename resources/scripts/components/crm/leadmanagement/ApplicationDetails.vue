@@ -2,7 +2,7 @@
    <v-card class="hood-card" v-if="lead">
         <h3 class="page-title">{{lead.applicant_name}}</h3>
         <IdCopyToClipboard :applicationId="lead.id"/>
-        <p class="sub-title mt-4 mb-2">Personal Details</p>
+        <p class="sub-title mt-4 mb-4">Personal Details</p>
 <!--        <table  class="application-info layout-fixed-table">-->
 <!--            <tr>-->
 <!--                <td class="font-weight-bold">Date of Birth</td>-->
@@ -40,6 +40,13 @@
 
 
        <v-row>
+
+           <v-col cols="5" class="py-0 my-0">
+                   <p class="font-weight-bold">Call Status</p>
+           </v-col>
+           <v-col cols="7"  class="py-0 my-0">
+               <p>{{lead.tsa_call_status}}</p>
+           </v-col>
 
            <v-col cols="5" class="py-0 my-0">
                    <p class="font-weight-bold">Date of Birth</p>
@@ -155,7 +162,7 @@
        <!-- <p class="sub-title py-2">Service Interests
            <span class="mx-2">
               <v-icon :disabled="isServiceAllowed(lead.service_interests, 'power')" color="yellow">mdi-flash</v-icon>
-              
+
           </span>
            <span class="mx-2">
               <v-icon :disabled="isServiceAllowed(lead.service_interests, 'gas')" color="red">mdi-fire</v-icon>
@@ -272,8 +279,10 @@ export default {
                 return 'In Progress';
             } else if(status === 'accepted') {
                 return 'Connected';
+            } else if(status === 'failed') {
+                return 'Manual Processing';
             } else {
-                return (status[0].toUpperCase() + status.slice(1)).replace(/_/g, " ");;
+                return (status[0].toUpperCase() + status.slice(1)).replace(/_/g, " ");
             }
         },
         goToLeadDetails(id) {
@@ -337,7 +346,7 @@ export default {
 }
 
 .flex-wrap-100{
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
     width: 100%;
 }
 </style>

@@ -3,6 +3,7 @@
 namespace App\Services\Agency;
 
 use App\Jobs\UpdateHubspotContactJob;
+use App\Models\AppCloseReason;
 use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
@@ -12,6 +13,7 @@ use App\Models\Identification;
 use App\Models\Office;
 use App\Models\User;
 use App\Services\RolePermission;
+use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use TSA\Services\TsaSendAppliationService;
 use Illuminate\Support\Str;
@@ -176,7 +178,12 @@ class ApplicationService
 
         if (in_array(HoodProfile::find($agentId)->user->roles->first()?->name,
             [RolePermission::ROLE_EXTERNAL_HOOD_TEAM_LEAD])) {
-            (new TsaSendAppliationService($applicationId))->sendApplication();
+            $tsaService = new TsaSendAppliationService($applicationId);
+            $tsaService->sendApplication();
+            $tsa_lead_id = $tsaService->getTsaLeadId();
+            $existingApplication = ConnectionApplication::find($applicationId);
+            $existingApplication->tsa_lead_id = $tsa_lead_id;
+            $existingApplication->save();
         }
         return $this->findApplications($applicationId);
     }
@@ -372,9 +379,11 @@ class ApplicationService
      */
     public function closeApplicationWithReason(array $application, int $applicationId, User $user)
     {
+
         try {
             $existingApplication = ConnectionApplication::find($applicationId);
-            $existingApplication->closing_reason = $application['closing_reason'];
+            $existingApplication->app_close_reason_id = $application['app_close_reason_id'];
+            $existingApplication->closing_reason = $application['closing_reason'] ?? null;
             $existingApplication->status = ConnectionApplication::STATUS_CLOSED;
             $existingApplication->closed_at = now();
             $existingApplication->closed_by = $user->profile->id;
@@ -382,9 +391,12 @@ class ApplicationService
 
             UpdateHubspotContactJob::dispatch($applicationId);
 
+            // get dropdown reason id text
+            $applicationReasonIdText = AppCloseReason::select('value')->where('id', $application['app_close_reason_id'])->first();
+
             $allicationNoteService = new ApplicationNoteService($user);
             $closingeNote = [];
-            $closingeNote['text'] = $application['closing_reason'];
+            $closingeNote['text'] = $application['closing_reason'] ?? $applicationReasonIdText?->value;
             $closingeNote['type'] = 'close_connection';
 
             $allicationNoteService->createNotes($closingeNote, $applicationId);
@@ -597,6 +609,7 @@ class ApplicationService
         return $sumoUuid;
     }
 
+
     public function clearConcession($id)
     {
         $existLead = ConnectionApplication::findOrFail($id);
@@ -631,4 +644,5 @@ class ApplicationService
 
         return $email_manually_verified_by;
     }
+
 }

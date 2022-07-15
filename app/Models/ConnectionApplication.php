@@ -189,12 +189,13 @@ class ConnectionApplication extends Model
         'water_next_available_date',
         'after_hour_payee',
         'after_hour_flag',
+        'tsa_call_status',
+        'tsa_lead_id',
         'unit_number',
         'street_type',
         'billing_state',
         'billing_street_type',
         'mannual_address',
-
         'billing_mannual_address',
         'billing_state_short',
         'billing_street_name_only',
@@ -215,10 +216,15 @@ class ConnectionApplication extends Model
         'concession_card_number',
         'concession_start_date',
         'concession_end_date',
-        'ea_go_neutral',
         'additional_access_information',
         'is_power_life_support',
+
         'email_manually_verified_by',
+
+        'is_skip_hubspot',
+        'is_running_submission',
+        'app_close_reason_id'
+
     ];
 
 
@@ -442,6 +448,14 @@ class ConnectionApplication extends Model
     public function connectionServices()
     {
         return $this->hasMany(ConnectionService::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function tsaCallHistories()
+    {
+        return $this->hasMany(TSACallHistory::class , 'connection_application_id')->orderBy('attempt_id');
     }
 
     /**
