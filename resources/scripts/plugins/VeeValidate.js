@@ -220,8 +220,8 @@ extend('required-issuing-country', {
     message: field => `Issuing Country is required`,
 });
 
-extend('validate-lead-email', {
-    message: field => `This is an invalid email address`,
+extend('gbg-email-validate', {
+    message: field => `Email could not be verified. Please confirm it’s valid email.`,
 
     validate: async (value) =>  {
         return new Promise(resolve => {

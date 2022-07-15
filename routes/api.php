@@ -135,6 +135,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_ADDRESS);
     Route::post('/applications/{applicationId}/draft', [ApplicationController::class, 'saveDraft'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
+    Route::post('/applications/{applicationId}/save-email', [ApplicationController::class, 'saveEmail'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
     Route::put('/applications/{id}/close', [ApplicationController::class, 'close']);
     Route::patch('/applications/{applicationId}/providers', [ApplicationController::class, 'providers'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_SERVICE_PROVIDERS);
@@ -277,3 +279,4 @@ Route::get('/kaka', function () {
  * api's for email validation
  */
 Route::get('/gbg-validate-email', [ApplicationController::class, 'isGbgValidateEmail']);
+Route::get('/applications/{id}/email-manually-verified', [ApplicationController::class, 'isEmailManuallyVerified']);

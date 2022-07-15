@@ -204,6 +204,12 @@ export default {
         let fullDateMonthYear = dayjs(fullMonthYear, 'MM/YYYY').daysInMonth() + '/' + fullMonthYear;
         if(isDatabaseFormat) return dayjs(fullDateMonthYear,'DD/MM/YYYY').format('YYYY-MM-DD');
         return fullDateMonthYear;
+    },
+
+    mapIsEmailManuallyVerified(data) {
+
+        // console.log("mapIsEmailManuallyVerified in Mapper ->", data);
+        return data ? true : false;
     }
 
 };

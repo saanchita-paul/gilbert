@@ -253,7 +253,7 @@ export default {
              return false;
         },
 
-        
+
 
         closePreventSubmissionModal() {
           this.preventSubmissionFlag = false;
@@ -397,6 +397,10 @@ export default {
             }
             return true;
         },
+
+        // async updateEmail(field, value) {
+        //     await LeadApplicationService.saveEmailField(field, value, this.leadId);
+        // },
     },
     watch: {
         powerPlan: {

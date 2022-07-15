@@ -450,4 +450,30 @@ class ApplicationController extends Controller
             return $this->sendErrorResponse($exception);
         }
     }
+
+    public function isEmailManuallyVerified($id)
+    {
+        try {
+            $service = new ApplicationService();
+            $result = $service->isEmailManuallyVerified($id);
+
+            $res = ['success' => true, 'data' => $result];
+
+            return response()->json($res);
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function saveEmail(Request $request, $id)
+    {
+        try {
+            $service = new ApplicationService();
+            $res = $service->updateEmailField($request->toArray(), $id);
+            return response()->json(['success' => true, 'data' => $res]);
+
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
 }

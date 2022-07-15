@@ -46,7 +46,10 @@ name: "LeadUserDetails",
         updateDraft(field, value, isDate, identification,isManualChangeFlag = false) {
             this.$emit('updateDraft', field, value, isDate, identification, isManualChangeFlag);
 
-        }
+        },
+        // updateEmail(field, value) {
+        //     this.$emit('updateEmail', field, value);
+        // },
     },
     mounted() {
         // console.log('LeadUserDetails', this.services);

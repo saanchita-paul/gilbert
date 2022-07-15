@@ -511,4 +511,28 @@ export default {
     async clearConcessionDetails(id) {
         await axios.post('/api/applications/'+id+'/clear-concession-details');
     },
+
+
+    async saveEmailField(field, value, leadId)
+    {
+        try {
+            const payload ={
+                [field]: value,
+            }
+            return await axios.post('/api/applications/'+leadId+'/save-email', payload);
+
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    async isEmailManuallyVerified(id) {
+        try {
+            const data = await axios.get('/api/applications/'+id+'/email-manually-verified');
+
+            return ApplicationMapper.mapIsEmailManuallyVerified(data.data.data);
+        } catch (error) {
+            return error.data;
+        }
+    }
 }
