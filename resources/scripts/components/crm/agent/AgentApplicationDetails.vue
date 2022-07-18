@@ -163,6 +163,7 @@ import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import IdCopyToClipboard from '@scripts/components/common/IdCopyToClipboard.vue';
 import CopyToClipboard from '@scripts/components/common/CopyToClipboard.vue';
+import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
 
 export default {
     name: "AgentApplicationDetails",
@@ -220,6 +221,8 @@ export default {
                 return 'inprogress-color';
             }else if(status == 'Submitted'){
                 return 'submitted-color';
+            }else if(status == 'Manual Processing'){
+                return 'manual-color';
             }else if(status == 'Rejected'){
                 return 'rejected-color';
             }
@@ -233,7 +236,8 @@ export default {
                 return svc.service_type === conn_ser;
             })
             if(service) {
-                return this.mapConnectionStatus(service.statusText);
+                // return this.mapConnectionStatus(service.statusText);
+                return AgentApplicationService.mapStatus(service.statusText);
             }
             return '';
         },
@@ -320,6 +324,10 @@ export default {
 
 .submitted-color{
     color: #0CC4ED;
+}
+
+.manual-color{
+    color: #FFA500;
 }
 
 .connected-color{

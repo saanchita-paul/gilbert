@@ -9,4 +9,33 @@ export default {
         return await AgentApplicationAPI.createApplication(application);
     },
     loadHoodAgentList: (meta) => AgentApplicationAPI.loadHoodAgentList(meta),
+
+
+    mapStatus: status => {
+        switch (status)
+        {
+            case 'unassigned':
+            case 'assigned':
+            case 'escalated':
+            case 'processing':
+                return 'In Progress';
+                break;
+            case 'submitted':
+                return 'Submitted';
+                break;
+            case 'accepted':
+                return 'Accepted';
+                break;
+            case 'rejected':
+                return 'Rejected';
+                break;
+            case 'failed':
+                return 'Manual Processing';
+                break;
+            default:
+                return 'Not Selected';
+                break;
+        }
+
+    },
 }
