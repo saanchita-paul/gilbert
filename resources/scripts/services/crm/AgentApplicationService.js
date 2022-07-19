@@ -32,6 +32,9 @@ export default {
             case 'failed':
                 return 'Manual Processing';
                 break;
+            case 'ac_manual_precessing':
+                return 'Ac Manual Processing';
+                break;
             default:
                 return 'Not Selected';
                 break;
