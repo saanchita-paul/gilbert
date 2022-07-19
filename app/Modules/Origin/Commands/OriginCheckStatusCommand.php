@@ -48,7 +48,7 @@ class OriginCheckStatusCommand extends Command
                     ->get();
         
         foreach($services as $service){
-            OriginStatusUpdateJob::dispatch($service->lead_reference);
+            OriginStatusUpdateJob::dispatch($service->lead_reference, $service->connection_application_id);
         }
 
         $this->line('Origin fetch plan lead command finished successfully!');
