@@ -340,6 +340,7 @@ export default {
             lead.concession_start_date = ApplicationMapper.mapDateToServer(lead.concession_start_date);
             lead.concession_end_date = ApplicationMapper.mapDateToServer(lead.concession_end_date);
             lead.identification.expire_date = ApplicationMapper.mapDateToServer(lead.identification.expire_date);
+            lead.email_manually_verified_by = ApplicationMapper.mapEmailManuallyFlagToServer(lead.email_manually_verified_by);
             const data = await axios.post('/api/applications/'+leadId+'/submit', {lead});
             return data;
         } catch (error) {

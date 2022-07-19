@@ -210,6 +210,14 @@ export default {
 
         // console.log("mapIsEmailManuallyVerified in Mapper ->", data);
         return data ? true : false;
+    },
+
+    mapEmailManuallyFlagToServer(data) {
+        console.log("mapEmailManuallyFlagToServer ->", data);
+        if (data === false) {
+            return null;
+        }
+        return data;
     }
 
 };
