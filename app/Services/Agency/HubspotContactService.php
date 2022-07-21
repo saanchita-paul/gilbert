@@ -111,7 +111,7 @@ class HubspotContactService
     public function getContactByEmail($email)
     {
         $url = str_replace('${email}', $email, config('hub_spot.get_contact_by_email')) . config('hub_spot.api_key');
-        $url = APILog::setLoggerQuery($url, APILog::API_HB_GET_CONTACT_BY_EMAIL);
+        // $url = APILog::setLoggerQuery($url, APILog::API_HB_GET_CONTACT_BY_EMAIL); // no need log
 
         $response = Http::get($url);
         $exists = !($response->status() === 404);
