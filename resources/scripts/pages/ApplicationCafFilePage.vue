@@ -41,12 +41,39 @@
             <!--  Chatbot Application end-->
 
             <!--  Gilbert Application start-->
-            <v-tab href="#gilbertApplication" disabled>
+            <v-tab href="#gilbertApplication">
                 <v-icon left>mdi-message-text</v-icon>
                 Gilbert Applications
             </v-tab>
             <v-tab-item value="gilbertApplication">
-                Gilbert Application Details
+                <v-card>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12">
+                                <h3>Filters</h3>
+                                <ApplicationCafFileFilter :selected="selectedCaf"
+                                                          v-model="advanceSearch"
+                                                          :cafFiles="cafFiles"
+                                                          :isSearchEmpty="advanceSearch.isSearchEmpty()"
+                                                          @updateDate="updateDate"></ApplicationCafFileFilter>
+                            </v-col>
+                            <v-col cols="12">
+                                <GilbertApplicationCafFileTable
+                                    v-model="selectedCaf"
+                                    :cafFiles="cafFiles"
+                                    :totalItem="totalItem"
+                                    @updateDataTable="updateDataTable"
+                                    @refreshDataTable="refreshDataTable"
+                                    @updateServiceType="updateServiceType"
+                                    @updateSelectedMovingData="updateSelectedMovingData"
+                                    @selectRowCafFile="selectRowCafFile"
+                                >
+
+                                </GilbertApplicationCafFileTable>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
             </v-tab-item>
             <!--  Gilbert Application end-->
         </v-tabs>
@@ -57,6 +84,7 @@
 import ApplicationCafFileFilter from '@scripts/pages/ApplicationCafFileFilter';
 import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileService";
 import ApplicationCafFileTable from "@scripts/pages/ApplicationCafFileTable";
+import GilbertApplicationCafFileTable from "@scripts/pages/GilbertApplicationCafFileTable";
 import {CafFileSearchFilterModel} from "@scripts/models/CafFileSearchFilterModel";
 import {forEach, isEqual, isNull, omit} from "lodash-es";
 
@@ -65,6 +93,7 @@ export default {
     components: {
         ApplicationCafFileTable,
         ApplicationCafFileFilter,
+        GilbertApplicationCafFileTable
     },
 
     data() {
