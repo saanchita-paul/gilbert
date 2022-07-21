@@ -448,4 +448,25 @@ class ApplicationController extends Controller
             return $this->sendErrorResponse($exception);
         }
     }
+
+
+    /**
+     * Getting Applications list
+     *
+     * @param Request $request
+     *
+     * @return AnonymousResourceCollection|JsonResponse
+     */
+
+    public function getPowerShop(Request $request): AnonymousResourceCollection|JsonResponse
+    {
+        /** @var User $user */
+        $user = auth()->user();
+        try {
+            $service = new SearchConnectionApplication($request->toArray());
+            return ApplicationResource::collection($service->get($user));
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
 }
