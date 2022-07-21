@@ -16,10 +16,8 @@ class TsaCallHistoryService
     public function getCallHistory($connection_application)
     {
         try {
-            // $url = \config('tsa.root_url') . \config('tsa.call_history') . 12;
             $url = \config('tsa.root_url') . \config('tsa.call_history') . $connection_application->tsa_lead_id;
-
-            $url = APILog::setLoggerQuery($url, APILog::API_TSA_INSERT_DATA, false);
+            // $url = APILog::setLoggerQuery($url, APILog::API_TSA_INSERT_DATA, false); // no need log
 
             $response = Http::withHeaders([
                 'content-type' => 'application/json',
