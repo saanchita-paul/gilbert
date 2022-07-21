@@ -196,7 +196,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     // application closing reasons delete
     Route::delete('/app-close-reasons/{id}', [AppCloseReasonController::class, 'delete']);
 
-    
+
     Route::get('/rea-extract/corporate-report', [ReaExtractsReportController::class, 'getReaCorporateReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 
@@ -292,10 +292,75 @@ Route::get('country_test', function () {
 });
 
 
-Route::get('/kaka', function () {
-    $dateTimeZone = new DateTimeZone("Australia/Melbourne");
-    $date = new DateTime(null, $dateTimeZone);
-//    dd($date);
-    return $dateTimeZone->getOffset($date)/60/60;
 
+
+use Spatie\ArrayToXml\ArrayToXml;
+Route::get('/kaka', function () {
+    $array = [
+//        'GenerateRequest' => [
+            'PxPayUserId' => 'PowershopSignUp_Dev',
+            'PxPayKey' => 'f598f2c0e3199578c499a778f33657b601f24f361af110fe0a22a542e5a1a657',
+//            'TxnType' => 'Purchase',
+            'TxnType' => 'Auth',
+            'AmountInput' => 1.0,
+            'CurrencyInput' => 'AUD',
+            'MerchantReference' => 'Purchase Example',
+            'TxnData1' => 'John Doe',
+            'TxnData12' => '0211111111',
+            'EmailAddress' => 'a@gmail.com',
+//            'TxnId' => 'hoodlenin002',
+            'TxnId' => Str::random(10),
+//            'BillingId' => 'BillingId123xyz',
+//            'EnableAddBillCard' => 'Lightsaber',
+            'RecurringMode' => 'single',
+            'UrlSuccess' => 'https://enk.leninsheikh.com/api/kaka/success',
+            'UrlFail' => 'https://enk.leninsheikh.com/api/kaka/failed',
+            'UrlCallback' => 'https://enk.leninsheikh.com/api/kaka/callback',
+//        ]
+    ];
+
+//    $xml = ArrayToXml::convert($array);
+    $xml = toXml($array);
+
+    $client = new \GuzzleHttp\Client();
+
+    $options = [
+        'headers' => [
+            'Content-Type' => 'text/xml; charset=UTF8',
+        ],
+        'body' => $xml,
+    ];
+
+    $response = $client->request('POST', 'https://sec.windcave.com/pxaccess/pxpay.aspx', $options);
+
+    $body = $response->getBody()->getContents();
+    $uri = (string ) simplexml_load_string($body)->URI ?? null;
+    if (!empty($uri)) {
+        return redirect($uri);
+    } else {
+        dd($body);
+    }
 });
+Route::any('/kaka/failed', function () {
+    dump('failed', request()->all(), request()->method());
+});
+Route::any('/kaka/success', function () {
+    dump('success', request()->all(), request()->method());
+});
+
+Route::any('/kaka/callback', function () {
+    dump('success', request()->all(), request()->method());
+});
+
+function toXml($array){
+
+    $xml  = "<GenerateRequest>";
+    foreach ($array as $key => $value) {
+        $xml .= "<$key>$value</$key>" ;
+    }
+//    while (list($prop, $val) = each($arr))
+//        $xml .= "<$prop>$val</$prop>" ;
+
+    $xml .= "</GenerateRequest>";
+    return $xml;
+}
