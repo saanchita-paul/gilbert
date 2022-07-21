@@ -75,7 +75,7 @@ class SearchConnectionApplication
         $this->appId = !empty($request['app_id']) ? $request['app_id'] : null;
         $this->agentId = !empty($request['agent_id']) ? $request['agent_id'] : null;
         $this->tenantEmail = !empty($request['tenant_email']) ? $request['tenant_email'] : null;
-        $this->provider = !empty($request['provider']) ? $request['provider'] : null;
+        $this->provider = !empty($request['provider_name']) ? $request['provider_name'] : null;
 
         !empty($request['moving_date']) && $this->setDateRangeNoTz($request['moving_date'], $request['moving_date']);
 
@@ -111,7 +111,7 @@ class SearchConnectionApplication
             ->applyFilterMovingDate()
             ->applyFilterAgentId()
             ->applyFilterTenantEmail()
-            ->applyFilterByProvider()
+//            ->applyFilterByProvider()
             ->applySearch();
 
         $this->builder = $this->applySorting($this->builder);
