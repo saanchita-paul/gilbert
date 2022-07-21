@@ -9,5 +9,6 @@ export default {
         })
         return filteredService?.enable_caf_file;
     },
-    generateCafFile: (data) => ApplicationCafFileAPI.generateCafFile(data)
+    generateCafFile: (data) => ApplicationCafFileAPI.generateCafFile(data),
+    getGilbertApplicationData: (sort_search_meta, params) => ApplicationCafFileAPI.getGilbertApplicationData(sort_search_meta, params),
 }

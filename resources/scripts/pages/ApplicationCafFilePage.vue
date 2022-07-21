@@ -62,7 +62,7 @@
                             <v-col cols="12">
                                 <GilbertApplicationCafFileTable
                                     v-model="selectedCaf"
-                                    :cafFiles="cafFiles"
+                                    :gilbertApplications="gilbertApplications"
                                     :totalItem="totalItem"
                                     @updateDataTable="updateDataTable"
                                     @refreshDataTable="refreshDataTable"
@@ -115,6 +115,7 @@ export default {
             options: {},
             advanceSearch: new CafFileSearchFilterModel(),
             dateRange: null,
+            gilbertApplications: []
         }
     },
 
@@ -134,9 +135,8 @@ export default {
         }
     },
 
-    mounted() {
-        // this.advanceSearch = new CafFileSearchFilterModel({...this.$route.query});
-        // this.fetchCafFiles();
+    async mounted() {
+        await this.fetchGilbertApplications();
     },
 
 
@@ -211,7 +211,15 @@ export default {
         async fetchCafFiles() {
             let data = await ApplicationCafFileService.getApplicationCafFileData({...this.sort_search_meta, ...{page: this.page}}, this.advanceSearch);
             this.cafFiles = data.data;
-            console.log('local loaded data', this.cafFiles);
+            this.page = data.pagination.current_page;
+            this.itemsPerPage = data.pagination.per_page;
+            this.totalItem = data.pagination.total;
+        },
+
+        async fetchGilbertApplications() {
+            let data = await ApplicationCafFileService.getGilbertApplicationData({...this.sort_search_meta, ...{page: this.page}}, this.advanceSearch);
+            this.gilbertApplications = data.data;
+            console.log('Gilbert application data', this.gilbertApplications);
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
             this.totalItem = data.pagination.total;

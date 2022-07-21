@@ -3,7 +3,7 @@
         <v-data-table
             v-model="selected"
             :headers="headers"
-            :items="cafFiles"
+            :items="gilbertApplications"
             :server-items-length="totalItem"
             :options.sync="options"
             :single-expand=true
@@ -21,7 +21,7 @@
             <!-- create date end-->
 
             <!-- remove select all checkbox from header start-->
-<!--            <template v-slot:[`header.data-table-select`]></template>-->
+            <template v-slot:[`header.data-table-select`]></template>
             <!-- remove select all checkbox from header end-->
             <template v-slot:item.data-table-select="{ item, isSelected, select }">
                 <v-simple-checkbox
@@ -35,7 +35,7 @@
             <!-- row expend start-->
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length" style="padding: 0">
-                    <GilbertApplicationCafFileDetails @refreshTable="updateTableData" :cafFileData='item' @updateServiceType="updateServiceType"></GilbertApplicationCafFileDetails>
+                    <GilbertApplicationCafFileDetails @refreshTable="updateTableData" :application='item' @updateServiceType="updateServiceType"></GilbertApplicationCafFileDetails>
                 </td>
             </template>
             <!-- row expend end-->
@@ -52,7 +52,7 @@ import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileS
 export default {
     name: "GilbertApplicationCafFileTable",
     components: {GilbertApplicationCafFileDetails},
-    props: ["value", "cafFiles", "totalItem"],
+    props: ["value", "gilbertApplications", "totalItem"],
     data() {
         return {
             selected: [],
