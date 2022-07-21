@@ -51,11 +51,13 @@
                         <v-row>
                             <v-col cols="12">
                                 <h3>Filters</h3>
-                                <ApplicationCafFileFilter :selected="selectedCaf"
-                                                          v-model="advanceSearch"
-                                                          :cafFiles="cafFiles"
-                                                          :isSearchEmpty="advanceSearch.isSearchEmpty()"
-                                                          @updateDate="updateDate"></ApplicationCafFileFilter>
+                                <GilbertApplicationCafFileFilter
+                                    :selected="selectedCaf"
+                                    v-model="advanceSearch"
+                                    :cafFiles="cafFiles"
+                                    :isSearchEmpty="advanceSearch.isSearchEmpty()"
+                                    @updateDate="updateDate">
+                                </GilbertApplicationCafFileFilter>
                             </v-col>
                             <v-col cols="12">
                                 <GilbertApplicationCafFileTable
@@ -68,7 +70,6 @@
                                     @updateSelectedMovingData="updateSelectedMovingData"
                                     @selectRowCafFile="selectRowCafFile"
                                 >
-
                                 </GilbertApplicationCafFileTable>
                             </v-col>
                         </v-row>
@@ -82,6 +83,7 @@
 
 <script>
 import ApplicationCafFileFilter from '@scripts/pages/ApplicationCafFileFilter';
+import GilbertApplicationCafFileFilter from '@scripts/pages/GilbertApplicationCafFileFilter';
 import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileService";
 import ApplicationCafFileTable from "@scripts/pages/ApplicationCafFileTable";
 import GilbertApplicationCafFileTable from "@scripts/pages/GilbertApplicationCafFileTable";
@@ -93,7 +95,8 @@ export default {
     components: {
         ApplicationCafFileTable,
         ApplicationCafFileFilter,
-        GilbertApplicationCafFileTable
+        GilbertApplicationCafFileTable,
+        GilbertApplicationCafFileFilter
     },
 
     data() {

@@ -6,35 +6,13 @@
             </v-col>
             <v-col cols="6" style="text-align:right">
                 <v-btn
-                    v-if="isEdit"
-                    @click="isEdit=false"
+                    @click="editApplication"
                     small
                     style="height: 25px; min-width: 90px; color: #5c229a; border: 3px solid #5c229a;"
                     outlined
                 >
                     Edit
                 </v-btn>
-
-                <div v-else>
-                    <v-btn
-                        small
-                        style="height: 25px; min-width: 90px;"
-                        @click="isEdit=true"
-                    >
-                        Cancel
-                    </v-btn>
-
-                    <v-btn
-                        small
-                        :loading = "loading"
-                        style="height: 25px; min-width: 90px; background: #5c229a; color: white"
-                        @click.prevent="updateCafFile(cafFileData.id)"
-                    >
-                        Save
-                    </v-btn>
-                </div>
-
-
             </v-col>
         </v-row>
 
@@ -44,55 +22,19 @@
                 <div>
                     <div class="item">
                         <p class="item-title">Title</p>
-                        <p class="item-value" v-if="isEdit">{{ cafFileData.title }}</p>
-                        <v-select
-                            v-else
-                            outlined
-                            dense
-                            :items="titlesDropDown"
-                            v-model="caf_detail.title"
-                            class="mr-2 item-value"
-                        ></v-select>
+                        <p class="item-value">{{ cafFileData.title }}</p>
                     </div>
                     <div class="item">
                         <p class="item-title">First Name</p>
-                        <p class="item-value" v-if="isEdit">{{ cafFileData.first_name }}</p>
-                        <v-text-field
-                            v-else
-                            outlined
-                            dense
-                            hide-details="auto"
-                            height="20px"
-                            style="background-color: white"
-                            class="mr-2 item-value"
-                            v-model="caf_detail.first_name"
-                        />
+                        <p class="item-value">{{ cafFileData.first_name }}</p>
                     </div>
                     <div class="item">
                         <p class="item-title">Middle Name</p>
-                        <p class="item-value" v-if="isEdit">{{ cafFileData.middle_name == null ? '-' : cafFileData.middle_name }}</p>
-                        <v-text-field
-                            v-else
-                            outlined
-                            dense
-                            hide-details="auto"
-                            style="background-color: white"
-                            class="mr-2 item-value"
-                            v-model="caf_detail.middle_name"
-                        />
+                        <p class="item-value">{{ cafFileData.middle_name == null ? '-' : cafFileData.middle_name }}</p>
                     </div>
                     <div class="item">
                         <p class="item-title">Last Name</p>
-                        <p class="item-value" v-if="isEdit">{{ cafFileData.last_name }}</p>
-                        <v-text-field
-                            v-else
-                            outlined
-                            dense
-                            hide-details="auto"
-                            style="background-color: white"
-                            class="mr-2 item-value"
-                            v-model="caf_detail.last_name"
-                        />
+                        <p class="item-value">{{ cafFileData.last_name }}</p>
                     </div>
                 </div>
                 <div class="item">
@@ -128,61 +70,16 @@
                 </div>
                 <div class="item">
                     <p class="item-title">NMI (Power) *</p>
-                    <p class="item-value" v-if="isEdit">{{ cafFileData.nmi ? cafFileData.nmi : '' }}</p>
-                    <v-text-field
-                        v-else
-                        outlined
-                        dense
-                        hide-details="auto"
-                        style="background-color: white"
-                        class="mr-2 item-value"
-                        v-model="caf_detail.nmi"
-                    />
+                    <p class="item-value">{{ cafFileData.nmi ? cafFileData.nmi : '' }}</p>
                 </div>
                 <div class="item">
                     <p class="item-title">MIRN (Gas) *</p>
-                    <p class="item-value" v-if="isEdit">{{ cafFileData.mirn ? cafFileData.mirn : '' }}</p>
-                    <v-text-field
-                        v-else
-                        outlined
-                        dense
-                        hide-details="auto"
-                        style="background-color: white"
-                        class="mr-2 item-value"
-                        v-model="caf_detail.mirn"
-                    />
+                    <p class="item-value">{{ cafFileData.mirn ? cafFileData.mirn : '' }}</p>
                 </div>
             </v-col>
             <v-col cols="3" class="hr-bar pl-2">
                 <h4 class="header">Agent's Additional Instructions</h4>
 
-                <div class="item">
-                    <p class="item-title">Business Name</p>
-                    <p class="item-value" v-if="isEdit">{{ cafFileData.business_name ? cafFileData.business_name : '' }}</p>
-                    <v-text-field
-                        v-else
-                        outlined
-                        dense
-                        hide-details="auto"
-                        style="background-color: white"
-                        class="mr-2 item-value"
-                        v-model="caf_detail.business_name"
-                    />
-                </div>
-
-                <div class="item">
-                    <p class="item-title">ABN</p>
-                    <p class="item-value" v-if="isEdit">{{ cafFileData.abn ? cafFileData.abn : '' }}</p>
-                    <v-text-field
-                        v-else
-                        outlined
-                        dense
-                        hide-details="auto"
-                        style="background-color: white"
-                        class="mr-2 item-value"
-                        v-model="caf_detail.abn"
-                    />
-                </div>
                 <div class="item">
                     <p class="item-title">Agency Office</p>
                     <p class="item-value"></p>
@@ -200,42 +97,7 @@
                 <h4 class="header">Connection Details</h4>
                 <div class="item">
                     <p class="item-title">Connection Date</p>
-                    <p class="item-value" v-if="isEdit">{{ cafFileData.connection_date ? cafFileData.connection_date : '' }}</p>
-                    <div class="text-field" v-else>
-                        <v-menu
-                            v-model="connectionDate"
-                            :close-on-content-click="false"
-                            :nudge-right="40"
-                            transition="scale-transition"
-                            offset-y
-                        >
-                            <template v-slot:activator="{ on, attrs }">
-                                <ValidationProvider
-                                    name="Connection Date"
-                                    v-slot="{ errors }"
-                                >
-                                    <v-text-field
-                                        placeholder="DD/MM/YYYY"
-                                        outlined
-                                        dense
-                                        append-icon="mdi-calendar"
-                                        v-model="caf_detail.connection_date"
-                                        v-bind="attrs"
-                                        :error-messages="errors[0]"
-                                        hide-details="auto"
-                                    >
-                                        <template slot="append">
-                                            <v-icon v-on="on">mdi-calendar</v-icon>
-                                        </template>
-                                    </v-text-field>
-                                </ValidationProvider>
-                            </template>
-                            <v-date-picker
-                                v-model="connection_date"
-                                @input="connectionDate = false"
-                            ></v-date-picker>
-                        </v-menu>
-                    </div>
+                    <p class="item-value">{{ cafFileData.connection_date ? cafFileData.connection_date : '' }}</p>
                 </div>
                 <div class="item">
                     <p class="item-title">Supplier</p>
@@ -243,52 +105,32 @@
                 </div>
                 <div class="item">
                     <p class="item-title">Service Type</p>
-                    <p class="item-value" v-if="isEdit">{{ cafFileData.service_type ? cafFileData.service_type : '' }}</p>
-                    <v-select
-                        v-else
-                        outlined
-                        dense
-                        :items="serviceDropDown"
-                        v-model="selectedService"
-                        @change="changeServiceType"
-                    ></v-select>
+                    <p class="item-value">{{ cafFileData.service_type ? cafFileData.service_type : '' }}</p>
                 </div>
                 <div class="item">
                     <p class="item-title">Plan</p>
-                    <p class="item-value" v-if="isEdit">{{ cafFileData.plan ? cafFileData.plan : '' }}</p>
-                    <v-select
-                        v-else
-                        outlined
-                        dense
-                        :items="planDropDown"
-                        v-model="selectedPlan"
-                        @change="updateSelelectedService"
-                    ></v-select>
+                    <p class="item-value">{{ cafFileData.plan ? cafFileData.plan : '' }}</p>
                 </div>
             </v-col>
         </v-row>
 
-        <SuccessfullyUpdateCloseConfirmModal v-if="closeConfirm" :dialog="closeConfirm"></SuccessfullyUpdateCloseConfirmModal>
     </div>
 </template>
 
 <script>
 
 import dayJs from "dayjs";
-import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileService";
-import SuccessfullyUpdateCloseConfirmModal from "@scripts/components/crm/modals/SuccessfullyUpdateCloseConfirmModal";
 import {capitalize} from "lodash-es";
 import {titlesMapperForDropdown} from "@scripts/data/titleMapper";
 import DayJs from "dayjs";
 
 export default {
     name: "ApplicationCafFileDetails",
-    components: {SuccessfullyUpdateCloseConfirmModal},
+    components: {},
     props: ["cafFileData"],
 
     data() {
         return {
-            isEdit: true,
             titlesDropDown: titlesMapperForDropdown,
             serviceDropDown: [],
             planDropDown: [
@@ -309,23 +151,20 @@ export default {
             selectedPlan: '',
 
             caf_detail: {
+                id: "",
                 title: "",
                 first_name: "",
                 middle_name: "",
                 last_name: "",
                 nmi: "",
                 mirn: "",
-                business_name: "",
-                abn: "",
                 connection_date: "",
                 service: {
                     connection_date: '',
                     plan: '',
                     service_type : ''
-
                 },
                 service_type: "",
-                // plan: ""
             },
         };
     },
@@ -367,47 +206,32 @@ export default {
         },
 
         syncData() {
+            this.caf_detail.id = this.cafFileData.id;
             this.caf_detail.title = this.cafFileData.title;
             this.caf_detail.first_name = this.cafFileData.first_name;
             this.caf_detail.middle_name = this.cafFileData.middle_name;
             this.caf_detail.last_name = this.cafFileData.last_name;
             this.caf_detail.nmi = this.cafFileData.nmi;
             this.caf_detail.mirn = this.cafFileData.mirn;
-            this.caf_detail.business_name = this.cafFileData.business_name;
-            this.caf_detail.abn = this.cafFileData.abn;
             this.caf_detail.connection_date = this.cafFileData.connection_date;
             this.caf_detail.service_type = this.cafFileData.selected_service;
             this.selectedPlan = this.cafFileData.plan;
             this.caf_detail.service.plan = this.selectedPlan;
             this.caf_detail.service.service_type = this.cafFileData.selected_service;
             this.caf_detail.service.connection_date = dayJs(this.cafFileData.connection_date,'DD/MM/YYYY').format('YYYY-MM-DD');
-
-
-
-            // this.caf_detail.plan = this.cafFileData.plan;
         },
         billing(value) {
             return value ? capitalize(value) : '';
-        },
-        async updateCafFile(cafId) {
-            this.loading = true;
-            let response = await ApplicationCafFileService.updateApplicationCafFileData(cafId, this.caf_detail);
-            this.$emit('refreshTable', response);
-
-
-            console.log(response);
-            this.loading = false;
-            // this.closeConfirm = true;
         },
 
         changeServiceType() {
             this.caf_detail.service.service_type = this.selectedService;
             this.$emit('updateServiceType', this.selectedService, this.cafFileData.id)
-        }
+        },
 
-        // isDisabled(services) {
-        //    return ApplicationCafFileService.isPossibleToCreateCaf(this.cafFileData.selected_service, services);
-        // }
+        editApplication() {
+            this.$router.push({name: 'applications.details', params: {id: this.caf_detail.id}});
+        },
     },
 };
 </script>

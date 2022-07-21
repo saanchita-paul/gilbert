@@ -67,8 +67,6 @@ export default {
                 {text: 'Created Date', align: 'start', sortable: true, value: 'created_date', class: 'black--text'},
                 {text: 'Supplier', align: 'start', sortable: true, value: 'supplier', class: 'black--text'},
                 {text: 'Plan', align: 'start', sortable: true, value: 'plan', class: 'black--text'},
-                {text: 'Business Name', align: 'start', sortable: true, value: 'business_name', class: 'black--text'},
-                {text: 'ABN', align: 'start', sortable: true, value: 'abn', class: 'black--text'},
                 {text: 'Status', align: 'start', sortable: true, value: 'status', class: 'black--text'},
                 {text: '', value: 'data-table-expand', sortable: false, align: 'start'},
                 {text: '', value: 'data-table-select', sortable: false}
