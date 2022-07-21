@@ -76,7 +76,7 @@ class HubspotContactService
         }
 
         $url = str_replace('${id}', $vid, config('hub_spot.update_contact')) . config('hub_spot.api_key');
-        $url = APILog::setLoggerQuery($url, APILog::API_HB_UPDATE_CONTACT);
+        // $url = APILog::setLoggerQuery($url, APILog::API_HB_UPDATE_CONTACT); // no need log
 
         $response = Http::post($url, [
             "properties" => $this->getProperties()
