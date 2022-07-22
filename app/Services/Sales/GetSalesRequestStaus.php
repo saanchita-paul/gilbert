@@ -146,15 +146,15 @@ class GetSalesRequestStaus
                 [
                     'version
                     quotes {
-                    id
-    status
-    fuel
-    lastUpdated
-    rejectionReasons {
-      code
-      detail
-    }
-  }'
+                        id
+                        status
+                        fuel
+                        lastUpdated
+                        rejectionReasons {
+                        code
+                        detail
+                        }
+                    }'
                 ]
             );
 
@@ -166,24 +166,24 @@ class GetSalesRequestStaus
             $header
         );
 
-        //call logger api to save log
+        //call logger api to save log (UPDATED 22/07/2022 - No Need Log)
 
-        $loggerResponse = $logSalesService->createSalesLog(
-            $url,
-            APILog::API_SALES_API_GET_STATUS,
-            'POST',
-            json_encode($da),
-            json_encode($header)
-        );
+        // $loggerResponse = $logSalesService->createSalesLog(
+        //     $url,
+        //     APILog::API_SALES_API_GET_STATUS,
+        //     'POST',
+        //     json_encode($da),
+        //     json_encode($header)
+        // );
+        
         $results = $client->runQuery($gql, true, $da);
 
-
         //update logger after response from graghql
-        $logSalesService->updateSalesLog($loggerResponse->key,
-            json_encode($results->getData()),
-            json_encode([]),
-            200
-        );
+        // $logSalesService->updateSalesLog($loggerResponse->key,
+        //     json_encode($results->getData()),
+        //     json_encode([]),
+        //     200
+        // );
 
         $this->processEaData($results->getResponseBody(), $leadId);
 
