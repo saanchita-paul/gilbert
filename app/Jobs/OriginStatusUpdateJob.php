@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use App\Services\Agency\HubspotContactService;
 
 class OriginStatusUpdateJob implements ShouldQueue
 {
@@ -19,7 +20,7 @@ class OriginStatusUpdateJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(private string $lead_reference)
+    public function __construct(private string $lead_reference, private string $connection_application_id)
     {
 
     }
@@ -33,5 +34,7 @@ class OriginStatusUpdateJob implements ShouldQueue
     {
         $checkOrder = new CheckOrderAPI($this->lead_reference);
         $checkOrder->fetch();
+        $hubspotService = new HubspotContactService($this->connection_application_id);
+        $hubspotService->update();
     }
 }
