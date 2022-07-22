@@ -54,7 +54,7 @@
                                 <GilbertApplicationCafFileFilter
                                     :selected="selectedCaf"
                                     v-model="advanceSearch"
-                                    :cafFiles="cafFiles"
+                                    :gilbertApplications="gilbertApplications"
                                     :isSearchEmpty="advanceSearch.isSearchEmpty()"
                                     @updateDate="updateDate">
                                 </GilbertApplicationCafFileFilter>
@@ -219,7 +219,6 @@ export default {
         async fetchGilbertApplications() {
             let data = await ApplicationCafFileService.getGilbertApplicationData({...this.sort_search_meta, ...{page: this.page}}, this.advanceSearch);
             this.gilbertApplications = data.data;
-            console.log('Gilbert application data', this.gilbertApplications);
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
             this.totalItem = data.pagination.total;

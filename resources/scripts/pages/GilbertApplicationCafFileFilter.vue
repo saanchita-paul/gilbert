@@ -96,7 +96,7 @@ import {isEmpty, isNil} from "lodash-es";
 export default {
     name: "GilbertApplicationCafFileFilter",
     components: {DatePickerModal},
-    props: ["selected", "isSearchEmpty", 'cafFiles'],
+    props: ["selected", "isSearchEmpty", 'gilbertApplications'],
     data() {
         return {
             name: "",
@@ -154,17 +154,21 @@ export default {
             this.$emit('updateDate', this.dateRange)
         },
 
-        generateCafFIle()
-        {
+        generateCafFIle() {
             let selectedId = this.selected.map(dt => dt.id);
 
-            let selectedLeads = this.cafFiles.filter(cf => selectedId.includes(cf.id));
+            let selectedLeads = this.gilbertApplications.filter(cf => selectedId.includes(cf.id));
+
             let selectedRow = selectedLeads.map(dt => {
-                return dt.id + '-' + dt.selected_service
+                return dt.id;
             });
+
             let query = selectedRow.join('_');
-            console.log('selected rows', query);
+
+            return false;
+
             const url = `${process.env.MIX_BOT_ROOT_URL}/api/download-caf-file?leads=`+ query;
+
             window.open(
                 url,
                 '_blank'
