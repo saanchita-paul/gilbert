@@ -43,26 +43,31 @@ class BaseOriginAPI
      * 
      * @throws exception
      */
-    protected function getApi(string $url, array $params = [], string $methodName = 'getOriginAPI'){
+    protected function getApi(string $url, array $params = [], string $methodName = 'getOriginAPI', $isSkipLog = false){
         try {
             Log::info(sprintf('Origin GET:%s - Attempting with request data:', $methodName), $params);
-            $url = APILog::setLoggerQuery($url, $this->toSnakeCase('Origin'.$methodName), false);
 
-            foreach($params as $key => $value){
-                $url = $url . '&' . $key . '=' . $value;
+            $options = [
+                "headers" => [
+                    "Accept" => "application/json",
+                    "Authorization" => $this->basicAuth,
+                ],
+                "query" => $params,
+            ];
+            
+            if (!$isSkipLog) {
+                $url = APILog::setLoggerQuery($url, $this->toSnakeCase('Origin'.$methodName), false);
+                
+                foreach ($params as $key => $value){
+                    $url = $url . '&' . $key . '=' . $value;
+                }
+
+                unset($options['query']);
             }
 
-            $headers = [
-                "Accept" => "application/json",
-                "Authorization" => $this->basicAuth,
-            ];
-
-            $response = Http::withOptions([
-                "headers" => $headers,
-                // "query" => $params,
-            ])->get($url);
-
-            $response->throw();
+            $response = Http::withOptions($options)
+                        ->get($url)
+                        ->throw();
             
             $responseData = json_decode($response->body(), true);
 
@@ -100,28 +105,29 @@ class BaseOriginAPI
      * 
      * @throws exception
      */
-    protected function postApi(string $url, array $body = [], string $methodName = 'postOriginAPI'){
+    protected function postApi(string $url, array $body = [], string $methodName = 'postOriginAPI', $isSkipLog = false){
         try {
             Log::info(sprintf('Origin POST:%s - Attempting with request data:', $methodName), $body);
-            $url = APILog::setLoggerQuery($url, $this->toSnakeCase('Origin'.$methodName), false);
-            
+
             $this->getAccessToken();
-
-            $headers = [
-                "X-CSRF-Token" => $this->accessToken,
-                "Authorization" => $this->basicAuth,
-                "Accept" => "application/json",
-                "Content-Type" => "application/json",
-            ];
-
-            $response = Http::withOptions([
-                'headers' => $headers,
+            $options = [
+                'headers' => [
+                    "X-CSRF-Token" => $this->accessToken,
+                    "Authorization" => $this->basicAuth,
+                    "Accept" => "application/json",
+                    "Content-Type" => "application/json",
+                ],
                 'cookies' => $this->cookiejar
-            ])
-            ->withBody(json_encode($body), "application/json")
-            ->post($url);
+            ];
+            
+            if (!$isSkipLog) {
+                $url = APILog::setLoggerQuery($url, $this->toSnakeCase('Origin'.$methodName), false);
+            }
 
-            $response->throw();
+            $response = Http::withOptions($options)
+                        ->withBody(json_encode($body), "application/json")
+                        ->post($url)
+                        ->throw();
 
             $responseData = json_decode($response->getBody(), true);
 
