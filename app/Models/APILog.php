@@ -16,12 +16,13 @@ class APILog extends Model
     const API_SUMO_SUBMIT_LEAD = 'sumo_submit_lead';
     const API_FAST_CONNECT_WATER_SUBMIT = 'fast_connect_water_submit';
     const API_TSA_INSERT_DATA = 'tsa_send_application_data';
+    const API_TSA_SAVE_HISTORY = 'tsa_save_history';
     const API_SALES_API_SUBMIT = 'sales_api_submit';
     const API_SALES_API_GET_STATUS = 'sales_api_get_status';
     const API_ORIGIN_GET_PRODUCT_INFO = 'origin_get_product_info';
     const API_ORIGIN_VALIDATE_ADDRESS = 'origin_validate_address';
     const API_ORIGIN_CHECK_FUEL = 'origin_check_fuel';
-    const API_ORIGIN_CHECK_STATUS = 'origin_check_status';
+    const API_ORIGIN_CHECK_STATUS = 'origin_check_order';
     const API_ORIGIN_SUBMIT_CUSTOMER_MOVE_IN = 'origin_submit_customer_move_in';
     const API_ORIGIN_SUBMIT_CANCEL = 'origin_submit_cancel';
 
