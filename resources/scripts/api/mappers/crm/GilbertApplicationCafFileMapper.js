@@ -24,6 +24,7 @@ const mapGilbertApplicationCafFile = data => {
     response.plan = mapPlan(response.plan_type);
     response.service_type = mapService(response.connection_services);
     response.is_selected = false;
+    response.selected_service = mapSelectedService(response.connection_services);
     return response;
 }
 
@@ -88,6 +89,19 @@ const mapService = service => {
     if (service_types.includes('power')) {
         return 'Electricity Only';
     }
+}
+
+const mapSelectedService = (services) => {
+    let filterServices = services.filter(svc => {
+        return (svc.service_type === 'gas')
+            || (svc.service_type === 'power');
+    })
+    if(filterServices.length === 2) {
+        return 'both'
+    } else if(filterServices.length === 1) {
+        return  filterServices[0].service_type;
+    }
+    return '';
 }
 
 export default {

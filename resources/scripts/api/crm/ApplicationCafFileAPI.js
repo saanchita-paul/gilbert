@@ -49,4 +49,17 @@ export default {
         };
     },
 
+    generateGilbertCafFIle: async (params) => {
+        try{
+            const url = `${process.env.MIX_BOT_ROOT_URL}/api/download-caf-file?leads=`+ params;
+
+            window.open(
+                url,
+                '_blank'
+            );
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
 }

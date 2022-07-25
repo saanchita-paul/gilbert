@@ -1,13 +1,12 @@
 <template>
     <v-container fluid>
 
-        <v-tabs>
+        <v-tabs v-model="activeTab">
+            <!--  Chatbot Application start-->
             <v-tab href="#chatbotApplication">
                 <v-icon left>mdi-facebook-messenger</v-icon>
                 Chatbot Applications
             </v-tab>
-
-            <!--  Chatbot Application start-->
             <v-tab-item value="chatbotApplication">
                 <v-card>
                     <v-card-text>
@@ -52,23 +51,20 @@
                             <v-col cols="12">
                                 <h3>Filters</h3>
                                 <GilbertApplicationCafFileFilter
-                                    :selected="selectedCaf"
-                                    v-model="advanceSearch"
+                                    :selectedCafFile="selectedCafFile"
+                                    v-model="advanceSearchModel"
                                     :gilbertApplications="gilbertApplications"
-                                    :isSearchEmpty="advanceSearch.isSearchEmpty()"
-                                    @updateDate="updateDate">
+                                    :isSearchEmpty="advanceSearchModel.isSearchEmpty()"
+                                    @updateDates="updateDates">
                                 </GilbertApplicationCafFileFilter>
                             </v-col>
                             <v-col cols="12">
                                 <GilbertApplicationCafFileTable
-                                    v-model="selectedCaf"
+                                    v-model="selectedCafFile"
                                     :gilbertApplications="gilbertApplications"
-                                    :totalItem="totalItem"
-                                    @updateDataTable="updateDataTable"
-                                    @refreshDataTable="refreshDataTable"
-                                    @updateServiceType="updateServiceType"
-                                    @updateSelectedMovingData="updateSelectedMovingData"
-                                    @selectRowCafFile="selectRowCafFile"
+                                    :totalItems="totalItems"
+                                    @refreshDataTable="reloadDataTable"
+                                    @selectRowCafFiles="selectRowCafFiles"
                                 >
                                 </GilbertApplicationCafFileTable>
                             </v-col>
@@ -78,6 +74,7 @@
             </v-tab-item>
             <!--  Gilbert Application end-->
         </v-tabs>
+
     </v-container>
 </template>
 
@@ -104,6 +101,7 @@ export default {
 
             selectedMovingData: [],
             selectedCaf: [],
+            selectedCafFile: [],
             tab: null,
             cafFiles: [],
 
@@ -115,7 +113,25 @@ export default {
             options: {},
             advanceSearch: new CafFileSearchFilterModel(),
             dateRange: null,
-            gilbertApplications: []
+            gilbertApplications: [],
+            sorts_search_meta: null,
+            pages: 1,
+            pageCounts: 0,
+            itemsPerPages: 10,
+            totalItems: null,
+            option: {},
+            advanceSearchModel: new CafFileSearchFilterModel(),
+        }
+    },
+
+    computed: {
+        activeTab: {
+            set(tab) {
+                this.$router.replace({ query: { ...this.$route.query, tab }})
+            },
+            get() {
+                return this.$route.query.tab;
+            }
         }
     },
 
@@ -132,11 +148,24 @@ export default {
                 this.fetchCafFiles();
             },
             deep: true
-        }
+        },
+        advanceSearchModel: {
+            handler(value) {
+                let params = {...this.$route.query, ...value}
+                if (isEqual(this.$route.query, value)) return;
+                this.$router.push({
+                    name: "caf.files",
+                    query: params,
+                });
+                this.resetPage();
+                this.fetchGilbertApplications();
+            },
+            deep: true
+        },
     },
 
     async mounted() {
-        await this.fetchGilbertApplications();
+        // await this.fetchGilbertApplications();
     },
 
 
@@ -188,6 +217,15 @@ export default {
 
         },
 
+        selectRowCafFiles(item) {
+            let index = this.selectedCafFile.findIndex(dt => dt.id === item.id);
+            if(index === -1) {
+                this.selectedCafFile.push(item);
+            } else {
+                this.selectedCafFile.splice(index, 1);
+            }
+        },
+
         updateSelectedMovingData(id, service_type)
         {
             let index = this.selectedMovingData.findIndex(dt => dt.id === id);
@@ -217,11 +255,11 @@ export default {
         },
 
         async fetchGilbertApplications() {
-            let data = await ApplicationCafFileService.getGilbertApplicationData({...this.sort_search_meta, ...{page: this.page}}, this.advanceSearch);
+            let data = await ApplicationCafFileService.getGilbertApplicationData({...this.sorts_search_meta, ...{page: this.pages}}, this.advanceSearchModel);
             this.gilbertApplications = data.data;
-            this.page = data.pagination.current_page;
-            this.itemsPerPage = data.pagination.per_page;
-            this.totalItem = data.pagination.total;
+            this.pages = data.pagination.current_page;
+            this.itemsPerPages = data.pagination.per_page;
+            this.totalItems = data.pagination.total;
         },
 
         resetPage() {
@@ -233,10 +271,24 @@ export default {
             this.fetchCafFiles();
         },
 
+        reloadDataTable(meta) {
+            this.pages = meta.page
+            this.sorts_search_meta = omit({...meta}, 'page');
+            this.fetchGilbertApplications();
+        },
+
         updateDate(dateRange) {
             if (dateRange) {
                 this.advanceSearch.start_date = dateRange.start
                 this.advanceSearch.end_date = dateRange.end
+            }
+
+        },
+
+        updateDates(dateRange) {
+            if (dateRange) {
+                this.advanceSearchModel.start_date = dateRange.start
+                this.advanceSearchModel.end_date = dateRange.end
             }
 
         },

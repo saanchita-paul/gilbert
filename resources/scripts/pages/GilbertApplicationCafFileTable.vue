@@ -4,7 +4,7 @@
             v-model="selected"
             :headers="headers"
             :items="gilbertApplications"
-            :server-items-length="totalItem"
+            :server-items-length="totalItems"
             :options.sync="options"
             :single-expand=true
             :expanded.sync="expanded"
@@ -29,7 +29,7 @@
             <!-- row expend start-->
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length" style="padding: 0">
-                    <GilbertApplicationCafFileDetails @refreshTable="updateTableData" :application='item' @updateServiceType="updateServiceType"></GilbertApplicationCafFileDetails>
+                    <GilbertApplicationCafFileDetails :application='item'></GilbertApplicationCafFileDetails>
                 </td>
             </template>
             <!-- row expend end-->
@@ -43,7 +43,7 @@ import GilbertApplicationCafFileDetails from "@scripts/pages/GilbertApplicationC
 export default {
     name: "GilbertApplicationCafFileTable",
     components: {GilbertApplicationCafFileDetails},
-    props: ["value", "gilbertApplications", "totalItem"],
+    props: ["value", "gilbertApplications", "totalItems"],
     data() {
         return {
             selected: [],
@@ -62,7 +62,6 @@ export default {
                 {text: '', value: 'data-table-expand', sortable: false, align: 'start'},
                 {text: '', value: 'data-table-select', sortable: false}
             ],
-            cafFileSearch: '',
             options: {
                 itemsPerPage: 10
             },
@@ -78,7 +77,7 @@ export default {
         },
         options: {
             handler () {
-                this.loadCafFileList();
+                this.loadGilbertCafFileList();
             },
             deep: true,
         },
@@ -86,58 +85,28 @@ export default {
 
     methods: {
 
-        updateTableData(data) {
-            console.log('data', data);
-            this.$emit('updateDataTable', data);
-        },
-
         onchangeRow(item) {
-            this.$emit('selectRowCafFile', item);
+            this.$emit('selectRowCafFiles', item);
         },
 
-        updateSelectedService(item) {
-          let moving_id = item.id;
-          let services = item.services;
-          let selectedServiceType = '';
-          services.forEach(svc => {
-              if(svc.is_active) {
-                  selectedServiceType = svc.service_type;
-              }
-          });
-
-          this.updateSelectedMovingData(moving_id, selectedServiceType);
-        },
-
-        updateServiceType(data, id) {
-            this.$emit('updateServiceType', data, id);
-        },
         onRowSelect(item, slot) {
             this.selectedRowId = item.id;
             slot.expand(!slot.isExpanded)
         },
+
         isSelectedClass(item) {
             if (item.id === this.selectedRowId) {
                 return 'selectedRowForAgentTable';
             }
         },
 
-
-        loadCafFileList() {
+        loadGilbertCafFileList() {
             const meta = {
                 page: this.options.page,
-                per_page: this.options.itemsPerPage === -1 ? this.totalItem : this.options.itemsPerPage,
+                per_page: this.options.itemsPerPage === -1 ? this.totalItems : this.options.itemsPerPage,
             }
             this.$emit('refreshDataTable', meta);
         },
-
-        updateSelectedMovingData(moving_id, selectedServiceType) {
-
-            this.$emit('updateSelectedMovingData', moving_id, selectedServiceType);
-        },
-
-        getStatus(item) {
-          return !item.is_possible_caf_file;
-        }
     },
 
 }

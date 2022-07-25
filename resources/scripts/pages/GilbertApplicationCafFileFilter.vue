@@ -6,7 +6,7 @@
                     <div class="d-flex">
                         <v-text-field
                             autocomplete="off"
-                            v-model="$attrs.value.name"
+                            v-model="$attrs.value.tenant_name"
                             outlined
                             dense
                             hide-details="auto"
@@ -72,7 +72,7 @@
                     </div>
                 </v-col>
                 <v-col cols="2">
-                    <v-btn class="float-right" :disabled="isDisabledCafBtn" @click="generateCafFIle">
+                    <v-btn class="float-right" :disabled="isDisabledCafBtn" @click="generateGilbertAppCafFIle">
                         Generate CAF File
                     </v-btn>
                 </v-col>
@@ -93,10 +93,11 @@
 import DatePickerModal from "@scripts/modules/sales/components/DatePickerModal";
 import {getFormattedDBDate, getToday, getTodayString, getYesterday, isSame} from "@scripts/services/DateRangeService";
 import {isEmpty, isNil} from "lodash-es";
+import ApplicationCafFileService from "@scripts/services/crm/ApplicationCafFileService";
 export default {
     name: "GilbertApplicationCafFileFilter",
     components: {DatePickerModal},
-    props: ["selected", "isSearchEmpty", 'gilbertApplications'],
+    props: ["selectedCafFile", "isSearchEmpty", 'gilbertApplications'],
     data() {
         return {
             name: "",
@@ -115,7 +116,7 @@ export default {
     },
     computed: {
         isDisabledCafBtn() {
-            return this.selected?.length < 1;
+            return this.selectedCafFile?.length < 1;
         }
     },
     watch: {
@@ -151,29 +152,22 @@ export default {
             this.$refs.form.reset();
         },
         updateDateRange() {
-            this.$emit('updateDate', this.dateRange)
+            this.$emit('updateDates', this.dateRange)
         },
 
-        generateCafFIle() {
-            let selectedId = this.selected.map(dt => dt.id);
+        generateGilbertAppCafFIle() {
+            let selectedId = this.selectedCafFile.map(dt => dt.id);
 
             let selectedLeads = this.gilbertApplications.filter(cf => selectedId.includes(cf.id));
 
             let selectedRow = selectedLeads.map(dt => {
-                return dt.id;
+                return dt.id + '-' + dt.selected_service
             });
 
             let query = selectedRow.join('_');
 
-            return false;
-
-            const url = `${process.env.MIX_BOT_ROOT_URL}/api/download-caf-file?leads=`+ query;
-
-            window.open(
-                url,
-                '_blank'
-            );
-
+            let response = ApplicationCafFileService.generateGilbertCafFIle(query);
+            console.log('Response from Generate caf file :', response);
         }
 
     },

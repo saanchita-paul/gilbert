@@ -8,6 +8,7 @@ class CafFileSearchFilterModel {
                     abn,
                     start_date,
                     end_date,
+                    tenant_name,
                 } = {}) {
         this.name = name;
         this.address = address;
@@ -15,6 +16,7 @@ class CafFileSearchFilterModel {
         this.abn = abn;
         this.start_date = start_date;
         this.end_date = end_date;
+        this.tenant_name = tenant_name;
     }
 
     isSearchEmpty() {
