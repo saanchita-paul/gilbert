@@ -61,7 +61,6 @@ class PowershopService
             $this->application = ConnectionApplication::findOrFail($id);
 //             dd($this->getCustomerData());
             $url = config('powershop.base_url').config('powershop.send_customer_data_url');
-            // $response = Http::post($url, $this->getCustomerData());
 
             $response = Http::withHeaders([
                 'content-type' => 'application/json',
@@ -160,7 +159,7 @@ class PowershopService
             ],
             "eligible_for_concessions" => $this->getMappedConcession($this->application->eligible_for_concessions),
             "terms_and_conditions_accepted_at" => $this->application->terms_and_conditions_accepted_at,
-            "promotion_code" => $this->application->promotion_code,
+            "promotion_code" => "HoodPS100%CarbonNeutral",
             "promotion_terms_and_conditions_accepted_at" => $this->application->promotion_terms_and_conditions_accepted_at,
         ];
     }
