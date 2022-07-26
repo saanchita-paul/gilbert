@@ -1,90 +1,120 @@
 <template>
     <v-app>
         <div fluid>
-            <v-container class="container-box">
-                <v-card class="card-section">
+            <v-container>
+                <div class="card-section">
                     <div class="plan-title-header">
                         <div class="d-flex">
                             <img src="" alt="">
                             <h3>Powershop</h3>
                         </div>
+                        <div>
+                            <h2>100% Carbon Neutral Plan</h2>
+                            <p>Electricity & Gas</p>
+                        </div>
                     </div>
 
                     <ElectricityPlan></ElectricityPlan>
 
-<!--                    <GasPlan></GasPlan>-->
+                    <GasPlan></GasPlan>
 
-                    <div class="pl-8 pr-8">
-                        <p class="font-weight-bold" style="font-size:14px">Included in your plan</p>
-                        <div class="d-flex">
-                            <p class="font-weight-bold mb-0" style="font-size:14px;">Rates:</p>
-                            <div class="d-flex">
-                                <p class="pl-2 mb-0" style="font-size:14px;">Rates</p>
-                                <v-icon aria-hidden="false" class="pl-1 mb-0" size="80%">
-                                    mdi-progress-question
-                                </v-icon>
+                    <div class="plan-details">
+                        <v-card>
+                            <div style="padding: 20px 10px">
+                                <div>
+                                    <h2 class="font-weight-bold plan-heading-text">Plan Details</h2>
+                                </div>
+                                <div>
+                                    <p>This offer is an ongoing contract, until you or we end it.</p>
+                                </div>
+
                             </div>
-                        </div>
-                        <!--						<div class="d-flex">-->
-                        <!--							<p class="font-weight-bold mb-0" style="font-size:14px;">Exit Fees:</p>-->
-                        <!--							<p class="pl-2 mb-0" style="font-size:14px;">{{ planDetails.exit_fees }}</p>-->
-                        <!--						</div>-->
-                        <!--						<div class="d-flex">-->
-                        <!--							<p class="font-weight-bold mb-0" style="font-size:14px;">Benefit Period:</p>-->
-                        <!--							<p class="pl-2 pb-2 mb-0" style="font-size:14px;">{{ planDetails.benefit_period }}</p>-->
-                        <!--						</div>-->
-                        <!-- <p class="font-weight-bold mb-0" style="font-size:14px;">Green options</p>
-                        <p class="plan-text mt-0" style="font-size:14px;">{{ planDetails.green_options }}</p> -->
-                        <hr class="mb-4" style="width:95%"/>
-
-                        <p class="plan-text mt-0" style="font-size:14px;">Your meter details will be verified with the
-                            distributor, and your charges may charge if any details are incorrect.
-                            Origin will confirm these once they’ve identified your meter type and processed your
-                            application and will notify
-                            you by letter about any such change.
-                        </p>
-
-                        <!-- <div v-if="willShowELectricity">
-                            <span class="font-weight-bold mb-0" style="font-size:14px;">Electricity</span>
-                            <div v-for="item in planDetails.plans.electricity.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
-                                <a :href="item.file_url" target="_blank">{{ planDetails.plans.electricity.distributor_name }} - {{ item.offer_name }}</a>
-                            </div>
-                        </div>
-
-                        <div v-if="willShowGas">
-                            <span class="font-weight-bold mb-0" style="font-size:14px;">Gas</span>
-                            <div v-for="item in planDetails.plans.gas.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
-                                <a :href="item.file_url" target="_blank">{{ planDetails.plans.gas.distributor_name }} - {{ item.offer_name }}</a>
-                            </div>
-                        </div> -->
-
-                        <!--						<div v-if="willShowELectricity">-->
-                        <!--							<span class="font-weight-bold mb-0" style="font-size:14px;">Electricity</span>-->
-                        <!--							<div v-if="this.leadSummary.state == 'Victoria'" class="pb-2" style="font-size:14px;">-->
-                        <!--								<a href="https://www.originenergy.com.au/vefs/" target="_blank">https://www.originenergy.com.au/vefs/</a>-->
-                        <!--							</div>-->
-                        <!--							<div v-else class="pb-2" style="font-size:14px;">-->
-                        <!--								<a href="https://www.originenergy.com.au/bpidlink/" target="_blank">https://www.originenergy.com.au/bpidlink/</a>-->
-                        <!--							</div>-->
-                        <!--						</div>-->
-
-                        <!--						<div v-if="willShowGas">-->
-                        <!--							<span class="font-weight-bold mb-0" style="font-size:14px;">Gas</span>-->
-                        <!--							<div v-if="this.leadSummary.state == 'Victoria'" class="pb-2" style="font-size:14px;">-->
-                        <!--								<a href="https://www.originenergy.com.au/vefs/" target="_blank">https://www.originenergy.com.au/vefs/</a>-->
-                        <!--							</div>-->
-                        <!--							<div v-else class="pb-2" style="font-size:14px;">-->
-                        <!--								<a href="https://www.originenergy.com.au/bpidlink/" target="_blank">https://www.originenergy.com.au/bpidlink/</a>-->
-                        <!--							</div>-->
-                        <!--						</div>-->
-
-                        <div class="pt-8 pb-2" style="font-size:14px;">
-                            <a href="https://google.com" target="_blank">Terms and conditions</a>
-                        </div>
+                        </v-card>
                     </div>
 
-                    <v-btn class="selectButton" color="#cd5b32" @click="closeDialog">Select Plan</v-btn>
-                </v-card>
+                    <div class="plan-details">
+                        <v-card>
+                            <div style="padding: 20px 10px">
+                                <div>
+                                    <h2 class="font-weight-bold plan-heading-text">Solar feed in tariff</h2>
+                                </div>
+
+                                <div class="price-list">
+                                    <div class="plan-text" style="font-size:14px">
+                                        Solar feed in tariff if applicable (Excl. GST)
+                                    </div>
+                                    <div  class="plan-text">6.7c/kWh</div>
+                                </div>
+
+                            </div>
+                        </v-card>
+                    </div>
+
+                    <div class="plan-details">
+                        <v-card>
+                            <div style="padding: 20px 10px">
+                                <div>
+                                    <h2 class="font-weight-bold plan-heading-text">BPID links</h2>
+                                </div>
+
+                                <v-divider></v-divider>
+
+                                <div>
+                                    <v-expansion-panels>
+                                        <v-expansion-panel>
+
+                                            <v-expansion-panel-header class="font-weight-bold">
+                                                Electricity Fact Sheets
+                                            </v-expansion-panel-header>
+
+                                            <v-expansion-panel-content>
+
+                                                <div class="">
+                                                    <div>
+                                                        <a href="#">SingeRate-controlload-cz6</a>
+                                                        <a href="#">SingeRate-controlload-cz7</a>
+                                                    </div>
+                                                </div>
+
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </div>
+                            </div>
+
+                            <div style="padding: 20px 10px">
+
+                                <v-divider></v-divider>
+
+                                <div>
+                                    <v-expansion-panels>
+                                        <v-expansion-panel>
+
+                                            <v-expansion-panel-header class="font-weight-bold">
+                                                Gas Fact Sheets
+                                            </v-expansion-panel-header>
+
+                                            <v-expansion-panel-content>
+
+                                                <div class="price-list">
+                                                    <div class="plan-text" style="font-size:14px">
+                                                        <a href="#">cardinia</a>
+                                                        <a href="#">central</a>
+                                                    </div>
+                                                </div>
+
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </div>
+                            </div>
+
+
+                        </v-card>
+                    </div>
+
+                    <v-btn class="selectButton" color="#FA0C69">Select Plan</v-btn>
+                </div>
             </v-container>
         </div>
     </v-app>
@@ -108,36 +138,17 @@ export default {
     watch: {},
     mounted() {
     },
-    methods: {
-        closeDialog() {
-            this.$emit('toggleDialog')
-        }
-
-    },
+    methods: {},
 }
 </script>
 
 <style scoped>
-.container-box {
-    padding: 0px !important;
-}
 
 .card-section {
     max-width: 450px;
-    margin: 0px auto;
-    border-radius: 2%;
-    padding-bottom: 15px;
-}
-
-.plan-text {
-    color: #505050;
-    display: block;
-    font-size: 14px;
-    font-family: sans-serif;
-    line-height: 24px;
-    text-rendering: optimizeLegibility;
-    text-transform: none;
-    -webkit-font-smoothing: antialiased;
+    margin: 0 auto;
+    border: 4px solid #F1186C;
+    border-radius: 10px;
 }
 
 .selectButton {
@@ -162,6 +173,33 @@ export default {
     background-color: #F1186C;
     color: white;
     padding: 10px;
+}
+
+.plan-heading-text {
+    color: #662445;
+}
+
+.plan-details {
+    margin: 10px 0;
+    padding: 0 10px;
+}
+
+.price-list {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.plan-details .v-expansion-panel::before {
+    box-shadow: none !important;
+}
+
+.v-expansion-panel-header {
+    padding: 0;
+}
+
+.theme--light.v-expansion-panels >>> .v-expansion-panel-content__wrap {
+    padding: 0;
 }
 
 </style>
