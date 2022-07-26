@@ -25,6 +25,7 @@ use App\Http\Controllers\Agency\AgentProfileController;
 use OurProperty\Http\Controllers\OurPropertyController;
 use App\Services\RolePermission;
 use App\Http\Controllers\Agency\ReaExtractsReportController;
+use App\Services\Utility\PowershopService;
 
 /*
 |--------------------------------------------------------------------------
@@ -303,4 +304,10 @@ Route::get('/kaka', function () {
 //    dd($date);
     return $dateTimeZone->getOffset($date)/60/60;
 
+});
+
+Route::get('powers-api', function () {
+    $s = new PowershopService();
+    $re = $s->sendCustomerData(ConnectionApplication::find(453)->id);
+    dd($re);
 });
