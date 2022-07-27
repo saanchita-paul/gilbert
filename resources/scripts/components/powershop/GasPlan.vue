@@ -6,21 +6,26 @@
                 <div style="padding: 20px 10px">
                     <div class="text-center">
                         <div class="d-flex justify-center align-center">
-                            <v-icon color="#FF5722" size="20" class="mr-2">mdi-fire</v-icon>
-                            <h2 class="font-weight-bold plan-heading-text">Gas</h2>
+                            <v-icon color="#FF5722" size="25" class="mr-2">mdi-fire</v-icon>
+                            <h2 class="font-weight-bold plan-heading-text mb-2">Gas</h2>
                         </div>
                     </div>
-                    <div>
-                        <p>This offer is an ongoing contract, until you or we end it. The estimates above are based on an average residential customer. We have calculated the monthly estimates based on the annual figure and divided by 12. Your actual bills will vary depending on your usage, rates and any price changes in the future. The estimates don’t include concessions or other rebates, distributor service order costs, fees that may apply to you.</p>
+                    <div class="mt-2">
+                        <p class="paragraph-text">This offer is an ongoing contract, until you or we end it. The estimates above are based on an average residential customer. We have calculated the monthly estimates based on the annual figure and divided by 12. Your actual bills will vary depending on your usage, rates and any price changes in the future. The estimates don’t include concessions or other rebates, distributor service order costs, fees that may apply to you.</p>
                     </div>
 
                     <v-divider></v-divider>
                     <div>
-                        <v-expansion-panels>
+                        <v-expansion-panels :value="opened">
                             <v-expansion-panel>
 
-                                <v-expansion-panel-header class="font-weight-bold">
+                                <v-expansion-panel-header class="font-weight-bold" style="font-size: 16px">
                                     Gas rates
+                                    <template v-slot:actions>
+                                        <v-icon color="#F1186C">
+                                            $expand
+                                        </v-icon>
+                                    </template>
                                 </v-expansion-panel-header>
 
                                 <v-expansion-panel-content>
@@ -54,39 +59,43 @@
 <script>
 export default {
     props: {},
+    data() {
+        return {
+            opened: 0,
+        }
+    },
     methods: {
-
     }
 }
 </script>
 
 <style scoped>
-
 .plan-details {
-    margin: 10px 0;
+    margin: 20px 0;
     padding: 0 10px;
 }
-
 .plan-details .v-expansion-panel::before {
     box-shadow: none !important;
 }
-
 .price-list {
     display: flex;
     justify-content: space-between;
     margin-bottom: 5px;
 }
-
 .plan-heading-text {
     color: #662445;
 }
-
 .v-expansion-panel-header {
     padding: 0;
 }
-
 .theme--light.v-expansion-panels >>> .v-expansion-panel-content__wrap {
     padding: 0;
 }
-
+.v-sheet.v-card {
+    border-radius: 10px;
+}
+.paragraph-text {
+    font-size: 14px;
+    font-weight: 400;
+}
 </style>
