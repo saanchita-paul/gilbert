@@ -71,6 +71,17 @@
                 ></OriginPlan>
             </div>
 
+            <div class="d-flex" v-if="selectedProvider === 'powershop'">
+                <PowershopPlan
+                    :class="{'not-editable': !isServiceEditable }"
+                    v-for="plan in powershopPlans"
+                    :key="plan.name"
+                    :plan="plan"
+                    @click.native="selectPlan(plan)"
+                    :isActive="selectedPlan"
+                ></PowershopPlan>
+            </div>
+
             <div class="d-flex" v-if="selectedProvider === 'sumo'">
                 <div v-if="isSumoPlansLoading" class="sumo-loading-container">
                     <v-progress-circular
@@ -105,6 +116,11 @@
                 </v-checkbox>
                 <p class="neutral-checkbox-text">Customer opts in for <span class="font-weight-bold">Go Neutral</span>.</p>
             </div>
+
+            <v-col cols="12" v-if="selectedProvider === 'powershop'">
+                <PaymentDetails>
+                </PaymentDetails>
+            </v-col>
 
         </v-col>
         <v-col cols="12">
@@ -171,6 +187,7 @@ import EAPlanService from "@scripts/services/ea/EAPlanService";
 import SumoService from "@scripts/services/crm/SumoService";
 import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
 import SumoPlan from "@scripts/components/crm/leadmanagement/SumoPlan";
+import PowershopPlan from "@scripts/components/crm/leadmanagement/PowershopPlan";
 import OriginPlan from "@scripts/components/crm/leadmanagement/OriginPlan";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
@@ -179,6 +196,8 @@ import SumoPlanDetails from "@scripts/components/crm/leadmanagement/SumoPlanDeta
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import {isNull} from "lodash-es";
 import {connectionServicesMapper} from "@scripts/data/ConnectionApplicationMapper";
+import PaymentDetails from "@scripts/components/crm/leadmanagement/PaymentDetails";
+
 
 export default {
     //todo reduce emit functions
@@ -190,10 +209,12 @@ export default {
         SameDayConnection,
         EnergyPlan,
         SumoPlan,
+        PowershopPlan,
         OriginPlan,
         EnergyPlanDetails,
         OriginPlanDetails,
-        SumoPlanDetails
+        SumoPlanDetails,
+        PaymentDetails
     },
     props: {
         leadSummary: {
@@ -215,6 +236,7 @@ export default {
             sumoPlanDetails: false,
             originPlans: [],
             originPlanDetails: false,
+            powershopPlans: [],
         };
     },
     computed: {
@@ -297,6 +319,7 @@ export default {
         this.fetchEaPlans();
         this.fetchOriginPlans();
         this.loadSelectedProviderAndPlan();
+        this.fetchPowershopPlans();
 
         // On address change refetch Sumo Plan Details
         const updateAddress = address => {
@@ -445,7 +468,17 @@ export default {
         },
         async changeGoNeutral() {
             await LeadApplicationService.saveSoleField('ea_go_neutral', this.leadSummary.ea_go_neutral, this.leadSummary.id);
-        }
+        },
+        async fetchPowershopPlans() {
+            const powershopProvider = this.providers.find(pl => {
+                return pl.name === 'powershop';
+            });
+
+            this.powershopPlans = powershopProvider.plans.filter(plan => {
+                return plan.type === 'power';
+            });
+            console.log("powershopPlans ->", this.powershopPlans);
+        },
     },
 };
 </script>
