@@ -123,8 +123,7 @@
         </v-col>
 
         <v-col cols="12" v-if="selectedProvider === 'powershop'">
-            <PaymentDetails>
-            </PaymentDetails>
+            <PaymentDetails @updateDraft="updateDraft" :lead="leadSummary"></PaymentDetails>
         </v-col>
 
         <v-col cols="12">
@@ -503,6 +502,9 @@ export default {
         togglePowerShopPlanDetails() {
             this.powerShopPlanDetails = !this.powerShopPlanDetails;
         },
+        async updateDraft(field, value) {
+            await LeadApplicationService.savePaymentField(field, value, this.leadSummary.id);
+        }
     },
 };
 </script>

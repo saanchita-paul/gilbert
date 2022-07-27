@@ -528,6 +528,14 @@ class ConnectionApplication extends Model
         return $data[sizeof($data) - 1];
     }
 
+     /**
+     * @return HasOne
+     */
+    public function powershopPaymentInfo()
+    {
+        return $this->hasOne(PowershopPaymentInfo::class , 'connection_application_id');
+    }
+
 
     /**
      * saving fast connect customer ref

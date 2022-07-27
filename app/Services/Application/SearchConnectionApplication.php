@@ -97,7 +97,8 @@ class SearchConnectionApplication
             ->with('SugerLead')
             ->with('tsaCallHistories')
             ->with('assignedTo')
-            ->with('submittedByUser');
+            ->with('submittedByUser')
+            ->with('powershopPaymentInfo');
 
         $this->applyFilterLeadType($user)
             ->applyFilterUserOffice($user)
