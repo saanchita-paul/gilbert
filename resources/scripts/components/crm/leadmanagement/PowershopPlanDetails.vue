@@ -14,13 +14,13 @@
                     </div>
                     <div>
                         <h2>100% Carbon Neutral Plan</h2>
-                        <p>Electricity & Gas</p>
+                        <p>{{ getServiceText }}</p>
                     </div>
                 </div>
 
-                <ElectricityPlan></ElectricityPlan>
+                <ElectricityPlan v-if="willShowElectricity" :plan="planDetails.plans.electricity"></ElectricityPlan>
 
-                <GasPlan></GasPlan>
+                <GasPlan v-if="willShowGas" :plan="planDetails.plans.gas"></GasPlan>
 
                 <div class="plan-details">
                     <v-card>
@@ -62,12 +62,12 @@
                     <v-card>
                         <div style="padding: 10px">
                             <div class="mb-2">
-                                <h2 class="font-weight-bold plan-heading-text">BPID links</h2>
+                                <h2 class="font-weight-bold plan-heading-text">
+                                    {{ isVictoria ? 'VEFS' : 'BPID' }} links</h2>
                             </div>
 
-                            <v-divider></v-divider>
-
-                            <div>
+                            <div v-if="willShowElectricity">
+                                <v-divider></v-divider>
                                 <v-expansion-panels :value="opened">
                                     <v-expansion-panel>
 
@@ -82,14 +82,18 @@
 
                                         <v-expansion-panel-content>
                                             <div>
-                                                <p class="mb-1"><a class="linkable" href="#">SingeRate-controlload-cz6</a></p>
-                                                <p class="mb-1"><a class="linkable" href="#">SingeRate-controlload-cz7</a></p>
+                                                <p class="mb-1"><a class="linkable"
+                                                                   href="#">SingeRate-controlload-cz6</a></p>
+                                                <p class="mb-1"><a class="linkable"
+                                                                   href="#">SingeRate-controlload-cz7</a></p>
                                                 <p class="mb-1"><a class="linkable" href="#">SingeRate-cz6</a></p>
                                                 <p class="mb-1"><a class="linkable" href="#">SingeRate-cz7</a></p>
                                                 <p class="mb-1"><a class="linkable" href="#">TimeofUse-cz6</a></p>
                                                 <p class="mb-1"><a class="linkable" href="#">TimeofUse-cz7</a></p>
-                                                <p class="mb-1"><a class="linkable" href="#">TimeofUse-controlLoad-cz6</a></p>
-                                                <p class="mb-1"><a class="linkable" href="#">TimeofUse-controlLoad-cz7</a></p>
+                                                <p class="mb-1"><a class="linkable"
+                                                                   href="#">TimeofUse-controlLoad-cz6</a></p>
+                                                <p class="mb-1"><a class="linkable"
+                                                                   href="#">TimeofUse-controlLoad-cz7</a></p>
                                             </div>
                                         </v-expansion-panel-content>
                                     </v-expansion-panel>
@@ -97,11 +101,9 @@
                             </div>
                         </div>
 
-                        <div style="padding: 0 10px">
-
+                        <div style="padding: 0 10px" v-if="willShowGas">
                             <v-divider></v-divider>
-                            <div>
-                                <v-expansion-panels :value="opened">
+                            <v-expansion-panels :value="opened">
                                     <v-expansion-panel>
 
                                         <v-expansion-panel-header class="font-weight-bold" style="font-size: 16px">
@@ -124,14 +126,13 @@
                                         </v-expansion-panel-content>
                                     </v-expansion-panel>
                                 </v-expansion-panels>
-                            </div>
                         </div>
-
-
                     </v-card>
                 </div>
 
-                <v-btn class="selectButton" color="#FA0C69" style="border-radius: 10px !important;" @click="closeDialog">Select Plan</v-btn>
+                <v-btn class="selectButton" color="#FA0C69" style="border-radius: 10px !important;"
+                       @click="closeDialog">Select Plan
+                </v-btn>
             </div>
         </div>
     </v-app>
@@ -140,23 +141,62 @@
 <script>
 import ElectricityPlan from "@scripts/components/powershop/ElectricityPlan"
 import GasPlan from "@scripts/components/powershop/GasPlan"
+import PowershopService from "@scripts/modules/powershop/services/PowershopService";
+import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
+
 export default {
     name: "PowershopPlanDetails",
     components: {
         ElectricityPlan,
         GasPlan,
     },
-    props: {},
+    props: {
+        serviceType: {
+            require: true
+        },
+        leadSummary: {
+            require: true
+        },
+    },
     data() {
         return {
             opened: 0,
+            planDetails: null,
         }
     },
-    computed: {},
+    computed: {
+        getServiceText() {
+            switch (this.serviceType) {
+                case "power":
+                    return "Electricity";
+                case "gas":
+                    return "Gas";
+                default:
+                    return "Electricity & Gas";
+            }
+        },
+        isBothEnergySubmit() {
+            return UtilityStoreService.getIsBothEnergySelected() || this.serviceType === 'energy';
+        },
+        willShowElectricity() {
+            return this.planDetails?.plans?.electricity && (this.serviceType === "power" || this.isBothEnergySubmit);
+        },
+        willShowGas() {
+            return this.planDetails?.plans?.gas && (this.serviceType === "gas" || this.isBothEnergySubmit);
+        },
+        isVictoria() {
+            return this.leadSummary.state === 'Victoria';
+        }
+    },
     watch: {},
     mounted() {
+        this.getPowershopData();
     },
     methods: {
+        async getPowershopData() {
+            this.planDetails = await PowershopService.getPowershopData();
+            console.log('Plan details data from powershop component: ', this.planDetails);
+        },
         closeDialog() {
             this.$emit('toggleDialog')
         }
@@ -171,6 +211,7 @@ export default {
     border: 4px solid #F1186C;
     border-radius: 8px;
 }
+
 .selectButton {
     color: white;
     font-weight: bold;
@@ -180,6 +221,7 @@ export default {
     padding-top: 10px;
     border-radius: 8px;
 }
+
 .v-size--default {
     height: 50px !important;
     min-width: 64px !important;
@@ -187,39 +229,49 @@ export default {
     margin: 10px auto !important;
     display: block !important;
 }
+
 .plan-title-header {
     background-color: #F1186C;
     color: white;
     padding: 10px;
 }
+
 .plan-heading-text {
     color: #662445;
 }
+
 .plan-details {
     margin: 20px 0;
     padding: 0 10px;
 }
+
 .price-list {
     display: flex;
     justify-content: space-between;
     margin-bottom: 5px;
 }
+
 .plan-details .v-expansion-panel::before {
     box-shadow: none !important;
 }
+
 .v-expansion-panel-header {
     padding: 0;
 }
+
 .theme--light.v-expansion-panels >>> .v-expansion-panel-content__wrap {
     padding: 0;
 }
+
 .v-sheet.v-card {
     border-radius: 10px;
 }
+
 .paragraph-text {
     font-size: 14px;
     font-weight: 400;
 }
+
 .linkable {
     color: #F1186C;
     font-size: 14px;

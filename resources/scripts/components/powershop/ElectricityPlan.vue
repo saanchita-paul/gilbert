@@ -23,7 +23,7 @@
                     </div>
                     <div class="d-flex">
                         <h4 class="font-weight-bold plan-heading-text mr-2">Your distributor</h4>
-                        <p class="deep-text">Jemena</p>
+                        <p class="deep-text">AusGrid</p>
                     </div>
                     <v-divider></v-divider>
                     <div>
@@ -69,6 +69,26 @@
                                         <div  class="plan-text">23.05</div>
                                     </div>
 
+                                    <div class="d-flex mt-8">
+                                        <p class="font-weight-bold" style="font-size:14px; margin-bottom: 2%">Fees</p>
+                                        <v-icon aria-hidden="false" class="pl-1 pb-1" size="80%">
+                                            mdi-help-circle-outline
+                                        </v-icon>
+                                    </div>
+
+                                    <div class="price-list">
+                                        <div class="plan-text" style="font-size:14px">
+                                            Manual Connection (insert fuse)
+                                        </div>
+                                        <div  class="plan-text">38.28</div>
+                                    </div>
+                                    <div class="price-list">
+                                        <div class="plan-text" style="font-size:14px">
+                                            Remote Connection
+                                        </div>
+                                        <div  class="plan-text">free</div>
+                                    </div>
+
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
                         </v-expansion-panels>
@@ -83,7 +103,11 @@
 
 <script>
 export default {
-    props: {},
+    props: {
+        plan: {
+            require: true,
+        },
+    },
     data() {
         return {
             opened: 0,
@@ -134,5 +158,6 @@ export default {
 .paragraph-text {
     font-size: 14px;
     font-weight: 400;
+    text-align: justify;
 }
 </style>

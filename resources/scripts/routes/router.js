@@ -24,7 +24,6 @@ import SalesEnergyPage from "@scripts/modules/sales/pages/SalesEnergyPage";
 import SalesWaterPage from "@scripts/modules/sales/pages/SalesWaterPage";
 import ApplicationSearchList from '@scripts/pages/ApplicationSearchList'
 import agent_routes from "@scripts/routes/agent_routes";
-import PowershopPlanDetails from "@scripts/components/crm/leadmanagement/PowershopPlanDetails";
 
 
 Vue.use(VueRouter);
@@ -301,11 +300,6 @@ const router = new VueRouter({
            meta: {
                isProtected: false
            }
-        },
-        {
-            path: '/powershop-details',
-            component: PowershopPlanDetails,
-            name:'powershop.plan.details',
         }
     ]
 })
