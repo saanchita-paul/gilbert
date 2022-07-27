@@ -78,6 +78,7 @@ class ExportEnergySubmissionReport
     {
         $date = now()->format('d_m_Y');
         $name = 'Gilbert_leads_report_'.$this->type.'_'.$date.'.csv';
+
         return (new FastExcel($this->leadsData))->download($name);
     }
 
@@ -244,22 +245,12 @@ class ExportEnergySubmissionReport
     private function filterWithSubmittedDate(Builder $builder, array $except)
     {
         return $builder
-//            ->whereIn('cs.status', [
-//                ConnectionService::STATUS_EA_PROCESSINF, //Not submitted
-//                ConnectionService::STATUS_SUBMITTED, //In progress
-//                ConnectionService::STATUS_ENERGY_SUBMIT, //In progress
-//                ConnectionService::STATUS_ACCEPTED, //Accepted
-//                ConnectionService::STATUS_REJECTED, //Rejected
-//                ConnectionApplication::STATUS_CLOSED, //Closed
-//                ConnectionService::AC_MANUAL_PROCESSING, //MANUAL_PROCESSING
-//                ConnectionService::STATUS_CANT_CONNECT, //Failed
-//            ])
             ->whereNotNull('cs.submitted_at')
+            ->whereNotIn('cs.service_type', [ConnectionService::TYPE_WATER])
 
             ->where('cs.submitted_at', '>=', $this->startDate)
             ->where('cs.submitted_at', '<=', $this->endDate)
             ->whereNotIn('cs.id', $except);
-//            ->whereNotBetween('ca.created_at', [$this->startDate, $this->endDate]);
     }
 
     private function getLeadSrc(?int $src): string
