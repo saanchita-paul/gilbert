@@ -31,6 +31,21 @@ export default [
         logo: '/assets/images/logo/providers/origin_new.png'
     },
     {
+        name: 'powershop',
+        formatted_name: 'Powershop',
+        service_type: 'energy',
+        default_plan: 'powershop_saver',
+        plans: [
+            new ProviderPlan({
+                title:'100% Carbon Neutral Plan',
+                name: 'carbon_neutral_plan',
+                bgColor: 'deeppink',
+                type: 'power',
+            }),
+        ],
+        logo: '/assets/images/logo/providers/powershop.png'
+    },
+    {
         name: 'sumo',
         formatted_name: 'Sumo',
         service_type: 'energy',
@@ -116,5 +131,6 @@ export default [
         ],
         logo: '/assets/images/logo/providers/goodtel.png'
     },
+
 
 ]

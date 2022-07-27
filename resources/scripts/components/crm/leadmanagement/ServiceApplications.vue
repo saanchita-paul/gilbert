@@ -3,7 +3,7 @@
         <v-tabs
             v-model="tab"
             height="80px"
-            
+
         >
             <v-tab class="px-0 tab-capital-case">
                 <v-card class="hood-card" width="100%">
