@@ -119,8 +119,7 @@
             </div>
 
             <v-col cols="12" v-if="selectedProvider === 'powershop'">
-                <PaymentDetails>
-                </PaymentDetails>
+                <PaymentDetails  @updateDraft="updateDraft" :lead="leadSummary"></PaymentDetails>
             </v-col>
 
         </v-col>
@@ -479,6 +478,7 @@ export default {
         submit() {
             let subType = this.isBothEnergySubmit ? "energy" : "gas";
             this.$eventBus.$emit("busUtilitySubmit", subType);
+            this.$emit("serviceType", subType);
         },
         async changeGoNeutral() {
             await LeadApplicationService.saveSoleField('ea_go_neutral', this.leadSummary.ea_go_neutral, this.leadSummary.id);
@@ -495,6 +495,9 @@ export default {
         },
         togglePowerShopPlanDetails() {
             this.powerShopPlanDetails = !this.powerShopPlanDetails;
+        },
+        async updateDraft(field, value) {
+            await LeadApplicationService.savePaymentField(field, value, this.leadSummary.id);
         },
     },
 };
