@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <div class="plan-details">
+        <div class="plan-details" v-if="plan">
             <v-card>
                 <div style="padding: 20px 10px">
                     <div class="text-center">
@@ -10,9 +10,12 @@
                             <h1 class="font-weight-bold plan-heading-text mb-2">Electricity</h1>
                         </div>
                         <div class="font-weight-bolder">
-                            <p class="mb-2 bolder-text">$1,249/year <span class="deep-text">(inc. GST)</span></p>
+                            <p class="mb-2 bolder-text">{{ plan.offers.title }} <span class="deep-text">(inc. GST)</span></p>
                             <p class="mb-2 bolder-text">1% <span class="deep-text">less than the </span></p>
-                            <p class="mb-4"><a class="linkable" href="#">Reference Pricing</a></p>
+                            <p class="mb-4">
+                                <a v-if="victoriaState" class="linkable" href="#">Victorian Default Offer</a>
+                                <a v-else class="linkable" href="#">Reference Pricing</a>
+                            </p>
                         </div>
                     </div>
                     <div class="mt-2">
@@ -23,7 +26,7 @@
                     </div>
                     <div class="d-flex">
                         <h4 class="font-weight-bold plan-heading-text mr-2">Your distributor</h4>
-                        <p class="deep-text">AusGrid</p>
+                        <p class="deep-text">{{ plan.distributor_name }}</p>
                     </div>
                     <v-divider></v-divider>
                     <div>
@@ -50,9 +53,9 @@
 
                                     <div class="price-list">
                                         <div class="plan-text" style="font-size:14px">
-                                            Daily Supply Charge (¢/day)
+                                            {{ plan.supply_charge.description }} ({{ plan.supply_charge.unit }})
                                         </div>
-                                        <div  class="plan-text">114.90</div>
+                                        <div class="plan-text">{{ plan.supply_charge.gst_inc_round_2 }}</div>
                                     </div>
 
                                     <div class="d-flex">
@@ -64,9 +67,9 @@
 
                                     <div class="price-list">
                                         <div class="plan-text" style="font-size:14px">
-                                            Single rate tariff (¢/kWh)
+                                            {{ plan.usage_charge.description }} ({{ plan.usage_charge.unit }})
                                         </div>
-                                        <div  class="plan-text">23.05</div>
+                                        <div  class="plan-text">{{ plan.usage_charge.gst_inc_round_2 }}</div>
                                     </div>
 
                                     <div class="d-flex mt-8">
@@ -80,13 +83,13 @@
                                         <div class="plan-text" style="font-size:14px">
                                             Manual Connection (insert fuse)
                                         </div>
-                                        <div  class="plan-text">38.28</div>
+                                        <div  class="plan-text">{{ plan.fees.manual_connection_fees }}</div>
                                     </div>
                                     <div class="price-list">
                                         <div class="plan-text" style="font-size:14px">
                                             Remote Connection
                                         </div>
-                                        <div  class="plan-text">free</div>
+                                        <div  class="plan-text">{{ plan.fees.remote_connection_fees }}</div>
                                     </div>
 
                                 </v-expansion-panel-content>
@@ -107,11 +110,17 @@ export default {
         plan: {
             require: true,
         },
+        victoriaState: {
+            require: false
+        }
     },
     data() {
         return {
             opened: 0,
         }
+    },
+    computed: {
+
     },
     methods: {
     }
