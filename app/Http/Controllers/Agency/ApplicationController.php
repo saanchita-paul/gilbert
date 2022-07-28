@@ -469,4 +469,16 @@ class ApplicationController extends Controller
             return $this->sendErrorResponse($exception);
         }
     }
+
+    public function savePaymentInfo(Request $request, $id)
+    {
+        try {
+            $service = new ApplicationService();
+            $res = $service->updatePaymentInfo($request->toArray(), $id);
+            return response()->json(['success' => true, 'data' => $res]);
+
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
 }

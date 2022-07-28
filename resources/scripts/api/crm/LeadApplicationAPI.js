@@ -387,6 +387,8 @@ export default {
 
     async saveSoleField(field, value, leadId, isDate, identification, isService)
     {
+        // console.log("Din the day");
+
         let day = '';
         let month = '';
         let year = '';
@@ -522,5 +524,12 @@ export default {
         } catch (error) {
             return error.data;
         }
+    },
+    async savePaymentField(field, value, leadId)
+    {
+        const payload ={
+            [field]: value,
+        }
+        await axios.post('/api/applications/'+leadId+'/payment-draft', payload);
     },
 }

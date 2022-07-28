@@ -210,6 +210,8 @@ export default {
                 return "Sumo";
             case providerNameMapper.PROVIDER_ORIGIN:
                 return "Origin";
+            case providerNameMapper.PROVIDER_POWERSHOP:
+                return "Powershop";
             default:
                 return null;
         }
@@ -231,4 +233,15 @@ export default {
         Store.commit("application/setActiveServiceTab", currentTab),
 
     validateCutOff: id => LeadApplicationAPI.validateCutOff(id),
+
+    savePaymentField: (
+        field,
+        value,
+        leadId,
+    ) =>
+        LeadApplicationAPI.savePaymentField(
+            field,
+            value,
+            leadId,
+        ),
 };

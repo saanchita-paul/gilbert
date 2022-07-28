@@ -44,6 +44,8 @@
                         v-slot="{ errors }"
                     >
                         <v-text-field
+                            v-model="estimated_billing_power.cost"
+                            @blur="saveDraft('estimated_elec_billing_cost', estimated_billing_power.cost)"
                             outlined
                             dense
                             hide-details="auto"
@@ -64,6 +66,8 @@
                         v-slot="{ errors }"
                     >
                         <v-select
+                            v-model="estimated_billing_power.period"
+                            @blur="saveDraft('estimated_elec_billing_period', estimated_billing_power.period)"
                             outlined
                             dense
                             :items="powerPeriod"
@@ -88,6 +92,8 @@
                         v-slot="{ errors }"
                     >
                         <v-text-field
+                            v-model="estimated_billing_gas.cost"
+                            @blur="saveDraft('estimated_gas_billing_cost', estimated_billing_gas.cost)"
                             outlined
                             dense
                             hide-details="auto"
@@ -108,6 +114,8 @@
                         v-slot="{ errors }"
                     >
                         <v-select
+                            v-model="estimated_billing_gas.period"
+                            @blur="saveDraft('estimated_gas_billing_period', estimated_billing_gas.period)"
                             outlined
                             dense
                             :items="gasPeriod"
@@ -122,14 +130,15 @@
         </v-col>
     </v-row>
 </template>
-
 <script>
 
 
 export default {
     name: "PaymentDetails",
     props: {
-
+        lead: {
+            require: true,
+        },
     },
     components: {
     },
@@ -183,11 +192,32 @@ export default {
                     value: "yearly",
                 },
             ],
+            estimated_billing_power: {
+                cost: "",
+                period: ""
+            },
+            estimated_billing_gas: {
+                cost: "",
+                period: ""
+            }
         }
-
     },
     methods: {
+        saveDraft(field, value) {
+            console.log('lead ->', this.lead);
+            console.log('powershop_payment_info ->', this.lead.powershop_payment_info.estimated_elec_billing_cost);
+            this.$emit("updateDraft", field, value);
+        },
+        synFormData() {
+            this.estimated_billing_power.cost = this.lead.powershop_payment_info.estimated_elec_billing_cost;
+            this.estimated_billing_power.period = this.lead.powershop_payment_info.estimated_elec_billing_period;
+            this.estimated_billing_gas.cost = this.lead.powershop_payment_info.estimated_gas_billing_cost;
+            this.estimated_billing_gas.period = this.lead.powershop_payment_info.estimated_gas_billing_period;
+        }
+    },
 
+    async mounted() {
+        await this.synFormData();
     }
 
 };

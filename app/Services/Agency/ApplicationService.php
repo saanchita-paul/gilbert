@@ -11,6 +11,7 @@ use App\Models\ConnectionService;
 use App\Models\HoodProfile;
 use App\Models\Identification;
 use App\Models\Office;
+use App\Models\PowershopPaymentInfo;
 use App\Models\User;
 use App\Services\RolePermission;
 use Illuminate\Support\Facades\Log;
@@ -418,6 +419,7 @@ class ApplicationService
         unset($application['identification']);
         unset($application['isService']);
 
+
         if ($isIdentification) {
             $this->createIdentification($application, $id);
         } else if ($isService) {
@@ -612,5 +614,22 @@ class ApplicationService
         ]);
 
         return $existLead->refresh();
+    }
+
+    public function updatePaymentInfo(array $paymentData, $id)
+    {
+        $existLead = ConnectionApplication::findOrFail($id);
+        $powershopPaymentInfo = PowershopPaymentInfo::where('connection_application_id', $existLead->id)->first();
+
+        if ($powershopPaymentInfo)
+        {
+            $paymentData['id'] =  $existLead->id;
+            $powershopPaymentInfo->update($paymentData);
+        }
+        else
+        {
+            $paymentData['connection_application_id'] = $existLead->id;
+            PowershopPaymentInfo::create($paymentData);
+        }
     }
 }

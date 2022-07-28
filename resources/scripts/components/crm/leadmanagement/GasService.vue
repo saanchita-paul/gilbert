@@ -79,6 +79,7 @@
                     :plan="plan"
                     @click.native="selectPlan(plan)"
                     :isActive="selectedPlan"
+                    @toggleDialog="togglePowerShopPlanDetails"
                 ></PowershopPlan>
             </div>
 
@@ -175,6 +176,16 @@
                 />
             </v-card>
         </v-dialog>
+
+        <v-dialog v-model="powerShopPlanDetails" max-width="450">
+            <v-card>
+                <PowershopPlanDetails
+                    @toggleDialog="togglePowerShopPlanDetails"
+                    :serviceType="isBothEnergySubmit ? 'energy' : 'gas'"
+                    :leadSummary="leadSummary"
+                />
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
@@ -197,6 +208,7 @@ import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import {isNull} from "lodash-es";
 import {connectionServicesMapper} from "@scripts/data/ConnectionApplicationMapper";
 import PaymentDetails from "@scripts/components/crm/leadmanagement/PaymentDetails";
+import PowershopPlanDetails from "@scripts/components/crm/leadmanagement/PowershopPlanDetails";
 
 
 export default {
@@ -204,6 +216,7 @@ export default {
     //todo shift all lead variables to vuex store
     name: "GasService",
     components: {
+        PowershopPlanDetails,
         ServiceProvider,
         TemporaryConnection,
         SameDayConnection,
@@ -237,6 +250,7 @@ export default {
             originPlans: [],
             originPlanDetails: false,
             powershopPlans: [],
+            powerShopPlanDetails: false
         };
     },
     computed: {
@@ -478,6 +492,9 @@ export default {
                 return plan.type === 'power';
             });
             console.log("powershopPlans ->", this.powershopPlans);
+        },
+        togglePowerShopPlanDetails() {
+            this.powerShopPlanDetails = !this.powerShopPlanDetails;
         },
     },
 };
