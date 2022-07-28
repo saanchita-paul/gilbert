@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DownloadExcelController;
 use App\Models\ConnectionApplication;
 use App\Http\Controllers\Agency\AppCloseReasonController;
 use App\Services\Agency\TriageFlagService;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Services\Address\AddressModel;
 use PropertyMe\services\FetchContacts;
 use App\Services\RolePermissionService;
+use Rap2hpoutre\FastExcel\Facades\FastExcel;
 use TSA\Services\TsaCallHistoryService;
 use Illuminate\Support\Facades\Broadcast;
 use TSA\Services\TsaSendAppliationService;
@@ -311,3 +313,8 @@ Route::get('powers-api', function () {
     $re = $s->sendCustomerData(ConnectionApplication::find(453)->id);
     dd($re);
 });
+
+//Route::get('/exceltest', function () {
+//    return FastExcel::data(collect([['name'=> 'sanchita'], ['name'=> 'paul']]))->download('file.xlsx');
+//});
+Route::get('/download-excel', [DownloadExcelController::class, 'downloadExcel']);
