@@ -20,8 +20,8 @@
                     @updateNote= "updateNote"
                     :leadSummary="leadSummary"
                     :afterHourFlag="afterHourFlag"
-                    :notes="notes">
-
+                    :notes="notes"
+                    @serviceType="serviceType">
                 </LeadServicesAndNotes>
 
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
@@ -39,7 +39,9 @@
 
         <AssignedToUserEmptyModal v-if="assignedToDialog" :dialog="assignedToDialog" @closeMessage="closeAssignedToEmptyModal"></AssignedToUserEmptyModal>
 
-        <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" :leadId="leadId" secondaryContact="secondaryContact" v-if="showSubmitModal" @confirmSubmitLead="confirmSubmitLead" @backToEdit="backToEdit" :submitType="submitType"> </LeadSubmitConfirmationModal>
+        <GasOnlyCanNotSubmitModal v-if="gasOnlyNotSubmitDialog" :dialog="gasOnlyNotSubmitDialog" @closeMessage="closegasOnlyNotSubmitModal"></GasOnlyCanNotSubmitModal>
+
+        <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" :leadId="leadId" secondaryContact="secondaryContact" v-if="showSubmitModal" @confirmSubmitLead="confirmSubmitLead" @backToEdit="backToEdit" :submitType="submitType" :leadSummary="leadSummary"> </LeadSubmitConfirmationModal>
             <PreventSubmissionModal v-if="preventSubmissionFlag" :message="preventSubmissionMessage" :dialog="preventSubmissionFlag" @closeMessage="closePreventSubmissionModal"></PreventSubmissionModal>
     </v-container>
 </template>
@@ -56,6 +58,7 @@ import EscalationConfirmModal from "@scripts/components/crm/modals/EscalationCon
 import LeadReadMoreModal from "@scripts/components/crm/modals/LeadReadMoreModal";
 import LeadSubmitConfirmationModal from "@scripts/components/crm/modals/LeadSubmitConfirmationModal";
 import AssignedToUserEmptyModal from "@scripts/components/crm/modals/AssignedToUserEmptyModal";
+import GasOnlyCanNotSubmitModal from "@scripts/components/crm/modals/GasOnlyCanNotSubmitModal";
 import * as dayjs from "dayjs";
 import {isNull} from "lodash-es";
 import PreventSubmissionModal from "@scripts/components/crm/modals/PreventSubmissionModal";
@@ -78,7 +81,8 @@ export default {
         CloseApplicationReasonModal,
         CloseConfirmModal,
         AssignedToUserEmptyModal,
-        PreventSubmissionModal
+        PreventSubmissionModal,
+        GasOnlyCanNotSubmitModal
     },
 
     data() {
@@ -116,7 +120,8 @@ export default {
                 }
             },
             nextBusinessDay: null,
-
+            gasOnlyNotSubmitDialog: false,
+            serviceSubmitType: null,
         }
     },
     computed: {
@@ -218,6 +223,14 @@ export default {
             if(!assignedHoodUser) {
                 this.assignedToDialog = true;
                 return true;
+            }
+            if (this.serviceSubmitType === 'gas')
+            {
+                if (this.gasProvider === 'powershop')
+                {
+                    this.gasOnlyNotSubmitDialog = true;
+                    return true;
+                }
             }
             if(this.isWaterUnavailable(submitType, this.lead?.property_details?.state, this.lead?.person_details?.tenancy_type))
             {
@@ -385,6 +398,9 @@ export default {
         closeAssignedToEmptyModal(){
             this.assignedToDialog = false;
         },
+        closegasOnlyNotSubmitModal(){
+            this.gasOnlyNotSubmitDialog = false;
+        },
         async loadNextBusinessDay() {
             this.nextBusinessDay = await ChatbotService.getNextBusinessDay(this.leadSummary?.state);
         },
@@ -399,6 +415,9 @@ export default {
             }
             return true;
         },
+        serviceType(value) {
+            this.serviceSubmitType = value;
+        }
     },
     watch: {
         powerPlan: {

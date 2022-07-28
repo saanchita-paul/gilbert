@@ -344,18 +344,21 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="crm-text-field">
-                                <div class="field-label">
-                                    <span>Supplier</span>
-                                </div>
-                                <div class="text-field">
-                                    <v-text-field
-                                        readonly
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                        :value="getProvider"
-                                    ></v-text-field>
+
+                            <div v-if="data.submitType === 'energy' || data.submitType === 'power'" >
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Power Supplier</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            readonly
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :value="getProvider"
+                                        ></v-text-field>
+                                    </div>
                                 </div>
                             </div>
                             <div v-if="data.submitType === 'energy' || data.submitType === 'power'" class="crm-text-field">
@@ -372,7 +375,23 @@
                                 ></v-text-field>
                                 </div>
                             </div>
+
+                            <div v-if="data.submitType === 'energy' || data.submitType === 'gas'"  class="crm-text-field">
+                                <div class="field-label">
+                                    <span>Gas Supplier</span>
+                                </div>
+                                <div class="text-field">
+                                    <v-text-field
+                                        readonly
+                                        outlined
+                                        dense
+                                        hide-details="auto"
+                                        :value="getProvider"
+                                    ></v-text-field>
+                                </div>
+                            </div>
                             <div v-if="data.submitType === 'energy' || data.submitType === 'gas'" class="crm-text-field">
+
                                 <div class="field-label">
                                     <span>Gas Plan</span>
                                 </div>
@@ -389,6 +408,85 @@
                         </div>
 
                     </v-col>
+
+                    <v-col cols="6">
+                        <p class="sub-title title-align">Payment</p>
+                        <div class="crm-text-field">
+                            <div class="field-label">
+                                <span>Payment Status</span>
+                            </div>
+                            <div class="text-field">
+                                <v-text-field
+                                    readonly
+                                    outlined
+                                    dense
+                                    hide-details="auto"
+                                    value="Valid/Invalid"
+                                ></v-text-field>
+                            </div>
+                        </div>
+                        <h4>Estimated Billing (Power)</h4>
+                        <div class="crm-text-field">
+                            <div class="field-label">
+                                <span>Cost</span>
+                            </div>
+                            <div class="text-field">
+                                <v-text-field
+                                    readonly
+                                    outlined
+                                    dense
+                                    hide-details="auto"
+                                    :value="leadSummary.powershop_payment_info.estimated_elec_billing_cost"
+                                ></v-text-field>
+                            </div>
+                        </div>
+                        <div class="crm-text-field">
+                            <div class="field-label">
+                                <span>Period</span>
+                            </div>
+                            <div class="text-field">
+                                <v-text-field
+                                    readonly
+                                    outlined
+                                    dense
+                                    hide-details="auto"
+                                    :value="elecPeriod"
+                                ></v-text-field>
+                            </div>
+                        </div>
+
+                        <h4>Estimated Billing (Gas)</h4>
+                        <div class="crm-text-field">
+                            <div class="field-label">
+                                <span>Cost</span>
+                            </div>
+                            <div class="text-field">
+                                <v-text-field
+                                    readonly
+                                    outlined
+                                    dense
+                                    hide-details="auto"
+                                    :value="leadSummary.powershop_payment_info.estimated_gas_billing_cost"
+                                ></v-text-field>
+                            </div>
+                        </div>
+                        <div class="crm-text-field" >
+                            <div class="field-label">
+                                <span>Period</span>
+                            </div>
+                            <div class="text-field">
+                                <v-text-field
+                                    readonly
+                                    outlined
+                                    dense
+                                    hide-details="auto"
+                                    :value="gasPeriod"
+                                ></v-text-field>
+                            </div>
+                        </div>
+                    </v-col>
+
+
                     <v-col cols="12" v-if="isAuthorizedPersonExist">
                         <v-row>
                             <v-col cols="12">
@@ -675,6 +773,7 @@ import LeadApplicationService from "@scripts/services/crm/LeadApplicationService
 // import ValidateCutOffTime from "@scripts/modules/origin/services/ValidateCutOffTime";
 import SecondaryContactMapper from "@scripts/api/mappers/crm/SecondaryContactMapper";
 import {isNull} from "lodash-es";
+import PowershopService from "@scripts/modules/powershop/services/PowershopService";
 export default {
   name: "ConfirmSubmission",
     props:{
@@ -687,6 +786,9 @@ export default {
         submitType: {
             require: true
         },
+        leadSummary: {
+            require: true
+        }
     },
     data() {
       return {
@@ -820,6 +922,12 @@ export default {
             return this.data.selectedProvider === 'ea'
                && (this.data.is_gas_life_support || this.data.is_power_life_support);
         },
+        elecPeriod() {
+            return this.leadSummary.powershop_payment_info.estimated_elec_billing_period.charAt(0).toUpperCase() + this.leadSummary.powershop_payment_info.estimated_elec_billing_period.slice(1);
+        },
+        gasPeriod() {
+            return this.leadSummary.powershop_payment_info.estimated_gas_billing_period.charAt(0).toUpperCase() + this.leadSummary.powershop_payment_info.estimated_gas_billing_period.slice(1);
+        }
     },
     methods: {
         backToEdit() {
@@ -829,6 +937,7 @@ export default {
             this.$emit('confirmSubmitLead');
         },
         async loadAuthorizedPerson() {
+            console.log("here ->", this.leadSummary);
             let unMappedSecondaryContact = await LeadApplicationService.loadAuthorizedPerson(this.$route.params.id);
             if(isNull(unMappedSecondaryContact)) {
                 this.isAuthorizedPersonExist = false;
@@ -860,6 +969,8 @@ export default {
     mounted() {
       this.validateCutOffTime();
       this.loadAuthorizedPerson();
+      this.elecPeriod();
+      this.gasPeriod();
     },
 };
 </script>
