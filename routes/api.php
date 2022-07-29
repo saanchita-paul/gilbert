@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\DownloadExcelController;
+use App\Http\Controllers\PowerShopController;
 use App\Models\ConnectionApplication;
 use App\Http\Controllers\Agency\AppCloseReasonController;
 use App\Services\Agency\TriageFlagService;
@@ -252,7 +252,8 @@ Route::get('/applications/{id}/validate-cutoff/', [ApplicationController::class,
 Route::post('/our-property/token', [OurPropertyController::class, 'getAccessToken']);
 Route::post('/our-property/lead', [OurPropertyController::class, 'createOurProperty']);
 
-Route::get('/download-excel', [DownloadExcelController::class, 'downloadExcel']);
+Route::get('/powershop-generate-caf', [PowerShopController::class, 'generatePowershopCaf']);
+
 
 
 

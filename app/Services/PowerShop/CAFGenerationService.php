@@ -1,31 +1,81 @@
 <?php
 
-namespace App\Services\DownloadExcel;
+namespace App\Services\PowerShop;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use Illuminate\Http\Request;
 use Rap2hpoutre\FastExcel\Facades\FastExcel;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use function PHPUnit\Framework\matches;
 use function PHPUnit\Framework\throwException;
 
-class ExcelFileService
+/**
+ *
+ */
+class CAFGenerationService
 {
+
+//    public function __construct(protected array $applicationIdList)
+//    {
+//    }
+
+    /**
+     * @var array
+     */
+    private array $applicationIdList;
+    /**
+     * @var
+     */
+    private $applicationList;
+    /**
+     * @var array
+     */
+    private array $mappedApplicationList;
+
+    /**
+     * @param array $applicationIdList
+     */
+    public function __construct(array $applicationIdList)
+    {
+        $this->applicationIdList = $applicationIdList;
+
+        $this->fetchApplications();
+        $this->mapApplications();
+    }
+
+    /**
+     * @throws \Box\Spout\Common\Exception\UnsupportedTypeException
+     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException
+     * @throws \Box\Spout\Common\Exception\InvalidArgumentException
+     * @throws \Box\Spout\Common\Exception\IOException
+     */
+    public function downloadCAF(): StreamedResponse
+    {
+       //dd( $this->mappedApplicationList);
+        return FastExcel::data(collect($this->mappedApplicationList))->download(now()->unix().'.xlsx');
+    }
+
+    /**
+     * @return void
+     */
+    private function fetchApplications(): void
+    {
+        $this->applicationList = ConnectionApplication::query()->whereIn('id', $this->applicationIdList)
+            ->with('connectionServices','identification','authorizedPerson')
+            ->get();
+    }
+
 
     /**
      * @param mixed $get
      */
 
-    public function getExelFileData(array $ids)
+    public function mapApplications()
     {
 
-        $applications = ConnectionApplication::whereIn('id', $ids)
-            ->with('connectionServices','identification','authorizedPerson')
-            ->get();
-
-        $mappedApplication = [];
-        foreach ($applications as $app) {
-            $mappedApplication[] = [
+        foreach ($this->applicationList as $app) {
+            $this->mappedApplicationList[] = [
                 'Brand' => 'PowerShop',
                 'Channel ID' => 'Hood Move Tech',
                 'Customer Type' => 'Residential',
@@ -85,8 +135,12 @@ class ExcelFileService
 
             ];
         }
-        return $mappedApplication;
     }
+
+    /**
+     * @param $app
+     * @return string|null
+     */
     private function getTenancyType($app)
     {
         return match($app->tenancy_type) {
@@ -95,6 +149,11 @@ class ExcelFileService
             default => null
         };
     }
+
+    /**
+     * @param $app
+     * @return string|null
+     */
     private function checkElectricity($app)
     {
         return match($app->has_electricity) {
@@ -103,6 +162,11 @@ class ExcelFileService
             default => null
         };
     }
+
+    /**
+     * @param $app
+     * @return string|null
+     */
     private function getConcessionCardType($app){
 
         return match($app->concession_card_type) {
@@ -114,6 +178,11 @@ class ExcelFileService
         };
 
     }
+
+    /**
+     * @param $app
+     * @return string
+     */
     private function getLifeSensitive($app){
         if ($app->is_gas_life_support == 1 && $app->is_power_life_support == 1){
         return 'Life support elec and gas';
@@ -125,6 +194,11 @@ class ExcelFileService
             return '';
         }
     }
+
+    /**
+     * @param $app
+     * @return string
+     */
     private function getSupplyAddress($app)
     {
         if($app->unit_number == ''){
@@ -143,6 +217,11 @@ class ExcelFileService
             return $app->unit_number. ' , ' .$app->street_number .' , '. $app->street_name_only .' , '. $app->street_type;
         }
     }
+
+    /**
+     * @param $app
+     * @return string
+     */
     private function getMailingAddress($app)
     {
         if($app->billing_unit_number == ''){
@@ -163,14 +242,28 @@ class ExcelFileService
 
     }
 
+    /**
+     * @param $app
+     * @return mixed
+     */
     private function getIDNumber($app)
     {
         return $app->identification->card_number;
     }
+
+    /**
+     * @param $app
+     * @return string
+     */
     private function getExpiryDate($app)
     {
         return date('d-M', strtotime($app->identification->expire_date));
     }
+
+    /**
+     * @param $app
+     * @return string|null
+     */
     private function getIDType($app)
     {
         return match($app->identification->type) {
@@ -180,23 +273,48 @@ class ExcelFileService
             default => null
         };
     }
+
+    /**
+     * @param $app
+     * @return mixed
+     */
     private function getSecondTitle($app)
     {
        return $app->authorizedPerson->title;
     }
+
+    /**
+     * @param $app
+     * @return mixed
+     */
     private function getSecondFirstName($app)
     {
         return $app->authorizedPerson->first_name;
     }
+
+    /**
+     * @param $app
+     * @return mixed
+     */
     private function getSecondLastName($app)
     {
         return $app->authorizedPerson->last_name;
     }
+
+    /**
+     * @param $app
+     * @return string
+     */
     private function getSecondDob($app)
     {
         return date('d/m/Y', strtotime($app->authorizedPerson->dob));
     }
 
+    /**
+     * @param $app
+     * @return string
+     * @throws \Exception
+     */
     private function getSignUpType($app){
 
         $services = $app->connectionServices->pluck('service_type')->toArray();
@@ -208,5 +326,4 @@ class ExcelFileService
             throw new \Exception('Only gas not supported!');
         }
     }
-
 }

@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 use App\Models\ConnectionApplication;
-use App\Services\DownloadExcel\ExcelFileService;
+use App\Services\PowerShop\CAFGenerationService;
 use http\Exception;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\Request;
 use Rap2hpoutre\FastExcel\Facades\FastExcel;
 
-class DownloadExcelController extends Controller
+class PowerShopController extends Controller
 {
-    public function downloadExcel(Request $request)
+    public function generatePowershopCaf(Request $request)
     {
      $ids = explode(',', $request->get('ids'));
         try {
-            $excel = new ExcelFileService();
-            return FastExcel::data($excel->getExelFileData($ids))->download('file.xlsx');
+            $service = new CAFGenerationService($ids);
+            return $service->downloadCAF();
         }
-        catch (Exception $exception) {
+        catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
 
