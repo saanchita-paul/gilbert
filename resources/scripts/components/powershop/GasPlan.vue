@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <div class="plan-details">
+        <div class="plan-details" v-if="plan">
             <v-card>
                 <div style="padding: 20px 10px">
                     <div class="text-center">
@@ -12,6 +12,11 @@
                     </div>
                     <div class="mt-2">
                         <p class="paragraph-text">This offer is an ongoing contract, until you or we end it. The estimates above are based on an average residential customer. We have calculated the monthly estimates based on the annual figure and divided by 12. Your actual bills will vary depending on your usage, rates and any price changes in the future. The estimates don’t include concessions or other rebates, distributor service order costs, fees that may apply to you.</p>
+                    </div>
+
+                    <div class="d-flex">
+                        <h4 class="font-weight-bold plan-heading-text mr-2">Your distributor</h4>
+                        <p class="deep-text">{{ plan.distributor_name }}</p>
                     </div>
 
                     <v-divider></v-divider>
@@ -32,9 +37,9 @@
 
                                     <div class="price-list">
                                         <div class="plan-text" style="font-size:14px">
-                                            Daily Supply Charge (¢/day)
+                                            {{ plan.supply_charge.description }} ({{ plan.supply_charge.unit }})
                                         </div>
-                                        <div  class="plan-text">74.70</div>
+                                        <div  class="plan-text">{{ plan.supply_charge.gst_inc_round_2 }}</div>
                                     </div>
 
                                     <div class="price-list">
@@ -55,7 +60,7 @@
                                         <div class="plan-text" style="font-size:14px">
                                             Reconnection
                                         </div>
-                                        <div  class="plan-text">$66.63</div>
+                                        <div  class="plan-text">{{ plan.fees.standard_connection_fee }}</div>
                                     </div>
 
                                 </v-expansion-panel-content>

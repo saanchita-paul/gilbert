@@ -18,7 +18,7 @@
                     </div>
                 </div>
 
-                <ElectricityPlan v-if="willShowElectricity" :plan="planDetails.plans.electricity"></ElectricityPlan>
+                <ElectricityPlan v-if="willShowElectricity" :plan="planDetails.plans.electricity" :victoriaState="isVictoria"></ElectricityPlan>
 
                 <GasPlan v-if="willShowGas" :plan="planDetails.plans.gas"></GasPlan>
 
@@ -81,19 +81,10 @@
                                         </v-expansion-panel-header>
 
                                         <v-expansion-panel-content>
-                                            <div>
-                                                <p class="mb-1"><a class="linkable"
-                                                                   href="#">SingeRate-controlload-cz6</a></p>
-                                                <p class="mb-1"><a class="linkable"
-                                                                   href="#">SingeRate-controlload-cz7</a></p>
-                                                <p class="mb-1"><a class="linkable" href="#">SingeRate-cz6</a></p>
-                                                <p class="mb-1"><a class="linkable" href="#">SingeRate-cz7</a></p>
-                                                <p class="mb-1"><a class="linkable" href="#">TimeofUse-cz6</a></p>
-                                                <p class="mb-1"><a class="linkable" href="#">TimeofUse-cz7</a></p>
-                                                <p class="mb-1"><a class="linkable"
-                                                                   href="#">TimeofUse-controlLoad-cz6</a></p>
-                                                <p class="mb-1"><a class="linkable"
-                                                                   href="#">TimeofUse-controlLoad-cz7</a></p>
+                                            <div v-if="electricityBPIDLinksList">
+                                                <p class="mb-1" v-for="bpid_link in electricityBPIDLinksList" :key="bpid_link.id">
+                                                    <a class="linkable" :href="bpid_link.file_url" target="_blank">{{ bpid_link.title }}</a>
+                                                </p>
                                             </div>
                                         </v-expansion-panel-content>
                                     </v-expansion-panel>
@@ -116,12 +107,10 @@
                                         </v-expansion-panel-header>
 
                                         <v-expansion-panel-content>
-                                            <div>
-                                                <p class="mb-1"><a class="linkable" href="#">cardinia</a></p>
-                                                <p class="mb-1"><a class="linkable" href="#">central</a></p>
-                                                <p class="mb-1"><a class="linkable" href="#">combined-all</a></p>
-                                                <p class="mb-1"><a class="linkable" href="#">murray</a></p>
-                                                <p class="mb-1"><a class="linkable" href="#">north</a></p>
+                                            <div v-if="gasBPIDLinksList">
+                                                <p class="mb-1" v-for="bpid_link in gasBPIDLinksList" :key="bpid_link.id">
+                                                    <a class="linkable" :href="bpid_link.file_url" target="_blank">{{ bpid_link.title }}</a>
+                                                </p>
                                             </div>
                                         </v-expansion-panel-content>
                                     </v-expansion-panel>
@@ -143,6 +132,7 @@ import ElectricityPlan from "@scripts/components/powershop/ElectricityPlan"
 import GasPlan from "@scripts/components/powershop/GasPlan"
 import PowershopService from "@scripts/modules/powershop/services/PowershopService";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
+import PowershopMapper from "@scripts/modules/powershop/api/mappers/PowershopMapper";
 
 export default {
     name: "PowershopPlanDetails",
@@ -166,14 +156,7 @@ export default {
     },
     computed: {
         getServiceText() {
-            switch (this.serviceType) {
-                case "power":
-                    return "Electricity";
-                case "gas":
-                    return "Gas";
-                default:
-                    return "Electricity & Gas";
-            }
+            return PowershopMapper.mapServiceText(this.serviceType);
         },
         isBothEnergySubmit() {
             return UtilityStoreService.getIsBothEnergySelected() || this.serviceType === 'energy';
@@ -186,16 +169,26 @@ export default {
         },
         isVictoria() {
             return this.leadSummary.state === 'Victoria';
+        },
+        electricityBPIDLinksList(){
+            return PowershopMapper.mapElectricityBPIDLinks(this.planDetails?.plans?.electricity);
+        },
+        gasBPIDLinksList(){
+            return PowershopMapper.mapGasBPIDLinks(this.planDetails?.plans?.gas);
         }
     },
-    watch: {},
+    watch: {
+        isBothEnergySubmit() {
+            this.getPowershopData()
+        },
+    },
     mounted() {
         this.getPowershopData();
     },
     methods: {
         async getPowershopData() {
             this.planDetails = await PowershopService.getPowershopData();
-            console.log('Plan details data from powershop component: ', this.planDetails);
+            console.log('Plan details data from PowerShop component: ', this.planDetails);
         },
         closeDialog() {
             this.$emit('toggleDialog')
@@ -210,6 +203,7 @@ export default {
     margin: 0 auto;
     border: 4px solid #F1186C;
     border-radius: 8px;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .selectButton {
