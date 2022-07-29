@@ -252,7 +252,7 @@ Route::get('/applications/{id}/validate-cutoff/', [ApplicationController::class,
 Route::post('/our-property/token', [OurPropertyController::class, 'getAccessToken']);
 Route::post('/our-property/lead', [OurPropertyController::class, 'createOurProperty']);
 
-
+Route::get('/download-excel', [DownloadExcelController::class, 'downloadExcel']);
 
 
 
@@ -319,4 +319,4 @@ Route::get('powers-api', function () {
 //Route::get('/exceltest', function () {
 //    return FastExcel::data(collect([['name'=> 'sanchita'], ['name'=> 'paul']]))->download('file.xlsx');
 //});
-Route::get('/download-excel', [DownloadExcelController::class, 'downloadExcel']);
+
