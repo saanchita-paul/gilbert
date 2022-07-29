@@ -65,7 +65,7 @@
                 <div class="d-flex align-end">
                     <span class="font-weight-bold">Application Status: </span> <span class="grey--text pl-2"> {{ leadSummary.status }} </span>
                 
-                    <span class="font-weight-bold">Payment Status: </span> <span class="grey--text pl-2"> Valid </span>
+                    <span class="font-weight-bold">Payment Status: </span> <span class="grey--text pl-2"> {{ leadSummary.powershop_payment_status }} </span>
                 </div>
             </div>
         </div>

@@ -481,4 +481,18 @@ class ApplicationController extends Controller
             return $this->sendErrorResponse($exception);
         }
     }
+
+
+    public function sendPaymentLink(Request $request, $id)
+    {
+        try {
+            $payment_link_type = $request->toArray()['link_type'];
+        //    dd($payment_link_type);
+
+            return $payment_link_type;
+
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
 }

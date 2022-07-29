@@ -436,7 +436,7 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    :value="leadSummary.powershop_payment_info.estimated_elec_billing_cost"
+                                    value=""
                                 ></v-text-field>
                             </div>
                         </div>
@@ -450,7 +450,7 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    :value="elecPeriod"
+                                    value=""
                                 ></v-text-field>
                             </div>
                         </div>
@@ -466,7 +466,7 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    :value="leadSummary.powershop_payment_info.estimated_gas_billing_cost"
+                                    value=""
                                 ></v-text-field>
                             </div>
                         </div>
@@ -480,7 +480,7 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    :value="gasPeriod"
+                                    value=""
                                 ></v-text-field>
                             </div>
                         </div>
@@ -922,12 +922,19 @@ export default {
             return this.data.selectedProvider === 'ea'
                && (this.data.is_gas_life_support || this.data.is_power_life_support);
         },
-        elecPeriod() {
-            return this.leadSummary.powershop_payment_info.estimated_elec_billing_period.charAt(0).toUpperCase() + this.leadSummary.powershop_payment_info.estimated_elec_billing_period.slice(1);
-        },
-        gasPeriod() {
-            return this.leadSummary.powershop_payment_info.estimated_gas_billing_period.charAt(0).toUpperCase() + this.leadSummary.powershop_payment_info.estimated_gas_billing_period.slice(1);
-        }
+        // elecPeriod() {
+        //     return this.leadSummary.powershop_payment_info?.estimated_elec_billing_period?.charAt(0).toUpperCase() + this.leadSummary.powershop_payment_info?.estimated_elec_billing_period?.slice(1);
+        // },
+        // gasPeriod() {
+        //     return this.leadSummary.powershop_payment_info?.estimated_gas_billing_period?.charAt(0).toUpperCase() + this.leadSummary.powershop_payment_info?.estimated_gas_billing_period?.slice(1);
+        // },
+        // elecCost() {
+        //     return this.leadSummary.powershop_payment_info?.estimated_elec_billing_cost ? this.leadSummary.powershop_payment_info?.estimated_elec_billing_cost : '';
+        // },
+        // gasCost() {
+        //     return this.leadSummary.powershop_payment_info?.estimated_elec_billing_cost ? this.leadSummary.powershop_payment_info?.estimated_elec_billing_cost : '';
+        // }
+        
     },
     methods: {
         backToEdit() {
@@ -937,7 +944,6 @@ export default {
             this.$emit('confirmSubmitLead');
         },
         async loadAuthorizedPerson() {
-            console.log("here ->", this.leadSummary);
             let unMappedSecondaryContact = await LeadApplicationService.loadAuthorizedPerson(this.$route.params.id);
             if(isNull(unMappedSecondaryContact)) {
                 this.isAuthorizedPersonExist = false;
@@ -965,12 +971,11 @@ export default {
                 }
             }
         },
+
     },
     mounted() {
       this.validateCutOffTime();
       this.loadAuthorizedPerson();
-      this.elecPeriod();
-      this.gasPeriod();
     },
 };
 </script>

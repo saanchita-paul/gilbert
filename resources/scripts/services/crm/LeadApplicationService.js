@@ -244,4 +244,6 @@ export default {
             value,
             leadId,
         ),
+
+    sendPowershopPaymentLink: (leadId, linkType) => LeadApplicationAPI.sendPowershopPaymentLink(leadId, linkType),
 };
