@@ -1,33 +1,27 @@
 <?php
 
-use App\Http\Controllers\PowerShopController;
-use App\Models\ConnectionApplication;
-use App\Http\Controllers\Agency\AppCloseReasonController;
-use App\Services\Agency\TriageFlagService;
-use Illuminate\Encryption\Encrypter;
-use App\Services\Address\GBGServices;
-use Illuminate\Support\Facades\Route;
-use App\Services\Address\AddressModel;
-use PropertyMe\services\FetchContacts;
-use App\Services\RolePermissionService;
-use Rap2hpoutre\FastExcel\Facades\FastExcel;
-use TSA\Services\TsaCallHistoryService;
-use Illuminate\Support\Facades\Broadcast;
-use TSA\Services\TsaSendAppliationService;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Agency\NoteController;
-use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\Agency\AgencyController;
-use App\Http\Controllers\Agency\OfficeController;
-use App\Http\Controllers\UserInvitationController;
-use App\Http\Controllers\Agency\HoodUserController;
-use App\Http\Controllers\Agency\ApplicationController;
-use FastConnect\Services\SubmitWaterLeadToFastConnect;
 use App\Http\Controllers\Agency\AgentProfileController;
-use OurProperty\Http\Controllers\OurPropertyController;
-use App\Services\RolePermission;
+use App\Http\Controllers\Agency\AppCloseReasonController;
+use App\Http\Controllers\Agency\ApplicationController;
+use App\Http\Controllers\Agency\HoodUserController;
+use App\Http\Controllers\Agency\NoteController;
+use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ReaExtractsReportController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\PowerShop\PowerShopController;
+use App\Http\Controllers\UserInvitationController;
+use App\Models\ConnectionApplication;
+use App\Services\RolePermission;
+use App\Services\RolePermissionService;
 use App\Services\Utility\PowershopService;
+use Illuminate\Encryption\Encrypter;
+use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Route;
+use OurProperty\Http\Controllers\OurPropertyController;
+use PropertyMe\services\FetchContacts;
+use Reporting\Http\Controllers\ReportController;
+use TSA\Services\TsaCallHistoryService;
 
 /*
 |--------------------------------------------------------------------------
@@ -252,11 +246,11 @@ Route::get('/applications/{id}/validate-cutoff/', [ApplicationController::class,
 Route::post('/our-property/token', [OurPropertyController::class, 'getAccessToken']);
 Route::post('/our-property/lead', [OurPropertyController::class, 'createOurProperty']);
 
-Route::get('/powershop-generate-caf', [PowerShopController::class, 'generatePowershopCaf']);
 
 /**
- * Powershop Payment
+ * Powershop
  */
+Route::get('/powershop/generate-caf', [PowerShopController::class, 'generatePowershopCaf']);
 Route::get('/powershop/payment/invite', function () {
 
 

@@ -1,12 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
-use App\Models\ConnectionApplication;
+namespace App\Http\Controllers\PowerShop;
+use App\Http\Controllers\Controller;
 use App\Services\PowerShop\CAFGenerationService;
-use http\Exception;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\Request;
-use Rap2hpoutre\FastExcel\Facades\FastExcel;
 
 class PowerShopController extends Controller
 {
