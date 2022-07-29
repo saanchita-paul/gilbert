@@ -485,6 +485,7 @@ export default {
         submit() {
             let subType = this.isBothEnergySubmit ? "energy" : "power";
             this.$eventBus.$emit("busUtilitySubmit", subType);
+            this.$emit("serviceType", subType);
         },
         async changeGoNeutral() {
             await LeadApplicationService.saveSoleField('ea_go_neutral', this.leadSummary.ea_go_neutral, this.leadSummary.id);

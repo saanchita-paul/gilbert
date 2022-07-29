@@ -205,14 +205,14 @@ export default {
     methods: {
         saveDraft(field, value) {
             console.log('lead ->', this.lead);
-            console.log('powershop_payment_info ->', this.lead.powershop_payment_info.estimated_elec_billing_cost);
+            // console.log('powershop_payment_info ->', this.lead.powershop_payment_info.estimated_elec_billing_cost);
             this.$emit("updateDraft", field, value);
         },
         synFormData() {
-            this.estimated_billing_power.cost = this.lead.powershop_payment_info.estimated_elec_billing_cost;
-            this.estimated_billing_power.period = this.lead.powershop_payment_info.estimated_elec_billing_period;
-            this.estimated_billing_gas.cost = this.lead.powershop_payment_info.estimated_gas_billing_cost;
-            this.estimated_billing_gas.period = this.lead.powershop_payment_info.estimated_gas_billing_period;
+            this.estimated_billing_power.cost = this.lead?.powershop_payment_info?.estimated_elec_billing_cost;
+            this.estimated_billing_power.period = this.lead?.powershop_payment_info?.estimated_elec_billing_period;
+            this.estimated_billing_gas.cost = this.lead?.powershop_payment_info?.estimated_gas_billing_cost;
+            this.estimated_billing_gas.period = this.lead?.powershop_payment_info?.estimated_gas_billing_period;
         }
     },
 
