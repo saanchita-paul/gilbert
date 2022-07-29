@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Services\DownloadExcel;
-
-use App\ConnectionService;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
 use Illuminate\Http\Request;
@@ -22,25 +20,28 @@ class ExcelFileService
         $applications = ConnectionApplication::whereIn('id', $ids)
             ->with('connectionServices','identification','authorizedPerson')
             ->get();
+
         $mappedApplication = [];
         foreach ($applications as $app) {
+//            dd(date('d/m/Y', strtotime($app->moving_date)));
+//            dd($app->moving_date->format('Y-m-d'));
             $mappedApplication[] = [
                 'Brand' => 'PowerShop',
                 'Channel ID' => 'Hood Move Tech',
                 'Customer Type' => 'Residential',
                 'NMI' => $app->nmi,
                 'MIRN' => $app->mirn,
-                'Connection Date' => $app->moving_date,
+                'Connection Date' => date('d/m/Y', strtotime($app->moving_date)),
                 'Type of Sale' => 'Moving',
                 'Signup Type' => $this->getSignUpType($app),
                 'Title' => $app->title,
                 'First Name' => $app->first_name,
                 'Last Name' => $app->last_name,
-                'Date of Birth' => $app->dob,
+                'Date of Birth' => date('d/m/Y', strtotime($app->dob)),
                 'Business Name' => null,
-                'Phone - Home' => $app->homephone, //?
+                'Phone - Home' => $app->homephone,
                 'Phone - Office' => null,
-                'Phone - Mobile' => $app->phone, //?
+                'Phone - Mobile' => $app->phone,
                 'E-mail' => $app->email,
                 'ABN' => null,
                 'ACN' => null,
@@ -87,18 +88,15 @@ class ExcelFileService
         return $mappedApplication;
     }
     private function getConcessionCardType($app){
-        if($app->concession_card_type == 'DVA'){
-            return 'DVA Health';
-        }
-        elseif ($app->concession_card_type == 'HCC'){
-            return 'Health Care Card';
-        }
-        elseif ($app->concession_card_type == 'PCC'){
-            return 'Pensioner Concession';
-        }
-        else {
-            return 'Queensland Seniors';
-        }
+
+        return match($app->concession_card_type) {
+            'DVA' => 'DVA Health',
+            'HCC' => 'Health Care Card',
+            'PCC' => 'Pensioner Concession',
+            'QSC'=> 'Queensland Seniors',
+            default => null
+        };
+
     }
     private function getLifeSensitive($app){
         if ($app->is_gas_life_support == 1 && $app->is_power_life_support == 1){
@@ -113,38 +111,49 @@ class ExcelFileService
     }
     private function getSupplyAddress($app)
     {
-        if ($app->unit_number != '' || $app->street_number != '' || $app->street_name_only != '' || $app->street_type != '') {
-            return $app->unit_number. ' , ' .$app->street_number .' , '. $app->street_name_only .' , '. $app->street_type;
+        if($app->unit_number == ''){
+            return $app->street_number .' , '. $app->street_name_only .' , '. $app->street_type;
         }
-        else {
-            return $app->unit_number. ' ' .$app->street_number .' '. $app->street_name_only .' '. $app->street_type;
+        elseif ($app->street_number == ''){
+            return $app->unit_number. ' , ' . $app->street_name_only .' , '. $app->street_type;
+        }
+        elseif ($app->street_name_only == ''){
+            return $app->unit_number. ' , ' .$app->street_number .' , '. $app->street_type;
+        }
+        elseif ($app->street_type == ''){
+            return $app->unit_number. ' , ' .$app->street_number .' , '. $app->street_name_only ;
+        }
+        else{
+            return $app->unit_number. ' , ' .$app->street_number .' , '. $app->street_name_only .' , '. $app->street_type;
         }
     }
     private function getMailingAddress($app)
     {
-        if ($app->billing_unit_number != '' || $app->billing_street_number != '' || $app->billing_street_name_only != '' || $app->billing_street_type != '')
-        {
-            return $app->billing_unit_number. ' , ' .$app->billing_street_number .' , '. $app->billing_street_name_only .' , '. $app->billing_street_type;
+        if($app->billing_unit_number == ''){
+            return $app->billing_street_number .' , '. $app->billing_street_name_only .' , '. $app->billing_street_type;
+        }
+        elseif ($app->billing_street_number == ''){
+            return $app->billing_unit_number. ' , ' . $app->billing_street_name_only .' , '. $app->billing_street_type;
+        }
+        elseif ($app->billing_street_name_only == ''){
+            return $app->billing_unit_number. ' , ' .$app->billing_street_number .' , '. $app->billing_street_type;
+        }
+        elseif ($app->billing_street_type == ''){
+            return $app->billing_unit_number. ' , ' .$app->billing_street_number .' , '. $app->billing_street_name_only ;
         }
         else{
-            return $app->billing_unit_number. ' ' .$app->billing_street_number .' '. $app->billing_street_name_only .' '. $app->billing_street_type;
+            return $app->billing_unit_number. ' , ' .$app->billing_street_number .' , '. $app->billing_street_name_only .' , '. $app->billing_street_type;
         }
 
     }
 
-    private function identification($app)
-    {
-     $cardNumber = $app->identification->card_number;
-     $expiryDate = $app->identification->expire_date;
-     $idType = $app->identification->type;
-    }
     private function getIDNumber($app)
     {
         return $app->identification->card_number;
     }
     private function getExpiryDate($app)
     {
-        return $app->identification->expire_date;
+        return date('d-M', strtotime($app->identification->expire_date));
     }
     private function getIDType($app)
     {
@@ -169,16 +178,14 @@ class ExcelFileService
     }
     private function getSecondDob($app)
     {
-        return $app->authorizedPerson->dob;
+        return date('d/m/Y', strtotime($app->authorizedPerson->dob));
     }
-
 
     private function getSignUpType($app){
 
         $connectionService = $app->connectionServices->toArray();
-       // dd($connectionService[1]['service_type']);
         foreach ($connectionService as $service){
-            if($service['service_type']= 'gas' && $service['service_type'] = 'electricity'){
+            if(!empty($service['service_type'] === 'gas' && $service['service_type'] === 'electricity')){
                 return 'Two Fuel';
             }
             else{
