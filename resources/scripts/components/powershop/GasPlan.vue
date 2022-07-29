@@ -39,14 +39,14 @@
                                         <div class="plan-text" style="font-size:14px">
                                             {{ plan.supply_charge.description }} ({{ plan.supply_charge.unit }})
                                         </div>
-                                        <div  class="plan-text">{{ plan.supply_charge.gst_inc_round_2 }}</div>
+                                        <div  class="plan-text">{{ plan.supply_charge.value }}</div>
                                     </div>
 
                                     <div class="price-list">
                                         <div class="plan-text" style="font-size:14px">
-                                            Anytime (¢/MJ)
+                                            {{ plan.usage_charge.description }} ({{ plan.usage_charge.unit }})
                                         </div>
-                                        <div  class="plan-text">2.12</div>
+                                        <div  class="plan-text">{{ plan.usage_charge.value }}</div>
                                     </div>
 
                                     <div class="d-flex mt-8">
@@ -60,7 +60,7 @@
                                         <div class="plan-text" style="font-size:14px">
                                             Reconnection
                                         </div>
-                                        <div  class="plan-text">{{ plan.fees.standard_connection_fee }}</div>
+                                        <div  class="plan-text">{{ plan.fees.reconnection }}</div>
                                     </div>
 
                                 </v-expansion-panel-content>

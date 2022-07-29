@@ -11,16 +11,16 @@
                         </div>
                         <div class="font-weight-bolder">
                             <p class="mb-2 bolder-text">{{ plan.offers.title }} <span class="deep-text">(inc. GST)</span></p>
-                            <p class="mb-2 bolder-text">1% <span class="deep-text">less than the </span></p>
+                            <p class="mb-2 bolder-text">{{ plan.offers.line_1 }}</p>
+<!--                            <p class="mb-2 bolder-text">{{ plan.offers.line_1 }} 1% <span class="deep-text">less than the </span></p>-->
                             <p class="mb-4">
-                                <a v-if="victoriaState" class="linkable" href="#">Victorian Default Offer</a>
-                                <a v-else class="linkable" href="#">Reference Pricing</a>
+                                <span v-if="victoriaState" class="linkable">Victorian Default Offer</span>
+                                <span v-else class="linkable">Reference Pricing</span>
                             </p>
                         </div>
                     </div>
                     <div class="mt-2">
-                        <p class="paragraph-text">Estimated cost and comparison for a residential customer using 4000kWh on a Single rate
-                            tariff in the CitiPower network.</p>
+                        <p class="paragraph-text">{{ plan.offers.line_2 }}</p>
                         <p class="paragraph-text">Your actual bills will vary depending on your usage and any price changes in the future.
                             You'll be notified of any change in accordance with our regulatory requirements.</p>
                     </div>
@@ -55,7 +55,7 @@
                                         <div class="plan-text" style="font-size:14px">
                                             {{ plan.supply_charge.description }} ({{ plan.supply_charge.unit }})
                                         </div>
-                                        <div class="plan-text">{{ plan.supply_charge.gst_inc_round_2 }}</div>
+                                        <div class="plan-text">{{ plan.supply_charge.value }}</div>
                                     </div>
 
                                     <div class="d-flex">
@@ -69,7 +69,7 @@
                                         <div class="plan-text" style="font-size:14px">
                                             {{ plan.usage_charge.description }} ({{ plan.usage_charge.unit }})
                                         </div>
-                                        <div  class="plan-text">{{ plan.usage_charge.gst_inc_round_2 }}</div>
+                                        <div  class="plan-text">{{ plan.usage_charge.value }}</div>
                                     </div>
 
                                     <div class="d-flex mt-8">
@@ -163,6 +163,7 @@ export default {
 .linkable {
     color: #F1186C;
     font-size: 14px;
+    text-decoration: underline;
 }
 .paragraph-text {
     font-size: 14px;

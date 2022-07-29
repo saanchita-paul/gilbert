@@ -18,7 +18,8 @@
                     </div>
                 </div>
 
-                <ElectricityPlan v-if="willShowElectricity" :plan="planDetails.plans.electricity" :victoriaState="isVictoria"></ElectricityPlan>
+                <ElectricityPlan v-if="willShowElectricity" :plan="planDetails.plans.electricity"
+                                 :victoriaState="isVictoria"></ElectricityPlan>
 
                 <GasPlan v-if="willShowGas" :plan="planDetails.plans.gas"></GasPlan>
 
@@ -51,7 +52,7 @@
                                 <div class="font-weight-bold" style="font-size:14px">
                                     Solar feed in tariff if applicable (Excl. GST)
                                 </div>
-                                <div>6.7c/kWh</div>
+                                <div>{{ getSolarFeedInTariff }}</div>
                             </div>
 
                         </div>
@@ -82,8 +83,10 @@
 
                                         <v-expansion-panel-content>
                                             <div v-if="electricityBPIDLinksList">
-                                                <p class="mb-1" v-for="bpid_link in electricityBPIDLinksList" :key="bpid_link.id">
-                                                    <a class="linkable" :href="bpid_link.file_url" target="_blank">{{ bpid_link.title }}</a>
+                                                <p class="mb-1" v-for="bpid_link in electricityBPIDLinksList"
+                                                   :key="bpid_link.id">
+                                                    <a class="linkable" :href="bpid_link.file_url"
+                                                       target="_blank">{{ bpid_link.title }}</a>
                                                 </p>
                                             </div>
                                         </v-expansion-panel-content>
@@ -95,26 +98,27 @@
                         <div style="padding: 0 10px" v-if="willShowGas">
                             <v-divider></v-divider>
                             <v-expansion-panels :value="opened">
-                                    <v-expansion-panel>
+                                <v-expansion-panel>
 
-                                        <v-expansion-panel-header class="font-weight-bold" style="font-size: 16px">
-                                            Gas Fact Sheets
-                                            <template v-slot:actions>
-                                                <v-icon color="#F1186C">
-                                                    $expand
-                                                </v-icon>
-                                            </template>
-                                        </v-expansion-panel-header>
+                                    <v-expansion-panel-header class="font-weight-bold" style="font-size: 16px">
+                                        Gas Fact Sheets
+                                        <template v-slot:actions>
+                                            <v-icon color="#F1186C">
+                                                $expand
+                                            </v-icon>
+                                        </template>
+                                    </v-expansion-panel-header>
 
-                                        <v-expansion-panel-content>
-                                            <div v-if="gasBPIDLinksList">
-                                                <p class="mb-1" v-for="bpid_link in gasBPIDLinksList" :key="bpid_link.id">
-                                                    <a class="linkable" :href="bpid_link.file_url" target="_blank">{{ bpid_link.title }}</a>
-                                                </p>
-                                            </div>
-                                        </v-expansion-panel-content>
-                                    </v-expansion-panel>
-                                </v-expansion-panels>
+                                    <v-expansion-panel-content>
+                                        <div v-if="gasBPIDLinksList">
+                                            <p class="mb-1" v-for="bpid_link in gasBPIDLinksList" :key="bpid_link.id">
+                                                <a class="linkable" :href="bpid_link.file_url"
+                                                   target="_blank">{{ bpid_link.title }}</a>
+                                            </p>
+                                        </div>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </v-expansion-panels>
                         </div>
                     </v-card>
                 </div>
@@ -128,8 +132,8 @@
 </template>
 
 <script>
-import ElectricityPlan from "@scripts/components/powershop/ElectricityPlan"
-import GasPlan from "@scripts/components/powershop/GasPlan"
+import ElectricityPlan from "@scripts/components/powershop/ElectricityPlan";
+import GasPlan from "@scripts/components/powershop/GasPlan";
 import PowershopService from "@scripts/modules/powershop/services/PowershopService";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import PowershopMapper from "@scripts/modules/powershop/api/mappers/PowershopMapper";
@@ -170,12 +174,35 @@ export default {
         isVictoria() {
             return this.leadSummary.state === 'Victoria';
         },
-        electricityBPIDLinksList(){
-            return PowershopMapper.mapElectricityBPIDLinks(this.planDetails?.plans?.electricity);
+        electricityBPIDLinksList() {
+            return this.planDetails?.plans?.electricity?.bpid_links;
         },
-        gasBPIDLinksList(){
-            return PowershopMapper.mapGasBPIDLinks(this.planDetails?.plans?.gas);
-        }
+        gasBPIDLinksList() {
+            return this.planDetails?.plans?.gas?.bpid_links;
+        },
+        getSolarFeedInTariff() {
+            return this.planDetails?.plans?.gas?.solar_feed_in_tariff ?? "";
+        },
+        state() {
+            switch(this.leadSummary.state) {
+                case "New South Wales":
+                    return 'NSW'
+                case "Victoria":
+                    return 'VIC'
+                case "Queensland":
+                    return 'QLD'
+                case "South Australia":
+                    return 'SA'
+                case "Northern Territory":
+                    return 'NT'
+                case "Tasmania":
+                    return 'TAS'
+                case "Australian Capital Territory":
+                    return 'ACT'
+                case 'Western Australia':
+                    return 'WA'
+            }
+        },
     },
     watch: {
         isBothEnergySubmit() {
@@ -187,8 +214,14 @@ export default {
     },
     methods: {
         async getPowershopData() {
-            this.planDetails = await PowershopService.getPowershopData();
-            console.log('Plan details data from PowerShop component: ', this.planDetails);
+
+            let query = {
+                postcode: this.leadSummary?.postcode,
+                state: this?.state,
+                nmi: this.leadSummary?.nmi,
+            }
+
+            this.planDetails = await PowershopService.getPowershopData(query);
         },
         closeDialog() {
             this.$emit('toggleDialog')
