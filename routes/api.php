@@ -243,9 +243,29 @@ Route::post('/our-property/token', [OurPropertyController::class, 'getAccessToke
 Route::post('/our-property/lead', [OurPropertyController::class, 'createOurProperty']);
 
 
+/**
+ * Powershop Payment
+ */
+Route::get('/powershop/payment/invite', function () {
 
 
+});
+Route::any('/powershop/payment/failed', function () {
+    dump('failed', request()->all(), request()->method());
+});
+Route::any('/powershop/payment/success', function () {
+//    $ref = request()->get('result');
+//    $details = getDetails($ref);
+//    return response()->json($details);
+});
 
+Route::any('/powershop/payment/callback', function () {
+    dump('success', request()->all(), request()->method());
+});
+
+/**
+ * Bellow API are only for testing purpose
+ */
 Route::get("/karan/sales-status", function () {
     $id = request()->get('id');
     $power = request()->get('power');
@@ -292,120 +312,3 @@ Route::get('country_test', function () {
 });
 
 
-
-
-Route::get('/kaka', function () {
-    $array = [
-//        'GenerateRequest' => [
-            'PxPayUserId' => 'PowershopSignUp_Dev',
-            'PxPayKey' => 'f598f2c0e3199578c499a778f33657b601f24f361af110fe0a22a542e5a1a657',
-//            'TxnType' => 'Purchase',
-            'TxnType' => 'Validate',
-//            'AmountInput' => 0.0,
-            'CurrencyInput' => 'AUD',
-            'MerchantReference' => 'Purchase Example',
-            'TxnData1' => 'Atikur Rahman',
-            'TxnData12' => '0211111111',
-            'EmailAddress' => 'a@gmail.com',
-//            'TxnId' => 'hoodlenin002',
-            'TxnId' => Str::random(10),
-            'BillingId' => '0000070082450801',
-            'EnableAddBillCard' => 1,
-            'RecurringMode' => 'recurringinitial',
-            'UrlSuccess' => 'https://enk.leninsheikh.com/api/kaka/success',
-            'UrlFail' => 'https://enk.leninsheikh.com/api/kaka/failed',
-            'UrlCallback' => 'https://enk.leninsheikh.com/api/kaka/callback',
-//        ]
-    ];
-
-//    $xml = ArrayToXml::convert($array);
-    $xml = toXml($array, 'GenerateRequest');
-
-    $client = new \GuzzleHttp\Client();
-
-    $options = [
-        'headers' => [
-            'Content-Type' => 'text/xml; charset=UTF8',
-        ],
-        'body' => $xml,
-    ];
-
-    $response = $client->request('POST', 'https://sec.windcave.com/pxaccess/pxpay.aspx', $options);
-
-    $body = $response->getBody()->getContents();
-    $uri = (string ) simplexml_load_string($body)->URI ?? null;
-    if (!empty($uri)) {
-        return redirect($uri);
-    } else {
-        dd($body);
-    }
-});
-Route::any('/kaka/failed', function () {
-    dump('failed', request()->all(), request()->method());
-});
-Route::any('/kaka/success', function () {
-    $ref = request()->get('result');
-    $details = getDetails($ref);
-    return response()->json($details);
-});
-
-Route::any('/kaka/callback', function () {
-    dump('success', request()->all(), request()->method());
-});
-
-Route::any('/kaka/details', function () {
-
-    $key = request()->get('key');
-    if (!$key) {
-        dd('key is missing');
-    }
-
-    $details = getDetails($key);
-    return response()->json($details);
-});
-
-function getDetails(string $key) {
-    $array = [
-        'PxPayUserId' => 'PowershopSignUp_Dev',
-        'PxPayKey' => 'f598f2c0e3199578c499a778f33657b601f24f361af110fe0a22a542e5a1a657',
-        'Response' => $key,
-    ];
-
-    $xml = toXml($array, 'ProcessResponse');
-    $options = [
-        'headers' => [
-            'Content-Type' => 'text/xml; charset=UTF8',
-        ],
-        'body' => $xml,
-    ];
-    $client = new \GuzzleHttp\Client();
-
-    $response = $client->request('POST', 'https://sec.windcave.com/pxaccess/pxpay.aspx', $options);
-    $body = $response->getBody()->getContents();
-    $res = json_decode(json_encode(simplexml_load_string($body)), true);
-
-    return ["payment_details" => [
-        "card" => [
-            "card_type" => data_get($res, 'CardName'),
-            "masked_card_number" => data_get($res, 'CardNumber'),
-            "expiry_date" => data_get($res, 'DateExpiry'),
-            "cardholder_name" => data_get($res, 'CardHolderName'),
-            "token" => data_get($res, 'DpsBillingId'),
-            "terms_and_conditions_accepted_at" => now(\App\Services\TimeZoneService::getTimeZoneInt()),
-            "preferred" => true
-        ]
-    ]];
-}
-
-function toXml($array, $root) {
-
-    $xml  = "<$root>";
-    foreach ($array as $key => $value) {
-        $xml .= "<$key>$value</$key>" ;
-    }
-//    while (list($prop, $val) = each($arr))
-//        $xml .= "<$prop>$val</$prop>" ;
-
-    $xml .= "</$root>";
-    return $xml;
-}
