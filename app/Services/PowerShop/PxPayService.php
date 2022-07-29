@@ -7,15 +7,27 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Str;
 
-class PowerShopPayment
+/**
+ *
+ */
+class PxPayService
 {
+    /**
+     * @var \Illuminate\Config\Repository|\Illuminate\Contracts\Foundation\Application|mixed
+     */
     protected $pxPayUser;
+    /**
+     * @var \Illuminate\Config\Repository|\Illuminate\Contracts\Foundation\Application|mixed
+     */
     protected $pxPayKey;
 
-    public function __construct($pxPayUser, $pxPayKey)
+    /**
+     *
+     */
+    public function __construct()
     {
-        $this->pxPayUser = $pxPayUser;
-        $this->pxPayKey = $pxPayKey;
+        $this->pxPayUser = config('powershop.px_pay_user');
+        $this->pxPayKey = config('powershop.px_pay_key');
     }
 
     /**
@@ -49,11 +61,14 @@ class PowerShopPayment
         }
     }
 
+    /**
+     * @return array
+     */
     private function generatePaymentData(): array
     {
         return [
-            'PxPayUserId' => config('powershop.px_pay_user'),
-            'PxPayKey' => config('powershop.px_pay_key'),
+            'PxPayUserId' => $this->pxPayUser,
+            'PxPayKey' => $this->pxPayKey,
 //            'TxnType' => 'Purchase',
             'TxnType' => 'Validate',
             'AmountInput' => 0.0,
@@ -71,6 +86,11 @@ class PowerShopPayment
         ];
     }
 
+    /**
+     * @param $array
+     * @param $root
+     * @return string
+     */
     public function toXml($array, $root): string
     {
 
@@ -128,6 +148,11 @@ class PowerShopPayment
     {
         $key = data_get($response, 'result');
 
-        $cardDetails = $this->getPaymentDetails($key);
+        return [
+            'paymentKey' => $key,
+            'paymentDetails' => $this->getPaymentDetails($key),
+        ];
+
     }
 }
+
