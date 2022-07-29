@@ -52,7 +52,6 @@ class CAFGenerationService
      */
     public function downloadCAF(): StreamedResponse
     {
-       //dd( $this->mappedApplicationList);
         return FastExcel::data(collect($this->mappedApplicationList))->download(now()->unix().'.xlsx');
     }
 
