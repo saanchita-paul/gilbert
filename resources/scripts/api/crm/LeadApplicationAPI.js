@@ -532,4 +532,9 @@ export default {
         }
         await axios.post('/api/applications/'+leadId+'/payment-draft', payload);
     },
+    async sendPowershopPaymentLink(leadId, linkType)
+    {
+        const payload = { "link_type" : linkType };
+        await axios.post('/api/applications/'+leadId+'/payment-link', payload);
+    },
 }

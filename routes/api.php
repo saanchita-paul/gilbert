@@ -143,8 +143,6 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_ADDRESS);
     Route::post('/applications/{applicationId}/draft', [ApplicationController::class, 'saveDraft'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
-    Route::post('/applications/{applicationId}/payment-draft', [ApplicationController::class, 'savePaymentInfo'])
-        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
     Route::put('/applications/{id}/close', [ApplicationController::class, 'close']);
     Route::patch('/applications/{applicationId}/providers', [ApplicationController::class, 'providers'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_SERVICE_PROVIDERS);
@@ -210,6 +208,13 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/rea-extract/corporate-report', [ReaExtractsReportController::class, 'getReaCorporateReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 
+    /**
+     * api for powershop payment
+     */
+
+    Route::post('/applications/{applicationId}/payment-draft', [ApplicationController::class, 'savePaymentInfo'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
+
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
@@ -228,6 +233,11 @@ Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWate
  */
 Route::get('/sumo/generate-uuid/{id}', [ApplicationController::class, 'getSumoUuid']);
 
+
+/**
+ * api to send payment link
+ */
+Route::post('/applications/{applicationId}/payment-link', [ApplicationController::class, 'sendPaymentLink']);
 
 
 /**

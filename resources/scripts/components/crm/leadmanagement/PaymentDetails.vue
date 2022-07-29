@@ -12,13 +12,14 @@
                     <ValidationProvider name="Payment Link" rules="required" v-slot="{ errors }">
                         <v-menu offset-y>
                             <template v-slot:activator="{ on, attrs }">
-                                <v-btn v-bind="attrs" v-on="on">
+                                <v-btn v-bind="attrs" v-on="on" :disabled="isDisable()">
                                     Send  link to customer  <span class="mdi mdi-send"></span>
                                 </v-btn>
                             </template>
                             <v-list>
                                 <v-list-item v-for="(item, index) in items" :key="index">
-                                    <v-icon v-text="item.icon" class="pr-4"></v-icon> <v-list-item-title>{{ item.text }} </v-list-item-title>
+                                    <v-icon v-text="item.icon" class="pr-4"></v-icon>
+                                    <v-list-item-title style="cursor : pointer" @click="sendPaymentLink(item.value)">{{ item.text }} </v-list-item-title>
                                 </v-list-item>
                             </v-list>
                         </v-menu>
@@ -27,7 +28,7 @@
             </div>
 
             <div class="crm-text-field">
-                <span>Payment Status: </span> <span class="grey--text pl-2"> Pending/Valid/Invalid </span>
+                <span>Payment Status: </span> <span class="grey--text pl-2"> {{ lead.powershop_payment_status }} </span>
             </div>
         </v-col>
 
@@ -132,6 +133,7 @@
 </template>
 <script>
 
+import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 
 export default {
     name: "PaymentDetails",
@@ -204,7 +206,7 @@ export default {
     },
     methods: {
         saveDraft(field, value) {
-            console.log('lead ->', this.lead);
+            // console.log('lead ->', this.lead);
             // console.log('powershop_payment_info ->', this.lead.powershop_payment_info.estimated_elec_billing_cost);
             this.$emit("updateDraft", field, value);
         },
@@ -213,7 +215,19 @@ export default {
             this.estimated_billing_power.period = this.lead?.powershop_payment_info?.estimated_elec_billing_period;
             this.estimated_billing_gas.cost = this.lead?.powershop_payment_info?.estimated_gas_billing_cost;
             this.estimated_billing_gas.period = this.lead?.powershop_payment_info?.estimated_gas_billing_period;
+        },
+        isDisable() {
+            if (this.lead.powershop_payment_status === "Valid")
+            {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        sendPaymentLink(linkType) {
+            LeadApplicationService.sendPowershopPaymentLink(this.lead.id, linkType);
         }
+
     },
 
     async mounted() {

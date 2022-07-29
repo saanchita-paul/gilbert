@@ -71,6 +71,7 @@ export default class ApplicationSummary {
     additional_access_information = null;
     is_power_life_support = null;
     powershop_payment_info = null;
+    powershop_payment_status = null;
     constructor(
         {
             id = null,
@@ -156,9 +157,10 @@ export default class ApplicationSummary {
             ea_go_neutral = null,
             additional_access_information = null,
             is_power_life_support = null,
-            powershop_payment_info,
+            powershop_payment_info = null,
+            powershop_payment_status = null
 
-        }
+        } =  {}
     ) {
 
         this.id = id;
@@ -253,6 +255,7 @@ export default class ApplicationSummary {
         this.additional_access_information = additional_access_information
         this.is_power_life_support = is_power_life_support
         this.powershop_payment_info = powershop_payment_info
+        this.powershop_payment_status = this.mapPaymentStatus(this.powershop_payment_info ? this.powershop_payment_info.status : 0)
     }
 
 
@@ -279,4 +282,14 @@ export default class ApplicationSummary {
         const statusList = ['Unassigned', 'Assigned', 'Escalated', 'Submitted', 'Accepted', 'Rejected', 'Inprogress', 'Closed'];
         return statusList[status];
     }
+
+    mapPaymentStatus(status) {
+
+        status = status - 1;
+        if (status < 0) return '';
+
+        const statusList = ['Pending', 'Valid', 'Invalid'];
+        
+        return statusList[status];
+        }
 }
