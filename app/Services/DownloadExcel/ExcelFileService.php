@@ -3,9 +3,11 @@
 namespace App\Services\DownloadExcel;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
+use App\Models\ConnectionService;
 use Illuminate\Http\Request;
 use Rap2hpoutre\FastExcel\Facades\FastExcel;
 use function PHPUnit\Framework\matches;
+use function PHPUnit\Framework\throwException;
 
 class ExcelFileService
 {
@@ -23,8 +25,6 @@ class ExcelFileService
 
         $mappedApplication = [];
         foreach ($applications as $app) {
-//            dd(date('d/m/Y', strtotime($app->moving_date)));
-//            dd($app->moving_date->format('Y-m-d'));
             $mappedApplication[] = [
                 'Brand' => 'PowerShop',
                 'Channel ID' => 'Hood Move Tech',
@@ -64,10 +64,10 @@ class ExcelFileService
                 'Mailing Suburb' => $app->billing_city,
                 'Mailing State/Territory' => $app->billing_state,
                 'Mailing Postal Code' => $app->billing_postcode,
-                'Owner/Renter' => $app->tenancy_type == 1 ? 'Renter' : 'Home Owner',
+                'Owner/Renter' => $this->getTenancyType($app),
                 'Electricity Promo' => '',
                 'Gas Promo' => '',
-                'Electricity Already On? (Y/N)' => $app->has_electricity == 1 ? 'Yes' : 'No',
+                'Electricity Already On? (Y/N)' => $this->checkElectricity($app),
                 'Meter Number(s)' => null,
                 'Any Hazards' => $app->is_any_unrestrained_animal,
                 'Any Access Requirements?' => '',
@@ -86,6 +86,22 @@ class ExcelFileService
             ];
         }
         return $mappedApplication;
+    }
+    private function getTenancyType($app)
+    {
+        return match($app->tenancy_type) {
+            1 => 'Renter',
+            2 => 'Home Owner',
+            default => null
+        };
+    }
+    private function checkElectricity($app)
+    {
+        return match($app->has_electricity) {
+            1 => 'Yes',
+            2 => 'No',
+            default => null
+        };
     }
     private function getConcessionCardType($app){
 
@@ -183,16 +199,14 @@ class ExcelFileService
 
     private function getSignUpType($app){
 
-        $connectionService = $app->connectionServices->toArray();
-        foreach ($connectionService as $service){
-            if(!empty($service['service_type'] === 'gas' && $service['service_type'] === 'electricity')){
-                return 'Two Fuel';
-            }
-            else{
-                return 'One Fuel';
-            }
+        $services = $app->connectionServices->pluck('service_type')->toArray();
+        if(in_array(ConnectionService::TYPE_GAS, $services ) && in_array(ConnectionService::TYPE_ELECTRICITY, $services )){
+            return 'Two Fuel';
+        } elseif(in_array(ConnectionService::TYPE_ELECTRICITY, $services )){
+            return 'Electricity';
+        } else{
+            throw new \Exception('Only gas not supported!');
         }
     }
-
 
 }

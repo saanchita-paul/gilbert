@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\ConnectionApplication;
 use App\Services\DownloadExcel\ExcelFileService;
 use http\Exception;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
