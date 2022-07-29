@@ -156,17 +156,9 @@ export default {
         },
 
         generateGilbertAppCafFIle() {
-            let selectedId = this.selectedCafFile.map(dt => dt.id);
-
-            let selectedLeads = this.gilbertApplications.filter(cf => selectedId.includes(cf.id));
-
-            let selectedRow = selectedLeads.map(dt => {
-                return dt.id + '-' + dt.selected_service
-            });
-
-            let query = selectedRow.join('_');
-
-            let response = ApplicationCafFileService.generateGilbertCafFIle(query);
+            let leadIds = this.selectedCafFile.map(item => item.id);
+            let selectedIds = leadIds.join(',');
+            let response = ApplicationCafFileService.generateGilbertCafFIle(selectedIds);
             console.log('Response from Generate caf file :', response);
         }
 

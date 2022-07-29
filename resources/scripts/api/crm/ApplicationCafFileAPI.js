@@ -51,8 +51,8 @@ export default {
 
     generateGilbertCafFIle: async (params) => {
         try{
-            const url = `${process.env.MIX_BOT_ROOT_URL}/api/download-caf-file?leads=`+ params;
-
+            const url = `/api/powershop-generate-caf?ids=`+ params;
+            
             window.open(
                 url,
                 '_blank'
