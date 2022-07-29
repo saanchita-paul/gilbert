@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PowerShopController;
 use App\Models\ConnectionApplication;
 use App\Http\Controllers\Agency\AppCloseReasonController;
 use App\Services\Agency\TriageFlagService;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Services\Address\AddressModel;
 use PropertyMe\services\FetchContacts;
 use App\Services\RolePermissionService;
+use Rap2hpoutre\FastExcel\Facades\FastExcel;
 use TSA\Services\TsaCallHistoryService;
 use Illuminate\Support\Facades\Broadcast;
 use TSA\Services\TsaSendAppliationService;
@@ -25,6 +27,7 @@ use App\Http\Controllers\Agency\AgentProfileController;
 use OurProperty\Http\Controllers\OurPropertyController;
 use App\Services\RolePermission;
 use App\Http\Controllers\Agency\ReaExtractsReportController;
+use App\Services\Utility\PowershopService;
 
 /*
 |--------------------------------------------------------------------------
@@ -140,11 +143,18 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_ADDRESS);
     Route::post('/applications/{applicationId}/draft', [ApplicationController::class, 'saveDraft'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
+    Route::post('/applications/{applicationId}/payment-draft', [ApplicationController::class, 'savePaymentInfo'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
     Route::put('/applications/{id}/close', [ApplicationController::class, 'close']);
     Route::patch('/applications/{applicationId}/providers', [ApplicationController::class, 'providers'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_SERVICE_PROVIDERS);
     Route::post('/applications/{applicationId}/clear-concession-details', [ApplicationController::class, 'clearConcession'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
+
+
+    Route::get('/power-applications', [ApplicationController::class, 'getPowerShop'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
+
 
     //todo: make a  separate controller for notes
     Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes'])
@@ -242,6 +252,7 @@ Route::get('/applications/{id}/validate-cutoff/', [ApplicationController::class,
 Route::post('/our-property/token', [OurPropertyController::class, 'getAccessToken']);
 Route::post('/our-property/lead', [OurPropertyController::class, 'createOurProperty']);
 
+Route::get('/powershop-generate-caf', [PowerShopController::class, 'generatePowershopCaf']);
 
 /**
  * Powershop Payment
@@ -312,3 +323,21 @@ Route::get('country_test', function () {
 });
 
 
+
+Route::get('/kaka', function () {
+    $dateTimeZone = new DateTimeZone("Australia/Melbourne");
+    $date = new DateTime(null, $dateTimeZone);
+//    dd($date);
+    return $dateTimeZone->getOffset($date)/60/60;
+
+});
+
+Route::get('powers-api', function () {
+    $s = new PowershopService();
+    $re = $s->sendCustomerData(ConnectionApplication::find(453)->id);
+    dd($re);
+});
+
+//Route::get('/exceltest', function () {
+//    return FastExcel::data(collect([['name'=> 'sanchita'], ['name'=> 'paul']]))->download('file.xlsx');
+//});

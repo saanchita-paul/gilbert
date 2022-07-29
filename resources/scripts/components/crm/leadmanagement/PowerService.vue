@@ -75,6 +75,18 @@
                 ></OriginPlan>
             </div>
 
+            <div class="d-flex" v-if="selectedProvider === 'powershop'">
+                <PowershopPlan
+                    :class="{'not-editable': !isServiceEditable }"
+                    v-for="plan in powershopPlans"
+                    :key="plan.name"
+                    :plan="plan"
+                    @click.native="selectPlan(plan)"
+                    :isActive="selectedPlan"
+                    @toggleDialog="togglePowerShopPlanDetails"
+                ></PowershopPlan>
+            </div>
+
             <div class="d-flex" v-if="selectedProvider === 'sumo'">
                 <div v-if="isSumoPlansLoading" class="sumo-loading-container">
                     <v-progress-circular
@@ -109,6 +121,11 @@
                 <p class="neutral-checkbox-text">Customer opts in for <span class="font-weight-bold">Go Neutral</span>.</p>
             </div>
         </v-col>
+
+        <v-col cols="12" v-if="selectedProvider === 'powershop'">
+            <PaymentDetails @updateDraft="updateDraft" :lead="leadSummary"></PaymentDetails>
+        </v-col>
+
         <v-col cols="12">
             <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
                 <v-btn
@@ -161,6 +178,16 @@
                 />
             </v-card>
         </v-dialog>
+
+        <v-dialog v-model="powerShopPlanDetails" max-width="450">
+            <v-card>
+                <PowershopPlanDetails
+                    @toggleDialog="togglePowerShopPlanDetails"
+                    :serviceType="isBothEnergySubmit ? 'energy' : 'power'"
+                    :leadSummary="leadSummary"
+                />
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
@@ -173,29 +200,36 @@ import EAPlanService from "@scripts/services/ea/EAPlanService";
 import SumoService from "@scripts/services/crm/SumoService";
 import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
 import SumoPlan from "@scripts/components/crm/leadmanagement/SumoPlan";
+import PowershopPlan from "@scripts/components/crm/leadmanagement/PowershopPlan";
 import OriginPlan from "@scripts/components/crm/leadmanagement/OriginPlan";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
 import OriginPlanDetails from "@scripts/components/crm/leadmanagement/OriginPlanDetails";
+import PaymentDetails from "@scripts/components/crm/leadmanagement/PaymentDetails";
 import SumoPlanDetails from "@scripts/components/crm/leadmanagement/SumoPlanDetails";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import {isNull } from "lodash-es";
 import {connectionServicesMapper} from "@scripts/data/ConnectionApplicationMapper";
+import PowershopPlanDetails from "@scripts/components/crm/leadmanagement/PowershopPlanDetails";
+
 
 export default {
     //todo reduce emit functions
     //todo shift all lead variables to vuex store
     name: "PowerService",
     components: {
+        PowershopPlanDetails,
         ServiceProvider,
         TemporaryConnection,
         SameDayConnection,
         EnergyPlan,
         SumoPlan,
+        PowershopPlan,
         OriginPlan,
         EnergyPlanDetails,
         OriginPlanDetails,
         SumoPlanDetails,
+        PaymentDetails,
     },
     props: {
         leadSummary: {
@@ -217,6 +251,8 @@ export default {
             sumoPlanDetails: false,
             originPlans: [],
             originPlanDetails: false,
+            powershopPlans: [],
+            powerShopPlanDetails: false
         };
     },
     computed: {
@@ -298,6 +334,8 @@ export default {
         this.fetchEaPlans();
         this.fetchOriginPlans();
         this.loadSelectedProviderAndPlan();
+        this.fetchPowershopPlans();
+
 
         // On address change refetch Sumo Plan Details
         const updateAddress = address => {
@@ -447,9 +485,26 @@ export default {
         submit() {
             let subType = this.isBothEnergySubmit ? "energy" : "power";
             this.$eventBus.$emit("busUtilitySubmit", subType);
+            this.$emit("serviceType", subType);
         },
         async changeGoNeutral() {
             await LeadApplicationService.saveSoleField('ea_go_neutral', this.leadSummary.ea_go_neutral, this.leadSummary.id);
+        },
+        async fetchPowershopPlans() {
+            const powershopProvider = this.providers.find(pl => {
+                return pl.name === 'powershop';
+            });
+
+            this.powershopPlans = powershopProvider.plans.filter(plan => {
+                return plan.type === 'power';
+            });
+            console.log("powershopPlans ->", this.powershopPlans);
+        },
+        togglePowerShopPlanDetails() {
+            this.powerShopPlanDetails = !this.powerShopPlanDetails;
+        },
+        async updateDraft(field, value) {
+            await LeadApplicationService.savePaymentField(field, value, this.leadSummary.id);
         }
     },
 };

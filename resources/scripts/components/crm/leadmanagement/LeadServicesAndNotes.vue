@@ -1,7 +1,7 @@
 <template>
     <v-row>
         <v-col cols="8" class="mb-8 pb-8">
-                <ServiceApplications @updateDraft="updateDraft" :afterHourFlag="afterHourFlag" :leadSummary="leadSummary"></ServiceApplications>
+                <ServiceApplications @updateDraft="updateDraft" :afterHourFlag="afterHourFlag" :leadSummary="leadSummary" @serviceType="serviceType"></ServiceApplications>
         </v-col>
         <v-col cols="4" class="mb-8 pb-8">
             <v-card class="hood-card">
@@ -41,6 +41,9 @@ name: "LeadServicesAndNotes",
             await LeadApplicationService.saveNote(note, this.leadSummary.id);
             this.$emit('updateNote');
         },
+        serviceType(value) {
+            this.$emit("serviceType", value);
+        }
     },
 }
 </script>

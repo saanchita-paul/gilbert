@@ -647,7 +647,7 @@
             </div>
         </div>
 
-      <div class="crm-text-field" v-if="property_details.state == 'Victoria'">
+      <div class="crm-text-field">
         <div class="field-label">
           <span>Is renovation going on? *</span>
         </div>

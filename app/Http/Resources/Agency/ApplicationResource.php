@@ -9,6 +9,7 @@ use App\Services\TimeZoneService;
 use App\Services\Utility\StateMapService;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
+use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
 
 class ApplicationResource extends JsonResource
 {
@@ -120,6 +121,8 @@ class ApplicationResource extends JsonResource
 
             'additional_access_information' => $this->additional_access_information,
             'is_power_life_support' => $this->is_power_life_support,
+//            'powershop_payment_info' => $this->mapPaymentInfo($this->powershopPaymentInfo),
+            'powershop_payment_info' => $this->powershopPaymentInfo,
         ];
     }
 
@@ -240,4 +243,10 @@ class ApplicationResource extends JsonResource
             return null;
         }
     }
+
+//    private function mapPaymentInfo($info)
+//    {
+//       dd($info);
+//       return false;
+//    }
 }

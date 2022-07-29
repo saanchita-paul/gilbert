@@ -4,6 +4,7 @@ namespace App\Services\Application;
 
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
 use App\Models\User;
 use App\Modules\Reporting\Services\SetDateRage;
 use App\Services\FullTextSearch\FullTextQueryInterface;
@@ -56,6 +57,8 @@ class SearchConnectionApplication
     private ?string $startDate = null;
     private ?string $endDate = null;
 
+    private ?string $provider = null;
+
     /**
      * @param array $request
      */
@@ -72,6 +75,7 @@ class SearchConnectionApplication
         $this->appId = !empty($request['app_id']) ? $request['app_id'] : null;
         $this->agentId = !empty($request['agent_id']) ? $request['agent_id'] : null;
         $this->tenantEmail = !empty($request['tenant_email']) ? $request['tenant_email'] : null;
+        $this->provider = !empty($request['provider_name']) ? $request['provider_name'] : null;
 
         !empty($request['moving_date']) && $this->setDateRangeNoTz($request['moving_date'], $request['moving_date']);
 
@@ -93,7 +97,8 @@ class SearchConnectionApplication
             ->with('SugerLead')
             ->with('tsaCallHistories')
             ->with('assignedTo')
-            ->with('submittedByUser');
+            ->with('submittedByUser')
+            ->with('powershopPaymentInfo');
 
         $this->applyFilterLeadType($user)
             ->applyFilterUserOffice($user)
@@ -107,6 +112,7 @@ class SearchConnectionApplication
             ->applyFilterMovingDate()
             ->applyFilterAgentId()
             ->applyFilterTenantEmail()
+//            ->applyFilterByProvider()
             ->applySearch();
 
         $this->builder = $this->applySorting($this->builder);
@@ -320,6 +326,19 @@ class SearchConnectionApplication
             }),
             default => $this->builder
         };
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    private function applyFilterByProvider(): static
+    {
+        if ($this->provider) {
+            $this->builder = $this->builder->whereHas('connectionServices', function(Builder $query) {
+                $query->where('provider_name', $this->provider);
+            });
+        }
         return $this;
     }
 }
