@@ -157,7 +157,7 @@ export default {
 
         generateGilbertAppCafFIle() {
             let leadIds = this.selectedCafFile.map(item => item.id);
-            let selectedIds = leadIds.join(',');
+            let selectedIds = leadIds.join();
             let response = ApplicationCafFileService.generateGilbertCafFIle(selectedIds);
             console.log('Response from Generate caf file :', response);
         }
