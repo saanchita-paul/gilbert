@@ -1492,7 +1492,7 @@ export default {
           unit_number = isEmpty(this.application.unit_number) ? "" : this.application.unit_number + " /";
           this.application.street_address = unit_number + ' ' + this.application.street_number + ' ' + this.application.street_name_only;
           if(this.application.mannual_address || this.application.address_text == "" ){
-              this.application.address_text = unit_number + ' ' + this.application.street_number + ' ' + this.application.street_name_only + ' ' + this.application.city + ' ' + this.application.state + ' ' + this.application.postcode + ' ' + this.application.country ;
+              this.application.address_text = unit_number + ' ' + this.application.street_number + ' ' + this.application.street_name_only + ' ' + this.application.street_type + ' ' + this.application.city + ' ' + this.application.state + ' ' + this.application.postcode + ' ' + this.application.country ;
           }
       },
     },

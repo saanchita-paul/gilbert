@@ -244,7 +244,7 @@
                                                   placeholder="Please Select">
                                         </v-select>
                                     </ValidationProvider>
-                                </v-col*>
+                                </v-col>
                                 <v-col cols="6" class="py-0">
                                     <ValidationProvider name="City/Suburb" rules="required"  v-slot="{ errors }">
                                         <v-text-field
@@ -594,9 +594,8 @@ export default {
           this.propertyDetails.street_address = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name_only;
 
           if(this.propertyDetails.mannual_address || this.propertyDetails.address_text == "" || this.propertyDetails.address_text == null ){
-              this.propertyDetails.address_text = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name_only + ' ' + this.propertyDetails.city + ' ' + this.propertyDetails.state + ' ' + this.propertyDetails.postcode + ' ' + this.propertyDetails.country ;
+              this.propertyDetails.address_text = unit_number + ' ' + this.propertyDetails.street_number + ' ' + this.propertyDetails.street_name_only + ' ' + this.propertyDetails.street_type + ' ' + this.propertyDetails.city + ' ' + this.propertyDetails.state + ' ' + this.propertyDetails.postcode + ' ' + this.propertyDetails.country ;
           }
-
       },
      mapStreetName(){
          this.propertyDetails.street_name = this.propertyDetails.street_name_only;
