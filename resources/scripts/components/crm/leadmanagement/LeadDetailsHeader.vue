@@ -16,7 +16,7 @@
                         </span>
                     </p>
                 </div>
-                <div>
+                <div v-if="showDuplicateLeadButton">
                     <v-btn outlined color="primary" @click="duplicateLead">View duplicate lead</v-btn>
                 </div>
             </div>
@@ -121,7 +121,7 @@ name: "LeadDetailsHeader",
             return leadSourceMap;
         },
         showDuplicateLeadButton() {
-            return this.leadSummary;
+            return this.leadSummary?.is_duplicate;
         }
     },
     methods: {

@@ -40,6 +40,7 @@
                                 :items="applications"
                                 hide-default-footer
                                 :loading="loadTable"
+                                :items-per-page="50"
                             ></v-data-table>
                         </v-col>
                     </v-row>
@@ -84,16 +85,13 @@ export default {
                 { text: 'Email Address', align: 'start', sortable: true, value: 'email' }
             ],
             loadTable: true,
-            applications: [],
-            duplicateGroupId: this.duplicateGroupId
+            applications: []
         }
     },
     mounted() {
         this.fetchDuplicateLead();
     },
-    computed: {
 
-    },
     methods: {
         cancelDuplicateLead() {
             this.$emit('cancelDuplicateLead');
