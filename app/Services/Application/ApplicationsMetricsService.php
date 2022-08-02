@@ -46,7 +46,7 @@ class ApplicationsMetricsService
 
     public function toArray(): array
     {
-        array_push($this->metrics, $this->getDuplicateCount());
+        $this->metrics[] = $this->getDuplicateCount();
         return $this->metrics;
     }
 
