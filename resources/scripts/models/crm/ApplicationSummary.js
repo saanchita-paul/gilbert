@@ -70,6 +70,9 @@ export default class ApplicationSummary {
     ea_go_neutral = null;
     additional_access_information = null;
     is_power_life_support = null;
+    is_duplicate = null;
+    duplicate_group_id = null;
+
     constructor(
         {
             id = null,
@@ -155,6 +158,8 @@ export default class ApplicationSummary {
             ea_go_neutral = null,
             additional_access_information = null,
             is_power_life_support = null,
+            is_duplicate = null,
+            duplicate_group_id = null,
         }
     ) {
 
@@ -245,10 +250,13 @@ export default class ApplicationSummary {
         this.concession_card_type = concession_card_type
         this.concession_card_number = concession_card_number
         this.concession_start_date = concession_start_date
-        this.concession_end_date = concession_end_date        
+        this.concession_end_date = concession_end_date
         this.ea_go_neutral = ea_go_neutral
         this.additional_access_information = additional_access_information
         this.is_power_life_support = is_power_life_support
+        this.is_duplicate = is_duplicate;
+        this.duplicate_group_id = duplicate_group_id;
+
     }
 
 
@@ -262,7 +270,7 @@ export default class ApplicationSummary {
         return streetType ?? type;
     }
 
-    
+
     sortCallHistory(tsa_call_histories){
         return sortBy(tsa_call_histories, ['attempt_id'])
     }
