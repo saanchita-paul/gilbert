@@ -16,6 +16,9 @@
                         </span>
                     </p>
                 </div>
+                <div>
+                    <v-btn outlined color="primary" @click="duplicateLead">View duplicate lead</v-btn>
+                </div>
             </div>
             <div>
                 <div class="d-flex justify-end">
@@ -190,6 +193,9 @@ name: "LeadDetailsHeader",
 
         mapConnectionStatus(status) {
             return  LeadApplicationService.mapStatus(status)
+        },
+        duplicateLead() {
+            this.$emit('duplicateLead');
         },
     },
     mounted() {
