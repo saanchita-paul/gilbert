@@ -113,6 +113,23 @@
                     </template>
                 </v-select>
                 <!-- triage ends -->
+
+
+
+                <v-text-field
+                    v-model="$attrs.value.email"
+                    full-width
+                    outlined
+                    dense
+                    hide-details="auto"
+                    placeholder="Email"
+                    style="background-color: white"
+                    class="my-1 ml-1"
+                />
+
+
+
+
             </div>
         </v-form>
     </div>

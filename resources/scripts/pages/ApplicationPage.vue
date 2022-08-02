@@ -5,7 +5,7 @@
                 <v-card class="hood-card">
                     <p>Your Metrics</p>
                     <h3 class="page-title">Total Applications: {{total_leads}}</h3>
-                    <ApplicationsMetrics @resetPage="resetPage" v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal"></ApplicationsMetrics>
+                    <ApplicationsMetrics @resetPage="resetPage" v-if="leadTypesFlag" :activeLeadType="activeLeadType" :showDuplicate="showDuplicates" :leads="leadTypes" @updateTotal="updateTotal"></ApplicationsMetrics>
                 </v-card>
                 <ApplicationFilter v-model="advanceSearch" :isSearchEmpty="advanceSearch.isSearchEmpty()"></ApplicationFilter>
                 <router-view
@@ -18,6 +18,7 @@
                     @openLeadSummary="openLeadSummary"
                     @updateLeadAndatrics="updateLeadAndatrics"
                     :isSearching="isSearching"
+                    :showDuplicates="showDuplicates"
                 ></router-view>
             </v-col>
             <v-col cols="4">
@@ -76,7 +77,8 @@ export default {
                 tenancy_type: "",
                 triage: "",
             },
-            advanceSearch: new LeadSearchFilterModel()
+            advanceSearch: new LeadSearchFilterModel(),
+            showDuplicates: false,
         }
     },
 
@@ -93,7 +95,7 @@ export default {
         async fetchLeads () {
             this.isSearching = true;
             let data = await LeadApplicationService.loadUserLeads(
-                {...this.sort_search_meta, ...{page: this.page}},
+                {...this.sort_search_meta, ...{page: this.page}, ...{is_duplicate: this.showDuplicates}},
                 this.activeLeadType,
                 this.selectedSrc, this.advanceSearch,
             );
@@ -163,11 +165,18 @@ export default {
                     || this.selectedSrc !== this.$route.query?.source;
 
                 this.activeLeadType = this.$route.query?.type;
-                this.selectedSrc = this.$route.query?.source
+                this.selectedSrc = this.$route.query?.source;
+                this.showDuplicates = Boolean(this.$route.query?.duplicates)? true: null;
+
                 // console.log("watch", reload)
                 // if (reload) {
                 //     this.loadLeads();
                 // }
+            }
+        },
+        showDuplicates: {
+            handler(){
+                this.loadLeads();
             }
         },
         activeLeadType: {

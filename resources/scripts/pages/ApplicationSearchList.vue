@@ -9,6 +9,7 @@
       @openLeadSummary="openLeadSummary"
       @updateLeadAndatrics="updateLeadAndatrics"
       :isSearching="isSearching"
+      :showDuplicates="showDuplicates"
     >
     </ApplicantTable>
   </div>
@@ -18,7 +19,7 @@
 import ApplicantTable from "@scripts/components/crm/leadmanagement/ApplicantTable";
 export default {
   name: "ApplicationSearchList",
-  props: ["selectedSrc", "leads", "totalItem", "leadDetails", "applications" , "currentLead", 'isSearching'],
+  props: ["selectedSrc", "leads", "totalItem", "leadDetails", "applications" , "currentLead", 'isSearching', 'showDuplicates'],
   components: { ApplicantTable },
   methods:{
     openLeadSummary(applicationId) {

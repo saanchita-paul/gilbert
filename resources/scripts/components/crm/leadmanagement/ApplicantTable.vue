@@ -36,7 +36,7 @@
             <v-row>
                 <v-col cols="12" class="crm-table">
                     <v-data-table
-                        :headers="headers"
+                        :headers="tableHeader"
                         :items="applications"
                         :item-class="isSelectedClass"
                         :options.sync="options"
@@ -101,6 +101,9 @@ export default {
             required: true
         },
         isSearching: {
+            default: false
+        },
+      showDuplicates: {
             default: false
         }
     },
@@ -170,9 +173,66 @@ export default {
                 }
 
             ],
+
+          duplicatedHeader: [
+            {
+              text: 'AppId',
+              align: 'start',
+              sortable: true,
+              value: 'id'
+            },
+            {
+              text: 'Name',
+              align: 'start',
+              sortable: true,
+              value: 'first_name'
+            },
+            {
+              text: 'Moving date',
+              align: 'start',
+              sortable: true,
+              value: 'moving_date'
+            },
+            {
+              text: 'Lead Resource',
+              align: 'start',
+              sortable: true,
+              value: 'source'
+            },
+            {
+              text: 'Created At',
+              align: 'start',
+              sortable: true,
+              value: 'created_at'
+            },
+            {
+              text: 'Submitted At',
+              align: 'start',
+              sortable: true,
+              value: 'created_at'
+            },
+            {
+              text: 'Email Address',
+              align: 'start',
+              sortable: true,
+              value: 'email'
+            },
+            {
+              text: 'Assignee',
+              align: 'start',
+              sortable: true,
+              value: 'assignee'
+            }
+          ],
         }
     },
 
+  computed: {
+    tableHeader() {
+      console.log('showDuplicates', this.showDuplicates)
+      return this.showDuplicates ? this.duplicatedHeader: this.headers ;
+    },
+  },
     methods: {
         isSelectedClass(item) {
             if(item.id === this.currentLead?.id) {

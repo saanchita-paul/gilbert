@@ -220,7 +220,9 @@ class ConnectionApplication extends Model
         'is_power_life_support',
         'is_skip_hubspot',
         'is_running_submission',
-        'app_close_reason_id'
+        'app_close_reason_id',
+        'is_duplicate',
+        'duplicate_group_id'
     ];
 
 

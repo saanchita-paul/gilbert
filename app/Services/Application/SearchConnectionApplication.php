@@ -55,6 +55,7 @@ class SearchConnectionApplication
     private $tenantEmail;
     private ?string $startDate = null;
     private ?string $endDate = null;
+    private bool $isDuplicate;
 
     /**
      * @param array $request
@@ -72,6 +73,7 @@ class SearchConnectionApplication
         $this->appId = !empty($request['app_id']) ? $request['app_id'] : null;
         $this->agentId = !empty($request['agent_id']) ? $request['agent_id'] : null;
         $this->tenantEmail = !empty($request['tenant_email']) ? $request['tenant_email'] : null;
+        $this->isDuplicate = !empty($request['is_duplicate']) ? (bool)$request['is_duplicate'] : false;
 
         !empty($request['moving_date']) && $this->setDateRangeNoTz($request['moving_date'], $request['moving_date']);
 
@@ -107,6 +109,7 @@ class SearchConnectionApplication
             ->applyFilterMovingDate()
             ->applyFilterAgentId()
             ->applyFilterTenantEmail()
+            ->applyDuplicateFilter()
             ->applySearch();
 
         $this->builder = $this->applySorting($this->builder);
@@ -320,6 +323,18 @@ class SearchConnectionApplication
             }),
             default => $this->builder
         };
+        return $this;
+    }
+
+    private function applyDuplicateFilter(): static
+    {
+
+        info('applying duplicate data', [$this->isDuplicate]);
+
+        if ($this->isDuplicate) {
+            $this->builder = $this->builder
+                ->where('is_duplicate', true);
+        }
         return $this;
     }
 }
