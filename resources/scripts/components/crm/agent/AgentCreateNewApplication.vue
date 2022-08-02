@@ -1482,7 +1482,8 @@ export default {
           if(this.application.billing_mannual_address || this.application.billing_address_text == "" )
           {
               let unit_number = isEmpty(this.application.billing_unit_number) ? "" : this.application.billing_unit_number + " /";
-              this.application.billing_address_text = unit_number + ' ' + this.application.billing_street_number + ' ' + this.application.billing_street_name_only + ' ' + ' ' + this.application.billing_city + this.application.billing_state + ' ' + this.application.billing_postcode + ' ' + this.application.billing_country;
+
+              this.application.billing_address_text = unit_number + ' ' + this.application.billing_street_number + ' ' + this.application.billing_street_name_only + ' ' + this.application.billing_street_type + ' ' + this.application.billing_city + ' ' + this.application.billing_state + ' ' + this.application.billing_postcode + ' ' + this.application.country;
           }
 
           if(!this.application.is_billing_same && !this.showSearchFieldsBilling){
