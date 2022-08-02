@@ -117,7 +117,7 @@
 
 
                 <v-text-field
-                    v-model="$attrs.value.email"
+                    v-model="$attrs.value.tenant_email"
                     full-width
                     outlined
                     dense

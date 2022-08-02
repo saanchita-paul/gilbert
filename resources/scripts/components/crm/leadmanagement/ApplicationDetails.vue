@@ -5,7 +5,7 @@
 
      <v-row>
        <v-col> <p class="sub-title mt-4 mb-4">Personal Details</p> </v-col>
-       <v-col v-if="!lead.is_duplicate"> <v-btn class="mt-2" text @click="showDuplicatesMessage" f> View All Duplicates</v-btn> </v-col>
+       <v-col v-if="lead.is_duplicate"> <v-btn class="mt-2" text @click="showDuplicatesMessage"> View All Duplicates</v-btn> </v-col>
      </v-row>
 
        <v-row>
