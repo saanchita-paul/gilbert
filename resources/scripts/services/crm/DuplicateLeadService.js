@@ -1,5 +1,5 @@
 import DuplicateLeadAPI from "@scripts/api/crm/DuplicateLeadAPI";
 
 export default {
-    getDuplicateLeadData: () => DuplicateLeadAPI.getDuplicateLeadData()
+    getDuplicateLeadData: (leadId) => DuplicateLeadAPI.getDuplicateLeadData(leadId)
 };

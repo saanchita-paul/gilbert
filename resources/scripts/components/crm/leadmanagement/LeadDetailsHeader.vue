@@ -119,6 +119,9 @@ name: "LeadDetailsHeader",
         },
         leadSourceMap(){
             return leadSourceMap;
+        },
+        showDuplicateLeadButton() {
+            return this.leadSummary;
         }
     },
     methods: {

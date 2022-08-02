@@ -3,9 +3,10 @@
         <v-dialog
             v-model="dialog"
             persistent
+            scrollable
             max-width="950px"
         >
-            <v-card>
+            <v-card max-height="600px">
                 <v-toolbar
                     dark
                     color="primary"
@@ -38,6 +39,7 @@
                                 :headers="headers"
                                 :items="applications"
                                 hide-default-footer
+                                :loading="loadTable"
                             ></v-data-table>
                         </v-col>
                     </v-row>
@@ -67,32 +69,38 @@ export default {
         dialog: {
             require: true,
         },
+        duplicateGroupId: {
+            require: true
+        }
     },
     data() {
         return {
             headers: [
-                { text: 'App Id', align: 'start', sortable: true, value: 'id' },
+                { text: 'App Id', align: 'start', value: 'id'},
                 { text: 'Name', align: 'start', sortable: true, value: 'name' },
                 { text: 'Mobile No', align: 'start', sortable: true, value: 'mobile' },
                 { text: 'Lead Source', align: 'start', sortable: true, value: 'source' },
                 { text: 'Connection Address', align: 'start', sortable: true, value: 'connection_address' },
                 { text: 'Email Address', align: 'start', sortable: true, value: 'email' }
             ],
-            applications: []
+            loadTable: true,
+            applications: [],
+            duplicateGroupId: this.duplicateGroupId
         }
     },
     mounted() {
         this.fetchDuplicateLead();
+    },
+    computed: {
+
     },
     methods: {
         cancelDuplicateLead() {
             this.$emit('cancelDuplicateLead');
         },
         async fetchDuplicateLead() {
-            this.applications = (await DuplicateLeadService.getDuplicateLeadData())?.data;
-            console.log('Duplicate Application Details', this.applications);
-            // this.leadId = this.$route.params.id;
-            // console.log('Lead ID', this.leadId);
+            this.applications = (await DuplicateLeadService.getDuplicateLeadData(this.duplicateGroupId)).data;
+            this.loadTable= false;
         }
     }
 }
@@ -104,6 +112,6 @@ export default {
     font-size: 16px;
 }
 .text-small {
-    font-size: 16px;
+    font-size: 15px;
 }
 </style>

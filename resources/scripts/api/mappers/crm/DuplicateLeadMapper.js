@@ -2,7 +2,7 @@ import {isNull} from "lodash-es";
 
 const mapDuplicateLeadList = (data) => {
     const values = [];
-    data.forEach((item) => {
+    data.data.forEach((item) => {
         values.push(mapDuplicateLead(item));
     });
 
@@ -11,22 +11,23 @@ const mapDuplicateLeadList = (data) => {
 
 const mapDuplicateLead = (data) => {
     return {
-        id: data.id,
+        id: data?.id,
         name: getFullName(data),
         mobile: getMobileNumber(data),
-        source: data.source,
-        connection_address: data.connection_address,
-        email: data.email
+        source: data?.source,
+        connection_address: data?.address_text,
+        email: data?.email
     };
 }
 
 const getFullName = (data) => {
-    return isNull(data.middle_name) ? data.first_name + ' ' + data.last_name
-        : data.first_name + ' ' + data.middle_name + ' ' + data.last_name;
+    return isNull(data?.middle_name) ? data?.first_name + ' ' + data?.last_name
+        : data?.first_name + ' ' + data?.middle_name + ' ' + data?.last_name;
 }
 
 const getMobileNumber = (data) => {
-    // do something
+    return data?.phone_type === 1 ? data?.phone
+        : data?.homephone;
 }
 
 export default {

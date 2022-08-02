@@ -452,13 +452,13 @@ class ApplicationController extends Controller
     }
 
     /**
-     * @param $parentId
+     * @param $applicationId
      * @return JsonResponse|AnonymousResourceCollection
      */
-    public function getDuplicateLeads($parentId): JsonResponse|AnonymousResourceCollection
+    public function getDuplicateLeads($applicationId): JsonResponse|AnonymousResourceCollection
     {
         try {
-            $service = new DuplicateApplicationService($parentId);
+            $service = new DuplicateApplicationService($applicationId);
             return DuplicationApplicationResource::collection($service->get());
 
         } catch (\Exception $exception) {
