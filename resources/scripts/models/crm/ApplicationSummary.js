@@ -71,7 +71,7 @@ export default class ApplicationSummary {
     additional_access_information = null;
     is_power_life_support = null;
     is_duplicate = null;
-    duplicate_group_id = null;
+    duplication_group_id = null;
 
     constructor(
         {
@@ -159,7 +159,7 @@ export default class ApplicationSummary {
             additional_access_information = null,
             is_power_life_support = null,
             is_duplicate = null,
-            duplicate_group_id = null,
+            duplication_group_id = null,
         }
     ) {
 
@@ -255,7 +255,7 @@ export default class ApplicationSummary {
         this.additional_access_information = additional_access_information
         this.is_power_life_support = is_power_life_support
         this.is_duplicate = is_duplicate;
-        this.duplicate_group_id = duplicate_group_id;
+        this.duplication_group_id = duplication_group_id;
 
     }
 
