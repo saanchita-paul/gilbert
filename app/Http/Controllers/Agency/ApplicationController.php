@@ -10,6 +10,7 @@ use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Requests\Agency\ProviderRequest;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationResource;
+use App\Http\Resources\Agency\DuplicationApplicationResource;
 use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
@@ -20,6 +21,7 @@ use App\Services\Agency\TriageFlagService;
 use App\Services\Agency\WaterAutoSubmitService;
 use App\Services\Application\ApplicationsMetricsService;
 use App\Services\Application\SearchConnectionApplication;
+use App\Services\DuplicateApplicationService;
 use App\Services\Ea\SetEaDistributorService;
 use Origin\Services\SetOriginDistributorService;
 use App\Services\FastConnectService;
@@ -444,6 +446,21 @@ class ApplicationController extends Controller
         try {
             $res = ValidateCutOffTime::validateCutOff($applicationId);
             return response()->json(['success' => true, 'data' => $res]);
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    /**
+     * @param $parentId
+     * @return JsonResponse|AnonymousResourceCollection
+     */
+    public function getDuplicateLeads($parentId): JsonResponse|AnonymousResourceCollection
+    {
+        try {
+            $service = new DuplicateApplicationService($parentId);
+            return DuplicationApplicationResource::collection($service->get());
+
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

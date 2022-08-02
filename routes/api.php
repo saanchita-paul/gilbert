@@ -145,6 +145,9 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_SERVICE_PROVIDERS);
     Route::post('/applications/{applicationId}/clear-concession-details', [ApplicationController::class, 'clearConcession'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
+    Route::get('/applications/{applicationId}/duplicate', [ApplicationController::class, 'getDuplicateLeads'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
+    
 
     //todo: make a  separate controller for notes
     Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes'])
@@ -196,7 +199,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     // application closing reasons delete
     Route::delete('/app-close-reasons/{id}', [AppCloseReasonController::class, 'delete']);
 
-    
+
     Route::get('/rea-extract/corporate-report', [ReaExtractsReportController::class, 'getReaCorporateReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 
