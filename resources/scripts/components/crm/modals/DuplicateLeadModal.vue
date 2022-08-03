@@ -46,7 +46,7 @@
                     </v-row>
                 </v-card-text>
 
-                <v-card-actions class="justify-center">
+                <v-card-actions class="justify-center" @click.prevent="goToAllDuplicates">
                     <v-btn
                         color="deep-purple lighten-2"
                         text
@@ -99,6 +99,13 @@ export default {
         async fetchDuplicateLead() {
             this.applications = (await DuplicateLeadService.getDuplicateLeadData(this.duplicateGroupId)).data;
             this.loadTable= false;
+        },
+        goToAllDuplicates() {
+            let params = { duplication_group_id: this.duplicateGroupId }
+            this.$router.push({
+                name: "applications",
+                query: params
+            });
         }
     }
 }
