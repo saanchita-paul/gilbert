@@ -13,6 +13,16 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class ApplicationResource extends JsonResource
 {
     /**
+     * @var mixed|null
+     */
+    private mixed $tsa;
+
+    public function __construct($resource, $tsa = [])
+    {
+        parent::__construct($resource);
+        $this->tsa = $tsa;
+    }
+    /**
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -45,7 +55,7 @@ class ApplicationResource extends JsonResource
             'address_text' => $this->address_text,
             'services' => $this->getConnectionServices($this->connectionServices),
             'connection_services' => $this->mapService($this->connectionServices),
-            'tsa_call_histories' => $this->mapTsaService($this->tsaCallHistories),
+            'tsa_call_histories' => $this->mapTsaService($this->tsa),
             'identification' => $this->identification,
             'family_violance' => isset($this->family_violance) ? $this->family_violance : 3,
             'is_renovation_on' => isset($this->is_renovation_on) ? $this->is_renovation_on : 0,

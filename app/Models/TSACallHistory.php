@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\ConnectionApplication;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -41,11 +42,23 @@ class TSACallHistory extends Model
 
     ];
 
+    public static function columns(): string
+    {
+        return 'id,connection_application_id,attempt_outcome,tsa_id,attempt_id,attempt_initiated_timestamp';
+    }
+
     /**
      * @return BelongsTo
      */
-    public function ConnectionApplication()
+    public function connectionApplication()
     {
         return $this->belongsTo(ConnectionApplication::class);
+    }
+
+    public static function getByAppID(int $appId): Collection|array
+    {
+        return static::query()
+            ->selectRaw(static::columns())
+            ->where('connection_application_id', $appId)->get();
     }
 }
