@@ -194,9 +194,9 @@ class IgniteLeadService
             NotifyBadAgentMailService::check(
                 $this->connectionApplication,
                 'Ignite',
-                $leadInfo['agency']['name'] ?? '',
-                Agency::where('name' , "Ignite-Hood-Agency")->first()?->office[0]?->name ?? 'Ignite-Hood-Office',
-                $leadInfo['agents'][0]['email'] ?? '',
+                $this->lead->agency_name ?? '',
+                Agency::where('name' , "Ignite-Hood-Agency")->first()?->offices[0]?->name ?? 'Ignite-Hood-Office',
+                $this->lead->agent_email ?? '',
             );
 
             $this->setServiceTypeTable($leadInfo['utilityConnectionsAllowed'] ?? ['water']);
