@@ -11,6 +11,9 @@ use Ignite\Models\IgniteLead;
 use Illuminate\Support\Facades\Log;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use App\Models\AgentProfile;
+use Illuminate\Database\Eloquent\Builder;
+use App\Services\NotifyBadAgentMailService;
 
 class IgniteLeadService
 {
@@ -94,6 +97,10 @@ class IgniteLeadService
         $this->lead->agent_id    = $leadInfo['agents'][0]['id'] ?? '';
         $this->lead->agent_name  = $leadInfo['agents'][0]['name'] ?? '';
         $this->lead->agent_email = $leadInfo['agents'][0]['email'] ?? '';
+        $this->connectionApplication->created_by = AgentProfile::whereHas(
+            'user',
+            fn(Builder $user) => $user->where('email', $this->lead->agent_email)
+        )->first()?->id ?? null;
 
         //
         $this->lead->connectionProviderName = $leadInfo['connectionProviderName'] ?? '';
@@ -183,6 +190,14 @@ class IgniteLeadService
 
             $this->connectionApplication->status = ConnectionApplication::STATUS_UNASSIGNED;
             $this->connectionApplication->save();
+
+            NotifyBadAgentMailService::check(
+                $this->connectionApplication,
+                'Ignite',
+                $leadInfo['agency']['name'] ?? '',
+                Agency::where('name' , "Ignite-Hood-Agency")->first()?->office[0]?->name ?? 'Ignite-Hood-Office',
+                $leadInfo['agents'][0]['email'] ?? '',
+            );
 
             $this->setServiceTypeTable($leadInfo['utilityConnectionsAllowed'] ?? ['water']);
 
