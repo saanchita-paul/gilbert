@@ -24,6 +24,7 @@ import SalesEnergyPage from "@scripts/modules/sales/pages/SalesEnergyPage";
 import SalesWaterPage from "@scripts/modules/sales/pages/SalesWaterPage";
 import ApplicationSearchList from '@scripts/pages/ApplicationSearchList'
 import agent_routes from "@scripts/routes/agent_routes";
+import AgentProgressStatus from "@scripts/components/crm/agency/AgentProgressStatus";
 
 
 Vue.use(VueRouter);
@@ -300,6 +301,11 @@ const router = new VueRouter({
            meta: {
                isProtected: false
            }
+        },
+        {
+            path: '/agent-status',
+            component: AgentProgressStatus,
+            name:'agent.status',
         }
     ]
 })
