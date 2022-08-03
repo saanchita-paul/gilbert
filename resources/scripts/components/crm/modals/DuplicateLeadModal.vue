@@ -77,12 +77,12 @@ export default {
     data() {
         return {
             headers: [
-                { text: 'App Id', align: 'start', value: 'id'},
-                { text: 'Name', align: 'start', sortable: true, value: 'name' },
-                { text: 'Mobile No', align: 'start', sortable: true, value: 'mobile' },
-                { text: 'Lead Source', align: 'start', sortable: true, value: 'source' },
-                { text: 'Connection Address', align: 'start', sortable: true, value: 'connection_address' },
-                { text: 'Email Address', align: 'start', sortable: true, value: 'email' }
+                { text: 'App Id', align: 'start', value: 'id', class: 'black--text'},
+                { text: 'Name', align: 'start', sortable: true, value: 'name', class: 'black--text' },
+                { text: 'Mobile No', align: 'start', sortable: true, value: 'mobile', class: 'black--text' },
+                { text: 'Lead Source', align: 'start', sortable: true, value: 'source', class: 'black--text' },
+                { text: 'Connection Address', align: 'start', sortable: true, value: 'connection_address', class: 'black--text' },
+                { text: 'Email Address', align: 'start', sortable: true, value: 'email', class: 'black--text' }
             ],
             loadTable: true,
             applications: []

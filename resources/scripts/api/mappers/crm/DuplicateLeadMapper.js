@@ -1,4 +1,5 @@
 import {isNull} from "lodash-es";
+import {leadSourceMapFromNumber} from '@scripts/data/LeadSourceMap';
 
 const mapDuplicateLeadList = (data) => {
     const values = [];
@@ -14,7 +15,7 @@ const mapDuplicateLead = (data) => {
         id: data?.id,
         name: getFullName(data),
         mobile: getMobileNumber(data),
-        source: data?.source,
+        source: leadSourceMapFromNumber[data?.source],
         connection_address: data?.address_text,
         email: data?.email
     };

@@ -17,7 +17,14 @@
                     </p>
                 </div>
                 <div v-if="showDuplicateLeadButton">
-                    <v-btn outlined color="primary" @click="duplicateLead">View duplicate lead</v-btn>
+                    <v-btn outlined color="primary" @click="duplicateLead">
+                        View duplicate lead
+                        <v-icon
+                            right
+                        >
+                            mdi-chevron-down
+                        </v-icon>
+                    </v-btn>
                 </div>
             </div>
             <div>
