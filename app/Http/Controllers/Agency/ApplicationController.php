@@ -14,6 +14,7 @@ use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use App\Models\TSACallHistory;
 use App\Models\User;
 use App\Services\Agency\ApplicationService;
 use App\Services\Agency\TriageFlagService;
@@ -112,7 +113,8 @@ class ApplicationController extends Controller
             }
 
             $application->load(['connectionServices.reasons']);
-            return new ApplicationResource($application);
+
+            return new ApplicationResource($application, TSACallHistory::getByAppID($application->id));
 
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
