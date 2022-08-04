@@ -20,7 +20,6 @@ class ExportReaAgenciesReport
     public function run()
     {
         try {
-            throw new \Exception('Hello World');
             return (new FastExcel($this->mappedCSVData))->download($this->getCsvName());
         } catch (\Exception $exception) {
             \Log::error('ExportReaAgenciesReport:ERROR (see context for more information)', [
