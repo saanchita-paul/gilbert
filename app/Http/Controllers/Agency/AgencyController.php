@@ -131,7 +131,7 @@ class AgencyController extends Controller
         try {
             return (new ExportReaAgenciesReport())->run();
         } catch (\Exception $exception) {
-            return response(['msg' => $exception->getMessage()] , 500);
+            return response(['msg' => $exception->getMessage()], 500);
         }
     }
 
