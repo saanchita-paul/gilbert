@@ -59,6 +59,8 @@ class TSACallHistory extends Model
     {
         return static::query()
             ->selectRaw(static::columns())
-            ->where('connection_application_id', $appId)->get();
+            ->where('connection_application_id', $appId)
+            ->get()
+            ->toArray();
     }
 }

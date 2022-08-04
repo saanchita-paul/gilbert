@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\TimeZoneService;
 use App\Services\Utility\StateMapService;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ApplicationResource extends JsonResource
@@ -20,12 +21,12 @@ class ApplicationResource extends JsonResource
     public function __construct($resource, $tsa = [])
     {
         parent::__construct($resource);
-        $this->tsa = $tsa;
+        $this->tsa = is_array($tsa) ? $tsa : [];
     }
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return array
      */
     public function toArray($request)
