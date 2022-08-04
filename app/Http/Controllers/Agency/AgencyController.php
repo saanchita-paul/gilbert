@@ -20,6 +20,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use App\Services\Agency\Report\ExportReaAgenciesReport;
 
 class AgencyController extends Controller
 {
@@ -123,6 +124,14 @@ class AgencyController extends Controller
             return response()->json(['success' => true, 'data' => $service->getAgencyMetrics()]);
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function download(){
+        try {
+            return (new ExportReaAgenciesReport())->run();
+        } catch (\Exception $exception) {
+            return response(['msg' => $exception->getMessage()] , 500);
         }
     }
 
