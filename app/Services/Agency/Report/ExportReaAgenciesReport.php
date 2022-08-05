@@ -22,36 +22,44 @@ class ExportReaAgenciesReport
         try {
             return (new FastExcel($this->mappedCSVData))->download($this->getCsvName());
         } catch (\Exception $exception) {
-            \Log::error('ExportReaAgenciesReport:ERROR (see context for more information)', [
-                'errorMessage' => $exception->getMessage(),
-                'errorTrace' => $exception->getTraceAsString(),
-            ]);
-            throw $exception;
+            $this->handleException($exception);
         }
     }
 
     private function fetchData()
     {
-        $query = DB::table('offices as o')
-                ->join('agencies as a', 'o.agency_id', '=', 'a.id')
-                ->select(
-                    DB::raw(" 
-                        o.name as 'Name',
-                        IF(a.type=0, 'Independent', a.name) as Agency,
-                        (select created_at from connection_applications where office_id = o.id order by created_at asc limit 1) as 'First Application Date',
-                        (select created_at from connection_applications where office_id = o.id order by created_at desc limit 1) as 'Last Application Date',
-                        (select DATEDIFF(NOW(), created_at) from connection_applications where office_id = o.id order by created_at desc limit 1) as 'Days Since Last Application'
-                    ")
-                )->get();
+        try {
+            $query = DB::table('offices as o')
+            ->join('agencies as a', 'o.agency_id', '=', 'a.id')
+            ->select(
+                DB::raw(" 
+                    o.name as 'Name',
+                    IF(a.type=0, 'Independent', a.name) as Agency,
+                    (select created_at from connection_applications where office_id = o.id order by created_at asc limit 1) as 'First Application Date',
+                    (select created_at from connection_applications where office_id = o.id order by created_at desc limit 1) as 'Last Application Date',
+                    (select DATEDIFF(NOW(), created_at) from connection_applications where office_id = o.id order by created_at desc limit 1) as 'Days Since Last Application'
+                ")
+            )->get();
 
-        $this->mappedCSVData = $query;
-
-        return $this;
+            $this->mappedCSVData = $query;
+            return $this;
+        } catch (\Exception $exception) {
+            $this->handleException($exception);
+        }
     }
 
     private function getCsvName()
     {
         $currentDate = Carbon::now()->format('Y_m_d_H_i');
         return 'Agencies_Report'.$currentDate.'.csv';
+    }
+
+    private function handleException(\Exception $e){
+        \Log::error('Export REA Agencies Report FAIL (see context for more information)', [
+            'errorMessage' => $e->getMessage(),
+            'errorTrace' => $e->getTraceAsString(),
+        ]);
+        
+        throw $e;
     }
 }
