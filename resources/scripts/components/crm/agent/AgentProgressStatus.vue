@@ -82,7 +82,7 @@ export default {
 
 .stepper-item .step-counter {
     position: relative;
-    z-index: 5;
+    z-index: 4;
     display: flex;
     justify-content: center;
     align-items: center;

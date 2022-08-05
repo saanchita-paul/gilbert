@@ -134,6 +134,7 @@ export default {
         async getApplicationList() {
             let data = await AgentApplicationService.getApplicationList(this.sort_search_meta);
             this.applicationList = data.applications;
+            console.log('Agent application list : ', this.applicationList);
             this.isLoaded = true;
             this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;

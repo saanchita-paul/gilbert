@@ -111,7 +111,7 @@
                                         <v-card-title>
                                             <v-icon left color="yellow">mdi-flash</v-icon>
                                             <span style="font-weight: bolder; font-size: 14px">Power:</span> &nbsp;
-                                            <span style="font-size: 14px">Declined</span>
+                                            <span style="font-size: 14px">{{ getServiceStatus('power') }}</span>
                                         </v-card-title>
                                         <v-card-text>
                                             <p style="color: #263238">The connection has been processed but was declined
@@ -154,7 +154,7 @@
                                         <v-card-title>
                                             <v-icon left color="red">mdi-fire</v-icon>
                                             <span style="font-weight: bolder; font-size: 14px">Gas:</span> &nbsp;
-                                            <span style="font-size: 14px">Declined</span>
+                                            <span style="font-size: 14px">{{ getServiceStatus('gas') }}</span>
                                         </v-card-title>
                                         <v-card-text>
                                             <p style="color: #263238">The connection has been processed but was declined
@@ -195,9 +195,9 @@
                                         shaped
                                     >
                                         <v-card-title>
-                                            <v-icon left color="blue">mdi-fire</v-icon>
+                                            <v-icon left color="blue">mdi-water</v-icon>
                                             <span style="font-weight: bolder; font-size: 14px">Water:</span> &nbsp;
-                                            <span style="font-size: 14px">Manual Processing</span>
+                                            <span style="font-size: 14px">{{ getServiceStatus('water') }}</span>
                                         </v-card-title>
                                         <v-card-text>
                                             <p style="color: #263238">There was an issue processing the water connection
@@ -240,7 +240,7 @@
                                         <v-card-title>
                                             <v-icon left color="green">mdi-wifi</v-icon>
                                             <span style="font-weight: bolder; font-size: 14px">Internet:</span> &nbsp;
-                                            <span style="font-size: 14px">Not Applicable</span>
+                                            <span style="font-size: 14px">{{ getServiceStatus('internet') }}</span>
                                         </v-card-title>
                                         <v-card-text>
                                             <p style="color: #263238">The connection is not required or was not selected

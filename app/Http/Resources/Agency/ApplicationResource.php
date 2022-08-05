@@ -120,6 +120,7 @@ class ApplicationResource extends JsonResource
 
             'additional_access_information' => $this->additional_access_information,
             'is_power_life_support' => $this->is_power_life_support,
+            'status_progress' => $this->getStatusProgress($this->status)
         ];
     }
 
@@ -239,5 +240,10 @@ class ApplicationResource extends JsonResource
             \Log::error("ApplicationResource " . $e->getMessage());
             return null;
         }
+    }
+
+    // new code for agent status progress bar
+    private function getStatusProgress($status) {
+        return 'Another test text from progress status function';
     }
 }
