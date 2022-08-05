@@ -183,8 +183,10 @@ class ExportEnergySubmissionReport
                 cs.status as `UI_Status`,
                 ca.status as `Application_Status`,
                 cs.status as `Utility_Status`,
-                acr.value as `acr_value`,
+                acr.value as `acr_value`, 
                 ca.closing_reason as `closing_reason`,
+                concat(apfle.first_name, apfle.last_name) as `Closed_By`,
+                ca.closed_at as `Closed_On`,
                 (select reason_text from rejection_reasons where connection_service_id=cs.id  limit 1) as Rejection_Reason
             ")
             ->rightJoin('connection_applications as ca', 'ca.id', '=', 'cs.connection_application_id')
@@ -194,6 +196,7 @@ class ExportEnergySubmissionReport
             ->leftJoin('app_close_reasons as acr', 'ca.app_close_reason_id', '=', 'acr.id')
             ->leftJoin('users as u', 'ca.submitted_by', '=', 'u.id')
             ->leftJoin('agent_profiles as aprofile', 'aprofile.id', '=', 'ca.assigned_to')
+            ->leftJoin('agent_profiles as apfle', 'apfle.id', '=', 'ca.closed_by')
             ->leftJoin('users as user', function (JoinClause $clause) {
                 $clause->on('user.profile_id', '=', 'aprofile.id')
                     ->where('user.profile_type', HoodProfile::class);
