@@ -112,7 +112,7 @@ export default {
         });
 
         data.application.service_interests = commission;
-        console.log(data.application);
+
        return {
            ...data.application,
            identification: this.mapIdentification(data.identification),
