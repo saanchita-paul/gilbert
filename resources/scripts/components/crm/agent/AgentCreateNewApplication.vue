@@ -77,7 +77,11 @@
                     </ValidationProvider>
                     </v-col>
                     <v-col cols="6" class="py-0 mt-3">
-                    <ValidationProvider name="Email" rules="required|email"  v-slot="{ errors }">
+                    <ValidationProvider
+                        name="Email"
+                        rules="required|email"
+                        v-slot="{ errors }"
+                    >
                         <v-text-field
                             label="Email*"
                             outlined
@@ -1225,6 +1229,7 @@ export default {
             searchResultBilling: [],
             searchFocus: false,
             billingSearchFocus: false,
+            // email_manually_verified_by: false,
         }
 
     },
@@ -1496,6 +1501,11 @@ export default {
               this.application.address_text = unit_number + ' ' + this.application.street_number + ' ' + this.application.street_name_only + ' ' + this.application.street_type + ' ' + this.application.city + ' ' + this.application.state + ' ' + this.application.postcode + ' ' + this.application.country ;
           }
       },
+
+        // async saveManuallyVerifiedBy() {
+        //     await LeadApplicationService.saveManuallyVerifiedBy();
+        //     // return ApplicationMapper.mapNote(data);
+        // }
     },
     watch: {
         showSearchFields(value){

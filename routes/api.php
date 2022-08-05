@@ -1,5 +1,7 @@
 <?php
 
+
+
 use App\Models\ConnectionApplication;
 use App\Http\Controllers\Agency\AppCloseReasonController;
 use App\Services\Agency\TriageFlagService;
@@ -25,6 +27,7 @@ use App\Http\Controllers\Agency\AgentProfileController;
 use OurProperty\Http\Controllers\OurPropertyController;
 use App\Services\RolePermission;
 use App\Http\Controllers\Agency\ReaExtractsReportController;
+use App\Services\GBGEmailValidationService;
 
 /*
 |--------------------------------------------------------------------------
@@ -140,6 +143,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_ADDRESS);
     Route::post('/applications/{applicationId}/draft', [ApplicationController::class, 'saveDraft'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
+    Route::post('/applications/{applicationId}/save-email', [ApplicationController::class, 'saveEmail'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
     Route::put('/applications/{id}/close', [ApplicationController::class, 'close']);
     Route::patch('/applications/{applicationId}/providers', [ApplicationController::class, 'providers'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_SERVICE_PROVIDERS);
@@ -244,6 +249,13 @@ Route::post('/our-property/lead', [OurPropertyController::class, 'createOurPrope
 
 
 
+/**
+ * api's for email validation
+ */
+Route::get('/gbg-validate-email', [ApplicationController::class, 'isGbgValidateEmail']);
+Route::get('/applications/{id}/email-manually-verified', [ApplicationController::class, 'isEmailManuallyVerified']);
+
+
 
 
 Route::get("/karan/sales-status", function () {
@@ -299,3 +311,14 @@ Route::get('/kaka', function () {
     return $dateTimeZone->getOffset($date)/60/60;
 
 });
+
+
+//Route::post('/gbg-validate-email', function() {
+//
+//    $email = "admin@mail.com";
+//    $service = new GBGEmailValidationService();
+//
+//    return $service->validateEmail($email);
+//
+//});
+

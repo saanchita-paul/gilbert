@@ -131,6 +131,8 @@ class ApplicationResource extends JsonResource
 
             'additional_access_information' => $this->additional_access_information,
             'is_power_life_support' => $this->is_power_life_support,
+            
+            'email_manually_verified_by' => $this->email_manually_verified_by,
         ];
     }
 
