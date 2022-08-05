@@ -60,6 +60,12 @@ class ExportEnergySubmissionReport
     private array $leadsData = [];
     private array $onlyWaterLeadIds = [];
 
+    /**
+     * @throws \Box\Spout\Common\Exception\UnsupportedTypeException
+     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException
+     * @throws \Box\Spout\Common\Exception\InvalidArgumentException
+     * @throws \Box\Spout\Common\Exception\IOException
+     */
     public function run()
     {
         $this->mapData($this->fetchData());
@@ -74,10 +80,22 @@ class ExportEnergySubmissionReport
         $this->run();
     }
 
+    /**
+     * @throws \Box\Spout\Common\Exception\UnsupportedTypeException
+     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException
+     * @throws \Box\Spout\Common\Exception\IOException
+     * @throws \Box\Spout\Common\Exception\InvalidArgumentException
+     */
     private function export()
     {
         $date = now()->format('d_m_Y');
         $name = 'Gilbert_leads_report_'.$this->type.'_'.$date.'.csv';
+
+        /**
+         * increasing memory limit to avoid memory exhausted error while exporting
+         */
+        ini_set('memory_limit', '512m' );
+
         return (new FastExcel($this->leadsData))->download($name);
     }
 
@@ -95,7 +113,7 @@ class ExportEnergySubmissionReport
             $datum->UI_Status = $this->getUiStatus($datum->Application_Status, $datum->UI_Status, $datum->Assigned_To);
             $datum->Application_Status = $this->getApplicationStatus($datum->Application_Status);
             $datum->Utility_Status = $this->getUtilityStatus($datum->Utility_Status);
-            $datum->Street_Type = $this->getRoadType($datum->Street_Type);
+//            $datum->Street_Type = $this->getRoadType($datum->Street_Type);
             $datum->Customer_Type = $this->getCustomerType($datum->Customer_Type);
             $datum->Offer_Type = 'ENE';
             $datum->Tenancy_Type = $this->getTenancyType($datum->Tenancy_Type);
@@ -159,8 +177,8 @@ class ExportEnergySubmissionReport
                 IFNULL(CONVERT_TZ(cs.submitted_at, '+00:00', '$tz'), 'NULL') as `Lead_Submitted_Date`,
                 IFNULL(ca.unit_number, 'NULL') as `Unit_Number`,
                 IFNULL(ca.street_number, 'NULL') as `Street_Number`,
-                IFNULL(ca.street_name, 'NULL') as `Street_Name`,
-                IFNULL(ca.street_name, 'NULL') as `Street_Type`,
+                IFNULL(ca.street_name_only, 'NULL') as `Street_Name`,
+                IFNULL(ca.street_type, 'NULL') as `Street_Type`,
                 IFNULL(ca.city,'NULL') as `Suburb`,
                 IFNULL(ca.state,'NULL') as `State`,
                 IFNULL(ca.postcode,'NULL') as `Postcode`,
@@ -247,22 +265,12 @@ class ExportEnergySubmissionReport
     private function filterWithSubmittedDate(Builder $builder, array $except)
     {
         return $builder
-//            ->whereIn('cs.status', [
-//                ConnectionService::STATUS_EA_PROCESSINF, //Not submitted
-//                ConnectionService::STATUS_SUBMITTED, //In progress
-//                ConnectionService::STATUS_ENERGY_SUBMIT, //In progress
-//                ConnectionService::STATUS_ACCEPTED, //Accepted
-//                ConnectionService::STATUS_REJECTED, //Rejected
-//                ConnectionApplication::STATUS_CLOSED, //Closed
-//                ConnectionService::AC_MANUAL_PROCESSING, //MANUAL_PROCESSING
-//                ConnectionService::STATUS_CANT_CONNECT, //Failed
-//            ])
             ->whereNotNull('cs.submitted_at')
+            ->whereNotIn('cs.service_type', [ConnectionService::TYPE_WATER])
 
             ->where('cs.submitted_at', '>=', $this->startDate)
             ->where('cs.submitted_at', '<=', $this->endDate)
             ->whereNotIn('cs.id', $except);
-//            ->whereNotBetween('ca.created_at', [$this->startDate, $this->endDate]);
     }
 
     private function getLeadSrc(?int $src): string
