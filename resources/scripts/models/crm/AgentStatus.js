@@ -1,7 +1,6 @@
 export default class AgentStatus {
-    constructor({stepCounter, stepName, description, active}) {
-        this.stepCounter = stepCounter;
-        this.stepName = stepName;
+    constructor({step_name, description, active}) {
+        this.step_name = step_name;
         this.description = description;
         this.active = active;
     }

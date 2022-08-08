@@ -9,6 +9,7 @@ use App\Services\TimeZoneService;
 use App\Services\Utility\StateMapService;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Services\Agency\AgentStatusProgressMapper;
 
 class ApplicationResource extends JsonResource
 {
@@ -242,8 +243,21 @@ class ApplicationResource extends JsonResource
         }
     }
 
-    // new code for agent status progress bar
-    private function getStatusProgress($status) {
-        return 'Another test text from progress status function';
+
+    /**
+     * Getting Application Status for progress bar
+     *
+     * @param string|null $status
+     *
+     * @return array|null
+     */
+    private function getStatusProgress(?string $status): ?array
+    {
+        try {
+            return AgentStatusProgressMapper::getAgentApplicationStatus($status);
+        } catch (\Exception $e) {
+            \Log::error("Error " . $e->getMessage());
+            return null;
+        }
     }
 }

@@ -8,7 +8,7 @@
             <v-col cols="6">
                 <div class="d-flex">
                     <p style="font-weight: bolder">Application Processing Timeline:</p>
-                    <AgentProgressStatus :agentStatus="steps"></AgentProgressStatus>
+                    <AgentProgressStatus :agentProgressStatus="status_progress_steps"></AgentProgressStatus>
                 </div>
             </v-col>
         </v-row>
@@ -347,32 +347,7 @@ export default {
     },
     data() {
         return {
-            steps: [
-                {
-                    stepName: 'New',
-                    stepCounter: 1,
-                    description: 'We have received the application and will be in touch with the customer very soon.',
-                    active: true
-                },
-                {
-                    stepName: 'Contacting',
-                    stepCounter: 2,
-                    description: 'We are attempting to contact the customer to confirm their connections.',
-                    active: true
-                },
-                {
-                    stepName: 'Confirmed',
-                    stepCounter: 3,
-                    description: 'We have spoken to the customer and confirmed their connections.',
-                    active: false
-                },
-                {
-                    stepName: 'Closed',
-                    stepCounter: 4,
-                    description: 'The customer decided not to go ahead or we couldn’t get in touch with them.',
-                    active: false
-                },
-            ],
+
         };
     },
     computed: {
@@ -413,6 +388,9 @@ export default {
                 ? 'Expires on ' + dayjs(this.application?.identification?.expire_date, 'YYYY-MM-DD').format('MM/YY')
                 : null;
         },
+        status_progress_steps() {
+            return this.application.status_progress;
+        }
     },
     methods: {
         getSubtitleColor(name) {
@@ -445,7 +423,7 @@ export default {
         }
     },
     mounted() {
-        console.log("single application details: ", this.application)
+
     }
 };
 </script>

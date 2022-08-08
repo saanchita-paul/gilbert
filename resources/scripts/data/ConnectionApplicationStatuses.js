@@ -20,11 +20,22 @@ const LEAD_STATUS_TO_TEXT = {
     [LEAD_STATUS_CONSENT_PENDING]: "Consent Pending",
 }
 
+const APPLICATION_STATUS_TO_TEXT = {
+    [LEAD_STATUS_UNASSIGNED]: "New",
+    [LEAD_STATUS_ASSIGNED]: "Contacting",
+    [LEAD_STATUS_ESCALATED]: "Escalated",
+    [LEAD_STATUS_CLOSED]: "Closed",
+}
+
 const AGENT_IN_PROGRESS_STATUSES = [
     LEAD_STATUS_UNASSIGNED,
     LEAD_STATUS_ASSIGNED,
     LEAD_STATUS_ESCALATED,
     LEAD_STATUS_NOT_SUBMITTED,
+    LEAD_STATUS_SUBMITTED
+]
+
+const APPLICATION_CONFIRMED_STATUSES = [
     LEAD_STATUS_SUBMITTED
 ]
 
@@ -39,4 +50,16 @@ export const getApplicationStatusText = (status, agent = false) => {
     }
 
     return LEAD_STATUS_TO_TEXT[status] ?? ''
+}
+
+
+/**
+ *
+ * @param {Number} status
+ */
+export const getApplicationStatusWithText = (status) => {
+    if (APPLICATION_CONFIRMED_STATUSES.includes(status)) {
+        return 'Confirmed';
+    }
+    return APPLICATION_STATUS_TO_TEXT[status] ?? '';
 }

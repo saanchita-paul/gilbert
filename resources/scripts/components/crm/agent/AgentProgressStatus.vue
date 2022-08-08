@@ -1,11 +1,11 @@
 <template>
     <div class="stepper-wrapper">
-        <div class="stepper-item" v-for="item in agentStatus" :key="item.stepCounter"
+        <div class="stepper-item" v-for="(item, index) in statusItems" :key="index"
              :class="{completed: item.active}">
             <v-tooltip bottom :disabled="!item.active">
                 <template v-slot:activator="{ on, attrs }">
-                    <div class="step-name">{{ item.stepName }}</div>
-                    <div class="step-counter" v-on="on">{{ item.stepCounter }}</div>
+                    <div class="step-name">{{ item.step_name  }}</div>
+                    <div class="step-counter" v-on="on">{{ index + 1 }}</div>
                 </template>
                 <div>
                     <v-card
@@ -17,7 +17,7 @@
                         <v-card-title>
                             <v-icon right color="#542E89">mdi-circle-outline</v-icon>
                             &nbsp;
-                            <h5 style="color: #542E89">{{ item.stepName }}</h5>
+                            <h5 style="color: #542E89">{{ item.step_name }}</h5>
                         </v-card-title>
                         <v-card-text>
                             <p style="color: #263238">{{ item.description }}</p>
@@ -34,10 +34,15 @@
 
 export default {
     name: "AgentProgressStatus",
-    props: ["agentStatus"],
+    props: ["agentProgressStatus"],
     data() {
         return {}
     },
+    computed: {
+        statusItems(){
+            return this.agentProgressStatus;
+        }
+    }
 }
 </script>
 
