@@ -15,7 +15,7 @@ class AddDuplicateToConnectionApplicaiton extends Migration
     {
         Schema::table('connection_applications', function (Blueprint $table) {
             $table->boolean('is_duplicate')->nullable();
-            $table->boolean('duplication_group_id')->nullable();
+            $table->string('duplication_group_id')->nullable();
         });
     }
 

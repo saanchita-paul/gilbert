@@ -209,7 +209,7 @@ export default {
               text: 'Submitted At',
               align: 'start',
               sortable: true,
-              value: 'created_at'
+              value: 'submitted_at'
             },
             {
               text: 'Email Address',

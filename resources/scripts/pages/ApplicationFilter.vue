@@ -128,8 +128,6 @@
                 />
 
 
-
-
             </div>
         </v-form>
     </div>
@@ -200,6 +198,7 @@ export default {
     methods: {
         clearSearch() {
             this.$refs.form.reset();
+
         },
     },
     watch: {

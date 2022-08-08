@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Agency\DuplicationApplicationController;
 use App\Models\ConnectionApplication;
 use App\Http\Controllers\Agency\AppCloseReasonController;
 use App\Services\Agency\TriageFlagService;
@@ -145,7 +146,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_SERVICE_PROVIDERS);
     Route::post('/applications/{applicationId}/clear-concession-details', [ApplicationController::class, 'clearConcession'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
-    Route::get('/applications/{applicationId}/duplicate', [ApplicationController::class, 'getDuplicateLeads'])
+    Route::get('/applications/{applicationId}/duplicate', [DuplicationApplicationController::class, 'getDuplicateLeads'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 
 

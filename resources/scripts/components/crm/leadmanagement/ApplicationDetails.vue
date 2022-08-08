@@ -261,7 +261,11 @@ export default {
             return !services.includes(type);
         },
       showDuplicatesMessage() {
-          // todo show all dupplicates
+          if(this.$route.query.duplication_group_id === this.lead.duplication_group_id) {
+              return;
+          }
+          const query = { ...this.$route.query, duplication_group_id: this.lead.duplication_group_id };
+          this.$router.replace({ query })
       }
     },
     computed: {

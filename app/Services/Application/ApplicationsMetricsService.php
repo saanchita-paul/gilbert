@@ -109,13 +109,7 @@ class ApplicationsMetricsService
      */
     private function getDuplicateCount()
     {
-       $count = 0;
-        if ($this->officeId) {
-            $count = ConnectionApplication::where('office_id', $this->officeId)
-                ->where('is_duplicate', true)
-                ->count();
-        }
-
+        $count = ConnectionApplication::where('is_duplicate', true)->distinct('duplication_group_id')->count();
         return [
                 "type" => "duplicate",
                 "count" => $count

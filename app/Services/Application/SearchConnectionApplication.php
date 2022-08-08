@@ -58,6 +58,11 @@ class SearchConnectionApplication
     private bool $isDuplicate;
 
     /**
+     * @var string|null
+     */
+    private $duplication_group_id;
+
+    /**
      * @param array $request
      */
     public function __construct(array $request)
@@ -74,6 +79,7 @@ class SearchConnectionApplication
         $this->agentId = !empty($request['agent_id']) ? $request['agent_id'] : null;
         $this->tenantEmail = !empty($request['tenant_email']) ? $request['tenant_email'] : null;
         $this->isDuplicate = !empty($request['is_duplicate']) ? (bool)$request['is_duplicate'] : false;
+        $this->duplication_group_id = !empty($request['duplication_group_id']) ? $request['duplication_group_id'] : null;
 
         !empty($request['moving_date']) && $this->setDateRangeNoTz($request['moving_date'], $request['moving_date']);
 
@@ -328,13 +334,16 @@ class SearchConnectionApplication
 
     private function applyDuplicateFilter(): static
     {
-
-        info('applying duplicate data', [$this->isDuplicate]);
-
         if ($this->isDuplicate) {
             $this->builder = $this->builder
                 ->where('is_duplicate', true);
         }
+
+        if (!empty($this->duplication_group_id)) {
+            $this->builder = $this->builder
+                ->where('duplication_group_id', $this->duplication_group_id);
+        }
+
         return $this;
     }
 }

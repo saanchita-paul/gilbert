@@ -31,9 +31,16 @@ class DuplicationApplicationResource extends JsonResource
             'moving_date' => $this->moving_date,
             'address_text' => $this->address_text,
             'source' => $this->source,
+            'created_at' => $this->created_at,
+            'submitted_at' => $this->submittedAt() ?? '',
+            'assigned_to' => $this->assigned_to,
+            'agent_profile' => $this->assignedTo
         ];
     }
 
+    private function submittedAt(){
+        return $this->connectionServices?->pluck('submitted_at')?->sort()?->first();
+    }
 
 }
 

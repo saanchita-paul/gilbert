@@ -22,7 +22,7 @@
                 ></router-view>
             </v-col>
             <v-col cols="4">
-                <ApplicationDetails :lead="leadDetails"></ApplicationDetails>
+                <ApplicationDetails :lead="leadDetails" @showDuplicateList="showDuplicateList"></ApplicationDetails>
             </v-col>
         </v-row>
     </v-container>
@@ -38,6 +38,7 @@ import {isEqual, omit} from "lodash-es";
 import {LeadSearchFilterModel} from '@scripts/models/LeadSearchFilterModel'
 import ApplicationFilter from '@scripts/pages/ApplicationFilter';
 import debounce from "lodash-es/debounce";
+import DuplicateLeadService from "@scripts/services/crm/DuplicateLeadService";
 
 export default {
     name: "ApplicationPage",
@@ -79,6 +80,7 @@ export default {
             },
             advanceSearch: new LeadSearchFilterModel(),
             showDuplicates: false,
+            duplication_group_id: null,
         }
     },
 
@@ -94,8 +96,18 @@ export default {
 
         async fetchLeads () {
             this.isSearching = true;
+
+            console.log('with data', {...this.sort_search_meta, ...{page: this.page}, ...{
+                    is_duplicate: this.showDuplicates,
+                    duplication_group_id: this.duplication_group_id
+                }
+            });
             let data = await LeadApplicationService.loadUserLeads(
-                {...this.sort_search_meta, ...{page: this.page}, ...{is_duplicate: this.showDuplicates}},
+                {...this.sort_search_meta, ...{page: this.page}, ...{
+                    is_duplicate: this.showDuplicates,
+                        duplication_group_id: this.duplication_group_id
+                    }
+                },
                 this.activeLeadType,
                 this.selectedSrc, this.advanceSearch,
             );
@@ -143,7 +155,14 @@ export default {
         },
         resetPage() {
             this.page = 1;
+        },
+
+        async showDuplicateList(duplication_group_id) {
+            let duplicatedData = await DuplicateLeadService.getDuplicateLeadData(duplication_group_id);
+            // this.leads = duplicatedData;
+            console.log('duplicated data', duplicatedData);
         }
+
     },
 
     created() {
@@ -167,6 +186,9 @@ export default {
                 this.activeLeadType = this.$route.query?.type;
                 this.selectedSrc = this.$route.query?.source;
                 this.showDuplicates = Boolean(this.$route.query?.duplicates)? true: null;
+                // this.duplication_group_id = this.$route.query?.duplication_group_id;
+                this.advanceSearch.duplication_group_id = this.$route.query?.duplication_group_id;
+                console.log(this.$route.query, this.duplication_group_id);
 
                 // console.log("watch", reload)
                 // if (reload) {
@@ -184,9 +206,18 @@ export default {
                 this.loadLeads();
             }
         },
+        duplication_group_id: {
+
+            handler(){
+                console.log(' console.log(duplication_group_id)', this.duplication_group_id);
+                this.page = 1;
+                this.loadLeads();
+            }
+        },
         advanceSearch:{
             handler(value) {
                 let params = { ...this.$route.query, ...value }
+                console.log('show params advance search', params);
                 if(isEqual(this.$route.query , value)) return;
                 this.$router.push({
                     name: "application.list",

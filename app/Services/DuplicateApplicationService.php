@@ -24,6 +24,7 @@ class DuplicateApplicationService
      */
     public function get(): \Illuminate\Database\Eloquent\Collection|array
     {
-        return ConnectionApplication::query()->where('duplication_group_id', $this->duplicate_group_id)->get();
+        return ConnectionApplication::with('connectionServices')
+            ->where('duplication_group_id', $this->duplicate_group_id)->get();
     }
 }

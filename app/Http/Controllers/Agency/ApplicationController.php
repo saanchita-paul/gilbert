@@ -451,18 +451,5 @@ class ApplicationController extends Controller
         }
     }
 
-    /**
-     * @param $applicationId
-     * @return JsonResponse|AnonymousResourceCollection
-     */
-    public function getDuplicateLeads($applicationId): JsonResponse|AnonymousResourceCollection
-    {
-        try {
-            $service = new DuplicateApplicationService($applicationId);
-            return DuplicationApplicationResource::collection($service->get());
 
-        } catch (\Exception $exception) {
-            return $this->sendErrorResponse($exception);
-        }
-    }
 }
