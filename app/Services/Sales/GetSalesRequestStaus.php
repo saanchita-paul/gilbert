@@ -209,7 +209,6 @@ class GetSalesRequestStaus
 
     public function fetchAllSubmittedLead()
     {
-
         $services = ConnectionService::query()
             ->with('connectionApplication')
             ->where('status', ConnectionService::STATUS_ENERGY_SUBMIT)
