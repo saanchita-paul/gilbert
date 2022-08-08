@@ -13,7 +13,7 @@ class UpdatedWaterStatus
             'reason' => ''
         ],
         "CONFIRMED" => [
-            'status' => ConnectionService::WATER_STATUS_CONNECTED,
+            'status' => ConnectionService::WATER_STATUS_SUBMITTED,
             'reason' => ''
         ],
         "ADVANCE" => [
@@ -22,6 +22,10 @@ class UpdatedWaterStatus
         ],
         "IN_TRANSIT" => [
             'status' => ConnectionService::WATER_STATUS_SUBMITTED,
+            'reason' => ''
+        ],
+        "COMPLETE" => [
+            'status' => ConnectionService::WATER_STATUS_CONNECTED,
             'reason' => ''
         ],
         "CANCELLED" => [
