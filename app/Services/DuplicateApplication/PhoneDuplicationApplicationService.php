@@ -7,7 +7,7 @@ namespace App\Services\DuplicateApplication;
 use App\Interfaces\DuplicateApplication\DuplicateApplicationInterface;
 use App\Models\ConnectionApplication;
 
-class FindPhoneDuplicationApplication implements DuplicateApplicationInterface
+class PhoneDuplicationApplicationService implements DuplicateApplicationInterface
 {
     /**
      * @var string

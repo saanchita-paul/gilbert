@@ -222,7 +222,9 @@ class ConnectionApplication extends Model
         'is_running_submission',
         'app_close_reason_id',
         'is_duplicate',
-        'duplication_group_id'
+        'duplication_group_id',
+        'duplicated_address_group_id',
+        'duplicated_email_group_id'
     ];
 
 
