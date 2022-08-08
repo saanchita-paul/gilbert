@@ -152,6 +152,10 @@ class ExportEnergySubmissionReport
                 ca.source as `Lead_Source`,
                 ca.first_name as `Customer_Firstname`,
                 ca.last_name as `Customer_Lastname`,
+                IFNULL(ca.phone,'NULL') as `Mobile Number`,
+                IFNULL(ca.homephone,'NULL') as `Land Number`,
+                IF(ca.is_gas_life_support=1, 'Yes',  'No') as Gas_Life_Support,
+                IF(ca.is_power_life_support=1, 'Yes',  'No') as Power_Life_Support,
                 ca.office_id as `Office_Id`,
                 ca.status as `Utility_Commission`,
                 IFNULL(CONVERT_TZ(ca.created_at, '+00:00', '$tz'), 'NULL') as `Lead_Created_Date`,
@@ -183,9 +187,9 @@ class ExportEnergySubmissionReport
                 cs.status as `UI_Status`,
                 ca.status as `Application_Status`,
                 cs.status as `Utility_Status`,
-                acr.value as `acr_value`, 
+                acr.value as `acr_value`,
                 ca.closing_reason as `closing_reason`,
-                concat(apfle.first_name, apfle.last_name) as `Closed_By`,
+                closed_by_user.email as `Closed_By`,
                 ca.closed_at as `Closed_On`,
                 (select reason_text from rejection_reasons where connection_service_id=cs.id  limit 1) as Rejection_Reason
             ")
@@ -196,10 +200,14 @@ class ExportEnergySubmissionReport
             ->leftJoin('app_close_reasons as acr', 'ca.app_close_reason_id', '=', 'acr.id')
             ->leftJoin('users as u', 'ca.submitted_by', '=', 'u.id')
             ->leftJoin('agent_profiles as aprofile', 'aprofile.id', '=', 'ca.assigned_to')
-            ->leftJoin('agent_profiles as apfle', 'apfle.id', '=', 'ca.closed_by')
+            ->leftJoin('hood_profiles as closed_by_profile', 'closed_by_profile.id', '=', 'ca.closed_by')
             ->leftJoin('users as user', function (JoinClause $clause) {
                 $clause->on('user.profile_id', '=', 'aprofile.id')
                     ->where('user.profile_type', HoodProfile::class);
+            })
+            ->leftJoin('users as closed_by_user', function (JoinClause $clause) {
+                $clause->on('closed_by_user.profile_id', '=', 'closed_by_profile.id')
+                    ->where('closed_by_user.profile_type', HoodProfile::class);
             })
             ->leftJoin('suger_leads as sl', 'ca.id', '=', 'sl.connection_application_id')
             ->where( function($q) use ($energyType) { $q->whereIn('cs.service_type', $energyType)->orWhereNull('cs.service_type'); } );
