@@ -23,8 +23,9 @@ const LEAD_STATUS_TO_TEXT = {
 const APPLICATION_STATUS_TO_TEXT = {
     [LEAD_STATUS_UNASSIGNED]: "New",
     [LEAD_STATUS_ASSIGNED]: "Contacting",
-    [LEAD_STATUS_ESCALATED]: "Escalated",
+    [LEAD_STATUS_ESCALATED]: "Contacting",
     [LEAD_STATUS_CLOSED]: "Closed",
+    [LEAD_STATUS_SUBMITTED]: "Confirmed",
 }
 
 const AGENT_IN_PROGRESS_STATUSES = [
@@ -35,9 +36,6 @@ const AGENT_IN_PROGRESS_STATUSES = [
     LEAD_STATUS_SUBMITTED
 ]
 
-const APPLICATION_CONFIRMED_STATUSES = [
-    LEAD_STATUS_SUBMITTED
-]
 
 /**
  *
@@ -55,11 +53,8 @@ export const getApplicationStatusText = (status, agent = false) => {
 
 /**
  *
- * @param {Number} status
+ * @param status
  */
 export const getApplicationStatusWithText = (status) => {
-    if (APPLICATION_CONFIRMED_STATUSES.includes(status)) {
-        return 'Confirmed';
-    }
     return APPLICATION_STATUS_TO_TEXT[status] ?? '';
 }

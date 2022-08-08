@@ -10,6 +10,7 @@ use App\Services\Utility\StateMapService;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Services\Agency\AgentStatusProgressMapper;
+use App\Services\Agency\AgentServiceApplicationStatusMapper;
 
 class ApplicationResource extends JsonResource
 {
@@ -121,7 +122,8 @@ class ApplicationResource extends JsonResource
 
             'additional_access_information' => $this->additional_access_information,
             'is_power_life_support' => $this->is_power_life_support,
-            'status_progress' => $this->getStatusProgress($this->status)
+            'status_progress' => $this->getStatusProgress($this->status),
+            'connection_services_status' => $this->mapConnectionServiceStatus($this->connectionServices)
         ];
     }
 
@@ -247,17 +249,28 @@ class ApplicationResource extends JsonResource
     /**
      * Getting Application Status for progress bar
      *
-     * @param string|null $status
+     * @param $status
      *
      * @return array|null
      */
-    private function getStatusProgress(?string $status): ?array
+    private function getStatusProgress($status): ?array
     {
         try {
             return AgentStatusProgressMapper::getAgentApplicationStatus($status);
         } catch (\Exception $e) {
             \Log::error("Error " . $e->getMessage());
             return null;
+        }
+    }
+
+    // map connection service status
+    public function mapConnectionServiceStatus($services)
+    {
+        try {
+            return (new AgentServiceApplicationStatusMapper())->getAgentServiceApplicationStatus($services);
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            return [];
         }
     }
 }

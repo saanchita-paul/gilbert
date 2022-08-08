@@ -27,7 +27,7 @@ class AgentStatusProgressMapper
                 array_push($links, self::getNewProgressStatus(), self::getClosedProgressStatus());
                 break;
             default:
-                array_push($links, self::getNewProgressStatus(), self::getContactingProgressStatus(), self::getConfirmedProgressStatus());
+                $links[] = [];
                 break;
         }
 

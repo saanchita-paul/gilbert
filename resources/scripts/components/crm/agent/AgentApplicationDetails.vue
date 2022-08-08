@@ -8,7 +8,7 @@
             <v-col cols="6">
                 <div class="d-flex">
                     <p style="font-weight: bolder">Application Processing Timeline:</p>
-                    <AgentProgressStatus :agentProgressStatus="status_progress_steps"></AgentProgressStatus>
+                    <AgentProgressStatus v-if="status_progress_steps.length > 0" :agentProgressStatus="status_progress_steps"></AgentProgressStatus>
                 </div>
             </v-col>
         </v-row>
@@ -116,12 +116,6 @@
                                         <v-card-text>
                                             <p style="color: #263238">The connection has been processed but was declined
                                                 by the provider.</p>
-                                            <div>
-                                                <p class="my-0" style="font-weight: bolder; color: #000000">Rejection
-                                                    reason:</p>
-                                                <p class="p-0 m-0" style="color: #263238">Only display this field if
-                                                    status is declined.</p>
-                                            </div>
                                         </v-card-text>
                                     </v-card>
                                 </div>
@@ -423,7 +417,8 @@ export default {
         }
     },
     mounted() {
-
+        console.log('Application details page: ', this.application);
+        console.log('Connection service status: ', this.application.service_application_status);
     }
 };
 </script>

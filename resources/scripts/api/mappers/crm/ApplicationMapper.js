@@ -21,6 +21,7 @@ export default {
         model.moving_date = new DayJS(model.moving_date).format(DATE_FORMAT.DB_DATE);
         model.status_progress = this.mapAgentStatusProgress(data.status_progress);
         model.application_status = this.mapApplicationStatus(data.status);
+        model.service_application_status = data.connection_services_status;
         if(isNull(data.created_by_agent))
         {
             model.created_by = '';

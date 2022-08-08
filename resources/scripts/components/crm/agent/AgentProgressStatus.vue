@@ -2,9 +2,9 @@
     <div class="stepper-wrapper">
         <div class="stepper-item" v-for="(item, index) in statusItems" :key="index"
              :class="{completed: item.active}">
-            <v-tooltip bottom :disabled="!item.active">
+            <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                    <div class="step-name">{{ item.step_name  }}</div>
+                    <div class="step-name">{{ item.step_name }}</div>
                     <div class="step-counter" v-on="on">{{ index + 1 }}</div>
                 </template>
                 <div>
