@@ -25,7 +25,7 @@
                 </v-col>
             </v-row>
 
-            <v-card class="hood-card">
+            <v-card class="hood-card mt-5">
                 <v-row>
                     <v-col cols="12" class="crm-table">
                         <v-data-table

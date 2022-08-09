@@ -155,6 +155,7 @@ export default class ApplicationSummary {
             ea_go_neutral = null,
             additional_access_information = null,
             is_power_life_support = null,
+            // email_manually_verified_by = 0,
         }
     ) {
 
@@ -245,10 +246,11 @@ export default class ApplicationSummary {
         this.concession_card_type = concession_card_type
         this.concession_card_number = concession_card_number
         this.concession_start_date = concession_start_date
-        this.concession_end_date = concession_end_date        
+        this.concession_end_date = concession_end_date
         this.ea_go_neutral = ea_go_neutral
         this.additional_access_information = additional_access_information
         this.is_power_life_support = is_power_life_support
+        // this.email_manually_verified_by = email_manually_verified_by
     }
 
 
