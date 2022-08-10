@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Services\Agency\AgentStatusProgressMapper;
 use App\Services\Agency\AgentServiceApplicationStatusMapper;
+use phpDocumentor\Reflection\DocBlock\Tags\Param;
 
 class ApplicationResource extends JsonResource
 {
@@ -122,8 +123,9 @@ class ApplicationResource extends JsonResource
 
             'additional_access_information' => $this->additional_access_information,
             'is_power_life_support' => $this->is_power_life_support,
-            'status_progress' => $this->getStatusProgress($this->status),
-            'connection_services_status' => $this->mapConnectionServiceStatus($this->connectionServices)
+            'status_progress' => $this->mapStatusProgress(),
+            'connection_services_status' => $this->mapConnectionServiceStatus($this->connectionServices),
+            'application_status' => $this->mapApplicationStatus()
         ];
     }
 
@@ -246,31 +248,57 @@ class ApplicationResource extends JsonResource
     }
 
 
+
     /**
      * Getting Application Status for progress bar
      *
-     * @param $status
      *
-     * @return array|null
      */
-    private function getStatusProgress($status): ?array
+    private function mapStatusProgress()
     {
         try {
-            return AgentStatusProgressMapper::getAgentApplicationStatus($status);
+            $service = new AgentStatusProgressMapper([
+                'assignTo' => $this->assigned_to,
+                'applicationStatus' => $this->status,
+                'services' => $this->connectionServices,
+            ]);
+            return $service->getAgentApplicationStatus();
         } catch (\Exception $e) {
             \Log::error("Error " . $e->getMessage());
             return null;
         }
     }
 
-    // map connection service status
-    public function mapConnectionServiceStatus($services)
+
+    /**
+     * map connection service status
+     *
+     * @param $services
+     * @return array|string[]|string[][]
+     */
+    public function mapConnectionServiceStatus($services):array
     {
         try {
             return (new AgentServiceApplicationStatusMapper())->getAgentServiceApplicationStatus($services);
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
             return [];
+        }
+    }
+
+    /**
+     * Getting Application Status
+     *
+     *
+     * @return string|null
+     */
+    private function mapApplicationStatus(): ?string
+    {
+        try {
+            return (new AgentStatusProgressMapper($this))->getApplicationStatus();
+        } catch (\Exception $e) {
+            \Log::error("Error " . $e->getMessage());
+            return null;
         }
     }
 }

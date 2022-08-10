@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import {isNull} from "lodash-es";
-import {getApplicationStatusText, getApplicationStatusWithText} from "../../../data/ConnectionApplicationStatuses";
+import {getApplicationStatusText} from "../../../data/ConnectionApplicationStatuses";
 import AuthService from "../../../services/AuthService";
 import AgentStatus from "@scripts/models/crm/AgentStatus";
 
@@ -19,9 +19,9 @@ export default {
         let model = Object.assign(new Application(), { ...data });
         model.status = this.mapStatus(model.status);
         model.moving_date = new DayJS(model.moving_date).format(DATE_FORMAT.DB_DATE);
-        model.status_progress = this.mapAgentStatusProgress(data.status_progress);
-        model.application_status = this.mapApplicationStatus(data.status);
-        model.service_application_status = data.connection_services_status;
+        model.status_progress = this.mapAgentStatusProgress(data?.status_progress);
+        model.application_status = data?.application_status;
+        model.connection_services_status = data?.connection_services_status;
         if(isNull(data.created_by_agent))
         {
             model.created_by = '';
@@ -39,10 +39,6 @@ export default {
 
     mapAgentStatusProgress(status_data) {
         return status_data.map(data => new AgentStatus({...data}));
-    },
-
-    mapApplicationStatus(status) {
-        return getApplicationStatusWithText(status);
     },
 
     mapApplicationList(data) {

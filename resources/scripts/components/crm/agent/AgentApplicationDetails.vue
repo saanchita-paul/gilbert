@@ -97,7 +97,7 @@
                                         </p>
                                         <p class="py-0 my-0 pl-5 service-status active-power-subtitle"
                                            :class="getSubtitleColor('power')">
-                                            {{ getServiceStatus('power') }}
+                                            {{ getPowerText.status_name }}
                                         </p>
                                     </span>
                                 </template>
@@ -111,11 +111,10 @@
                                         <v-card-title>
                                             <v-icon left color="yellow">mdi-flash</v-icon>
                                             <span style="font-weight: bolder; font-size: 14px">Power:</span> &nbsp;
-                                            <span style="font-size: 14px">{{ getServiceStatus('power') }}</span>
+                                            <span style="font-size: 14px">{{ getPowerText.status_name }}</span>
                                         </v-card-title>
                                         <v-card-text>
-                                            <p style="color: #263238">The connection has been processed but was declined
-                                                by the provider.</p>
+                                            <p style="color: #263238">{{ getPowerText.description }}</p>
                                         </v-card-text>
                                     </v-card>
                                 </div>
@@ -134,7 +133,7 @@
                                         </p>
                                         <p class="py-0 my-0 pl-5 service-status active-power-subtitle"
                                            :class="getSubtitleColor('gas')">
-                                            {{ getServiceStatus('gas') }}
+                                            {{ getGasText.status_name }}
                                         </p>
                                     </span>
                                 </template>
@@ -148,17 +147,10 @@
                                         <v-card-title>
                                             <v-icon left color="red">mdi-fire</v-icon>
                                             <span style="font-weight: bolder; font-size: 14px">Gas:</span> &nbsp;
-                                            <span style="font-size: 14px">{{ getServiceStatus('gas') }}</span>
+                                            <span style="font-size: 14px">{{ getGasText.status_name }}</span>
                                         </v-card-title>
                                         <v-card-text>
-                                            <p style="color: #263238">The connection has been processed but was declined
-                                                by the provider.</p>
-                                            <div>
-                                                <p class="my-0" style="font-weight: bolder; color: #000000">Rejection
-                                                    reason:</p>
-                                                <p class="p-0 m-0" style="color: #263238">Only display this field if
-                                                    status is declined.</p>
-                                            </div>
+                                            <p style="color: #263238">{{ getGasText.description }}</p>
                                         </v-card-text>
                                     </v-card>
                                 </div>
@@ -177,7 +169,7 @@
                                         </p>
                                         <p class="py-0 my-0 pl-5 service-status"
                                            :class="getSubtitleColor('water')">
-                                            {{ getServiceStatus('water') }}
+                                            {{ getWaterText.status_name }}
                                         </p>
                                     </span>
                                 </template>
@@ -191,17 +183,10 @@
                                         <v-card-title>
                                             <v-icon left color="blue">mdi-water</v-icon>
                                             <span style="font-weight: bolder; font-size: 14px">Water:</span> &nbsp;
-                                            <span style="font-size: 14px">{{ getServiceStatus('water') }}</span>
+                                            <span style="font-size: 14px">{{ getWaterText.status_name }}</span>
                                         </v-card-title>
                                         <v-card-text>
-                                            <p style="color: #263238">There was an issue processing the water connection
-                                                automatically, but our team is fixing it.</p>
-                                            <div>
-                                                <p class="my-0" style="font-weight: bolder; color: #000000">Rejection
-                                                    reason:</p>
-                                                <p class="p-0 m-0" style="color: #263238">Only display this field if
-                                                    status is declined.</p>
-                                            </div>
+                                            <p style="color: #263238">{{ getWaterText.description }}</p>
                                         </v-card-text>
                                     </v-card>
                                 </div>
@@ -220,7 +205,7 @@
                                         </p>
                                         <p class="py-0 my-0 pl-5 service-status active-power-subtitle"
                                            :class="getSubtitleColor('internet')">
-                                            {{ getServiceStatus('internet') }}
+                                            {{ getInternetText.status_name }}
                                         </p>
                                     </span>
                                 </template>
@@ -234,75 +219,16 @@
                                         <v-card-title>
                                             <v-icon left color="green">mdi-wifi</v-icon>
                                             <span style="font-weight: bolder; font-size: 14px">Internet:</span> &nbsp;
-                                            <span style="font-size: 14px">{{ getServiceStatus('internet') }}</span>
+                                            <span style="font-size: 14px">{{ getInternetText.status_name }}</span>
                                         </v-card-title>
                                         <v-card-text>
-                                            <p style="color: #263238">The connection is not required or was not selected
-                                                by the customer.</p>
+                                            <p style="color: #263238">{{ getInternetText.description }}</p>
                                         </v-card-text>
                                     </v-card>
                                 </div>
                             </v-tooltip>
                         </v-col>
                     </v-row>
-
-                    <!--                    <v-row>-->
-
-                    <!--                        <v-col class="my-0 py-0 mx-0">-->
-                    <!--                            <p class="pt-2 pb-1 mb-0 services">-->
-                    <!--                  <span class="ml-1">-->
-                    <!--                      <v-icon :disabled="isServiceAllowed(application.services, 'power')"-->
-                    <!--                              color="yellow">mdi-flash</v-icon>Power-->
-                    <!--                  </span>-->
-                    <!--                            </p>-->
-                    <!--                            <p class="py-0 my-0 pl-5 service-status active-power-subtitle"-->
-                    <!--                               :class="getSubtitleColor('power')">-->
-                    <!--                                {{ getServiceStatus('power') }}-->
-                    <!--                                &lt;!&ndash;                    Connected&ndash;&gt;-->
-                    <!--                            </p>-->
-                    <!--                        </v-col>-->
-
-                    <!--                        <v-col class="my-0 py-0 mx-0">-->
-                    <!--                            <p class="pt-2 pb-1 mb-0 services">-->
-                    <!--                  <span class="ml-1">-->
-                    <!--                      <v-icon :disabled="isServiceAllowed(application.services, 'gas')" color="red">mdi-fire</v-icon>Gas-->
-                    <!--                  </span>-->
-                    <!--                            </p>-->
-                    <!--                            <p class="py-0 my-0 pl-5 service-status active-power-subtitle"-->
-                    <!--                               :class="getSubtitleColor('gas')">-->
-                    <!--                                {{ getServiceStatus('gas') }}-->
-                    <!--                                &lt;!&ndash;                    Connected&ndash;&gt;-->
-                    <!--                            </p>-->
-                    <!--                        </v-col>-->
-                    <!--                        <v-col class="my-0 py-0 mx-0">-->
-                    <!--                            <p class="pt-2 pb-1 mb-0 services">-->
-                    <!--                  <span class="ml-1">-->
-                    <!--                      <v-icon :disabled="isServiceAllowed(application.services, 'water')"-->
-                    <!--                              color="blue">mdi-water</v-icon>Water-->
-                    <!--                  </span>-->
-                    <!--                            </p>-->
-                    <!--                            <p class="py-0 my-0 pl-5 service-status "-->
-                    <!--                               :class="getSubtitleColor('water')">-->
-                    <!--                                {{ getServiceStatus('water') }}-->
-                    <!--                                &lt;!&ndash;                    Connected&ndash;&gt;-->
-                    <!--                            </p>-->
-                    <!--                        </v-col>-->
-                    <!--                        <v-col class="my-0 py-0 mx-0">-->
-                    <!--                            <p class="pt-2 pb-1 mb-0 services">-->
-                    <!--                  <span class="ml-1">-->
-                    <!--                       <v-icon :disabled="isServiceAllowed(application.services, 'internet')"-->
-                    <!--                               color="green">mdi-wifi</v-icon>Internet-->
-                    <!--                  </span>-->
-                    <!--                            </p>-->
-                    <!--                            <p class="py-0 my-0 pl-5 service-status active-power-subtitle"-->
-                    <!--                               :class="getSubtitleColor('internet')">-->
-                    <!--                                {{ getServiceStatus('internet') }}-->
-                    <!--                                &lt;!&ndash;                    Connected&ndash;&gt;-->
-                    <!--                            </p>-->
-                    <!--                        </v-col>-->
-
-
-                    <!--                    </v-row>-->
                 </div>
 
             </v-col>
@@ -384,7 +310,19 @@ export default {
         },
         status_progress_steps() {
             return this.application.status_progress;
-        }
+        },
+        getPowerText() {
+            return this.application?.connection_services_status?.power;
+        },
+        getGasText() {
+            return this.application?.connection_services_status?.gas;
+        },
+        getWaterText() {
+            return this.application?.connection_services_status?.water;
+        },
+        getInternetText() {
+            return this.application?.connection_services_status?.internet;
+        },
     },
     methods: {
         getSubtitleColor(name) {
@@ -417,8 +355,6 @@ export default {
         }
     },
     mounted() {
-        console.log('Application details page: ', this.application);
-        console.log('Connection service status: ', this.application.service_application_status);
     }
 };
 </script>
