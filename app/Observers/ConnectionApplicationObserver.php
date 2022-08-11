@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\ConnectionApplication;
 use App\Services\Agency\TriageFlagService;
+use App\Services\GBGEmailValidationService;
 
 class ConnectionApplicationObserver
 {
@@ -16,6 +17,10 @@ class ConnectionApplicationObserver
     public function created(ConnectionApplication $connectionApplication)
     {
         TriageFlagService::setTriageFlag($connectionApplication->id);
+
+        $connectionApplication->update([
+            'is_email_validate' => GBGEmailValidationService::validateEmail($connectionApplication->email),
+        ]);
     }
 
     /**
@@ -30,6 +35,12 @@ class ConnectionApplicationObserver
             if ($application->isDirty($field)) {
                return TriageFlagService::setTriageFlag($application->id);
             }
+        }
+
+        if ($application->isDirty($application->email)) {
+            $application->update([
+                'is_email_validate' => GBGEmailValidationService::validateEmail($application->email),
+            ]);
         }
     }
 

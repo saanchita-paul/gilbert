@@ -1,141 +1,132 @@
 <template>
     <div>
-    <div class="d-flex justify-space-between">
-<!--      <div class="section-leademetriics">-->
-<!--        <div class="leade-badge" v-for=" appMetric in appMetrics" :key="appMetric.id">-->
-<!--            <h3>{{appMetric.title}}</h3>-->
-<!--            <div class="leade-icon">-->
-<!--                <v-icon :color="appMetric.color">{{appMetric.icon}}</v-icon>-->
-<!--                <span>{{appMetric.lead_count}}</span>-->
-<!--            </div>-->
-<!--            <p class="leade-text">{{appMetric.status}}</p>-->
-<!--        </div>-->
-<!--      </div>-->
+        <div class="d-flex justify-space-between">
+            <div style="flex-basis: 20%;" class="py-0">
+                <slot v-if="isModeEdit" name="backButton"/>
+                <h3  v-else >All Application Metrics</h3>
+            </div>
+            <div style="flex-basis: 75%;" class="py-0">
+                <div v-if="!isModeEdit" class="mb-2 d-flex justify-end">
+                    <v-btn class="mr-1" outlined @click="downloadAgencyReport">
+                        Report
+                        <v-icon right>mdi-download</v-icon>
+                    </v-btn>
+                </div>
+                <div class="d-flex justify-end" style="flex-wrap: wrap;" >
+                    <div class="py-2 mr-2"> <v-btn @click="clearFilter" color="#C0C3C4" small v-if="!isSearchEmpty"> 
+                        <v-icon small> mdi-close </v-icon> Reset </v-btn> 
+                    </div>
+                    <div class="py-0 mr-2 LeadMatics123" style="flex-basis: 235px;">
+                        <v-text-field
+                            class='date-select'
+                            dense
+                            placeholder="Date"
+                            v-model="selectedDate"
+                            append-icon="mdi-calendar-range"
+                            readonly
+                            outlined
+                            hide-details
+                            @click="showDatePickerModal = true"
+                            @click:append="showDatePickerModal = true"
+                        ></v-text-field>
+                    </div>
+                    <div v-if="isModeEdit" class="py-0 mr-2 LeadMatics123 justify-end" style="flex-basis: 123px;">
+                        <!-- <v-btn outlined >Edit Agency</v-btn> -->
+                        <slot name="editButton"/>
 
-        <div style="flex-basis: 20%;" class="py-0">
-            <slot v-if="isModeEdit" name="backButton"/>
-            <h3  v-else >All Application Metrics</h3>
+                        <v-col class="pb-0 report-button">
+                                <v-btn outlined @click="onClickDownloadReport">
+                                    Report
+                                    <v-icon right>mdi-download</v-icon>
+                                </v-btn>
+                            </v-col>
+                    </div>
+                    <div v-if="!isModeEdit" class="py-0 mr-2 LeadMatics123" style="flex-basis: 90px;">
+                        <v-select
+                            dense
+                            label="State"
+                            v-model="state"
+                            @change="changeState"
+                            item-text="text"
+                            outlined
+                            item-value="text"
+                            :items="states"
+                            hide-details
+                        ></v-select>
+                    </div>
+                    <div v-if="!isModeEdit" class="py-0 mr-2 LeadMatics123" style="flex-basis: 180px;">
+                        <v-select
+                            class='date-select'
+                            dense
+                            outlined
+                            label="Acct Manager HOOD"
+                            v-model="hood_user"
+                            :items="hood_users"
+                            @change="changeHoodUser"
+                            item-text="name"
+                            item-value="id"
+                            hide-details
+                        ></v-select>
+                    </div>
+                    <div v-if="!isModeEdit" class="py-0 mr-2 LeadMatics123" style="flex-basis: 140px;">
+                        <v-select
+                            v-model="selectedAgency"
+                            :items="agencies"
+                            item-text="name"
+                            item-value="id"
+                            placeholder="Select Agency"
+                            outlined
+                            dense
+                            hide-details="auto"
+                            @change="onChangeAgentAgency"
+                        >
+                            <template v-slot:prepend-item>
+                                <v-list-item ripple>
+                                    <v-text-field
+                                        label="Search Agency"
+                                        outlined
+                                        dense
+                                        prepend-inner-icon="mdi-magnify"
+                                        hide-details="auto"
+                                        v-model="search_agency"
+                                        @input="changeText"
+                                    ></v-text-field>
+                                </v-list-item>
+                                <v-divider class="mt-2"></v-divider>
+                            </template>
+                        </v-select>
+                    </div>
+                    <div v-if="!isModeEdit" class="py-0 mr-1 LeadMatics123" style="flex-basis: 130px;">
+                        <v-select
+                            v-model="selectedOffice"
+                            :items="offices"
+                            item-text="name"
+                            item-value="id"
+                            placeholder="Select Office"
+                            outlined
+                            dense
+                            hide-details="auto"
+                            @change="onChangeOffice"
+                        >
+                            <template v-slot:prepend-item>
+                                <v-list-item ripple>
+                                    <v-text-field
+                                        label="Search Office"
+                                        outlined
+                                        dense
+                                        prepend-inner-icon="mdi-magnify"
+                                        hide-details="auto"
+                                        v-model="search_office"
+                                        @input="changeOffice"
+                                    ></v-text-field>
+                                </v-list-item>
+                                <v-divider class="mt-2"></v-divider>
+                            </template>
+                        </v-select>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div style="flex-basis: 75%;"  class="py-0">
-           <div class="d-flex justify-end" style="flex-wrap: wrap;" >
-            <div class="py-2 mr-2"> <v-btn @click="clearFilter" color="#C0C3C4" small v-if="!isSearchEmpty"> <v-icon small> mdi-close </v-icon> Reset </v-btn> </div>
-               <div  class="py-0 mr-2 LeadMatics123" style="flex-basis: 235px;">
-                   <v-text-field
-                       class='date-select'
-                       dense
-                       placeholder="Date"
-                       v-model="selectedDate"
-                       append-icon="mdi-calendar-range"
-                       readonly
-                       outlined
-                       hide-details
-                       @click="showDatePickerModal = true"
-                       @click:append="showDatePickerModal = true"
-                   ></v-text-field>
-               </div>
-
-               <div v-if="isModeEdit" class="py-0 mr-2 LeadMatics123 justify-end" style="flex-basis: 123px;">
-                   <!-- <v-btn outlined >Edit Agency</v-btn> -->
-                   <slot name="editButton"/>
-
-                   <v-col class="pb-0 report-button">
-                        <v-btn outlined @click="onClickDownloadReport">
-                            Report
-                            <v-icon right>mdi-download</v-icon>
-                        </v-btn>
-                    </v-col>
-               </div>
-                
-
-
-               <div v-if="!isModeEdit" class="py-0 mr-2 LeadMatics123" style="flex-basis: 90px;">
-                   <v-select
-                       dense
-                       label="State"
-                       v-model="state"
-                       @change="changeState"
-                       item-text="text"
-                       outlined
-                       item-value="text"
-                       :items="states"
-                       hide-details
-                   ></v-select>
-               </div>
-               <div v-if="!isModeEdit" class="py-0 mr-2 LeadMatics123" style="flex-basis: 180px;">
-                   <v-select
-                       class='date-select'
-                       dense
-                       outlined
-                       label="Acct Manager HOOD"
-                       v-model="hood_user"
-                       :items="hood_users"
-                       @change="changeHoodUser"
-                       item-text="name"
-                       item-value="id"
-                       hide-details
-                   ></v-select>
-               </div>
-               <div v-if="!isModeEdit" class="py-0 mr-2 LeadMatics123" style="flex-basis: 140px;">
-                   <v-select
-                       v-model="selectedAgency"
-                       :items="agencies"
-                       item-text="name"
-                       item-value="id"
-                       placeholder="Select Agency"
-                       outlined
-                       dense
-                       hide-details="auto"
-                       @change="onChangeAgentAgency"
-                   >
-                       <template v-slot:prepend-item>
-                           <v-list-item ripple>
-                               <v-text-field
-                                   label="Search Agency"
-                                   outlined
-                                   dense
-                                   prepend-inner-icon="mdi-magnify"
-                                   hide-details="auto"
-                                   v-model="search_agency"
-                                   @input="changeText"
-                               ></v-text-field>
-                           </v-list-item>
-                           <v-divider class="mt-2"></v-divider>
-                       </template>
-                   </v-select>
-               </div>
-               <div v-if="!isModeEdit"  class="py-0 mr-1 LeadMatics123" style="flex-basis: 130px;">
-                   <v-select
-                       v-model="selectedOffice"
-                       :items="offices"
-                       item-text="name"
-                       item-value="id"
-                       placeholder="Select Office"
-                       outlined
-                       dense
-                       hide-details="auto"
-                       @change="onChangeOffice"
-                   >
-                       <template v-slot:prepend-item>
-                           <v-list-item ripple>
-                               <v-text-field
-                                   label="Search Office"
-                                   outlined
-                                   dense
-                                   prepend-inner-icon="mdi-magnify"
-                                   hide-details="auto"
-                                   v-model="search_office"
-                                   @input="changeOffice"
-                               ></v-text-field>
-                           </v-list-item>
-                           <v-divider class="mt-2"></v-divider>
-                       </template>
-                   </v-select>
-               </div>
-           </div>
-        </div>
-
-
-    </div>
         <v-row class="my-4">
             <v-col cols="2">
                 <div class="font-weight-bold text-center py-2 count_font">
@@ -378,7 +369,14 @@ export default {
                 '/api/rea-extract/corporate-report?agencyId='+this.agency_id+'&start='+this.dateRange.start+'&end='+this.dateRange.end,
                 '_blank'
             );
-        }
+        },
+
+        downloadAgencyReport() {
+            window.open(
+                '/api/agencies/export',
+                '_blank'
+            );
+        },
     },
 
     watch: {

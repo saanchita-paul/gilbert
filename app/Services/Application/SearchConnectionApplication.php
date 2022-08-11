@@ -93,6 +93,10 @@ class SearchConnectionApplication
             ->with('SugerLead')
             ->with('tsaCallHistories')
             ->with('assignedTo')
+            ->with('office')
+            ->with('authorizedPerson')
+            ->with('createdBy')
+            ->with('identification')
             ->with('submittedByUser');
 
         $this->applyFilterLeadType($user)
