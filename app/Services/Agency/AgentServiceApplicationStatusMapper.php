@@ -73,7 +73,9 @@ class AgentServiceApplicationStatusMapper
             ConnectionService::STATUS_ACCEPTED,
             ConnectionService::STATUS_SUBMITTED => ['status_name' => 'Confirmed', 'description' => 'The connection has been processed and accepted by the provider.'],
             ConnectionService::STATUS_REJECTED => ['status_name' => 'Declined', 'description' => 'The connection has been processed but was declined by the provider.'],
-            ConnectionService::STATUS_FAILED => ['status_name' => 'Manual Processing', 'description' => 'There was an issue processing the water connection automatically, but our team is fixing it.'],
+            ConnectionService::STATUS_FAILED,
+            ConnectionService::AC_MANUAL_PROCESSING,
+            ConnectionService::STATUS_EA_PROCESSINF => ['status_name' => 'Manual Processing', 'description' => 'There was an issue processing the water connection automatically, but our team is fixing it.'],
             default => self::DEFAULT_STATUS
         };
 

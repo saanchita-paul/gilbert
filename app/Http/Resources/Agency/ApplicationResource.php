@@ -252,15 +252,15 @@ class ApplicationResource extends JsonResource
     /**
      * Getting Application Status for progress bar
      *
-     *
+     * @return array|null
      */
-    private function mapStatusProgress()
+    private function mapStatusProgress(): array | null
     {
         try {
             $service = new AgentStatusProgressMapper([
-                'assignTo' => $this->assigned_to,
+                'assignedTo' => $this->assigned_to,
                 'applicationStatus' => $this->status,
-                'services' => $this->connectionServices,
+                'applicationServices' => $this->connectionServices,
             ]);
             return $service->getAgentApplicationStatus();
         } catch (\Exception $e) {
@@ -295,7 +295,12 @@ class ApplicationResource extends JsonResource
     private function mapApplicationStatus(): ?string
     {
         try {
-            return (new AgentStatusProgressMapper($this))->getApplicationStatus();
+            $service = new AgentStatusProgressMapper([
+                'assignedTo' => $this->assigned_to,
+                'applicationStatus' => $this->status,
+                'applicationServices' => $this->connectionServices,
+            ]);
+            return $service->getApplicationStatus();
         } catch (\Exception $e) {
             \Log::error("Error " . $e->getMessage());
             return null;

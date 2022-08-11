@@ -3,18 +3,36 @@
 namespace App\Services\Agency;
 
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
 
 class AgentStatusProgressMapper
 {
-    private int $assignTo;
-    private int $applicationStatus = 8;
-    private array $services;
+    /**
+     * @var mixed
+     */
+    private mixed $assignedTo;
+    /**
+     * @var mixed
+     */
+    private mixed $applicationStatus;
+    /**
+     * @var mixed
+     */
+    private mixed $services;
+    /**
+     * @var array
+     */
     private array $links = [];
 
-//    public function __construct($application)
-//    {
-//
-//    }
+    /**
+     * @param array $applicationData
+     */
+    public function __construct(array $applicationData)
+    {
+        $this->assignedTo = $applicationData['assignedTo'];
+        $this->applicationStatus = $applicationData['applicationStatus'];
+        $this->services = $applicationData['applicationServices'];
+    }
 
 
     /**
@@ -33,6 +51,9 @@ class AgentStatusProgressMapper
                     $this->getContactingProgressStatus()
                 );
                 break;
+            case ConnectionApplication::STATUS_ESCALATED: // 3
+                $this->handleEscalatedApplicationStatus();
+                break;
             case ConnectionApplication::STATUS_SUBMITTED: // 4
             case ConnectionApplication::STATUS_ACCEPTED: // 5
             case ConnectionApplication::STATUS_EA_PROCESSINF: // 7
@@ -44,11 +65,7 @@ class AgentStatusProgressMapper
                 );
                 break;
             case ConnectionApplication::STATUS_CLOSED: // 8
-                array_push(
-                    $this->links,
-                    $this->getNewProgressStatus(),
-                    $this->getClosedProgressStatus()
-                );
+                $this->handleCloseApplicationStatus();
                 break;
             default:
                 $this->links = [];
@@ -58,9 +75,100 @@ class AgentStatusProgressMapper
         return $this->links;
     }
 
-    private function handleClosedStatus()
+    /**
+     * handle application close status
+     *
+     * @return void
+     */
+    private function handleCloseApplicationStatus(): void
     {
+        if ($this->assignedTo == null) {
+            array_push(
+                $this->links,
+                $this->getNewProgressStatus(),
+                $this->getClosedProgressStatus()
+            );
+        } else if ($this->checkServiceStatusForContacting() && $this->assignedTo != null) {
+            array_push(
+                $this->links,
+                $this->getNewProgressStatus(),
+                $this->getContactingProgressStatus(),
+                $this->getClosedProgressStatus()
+            );
+        } else if ($this->checkServiceStatusForConfirmed()) {
+            array_push(
+                $this->links,
+                $this->getNewProgressStatus(),
+                $this->getContactingProgressStatus(),
+                $this->getConfirmedProgressStatus(),
+                $this->getClosedProgressStatus()
+            );
+        }
+    }
 
+    /**
+     * Check application close after contacting
+     *
+     * @return bool
+     */
+    private function checkServiceStatusForContacting(): bool
+    {
+        $electricity = false;
+        $gas = false;
+        foreach ($this->services as $service){
+            if ($service->service_type == 'power' &&
+                $service->status == ConnectionService::STATUS_EA_PROCESSINF) {
+                $electricity = true;
+            }
+            if ($service->service_type == 'gas' &&
+                $service->status == ConnectionService::STATUS_EA_PROCESSINF) {
+                $gas = true;
+            }
+        }
+        return $electricity && $gas;
+    }
+
+    /**
+     * Check application close after confirmed
+     *
+     * @return bool
+     */
+    private function checkServiceStatusForConfirmed(): bool
+    {
+        $electricityOrGas = false;
+        foreach ($this->services as $service) {
+            if (($service->service_type == 'power' || $service->service_type == 'gas') &&
+                ($service->status == ConnectionService::STATUS_SUBMITTED ||
+                    $service->status == ConnectionService::STATUS_ACCEPTED ||
+                    $service->status == ConnectionService::STATUS_REJECTED ||
+                    $service->status == ConnectionService::STATUS_EA_PROCESSINF)) {
+                $electricityOrGas = true;
+            }
+        }
+        return $electricityOrGas;
+    }
+
+    /**
+     * handle application escalated status
+     *
+     * @return void
+     */
+    private function handleEscalatedApplicationStatus(): void
+    {
+        if ($this->assignedTo == null || ($this->checkServiceStatusForContacting() && $this->assignedTo != null)) {
+            array_push(
+                $this->links,
+                $this->getNewProgressStatus(),
+                $this->getContactingProgressStatus()
+            );
+        } else if ($this->checkServiceStatusForConfirmed()) {
+            array_push(
+                $this->links,
+                $this->getNewProgressStatus(),
+                $this->getContactingProgressStatus(),
+                $this->getConfirmedProgressStatus()
+            );
+        }
     }
 
     /**
@@ -68,7 +176,7 @@ class AgentStatusProgressMapper
      *
      * @return array
      */
-    private function getNewProgressStatus()
+    private function getNewProgressStatus(): array
     {
         return [
             'step_name' => 'New',
@@ -82,10 +190,10 @@ class AgentStatusProgressMapper
      *
      * @return array
      */
-    private function getContactingProgressStatus()
+    private function getContactingProgressStatus(): array
     {
         return [
-            'step_name' => 'Contacting',
+            'step_name' => 'Contacting...',
             'description' => 'We are attempting to contact the customer to confirm their connections.',
             'active' => true
         ];
@@ -96,7 +204,7 @@ class AgentStatusProgressMapper
      *
      * @return array
      */
-    private function getConfirmedProgressStatus()
+    private function getConfirmedProgressStatus(): array
     {
         return [
             'step_name' => 'Confirmed',
@@ -111,11 +219,11 @@ class AgentStatusProgressMapper
      *
      * @return array
      */
-    private function getClosedProgressStatus()
+    private function getClosedProgressStatus(): array
     {
         return [
             'step_name' => 'Closed',
-            'description' => 'The customer decided not to go ahead or we couldn\'t get in touch with them.',
+            'description' => 'The customer decided not to go ahead or we could not get in touch with them.',
             'active' => true
         ];
     }
@@ -127,11 +235,32 @@ class AgentStatusProgressMapper
     {
         return match ($this->applicationStatus) {
             ConnectionApplication::STATUS_UNASSIGNED => 'New',
-            ConnectionApplication::STATUS_ASSIGNED, ConnectionApplication::STATUS_ESCALATED => 'Contacting',
-            ConnectionApplication::STATUS_SUBMITTED, ConnectionApplication::STATUS_ACCEPTED, ConnectionApplication::STATUS_EA_PROCESSINF => 'Confirmed',
+            ConnectionApplication::STATUS_ASSIGNED => 'Contacting...',
+            ConnectionApplication::STATUS_ESCALATED => $this->getEscalatedStatus(),
+            ConnectionApplication::STATUS_SUBMITTED,
+            ConnectionApplication::STATUS_ACCEPTED,
+            ConnectionApplication::STATUS_REJECTED,
+            ConnectionApplication::STATUS_EA_PROCESSINF => 'Confirmed',
             ConnectionApplication::STATUS_CLOSED => 'Closed',
-            default => 'Unknown',
+            default => '',
         };
+    }
+
+    /**
+     * @return string
+     */
+    private function getEscalatedStatus(): string
+    {
+        foreach ($this->services as $service) {
+            if ($service->service_type &&
+                ($service->status == ConnectionService::STATUS_SUBMITTED ||
+                    $service->status == ConnectionService::STATUS_ACCEPTED ||
+                    $service->status == ConnectionService::STATUS_ENERGY_SUBMIT)) {
+                return 'Confirmed';
+            }
+        }
+
+        return 'Contacting...';
     }
 
 }
