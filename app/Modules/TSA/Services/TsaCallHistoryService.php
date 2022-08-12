@@ -53,28 +53,37 @@ class TsaCallHistoryService
 
         $attemps = $callHistory['attempts'];
 
-        foreach ($attemps as $key => $value) {
+        $ids = collect($attemps)->pluck('attempt_id')->toArray();
+
+        $foundAttempts = TSACallHistory::query()->select(['attempt_id'])->whereIn('attempt_id', $ids)->get()->pluck('attempt_id')->toArray();
+
+        foreach ($attemps as $value) {
             try {
-                TSACallHistory::where('attempt_id', $value['attempt_id'])->firstOrFail();
+                if (!in_array(data_get($value, 'attempt'), $foundAttempts)) {
+                    $tsaCallHistory = new TSACallHistory();
+                    $tsaCallHistory->connection_application_id = $connection_application->id;
+                    $tsaCallHistory->tsa_id = $callHistory['import_id'];
+                    $tsaCallHistory->lead_status = $callHistory['lead_status'];
+                    $tsaCallHistory->num_attempts = $callHistory['num_attempts'];
+
+                    $tsaCallHistory->attempt_id = $value['attempt_id'];
+                    $tsaCallHistory->attempt_assigned_timestamp = Carbon::parse($value['assigned_timestamp'])->format("Y-m-d H:i:s")  ;
+                    $tsaCallHistory->attempt_initiated_timestamp = Carbon::parse($value['initiated_timestamp'])->format("Y-m-d H:i:s");
+                    $tsaCallHistory->attempt_connected_timestamp = Carbon::parse($value['connected_timestamp'])->format("Y-m-d H:i:s");
+                    $tsaCallHistory->attempt_disconnected_timestamp = Carbon::parse($value['disconnected_timestamp'])->format("Y-m-d H:i:s");
+                    $tsaCallHistory->attempt_disposed_timestamp = Carbon::parse($value['disposed_timestamp'])->format("Y-m-d H:i:s");
+                    $tsaCallHistory->attempt_outcome = $value['outcome'];
+                    $tsaCallHistory->attempt_disposition_code = $value['disposition_code'];
+                    $tsaCallHistory->attempt_disposition_sub_code = $value['disposition_sub_code'];
+
+                    dump($tsaCallHistory->toArray());
+//                    $tsaCallHistory->save();
+
+                }
             } catch (\Exception $exception) {
-                $tsaCallHistory = new TSACallHistory();
-                $tsaCallHistory->all_fields_dump = $callHistoryJsonString;
-                $tsaCallHistory->connection_application_id = $connection_application->id;
-                $tsaCallHistory->tsa_id = $callHistory['import_id'];
-                $tsaCallHistory->lead_status = $callHistory['lead_status'];
-                $tsaCallHistory->num_attempts = $callHistory['num_attempts'];
-
-                $tsaCallHistory->attempt_id = $value['attempt_id'];
-                $tsaCallHistory->attempt_assigned_timestamp = Carbon::parse($value['assigned_timestamp'])->format("Y-m-d H:i:s")  ;
-                $tsaCallHistory->attempt_initiated_timestamp = Carbon::parse($value['initiated_timestamp'])->format("Y-m-d H:i:s");
-                $tsaCallHistory->attempt_connected_timestamp = Carbon::parse($value['connected_timestamp'])->format("Y-m-d H:i:s");
-                $tsaCallHistory->attempt_disconnected_timestamp = Carbon::parse($value['disconnected_timestamp'])->format("Y-m-d H:i:s");
-                $tsaCallHistory->attempt_disposed_timestamp = Carbon::parse($value['disposed_timestamp'])->format("Y-m-d H:i:s");
-                $tsaCallHistory->attempt_outcome = $value['outcome'];
-                $tsaCallHistory->attempt_disposition_code = $value['disposition_code'];
-                $tsaCallHistory->attempt_disposition_sub_code = $value['disposition_sub_code'];
-
-                $tsaCallHistory->save();
+                \Log::error($exception->getMessage());
+                \Log::error($exception->getTraceAsString());
+                dump($exception->getMessage());
             }
 
         }
@@ -88,6 +97,8 @@ class TsaCallHistoryService
             ConnectionApplication::STATUS_REJECTED,
             ConnectionApplication::STATUS_SUBMITTED,
         ])
+            ->whereIn('id', [18124])
+
         ->whereNotNull('tsa_lead_id')
         ->get();
 
