@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Http\Controllers\Agency\DuplicationApplicationController;
 use App\Models\ConnectionApplication;
 use App\Http\Controllers\Agency\AppCloseReasonController;
@@ -26,6 +27,7 @@ use App\Http\Controllers\Agency\AgentProfileController;
 use OurProperty\Http\Controllers\OurPropertyController;
 use App\Services\RolePermission;
 use App\Http\Controllers\Agency\ReaExtractsReportController;
+use App\Services\GBGEmailValidationService;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +61,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/agencies/get-agency-metrics', [AgencyController::class, 'getAgencyMetrics']); # not is use
     Route::get('/agencies/get-agency-application-metrics', [AgencyController::class, 'getAgencyApplicationMetrics'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_METRICS);
+    Route::get('/agencies/export', [AgencyController::class, 'download']);
     Route::get('/agencies/{id}', [AgencyController::class, 'getAgency'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_AGENCY_DETAILS);
     Route::post('/agencies/{id}/update', [AgencyController::class, 'update'])
@@ -140,6 +143,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::put('/applications/{applicationId}/update-address', [ApplicationController::class, 'updateAddress'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_ADDRESS);
     Route::post('/applications/{applicationId}/draft', [ApplicationController::class, 'saveDraft'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
+    Route::post('/applications/{applicationId}/save-email', [ApplicationController::class, 'saveEmail'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
     Route::put('/applications/{id}/close', [ApplicationController::class, 'close']);
     Route::patch('/applications/{applicationId}/providers', [ApplicationController::class, 'providers'])
@@ -248,6 +253,13 @@ Route::post('/our-property/lead', [OurPropertyController::class, 'createOurPrope
 
 
 
+/**
+ * api's for email validation
+ */
+Route::get('/gbg-validate-email', [ApplicationController::class, 'isGbgValidateEmail']);
+Route::get('/applications/{id}/email-manually-verified', [ApplicationController::class, 'isEmailManuallyVerified']);
+
+
 
 
 Route::get("/karan/sales-status", function () {
@@ -303,3 +315,14 @@ Route::get('/kaka', function () {
     return $dateTimeZone->getOffset($date)/60/60;
 
 });
+
+
+//Route::post('/gbg-validate-email', function() {
+//
+//    $email = "admin@mail.com";
+//    $service = new GBGEmailValidationService();
+//
+//    return $service->validateEmail($email);
+//
+//});
+

@@ -97,6 +97,12 @@ class EnergyReport
                             ->orWhere('compare_connect_id', 'N/A');
                     });
             })
+            ->whereHas('connectionApplication', function ($query) {
+                $query->whereHas('agency', function ($q) {
+                    $q->where('dashboard_excluded', false);
+                });
+            })
+
             // ->where('updated_at', '>=', $this->startDate)
             // ->where('updated_at', '<=', $this->endDate)
             ->groupBy('provider_name', 'service_type', 'plan_type')
@@ -131,6 +137,11 @@ class EnergyReport
                             ->orWhere('compare_connect_id', 'N/A');
                     });
             })
+            ->whereHas('connectionApplication', function ($query) {
+                $query->whereHas('agency', function ($q) {
+                    $q->where('dashboard_excluded', false);
+                });
+            })
             // ->where('updated_at', '>=', $this->startDate)
             // ->where('updated_at', '<=', $this->endDate)
             ->groupBy('provider_name', 'service_type', 'plan_type')
@@ -163,6 +174,11 @@ class EnergyReport
                             ->orWhere('compare_connect_id', 'N/A');
                     });
             })
+            ->whereHas('connectionApplication', function ($query) {
+                $query->whereHas('agency', function ($q) {
+                    $q->where('dashboard_excluded', false);
+                });
+            })
             // ->where('updated_at', '>=', $this->startDate)
             // ->where('updated_at', '<=', $this->endDate)
             ->count();
@@ -194,6 +210,11 @@ class EnergyReport
                         $q->whereNull('compare_connect_id')
                             ->orWhere('compare_connect_id', 'N/A');
                     });
+            })
+            ->whereHas('connectionApplication', function ($query) {
+                $query->whereHas('agency', function ($q) {
+                    $q->where('dashboard_excluded', false);
+                });
             })
             // ->where('updated_at', '>=', $this->startDate)
             // ->where('updated_at', '<=', $this->endDate)
@@ -229,6 +250,11 @@ class EnergyReport
                             ->orWhere('compare_connect_id', 'N/A');
                     });
             })
+            ->whereHas('connectionApplication', function ($query) {
+                $query->whereHas('agency', function ($q) {
+                    $q->where('dashboard_excluded', false);
+                });
+            })
             // ->where('updated_at', '>=', $this->startDate)
             // ->where('updated_at', '<=', $this->endDate)
             ->groupBy('provider_name', 'service_type', 'plan_type')
@@ -263,6 +289,11 @@ class EnergyReport
                             ->orWhere('compare_connect_id', 'N/A');
                     });
             })
+            ->whereHas('connectionApplication', function ($query) {
+                $query->whereHas('agency', function ($q) {
+                    $q->where('dashboard_excluded', false);
+                });
+            })
             // ->where('updated_at', '>=', $this->startDate)
             // ->where('updated_at', '<=', $this->endDate)
             ->whereHas('reasons', function ($query) {
@@ -290,6 +321,11 @@ class EnergyReport
                     ->orWhereHas('SugerLead', function ($q) {
                         $q->whereNull('compare_connect_id')
                             ->orWhere('compare_connect_id', 'N/A');
+                    });
+            })
+            ->where(function ($query){
+                $query->whereHas('agency', function ($q) {
+                        $q->where('dashboard_excluded', false);
                     });
             })
             ->groupBy('status', 'source')

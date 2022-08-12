@@ -240,5 +240,10 @@ export default {
     setActiveServiceTab: currentTab =>
         Store.commit("application/setActiveServiceTab", currentTab),
 
+
+    saveEmailField: (field, value, leadId) => LeadApplicationAPI.saveEmailField(field, value, leadId),
+    isEmailManuallyVerified: id => LeadApplicationAPI.isEmailManuallyVerified(id),
+
     validateCutOff: id => LeadApplicationAPI.validateCutOff(id),
+
 };

@@ -160,6 +160,9 @@ export default class ApplicationSummary {
             is_power_life_support = null,
             is_duplicate = null,
             duplication_group_id = null,
+
+            // email_manually_verified_by = 0,
+
         }
     ) {
 
@@ -256,6 +259,9 @@ export default class ApplicationSummary {
         this.is_power_life_support = is_power_life_support
         this.is_duplicate = is_duplicate;
         this.duplication_group_id = duplication_group_id;
+
+
+        // this.email_manually_verified_by = email_manually_verified_by
 
     }
 

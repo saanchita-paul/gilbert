@@ -3,6 +3,7 @@ import {ValidationProvider, extend, ValidationObserver} from 'vee-validate';
 import * as rules from 'vee-validate/dist/rules';
 import {email, max, required} from "vee-validate/dist/rules";
 import AuthService from "@scripts/services/AuthService";
+import GBGService from "@scripts/services/GBGService";
 import EAPlanService from "@scripts/services/ea/EAPlanService";
 import dayJs from "dayjs";
 import AgencyService from '@scripts/services/crm/AgencyService';
@@ -217,6 +218,20 @@ extend('required-special-number', {
 extend('required-issuing-country', {
     ...rules.required,
     message: field => `Issuing Country is required`,
+});
+
+extend('gbg-email-validate', {
+    message: field => `Email could not be verified. Please confirm it’s valid email.`,
+
+    validate: async (value) =>  {
+        return new Promise(resolve => {
+            GBGService.validateEmail(value)
+                .then( valid => {
+                    valid = valid;
+                    resolve({ valid })
+                })
+        })
+    }
 });
 
 export { medicareRules , mediExpireDate }

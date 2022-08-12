@@ -410,6 +410,11 @@ export default {
         cancelDuplicateLead() {
             this.duplicateLead = false;
         },
+
+
+        // async updateEmail(field, value) {
+        //     await LeadApplicationService.saveEmailField(field, value, this.leadId);
+        // },
     },
     watch: {
         powerPlan: {

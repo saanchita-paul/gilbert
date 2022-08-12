@@ -50,6 +50,11 @@ name: "LeadUserDetails",
         duplicateLead(){
             this.$emit('duplicateLead');
         },
+
+        // updateEmail(field, value) {
+        //     this.$emit('updateEmail', field, value);
+        // },
+
     },
     mounted() {
         // console.log('LeadUserDetails', this.services);

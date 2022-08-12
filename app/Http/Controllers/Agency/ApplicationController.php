@@ -15,6 +15,7 @@ use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use App\Models\TSACallHistory;
 use App\Models\User;
 use App\Services\Agency\ApplicationService;
 use App\Services\Agency\TriageFlagService;
@@ -23,6 +24,7 @@ use App\Services\Application\ApplicationsMetricsService;
 use App\Services\Application\SearchConnectionApplication;
 use App\Services\DuplicateApplicationService;
 use App\Services\Ea\SetEaDistributorService;
+use App\Services\GBGEmailValidationService;
 use Origin\Services\SetOriginDistributorService;
 use App\Services\FastConnectService;
 use Illuminate\Http\JsonResponse;
@@ -114,7 +116,8 @@ class ApplicationController extends Controller
             }
 
             $application->load(['connectionServices.reasons']);
-            return new ApplicationResource($application);
+
+            return new ApplicationResource($application, TSACallHistory::getByAppID($application->id));
 
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
@@ -441,11 +444,53 @@ class ApplicationController extends Controller
         }
     }
 
+
+    public function isGbgValidateEmail(Request $request)
+    {
+        try {
+            $service = new GBGEmailValidationService();
+            $result = $service->validateEmail($request->email);
+
+            $res = ['success' => true, 'data' => $result];
+
+            return response()->json($res);
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function isEmailManuallyVerified($id)
+    {
+        try {
+            $service = new ApplicationService();
+            $result = $service->isEmailManuallyVerified($id);
+
+            $res = ['success' => true, 'data' => $result];
+
+            return response()->json($res);
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function saveEmail(Request $request, $id)
+    {
+        try {
+            $service = new ApplicationService();
+            $res = $service->updateEmailField($request->toArray(), $id);
+            return response()->json(['success' => true, 'data' => $res]);
+
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
     public function validateCutOff($applicationId)
     {
         try {
             $res = ValidateCutOffTime::validateCutOff($applicationId);
             return response()->json(['success' => true, 'data' => $res]);
+
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
