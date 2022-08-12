@@ -16,8 +16,6 @@ class AddDuplicateToConnectionApplicaiton extends Migration
         Schema::table('connection_applications', function (Blueprint $table) {
             $table->boolean('is_duplicate')->nullable();
             $table->string('duplication_group_id')->nullable();
-            $table->string('duplicated_email_group_id')->nullable();
-            $table->string('duplicated_address_group_id')->nullable();
         });
     }
 
@@ -31,8 +29,6 @@ class AddDuplicateToConnectionApplicaiton extends Migration
         Schema::table('connection_applications', function (Blueprint $table) {
             $table->dropColumn('is_duplicate');
             $table->dropColumn('duplication_group_id');
-            $table->dropColumn('duplicated_email_group_id');
-            $table->dropColumn('duplicated_address_group_id');
         });
     }
 }

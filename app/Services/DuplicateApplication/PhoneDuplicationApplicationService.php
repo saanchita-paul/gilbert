@@ -6,37 +6,32 @@ namespace App\Services\DuplicateApplication;
 
 use App\Interfaces\DuplicateApplication\DuplicateApplicationInterface;
 use App\Models\ConnectionApplication;
+use Illuminate\Database\Eloquent\Builder;
 
 class PhoneDuplicationApplicationService implements DuplicateApplicationInterface
 {
     /**
-     * @var string
+     * @var Builder
      */
+    private Builder $builder;
     private string $phone;
+
 
     public function __construct(string $phone)
     {
         $this->phone = $phone;
     }
 
-    public function updateDuplicationGroupId() :static
+    public function getBuilder(): Builder
     {
-        // TODO: Implement updateDuplicationGroupId() method.
-    }
-
-
-    public function findDuplicatedApplicationGroupId(): static
-    {
-        // TODO: Implement findDuplicatedApplicationGroupId() method.
-    }
-
-    public function handle(): void
-    {
-        // TODO: Implement handle() method.
-    }
-    private function findEmailDuplicationApplicationBuilder(): static
-    {
-        $this->builder =  ConnectionApplication::whereRaw("lower(REPLACE(`email`, ' ', '')) = ? ", $this->email);
-        return $this;
+        $phone = preg_replace('/[^0-9]/', '',$this->phone);
+        $position = strlen($phone) - 9;
+        return ConnectionApplication::query()
+            ->whereRaw("right(replace(replace(replace(replace(phone, ' ', ''), '+',''), '-',''),'_',''), 9) = ?",
+                substr($phone, $position))
+            ->orWhereRaw(
+                "right(replace(replace(replace(replace(homephone, ' ', ''), '+',''), '-',''),'_',''), 9) = ?",
+                substr($phone, $position)
+            );
     }
 }
