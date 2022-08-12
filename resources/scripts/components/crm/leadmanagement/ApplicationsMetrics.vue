@@ -88,6 +88,7 @@ export default {
             if(type === 'duplicates') {
                 this.$router.push({query:{duplicates:true, ...query}});
             } else {
+                query =omit({...this.$route.query}, ['type', 'duplicates', 'duplication_group_id']);
                 this.$router.push({query:{type:type, ...query}});
             }
 
