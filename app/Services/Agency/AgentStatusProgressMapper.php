@@ -95,7 +95,7 @@ class AgentStatusProgressMapper
                 $this->getContactingProgressStatus(),
                 $this->getClosedProgressStatus()
             );
-        } else if ($this->checkServiceStatusForConfirmed()) {
+        } else if ($this->checkServiceStatusForConfirmed() && $this->assignedTo != null) {
             array_push(
                 $this->links,
                 $this->getNewProgressStatus(),
@@ -103,6 +103,8 @@ class AgentStatusProgressMapper
                 $this->getConfirmedProgressStatus(),
                 $this->getClosedProgressStatus()
             );
+        } else {
+            $this->links = [];
         }
     }
 
@@ -168,6 +170,8 @@ class AgentStatusProgressMapper
                 $this->getContactingProgressStatus(),
                 $this->getConfirmedProgressStatus()
             );
+        } else {
+            $this->links = [];
         }
     }
 
@@ -240,7 +244,7 @@ class AgentStatusProgressMapper
             ConnectionApplication::STATUS_SUBMITTED,
             ConnectionApplication::STATUS_ACCEPTED,
             ConnectionApplication::STATUS_REJECTED,
-            ConnectionApplication::STATUS_EA_PROCESSINF => 'Confirmed',
+            ConnectionApplication::STATUS_EA_PROCESSINF => $this->checkStatusForConfirmed(),
             ConnectionApplication::STATUS_CLOSED => 'Closed',
             default => '',
         };
@@ -261,6 +265,28 @@ class AgentStatusProgressMapper
         }
 
         return 'Contacting...';
+    }
+
+    /**
+     * Check application status for confirmed
+     *
+     * @return string
+     */
+    private function checkStatusForConfirmed(): string
+    {
+        foreach ($this->services as $service) {
+            if ($service->service_type &&
+                ($service->status == ConnectionService::STATUS_SUBMITTED ||
+                    $service->status == ConnectionService::STATUS_ACCEPTED ||
+                    $service->status == ConnectionService::STATUS_REJECTED ||
+                    $service->status == ConnectionService::AC_MANUAL_PROCESSING ||
+                    $service->status == ConnectionService::STATUS_EA_PROCESSINF)) {
+                return 'Confirmed';
+            } else {
+                return '';
+            }
+        }
+        return '';
     }
 
 }
