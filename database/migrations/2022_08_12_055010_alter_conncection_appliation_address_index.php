@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\FullTextSearch\FullTextQuery;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
