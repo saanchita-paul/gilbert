@@ -234,11 +234,8 @@ class ExportEnergySubmissionReport
         $tempBuilder = clone $builder;
         $filterWithCreatedDate = $this->filterWithCreatedDate($tempBuilder)->get();
         $tempBuilder = clone $builder;
-//        dd();
-        $filterWithSubmittedDate = $this->filterWithSubmittedDate($tempBuilder, $filterWithCreatedDate->pluck('Service_Id')->toArray())->get()->toArray();
-//        dd(ConnectionApplication::with('connectionServices')->where('id', '15385')->first()->toArray());
-//        dd(ConnectionService::whereIn('connection_application_id', [15371,15331,15256,15220])->get()->toArray());
-//        dd(collect($filterWithSubmittedDate)->pluck('App_id')->toArray());
+
+        $filterWithSubmittedDate = $this->filterWithSubmittedDate($tempBuilder)->get()->toArray();
 
         return array_merge(
             $filterWithCreatedDate->toArray(),
@@ -270,15 +267,14 @@ class ExportEnergySubmissionReport
             ->where('ca.created_at', '<=', $this->endDate);
     }
 
-    private function filterWithSubmittedDate(Builder $builder, array $except)
+    private function filterWithSubmittedDate(Builder $builder)
     {
         return $builder
             ->whereNotNull('cs.submitted_at')
             ->whereNotIn('cs.service_type', [ConnectionService::TYPE_WATER])
-
+            ->where('ca.created_at', '<', $this->startDate)
             ->where('cs.submitted_at', '>=', $this->startDate)
-            ->where('cs.submitted_at', '<=', $this->endDate)
-            ->whereNotIn('cs.id', $except);
+            ->where('cs.submitted_at', '<=', $this->endDate);
     }
 
     private function getLeadSrc(?int $src): string
