@@ -54,6 +54,11 @@
                             <v-icon small  :disabled="isServiceAllowed(item.services, 'internet')" color="green">mdi-wifi</v-icon>
                             <v-icon small :disabled="isServiceAllowed(item.services, 'water')" color="blue" >mdi-water</v-icon>
                         </template>
+                        <template v-slot:item.source="{ item }">
+                            <div
+                                v-text="leadSourceMapFromNumber[item.source]"
+                            ></div>
+                        </template>
                         <template v-slot:item.assignee="{ item }">
                             <AssigneeDropdown v-if="currentUser && users"
                                 :lead="item" :users="users" :currentUser="currentUser.profile"
@@ -79,6 +84,7 @@ import AssignedtoPopUp from "@scripts/components/crm/leadmanagement/AssignedtoPo
 import ReassignModal from "@scripts/components/crm/modals/ReassignModal";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import AuthService from "@scripts/services/AuthService";
+import {leadSourceMapFromNumber} from "@scripts/data/LeadSourceMap";
 
 export default {
   name: "ApplicantTable",
@@ -232,6 +238,9 @@ export default {
       console.log('showDuplicates', this.showDuplicates)
       return this.showDuplicates ? this.duplicatedHeader: this.headers ;
     },
+      leadSourceMapFromNumber() {
+          return leadSourceMapFromNumber;
+      }
   },
     methods: {
         isSelectedClass(item) {

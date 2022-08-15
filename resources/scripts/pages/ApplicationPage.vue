@@ -96,12 +96,6 @@ export default {
 
         async fetchLeads () {
             this.isSearching = true;
-
-            console.log('with data', {...this.sort_search_meta, ...{page: this.page}, ...{
-                    is_duplicate: this.showDuplicates,
-                    duplication_group_id: this.duplication_group_id
-                }
-            });
             let data = await LeadApplicationService.loadUserLeads(
                 {...this.sort_search_meta, ...{page: this.page}, ...{
                     is_duplicate: this.showDuplicates,
@@ -159,8 +153,6 @@ export default {
 
         async showDuplicateList(duplication_group_id) {
             let duplicatedData = await DuplicateLeadService.getDuplicateLeadData(duplication_group_id);
-            // this.leads = duplicatedData;
-            console.log('duplicated data', duplicatedData);
         }
 
     },
@@ -188,12 +180,6 @@ export default {
                 this.showDuplicates = Boolean(this.$route.query?.duplicates)? true: null;
                 // this.duplication_group_id = this.$route.query?.duplication_group_id;
                 this.advanceSearch.duplication_group_id = this.$route.query?.duplication_group_id;
-                console.log(this.$route.query, this.duplication_group_id);
-
-                // console.log("watch", reload)
-                // if (reload) {
-                //     this.loadLeads();
-                // }
             }
         },
         showDuplicates: {
@@ -209,7 +195,6 @@ export default {
         duplication_group_id: {
 
             handler(){
-                console.log(' console.log(duplication_group_id)', this.duplication_group_id);
                 this.page = 1;
                 this.loadLeads();
             }
@@ -217,7 +202,6 @@ export default {
         advanceSearch:{
             handler(value) {
                 let params = { ...this.$route.query, ...value }
-                console.log('show params advance search', params);
                 if(isEqual(this.$route.query , value)) return;
                 this.$router.push({
                     name: "application.list",
