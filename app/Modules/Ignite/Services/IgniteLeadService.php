@@ -159,8 +159,11 @@ class IgniteLeadService
      */
     private function setOfficeAndAgencyId(array $leadInfo) : void{
         try {
-            $agencyName = $leadInfo['agency']['name'] ?? "Ignite-Hood-Agency";
+            $agencyName = $leadInfo['agency']['name'];
             $agency = Agency::where('name' , $agencyName)->first();
+            if (!$agency) {
+                $agency = Agency::where('name', "Ignite-Hood-Agency")->first();
+            }
             $this->connectionApplication->agency_id = $agency?->id ?? 1;
             $this->connectionApplication->office_id = $agency?->offices[0]?->id ?? 1;
             if(!$agency) throw new Exception('Please run FoxieSeeder');
