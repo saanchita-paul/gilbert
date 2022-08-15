@@ -157,9 +157,10 @@ class IgniteLeadService
      * @return void
      * @throws Exception
      */
-    private function setOfficeAndAgencyId() : void{
+    private function setOfficeAndAgencyId(array $leadInfo) : void{
         try {
-            $agency = Agency::where('name' , "Ignite-Hood-Agency")->first();
+            $agencyName = $leadInfo['agency']['name'] ?? "Ignite-Hood-Agency";
+            $agency = Agency::where('name' , $agencyName)->first();
             $this->connectionApplication->agency_id = $agency?->id ?? 1;
             $this->connectionApplication->office_id = $agency?->offices[0]?->id ?? 1;
             if(!$agency) throw new Exception('Please run FoxieSeeder');
@@ -183,7 +184,7 @@ class IgniteLeadService
             $this->connectionApplication = new ConnectionApplication;
             $this->lead = new IgniteLead();
 
-            $this->setOfficeAndAgencyId();
+            $this->setOfficeAndAgencyId($leadInfo);
 
             $this->setAttribute($leadInfo);
 
@@ -195,7 +196,7 @@ class IgniteLeadService
                 $this->connectionApplication,
                 'Ignite',
                 $this->lead->agency_name ?? '',
-                Agency::where('name' , "Ignite-Hood-Agency")->first()?->offices[0]?->name ?? 'Ignite-Hood-Office',
+                $this->connectionApplication->office->name ?? 'Ignite-Hood-Office',
                 $this->lead->agent_email ?? '',
             );
 
