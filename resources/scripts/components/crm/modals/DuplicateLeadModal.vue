@@ -101,7 +101,7 @@ export default {
             this.loadTable= false;
         },
         goToAllDuplicates() {
-            let params = { duplication_group_id: this.duplicateGroupId }
+            let params = { duplication_group_id: this.duplicateGroupId, 'duplicates': true }
             this.$router.push({
                 name: "applications",
                 query: params

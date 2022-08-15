@@ -127,6 +127,11 @@
                     class="my-1 ml-1"
                 />
 
+                <v-text-field
+                    hidden
+                    v-model="$attrs.value.duplication_group_id"
+                />
+
 
             </div>
         </v-form>
@@ -198,7 +203,6 @@ export default {
     methods: {
         clearSearch() {
             this.$refs.form.reset();
-
         },
     },
     watch: {

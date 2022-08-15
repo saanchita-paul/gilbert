@@ -56,6 +56,8 @@ class LeadSearchFilterModel {
         this.agent_name = null;
         this.triage = null;
         this.duplication_group_id = null;
+
+        console.log('clear duplicated group id');
     }
 
 
