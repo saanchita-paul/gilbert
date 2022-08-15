@@ -33,5 +33,6 @@ class IgniteFetchJob implements ShouldQueue
         //
         $createLeadService = new IgniteLeadService();
         $createLeadService->create();
+        // $createLeadService->dummyCreate();
     }
 }
