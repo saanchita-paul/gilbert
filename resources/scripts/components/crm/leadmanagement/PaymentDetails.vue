@@ -206,8 +206,6 @@ export default {
     },
     methods: {
         saveDraft(field, value) {
-            // console.log('lead ->', this.lead);
-            // console.log('powershop_payment_info ->', this.lead.powershop_payment_info.estimated_elec_billing_cost);
             this.$emit("updateDraft", field, value);
         },
         synFormData() {

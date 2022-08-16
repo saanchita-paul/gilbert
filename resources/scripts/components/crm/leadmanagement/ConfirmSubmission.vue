@@ -411,6 +411,7 @@
 
                     <v-col cols="6">
                         <p class="sub-title title-align">Payment</p>
+
                         <div class="crm-text-field">
                             <div class="field-label">
                                 <span>Payment Status</span>
@@ -421,7 +422,7 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    value="Valid/Invalid"
+                                    :value=getPaymentStatus
                                 ></v-text-field>
                             </div>
                         </div>
@@ -436,7 +437,7 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    value=""
+                                    :value=getPowerCost
                                 ></v-text-field>
                             </div>
                         </div>
@@ -450,7 +451,7 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    value=""
+                                    :value=getPowerPeriod
                                 ></v-text-field>
                             </div>
                         </div>
@@ -466,7 +467,7 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    value=""
+                                    :value=getGasCost
                                 ></v-text-field>
                             </div>
                         </div>
@@ -480,7 +481,7 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    value=""
+                                    :value=getGasPeriod
                                 ></v-text-field>
                             </div>
                         </div>
@@ -895,6 +896,7 @@ export default {
           provider: null,
           isValidElecCutOff: null,
           isValidGasCutOff: null,
+          paymentInformation: null,
       }
     },
     computed: {
@@ -922,19 +924,30 @@ export default {
             return this.data.selectedProvider === 'ea'
                && (this.data.is_gas_life_support || this.data.is_power_life_support);
         },
-        // elecPeriod() {
-        //     return this.leadSummary.powershop_payment_info?.estimated_elec_billing_period?.charAt(0).toUpperCase() + this.leadSummary.powershop_payment_info?.estimated_elec_billing_period?.slice(1);
-        // },
-        // gasPeriod() {
-        //     return this.leadSummary.powershop_payment_info?.estimated_gas_billing_period?.charAt(0).toUpperCase() + this.leadSummary.powershop_payment_info?.estimated_gas_billing_period?.slice(1);
-        // },
-        // elecCost() {
-        //     return this.leadSummary.powershop_payment_info?.estimated_elec_billing_cost ? this.leadSummary.powershop_payment_info?.estimated_elec_billing_cost : '';
-        // },
-        // gasCost() {
-        //     return this.leadSummary.powershop_payment_info?.estimated_elec_billing_cost ? this.leadSummary.powershop_payment_info?.estimated_elec_billing_cost : '';
-        // }
-        
+        getPowerPeriod() {
+            return this.paymentInformation?.powershop_payment_info?.estimated_elec_billing_period?.charAt(0).toUpperCase()
+                + this.paymentInformation?.powershop_payment_info?.estimated_elec_billing_period?.slice(1);
+        },
+        getGasPeriod() {
+            return this.paymentInformation?.powershop_payment_info?.estimated_gas_billing_period?.charAt(0).toUpperCase()
+                + this.paymentInformation?.powershop_payment_info?.estimated_gas_billing_period?.slice(1);
+        },
+        getPowerCost() {
+            return this.paymentInformation?.powershop_payment_info?.estimated_elec_billing_cost
+                ? this.paymentInformation?.powershop_payment_info?.estimated_elec_billing_cost
+                : '';
+        },
+        getGasCost() {
+            return this.paymentInformation?.powershop_payment_info?.estimated_gas_billing_cost
+                ? this.paymentInformation?.powershop_payment_info?.estimated_gas_billing_cost
+                : '';
+        },
+        getPaymentStatus() {
+            return this.paymentInformation?.powershop_payment_info.status
+                ? this.paymentInformation?.powershop_payment_info.status
+                : '';
+        }
+
     },
     methods: {
         backToEdit() {
@@ -971,12 +984,16 @@ export default {
                 }
             }
         },
+        async loadPaymentInformation() {
+            this.paymentInformation = await LeadApplicationService.loadUserLead(this.leadSummary.id);
+        },
 
     },
     mounted() {
       this.validateCutOffTime();
       this.loadAuthorizedPerson();
-    },
+      this.loadPaymentInformation();
+    }
 };
 </script>
 
