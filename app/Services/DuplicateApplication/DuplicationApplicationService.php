@@ -104,6 +104,11 @@ class DuplicationApplicationService
      */
     private $duplicatedGroupId;
 
+    /**
+     * @var Builder | null
+     */
+    private ?Builder $activeBuilder;
+
 
     /**
      * DuplicationApplicationService constructor.
@@ -147,6 +152,7 @@ class DuplicationApplicationService
         $this->duplicatedEmailBuilder = null;
         $this->duplicatedPhoneBuilder = null;
         $this->duplicatedAddressBuilder = null;
+        $this->activeBuilder = null;
         $this->duplicatedGroupId = null;
     }
 
@@ -162,6 +168,12 @@ class DuplicationApplicationService
         if(!empty($this->email) && ($this->isNewLead || $this->isEmailUpdated)) {
             $emailDuplicatedServices = new EmailDuplicatedApplicationService($this->email);
             $this->duplicatedEmailBuilder = $emailDuplicatedServices->getBuilder();
+            $itemCount = $this->duplicatedEmailBuilder->count();
+            info('email duplicated items count'.$itemCount);
+            if($itemCount > 0) {
+                $this->activeBuilder = $this->duplicatedEmailBuilder;
+                return;
+            }
 
         }
 
@@ -169,6 +181,13 @@ class DuplicationApplicationService
         if(!empty($this->phone) && ($this->isNewLead || $this->isPhoneUpdated)) {
             $phoneDuplicatedServices = new PhoneDuplicationApplicationService($this->phone);
             $this->duplicatedPhoneBuilder =  $phoneDuplicatedServices->getBuilder();
+            $itemCount = $this->duplicatedPhoneBuilder->count();
+            info('phone duplicated items count'.$itemCount);
+            if($itemCount > 0) {
+                $this->activeBuilder = $this->duplicatedPhoneBuilder;
+                info('phone duplicated items count '.$itemCount);
+                return;
+            }
         }
 
 //         run only for new and phone changed lead
@@ -183,39 +202,35 @@ class DuplicationApplicationService
                 $this->country
             );
             $this->duplicatedAddressBuilder = $addressDuplicatedServices->getBuilder();
+            $itemCount = $this->duplicatedAddressBuilder->count();
+            info('Address duplicated items count '.$itemCount);
+            if($itemCount > 0) {
+                $this->activeBuilder = $this->duplicatedAddressBuilder;
+                return;
+            }
         }
 
     }
 
     /**
      * @param Builder|null $builder
-     * @return bool
+     * @return void
      */
-    private function isSetGroupID(?Builder $builder):bool
+    private function setGroupID(?Builder $builder):void
     {
-
-        info('database value', ['count' => $builder]);
-        if(empty($builder) || $builder->count()< 1) {
-            return  false;
-        }
-
         $temporaryBuilder = clone $builder;
 
         // if connection already in existing group
         $this->duplicatedGroupId = $temporaryBuilder->whereNotNull('duplication_group_id')
             ->pluck('duplication_group_id')->first();
 
-//        info('duplicatedGroupId value 1', ['this->duplicatedGroupId' => $this->duplicatedGroupId]);
-        if(!empty( $this->duplicatedGroupId)) {
-         return true;
+        // if connection already not it in existing group
+        if(empty( $this->duplicatedGroupId)) {
+            $this->duplicatedGroupId = $builder->pluck('id')->first();
+            info('new duplication id '.$this->duplicatedGroupId);
+        } else {
+            info('parent duplication id '.$this->duplicatedGroupId);
         }
-
-        // if connection already not in existing group
-        $this->duplicatedGroupId = $builder->whereNotNull('id')
-            ->pluck('id')->first();
-//        info('duplicatedGroupId value 2', ['this->duplicatedGroupId' => $this->duplicatedGroupId]);
-        return true;
-
     }
 
     /**
@@ -223,13 +238,10 @@ class DuplicationApplicationService
      */
     private function updateGroupId(): void
     {
-        $updateGroupId = false;
-        $setGroupId = $this->isSetGroupID($this->duplicatedEmailBuilder);
-        if($setGroupId && !$updateGroupId) {
 
-            $updateGroupId = true;
-//            info('duplicatedAddressBuilder');
-            $this->duplicatedEmailBuilder->update(
+        if(!is_null($this->activeBuilder)) {
+            $this->setGroupID($this->activeBuilder);
+            $this->activeBuilder->update(
                 [
                     'is_duplicate' => true,
                     'duplication_group_id'=> $this->duplicatedGroupId
@@ -237,27 +249,6 @@ class DuplicationApplicationService
             );
         }
 
-        $setGroupId = $this->isSetGroupID($this->duplicatedPhoneBuilder);
-        if($setGroupId && !$updateGroupId) {
-//            info('duplicatedAddressBuilder');
-            $updateGroupId = true;
-            $this->duplicatedPhoneBuilder->update(
-                [
-                    'is_duplicate' => true,
-                    'duplication_group_id'=> $this->duplicatedGroupId
-                ]
-            );
-        }
-
-        $setGroupId = $this->isSetGroupID($this->duplicatedPhoneBuilder);
-        if($setGroupId && !$updateGroupId) {
-            $this->duplicatedAddressBuilder->update(
-                [
-                    'is_duplicate' => true,
-                    'duplication_group_id'=> $this->duplicatedGroupId
-                ]
-            );
-        }
 
     }
 
@@ -265,10 +256,6 @@ class DuplicationApplicationService
     {
         $this->findAndSetDuplicatedLeadQuery();
         $this->updateGroupId();
-
-        if($this->duplicatedGroupId === 'null') {
-            $this->duplicatedGroupId = null;
-        }
 
         return $this->duplicatedGroupId;
     }
