@@ -87,15 +87,18 @@ class DuplicationApplicationService
      */
     private bool $isAddressUpdate;
 
-    private Builder $duplicatedEmailBuilder;
     /**
-     * @var Builder
+     * @var Builder | null
      */
-    private Builder $duplicatedPhoneBuilder;
+    private ?Builder $duplicatedEmailBuilder;
     /**
-     * @var Builder
+     * @var Builder | null
      */
-    private Builder $duplicatedAddressBuilder;
+    private ?Builder $duplicatedPhoneBuilder;
+    /**
+     * @var Builder | null
+     */
+    private ?Builder $duplicatedAddressBuilder;
     /**
      * @var mixed
      */
@@ -131,7 +134,7 @@ class DuplicationApplicationService
 
     private function populatedRequiredField(array $duplicatedKeyData)
     {
-        info('hello', $duplicatedKeyData);
+        info('duplicated key', $duplicatedKeyData);
         $this->email = $duplicatedKeyData['email'] ?? '';
         $this->phone = $duplicatedKeyData['phone'] ?? '';
         $this->unitNumber = $duplicatedKeyData['unit_number'] ?? '';
@@ -141,6 +144,10 @@ class DuplicationApplicationService
         $this->postCode = $duplicatedKeyData['post_code'] ?? '';
         $this->country = $duplicatedKeyData['country'] ?? '';
         $this->state = $duplicatedKeyData['state'] ?? '';
+        $this->duplicatedEmailBuilder = null;
+        $this->duplicatedPhoneBuilder = null;
+        $this->duplicatedAddressBuilder = null;
+        $this->duplicatedGroupId = null;
     }
 
     /**
@@ -152,19 +159,19 @@ class DuplicationApplicationService
     {
 
         // run only for new and email changed lead
-        if($this->isNewLead || $this->isEmailUpdated) {
+        if(!empty($this->email) && ($this->isNewLead || $this->isEmailUpdated)) {
             $emailDuplicatedServices = new EmailDuplicatedApplicationService($this->email);
             $this->duplicatedEmailBuilder = $emailDuplicatedServices->getBuilder();
 
         }
 
         // run only for new and phone changed lead
-        if($this->isNewLead || $this->isPhoneUpdated) {
+        if(!empty($this->phone) && ($this->isNewLead || $this->isPhoneUpdated)) {
             $phoneDuplicatedServices = new PhoneDuplicationApplicationService($this->phone);
             $this->duplicatedPhoneBuilder =  $phoneDuplicatedServices->getBuilder();
         }
 
-        // run only for new and phone changed lead
+//         run only for new and phone changed lead
         if($this->isNewLead || $this->isAddressUpdate) {
             $addressDuplicatedServices = new AddressDuplicationApplicationService(
                 $this->unitNumber,
@@ -181,13 +188,14 @@ class DuplicationApplicationService
     }
 
     /**
-     * @param Builder $builder
+     * @param Builder|null $builder
      * @return bool
      */
-    private function isSetGroupID(Builder $builder):bool
+    private function isSetGroupID(?Builder $builder):bool
     {
-//        info('database value', ['count' => $builder->count()]);
-        if(($builder->count()<= 1)) {
+
+        info('database value', ['count' => $builder]);
+        if(empty($builder) || $builder->count()< 1) {
             return  false;
         }
 
@@ -243,7 +251,6 @@ class DuplicationApplicationService
 
         $setGroupId = $this->isSetGroupID($this->duplicatedPhoneBuilder);
         if($setGroupId && !$updateGroupId) {
-//            info('duplicatedAddressBuilder');
             $this->duplicatedAddressBuilder->update(
                 [
                     'is_duplicate' => true,
@@ -258,6 +265,11 @@ class DuplicationApplicationService
     {
         $this->findAndSetDuplicatedLeadQuery();
         $this->updateGroupId();
+
+        if($this->duplicatedGroupId === 'null') {
+            $this->duplicatedGroupId = null;
+        }
+
         return $this->duplicatedGroupId;
     }
 

@@ -34,8 +34,11 @@ class ConnectionApplicationObserver
 
 
         $duplicatedKey = ($this->afterCreatedApplication($connectionApplication->toArray()))->updateDuplicatedApp();
-        $connectionApplication->is_duplicate = true;
-        $connectionApplication->duplication_group_id = $duplicatedKey;
+        if(!empty( $duplicatedKey)) {
+            $connectionApplication->is_duplicate = true;
+            $connectionApplication->duplication_group_id = $duplicatedKey;
+        }
+
     }
 
     /**
@@ -179,7 +182,7 @@ class ConnectionApplicationObserver
     {
         $datum = $this->prepareDuplicatedKeys($data);
         if($data['phone_type'] === ConnectionApplication::PHONE_TYPE_HOMEPHONE) {
-            $datum['phone']  = $data['homephone'];
+            $datum['phone']  = isset($data['homephone']) ?? null;
         }
         return  (new DuplicationApplicationService($datum, true));
 
