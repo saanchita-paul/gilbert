@@ -249,7 +249,7 @@ class DuplicationApplicationService
             );
         }
 
-        $setGroupId = $this->isSetGroupID($this->duplicatedPhoneBuilder);
+        $setGroupId = $this->isSetGroupID($this->duplicatedAddressBuilder);
         if($setGroupId && !$updateGroupId) {
             $this->duplicatedAddressBuilder->update(
                 [
