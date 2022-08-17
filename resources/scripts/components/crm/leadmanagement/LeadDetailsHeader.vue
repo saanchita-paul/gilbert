@@ -17,7 +17,7 @@
                     </p>
                 </div>
                 <div v-if="showDuplicateLeadButton">
-                    <v-btn outlined color="primary" @click="duplicateLead">
+                    <v-btn outlined text class="view_application" @click="duplicateLead">
                         View duplicate lead
                         <v-icon
                             right
@@ -251,6 +251,9 @@ name: "LeadDetailsHeader",
     }
     .successColor{
         color: $successColor;
+    }
+    .view_application {
+        background: #FFC104
     }
     .buttonBackgroundColor{
         background-color: $buttonBackgroundColor;
