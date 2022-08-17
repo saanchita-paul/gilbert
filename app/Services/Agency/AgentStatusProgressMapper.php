@@ -163,11 +163,19 @@ class AgentStatusProgressMapper
      */
     private function handleEscalatedApplicationStatus(): void
     {
-        if ($this->assignedTo == null || ($this->checkServiceStatusForContacting() && $this->assignedTo != null)) {
+        if ($this->assignedTo == null) {
+            array_push(
+                $this->links,
+                $this->getNewProgressStatus(true, true),
+                $this->getContactingProgressStatus(),
+                $this->getConfirmedProgressStatus()
+            );
+        } else if ($this->checkServiceStatusForContacting() && $this->assignedTo != null) {
             array_push(
                 $this->links,
                 $this->getNewProgressStatus(true),
-                $this->getContactingProgressStatus(true, true)
+                $this->getContactingProgressStatus(true, true),
+                $this->getConfirmedProgressStatus()
             );
         } else if ($this->checkServiceStatusForConfirmed()) {
             array_push(
@@ -277,7 +285,9 @@ class AgentStatusProgressMapper
     private function getEscalatedStatus(): string
     {
         foreach ($this->services as $service) {
-            if ($service->service_type &&
+            if($this->assignedTo == null){
+                return 'New';
+            } else if ($service->service_type &&
                 ($service->status == ConnectionService::STATUS_SUBMITTED ||
                     $service->status == ConnectionService::STATUS_ACCEPTED ||
                     $service->status == ConnectionService::STATUS_ENERGY_SUBMIT)) {
