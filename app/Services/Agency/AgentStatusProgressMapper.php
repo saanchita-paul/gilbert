@@ -42,13 +42,19 @@ class AgentStatusProgressMapper
     {
         switch ($this->applicationStatus) {
             case ConnectionApplication::STATUS_UNASSIGNED: // 1
-                $this->links[] = $this->getNewProgressStatus();
+                array_push(
+                    $this->links,
+                    $this->getNewProgressStatus(true, true),
+                    $this->getContactingProgressStatus(),
+                    $this->getConfirmedProgressStatus()
+                );
                 break;
             case ConnectionApplication::STATUS_ASSIGNED: // 2
                 array_push(
                     $this->links,
-                    $this->getNewProgressStatus(),
-                    $this->getContactingProgressStatus()
+                    $this->getNewProgressStatus(true),
+                    $this->getContactingProgressStatus(true, true),
+                    $this->getConfirmedProgressStatus()
                 );
                 break;
             case ConnectionApplication::STATUS_ESCALATED: // 3
@@ -59,9 +65,9 @@ class AgentStatusProgressMapper
             case ConnectionApplication::STATUS_EA_PROCESSINF: // 7
                 array_push(
                     $this->links,
-                    $this->getNewProgressStatus(),
-                    $this->getContactingProgressStatus(),
-                    $this->getConfirmedProgressStatus()
+                    $this->getNewProgressStatus(true),
+                    $this->getContactingProgressStatus(true),
+                    $this->getConfirmedProgressStatus(true, true)
                 );
                 break;
             case ConnectionApplication::STATUS_CLOSED: // 8
@@ -85,23 +91,23 @@ class AgentStatusProgressMapper
         if ($this->assignedTo == null) {
             array_push(
                 $this->links,
-                $this->getNewProgressStatus(),
-                $this->getClosedProgressStatus()
+                $this->getNewProgressStatus(true),
+                $this->getClosedProgressStatus(true, true)
             );
         } else if ($this->checkServiceStatusForContacting() && $this->assignedTo != null) {
             array_push(
                 $this->links,
-                $this->getNewProgressStatus(),
-                $this->getContactingProgressStatus(),
-                $this->getClosedProgressStatus()
+                $this->getNewProgressStatus(true),
+                $this->getContactingProgressStatus(true),
+                $this->getClosedProgressStatus(true, true)
             );
         } else if ($this->checkServiceStatusForConfirmed() && $this->assignedTo != null) {
             array_push(
                 $this->links,
-                $this->getNewProgressStatus(),
-                $this->getContactingProgressStatus(),
-                $this->getConfirmedProgressStatus(),
-                $this->getClosedProgressStatus()
+                $this->getNewProgressStatus(true),
+                $this->getContactingProgressStatus(true),
+                $this->getConfirmedProgressStatus(true),
+                $this->getClosedProgressStatus(true, true)
             );
         } else {
             $this->links = [];
@@ -160,15 +166,15 @@ class AgentStatusProgressMapper
         if ($this->assignedTo == null || ($this->checkServiceStatusForContacting() && $this->assignedTo != null)) {
             array_push(
                 $this->links,
-                $this->getNewProgressStatus(),
-                $this->getContactingProgressStatus()
+                $this->getNewProgressStatus(true),
+                $this->getContactingProgressStatus(true, true)
             );
         } else if ($this->checkServiceStatusForConfirmed()) {
             array_push(
                 $this->links,
-                $this->getNewProgressStatus(),
-                $this->getContactingProgressStatus(),
-                $this->getConfirmedProgressStatus()
+                $this->getNewProgressStatus(true),
+                $this->getContactingProgressStatus(true),
+                $this->getConfirmedProgressStatus(true, true)
             );
         } else {
             $this->links = [];
@@ -178,42 +184,53 @@ class AgentStatusProgressMapper
     /**
      * Getting new status progress data
      *
+     * @param bool $barColor
+     * @param bool $textColor
      * @return array
      */
-    private function getNewProgressStatus(): array
+    private function getNewProgressStatus(bool $barColor = false, bool $textColor = false): array
     {
         return [
             'step_name' => 'New',
             'description' => 'We have received the application and will be in touch with the customer very soon.',
-            'active' => true
+            'bar_color' => $barColor,
+            'text_color' => $textColor
         ];
     }
 
     /**
      * Getting contacting status progress data
      *
+     * *
+     * @param bool $barColor
+     * @param bool $textColor
      * @return array
      */
-    private function getContactingProgressStatus(): array
+    private function getContactingProgressStatus(bool $barColor = false, bool $textColor = false): array
     {
         return [
             'step_name' => 'Contacting...',
             'description' => 'We are attempting to contact the customer to confirm their connections.',
-            'active' => true
+            'bar_color' => $barColor,
+            'text_color' => $textColor
         ];
     }
 
     /**
      * Getting confirmed status progress data
      *
+     * *
+     * @param bool $barColor
+     * @param bool $textColor
      * @return array
      */
-    private function getConfirmedProgressStatus(): array
+    private function getConfirmedProgressStatus(bool $barColor = false, bool $textColor = false): array
     {
         return [
             'step_name' => 'Confirmed',
             'description' => 'We have spoken to the customer and confirmed their connections.',
-            'active' => true
+            'bar_color' => $barColor,
+            'text_color' => $textColor
         ];
     }
 
@@ -221,14 +238,18 @@ class AgentStatusProgressMapper
     /**
      * Getting close status progress data
      *
+     * *
+     * @param bool $barColor
+     * @param bool $textColor
      * @return array
      */
-    private function getClosedProgressStatus(): array
+    private function getClosedProgressStatus(bool $barColor = false, bool $textColor = false): array
     {
         return [
             'step_name' => 'Closed',
             'description' => 'The customer decided not to go ahead or we could not get in touch with them.',
-            'active' => true
+            'bar_color' => $barColor,
+            'text_color' => $textColor
         ];
     }
 

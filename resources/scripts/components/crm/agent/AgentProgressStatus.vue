@@ -1,11 +1,10 @@
 <template>
     <div class="stepper-wrapper">
-        <div class="stepper-item" v-for="(item, index) in statusItems" :key="index"
-             :class="{completed: item.active}">
-            <v-tooltip bottom>
+        <div class="stepper-item" :class="{completed: item.bar_color}" v-for="(item, index) in statusItems" :key="index">
+            <v-tooltip bottom content-class='custom-tooltip'>
                 <template v-slot:activator="{ on, attrs }">
-                    <div class="step-name">{{ item.step_name }}</div>
-                    <div class="step-counter" v-on="on">{{ index + 1 }}</div>
+                    <div :class="{stepName: item.text_color}">{{ item.step_name }}</div>
+                    <div class="step-counter" v-on="on"></div>
                 </template>
                 <div>
                     <v-card
@@ -41,7 +40,7 @@ export default {
     computed: {
         statusItems(){
             return this.agentProgressStatus;
-        }
+        },
     }
 }
 </script>
@@ -66,7 +65,7 @@ export default {
     content: "";
     border-bottom: 4px solid #dddddd;
     width: 100%;
-    top: 35px;
+    top: 30px;
     left: -50%;
     z-index: 2;
 }
@@ -76,13 +75,14 @@ export default {
     content: "";
     border-bottom: 4px solid #dddddd;
     width: 100%;
-    top: 35px;
+    top: 30px;
     left: 50%;
     z-index: 2;
 }
 
-.stepper-item .step-name {
-    /*color: #542E89;*/
+.stepper-item .stepName {
+    color: #542E89;
+    font-weight: bolder;
 }
 
 .stepper-item .step-counter {
@@ -91,8 +91,8 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     background: #FFFFFF;
     border: 4px solid #dddddd;
@@ -101,7 +101,6 @@ export default {
 }
 
 .stepper-item.completed .step-counter {
-    background-color: #542E89;
     border-color: #542E89;
     color: #FFFFFF;
 }
@@ -111,7 +110,7 @@ export default {
     content: "";
     border-bottom: 4px solid #542E89;
     width: 100%;
-    top: 35px;
+    top: 30px;
     left: -50%;
     z-index: 3;
 }
@@ -127,5 +126,9 @@ export default {
 
 .v-tooltip__content {
     background-color: transparent;
+}
+
+.custom-tooltip {
+    opacity: 1!important;
 }
 </style>

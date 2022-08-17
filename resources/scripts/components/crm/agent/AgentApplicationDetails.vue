@@ -85,7 +85,7 @@
                     <p class="preferenceTitle mt-4 mb-2">Service Preference</p>
                     <v-row>
                         <v-col class="my-0 py-0 mx-0">
-                            <v-tooltip bottom>
+                            <v-tooltip bottom content-class='custom-tooltip'>
                                 <template v-slot:activator="{ on, attrs }">
                                     <span v-on="on">
                                         <p class="pt-2 pb-1 mb-0 services">
@@ -95,8 +95,7 @@
                                                     color="yellow">mdi-flash</v-icon>Power
                                             </span>
                                         </p>
-                                        <p class="py-0 my-0 pl-5 service-status active-power-subtitle"
-                                           :class="getSubtitleColor('power')">
+                                        <p class="py-0 my-0 pl-5 service-status">
                                             {{ getPowerText.status_name }}
                                         </p>
                                     </span>
@@ -121,7 +120,7 @@
                             </v-tooltip>
                         </v-col>
                         <v-col class="my-0 py-0 mx-0">
-                            <v-tooltip bottom>
+                            <v-tooltip bottom content-class='custom-tooltip'>
                                 <template v-slot:activator="{ on, attrs }">
                                     <span v-on="on">
                                         <p class="pt-2 pb-1 mb-0 services">
@@ -131,8 +130,7 @@
                                                     color="red">mdi-fire</v-icon>Gas
                                             </span>
                                         </p>
-                                        <p class="py-0 my-0 pl-5 service-status active-power-subtitle"
-                                           :class="getSubtitleColor('gas')">
+                                        <p class="py-0 my-0 pl-5 service-status">
                                             {{ getGasText.status_name }}
                                         </p>
                                     </span>
@@ -157,7 +155,7 @@
                             </v-tooltip>
                         </v-col>
                         <v-col class="my-0 py-0 mx-0">
-                            <v-tooltip bottom>
+                            <v-tooltip bottom content-class='custom-tooltip'>
                                 <template v-slot:activator="{ on, attrs }">
                                     <span v-on="on">
                                         <p class="pt-2 pb-1 mb-0 services">
@@ -167,8 +165,7 @@
                                                     color="blue">mdi-water</v-icon>Water
                                             </span>
                                         </p>
-                                        <p class="py-0 my-0 pl-5 service-status"
-                                           :class="getSubtitleColor('water')">
+                                        <p class="py-0 my-0 pl-5 service-status">
                                             {{ getWaterText.status_name }}
                                         </p>
                                     </span>
@@ -193,7 +190,7 @@
                             </v-tooltip>
                         </v-col>
                         <v-col class="my-0 py-0 mx-0">
-                            <v-tooltip bottom>
+                            <v-tooltip bottom content-class='custom-tooltip'>
                                 <template v-slot:activator="{ on, attrs }">
                                     <span v-on="on">
                                         <p class="pt-2 pb-1 mb-0 services">
@@ -203,8 +200,7 @@
                                                     color="green">mdi-wifi</v-icon>Internet
                                             </span>
                                         </p>
-                                        <p class="py-0 my-0 pl-5 service-status active-power-subtitle"
-                                           :class="getSubtitleColor('internet')">
+                                        <p class="py-0 my-0 pl-5 service-status">
                                             {{ getInternetText.status_name }}
                                         </p>
                                     </span>
@@ -472,6 +468,10 @@ export default {
 
 .v-tooltip__content {
     background-color: transparent;
+}
+
+.custom-tooltip {
+    opacity: 1!important;
 }
 
 </style>
