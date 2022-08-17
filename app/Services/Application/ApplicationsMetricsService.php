@@ -109,7 +109,7 @@ class ApplicationsMetricsService
      */
     private function getDuplicateCount()
     {
-        $count = ConnectionApplication::where('is_duplicate', true)->distinct('duplication_group_id')->count();
+        $count = ConnectionApplication::where('is_duplicate', true)->count();
         return [
                 "type" => "duplicate",
                 "count" => $count

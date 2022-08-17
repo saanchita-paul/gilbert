@@ -5,7 +5,7 @@
 
      <v-row>
        <v-col> <p class="sub-title mt-4 mb-4">Personal Details</p> </v-col>
-       <v-col v-if="lead.is_duplicate"> <v-btn class="mt-2" text @click="showDuplicatesMessage"> View All Duplicates</v-btn> </v-col>
+       <v-col v-if="lead.is_duplicate"> <v-btn class="mt-2 view_application"   @click="showDuplicatesMessage"> View all duplicates</v-btn> </v-col>
      </v-row>
 
        <v-row>
@@ -314,6 +314,10 @@ export default {
 }
 .need_more_info{
     color: #FF5722 !important;
+}
+
+.view_application {
+    background: #FFC104
 }
 
 .border-all{
