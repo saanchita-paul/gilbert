@@ -40,3 +40,9 @@ export const getApplicationStatusText = (status, agent = false) => {
 
     return LEAD_STATUS_TO_TEXT[status] ?? ''
 }
+
+export const powerShopPaymentStatusNumberToName = {
+    1 : 'Pending',
+    2 : 'Valid',
+    3 : 'Invalid',
+};

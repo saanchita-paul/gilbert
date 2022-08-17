@@ -754,6 +754,23 @@
                     <p v-if="elecNote" class="cutoff-note">{{ elecNote }}</p>
                     <p v-if="gasNote" class="cutoff-note">{{ gasNote }}</p>
 
+                <div v-if="showPowerShopNoteSection">
+                    <v-alert text>
+                        <div class="alert-text alert-bolder-text mb-2">Please Note:</div>
+                        <div class="alert-text">
+                            <div>
+                                <span class="alert-bolder-text">Gas:&nbsp;</span>Please let customer know that gas will be connected by distributor in 3-5 business days.
+                            </div>
+                            <div>
+                                <span class="alert-bolder-text">Electricity:&nbsp;</span>You are trying to submit after same day cutoff time, Please choose different connection date
+                            </div>
+                            <div>
+                                <span class="alert-bolder-text">Electricity:&nbsp;</span>We don’t service same day connections for ACT. Please select a different connection date.
+                            </div>
+                        </div>
+                    </v-alert>
+                </div>
+
             </section>
 
             <v-footer  class="text-right">
@@ -775,6 +792,7 @@ import LeadApplicationService from "@scripts/services/crm/LeadApplicationService
 import SecondaryContactMapper from "@scripts/api/mappers/crm/SecondaryContactMapper";
 import {isNull} from "lodash-es";
 import PowershopService from "@scripts/modules/powershop/services/PowershopService";
+import {powerShopPaymentStatusNumberToName} from '@scripts/data/PowershopDataMapper';
 export default {
   name: "ConfirmSubmission",
     props:{
@@ -944,10 +962,12 @@ export default {
         },
         getPaymentStatus() {
             return this.paymentInformation?.powershop_payment_info.status
-                ? this.paymentInformation?.powershop_payment_info.status
-                : '';
+                ? powerShopPaymentStatusNumberToName[this.paymentInformation?.powershop_payment_info.status]
+                : 'Pending';
+        },
+        showPowerShopNoteSection () {
+            return this.data.selectedProvider === 'powershop';
         }
-
     },
     methods: {
         backToEdit() {
@@ -988,6 +1008,7 @@ export default {
             this.paymentInformation = await LeadApplicationService.loadUserLead(this.leadSummary.id);
         },
 
+
     },
     mounted() {
       this.validateCutOffTime();
@@ -1005,5 +1026,12 @@ export default {
 .cutoff-note {
     padding-left: 8px;
     color: red;
+}
+.alert-text {
+    color: #FF5722;
+    font-size: 18px;
+}
+.alert-bolder-text {
+    font-weight: 700;
 }
 </style>
