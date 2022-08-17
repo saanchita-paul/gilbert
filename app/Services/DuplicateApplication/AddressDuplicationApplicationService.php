@@ -150,7 +150,6 @@ class AddressDuplicationApplicationService implements DuplicateApplicationInterf
 
         // find text `unit` exist in the unit number or not
 
-        info('both unit number', [$this->extractUnitFromString($ca_unit_number), $this->extractUnitFromString($this->unitNumber)]);
 
         if($this->extractUnitFromString($ca_unit_number) === $this->extractUnitFromString($this->unitNumber)) {
             return true;
@@ -171,10 +170,10 @@ class AddressDuplicationApplicationService implements DuplicateApplicationInterf
 
         $pos = stripos($ca_unit_number, 'unit');
         if($pos) {
-            return preg_replace('/[A-Za-z0-9]/', '', substr($ca_unit_number, $pos + 4));
+            return preg_replace('/[^A-Za-z0-9]/', '', substr($ca_unit_number, $pos + 4));
         }
-        $ca_unit_number = preg_replace('/[A-Za-z0-9]/', '', $ca_unit_number);
-        if($ca_unit_number[0] === 'u') {
+        $ca_unit_number = preg_replace('/[^A-Za-z0-9]/', '', $ca_unit_number);
+        if(strlen($ca_unit_number)>1 && $ca_unit_number[0] === 'u') {
             return substr($ca_unit_number, 1);
         }
 
