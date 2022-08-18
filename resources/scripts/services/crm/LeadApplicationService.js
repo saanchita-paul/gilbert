@@ -10,6 +10,8 @@ import {
 } from "@scripts/data/ConnectionApplicationMapper";
 import Store from "@scripts/store";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
+import {isNull} from "lodash-es";
+import DuplicateLeadService from "@scripts/services/crm/DuplicateLeadService";
 
 export default {
     loadMetrics: data => LeadApplicationAPI.getMetrics(data),
@@ -17,13 +19,21 @@ export default {
     loadAgencyMetricsByApplication: data =>
         LeadApplicationAPI.loadAgencyMetricsByApplication(data),
     loadUserLeadMetrics: () => LeadApplicationAPI.getUserLeadMetrics(),
-    loadUserLeads: (sort_search_meta, active_lead_type, src = "hood", params) =>
-        LeadApplicationAPI.getUserLeads(
+    loadUserLeads: (sort_search_meta, active_lead_type, src = "hood", params) => {
+
+        // if(!isNull(params.duplication_group_id)) {
+        //    return  DuplicateLeadService.getDuplicateLeadData(
+        //        params.duplication_group_id)
+        // }
+        return  LeadApplicationAPI.getUserLeads(
             sort_search_meta,
             active_lead_type,
             src,
             params
-        ),
+        )
+
+
+    },
     loadUserLeadsForAgents: (
         sort_search_meta,
         active_lead_type,

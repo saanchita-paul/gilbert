@@ -17,7 +17,11 @@ export default {
     mapApplication(data) {
         let model = Object.assign(new Application(), { ...data });
         model.status = this.mapStatus(model.status);
-        model.moving_date = new DayJS(model.moving_date).format(DATE_FORMAT.DB_DATE);
+        model.moving_date = new DayJS(data.moving_date).format(DATE_FORMAT.DB_DATE);
+        model.created_at = data.created_at;
+        model.submitted_at = dayjs(data.submitted_at).isValid()? dayjs(data.submitted_at).format(DATE_FORMAT.DB_DATE): '';
+        
+
         if(isNull(data.created_by_agent))
         {
             model.created_by = '';
