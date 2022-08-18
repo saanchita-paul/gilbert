@@ -87,7 +87,7 @@ export default {
     },
     computed: {
         getPlanName() {
-            return this.plan?.vdo?.marketing_offer_name ? this.plan?.vdo?.marketing_offer_name : '';
+            return this.plan?.plan_name_text ? this.plan?.plan_name_text : '';
         }
     },
 	methods : {

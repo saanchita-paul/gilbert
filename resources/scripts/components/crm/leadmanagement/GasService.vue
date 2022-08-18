@@ -68,9 +68,6 @@
                     @click.native="selectPlan(plan)"
                     :isActive="selectedPlan"
                     @toggleDialog="toggleOriginPlanDetails"
-                    :serviceType="isBothEnergySubmit ? 'energy' : 'gas'"
-                    :selectedPlan="selectedPlan"
-                    :leadSummary="leadSummary"
                 ></OriginPlan>
             </div>
 
@@ -149,6 +146,7 @@
                     :serviceType="isBothEnergySubmit ? 'energy' : 'gas'"
                     :selectedPlan="selectedPlan"
                     :leadSummary="leadSummary"
+                    :planDetails="planDetails"
                 />
             </v-card>
         </v-dialog>
@@ -182,6 +180,9 @@ import SumoPlanDetails from "@scripts/components/crm/leadmanagement/SumoPlanDeta
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import {isNull} from "lodash-es";
 import {connectionServicesMapper} from "@scripts/data/ConnectionApplicationMapper";
+import OriginService from "@scripts/modules/origin/services/OriginService";
+import OriginMapper from "@scripts/modules/origin/api/mappers/OriginMapper";
+import ProviderPlan from "@scripts/models/crm/ProviderPlan";
 
 export default {
     //todo reduce emit functions
@@ -218,6 +219,7 @@ export default {
             sumoPlanDetails: false,
             originPlans: [],
             originPlanDetails: false,
+            planDetails: null
         };
     },
     computed: {
@@ -295,10 +297,34 @@ export default {
             return UtilityStoreService.getGasStatus() === connectionServicesMapper.STATUS_REJECTED
             || UtilityStoreService.getGasStatus() === connectionServicesMapper.STATUS_CANT_CONNECT;
         },
+        getNMIPrefix() {
+            return this.leadSummary.nmi?.substr(0, 2) ?? '';
+        },
+        state() {
+            switch(this.leadSummary.state) {
+                case "New South Wales":
+                    return 'nsw'
+                case "Victoria":
+                    return 'vic'
+                case "Queensland":
+                    return 'qld'
+                case "South Australia":
+                    return 'sa'
+                case "Northern Territory":
+                    return 'nt'
+                case "Tasmania":
+                    return 'tas'
+                case "Australian Capital Territory":
+                    return 'act'
+                case 'Western Australia':
+                    return 'wa'
+            }
+        },
     },
     mounted() {
         this.fetchEaPlans();
-        this.fetchOriginPlans();
+        this.getOriginData();
+        // this.fetchOriginPlans();
         this.loadSelectedProviderAndPlan();
 
         // On address change refetch Sumo Plan Details
@@ -309,6 +335,14 @@ export default {
         this.$once("hook:beforeDestroy", () => {
             this.$eventBus.$off("address_updated", updateAddress);
         });
+    },
+    watch: {
+        isBothEnergySubmit() {
+            this.getOriginData()
+        },
+        getNMIPrefix() {
+            this.getOriginData()
+        },
     },
     methods: {
         loadSelectedProviderAndPlan() {
@@ -448,7 +482,34 @@ export default {
         },
         async changeGoNeutral() {
             await LeadApplicationService.saveSoleField('ea_go_neutral', this.leadSummary.ea_go_neutral, this.leadSummary.id);
-        }
+        },
+        async getOriginData() {
+            let query = null;
+            if(this.isBothEnergySubmit) {
+                query = {
+                    state: this.state,
+                    postcode: this.leadSummary.postcode,
+                    nmi_prefix: this.getNMIPrefix,
+                }
+            } else {
+                query = {
+                    service_type: 'gas',
+                    state: this.state,
+                    postcode: this.leadSummary.postcode,
+                    nmi_prefix: this.getNMIPrefix,
+                }
+            }
+
+            this.planDetails = await OriginService.getOriginData(query);
+
+            this.originPlans = [new ProviderPlan({
+                title: this.planDetails.plans.gas.plan_name_text,
+                name: this.planDetails.plans.gas.plan_name_code,
+                bgColor: 'red',
+                type: 'gas',
+            })]
+
+        },
     },
 };
 </script>
