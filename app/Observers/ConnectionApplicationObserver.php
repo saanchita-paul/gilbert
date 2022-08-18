@@ -182,7 +182,7 @@ class ConnectionApplicationObserver
     {
         $datum = $this->prepareDuplicatedKeys($data);
         if($data['phone_type'] === ConnectionApplication::PHONE_TYPE_HOMEPHONE) {
-            $datum['phone']  = isset($data['homephone']) ?? null;
+            $datum['phone']  = isset($data['homephone']) ? $data['homephone']: null;
         }
         return  (new DuplicationApplicationService($datum, true));
 
