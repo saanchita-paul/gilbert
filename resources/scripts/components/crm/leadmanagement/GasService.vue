@@ -68,6 +68,9 @@
                     @click.native="selectPlan(plan)"
                     :isActive="selectedPlan"
                     @toggleDialog="toggleOriginPlanDetails"
+                    :serviceType="isBothEnergySubmit ? 'energy' : 'gas'"
+                    :selectedPlan="selectedPlan"
+                    :leadSummary="leadSummary"
                 ></OriginPlan>
             </div>
 
