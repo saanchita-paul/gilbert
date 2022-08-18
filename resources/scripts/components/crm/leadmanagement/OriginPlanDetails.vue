@@ -46,7 +46,7 @@
 								<a :href="item.file_url" target="_blank">{{ planDetails.plans.electricity.distributor_name }} - {{ item.offer_name }}</a>
 							</div>
 						</div>
-						
+
 						<div v-if="willShowGas">
 							<span class="font-weight-bold mb-0" style="font-size:14px;">Gas</span>
 							<div v-for="item in planDetails.plans.gas.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
@@ -63,7 +63,7 @@
 								<a href="https://www.originenergy.com.au/bpidlink/" target="_blank">https://www.originenergy.com.au/bpidlink/</a>
 							</div>
 						</div>
-						
+
 						<div v-if="willShowGas">
 							<span class="font-weight-bold mb-0" style="font-size:14px;">Gas</span>
 							<div v-if="this.leadSummary.state == 'Victoria'" class="pb-2" style="font-size:14px;">
@@ -73,7 +73,7 @@
 								<a href="https://www.originenergy.com.au/bpidlink/" target="_blank">https://www.originenergy.com.au/bpidlink/</a>
 							</div>
 						</div>
-						
+
 						<div class="pt-8 pb-2" style="font-size:14px;">
                             <a href="https://google.com" target="_blank">Terms and conditions</a>
 						</div>
@@ -162,19 +162,19 @@ export default {
 			switch(this.leadSummary.state) {
 				case "New South Wales":
 					return 'nsw'
-				case "Victoria": 
+				case "Victoria":
 					return 'vic'
-				case "Queensland": 
+				case "Queensland":
 					return 'qld'
-				case "South Australia": 
+				case "South Australia":
 					return 'sa'
-				case "Northern Territory": 
+				case "Northern Territory":
 					return 'nt'
 				case "Tasmania":
 					return 'tas'
-				case "Australian Capital Territory": 
+				case "Australian Capital Territory":
 					return 'act'
-				case 'Western Australia': 
+				case 'Western Australia':
 					return 'wa'
 			}
 		},
@@ -212,8 +212,9 @@ export default {
 						nmi_prefix: this.getNMIPrefix,
 					}
 			}
-			
+
 			this.planDetails = await OriginService.getOriginData(query);
+            console.log('Origin Plan Details: ', this.planDetails);
 		},
         closeDialog(){
             this.$emit('toggleDialog')

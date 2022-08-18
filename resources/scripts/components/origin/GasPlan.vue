@@ -2,7 +2,7 @@
 	<div>
 		<div class="plan-title-header pt-2 pl-4 pr-4 pb-2 d-flex justify-space-between">
 			<div>
-				<p class="font-weight-bold mb-0" style="font-size:24px">Origin Advantage Variable </p>
+				<p class="font-weight-bold mb-0" style="font-size:24px">{{ getPlanName }} </p>
 				<p style="font-size:20px">Gas</p>
 			</div>
 		</div>
@@ -70,6 +70,11 @@ export default {
 			require: true,
 		}
 	},
+    computed: {
+        getPlanName() {
+            return this.plan?.plan_name ? this.plan?.plan_name : '';
+        }
+    }
 }
 </script>
 

@@ -13,6 +13,12 @@
 export default {
     name: "OriginPlan",
     props: ["plan", "isActive"],
+    computed: {
+
+    },
+    mounted() {
+        console.log('Origin plan mounted');
+    },
     methods: {
         reviewPlan() {
             this.$emit("toggleDialog");
