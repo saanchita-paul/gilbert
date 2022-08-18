@@ -185,14 +185,24 @@ class IgniteLeadService
      */
     private function setOfficeAndAgencyId(array $leadInfo) : void{
         try {
-            $agencyName = $leadInfo['agency']['name'];
-            $agency = Agency::where('name' , $agencyName)->first();
-            if (!$agency) {
-                $agency = Agency::where('name', "Ignite-Hood-Agency")->first();
+            if ($this->connectionApplication->createdBy()->exists()){
+                $agentProfile = $this->connectionApplication->createdBy;
+                $agentAgencyId = $agentProfile->agency_id;
+                $agentOfficeId = $agentProfile->office_id;
+
+                $this->connectionApplication->agency_id = $agentAgencyId;
+                $this->connectionApplication->office_id = $agentOfficeId;                    
             }
-            $this->connectionApplication->agency_id = $agency?->id ?? 1;
-            $this->connectionApplication->office_id = $agency?->offices[0]?->id ?? 1;
-            if(!$agency) throw new Exception('Please run FoxieSeeder');
+            else{
+                $agencyName = $leadInfo['agency']['name'];
+                $agency = Agency::where('name' , $agencyName)->first();
+                if (!$agency) {
+                    $agency = Agency::where('name', "Ignite-Hood-Agency")->first();
+                }
+                $this->connectionApplication->agency_id = $agency?->id ?? 1;
+                $this->connectionApplication->office_id = $agency?->offices[0]?->id ?? 1;
+                if(!$agency) throw new Exception('Please run FoxieSeeder');
+            }
         } catch (\Exception $exception) {
             Log::error("Please run IgniteSeeder , php artisan db:seed --class=IgniteSeeder");
             \Log::error($exception->getMessage());
@@ -230,7 +240,7 @@ class IgniteLeadService
             NotifyBadAgentMailService::check(
                 $this->connectionApplication,
                 'Ignite',
-                $this->lead->agency_name ?? '',
+                $this->connectionApplication->agency->name ?? ($this->lead->agency_name ?? ''),
                 $this->connectionApplication->office->name ?? 'Ignite-Hood-Office',
                 $this->lead->agent_email ?? '',
             );
