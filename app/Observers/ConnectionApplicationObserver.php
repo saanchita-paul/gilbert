@@ -181,7 +181,7 @@ class ConnectionApplicationObserver
     private function afterCreatedApplication(array $data): DuplicationApplicationService
     {
         $datum = $this->prepareDuplicatedKeys($data);
-        if($data['phone_type'] === ConnectionApplication::PHONE_TYPE_HOMEPHONE) {
+        if( isset($data['phone_type']) && $data['phone_type'] === ConnectionApplication::PHONE_TYPE_HOMEPHONE) {
             $datum['phone']  = isset($data['homephone']) ? $data['homephone']: null;
         }
         return  (new DuplicationApplicationService($datum, true));
