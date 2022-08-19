@@ -221,9 +221,9 @@ export default {
      * @return {string}
      */
     mapPlan: plan => {
-        return plan.toLowerCase().split('_')
+        return plan ? plan.toLowerCase().split('_')
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
+            .join(' ') : null;
     },
 
     clearConcessionDetails: id => LeadApplicationAPI.clearConcessionDetails(id),

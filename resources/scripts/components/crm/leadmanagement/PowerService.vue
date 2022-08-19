@@ -507,7 +507,7 @@ export default {
 
             this.planDetails = await OriginService.getOriginData(query);
 
-             if (this.planDetails.plans.electricity !== null) {
+             if (this.planDetails.plans.electricity) {
                  this.originPlans = [
                      new ProviderPlan({
                         title: this.planDetails.plans.electricity?.plan_name_text,
