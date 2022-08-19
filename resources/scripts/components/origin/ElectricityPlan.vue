@@ -16,7 +16,7 @@
 			<p class="font-weight-bold" style="font-size:26px">{{ plan.offers.title }}</p>
 			<p class="font-weight-bold" style="font-size:14px">{{ plan.offers.line_1}}</p>
 			<p class="plan-content">{{plan.offers.line_2}}</p>
-			<p class="plan-content">Guarantee usage and supply charges will not increase for 12 months.</p>
+			<p class="plan-content">The usage and supply charges may change during the 12 month energy plan period. Origin will let you know if they do.</p>
 			<p class="plan-content">Other charges and any solar feed-in tariff may change.</p>
 		</div>
 		<v-expansion-panels>

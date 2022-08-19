@@ -502,13 +502,16 @@ export default {
 
             this.planDetails = await OriginService.getOriginData(query);
 
-            this.originPlans = [new ProviderPlan({
-                title: this.planDetails.plans.gas.plan_name_text,
-                name: this.planDetails.plans.gas.plan_name_code,
-                bgColor: 'red',
-                type: 'gas',
-            })]
-
+            if (this.planDetails.plans.gas !== null) {
+                this.originPlans = [
+                    new ProviderPlan({
+                        title: this.planDetails.plans.gas?.plan_name_text,
+                        name: this.planDetails.plans.gas?.plan_name_code,
+                        bgColor: 'red',
+                        type: 'gas',
+                    })
+                ]
+            }
         },
     },
 };

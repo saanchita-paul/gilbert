@@ -367,16 +367,16 @@ export default {
             this.isEaPlansLoaded = true;
             console.log("eaPlans", this.eaPlans);
         },
-        async fetchOriginPlans() {
-            const originProvider = this.providers.find(pl => {
-                return pl.name === 'origin';
-            });
-
-            this.originPlans = originProvider.plans.filter(plan => {
-                return plan.type === 'power';
-            });
-            console.log("originPlans", this.originPlans);
-        },
+        // async fetchOriginPlans() {
+        //     const originProvider = this.providers.find(pl => {
+        //         return pl.name === 'origin';
+        //     });
+        //
+        //     this.originPlans = originProvider.plans.filter(plan => {
+        //         return plan.type === 'power';
+        //     });
+        //     console.log("originPlans", this.originPlans);
+        // },
         async fetchSumoPlans(name) {
             this.isSumoPlansLoading = true;
             this.isSumoPlansLoadError = false;
@@ -507,12 +507,16 @@ export default {
 
             this.planDetails = await OriginService.getOriginData(query);
 
-             this.originPlans = [new ProviderPlan({
-                title: this.planDetails.plans.electricity.plan_name_text,
-                name: this.planDetails.plans.electricity.plan_name_code,
-                bgColor: 'red',
-                type: 'power',
-            })]
+             if (this.planDetails.plans.electricity !== null) {
+                 this.originPlans = [
+                     new ProviderPlan({
+                        title: this.planDetails.plans.electricity?.plan_name_text,
+                        name: this.planDetails.plans.electricity?.plan_name_code,
+                        bgColor: 'red',
+                        type: 'power',
+                    })
+                 ]
+             }
         },
     },
 };

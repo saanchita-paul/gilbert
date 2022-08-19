@@ -40,20 +40,6 @@
 							you by letter about any such change.
 						</p>
 
-						<!-- <div v-if="willShowElectricity">
-							<span class="font-weight-bold mb-0" style="font-size:14px;">Electricity</span>
-							<div v-for="item in planDetails.plans.electricity.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
-								<a :href="item.file_url" target="_blank">{{ planDetails.plans.electricity.distributor_name }} - {{ item.offer_name }}</a>
-							</div>
-						</div>
-
-						<div v-if="willShowGas">
-							<span class="font-weight-bold mb-0" style="font-size:14px;">Gas</span>
-							<div v-for="item in planDetails.plans.gas.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
-								<a :href="item.file_url" target="_blank">{{ planDetails.plans.gas.distributor_name }} - {{ item.offer_name }}</a>
-							</div>
-						</div> -->
-
 						<div v-if="willShowElectricity">
 							<span class="font-weight-bold mb-0" style="font-size:14px;">Electricity</span>
 							<div v-if="this.leadSummary.state == 'Victoria'" class="pb-2" style="font-size:14px;">
@@ -119,10 +105,10 @@ export default {
 	},
 	computed: {
 		willShowElectricity() {
-			return this.planDetails?.plans?.electricity ;
+			return this.planDetails?.plans?.electricity;
 		},
 		willShowGas() {
-			return this.planDetails?.plans?.gas ;
+			return this.planDetails?.plans?.gas;
 		},
 	},
 	watch: {},
