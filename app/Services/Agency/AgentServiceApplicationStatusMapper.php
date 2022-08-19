@@ -53,10 +53,11 @@ class AgentServiceApplicationStatusMapper
     private function mapEnergyStatus(string $serviceType, ?int $status): void
     {
         $value = match ($status) {
-            ConnectionService::STATUS_SUBMITTED,
             ConnectionService::STATUS_ACCEPTED => ['status_name' => 'Confirmed', 'description' => 'The connection has been processed and accepted by the provider.'],
             ConnectionService::STATUS_REJECTED,
             ConnectionService::STATUS_CANT_CONNECT => ['status_name' => 'Declined', 'description' => 'The connection has been processed but was declined by the provider.'],
+            ConnectionService::STATUS_SUBMITTED,
+            ConnectionService::STATUS_ENERGY_SUBMIT,
             ConnectionService::AC_MANUAL_PROCESSING => ['status_name' => 'Awaiting Confirmation', 'description' => 'The connection is processed and we are awaiting confirmation from the provider.'],
             ConnectionService::STATUS_EA_PROCESSINF => ['status_name' => 'Not Applicable', 'description' => 'The connection is not required or is yet to be selected by the customer.'],
             default => self::DEFAULT_STATUS
