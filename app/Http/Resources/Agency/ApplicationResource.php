@@ -134,7 +134,7 @@ class ApplicationResource extends JsonResource
             'additional_access_information' => $this->additional_access_information,
             'is_power_life_support' => $this->is_power_life_support,
             'status_progress' => $this->mapStatusProgress(),
-            'connection_services_status' => $this->mapConnectionServiceStatus($this->connectionServices),
+            'connection_services_status' => $this->mapConnectionServiceStatus($this->connectionServices, $this->tenancy_type, $this->state),
             'application_status' => $this->mapApplicationStatus(),
             'email_manually_verified_by' => $this->email_manually_verified_by,
         ];
@@ -287,10 +287,10 @@ class ApplicationResource extends JsonResource
      * @param $services
      * @return array|string[]|string[][]
      */
-    public function mapConnectionServiceStatus($services):array
+    public function mapConnectionServiceStatus($services, $tenancyType, $state):array
     {
         try {
-            return (new AgentServiceApplicationStatusMapper())->getAgentServiceApplicationStatus($services);
+            return (new AgentServiceApplicationStatusMapper())->getAgentServiceApplicationStatus($services, $tenancyType, $state);
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
             return [];
