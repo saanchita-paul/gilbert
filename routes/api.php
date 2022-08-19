@@ -202,7 +202,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     // application closing reasons delete
     Route::delete('/app-close-reasons/{id}', [AppCloseReasonController::class, 'delete']);
 
-    
+
     Route::get('/rea-extract/corporate-report', [ReaExtractsReportController::class, 'getReaCorporateReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 
@@ -296,13 +296,7 @@ Route::get("/karan/sales-status", function () {
 // });
 
 
-Route::get('country_test', function () {
-    //  return SubmitWaterLeadToFastConnect::mapLengthOfCountry[2];
-    $s = new TsaCallHistoryService();
-    // ConnectionApplication::find(12)
-    // $s->saveCallHistory(ConnectionApplication::find(12));
-    $s->saveCallHistory(ConnectionApplication::find(12));
-});
+
 
 
 Route::get('/kaka', function () {

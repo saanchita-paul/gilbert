@@ -12,7 +12,7 @@ class SaveTsaCallHistoryCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'fetch:save-tsa-call-history';
+    protected $signature = 'tsa:save-call-history';
 
     /**
      * The console command description.
@@ -38,7 +38,6 @@ class SaveTsaCallHistoryCommand extends Command
      */
     public function handle()
     {
-        $service = new TsaCallHistoryService();
-        $service->saveCallHistoryBySchedule();
+        TsaCallHistoryService::run();
     }
 }
