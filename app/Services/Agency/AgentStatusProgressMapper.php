@@ -317,8 +317,6 @@ class AgentStatusProgressMapper
                     $service->status == ConnectionService::AC_MANUAL_PROCESSING ||
                     $service->status == ConnectionService::STATUS_ENERGY_SUBMIT)) {
                 return 'Confirmed';
-            } else {
-                return '';
             }
         }
         return '';
