@@ -149,6 +149,8 @@ class AgentStatusProgressMapper
                 ($service->status == ConnectionService::STATUS_SUBMITTED ||
                     $service->status == ConnectionService::STATUS_ACCEPTED ||
                     $service->status == ConnectionService::STATUS_REJECTED ||
+                    $service->status == ConnectionService::STATUS_ENERGY_SUBMIT ||
+                    $service->status == ConnectionService::AC_MANUAL_PROCESSING ||
                     $service->status == ConnectionService::STATUS_EA_PROCESSINF)) {
                 $electricityOrGas = true;
             }
@@ -287,9 +289,11 @@ class AgentStatusProgressMapper
         foreach ($this->services as $service) {
             if($this->assignedTo == null){
                 return 'New';
-            } else if ($service->service_type &&
+            } else if (in_array($service->service_type, [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS]) &&
                 ($service->status == ConnectionService::STATUS_SUBMITTED ||
                     $service->status == ConnectionService::STATUS_ACCEPTED ||
+                    $service->status == ConnectionService::AC_MANUAL_PROCESSING ||
+                    $service->status == ConnectionService::STATUS_REJECTED ||
                     $service->status == ConnectionService::STATUS_ENERGY_SUBMIT)) {
                 return 'Confirmed';
             }
@@ -306,15 +310,13 @@ class AgentStatusProgressMapper
     private function checkStatusForConfirmed(): string
     {
         foreach ($this->services as $service) {
-            if ($service->service_type &&
+            if (in_array($service->service_type, [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS]) &&
                 ($service->status == ConnectionService::STATUS_SUBMITTED ||
                     $service->status == ConnectionService::STATUS_ACCEPTED ||
                     $service->status == ConnectionService::STATUS_REJECTED ||
                     $service->status == ConnectionService::AC_MANUAL_PROCESSING ||
-                    $service->status == ConnectionService::STATUS_EA_PROCESSINF)) {
+                    $service->status == ConnectionService::STATUS_ENERGY_SUBMIT)) {
                 return 'Confirmed';
-            } else {
-                return '';
             }
         }
         return '';
