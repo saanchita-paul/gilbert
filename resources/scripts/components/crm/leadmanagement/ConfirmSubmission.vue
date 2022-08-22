@@ -764,13 +764,12 @@
                             <div>
                                 <span class="alert-bolder-text">Electricity:&nbsp;</span>You are trying to submit after same day cutoff time, Please choose different connection date
                             </div>
-                            <div>
+                            <div v-if="checkSameDayConnectionForACT">
                                 <span class="alert-bolder-text">Electricity:&nbsp;</span>We don’t service same day connections for ACT. Please select a different connection date.
                             </div>
                         </div>
                     </v-alert>
                 </div>
-
             </section>
 
             <v-footer  class="text-right">
@@ -793,6 +792,7 @@ import SecondaryContactMapper from "@scripts/api/mappers/crm/SecondaryContactMap
 import {isNull} from "lodash-es";
 import PowershopService from "@scripts/modules/powershop/services/PowershopService";
 import {powerShopPaymentStatusNumberToName} from '@scripts/data/PowershopDataMapper';
+import dayjs from "dayjs";
 export default {
   name: "ConfirmSubmission",
     props:{
@@ -967,6 +967,14 @@ export default {
         },
         showPowerShopNoteSection () {
             return this.data.selectedProvider === 'powershop';
+        },
+        checkSameDayConnectionForACT() {
+            return dayjs().isSame(dayjs(this.data.moving_date, 'DD/MM/YYYY').format('YYYY-MM-DD'), 'day')
+                && this.data.state === 'Australian Capital Territory';
+        },
+        checkGasBusinessDay() {
+            return this.data.selectedProvider === 'powershop'
+                && this.submitType === 'gas';
         }
     },
     methods: {
