@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use App\Models\ConnectionApplication;
 use Exception;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  *
@@ -39,7 +41,7 @@ class TsaCallHistoryService
     /**
      * @var int
      */
-    private int $concurrency = 100;
+    private int $concurrency;
     /**
      * @var int
      */
@@ -53,12 +55,23 @@ class TsaCallHistoryService
      */
     private int $totalChunks = 0;
 
+    private ProgressBar $progressBar;
+
+    private ConsoleOutput $consoleOutput;
+
+    private int $total;
+
     /**
      *
      */
-    public function __construct()
+    public function __construct(int $concurrency)
     {
+        $this->concurrency = $concurrency;
         $this->fetchTotalChunk();
+
+        $this->consoleOutput = new ConsoleOutput();
+
+        $this->progressBar = $this->createProgressBar($this->total);
     }
 
     /**
@@ -66,7 +79,6 @@ class TsaCallHistoryService
      */
     private function fetchConcurrently(): static
     {
-        dump(sizeof($this->appForUpdate) . ' apps to update');
         $url = \config('tsa.root_url') . \config('tsa.call_history');
         $client = new Client(['headers' => [
             'content-type' => 'application/json',
@@ -105,6 +117,7 @@ class TsaCallHistoryService
         } else {
             Log::error('No app found for id: ' . $index);
         }
+        $this->progressBar->advance();
     }
 
 
@@ -121,38 +134,11 @@ class TsaCallHistoryService
             $this->failedAppIds[$id] = $exception->getMessage();
             \Log::error("ERROR ID: $id", [$exception->getMessage()]);
         }
+
+//         $this->consoleOutput->writeln($exception->getMessage());
+        $this->progressBar->advance();
     }
 
-
-    /**
-     * @param $connection_application
-     * @return false|string
-     */
-    public function getCallHistory($connection_application)
-    {
-        try {
-            $url = \config('tsa.root_url') . \config('tsa.call_history') . $connection_application->tsa_lead_id;
-            // $url = APILog::setLoggerQuery($url, APILog::API_TSA_SAVE_HISTORY, false); // no need log
-
-            $response = Http::withHeaders([
-                'content-type' => 'application/json',
-                'X-API-Service' => \config('tsa.x_api_service_name'),
-                'X-API-Token' => \config('tsa.x_api_token')
-            ])
-                ->get($url);
-
-            if ($response->status() == 200) {
-                return $response->body();
-            }
-            throw new Exception("no call history found");
-
-        } catch (\Exception $exception) {
-            \Log::error($exception->getMessage());
-            \Log::error($exception->getTraceAsString());
-            return false;
-        }
-
-    }
 
     /**
      * @param int $appId
@@ -161,11 +147,11 @@ class TsaCallHistoryService
      */
     public function saveCallHistory(int $appId, array $callHistory): void
     {
-        $attemps = $callHistory['attempts'];
+        $attempts = $callHistory['attempts'];
 
 //        dump(sizeof($attemps));
 
-        $ids = collect($attemps)->pluck('attempt_id')->toArray();
+        $ids = collect($attempts)->pluck('attempt_id')->toArray();
 
         $foundAttempts = TSACallHistory::query()
             ->select(['attempt_id'])
@@ -176,7 +162,7 @@ class TsaCallHistoryService
             ->toArray();
 
         try {
-            foreach ($attemps as $value) {
+            foreach ($attempts as $value) {
                 if (!in_array(data_get($value, 'attempt_id'), $foundAttempts)) {
 //                if (true) {
 
@@ -214,14 +200,11 @@ class TsaCallHistoryService
      */
     public function loadApp(): static
     {
-        $t = $this->getAppBuilder()
+        $this->appForUpdate = $this->getAppBuilder()
             ->skip($this->currentChunk * $this->chunkSize)
             ->take($this->chunkSize)
-            ->get();
-
-        dump("F -> " . $t->first()->id . " <> L -> " .  $t->last()->id);
-
-        $this->appForUpdate = $t->toArray();
+            ->get()
+            ->toArray();
 
         return $this;
     }
@@ -249,9 +232,9 @@ class TsaCallHistoryService
      */
     private function fetchTotalChunk(): void
     {
-        $total = $this->getAppBuilder()->count();
+        $this->total = $this->getAppBuilder()->count();
 
-        $this->totalChunks = ceil($total / $this->chunkSize);
+        $this->totalChunks = ceil($this->total / $this->chunkSize);
     }
 
     /**
@@ -262,6 +245,8 @@ class TsaCallHistoryService
         foreach (array_chunk($this->newAttempts, 500) as $chunk) {
             TSACallHistory::query()->insert($chunk);
         }
+
+        $this->newAttempts= [];
     }
 
     /**
@@ -270,15 +255,31 @@ class TsaCallHistoryService
     public function start(): void
     {
 //        $this->loadApp()->fetchConcurrently()->saveNewAttempts();
+        $this->progressBar->start();
 
         while ($this->currentChunk < $this->totalChunks) {
-            $this->newAttempts= [];
             $this->loadApp()->fetchConcurrently()->saveNewAttempts();
-            dump("done: " . $this->currentChunk + 1);
             $this->currentChunk++;
         }
 
-        dump("Failed Jobs: ", sizeof($this->failedAppIds));
+        $this->progressBar->finish();
+
+        $this->logResults();
+    }
+
+    /**
+     * Logging result to terminal
+     *
+     * @return void
+     */
+    private function logResults(): void
+    {
+        $this->consoleOutput->writeln("\n");
+        $this->consoleOutput->writeln("Total Jobs: " . $this->total);
+        $this->consoleOutput->writeln("<info>Success Jobs: " . $this->total - sizeof($this->failedAppIds). "</info>");
+        $this->consoleOutput->writeln("<error>Failed Jobs: " . sizeof($this->failedAppIds) . "</error>");
+        $this->consoleOutput->writeln("\n");
+
     }
 
     /**
@@ -286,10 +287,18 @@ class TsaCallHistoryService
      *
      * @return void
      */
-    public static function run(): void
+    public static function run(int $concurrency): void
     {
-        (new static())->start();
+        (new static($concurrency))->start();
     }
 
 
+    private function createProgressBar($count = 0): ProgressBar
+    {
+        $this->consoleOutput->writeln('<info>Fetching TSA call history...</info>');
+        $p = new ProgressBar($this->consoleOutput, $count);
+        $p->setFormat('<comment>%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%  %memory:6s%</comment>');
+
+        return $p;
+    }
 }

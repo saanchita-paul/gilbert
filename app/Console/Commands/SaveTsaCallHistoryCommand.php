@@ -12,7 +12,7 @@ class SaveTsaCallHistoryCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'tsa:save-call-history';
+    protected $signature = 'tsa:save-call-history {--concurrency=}';
 
     /**
      * The console command description.
@@ -38,6 +38,8 @@ class SaveTsaCallHistoryCommand extends Command
      */
     public function handle()
     {
-        TsaCallHistoryService::run();
+        $concurrency = $this->option('concurrency') ?? config('tsa.concurrency');
+        TsaCallHistoryService::run($concurrency);
     }
+
 }
