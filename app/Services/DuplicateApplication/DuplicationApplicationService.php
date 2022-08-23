@@ -15,9 +15,9 @@ class DuplicationApplicationService
         'phone',
         'unit_number',
         'street_number',
-        'street_name',
+        'street_name_only',
         'city',
-        'post_code',
+        'postcode',
         'country',
         'state'
 
@@ -27,9 +27,9 @@ class DuplicationApplicationService
         'phone' => '',
         'unit_number' => '',
         'street_number' => '',
-        'street_name' => '',
+        'street_name_only' => '',
         'city' => '',
-        'post_code' => '',
+        'postcode' => '',
         'country' => '',
         'state' => '',
     ];
@@ -144,9 +144,9 @@ class DuplicationApplicationService
         $this->phone = $duplicatedKeyData['phone'] ?? '';
         $this->unitNumber = $duplicatedKeyData['unit_number'] ?? '';
         $this->streetNumber = $duplicatedKeyData['street_number'] ?? '';
-        $this->streetName = $duplicatedKeyData['street_name'] ?? '';
+        $this->streetName = $duplicatedKeyData['street_name_only'] ?? '';
         $this->city = $duplicatedKeyData['city'] ?? '';
-        $this->postCode = $duplicatedKeyData['post_code'] ?? '';
+        $this->postCode = $duplicatedKeyData['postcode'] ?? '';
         $this->country = $duplicatedKeyData['country'] ?? '';
         $this->state = $duplicatedKeyData['state'] ?? '';
         $this->duplicatedEmailBuilder = null;

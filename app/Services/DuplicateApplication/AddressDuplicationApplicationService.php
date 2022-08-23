@@ -70,7 +70,8 @@ class AddressDuplicationApplicationService implements DuplicateApplicationInterf
         $fts = resolve(FullTextSearchInterface::class);
         $this->createFullTextQueries();
         $this->builder = $fts->applyAndSearches($this->builder, queries: $this->searchQueries);
-        $this->applyUnitSearch();
+        $this->applyUnitSearch()
+            ->applyExactSearchExceptUnit();
         return  $this->builder;
     }
 
@@ -112,22 +113,37 @@ class AddressDuplicationApplicationService implements DuplicateApplicationInterf
      * update the query builder with related connection application
      * @return void
      */
-    private function applyUnitSearch():void
+    private function applyUnitSearch():static
     {
-        $duplicatedAddressLead = $this->builder->get();
-        $duplicatedAddressLead->filter(function($data)  {
+        $p = clone $this->builder;
+        $duplicatedAddressLead = $p->get();
+        $filteredDuplicatedList = $duplicatedAddressLead->filter(function($data)  {
 
             return empty($this->unitNumber) ||
                 $this->unitNumber === 'null' ||
                 $this->matchUnitNumber($data->unit_number);
         });
+        $duplicatedAddressLeadId = $filteredDuplicatedList->pluck('id')->toArray();
+        $this->builder = ConnectionApplication::whereIn('id', $duplicatedAddressLeadId);
+        return $this;
+    }
 
-        info('unit number match', [
-            $duplicatedAddressLead->pluck('id')->toArray()
-        ]);
 
-        $duplicatedAddressLeadId = $duplicatedAddressLead->pluck('id')->toArray();
-        $this->builder = $this->builder->whereIn('id', $duplicatedAddressLeadId);
+    private function applyExactSearchExceptUnit()
+    {
+
+
+        $duplicatedAddressLead =  $this->builder->get();
+        $filteredDuplicatedList = $duplicatedAddressLead->filter(function($data)  {
+            return ($this->removeSpecialCharacter($this->streetName) === $this->removeSpecialCharacter($data['street_name_only'])) &&
+             ($this->removeSpecialCharacter($this->streetNumber) === $this->removeSpecialCharacter($data['street_number'])) &&
+             ($this->removeSpecialCharacter($this->city) === $this->removeSpecialCharacter($data['city'])) &&
+             ($this->removeSpecialCharacter($this->postCode) === $this->removeSpecialCharacter($data['postcode'])) &&
+             ($this->removeSpecialCharacter($this->state) === $this->removeSpecialCharacter($data['state']));
+        });
+        $duplicatedAddressLeadId = $filteredDuplicatedList->pluck('id')->toArray();
+        $this->builder = ConnectionApplication::whereIn('id', $duplicatedAddressLeadId);
+
     }
 
 
@@ -149,7 +165,6 @@ class AddressDuplicationApplicationService implements DuplicateApplicationInterf
         }
 
         // find text `unit` exist in the unit number or not
-
 
         if($this->extractUnitFromString($ca_unit_number) === $this->extractUnitFromString($this->unitNumber)) {
             return true;
@@ -178,6 +193,15 @@ class AddressDuplicationApplicationService implements DuplicateApplicationInterf
         }
 
         return $ca_unit_number;
+    }
+
+    /**
+     * @param $data
+     * @return string
+     */
+    private function removeSpecialCharacter($data): string
+    {
+        return preg_replace('/[^A-Za-z0-9]/', '', $data);
     }
 
 
