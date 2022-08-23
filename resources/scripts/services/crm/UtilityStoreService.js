@@ -22,10 +22,13 @@ export default {
     setGasPlan: plan => Store.commit("setGasPlan", plan),
 
     setBothProvider: provider => Store.commit("setBothProvider", provider),
-    setBothPlan: (plan, provider = null) => {
+    setBothPlan: (plan, provider = null, names) => {
+        console.log('STORE BOTH : ', plan, provider, names);
         if(provider === 'origin' && plan !== null) {
-            Store.commit("setPowerPlan", planTypeNameMapper.PLAN_ORIGIN_HOME_ASSIST);
-            Store.commit("setGasPlan", planTypeNameMapper.PLAN_ORIGIN_ADVANTAGE_VARIABLE);
+            // Store.commit("setPowerPlan", planTypeNameMapper.PLAN_ORIGIN_HOME_ASSIST);
+            // Store.commit("setGasPlan", planTypeNameMapper.PLAN_ORIGIN_ADVANTAGE_VARIABLE);
+            // Store.commit("setPowerPlan", plan);
+            // Store.commit("setGasPlan", plan);
         } else {
             Store.commit("setBothPlan", plan)
         }

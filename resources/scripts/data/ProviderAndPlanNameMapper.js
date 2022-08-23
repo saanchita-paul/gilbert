@@ -35,7 +35,7 @@ export const planTypeKeyMapper= {
     [planTypeNameMapper.PLAN_ORIGIN_ADVANTAGE_VARIABLE]: "Origin Advantage Variable",
     [planTypeNameMapper.PLAN_ORIGIN_HOME_ASSIST]: "Origin Home Assist",
     [planTypeNameMapper.PLAN_ORIGIN_HOME_SUPPORT]: "Origin Home Support",
-    [planTypeNameMapper.PLAN_ORIGIN_HOME_SUPPORT]: "Origin Supply",
+    [planTypeNameMapper.PLAN_ORIGIN_SUPPLY]: "Origin Supply",
     [planTypeNameMapper.PLAN_SUMO_SAVER]: "Sumo Saver",
     [planTypeNameMapper.PLAN_SUMO_FREEDOM]: "Sumo Freedom",
     [planTypeNameMapper.PLAN_SUMO_SELECT]: "Sumo Select",
