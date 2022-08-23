@@ -131,7 +131,7 @@ class ApplicationResource extends JsonResource
 
             'additional_access_information' => $this->additional_access_information,
             'is_power_life_support' => $this->is_power_life_support,
-            
+
             'email_manually_verified_by' => $this->email_manually_verified_by,
         ];
     }
@@ -219,8 +219,9 @@ class ApplicationResource extends JsonResource
         return null;
     }
 
-    private function mapPlan($plan)
+    private function mapPlan($plan): string
     {
+        return 'bug';
         if (!empty($plan)) {
             return ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
         }
