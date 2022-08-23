@@ -77,7 +77,7 @@ class AgentServiceApplicationStatusMapper
     {
         $notApplicable = ['status_name' => 'Not Applicable', 'description' => 'The connection is not required or is yet to be selected by the customer.'];
 
-        if ($tenancyType == ConnectionApplication::TENANCY_TYPE_HOME_OWNER && $state !== 'Victoria') {
+        if ($tenancyType == ConnectionApplication::TENANCY_TYPE_HOME_OWNER || $state !== 'Victoria') {
             $this->services[$serviceType] = $notApplicable;
             return;
         }
