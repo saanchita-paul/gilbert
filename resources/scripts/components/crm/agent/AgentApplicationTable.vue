@@ -155,7 +155,7 @@ export default {
             text: 'Status',
             align: 'start',
             sortable: true,
-            value: 'status'
+            value: 'application_status'
           },
           {
             text: '',

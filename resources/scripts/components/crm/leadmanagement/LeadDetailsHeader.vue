@@ -16,6 +16,16 @@
                         </span>
                     </p>
                 </div>
+                <div v-if="showDuplicateLeadButton">
+                    <v-btn outlined text class="view_application" @click="duplicateLead">
+                        View duplicate lead
+                        <v-icon
+                            right
+                        >
+                            mdi-chevron-down
+                        </v-icon>
+                    </v-btn>
+                </div>
             </div>
             <div>
                 <div class="d-flex justify-end">
@@ -116,6 +126,9 @@ name: "LeadDetailsHeader",
         },
         leadSourceMap(){
             return leadSourceMap;
+        },
+        showDuplicateLeadButton() {
+            return this.leadSummary?.is_duplicate;
         }
     },
     methods: {
@@ -191,6 +204,9 @@ name: "LeadDetailsHeader",
         mapConnectionStatus(status) {
             return  LeadApplicationService.mapStatus(status)
         },
+        duplicateLead() {
+            this.$emit('duplicateLead');
+        },
     },
     mounted() {
         // console.log('load_summary_he', this.leadSummary);
@@ -235,6 +251,9 @@ name: "LeadDetailsHeader",
     }
     .successColor{
         color: $successColor;
+    }
+    .view_application {
+        background: #FFC104
     }
     .buttonBackgroundColor{
         background-color: $buttonBackgroundColor;
