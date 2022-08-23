@@ -201,7 +201,7 @@ class AddressDuplicationApplicationService implements DuplicateApplicationInterf
      */
     private function removeSpecialCharacter($data): string
     {
-        return preg_replace('/[^A-Za-z0-9]/', '', $data);
+        return strtolower(preg_replace('/[^A-Za-z0-9]/', '', $data));
     }
 
 
