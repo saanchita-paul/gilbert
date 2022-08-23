@@ -761,11 +761,8 @@
                             <div>
                                 <span class="alert-bolder-text">Gas:&nbsp;</span>Please let customer know that gas will be connected by distributor in 3-5 business days.
                             </div>
-                            <div>
-                                <span class="alert-bolder-text">Electricity:&nbsp;</span>You are trying to submit after same day cutoff time, Please choose different connection date
-                            </div>
-                            <div v-if="checkSameDayConnectionForACT">
-                                <span class="alert-bolder-text">Electricity:&nbsp;</span>We don’t service same day connections for ACT. Please select a different connection date.
+                            <div v-if="electricityPowerShopNote">
+                                <span class="alert-bolder-text">Electricity:&nbsp;</span> {{ electricityPowerShopNote }}
                             </div>
                         </div>
                     </v-alert>
@@ -793,6 +790,7 @@ import {isNull} from "lodash-es";
 import PowershopService from "@scripts/modules/powershop/services/PowershopService";
 import {powerShopPaymentStatusNumberToName} from '@scripts/data/PowershopDataMapper';
 import dayjs from "dayjs";
+import PowerShopSameDayConnectionService from "@scripts/modules/powershop/services/PowerShopSameDayConnectionService";
 export default {
   name: "ConfirmSubmission",
     props:{
@@ -915,6 +913,8 @@ export default {
           isValidElecCutOff: null,
           isValidGasCutOff: null,
           paymentInformation: null,
+          electricityPowerShopNote: '',
+          gasPowerShopNote: '',
       }
     },
     computed: {
@@ -968,14 +968,6 @@ export default {
         showPowerShopNoteSection () {
             return this.data.selectedProvider === 'powershop';
         },
-        checkSameDayConnectionForACT() {
-            return dayjs().isSame(dayjs(this.data.moving_date, 'DD/MM/YYYY').format('YYYY-MM-DD'), 'day')
-                && this.data.state === 'Australian Capital Territory';
-        },
-        checkGasBusinessDay() {
-            return this.data.selectedProvider === 'powershop'
-                && this.submitType === 'gas';
-        }
     },
     methods: {
         backToEdit() {
@@ -1016,9 +1008,19 @@ export default {
             this.paymentInformation = await LeadApplicationService.loadUserLead(this.leadSummary.id);
         },
 
+        checkSameDayCutOffTime() {
+            const electricityCutOffText = 'You are trying to submit after same day cutoff time, Please choose different connection date.';
+            const electricityNoSameDayText  = 'We don’t service same day connections for ACT. Please select a different connection date.';
+
+            if (this.data.selectedProvider === 'powershop') {
+                const result = PowerShopSameDayConnectionService.validateSameDayConnection(this.data);
+                console.log('Response From VUE ', result);
+            }
+        }
 
     },
     mounted() {
+      this.checkSameDayCutOffTime();
       this.validateCutOffTime();
       this.loadAuthorizedPerson();
       this.loadPaymentInformation();
