@@ -12,6 +12,14 @@
 			<v-icon color="#FF5722" size="20" class="pb-4 pr-2">mdi-fire</v-icon>
 			<p class="font-weight-bold">Gas</p>
 		</div>
+
+        <div>
+            <ul class="">
+                <li>A no exit fee agreement</li>
+                <li>Agreement will continue unless you end it with Origin</li>
+            </ul>
+        </div>
+
 		<v-expansion-panels>
 			<v-expansion-panel color="red">
 				<v-expansion-panel-header class="font-weight-bold">

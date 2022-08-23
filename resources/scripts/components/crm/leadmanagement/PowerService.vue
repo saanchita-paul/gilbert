@@ -459,8 +459,8 @@ export default {
         },
         changeIsBothEnergySubmit(value) {
             if(value) {
-                UtilityStoreService.setBothProvider(this.selectedProvider);
-                UtilityStoreService.setBothPlan(this.selectedPlan, this.selectedProvider);
+                // UtilityStoreService.setBothProvider(this.selectedProvider);
+                // UtilityStoreService.setBothPlan(this.selectedPlan, this.selectedProvider);
 
                 if(this.selectedProvider && this.selectedPlan) {
                     let payload = {
