@@ -112,7 +112,7 @@ class SearchConnectionApplication
             ->applyFilterMovingDate()
             ->applyFilterAgentId()
             ->applyFilterTenantEmail()
-//            ->applyFilterByProvider()
+            ->applyFilterByProvider()
             ->applySearch();
 
         $this->builder = $this->applySorting($this->builder);

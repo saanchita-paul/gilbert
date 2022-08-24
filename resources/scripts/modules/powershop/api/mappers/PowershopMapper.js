@@ -2,17 +2,18 @@ import PowershopPlanDetails from '@scripts/modules/powershop/models/PowershopPla
 
 const mapPowershopData = (plansData) => {
     const planDetailsModel = new PowershopPlanDetails(plansData);
-    planDetailsModel.plans.electricity = mapElectricityPlan(plansData?.plans?.electricity);
-    planDetailsModel.plans.gas = mapGasPlan(plansData?.plans?.gas);
+    planDetailsModel.plans.electricity = mapElectricityPlan(plansData?.plans?.electricity[0]);
+    planDetailsModel.plans.gas = mapGasPlan(plansData?.plans?.gas[0]);
     return planDetailsModel;
 }
 
 const mapElectricityPlan = (electricity) => {
     return {
         distributor_name: electricity?.distributor_name,
-        fees: electricity?.fees,
-        supply_charge: mapSupplyCharge(electricity?.supply_charge),
-        usage_charge: mapUsagesCharge(electricity?.usage_charge),
+        fees: electricity?.price,
+        supply_charge: electricity?.daily_charge,
+        usage_charge: electricity?.anytime_charge,
+        solar_buy_pack_value: electricity?.solar_buy_pack_value,
         offers: electricity?.offers,
         bpid_links: mapBPIDLinks(electricity?.bpid_links)
     }
@@ -39,7 +40,7 @@ const mapBPIDLinks = (bpidLinks) => {
         return {
             id: item?.id,
             title: item?.title,
-            file_url: item?.file_url,
+            file_url: item?.link,
         }
     });
 }
@@ -47,10 +48,9 @@ const mapBPIDLinks = (bpidLinks) => {
 const mapGasPlan = (gas) => {
     return {
         distributor_name: gas?.distributor_name,
-        solar_feed_in_tariff: gas?.solar_fees,
-        fees: gas?.fees,
-        supply_charge: mapSupplyCharge(gas?.supply_charge),
-        usage_charge: mapUsagesCharge(gas?.usage_charge),
+        fees: gas?.price,
+        supply_charge: gas?.daily_charge,
+        usage_charge: gas?.anytime_charge,
         bpid_links: mapBPIDLinks(gas?.bpid_links)
     }
 }

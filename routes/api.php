@@ -144,9 +144,6 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
 
 
-    Route::get('/power-applications', [ApplicationController::class, 'getPowerShop'])
-        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
-
 
     //todo: make a  separate controller for notes
     Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes'])
@@ -260,7 +257,10 @@ Route::post('/our-property/lead', [OurPropertyController::class, 'createOurPrope
 /**
  * Powershop
  */
-Route::get('/powershop/generate-caf', [PowerShopController::class, 'generatePowershopCaf']);
+
+Route::get('/powershop/applications', [PowerShopController::class, 'getPowerShop'])
+    ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
+Route::get('/powershop/generate-caf', [PowerShopController::class, 'generatePowerShopCaf']);
 Route::get('/powershop/payment/invite', function () {
 
 
