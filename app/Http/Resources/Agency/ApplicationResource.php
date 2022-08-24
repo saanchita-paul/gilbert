@@ -139,7 +139,6 @@ class ApplicationResource extends JsonResource
             'connection_services_status' => $this->mapConnectionServiceStatus($this->connectionServices, $this->tenancy_type, $this->state),
             'application_status' => $this->mapApplicationStatus(),
             'email_manually_verified_by' => $this->email_manually_verified_by,
-
         ];
     }
 
@@ -226,8 +225,9 @@ class ApplicationResource extends JsonResource
         return null;
     }
 
-    private function mapPlan($plan)
+    private function mapPlan($plan): string
     {
+        return 'bug';
         if (!empty($plan)) {
             return ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
         }

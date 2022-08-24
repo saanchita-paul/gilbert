@@ -2,7 +2,7 @@
 	<div>
 		<div class="plan-title-header pt-2 pl-4 pr-4 pb-2 d-flex justify-space-between">
 			<div>
-				<p class="font-weight-bold mb-0" style="font-size:24px">Origin Advantage Variable </p>
+				<p class="font-weight-bold mb-0" style="font-size:24px">{{ getPlanName }} </p>
 				<p style="font-size:20px">Gas</p>
 			</div>
 		</div>
@@ -12,6 +12,14 @@
 			<v-icon color="#FF5722" size="20" class="pb-4 pr-2">mdi-fire</v-icon>
 			<p class="font-weight-bold">Gas</p>
 		</div>
+
+        <div>
+            <ul class="">
+                <li>A no exit fee agreement</li>
+                <li>Agreement will continue unless you end it with Origin</li>
+            </ul>
+        </div>
+
 		<v-expansion-panels>
 			<v-expansion-panel color="red">
 				<v-expansion-panel-header class="font-weight-bold">
@@ -70,6 +78,11 @@ export default {
 			require: true,
 		}
 	},
+    computed: {
+        getPlanName() {
+            return this.plan?.plan_name_text ? this.plan?.plan_name_text : '';
+        }
+    }
 }
 </script>
 

@@ -517,14 +517,8 @@ class ApplicationService
         };
 
         foreach ($services as $service) {
-
-            $plan = $data['plan_type'];
-            if($data['provider_name'] === 'origin' && $data['plan_type'] !== null) {
-                $plan = match ($service) {
-                    ConnectionService::TYPE_ELECTRICITY => ConnectionService::ORIGIN_HOME_ASSIST_PLAN,
-                    ConnectionService::TYPE_GAS => ConnectionService::ORIGIN_ADVANTAGE_VARIABLE_PLAN,
-                };
-            }
+            $key = $service. "_plan_type";
+            $plan =   $data[$key] ?? null;
 
             $connectionService = ConnectionService::where('connection_application_id', $applicationId)
                 ->where('service_type', $service)
