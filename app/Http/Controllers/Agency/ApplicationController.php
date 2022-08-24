@@ -10,6 +10,7 @@ use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Requests\Agency\ProviderRequest;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationResource;
+use App\Http\Resources\Agency\DuplicationApplicationResource;
 use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
@@ -21,6 +22,7 @@ use App\Services\Agency\TriageFlagService;
 use App\Services\Agency\WaterAutoSubmitService;
 use App\Services\Application\ApplicationsMetricsService;
 use App\Services\Application\SearchConnectionApplication;
+use App\Services\DuplicateApplicationService;
 use App\Services\Ea\SetEaDistributorService;
 use App\Services\GBGEmailValidationService;
 use Origin\Services\SetOriginDistributorService;
@@ -493,4 +495,6 @@ class ApplicationController extends Controller
             return $this->sendErrorResponse($exception);
         }
     }
+
+
 }

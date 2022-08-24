@@ -13,7 +13,8 @@ class LeadSearchFilterModel {
         active_lead_type,
         agent_id,
         agent_name,
-        triage
+        triage,
+                    duplication_group_id,
     } = {}) {
         this.tenant_name = tenant_name;
         this.source = source ?? null;
@@ -27,6 +28,7 @@ class LeadSearchFilterModel {
         this.agent_id = agent_id;
         this.agent_name = agent_name;
         this.triage = triage ?? null;
+        this.duplication_group_id = duplication_group_id ?? null;
     }
 
     isSearchEmpty() {
@@ -35,7 +37,9 @@ class LeadSearchFilterModel {
             isEmpty(this.phone) &&
             isEmpty(this.address) &&
             isEmpty(this.tenancy_type) &&
-            isEmpty(this.triage);
+            isEmpty(this.triage) &&
+            isEmpty(this.tenant_email) &&
+            isEmpty(this.duplication_group_id);
     }
 
     clear(){
@@ -51,7 +55,12 @@ class LeadSearchFilterModel {
         this.agent_id = null;
         this.agent_name = null;
         this.triage = null;
+        this.duplication_group_id = null;
+
+        console.log('clear duplicated group id');
     }
+
+
 }
 
 export { LeadSearchFilterModel };
