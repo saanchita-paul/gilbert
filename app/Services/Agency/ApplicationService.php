@@ -619,17 +619,10 @@ class ApplicationService
     public function updatePaymentInfo(array $paymentData, $id)
     {
         $existLead = ConnectionApplication::findOrFail($id);
-        $powershopPaymentInfo = PowershopPaymentInfo::where('connection_application_id', $existLead->id)->first();
 
-        if ($powershopPaymentInfo)
-        {
-            $paymentData['id'] =  $existLead->id;
-            $powershopPaymentInfo->update($paymentData);
-        }
-        else
-        {
-            $paymentData['connection_application_id'] = $existLead->id;
-            PowershopPaymentInfo::create($paymentData);
-        }
+        PowershopPaymentInfo::updateOrCreate(
+            ['connection_application_id' => $existLead->id],
+            $paymentData
+        );
     }
 }

@@ -220,7 +220,8 @@ class ConnectionApplication extends Model
         'is_power_life_support',
         'is_skip_hubspot',
         'is_running_submission',
-        'app_close_reason_id'
+        'app_close_reason_id',
+        'is_generated_caf'
     ];
 
 
@@ -259,6 +260,8 @@ class ConnectionApplication extends Model
     const PLAN_TYPE_BASIC = 'basic_plan';
     const PLAN_TYPE_NO_FRILLS = 'no_frills';
     const PLAN_TYPE_FLEXI_PLAN = 'flexi_plan';
+
+    const PROVIDER_POWER_SHOP = 'powershop';
 
     const PLAN_TYPE_ORIGIN_GO = 'origin_go';
     const PLAN_TYPE_ORIGIN_VARIABLE = 'origin_go_variable';

@@ -68,7 +68,8 @@
             "HoodLead\\": "app/Modules/HoodLead",
             "TSA\\": "app/Modules/TSA",
             "Reporting\\": "app/Modules/Reporting",
-            "Origin\\": "app/Modules/Origin"
+            "Origin\\": "app/Modules/Origin",
+            "Powershop\\": "app/Modules/Powershop"
         }
     },
     "autoload-dev": {

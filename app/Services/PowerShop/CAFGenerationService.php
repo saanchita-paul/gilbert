@@ -5,6 +5,7 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Rap2hpoutre\FastExcel\Facades\FastExcel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use function PHPUnit\Framework\matches;
@@ -74,66 +75,77 @@ class CAFGenerationService
     {
 
         foreach ($this->applicationList as $app) {
-            $this->mappedApplicationList[] = [
-                'Brand' => 'PowerShop',
-                'Channel ID' => 'Hood Move Tech',
-                'Customer Type' => 'Residential',
-                'NMI' => $app->nmi,
-                'MIRN' => $app->mirn,
-                'Connection Date' => date('d/m/Y', strtotime($app->moving_date)),
-                'Type of Sale' => 'Moving',
-                'Signup Type' => $this->getSignUpType($app),
-                'Title' => $app->title,
-                'First Name' => $app->first_name,
-                'Last Name' => $app->last_name,
-                'Date of Birth' => date('d/m/Y', strtotime($app->dob)),
-                'Business Name' => null,
-                'Phone - Home' => $app->homephone,
-                'Phone - Office' => null,
-                'Phone - Mobile' => $app->phone,
-                'E-mail' => $app->email,
-                'ABN' => null,
-                'ACN' => null,
-                'ID Number' => $this->getIDNumber($app),
-                'ID Expiry date' => $this->getExpiryDate($app),
-                'Type of ID' =>  $this->getIDType($app),
-                'Concession Card Number' => null,
-                'Concession Card Type' => $this->getConcessionCardType($app),
-                'Concession Card Expiry Date' => null,
-                'Name on Concession Card' => null,
-                'Second Person Title' =>  $this->getSecondTitle($app),
-                'Second First Name' => $this->getSecondFirstName($app),
-                'Second Last Name' => $this->getSecondLastName($app),
-                'Second Person DOB' => $this->getSecondDob($app),
-                'Supply Address' => $this->getSupplyAddress($app),
-                'Supply Suburb' => $app->city,
-                'State/Territory' => $app->state,
-                'Postal Code' => $app->postcode,
-                'Mailing Address' => $this->getMailingAddress($app),
-                'Mailing Suburb' => $app->billing_city,
-                'Mailing State/Territory' => $app->billing_state,
-                'Mailing Postal Code' => $app->billing_postcode,
-                'Owner/Renter' => $this->getTenancyType($app),
-                'Electricity Promo' => '',
-                'Gas Promo' => '',
-                'Electricity Already On? (Y/N)' => $this->checkElectricity($app),
-                'Meter Number(s)' => null,
-                'Any Hazards' => $app->is_any_unrestrained_animal,
-                'Any Access Requirements?' => '',
-                'Life Support/Sensitive Load' => $this->getLifeSensitive($app),
-                'Advised Main Switch Needs Turning Off?' => 'Yes',
-                'Safety Certificate Required?' => 'No',
-                'Token' => '',
-                'Electricity Offer Status' => null,
-                'Electricity Reference Number' => null,
-                'Electricity Rejection/Incomplete Reason' => null,
-                'Gas Offer Status' => null,
-                'Gas Reference Number' => null,
-                'Gas Rejection/Incomplete Reason' => null,
-                'Other Comments' => null,
 
-            ];
+            try{
+                $this->mappedApplicationList[] = [
+                    'Brand' => 'PowerShop',
+                    'Channel ID' => 'Hood Move Tech',
+                    'Customer Type' => 'Residential',
+                    'NMI' => $app->nmi,
+                    'MIRN' => $app->mirn,
+                    'Connection Date' => date('d/m/Y', strtotime($app->moving_date)),
+                    'Type of Sale' => 'Moving',
+                    'Signup Type' => $this->getSignUpType($app),
+                    'Title' => $app->title,
+                    'First Name' => $app->first_name,
+                    'Last Name' => $app->last_name,
+                    'Date of Birth' => date('d/m/Y', strtotime($app->dob)),
+                    'Business Name' => null,
+                    'Phone - Home' => $app->homephone,
+                    'Phone - Office' => null,
+                    'Phone - Mobile' => $app->phone,
+                    'E-mail' => $app->email,
+                    'ABN' => null,
+                    'ACN' => null,
+                    'ID Number' => $this->getIDNumber($app),
+                    'ID Expiry date' => $this->getExpiryDate($app),
+                    'Type of ID' =>  $this->getIDType($app),
+                    'Concession Card Number' => null,
+                    'Concession Card Type' => $this->getConcessionCardType($app),
+                    'Concession Card Expiry Date' => null,
+                    'Name on Concession Card' => null,
+                    'Second Person Title' =>  $this->getSecondTitle($app),
+                    'Second First Name' => $this->getSecondFirstName($app),
+                    'Second Last Name' => $this->getSecondLastName($app),
+                    'Second Person DOB' => $this->getSecondDob($app),
+                    'Supply Address' => $this->getSupplyAddress($app),
+                    'Supply Suburb' => $app->city,
+                    'State/Territory' => $app->state,
+                    'Postal Code' => $app->postcode,
+                    'Mailing Address' => $this->getMailingAddress($app),
+                    'Mailing Suburb' => $app->billing_city,
+                    'Mailing State/Territory' => $app->billing_state,
+                    'Mailing Postal Code' => $app->billing_postcode,
+                    'Owner/Renter' => $this->getTenancyType($app),
+                    'Electricity Promo' => '',
+                    'Gas Promo' => '',
+                    'Electricity Already On? (Y/N)' => $this->checkElectricity($app),
+                    'Meter Number(s)' => null,
+                    'Any Hazards' => $this->getHazard($app->is_any_unrestrained_animal, $app->is_renovation_on),
+                    'Any Access Requirements?' => $this->getAccessReq($app->is_access_require, $app->additional_access_information),
+                    'Life Support/Sensitive Load' => $this->getLifeSensitive($app),
+                    'Advised Main Switch Needs Turning Off?' => 'Yes',
+                    'Safety Certificate Required?' => 'No',
+                    'Token' => '',
+                    'Electricity Offer Status' => null,
+                    'Electricity Reference Number' => null,
+                    'Electricity Rejection/Incomplete Reason' => null,
+                    'Gas Offer Status' => null,
+                    'Gas Reference Number' => null,
+                    'Gas Rejection/Incomplete Reason' => null,
+                    'Other Comments' => null,
+
+                ];
+                $selectedId[] = $app->id;
+
+            } catch (\Exception $exception) {
+                Log::error($exception->getMessage());
+                info('Data file to export due to', $exception->getMessage());
+
+            }
+
         }
+        ConnectionApplication::whereIn('id', $selectedId)->update(['is_generated_caf' => true]);
     }
 
     /**
@@ -182,7 +194,8 @@ class CAFGenerationService
      * @param $app
      * @return string
      */
-    private function getLifeSensitive($app){
+    private function getLifeSensitive($app): string
+    {
         if ($app->is_gas_life_support == 1 && $app->is_power_life_support == 1){
         return 'Life support elec and gas';
         }
@@ -190,7 +203,7 @@ class CAFGenerationService
             return 'Life support elec';
         }
         else{
-            return '';
+            return 'Life support gas';
         }
     }
 
@@ -198,7 +211,7 @@ class CAFGenerationService
      * @param $app
      * @return string
      */
-    private function getSupplyAddress($app)
+    private function getSupplyAddress($app): string
     {
         if($app->unit_number == ''){
             return $app->street_number .' , '. $app->street_name_only .' , '. $app->street_type;
@@ -221,7 +234,7 @@ class CAFGenerationService
      * @param $app
      * @return string
      */
-    private function getMailingAddress($app)
+    private function getMailingAddress($app): string
     {
         if($app->billing_unit_number == ''){
             return $app->billing_street_number .' , '. $app->billing_street_name_only .' , '. $app->billing_street_type;
@@ -245,7 +258,7 @@ class CAFGenerationService
      * @param $app
      * @return mixed
      */
-    private function getIDNumber($app)
+    private function getIDNumber($app): mixed
     {
         return $app->identification->card_number;
     }
@@ -263,7 +276,7 @@ class CAFGenerationService
      * @param $app
      * @return string|null
      */
-    private function getIDType($app)
+    private function getIDType($app): ?string
     {
         return match($app->identification->type) {
             1 => 'passport',
@@ -277,27 +290,27 @@ class CAFGenerationService
      * @param $app
      * @return mixed
      */
-    private function getSecondTitle($app)
+    private function getSecondTitle($app): mixed
     {
-       return $app->authorizedPerson->title;
+       return $app->authorizedPerson?->title;
     }
 
     /**
      * @param $app
      * @return mixed
      */
-    private function getSecondFirstName($app)
+    private function getSecondFirstName($app): mixed
     {
-        return $app->authorizedPerson->first_name;
+        return $app->authorizedPerson?->first_name;
     }
 
     /**
      * @param $app
      * @return mixed
      */
-    private function getSecondLastName($app)
+    private function getSecondLastName($app): mixed
     {
-        return $app->authorizedPerson->last_name;
+        return $app->authorizedPerson?->last_name;
     }
 
     /**
@@ -306,7 +319,7 @@ class CAFGenerationService
      */
     private function getSecondDob($app)
     {
-        return date('d/m/Y', strtotime($app->authorizedPerson->dob));
+        return $app->authorizedPerson?->dob ? date('d/m/Y', strtotime($app->authorizedPerson?->dob)) : null;
     }
 
     /**
@@ -314,15 +327,44 @@ class CAFGenerationService
      * @return string
      * @throws \Exception
      */
-    private function getSignUpType($app){
+    private function getSignUpType($app): string
+    {
 
         $services = $app->connectionServices->pluck('service_type')->toArray();
+
         if(in_array(ConnectionService::TYPE_GAS, $services ) && in_array(ConnectionService::TYPE_ELECTRICITY, $services )){
             return 'Two Fuel';
         } elseif(in_array(ConnectionService::TYPE_ELECTRICITY, $services )){
             return 'Electricity';
         } else{
+            return '';
             throw new \Exception('Only gas not supported!');
         }
     }
+
+    private function getHazard($is_any_unrestrained_animal, $is_renovation_on): string
+    {
+        $hazard = [];
+        if(!empty($is_any_unrestrained_animal)) {
+            $hazard[] =  'Animal on property';
+        }
+        if(!empty($is_renovation_on)) {
+            $hazard[] = ',renovation going on';
+        }
+        return join(' ,' , $hazard);
+    }
+
+    private function getAccessReq($is_access_require, $additional_access_information): string
+    {
+        $accessInfo = [];
+        if($is_access_require) {
+            $accessInfo[] = 'Yes';
+        } else {
+            $accessInfo[] = 'No';
+        }
+        $accessInfo[] = $additional_access_information;
+        return join(' ,' , $accessInfo);
+
+    }
+
 }

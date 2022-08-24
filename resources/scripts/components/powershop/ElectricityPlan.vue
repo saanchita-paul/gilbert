@@ -11,7 +11,7 @@
                         </div>
                         <div class="font-weight-bolder">
                             <p class="mb-2 bolder-text">{{ plan.offers.title }} <span class="deep-text">(inc. GST)</span></p>
-                            <p class="mb-2 bolder-text">{{ plan.offers.line_1 }}</p>
+                            <p class="mb-2 bolder-text">{{ plan.offers.line_2 }}</p>
 <!--                            <p class="mb-2 bolder-text">{{ plan.offers.line_1 }} 1% <span class="deep-text">less than the </span></p>-->
                             <p class="mb-4">
                                 <span v-if="victoriaState" class="linkable">Victorian Default Offer</span>
@@ -20,7 +20,7 @@
                         </div>
                     </div>
                     <div class="mt-2">
-                        <p class="paragraph-text">{{ plan.offers.line_2 }}</p>
+                        <p class="paragraph-text">{{ plan.offers.line_1 }}</p>
                         <p class="paragraph-text">Your actual bills will vary depending on your usage and any price changes in the future.
                             You'll be notified of any change in accordance with our regulatory requirements.</p>
                     </div>
@@ -53,9 +53,9 @@
 
                                     <div class="price-list">
                                         <div class="plan-text" style="font-size:14px">
-                                            {{ plan.supply_charge.description }} ({{ plan.supply_charge.unit }})
+                                            Daily Supply Charge (c/day)
                                         </div>
-                                        <div class="plan-text">{{ plan.supply_charge.value }}</div>
+                                        <div class="plan-text">{{ plan.supply_charge }}</div>
                                     </div>
 
                                     <div class="d-flex">
@@ -67,9 +67,9 @@
 
                                     <div class="price-list">
                                         <div class="plan-text" style="font-size:14px">
-                                            {{ plan.usage_charge.description }} ({{ plan.usage_charge.unit }})
+                                            Single rate tarrif (c/kWh)
                                         </div>
-                                        <div  class="plan-text">{{ plan.usage_charge.value }}</div>
+                                        <div  class="plan-text">{{ plan.usage_charge }}</div>
                                     </div>
 
                                     <div class="d-flex mt-8">
@@ -79,17 +79,11 @@
                                         </v-icon>
                                     </div>
 
-                                    <div class="price-list">
+                                    <div class="price-list" v-for="fees in plan.fees">
                                         <div class="plan-text" style="font-size:14px">
-                                            Manual Connection (insert fuse)
+                                            {{ fees.title }}
                                         </div>
-                                        <div  class="plan-text">{{ plan.fees.manual_connection_fees }}</div>
-                                    </div>
-                                    <div class="price-list">
-                                        <div class="plan-text" style="font-size:14px">
-                                            Remote Connection
-                                        </div>
-                                        <div  class="plan-text">{{ plan.fees.remote_connection_fees }}</div>
+                                        <div  class="plan-text">{{ fees.fees }}</div>
                                     </div>
 
                                 </v-expansion-panel-content>

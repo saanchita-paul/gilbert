@@ -11,15 +11,17 @@
             <Donut v-if="isDataExists(data)" :data="data"/>
             <EmptyDonut v-else :data="data"/>
         </v-row>
-        <v-row v-if="title !== 'Water'" class="justify-center d-flex mt-1">
-            <div v-for="(value, index) in data.datasets[0].data" :key="index" class="mx-3 justify-center">
-                <p class="label mb-1">
-                    <v-icon :color="data.datasets[0].backgroundColor[index]" size="13">mdi-checkbox-blank-circle
-                    </v-icon>
-                </p>
-                <p class="label font-weight-bold  mb-1">{{ value }}</p>
-                <p class="label  mb-2">{{ data.labels[index] }}</p>
-            </div>
+        <v-row v-if="title !== 'Water'" class="justify-center mt-1">
+            <v-col cols="9" v-for="(value, index) in data.datasets[0].data" :key="index" class="flex justify-center my-0 ml-4 py-0">
+                <v-row class="justify-start">
+                    <p class="label ma-1">
+                        <v-icon :color="data.datasets[0].backgroundColor[index]" size="13">mdi-checkbox-blank-circle
+                        </v-icon>
+                    </p>
+                    <p class="label font-weight-bold  ma-1">{{ value }}</p>
+                    <p class="label  ma-1">{{ data.labels[index] }}</p>
+                </v-row>
+            </v-col>
         </v-row>
     </v-container>
 </template>

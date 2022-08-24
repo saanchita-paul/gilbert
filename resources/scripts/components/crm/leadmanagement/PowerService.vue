@@ -75,7 +75,7 @@
                 ></OriginPlan>
             </div>
 
-            <div class="d-flex" v-if="selectedProvider === 'powershop'">
+            <div class="d-flex" v-if="selectedProvider === 'powershop' && loadPowerShopDetails">
                 <PowershopPlan
                     :class="{'not-editable': !isServiceEditable }"
                     v-for="plan in powershopPlans"
@@ -185,6 +185,7 @@
                     @toggleDialog="togglePowerShopPlanDetails"
                     :serviceType="isBothEnergySubmit ? 'energy' : 'power'"
                     :leadSummary="leadSummary"
+                    :planDetails="powerShoplandata"
                 />
             </v-card>
         </v-dialog>
@@ -211,6 +212,7 @@ import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import {isNull } from "lodash-es";
 import {connectionServicesMapper} from "@scripts/data/ConnectionApplicationMapper";
 import PowershopPlanDetails from "@scripts/components/crm/leadmanagement/PowershopPlanDetails";
+import PowershopService from "@scripts/modules/powershop/services/PowershopService";
 
 
 export default {
@@ -252,7 +254,9 @@ export default {
             originPlans: [],
             originPlanDetails: false,
             powershopPlans: [],
-            powerShopPlanDetails: false
+            powerShopPlanDetails: false,
+            powerShoplandata: null,
+            loadPowerShopDetails: false
         };
     },
     computed: {
@@ -411,9 +415,16 @@ export default {
         onSelectProvider(provider) {
             this.resetSelectedPlan();
             this.selectedProvider = provider;
+
+            console.log('selected plan', this.selectedProvider)
+
             if (provider === "sumo") {
                 this.$eventBus.$emit("validate", this.fetchSumoPlans);
             }
+            if (provider === "powershop") {
+                this.getPowershopData();
+            }
+
         },
         selectEAPlan(plan, isManual = false) {
             let planObj = {
@@ -505,7 +516,22 @@ export default {
         },
         async updateDraft(field, value) {
             await LeadApplicationService.savePaymentField(field, value, this.leadSummary.id);
-        }
+        },
+        async getPowershopData() {
+
+            let query = {
+                postcode: this.leadSummary?.postcode,
+                service_type: this.isBothEnergySubmit ? 'energy' : 'power',
+                nmi: this.leadSummary?.nmi,
+            }
+            this.powerShoplandata = await PowershopService.getPowerShopData(query);
+            if(!isNull(this.powerShoplandata)) {
+                this.loadPowerShopDetails = true;
+            }
+
+
+            console.log('selected power shop plan', this.powerShoplandata);
+        },
     },
 };
 </script>
