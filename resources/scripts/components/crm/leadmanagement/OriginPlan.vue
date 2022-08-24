@@ -10,13 +10,28 @@
 </template>
 
 <script>
+
 export default {
     name: "OriginPlan",
-    props: ["plan", "isActive"],
+    props: {
+        plan: {
+            require: false
+        },
+        isActive: {
+            require: false
+        },
+    },
+    data() {
+        return {}
+    },
+    computed: {
+    },
+    mounted() {},
+    watch: {},
     methods: {
         reviewPlan() {
             this.$emit("toggleDialog");
-        }
+        },
     }
 };
 </script>

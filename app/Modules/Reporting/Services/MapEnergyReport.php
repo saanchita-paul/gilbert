@@ -25,8 +25,11 @@ class MapEnergyReport
         'ea_power_basic_plan' => 0,
         'sumo_power_freedom' => 0,
         'sumo_gas_freedom' => 0,
-        'origin_power_home_assist' => 0,
-        'origin_gas_home_assist' => 0,
+        ConnectionService::PLAN_ORIGIN_HOME_ASSIST => 0,
+        ConnectionService::PLAN_ORIGIN_BASIC => 0,
+        ConnectionService::PLAN_ORIGIN_ADVANTAGE_VARIABLE => 0,
+        ConnectionService::PLAN_ORIGIN_HOME_SUPPORT => 0,
+        ConnectionService::PLAN_ORIGIN_SUPPLY => 0,
     ];
 
     /**
@@ -90,7 +93,9 @@ class MapEnergyReport
             ConnectionApplication::PLAN_TYPE_NO_FRILLS => $this->reportData["ea_power_no_frills"] += $data['total'],
             ConnectionApplication::PLAN_TYPE_FLEXI_PLAN => $this->reportData["ea_power_flexi_plan"] += $data['total'],
             'Sumo Freedom' => $this->reportData["sumo_power_freedom"] += $data['total'],
-            'origin_home_assist' => $this->reportData["origin_power_home_assist"] += $data['total'],
+            ConnectionService::PLAN_ORIGIN_HOME_ASSIST => $this->reportData[ConnectionService::PLAN_ORIGIN_HOME_ASSIST] += $data['total'],
+            ConnectionService::PLAN_ORIGIN_HOME_SUPPORT => $this->reportData[ConnectionService::PLAN_ORIGIN_HOME_SUPPORT] += $data['total'],
+//            'origin_home_assist' => $this->reportData["origin_power_home_assist"] += $data['total'],
             default => null
         };
     }
@@ -108,7 +113,10 @@ class MapEnergyReport
             ConnectionApplication::PLAN_TYPE_NO_FRILLS => $this->reportData["ea_gas_no_frills"] += $data['total'],
             ConnectionApplication::PLAN_TYPE_FLEXI_PLAN => $this->reportData["ea_gas_flexi_plan"] += $data['total'],
             'Sumo Freedom' => $this->reportData["sumo_gas_freedom"] += $data['total'],
-            'origin_advantage_variable' => $this->reportData["origin_gas_home_assist"] += $data['total'],
+            ConnectionService::PLAN_ORIGIN_ADVANTAGE_VARIABLE => $this->reportData[ConnectionService::PLAN_ORIGIN_ADVANTAGE_VARIABLE] += $data['total'],
+            ConnectionService::PLAN_ORIGIN_BASIC => $this->reportData[ConnectionService::PLAN_ORIGIN_BASIC] += $data['total'],
+            ConnectionService::PLAN_ORIGIN_SUPPLY => $this->reportData[ConnectionService::PLAN_ORIGIN_SUPPLY] += $data['total'],
+//            'origin_advantage_variable' => $this->reportData["origin_gas_home_assist"] += $data['total'],
             default => null
         };
     }
