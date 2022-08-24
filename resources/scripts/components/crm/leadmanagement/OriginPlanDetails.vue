@@ -104,11 +104,14 @@ export default {
 		return {}
 	},
 	computed: {
+        isBothEnergySubmit() {
+            return UtilityStoreService.getIsBothEnergySelected() || this.serviceType === 'energy';
+        },
 		willShowElectricity() {
-			return this.planDetails?.plans?.electricity;
+			return this.planDetails?.plans?.electricity && (this.serviceType === 'power' || this.isBothEnergySubmit);
 		},
 		willShowGas() {
-			return this.planDetails?.plans?.gas;
+            return this.planDetails?.plans?.gas && (this.serviceType === 'gas' || this.isBothEnergySubmit);
 		},
 	},
 	watch: {},

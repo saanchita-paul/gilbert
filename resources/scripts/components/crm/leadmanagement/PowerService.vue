@@ -249,7 +249,7 @@ export default {
             },
             set(value) {
                 this.isBothEnergySubmit === true ?
-                    UtilityStoreService.setBothPlan(value, this.selectedProvider)
+                    UtilityStoreService.setBothPlan(value, this.selectedProvider, this.getPlanPayload(value))
                     : UtilityStoreService.setPowerPlan(value);
             }
         },
@@ -425,17 +425,43 @@ export default {
         async selectPlan(plan, isManual = true) {
             if(!this.isServiceEditable) return;
             this.selectedPlan = plan.name;
-            let payload = {
-                service_type: this.leadSummary?.service_interests,
-                provider_name: this.selectedProvider,
-                plan_type: plan.name,
-                service_area: this.isBothEnergySubmit ? "energy" : "power"
-            };
+            let payload = this.getPlanPayload(plan.name);
 
             if (this.selectedProvider !== null) {
                 await LeadApplicationService.updateApplicationProviders(payload, this.leadSummary.id);
                 this.reloadUtilityStore();
             }
+        },
+        async changeIsBothEnergySubmit(value) {
+
+            if (this.selectedProvider === 'origin') {
+                await this.getOriginData();
+            }
+            if(value) {
+                const payload = this.getPlanPayload(this.selectedPlan);
+                UtilityStoreService.setBothProvider(this.selectedProvider);
+                UtilityStoreService.setBothPlan(this.selectedPlan, this.selectedProvider, payload);
+
+                if(this.selectedProvider && this.selectedPlan) {
+                    LeadApplicationService.updateApplicationProviders(payload, this.leadSummary.id);
+                }
+            }
+        },
+
+        getPlanPayload(planText) {
+            const payload = {
+                service_type: this.leadSummary?.service_interests,
+                provider_name: this.selectedProvider,
+                plan_type: 'Hello',
+                service_area: this.isBothEnergySubmit ? "energy" : "power",
+                gas_plan_type: planText,
+                power_plan_type: planText ,
+            }
+            console.log("DETAILS", this.planDetails)
+            return this.selectedProvider === 'origin' ? {...payload, ...{
+                    gas_plan_type: this.planDetails.plans.gas?.plan_name_code || null,
+                    power_plan_type: this.planDetails.plans.electricity?.plan_name_code || null ,
+            }} : payload;
         },
         async reloadUtilityStore() {
             let leadSummary = await LeadApplicationService.loadUserLead(this.leadSummary.id);
@@ -456,22 +482,6 @@ export default {
         },
         changeAfterHourPayee() {
             this.$emit("changeAfterHourPayee");
-        },
-        changeIsBothEnergySubmit(value) {
-            if(value) {
-                UtilityStoreService.setBothProvider(this.selectedProvider);
-                UtilityStoreService.setBothPlan(this.selectedPlan, this.selectedProvider);
-
-                if(this.selectedProvider && this.selectedPlan) {
-                    let payload = {
-                        service_type: this.leadSummary?.service_interests,
-                        provider_name: this.selectedProvider,
-                        plan_type: this.selectedPlan,
-                        service_area: this.isBothEnergySubmit ? "energy" : "power"
-                    };
-                    LeadApplicationService.updateApplicationProviders(payload, this.leadSummary.id);
-                }
-            }
         },
         isDisable() {
             return (
