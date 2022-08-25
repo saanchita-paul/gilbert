@@ -12,12 +12,18 @@ import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import {isNull} from "lodash-es";
 import {getApplicationStatusText} from "../../../data/ConnectionApplicationStatuses";
 import AuthService from "../../../services/AuthService";
+import AgentStatus from "@scripts/models/crm/AgentStatus";
 
 export default {
     mapApplication(data) {
         let model = Object.assign(new Application(), { ...data });
         model.status = this.mapStatus(model.status);
-        model.moving_date = new DayJS(model.moving_date).format(DATE_FORMAT.DB_DATE);
+        model.moving_date = new DayJS(data.moving_date).format(DATE_FORMAT.DB_DATE);
+        model.created_at = data.created_at;
+        model.submitted_at = dayjs(data.submitted_at).isValid()? dayjs(data.submitted_at).format(DATE_FORMAT.DB_DATE): '';
+        model.status_progress = this.mapAgentStatusProgress(data?.status_progress);
+        model.application_status = data?.application_status;
+        model.connection_services_status = data?.connection_services_status;
         if(isNull(data.created_by_agent))
         {
             model.created_by = '';
@@ -31,6 +37,10 @@ export default {
     {
         const office = AuthService.getUserOffice()
         return getApplicationStatusText(status, !!office)
+    },
+
+    mapAgentStatusProgress(status_data) {
+        return status_data.map(data => new AgentStatus({...data}));
     },
 
     mapApplicationList(data) {
@@ -112,7 +122,7 @@ export default {
         });
 
         data.application.service_interests = commission;
-        console.log(data.application);
+
        return {
            ...data.application,
            identification: this.mapIdentification(data.identification),
@@ -204,6 +214,20 @@ export default {
         let fullDateMonthYear = dayjs(fullMonthYear, 'MM/YYYY').daysInMonth() + '/' + fullMonthYear;
         if(isDatabaseFormat) return dayjs(fullDateMonthYear,'DD/MM/YYYY').format('YYYY-MM-DD');
         return fullDateMonthYear;
+    },
+
+    mapIsEmailManuallyVerified(data) {
+
+        // console.log("mapIsEmailManuallyVerified in Mapper ->", data);
+        return data ? true : false;
+    },
+
+    mapEmailManuallyFlagToServer(data) {
+        console.log("mapEmailManuallyFlagToServer ->", data);
+        if (data === false) {
+            return null;
+        }
+        return data;
     }
 
 };

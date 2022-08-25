@@ -113,6 +113,26 @@
                     </template>
                 </v-select>
                 <!-- triage ends -->
+
+
+
+                <v-text-field
+                    v-model="$attrs.value.tenant_email"
+                    full-width
+                    outlined
+                    dense
+                    hide-details="auto"
+                    placeholder="Email"
+                    style="background-color: white"
+                    class="my-1 ml-1"
+                />
+
+                <v-text-field
+                    hidden
+                    v-model="$attrs.value.duplication_group_id"
+                />
+
+
             </div>
         </v-form>
     </div>

@@ -162,6 +162,7 @@
                     :serviceType="isBothEnergySubmit ? 'energy' : 'gas'"
                     :selectedPlan="selectedPlan"
                     :leadSummary="leadSummary"
+                    :planDetails="planDetails"
                 />
             </v-card>
         </v-dialog>
@@ -208,7 +209,9 @@ import {isNull} from "lodash-es";
 import {connectionServicesMapper} from "@scripts/data/ConnectionApplicationMapper";
 import PaymentDetails from "@scripts/components/crm/leadmanagement/PaymentDetails";
 import PowershopPlanDetails from "@scripts/components/crm/leadmanagement/PowershopPlanDetails";
-
+import OriginService from "@scripts/modules/origin/services/OriginService";
+import OriginMapper from "@scripts/modules/origin/api/mappers/OriginMapper";
+import ProviderPlan from "@scripts/models/crm/ProviderPlan";
 
 export default {
     //todo reduce emit functions
@@ -249,7 +252,8 @@ export default {
             originPlans: [],
             originPlanDetails: false,
             powershopPlans: [],
-            powerShopPlanDetails: false
+            powerShopPlanDetails: false,
+            planDetails: null
         };
     },
     computed: {
@@ -277,7 +281,7 @@ export default {
             },
             set(value) {
                 this.isBothEnergySubmit === true ?
-                    UtilityStoreService.setBothPlan(value, this.selectedProvider)
+                    UtilityStoreService.setBothPlan(value, this.selectedProvider, this.getPlanPayload(value))
                     : UtilityStoreService.setGasPlan(value);
             }
         },
@@ -327,10 +331,34 @@ export default {
             return UtilityStoreService.getGasStatus() === connectionServicesMapper.STATUS_REJECTED
             || UtilityStoreService.getGasStatus() === connectionServicesMapper.STATUS_CANT_CONNECT;
         },
+        getNMIPrefix() {
+            return this.leadSummary.nmi?.substr(0, 2) ?? '';
+        },
+        state() {
+            switch(this.leadSummary.state) {
+                case "New South Wales":
+                    return 'nsw'
+                case "Victoria":
+                    return 'vic'
+                case "Queensland":
+                    return 'qld'
+                case "South Australia":
+                    return 'sa'
+                case "Northern Territory":
+                    return 'nt'
+                case "Tasmania":
+                    return 'tas'
+                case "Australian Capital Territory":
+                    return 'act'
+                case 'Western Australia':
+                    return 'wa'
+            }
+        },
     },
     mounted() {
         this.fetchEaPlans();
-        this.fetchOriginPlans();
+        this.getOriginData();
+        // this.fetchOriginPlans();
         this.loadSelectedProviderAndPlan();
         this.fetchPowershopPlans();
 
@@ -342,6 +370,14 @@ export default {
         this.$once("hook:beforeDestroy", () => {
             this.$eventBus.$off("address_updated", updateAddress);
         });
+    },
+    watch: {
+        isBothEnergySubmit() {
+            this.getOriginData()
+        },
+        getNMIPrefix() {
+            this.getOriginData()
+        },
     },
     methods: {
         loadSelectedProviderAndPlan() {
@@ -422,12 +458,7 @@ export default {
         async selectPlan(plan, isManual = true) {
             if(!this.isServiceEditable) return;
             this.selectedPlan = plan.name;
-            let payload = {
-                service_type: this.leadSummary?.service_interests,
-                provider_name: this.selectedProvider,
-                plan_type: plan.name,
-                service_area: this.isBothEnergySubmit ? "energy" : "gas"
-            };
+            let payload = this.getPlanPayload(plan.name);
 
             if (this.selectedProvider !== null) {
                 await LeadApplicationService.updateApplicationProviders(payload, this.leadSummary.id);
@@ -451,22 +482,35 @@ export default {
         toggleSumoPlanDetails() {
             this.sumoPlanDetails = !this.sumoPlanDetails;
         },
-        changeIsBothEnergySubmit(value) {
+        async changeIsBothEnergySubmit(value) {
+            if (this.selectedProvider === 'origin') {
+                await this.getOriginData();
+            }
             if(value) {
+                const payload = this.getPlanPayload(this.selectedPlan);
                 UtilityStoreService.setBothProvider(this.selectedProvider);
-                UtilityStoreService.setBothPlan(this.selectedPlan, this.selectedProvider);
+                UtilityStoreService.setBothPlan(this.selectedPlan, this.selectedProvider, payload);
 
                 if(this.selectedProvider && this.selectedPlan) {
-                    let payload = {
-                        service_type: this.leadSummary?.service_interests,
-                        provider_name: this.selectedProvider,
-                        plan_type: this.selectedPlan,
-                        service_area: this.isBothEnergySubmit ? "energy" : "gas"
-                    };
                     LeadApplicationService.updateApplicationProviders(payload, this.leadSummary.id);
                 }
             }
         },
+        getPlanPayload(planText) {
+            const payload = {
+                service_type: this.leadSummary?.service_interests,
+                provider_name: this.selectedProvider,
+                plan_type: 'Hello',
+                service_area: this.isBothEnergySubmit ? "energy" : "gas",
+                gas_plan_type: planText,
+                power_plan_type: planText ,
+            }
+            return this.selectedProvider === 'origin' ? {...payload, ...{
+                    gas_plan_type: this.planDetails.plans.gas?.plan_name_code || null,
+                    power_plan_type: this.planDetails.plans.electricity?.plan_name_code || null ,
+                }} : payload;
+        },
+
         isDisable() {
             return (
                 !LeadApplicationService.canSubmitEnergy('gas') ||
@@ -480,9 +524,11 @@ export default {
             this.$eventBus.$emit("busUtilitySubmit", subType);
             this.$emit("serviceType", subType);
         },
+
         async changeGoNeutral() {
             await LeadApplicationService.saveSoleField('ea_go_neutral', this.leadSummary.ea_go_neutral, this.leadSummary.id);
         },
+
         async fetchPowershopPlans() {
             const powershopProvider = this.providers.find(pl => {
                 return pl.name === 'powershop';
@@ -493,11 +539,44 @@ export default {
             });
             console.log("powershopPlans ->", this.powershopPlans);
         },
+
         togglePowerShopPlanDetails() {
             this.powerShopPlanDetails = !this.powerShopPlanDetails;
         },
+
         async updateDraft(field, value) {
             await LeadApplicationService.savePaymentField(field, value, this.leadSummary.id);
+        },
+
+        async getOriginData() {
+            let query = null;
+            if(this.isBothEnergySubmit) {
+                query = {
+                    state: this.state,
+                    postcode: this.leadSummary.postcode,
+                    nmi_prefix: this.getNMIPrefix,
+                }
+            } else {
+                query = {
+                    service_type: 'gas',
+                    state: this.state,
+                    postcode: this.leadSummary.postcode,
+                    nmi_prefix: this.getNMIPrefix,
+                }
+            }
+
+            this.planDetails = await OriginService.getOriginData(query);
+
+            if (this.planDetails.plans.gas) {
+                this.originPlans = [
+                    new ProviderPlan({
+                        title: this.planDetails.plans.gas?.plan_name_text,
+                        name: this.planDetails.plans.gas?.plan_name_code,
+                        bgColor: 'red',
+                        type: 'gas',
+                    })
+                ]
+            }
         },
     },
 };

@@ -235,7 +235,7 @@
         <div class="text-field">
           <ValidationProvider
             name="Email"
-            rules="required|email"
+            :rules="`${isManuallyVerified?'':'gbg-email-validate|'}required|email`"
             v-slot="{ errors }"
           >
             <v-text-field
@@ -248,6 +248,13 @@
               @blur="saveDraft('email', person_details.email)"
             ></v-text-field>
           </ValidationProvider>
+        <div class="text-field">
+            <v-checkbox
+                v-model="person_details.email_manually_verified_by"
+                @change="saveDraft('email_manually_verified_by', person_details.email_manually_verified_by)"
+                :label="`Manually verify email`"
+            ></v-checkbox>
+        </div>
         </div>
       </div>
       <div class="crm-text-field">
@@ -1306,6 +1313,7 @@ import {medicareRules, mediExpireDate} from '@scripts/plugins/VeeValidate';
 import {tenancyTypeMapper} from '@scripts/data/ConnectionApplicationMapper';
 import {mapGetters} from "vuex";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
+import AuthService from "@scripts/services/AuthService";
 
 export default {
   name: "InfoField",
@@ -1650,6 +1658,7 @@ export default {
         concession_card_number: null,
         concession_start_date: null,
         concession_end_date: null,
+        email_manually_verified_by: null,
       },
         dob: null,
         moving_date: null,
@@ -1663,6 +1672,8 @@ export default {
         isConcessionEndDate: false,
         showDateOfBirth: false,
         serviceAddressFlag: false,
+        currentUser: null,
+        manuallyVerified: false,
     };
   },
   methods: {
@@ -1708,8 +1719,9 @@ export default {
       this.person_details.is_email_billing = this.lead.is_email_billing;
       this.person_details.additional_instruction =
       this.lead.additional_instruction;
+      // this.person_details.email_manually_verified_by = this.manuallyVerified;
 
-      this.dob = this.lead.dob;
+        this.dob = this.lead.dob;
       // console.log('moving date->' , this.lead.moving_date)
       this.moving_date = this.lead.moving_date;
       // console.log('identifcation' , this.lead.identification)
@@ -1778,9 +1790,16 @@ export default {
     },
 
     saveDraft(field, value, isDate = false, identification = false) {
-      this.$emit("updateDraft", field, value, isDate, identification, true);
+        if(field === "email"){
+            this.resetData()
+        }
+            this.$emit("updateDraft", field, value, isDate, identification, true);
     },
 
+      resetData() {
+          this.person_details.email_manually_verified_by = false;
+          this.saveDraft('email_manually_verified_by', false);
+      },
     changeIdentity() {
       this.indentification.card_number = "";
       this.indentification.state = "";
@@ -1938,6 +1957,16 @@ export default {
         isStateSA() {
           return this.property_details.state == 'South Australia';
         },
+
+       // async isVerified() {
+       //      this.manuallyVerified = await LeadApplicationService.isEmailManuallyVerified(this.lead.id);
+       //      this.person_details.email_manually_verified_by =  this.manuallyVerified;
+       //      return this.person_details.email_manually_verified_by;
+       //  },
+
+        isManuallyVerified() {
+            return this.person_details.email_manually_verified_by;
+        },
     },
 
   watch: {
@@ -2077,6 +2106,10 @@ export default {
         this.$eventBus.$off("update_connection_end_date", update_connection_end_date );
     });
 
+    this.currentUser = AuthService.getAuthUser().profile.id;
+
+    this.manuallyVerified =  await LeadApplicationService.isEmailManuallyVerified(this.lead.id);
+    this.person_details.email_manually_verified_by =  this.manuallyVerified;
   },
 };
 </script>

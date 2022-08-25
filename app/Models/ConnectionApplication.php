@@ -218,10 +218,18 @@ class ConnectionApplication extends Model
         'concession_end_date',
         'additional_access_information',
         'is_power_life_support',
+
+        'email_manually_verified_by',
+
         'is_skip_hubspot',
         'is_running_submission',
         'app_close_reason_id',
-        'is_generated_caf'
+        'is_generated_caf',
+        'is_duplicate',
+        'duplication_group_id',
+        'duplicated_address_group_id',
+        'duplicated_email_group_id',
+        'app_close_reason_id'
     ];
 
 

@@ -36,7 +36,7 @@
             <v-row>
                 <v-col cols="12" class="crm-table">
                     <v-data-table
-                        :headers="headers"
+                        :headers="tableHeader"
                         :items="applications"
                         :item-class="isSelectedClass"
                         :options.sync="options"
@@ -53,6 +53,11 @@
                             <v-icon small :disabled="isServiceAllowed(item.services, 'gas')" color="red">mdi-fire</v-icon>
                             <v-icon small  :disabled="isServiceAllowed(item.services, 'internet')" color="green">mdi-wifi</v-icon>
                             <v-icon small :disabled="isServiceAllowed(item.services, 'water')" color="blue" >mdi-water</v-icon>
+                        </template>
+                        <template v-slot:item.source="{ item }">
+                            <div
+                                v-text="leadSourceMapFromNumber[item.source]"
+                            ></div>
                         </template>
                         <template v-slot:item.assignee="{ item }">
                             <AssigneeDropdown v-if="currentUser && users"
@@ -79,6 +84,7 @@ import AssignedtoPopUp from "@scripts/components/crm/leadmanagement/AssignedtoPo
 import ReassignModal from "@scripts/components/crm/modals/ReassignModal";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import AuthService from "@scripts/services/AuthService";
+import {leadSourceMapFromNumber} from "@scripts/data/LeadSourceMap";
 
 export default {
   name: "ApplicantTable",
@@ -101,6 +107,9 @@ export default {
             required: true
         },
         isSearching: {
+            default: false
+        },
+      showDuplicates: {
             default: false
         }
     },
@@ -170,9 +179,69 @@ export default {
                 }
 
             ],
+
+          duplicatedHeader: [
+            {
+              text: 'AppId',
+              align: 'start',
+              sortable: true,
+              value: 'id'
+            },
+            {
+              text: 'Name',
+              align: 'start',
+              sortable: true,
+              value: 'first_name'
+            },
+            {
+              text: 'Moving date',
+              align: 'start',
+              sortable: true,
+              value: 'moving_date'
+            },
+            {
+              text: 'Lead Resource',
+              align: 'start',
+              sortable: true,
+              value: 'source'
+            },
+            {
+              text: 'Created At',
+              align: 'start',
+              sortable: true,
+              value: 'created_at'
+            },
+            {
+              text: 'Submitted At',
+              align: 'start',
+              sortable: true,
+              value: 'submitted_at'
+            },
+            {
+              text: 'Email Address',
+              align: 'start',
+              sortable: true,
+              value: 'email'
+            },
+            {
+              text: 'Assignee',
+              align: 'start',
+              sortable: true,
+              value: 'assignee'
+            }
+          ],
         }
     },
 
+  computed: {
+    tableHeader() {
+      console.log('showDuplicates', this.showDuplicates)
+      return this.showDuplicates ? this.duplicatedHeader: this.headers ;
+    },
+      leadSourceMapFromNumber() {
+          return leadSourceMapFromNumber;
+      }
+  },
     methods: {
         isSelectedClass(item) {
             if(item.id === this.currentLead?.id) {

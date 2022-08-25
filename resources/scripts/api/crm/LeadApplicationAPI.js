@@ -244,6 +244,7 @@ export default {
 
     async getUserLeads(sort_search_meta, active_lead_type, src, params) {
         try {
+            // console.log('finel parameter', params);
             const data = await axios.get('/api/applications',{params:{...sort_search_meta, source: src , ...params, active_lead_type:active_lead_type}});
             return ApplicationMapper.mapApplicationList(data.data);
 
@@ -340,6 +341,7 @@ export default {
             lead.concession_start_date = ApplicationMapper.mapDateToServer(lead.concession_start_date);
             lead.concession_end_date = ApplicationMapper.mapDateToServer(lead.concession_end_date);
             lead.identification.expire_date = ApplicationMapper.mapDateToServer(lead.identification.expire_date);
+            lead.email_manually_verified_by = ApplicationMapper.mapEmailManuallyFlagToServer(lead.email_manually_verified_by);
             const data = await axios.post('/api/applications/'+leadId+'/submit', {lead});
             return data;
         } catch (error) {
@@ -517,10 +519,24 @@ export default {
         await axios.post('/api/applications/'+id+'/clear-concession-details');
     },
 
+
+    async saveEmailField(field, value, leadId)
+    {
+        try {
+            const payload ={
+                [field]: value,
+            }
+            return await axios.post('/api/applications/'+leadId+'/save-email', payload);
+        } catch (error) {
+            return error.data;
+        }
+    },
+
     async validateCutOff(id) {
         try {
             const data = await axios.get('/api/applications/' + id + '/validate-cutoff');
             return data.data;
+
         } catch (error) {
             return error.data;
         }
@@ -537,4 +553,13 @@ export default {
         const payload = { "link_type" : linkType };
         await axios.post('/api/applications/'+leadId+'/payment-link', payload);
     },
+    async isEmailManuallyVerified(id) {
+        try {
+            const data = await axios.get('/api/applications/'+id+'/email-manually-verified');
+
+            return ApplicationMapper.mapIsEmailManuallyVerified(data.data.data);
+        } catch (error) {
+            return error.data;
+        }
+    }
 }

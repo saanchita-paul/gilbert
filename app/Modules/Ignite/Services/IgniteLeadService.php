@@ -3,14 +3,21 @@
 namespace Ignite\Services;
 
 use App\Events\NotifyAgentAfterLeadCreation;
-use App\Jobs\CreateHubspotProperty;
-use Exception;
-use Carbon\Carbon;
-use App\Models\Agency;
 use Ignite\Models\IgniteLead;
-use Illuminate\Support\Facades\Log;
+use App\Models\Agency;
+use App\Models\Identification;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use App\Models\AgentProfile;
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Builder;
+use App\Jobs\CreateHubspotProperty;
+use App\Services\NotifyBadAgentMailService;
+
+use Locale;
+
 
 class IgniteLeadService
 {
@@ -19,6 +26,7 @@ class IgniteLeadService
      */
     private IgniteLead $lead;
     private ConnectionApplication $connectionApplication;
+    private Identification $identification;
 
     const TYPE_CREATE = 1;
     const TYPE_UPDATE = 2;
@@ -51,13 +59,28 @@ class IgniteLeadService
         'wa'  => self::MAP_STATE_WA,
     ];
 
+    const MAP_COUNTRY = [
+        'au' => 'AUS',
+        'th' => 'THA',
+    ];
+
+    const MAP_TYPE = [
+        'PASSPORT' => 1,
+        'DRIVER_LICENCE' => 2
+    ];
+
+    const MAP_IDENTITY_TYPE = [
+        'DRIVER_LICENCE' => Identification::TYPE_DRIVING_LICENCE,
+        'PASSPORT' => Identification::TYPE_PASSPORT,
+    ];
+
     /**
      * Set attribute for create.
      *
      * @param  array  $leadInfo
      * @return void
      */
-    private function setAttribute(array $leadInfo) : void{
+    private function setAttributeToApplication(array $leadInfo) : void{
 
         //tenant
         $this->connectionApplication->first_name   = $leadInfo['tenant']['firstName'] ?? 'Iron';
@@ -82,23 +105,33 @@ class IgniteLeadService
 
         $this->connectionApplication->address_text   = $street . ' ' . $city . ' ' . $state  . ' ' . $postcode;
 
-        //InginteLeads Table
-        $this->lead->lead_id     = $leadInfo['application']['id'] ?? '';
-        $this->lead->approvedAt  = Carbon::parse($leadInfo['application']['approvedAt'])->format("Y-m-d H:i:s") ?? '';
-
-        //agency
-        $this->lead->agency_id   = $leadInfo['agency']['reaId'] ?? '';
-        $this->lead->agency_name = $leadInfo['agency']['name'] ?? '';
-
-        //agent
-        $this->lead->agent_id    = $leadInfo['agents'][0]['id'] ?? '';
-        $this->lead->agent_name  = $leadInfo['agents'][0]['name'] ?? '';
-        $this->lead->agent_email = $leadInfo['agents'][0]['email'] ?? '';
-
-        //
-        $this->lead->connectionProviderName = $leadInfo['connectionProviderName'] ?? '';
+        $this->connectionApplication->created_by = AgentProfile::whereHas(
+            'user',
+            fn(Builder $user) => $user->where('email', $this->lead->agent_email)
+        )->first()?->id ?? null;
     }
 
+    private function setIdentification(array $leadInfo) : void
+    {
+        if ($this->connectionApplication->id && $leadInfo['tenant']['identityDocument'] !== null)
+        {
+            $this->identification = new Identification;
+
+            $this->identification->connection_application_id = $this->connectionApplication->id;
+            $this->identification->type = self::MAP_TYPE[$leadInfo['tenant']['identityDocument']['documentType']] ?? null;
+
+            if ($leadInfo['tenant']['identityDocument']['documentType'] === 'PASSPORT') {
+                $this->identification->card_number = $leadInfo['tenant']['identityDocument']['passportNumber'];
+                $this->identification->country = self::MAP_COUNTRY[strtolower($leadInfo['tenant']['identityDocument']['passportCountryCode'])] ?? null;
+            } else {
+                $this->identification->card_number = $leadInfo['tenant']['identityDocument']['licenceNumber'];
+                $this->identification->state = self::MAP_STATE[strtolower($leadInfo['tenant']['identityDocument']['licenceState'])] ?? null;
+                $this->identification->expire_date = $leadInfo['tenant']['identityDocument']['licenceExpiryDate'];
+            }
+
+            $this->identification->save();
+        }
+    }
 
     /**
      * Set service types.
@@ -141,7 +174,7 @@ class IgniteLeadService
 
     private function isStateVic($state) : bool
     {
-        return strtolower($state) === 'vic' || strtolower($state) === 'victoria';
+        return strtolower($state) === 'vic' || strtolower($state) === 'victoria'; 
     }
 
     /**
@@ -150,12 +183,26 @@ class IgniteLeadService
      * @return void
      * @throws Exception
      */
-    private function setOfficeAndAgencyId() : void{
+    private function setOfficeAndAgencyId(array $leadInfo) : void{
         try {
-            $agency = Agency::where('name' , "Ignite-Hood-Agency")->first();
-            $this->connectionApplication->agency_id = $agency?->id ?? 1;
-            $this->connectionApplication->office_id = $agency?->offices[0]?->id ?? 1;
-            if(!$agency) throw new Exception('Please run FoxieSeeder');
+            if ($this->connectionApplication->createdBy()->exists()){
+                $agentProfile = $this->connectionApplication->createdBy;
+                $agentAgencyId = $agentProfile->agency_id;
+                $agentOfficeId = $agentProfile->office_id;
+
+                $this->connectionApplication->agency_id = $agentAgencyId;
+                $this->connectionApplication->office_id = $agentOfficeId;                    
+            }
+            else{
+                $agencyName = $leadInfo['agency']['name'];
+                $agency = Agency::where('name' , $agencyName)->first();
+                if (!$agency) {
+                    $agency = Agency::where('name', "Ignite-Hood-Agency")->first();
+                }
+                $this->connectionApplication->agency_id = $agency?->id ?? 1;
+                $this->connectionApplication->office_id = $agency?->offices[0]?->id ?? 1;
+                if(!$agency) throw new Exception('Please run FoxieSeeder');
+            }
         } catch (\Exception $exception) {
             Log::error("Please run IgniteSeeder , php artisan db:seed --class=IgniteSeeder");
             \Log::error($exception->getMessage());
@@ -176,25 +223,36 @@ class IgniteLeadService
             $this->connectionApplication = new ConnectionApplication;
             $this->lead = new IgniteLead();
 
-            $this->setOfficeAndAgencyId();
-
-            $this->setAttribute($leadInfo);
-
+            $this->setAttributeToIgniteLead($leadInfo);
+            $this->lead->save();
+            
+            $this->setAttributeToApplication($leadInfo);
+            $this->setOfficeAndAgencyId($leadInfo);
 
             $this->connectionApplication->status = ConnectionApplication::STATUS_UNASSIGNED;
-            $this->connectionApplication->save();
+            
+            if ($this->connectionApplication->save()){
+                $this->setIdentificationNew($leadInfo);
+            }
+
+            // $this->setIdentification($leadInfo);
+
+            NotifyBadAgentMailService::check(
+                $this->connectionApplication,
+                'Ignite',
+                $this->connectionApplication->agency->name ?? ($this->lead->agency_name ?? ''),
+                $this->connectionApplication->office->name ?? 'Ignite-Hood-Office',
+                $this->lead->agent_email ?? '',
+            );
 
             $this->setServiceTypeTable($leadInfo['utilityConnectionsAllowed'] ?? ['water']);
 
-            $this->lead->all_fields_dump = json_encode($leadInfo);
-            $this->lead->connection_application_id = $this->connectionApplication->id;
-            $this->lead->save();
-
-
+           $this->lead->connection_application_id = $this->connectionApplication->id;
+           $this->lead->save();
 
             // hubspot api call for creation
             NotifyAgentAfterLeadCreation::dispatch($this->lead->id);
-            CreateHubspotProperty::dispatch($this->lead->id);
+            CreateHubspotProperty::dispatch($this->connectionApplication->id);
 
             return true;
         } catch (\Exception $exception) {
@@ -211,7 +269,8 @@ class IgniteLeadService
      * @return bool
      * @throws Exception
      */
-    public function create() : bool{
+    public function create() : bool
+    {
         try {
             $service = new IgniteConnectionLeadService();
             $token =  $service->authenticate();
@@ -226,13 +285,36 @@ class IgniteLeadService
     }
 
     /**
-     * Create new ConnectionApplication, run a loop.
-     *
-     * @param  array  $allLead
-     * @return bool
+     *  Create dummy new ConnectionApplication via read json from path 'Storage/app/ignite_lead_response.json'
+     * 
+     * @return void
      * @throws Exception
      */
-    private function verifyData(array $allLead , IgniteConnectionLeadService $service) : int{
+    public function dummyCreate() {
+        try {
+            $leads = json_decode(file_get_contents(storage_path('app/ignite_lead_response.json')), true);
+            foreach ($leads as $leadInfo) {
+                $igniteLead = IgniteLead::where('lead_id' ,  $leadInfo['application']['id'])->first();
+                if(!$igniteLead){
+                    $this->insertLead($leadInfo);
+                }
+            };
+        } catch (\Exception $exception) {
+            \Log::info($exception->getMessage());
+            \Log::error($exception->getTraceAsString());
+            throw $exception;
+        }        
+    }
+
+    /**
+     * Create new ConnectionApplication, run a loop.
+     *
+     * @param array $allLead
+     * @param IgniteConnectionLeadService $service
+     * @throws Exception
+     */
+    private function verifyData(array $allLead , IgniteConnectionLeadService $service)
+    {
 
         foreach ($allLead  as $leadInfo) {
             try {
@@ -247,14 +329,62 @@ class IgniteLeadService
         };
 
         //TODO logic might be changed according to requirementes
-        if($service->getNextPageUrl() == '') {
-        // if(count($allLead) < 25) {
-            return 0;
-        }else{
-            $allLead =  $service->getIgniteLeads( $service->getToken() , $service->getNextPageUrl() );
-            return $this->verifyData($allLead , $service);
+        $nextPage = $service->getNextPageUrl();
+        if ($nextPage !== '') {
+            $allLead =  $service->getIgniteLeads( $service->getToken() , $nextPage);
+            $this->verifyData($allLead , $service);
         }
 
+    }
+
+    private function setAttributeToIgniteLead(array $leadInfo)
+    {
+        $this->lead->all_fields_dump = json_encode($leadInfo);
+        //InginteLeads Table
+        $this->lead->lead_id     = $leadInfo['application']['id'] ?? '';
+        $this->lead->approvedAt  = Carbon::parse($leadInfo['application']['approvedAt'])->format("Y-m-d H:i:s") ?? '';
+
+        //agency
+        $this->lead->agency_id   = $leadInfo['agency']['reaId'] ?? '';
+        $this->lead->agency_name = $leadInfo['agency']['name'] ?? '';
+
+        //agent
+        $this->lead->agent_id    = $leadInfo['agents'][0]['id'] ?? '';
+        $this->lead->agent_name  = $leadInfo['agents'][0]['name'] ?? '';
+        $this->lead->agent_email = $leadInfo['agents'][0]['email'] ?? '';
+        $this->lead->connectionProviderName = $leadInfo['connectionProviderName'] ?? '';
+        info("IGNITE TATA: " . $this->lead->lead_id);
+    }
+
+    private function setIdentificationNew (array $leadInfo) 
+    {
+        try {
+            if (empty($leadInfo['tenant']['identityDocument'])) {
+                throw new \Exception('Ignite Lead does not include identityDocument property');
+            }
+
+            $identityInfo = $leadInfo['tenant']['identityDocument'];
+            
+            if (!array_key_exists($identityInfo['documentType'], self::MAP_IDENTITY_TYPE)){
+                throw new \Exception(sprintf('Ignite Lead identity type "%s" not valid', $identityInfo['documentType']));
+            }
+
+            $newIdentification = new Identification();
+            $newIdentification->connection_application_id = $this->connectionApplication->id;
+            $newIdentification->type = self::MAP_IDENTITY_TYPE[$identityInfo['documentType']]; 
+            $newIdentification->card_number = $identityInfo['licenceNumber'] ?? ($identityInfo['passportNumber'] ?? null);
+            $newIdentification->state  = self::MAP_STATE[strtolower( $identityInfo['licenceState'] )] ?? null;
+            $newIdentification->expire_date = $identityInfo['licenceExpiryDate'] ?? ($identityInfo['passportExpiryDate'] ?? null); 
+            if (!empty($identityInfo['passportCountryCode'])) $newIdentification->country = Locale::getDisplayRegion(sprintf('-%s', $identityInfo['passportCountryCode']));
+            
+            $newIdentification->save();
+
+        } catch (\Exception $e){
+            \Log::error('Ignite Lead save identification failed', [
+                'message' => $e->getMessage(),
+                'leadInfo' => $leadInfo,
+            ]);
+        }
     }
 
 }

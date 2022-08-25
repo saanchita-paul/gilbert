@@ -56,6 +56,12 @@ class SearchConnectionApplication
     private $tenantEmail;
     private ?string $startDate = null;
     private ?string $endDate = null;
+    private bool $isDuplicate;
+
+    /**
+     * @var string|null
+     */
+    private $duplication_group_id;
 
     private ?string $provider = null;
 
@@ -76,6 +82,8 @@ class SearchConnectionApplication
         $this->agentId = !empty($request['agent_id']) ? $request['agent_id'] : null;
         $this->tenantEmail = !empty($request['tenant_email']) ? $request['tenant_email'] : null;
         $this->provider = !empty($request['provider_name']) ? $request['provider_name'] : null;
+        $this->isDuplicate = !empty($request['is_duplicate']) ? (bool)$request['is_duplicate'] : false;
+        $this->duplication_group_id = !empty($request['duplication_group_id']) ? $request['duplication_group_id'] : null;
 
         !empty($request['moving_date']) && $this->setDateRangeNoTz($request['moving_date'], $request['moving_date']);
 
@@ -98,7 +106,13 @@ class SearchConnectionApplication
             ->with('tsaCallHistories')
             ->with('assignedTo')
             ->with('submittedByUser')
-            ->with('powershopPaymentInfo');
+            ->with('powershopPaymentInfo')
+            ->with('office')
+            ->with('authorizedPerson')
+            ->with('createdBy')
+            ->with('identification')
+            ->with('submittedByUser');
+
 
         $this->applyFilterLeadType($user)
             ->applyFilterUserOffice($user)
@@ -113,6 +127,7 @@ class SearchConnectionApplication
             ->applyFilterAgentId()
             ->applyFilterTenantEmail()
             ->applyFilterByProvider()
+            ->applyDuplicateFilter()
             ->applySearch();
 
         $this->builder = $this->applySorting($this->builder);
@@ -305,7 +320,7 @@ class SearchConnectionApplication
             $this->searchQueries[] = $query->createNew(text: $filters['phone'], index: 'phone,homephone');
         }
         if (!empty($filters['address'])) {
-            $index = 'unit_number,street_number,street_name,city,postcode,state,country,street_address,address_text';
+            $index = 'unit_number,street_number,street_name_only,city,postcode,state,country,street_address,address_text';
             $this->searchQueries[] = $query->createNew(text: $filters['address'], index: $index);
         }
     }
@@ -335,10 +350,23 @@ class SearchConnectionApplication
     private function applyFilterByProvider(): static
     {
         if ($this->provider) {
-            $this->builder = $this->builder->whereHas('connectionServices', function(Builder $query) {
+            $this->builder = $this->builder->whereHas('connectionServices', function (Builder $query) {
                 $query->where('provider_name', $this->provider);
             });
         }
-        return $this;
+    }
+
+    private function applyDuplicateFilter(): static
+    {
+        if ($this->isDuplicate) {
+            $this->builder = $this->builder
+                ->where('is_duplicate', true);
+        }
+
+        if (!empty($this->duplication_group_id)) {
+            $this->builder = $this->builder
+                ->where('duplication_group_id', $this->duplication_group_id);
+        }
+
     }
 }

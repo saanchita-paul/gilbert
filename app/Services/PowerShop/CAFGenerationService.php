@@ -83,13 +83,13 @@ class CAFGenerationService
                     'Customer Type' => 'Residential',
                     'NMI' => $app->nmi,
                     'MIRN' => $app->mirn,
-                    'Connection Date' => date('d/m/Y', strtotime($app->moving_date)),
+                    'Connection Date' => date('m/d/Y', strtotime($app->moving_date)),
                     'Type of Sale' => 'Moving',
                     'Signup Type' => $this->getSignUpType($app),
                     'Title' => $app->title,
                     'First Name' => $app->first_name,
                     'Last Name' => $app->last_name,
-                    'Date of Birth' => date('d/m/Y', strtotime($app->dob)),
+                    'Date of Birth' => date('m/d/Y', strtotime($app->dob)),
                     'Business Name' => null,
                     'Phone - Home' => $app->homephone,
                     'Phone - Office' => null,
@@ -344,26 +344,29 @@ class CAFGenerationService
 
     private function getHazard($is_any_unrestrained_animal, $is_renovation_on): string
     {
+        $hasrestineAnymal = false;
         $hazard = [];
-        if(!empty($is_any_unrestrained_animal)) {
-            $hazard[] =  'Animal on property';
+        if( !is_null(is_any_unrestrained_animal) && !empty(trim(is_any_unrestrained_animal)) ) {
+            $hazard =  'Animal on property';
+            $hasrestineAnymal = true;
         }
-        if(!empty($is_renovation_on)) {
-            $hazard[] = ',renovation going on';
+        if(is_null($is_renovation_on) && !empty(trim($is_renovation_on))) {
+            if($hasrestineAnymal) {
+                return $hazard .', '. 'renovation going on';
+            }
         }
-        return join(' ,' , $hazard);
+        return $hazard;
+
+
     }
 
     private function getAccessReq($is_access_require, $additional_access_information): string
     {
-        $accessInfo = [];
         if($is_access_require) {
-            $accessInfo[] = 'Yes';
+            return  'Yes, '. $additional_access_information;
         } else {
-            $accessInfo[] = 'No';
+            return 'No';
         }
-        $accessInfo[] = $additional_access_information;
-        return join(' ,' , $accessInfo);
 
     }
 

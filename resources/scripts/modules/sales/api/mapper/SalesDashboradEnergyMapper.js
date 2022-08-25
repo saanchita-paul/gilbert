@@ -44,7 +44,13 @@ export default {
                 ],
                 [
                     {
-                        key: 'Home Assist', value: data?.origin_gas_home_assist,
+                        key: 'Advantage variable', value: data?.origin_advantage_variable,
+                    },
+                    {
+                        key: 'Home Supply', value: data?.origin_supply,
+                    },
+                    {
+                        key: 'Home Basic', value: data?.origin_basic,
                     },
                 ],
                 [
@@ -56,8 +62,8 @@ export default {
 
             const totalEaData = data?.ea_gas_no_frills + data?.ea_gas_basic_plan + data?.ea_gas_total_plan + data?.ea_gas_flexi_plan;
             const totalSumoData = data?.sumo_gas_freedom;
-            const totalOriginData = data?.origin_gas_home_assist;
             const totalPowerShopData = data?.origin_gas_home_assist;
+            const totalOriginData = data?.origin_advantage_variable + data?.origin_supply + data?.origin_basic;
 
             const chartData = [totalEaData, totalSumoData, totalOriginData, totalPowerShopData];
             const plan = PLAN;
@@ -122,7 +128,10 @@ export default {
                 ],
                 [
                     {
-                        key: 'Home Assist', value: data?.origin_power_home_assist,
+                        key: 'Home Assist', value: data?.origin_home_assist,
+                    },
+                    {
+                        key: 'Home Support', value: data?.origin_home_support,
                     },
                 ],
                 [
@@ -134,8 +143,9 @@ export default {
 
             const totalEaData = data?.ea_power_no_frills + data?.ea_power_basic_plan + data?.ea_power_total_plan + data?.ea_power_flexi_plan;
             const totalSumoData = data?.sumo_power_freedom;
-            const totalOriginData = data?.origin_power_home_assist;
             const totalPowerShopData = data?.origin_power_home_assist;
+            const totalOriginData = data?.origin_home_assist + data?.origin_home_support;
+
 
             const chartData = [totalEaData, totalSumoData, totalOriginData, totalPowerShopData];
             const backgroundColorList = [

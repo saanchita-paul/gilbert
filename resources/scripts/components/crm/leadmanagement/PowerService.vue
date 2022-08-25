@@ -165,6 +165,7 @@
                     :serviceType="isBothEnergySubmit ? 'energy' : 'power'"
                     :selectedPlan="selectedPlan"
                     :leadSummary="leadSummary"
+                    :planDetails="planDetails"
                 />
             </v-card>
         </v-dialog>
@@ -213,7 +214,9 @@ import {isNull } from "lodash-es";
 import {connectionServicesMapper} from "@scripts/data/ConnectionApplicationMapper";
 import PowershopPlanDetails from "@scripts/components/crm/leadmanagement/PowershopPlanDetails";
 import PowershopService from "@scripts/modules/powershop/services/PowershopService";
-
+import OriginService from "@scripts/modules/origin/services/OriginService";
+import OriginMapper from "@scripts/modules/origin/api/mappers/OriginMapper";
+import ProviderPlan from "@scripts/models/crm/ProviderPlan";
 
 export default {
     //todo reduce emit functions
@@ -256,7 +259,8 @@ export default {
             powershopPlans: [],
             powerShopPlanDetails: false,
             powerShoplandata: null,
-            loadPowerShopDetails: false
+            loadPowerShopDetails: false,
+            planDetails: null
         };
     },
     computed: {
@@ -284,7 +288,7 @@ export default {
             },
             set(value) {
                 this.isBothEnergySubmit === true ?
-                    UtilityStoreService.setBothPlan(value, this.selectedProvider)
+                    UtilityStoreService.setBothPlan(value, this.selectedProvider, this.getPlanPayload(value))
                     : UtilityStoreService.setPowerPlan(value);
             }
         },
@@ -333,10 +337,34 @@ export default {
             return UtilityStoreService.getPowerStatus() === connectionServicesMapper.STATUS_REJECTED
             || UtilityStoreService.getPowerStatus() === connectionServicesMapper.STATUS_CANT_CONNECT;
         },
+        getNMIPrefix() {
+            return this.leadSummary.nmi?.substr(0, 2) ?? '';
+        },
+        state() {
+            switch(this.leadSummary.state) {
+                case "New South Wales":
+                    return 'nsw'
+                case "Victoria":
+                    return 'vic'
+                case "Queensland":
+                    return 'qld'
+                case "South Australia":
+                    return 'sa'
+                case "Northern Territory":
+                    return 'nt'
+                case "Tasmania":
+                    return 'tas'
+                case "Australian Capital Territory":
+                    return 'act'
+                case 'Western Australia':
+                    return 'wa'
+            }
+        },
     },
     mounted() {
         this.fetchEaPlans();
-        this.fetchOriginPlans();
+        this.getOriginData();
+        // this.fetchOriginPlans();
         this.loadSelectedProviderAndPlan();
         this.fetchPowershopPlans();
 
@@ -349,6 +377,14 @@ export default {
         this.$once("hook:beforeDestroy", () => {
             this.$eventBus.$off("address_updated", updateAddress);
         });
+    },
+    watch: {
+        isBothEnergySubmit() {
+            this.getOriginData()
+        },
+        getNMIPrefix() {
+            this.getOriginData()
+        },
     },
     methods: {
         loadSelectedProviderAndPlan() {
@@ -372,16 +408,16 @@ export default {
             this.isEaPlansLoaded = true;
             console.log("eaPlans", this.eaPlans);
         },
-        async fetchOriginPlans() {
-            const originProvider = this.providers.find(pl => {
-                return pl.name === 'origin';
-            });
-
-            this.originPlans = originProvider.plans.filter(plan => {
-                return plan.type === 'power';
-            });
-            console.log("originPlans", this.originPlans);
-        },
+        // async fetchOriginPlans() {
+        //     const originProvider = this.providers.find(pl => {
+        //         return pl.name === 'origin';
+        //     });
+        //
+        //     this.originPlans = originProvider.plans.filter(plan => {
+        //         return plan.type === 'power';
+        //     });
+        //     console.log("originPlans", this.originPlans);
+        // },
         async fetchSumoPlans(name) {
             this.isSumoPlansLoading = true;
             this.isSumoPlansLoadError = false;
@@ -437,17 +473,43 @@ export default {
         async selectPlan(plan, isManual = true) {
             if(!this.isServiceEditable) return;
             this.selectedPlan = plan.name;
-            let payload = {
-                service_type: this.leadSummary?.service_interests,
-                provider_name: this.selectedProvider,
-                plan_type: plan.name,
-                service_area: this.isBothEnergySubmit ? "energy" : "power"
-            };
+            let payload = this.getPlanPayload(plan.name);
 
             if (this.selectedProvider !== null) {
                 await LeadApplicationService.updateApplicationProviders(payload, this.leadSummary.id);
                 this.reloadUtilityStore();
             }
+        },
+        async changeIsBothEnergySubmit(value) {
+
+            if (this.selectedProvider === 'origin') {
+                await this.getOriginData();
+            }
+            if(value) {
+                const payload = this.getPlanPayload(this.selectedPlan);
+                UtilityStoreService.setBothProvider(this.selectedProvider);
+                UtilityStoreService.setBothPlan(this.selectedPlan, this.selectedProvider, payload);
+
+                if(this.selectedProvider && this.selectedPlan) {
+                    LeadApplicationService.updateApplicationProviders(payload, this.leadSummary.id);
+                }
+            }
+        },
+
+        getPlanPayload(planText) {
+            const payload = {
+                service_type: this.leadSummary?.service_interests,
+                provider_name: this.selectedProvider,
+                plan_type: 'Hello',
+                service_area: this.isBothEnergySubmit ? "energy" : "power",
+                gas_plan_type: planText,
+                power_plan_type: planText ,
+            }
+            console.log("DETAILS", this.planDetails)
+            return this.selectedProvider === 'origin' ? {...payload, ...{
+                    gas_plan_type: this.planDetails.plans.gas?.plan_name_code || null,
+                    power_plan_type: this.planDetails.plans.electricity?.plan_name_code || null ,
+            }} : payload;
         },
         async reloadUtilityStore() {
             let leadSummary = await LeadApplicationService.loadUserLead(this.leadSummary.id);
@@ -468,22 +530,6 @@ export default {
         },
         changeAfterHourPayee() {
             this.$emit("changeAfterHourPayee");
-        },
-        changeIsBothEnergySubmit(value) {
-            if(value) {
-                UtilityStoreService.setBothProvider(this.selectedProvider);
-                UtilityStoreService.setBothPlan(this.selectedPlan, this.selectedProvider);
-
-                if(this.selectedProvider && this.selectedPlan) {
-                    let payload = {
-                        service_type: this.leadSummary?.service_interests,
-                        provider_name: this.selectedProvider,
-                        plan_type: this.selectedPlan,
-                        service_area: this.isBothEnergySubmit ? "energy" : "power"
-                    };
-                    LeadApplicationService.updateApplicationProviders(payload, this.leadSummary.id);
-                }
-            }
         },
         isDisable() {
             return (
@@ -525,12 +571,43 @@ export default {
                 nmi: this.leadSummary?.nmi,
             }
             this.powerShoplandata = await PowershopService.getPowerShopData(query);
-            if(!isNull(this.powerShoplandata)) {
+            if (!isNull(this.powerShoplandata)) {
                 this.loadPowerShopDetails = true;
             }
 
 
             console.log('selected power shop plan', this.powerShoplandata);
+        },
+
+        async getOriginData() {
+            let query = null;
+            if(this.isBothEnergySubmit) {
+                query = {
+                    state: this.state,
+                    postcode: this.leadSummary.postcode,
+                    nmi_prefix: this.getNMIPrefix,
+                }
+            } else {
+                query = {
+                    service_type: 'electricity',
+                    state: this.state,
+                    postcode: this.leadSummary.postcode,
+                    nmi_prefix: this.getNMIPrefix,
+                }
+            }
+
+            this.planDetails = await OriginService.getOriginData(query);
+
+             if (this.planDetails.plans.electricity) {
+                 this.originPlans = [
+                     new ProviderPlan({
+                        title: this.planDetails.plans.electricity?.plan_name_text,
+                        name: this.planDetails.plans.electricity?.plan_name_code,
+                        bgColor: 'red',
+                        type: 'power',
+                    })
+                 ]
+             }
         },
     },
 };
