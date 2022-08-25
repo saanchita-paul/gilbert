@@ -36,17 +36,18 @@
                                 <v-expansion-panel-content>
 
                                     <div class="price-list">
+
                                         <div class="plan-text" style="font-size:14px">
-                                            {{ plan.supply_charge.description }} ({{ plan.supply_charge.unit }})
+                                            Daily Supply Charge (c/day)
                                         </div>
-                                        <div  class="plan-text">{{ plan.supply_charge.value }}</div>
+                                        <div class="plan-text">{{ plan.supply_charge }}</div>
                                     </div>
 
                                     <div class="price-list">
                                         <div class="plan-text" style="font-size:14px">
-                                            {{ plan.usage_charge.description }} ({{ plan.usage_charge.unit }})
+                                            Anytime (c/MJ)
                                         </div>
-                                        <div  class="plan-text">{{ plan.usage_charge.value }}</div>
+                                        <div  class="plan-text">{{ plan.usage_charge }}</div>
                                     </div>
 
                                     <div class="d-flex mt-8">
@@ -56,11 +57,11 @@
                                         </v-icon>
                                     </div>
 
-                                    <div class="price-list">
+                                    <div class="price-list" v-for="fees in plan.fees">
                                         <div class="plan-text" style="font-size:14px">
-                                            Reconnection
+                                            {{ fees.title }}
                                         </div>
-                                        <div  class="plan-text">{{ plan.fees.reconnection }}</div>
+                                        <div  class="plan-text">{{ fees.fees }}</div>
                                     </div>
 
                                 </v-expansion-panel-content>

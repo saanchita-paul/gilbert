@@ -60,8 +60,6 @@ class EASubmissionJob implements ShouldQueue
                 $postEaService = new PostSalesService($this->applicationId);
                 $postEaService->postToEa($submitType, $this->applicationId);
                 ConnectionApplication::where('id' , $this->applicationId)->update(['status' => ConnectionApplication::STATUS_SUBMITTED]);
-                $hubspotService = new HubspotContactService($this->applicationId);
-                $hubspotService->update();
             }
             catch (\Exception $e) {
                 $logError = [

@@ -5,7 +5,7 @@
                 <v-card class="hood-card">
                     <p>Your Metrics</p>
                     <h3 class="page-title">Total Applications: {{total_leads}}</h3>
-                    <ApplicationsMetrics @resetPage="resetPage" v-if="leadTypesFlag" :activeLeadType="activeLeadType" :leads="leadTypes" @updateTotal="updateTotal"></ApplicationsMetrics>
+                    <ApplicationsMetrics @resetPage="resetPage" v-if="leadTypesFlag" :activeLeadType="activeLeadType" :showDuplicate="showDuplicates" :leads="leadTypes" @updateTotal="updateTotal"></ApplicationsMetrics>
                 </v-card>
                 <ApplicationFilter v-model="advanceSearch" :isSearchEmpty="advanceSearch.isSearchEmpty()"></ApplicationFilter>
                 <router-view
@@ -18,10 +18,11 @@
                     @openLeadSummary="openLeadSummary"
                     @updateLeadAndatrics="updateLeadAndatrics"
                     :isSearching="isSearching"
+                    :showDuplicates="showDuplicates"
                 ></router-view>
             </v-col>
             <v-col cols="4">
-                <ApplicationDetails :lead="leadDetails"></ApplicationDetails>
+                <ApplicationDetails :lead="leadDetails" @showDuplicateList="showDuplicateList"></ApplicationDetails>
             </v-col>
         </v-row>
     </v-container>
@@ -37,6 +38,7 @@ import {isEqual, omit} from "lodash-es";
 import {LeadSearchFilterModel} from '@scripts/models/LeadSearchFilterModel'
 import ApplicationFilter from '@scripts/pages/ApplicationFilter';
 import debounce from "lodash-es/debounce";
+import DuplicateLeadService from "@scripts/services/crm/DuplicateLeadService";
 
 export default {
     name: "ApplicationPage",
@@ -76,7 +78,9 @@ export default {
                 tenancy_type: "",
                 triage: "",
             },
-            advanceSearch: new LeadSearchFilterModel()
+            advanceSearch: new LeadSearchFilterModel(),
+            showDuplicates: false,
+            duplication_group_id: null,
         }
     },
 
@@ -93,7 +97,11 @@ export default {
         async fetchLeads () {
             this.isSearching = true;
             let data = await LeadApplicationService.loadUserLeads(
-                {...this.sort_search_meta, ...{page: this.page}},
+                {...this.sort_search_meta, ...{page: this.page}, ...{
+                    is_duplicate: this.showDuplicates,
+                        duplication_group_id: this.duplication_group_id
+                    }
+                },
                 this.activeLeadType,
                 this.selectedSrc, this.advanceSearch,
             );
@@ -141,7 +149,12 @@ export default {
         },
         resetPage() {
             this.page = 1;
+        },
+
+        async showDuplicateList(duplication_group_id) {
+            let duplicatedData = await DuplicateLeadService.getDuplicateLeadData(duplication_group_id);
         }
+
     },
 
     created() {
@@ -163,15 +176,26 @@ export default {
                     || this.selectedSrc !== this.$route.query?.source;
 
                 this.activeLeadType = this.$route.query?.type;
-                this.selectedSrc = this.$route.query?.source
-                // console.log("watch", reload)
-                // if (reload) {
-                //     this.loadLeads();
-                // }
+                this.selectedSrc = this.$route.query?.source;
+                this.showDuplicates = Boolean(this.$route.query?.duplicates)? true: null;
+                // this.duplication_group_id = this.$route.query?.duplication_group_id;
+                this.advanceSearch.duplication_group_id = this.$route.query?.duplication_group_id;
+            }
+        },
+        showDuplicates: {
+            handler(){
+                this.loadLeads();
             }
         },
         activeLeadType: {
             handler(){
+                this.loadLeads();
+            }
+        },
+        duplication_group_id: {
+
+            handler(){
+                this.page = 1;
                 this.loadLeads();
             }
         },

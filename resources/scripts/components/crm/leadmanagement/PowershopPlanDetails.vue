@@ -14,6 +14,7 @@
                     </div>
                     <div>
                         <h2>100% Carbon Neutral Plan</h2>
+                        <h2>{{'Plan Title'}}</h2>
                         <p>{{ getServiceText }}</p>
                     </div>
                 </div>
@@ -151,11 +152,14 @@ export default {
         leadSummary: {
             require: true
         },
+        planDetails: {
+            require: true
+        }
     },
     data() {
         return {
             opened: 0,
-            planDetails: null,
+
         }
     },
     computed: {
@@ -181,7 +185,7 @@ export default {
             return this.planDetails?.plans?.gas?.bpid_links;
         },
         getSolarFeedInTariff() {
-            return this.planDetails?.plans?.gas?.solar_feed_in_tariff ?? "";
+            return this.planDetails?.plans?.electricity?.solar_buy_pack_value ?? "";
         },
         state() {
             switch(this.leadSummary.state) {
@@ -220,6 +224,8 @@ export default {
                 state: this?.state,
                 nmi: this.leadSummary?.nmi,
             }
+
+            console.log('calling power shop data');
 
             this.planDetails = await PowershopService.getPowershopData(query);
         },

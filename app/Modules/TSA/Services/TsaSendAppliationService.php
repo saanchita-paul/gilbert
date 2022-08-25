@@ -115,13 +115,12 @@ class TsaSendAppliationService
 
             if($response->status() == 200) {
                 $responseData = json_decode($response->body(), true);
-                if($responseData === []) {
-                    ErrorLogService::send('[TSA] No lead id found for application id: ' . $this->application->id , ['taige.alhadweh@hood.ai']);
-                } else {
+
+                if(isset($responseData[0]['lead_id'])) {
                     return $responseData[0]['lead_id'];
                 }
             }
-            throw new Exception("no call history found");
+            throw new Exception("TSA lead id not found");
 
         } catch (\Exception $exception) {
             \Log::error($exception->getMessage());

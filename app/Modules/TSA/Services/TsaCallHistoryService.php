@@ -16,17 +16,15 @@ class TsaCallHistoryService
     public function getCallHistory($connection_application)
     {
         try {
-            // $url = \config('tsa.root_url') . \config('tsa.call_history') . 12;
             $url = \config('tsa.root_url') . \config('tsa.call_history') . $connection_application->tsa_lead_id;
-
-            $url = APILog::setLoggerQuery($url, APILog::API_TSA_INSERT_DATA, false);
+            // $url = APILog::setLoggerQuery($url, APILog::API_TSA_SAVE_HISTORY, false); // no need log
 
             $response = Http::withHeaders([
                 'content-type' => 'application/json',
                 'X-API-Service' => \config('tsa.x_api_service_name'),
                 'X-API-Token' => \config('tsa.x_api_token')
             ])
-                ->get($url);
+            ->get($url);
 
             if($response->status() == 200) {
                 return $response->body();
@@ -93,7 +91,6 @@ class TsaCallHistoryService
         ->whereNotNull('tsa_lead_id')
         ->get();
 
-//      dump($connection_applications);
         foreach ($connection_applications as $connection_application) {
             $this->saveCallHistory($connection_application);
         }

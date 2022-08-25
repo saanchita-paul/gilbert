@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Agency\AgencyController;
 use App\Http\Controllers\Agency\AgentProfileController;
+use App\Http\Controllers\Agency\DuplicationApplicationController;
+use App\Models\ConnectionApplication;
 use App\Http\Controllers\Agency\AppCloseReasonController;
 use App\Http\Controllers\Agency\ApplicationController;
 use App\Http\Controllers\Agency\HoodUserController;
@@ -11,8 +13,8 @@ use App\Http\Controllers\Agency\ReaExtractsReportController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\PowerShop\PowerShopController;
 use App\Http\Controllers\UserInvitationController;
-use App\Models\ConnectionApplication;
 use App\Services\RolePermission;
+
 use App\Services\RolePermissionService;
 use App\Services\Utility\PowershopService;
 use Illuminate\Encryption\Encrypter;
@@ -22,6 +24,8 @@ use OurProperty\Http\Controllers\OurPropertyController;
 use PropertyMe\services\FetchContacts;
 use Reporting\Http\Controllers\ReportController;
 use TSA\Services\TsaCallHistoryService;
+use App\Services\GBGEmailValidationService;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +59,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/agencies/get-agency-metrics', [AgencyController::class, 'getAgencyMetrics']); # not is use
     Route::get('/agencies/get-agency-application-metrics', [AgencyController::class, 'getAgencyApplicationMetrics'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_METRICS);
+    Route::get('/agencies/export', [AgencyController::class, 'download']);
     Route::get('/agencies/{id}', [AgencyController::class, 'getAgency'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_AGENCY_DETAILS);
     Route::post('/agencies/{id}/update', [AgencyController::class, 'update'])
@@ -137,15 +142,17 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_ADDRESS);
     Route::post('/applications/{applicationId}/draft', [ApplicationController::class, 'saveDraft'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
+    Route::post('/applications/{applicationId}/save-email', [ApplicationController::class, 'saveEmail'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
     Route::put('/applications/{id}/close', [ApplicationController::class, 'close']);
     Route::patch('/applications/{applicationId}/providers', [ApplicationController::class, 'providers'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_SERVICE_PROVIDERS);
     Route::post('/applications/{applicationId}/clear-concession-details', [ApplicationController::class, 'clearConcession'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
-
-
-    Route::get('/power-applications', [ApplicationController::class, 'getPowerShop'])
+    Route::get('/applications/{applicationId}/duplicate', [DuplicationApplicationController::class, 'getDuplicateLeads'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
+
+
 
 
     //todo: make a  separate controller for notes
@@ -260,8 +267,18 @@ Route::post('/our-property/lead', [OurPropertyController::class, 'createOurPrope
 /**
  * Powershop
  */
-Route::get('/powershop/generate-caf', [PowerShopController::class, 'generatePowershopCaf']);
+
+Route::get('/powershop/applications', [PowerShopController::class, 'getPowerShop'])
+    ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
+Route::get('/powershop/generate-caf', [PowerShopController::class, 'generatePowerShopCaf']);
 Route::get('/powershop/payment/invite', function () {
+
+/**
+ * api's for email validation
+ */
+Route::get('/gbg-validate-email', [ApplicationController::class, 'isGbgValidateEmail']);
+Route::get('/applications/{id}/email-manually-verified', [ApplicationController::class, 'isEmailManuallyVerified']);
+
 
 
 });
@@ -336,6 +353,7 @@ Route::get('/kaka', function () {
 
 });
 
+
 Route::get('powers-api', function () {
     $s = new PowershopService();
     $re = $s->sendCustomerData(ConnectionApplication::find(453)->id);
@@ -345,3 +363,14 @@ Route::get('powers-api', function () {
 //Route::get('/exceltest', function () {
 //    return FastExcel::data(collect([['name'=> 'sanchita'], ['name'=> 'paul']]))->download('file.xlsx');
 //});
+
+
+//Route::post('/gbg-validate-email', function() {
+//
+//    $email = "admin@mail.com";
+//    $service = new GBGEmailValidationService();
+//
+//    return $service->validateEmail($email);
+//
+//});
+

@@ -1,5 +1,6 @@
 import COLOR from "@scripts/data/constants/COLOR";
 import { DashboardSourceModel } from "@scripts/modules/sales/models/DashboardSourceModel";
+import {getProviderBackgound, PLAN} from "@scripts/data/constants/ENERGY_PLAN";
 
 export default {
 
@@ -11,12 +12,14 @@ export default {
     getEnergyDashboardData: (response) => {
 
 
+
         function getGasData(data, isRejected = false) {
 
             let lables = [
                 'EA',
                 'Sumo',
-                'Origin'
+                'Origin',
+                'PowerShop'
             ];
 
             let toolTips = [
@@ -41,26 +44,43 @@ export default {
                 ],
                 [
                     {
-                        key: 'Home Assist', value: data?.origin_gas_home_assist,
+                        key: 'Advantage variable', value: data?.origin_advantage_variable,
+                    },
+                    {
+                        key: 'Home Supply', value: data?.origin_supply,
+                    },
+                    {
+                        key: 'Home Basic', value: data?.origin_basic,
+                    },
+                ],
+                [
+                    {
+                        key: 'Power shop', value: data?.origin_gas_home_assist,
                     },
                 ],
             ];
 
             const totalEaData = data?.ea_gas_no_frills + data?.ea_gas_basic_plan + data?.ea_gas_total_plan + data?.ea_gas_flexi_plan;
             const totalSumoData = data?.sumo_gas_freedom;
-            const totalOriginData = data?.origin_gas_home_assist;
+            const totalPowerShopData = data?.origin_gas_home_assist;
+            const totalOriginData = data?.origin_advantage_variable + data?.origin_supply + data?.origin_basic;
 
-            const chartData = [totalEaData, totalSumoData, totalOriginData];
+            const chartData = [totalEaData, totalSumoData, totalOriginData, totalPowerShopData];
+            const plan = PLAN;
+            const charBackGround = getProviderBackgound(plan)
+            console.log('char ', chartData);
             const backgroundColorList = [
                 '#542E89',
                 '#03A9F4',
                 '#FFC72C',
+                'gold',
             ];
 
             const rejectedbackgroundColor = [
                 '#542E89',
                 '#03A9F4',
                 '#FFC72C',
+                'gold',
             ]
 
 
@@ -82,7 +102,8 @@ export default {
             let lables = [
                 'EA',
                 'Sumo',
-                'Origin'
+                'Origin',
+                'PowerSHop'
             ];
 
             let toolTips = [
@@ -107,31 +128,43 @@ export default {
                 ],
                 [
                     {
-                        key: 'Home Assist', value: data?.origin_power_home_assist,
+                        key: 'Home Assist', value: data?.origin_home_assist,
+                    },
+                    {
+                        key: 'Home Support', value: data?.origin_home_support,
+                    },
+                ],
+                [
+                    {
+                        key: 'Power shop', value: data?.origin_gas_home_assist,
                     },
                 ],
             ];
 
             const totalEaData = data?.ea_power_no_frills + data?.ea_power_basic_plan + data?.ea_power_total_plan + data?.ea_power_flexi_plan;
             const totalSumoData = data?.sumo_power_freedom;
-            const totalOriginData = data?.origin_power_home_assist;
+            const totalPowerShopData = data?.origin_power_home_assist;
+            const totalOriginData = data?.origin_home_assist + data?.origin_home_support;
 
-            const chartData = [totalEaData, totalSumoData, totalOriginData];
+
+            const chartData = [totalEaData, totalSumoData, totalOriginData, totalPowerShopData];
             const backgroundColorList = [
                 '#542E89',
                 '#03A9F4',
                 '#FFC72C',
+                'gold',
             ];
             const rejectedbackgroundColor = [
                 '#542E89',
                 '#03A9F4',
                 '#FFC72C',
+                'gold',
             ];
 
             return {
                 labels: lables,
                 toolTips: toolTips,
-                total: totalEaData + totalSumoData + totalOriginData,
+                total: totalEaData + totalSumoData + totalOriginData + totalPowerShopData,
                 datasets: [{
                     label: 'My First Dataset',
                     data: chartData,
