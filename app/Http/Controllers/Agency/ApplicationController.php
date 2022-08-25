@@ -24,7 +24,6 @@ use App\Services\Application\ApplicationsMetricsService;
 use App\Services\Application\SearchConnectionApplication;
 use App\Services\DuplicateApplicationService;
 use App\Services\Ea\SetEaDistributorService;
-use App\Services\PowerShop\SameDayConnectionService;
 use App\Services\GBGEmailValidationService;
 use Origin\Services\SetOriginDistributorService;
 use App\Services\FastConnectService;
@@ -522,15 +521,4 @@ class ApplicationController extends Controller
         }
     }
 
-    // same day connection
-    public function sameDayConnectionValidate(Request $request)
-    {
-        return $request->all();
-        try {
-            $service = new SameDayConnectionService($request->toArray());
-            return response()->json(['data' => $service->validateSameDayConnection()]);
-        } catch (\Exception $exception) {
-            return $this->sendErrorResponse($exception);
-        }
-    }
 }

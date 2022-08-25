@@ -758,8 +758,8 @@
                     <v-alert text>
                         <div class="alert-text alert-bolder-text mb-2">Please Note:</div>
                         <div class="alert-text">
-                            <div>
-                                <span class="alert-bolder-text">Gas:&nbsp;</span>Please let customer know that gas will be connected by distributor in 3-5 business days.
+                            <div v-if="gasPowerShopNote">
+                                <span class="alert-bolder-text">Gas:&nbsp;</span> {{ gasPowerShopNote }}
                             </div>
                             <div v-if="electricityPowerShopNote">
                                 <span class="alert-bolder-text">Electricity:&nbsp;</span> {{ electricityPowerShopNote }}
@@ -1009,12 +1009,13 @@ export default {
         },
 
         async checkSameDayValidation() {
-            const electricityCutOffText = 'You are trying to submit after same day cutoff time, Please choose different connection date.';
-            const electricityNoSameDayText  = 'We don’t service same day connections for ACT. Please select a different connection date.';
+            const gasSameDayText  = 'Please let customer know that gas will be connected by distributor in 3-5 business days.';
+            const electricitySameDayText = 'You are trying to submit after same day cutoff time, Please choose different connection date.';
+            const electricityACTSameDayText  = 'We don’t service same day connections for ACT. Please select a different connection date.';
 
             if (this.data.selectedProvider === 'powershop') {
-                const result = await PowerShopSameDayConnectionService.validateSameDayConnection(this.data);
-                console.log('Response From VUE : ', result);
+                const data = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.leadId)).data;
+                console.log('Response From API : ', data);
             }
         }
 

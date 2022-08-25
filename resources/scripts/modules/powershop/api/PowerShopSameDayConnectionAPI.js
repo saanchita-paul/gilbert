@@ -1,13 +1,12 @@
 import axios from "axios";
 
 export default {
-    async validateSameDayConnection(applicationDetails) {
+    async validateSameDayConnection(applicationId) {
         try {
-            console.log('Before API call: ', applicationDetails);
-            const response = await axios.get('/api/applications/same-day-connection', { data: { applicationDetails: applicationDetails } });
-            console.log('Response ', response);
-            return response.data;
+            const data = await axios.get(`/api/applications/${applicationId}/same-day-connection`);
+            return data.data;
         } catch (error) {
+            console.log('Error while fetch same day connection API');
             return error.data;
         }
     },
