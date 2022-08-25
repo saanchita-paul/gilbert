@@ -61,7 +61,7 @@ class ConnectionService extends Model
     const PROVIDER_SUMO = 'sumo';
     const PROVIDER_EA = 'ea';
     const PROVIDER_ORIGIN = 'origin';
-    const PROVIDER_POWER_SHOP = 'power_shop';
+    const PROVIDER_POWER_SHOP = 'powershop';
 
 
     const STATUS_MAPPING = [
