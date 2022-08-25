@@ -21,6 +21,7 @@ use App\Services\Agency\WaterAutoSubmitService;
 use App\Services\Application\ApplicationsMetricsService;
 use App\Services\Application\SearchConnectionApplication;
 use App\Services\Ea\SetEaDistributorService;
+use App\Services\PowerShop\SameDayConnectionService;
 use Origin\Services\SetOriginDistributorService;
 use App\Services\FastConnectService;
 use Illuminate\Http\JsonResponse;
@@ -473,6 +474,18 @@ class ApplicationController extends Controller
 
             return $payment_link_type;
 
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    // same day connection
+    public function sameDayConnectionValidate(Request $request)
+    {
+        return $request->all();
+        try {
+            $service = new SameDayConnectionService($request->toArray());
+            return response()->json(['data' => $service->validateSameDayConnection()]);
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

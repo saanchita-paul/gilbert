@@ -1008,19 +1008,19 @@ export default {
             this.paymentInformation = await LeadApplicationService.loadUserLead(this.leadSummary.id);
         },
 
-        checkSameDayCutOffTime() {
+        async checkSameDayValidation() {
             const electricityCutOffText = 'You are trying to submit after same day cutoff time, Please choose different connection date.';
             const electricityNoSameDayText  = 'We don’t service same day connections for ACT. Please select a different connection date.';
 
             if (this.data.selectedProvider === 'powershop') {
-                const result = PowerShopSameDayConnectionService.validateSameDayConnection(this.data.moving_date, this.data.state);
+                const result = await PowerShopSameDayConnectionService.validateSameDayConnection(this.data);
                 console.log('Response From VUE : ', result);
             }
         }
 
     },
     mounted() {
-      this.checkSameDayCutOffTime();
+      this.checkSameDayValidation();
       this.validateCutOffTime();
       this.loadAuthorizedPerson();
       this.loadPaymentInformation();
