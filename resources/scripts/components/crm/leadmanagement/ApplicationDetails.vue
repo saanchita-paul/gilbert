@@ -2,42 +2,11 @@
    <v-card class="hood-card" v-if="lead">
         <h3 class="page-title">{{lead.applicant_name}}</h3>
         <IdCopyToClipboard :applicationId="lead.id"/>
-        <p class="sub-title mt-4 mb-4">Personal Details</p>
-<!--        <table  class="application-info layout-fixed-table">-->
-<!--            <tr>-->
-<!--                <td class="font-weight-bold">Date of Birth</td>-->
-<!--                <td>{{lead.date_of_birth}}</td>-->
-<!--            </tr>-->
-<!--            <tr v-if="lead.phone_type == 1">-->
-<!--                <td class="font-weight-bold"> Mobile </td>-->
-<!--                <td>{{lead.phone}}</td>-->
-<!--            </tr>-->
-<!--            <tr v-else>-->
-<!--                <td class="font-weight-bold"> Homephone </td>-->
-<!--                <td>{{lead.homephone}}</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td class="font-weight-bold">Email</td>-->
-<!--                <td>{{lead.email}}</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td class="font-weight-bold">Moving Date</td>-->
-<!--                <td>{{lead.moving_date}}</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td class="font-weight-bold">Email billing</td>-->
-<!--                <td>{{ lead.is_email_billing == 1?'Email':'Paper' }}</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td class="font-weight-bold">Authorized Person</td>-->
-<!--                <td>{{ lead.authorizedPersonName == null ? 'Unassigned' : lead.authorizedPersonName }}</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td class="font-weight-bold">Status:</td>-->
-<!--                <td>{{ lead.status }}</td>-->
-<!--            </tr>-->
-<!--        </table>-->
 
+     <v-row>
+       <v-col> <p class="sub-title mt-4 mb-4">Personal Details</p> </v-col>
+       <v-col v-if="lead.is_duplicate"> <v-btn class="mt-2 view_application" text  @click="showDuplicatesMessage"> View all duplicates</v-btn> </v-col>
+     </v-row>
 
        <v-row>
 
@@ -290,7 +259,14 @@ export default {
         },
         isServiceAllowed(services, type) {
             return !services.includes(type);
-        }
+        },
+      showDuplicatesMessage() {
+          if(this.$route.query.duplication_group_id === this.lead.duplication_group_id) {
+              return;
+          }
+          const query = { ...this.$route.query, duplication_group_id: this.lead.duplication_group_id };
+          this.$router.replace({ query })
+      }
     },
     computed: {
       emailBillingMapper(){
@@ -338,6 +314,10 @@ export default {
 }
 .need_more_info{
     color: #FF5722 !important;
+}
+
+.view_application {
+    background: #FFC104
 }
 
 .border-all{

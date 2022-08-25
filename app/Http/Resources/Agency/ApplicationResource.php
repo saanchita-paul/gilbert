@@ -8,15 +8,29 @@ use App\Models\User;
 use App\Services\TimeZoneService;
 use App\Services\Utility\StateMapService;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
+use App\Services\Agency\AgentStatusProgressMapper;
+use App\Services\Agency\AgentServiceApplicationStatusMapper;
+use phpDocumentor\Reflection\DocBlock\Tags\Param;
 
 class ApplicationResource extends JsonResource
 {
     /**
+     * @var mixed|null
+     */
+    private mixed $tsa;
+
+    public function __construct($resource, $tsa = [])
+    {
+        parent::__construct($resource);
+        $this->tsa = is_array($tsa) ? $tsa : [];
+    }
+    /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return array
      */
     public function toArray($request)
@@ -46,7 +60,7 @@ class ApplicationResource extends JsonResource
             'address_text' => $this->address_text,
             'services' => $this->getConnectionServices($this->connectionServices),
             'connection_services' => $this->mapService($this->connectionServices),
-            'tsa_call_histories' => $this->mapTsaService($this->tsaCallHistories),
+            'tsa_call_histories' => $this->mapTsaService($this->tsa),
             'identification' => $this->identification,
             'family_violance' => isset($this->family_violance) ? $this->family_violance : 3,
             'is_renovation_on' => isset($this->is_renovation_on) ? $this->is_renovation_on : 0,
@@ -118,11 +132,17 @@ class ApplicationResource extends JsonResource
             'concession_start_date' => $this->concession_start_date,
             'concession_end_date' => $this->concession_end_date,
             'ea_go_neutral' => $this->ea_go_neutral,
-
             'additional_access_information' => $this->additional_access_information,
             'is_power_life_support' => $this->is_power_life_support,
 //            'powershop_payment_info' => $this->mapPaymentInfo($this->powershopPaymentInfo),
             'powershop_payment_info' => $this->powershopPaymentInfo,
+            'is_duplicate' => $this->is_duplicate,
+            'duplication_group_id' => $this->duplication_group_id,
+            'status_progress' => $this->mapStatusProgress(),
+            'connection_services_status' => $this->mapConnectionServiceStatus($this->connectionServices, $this->tenancy_type, $this->state),
+            'application_status' => $this->mapApplicationStatus(),
+            'email_manually_verified_by' => $this->email_manually_verified_by,
+
         ];
     }
 
@@ -209,8 +229,9 @@ class ApplicationResource extends JsonResource
         return null;
     }
 
-    private function mapPlan($plan)
+    private function mapPlan($plan): string
     {
+        return 'bug';
         if (!empty($plan)) {
             return ConnectionApplication::PLAN_TYPE_REVERSE_MAPPER[$plan];
         }
@@ -249,4 +270,63 @@ class ApplicationResource extends JsonResource
 //       dd($info);
 //       return false;
 //    }
+
+
+    /**
+     * Getting Application Status for progress bar
+     *
+     * @return array|null
+     */
+    private function mapStatusProgress(): array | null
+    {
+        try {
+            $service = new AgentStatusProgressMapper([
+                'assignedTo' => $this->assigned_to,
+                'applicationStatus' => $this->status,
+                'applicationServices' => $this->connectionServices,
+            ]);
+            return $service->getAgentApplicationStatus();
+        } catch (\Exception $e) {
+            \Log::error("Error " . $e->getMessage());
+            return null;
+        }
+    }
+
+
+    /**
+     * map connection service status
+     *
+     * @param $services
+     * @return array|string[]|string[][]
+     */
+    public function mapConnectionServiceStatus($services, $tenancyType, $state):array
+    {
+        try {
+            return (new AgentServiceApplicationStatusMapper())->getAgentServiceApplicationStatus($services, $tenancyType, $state);
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Getting Application Status
+     *
+     *
+     * @return string|null
+     */
+    private function mapApplicationStatus(): ?string
+    {
+        try {
+            $service = new AgentStatusProgressMapper([
+                'assignedTo' => $this->assigned_to,
+                'applicationStatus' => $this->status,
+                'applicationServices' => $this->connectionServices,
+            ]);
+            return $service->getApplicationStatus();
+        } catch (\Exception $e) {
+            \Log::error("Error " . $e->getMessage());
+            return null;
+        }
+    }
 }

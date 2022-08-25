@@ -44,10 +44,6 @@ trait SalesResponseHandle
                 $this->saveRejectionReasons($reasons, $leadId, 'power');
                 $this->updateQuoteReference($leadId, 'power', $quote->id);
             }
-//            if (sizeof($reasons) > 0) {
-                $this->resetIsRunningSubmission($leadId);
-//            }
-
         }
     }
 

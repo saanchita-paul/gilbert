@@ -41,7 +41,7 @@ class CheckOrderAPI extends BaseOriginAPI
             '$filter' => sprintf("PartnerReferenceNumber eq '%s'", $this->partnerReferenceNumber)
         ];
 
-        $responseData = $this->getApi($url, $params, self::METHODNAME);
+        $responseData = $this->getApi($url, $params, self::METHODNAME, true);
 
         if(empty($responseData))
             throw new \Exception(sprintf('Origin GET:%s - FAILED (Empty response from Origin)', self::METHODNAME));

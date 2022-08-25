@@ -419,6 +419,13 @@ class ApplicationService
         unset($application['identification']);
         unset($application['isService']);
 
+        if (isset($application['email_manually_verified_by'])) {
+            if ($application['email_manually_verified_by'] === true) {
+                $application['email_manually_verified_by'] =  auth()->user()->profile_id;
+            } else {
+                $application['email_manually_verified_by'] =  null;
+            }
+        }
 
         if ($isIdentification) {
             $this->createIdentification($application, $id);
@@ -511,14 +518,8 @@ class ApplicationService
         };
 
         foreach ($services as $service) {
-
-            $plan = $data['plan_type'];
-            if($data['provider_name'] === 'origin' && $data['plan_type'] !== null) {
-                $plan = match ($service) {
-                    ConnectionService::TYPE_ELECTRICITY => ConnectionService::ORIGIN_HOME_ASSIST_PLAN,
-                    ConnectionService::TYPE_GAS => ConnectionService::ORIGIN_ADVANTAGE_VARIABLE_PLAN,
-                };
-            }
+            $key = $service. "_plan_type";
+            $plan =   $data[$key] ?? null;
 
             $connectionService = ConnectionService::where('connection_application_id', $applicationId)
                 ->where('service_type', $service)
@@ -602,6 +603,8 @@ class ApplicationService
 
         return $sumoUuid;
     }
+
+
     public function clearConcession($id)
     {
         $existLead = ConnectionApplication::findOrFail($id);
@@ -625,4 +628,23 @@ class ApplicationService
             $paymentData
         );
     }
+
+    public function updateEmailField(array $application, $id)
+    {
+        $existLead = ConnectionApplication::findOrFail($id);
+        ConnectionApplication::where('id' , $existLead->id)
+            ->update([
+                'email_manually_verified_by' => null,
+            ]);
+        return $existLead->refresh();
+    }
+
+    public function isEmailManuallyVerified($applicationId)
+    {
+        $existingApplication = ConnectionApplication::findOrFail($applicationId);
+        $email_manually_verified_by = $existingApplication->email_manually_verified_by;
+
+        return $email_manually_verified_by;
+    }
+
 }

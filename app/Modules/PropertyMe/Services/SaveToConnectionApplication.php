@@ -19,6 +19,7 @@ use PropertyMe\PropertyMeLead;
 use App\Modules\PropertyMe\Services\DobIdentificationService;
 use App\Models\ApplicationNote;
 use App\Models\ConnectionService;
+use App\Services\NotifyBadAgentMailService;
 
 class SaveToConnectionApplication
 {
@@ -85,6 +86,15 @@ class SaveToConnectionApplication
 
         // auto adding water service to connection application
         if ($application->id) {
+
+            NotifyBadAgentMailService::check(
+                $application, 
+                'PropertyMe', 
+                $this->office->agency->name ?? '', 
+                $this->office->name ?? '', 
+                $lead->agent_email ?? ''
+            );
+
             $connectionService = new ConnectionService();
             $connectionService->service_type = 'water';
             $connectionService->status = ConnectionService::STATUS_EA_PROCESSINF;
