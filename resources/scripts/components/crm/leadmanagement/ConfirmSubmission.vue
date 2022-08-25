@@ -1013,8 +1013,8 @@ export default {
             const electricityNoSameDayText  = 'We don’t service same day connections for ACT. Please select a different connection date.';
 
             if (this.data.selectedProvider === 'powershop') {
-                const result = PowerShopSameDayConnectionService.validateSameDayConnection(this.data);
-                console.log('Response From VUE ', result);
+                const result = PowerShopSameDayConnectionService.validateSameDayConnection(this.data.moving_date, this.data.state);
+                console.log('Response From VUE : ', result);
             }
         }
 
