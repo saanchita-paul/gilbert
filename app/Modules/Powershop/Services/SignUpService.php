@@ -17,6 +17,9 @@ class SignUpService
 {
     private array|Collection|ConnectionApplication|Model $application;
     private string $submitType;
+    private int $elecKey;
+    private int $gasKey;
+    private int $utilityKeyCount = 0;
 
     const MAP_STATE = [
         "New South Wales" => 'NSW',
@@ -64,7 +67,7 @@ class SignUpService
             $url = config('powershop.base_url').config('powershop.send_customer_data_url');
             $url = APILog::setLoggerQuery($url, APILog::API_POWERSHOP_SEND_CUSTOMER_DATA, false);
             $data = config('powershop.use_dummy_data') ? $this->getDummyData() : $this->getCustomerData($this->submitType);
-
+            info('Powershop send data', $data);
             $response = Http::withHeaders([
                 'content-type' => 'application/json',
                 'accept' => 'application/json',
@@ -73,9 +76,32 @@ class SignUpService
             ->withBody(json_encode($data),'application-json')
             ->post($url);
 
-            $response->throwIf(in_array($response->status(), [400, 401, 500]));
+            $response->throwIf(!$response->successful() && $response->status() != 422);
 
-            return json_decode($response->body(), true);
+            $results = json_decode($response->body(), true);
+            info('Powershop receive data', $results); 
+            if (isset($results['data']['errors'])){
+                $results = [
+                    'status' => 'rejected',
+                    'errors' => $this->getFormattedErrors($results['data']['errors']),
+                ];
+            }
+            else {
+                $results = [
+                    'status' => 'in_progress',
+                    'reference' => $results['data']['reference'],
+                ];
+            }
+            return $results;
+        } catch (\Illuminate\Http\Client\RequestException $exception){
+            $statusCode = $exception->response->status();
+            $responseJson = $exception->response->json();
+            \Log::error('Powershop::SendCustomerData FAIL (see context)', [
+                'status' => $statusCode,
+                'message' => $responseJson,
+                'trace' => $exception->getTraceAsString(),
+            ]);
+            throw $exception;
         } catch (Exception $exception) {
             \Log::error('Powershop::SendCustomerData FAIL (see context)', [
                 'message' => $exception->getMessage(),
@@ -114,7 +140,7 @@ class SignUpService
                 'region' => $this->getMappedState($this->application->state),
             ],
             'postal_address' => [
-                'flat_number' => $this->application->billing_address_unit,
+                'flat_number' => $this->application->billing_unit_number,
                 'house_number' => $this->application->billing_street_number,
                 'street_name' => $this->application->billing_street_name_only,
                 'street_type' => $this->application->billing_street_type,
@@ -123,13 +149,16 @@ class SignUpService
                 'region' => $this->getMappedState($this->application->billing_state),
             ],
         ];
+        if ($this->application->is_billing_same) {
+            $data['property_information']['postal_address'] = $data['property_information']['supply_address'];
+        }
         $hazData = $this->getHazards();
         if (!empty($hazData)) $data['property_information']['hazards'] = $hazData;
         $data['utility_details'] = $this->getUtilityDetails($submitType);
         $data['eligible_for_concessions'] = $this->getIsEligibleConcession();
         $data['payment_details'] = $this->getPaymentDetails();
 
-        if ($this->application->authorizedPerson()->exists()){
+        if ($this->application->authorizedPerson()->exists() && !empty($this->application->authorizedPerson->first_name)){
             $data['secondary_account_holders'] = [
                 [
                     'title' =>  $this->application->authorizedPerson->title,
@@ -144,7 +173,7 @@ class SignUpService
         $vulData = $this->getVulnerabilities();
         if (!empty($vulData)) $data['vulnerabilities'] = $vulData;
 
-        $data['terms_and_conditions_accepted_at'] = $this->getFormattedDate($this->application->terms_and_conditions_accepted_at);
+        $data['terms_and_conditions_accepted_at'] = $this->getFormattedDate(Carbon::now()->format('Y-m-d H:i:s')); // TODO: get timestamp
         return $data;
     }
 
@@ -176,18 +205,20 @@ class SignUpService
             "proposed_start_date" => $this->getFormattedDate($this->application->moving_date), //TODO: auto find nearest available date
             "is_connection_currently_active" => false,
             "estimated_billing" => [
-                'cost' => $this->application->estimated_gas_billing_cost,
-                'period' => $this->application->estimated_gas_billing_period,
+                'cost' => 500, // TODO: refer payment table
+                'period' => 'quarterly', // TODO: refer payment table
             ],
             "promotion" => [
                 "promotion_code" => "HoodPS100%CarbonNeutral",
-                "promotion_terms_and_conditions_accepted_at" => $this->getFormattedDate($this->application->promotion_terms_and_conditions_accepted_at),
+                "promotion_terms_and_conditions_accepted_at" => $this->getFormattedDate(Carbon::now()->format('Y-m-d H:i:s')),
             ],
         ];
 
         if (!empty($this->application->additional_access_information))
             $data['meter_details']['meter_location_notes'] = $this->application->additional_access_information;
 
+        $this->elecKey = $this->utilityKeyCount;
+        $this->utilityKeyCount += 1;
         return $data;
     }
 
@@ -208,14 +239,17 @@ class SignUpService
             "proposed_start_date" => $this->getFormattedDate($this->application->moving_date), //TODO: auto find nearest available date
             "is_connection_currently_active" => false,
             "estimated_billing" => [
-                'cost' => $this->application->estimated_elec_billing_cost,
-                'period' => $this->application->estimated_elec_billing_period,
+                'cost' => 500, // TODO: refer payment table
+                'period' => 'quarterly', // TODO: refer payment table
             ],
             "promotion" => [
                 "promotion_code" => "HoodPS100%CarbonNeutral",
-                "promotion_terms_and_conditions_accepted_at" => $this->getFormattedDate($this->application->promotion_terms_and_conditions_accepted_at),
+                "promotion_terms_and_conditions_accepted_at" => $this->getFormattedDate(Carbon::now()->format('Y-m-d H:i:s')), //TODO: get timestamp
             ],
         ];
+
+        $this->gasKey = $this->utilityKeyCount;
+        $this->utilityKeyCount += 1;
 
         return $data;
     }
@@ -241,7 +275,7 @@ class SignUpService
         
         if ($this->application->is_gas_life_support || $this->application->is_power_life_support) {
             $data['dependency_type'] = 'Life support';
-            $data['medical_details_disclaimer_accepted_at'] = $this->getFormattedDate($this->application->life_support_accepted_at);
+            $data['medical_details_disclaimer_accepted_at'] = $this->getFormattedDate(Carbon::now()->format('Y-m-d H:i:s')); // TODO: get timestamp
 
             if ($this->application->is_gas_life_support && $this->application->is_power_life_support)
             {
@@ -394,6 +428,54 @@ class SignUpService
             "terms_and_conditions_accepted_at" => Carbon::now()->format('Y-m-d'),
         ];
 
+    }
+
+    private function getFormattedErrors ($errors) {
+        $data = [];
+        foreach ($errors as $errKey => $errVal) {
+            if ($errKey == 'utility_details') {
+                foreach ($errVal as $subErrKey => $subErrVal){
+                    if(isset($this->elecKey) && $this->elecKey == $subErrKey){
+                        $powerData = [];
+                        foreach($subErrVal as $powerKey => $powerVal){
+                            self::recursiveStore($powerVal, $powerData, $powerKey);
+                        }
+                        $data[ConnectionService::TYPE_ELECTRICITY] = $powerData;  
+                    }    
+                    if (isset($this->gasKey) && $this->gasKey == $subErrKey) {
+                        $gasData = [];
+                        foreach($subErrVal as $gasKey => $gasVal){
+                            self::recursiveStore($gasVal, $gasData, $gasKey);
+                        }
+                        
+                        $data[ConnectionService::TYPE_GAS] = $gasData;  
+                    }
+                }
+            }
+            else {
+                $keyData = [];
+                foreach ($errVal as $subErrKey => $subErrVal){
+                    self::recursiveStore($subErrVal, $keyData, $subErrKey);
+                }
+                $data[$errKey] = $keyData;
+            }
+        }
+
+        return $data;
+    }
+
+    private function recursiveStore(array $array, &$data, $preText = ''){
+        foreach($array as $k => $v){
+            if (!is_int($k)){
+                $preText = $preText . ' ' . $k;
+            }
+            if (!is_array($v)) {
+                $data[] = $preText . ' '. $v;
+            }
+            else {
+                self::recursiveStore($v, $data, $preText);
+            }
+        }
     }
 
 }
