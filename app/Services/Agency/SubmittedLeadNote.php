@@ -12,6 +12,8 @@ use App\Services\Utility\StateMapService;
 use Origin\Services\OriginPlanDetailsService;
 use phpDocumentor\Reflection\Utils;
 use Origin\Services\ValidateCutOffTime;
+use Powershop\Services\PowershopPlanDetailsService;
+use App\Services\PowerShop\SameDayConnectionService;
 
 class SubmittedLeadNote
 {
@@ -45,6 +47,11 @@ class SubmittedLeadNote
            'ea_go_neutral' => $this->existLead && $provider_name === 'EA'? $this->existLead->ea_go_neutral : 'N/A',
         ];
 
+        if ($provider_name == 'Powershop' && in_array($submittedService, ['Elec & Gas'])){
+            $sameDayService = new SameDayConnectionService($this->existLead->id);
+            $leadData['gas_moving_date'] = $sameDayService->getNextGasConnectionDate();
+        }
+
         if ($provider_name == 'Origin' && in_array($submittedService, ['Gas', 'Elec & Gas'])){
             if ($submittedService === 'Gas'){
                 $leadData['moving_date'] = ValidateCutOffTime::getNextGasConnectionDate($this->existLead?->moving_date, $this->existLead?->state);
@@ -65,6 +72,7 @@ class SubmittedLeadNote
 
         $this->doSubmitEaNote($state, $postCode);
         $this->doSubmitOriginNote($state, $postCode);
+        $this->doSubmitPowershopNote($state, $postCode);
     }
 
     private function doSubmitEaNote($state, $postCode){
@@ -83,6 +91,25 @@ class SubmittedLeadNote
             'type' => ApplicationNote::SUBMITTED_CONNECTION,
             'connection_details' => $this->leadDetailsJson,
             'plan_details' => $planDetails
+        ];
+        $noteService->createNotes($note, $this->existLead?->id);
+    }
+
+    private function doSubmitPowershopNote($state, $postCode){
+        $powershopPlanService = new PowershopPlanDetailsService($state, $postCode, $this->existLead->id, $this->servicesId);
+
+        $plan_type = $powershopPlanService->plan_type;
+
+        if(empty($plan_type)) return;
+
+        $noteService = new ApplicationNoteService($this->user);
+        $submittedService = $this->getServices($powershopPlanService->service_type);
+        $planDetails = $powershopPlanService->getPlanDetails(); // todo
+        $this->leadDetailsJson = $this->prepareLeadData($plan_type, $postCode, $state, $submittedService, 'Powershop');
+        $note = [
+            'type' => ApplicationNote::SUBMITTED_CONNECTION,
+            'connection_details' => $this->leadDetailsJson,
+            // 'plan_details' => $planDetails
         ];
         $noteService->createNotes($note, $this->existLead?->id);
     }
