@@ -6,6 +6,8 @@ use App\Models\ConnectionService;
 use App\Models\ConnectionApplication;
 use App\Models\RejectionReason;
 
+use App\Services\PowerShop\SameDayConnectionService;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -39,7 +41,17 @@ class SubmitToPowershopService
     }
 
     public function submit(){
-        // TODO: validate connection date        
+        // TODO: validate connection date
+        foreach ($this->conServices as $conService) {
+            $availableDate = $this->application->moving_date;
+            if ($conService->service_type == ConnectionService::TYPE_GAS){
+                $newDateService = new SameDayConnectionService($this->application->id);
+                $availableDate = $newDateService->getNextGasConnectionDate();
+            } 
+            $conService->connection_date = $availableDate;
+            $conService->save();
+        }
+
         $newSignUp = new SignUpService($this->application->id, $this->submitType);
         $results = $newSignUp->sendCustomerData();
         if (empty($results['reference'])){

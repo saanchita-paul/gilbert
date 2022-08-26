@@ -202,17 +202,20 @@ class SignUpService
         $data = [
             "utility_type" => 'electricity',
             "connection_number" => $this->application->nmi,
-            "proposed_start_date" => $this->getFormattedDate($this->application->moving_date), //TODO: auto find nearest available date
+            "proposed_start_date" => $this->getFormattedDate($service->connection_date ?? $this->application->moving_date),
             "is_connection_currently_active" => false,
             "estimated_billing" => [
                 'cost' => 500, // TODO: refer payment table
                 'period' => 'quarterly', // TODO: refer payment table
             ],
-            "promotion" => [
-                "promotion_code" => "HoodPS100%CarbonNeutral",
-                "promotion_terms_and_conditions_accepted_at" => $this->getFormattedDate(Carbon::now()->format('Y-m-d H:i:s')),
-            ],
         ];
+
+        $promoCode = PromotionCodeService::getCode($this->application->state, $service->service_type);
+        if (!empty($promoCode))
+            $data['promotion'] = [
+                "promotion_code" => $promoCode,
+                "promotion_terms_and_conditions_accepted_at" => $this->getFormattedDate(Carbon::now()->format('Y-m-d H:i:s')),
+            ];
 
         if (!empty($this->application->additional_access_information))
             $data['meter_details']['meter_location_notes'] = $this->application->additional_access_information;
@@ -225,7 +228,7 @@ class SignUpService
     private function getGasDetails()
     {
         $service = ConnectionService::where('connection_application_id', $this->application->id)
-                    ->where('service_type', ConnectionService::TYPE_ELECTRICITY)
+                    ->where('service_type', ConnectionService::TYPE_GAS)
                     ->where('provider_name', ConnectionService::PROVIDER_POWER_SHOP)
                     ->first();
         
@@ -236,17 +239,20 @@ class SignUpService
         $data = [
             "utility_type" => 'gas',
             "connection_number" => $this->application->mirn_checksum,
-            "proposed_start_date" => $this->getFormattedDate($this->application->moving_date), //TODO: auto find nearest available date
+            "proposed_start_date" => $this->getFormattedDate($service->connection_date ?? $this->application->moving_date),
             "is_connection_currently_active" => false,
             "estimated_billing" => [
                 'cost' => 500, // TODO: refer payment table
                 'period' => 'quarterly', // TODO: refer payment table
             ],
-            "promotion" => [
-                "promotion_code" => "HoodPS100%CarbonNeutral",
-                "promotion_terms_and_conditions_accepted_at" => $this->getFormattedDate(Carbon::now()->format('Y-m-d H:i:s')), //TODO: get timestamp
-            ],
         ];
+
+        $promoCode = PromotionCodeService::getCode($this->application->state, $service->service_type);
+        if (!empty($promoCode))
+            $data['promotion'] = [
+                "promotion_code" => $promoCode,
+                "promotion_terms_and_conditions_accepted_at" => $this->getFormattedDate(Carbon::now()->format('Y-m-d H:i:s')),
+            ];
 
         $this->gasKey = $this->utilityKeyCount;
         $this->utilityKeyCount += 1;
