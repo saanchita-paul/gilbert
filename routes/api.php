@@ -268,7 +268,7 @@ Route::get('/powershop/applications', [PowerShopController::class, 'getPowerShop
 Route::get('/powershop/generate-caf', [PowerShopController::class, 'generatePowerShopCaf']);
 
 
-Route::get('/powershop/payment/invite', [PxPayController::class, 'invite']);
+Route::post('/powershop/payment/invite', [PxPayController::class, 'invite']);
 
 Route::any('/powershop/payment/failed', function () {
     dump('failed', request()->all(), request()->method());
