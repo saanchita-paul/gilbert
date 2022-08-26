@@ -70,9 +70,20 @@ class SameDayConnectionService
         $application = ConnectionApplication::findOrFail($this->applicationId);
 
         $electricity = $this->validateElectricity($application);
+        $gas = $this->validateGas($application);
+        $gasNote = '';
+
+        if (!$gas) {
+            $gasNote = sprintf('Please let customer know that gas will be connected by distributor in %s business days (%s)', 
+                self::MAP_GAS_BUSINESS_DAYS[$application->state],
+                $this->getNearestAvailableGasDate($application)->format('Y-m-d'),
+            );
+        }
 
         return [
             'electricityOk' => $electricity,
+            'gasOk' => $gas,
+            'gasNote' => $gasNote,
         ];
     }
 

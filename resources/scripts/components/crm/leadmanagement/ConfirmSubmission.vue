@@ -1016,6 +1016,10 @@ export default {
             if (this.data.selectedProvider === 'powershop') {
                 const data = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.leadId)).data;
                 console.log('Response From API : ', data);
+
+                if (!data.gasOkay) {
+                    this.gasPowerShopNote = data.gasNote ?? gasSameDayText;
+                }
             }
         }
 
