@@ -758,11 +758,14 @@
                     <v-alert text>
                         <div class="alert-text alert-bolder-text mb-2">Please Note:</div>
                         <div class="alert-text">
-                            <div v-if="gasPowerShopNote">
-                                <span class="alert-bolder-text">Gas:&nbsp;</span> {{ gasPowerShopNote }}
+                            <div>
+                                <span class="alert-bolder-text">Gas:&nbsp;</span> Please let customer know that gas will be connected by distributor in 3-5 business days.
                             </div>
-                            <div v-if="electricityPowerShopNote">
-                                <span class="alert-bolder-text">Electricity:&nbsp;</span> {{ electricityPowerShopNote }}
+                            <div v-if="showElectricityPowerShopNote">
+                                <span class="alert-bolder-text">Electricity:&nbsp;</span> You are trying to submit after same day cutoff time, Please choose different connection date.
+                            </div>
+                            <div v-if="showElectricityACTPowerShopNote">
+                                <span class="alert-bolder-text">Electricity:&nbsp;</span> We don’t service same day connections for ACT. Please select a different connection date.
                             </div>
                         </div>
                     </v-alert>
@@ -913,13 +916,12 @@ export default {
           isValidElecCutOff: null,
           isValidGasCutOff: null,
           paymentInformation: null,
-          electricityPowerShopNote: '',
-          gasPowerShopNote: '',
+          sameDayConnectionData: null
       }
     },
     computed: {
         allOk() {
-           return this.is_temp_condition  && this.is_life_support && !this.isLifeSupportAndEA;
+           return this.is_temp_condition  && this.is_life_support && !this.isLifeSupportAndEA && !this.isPowerShopOk;
         },
         selectedPowerPlan() {
             return LeadApplicationService.mapPlan(this.data.selectedPowerPlan);
@@ -968,6 +970,19 @@ export default {
         showPowerShopNoteSection () {
             return this.data.selectedProvider === 'powershop';
         },
+        showElectricityPowerShopNote() {
+            return this.sameDayConnectionData?.isElectricity
+                && this.submitType === 'power'
+                && this.data.state !== "Australian Capital Territory";
+        },
+        showElectricityACTPowerShopNote() {
+            return this.sameDayConnectionData?.isElectricity
+                && this.submitType === 'power'
+                && this.data.state === "Australian Capital Territory";
+        },
+        isPowerShopOk() {
+            return this.sameDayConnectionData?.isElectricity;
+        }
     },
     methods: {
         backToEdit() {
@@ -1009,13 +1024,9 @@ export default {
         },
 
         async checkSameDayValidation() {
-            const gasSameDayText  = 'Please let customer know that gas will be connected by distributor in 3-5 business days.';
-            const electricitySameDayText = 'You are trying to submit after same day cutoff time, Please choose different connection date.';
-            const electricityACTSameDayText  = 'We don’t service same day connections for ACT. Please select a different connection date.';
-
             if (this.data.selectedProvider === 'powershop') {
-                const data = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.leadId)).data;
-                console.log('Response From API : ', data);
+                this.sameDayConnectionData = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.leadId)).data;
+                console.log('Same Day API: ', this.sameDayConnectionData);
             }
         }
 

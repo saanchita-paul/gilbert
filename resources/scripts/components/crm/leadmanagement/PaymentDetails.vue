@@ -33,10 +33,11 @@
         </v-col>
 
         <v-col cols="6" >
-            <h4 class="pb-2">Estimated Billing (Power)</h4>
+            <h2 class="pb-2">Estimated Billing</h2>
+            <p class="mt-4">Please input values from 1-900 in fields below.</p>
             <div class="crm-text-field">
                 <div class="pr-3">
-                    <span>Cost: </span>
+                    <h3>Quarterly Cost (Power) </h3>
                 </div>
                 <div class="text-field">
                     <ValidationProvider
@@ -56,35 +57,10 @@
                     </ValidationProvider>
                 </div>
             </div>
-            <div class="crm-text-field">
-                <div>
-                    <span>Period: </span>
-                </div>
-                <div class="text-field">
-                    <ValidationProvider
-                        name="Period"
-                        rules="required"
-                        v-slot="{ errors }"
-                    >
-                        <v-select
-                            v-model="estimated_billing_power.period"
-                            @blur="saveDraft('estimated_elec_billing_period', estimated_billing_power.period)"
-                            outlined
-                            dense
-                            :items="powerPeriod"
-                            hide-details="auto"
-                            :error-messages="errors[0]"
-                            placeholder="Please choose one"
-                        >
-                        </v-select>
-                    </ValidationProvider>
-                </div>
-            </div>
 
-            <h4 class="pb-2">Estimated Billing (Gas)</h4>
             <div class="crm-text-field">
                 <div class="pr-3">
-                    <span>Cost: </span>
+                    <h3>Quarterly Cost (Gas)</h3>
                 </div>
                 <div class="text-field">
                     <ValidationProvider
@@ -104,30 +80,7 @@
                     </ValidationProvider>
                 </div>
             </div>
-            <div class="crm-text-field">
-                <div>
-                    <span>Period: </span>
-                </div>
-                <div class="text-field">
-                    <ValidationProvider
-                        name="Period"
-                        rules="required"
-                        v-slot="{ errors }"
-                    >
-                        <v-select
-                            v-model="estimated_billing_gas.period"
-                            @blur="saveDraft('estimated_gas_billing_period', estimated_billing_gas.period)"
-                            outlined
-                            dense
-                            :items="gasPeriod"
-                            hide-details="auto"
-                            :error-messages="errors[0]"
-                            placeholder="Please choose one"
-                        >
-                        </v-select>
-                    </ValidationProvider>
-                </div>
-            </div>
+
         </v-col>
     </v-row>
 </template>
