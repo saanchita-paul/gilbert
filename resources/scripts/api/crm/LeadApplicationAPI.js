@@ -550,8 +550,11 @@ export default {
     },
     async sendPowershopPaymentLink(leadId, linkType)
     {
-        const payload = { "link_type" : linkType };
-        await axios.post('/api/applications/'+leadId+'/payment-link', payload);
+        const payload = {
+            "link_type": linkType,
+            'app_id': leadId
+        };
+        await axios.post('/api/powershop/payment/invite', payload);
     },
     async isEmailManuallyVerified(id) {
         try {

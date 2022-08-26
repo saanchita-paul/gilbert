@@ -3,6 +3,7 @@
 use App\Http\Controllers\Agency\AgencyController;
 use App\Http\Controllers\Agency\AgentProfileController;
 use App\Http\Controllers\Agency\DuplicationApplicationController;
+use App\Http\Controllers\PowerShop\PxPayController;
 use App\Models\ConnectionApplication;
 use App\Http\Controllers\Agency\AppCloseReasonController;
 use App\Http\Controllers\Agency\ApplicationController;
@@ -236,12 +237,6 @@ Route::get('/sumo/generate-uuid/{id}', [ApplicationController::class, 'getSumoUu
 
 
 /**
- * api to send payment link
- */
-Route::post('/applications/{applicationId}/payment-link', [ApplicationController::class, 'sendPaymentLink']);
-
-
-/**
  * api's for admin only
  */
 Route::get('/get-report-access-token', [ReportController::class, 'getReportAccessToken']);
@@ -271,17 +266,10 @@ Route::post('/our-property/lead', [OurPropertyController::class, 'createOurPrope
 Route::get('/powershop/applications', [PowerShopController::class, 'getPowerShop'])
     ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 Route::get('/powershop/generate-caf', [PowerShopController::class, 'generatePowerShopCaf']);
-Route::get('/powershop/payment/invite', function () {
-
-/**
- * api's for email validation
- */
-Route::get('/gbg-validate-email', [ApplicationController::class, 'isGbgValidateEmail']);
-Route::get('/applications/{id}/email-manually-verified', [ApplicationController::class, 'isEmailManuallyVerified']);
 
 
+Route::get('/powershop/payment/invite', [PxPayController::class, 'invite']);
 
-});
 Route::any('/powershop/payment/failed', function () {
     dump('failed', request()->all(), request()->method());
 });
@@ -291,9 +279,16 @@ Route::any('/powershop/payment/success', function () {
 //    return response()->json($details);
 });
 
-Route::any('/powershop/payment/callback', function () {
-    dump('success', request()->all(), request()->method());
-});
+Route::any('/powershop/payment/callback', [PxPayController::class, 'handleCallback']);
+/**
+ * api's for email validation
+ */
+Route::get('/gbg-validate-email', [ApplicationController::class, 'isGbgValidateEmail']);
+Route::get('/applications/{id}/email-manually-verified', [ApplicationController::class, 'isEmailManuallyVerified']);
+
+
+
+
 
 /**
  * Bellow API are only for testing purpose

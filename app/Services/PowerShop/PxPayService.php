@@ -30,6 +30,14 @@ class PxPayService
         $this->pxPayKey = config('powershop.px_pay_key');
     }
 
+
+
+    public function invite(int $appId, string $via)
+    {
+        //todo
+    }
+
+
     /**
      * @throws GuzzleException
      * @throws \Exception
@@ -55,6 +63,7 @@ class PxPayService
         $body = $response->getBody()->getContents();
         $uri = (string ) simplexml_load_string($body)->URI ?? null;
         if (!empty($uri)) {
+            dd($uri);
             return $uri;
         } else {
             throw new \Exception("PxPay Failed: " . json_encode($body));
@@ -73,9 +82,10 @@ class PxPayService
             'TxnType' => 'Validate',
             'AmountInput' => 0.0,
             'CurrencyInput' => 'AUD',
-            'MerchantReference' => 'Purchase Example',
+            'MerchantReference' => 'Hood',
             'TxnData1' => 'Atikur Rahman',
-            'TxnData12' => '0211111111',
+            'TxnData2' => '0211111111',
+//            'TxnData3' => 'kaka',
             'EmailAddress' => 'a@gmail.com',
             'TxnId' => Str::uuid()->toString(),
             'EnableAddBillCard' => 1,
@@ -85,6 +95,7 @@ class PxPayService
             'UrlCallback' => 'https://enk.leninsheikh.com/api/kaka/callback',
         ];
     }
+
 
     /**
      * @param $array
@@ -129,7 +140,7 @@ class PxPayService
         $response = $client->request('POST', $url, $options);
         $body = $response->getBody()->getContents();
         $res = json_decode(json_encode(simplexml_load_string($body)), true);
-
+        dd($res);
         return  [
                 "card_type" => data_get($res, 'CardName'),
                 "masked_card_number" => data_get($res, 'CardNumber'),

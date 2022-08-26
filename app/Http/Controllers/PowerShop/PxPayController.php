@@ -28,7 +28,7 @@ class PxPayController extends Controller
     /**
      * @throws GuzzleException
      */
-    public function getRedirectURL(): JsonResponse|Redirector
+    public function invite(Request $request): JsonResponse|Redirector
     {
         try {
             return redirect($this->pxPayService->getRedirectUrl());
@@ -63,7 +63,7 @@ class PxPayController extends Controller
         try {
             $cardDetails = $this->pxPayService->handleCallback($request->toArray());
 
-            return response()->json(['success' => true]);
+            return response()->json(['success' => true, 'data' => $cardDetails]);
         } catch (Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

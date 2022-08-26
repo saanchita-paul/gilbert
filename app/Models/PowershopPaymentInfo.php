@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PowershopPaymentInfo extends Model
 {
@@ -23,9 +24,44 @@ class PowershopPaymentInfo extends Model
         'estimated_elec_billing_period',
         'estimated_gas_billing_cost',
         'estimated_gas_billing_period',
-
+        'invited_at',
+        'verified_at',
+        'rejected_at',
+        'customer_full_name',
+        'customer_email',
+        'customer_phone',
+        'px_transaction_type',
+        'px_amount',
+        'px_currency_type',
+        'px_txn_id',
+        'px_is_enable_billing',
+        'px_redirect_url',
+        'px_recurring_mode',
+        'px_callback_result',
+        'px_response_text',
+        'px_card_type',
+        'px_card_number',
+        'px_card_expire_date',
+        'px_card_holder_name',
+        'px_dps_billing_id'
     ];
 
+    protected $hidden = [
+        'px_transaction_type',
+        'px_amount',
+        'px_currency_type',
+        'px_txn_id',
+        'px_is_enable_billing',
+        'px_redirect_url',
+        'px_recurring_mode',
+        'px_callback_result',
+        'px_response_text',
+        'px_card_type',
+        'px_card_number',
+        'px_card_expire_date',
+        'px_card_holder_name',
+        'px_dps_billing_id'
+    ];
 
 
     /**
