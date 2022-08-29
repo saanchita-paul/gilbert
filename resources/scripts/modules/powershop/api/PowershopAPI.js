@@ -1,5 +1,6 @@
 import axios from "axios";
 import PowershopMapper from "@scripts/modules/powershop/api/mappers/PowershopMapper";
+import {isNull} from "lodash-es";
 
 const ROOT = `${process.env.MIX_BOT_ROOT_URL}`;
 
@@ -7,8 +8,9 @@ export default {
     getPowerShopData: async (query) => {
         try {
 
+            isNull()
             if(query.nmi !== '') {
-                query.nmi_prefix = query.nmi.substr(0,3);
+                query.nmi_prefix = query.nmi?.substr(0,3);
             }
             //   const data = (await axios.get(`${ROOT}/api/power-shop-plan-details`, { params: query })).data.data;
              const data = {
