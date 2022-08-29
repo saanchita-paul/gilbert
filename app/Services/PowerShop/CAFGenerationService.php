@@ -5,6 +5,7 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Rap2hpoutre\FastExcel\Facades\FastExcel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -33,12 +34,16 @@ class CAFGenerationService
      * @var array
      */
     private array $mappedApplicationList;
+    private array $gasPromotionData;
+    private array $elePromotionData;
 
     /**
      * @param array $applicationIdList
      */
     public function __construct(array $applicationIdList)
     {
+
+        $this->getPromotionCode();
         $this->applicationIdList = $applicationIdList;
 
         $this->fetchApplications();
@@ -117,8 +122,8 @@ class CAFGenerationService
                     'Mailing State/Territory' => $app->billing_state,
                     'Mailing Postal Code' => $app->billing_postcode,
                     'Owner/Renter' => $this->getTenancyType($app),
-                    'Electricity Promo' => '',
-                    'Gas Promo' => '',
+                    'Electricity Promo' => $this->getPromo($app->state, ConnectionService::TYPE_ELECTRICITY),
+                    'Gas Promo' => $this->getPromo($app->state, ConnectionService::TYPE_GAS),
                     'Electricity Already On? (Y/N)' => $this->checkElectricity($app),
                     'Meter Number(s)' => null,
                     'Any Hazards' => $this->getHazard($app->is_any_unrestrained_animal, $app->is_renovation_on),
@@ -342,11 +347,16 @@ class CAFGenerationService
         }
     }
 
+    /**
+     * @param $is_any_unrestrained_animal
+     * @param $is_renovation_on
+     * @return string
+     */
     private function getHazard($is_any_unrestrained_animal, $is_renovation_on): string
     {
         $hasrestineAnymal = false;
         $hazard = [];
-        if( !is_null(is_any_unrestrained_animal) && !empty(trim(is_any_unrestrained_animal)) ) {
+        if( !is_null($is_any_unrestrained_animal) && !empty(trim($is_any_unrestrained_animal)) ) {
             $hazard =  'Animal on property';
             $hasrestineAnymal = true;
         }
@@ -357,9 +367,13 @@ class CAFGenerationService
         }
         return $hazard;
 
-
     }
 
+    /**
+     * @param $is_access_require
+     * @param $additional_access_information
+     * @return string
+     */
     private function getAccessReq($is_access_require, $additional_access_information): string
     {
         if($is_access_require) {
@@ -368,6 +382,53 @@ class CAFGenerationService
             return 'No';
         }
 
+    }
+
+
+    /**
+     * call chatbot api for finding promotion code
+     * this api may take state for state wise promotion code
+     * but if call without state it will give all the promotion code
+     */
+    private function getPromotionCode()
+    {
+        try {
+            $chatbotUri = 'https://demo.chatbot.hood.ai/';
+//            $chatbotUri = config('bot.root_url');
+            $url = $chatbotUri.'api/hood-dashboard/power-shop/promo-code';
+            $response = Http::get($url);
+            if($response->status() == 200) {
+                $this->mapPromotionCode(json_decode($response->body(), true));
+            }
+        } catch (\Exception $e) {
+            Log::warning('No promotion code is found');
+        }
+    }
+
+    /**
+     * @param array|null $promotionData
+     */
+    private function mapPromotionCode(?array $promotionData): void
+    {
+        foreach ($promotionData as $data)
+        {
+            $this->gasPromotionData[$data->state] = $data->gas_promo_code;
+            $this->elePromotionData[$data->state] = $data->elec_promo_code;
+        }
+    }
+
+    /**
+     * @param $state
+     * @param string $service
+     * @return null|string
+     */
+    private function getPromo($state, string $service) : null| string
+    {
+        return match($service) {
+            ConnectionService::TYPE_GAS => $this->gasPromotionData[$state] ?? '' ,
+            ConnectionService::TYPE_ELECTRICITY => $this->elePromotionData[$state] ?? '' ,
+            default => ''
+        };
     }
 
 }

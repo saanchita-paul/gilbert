@@ -153,6 +153,7 @@ class ApplicationResource extends JsonResource
         for ($i = 0; $i < $count; $i++) {
             array_push($service_array, $services[$i]['service_type']);
         }
+
         return $service_array;
     }
 
