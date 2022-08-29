@@ -13,6 +13,7 @@
         </v-col>
         <v-col v-if="canShowBothEnergySubmitCheckbox" cols="12" class="d-flex pb-0">
             <v-checkbox
+                :disabled="disabledIfPowerShopGasSelected"
                 v-model="isBothEnergySubmit"
                 @change="changeIsBothEnergySubmit"
             ></v-checkbox>
@@ -118,9 +119,9 @@
                 <p class="neutral-checkbox-text">Customer opts in for <span class="font-weight-bold">Go Neutral</span>.</p>
             </div>
 
-            <v-col cols="12" v-if="selectedProvider === 'powershop'">
-                <PaymentDetails  @updateDraft="updateDraft" :lead="leadSummary"></PaymentDetails>
-            </v-col>
+<!--            <v-col cols="12" v-if="selectedProvider === 'powershop'">-->
+<!--                <PaymentDetails  @updateDraft="updateDraft" :lead="leadSummary"></PaymentDetails>-->
+<!--            </v-col>-->
 
         </v-col>
         <v-col cols="12">
@@ -354,6 +355,10 @@ export default {
                     return 'wa'
             }
         },
+        disabledIfPowerShopGasSelected() {
+            return LeadApplicationService.getActiveServiceTab() === 1
+                && this.selectedProvider === "powershop";
+        }
     },
     mounted() {
         this.fetchEaPlans();
@@ -516,7 +521,8 @@ export default {
                 !LeadApplicationService.canSubmitEnergy('gas') ||
                 !this.selectedProvider ||
                 !this.selectedPlan ||
-                (this.isBothEnergySubmit && this.isPayeeSelectedForAfterHourSubmission)
+                (this.isBothEnergySubmit && this.isPayeeSelectedForAfterHourSubmission) ||
+                this.disabledIfPowerShopGasSelected
             );
         },
         submit() {

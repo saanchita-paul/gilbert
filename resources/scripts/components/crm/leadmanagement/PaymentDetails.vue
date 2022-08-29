@@ -121,8 +121,8 @@ export default {
                     value: "bi-monthly",
                 },
                 {
-                    text: "Quartely",
-                    value: "quartely",
+                    text: "Quarterly",
+                    value: "Quarterly",
                 },
                 {
                     text: "Yearly",
@@ -139,8 +139,8 @@ export default {
                     value: "bi-monthly",
                 },
                 {
-                    text: "Quartely",
-                    value: "quartely",
+                    text: "Quarterly",
+                    value: "Quarterly",
                 },
                 {
                     text: "Yearly",

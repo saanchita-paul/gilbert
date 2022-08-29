@@ -451,7 +451,7 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    :value=getPowerPeriod
+                                    value='Quarterly'
                                 ></v-text-field>
                             </div>
                         </div>
@@ -481,7 +481,7 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    :value=getGasPeriod
+                                    value='Quarterly'
                                 ></v-text-field>
                             </div>
                         </div>
@@ -945,14 +945,14 @@ export default {
             return this.data.selectedProvider === 'ea'
                && (this.data.is_gas_life_support || this.data.is_power_life_support);
         },
-        getPowerPeriod() {
-            return this.paymentInformation?.powershop_payment_info?.estimated_elec_billing_period?.charAt(0).toUpperCase()
-                + this.paymentInformation?.powershop_payment_info?.estimated_elec_billing_period?.slice(1);
-        },
-        getGasPeriod() {
-            return this.paymentInformation?.powershop_payment_info?.estimated_gas_billing_period?.charAt(0).toUpperCase()
-                + this.paymentInformation?.powershop_payment_info?.estimated_gas_billing_period?.slice(1);
-        },
+        // getPowerPeriod() {
+        //     return this.paymentInformation?.powershop_payment_info?.estimated_elec_billing_period?.charAt(0).toUpperCase()
+        //         + this.paymentInformation?.powershop_payment_info?.estimated_elec_billing_period?.slice(1);
+        // },
+        // getGasPeriod() {
+        //     return this.paymentInformation?.powershop_payment_info?.estimated_gas_billing_period?.charAt(0).toUpperCase()
+        //         + this.paymentInformation?.powershop_payment_info?.estimated_gas_billing_period?.slice(1);
+        // },
         getPowerCost() {
             return this.paymentInformation?.powershop_payment_info?.estimated_elec_billing_cost
                 ? this.paymentInformation?.powershop_payment_info?.estimated_elec_billing_cost
