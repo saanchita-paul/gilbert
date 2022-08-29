@@ -3,6 +3,7 @@
 namespace App\Services\PowerShop;
 
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
 use App\Services\TimeZoneService;
 use Carbon\Carbon;
 use Cmixin\BusinessTime;
@@ -11,10 +12,12 @@ use Exception;
 class SameDayConnectionService
 {
     private int $applicationId;
+    private string $submitType;
 
-    public function __construct(int $applicationId)
+    public function __construct(int $applicationId, $submitType)
     {
         $this->applicationId = $applicationId;
+        $this->submitType = $submitType;
     }
 
     const MAP_STATE_NSW = 'New South Wales';
@@ -73,20 +76,12 @@ class SameDayConnectionService
         $application = ConnectionApplication::findOrFail($this->applicationId);
 
         $electricity = $this->validateElectricity($application);
-//        $gas = $this->validateGas($application);
-//        $gasNote = '';
-//
-//        if (!$gas) {
-//            $gasNote = sprintf('Please let customer know that gas will be connected by distributor in %s business days (%s)',
-//                self::MAP_GAS_BUSINESS_DAYS[$application->state],
-//                $this->getNearestAvailableGasDate($application)->format('Y-m-d'),
-//            );
-//        }
+        $gas = $this->validateGas($application, $this->submitType);
 
         return [
             'electricityOk' => $electricity,
-            // 'gasOk' => $gas,
-            // 'gasNote' => $gasNote,
+            'gasOk' => !$gas['isInvalid'],
+            'gasNote' => $gas['invalidNote'],
         ];
     }
 
@@ -120,19 +115,44 @@ class SameDayConnectionService
 
     }
 
-    private function validateGas(ConnectionApplication $application) {
+    private function validateGas(ConnectionApplication $application, string $submitType) : array {
+        $result = [
+            'isInvalid' => false,
+            'invalidNote' => '', 
+        ];
+
+        if ($submitType == ConnectionService::TYPE_ELECTRICITY){
+            return $result;
+        }
+        
+        if ($submitType == ConnectionService::TYPE_GAS){
+            $result['isInvalid'] = true;
+            $result['invalidNote'] = 'Powershop does not allow gas connection only';
+            return $result;
+        }
+
+        if (!in_array($application->state, [self::MAP_STATE_NSW, self::MAP_STATE_VIC])){
+            $result['isInvalid'] = true;
+            $result['invalidNote'] = 'Powershop does not provide gas connection for state of ' . $application->state;
+            return $result;
+        }
+        
         $connectionDate = Carbon::parse($application->moving_date)->shiftTimezone(self::MAP_STATE_TIMEZONE[$application->state]);
         $availableDate = $this->getNearestAvailableGasDate($application);
 
         if($availableDate->gt($connectionDate)){
-            return false;
+            $result['invalidNote'] = sprintf('Please let customer know that gas will be connected by distributor in %s business days (%s)',
+                                        self::MAP_GAS_BUSINESS_DAYS[$application->state],
+                                        $this->getNearestAvailableGasDate($application)->format('Y-m-d'),
+                                    );
         }
 
         if($connectionDate->isWeekend() || $connectionDate->isHoliday()){
-            return false;
+            $result['isInvalid'] = true;
+            $result['invalidNote'] = 'Connection date falls on a holiday. Please select a different connection date.';
         }
 
-        return true;
+        return $result;
     }
 
     private function getNearestAvailableGasDate(ConnectionApplication $application) : Carbon
@@ -153,7 +173,7 @@ class SameDayConnectionService
             $businessDays += 1;
         }
 
-        for($i=0; $i<$businessDays; $i++){
+        for($i=0; $i<$businessDays-1; $i++){
             $availableDate->addDay();
             while($availableDate->isWeekend()){
                 $availableDate->addDay();

@@ -48,7 +48,7 @@ class SubmittedLeadNote
         ];
 
         if ($provider_name == 'Powershop' && in_array($submittedService, ['Elec & Gas'])){
-            $sameDayService = new SameDayConnectionService($this->existLead->id);
+            $sameDayService = new SameDayConnectionService($this->existLead->id, $this->getSubmitType($submittedService));
             $leadData['gas_moving_date'] = $sameDayService->getNextGasConnectionDate();
         }
 
@@ -141,6 +141,15 @@ class SubmittedLeadNote
           'electricity' => 'Elec' ,
           'electricity_and_gas' => 'Elec & Gas',
         };
+    }
+
+    private function getSubmitType($serviceType)
+    {
+        return match ($serviceType) {
+            ConnectionService::TYPE_GAS, 'Gas' => ConnectionService::TYPE_GAS ,
+            'electricity', 'Elec' => ConnectionService::TYPE_ELECTRICITY,
+            'electricity_and_gas', 'Elec & Gas' => 'energy',
+          };
     }
 
 }
