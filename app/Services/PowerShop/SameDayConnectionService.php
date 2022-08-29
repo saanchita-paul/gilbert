@@ -26,14 +26,16 @@ class SameDayConnectionService
     const MAP_STATE_ACT = 'Australian Capital Territory';
     const MAP_STATE_WA = 'Western Australia';
 
+    const VIC_TIME_ZONE = 'Australia/Victoria';
+
     private function stateTime($state)
     {
         return match ($state) {
             self::MAP_STATE_NSW,
-            self::MAP_STATE_SA => today('Australia/Victoria')->addHours(13),
-            self::MAP_STATE_VIC => today('Australia/Victoria')->addHours(15),
-            self::MAP_STATE_QLD => today('Australia/Victoria')->addHours(10),
-            self::MAP_STATE_ACT => today('Australia/Victoria')
+            self::MAP_STATE_SA => today(self::VIC_TIME_ZONE)->addHours(13),
+            self::MAP_STATE_VIC => today(self::VIC_TIME_ZONE)->addHours(15),
+            self::MAP_STATE_QLD => today(self::VIC_TIME_ZONE)->addHours(10),
+            self::MAP_STATE_ACT => today(self::VIC_TIME_ZONE)
         };
     }
     const MAP_STATE_TIMEZONE = [
@@ -71,20 +73,20 @@ class SameDayConnectionService
         $application = ConnectionApplication::findOrFail($this->applicationId);
 
         $electricity = $this->validateElectricity($application);
-        $gas = $this->validateGas($application);
-        $gasNote = '';
-
-        if (!$gas) {
-            $gasNote = sprintf('Please let customer know that gas will be connected by distributor in %s business days (%s)',
-                self::MAP_GAS_BUSINESS_DAYS[$application->state],
-                $this->getNearestAvailableGasDate($application)->format('Y-m-d'),
-            );
-        }
+//        $gas = $this->validateGas($application);
+//        $gasNote = '';
+//
+//        if (!$gas) {
+//            $gasNote = sprintf('Please let customer know that gas will be connected by distributor in %s business days (%s)',
+//                self::MAP_GAS_BUSINESS_DAYS[$application->state],
+//                $this->getNearestAvailableGasDate($application)->format('Y-m-d'),
+//            );
+//        }
 
         return [
             'electricityOk' => $electricity,
-            'gasOk' => $gas,
-            'gasNote' => $gasNote,
+            // 'gasOk' => $gas,
+            // 'gasNote' => $gasNote,
         ];
     }
 
@@ -102,10 +104,10 @@ class SameDayConnectionService
 
     private function validateElectricity($application)
     {
-        $currentTime = Carbon::now(TimeZoneService::getTimeZoneInt('Australia/Victoria'));
+        $currentTime = Carbon::now(TimeZoneService::getTimeZoneInt(self::VIC_TIME_ZONE));
         $connectionDate = $application->moving_date;
         $state = $application->state;
-        $isToday = (new Carbon($connectionDate))->timezone('Australia/Victoria')->isToday();
+        $isToday = (new Carbon($connectionDate))->timezone(self::VIC_TIME_ZONE)->isToday();
 
         if (!$isToday) return false;
 

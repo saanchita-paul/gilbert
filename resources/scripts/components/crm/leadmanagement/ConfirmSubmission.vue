@@ -759,7 +759,7 @@
                         <div class="alert-text alert-bolder-text mb-2">Please Note:</div>
                         <div class="alert-text">
                             <div>
-                                <span class="alert-bolder-text">Gas:&nbsp;</span> Please let customer know that gas will be connected by distributor in 3-5 business days.
+                                <span class="alert-bolder-text">Gas:&nbsp;</span> Gas text note
                             </div>
                             <div v-if="showElectricityPowerShopNote">
                                 <span class="alert-bolder-text">Electricity:&nbsp;</span> You are trying to submit after same day cutoff time, Please choose different connection date.
@@ -916,7 +916,8 @@ export default {
           isValidElecCutOff: null,
           isValidGasCutOff: null,
           paymentInformation: null,
-          sameDayConnectionData: null
+          sameDayConnectionData: null,
+          powerShopGasNoteText: ''
       }
     },
     computed: {
@@ -971,18 +972,22 @@ export default {
             return this.data.selectedProvider === 'powershop';
         },
         showElectricityPowerShopNote() {
-            return this.sameDayConnectionData?.isElectricity
+            return this.sameDayConnectionData?.electricityOk
                 && this.submitType === 'power'
                 && this.data.state !== "Australian Capital Territory";
         },
         showElectricityACTPowerShopNote() {
-            return this.sameDayConnectionData?.isElectricity
+            return this.sameDayConnectionData?.electricityOk
                 && this.submitType === 'power'
                 && this.data.state === "Australian Capital Territory";
         },
         isPowerShopOk() {
-            return this.sameDayConnectionData?.isElectricity;
-        }
+            return this.sameDayConnectionData?.electricityOk;
+        },
+        // showPowerShopGasNote() {
+        //     return !this.sameDayConnectionData.gasOk
+        //     && this.submitType === 'power';
+        // }
     },
     methods: {
         backToEdit() {
@@ -1027,12 +1032,7 @@ export default {
             if (this.data.selectedProvider === 'powershop') {
                 this.sameDayConnectionData = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.leadId)).data;
                 console.log('Same Day API: ', this.sameDayConnectionData);
-                const data = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.leadId)).data;
-                console.log('Response From API : ', data);
-
-                if (!data.gasOkay) {
-                    this.gasPowerShopNote = data.gasNote ?? gasSameDayText;
-                }
+                // this.powerShopGasNoteText = this.sameDayConnectionData.gasNote;
             }
         }
 
