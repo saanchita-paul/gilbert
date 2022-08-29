@@ -13,16 +13,16 @@
                         <h3>Powershop</h3>
                     </div>
                     <div>
-                        <h2>100% Carbon Neutral Plan</h2>
-                        <h2>{{'Plan Title'}}</h2>
+                        <h2>{{planDetails.title}}</h2>
+<!--                        <h2>{{'Plan Title'}}</h2>-->
                         <p>{{ getServiceText }}</p>
                     </div>
                 </div>
 
-                <ElectricityPlan v-if="willShowElectricity" :plan="planDetails.plans.electricity"
+                <ElectricityPlan v-if="willShowElectricity" :plan="planDetails"
                                  :victoriaState="isVictoria"></ElectricityPlan>
 
-                <GasPlan v-if="willShowGas" :plan="planDetails.plans.gas"></GasPlan>
+                <GasPlan v-if="willShowGas" :plan="planDetails"></GasPlan>
 
                 <div class="plan-details">
                     <v-card>
@@ -170,22 +170,22 @@ export default {
             return UtilityStoreService.getIsBothEnergySelected() || this.serviceType === 'energy';
         },
         willShowElectricity() {
-            return this.planDetails?.plans?.electricity && (this.serviceType === "power" || this.isBothEnergySubmit);
+            return this.planDetails && this.serviceType === "power";
         },
         willShowGas() {
-            return this.planDetails?.plans?.gas && (this.serviceType === "gas" || this.isBothEnergySubmit);
+            return this.planDetails && (this.serviceType === "gas");
         },
         isVictoria() {
             return this.leadSummary.state === 'Victoria';
         },
         electricityBPIDLinksList() {
-            return this.planDetails?.plans?.electricity?.bpid_links;
+            return this.planDetails?.bpid_links;
         },
         gasBPIDLinksList() {
-            return this.planDetails?.plans?.gas?.bpid_links;
+            return this.planDetails.bpid_links;
         },
         getSolarFeedInTariff() {
-            return this.planDetails?.plans?.electricity?.solar_buy_pack_value ?? "";
+            return this.planDetails.solar_buy_pack_value ?? "";
         },
         state() {
             switch(this.leadSummary.state) {

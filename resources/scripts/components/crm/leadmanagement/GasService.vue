@@ -184,6 +184,7 @@
                     @toggleDialog="togglePowerShopPlanDetails"
                     :serviceType="isBothEnergySubmit ? 'energy' : 'gas'"
                     :leadSummary="leadSummary"
+                    :planDetails="activePowerShopPlan"
                 />
             </v-card>
         </v-dialog>
@@ -213,6 +214,7 @@ import PowershopPlanDetails from "@scripts/components/crm/leadmanagement/Powersh
 import OriginService from "@scripts/modules/origin/services/OriginService";
 import OriginMapper from "@scripts/modules/origin/api/mappers/OriginMapper";
 import ProviderPlan from "@scripts/models/crm/ProviderPlan";
+import PowershopService from "@scripts/modules/powershop/services/PowershopService";
 
 export default {
     //todo reduce emit functions
@@ -254,7 +256,8 @@ export default {
             originPlanDetails: false,
             powershopPlans: [],
             powerShopPlanDetails: false,
-            planDetails: null
+            planDetails: null,
+            activePowerShopPlan: null
         };
     },
     computed: {
@@ -536,23 +539,45 @@ export default {
         },
 
         async fetchPowershopPlans() {
-            const powershopProvider = this.providers.find(pl => {
-                return pl.name === 'powershop';
-            });
+            // const powershopProvider = this.providers.find(pl => {
+            //     return pl.name === 'powershop';
+            // });
+            //
+            // this.powershopPlans = powershopProvider.plans.filter(plan => {
+            //     return plan.type === 'power';
+            // });
 
-            this.powershopPlans = powershopProvider.plans.filter(plan => {
-                return plan.type === 'power';
-            });
-            console.log("powershopPlans ->", this.powershopPlans);
+            await this.getPowershopData();
         },
 
-        togglePowerShopPlanDetails() {
+        togglePowerShopPlanDetails(plan) {
             this.powerShopPlanDetails = !this.powerShopPlanDetails;
+            this.activePowerShopPlan = plan;
         },
 
         async updateDraft(field, value) {
             await LeadApplicationService.savePaymentField(field, value, this.leadSummary.id);
         },
+
+
+        async getPowershopData() {
+            let query = {
+                postcode: this.leadSummary?.postcode,
+                service_type: 'gas',
+                state: this.state,
+            }
+            this.powerShoplandata = await PowershopService.getPowerShopData(query);
+            this.powershopPlans = this.powerShoplandata.plans.gas
+
+            console.log('power shop gas plan', this.powershopPlans);
+
+            if (!isNull(this.powerShoplandata)) {
+                this.loadPowerShopDetails = true;
+            }
+
+        },
+
+
 
         async getOriginData() {
             let query = null;

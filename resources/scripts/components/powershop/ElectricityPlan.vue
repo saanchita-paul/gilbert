@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <div class="plan-details" v-if="plan">
             <v-card>
                 <div style="padding: 20px 10px">
@@ -10,6 +9,7 @@
                             <h1 class="font-weight-bold plan-heading-text mb-2">Electricity</h1>
                         </div>
                         <div class="font-weight-bolder">
+
                             <p class="mb-2 bolder-text">{{ plan.offers.title }} <span class="deep-text">(inc. GST)</span></p>
                             <p class="mb-2 bolder-text">{{ plan.offers.line_2 }}</p>
 <!--                            <p class="mb-2 bolder-text">{{ plan.offers.line_1 }} 1% <span class="deep-text">less than the </span></p>-->
@@ -117,6 +117,10 @@ export default {
 
     },
     methods: {
+    },
+
+    mounted() {
+        console.log('getting plan from here', this.plan);
     }
 }
 </script>
