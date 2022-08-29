@@ -22,6 +22,7 @@ use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 use OurProperty\Http\Controllers\OurPropertyController;
+use Powershop\Http\Controllers\PaymentInfoController;
 use PropertyMe\services\FetchContacts;
 use Reporting\Http\Controllers\ReportController;
 use TSA\Services\TsaCallHistoryService;
@@ -268,18 +269,8 @@ Route::get('/powershop/applications', [PowerShopController::class, 'getPowerShop
 Route::get('/powershop/generate-caf', [PowerShopController::class, 'generatePowerShopCaf']);
 
 
-Route::post('/powershop/payment/invite', [PxPayController::class, 'invite']);
+Route::post('/powershop/payment/invite', [PaymentInfoController::class, 'inviteCustomer']);
 
-Route::any('/powershop/payment/failed', function () {
-    dump('failed', request()->all(), request()->method());
-});
-Route::any('/powershop/payment/success', function () {
-//    $ref = request()->get('result');
-//    $details = getDetails($ref);
-//    return response()->json($details);
-});
-
-Route::any('/powershop/payment/callback', [PxPayController::class, 'handleCallback']);
 /**
  * api's for email validation
  */

@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class PowershopPaymentInfo extends Model
 {
     use HasFactory;
+
+    const STATUS_PENDING = 1;
+    const STATUS_VERIFIED = 2;
+    const STATUS_REJECTED= 3;
     /**
      * The attributes that are mass assignable.
      *
@@ -43,7 +47,8 @@ class PowershopPaymentInfo extends Model
         'px_card_number',
         'px_card_expire_date',
         'px_card_holder_name',
-        'px_dps_billing_id'
+        'px_dps_billing_id',
+        'px_response_text_desc'
     ];
 
     protected $hidden = [
@@ -60,8 +65,11 @@ class PowershopPaymentInfo extends Model
         'px_card_number',
         'px_card_expire_date',
         'px_card_holder_name',
-        'px_dps_billing_id'
+        'px_dps_billing_id',
+        'px_response_text_desc'
     ];
+
+
 
 
     /**

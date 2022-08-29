@@ -29,6 +29,7 @@ class AddPaymentDetailsToPowershopPaymentInfosTable extends Migration
             $table->string('px_callback_result', 250)->nullable();
             $table->string('px_recurring_mode', 25)->nullable();
             $table->string('px_response_text', 50)->nullable();
+            $table->string('px_response_text_desc', 50)->nullable();
             $table->string('px_card_type', 20)->nullable();
             $table->string('px_card_number', 50)->nullable();
             $table->string('px_card_expire_date', 20)->nullable();
@@ -61,6 +62,7 @@ class AddPaymentDetailsToPowershopPaymentInfosTable extends Migration
                 'px_recurring_mode',
                 'px_callback_result',
                 'px_response_text',
+                'px_response_text_desc',
                 'px_card_type',
                 'px_card_number',
                 'px_card_expire_date',
