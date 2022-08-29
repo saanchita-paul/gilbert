@@ -548,6 +548,8 @@ export default {
             await LeadApplicationService.saveSoleField('ea_go_neutral', this.leadSummary.ea_go_neutral, this.leadSummary.id);
         },
         async fetchPowershopPlans() {
+
+            console.log('plan fetching is calling');
             const powershopProvider = this.providers.find(pl => {
                 return pl.name === 'powershop';
             });
@@ -564,6 +566,8 @@ export default {
             await LeadApplicationService.savePaymentField(field, value, this.leadSummary.id);
         },
         async getPowershopData() {
+
+            console.log('selected power shop plan', this.powerShoplandata);
 
             let query = {
                 postcode: this.leadSummary?.postcode,

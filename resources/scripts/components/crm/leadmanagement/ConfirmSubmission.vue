@@ -758,8 +758,8 @@
                     <v-alert text>
                         <div class="alert-text alert-bolder-text mb-2">Please Note:</div>
                         <div class="alert-text">
-                            <div>
-                                <span class="alert-bolder-text">Gas:&nbsp;</span> Please let customer know that gas will be connected by distributor in 3-5 business days.
+                            <div v-if="showGasPowerShopNote">
+                                <span class="alert-bolder-text">Gas:&nbsp;</span> {{ showGasPowerShopNote }}
                             </div>
                             <div v-if="showElectricityPowerShopNote">
                                 <span class="alert-bolder-text">Electricity:&nbsp;</span> You are trying to submit after same day cutoff time, Please choose different connection date.
@@ -971,17 +971,21 @@ export default {
             return this.data.selectedProvider === 'powershop';
         },
         showElectricityPowerShopNote() {
-            return this.sameDayConnectionData?.isElectricity
+            return this.sameDayConnectionData?.electricityOk
                 && this.submitType === 'power'
                 && this.data.state !== "Australian Capital Territory";
         },
         showElectricityACTPowerShopNote() {
-            return this.sameDayConnectionData?.isElectricity
+            return this.sameDayConnectionData?.electricityOk
                 && this.submitType === 'power'
                 && this.data.state === "Australian Capital Territory";
         },
+        showGasPowerShopNote() {
+            return this.sameDayConnectionData?.gasNote;
+        },
         isPowerShopOk() {
-            return this.sameDayConnectionData?.isElectricity;
+            return this.sameDayConnectionData?.electricityOk
+                && this.sameDayConnectionData?.gasOk;
         }
     },
     methods: {
@@ -1025,14 +1029,8 @@ export default {
 
         async checkSameDayValidation() {
             if (this.data.selectedProvider === 'powershop') {
-                this.sameDayConnectionData = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.leadId)).data;
+                this.sameDayConnectionData = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.leadId, this.submitType)).data;
                 console.log('Same Day API: ', this.sameDayConnectionData);
-                const data = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.leadId)).data;
-                console.log('Response From API : ', data);
-
-                if (!data.gasOkay) {
-                    this.gasPowerShopNote = data.gasNote ?? gasSameDayText;
-                }
             }
         }
 

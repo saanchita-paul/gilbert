@@ -354,7 +354,6 @@ class SearchConnectionApplication
                 $query->where('provider_name', $this->provider);
             });
         }
-
         return $this;
     }
 
@@ -369,8 +368,6 @@ class SearchConnectionApplication
             $this->builder = $this->builder
                 ->where('duplication_group_id', $this->duplication_group_id);
         }
-
         return $this;
-
     }
 }

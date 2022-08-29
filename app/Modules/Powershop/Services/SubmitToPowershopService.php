@@ -45,7 +45,7 @@ class SubmitToPowershopService
         foreach ($this->conServices as $conService) {
             $availableDate = $this->application->moving_date;
             if ($conService->service_type == ConnectionService::TYPE_GAS){
-                $newDateService = new SameDayConnectionService($this->application->id);
+                $newDateService = new SameDayConnectionService($this->application->id, ConnectionService::TYPE_GAS);
                 $availableDate = $newDateService->getNextGasConnectionDate();
             } 
             $conService->connection_date = $availableDate;

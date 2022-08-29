@@ -54,10 +54,10 @@ class PowerShopController extends Controller
     }
 
     // same day connection
-    public function sameDayConnectionValidate($applicationId)
+    public function sameDayConnectionValidate($applicationId, $submitType)
     {
         try {
-            $service = new SameDayConnectionService($applicationId);
+            $service = new SameDayConnectionService($applicationId, $submitType);
             return response()->json(['data' => $service->validateSameDayConnection()]);
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
