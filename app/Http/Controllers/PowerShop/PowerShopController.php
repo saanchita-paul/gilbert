@@ -7,6 +7,7 @@ use App\Models\ConnectionApplication;
 use App\Models\User;
 use App\Services\Application\SearchConnectionApplication;
 use App\Services\PowerShop\CAFGenerationService;
+use App\Services\PowerShop\SameDayConnectionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -47,6 +48,17 @@ class PowerShopController extends Controller
             $data = array_merge($request->toArray(), ['provider_name' => ConnectionApplication::PROVIDER_POWER_SHOP]);
             $service = new SearchConnectionApplication($data);
             return ApplicationResource::collection($service->get($user));
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    // same day connection
+    public function sameDayConnectionValidate($applicationId)
+    {
+        try {
+            $service = new SameDayConnectionService($applicationId);
+            return response()->json(['data' => $service->validateSameDayConnection()]);
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

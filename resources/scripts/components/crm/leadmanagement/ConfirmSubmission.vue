@@ -759,13 +759,13 @@
                         <div class="alert-text alert-bolder-text mb-2">Please Note:</div>
                         <div class="alert-text">
                             <div>
-                                <span class="alert-bolder-text">Gas:&nbsp;</span>Please let customer know that gas will be connected by distributor in 3-5 business days.
+                                <span class="alert-bolder-text">Gas:&nbsp;</span> Please let customer know that gas will be connected by distributor in 3-5 business days.
                             </div>
-                            <div>
-                                <span class="alert-bolder-text">Electricity:&nbsp;</span>You are trying to submit after same day cutoff time, Please choose different connection date
+                            <div v-if="showElectricityPowerShopNote">
+                                <span class="alert-bolder-text">Electricity:&nbsp;</span> You are trying to submit after same day cutoff time, Please choose different connection date.
                             </div>
-                            <div v-if="checkSameDayConnectionForACT">
-                                <span class="alert-bolder-text">Electricity:&nbsp;</span>We don’t service same day connections for ACT. Please select a different connection date.
+                            <div v-if="showElectricityACTPowerShopNote">
+                                <span class="alert-bolder-text">Electricity:&nbsp;</span> We don’t service same day connections for ACT. Please select a different connection date.
                             </div>
                         </div>
                     </v-alert>
@@ -793,6 +793,7 @@ import {isNull} from "lodash-es";
 import PowershopService from "@scripts/modules/powershop/services/PowershopService";
 import {powerShopPaymentStatusNumberToName} from '@scripts/data/PowershopDataMapper';
 import dayjs from "dayjs";
+import PowerShopSameDayConnectionService from "@scripts/modules/powershop/services/PowerShopSameDayConnectionService";
 export default {
   name: "ConfirmSubmission",
     props:{
@@ -915,11 +916,12 @@ export default {
           isValidElecCutOff: null,
           isValidGasCutOff: null,
           paymentInformation: null,
+          sameDayConnectionData: null
       }
     },
     computed: {
         allOk() {
-           return this.is_temp_condition  && this.is_life_support && !this.isLifeSupportAndEA;
+           return this.is_temp_condition  && this.is_life_support && !this.isLifeSupportAndEA && !this.isPowerShopOk;
         },
         selectedPowerPlan() {
             return LeadApplicationService.mapPlan(this.data.selectedPowerPlan);
@@ -968,13 +970,18 @@ export default {
         showPowerShopNoteSection () {
             return this.data.selectedProvider === 'powershop';
         },
-        checkSameDayConnectionForACT() {
-            return dayjs().isSame(dayjs(this.data.moving_date, 'DD/MM/YYYY').format('YYYY-MM-DD'), 'day')
-                && this.data.state === 'Australian Capital Territory';
+        showElectricityPowerShopNote() {
+            return this.sameDayConnectionData?.isElectricity
+                && this.submitType === 'power'
+                && this.data.state !== "Australian Capital Territory";
         },
-        checkGasBusinessDay() {
-            return this.data.selectedProvider === 'powershop'
-                && this.submitType === 'gas';
+        showElectricityACTPowerShopNote() {
+            return this.sameDayConnectionData?.isElectricity
+                && this.submitType === 'power'
+                && this.data.state === "Australian Capital Territory";
+        },
+        isPowerShopOk() {
+            return this.sameDayConnectionData?.isElectricity;
         }
     },
     methods: {
@@ -1016,9 +1023,22 @@ export default {
             this.paymentInformation = await LeadApplicationService.loadUserLead(this.leadSummary.id);
         },
 
+        async checkSameDayValidation() {
+            if (this.data.selectedProvider === 'powershop') {
+                this.sameDayConnectionData = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.leadId)).data;
+                console.log('Same Day API: ', this.sameDayConnectionData);
+                const data = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.leadId)).data;
+                console.log('Response From API : ', data);
+
+                if (!data.gasOkay) {
+                    this.gasPowerShopNote = data.gasNote ?? gasSameDayText;
+                }
+            }
+        }
 
     },
     mounted() {
+      this.checkSameDayValidation();
       this.validateCutOffTime();
       this.loadAuthorizedPerson();
       this.loadPaymentInformation();

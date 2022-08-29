@@ -41,6 +41,7 @@ class ApplicationNote extends Model
     const REGULAR = 'regular';
     const SUBMITTED_CONNECTION = 'submitted_connection'; // SUBMITTED EA
     const SUBMITTED_ORIGIN = 'submitted_origin';
+    const SUBMITTED_POWERSHOP = 'submitted_powershop';
 
     const NOTETYPE = [
         'escalated' => self::ESCALATED,
@@ -49,6 +50,13 @@ class ApplicationNote extends Model
         'submitted_connection' => self::SUBMITTED_CONNECTION,
         'regular' => self::REGULAR,
         'submitted_origin' => self::SUBMITTED_ORIGIN,
+        'submitted_powershop' => self::SUBMITTED_POWERSHOP
+    ];
+
+    const NOTESUBMIT = [
+        self::SUBMITTED_CONNECTION,
+        self::SUBMITTED_ORIGIN,
+        self::SUBMITTED_POWERSHOP
     ];
 
 

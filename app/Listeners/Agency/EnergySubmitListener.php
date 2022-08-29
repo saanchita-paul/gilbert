@@ -6,6 +6,7 @@ use App\Events\Agency\SubmitApplicationEvent;
 use App\Jobs\EnergySubmission\OriginSubmissionJob;
 use App\Jobs\EnergySubmission\EASubmissionJob;
 use App\Jobs\EnergySubmission\SumoSubmissionJob;
+use App\Jobs\EnergySubmission\PowershopSubmissionJob;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Services\Address\AddressModel;
@@ -56,6 +57,8 @@ class EnergySubmitListener
                 case "sumo":
                     SumoSubmissionJob::dispatch($event->applicationId, $event->submitType);
                     break;
+                case ConnectionService::PROVIDER_POWER_SHOP:
+                    PowershopSubmissionJob::dispatch($event->applicationId, $event->submitType);
             }
         }
 

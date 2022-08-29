@@ -505,7 +505,7 @@ export default {
                 gas_plan_type: planText,
                 power_plan_type: planText ,
             }
-            console.log("DETAILS", this.planDetails)
+
             return this.selectedProvider === 'origin' ? {...payload, ...{
                     gas_plan_type: this.planDetails.plans.gas?.plan_name_code || null,
                     power_plan_type: this.planDetails.plans.electricity?.plan_name_code || null ,

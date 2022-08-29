@@ -369,6 +369,5 @@ class SearchConnectionApplication
                 ->where('duplication_group_id', $this->duplication_group_id);
         }
         return $this;
-
     }
 }
