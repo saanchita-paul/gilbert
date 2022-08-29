@@ -3,6 +3,7 @@
 use App\Http\Controllers\Agency\AgencyController;
 use App\Http\Controllers\Agency\AgentProfileController;
 use App\Http\Controllers\Agency\DuplicationApplicationController;
+use App\Http\Controllers\PowerShop\PxPayController;
 use App\Models\ConnectionApplication;
 use App\Http\Controllers\Agency\AppCloseReasonController;
 use App\Http\Controllers\Agency\ApplicationController;
@@ -21,6 +22,7 @@ use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 use OurProperty\Http\Controllers\OurPropertyController;
+use Powershop\Http\Controllers\PaymentInfoController;
 use PropertyMe\services\FetchContacts;
 use Reporting\Http\Controllers\ReportController;
 use TSA\Services\TsaCallHistoryService;
@@ -236,12 +238,6 @@ Route::get('/sumo/generate-uuid/{id}', [ApplicationController::class, 'getSumoUu
 
 
 /**
- * api to send payment link
- */
-Route::post('/applications/{applicationId}/payment-link', [ApplicationController::class, 'sendPaymentLink']);
-
-
-/**
  * api's for admin only
  */
 Route::get('/get-report-access-token', [ReportController::class, 'getReportAccessToken']);
@@ -271,7 +267,9 @@ Route::post('/our-property/lead', [OurPropertyController::class, 'createOurPrope
 Route::get('/powershop/applications', [PowerShopController::class, 'getPowerShop'])
     ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 Route::get('/powershop/generate-caf', [PowerShopController::class, 'generatePowerShopCaf']);
-Route::get('/powershop/payment/invite', function () {
+
+
+Route::post('/powershop/payment/invite', [PaymentInfoController::class, 'inviteCustomer']);
 
 /**
  * api's for email validation
@@ -281,19 +279,7 @@ Route::get('/applications/{id}/email-manually-verified', [ApplicationController:
 
 
 
-});
-Route::any('/powershop/payment/failed', function () {
-    dump('failed', request()->all(), request()->method());
-});
-Route::any('/powershop/payment/success', function () {
-//    $ref = request()->get('result');
-//    $details = getDetails($ref);
-//    return response()->json($details);
-});
 
-Route::any('/powershop/payment/callback', function () {
-    dump('success', request()->all(), request()->method());
-});
 
 /**
  * Bellow API are only for testing purpose

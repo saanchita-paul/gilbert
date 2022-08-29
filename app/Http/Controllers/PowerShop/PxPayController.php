@@ -25,13 +25,18 @@ class PxPayController extends Controller
         $this->pxPayService = new PxPayService();
     }
 
+
     /**
+     * @param $id
+     * @return Application|JsonResponse|RedirectResponse|Redirector
      * @throws GuzzleException
      */
-    public function getRedirectURL(): JsonResponse|Redirector
+
+    public function acceptInvite($id): JsonResponse|Redirector|Application|RedirectResponse
     {
         try {
-            return redirect($this->pxPayService->getRedirectUrl());
+            $service = new PxPayService();
+            return  redirect($service->getRedirectUrl($id));
         } catch (Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
@@ -50,9 +55,15 @@ class PxPayController extends Controller
      * @param Request $request
      * @return string
      */
-    public function handleFailure(Request $request): string
+    public function handleFailure(Request $request): JsonResponse
     {
-        return "Sorry! You have failed to validate your card information! Please Contact to 01457889!";
+        try {
+            $mgs = $this->pxPayService->handleFailed($request->toArray());
+
+            return response()->json(['success' => false, 'mgs' => $mgs]);
+        } catch (Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
     }
 
     /**
@@ -61,7 +72,7 @@ class PxPayController extends Controller
     public function handleCallback(Request $request): JsonResponse
     {
         try {
-            $cardDetails = $this->pxPayService->handleCallback($request->toArray());
+            $this->pxPayService->handleCallback($request->toArray());
 
             return response()->json(['success' => true]);
         } catch (Exception $exception) {

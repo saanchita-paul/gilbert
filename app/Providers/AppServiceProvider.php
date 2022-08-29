@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Contracts\SMS\SMSManagerInterface;
+use App\Contracts\SMS\SMSModel;
+use App\Plugins\AWS\SMS\SMS;
+use App\Plugins\AWS\SMS\SMSManagerAWS;
 use App\Services\FullTextSearch\FullTextQuery;
 use App\Services\FullTextSearch\FullTextQueryInterface;
 use App\Services\FullTextSearch\FullTextSearch;
@@ -31,6 +35,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->bootFullTextSearch();
+
+        $this->bootSMSManager();
     }
 
     /**
@@ -42,5 +48,11 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(FullTextQueryInterface::class, fn ($app) => new FullTextQuery());
         $this->app->bind(FullTextSearchInterface::class, FullTextSearch::class);
+    }
+
+    private function bootSMSManager()
+    {
+        $this->app->bind(SMSModel::class, fn ($app) => new SMS());
+        $this->app->bind(SMSManagerInterface::class, SMSManagerAWS::class);
     }
 }
