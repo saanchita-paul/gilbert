@@ -17,24 +17,25 @@ class SameDayConnectionService
         $this->applicationId = $applicationId;
     }
 
-    const MAP_STATE = [
-        "New South Wales" => 'NSW',
-        "Victoria" => 'VIC',
-        "Queensland" => 'QLD',
-        "South Australia" => 'SA',
-        "Northern Territory" => 'NT',
-        "Tasmania" => 'TAS',
-        "Australian Capital Territory" => 'ACT',
-        'Western Australia' => 'WA'
-    ];
+    const MAP_STATE_NSW = 'New South Wales';
+    const MAP_STATE_VIC = 'Victoria';
+    const MAP_STATE_QLD = 'Queensland';
+    const MAP_STATE_SA  = 'South Australia';
+    const MAP_STATE_NT  = 'Northern Territory';
+    const MAP_STATE_TAS = 'Tasmania';
+    const MAP_STATE_ACT = 'Australian Capital Territory';
+    const MAP_STATE_WA = 'Western Australia';
 
-    const MAP_STATE_TIME = [
-        "New South Wales" => '13:00:00',
-        "Victoria" => '15:00:00',
-        "Queensland" => '10:00:00',
-        "South Australia" => '13:00:00'
-    ];
-
+    private function stateTime($state)
+    {
+        return match ($state) {
+            self::MAP_STATE_NSW,
+            self::MAP_STATE_SA => today('Australia/Victoria')->addHours(13),
+            self::MAP_STATE_VIC => today('Australia/Victoria')->addHours(15),
+            self::MAP_STATE_QLD => today('Australia/Victoria')->addHours(10),
+            self::MAP_STATE_ACT => today('Australia/Victoria')
+        };
+    }
     const MAP_STATE_TIMEZONE = [
         "New South Wales" => 'Australia/NSW',
         "Victoria" => 'Australia/Victoria',
@@ -74,7 +75,7 @@ class SameDayConnectionService
         $gasNote = '';
 
         if (!$gas) {
-            $gasNote = sprintf('Please let customer know that gas will be connected by distributor in %s business days (%s)', 
+            $gasNote = sprintf('Please let customer know that gas will be connected by distributor in %s business days (%s)',
                 self::MAP_GAS_BUSINESS_DAYS[$application->state],
                 $this->getNearestAvailableGasDate($application)->format('Y-m-d'),
             );
@@ -101,29 +102,20 @@ class SameDayConnectionService
 
     private function validateElectricity($application)
     {
-        // Australia/Victoria
-
-        $currentTime = Carbon::now(TimeZoneService::getTimeZoneInt('Asia/Dhaka'))->toTimeString();
+        $currentTime = Carbon::now(TimeZoneService::getTimeZoneInt('Australia/Victoria'));
         $connectionDate = $application->moving_date;
         $state = $application->state;
-        $isToday = (new Carbon($connectionDate))->isCurrentDay();
+        $isToday = (new Carbon($connectionDate))->timezone('Australia/Victoria')->isToday();
 
         if (!$isToday) return false;
 
         try {
-            return match(self::MAP_STATE[$state]) {
-                'VIC',
-                'NSW',
-                'QLD',
-                'SA' => !($currentTime >= self::MAP_STATE_TIME[$state]),
-                'ACT' => !self::MAP_STATE[$state] == 'ACT',
-                default => true,
-            };
+            return $currentTime->gt($this->stateTime($state));
         } catch (\Exception $exception) {
             \Log::error($exception->getMessage());
             \Log::error($exception->getTraceAsString());
         }
-        return true;
+
     }
 
     private function validateGas(ConnectionApplication $application) {
@@ -157,7 +149,7 @@ class SameDayConnectionService
         $businessDays = self::MAP_GAS_BUSINESS_DAYS[$state];
         if ($currentDate->isToday() && intval($currentDate->format('H')) >= 12){
             $businessDays += 1;
-        } 
+        }
 
         for($i=0; $i<$businessDays; $i++){
             $availableDate->addDay();
