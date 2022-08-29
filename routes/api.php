@@ -326,7 +326,7 @@ Route::get("/karan/sales-status", function () {
 });
 
 
-Route::get('/applications/{applicationId}/same-day-connection', [PowerShopController::class, 'sameDayConnectionValidate']);
+Route::get('/applications/{applicationId}/{submitType}/same-day-connection', [PowerShopController::class, 'sameDayConnectionValidate']);
 
 // Route::get('report_corporate', function () {
 //     $data = ['image' => ''];
