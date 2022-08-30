@@ -182,9 +182,10 @@
             <v-card>
                 <PowershopPlanDetails
                     @toggleDialog="togglePowerShopPlanDetails"
-                    :serviceType="isBothEnergySubmit ? 'energy' : 'gas'"
+                    :serviceType=" 'gas'"
                     :leadSummary="leadSummary"
-                    :planDetails="activePowerShopPlan"
+                    :planDetails="powershopPlan"
+                    :plan="activePowerShopPlan"
                 />
             </v-card>
         </v-dialog>
@@ -257,7 +258,8 @@ export default {
             powershopPlans: [],
             powerShopPlanDetails: false,
             planDetails: null,
-            activePowerShopPlan: null
+            activePowerShopPlan: null,
+            powershopPlan: null,
         };
     },
     computed: {
@@ -567,9 +569,9 @@ export default {
                 state: this.state,
             }
             this.powerShoplandata = await PowershopService.getPowerShopData(query);
+            this.powershopPlan = this.powerShoplandata;
             this.powershopPlans = this.powerShoplandata.plans.gas
 
-            console.log('power shop gas plan', this.powershopPlans);
 
             if (!isNull(this.powerShoplandata)) {
                 this.loadPowerShopDetails = true;

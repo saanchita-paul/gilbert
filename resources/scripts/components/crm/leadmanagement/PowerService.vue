@@ -186,7 +186,9 @@
                     @toggleDialog="togglePowerShopPlanDetails"
                     :serviceType="isBothEnergySubmit ? 'energy' : 'power'"
                     :leadSummary="leadSummary"
-                    :planDetails="activePowerShopPlan"
+                    :planDetails="powershopPlan"
+                    :plan="activePowerShopPlan"
+
                 />
             </v-card>
         </v-dialog>
@@ -262,6 +264,7 @@ export default {
             loadPowerShopDetails: false,
             planDetails: null,
             activePowerShopPlan: null,
+            powershopPlan: null,
         };
     },
     computed: {
@@ -372,6 +375,12 @@ export default {
         // this.fetchOriginPlans();
         this.loadSelectedProviderAndPlan();
         this.fetchPowershopPlans();
+
+        console.log('selected provider', this.selectedProvider);
+
+        if(this.selectedProvider === 'powershop') {
+            this.getPowershopData();
+        }
 
 
         // On address change refetch Sumo Plan Details
@@ -579,14 +588,14 @@ export default {
         async getPowershopData() {
             let query = {
                 postcode: this.leadSummary?.postcode,
-                service_type: 'electricity',
+                service_type: this.isBothEnergySubmit ? "energy" : "energy",
                 nmi: this.leadSummary?.nmi,
                 state: this.state,
             }
             this.powerShoplandata = await PowershopService.getPowerShopData(query);
+            this.powershopPlan = this.powerShoplandata;
             this.powershopPlans = this.powerShoplandata.plans.electricity;
 
-            console.log('power shop eletricity plan', this.powershopPlans);
             if (!isNull(this.powerShoplandata)) {
                 this.loadPowerShopDetails = true;
             }

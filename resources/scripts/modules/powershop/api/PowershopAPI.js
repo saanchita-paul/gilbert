@@ -13,6 +13,9 @@ export default {
 
             const data = (await axios.get(`https://demo.chatbot.hood.ai/hood-dashboard/api/power-shop-plan-details`, { params: query })).data.data;
             const plan = await PowershopMapper.mapPowershopData(data);
+
+            console.log('plan details',  plan);
+
            return plan;
 
         } catch (error) {

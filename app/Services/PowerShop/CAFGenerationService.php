@@ -79,6 +79,7 @@ class CAFGenerationService
     public function mapApplications()
     {
 
+        $selectedId = [];
         foreach ($this->applicationList as $app) {
 
             try{
@@ -145,7 +146,7 @@ class CAFGenerationService
 
             } catch (\Exception $exception) {
                 Log::error($exception->getMessage());
-                info('Data file to export due to', $exception->getMessage());
+                info('Data file to export due to', [$exception->getMessage()]);
 
             }
 
@@ -202,7 +203,7 @@ class CAFGenerationService
     private function getLifeSensitive($app): string
     {
         if ($app->is_gas_life_support == 1 && $app->is_power_life_support == 1){
-        return 'Life support elec and gas';
+            return 'Life support elec and gas';
         }
         elseif ($app->is_power_life_support == 1){
             return 'Life support elec';
@@ -265,7 +266,7 @@ class CAFGenerationService
      */
     private function getIDNumber($app): mixed
     {
-        return $app->identification->card_number;
+        return $app->identification?->card_number;
     }
 
     /**
@@ -274,7 +275,7 @@ class CAFGenerationService
      */
     private function getExpiryDate($app)
     {
-        return date('d-M', strtotime($app->identification->expire_date));
+        return date('d-M', strtotime($app->identification?->expire_date));
     }
 
     /**
@@ -283,7 +284,7 @@ class CAFGenerationService
      */
     private function getIDType($app): ?string
     {
-        return match($app->identification->type) {
+        return match($app->identification?->type) {
             1 => 'passport',
             2 => 'driving licence',
             3 => 'medicare',
@@ -297,7 +298,7 @@ class CAFGenerationService
      */
     private function getSecondTitle($app): mixed
     {
-       return $app->authorizedPerson?->title;
+        return $app->authorizedPerson?->title;
     }
 
     /**
@@ -401,7 +402,7 @@ class CAFGenerationService
                 $this->mapPromotionCode(json_decode($response->body(), true));
             }
         } catch (\Exception $e) {
-            Log::warning('No promotion code is found');
+            Log::warning('No promotion code is found'.$e->getMessage());
         }
     }
 
@@ -410,11 +411,19 @@ class CAFGenerationService
      */
     private function mapPromotionCode(?array $promotionData): void
     {
+
+
         foreach ($promotionData as $data)
         {
-            $this->gasPromotionData[$data->state] = $data->gas_promo_code;
-            $this->elePromotionData[$data->state] = $data->elec_promo_code;
+
+            foreach ($data as $data1) {
+
+                $this->gasPromotionData[$data1['state']] = $data1['gas_promo_code'];
+                $this->gasPromotionData[$data1['state']] = $data1['elec_promo_code'];
+            }
         }
+
+        info('data',   $this->gasPromotionData);
     }
 
     /**
@@ -424,11 +433,25 @@ class CAFGenerationService
      */
     private function getPromo($state, string $service) : null| string
     {
+
+        $state = $this->stateMap($state);
         return match($service) {
             ConnectionService::TYPE_GAS => $this->gasPromotionData[$state] ?? '' ,
             ConnectionService::TYPE_ELECTRICITY => $this->elePromotionData[$state] ?? '' ,
             default => ''
         };
+    }
+
+    private function stateMap($state)
+    {
+        $stateList = ['New South Wales'=>'NSW','Victoria'=>'VIC','Queensland'=>'QLD',
+            'South Australia'=>'SA','Northern Territory'=>'NT','TAS'=>'Tasmania','ACT'=>'Australian Capital Territory','WA' => 'Western Australia'];
+        if(array_key_exists($state, $stateList))
+        {
+            return $stateList[$state];
+        }
+        return $state;
+
     }
 
 }

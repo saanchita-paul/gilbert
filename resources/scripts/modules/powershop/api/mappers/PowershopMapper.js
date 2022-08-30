@@ -30,7 +30,7 @@ const mapElectricityPlan = (electricity) => {
            solar_buy_pack_value: electricity?.solar_buy_pack_value,
            offers: mapElectricityOffer(vdo, electricity?.distributor_name),
            bpid_links: mapBPIDLinks(electricity?.bpid_links),
-           name: vdo.marketing_offer_name,
+           name: vdo.name,
            title: vdo.marketing_offer_name,
         }
     });
@@ -87,7 +87,7 @@ const mapGasPlan = (gas) => {
             supply_charge: gas?.daily_charge,
             usage_charge: gas?.anytime_charge,
             bpid_links: mapBPIDLinks(gas?.bpid_links),
-            name: vdo.marketing_offer_name,
+            name: vdo.name,
             title: vdo.marketing_offer_name,
         }
     });

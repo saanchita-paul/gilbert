@@ -13,16 +13,15 @@
                         <h3>Powershop</h3>
                     </div>
                     <div>
-                        <h2>{{planDetails.title}}</h2>
-<!--                        <h2>{{'Plan Title'}}</h2>-->
+                        <h2>{{plan.title}}</h2>
                         <p>{{ getServiceText }}</p>
                     </div>
                 </div>
 
-                <ElectricityPlan v-if="willShowElectricity" :plan="planDetails"
+                <ElectricityPlan v-if="willShowElectricity" :plan="electricityPlan"
                                  :victoriaState="isVictoria"></ElectricityPlan>
 
-                <GasPlan v-if="willShowGas" :plan="planDetails"></GasPlan>
+                <GasPlan v-if="willShowGas" :plan="gasPlan"></GasPlan>
 
                 <div class="plan-details">
                     <v-card>
@@ -154,7 +153,10 @@ export default {
         },
         planDetails: {
             require: true
-        }
+        },
+      plan: {
+        require: true
+      }
     },
     data() {
         return {
@@ -169,23 +171,38 @@ export default {
         isBothEnergySubmit() {
             return UtilityStoreService.getIsBothEnergySelected() || this.serviceType === 'energy';
         },
-        willShowElectricity() {
-            return this.planDetails && this.serviceType === "power";
+
+        electricityPlan() {
+          const p =  this.planDetails.plans?.electricity?.find(dt=> dt?.name === this.plan.name);
+          console.log('power shop electricity plan', p,  this.planDetails.plans?.electricity, this.plan?.name );
+          return p;
         },
+      gasPlan() {
+        const p =  this.planDetails?.plans?.gas?.find(dt=> dt?.name === this.plan.name);
+        console.log('power shop gas plan', p, this.planDetails?.plans?.gas);
+        return p;
+      },
+
+      willShowElectricity() {
+          console.log(' this.serviceType', this.serviceType);
+        return this.planDetails.plans?.electricity && (this.serviceType === "power" || this.serviceType === "energy");
+      },
+
         willShowGas() {
-            return this.planDetails && (this.serviceType === "gas");
+            console.log(' will show gas', this.serviceType,  this.planDetails?.plans?.gas);
+            return this.planDetails?.plans?.gas && (this.serviceType === "gas" || this.serviceType === "energy");
         },
         isVictoria() {
             return this.leadSummary.state === 'Victoria';
         },
         electricityBPIDLinksList() {
-            return this.planDetails?.bpid_links;
+            return this.electricityPlan?.bpid_links;
         },
         gasBPIDLinksList() {
-            return this.planDetails.bpid_links;
+            return this.gasPlan?.bpid_links;
         },
         getSolarFeedInTariff() {
-            return this.planDetails.solar_buy_pack_value ?? "";
+            return this.electricityPlan?.solar_buy_pack_value ?? "";
         },
         state() {
             switch(this.leadSummary.state) {
@@ -214,7 +231,7 @@ export default {
         },
     },
     mounted() {
-        this.getPowershopData();
+        // this.getPowershopData();
     },
     methods: {
         async getPowershopData() {

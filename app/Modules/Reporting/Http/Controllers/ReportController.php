@@ -15,6 +15,7 @@ class ReportController extends Controller
 {
     public function home(Request $request)
     {
+        info('report data', $request->toArray());
         $dateType = $request->get('dateType') ?? 'submitted_date';
         $energy =  (new EnergyReport(
             $dateType,
