@@ -355,7 +355,7 @@ class CAFGenerationService
     private function getHazard($is_any_unrestrained_animal, $is_renovation_on): string
     {
         $hasrestineAnymal = false;
-        $hazard = [];
+        $hazard = '';
         if( !is_null($is_any_unrestrained_animal) && !empty(trim($is_any_unrestrained_animal)) ) {
             $hazard =  'Animal on property';
             $hasrestineAnymal = true;
@@ -395,7 +395,7 @@ class CAFGenerationService
         try {
             $chatbotUri = 'https://demo.chatbot.hood.ai/';
 //            $chatbotUri = config('bot.root_url');
-            $url = $chatbotUri.'api/hood-dashboard/power-shop/promo-code';
+            $url = $chatbotUri.'hood-dashboard/api/power-shop/promo-code';
             $response = Http::get($url);
             if($response->status() == 200) {
                 $this->mapPromotionCode(json_decode($response->body(), true));
