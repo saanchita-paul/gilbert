@@ -426,10 +426,10 @@
                                 ></v-text-field>
                             </div>
                         </div>
-                        <h4>Estimated Billing (Power)</h4>
+
                         <div class="crm-text-field">
                             <div class="field-label">
-                                <span>Cost</span>
+                                <span>Quarterly Cost (Power)</span>
                             </div>
                             <div class="text-field">
                                 <v-text-field
@@ -441,25 +441,10 @@
                                 ></v-text-field>
                             </div>
                         </div>
-                        <div class="crm-text-field">
-                            <div class="field-label">
-                                <span>Period</span>
-                            </div>
-                            <div class="text-field">
-                                <v-text-field
-                                    readonly
-                                    outlined
-                                    dense
-                                    hide-details="auto"
-                                    value='Quarterly'
-                                ></v-text-field>
-                            </div>
-                        </div>
 
-                        <h4>Estimated Billing (Gas)</h4>
                         <div class="crm-text-field">
                             <div class="field-label">
-                                <span>Cost</span>
+                                <span>Quarterly Cost (Gas)</span>
                             </div>
                             <div class="text-field">
                                 <v-text-field
@@ -468,20 +453,6 @@
                                     dense
                                     hide-details="auto"
                                     :value=getGasCost
-                                ></v-text-field>
-                            </div>
-                        </div>
-                        <div class="crm-text-field" >
-                            <div class="field-label">
-                                <span>Period</span>
-                            </div>
-                            <div class="text-field">
-                                <v-text-field
-                                    readonly
-                                    outlined
-                                    dense
-                                    hide-details="auto"
-                                    value='Quarterly'
                                 ></v-text-field>
                             </div>
                         </div>
@@ -944,14 +915,6 @@ export default {
             return this.data.selectedProvider === 'ea'
                && (this.data.is_gas_life_support || this.data.is_power_life_support);
         },
-        // getPowerPeriod() {
-        //     return this.paymentInformation?.powershop_payment_info?.estimated_elec_billing_period?.charAt(0).toUpperCase()
-        //         + this.paymentInformation?.powershop_payment_info?.estimated_elec_billing_period?.slice(1);
-        // },
-        // getGasPeriod() {
-        //     return this.paymentInformation?.powershop_payment_info?.estimated_gas_billing_period?.charAt(0).toUpperCase()
-        //         + this.paymentInformation?.powershop_payment_info?.estimated_gas_billing_period?.slice(1);
-        // },
         getPowerCost() {
             return this.paymentInformation?.powershop_payment_info?.estimated_elec_billing_cost
                 ? this.paymentInformation?.powershop_payment_info?.estimated_elec_billing_cost
@@ -1028,7 +991,6 @@ export default {
         async checkSameDayValidation() {
             if (this.data.selectedProvider === 'powershop') {
                 this.sameDayConnectionData = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.leadId, this.submitType)).data;
-                console.log('Same Day API: ', this.sameDayConnectionData);
             }
         }
 
