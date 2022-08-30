@@ -20,14 +20,13 @@ class PaymentInfoController extends Controller
      * @param Request $request
      *
      * @return JsonResponse|Redirector
-     * @throws GuzzleException
      */
     public function inviteCustomer(Request $request): JsonResponse|Redirector
     {
         $service = new PaymentInfoService($request->get('app_id'));
         try {
-            $service->inviteCustomer();
-            return response()->json(['ok']);
+            $info = $service->inviteCustomer();
+            return response()->json(['data' => $info]);
         } catch (Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
