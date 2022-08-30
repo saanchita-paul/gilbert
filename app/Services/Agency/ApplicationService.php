@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use TSA\Services\TsaSendAppliationService;
 use Illuminate\Support\Str;
-
+use Carbon\Carbon;
 
 class ApplicationService
 {
@@ -425,6 +425,20 @@ class ApplicationService
             } else {
                 $application['email_manually_verified_by'] =  null;
             }
+        }
+
+        foreach ([
+            'is_gas_life_support' => 'gas_life_support_accepted_at', 
+            'is_power_life_support' => 'power_life_support_accepted_at']
+            as $key => $val){
+            
+                if (isset($application[$key])) {
+                    if ($application[$key] === true) {
+                        $application[$val] = Carbon::now();
+                    } else {
+                        $application[$val] = null;
+                    }
+                }
         }
 
         if ($isIdentification) {
