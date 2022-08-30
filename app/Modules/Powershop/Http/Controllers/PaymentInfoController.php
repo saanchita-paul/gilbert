@@ -34,14 +34,14 @@ class PaymentInfoController extends Controller
 
     /**
      * @param Request $request
-     *
+     * @param int $applicationId
      * @return JsonResponse
      */
-    public function updatePaymentInfo(Request $request): JsonResponse
+    public function updatePaymentInfo(Request $request, int $applicationId): JsonResponse
     {
-        $service = new PaymentInfoService($request->get('app_id'));
+        $service = new PaymentInfoService($applicationId);
         try {
-            return response()->json(['data' => $service->update([])]);
+            return response()->json(['data' => $service->update($request->toArray())]);
         } catch (Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

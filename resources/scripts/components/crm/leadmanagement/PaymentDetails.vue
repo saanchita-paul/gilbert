@@ -46,8 +46,8 @@
                         v-slot="{ errors }"
                     >
                         <v-text-field
-                            v-model="estimated_billing_power.cost"
-                            @blur="savePaymentInfo('estimated_elec_billing_cost', estimated_billing_power.cost)"
+                            v-model="powerCost"
+                            @blur="savePaymentInfo('estimated_elec_billing_cost', powerCost)"
                             outlined
                             dense
                             hide-details="auto"
@@ -69,8 +69,8 @@
                         v-slot="{ errors }"
                     >
                         <v-text-field
-                            v-model="estimated_billing_gas.cost"
-                            @blur="savePaymentInfo('estimated_gas_billing_cost', estimated_billing_gas.cost)"
+                            v-model="gasCost"
+                            @blur="savePaymentInfo('estimated_gas_billing_cost', gasCost)"
                             outlined
                             dense
                             hide-details="auto"
@@ -88,6 +88,7 @@
 
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import {powerShopPaymentStatusNumberToName} from "@scripts/data/PowershopDataMapper";
+import PowershopService from "@scripts/modules/powershop/services/PowershopService";
 
 export default {
     name: "PaymentDetails",
@@ -112,17 +113,9 @@ export default {
                     icon: "mdi-email"
                 },
             ],
-            estimated_billing_power: {
-                cost: "",
-                period: ""
-            },
-            estimated_billing_gas: {
-                cost: "",
-                period: ""
-            },
             paymentStatus: null,
-            powerCost: 0,
-            gasCost: 0
+            powerCost: null,
+            gasCost: null
         }
     },
     computed: {
@@ -131,22 +124,15 @@ export default {
         },
     },
     methods: {
-        savePaymentInfo(field, value) {
-            // this.$emit("updateDraft", field, value);
-            console.log(field, value);
+        async savePaymentInfo(field, value) {
+            await PowershopService.updatePaymentInformation(field, value, this.lead.id);
         },
         synFormData() {
-            this.estimated_billing_power.cost = this.lead?.powershop_payment_info?.estimated_elec_billing_cost;
-            this.estimated_billing_power.period = this.lead?.powershop_payment_info?.estimated_elec_billing_period;
-            this.estimated_billing_gas.cost = this.lead?.powershop_payment_info?.estimated_gas_billing_cost;
-            this.estimated_billing_gas.period = this.lead?.powershop_payment_info?.estimated_gas_billing_period;
+            this.powerCost = this.lead?.powershop_payment_info?.estimated_elec_billing_cost;
+            this.gasCost = this.lead?.powershop_payment_info?.estimated_gas_billing_cost;
         },
         isDisable() {
-            if (this.lead.powershop_payment_status === "Valid") {
-                return true;
-            } else {
-                return false;
-            }
+            return this.lead.powershop_payment_status === "Valid";
         },
         async sendPaymentLink(linkType) {
             const response = await LeadApplicationService.sendPowershopPaymentLink(this.lead.id, linkType);
