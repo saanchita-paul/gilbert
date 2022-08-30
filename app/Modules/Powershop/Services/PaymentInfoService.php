@@ -6,6 +6,8 @@ use App\Models\ConnectionApplication;
 use App\Models\PowershopPaymentInfo;
 use App\Services\PowerShop\PxPayService;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Powershop\Notifications\PxPaymentInviteNotification;
 
@@ -25,7 +27,7 @@ class PaymentInfoService
 
     }
 
-    public function update(array $data): void
+    public function update(array $data)
     {
         if ($this->paymentInfo) {
             $this->paymentInfo->update($data);
@@ -38,6 +40,8 @@ class PaymentInfoService
             $this->paymentInfo->fill(array_merge(['connection_application_id' => $this->appId], $data));
             $this->paymentInfo->save();
         }
+
+        return $this->paymentInfo;
     }
 
 
@@ -77,9 +81,9 @@ class PaymentInfoService
 
 
     /**
-     * @return void
+     * @return Builder|Model|object
      */
-    public function inviteCustomer(): void
+    public function inviteCustomer()
     {
         $this->updateInfoForInvite();
 
@@ -89,5 +93,7 @@ class PaymentInfoService
             $this->paymentInfo->customer_full_name,
             $url
         ));
+
+        return $this->paymentInfo;
     }
 }
