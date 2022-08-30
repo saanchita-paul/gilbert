@@ -107,7 +107,7 @@ class SubmittedLeadNote
         $planDetails = $powershopPlanService->getPlanDetails(); // todo
         $this->leadDetailsJson = $this->prepareLeadData($plan_type, $postCode, $state, $submittedService, 'Powershop');
         $note = [
-            'type' => ApplicationNote::SUBMITTED_CONNECTION,
+            'type' => ApplicationNote::SUBMITTED_POWERSHOP,
             'connection_details' => $this->leadDetailsJson,
             // 'plan_details' => $planDetails
         ];
