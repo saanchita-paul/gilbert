@@ -921,7 +921,7 @@ export default {
     },
     computed: {
         allOk() {
-           return this.is_temp_condition  && this.is_life_support && !this.isLifeSupportAndEA && !this.isPowerShopOk;
+           return this.is_temp_condition  && this.is_life_support && !this.isLifeSupportAndEA && this.isPowerShopOk;
         },
         selectedPowerPlan() {
             return LeadApplicationService.mapPlan(this.data.selectedPowerPlan);
@@ -971,13 +971,11 @@ export default {
             return this.data.selectedProvider === 'powershop';
         },
         showElectricityPowerShopNote() {
-            return this.sameDayConnectionData?.electricityOk
-                && this.submitType === 'power'
+            return !this.sameDayConnectionData?.electricityOk
                 && this.data.state !== "Australian Capital Territory";
         },
         showElectricityACTPowerShopNote() {
-            return this.sameDayConnectionData?.electricityOk
-                && this.submitType === 'power'
+            return !this.sameDayConnectionData?.electricityOk
                 && this.data.state === "Australian Capital Territory";
         },
         showGasPowerShopNote() {

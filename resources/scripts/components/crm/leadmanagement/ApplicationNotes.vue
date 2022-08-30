@@ -34,6 +34,7 @@
                                 <v-timeline-item color="primary" small v-for="nt in notes" :color="getColor(nt.active)" :key="nt.id">
                                     <SubmittedNote v-if="nt.type == 'submitted_connection'" :note="nt"> </SubmittedNote>
                                     <SubmittedOriginNote v-if="nt.type == 'submitted_origin'" :note="nt"> </SubmittedOriginNote>
+                                    <SubmittedPowershopNote v-if="nt.type == 'submitted_powershop'" :note="nt"> </SubmittedPowershopNote>
                                     <InvalidNote v-else-if="nt.type == 'invalid_property_me_note'" :note="nt"> </InvalidNote>
                                     <Note v-else :note="nt"></Note>
                                 </v-timeline-item>
@@ -63,10 +64,11 @@ import Note from "@scripts/components/crm/leadmanagement/notes/Note";
 import InvalidNote from "@scripts/components/crm/leadmanagement/notes/InvalidNote";
 import SubmittedNote from "@scripts/components/crm/leadmanagement/notes/SubmittedNote";
 import SubmittedOriginNote from "@scripts/components/crm/leadmanagement/notes/SubmittedOriginNote";
+import SubmittedPowershopNote from "@scripts/components/crm/leadmanagement/notes/SubmittedPowershopNote";
 
 export default {
   name: "ApplicationNotes",
-    components: {SubmittedNote, Note, InvalidNote, SubmittedOriginNote},
+    components: {SubmittedNote, Note, InvalidNote, SubmittedOriginNote, SubmittedPowershopNote},
     props: {
       notes: {
           require: true

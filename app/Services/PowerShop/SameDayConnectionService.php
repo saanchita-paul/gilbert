@@ -34,11 +34,10 @@ class SameDayConnectionService
     private function stateTime($state)
     {
         return match ($state) {
-            self::MAP_STATE_NSW,
-            self::MAP_STATE_SA => today(self::VIC_TIME_ZONE)->addHours(13),
-            self::MAP_STATE_VIC => today(self::VIC_TIME_ZONE)->addHours(15),
-            self::MAP_STATE_QLD => today(self::VIC_TIME_ZONE)->addHours(10),
-            self::MAP_STATE_ACT => today(self::VIC_TIME_ZONE)
+            self::MAP_STATE_NSW => today(self::MAP_STATE_TIMEZONE[$state])->addHours(13),
+            self::MAP_STATE_SA => today(self::MAP_STATE_TIMEZONE[$state])->addHours(13),
+            self::MAP_STATE_VIC => today(self::MAP_STATE_TIMEZONE[$state])->addHours(15),
+            self::MAP_STATE_QLD => today(self::MAP_STATE_TIMEZONE[$state])->addHours(10)
         };
     }
     const MAP_STATE_TIMEZONE = [
@@ -99,15 +98,19 @@ class SameDayConnectionService
 
     private function validateElectricity($application)
     {
-        $currentTime = Carbon::now(TimeZoneService::getTimeZoneInt(self::VIC_TIME_ZONE));
-        $connectionDate = $application->moving_date;
+        // return true if validation pass
+        // return false if validation fails 
         $state = $application->state;
-        $isToday = (new Carbon($connectionDate))->timezone(self::VIC_TIME_ZONE)->isToday();
+        $connectionDate = $application->moving_date;
+        $currentTime = Carbon::now(TimeZoneService::getTimeZoneInt(self::MAP_STATE_TIMEZONE[$state]));
+        $isToday = (new Carbon($connectionDate))->timezone(self::MAP_STATE_TIMEZONE[$state])->isToday();
 
-        if (!$isToday) return false;
+        if ($state == self::MAP_STATE_ACT) return false;
+
+        if (!$isToday) return true;
 
         try {
-            return $currentTime->gt($this->stateTime($state));
+            return $currentTime->lt($this->stateTime($state));
         } catch (\Exception $exception) {
             \Log::error($exception->getMessage());
             \Log::error($exception->getTraceAsString());
@@ -127,7 +130,7 @@ class SameDayConnectionService
         
         if ($submitType == ConnectionService::TYPE_GAS){
             $result['isInvalid'] = true;
-            $result['invalidNote'] = 'Powershop does not allow gas connection only';
+            $result['invalidNote'] = 'Powershop does not accept gas only submissions. Please select a different retailer';
             return $result;
         }
 
