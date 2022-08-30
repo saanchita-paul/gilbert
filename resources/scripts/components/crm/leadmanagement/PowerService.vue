@@ -186,7 +186,7 @@
                     @toggleDialog="togglePowerShopPlanDetails"
                     :serviceType="isBothEnergySubmit ? 'energy' : 'power'"
                     :leadSummary="leadSummary"
-                    :planDetails="powerShoplandata"
+                    :planDetails="activePowerShopPlan"
                 />
             </v-card>
         </v-dialog>
@@ -260,10 +260,15 @@ export default {
             powerShopPlanDetails: false,
             powerShoplandata: null,
             loadPowerShopDetails: false,
-            planDetails: null
+            planDetails: null,
+            activePowerShopPlan: null,
         };
     },
     computed: {
+
+        activeServiceType() {
+            return LeadApplicationService.getActiveServiceTab()
+        },
         providers() {
             return ServiceProvideres.filter(dt => {
                 return dt.service_type === "energy";
@@ -385,6 +390,11 @@ export default {
         getNMIPrefix() {
             this.getOriginData()
         },
+        activeServiceType() {
+            if(this.selectedProvider === 'powershop') {
+                this.getPowershopData();
+            }
+        }
     },
     methods: {
         loadSelectedProviderAndPlan() {
@@ -557,30 +567,30 @@ export default {
             this.powershopPlans = powershopProvider.plans.filter(plan => {
                 return plan.type === 'power';
             });
-            console.log("powershopPlans ->", this.powershopPlans);
         },
-        togglePowerShopPlanDetails() {
+        togglePowerShopPlanDetails(plan) {
             this.powerShopPlanDetails = !this.powerShopPlanDetails;
+            this.activePowerShopPlan = plan;
         },
         async updateDraft(field, value) {
             await LeadApplicationService.savePaymentField(field, value, this.leadSummary.id);
         },
+
         async getPowershopData() {
-
-            console.log('selected power shop plan', this.powerShoplandata);
-
             let query = {
                 postcode: this.leadSummary?.postcode,
-                service_type: this.isBothEnergySubmit ? 'energy' : 'power',
+                service_type: 'electricity',
                 nmi: this.leadSummary?.nmi,
+                state: this.state,
             }
             this.powerShoplandata = await PowershopService.getPowerShopData(query);
+            this.powershopPlans = this.powerShoplandata.plans.electricity;
+
+            console.log('power shop eletricity plan', this.powershopPlans);
             if (!isNull(this.powerShoplandata)) {
                 this.loadPowerShopDetails = true;
             }
 
-
-            console.log('selected power shop plan', this.powerShoplandata);
         },
 
         async getOriginData() {

@@ -968,7 +968,7 @@ export default {
                 : 'Pending';
         },
         showPowerShopNoteSection () {
-            return this.data.selectedProvider === 'powershop';
+            return this.data.selectedProvider === 'powershop' && !this.isPowerShopOk;
         },
         showElectricityPowerShopNote() {
             return !this.sameDayConnectionData?.electricityOk
