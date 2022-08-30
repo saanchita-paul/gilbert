@@ -281,7 +281,7 @@ class SignUpService
         
         if ($this->application->is_gas_life_support || $this->application->is_power_life_support) {
             $data['dependency_type'] = 'Life support';
-            $data['medical_details_disclaimer_accepted_at'] = $this->getFormattedDate(Carbon::now()->format('Y-m-d H:i:s')); // TODO: get timestamp
+            $data['medical_details_disclaimer_accepted_at'] = $this->getFormattedDate(Carbon::parse($this->application->life_support_accepted_at)->format('Y-m-d H:i:s')); // TODO: get timestamp
 
             if ($this->application->is_gas_life_support && $this->application->is_power_life_support)
             {

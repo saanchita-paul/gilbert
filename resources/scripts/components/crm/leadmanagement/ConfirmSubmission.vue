@@ -931,7 +931,12 @@ export default {
                 : 'Pending';
         },
         showPowerShopNoteSection () {
-            return this.data.selectedProvider === 'powershop' && !this.isPowerShopOk;
+            return this.data.selectedProvider === 'powershop' 
+                && (
+                    !this.showElectricityPowerShopNote
+                    || !this.showElectricityACTPowerShopNote
+                    || !this.showGasPowerShopNote
+                );
         },
         showElectricityPowerShopNote() {
             return !this.sameDayConnectionData?.electricityOk
