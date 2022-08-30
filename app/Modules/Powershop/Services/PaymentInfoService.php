@@ -13,6 +13,9 @@ use Powershop\Notifications\PxPaymentInviteNotification;
 
 class PaymentInfoService
 {
+    /**
+     * @var PowershopPaymentInfo
+     */
     private $paymentInfo;
 
     public function __construct(public int $appId)
@@ -81,18 +84,21 @@ class PaymentInfoService
 
 
     /**
-     * @return Builder|Model|object
+     * @param string $channel
+     * @return PowershopPaymentInfo
      */
-    public function inviteCustomer()
+    public function inviteCustomer(string $channel): PowershopPaymentInfo
     {
         $this->updateInfoForInvite();
 
         $url = config('app.url') . '/powershop/payment/accept-invite/' . $this->paymentInfo->px_txn_id;
 
-        \Notification::route('mail', $this->paymentInfo->customer_email)->notify(new PxPaymentInviteNotification(
+        $this->paymentInfo->notify(new PxPaymentInviteNotification(
             $this->paymentInfo->customer_full_name,
-            $url
+            $url,
+            strtolower($channel)
         ));
+
 
         return $this->paymentInfo;
     }

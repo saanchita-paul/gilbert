@@ -25,7 +25,7 @@ class PaymentInfoController extends Controller
     {
         $service = new PaymentInfoService($request->get('app_id'));
         try {
-            $info = $service->inviteCustomer();
+            $info = $service->inviteCustomer($request->get('link_type'));
             return response()->json(['data' => $info]);
         } catch (Exception $exception) {
             return $this->sendErrorResponse($exception);
