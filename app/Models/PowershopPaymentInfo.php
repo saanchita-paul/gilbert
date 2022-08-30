@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Notifications\Notifiable;
 
 class PowershopPaymentInfo extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     const STATUS_PENDING = 1;
     const STATUS_VERIFIED = 2;
@@ -60,13 +61,13 @@ class PowershopPaymentInfo extends Model
         'px_redirect_url',
         'px_recurring_mode',
         'px_callback_result',
-        'px_response_text',
+//        'px_response_text',
         'px_card_type',
         'px_card_number',
         'px_card_expire_date',
         'px_card_holder_name',
         'px_dps_billing_id',
-        'px_response_text_desc'
+//        'px_response_text_desc'
     ];
 
 
@@ -78,5 +79,11 @@ class PowershopPaymentInfo extends Model
     public function connecttion_application()
     {
         return $this->belongsTo(ConnectionApplication::class, 'connection_application_id');
+    }
+
+
+    public function routeNotificationFor($driver, $notification = null)
+    {
+        return $this->customer_email;
     }
 }
