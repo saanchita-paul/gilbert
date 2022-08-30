@@ -12,7 +12,7 @@
                     <ValidationProvider name="Payment Link" rules="required" v-slot="{ errors }">
                         <v-menu offset-y>
                             <template v-slot:activator="{ on, attrs }">
-                                <v-btn v-bind="attrs" v-on="on" :disabled="isDisable()">
+                                <v-btn v-bind="attrs"  text v-on="on" :disabled="isDisable()">
                                     Send  link to customer  <span class="mdi mdi-send"></span>
                                 </v-btn>
                             </template>
@@ -121,8 +121,8 @@ export default {
                     value: "bi-monthly",
                 },
                 {
-                    text: "Quartely",
-                    value: "quartely",
+                    text: "Quarterly",
+                    value: "Quarterly",
                 },
                 {
                     text: "Yearly",
@@ -139,8 +139,8 @@ export default {
                     value: "bi-monthly",
                 },
                 {
-                    text: "Quartely",
-                    value: "quartely",
+                    text: "Quarterly",
+                    value: "Quarterly",
                 },
                 {
                     text: "Yearly",
