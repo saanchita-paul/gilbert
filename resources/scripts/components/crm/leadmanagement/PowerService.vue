@@ -581,7 +581,7 @@ export default {
                 postcode: this.leadSummary?.postcode,
                 service_type: 'electricity',
                 nmi: this.leadSummary?.nmi,
-                state: this.leadSummary?.state,
+                state: this.state,
             }
             this.powerShoplandata = await PowershopService.getPowerShopData(query);
             this.powershopPlans = this.powerShoplandata.plans.electricity;
