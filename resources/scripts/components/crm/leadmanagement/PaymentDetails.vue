@@ -5,14 +5,14 @@
             <h4 class="py-4">Payment Details</h4>
             <div class="crm-text-field">
                 <div class="pr-4">
-                    <span>Payment Link: </span>
+                    <h4>Payment Link: </h4>
                 </div>
 
                 <div >
                     <ValidationProvider name="Payment Link" rules="required" v-slot="{ errors }">
                         <v-menu offset-y>
                             <template v-slot:activator="{ on, attrs }">
-                                <v-btn v-bind="attrs"  text v-on="on" :disabled="isDisable()">
+                                <v-btn class="button-border" v-bind="attrs"  text v-on="on" :disabled="isDisable()">
                                     Send  link to customer  <span class="mdi mdi-send"></span>
                                 </v-btn>
                             </template>
@@ -28,16 +28,16 @@
             </div>
 
             <div class="crm-text-field">
-                <span>Payment Status: </span> <span class="grey--text pl-2"> {{ lead.powershop_payment_status }} </span>
+                <h4>Payment Status: </h4> <span class="grey--text pl-2"> {{ getPaymentStatus }} </span>
             </div>
         </v-col>
 
         <v-col cols="6" >
-            <h2 class="pb-2">Estimated Billing</h2>
+            <h3 class="pb-2">Estimated Billing</h3>
             <p class="mt-4">Please input values from 1-900 in fields below.</p>
             <div class="crm-text-field">
                 <div class="pr-3">
-                    <h3>Quarterly Cost (Power) </h3>
+                    <h4>Quarterly Cost (Power) </h4>
                 </div>
                 <div class="text-field">
                     <ValidationProvider
@@ -46,8 +46,8 @@
                         v-slot="{ errors }"
                     >
                         <v-text-field
-                            v-model="estimated_billing_power.cost"
-                            @blur="saveDraft('estimated_elec_billing_cost', estimated_billing_power.cost)"
+                            v-model="powerCost"
+                            @blur="savePaymentInfo('estimated_elec_billing_cost', powerCost)"
                             outlined
                             dense
                             hide-details="auto"
@@ -60,7 +60,7 @@
 
             <div class="crm-text-field">
                 <div class="pr-3">
-                    <h3>Quarterly Cost (Gas)</h3>
+                    <h4>Quarterly Cost (Gas)</h4>
                 </div>
                 <div class="text-field">
                     <ValidationProvider
@@ -69,8 +69,8 @@
                         v-slot="{ errors }"
                     >
                         <v-text-field
-                            v-model="estimated_billing_gas.cost"
-                            @blur="saveDraft('estimated_gas_billing_cost', estimated_billing_gas.cost)"
+                            v-model="gasCost"
+                            @blur="savePaymentInfo('estimated_gas_billing_cost', gasCost)"
                             outlined
                             dense
                             hide-details="auto"
@@ -87,6 +87,8 @@
 <script>
 
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+import {powerShopPaymentStatusNumberToName} from "@scripts/data/PowershopDataMapper";
+import PowershopService from "@scripts/modules/powershop/services/PowershopService";
 
 export default {
     name: "PaymentDetails",
@@ -111,72 +113,30 @@ export default {
                     icon: "mdi-email"
                 },
             ],
-            gasPeriod: [
-                {
-                    text: "Monthly",
-                    value: "monthly",
-                },
-                {
-                    text: "Bi-Monthly",
-                    value: "bi-monthly",
-                },
-                {
-                    text: "Quarterly",
-                    value: "Quarterly",
-                },
-                {
-                    text: "Yearly",
-                    value: "yearly",
-                },
-            ],
-            powerPeriod: [
-                {
-                    text: "Monthly",
-                    value: "monthly",
-                },
-                {
-                    text: "Bi-Monthly",
-                    value: "bi-monthly",
-                },
-                {
-                    text: "Quarterly",
-                    value: "Quarterly",
-                },
-                {
-                    text: "Yearly",
-                    value: "yearly",
-                },
-            ],
-            estimated_billing_power: {
-                cost: "",
-                period: ""
-            },
-            estimated_billing_gas: {
-                cost: "",
-                period: ""
-            }
+            paymentStatus: null,
+            powerCost: null,
+            gasCost: null
         }
     },
+    computed: {
+        getPaymentStatus() {
+            return powerShopPaymentStatusNumberToName[this.paymentStatus] ?? this.lead.powershop_payment_status;
+        },
+    },
     methods: {
-        saveDraft(field, value) {
-            this.$emit("updateDraft", field, value);
+        async savePaymentInfo(field, value) {
+            await PowershopService.updatePaymentInformation(field, value, this.lead.id);
         },
         synFormData() {
-            this.estimated_billing_power.cost = this.lead?.powershop_payment_info?.estimated_elec_billing_cost;
-            this.estimated_billing_power.period = this.lead?.powershop_payment_info?.estimated_elec_billing_period;
-            this.estimated_billing_gas.cost = this.lead?.powershop_payment_info?.estimated_gas_billing_cost;
-            this.estimated_billing_gas.period = this.lead?.powershop_payment_info?.estimated_gas_billing_period;
+            this.powerCost = this.lead?.powershop_payment_info?.estimated_elec_billing_cost;
+            this.gasCost = this.lead?.powershop_payment_info?.estimated_gas_billing_cost;
         },
         isDisable() {
-            if (this.lead.powershop_payment_status === "Valid")
-            {
-                return true;
-            } else {
-                return false;
-            }
+            return this.lead.powershop_payment_status === "Valid";
         },
-        sendPaymentLink(linkType) {
-            LeadApplicationService.sendPowershopPaymentLink(this.lead.id, linkType);
+        async sendPaymentLink(linkType) {
+            const response = await LeadApplicationService.sendPowershopPaymentLink(this.lead.id, linkType);
+            this.paymentStatus = response.data?.status;
         }
 
     },
@@ -189,5 +149,7 @@ export default {
 </script>
 
 <style scoped>
-
+.button-border {
+    border: 1px solid #263238;
+}
 </style>

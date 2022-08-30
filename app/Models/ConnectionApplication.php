@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use OurProperty\Models\OurProperty;
 use phpDocumentor\Reflection\Utils;
 use PropertyMe\PropertyMeLead;
+use Carbon\Carbon;
 
 /**
  * App\Models\ConnectionApplication
@@ -229,7 +230,9 @@ class ConnectionApplication extends Model
         'duplication_group_id',
         'duplicated_address_group_id',
         'duplicated_email_group_id',
-        'app_close_reason_id'
+        'app_close_reason_id',
+        'power_life_support_accepted_at',
+        'gas_life_support_accepted_at'
     ];
 
 
@@ -638,5 +641,25 @@ class ConnectionApplication extends Model
 
         return $this->mirn ?? '';
 
+    }
+
+    public function getLifeSupportAcceptedAtAttribute(){
+        $power = $this->power_life_support_accepted_at;
+        $gas = $this->gas_life_support_accepted_at;
+
+        if (empty($gas) && empty($power)){
+            return '';
+        }
+        else if (empty($gas)){
+            return $power;
+        }
+        else if (empty($power)){
+            return $gas;
+        }
+        else {
+            $isPowerLater = Carbon::parse($power)->gt(Carbon::parse($gas));
+            if ($isPowerLater) return $power;
+            else return $gas;
+        }
     }
 }

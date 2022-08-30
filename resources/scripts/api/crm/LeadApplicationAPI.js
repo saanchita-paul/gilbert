@@ -1,7 +1,6 @@
 import AppMetricsMapper from "@scripts/api/mappers/crm/AppMetricsMapper";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
-import dayjs from "dayjs";
 import OfficeMapper from "@scripts/api/mappers/crm/OfficeMapper";
 import SecondaryContactMapper from "@scripts/api/mappers/crm/SecondaryContactMapper";
 
@@ -554,7 +553,12 @@ export default {
             "link_type": linkType,
             'app_id': leadId
         };
-        await axios.post('/api/powershop/payment/invite', payload);
+        try {
+            return (await axios.post('/api/powershop/payment/invite', payload)).data;
+        } catch (error) {
+            console.log('Error');
+            return error.data;
+        }
     },
     async isEmailManuallyVerified(id) {
         try {

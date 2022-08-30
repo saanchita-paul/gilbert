@@ -48,19 +48,28 @@ class PxPayController extends Controller
      */
     public function handleSuccess(Request $request)
     {
-        return "Yooo! You have successfully validate your card information!";
+        try {
+            $name = $this->pxPayService->handleSuccess($request->toArray());
+
+            return view('powershop.success', ['name' => $name]);
+        } catch (Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
     }
 
     /**
      * @param Request $request
      * @return string
      */
-    public function handleFailure(Request $request): JsonResponse
+    public function handleFailure(Request $request)
     {
         try {
-            $mgs = $this->pxPayService->handleFailed($request->toArray());
+            $info= $this->pxPayService->handleFailed($request->toArray());
 
-            return response()->json(['success' => false, 'mgs' => $mgs]);
+            return view('powershop.failed', [
+                'name' => $info->customer_full_name,
+                'reason' => $info->px_response_text_desc
+            ]);
         } catch (Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

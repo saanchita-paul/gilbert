@@ -165,9 +165,9 @@ class PxPayService
 
     /**
      * @param string $txnId
-     * @return Model|Builder
+     * @return PowershopPaymentInfo
      */
-    private function getPaymentInfo(string $txnId): Model|Builder
+    private function getPaymentInfo(string $txnId)
     {
         return PowershopPaymentInfo::query()->where(['px_txn_id' => $txnId])->firstOrFail();
     }
@@ -183,11 +183,25 @@ class PxPayService
         $paymentInfo->update($this->getPaymentDetails($key));
     }
 
+    /**
+     * @param array $response
+     * @return PowershopPaymentInfo
+     */
     public function handleFailed(array $response)
+    {
+        return $this->getPaymentInfo(data_get($response, 'txn_id'));
+    }
+
+    /**
+     * @param array $response
+     *
+     * @return string
+     */
+    public function handleSuccess(array $response)
     {
         $paymentInfo =  $this->getPaymentInfo(data_get($response, 'txn_id'));
 
-        return $paymentInfo->px_response_text_desc;
+        return $paymentInfo->customer_full_name;
     }
 
 }

@@ -6,11 +6,16 @@ use App\Models\ConnectionApplication;
 use App\Models\PowershopPaymentInfo;
 use App\Services\PowerShop\PxPayService;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Powershop\Notifications\PxPaymentInviteNotification;
 
 class PaymentInfoService
 {
+    /**
+     * @var PowershopPaymentInfo
+     */
     private $paymentInfo;
 
     public function __construct(public int $appId)
@@ -25,7 +30,7 @@ class PaymentInfoService
 
     }
 
-    public function update(array $data): void
+    public function update(array $data)
     {
         if ($this->paymentInfo) {
             $this->paymentInfo->update($data);
@@ -38,6 +43,8 @@ class PaymentInfoService
             $this->paymentInfo->fill(array_merge(['connection_application_id' => $this->appId], $data));
             $this->paymentInfo->save();
         }
+
+        return $this->paymentInfo;
     }
 
 
@@ -77,17 +84,22 @@ class PaymentInfoService
 
 
     /**
-     * @return void
+     * @param string $channel
+     * @return PowershopPaymentInfo
      */
-    public function inviteCustomer(): void
+    public function inviteCustomer(string $channel): PowershopPaymentInfo
     {
         $this->updateInfoForInvite();
 
         $url = config('app.url') . '/powershop/payment/accept-invite/' . $this->paymentInfo->px_txn_id;
 
-        \Notification::route('mail', $this->paymentInfo->customer_email)->notify(new PxPaymentInviteNotification(
+        $this->paymentInfo->notify(new PxPaymentInviteNotification(
             $this->paymentInfo->customer_full_name,
-            $url
+            $url,
+            strtolower($channel)
         ));
+
+
+        return $this->paymentInfo;
     }
 }

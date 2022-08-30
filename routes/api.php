@@ -271,6 +271,9 @@ Route::get('/powershop/generate-caf', [PowerShopController::class, 'generatePowe
 
 Route::post('/powershop/payment/invite', [PaymentInfoController::class, 'inviteCustomer']);
 
+// save payment info
+Route::post('/powershop/{applicationId}/payment', [PaymentInfoController::class, 'updatePaymentInfo']);
+
 /**
  * api's for email validation
  */

@@ -22,5 +22,17 @@ export default {
             console.log("PowerShop Plan Details Fetch Error", error);
             return null;
         }
-    }
+    },
+
+    updatePaymentInformation: async (field, value, applicationId) => {
+        const payload = {
+            [field]: value,
+        }
+
+        try {
+            return await axios.post(`/api/powershop/${applicationId}/payment`, payload);
+        } catch (error) {
+            console.log("Error!");
+        }
+    },
 };

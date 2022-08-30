@@ -3,6 +3,7 @@
 namespace Powershop\Notifications;
 
 use App\Models\ConnectionApplication;
+use App\Notifications\NotificationChannels\LogChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -19,7 +20,7 @@ class PxPaymentInviteNotification extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(private string $name, private string $url)
+    public function __construct(private string $name, private string $url, private string $channel)
     {
     }
 
@@ -31,23 +32,31 @@ class PxPaymentInviteNotification extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return  match ($this->channel) {
+            'email' => ['mail'],
+            'sms' =>  [LogChannel::class]
+        };
     }
 
     /**
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail($notifiable)
     {
         return (new MailMessage)
             ->subject("New Lead Submitted")
-            ->view('email.powershop.px_verification', [
+            ->view('powershop.email_px_invite', [
                 'paymentUrl' => $this->url,
                 'name' => $this->name
             ]);
+    }
+
+    public function toLog($notifiable)
+    {
+        return json_encode($notifiable);
     }
 
 

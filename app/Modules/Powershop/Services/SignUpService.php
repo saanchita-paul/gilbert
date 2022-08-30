@@ -281,7 +281,7 @@ class SignUpService
         
         if ($this->application->is_gas_life_support || $this->application->is_power_life_support) {
             $data['dependency_type'] = 'Life support';
-            $data['medical_details_disclaimer_accepted_at'] = $this->getFormattedDate(Carbon::now()->format('Y-m-d H:i:s')); // TODO: get timestamp
+            $data['medical_details_disclaimer_accepted_at'] = $this->getFormattedDate(Carbon::parse($this->application->life_support_accepted_at)->format('Y-m-d H:i:s')); // TODO: get timestamp
 
             if ($this->application->is_gas_life_support && $this->application->is_power_life_support)
             {
@@ -318,15 +318,17 @@ class SignUpService
 
     private function getPaymentDetails()
     {
-        // TODO
+        $paymentInfo = $this->application->powershopPaymentInfo;
+        if(!$paymentInfo || empty($paymentInfo->token))
+            throw new \Exception('Powershop payment info missing or no token/billing id');
         return [
             "card" => [
-                'card_type' => "mastercard",
-                'masked_card_number' => "xxxxxxxxxxxxx74",
-                'expiry_date' => "122022",
-                'cardholder_name' => "Messi",
-                'token' => substr(md5(Carbon::now()->format('Y-m-d H:i:s')), 12),
-                'terms_and_conditions_accepted_at' => Carbon::now()->format('Y-m-d'),
+                'card_type' => $paymentInfo->px_card_type,
+                'masked_card_number' => $paymentInfo->px_card_number,
+                'expiry_date' => Carbon::parse($paymentInfo->px_card_expire_date)->format('Y-m-d'),
+                'cardholder_name' => $paymentInfo->px_card_holder_name,
+                'token' => $paymentInfo->px_dps_billing_id,
+                'terms_and_conditions_accepted_at' => Carbon::parse($paymentInfo->verified_at)->format('Y-m-d'),
                 'preferred' => true,
             ]
         ];
