@@ -41,7 +41,6 @@ class SubmitToPowershopService
     }
 
     public function submit(){
-        // TODO: validate connection date
         foreach ($this->conServices as $conService) {
             $availableDate = $this->application->moving_date;
             if ($conService->service_type == ConnectionService::TYPE_GAS){
