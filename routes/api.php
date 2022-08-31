@@ -214,9 +214,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     /**
      * api for powershop payment
      */
-
-    Route::post('/applications/{applicationId}/payment-draft', [ApplicationController::class, 'savePaymentInfo'])
-        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
+    Route::post('/powershop/payment', [PaymentInfoController::class, 'updatePaymentInfo']);
 
 });
 
@@ -271,8 +269,6 @@ Route::get('/powershop/generate-caf', [PowerShopController::class, 'generatePowe
 
 Route::post('/powershop/payment/invite', [PaymentInfoController::class, 'inviteCustomer']);
 
-// save payment info
-Route::post('/powershop/payment', [PaymentInfoController::class, 'updatePaymentInfo']);
 
 /**
  * api's for email validation

@@ -36,7 +36,7 @@
             <h3 class="pb-2">Estimated Billing</h3>
             <p class="mt-4">Please input values from 1-900 in fields below.</p>
             <div class="crm-text-field">
-                <div class="pr-3">
+                <div class="pr-3 title-text">
                     <h4>Quarterly Cost (Power) </h4>
                 </div>
                 <div class="text-field">
@@ -53,13 +53,17 @@
                             hide-details="auto"
                             placeholder="Cost"
                             :error-messages="errors[0]"
-                        ></v-text-field>
+                        >
+                            <template v-slot:append>
+                                <span class="custom-placeholder">AUD</span>
+                            </template>
+                        </v-text-field>
                     </ValidationProvider>
                 </div>
             </div>
 
             <div class="crm-text-field">
-                <div class="pr-3">
+                <div class="pr-3 title-text">
                     <h4>Quarterly Cost (Gas)</h4>
                 </div>
                 <div class="text-field">
@@ -76,7 +80,11 @@
                             hide-details="auto"
                             placeholder="Cost"
                             :error-messages="errors[0]"
-                        ></v-text-field>
+                        >
+                            <template v-slot:append>
+                                <span class="custom-placeholder">AUD</span>
+                            </template>
+                        </v-text-field>
                     </ValidationProvider>
                 </div>
             </div>
@@ -151,5 +159,11 @@ export default {
 <style scoped>
 .button-border {
     border: 1px solid #263238;
+}
+.title-text {
+    flex-basis: 40%;
+}
+.custom-placeholder {
+    font-weight: 500;
 }
 </style>

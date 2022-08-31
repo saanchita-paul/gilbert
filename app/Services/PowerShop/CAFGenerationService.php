@@ -207,12 +207,13 @@ class CAFGenerationService
         if ($app->is_gas_life_support == 1 && $app->is_power_life_support == 1){
             return 'Life support elec and gas';
         }
-        elseif ($app->is_power_life_support == 1){
+        elseif ($app->is_power_life_support === 1){
             return 'Life support elec';
         }
-        else{
+        else if($app->is_gas_life_support === 1){
             return 'Life support gas';
         }
+        return '';
     }
 
     /**
