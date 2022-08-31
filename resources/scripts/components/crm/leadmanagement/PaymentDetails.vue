@@ -51,7 +51,7 @@
                             outlined
                             dense
                             hide-details="auto"
-                            placeholder="Cost"
+                            placeholder="Power Cost"
                             :error-messages="errors[0]"
                         >
                             <template v-slot:append>
@@ -78,7 +78,7 @@
                             outlined
                             dense
                             hide-details="auto"
-                            placeholder="Cost"
+                            placeholder="Gas Cost"
                             :error-messages="errors[0]"
                         >
                             <template v-slot:append>
