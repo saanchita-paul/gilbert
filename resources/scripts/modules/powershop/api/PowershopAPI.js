@@ -27,10 +27,11 @@ export default {
     updatePaymentInformation: async (field, value, applicationId) => {
         const payload = {
             [field]: value,
+            'app_id': applicationId
         }
 
         try {
-            return await axios.post(`/api/powershop/${applicationId}/payment`, payload);
+            return await axios.post('/api/powershop/payment', payload);
         } catch (error) {
             console.log("Error!");
         }
