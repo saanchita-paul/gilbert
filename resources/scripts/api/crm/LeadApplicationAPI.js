@@ -540,13 +540,7 @@ export default {
             return error.data;
         }
     },
-    async savePaymentField(field, value, leadId)
-    {
-        const payload ={
-            [field]: value,
-        }
-        await axios.post('/api/applications/'+leadId+'/payment-draft', payload);
-    },
+
     async sendPowershopPaymentLink(leadId, linkType)
     {
         const payload = {

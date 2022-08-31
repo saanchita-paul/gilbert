@@ -428,10 +428,10 @@ class ApplicationService
         }
 
         foreach ([
-            'is_gas_life_support' => 'gas_life_support_accepted_at', 
+            'is_gas_life_support' => 'gas_life_support_accepted_at',
             'is_power_life_support' => 'power_life_support_accepted_at']
             as $key => $val){
-            
+
                 if (isset($application[$key])) {
                     if ($application[$key] === true) {
                         $application[$val] = Carbon::now();
@@ -631,16 +631,6 @@ class ApplicationService
         ]);
 
         return $existLead->refresh();
-    }
-
-    public function updatePaymentInfo(array $paymentData, $id)
-    {
-        $existLead = ConnectionApplication::findOrFail($id);
-
-        PowershopPaymentInfo::updateOrCreate(
-            ['connection_application_id' => $existLead->id],
-            $paymentData
-        );
     }
 
     public function updateEmailField(array $application, $id)
