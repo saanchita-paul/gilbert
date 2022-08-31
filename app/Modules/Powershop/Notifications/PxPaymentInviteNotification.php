@@ -8,6 +8,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Twilio\TwilioChannel;
+use NotificationChannels\Twilio\TwilioSmsMessage;
 
 class PxPaymentInviteNotification extends Notification implements ShouldQueue
 {
@@ -34,7 +36,8 @@ class PxPaymentInviteNotification extends Notification implements ShouldQueue
     {
         return  match ($this->channel) {
             'email' => ['mail'],
-            'sms' =>  [LogChannel::class]
+            'sms' =>  [TwilioChannel::class],
+            'log' => [LogChannel::class],
         };
     }
 
@@ -59,7 +62,11 @@ class PxPaymentInviteNotification extends Notification implements ShouldQueue
         return json_encode($notifiable);
     }
 
-
+    public function toTwilio($notifiable)
+    {
+        return (new TwilioSmsMessage())
+            ->content("Hello {$this->name},\n\nThank you for choosing Powershop with Hood! As we mentioned, please provide your payment details by click on the link bellow.\n{$this->url}\n\nHOOD Support Team");
+    }
 
 
     /**
