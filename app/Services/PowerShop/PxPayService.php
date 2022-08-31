@@ -181,6 +181,8 @@ class PxPayService
         $paymentInfo =  $this->getPaymentInfo(data_get($response, 'txn_id'));
 
         $paymentInfo->update($this->getPaymentDetails($key));
+
+        return $paymentInfo;
     }
 
     /**
@@ -189,7 +191,7 @@ class PxPayService
      */
     public function handleFailed(array $response)
     {
-        return $this->getPaymentInfo(data_get($response, 'txn_id'));
+        return $this->handleCallback($response);
     }
 
     /**
@@ -199,7 +201,7 @@ class PxPayService
      */
     public function handleSuccess(array $response)
     {
-        $paymentInfo =  $this->getPaymentInfo(data_get($response, 'txn_id'));
+        $paymentInfo =  $this->handleCallback($response);
 
         return $paymentInfo->customer_full_name;
     }
