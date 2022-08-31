@@ -332,6 +332,19 @@ class SignUpService
                 'preferred' => true,
             ]
         ];
+
+        // // DUMMY
+        // return [
+        //     "card" => [
+        //         "card_type" => "mastercard",
+        //         "masked_card_number" => "xxxxxxxxxxxxx74",
+        //         "expiry_date" => "122022",
+        //         "cardholder_name" => "Cristiano Ronaldo",
+        //         "token" => "281174b44b44b397b38a",
+        //         "terms_and_conditions_accepted_at" => Carbon::now()->format('Y-m-d'),
+        //         "preferred" => true,
+        //     ],
+        // ];
     }
 
     private function getFormattedDate(string $date)
