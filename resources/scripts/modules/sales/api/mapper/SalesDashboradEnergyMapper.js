@@ -32,6 +32,9 @@ export default {
                     },
                     {
                         key: 'Flexi Plan', value: data?.ea_gas_flexi_plan,
+                    },
+                    {
+                        key: 'Balance Plan', value: data?.ea_gas_balance_plan,
                     }
                 ],
                 [
@@ -104,6 +107,9 @@ export default {
                     },
                     {
                         key: 'Flexi Plan', value: data?.ea_power_flexi_plan,
+                    },
+                    {
+                        key: 'Balance Plan', value: data?.ea_power_balance_plan,
                     }
                 ],
                 [

@@ -300,6 +300,10 @@ export default {
                     text: "Flexi Plan (Home)",
                     value: "Flexi Plan (Home)",
                 },
+                {
+                    text: "Balance Plan (Home)",
+                    value: "Balance Plan (Home)",
+                },
             ],
             connectionDate: false,
             closeConfirm: false,
