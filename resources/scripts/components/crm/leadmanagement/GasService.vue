@@ -182,7 +182,7 @@
             <v-card>
                 <PowershopPlanDetails
                     @toggleDialog="togglePowerShopPlanDetails"
-                    :serviceType=" 'gas'"
+                    :serviceType="isBothEnergySubmit ? 'energy' : 'gas'"
                     :leadSummary="leadSummary"
                     :planDetails="powershopPlan"
                     :plan="activePowerShopPlan"
@@ -565,7 +565,7 @@ export default {
         async getPowershopData() {
             let query = {
                 postcode: this.leadSummary?.postcode,
-                service_type: 'gas',
+                service_type: this.isBothEnergySubmit ? "energy" : "gas",
                 state: this.state,
             }
             this.powerShoplandata = await PowershopService.getPowerShopData(query);

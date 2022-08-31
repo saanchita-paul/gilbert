@@ -36,6 +36,7 @@ class CAFGenerationService
     private array $mappedApplicationList;
     private array $gasPromotionData;
     private array $elePromotionData;
+    private $cafToken;
 
     /**
      * @param array $applicationIdList
@@ -45,6 +46,7 @@ class CAFGenerationService
 
         $this->getPromotionCode();
         $this->applicationIdList = $applicationIdList;
+        $this->cafToken = $this->getPowerShopCafToken();
 
         $this->fetchApplications();
         $this->mapApplications();
@@ -123,8 +125,8 @@ class CAFGenerationService
                     'Mailing State/Territory' => $app->billing_state,
                     'Mailing Postal Code' => $app->billing_postcode,
                     'Owner/Renter' => $this->getTenancyType($app),
-                    'Electricity Promo' => $this->getPromo($app->state, ConnectionService::TYPE_ELECTRICITY),
-                    'Gas Promo' => $this->getPromo($app->state, ConnectionService::TYPE_GAS),
+                    'Electricity Promo' => $this->getPromo($app, ConnectionService::TYPE_ELECTRICITY),
+                    'Gas Promo' => $this->getPromo($app, ConnectionService::TYPE_GAS),
                     'Electricity Already On? (Y/N)' => $this->checkElectricity($app),
                     'Meter Number(s)' => null,
                     'Any Hazards' => $this->getHazard($app->is_any_unrestrained_animal, $app->is_renovation_on),
@@ -132,7 +134,7 @@ class CAFGenerationService
                     'Life Support/Sensitive Load' => $this->getLifeSensitive($app),
                     'Advised Main Switch Needs Turning Off?' => 'Yes',
                     'Safety Certificate Required?' => 'No',
-                    'Token' => '',
+                    'Token' => $this->cafToken,
                     'Electricity Offer Status' => null,
                     'Electricity Reference Number' => null,
                     'Electricity Rejection/Incomplete Reason' => null,
@@ -413,17 +415,15 @@ class CAFGenerationService
     {
 
 
-        foreach ($promotionData as $data)
+        foreach (data_get($promotionData, 'data', []) as $data)
         {
 
-            foreach ($data as $data1) {
+            $this->gasPromotionData[data_get($data, 'state')] = data_get($data, 'gas_promo_code');
+            $this->elePromotionData[data_get($data, 'state')] = data_get($data, 'elec_promo_code');
 
-                $this->gasPromotionData[$data1['state']] = $data1['gas_promo_code'];
-                $this->gasPromotionData[$data1['state']] = $data1['elec_promo_code'];
-            }
+
         }
 
-        info('data',   $this->gasPromotionData);
     }
 
     /**
@@ -431,10 +431,16 @@ class CAFGenerationService
      * @param string $service
      * @return null|string
      */
-    private function getPromo($state, string $service) : null| string
+    private function getPromo($app, string $service) : null| string
     {
 
-        $state = $this->stateMap($state);
+        $services = $app->connectionServices?->pluck('service_type')->toArray();
+
+
+        if(!in_array( $service, $services)) {
+            return '';
+        }
+        $state = $this->stateMap($app->state);
         return match($service) {
             ConnectionService::TYPE_GAS => $this->gasPromotionData[$state] ?? '' ,
             ConnectionService::TYPE_ELECTRICITY => $this->elePromotionData[$state] ?? '' ,
@@ -452,6 +458,11 @@ class CAFGenerationService
         }
         return $state;
 
+    }
+
+    private function getPowerShopCafToken(): string
+    {
+        return '';
     }
 
 }

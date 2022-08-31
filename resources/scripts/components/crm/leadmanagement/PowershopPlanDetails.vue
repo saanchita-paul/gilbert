@@ -184,7 +184,7 @@ export default {
       },
 
       willShowElectricity() {
-          console.log(' this.serviceType', this.serviceType);
+          console.log(' show power service', this.serviceType);
         return this.planDetails.plans?.electricity && (this.serviceType === "power" || this.serviceType === "energy");
       },
 
