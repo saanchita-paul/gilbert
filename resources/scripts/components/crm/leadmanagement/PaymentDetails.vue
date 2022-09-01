@@ -128,7 +128,9 @@ export default {
     },
     computed: {
         getPaymentStatus() {
-            return powerShopPaymentStatusNumberToName[this.paymentStatus] ?? powerShopPaymentStatusNumberToName[this.lead.powershop_payment_info.status];
+            return this.paymentStatus
+                ? powerShopPaymentStatusNumberToName[this.paymentStatus]
+                : powerShopPaymentStatusNumberToName[this.lead?.powershop_payment_info?.status];
         },
     },
     methods: {
