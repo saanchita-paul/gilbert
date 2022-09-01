@@ -319,16 +319,16 @@ class SignUpService
     private function getPaymentDetails()
     {
         $paymentInfo = $this->application->powershopPaymentInfo;
-        if(!$paymentInfo || empty($paymentInfo->token))
+        if(!$paymentInfo || empty($paymentInfo->px_dps_billing_id))
             throw new \Exception('Powershop payment info missing or no token/billing id');
         return [
             "card" => [
-                'card_type' => $paymentInfo->px_card_type,
+                'card_type' => strtolower($paymentInfo->px_card_type),
                 'masked_card_number' => $paymentInfo->px_card_number,
-                'expiry_date' => Carbon::parse($paymentInfo->px_card_expire_date)->format('Y-m-d'),
+                'expiry_date' => $paymentInfo->px_card_expire_date,
                 'cardholder_name' => $paymentInfo->px_card_holder_name,
                 'token' => $paymentInfo->px_dps_billing_id,
-                'terms_and_conditions_accepted_at' => Carbon::parse($paymentInfo->verified_at)->format('Y-m-d'),
+                'terms_and_conditions_accepted_at' => $this->getFormattedDate($paymentInfo->verified_at),
                 'preferred' => true,
             ]
         ];
