@@ -154,9 +154,9 @@ export default {
         planDetails: {
             require: true
         },
-      plan: {
-        require: true
-      }
+        plan: {
+            require: true
+        }
     },
     data() {
         return {
@@ -177,16 +177,16 @@ export default {
           console.log('power shop electricity plan', p,  this.planDetails.plans?.electricity, this.plan?.name );
           return p;
         },
-      gasPlan() {
-        const p =  this.planDetails?.plans?.gas?.find(dt=> dt?.name === this.plan.name);
-        console.log('power shop gas plan', p, this.planDetails?.plans?.gas);
-        return p;
-      },
+        gasPlan() {
+            const p =  this.planDetails?.plans?.gas?.find(dt=> dt?.name === this.plan.name);
+            console.log('power shop gas plan', p, this.planDetails?.plans?.gas);
+            return p;
+        },
 
-      willShowElectricity() {
-          console.log(' show power service', this.serviceType);
-        return this.planDetails.plans?.electricity && (this.serviceType === "power" || this.serviceType === "energy");
-      },
+        willShowElectricity() {
+            console.log(' show power service', this.serviceType);
+            return this.planDetails.plans?.electricity && (this.serviceType === "power" || this.serviceType === "energy");
+        },
 
         willShowGas() {
             console.log(' will show gas', this.serviceType,  this.planDetails?.plans?.gas);
@@ -232,6 +232,7 @@ export default {
     },
     mounted() {
         // this.getPowershopData();
+        console.log(this.$props);
     },
     methods: {
         async getPowershopData() {
