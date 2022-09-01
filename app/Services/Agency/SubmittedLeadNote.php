@@ -96,7 +96,7 @@ class SubmittedLeadNote
     }
 
     private function doSubmitPowershopNote($state, $postCode){
-        $powershopPlanService = new PowershopPlanDetailsService($state, $postCode, $this->existLead->id, $this->servicesId);
+        $powershopPlanService = new PowershopPlanDetailsService($state, $postCode, $this->existLead->id, $this->servicesId, $this->existLead->nmi ?? '');
 
         $plan_type = $powershopPlanService->plan_type;
 
@@ -104,12 +104,12 @@ class SubmittedLeadNote
 
         $noteService = new ApplicationNoteService($this->user);
         $submittedService = $this->getServices($powershopPlanService->service_type);
-        $planDetails = $powershopPlanService->getPlanDetails(); // todo
+        $planDetails = $powershopPlanService->getPlanDetails();
         $this->leadDetailsJson = $this->prepareLeadData($plan_type, $postCode, $state, $submittedService, 'Powershop');
         $note = [
             'type' => ApplicationNote::SUBMITTED_POWERSHOP,
             'connection_details' => $this->leadDetailsJson,
-            // 'plan_details' => $planDetails
+            'plan_details' => $planDetails
         ];
         $noteService->createNotes($note, $this->existLead?->id);
     }

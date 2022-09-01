@@ -22,17 +22,33 @@
         <p class="title mt-3"> Go Neutral: <span class="note-data">{{ note.leads.ea_go_neutral === 1 ? "Yes" : (note.leads.ea_go_neutral === 0 ? "No" : 'N/A') }}</span></p>
 
         <v-btn  outlined small
-                color="indigo" class="my-4" @click="togglePlanDetails">show Plan</v-btn>
+                color="indigo" class="my-4" @click="togglePowerShopPlanDetails">show Plan</v-btn>
+        
+        <v-dialog v-model="dialog" max-width="450">
+            <v-card>
+                <PowershopPlanDetails
+                    @toggleDialog="togglePowerShopPlanDetails"
+                    :serviceType="'energy'"
+                    :leadSummary="note.leads"
+                    :planDetails="planDetails"
+                    :plan="true"
+
+                />
+            </v-card>
+        </v-dialog>
+        
     </v-card>
 </template>
 
 <script>
 import dayJs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
+import PowershopPlanDetails from "@scripts/components/crm/leadmanagement/PowershopPlanDetails";
+import PowershopMapper from "@scripts/modules/powershop/api/mappers/PowershopMapper";
 
 export default {
-name: "SubmittedPowershopOriginNote",
-    components: {},
+name: "SubmittedPowershopNote",
+    components: {PowershopPlanDetails},
     props: ['note'],
     data() {
         return {
@@ -50,7 +66,6 @@ name: "SubmittedPowershopOriginNote",
         state () {
             return this.note.leads.state;
         },
-
         plan() {
             // let elecPlan = this.note.plans.plans.electricity? this.note.plans.plans.electricity.vdo.marketing_offer_name : null;
             // let gasPlan = this.note.plans.plans.gas? this.note.plans.plans.gas.bpid_links[0].offer_name : null;
@@ -84,7 +99,7 @@ name: "SubmittedPowershopOriginNote",
         },
     },
     methods: {
-        togglePlanDetails() {
+        togglePowerShopPlanDetails() {
             this.dialog = !this.dialog;
         },
         async mapServiceType() {
@@ -105,11 +120,18 @@ name: "SubmittedPowershopOriginNote",
                 '_blank'
             );
 
-        }
+        },
+        async mapPlanType() {
+            if (this.note.plans){
+                const plan = await PowershopMapper.mapPowershopData(this.note.plans);
+                this.planDetails = plan;
+            }
+        },
     },
 
     async mounted() {
         await this.mapServiceType();
+        await this.mapPlanType();
     }
 }
 </script>
