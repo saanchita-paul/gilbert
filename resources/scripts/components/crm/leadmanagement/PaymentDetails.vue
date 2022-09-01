@@ -128,7 +128,7 @@ export default {
     },
     computed: {
         getPaymentStatus() {
-            return powerShopPaymentStatusNumberToName[this.paymentStatus] ?? this.lead.powershop_payment_status;
+            return powerShopPaymentStatusNumberToName[this.paymentStatus] ?? powerShopPaymentStatusNumberToName[this.lead.powershop_payment_info.status];
         },
     },
     methods: {
@@ -140,7 +140,7 @@ export default {
             this.gasCost = this.lead?.powershop_payment_info?.estimated_gas_billing_cost;
         },
         isDisable() {
-            return this.lead.powershop_payment_status === "Valid";
+            return this.lead?.powershop_payment_info?.status === 2;
         },
         async sendPaymentLink(linkType) {
             const response = await LeadApplicationService.sendPowershopPaymentLink(this.lead.id, linkType);
