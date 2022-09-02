@@ -55,14 +55,17 @@ export default {
                 ],
                 [
                     {
-                        key: 'Power shop', value: data?.origin_gas_home_assist,
+                        key: 'PowerShop 100% Carbon Neutral', value: data?.powershop_carbon_neutral,
+                    },
+                    {
+                        key: 'PowerShop Switch Saver', value: data?.switch_saver,
                     },
                 ],
             ];
 
             const totalEaData = data?.ea_gas_no_frills + data?.ea_gas_basic_plan + data?.ea_gas_total_plan + data?.ea_gas_flexi_plan;
             const totalSumoData = data?.sumo_gas_freedom;
-            const totalPowerShopData = data?.origin_gas_home_assist;
+            const totalPowerShopData = data?.powershop_carbon_neutral + data?.switch_saver;
             const totalOriginData = data?.origin_advantage_variable + data?.origin_supply + data?.origin_basic;
 
             const chartData = [totalEaData, totalSumoData, totalOriginData, totalPowerShopData];
@@ -73,14 +76,14 @@ export default {
                 '#542E89',
                 '#03A9F4',
                 '#FFC72C',
-                'gold',
+                '#FA0E6A',
             ];
 
             const rejectedbackgroundColor = [
                 '#542E89',
                 '#03A9F4',
                 '#FFC72C',
-                'gold',
+                '#FA0E6A',
             ]
 
 
@@ -136,14 +139,17 @@ export default {
                 ],
                 [
                     {
-                        key: 'Power shop', value: data?.origin_gas_home_assist,
+                        key: 'PowerShop 100% Carbon Neutral', value: data?.powershop_carbon_neutral,
+                    },
+                    {
+                        key: 'PowerShop Switch Saver', value: data?.switch_saver,
                     },
                 ],
             ];
 
             const totalEaData = data?.ea_power_no_frills + data?.ea_power_basic_plan + data?.ea_power_total_plan + data?.ea_power_flexi_plan;
             const totalSumoData = data?.sumo_power_freedom;
-            const totalPowerShopData = data?.origin_power_home_assist;
+            const totalPowerShopData = data?.powershop_carbon_neutral +  data?.switch_saver;
             const totalOriginData = data?.origin_home_assist + data?.origin_home_support;
 
 
@@ -152,13 +158,13 @@ export default {
                 '#542E89',
                 '#03A9F4',
                 '#FFC72C',
-                'gold',
+                '#FA0E6A',
             ];
             const rejectedbackgroundColor = [
                 '#542E89',
                 '#03A9F4',
                 '#FFC72C',
-                'gold',
+                '#FA0E6A',
             ];
 
             return {

@@ -15,7 +15,7 @@
             <v-col cols="9" v-for="(value, index) in data.datasets[0].data" :key="index" class="flex justify-center my-0 ml-4 py-0">
                 <v-row class="justify-start">
                     <p class="label ma-1">
-                        <v-icon :color="data.datasets[0].backgroundColor[index]" size="13">mdi-checkbox-blank-circle
+                        <v-icon style="margin-top: -4px !important;" :color="data.datasets[0].backgroundColor[index]" size="13">mdi-checkbox-blank-circle
                         </v-icon>
                     </p>
                     <p class="label font-weight-bold  ma-1">{{ value }}</p>

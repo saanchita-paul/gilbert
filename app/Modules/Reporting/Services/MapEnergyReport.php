@@ -30,7 +30,7 @@ class MapEnergyReport
         ConnectionService::PLAN_ORIGIN_ADVANTAGE_VARIABLE => 0,
         ConnectionService::PLAN_ORIGIN_HOME_SUPPORT => 0,
         ConnectionService::PLAN_ORIGIN_SUPPLY => 0,
-        ConnectionService::POWER_SHOP_100_PERCENT_CARBON_NEUTRAL => 0,
+        'powershop_carbon_neutral' => 0,
         ConnectionService::POWER_SHOP_SWITCH_SAVER => 0,
     ];
 
@@ -62,7 +62,6 @@ class MapEnergyReport
      */
     public function getReportData(): array
     {
-        dump($this->reportData);
         return $this->reportData;
     }
 
@@ -122,7 +121,7 @@ class MapEnergyReport
             ConnectionService::PLAN_ORIGIN_ADVANTAGE_VARIABLE => $this->reportData[ConnectionService::PLAN_ORIGIN_ADVANTAGE_VARIABLE] += $data['total'],
             ConnectionService::PLAN_ORIGIN_BASIC => $this->reportData[ConnectionService::PLAN_ORIGIN_BASIC] += $data['total'],
             ConnectionService::POWER_SHOP_100_PERCENT_CARBON_NEUTRAL => $this->reportData[ConnectionService::POWER_SHOP_100_PERCENT_CARBON_NEUTRAL] += $data['total'],
-            ConnectionService::POWER_SHOP_SWITCH_SAVER => $this->reportData[ConnectionService::POWER_SHOP_SWITCH_SAVER] += $data['total'],
+//            ConnectionService::POWER_SHOP_SWITCH_SAVER => $this->reportData[ConnectionService::POWER_SHOP_SWITCH_SAVER] += $data['total'],
 //            'origin_advantage_variable' => $this->reportData["origin_gas_home_assist"] += $data['total'],
             default => null
         };
