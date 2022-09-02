@@ -13,6 +13,7 @@
                                 :leadSummary="leadSummary"
                                 @updateAddress="updateAddress"
                                 @updateDraft="updateDraft"
+                                @duplicateLead="duplicatedLead"
                         ></LeadUserDetails>
                  </ValidationObserver>
                 <LeadServicesAndNotes
@@ -41,6 +42,8 @@
 
         <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" :leadId="leadId" secondaryContact="secondaryContact" v-if="showSubmitModal" @confirmSubmitLead="confirmSubmitLead" @backToEdit="backToEdit" :submitType="submitType"> </LeadSubmitConfirmationModal>
             <PreventSubmissionModal v-if="preventSubmissionFlag" :message="preventSubmissionMessage" :dialog="preventSubmissionFlag" @closeMessage="closePreventSubmissionModal"></PreventSubmissionModal>
+
+        <DuplicateLeadModal v-if="duplicateLead" :dialog="duplicateLead" @cancelDuplicateLead="cancelDuplicateLead" :duplicateGroupId="leadSummary.duplication_group_id"></DuplicateLeadModal>
     </v-container>
 </template>
 
@@ -63,6 +66,7 @@ import EAAfterHourService from "@scripts/services/ea/EAAfterHourService";
 import ChatbotService from "@scripts/services/crm/ChatbotService";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import Store from '@scripts/store/index';
+import DuplicateLeadModal from "@scripts/components/crm/modals/DuplicateLeadModal";
 
 export default {
     //todo shift afterHourFlag, nextBusinessDay, getElectricityDistributor to powerService
@@ -78,7 +82,8 @@ export default {
         CloseApplicationReasonModal,
         CloseConfirmModal,
         AssignedToUserEmptyModal,
-        PreventSubmissionModal
+        PreventSubmissionModal,
+        DuplicateLeadModal
     },
 
     data() {
@@ -116,7 +121,7 @@ export default {
                 }
             },
             nextBusinessDay: null,
-
+            duplicateLead: false
         }
     },
     computed: {
@@ -399,6 +404,13 @@ export default {
             }
             return true;
         },
+        duplicatedLead() {
+            this.duplicateLead = true;
+        },
+        cancelDuplicateLead() {
+            this.duplicateLead = false;
+        },
+
 
         // async updateEmail(field, value) {
         //     await LeadApplicationService.saveEmailField(field, value, this.leadId);

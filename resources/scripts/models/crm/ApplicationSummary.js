@@ -70,6 +70,9 @@ export default class ApplicationSummary {
     ea_go_neutral = null;
     additional_access_information = null;
     is_power_life_support = null;
+    is_duplicate = null;
+    duplication_group_id = null;
+
     constructor(
         {
             id = null,
@@ -155,7 +158,11 @@ export default class ApplicationSummary {
             ea_go_neutral = null,
             additional_access_information = null,
             is_power_life_support = null,
+            is_duplicate = null,
+            duplication_group_id = null,
+
             // email_manually_verified_by = 0,
+
         }
     ) {
 
@@ -250,7 +257,12 @@ export default class ApplicationSummary {
         this.ea_go_neutral = ea_go_neutral
         this.additional_access_information = additional_access_information
         this.is_power_life_support = is_power_life_support
+        this.is_duplicate = is_duplicate;
+        this.duplication_group_id = duplication_group_id;
+
+
         // this.email_manually_verified_by = email_manually_verified_by
+
     }
 
 
@@ -264,7 +276,7 @@ export default class ApplicationSummary {
         return streetType ?? type;
     }
 
-    
+
     sortCallHistory(tsa_call_histories){
         return sortBy(tsa_call_histories, ['attempt_id'])
     }
