@@ -516,19 +516,27 @@ export default {
         },
 
         getPlanPayload(planText) {
-            const payload = {
+            let payload = {
                 service_type: this.leadSummary?.service_interests,
                 provider_name: this.selectedProvider,
                 plan_type: 'Hello',
                 service_area: this.isBothEnergySubmit ? "energy" : "power",
                 gas_plan_type: planText,
-                power_plan_type: planText ,
+                power_plan_type: planText
             }
 
-            return this.selectedProvider === 'origin' ? {...payload, ...{
+            if (this.selectedProvider === 'origin') {
+               return {...payload, ...{
                     gas_plan_type: this.planDetails.plans.gas?.plan_name_code || null,
                     power_plan_type: this.planDetails.plans.electricity?.plan_name_code || null ,
-            }} : payload;
+                }}
+            }
+
+            if (this.selectedProvider === 'powershop') {
+                payload.gas_plan_type = this.powerShoplandata.plans.gas ? 'powershop_100%_carbon_neutral' : null;
+            }
+
+            return payload;
         },
         async reloadUtilityStore() {
             let leadSummary = await LeadApplicationService.loadUserLead(this.leadSummary.id);
