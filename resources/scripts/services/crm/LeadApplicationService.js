@@ -249,16 +249,6 @@ export default {
     isEmailManuallyVerified: id => LeadApplicationAPI.isEmailManuallyVerified(id),
 
     validateCutOff: id => LeadApplicationAPI.validateCutOff(id),
-    savePaymentField: (
-        field,
-        value,
-        leadId,
-    ) =>
-        LeadApplicationAPI.savePaymentField(
-            field,
-            value,
-            leadId,
-        ),
 
     sendPowershopPaymentLink: (leadId, linkType) => LeadApplicationAPI.sendPowershopPaymentLink(leadId, linkType),
 

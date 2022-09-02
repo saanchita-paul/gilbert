@@ -18,6 +18,7 @@ class PowershopPlanDetailsService
         public string $postcode,
         public int $leadId,
         public array $servicesId,
+        public string $nmi = '',
     )
     {
         $this->chatbotUri = config('bot.root_url');
@@ -26,10 +27,28 @@ class PowershopPlanDetailsService
 
     public function getPlanDetails()
     {
-        // TODO : get plan details from chatbot api
-        $data = [];
+        $query = [
+            'state' => $this->state,
+            'service_type' => $this->service_type,
+            'postcode' => $this->postcode,
+        ];
 
-        return json_encode($data);
+        if (!empty($this->nmi)) {
+            $query['nmi_prefix'] = substr($this->nmi, 0, 2);
+        }
+
+        try{
+            $response = Http::withOptions([
+                "verify" => false,
+            ])->get($this->chatbotUri.'/hood-dashboard/api/power-shop-plan-details', $query);
+            Log::info("Powershop Plan Response: ", [json_encode(json_decode($response->body())->data)]);
+            return json_encode(json_decode($response->body())->data);
+        } catch (\Exception $e)
+        {
+            Log::error("[Powershop Plan Error] ->  " .$e->getMessage());
+            Log::error($e->getTraceAsString());
+            return  '';
+        }
     }
 
     private function mapServiceForPlan()

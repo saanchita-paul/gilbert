@@ -82,8 +82,15 @@ class PowershopPaymentInfo extends Model
     }
 
 
-    public function routeNotificationFor($driver, $notification = null)
+    public function routeNotificationForMail($driver, $notification = null)
     {
         return $this->customer_email;
+    }
+
+    public function routeNotificationForTwilio()
+    {
+        $phone_number = $this->customer_phone;
+        if (substr($phone_number, 0, 2) === '04') $phone_number = '+614' . substr($phone_number, 2);
+        return $phone_number;
     }
 }

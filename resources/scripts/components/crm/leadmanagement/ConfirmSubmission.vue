@@ -933,9 +933,9 @@ export default {
         showPowerShopNoteSection () {
             return this.data.selectedProvider === 'powershop' 
                 && (
-                    !this.showElectricityPowerShopNote
-                    || !this.showElectricityACTPowerShopNote
-                    || !this.showGasPowerShopNote
+                    this.showElectricityPowerShopNote
+                    || this.showElectricityACTPowerShopNote
+                    || this.showGasPowerShopNote
                 );
         },
         showElectricityPowerShopNote() {

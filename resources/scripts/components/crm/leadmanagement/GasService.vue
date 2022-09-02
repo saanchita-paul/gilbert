@@ -17,7 +17,7 @@
                 v-model="isBothEnergySubmit"
                 @change="changeIsBothEnergySubmit"
             ></v-checkbox>
-            <p class="checkbox-text">Submit elec and gas to same retailer for same plan.</p>
+            <p class="checkbox-text" :class="disabledIfPowerShopGasSelected ? 'grey--text' : ''">Submit elec and gas to same retailer for same plan.</p>
         </v-col>
         <v-col cols="12">
             <v-divider></v-divider>
@@ -118,10 +118,6 @@
                 </v-checkbox>
                 <p class="neutral-checkbox-text">Customer opts in for <span class="font-weight-bold">Go Neutral</span>.</p>
             </div>
-
-<!--            <v-col cols="12" v-if="selectedProvider === 'powershop'">-->
-<!--                <PaymentDetails  @updateDraft="updateDraft" :lead="leadSummary"></PaymentDetails>-->
-<!--            </v-col>-->
 
         </v-col>
         <v-col cols="12">
@@ -556,11 +552,6 @@ export default {
             this.powerShopPlanDetails = !this.powerShopPlanDetails;
             this.activePowerShopPlan = plan;
         },
-
-        async updateDraft(field, value) {
-            await LeadApplicationService.savePaymentField(field, value, this.leadSummary.id);
-        },
-
 
         async getPowershopData() {
             let query = {
