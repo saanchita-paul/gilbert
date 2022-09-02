@@ -269,6 +269,7 @@ class ConnectionApplication extends Model
     const PLAN_TYPE_BASIC = 'basic_plan';
     const PLAN_TYPE_NO_FRILLS = 'no_frills';
     const PLAN_TYPE_FLEXI_PLAN = 'flexi_plan';
+    const PLAN_TYPE_BALANCE_PLAN = 'balance_plan';
 
     const PLAN_TYPE_ORIGIN_GO = 'origin_go';
     const PLAN_TYPE_ORIGIN_VARIABLE = 'origin_go_variable';
