@@ -72,18 +72,22 @@ name: "SubmittedOriginNote",
         plan() {
             // let elecPlan = this.note.plans.plans.electricity? this.note.plans.plans.electricity.vdo.marketing_offer_name : null;
             // let gasPlan = this.note.plans.plans.gas? this.note.plans.plans.gas.bpid_links[0].offer_name : null;
-            let elecPlan = this.note.plans.plans.electricity? 'Origin Home Assist(Elec)' : null;
-            let gasPlan = this.note.plans.plans.gas? 'Origin Advantage Variable(Gas)' : null;
+            let elecPlan = this.note.plans.plans.electricity ?? null;
+            let gasPlan = this.note.plans.plans.gas ?? null;
 
             if (elecPlan && gasPlan){
-                return elecPlan + '|' + gasPlan;
+                elecPlan = elecPlan.plan_name_text ?? 'Origin Home Assist';
+                gasPlan = gasPlan.plan_name_text ?? 'Origin Advantage Variable';
+                return elecPlan + '(elec)' + '|' + gasPlan + '(gas)';
             }
             if (elecPlan && !gasPlan){
-                return elecPlan;
+                elecPlan = elecPlan.plan_name_text ?? 'Origin Home Assist';
+                return elecPlan + '(elec)';
             }
             if (!elecPlan && gasPlan)
             {
-                return gasPlan;
+                gasPlan = gasPlan.plan_name_text ?? 'Origin Advantage Variable';
+                return gasPlan + '(gas)';
             }
 
             return this.note.leads.plan_type;
