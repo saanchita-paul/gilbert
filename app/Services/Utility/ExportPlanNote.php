@@ -186,6 +186,40 @@ class ExportPlanNote
             return $mappData;
         }
 
+        if($submitType == ApplicationNote::SUBMITTED_POWERSHOP){
+            $mappData = [];
+
+            if(!empty($data['plans']['electricity'])){
+                $elecData = [
+                    'Elec Plan Name' => '',
+                    'Elec Plan Description' => '',
+                    'Elec Distributor' => '',
+                    'Elec Connection Fee Per Year' => '',
+                    'Elec Discount Rate' => '',
+                    'Elec Consumption' => '',
+                    'Elec Daily Supply Charge' => '',
+                    'Elec Single Rate Tariff' => '',
+                    'Elec Manual Connection' => '',
+                    'Elec Remote Connection' => '',
+                    'Solar Feed Rate' => '',
+                ];
+
+                $mappData = array_merge($mappData, $elecData);
+            }
+
+            if(!empty($data['plans']['gas'])){
+                $gasData = [
+                    'Gas Daily Supply Charge' => '',
+                    'Gas Anytime Charge' => '',
+                    'Gas Reconnetion Charge' => '',
+                ];
+
+                $mappData = array_merge($mappData, $gasData);
+            }
+
+            return $mappData;
+        }
+
     }
 
 
