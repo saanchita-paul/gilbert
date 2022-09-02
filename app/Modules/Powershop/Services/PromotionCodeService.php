@@ -7,7 +7,7 @@ use App\Models\ConnectionService;
 class PromotionCodeService
 {
     public static function getCode(string $state, string $service_type) : string {
-        // TODO: get code from chatbot api
+        // TODO: get code from chatbot api and include plan type as parameter to know what plan customer choose
         $code = '';
 
         if ($state == 'Victoria' && $service_type == ConnectionService::TYPE_ELECTRICITY) {

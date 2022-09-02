@@ -187,6 +187,7 @@ class ExportPlanNote
         }
 
         if($submitType == ApplicationNote::SUBMITTED_POWERSHOP){
+            // REFER HCO-999 for fields
             $mappData = [];
 
             if(!empty($data['plans']['electricity'])){
@@ -209,9 +210,9 @@ class ExportPlanNote
 
             if(!empty($data['plans']['gas'])){
                 $gasData = [
-                    'Gas Daily Supply Charge' => '',
-                    'Gas Anytime Charge' => '',
-                    'Gas Reconnetion Charge' => '',
+                    'Gas Daily Supply Charge' => $data['plans']['gas']['daily_charge'],
+                    'Gas Anytime Charge' => $data['plans']['gas']['anytime_charge'],
+                    'Gas Reconnection Charge' => '',
                 ];
 
                 $mappData = array_merge($mappData, $gasData);
