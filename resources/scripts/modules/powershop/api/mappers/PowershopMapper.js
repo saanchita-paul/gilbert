@@ -68,6 +68,7 @@ const mapBPIDLinks = (bpidLinks) => {
             id: item?.id,
             title: item?.title,
             file_url: item?.link,
+            plan: item?.plan
         }
     });
 }

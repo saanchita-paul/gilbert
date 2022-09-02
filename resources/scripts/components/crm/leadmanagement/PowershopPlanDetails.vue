@@ -196,7 +196,7 @@ export default {
             return this.leadSummary.state === 'Victoria';
         },
         electricityBPIDLinksList() {
-            return this.electricityPlan?.bpid_links;
+            return this.electricityPlan?.bpid_links?.filter(bpid => bpid.plan === this.plan.name);
         },
         gasBPIDLinksList() {
             return this.gasPlan?.bpid_links;
