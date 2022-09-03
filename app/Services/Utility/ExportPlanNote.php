@@ -7,6 +7,7 @@ namespace App\Services\Utility;
 use App\Models\ApplicationNote;
 use Carbon\Carbon;
 use Rap2hpoutre\FastExcel\FastExcel;
+use App\Models\ConnectionService;
 
 class ExportPlanNote
 {
@@ -187,23 +188,48 @@ class ExportPlanNote
         }
 
         if($submitType == ApplicationNote::SUBMITTED_POWERSHOP){
-            // REFER HCO-999 for fields
+            // REFER HCO-999 for fields 
+            // TODO GAS
             $mappData = [];
 
             if(!empty($data['plans']['electricity'])){
+                $elecPlan = $data['plans']['electricity'];
+                $conService = ConnectionService::where('connection_application_id', $this->noteData->connection_application_id)
+                            ->where('provider_name', ConnectionService::PROVIDER_POWER_SHOP)
+                            ->where('utility_type', ConnectionService::TYPE_ELECTRICITY)
+                            ->first();
+                $elecServices = $elecPlan['vdo'];
+                $choosenService = $elecServices[0];
+                if ($conService) {
+                    foreach ($elecServices as $elecService) {
+                        if ($elecService['name'] == $conService->plan_type)
+                            $choosenService = $elecService;
+                    }
+                }
+
                 $elecData = [
-                    'Elec Plan Name' => '',
-                    'Elec Plan Description' => '',
-                    'Elec Distributor' => '',
-                    'Elec Connection Fee Per Year' => '',
-                    'Elec Discount Rate' => '',
-                    'Elec Consumption' => '',
-                    'Elec Daily Supply Charge' => '',
-                    'Elec Single Rate Tariff' => '',
-                    'Elec Manual Connection' => '',
-                    'Elec Remote Connection' => '',
-                    'Solar Feed Rate' => '',
+                    'Elec Plan Name' => $choosenService['marketing_offer_name'] ?? '',
+                    'Elec Plan Description' => $choosenService['description'] ?? '',
+                    'Elec Distributor' => $elecPlan['distributor_name'] ?? '',
+                    'Elec Connection Fee Per Year' => $choosenService['vdo_dmo_amount'] ?? '',
+                    'Elec Discount Rate' => $choosenService['vdo_dmo_percentage'] ?? '',
+                    'Elec Consumption' => $choosenService['consumption'] ?? '',
+                    'Elec Daily Supply Charge' => $elecPlan['daily_charge'] ?? '',
+                    'Elec Single Rate Tariff' => $elecPlan['anytime_charge'] ?? '',
+                    'Elec Manual Connection' => $elecPlan['price'][0]['fees'] ?? '',
+                    'Elec Remote Connection' => $elecPlan['price'][1]['fees'] ?? '',
+                    'Elec Same Day Reconnection' => $elecPlan['price'][2]['fees'] ?? '',
+                    'Solar Feed Rate' => $elecPlan['solar_buy_pack_value'] ?? '',
                 ];
+
+                $linkCount = 1;
+                foreach ($elecPlan['bpid_links'] as $link){
+                    if ($link['plan'] == $choosenService['name']){
+                        $elecData['Elec Link ' . $linkCount] = $link['link'];
+                        $elecData['Elec Description ' . $linkCount] = $link['title'];
+                        $linkCount += 1;
+                    }
+                }
 
                 $mappData = array_merge($mappData, $elecData);
             }

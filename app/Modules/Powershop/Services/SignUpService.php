@@ -205,12 +205,12 @@ class SignUpService
             "proposed_start_date" => $this->getFormattedDate($service->connection_date ?? $this->application->moving_date),
             "is_connection_currently_active" => false,
             "estimated_billing" => [
-                'cost' => 500, // TODO: refer payment table
-                'period' => 'quarterly', // TODO: refer payment table
+                'cost' => $this->application->powershopPaymentInfo->estimated_elec_billing_cost,
+                'period' => 'quarterly',
             ],
         ];
 
-        $promoCode = PromotionCodeService::getCode($this->application->state, $service->service_type);
+        $promoCode = PromotionCodeService::getCode($this->application->state, $service->service_type, $service->plan_type);
         if (!empty($promoCode))
             $data['promotion'] = [
                 "promotion_code" => $promoCode,
@@ -242,12 +242,12 @@ class SignUpService
             "proposed_start_date" => $this->getFormattedDate($service->connection_date ?? $this->application->moving_date),
             "is_connection_currently_active" => false,
             "estimated_billing" => [
-                'cost' => 500, // TODO: refer payment table
-                'period' => 'quarterly', // TODO: refer payment table
+                'cost' => $this->application->powershopPaymentInfo->estimated_gas_billing_cost,
+                'period' => 'quarterly',
             ],
         ];
 
-        $promoCode = PromotionCodeService::getCode($this->application->state, $service->service_type);
+        $promoCode = PromotionCodeService::getCode($this->application->state, $service->service_type, $service->plan_type);
         if (!empty($promoCode))
             $data['promotion'] = [
                 "promotion_code" => $promoCode,
