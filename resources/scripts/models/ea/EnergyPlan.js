@@ -5,6 +5,7 @@ export const PLAN_TYPE_TOTAL = 'total_plan';
 export const PLAN_TYPE_NO_FRILLS = 'no_frills';
 export const PLAN_TYPE_BASIC_PLAN = 'basic_plan';
 export const PLAN_TYPE_FLEXI_PLAN = 'flexi_plan';
+export const PLAN_TYPE_BALANCE_PLAN = 'balance_plan';
 
 export const SERVICE_TYPES = {
     GAS: 'gas',
@@ -26,6 +27,7 @@ export const EA_PLAN_TYPES = [
      {value: "No Frills (Home)", key: PLAN_TYPE_NO_FRILLS},
      {value: "Total Plan (Home)", key: PLAN_TYPE_TOTAL},
      {value: "Flexi Plan (Home)", key: PLAN_TYPE_FLEXI_PLAN},
+     {value: "Balance Plan (Home)", key: PLAN_TYPE_BALANCE_PLAN},
 ]
 
 export default class EnergyPlan {
@@ -96,5 +98,5 @@ export default class EnergyPlan {
 
 }
 
-export const isTopEAPlan = (plan) => [PLAN_TYPE_TOTAL, PLAN_TYPE_FLEXI_PLAN].includes(plan)
+export const isTopEAPlan = (plan) => [PLAN_TYPE_TOTAL, PLAN_TYPE_FLEXI_PLAN, PLAN_TYPE_BALANCE_PLAN].includes(plan)
 
