@@ -558,17 +558,7 @@ export default {
         async changeGoNeutral() {
             await LeadApplicationService.saveSoleField('ea_go_neutral', this.leadSummary.ea_go_neutral, this.leadSummary.id);
         },
-        // async fetchPowershopPlans() {
-        //
-        //     console.log('plan fetching is calling');
-        //     const powershopProvider = this.providers.find(pl => {
-        //         return pl.name === 'powershop';
-        //     });
-        //
-        //     this.powershopPlans = powershopProvider.plans.filter(plan => {
-        //         return plan.type === 'power';
-        //     });
-        // },
+
         togglePowerShopPlanDetails() {
             this.powerShopPlanDetails = !this.powerShopPlanDetails;
             // this.activePowerShopPlan = plan;

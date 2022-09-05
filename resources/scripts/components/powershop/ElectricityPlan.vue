@@ -121,10 +121,15 @@ export default {
 
             if (plan){
                 return {
-                    'title': "$" + plan?.vdo_dmo_amount + "/Year",
-                    'line_1' : "For an average household using "+ plan?.consumption +" kWh/year, the estimated annual cost of this electricity plan is $" + plan?.vdo_dmo_amount + " in the "+ this.plan.distributor_name +" network with single rate tariff.",
-                    'line_2' :  plan?.vdo_dmo_percentage + "%",
+                    title: "$" + plan?.vdo_dmo_amount + "/Year",
+                    line_1 : "For an average household using "+ plan?.consumption +" kWh/year, the estimated annual cost of this electricity plan is $" + plan?.vdo_dmo_amount + " in the "+ this.plan.distributor_name +" network with single rate tariff.",
+                    line_2 :  plan?.vdo_dmo_percentage + "%",
                 }
+            }
+            return {
+                title: "",
+                line_1 : "",
+                line_2 : "",
             }
         }
     },

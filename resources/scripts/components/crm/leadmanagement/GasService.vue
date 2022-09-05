@@ -75,7 +75,7 @@
             <div class="d-flex" v-if="selectedProvider === 'powershop'">
                 <PowershopPlan
                     :class="{'not-editable': !isServiceEditable }"
-                    v-for="plan in powershopPlans"
+                    v-for="plan in getPowerShopPlans"
                     :key="plan.name"
                     :plan="plan"
                     @click.native="selectPlan(plan)"
@@ -179,9 +179,9 @@
                 <PowershopPlanDetails
                     @toggleDialog="togglePowerShopPlanDetails"
                     :serviceType="isBothEnergySubmit ? 'energy' : 'gas'"
-                    :leadSummary="leadSummary"
-                    :planDetails="powershopPlan"
-                    :plan="activePowerShopPlan"
+                    :state="leadSummary.state"
+                    :planDetails="powerShopData"
+                    :plan="selectedPlan"
                 />
             </v-card>
         </v-dialog>
@@ -256,6 +256,7 @@ export default {
             planDetails: null,
             activePowerShopPlan: null,
             powershopPlan: null,
+            powerShopData: null
         };
     },
     computed: {
@@ -359,14 +360,21 @@ export default {
         disabledIfPowerShopGasSelected() {
             return LeadApplicationService.getActiveServiceTab() === 1
                 && this.selectedProvider === "powershop";
-        }
+        },
+        getPowerShopPlans() {
+            return this.powerShopData?.plans?.gas?.vdo || [];
+        },
     },
     mounted() {
         this.fetchEaPlans();
         this.getOriginData();
         // this.fetchOriginPlans();
         this.loadSelectedProviderAndPlan();
-        this.fetchPowershopPlans();
+        // this.fetchPowershopPlans();
+
+        if(this.selectedProvider === 'powershop') {
+            this.getPowershopData();
+        }
 
         // On address change refetch Sumo Plan Details
         const updateAddress = address => {
@@ -559,15 +567,7 @@ export default {
                 service_type: this.isBothEnergySubmit ? "energy" : "gas",
                 state: this.state,
             }
-            this.powerShoplandata = await PowershopService.getPowerShopData(query);
-            this.powershopPlan = this.powerShoplandata;
-            this.powershopPlans = this.powerShoplandata.plans.gas
-
-
-            if (!isNull(this.powerShoplandata)) {
-                this.loadPowerShopDetails = true;
-            }
-
+            this.powerShopData = await PowershopService.getPowerShopData(query);
         },
 
 

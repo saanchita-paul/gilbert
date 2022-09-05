@@ -65,17 +65,14 @@ const mapGasPlan = (gas) => {
         return null;
     }
 
-    return  gas.vdo.map(vdo => {
-        return {
-            distributor_name: gas?.distributor_name,
-            fees: gas?.price,
-            supply_charge: gas?.daily_charge,
-            usage_charge: gas?.anytime_charge,
-            bpid_links: mapBPIDLinks(gas?.bpid_links),
-            name: vdo.name,
-            title: vdo.marketing_offer_name,
-        }
-    });
+    return {
+        distributor_name: gas?.distributor_name,
+        fees: gas?.price,
+        supply_charge: gas?.daily_charge,
+        usage_charge: gas?.anytime_charge,
+        bpid_links: mapBPIDLinks(gas?.bpid_links),
+        vdo: gas.vdo
+    }
 }
 
 const mapServiceText = (serviceType) => {

@@ -170,11 +170,11 @@ export default {
         },
 
         willShowElectricity() {
-            return this.planDetails.plans?.electricity && (this.serviceType === "power" || this.serviceType === "energy");
+            return this.planDetails?.plans?.electricity && (this.serviceType === "power" || this.serviceType === "energy");
         },
 
         willShowGas() {
-            return this.planDetails.plans?.gas && (this.serviceType === "gas" || this.serviceType === "energy");
+            return this.planDetails?.plans?.gas && (this.serviceType === "gas" || this.serviceType === "energy");
         },
 
         isVictoria() {
@@ -194,7 +194,12 @@ export default {
         },
 
         getPlanTitle() {
-            return (this.planDetails?.plans?.electricity?.vdo.find((item) => item.name === this.plan))?.marketing_offer_name;
+
+            if (this.serviceType === "energy" || this.serviceType === "power") {
+                return (this.planDetails?.plans?.electricity?.vdo.find((item) => item.name === this.plan))?.marketing_offer_name;
+            }
+
+            return 'Powershop 100% Carbon Neutral';
         }
     },
     watch: {},

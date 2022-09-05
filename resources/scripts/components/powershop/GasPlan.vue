@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <div class="plan-details" v-if="plan">
             <v-card>
                 <div style="padding: 20px 10px">
