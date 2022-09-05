@@ -3,13 +3,8 @@
 namespace Powershop\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\PowershopPaymentInfo;
-use App\Services\PowerShop\PxPayService;
 use Exception;
-use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Powershop\Services\PaymentInfoService;

@@ -4,10 +4,6 @@ namespace Powershop\Services;
 
 use App\Models\ConnectionApplication;
 use App\Models\PowershopPaymentInfo;
-use App\Services\PowerShop\PxPayService;
-use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Powershop\Notifications\PxPaymentInviteNotification;
 

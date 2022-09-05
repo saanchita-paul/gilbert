@@ -1,17 +1,11 @@
 <?php
 
-namespace App\Services\PowerShop;
+namespace Powershop\Services;
 
 use App\Models\PowershopPaymentInfo;
-use App\Services\TimeZoneService;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
-use Powershop\Notifications\PxPaymentInviteNotification;
-use Powershop\Services\PaymentInfoService;
 
 /**
  *

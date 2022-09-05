@@ -2,20 +2,18 @@
 
 use App\Http\Controllers\Agency\AgencyController;
 use App\Http\Controllers\Agency\AgentProfileController;
-use App\Http\Controllers\Agency\DuplicationApplicationController;
-use App\Http\Controllers\PowerShop\PxPayController;
-use App\Models\ConnectionApplication;
 use App\Http\Controllers\Agency\AppCloseReasonController;
 use App\Http\Controllers\Agency\ApplicationController;
+use App\Http\Controllers\Agency\DuplicationApplicationController;
 use App\Http\Controllers\Agency\HoodUserController;
 use App\Http\Controllers\Agency\NoteController;
 use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ReaExtractsReportController;
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\PowerShop\PowerShopController;
 use App\Http\Controllers\UserInvitationController;
+use App\Models\ConnectionApplication;
+use Powershop\Http\Controllers\PowerShopController;
 use App\Services\RolePermission;
-
 use App\Services\RolePermissionService;
 use App\Services\Utility\PowershopService;
 use Illuminate\Encryption\Encrypter;
@@ -26,7 +24,6 @@ use Powershop\Http\Controllers\PaymentInfoController;
 use PropertyMe\services\FetchContacts;
 use Reporting\Http\Controllers\ReportController;
 use TSA\Services\TsaCallHistoryService;
-use App\Services\GBGEmailValidationService;
 
 
 /*

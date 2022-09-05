@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\PowerShop;
+namespace Powershop\Http\Controllers;
 use App\Http\Controllers\Controller;
-use App\Services\PowerShop\CAFGenerationService;
-use App\Services\PowerShop\PxPayService;
+use Powershop\Services\PxPayService;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Contracts\Foundation\Application;

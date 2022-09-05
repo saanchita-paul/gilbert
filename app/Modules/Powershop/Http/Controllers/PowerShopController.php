@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\PowerShop;
+namespace Powershop\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Agency\ApplicationResource;
 use App\Models\ConnectionApplication;
 use App\Models\User;
+use Powershop\Services\CAFGenerationService;
+use Powershop\Services\SameDayConnectionService;
 use App\Services\Application\SearchConnectionApplication;
-use App\Services\PowerShop\CAFGenerationService;
-use App\Services\PowerShop\SameDayConnectionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;

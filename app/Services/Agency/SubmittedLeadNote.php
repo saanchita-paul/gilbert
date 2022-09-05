@@ -7,13 +7,13 @@ namespace App\Services\Agency;
 use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use Powershop\Services\SameDayConnectionService;
 use App\Services\Ea\EaPlanDetailsService;
 use App\Services\Utility\StateMapService;
 use Origin\Services\OriginPlanDetailsService;
-use phpDocumentor\Reflection\Utils;
 use Origin\Services\ValidateCutOffTime;
+use phpDocumentor\Reflection\Utils;
 use Powershop\Services\PowershopPlanDetailsService;
-use App\Services\PowerShop\SameDayConnectionService;
 
 class SubmittedLeadNote
 {

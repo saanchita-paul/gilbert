@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\PowerShop;
+namespace Powershop\Services;
 
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
@@ -99,7 +99,7 @@ class SameDayConnectionService
     private function validateElectricity($application)
     {
         // return true if validation pass
-        // return false if validation fails 
+        // return false if validation fails
         $state = $application->state;
         $connectionDate = $application->moving_date;
         $currentTime = Carbon::now(TimeZoneService::getTimeZoneInt(self::MAP_STATE_TIMEZONE[$state]));
@@ -121,13 +121,13 @@ class SameDayConnectionService
     private function validateGas(ConnectionApplication $application, string $submitType) : array {
         $result = [
             'isInvalid' => false,
-            'invalidNote' => '', 
+            'invalidNote' => '',
         ];
 
         if ($submitType == ConnectionService::TYPE_ELECTRICITY){
             return $result;
         }
-        
+
         if ($submitType == ConnectionService::TYPE_GAS){
             $result['isInvalid'] = true;
             $result['invalidNote'] = 'Powershop does not accept gas only submissions. Please select a different retailer';
@@ -139,7 +139,7 @@ class SameDayConnectionService
             $result['invalidNote'] = 'Powershop does not provide gas connection for state of ' . $application->state;
             return $result;
         }
-        
+
         $connectionDate = Carbon::parse($application->moving_date)->shiftTimezone(self::MAP_STATE_TIMEZONE[$application->state]);
         $availableDate = $this->getNearestAvailableGasDate($application);
 

@@ -1,9 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\PowerShop\PxPayController;
+use Powershop\Http\Controllers\PxPayController;
 use Illuminate\Support\Facades\Route;
-use Powershop\Http\Controllers\PaymentInfoController;
 
 /*
 |--------------------------------------------------------------------------

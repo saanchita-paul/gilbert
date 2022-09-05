@@ -2,17 +2,13 @@
 
 namespace Powershop\Services;
 
-use App\Models\ConnectionService;
 use App\Models\ConnectionApplication;
-use App\Models\RejectionReason;
-
-use App\Services\PowerShop\SameDayConnectionService;
-
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Collection;
-
+use App\Models\ConnectionService;
+use Powershop\Services\SameDayConnectionService;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class SubmitToPowershopService
 {
@@ -46,7 +42,7 @@ class SubmitToPowershopService
             if ($conService->service_type == ConnectionService::TYPE_GAS){
                 $newDateService = new SameDayConnectionService($this->application->id, ConnectionService::TYPE_GAS);
                 $availableDate = $newDateService->getNextGasConnectionDate();
-            } 
+            }
             $conService->connection_date = $availableDate;
             $conService->save();
         }

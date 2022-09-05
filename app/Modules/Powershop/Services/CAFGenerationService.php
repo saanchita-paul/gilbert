@@ -1,16 +1,12 @@
 <?php
 
-namespace App\Services\PowerShop;
+namespace Powershop\Services;
 use App\Models\ConnectionApplication;
-use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Rap2hpoutre\FastExcel\Facades\FastExcel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use function PHPUnit\Framework\matches;
-use function PHPUnit\Framework\throwException;
 
 /**
  *
