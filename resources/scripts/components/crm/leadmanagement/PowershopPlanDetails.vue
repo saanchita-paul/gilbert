@@ -13,15 +13,15 @@
                         <h3>Powershop</h3>
                     </div>
                     <div>
-                        <h2>{{plan.title}}</h2>
+                        <h2>{{ getPlanTitle }}</h2>
                         <p>{{ getServiceText }}</p>
                     </div>
                 </div>
 
-                <ElectricityPlan v-if="willShowElectricity" :plan="electricityPlan"
-                                 :victoriaState="isVictoria"></ElectricityPlan>
+                <ElectricityPlan v-if="willShowElectricity" :plan="planDetails.plans.electricity"
+                                 :victoriaState="isVictoria" :selectedPlan="plan"></ElectricityPlan>
 
-                <GasPlan v-if="willShowGas" :plan="gasPlan"></GasPlan>
+                <GasPlan v-if="willShowGas" :plan="planDetails.plans.gas" :selectedPlan="plan"></GasPlan>
 
                 <div class="plan-details">
                     <v-card>
@@ -52,7 +52,7 @@
                                 <div class="font-weight-bold" style="font-size:14px">
                                     Solar feed in tariff if applicable (Excl. GST)
                                 </div>
-                                <div>{{ getSolarFeedInTariff }}</div>
+                                <div>{{ getSolarFeedInTariff }} </div>
                             </div>
 
                         </div>
@@ -148,7 +148,7 @@ export default {
         serviceType: {
             require: true
         },
-        leadSummary: {
+        state: {
             require: true
         },
         planDetails: {
@@ -168,85 +168,38 @@ export default {
         getServiceText() {
             return PowershopMapper.mapServiceText(this.serviceType);
         },
-        isBothEnergySubmit() {
-            return UtilityStoreService.getIsBothEnergySelected() || this.serviceType === 'energy';
-        },
-
-        electricityPlan() {
-          const p =  this.planDetails.plans?.electricity?.find(dt=> dt?.name === this.plan.name);
-          console.log('power shop electricity plan', p,  this.planDetails.plans?.electricity, this.plan?.name );
-          return p;
-        },
-        gasPlan() {
-            const p =  this.planDetails?.plans?.gas?.find(dt=> dt?.name === this.plan.name);
-            console.log('power shop gas plan', p, this.planDetails?.plans?.gas);
-            return p;
-        },
 
         willShowElectricity() {
-            console.log(' show power service', this.serviceType);
             return this.planDetails.plans?.electricity && (this.serviceType === "power" || this.serviceType === "energy");
         },
 
         willShowGas() {
-            console.log(' will show gas', this.serviceType,  this.planDetails?.plans?.gas);
-            return this.planDetails?.plans?.gas && (this.serviceType === "gas" || this.serviceType === "energy");
+            return this.planDetails.plans?.gas && (this.serviceType === "gas" || this.serviceType === "energy");
         },
+
         isVictoria() {
-            return this.leadSummary.state === 'Victoria';
+            return this.state.toLowerCase() === 'victoria';
         },
+
         electricityBPIDLinksList() {
-            return this.electricityPlan?.bpid_links?.filter(bpid => bpid.plan === this.plan.name);
+            return this.planDetails?.plans?.electricity?.bpid_links || [];
         },
+
         gasBPIDLinksList() {
-            return this.gasPlan?.bpid_links;
+            return this.planDetails?.plans?.gas?.bpid_links || [];
         },
+
         getSolarFeedInTariff() {
-            return this.electricityPlan?.solar_buy_pack_value ?? "";
+            return this.planDetails?.plans?.electricity?.solar_buy_pack_value ?? "";
         },
-        state() {
-            switch(this.leadSummary.state) {
-                case "New South Wales":
-                    return 'NSW'
-                case "Victoria":
-                    return 'VIC'
-                case "Queensland":
-                    return 'QLD'
-                case "South Australia":
-                    return 'SA'
-                case "Northern Territory":
-                    return 'NT'
-                case "Tasmania":
-                    return 'TAS'
-                case "Australian Capital Territory":
-                    return 'ACT'
-                case 'Western Australia':
-                    return 'WA'
-            }
-        },
+
+        getPlanTitle() {
+            return (this.planDetails?.plans?.electricity?.vdo.find((item) => item.name === this.plan))?.marketing_offer_name;
+        }
     },
-    watch: {
-        isBothEnergySubmit() {
-            this.getPowershopData()
-        },
-    },
-    mounted() {
-        // this.getPowershopData();
-        console.log(this.$props);
-    },
+    watch: {},
+    mounted() {},
     methods: {
-        async getPowershopData() {
-
-            let query = {
-                postcode: this.leadSummary?.postcode,
-                state: this?.state,
-                nmi: this.leadSummary?.nmi,
-            }
-
-            console.log('calling power shop data');
-
-            this.planDetails = await PowershopService.getPowershopData(query);
-        },
         closeDialog() {
             this.$emit('toggleDialog')
         }

@@ -23,20 +23,19 @@
 
         <v-btn  outlined small
                 color="indigo" class="my-4" @click="togglePowerShopPlanDetails">show Plan</v-btn>
-        
+
         <v-dialog v-model="dialog" max-width="450">
             <v-card>
                 <PowershopPlanDetails
                     @toggleDialog="togglePowerShopPlanDetails"
-                    :serviceType="'energy'"
-                    :leadSummary="note.leads"
+                    :serviceType="serviceType"
+                    :state="note.leads.state"
                     :planDetails="planDetails"
-                    :plan="true"
-
+                    :plan="note.leads.plan_type"
                 />
             </v-card>
         </v-dialog>
-        
+
     </v-card>
 </template>
 
@@ -123,8 +122,7 @@ name: "SubmittedPowershopNote",
         },
         async mapPlanType() {
             if (this.note.plans){
-                const plan = await PowershopMapper.mapPowershopData(this.note.plans);
-                this.planDetails = plan;
+                this.planDetails = await PowershopMapper.mapPowershopData(this.note.plans);
             }
         },
     },

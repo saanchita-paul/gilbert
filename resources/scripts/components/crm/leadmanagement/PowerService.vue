@@ -75,10 +75,10 @@
                 ></OriginPlan>
             </div>
 
-            <div class="d-flex" v-if="selectedProvider === 'powershop' && loadPowerShopDetails">
+            <div class="d-flex" v-if="selectedProvider === 'powershop'">
                 <PowershopPlan
                     :class="{'not-editable': !isServiceEditable }"
-                    v-for="plan in powershopPlans"
+                    v-for="plan in getPowerShopPlans"
                     :key="plan.name"
                     :plan="plan"
                     @click.native="selectPlan(plan)"
@@ -185,10 +185,9 @@
                 <PowershopPlanDetails
                     @toggleDialog="togglePowerShopPlanDetails"
                     :serviceType="isBothEnergySubmit ? 'energy' : 'power'"
-                    :leadSummary="leadSummary"
-                    :planDetails="powershopPlan"
-                    :plan="activePowerShopPlan"
-
+                    :state="leadSummary.state"
+                    :planDetails="powerShopData"
+                    :plan="selectedPlan"
                 />
             </v-card>
         </v-dialog>
@@ -265,10 +264,10 @@ export default {
             planDetails: null,
             activePowerShopPlan: null,
             powershopPlan: null,
+            powerShopData: null
         };
     },
     computed: {
-
         activeServiceType() {
             return LeadApplicationService.getActiveServiceTab()
         },
@@ -368,21 +367,18 @@ export default {
                     return 'wa'
             }
         },
+        getPowerShopPlans() {
+            return this.powerShopData?.plans?.electricity?.vdo || [];
+        },
     },
     mounted() {
         this.fetchEaPlans();
         this.getOriginData();
-        // this.fetchOriginPlans();
         this.loadSelectedProviderAndPlan();
-        this.fetchPowershopPlans();
-
-        console.log('selected provider', this.selectedProvider);
 
         if(this.selectedProvider === 'powershop') {
             this.getPowershopData();
         }
-
-
         // On address change refetch Sumo Plan Details
         const updateAddress = address => {
             this.selectedProvider === "sumo" ? this.$eventBus.$emit("validate", this.fetchSumoPlans) : null;
@@ -425,18 +421,7 @@ export default {
                 state: this.leadSummary.state
             });
             this.isEaPlansLoaded = true;
-            console.log("eaPlans", this.eaPlans);
         },
-        // async fetchOriginPlans() {
-        //     const originProvider = this.providers.find(pl => {
-        //         return pl.name === 'origin';
-        //     });
-        //
-        //     this.originPlans = originProvider.plans.filter(plan => {
-        //         return plan.type === 'power';
-        //     });
-        //     console.log("originPlans", this.originPlans);
-        // },
         async fetchSumoPlans(name) {
             this.isSumoPlansLoading = true;
             this.isSumoPlansLoadError = false;
@@ -514,7 +499,6 @@ export default {
                 }
             }
         },
-
         getPlanPayload(planText) {
             let payload = {
                 service_type: this.leadSummary?.service_interests,
@@ -533,7 +517,7 @@ export default {
             }
 
             if (this.selectedProvider === 'powershop') {
-                payload.gas_plan_type = this.powerShoplandata.plans.gas ? 'powershop_100%_carbon_neutral' : null;
+                payload.gas_plan_type = this.powerShopData.plans.gas ? 'powershop_100%_carbon_neutral' : null;
             }
 
             return payload;
@@ -574,22 +558,38 @@ export default {
         async changeGoNeutral() {
             await LeadApplicationService.saveSoleField('ea_go_neutral', this.leadSummary.ea_go_neutral, this.leadSummary.id);
         },
-        async fetchPowershopPlans() {
-
-            console.log('plan fetching is calling');
-            const powershopProvider = this.providers.find(pl => {
-                return pl.name === 'powershop';
-            });
-
-            this.powershopPlans = powershopProvider.plans.filter(plan => {
-                return plan.type === 'power';
-            });
-        },
-        togglePowerShopPlanDetails(plan) {
+        // async fetchPowershopPlans() {
+        //
+        //     console.log('plan fetching is calling');
+        //     const powershopProvider = this.providers.find(pl => {
+        //         return pl.name === 'powershop';
+        //     });
+        //
+        //     this.powershopPlans = powershopProvider.plans.filter(plan => {
+        //         return plan.type === 'power';
+        //     });
+        // },
+        togglePowerShopPlanDetails() {
             this.powerShopPlanDetails = !this.powerShopPlanDetails;
-            this.activePowerShopPlan = plan;
+            // this.activePowerShopPlan = plan;
         },
 
+        // async getPowershopData() {
+        //     let query = {
+        //         postcode: this.leadSummary?.postcode,
+        //         service_type: this.isBothEnergySubmit ? "energy" : "energy",
+        //         nmi: this.leadSummary?.nmi,
+        //         state: this.state,
+        //     }
+        //     this.powerShoplandata = await PowershopService.getPowerShopData(query);
+        //     this.powershopPlan = this.powerShoplandata;
+        //     this.powershopPlans = this.powerShoplandata.plans.electricity;
+        //
+        //     if (!isNull(this.powerShoplandata)) {
+        //         this.loadPowerShopDetails = true;
+        //     }
+        //
+        // },
         async getPowershopData() {
             let query = {
                 postcode: this.leadSummary?.postcode,
@@ -597,14 +597,7 @@ export default {
                 nmi: this.leadSummary?.nmi,
                 state: this.state,
             }
-            this.powerShoplandata = await PowershopService.getPowerShopData(query);
-            this.powershopPlan = this.powerShoplandata;
-            this.powershopPlans = this.powerShoplandata.plans.electricity;
-
-            if (!isNull(this.powerShoplandata)) {
-                this.loadPowerShopDetails = true;
-            }
-
+            this.powerShopData = await PowershopService.getPowerShopData(query);
         },
 
         async getOriginData() {
