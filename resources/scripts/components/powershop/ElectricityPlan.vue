@@ -10,9 +10,8 @@
                         </div>
                         <div class="font-weight-bolder">
 
-                            <p class="mb-2 bolder-text">{{ plan.offers.title }} <span class="deep-text">(inc. GST)</span></p>
-                            <p class="mb-2 bolder-text">{{ plan.offers.line_2 }}</p>
-<!--                            <p class="mb-2 bolder-text">{{ plan.offers.line_1 }} 1% <span class="deep-text">less than the </span></p>-->
+                            <p class="mb-2 bolder-text">{{ getSelectedElectricityPlan.title }} <span class="deep-text">(inc. GST)</span></p>
+                            <p class="mb-2 bolder-text">{{ getSelectedElectricityPlan.line_2 }} <span class="deep-text">(less then the)</span></p>
                             <p class="mb-4">
                                 <span v-if="victoriaState" class="linkable">Victorian Default Offer</span>
                                 <span v-else class="linkable">Reference Pricing</span>
@@ -20,7 +19,7 @@
                         </div>
                     </div>
                     <div class="mt-2">
-                        <p class="paragraph-text">{{ plan.offers.line_1 }}</p>
+                        <p class="paragraph-text">{{ getSelectedElectricityPlan.line_1 }}</p>
                         <p class="paragraph-text">Your actual bills will vary depending on your usage and any price changes in the future.
                             You'll be notified of any change in accordance with our regulatory requirements.</p>
                     </div>
@@ -106,7 +105,10 @@ export default {
         },
         victoriaState: {
             require: false
-        }
+        },
+        selectedPlan: {
+            require: false
+        },
     },
     data() {
         return {
@@ -114,13 +116,22 @@ export default {
         }
     },
     computed: {
+        getSelectedElectricityPlan() {
+            const plan = this.plan?.vdo.find((item) => item.name === this.selectedPlan);
 
+            if (plan){
+                return {
+                    'title': "$" + plan?.vdo_dmo_amount + "/Year",
+                    'line_1' : "For an average household using "+ plan?.consumption +" kWh/year, the estimated annual cost of this electricity plan is $" + plan?.vdo_dmo_amount + " in the "+ this.plan.distributor_name +" network with single rate tariff.",
+                    'line_2' :  plan?.vdo_dmo_percentage + "%",
+                }
+            }
+        }
     },
     methods: {
     },
 
     mounted() {
-        console.log('getting plan from here', this.plan);
     }
 }
 </script>
