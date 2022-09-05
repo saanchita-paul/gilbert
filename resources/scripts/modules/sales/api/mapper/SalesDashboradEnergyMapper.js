@@ -55,7 +55,12 @@ export default {
                 ],
             ];
 
-            const totalEaData = data?.ea_gas_no_frills + data?.ea_gas_basic_plan + data?.ea_gas_total_plan + data?.ea_gas_flexi_plan;
+            const totalEaData =
+                data?.ea_gas_no_frills
+                + data?.ea_gas_basic_plan
+                + data?.ea_gas_total_plan
+                + data?.ea_gas_flexi_plan
+                + data?.ea_gas_balance_plan;
             const totalSumoData = data?.sumo_gas_freedom;
             const totalOriginData = data?.origin_advantage_variable + data?.origin_supply + data?.origin_basic;
 
@@ -127,7 +132,11 @@ export default {
                 ],
             ];
 
-            const totalEaData = data?.ea_power_no_frills + data?.ea_power_basic_plan + data?.ea_power_total_plan + data?.ea_power_flexi_plan;
+            const totalEaData = data?.ea_power_no_frills
+                + data?.ea_power_basic_plan
+                + data?.ea_power_total_plan
+                + data?.ea_power_flexi_plan
+                + data?.ea_power_balance_plan;
             const totalSumoData = data?.sumo_power_freedom;
             const totalOriginData = data?.origin_home_assist + data?.origin_home_support;
 
