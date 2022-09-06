@@ -439,7 +439,6 @@ export default {
                 );
 
                 this.isSumoPlansLoading = false;
-                console.log("sumoPlans", this.sumoPlans);
                 return 0;
             } catch (error) {
                 console.log('Sumo Error', error);
@@ -455,8 +454,6 @@ export default {
         onSelectProvider(provider) {
             this.resetSelectedPlan();
             this.selectedProvider = provider;
-
-            console.log('selected plan', this.selectedProvider)
 
             if (provider === "sumo") {
                 this.$eventBus.$emit("validate", this.fetchSumoPlans);
