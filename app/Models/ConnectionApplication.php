@@ -271,6 +271,7 @@ class ConnectionApplication extends Model
     const PLAN_TYPE_BASIC = 'basic_plan';
     const PLAN_TYPE_NO_FRILLS = 'no_frills';
     const PLAN_TYPE_FLEXI_PLAN = 'flexi_plan';
+    const PLAN_TYPE_BALANCE_PLAN = 'balance_plan';
 
     const PROVIDER_POWER_SHOP = 'powershop';
 

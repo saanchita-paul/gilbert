@@ -117,7 +117,7 @@ class ExportPlanNote
 
             if(!empty($data['plans']['electricity'])){
                 $mapElecData = [
-                    'Ele Plan Name' => 'Origin Home Assist', // static
+                    'Ele Plan Name' => $data['plans']['electricity']['plan_name_text'] ?? 'Origin Home Assist',
                     'Ele Plan Description' => $data['plans']['electricity']['offers'] ? $data['plans']['electricity']['offers']['line_1'] . '. ' . $data['plans']['electricity']['offers']['line_1'] : '',
                     'Ele Distributor' => $data['plans']['electricity']['distributor_name'] ?? '',
                     'Ele Connection Fee Per Year' => $data['plans']['electricity']['vdo']['vdo_dmo_amount'] ?? '',
@@ -153,7 +153,7 @@ class ExportPlanNote
             }
             if(!empty($data['plans']['gas'])){
                 $mapGasData = [
-                    'Gas Plan Name' => 'Origin Advantage Variable', // static
+                    'Gas Plan Name' => $data['plans']['gas']['plan_name_text'] ?? 'Origin Advantage Variable',
                     // 'Plan Description' => $data['plans']['electricity']['offers'] ? $data['plans']['electricity']['offers']['line_1'] . '. ' . $data['plans']['electricity']['offers']['line_1'] : '',
                     // 'Gas Distributor' => $data['plans']['electricity']['distributor_name'] ?? '',
                     'Gas Standard Connection Fee' => data_get($data, 'plans.gas.fees.standard_connection_fee', ''),

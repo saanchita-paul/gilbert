@@ -76,7 +76,7 @@
 
                     <p class="title font-weight-bold mt-3">Features</p>
 
-                    <div v-if="plan === 'flexi_plan'" class="mb-3">
+                    <div v-if="plan === isTopPlan" class="mb-3">
                         <p class="mb-0 font-weight-bold">Discount</p>
                         <p class="mb-0">{{planDetails.discounts.electricity}}% discount off off total electricity bill. Guaranteed discount that applied to your energy charges</p>
                         <p class="mb-0">A variable rate, with a total energy bill discount.</p>
