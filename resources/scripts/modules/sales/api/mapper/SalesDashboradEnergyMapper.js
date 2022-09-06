@@ -98,7 +98,7 @@ export default {
             return {
                 labels: lables,
                 toolTips: toolTips,
-                total: totalEaData + totalSumoData + totalOriginData,
+                total: totalEaData + totalSumoData + totalOriginData + totalPowerShopData,
                 datasets: [{
                     label: 'My First Dataset',
                     data: chartData,
