@@ -365,16 +365,14 @@ export default {
             return this.powerShopData?.plans?.gas?.vdo || [];
         },
     },
-    mounted() {
-        this.fetchEaPlans();
-        this.getOriginData();
-        // this.fetchOriginPlans();
-        this.loadSelectedProviderAndPlan();
-        // this.fetchPowershopPlans();
+    async mounted() {
+        await this.fetchEaPlans();
+        await this.getOriginData();
 
-        if(this.selectedProvider === 'powershop') {
-            this.getPowershopData();
+        if (this.selectedProvider === 'powershop') {
+            await this.getPowershopData();
         }
+        this.loadSumoSelectedProviderAndPlan();
 
         // On address change refetch Sumo Plan Details
         const updateAddress = address => {
@@ -387,21 +385,17 @@ export default {
     },
     watch: {
         isBothEnergySubmit() {
-            this.getOriginData()
+            this.getOriginData();
+            if(this.selectedProvider === 'powershop') {
+                this.getPowershopData();
+            }
         },
         getNMIPrefix() {
             this.getOriginData()
         },
     },
     methods: {
-        loadSelectedProviderAndPlan() {
-            const connectionService = this.leadSummary.connection_services.find(
-                data => data.service_type === "gas"
-            );
-
-            this.selectedProvider = connectionService?.provider_name;
-            this.selectedPlan = connectionService?.plan_type;
-
+        loadSumoSelectedProviderAndPlan() {
             if (this.selectedProvider === "sumo") {
                 setTimeout(() => this.$eventBus.$emit("validate", this.fetchSumoPlans), 600);
             }
@@ -413,16 +407,6 @@ export default {
                 state: this.leadSummary.state
             });
             this.isEaPlansLoaded = true;
-            console.log("eaPlans", this.eaPlans);
-        },
-        async fetchOriginPlans() {
-            const originProvider = this.providers.find(pl => {
-                return pl.name === 'origin';
-            });
-            this.originPlans = originProvider.plans.filter(plan => {
-                return plan.type === 'gas';
-            });
-            console.log("originPlans", this.originPlans);
         },
         async fetchSumoPlans(name) {
             this.isSumoPlansLoading = true;
@@ -440,7 +424,6 @@ export default {
                     this.leadSummary
                 );
                 this.isSumoPlansLoading = false;
-                console.log("sumoPlans", this.sumoPlans);
                 return 0;
             } catch (error) {
                 console.log('Sumo Error', error);
@@ -459,6 +442,10 @@ export default {
 
             if (provider === "sumo") {
                 this.$eventBus.$emit("validate", this.fetchSumoPlans);
+            }
+
+            if (provider === "powershop") {
+                this.getPowershopData();
             }
         },
         selectEAPlan(plan, isManual = false) {
@@ -519,10 +506,18 @@ export default {
                 gas_plan_type: planText,
                 power_plan_type: planText ,
             }
-            return this.selectedProvider === 'origin' ? {...payload, ...{
-                    gas_plan_type: this.planDetails.plans.gas?.plan_name_code || null,
-                    power_plan_type: this.planDetails.plans.electricity?.plan_name_code || null ,
-                }} : payload;
+            if (this.selectedProvider === 'origin') {
+                return {...payload, ...{
+                        gas_plan_type: this.planDetails.plans.gas?.plan_name_code || null,
+                        power_plan_type: this.planDetails.plans.electricity?.plan_name_code || null ,
+                    }}
+            }
+
+            if (this.selectedProvider === 'powershop') {
+                payload.gas_plan_type = this.powerShopData?.plans?.gas ? 'powershop_100%_carbon_neutral' : null;
+            }
+
+            return payload;
         },
 
         isDisable() {
@@ -544,21 +539,8 @@ export default {
             await LeadApplicationService.saveSoleField('ea_go_neutral', this.leadSummary.ea_go_neutral, this.leadSummary.id);
         },
 
-        async fetchPowershopPlans() {
-            // const powershopProvider = this.providers.find(pl => {
-            //     return pl.name === 'powershop';
-            // });
-            //
-            // this.powershopPlans = powershopProvider.plans.filter(plan => {
-            //     return plan.type === 'power';
-            // });
-
-            await this.getPowershopData();
-        },
-
-        togglePowerShopPlanDetails(plan) {
+        togglePowerShopPlanDetails() {
             this.powerShopPlanDetails = !this.powerShopPlanDetails;
-            this.activePowerShopPlan = plan;
         },
 
         async getPowershopData() {
