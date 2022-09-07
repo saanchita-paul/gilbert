@@ -389,15 +389,9 @@ class CAFGenerationService
         try {
             $url = $this->chatbotUri.'/hood-dashboard/api/power-shop/promo-code';
 
-            if (config('app.env') == 'local'){
-                $response = Http::withOptions([
-                    'verify' => false,
-                ])
-                ->get($url);
-            } else {
-                $response = Http::get($url);
-            }
-
+            if (config('app.env') == 'local') $response = Http::withOptions(['verify' => false,])->get($url);
+            else $response = Http::get($url);
+            
             if($response->status() == 200) {
                 $this->mapPromotionCode(json_decode($response->body(), true));
             }
