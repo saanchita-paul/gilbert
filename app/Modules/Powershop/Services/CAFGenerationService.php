@@ -13,11 +13,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  */
 class CAFGenerationService
 {
-
-//    public function __construct(protected array $applicationIdList)
-//    {
-//    }
-
     /**
      * @var array
      */
@@ -43,7 +38,7 @@ class CAFGenerationService
         $this->chatbotUri = config('bot.root_url');
         $this->getPromotionCode();
         $this->applicationIdList = $applicationIdList;
-        $this->cafToken = $this->getPowerShopCafToken();
+        // $this->cafToken = $this->getPowerShopCafToken();
 
         $this->fetchApplications();
         $this->mapApplications();
@@ -80,8 +75,8 @@ class CAFGenerationService
 
         $selectedId = [];
         foreach ($this->applicationList as $app) {
-
             try{
+                $cafToken = $this->getPowerShopCafToken($app);
                 $this->mappedApplicationList[] = [
                     'Brand' => 'PowerShop',
                     'Channel ID' => 'Hood Move Tech',
@@ -131,7 +126,7 @@ class CAFGenerationService
                     'Life Support/Sensitive Load' => $this->getLifeSensitive($app),
                     'Advised Main Switch Needs Turning Off?' => 'Yes',
                     'Safety Certificate Required?' => 'No',
-                    'Token' => $this->cafToken,
+                    'Token' => $cafToken,
                     'Electricity Offer Status' => null,
                     'Electricity Reference Number' => null,
                     'Electricity Rejection/Incomplete Reason' => null,
@@ -361,7 +356,7 @@ class CAFGenerationService
             $hazard =  'Animal on property';
             $hasrestineAnymal = true;
         }
-        if(is_null($is_renovation_on) && !empty(trim($is_renovation_on))) {
+        if(!is_null($is_renovation_on) && !empty(trim($is_renovation_on))) {
             if($hasrestineAnymal) {
                 return $hazard .', '. 'renovation going on';
             }
@@ -388,14 +383,21 @@ class CAFGenerationService
 
     /**
      * call chatbot api for finding promotion code
-     * this api may take state for state wise promotion code
-     * but if call without state it will give all the promotion code
      */
     private function getPromotionCode()
     {
         try {
-            $url = $this->chatbotUri.'hood-dashboard/api/power-shop/promo-code';
-            $response = Http::get($url);
+            $url = $this->chatbotUri.'/hood-dashboard/api/power-shop/promo-code';
+
+            if (config('app.env') == 'local'){
+                $response = Http::withOptions([
+                    'verify' => false,
+                ])
+                ->get($url);
+            } else {
+                $response = Http::get($url);
+            }
+
             if($response->status() == 200) {
                 $this->mapPromotionCode(json_decode($response->body(), true));
             }
@@ -409,17 +411,8 @@ class CAFGenerationService
      */
     private function mapPromotionCode(?array $promotionData): void
     {
-
-
-        foreach (data_get($promotionData, 'data', []) as $data)
-        {
-
-            $this->gasPromotionData[data_get($data, 'state')] = data_get($data, 'gas_promo_code');
-            $this->elePromotionData[data_get($data, 'state')] = data_get($data, 'elec_promo_code');
-
-
-        }
-
+        $this->gasPromotionData = data_get($promotionData, 'gas', []);
+        $this->elePromotionData = data_get($promotionData, 'electricity', []);
     }
 
     /**
@@ -429,19 +422,48 @@ class CAFGenerationService
      */
     private function getPromo($app, string $service) : null| string
     {
+        $promo = '';
 
-        $services = $app->connectionServices?->pluck('service_type')->toArray();
+        $state = $app->state;
+        $postcode = $app->postcode;
+        
+        $conService = ConnectionService::where('connection_application_id', $app->id)
+                        ->where('provider_name', ConnectionService::PROVIDER_POWER_SHOP)
+                        ->where('service_type', $service)
+                        ->first();
 
+        if ($conService) {
+            $plan_name = $conService->plan_type;
 
-        if(!in_array( $service, $services)) {
-            return '';
+            if ($service == ConnectionService::TYPE_ELECTRICITY && !empty($this->elePromotionData)){
+                $nmi_prefix = substr($app->nmi, 0, 3);
+    
+                foreach($this->elePromotionData as $data){
+                    if ((in_array($state, $data['state']) || in_array($this->stateMap($state), $data['state'])) &&
+                        in_array($plan_name, $data['plan_name']) &&
+                        in_array($postcode, $data['postcode'])
+                    ){
+                        if (empty($promo) || in_array($nmi_prefix, $data['nmi_prefix'])){
+                            $promo = $data['promo_code'];
+                        }
+                    }
+                }
+            }
+
+            if ($service == ConnectionService::TYPE_GAS && !empty($this->gasPromotionData)){
+
+                foreach($this->gasPromotionData as $data){
+                    if ((in_array($state, $data['state']) || in_array($this->stateMap($state), $data['state'])) &&
+                        in_array($plan_name, $data['plan_name']) &&
+                        in_array($postcode, $data['postcode'])
+                    ){
+                        $promo = $data['promo_code'];
+                    }
+                }
+            }
         }
-        $state = $this->stateMap($app->state);
-        return match($service) {
-            ConnectionService::TYPE_GAS => $this->gasPromotionData[$state] ?? '' ,
-            ConnectionService::TYPE_ELECTRICITY => $this->elePromotionData[$state] ?? '' ,
-            default => ''
-        };
+
+        return $promo;
     }
 
     private function stateMap($state)
