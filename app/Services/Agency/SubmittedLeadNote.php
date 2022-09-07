@@ -23,7 +23,7 @@ class SubmittedLeadNote
 
     }
 
-   private function prepareLeadData($planType, $postCode, $state, $submittedService, $provider_name = 'N/A')
+   private function prepareLeadData($planType, $postCode, $state, $submittedService, $provider_name = 'N/A', $gas_plan_type = null)
     {
        $leadData = [
            'utility_type' => $submittedService,
@@ -50,6 +50,7 @@ class SubmittedLeadNote
         if ($provider_name == 'Powershop' && in_array($submittedService, ['Elec & Gas'])){
             $sameDayService = new SameDayConnectionService($this->existLead->id, $this->getSubmitType($submittedService));
             $leadData['gas_moving_date'] = $sameDayService->getNextGasConnectionDate();
+            if (!empty($gas_plan_type)) $leadData['gas_plan_type'] = $gas_plan_type;
         }
 
         if ($provider_name == 'Origin' && in_array($submittedService, ['Gas', 'Elec & Gas'])){
@@ -98,14 +99,15 @@ class SubmittedLeadNote
     private function doSubmitPowershopNote($state, $postCode){
         $powershopPlanService = new PowershopPlanDetailsService($state, $postCode, $this->existLead->id, $this->servicesId, $this->existLead->nmi ?? '');
 
-        $plan_type = $powershopPlanService->plan_type;
+        $elec_plan_type = $powershopPlanService->elec_plan_type;
+        $gas_plan_type = $powershopPlanService->gas_plan_type;
 
-        if(empty($plan_type)) return;
+        if(empty($elec_plan_type)) return;
 
         $noteService = new ApplicationNoteService($this->user);
         $submittedService = $this->getServices($powershopPlanService->service_type);
         $planDetails = $powershopPlanService->getPlanDetails();
-        $this->leadDetailsJson = $this->prepareLeadData($plan_type, $postCode, $state, $submittedService, 'Powershop');
+        $this->leadDetailsJson = $this->prepareLeadData($elec_plan_type, $postCode, $state, $submittedService, 'Powershop', $gas_plan_type ?? null);
         $note = [
             'type' => ApplicationNote::SUBMITTED_POWERSHOP,
             'connection_details' => $this->leadDetailsJson,
