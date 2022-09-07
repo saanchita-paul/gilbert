@@ -188,15 +188,13 @@ class ExportPlanNote
         }
 
         if($submitType == ApplicationNote::SUBMITTED_POWERSHOP){
-            // REFER HCO-999 for fields 
-            // TODO GAS
             $mappData = [];
 
             if(!empty($data['plans']['electricity'])){
                 $elecPlan = $data['plans']['electricity'];
                 $conService = ConnectionService::where('connection_application_id', $this->noteData->connection_application_id)
                             ->where('provider_name', ConnectionService::PROVIDER_POWER_SHOP)
-                            ->where('utility_type', ConnectionService::TYPE_ELECTRICITY)
+                            ->where('service_type', ConnectionService::TYPE_ELECTRICITY)
                             ->first();
                 $elecServices = $elecPlan['vdo'];
                 $choosenService = $elecServices[0];
@@ -235,11 +233,33 @@ class ExportPlanNote
             }
 
             if(!empty($data['plans']['gas'])){
+                $gasPlan = $data['plans']['gas'];
+                $conService = ConnectionService::where('connection_application_id', $this->noteData->connection_application_id)
+                            ->where('provider_name', ConnectionService::PROVIDER_POWER_SHOP)
+                            ->where('service_type', ConnectionService::TYPE_GAS)
+                            ->first();
+                $gasServices = $gasPlan['vdo'];
+                $choosenService = $gasServices[0];
+                if ($conService) {
+                    foreach ($gasServices as $gasService) {
+                        if ($gasService['name'] == $conService->plan_type)
+                            $choosenService = $gasService;
+                    }
+                }
                 $gasData = [
                     'Gas Daily Supply Charge' => $data['plans']['gas']['daily_charge'],
                     'Gas Anytime Charge' => $data['plans']['gas']['anytime_charge'],
-                    'Gas Reconnection Charge' => '',
+                    'Gas Reconnection Charge' => $data['plans']['gas']['price'][0]['fees'],
                 ];
+
+                $linkCount = 1;
+                foreach ($gasPlan['bpid_links'] as $link){
+                    if ($link['plan'] == $choosenService['name']){
+                        $gasData['Gas Link ' . $linkCount] = $link['link'];
+                        $gasData['Gas Description ' . $linkCount] = $link['title'];
+                        $linkCount += 1;
+                    }
+                }
 
                 $mappData = array_merge($mappData, $gasData);
             }
