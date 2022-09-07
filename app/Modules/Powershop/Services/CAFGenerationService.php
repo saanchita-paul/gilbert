@@ -33,13 +33,14 @@ class CAFGenerationService
     private array $gasPromotionData;
     private array $elePromotionData;
     private $cafToken;
+    private $chatbotUri;
 
     /**
      * @param array $applicationIdList
      */
     public function __construct(array $applicationIdList)
     {
-
+        $this->chatbotUri = config('bot.root_url');
         $this->getPromotionCode();
         $this->applicationIdList = $applicationIdList;
         $this->cafToken = $this->getPowerShopCafToken();
@@ -65,7 +66,7 @@ class CAFGenerationService
     private function fetchApplications(): void
     {
         $this->applicationList = ConnectionApplication::query()->whereIn('id', $this->applicationIdList)
-            ->with('connectionServices','identification','authorizedPerson')
+            ->with('connectionServices','identification','authorizedPerson', 'powershopPaymentInfo')
             ->get();
     }
 
@@ -393,9 +394,7 @@ class CAFGenerationService
     private function getPromotionCode()
     {
         try {
-            $chatbotUri = 'https://demo.chatbot.hood.ai/';
-//            $chatbotUri = config('bot.root_url');
-            $url = $chatbotUri.'hood-dashboard/api/power-shop/promo-code';
+            $url = $this->chatbotUri.'hood-dashboard/api/power-shop/promo-code';
             $response = Http::get($url);
             if($response->status() == 200) {
                 $this->mapPromotionCode(json_decode($response->body(), true));
@@ -457,9 +456,9 @@ class CAFGenerationService
 
     }
 
-    private function getPowerShopCafToken(): string
+    private function getPowerShopCafToken($app): string
     {
-        return '';
+        return $app->powershopPaymentInfo->pluck('px_dps_billing_id');
     }
 
 }

@@ -108,8 +108,12 @@
                     <p class="item-value">{{ application.service_type }}</p>
                 </div>
                 <div class="item">
-                    <p class="item-title">Plan</p>
-                    <p class="item-value">{{ application.plan }}</p>
+                    <p class="item-title"> Electricity Plan</p>
+                    <p class="item-value">{{ application.elctricity_plan }}</p>
+                </div>
+                <div class="item">
+                    <p class="item-title"> Gas Plan</p>
+                    <p class="item-value">{{ application.gas_plan }}</p>
                 </div>
             </v-col>
         </v-row>

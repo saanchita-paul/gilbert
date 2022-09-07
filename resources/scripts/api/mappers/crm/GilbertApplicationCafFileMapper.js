@@ -21,7 +21,8 @@ const mapGilbertApplicationCafFile = data => {
     response.billing = mapBilling(response.is_email_billing);
     response.status = mapStatus(response.status);
     response.supplier = mapSupplier(response.connection_services);
-    response.plan = mapPlan(response.plan_type);
+    response.elctricity_plan = mapPlan(response.connection_services, 'power');
+    response.gas_plan = mapPlan(response.connection_services, 'gas');
     response.service_type = mapService(response.connection_services);
     response.is_selected = false;
     response.selected_service = mapSelectedService(response.connection_services);
@@ -62,13 +63,20 @@ const mapSupplier = provider => {
     return 'PowerShop';
 }
 
-const mapPlan = plan_type => {
-    if (plan_type === 'total_plan') {
-        return 'Total Plan';
-    } else if (plan_type === 'flexi_plan') {
-        return '"Flexi Plan';
-    } else {
-        return '';
+const mapPlan = (services , serviceType)=> {
+
+const activeService = services?.find(svc => svc.service_type === serviceType);
+    switch (activeService?.plan_type) {
+        case 'total_plan':
+            return 'Total Plan';
+        case 'flexi_plan':
+            return 'Flexi Plan';
+        case 'powershop_100%_carbon_neutral':
+            return 'Power Shop 100% Carbon Neutral';
+        case 'switch_saver':
+            return 'Switch Saver';
+        default:
+            return '';
     }
 }
 
