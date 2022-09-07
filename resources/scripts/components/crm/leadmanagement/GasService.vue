@@ -40,8 +40,6 @@
             <v-divider></v-divider>
         </v-col>
 
-        <v-divider></v-divider>
-
         <v-col cols="12" ref="provider">
             <p class="sub-title" v-if="selectedServiceTitle.length > 0">
                 Select a plan for {{ selectedServiceTitle }}

@@ -43,8 +43,6 @@
             <SameDayConnection :leadSummary="leadSummary" @changeAfterHourPayee="changeAfterHourPayee" />
         </v-col>
 
-        <v-divider></v-divider>
-
         <v-col cols="12" ref="provider">
             <p class="sub-title" v-if="selectedServiceTitle.length > 0">
                 Select a plan for {{ selectedServiceTitle }}
@@ -121,8 +119,8 @@
                 <p class="neutral-checkbox-text">Customer opts in for <span class="font-weight-bold">Go Neutral</span>.</p>
             </div>
         </v-col>
-
         <v-col cols="12" v-if="selectedProvider === 'powershop'">
+            <v-divider></v-divider>
             <PaymentDetails :lead="leadSummary"></PaymentDetails>
         </v-col>
 

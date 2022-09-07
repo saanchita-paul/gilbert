@@ -33,42 +33,43 @@
         </v-col>
 
         <v-col cols="6" >
-            <h3 class="pb-2">Estimated Billing</h3>
-            <p class="mt-4">Please input values from 1-900 in fields below.</p>
-            <div class="crm-text-field">
-                <div class="pr-3 title-text">
-                    <h4>Quarterly Cost (Power) </h4>
-                </div>
-                <div class="text-field">
-                    <ValidationProvider
-                        name="Cost"
-                        rules="required"
-                        v-slot="{ errors }"
-                    >
-                        <v-text-field
-                            v-model="powerCost"
-                            @blur="savePaymentInfo('estimated_elec_billing_cost', powerCost)"
-                            outlined
-                            dense
-                            hide-details="auto"
-                            placeholder="Power Cost"
-                            :error-messages="errors[0]"
+            <ValidationObserver ref="payment">
+                <h3 class="pb-2">Estimated Billing</h3>
+                <p class="mt-4">Please input values from 1-900 in fields below.</p>
+                <div class="crm-text-field">
+                    <div class="pr-3 title-text">
+                        <h4>Quarterly Cost (Power) <span>*</span></h4>
+                    </div>
+                    <div class="text-field">
+                        <ValidationProvider
+                            name="Power cost"
+                            rules="required"
+                            v-slot="{ errors }"
                         >
-                            <template v-slot:append>
-                                <span class="custom-placeholder">AUD</span>
-                            </template>
-                        </v-text-field>
-                    </ValidationProvider>
+                            <v-text-field
+                                v-model="powerCost"
+                                @blur="savePaymentInfo('estimated_elec_billing_cost', powerCost)"
+                                outlined
+                                dense
+                                hide-details="auto"
+                                placeholder="Power Cost"
+                                :error-messages="errors[0]"
+                            >
+                                <template v-slot:append>
+                                    <span class="custom-placeholder">AUD</span>
+                                </template>
+                            </v-text-field>
+                        </ValidationProvider>
+                    </div>
                 </div>
-            </div>
 
-            <div class="crm-text-field">
+                <div class="crm-text-field">
                 <div class="pr-3 title-text">
-                    <h4>Quarterly Cost (Gas)</h4>
+                    <h4>Quarterly Cost (Gas) <span>*</span></h4>
                 </div>
                 <div class="text-field">
                     <ValidationProvider
-                        name="Cost"
+                        name="Gas cost"
                         rules="required"
                         v-slot="{ errors }"
                     >
@@ -88,7 +89,7 @@
                     </ValidationProvider>
                 </div>
             </div>
-
+            </ValidationObserver>
         </v-col>
     </v-row>
 </template>

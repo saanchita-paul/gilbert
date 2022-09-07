@@ -55,7 +55,7 @@
                 </v-card>
             </v-tab>
 
-            <v-tabs-items v-model="tab">
+            <v-tabs-items v-model="tab" class="p-24">
                 <v-tab-item>
                     <PowerService
                         :leadSummary="leadSummary"
@@ -167,5 +167,8 @@ export default {
 }
 .dangerText {
     color: red;
+}
+.p-24 {
+    padding: 24px !important;
 }
 </style>

@@ -409,7 +409,7 @@
 
                     </v-col>
 
-                    <v-col cols="6">
+                    <v-col cols="6" v-if="showPowerShopPaymentSection">
                         <p class="sub-title title-align">Payment</p>
 
                         <div class="crm-text-field">
@@ -892,7 +892,8 @@ export default {
     },
     computed: {
         allOk() {
-           return this.is_temp_condition  && this.is_life_support && !this.isLifeSupportAndEA && this.isPowerShopOk;
+           return this.is_temp_condition  && this.is_life_support
+               && (!this.isLifeSupportAndEA || this.isPowerShopOk);
         },
         selectedPowerPlan() {
             return LeadApplicationService.mapPlan(this.data.selectedPowerPlan);
@@ -931,7 +932,7 @@ export default {
                 : 'Pending';
         },
         showPowerShopNoteSection () {
-            return this.data.selectedProvider === 'powershop' 
+            return this.data.selectedProvider === 'powershop'
                 && (
                     this.showElectricityPowerShopNote
                     || this.showElectricityACTPowerShopNote
@@ -952,6 +953,9 @@ export default {
         isPowerShopOk() {
             return this.sameDayConnectionData?.electricityOk
                 && this.sameDayConnectionData?.gasOk;
+        },
+        showPowerShopPaymentSection() {
+            return this.data.selectedProvider === 'powershop';
         }
     },
     methods: {
