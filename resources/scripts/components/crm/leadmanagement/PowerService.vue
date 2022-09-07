@@ -121,7 +121,7 @@
         </v-col>
         <v-col cols="12" v-if="selectedProvider === 'powershop'">
             <v-divider></v-divider>
-            <PaymentDetails :lead="leadSummary"></PaymentDetails>
+            <PaymentDetails :lead="leadSummary" @paymentStatus="paymentStatusCheck"></PaymentDetails>
         </v-col>
 
         <v-col cols="12">
@@ -262,7 +262,8 @@ export default {
             planDetails: null,
             activePowerShopPlan: null,
             powershopPlan: null,
-            powerShopData: null
+            powerShopData: null,
+            paymentStatus: null
         };
     },
     computed: {
@@ -368,6 +369,9 @@ export default {
         getPowerShopPlans() {
             return this.powerShopData?.plans?.electricity?.vdo || [];
         },
+        paymentValidate() {
+            return this.paymentStatus === 2  || this.leadSummary?.powershop_payment_info?.status === 2;
+        }
     },
     mounted() {
         this.fetchEaPlans();
@@ -542,7 +546,8 @@ export default {
                 !LeadApplicationService.canSubmitEnergy('power') ||
                 !this.selectedProvider ||
                 !this.selectedPlan ||
-                this.isPayeeSelectedForAfterHourSubmission
+                this.isPayeeSelectedForAfterHourSubmission ||
+                !this.paymentValidate
             );
         },
         submit() {
@@ -556,25 +561,8 @@ export default {
 
         togglePowerShopPlanDetails() {
             this.powerShopPlanDetails = !this.powerShopPlanDetails;
-            // this.activePowerShopPlan = plan;
         },
 
-        // async getPowershopData() {
-        //     let query = {
-        //         postcode: this.leadSummary?.postcode,
-        //         service_type: this.isBothEnergySubmit ? "energy" : "energy",
-        //         nmi: this.leadSummary?.nmi,
-        //         state: this.state,
-        //     }
-        //     this.powerShoplandata = await PowershopService.getPowerShopData(query);
-        //     this.powershopPlan = this.powerShoplandata;
-        //     this.powershopPlans = this.powerShoplandata.plans.electricity;
-        //
-        //     if (!isNull(this.powerShoplandata)) {
-        //         this.loadPowerShopDetails = true;
-        //     }
-        //
-        // },
         async getPowershopData() {
             let query = {
                 postcode: this.leadSummary?.postcode,
@@ -615,6 +603,10 @@ export default {
                  ]
              }
         },
+
+        paymentStatusCheck(status) {
+            this.paymentStatus = status;
+        }
     },
 };
 </script>

@@ -787,10 +787,7 @@
 
 
      <div class="crm-text-field mt-n6">
-        <div class="field-label">
-          <!-- <span>Inspection Time *</span> -->
-        </div>
-        <div class="text-field">
+        <div class="">
           <v-checkbox
               v-model="property_details.is_power_life_support"
               @change="saveDraft('is_power_life_support', property_details.is_power_life_support)"
@@ -800,9 +797,7 @@
       </div>
 
       <div class="crm-text-field mt-n6">
-        <div class="field-label">
-        </div>
-        <div class="text-field">
+        <div class="">
           <v-checkbox
               v-model="property_details.is_gas_life_support"
               @change="saveDraft('is_gas_life_support', property_details.is_gas_life_support)"
@@ -812,9 +807,7 @@
       </div>
 
       <div class="crm-text-field mt-n6">
-        <div class="field-label">
-        </div>
-        <div class="text-field">
+        <div class="">
           <v-checkbox
               v-model="property_details.is_any_unrestrained_animal"
                @change="saveDraft('is_any_unrestrained_animal', property_details.is_any_unrestrained_animal)"
@@ -1099,7 +1092,7 @@
         </div>
       </div>
 
-      <div class="crm-text-field">
+      <div class="crm-text-field mt-24">
         <div class="field-label">
           <span>Concession Card</span>
         </div>
@@ -2120,5 +2113,8 @@ export default {
 }
 .required-field {
     border: 2px solid red;
+}
+.mt-24 {
+    margin-top: 24px !important;
 }
 </style>
