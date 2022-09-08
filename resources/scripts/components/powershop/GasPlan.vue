@@ -1,6 +1,21 @@
 <template>
-    <div>
-        <div class="plan-details" v-if="plan">
+    <div v-if="plan">
+        <div class="plan-title-header">
+            <div class="d-flex align-center">
+                <v-img
+                    max-height="50"
+                    max-width="50"
+                    class="mr-2"
+                    src="/assets/images/logo/providers/powershop_logo.png"
+                ></v-img>
+                <h3>Powershop</h3>
+            </div>
+            <div>
+                <h2>{{ selectedPlan.marketing_offer_name }}</h2>
+                <p>Gas</p>
+            </div>
+        </div>
+        <div class="plan-details">
             <v-card>
                 <div style="padding: 20px 10px">
                     <div class="text-center">
@@ -10,7 +25,8 @@
                         </div>
                     </div>
                     <div class="mt-2">
-                        <p class="paragraph-text">This offer is an ongoing contract, until you or we end it. The estimates above are based on an average residential customer. We have calculated the monthly estimates based on the annual figure and divided by 12. Your actual bills will vary depending on your usage, rates and any price changes in the future. The estimates don’t include concessions or other rebates, distributor service order costs, fees that may apply to you.</p>
+                        <!-- <p class="paragraph-text">This offer is an ongoing contract, until you or we end it. The estimates above are based on an average residential customer. We have calculated the monthly estimates based on the annual figure and divided by 12. Your actual bills will vary depending on your usage, rates and any price changes in the future. The estimates don’t include concessions or other rebates, distributor service order costs, fees that may apply to you.</p> -->
+                        <p class="paragraph-text">{{ selectedPlan.description }}</p>
                     </div>
 
                     <div class="d-flex">
@@ -81,6 +97,9 @@ export default {
         plan: {
             require: true,
         },
+        selectedPlan: {
+            require: true,
+        },
     },
     data() {
         return {
@@ -88,11 +107,16 @@ export default {
         }
     },
     methods: {
-    }
+    },
 }
 </script>
 
 <style scoped>
+.plan-title-header {
+    background-color: #F1186C;
+    color: white;
+    padding: 10px;
+}
 .plan-details {
     margin: 20px 0;
     padding: 0 10px;

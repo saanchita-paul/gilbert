@@ -85,5 +85,6 @@ const mapServiceText = (serviceType) => {
 export default {
     mapPowershopData,
     mapServiceText,
+    mapBPIDLinks,
 };
 
