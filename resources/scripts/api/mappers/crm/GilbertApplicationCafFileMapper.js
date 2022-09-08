@@ -19,7 +19,7 @@ const mapGilbertApplicationCafFile = data => {
     response.date_of_birth = mapDateOfBirth(response.date_of_birth);
     response.occupancy_type = mapOccupancyType(response.tenancy_type);
     response.billing = mapBilling(response.is_email_billing);
-    response.status = mapStatus(response.status);
+    response.status = mapStatus(response.status, response.is_generated_caf);
     response.supplier = mapSupplier(response.connection_services);
     response.elctricity_plan = mapPlan(response.connection_services, 'power');
     response.gas_plan = mapPlan(response.connection_services, 'gas');
@@ -55,7 +55,8 @@ const mapBilling = data => {
     return data === 1 ? 'Email' : 'Post';
 }
 
-const mapStatus = status => {
+const mapStatus = (status, is_generated_caf=false) => {
+    if (is_generated_caf == true) return 'CAF Generated';
     return getApplicationStatusText(status);
 }
 

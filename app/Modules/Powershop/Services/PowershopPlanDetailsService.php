@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Log;
 class PowershopPlanDetailsService
 {
     public string $service_type;
-    public string $plan_type = '';
+    public string $elec_plan_type = '';
+    public string $gas_plan_type = '';
 
 
     public function __construct(
@@ -71,12 +72,12 @@ class PowershopPlanDetailsService
         $gasFlag = false;
 
         if($gasService) {
-            $this->plan_type = $gasService->plan_type;
+            $this->gas_plan_type = $gasService->plan_type;
             $gasFlag = true;
         }
 
         if($eleService) {
-            $this->plan_type = $eleService->plan_type;
+            $this->elec_plan_type = $eleService->plan_type;
             $powerFlag = true;
         }
 

@@ -68,11 +68,26 @@ name: "SubmittedPowershopNote",
         plan() {
             // let elecPlan = this.note.plans.plans.electricity? this.note.plans.plans.electricity.vdo.marketing_offer_name : null;
             // let gasPlan = this.note.plans.plans.gas? this.note.plans.plans.gas.bpid_links[0].offer_name : null;
-            let elecPlan = this.note.plans?.plans?.electricity? '100% Carbon Neutral Plan (Elec)' : null;
-            let gasPlan = this.note.plans?.plans?.gas? '100% Carbon Neutral Plan (Gas)' : null;
+            let elecPlan = '';
+            let gasPlan = '';
+
+            let elecPlans = this.note.plans.plans.electricity?.vdo ?? [];
+            let gasPlans = this.note.plans.plans.gas?.vdo ?? [];
+
+            for (const plan of elecPlans){
+                if (plan.name == this.note.leads.plan_type)
+                    elecPlan = plan.marketing_offer_name;
+            }
+
+            if (this.note.leads.gas_plan_type){
+                for (const plan of gasPlans){
+                    if (plan.name == this.note.leads.gas_plan_type)
+                        gasPlan = plan.marketing_offer_name;
+                }
+            }
 
             if (elecPlan && gasPlan){
-                return elecPlan + '|' + gasPlan;
+                return elecPlan + '(Elec)' + '|' + gasPlan + '(Gas)';
             }
             if (elecPlan && !gasPlan){
                 return elecPlan;
