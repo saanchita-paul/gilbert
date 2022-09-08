@@ -69,6 +69,9 @@ return [
 
     'timezone' => 'UTC',
 
+    'use_local_timezone' => env('USE_LOCAL_TIMEZONE', false),
+    'local_timezone' => env('TIME_ZONE', 'Australia/Melbourne'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
