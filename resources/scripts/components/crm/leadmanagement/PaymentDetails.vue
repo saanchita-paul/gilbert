@@ -179,11 +179,8 @@ export default {
                 this.isEnable = false;
                 this.isLoading = true;
                 this.sameDayConnectionData = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.lead.id, this.submitType)).data;
-                console.log('Same day connection response : ', this.sameDayConnectionData);
-                //this.isEnable = true;
                 this.isLoading = false;
-                this.isEnable = this.sameDayConnectionData?.electricityOk && this.sameDayConnectionData?.gasOk ?
-                     true : false;
+                this.isEnable = this.sameDayConnectionData?.electricityOk &&  this.sameDayConnectionData?.gasOk;
             }
         }
 

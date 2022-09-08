@@ -729,6 +729,9 @@
                     <v-alert text>
                         <div class="alert-text alert-bolder-text mb-2">Please Note:</div>
                         <div class="alert-text">
+                            <div v-if="isPaymentNotComplete">
+                                <span class="alert-bolder-text">Payment:</span> Payment verification Incomplete.
+                            </div>
                             <div v-if="showGasPowerShopNote">
                                 <span class="alert-bolder-text">Gas:&nbsp;</span> {{ showGasPowerShopNote }}
                             </div>
@@ -746,7 +749,7 @@
             <v-footer  class="text-right">
                 <v-col class="text-right" cols="12">
                     <v-btn @click="backToEdit">Back to Edit</v-btn>
-                    <v-btn  color="primary" @click="confirmSubmit" :disabled="!allOk">Confirm and Submit</v-btn>
+                    <v-btn  color="primary" @click="confirmSubmit" :disabled="isDisabled">Confirm and Submit</v-btn>
                 </v-col>
             </v-footer>
         </v-card>
@@ -891,9 +894,12 @@ export default {
       }
     },
     computed: {
-        allOk() {
-           return this.is_temp_condition  && this.is_life_support
-               && (!this.isLifeSupportAndEA || this.isPowerShopOk);
+        isDisabled() {
+           return !Boolean(this.is_temp_condition)
+               || !Boolean(this.is_life_support)
+               || Boolean(this.isLifeSupportAndEA)
+               || !Boolean(this.isPowerShopOk)
+               || Boolean(this.isPaymentNotComplete)
         },
         selectedPowerPlan() {
             return LeadApplicationService.mapPlan(this.data.selectedPowerPlan);
@@ -927,8 +933,8 @@ export default {
                 : '';
         },
         getPaymentStatus() {
-            return this.paymentInformation?.powershop_payment_info.status
-                ? powerShopPaymentStatusNumberToName[this.paymentInformation?.powershop_payment_info.status]
+            return this.paymentInformation?.powershop_payment_info?.status
+                ? powerShopPaymentStatusNumberToName[this.paymentInformation?.powershop_payment_info?.status]
                 : 'Pending';
         },
         showPowerShopNoteSection () {
@@ -937,6 +943,7 @@ export default {
                     this.showElectricityPowerShopNote
                     || this.showElectricityACTPowerShopNote
                     || this.showGasPowerShopNote
+                    || this.isPaymentNotComplete
                 );
         },
         showElectricityPowerShopNote() {
@@ -956,6 +963,9 @@ export default {
         },
         showPowerShopPaymentSection() {
             return this.data.selectedProvider === 'powershop';
+        },
+        isPaymentNotComplete() {
+            return this.paymentInformation?.powershop_payment_info?.status !== 2;
         }
     },
     methods: {
