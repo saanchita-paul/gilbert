@@ -3,23 +3,25 @@
         <v-col cols="6">
             <h3>Payment</h3>
             <h4 class="py-4">Payment Details</h4>
-            <div class="crm-text-field">
+            <div class="crm-text-field justify-content">
                 <div class="pr-4">
-                    <h4>Payment Link: </h4>
+                    <h4>Payment Link </h4>
                 </div>
 
-                <div >
+                <div>
                     <ValidationProvider name="Payment Link" rules="required" v-slot="{ errors }">
                         <v-menu offset-y>
                             <template v-slot:activator="{ on, attrs }">
-                                <v-btn class="button-border" v-bind="attrs"  text v-on="on" :disabled="isDisable()">
-                                    Send  link to customer  <span class="mdi mdi-send"></span>
+                                <v-btn class="button-border" v-bind="attrs" text v-on="on" :disabled="isDisable()">
+                                    Send link to customer <span class="mdi mdi-send"></span>
                                 </v-btn>
                             </template>
                             <v-list>
                                 <v-list-item v-for="(item, index) in items" :key="index">
                                     <v-icon v-text="item.icon" class="pr-4"></v-icon>
-                                    <v-list-item-title style="cursor : pointer" @click="sendPaymentLink(item.value)">{{ item.text }} </v-list-item-title>
+                                    <v-list-item-title style="cursor : pointer" @click="sendPaymentLink(item.value)">
+                                        {{ item.text }}
+                                    </v-list-item-title>
                                 </v-list-item>
                             </v-list>
                         </v-menu>
@@ -27,20 +29,21 @@
                 </div>
             </div>
 
-            <div class="crm-text-field">
-                <h4>Payment Status: </h4> <span class="grey--text pl-2"> {{ getPaymentStatus }} </span>
+            <div class="crm-text-field justify-content">
+                <h4>Payment Status </h4> <span class="text-bolder pl-2"> {{ getPaymentStatus }} </span>
             </div>
         </v-col>
 
-        <v-col cols="6" >
+        <v-col cols="6">
             <ValidationObserver ref="payment">
                 <h3 class="pb-2">Estimated Billing</h3>
                 <p class="mt-4">Please input values from 1-900 in fields below.</p>
+
                 <div class="crm-text-field">
                     <div class="pr-3 title-text">
                         <h4>Quarterly Cost (Power) <span>*</span></h4>
                     </div>
-                    <div class="text-field">
+                    <div class="">
                         <ValidationProvider
                             name="Power cost"
                             rules="required"
@@ -64,31 +67,31 @@
                 </div>
 
                 <div class="crm-text-field">
-                <div class="pr-3 title-text">
-                    <h4>Quarterly Cost (Gas) <span>*</span></h4>
-                </div>
-                <div class="text-field">
-                    <ValidationProvider
-                        name="Gas cost"
-                        rules="required"
-                        v-slot="{ errors }"
-                    >
-                        <v-text-field
-                            v-model="gasCost"
-                            @blur="savePaymentInfo('estimated_gas_billing_cost', gasCost)"
-                            outlined
-                            dense
-                            hide-details="auto"
-                            placeholder="Gas Cost"
-                            :error-messages="errors[0]"
+                    <div class="pr-3 title-text">
+                        <h4>Quarterly Cost (Gas) <span>*</span></h4>
+                    </div>
+                    <div class="">
+                        <ValidationProvider
+                            name="Gas cost"
+                            rules="required"
+                            v-slot="{ errors }"
                         >
-                            <template v-slot:append>
-                                <span class="custom-placeholder">AUD</span>
-                            </template>
-                        </v-text-field>
-                    </ValidationProvider>
+                            <v-text-field
+                                v-model="gasCost"
+                                @blur="savePaymentInfo('estimated_gas_billing_cost', gasCost)"
+                                outlined
+                                dense
+                                hide-details="auto"
+                                placeholder="Gas Cost"
+                                :error-messages="errors[0]"
+                            >
+                                <template v-slot:append>
+                                    <span class="custom-placeholder">AUD</span>
+                                </template>
+                            </v-text-field>
+                        </ValidationProvider>
+                    </div>
                 </div>
-            </div>
             </ValidationObserver>
         </v-col>
     </v-row>
@@ -98,6 +101,7 @@
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import {powerShopPaymentStatusNumberToName} from "@scripts/data/PowershopDataMapper";
 import PowershopService from "@scripts/modules/powershop/services/PowershopService";
+import DayJs from "dayjs";
 
 export default {
     name: "PaymentDetails",
@@ -106,8 +110,7 @@ export default {
             require: true,
         },
     },
-    components: {
-    },
+    components: {},
     data() {
         return {
             items: [
@@ -148,12 +151,22 @@ export default {
         async sendPaymentLink(linkType) {
             const response = await LeadApplicationService.sendPowershopPaymentLink(this.lead.id, linkType);
             this.paymentStatus = response.data?.status;
-        }
+        },
 
+    },
+    watch: {
+        paymentStatus() {
+            this.$emit('paymentStatus', this.paymentStatus);
+        },
     },
 
     async mounted() {
         await this.synFormData();
+        const validatePayment = () => {
+            let v = this.$refs.payment.validate();
+            if(!v) return false;
+        };
+        this.$eventBus.$on("busUtilitySubmit", validatePayment);
     }
 
 };
@@ -163,10 +176,17 @@ export default {
 .button-border {
     border: 1px solid #263238;
 }
+
 .title-text {
     flex-basis: 40%;
 }
+
 .custom-placeholder {
     font-weight: 500;
 }
+
+.justify-content {
+    justify-content: space-between !important;
+}
+
 </style>
