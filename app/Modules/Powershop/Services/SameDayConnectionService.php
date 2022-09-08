@@ -90,7 +90,7 @@ class SameDayConnectionService
      */
     public function getNextGasConnectionDate() : string {
         $application = ConnectionApplication::findOrFail($this->applicationId);
-        $connectionDate = Carbon::parse($application->moving_date)->shiftTimezone(self::MAP_STATE_TIMEZONE[$application->state]);
+        $connectionDate = Carbon::parse($application->moving_date)->shiftTimezone(TimeZoneService::getTimeZoneInt(self::MAP_STATE_VIC));
         $availableDate = $this->getNearestAvailableGasDate($application);
 
         return $availableDate->gt($connectionDate) ? $availableDate->format('Y-m-d') : $connectionDate->format('Y-m-d');
@@ -98,12 +98,10 @@ class SameDayConnectionService
 
     private function validateElectricity($application)
     {
-        // return true if validation pass
-        // return false if validation fails
         $state = $application->state;
         $connectionDate = $application->moving_date;
-        $currentTime = Carbon::now(TimeZoneService::getTimeZoneInt(self::MAP_STATE_TIMEZONE[$state]));
-        $isToday = (new Carbon($connectionDate))->timezone(self::MAP_STATE_TIMEZONE[$state])->isToday();
+        $currentTime = Carbon::now(TimeZoneService::getTimeZoneInt(self::MAP_STATE_VIC));
+        $isToday = (new Carbon($connectionDate))->timezone(TimeZoneService::getTimeZoneInt(self::MAP_STATE_VIC))->isToday();
 
         if ($state == self::MAP_STATE_ACT) return false;
 
@@ -140,7 +138,7 @@ class SameDayConnectionService
             return $result;
         }
 
-        $connectionDate = Carbon::parse($application->moving_date)->shiftTimezone(self::MAP_STATE_TIMEZONE[$application->state]);
+        $connectionDate = Carbon::parse($application->moving_date)->shiftTimezone(TimeZoneService::getTimeZoneInt(self::MAP_STATE_VIC));
         $availableDate = $this->getNearestAvailableGasDate($application);
 
         if($availableDate->gt($connectionDate)){
@@ -169,8 +167,8 @@ class SameDayConnectionService
         BusinessTime::enable(Carbon::class);
         Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
 
-        $currentDate = Carbon::now(self::MAP_STATE_TIMEZONE[$state]);
-        $availableDate = Carbon::today(self::MAP_STATE_TIMEZONE[$state]);
+        $currentDate = Carbon::now(TimeZoneService::getTimeZoneInt(self::MAP_STATE_VIC));
+        $availableDate = Carbon::today(TimeZoneService::getTimeZoneInt(self::MAP_STATE_VIC));
         $businessDays = self::MAP_GAS_BUSINESS_DAYS[$state];
         if ($currentDate->isToday() && intval($currentDate->format('H')) >= 12){
             $businessDays += 1;
