@@ -186,6 +186,7 @@
                     :state="leadSummary.state"
                     :planDetails="powerShopData"
                     :plan="selectedPlan"
+                    :gasPlan="selectedGasPlan"
                 />
             </v-card>
         </v-dialog>
@@ -297,6 +298,11 @@ export default {
                     UtilityStoreService.setBothPlan(value, this.selectedProvider, this.getPlanPayload(value))
                     : UtilityStoreService.setPowerPlan(value);
             }
+        },
+        selectedGasPlan: {
+            get() {
+                return UtilityStoreService.getGasPlan();
+            },
         },
         isBothEnergySubmit: {
             get() {

@@ -139,7 +139,10 @@ export default {
         },
         plan: {
             require: true
-        }
+        },
+        gasPlan: {
+            require: false
+        },
     },
     data() {
         return {
@@ -188,7 +191,9 @@ export default {
         },
         getSelectedGasPlanDetails() {
             if (this.serviceType === "energy"){
-                return this.planDetails?.plans?.gas?.vdo.find((item) => item.name === this.plan);
+                const plan = this.planDetails?.plans?.gas?.vdo.find((item) => item.name === this.gasPlan);
+                if (plan === undefined) plan = this.planDetails?.plans?.gas?.vdo[0] ?? null;
+                return plan;
             }
             return null;
         }
