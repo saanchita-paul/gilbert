@@ -36,7 +36,8 @@ class TimeZoneService
             }
             $dateTimeZone = new DateTimeZone($zone);
             $date = new DateTime('now', $dateTimeZone);
-            return $dateTimeZone->getOffset($date)/60/60;
+            $return = $dateTimeZone->getOffset($date)/60/60;
+            return $return;
 
         } catch (\Exception $exception) {
             \Log::error($exception->getMessage());
