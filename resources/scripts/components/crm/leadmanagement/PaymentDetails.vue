@@ -9,23 +9,28 @@
                 </div>
 
                 <div>
-                    <ValidationProvider name="Payment Link" rules="required" v-slot="{ errors }">
-                        <v-menu offset-y>
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn class="button-border" v-bind="attrs" text v-on="on" :disabled="isDisable()">
-                                    Send link to customer <span class="mdi mdi-send"></span>
-                                </v-btn>
-                            </template>
-                            <v-list>
-                                <v-list-item v-for="(item, index) in items" :key="index">
-                                    <v-icon v-text="item.icon" class="pr-4"></v-icon>
-                                    <v-list-item-title style="cursor : pointer" @click="sendPaymentLink(item.value)">
-                                        {{ item.text }}
-                                    </v-list-item-title>
-                                </v-list-item>
-                            </v-list>
-                        </v-menu>
-                    </ValidationProvider>
+                    <v-menu offset-y>
+                        <template  v-slot:activator="{ on, attrs }">
+                            <v-btn @click="checkSameDayValidation" class="button-border" v-bind="attrs" text v-on="on" :disabled="disabledPaymentButton()">
+                                Send link to customer <span class="mdi mdi-send"></span>
+                            </v-btn>
+                        </template>
+
+                        <v-list v-if="!isLoading">
+                            <v-list-item :disabled="!isEnable" v-for="(item, index) in items" :key="index">
+                                <v-icon v-text="item.icon" class="pr-4"></v-icon>
+                                <v-list-item-title style="cursor : pointer" @click="sendPaymentLink(item.value)">
+                                    {{ item.text }}
+                                </v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                        <template v-else>
+                            <v-skeleton-loader
+                                type="list-item,list-item"
+                            ></v-skeleton-loader>
+                        </template>
+                    </v-menu>
+
                 </div>
             </div>
 
@@ -35,7 +40,6 @@
         </v-col>
 
         <v-col cols="6">
-            <ValidationObserver ref="payment">
                 <h3 class="pb-2">Estimated Billing</h3>
                 <p class="mt-4">Please input values from 1-900 in fields below.</p>
 
@@ -92,7 +96,6 @@
                         </ValidationProvider>
                     </div>
                 </div>
-            </ValidationObserver>
         </v-col>
     </v-row>
 </template>
@@ -102,17 +105,26 @@ import LeadApplicationService from "@scripts/services/crm/LeadApplicationService
 import {powerShopPaymentStatusNumberToName} from "@scripts/data/PowershopDataMapper";
 import PowershopService from "@scripts/modules/powershop/services/PowershopService";
 import DayJs from "dayjs";
+import PowerShopSameDayConnectionService from "@scripts/modules/powershop/services/PowerShopSameDayConnectionService";
 
 export default {
     name: "PaymentDetails",
+    components: {},
     props: {
         lead: {
             require: true,
         },
+        selectedProvider: {
+            require: true,
+        },
+        submitType: {
+            require: true
+        },
     },
-    components: {},
     data() {
         return {
+            isEnable: false,
+            isLoading: false,
             items: [
                 {
                     text: "via SMS",
@@ -127,7 +139,8 @@ export default {
             ],
             paymentStatus: null,
             powerCost: null,
-            gasCost: null
+            gasCost: null,
+            sameDayConnectionData: null
         }
     },
     computed: {
@@ -137,6 +150,14 @@ export default {
                 : powerShopPaymentStatusNumberToName[this.lead?.powershop_payment_info?.status];
         },
     },
+    watch: {
+        paymentStatus() {
+            this.$emit('paymentStatus', this.paymentStatus);
+        },
+    },
+    async mounted() {
+        await this.synFormData();
+    },
     methods: {
         async savePaymentInfo(field, value) {
             await PowershopService.updatePaymentInformation(field, value, this.lead.id);
@@ -145,7 +166,7 @@ export default {
             this.powerCost = this.lead?.powershop_payment_info?.estimated_elec_billing_cost;
             this.gasCost = this.lead?.powershop_payment_info?.estimated_gas_billing_cost;
         },
-        isDisable() {
+        disabledPaymentButton() {
             return this.lead?.powershop_payment_info?.status === 2;
         },
         async sendPaymentLink(linkType) {
@@ -153,21 +174,20 @@ export default {
             this.paymentStatus = response.data?.status;
         },
 
-    },
-    watch: {
-        paymentStatus() {
-            this.$emit('paymentStatus', this.paymentStatus);
-        },
-    },
+        async checkSameDayValidation() {
+            if (this.selectedProvider === 'powershop') {
+                this.isEnable = false;
+                this.isLoading = true;
+                this.sameDayConnectionData = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.lead.id, this.submitType)).data;
+                console.log('Same day connection response : ', this.sameDayConnectionData);
+                //this.isEnable = true;
+                this.isLoading = false;
+                this.isEnable = this.sameDayConnectionData?.electricityOk && this.sameDayConnectionData?.gasOk ?
+                     true : false;
+            }
+        }
 
-    async mounted() {
-        await this.synFormData();
-        const validatePayment = () => {
-            let v = this.$refs.payment.validate();
-            if(!v) return false;
-        };
-        this.$eventBus.$on("busUtilitySubmit", validatePayment);
-    }
+    },
 
 };
 </script>

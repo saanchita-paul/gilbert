@@ -2,16 +2,16 @@
     <v-row>
         <v-col cols="12">
             <p class="sub-title">Notes</p>
-            <ValidationObserver ref="submit_note">
-            <ValidationProvider name="Expired Date" rules="required"  v-slot="{ errors }">
+<!--            <ValidationObserver ref="submit_note">
+            <ValidationProvider name="Expired Date" rules="required"  v-slot="{ errors }">-->
 
             <v-textarea v-model ="note.text"
                 outlined
                 hide-details="auto"
                 placeholder="Notes goes here."
             ></v-textarea>
-            </ValidationProvider>
-            </ValidationObserver>
+<!--            </ValidationProvider>
+            </ValidationObserver>-->
 
             <v-btn class="ma-2 float-right" @click="saveNote">Submit Note</v-btn>
         </v-col>
@@ -28,7 +28,7 @@
 
             <v-tabs-items v-model="tab">
                 <v-tab-item v-for="item in items" :key="item">
-                    
+
                     <v-col v-if="item == 'Internal Notes'" cols="12" class="notes-container">
                         <v-timeline dense>
                                 <v-timeline-item color="primary" small v-for="nt in notes" :color="getColor(nt.active)" :key="nt.id">
@@ -40,7 +40,7 @@
                                 </v-timeline-item>
                         </v-timeline>
                     </v-col>
-                    
+
                     <div v-if="item == 'Call History'">
                         <v-col cols="12" class="notes-container" v-if="leadSummary.tsa_call_histories.length">
                             <v-timeline dense>
@@ -52,7 +52,7 @@
                         </v-timeline>
                     </v-col>
                     </div>
-                    
+
                 </v-tab-item>
             </v-tabs-items>
         </v-card>
@@ -99,8 +99,10 @@ export default {
         },
       async saveNote() {
 
-            let v =  await this.$refs.submit_note.validate();
-            if(!v) return;
+            /*let v =  await this.$refs.submit_note.validate();
+            if(!v) return;*/
+
+          if (!this.note.text) return
 
             this.$emit('saveNote', this.note);
             this.note.text = '';

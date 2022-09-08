@@ -121,7 +121,12 @@
         </v-col>
         <v-col cols="12" v-if="selectedProvider === 'powershop'">
             <v-divider></v-divider>
-            <PaymentDetails :lead="leadSummary" @paymentStatus="paymentStatusCheck"></PaymentDetails>
+            <PaymentDetails
+                :lead="leadSummary"
+                :selectedProvider="selectedProvider"
+                :serviceType="isBothEnergySubmit ? 'energy' : 'power'"
+                @paymentStatus="paymentStatusCheck"
+            />
         </v-col>
 
         <v-col cols="12">
@@ -369,9 +374,9 @@ export default {
         getPowerShopPlans() {
             return this.powerShopData?.plans?.electricity?.vdo || [];
         },
-        paymentValidate() {
-            return this.paymentStatus === 2  || this.leadSummary?.powershop_payment_info?.status === 2;
-        }
+        // paymentValidate() {
+        //     return this.paymentStatus === 2  || this.leadSummary?.powershop_payment_info?.status === 2;
+        // }
     },
     mounted() {
         this.fetchEaPlans();
@@ -546,8 +551,7 @@ export default {
                 !LeadApplicationService.canSubmitEnergy('power') ||
                 !this.selectedProvider ||
                 !this.selectedPlan ||
-                this.isPayeeSelectedForAfterHourSubmission ||
-                !this.paymentValidate
+                this.isPayeeSelectedForAfterHourSubmission
             );
         },
         submit() {
