@@ -125,7 +125,7 @@
         </v-col>
 
         <v-col cols="12">
-            <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
+            <div class="d-flex justify-end" style="width: 100%; background-color: white;">
                 <v-btn
                     :disabled="isDisable()"
                     color="#542E89"

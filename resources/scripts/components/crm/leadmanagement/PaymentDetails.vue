@@ -3,9 +3,9 @@
         <v-col cols="6">
             <h3>Payment</h3>
             <h4 class="py-4">Payment Details</h4>
-            <div class="crm-text-field">
+            <div class="crm-text-field justify-content">
                 <div class="pr-4">
-                    <h4>Payment Link: </h4>
+                    <h4>Payment Link </h4>
                 </div>
 
                 <div>
@@ -29,8 +29,8 @@
                 </div>
             </div>
 
-            <div class="crm-text-field">
-                <h4>Payment Status: </h4> <span class="grey--text pl-2"> {{ getPaymentStatus }} </span>
+            <div class="crm-text-field justify-content">
+                <h4>Payment Status </h4> <span class="text-bolder pl-2"> {{ getPaymentStatus }} </span>
             </div>
         </v-col>
 
@@ -38,11 +38,12 @@
             <ValidationObserver ref="payment">
                 <h3 class="pb-2">Estimated Billing</h3>
                 <p class="mt-4">Please input values from 1-900 in fields below.</p>
+
                 <div class="crm-text-field">
                     <div class="pr-3 title-text">
                         <h4>Quarterly Cost (Power) <span>*</span></h4>
                     </div>
-                    <div class="text-field">
+                    <div class="">
                         <ValidationProvider
                             name="Power cost"
                             rules="required"
@@ -69,7 +70,7 @@
                     <div class="pr-3 title-text">
                         <h4>Quarterly Cost (Gas) <span>*</span></h4>
                     </div>
-                    <div class="text-field">
+                    <div class="">
                         <ValidationProvider
                             name="Gas cost"
                             rules="required"
@@ -163,7 +164,7 @@ export default {
         await this.synFormData();
         const validatePayment = () => {
             let v = this.$refs.payment.validate();
-            if(v) return;
+            if(!v) return false;
         };
         this.$eventBus.$on("busUtilitySubmit", validatePayment);
     }
@@ -183,4 +184,9 @@ export default {
 .custom-placeholder {
     font-weight: 500;
 }
+
+.justify-content {
+    justify-content: space-between !important;
+}
+
 </style>
