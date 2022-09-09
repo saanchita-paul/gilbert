@@ -65,7 +65,7 @@ class SubmitToPowershopService
     public static function saveSubmittedStatus($serviceId, $reference)
     {
         $service = ConnectionService::findOrFail($serviceId);
-        $service->status = ConnectionService::STATUS_SUBMITTED;
+        $service->status = ConnectionService::STATUS_ACCEPTED;
         $service->quote_reference = $reference;
         $service->submitted_at = Carbon::now();
         $service->save();
