@@ -195,6 +195,11 @@ export default {
                 if (plan === undefined) plan = this.planDetails?.plans?.gas?.vdo[0] ?? null;
                 return plan;
             }
+            if (this.serviceType === "gas"){
+                let plan = this.planDetails?.plans?.gas?.vdo.find((item) => item.name === this.plan);
+                if (plan === undefined) plan = this.planDetails?.plans?.gas?.vdo[0] ?? null;
+                return plan;
+            }
             return null;
         }
         // getPlanTitle() {
