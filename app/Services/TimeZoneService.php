@@ -46,5 +46,12 @@ class TimeZoneService
         }
     }
 
+    public static function getTimeZoneArea(string $state = 'Default'){
+        if (config('app.use_local_timezone'))
+                return config('app.local_timezone');
+        
+        return in_array($state, self::MAP_STATE_TIMEZONE) ? self::MAP_STATE_TIMEZONE[$state] : self::MAP_STATE_TIMEZONE['Default'];
+    }
+
 
 }

@@ -34,10 +34,10 @@ class SameDayConnectionService
     private function stateTime($state)
     {
         return match ($state) {
-            self::MAP_STATE_NSW => today(self::MAP_STATE_TIMEZONE[$state])->addHours(13),
-            self::MAP_STATE_SA => today(self::MAP_STATE_TIMEZONE[$state])->addHours(13),
-            self::MAP_STATE_VIC => today(self::MAP_STATE_TIMEZONE[$state])->addHours(15),
-            self::MAP_STATE_QLD => today(self::MAP_STATE_TIMEZONE[$state])->addHours(10)
+            self::MAP_STATE_NSW => today(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC))->addHours(13),
+            self::MAP_STATE_SA => today(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC))->addHours(13),
+            self::MAP_STATE_VIC => today(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC))->addHours(15),
+            self::MAP_STATE_QLD => today(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC))->addHours(10)
         };
     }
     const MAP_STATE_TIMEZONE = [
@@ -90,7 +90,7 @@ class SameDayConnectionService
      */
     public function getNextGasConnectionDate() : string {
         $application = ConnectionApplication::findOrFail($this->applicationId);
-        $connectionDate = Carbon::parse($application->moving_date)->shiftTimezone(TimeZoneService::getTimeZoneInt(self::MAP_STATE_VIC));
+        $connectionDate = Carbon::parse($application->moving_date)->shiftTimezone(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC));
         $availableDate = $this->getNearestAvailableGasDate($application);
 
         return $availableDate->gt($connectionDate) ? $availableDate->format('Y-m-d') : $connectionDate->format('Y-m-d');
@@ -100,8 +100,8 @@ class SameDayConnectionService
     {
         $state = $application->state;
         $connectionDate = $application->moving_date;
-        $currentTime = Carbon::now(TimeZoneService::getTimeZoneInt(self::MAP_STATE_VIC));
-        $isToday = (new Carbon($connectionDate))->timezone(TimeZoneService::getTimeZoneInt(self::MAP_STATE_VIC))->isToday();
+        $currentTime = Carbon::now(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC));
+        $isToday = (new Carbon($connectionDate))->timezone(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC))->isToday();
 
         if ($state == self::MAP_STATE_ACT) return false;
 
@@ -138,7 +138,7 @@ class SameDayConnectionService
             return $result;
         }
 
-        $connectionDate = Carbon::parse($application->moving_date)->shiftTimezone(TimeZoneService::getTimeZoneInt(self::MAP_STATE_VIC));
+        $connectionDate = Carbon::parse($application->moving_date)->shiftTimezone(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC));
         $availableDate = $this->getNearestAvailableGasDate($application);
 
         if($availableDate->gt($connectionDate)){
@@ -167,8 +167,8 @@ class SameDayConnectionService
         BusinessTime::enable(Carbon::class);
         Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
 
-        $currentDate = Carbon::now(TimeZoneService::getTimeZoneInt(self::MAP_STATE_VIC));
-        $availableDate = Carbon::today(TimeZoneService::getTimeZoneInt(self::MAP_STATE_VIC));
+        $currentDate = Carbon::now(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC));
+        $availableDate = Carbon::today(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC));
         $businessDays = self::MAP_GAS_BUSINESS_DAYS[$state];
         if ($currentDate->isToday() && intval($currentDate->format('H')) >= 12){
             $businessDays += 1;

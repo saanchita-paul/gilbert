@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Nette\Utils\Json;
 use App\Models\ConnectionService;
 use Carbon\CarbonInterface;
+use App\Services\TimeZoneService;
 
 class ValidateCutOffTime
 {
@@ -271,9 +272,9 @@ class ValidateCutOffTime
         BusinessTime::enable(Carbon::class);
         Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
 
-        $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]);
-        $nowDate = Carbon::now(self::MAP_STATE_TIMEZONE[$state]);
-        $nextDate = Carbon::today(self::MAP_STATE_TIMEZONE[$state])->nextBusinessDay();
+        $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(TimeZoneService::getTimeZoneArea($state));
+        $nowDate = Carbon::now(TimeZoneService::getTimeZoneArea($state));
+        $nextDate = Carbon::today(TimeZoneService::getTimeZoneArea($state))->nextBusinessDay();
 
         $distributor = '';
         $nmi_check = substr($nmi, 0, 2);
@@ -295,14 +296,14 @@ class ValidateCutOffTime
                 throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_PAST_CUT_OFF', 'Distributor does not support same day connection'), BaseOriginAPI::CODE_REJECT);
             }
 
-            $checkDate = Carbon::today(self::MAP_STATE_TIMEZONE[$state])->addHours(intval($elecDist['sdfi_business']));
+            $checkDate = Carbon::today(TimeZoneService::getTimeZoneArea($state))->addHours(intval($elecDist['sdfi_business']));
             $pastCutOff = $nowDate->gt($checkDate);
 
             if($pastCutOff){
                 return false;
             }
         } else if ($connectionDate->eq($nextDate)){
-            $checkDate = $elecDist['isStandardSameDay'] ? Carbon::parse($nextDate->format('Y-m-d'))->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]) : Carbon::today(self::MAP_STATE_TIMEZONE[$state]);
+            $checkDate = $elecDist['isStandardSameDay'] ? Carbon::parse($nextDate->format('Y-m-d'))->shiftTimezone(TimeZoneService::getTimeZoneArea($state)) : Carbon::today(TimeZoneService::getTimeZoneArea($state));
             $checkDate->addHours(intval($elecDist['standard']));
             $pastCutOff = $nowDate->gt($checkDate);
 
@@ -329,8 +330,8 @@ class ValidateCutOffTime
         BusinessTime::enable(Carbon::class);
         Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
 
-        $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]);
-        $availableDate = Carbon::today(self::MAP_STATE_TIMEZONE[$state]);
+        $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(TimeZoneService::getTimeZoneArea($state));
+        $availableDate = Carbon::today(TimeZoneService::getTimeZoneArea($state));
 
         for($i=0; $i<=self::GAS_BUSINESS_DAYS; $i++){
             $availableDate->addDay();
@@ -370,8 +371,8 @@ class ValidateCutOffTime
         BusinessTime::enable(Carbon::class);
         Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
 
-        $connectionDate = Carbon::parse($movingDate)->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]);
-        $availableDate = Carbon::today(self::MAP_STATE_TIMEZONE[$state]);
+        $connectionDate = Carbon::parse($movingDate)->shiftTimezone(TimeZoneService::getTimeZoneArea($state));
+        $availableDate = Carbon::today(TimeZoneService::getTimeZoneArea($state));
 
         for($i=0; $i<=self::GAS_BUSINESS_DAYS; $i++){
             $availableDate->addDay();
