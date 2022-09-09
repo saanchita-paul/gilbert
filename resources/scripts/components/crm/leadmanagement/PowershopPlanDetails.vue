@@ -185,13 +185,13 @@ export default {
             return this.planDetails?.plans?.electricity?.solar_buy_pack_value ?? "";
         },
         getSelectedElecPlanDetails() {
-            const plan = this.planDetails?.plans?.electricity?.vdo.find((item) => item.name === this.plan);
+            let plan = this.planDetails?.plans?.electricity?.vdo.find((item) => item.name === this.plan);
             if (plan === undefined) plan = this.planDetails?.plans?.electricity?.vdo[0] ?? null;
-            return plan;            
+            return plan;
         },
         getSelectedGasPlanDetails() {
             if (this.serviceType === "energy"){
-                const plan = this.planDetails?.plans?.gas?.vdo.find((item) => item.name === this.gasPlan);
+                let plan = this.planDetails?.plans?.gas?.vdo.find((item) => item.name === this.gasPlan);
                 if (plan === undefined) plan = this.planDetails?.plans?.gas?.vdo[0] ?? null;
                 return plan;
             }

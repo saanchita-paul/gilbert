@@ -175,6 +175,15 @@ class PxPayService
 
         $paymentInfo->update($this->getPaymentDetails($key));
 
+        if ($paymentInfo->status == PowershopPaymentInfo::STATUS_VERIFIED){
+            $paymentInfo->verified_at = now();
+            $paymentInfo->save();
+        }
+        if ($paymentInfo->status == PowershopPaymentInfo::STATUS_REJECTED){
+            $paymentInfo->rejected_at = now();
+            $paymentInfo->save();
+        }
+
         return $paymentInfo;
     }
 
