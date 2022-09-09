@@ -1,57 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>HOOD</title>
+<title>HOOD | Payment Failed</title>
 </head>
 
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
     .wrapper {
-        max-width: 850px;
-        margin: 0px auto;
-        font-family: 'Ubuntu', sans-serif;
-        font-size: 14px;
+        background: #542E89;
+        font-family: 'Ubuntu';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 24px;
+        line-height: 32px;
     }
-    .main-content {
-        padding: 10px 5px;
+    .main-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -moz-transform: translateX(-50%) translateY(-50%);
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
     }
-    .email-footer {
-        background-color: #532D86;
-        padding: 5px 15px;
+    .font-24 {
+        font-size: 24px
     }
-    .email-footer img {
-        max-width: 150px;
+    .mt-20 {
+        margin-top: 20px;
     }
+
 </style>
-<body>
-    <div class="wrapper" style=" max-width: 850px;
-    margin: 0px auto;
-    font-family: 'Ubuntu', sans-serif;
-    font-size: 14px;">
-        <header>
-            {{-- <img src="{{ asset('assets/images/email/headerFrame.png' )}}" width="100%"> --}}
-            <img src="https://devcrmagency.hood.ai/assets/images/email/headerFrame.png" width="100%">
-        </header>
-
-        <section class="main-content" style="padding: 10px 5px;">
-            <br>
-            <p>Hey, {{$name}}</p>
-            <br>
-            <p><strong>Verification is Failed!</strong></p>
-            <p style="color: red"><strong>Reason:  {{$reason}} </strong></p>
-            <p>Please contact with hood (045784658).</p>
-
-            <br>
-            <br>
-            <p>HOOD Support Team</p>
-            <br>
-            <div class="email-footer" style="background-color: #532D86;
-        padding: 5px 15px;">
-                {{-- <img src="{{ asset('assets/images/email/HOODlogo.png')}}" style="max-width: 150px;"> --}}
-                <img src="https://devcrmagency.hood.ai/assets/images/email/HOODlogo.png" style="max-width: 150px;">
-            </div>
-        </section>
-    </div>
-
+<body class="wrapper">
+    <section class="main-container" style="width: 280px;">
+        <div style="color: #FFFFFF; text-align: center;">
+            <h2 class="font-24">Unfortunately, your payment has been declined due to {{ $reason }}.</h2>
+            <h2 class="font-24 mt-20">To complete your order, we will be sending you another payment link.</h2>
+        </div>
+    </section>
 </body>
 </html>

@@ -1,57 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>HOOD</title>
+<title>HOOD | Payment Success</title>
 </head>
 
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
     .wrapper {
-        max-width: 850px;
-        margin: 0px auto;
-        font-family: 'Ubuntu', sans-serif;
-        font-size: 14px;
+        background: #542E89;
+        font-family: 'Ubuntu';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 24px;
+        line-height: 32px;
     }
-    .main-content {
-        padding: 10px 5px;
+    .main-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -moz-transform: translateX(-50%) translateY(-50%);
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
     }
-    .email-footer {
-        background-color: #532D86;
-        padding: 5px 15px;
+    .font-24 {
+        font-size: 24px
     }
-    .email-footer img {
-        max-width: 150px;
+    .text-normal {
+        width: 255px;
+        font-size: 18px;
+        line-height: 23px;
+        font-weight: 400;
+        font-style: normal;
+    }
+    .mb-70 {
+        margin-bottom: 70px;
+    }
+    .mt-20 {
+        margin-top: 20px;
     }
 </style>
-<body>
-    <div class="wrapper" style=" max-width: 850px;
-    margin: 0px auto;
-    font-family: 'Ubuntu', sans-serif;
-    font-size: 14px;">
-        <header>
-            {{-- <img src="{{ asset('assets/images/email/headerFrame.png' )}}" width="100%"> --}}
-            <img src="https://devcrmagency.hood.ai/assets/images/email/headerFrame.png" width="100%">
-        </header>
-
-        <section class="main-content" style="padding: 10px 5px;">
-            <br>
-            <p>Hey, {{$name}}</p>
-            <br>
-            <p><strong>Credit Card verification is completed! 🤠</strong></p>
-            <br>
-            <p>Thank you for choosing Powershop with Hood!.</p>
-
-            <br>
-            <br>
-            <p>HOOD Support Team</p>
-            <br>
-            <div class="email-footer" style="background-color: #532D86;
-        padding: 5px 15px;">
-                {{-- <img src="{{ asset('assets/images/email/HOODlogo.png')}}" style="max-width: 150px;"> --}}
-                <img src="https://devcrmagency.hood.ai/assets/images/email/HOODlogo.png" style="max-width: 150px;">
+<body class="wrapper">
+    <section class="main-container">
+        <div style="color: #FFFFFF; text-align: center">
+            <div class="mb-70">
+                <img src="{{ asset('assets/images/icons/thumb.svg') }}">
             </div>
-        </section>
-    </div>
-
+            <div class="font-24" style="width: 270px">
+                Thank you for connecting with HOOD!
+            </div>
+            <div class="text-normal mt-20">
+                <p>We have securely received your details. You can now close this window.</p>
+            </div>
+        </div>
+    </section>
 </body>
 </html>
