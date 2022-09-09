@@ -99,11 +99,12 @@ class SameDayConnectionService
     private function validateElectricity($application)
     {
         $state = $application->state;
-        $connectionDate = $application->moving_date;
         $currentTime = Carbon::now(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC));
-        $isToday = (new Carbon($connectionDate))->timezone(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC))->isToday();
+        $connectionDate = (new Carbon($application->moving_date))->timezone(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC));
+        $isToday = $connectionDate->isToday();
+        $isPast = $connectionDate->isPast();
 
-        if ($state == self::MAP_STATE_ACT) return false;
+        if ($state == self::MAP_STATE_ACT || $isPast) return false;
 
         if (!$isToday) return true;
 
