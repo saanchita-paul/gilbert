@@ -16,14 +16,17 @@
                                 @duplicateLead="duplicatedLead"
                         ></LeadUserDetails>
                  </ValidationObserver>
-                <LeadServicesAndNotes
-                    @updateDraft="updateDraft"
-                    @updateNote= "updateNote"
-                    :leadSummary="leadSummary"
-                    :afterHourFlag="afterHourFlag"
-                    :notes="notes"
-                    @serviceType="serviceType">
-                </LeadServicesAndNotes>
+
+                <ValidationObserver ref="service_form">
+                    <LeadServicesAndNotes
+                        @updateDraft="updateDraft"
+                        @updateNote="updateNote"
+                        :leadSummary="leadSummary"
+                        :afterHourFlag="afterHourFlag"
+                        :notes="notes"
+                        @serviceType="serviceType">
+                    </LeadServicesAndNotes>
+                </ValidationObserver>
 
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
             <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" :title="fullName"></EscalationConfirmModal>
@@ -259,8 +262,6 @@ export default {
         },
         isWaterUnavailable($submitType, $state, $tenantType) {
 
-            // console.log("I am checking ->", $state, $submitType)
-
             const rightState = ['vic', 'victoria'].includes($state?.toLowerCase());
 
             if($submitType === 'water' && !rightState) {
@@ -283,12 +284,11 @@ export default {
             this.showSubmitModal = false;
         },
         async validateLead() {
-          return await this.$refs.submit_lead.validate()
+          return (await this.$refs.submit_lead.validate()) && (await this.$refs.service_form.validate())
         },
         async confirmSubmitLead() {
             this.showSubmitModal = false;
             let payload = null;
-            console.log('lead', this.lead);
             if(this.lead.property_details === undefined)
             {
                 payload = {...this.lead};
