@@ -210,7 +210,8 @@ class SignUpService
             ],
         ];
 
-        $promoCode = PromotionCodeService::getCode($this->application->state, $service->service_type, $service->plan_type);
+        $promoCode = PromotionCodeService::getCodeviaAPI($service->service_type, $service->plan_type, $this->application->state, $this->application->postcode, $this->application->nmi);
+
         if (!empty($promoCode))
             $data['promotion'] = [
                 "promotion_code" => $promoCode,
@@ -247,7 +248,8 @@ class SignUpService
             ],
         ];
 
-        $promoCode = PromotionCodeService::getCode($this->application->state, $service->service_type, $service->plan_type);
+        $promoCode = PromotionCodeService::getCodeviaAPI($service->service_type, $service->plan_type, $this->application->state, $this->application->postcode);
+
         if (!empty($promoCode))
             $data['promotion'] = [
                 "promotion_code" => $promoCode,

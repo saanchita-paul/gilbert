@@ -3,7 +3,9 @@
 namespace Powershop\Services;
 
 use App\Models\ConnectionService;
-
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Exception;
 class PromotionCodeService
 {
     const MAP_PLAN_TYPE = [
@@ -34,6 +36,36 @@ class PromotionCodeService
             if (in_array($state, ['Queensland', 'South Australia']) && $service_type == ConnectionService::TYPE_ELECTRICITY){
                 $code = 'HoodPS100%CarbonNeutral';            
             }
+        }
+
+        return $code;
+    }
+
+    public static function getCodeviaAPI(string $service_type, string $plan_name, string $state, string $postcode, string $nmi = null){
+        $code = '';
+        try {
+            $url = config('bot.root_url').'/hood-dashboard/api/power-shop/promo-code';
+            $param = [
+                'type' => 'search',
+                'plan_name' => $plan_name,
+                'state' => $state,
+                'postcode' => $postcode,
+            ];
+            if (!empty($nmi)) $param['nmi_prefix'] = substr($nmi, 0, 3); 
+
+            if (config('app.env') == 'local') $response = Http::withOptions(['verify' => false,])->get($url, $param);
+            else $response = Http::get($url, $param);
+            
+            $data = json_decode($response->body(), true);
+
+            if ($service_type == ConnectionService::TYPE_ELECTRICITY)
+                $code = $data['electricity'];
+            
+            if ($service_type == ConnectionService::TYPE_GAS)
+                $code = $data['gas'];
+             
+        } catch (\Exception $e) {
+            Log::warning('No promotion code is found', ['message' => $e->getMessage()]);
         }
 
         return $code;
