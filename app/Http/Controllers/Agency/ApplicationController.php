@@ -33,6 +33,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Origin\Services\ValidateCutOffTime;
 use PropertyMe\services\FetchContacts;
+use Powershop\Services\SetPowershopDistributorService;
 
 class ApplicationController extends Controller
 {
@@ -226,6 +227,9 @@ class ApplicationController extends Controller
                         $setOriginDistributorService = new SetOriginDistributorService($res, $ids, $submitType);
                         $setOriginDistributorService->setDistributor();
                         break;
+                    case ConnectionService::PROVIDER_POWER_SHOP:
+                        $setPowershopDistributorService = new SetPowershopDistributorService($res, $ids, $submitType);
+                        $setPowershopDistributorService->setDistributor();
                 }
             }
         }
