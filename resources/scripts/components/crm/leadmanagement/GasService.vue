@@ -364,14 +364,8 @@ export default {
         },
     },
     async mounted() {
-        await this.fetchEaPlans();
-        await this.getOriginData();
-
-        if (this.selectedProvider === 'powershop') {
-            await this.getPowershopData();
-        }
+        this.getAllPlans();
         this.loadSumoSelectedProviderAndPlan();
-
         // On address change refetch Sumo Plan Details
         const updateAddress = address => {
             this.selectedProvider === "sumo" ? this.$eventBus.$emit("validate", this.fetchSumoPlans) : null;
@@ -383,16 +377,23 @@ export default {
     },
     watch: {
         isBothEnergySubmit() {
-            this.getOriginData();
-            if(this.selectedProvider === 'powershop') {
-                this.getPowershopData();
-            }
+            this.getAllPlans(false);
         },
         getNMIPrefix() {
-            this.getOriginData()
+            this.getAllPlans(false);
         },
     },
     methods: {
+        getAllPlans(skipCheckProvider = true) {
+            if (skipCheckProvider || this.selectedProvider == 'ea')
+                this.fetchEaPlans();
+            if (skipCheckProvider || this.selectedProvider == 'origin')
+                this.getOriginData();
+            if (skipCheckProvider || this.selectedProvider == 'powershop')
+                this.getPowershopData();
+            if (skipCheckProvider || this.selectedProvider == 'sumo') 
+                this.$eventBus.$emit("validate", this.fetchSumoPlans);
+        },
         loadSumoSelectedProviderAndPlan() {
             if (this.selectedProvider === "sumo") {
                 setTimeout(() => this.$eventBus.$emit("validate", this.fetchSumoPlans), 600);
@@ -437,14 +438,7 @@ export default {
         onSelectProvider(provider) {
             this.resetSelectedPlan();
             this.selectedProvider = provider;
-
-            if (provider === "sumo") {
-                this.$eventBus.$emit("validate", this.fetchSumoPlans);
-            }
-
-            if (provider === "powershop") {
-                this.getPowershopData();
-            }
+            this.getAllPlans(false);
         },
         selectEAPlan(plan, isManual = false) {
             let planObj = {
