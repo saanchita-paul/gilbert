@@ -338,7 +338,7 @@ export default {
         quoteReference() {
             return this.service?.quote_reference ? this.service.quote_reference : (this.service?.lead_reference ? this.service.lead_reference : '-');
         },
-         reason() {
+        reason() {
             const reasons = this.service?.reasons;
             if (Array.isArray(reasons) && reasons.length > 0) {
                 return reasons.sort((a, b) => {
@@ -380,13 +380,8 @@ export default {
         },
     },
     mounted() {
-        this.fetchEaPlans();
-        this.getOriginData();
+        this.getAllPlans();
         this.loadSelectedProviderAndPlan();
-
-        if(this.selectedProvider === 'powershop') {
-            this.getPowershopData();
-        }
         // On address change refetch Sumo Plan Details
         const updateAddress = address => {
             this.selectedProvider === "sumo" ? this.$eventBus.$emit("validate", this.fetchSumoPlans) : null;
@@ -398,18 +393,23 @@ export default {
     },
     watch: {
         isBothEnergySubmit() {
-            this.getOriginData()
+            this.getAllPlans(false);
         },
         getNMIPrefix() {
-            this.getOriginData()
+            this.getAllPlans(false);
         },
-        activeServiceType() {
-            if(this.selectedProvider === 'powershop') {
-                this.getPowershopData();
-            }
-        }
     },
     methods: {
+        getAllPlans(skipCheckProvider = true) {
+            if (skipCheckProvider || this.selectedProvider == 'ea')
+                this.fetchEaPlans();
+            if (skipCheckProvider || this.selectedProvider == 'origin')
+                this.getOriginData();
+            if (skipCheckProvider || this.selectedProvider == 'powershop')
+                this.getPowershopData();
+            if (skipCheckProvider || this.selectedProvider == 'sumo') 
+                this.$eventBus.$emit("validate", this.fetchSumoPlans);
+        },
         loadSelectedProviderAndPlan() {
             const connectionService = this.leadSummary.connection_services.find(
                 data => data.service_type === "power"
@@ -462,14 +462,8 @@ export default {
         onSelectProvider(provider) {
             this.resetSelectedPlan();
             this.selectedProvider = provider;
-
-            if (provider === "sumo") {
-                this.$eventBus.$emit("validate", this.fetchSumoPlans);
-            }
-            if (provider === "powershop") {
-                this.getPowershopData();
-            }
-
+            
+            this.getAllPlans(false);
         },
         selectEAPlan(plan, isManual = false) {
             let planObj = {
