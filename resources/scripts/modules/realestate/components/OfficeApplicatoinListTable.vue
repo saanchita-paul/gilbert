@@ -4,9 +4,10 @@
             dynamicComponent="ApplicatoinListTable"
             @updateSearch="search"
             @changeComponent="changeComponent"
+            @openAssignApplicationModal="openAssignApplicationModal"
         >
         </CrmOfficeListHeader>
-        <v-row >
+        <v-row>
             <v-col cols="12" class="crm-table">
                 <v-data-table
                     :headers="headers"
@@ -23,7 +24,8 @@
                                 isServiceAllowed(item.services, 'power')
                             "
                             color="yellow"
-                            >mdi-flash</v-icon
+                        >mdi-flash
+                        </v-icon
                         >
                         <v-icon
                             small
@@ -31,7 +33,8 @@
                                 isServiceAllowed(item.services, 'gas')
                             "
                             color="red"
-                            >mdi-fire</v-icon
+                        >mdi-fire
+                        </v-icon
                         >
                         <v-icon
                             small
@@ -39,7 +42,8 @@
                                 isServiceAllowed(item.services, 'internet')
                             "
                             color="green"
-                            >mdi-wifi</v-icon
+                        >mdi-wifi
+                        </v-icon
                         >
                         <v-icon
                             small
@@ -47,7 +51,8 @@
                                 isServiceAllowed(item.services, 'water')
                             "
                             color="blue"
-                            >mdi-water</v-icon
+                        >mdi-water
+                        </v-icon
                         >
                     </template>
                     <template v-slot:item.source="{ item }">
@@ -58,9 +63,27 @@
                     <template v-slot:item.tenant_name="{ item }">
                         <div v-text="tenantName(item)"></div>
                     </template>
+
+                    <!-- remove select all checkbox from header start-->
+                    <template class="text-center" v-slot:[`header.data-table-select`]>
+                        <v-simple-checkbox
+                            :ripple="false"
+                        ></v-simple-checkbox>
+                    </template>
+                    <!-- remove select all checkbox from header end-->
+                    <template v-slot:item.data-table-select="{ item, isSelected, select }">
+                        <v-simple-checkbox
+                            :ripple="false"
+                        ></v-simple-checkbox>
+                    </template>
                 </v-data-table>
             </v-col>
         </v-row>
+
+        <AssignApplicationsModal v-if="showAssignApplicationModal"
+                                 :dialog="showAssignApplicationModal"
+                                 @cancelAssignApplications="cancelAssignApplications"
+        />
     </div>
 </template>
 
@@ -74,82 +97,90 @@ import AuthService from "@scripts/services/AuthService";
 import {LeadSearchFilterModel} from "@scripts/models/LeadSearchFilterModel";
 import {leadSourceMapFromNumber} from "@scripts/data/LeadSourceMap";
 import CrmOfficeListHeader from "@scripts/modules/realestate/components/CrmOfficeListHeader";
+import AssignApplicationsModal from "@scripts/components/crm/modals/AssignApplicationsModal";
 
 export default {
-    name: "OfficeApplicatoinListTable",
+    name      : "OfficeApplicatoinListTable",
     components: {
         CrmOfficeListHeader,
         ReassignModal,
         Search,
         AssigneeDropdown,
-        AssignedtoPopUp
+        AssignedtoPopUp,
+        AssignApplicationsModal
     },
 
     props: {
-        officeId: { required: true }
+        officeId: {required: true}
     },
 
     data() {
         return {
-            currentUser: null,
-            leadSearch: "",
-            options: {},
-            loading: false,
-            page: 1,
-            itemsPerPage: 10,
-            headers: [
+            currentUser               : null,
+            leadSearch                : "",
+            options                   : {},
+            loading                   : false,
+            page                      : 1,
+            itemsPerPage              : 10,
+            headers                   : [
                 {
-                    text: "Tenant Name",
-                    align: "start",
+                    text    : "Tenant Name",
+                    align   : "start",
                     sortable: true,
-                    value: "tenant_name"
+                    value   : "tenant_name"
                 },
                 {
-                    text: "Property Address",
-                    align: "start",
+                    text    : "Property Address",
+                    align   : "start",
                     sortable: true,
-                    value: "address_text"
+                    value   : "address_text"
                 },
                 {
-                    text: "Connection Date",
-                    align: "start",
+                    text    : "Connection Date",
+                    align   : "start",
                     sortable: true,
-                    value: "moving_date"
+                    value   : "moving_date"
                 },
                 {
-                    text: "Creation date",
-                    align: "start",
+                    text    : "Creation date",
+                    align   : "start",
                     sortable: true,
-                    value: "created_at"
+                    value   : "created_at"
                 },
                 {
-                    text: "Created By",
-                    align: "start",
+                    text    : "Created By",
+                    align   : "start",
                     sortable: true,
-                    value: "created_by"
+                    value   : "created_by"
                 },
                 {
-                    text: "Source",
-                    align: "start",
+                    text    : "Source",
+                    align   : "start",
                     sortable: true,
-                    value: "source"
+                    value   : "source"
                 },
                 {
-                    text: "Services",
-                    align: "start",
+                    text    : "Services",
+                    align   : "start",
                     sortable: true,
-                    value: "services"
+                    value   : "services"
                 },
                 {
-                    text: "Status",
-                    align: "start",
+                    text    : "Status",
+                    align   : "start",
                     sortable: true,
-                    value: "application_status"
+                    value   : "application_status"
+                },
+                {
+                    text    : '',
+                    value   : 'data-table-select',
+                    sortable: false
                 }
             ],
-            applications: [],
-            totalItem: 0,
-            advanceSearch: new LeadSearchFilterModel()
+            applications              : [],
+            totalItem                 : 0,
+            advanceSearch             : new LeadSearchFilterModel(),
+            showAssignApplicationModal: false,
         };
     },
     computed: {
@@ -157,24 +188,24 @@ export default {
             return leadSourceMapFromNumber;
         }
     },
-    methods: {
+    methods : {
         tenantName(item) {
             return item.first_name + " " + item.last_name;
         },
 
         async loadLeads(meta) {
-            this.loading = true;
-            let data = await LeadApplicationService.loadUserLeadsForAgents(
+            this.loading      = true;
+            let data          = await LeadApplicationService.loadUserLeadsForAgents(
                 meta,
                 "",
                 "",
                 this.advanceSearch
             );
-            this.loading = false;
+            this.loading      = false;
             this.applications = data.applications;
-            this.page = data.pagination.current_page;
+            this.page         = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
-            this.totalItem = data.pagination.total;
+            this.totalItem    = data.pagination.total;
         },
         isServiceAllowed(services, type) {
             return !services.includes(type);
@@ -182,14 +213,14 @@ export default {
 
         loadLeadList() {
             const meta = {
-                search: this.leadSearch,
-                page: this.options.page,
-                per_page: this.options.itemsPerPage === -1 ? this.totalItem : this.options.itemsPerPage,
+                search       : this.leadSearch,
+                page         : this.options.page,
+                per_page     : this.options.itemsPerPage === -1 ? this.totalItem : this.options.itemsPerPage,
                 is_descending:
                     this.options.sortDesc.length != 0
                         ? this.options.sortDesc[0]
                         : false,
-                sort_by:
+                sort_by      :
                     this.options.sortBy.length != 0
                         ? this.options.sortBy[0]
                         : "",
@@ -199,21 +230,30 @@ export default {
 
         changeComponent(name) {
 
-            this.$router.push({name: 'real.state.agency.users',
-                params: {id : this.$route.params.id, office_id : this.$route.params.officeId},
-                query: { type: name}
+            this.$router.push({
+                name  : 'real.state.agency.users',
+                params: {id: this.$route.params.id, office_id: this.$route.params.officeId},
+                query : {type: name}
             })
             this.$emit("changeComponent", name);
         },
 
         search(searchText) {
             this.advanceSearch.tenant_name = searchText;
-            this.advanceSearch.office_id = this.officeId;
+            this.advanceSearch.office_id   = this.officeId;
+            this.loadLeadList();
+        },
+
+        openAssignApplicationModal() {
+           this.showAssignApplicationModal = true;
+        },
+        cancelAssignApplications() {
+            this.showAssignApplicationModal = false;
             this.loadLeadList();
         }
     },
     mounted() {
-        this.currentUser = AuthService.getAuthUser();
+        this.currentUser             = AuthService.getAuthUser();
         this.advanceSearch.office_id = this.officeId;
         this.loadLeadList();
     },
@@ -234,10 +274,10 @@ export default {
 }
 
 .crm-table thead tr th {
-   font-size: 3em !important;
+    font-size: 3em !important;
 }
 
-.crm-table tr td{
+.crm-table tr td {
     font-size: 5.4em !important;
 }
 

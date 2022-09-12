@@ -41,6 +41,17 @@
                 <v-icon left>add</v-icon> Add New Staff
             </v-btn>
         </div>
+
+        <div  class="d-flex  mt-5 mb-1" v-if="dynamicComponent === 'ApplicatoinListTable'">
+            <div class="buttonLarge">
+                <v-btn
+                    color="primary"
+                    @click="assignOfficeAgentModalOpen"
+                >
+                    Assign Office & Agent
+                </v-btn>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -78,6 +89,10 @@ name: "CrmOfficeListHeader",
 
         sendInvitationToSelected() {
             this.$emit('sendInvitationToSelected');
+        },
+
+        assignOfficeAgentModalOpen() {
+            this.$emit('openAssignApplicationModal');
         }
     }
 }
