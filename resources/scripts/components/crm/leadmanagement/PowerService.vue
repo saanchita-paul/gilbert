@@ -125,7 +125,6 @@
                 :lead="leadSummary"
                 :selectedProvider="selectedProvider"
                 :serviceType="isBothEnergySubmit ? 'energy' : 'power'"
-                @paymentStatus="paymentStatusCheck"
             />
         </v-col>
 
@@ -269,7 +268,6 @@ export default {
             activePowerShopPlan: null,
             powershopPlan: null,
             powerShopData: null,
-            paymentStatus: null
         };
     },
     computed: {
@@ -380,9 +378,6 @@ export default {
         getPowerShopPlans() {
             return this.powerShopData?.plans?.electricity?.vdo || [];
         },
-        // paymentValidate() {
-        //     return this.paymentStatus === 2  || this.leadSummary?.powershop_payment_info?.status === 2;
-        // }
     },
     mounted() {
         this.fetchEaPlans();
@@ -613,10 +608,6 @@ export default {
                  ]
              }
         },
-
-        paymentStatusCheck(status) {
-            this.paymentStatus = status;
-        }
     },
 };
 </script>

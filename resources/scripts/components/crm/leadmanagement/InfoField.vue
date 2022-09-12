@@ -2117,4 +2117,8 @@ export default {
 .mt-24 {
     margin-top: 24px !important;
 }
+
+.field-label {
+    text-align: left !important;
+}
 </style>

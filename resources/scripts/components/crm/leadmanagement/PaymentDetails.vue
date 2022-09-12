@@ -12,18 +12,43 @@
                     <v-menu offset-y>
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn @click="checkSameDayValidation" class="button-border" v-bind="attrs" text v-on="on"
-                                   :disabled="disabledPaymentButton()" style="width: 100% !important;">
+                                   :disabled="disablePaymentLinkButton ? 'disabled' : disabledPaymentButton" style="width: 100% !important;">
                                 Send link to customer <span class="mdi mdi-send"></span>
                             </v-btn>
                         </template>
 
                         <v-list v-if="!isLoading">
-                            <v-list-item :disabled="!isEnable" v-for="(item, index) in items" :key="index">
-                                <v-icon v-text="item.icon" class="pr-4"></v-icon>
-                                <v-list-item-title style="cursor : pointer" @click="sendPaymentLink(item.value)">
-                                    {{ item.text }}
-                                </v-list-item-title>
-                            </v-list-item>
+
+                            <template v-for="(item, index) in items">
+                                <v-hover v-slot="{ hover }">
+                                    <v-list-item :key="index" :disabled="!isEnable" style="cursor : pointer" @click="sendPaymentLink(item.value)">
+                                        <template v-slot:default="{ active, toggle }">
+                                            <v-expand-transition>
+                                                <v-overlay
+                                                    absolute
+                                                    :opacity=".2"
+                                                    :value="hover"
+                                                    style="display: flex; justify-content: end; padding-right: 10px;"
+                                                >
+                                                    <v-icon style="color: #542E89">mdi mdi-send</v-icon>
+                                                </v-overlay>
+                                            </v-expand-transition>
+
+                                            <v-list-item-content>
+                                                <div class="d-flex">
+                                                    <v-icon v-text="item.icon" class="pr-4"></v-icon>
+                                                    <v-list-item-title>
+                                                        {{ item.text }}
+                                                    </v-list-item-title>
+                                                </div>
+                                            </v-list-item-content>
+                                            <v-list-item-action>
+                                                <v-list-item-action-text v-text="item.action"></v-list-item-action-text>
+                                            </v-list-item-action>
+                                        </template>
+                                    </v-list-item>
+                                </v-hover>
+                            </template>
                         </v-list>
                         <template v-else>
                             <v-skeleton-loader
@@ -146,7 +171,8 @@ export default {
             paymentStatus: null,
             powerCost: null,
             gasCost: null,
-            sameDayConnectionData: null
+            sameDayConnectionData: null,
+            disablePaymentLinkButton: false
         }
     },
     computed: {
@@ -155,11 +181,11 @@ export default {
                 ? powerShopPaymentStatusNumberToName[this.paymentStatus]
                 : powerShopPaymentStatusNumberToName[this.lead?.powershop_payment_info?.status];
         },
+        disabledPaymentButton() {
+            return this.lead?.powershop_payment_info?.status === 2;
+        },
     },
     watch: {
-        paymentStatus() {
-            this.$emit('paymentStatus', this.paymentStatus);
-        },
     },
     async mounted() {
         await this.synFormData();
@@ -172,12 +198,11 @@ export default {
             this.powerCost = this.lead?.powershop_payment_info?.estimated_elec_billing_cost;
             this.gasCost = this.lead?.powershop_payment_info?.estimated_gas_billing_cost;
         },
-        disabledPaymentButton() {
-            return this.lead?.powershop_payment_info?.status === 2;
-        },
+
         async sendPaymentLink(linkType) {
             const response = await LeadApplicationService.sendPowershopPaymentLink(this.lead.id, linkType);
             this.paymentStatus = response.data?.status;
+            this.disablePaymentLinkButton = true;
         },
 
         async checkSameDayValidation() {
