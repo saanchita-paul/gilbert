@@ -3,15 +3,16 @@
         <v-col cols="6">
             <h3>Payment</h3>
             <h4 class="py-4">Payment Details</h4>
-            <div class="crm-text-field justify-content">
-                <div class="pr-4">
-                    <h4>Payment Link </h4>
+            <div class="crm-text-field">
+                <div class="pr-3 title-text">
+                    <h4>Payment Link</h4>
                 </div>
 
-                <div>
+                <div class="text-field">
                     <v-menu offset-y>
-                        <template  v-slot:activator="{ on, attrs }">
-                            <v-btn @click="checkSameDayValidation" class="button-border" v-bind="attrs" text v-on="on" :disabled="disabledPaymentButton()">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn @click="checkSameDayValidation" class="button-border" v-bind="attrs" text v-on="on"
+                                   :disabled="disabledPaymentButton()" style="width: 100% !important;">
                                 Send link to customer <span class="mdi mdi-send"></span>
                             </v-btn>
                         </template>
@@ -34,8 +35,13 @@
                 </div>
             </div>
 
-            <div class="crm-text-field justify-content">
-                <h4>Payment Status </h4> <span class="text-bolder pl-2"> {{ getPaymentStatus }} </span>
+            <div class="crm-text-field">
+                <div class="pr-3 title-text">
+                    <h4>Payment Status</h4>
+                </div>
+                <div class="">
+                    <span class="text-bolder"> {{ getPaymentStatus }} </span>
+                </div>
             </div>
         </v-col>
 
@@ -204,6 +210,10 @@ export default {
 
 .justify-content {
     justify-content: space-between !important;
+}
+
+.text-bolder {
+    font-weight: 600;
 }
 
 </style>
