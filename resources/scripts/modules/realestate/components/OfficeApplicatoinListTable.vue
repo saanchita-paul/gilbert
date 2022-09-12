@@ -73,6 +73,8 @@
                     <!-- remove select all checkbox from header end-->
                     <template v-slot:item.data-table-select="{ item, isSelected, select }">
                         <v-simple-checkbox
+                            v-model="item.is_selected"
+                            @input="onSelectChange($event, item)"
                             :ripple="false"
                         ></v-simple-checkbox>
                     </template>
@@ -82,6 +84,7 @@
 
         <AssignApplicationsModal v-if="showAssignApplicationModal"
                                  :dialog="showAssignApplicationModal"
+                                 :applications="formattedSelectedApplications"
                                  @cancelAssignApplications="cancelAssignApplications"
         />
     </div>
@@ -178,6 +181,7 @@ export default {
                 }
             ],
             applications              : [],
+            selectedApplications      : [],
             totalItem                 : 0,
             advanceSearch             : new LeadSearchFilterModel(),
             showAssignApplicationModal: false,
@@ -186,6 +190,23 @@ export default {
     computed: {
         leadSourceMapFromNumber() {
             return leadSourceMapFromNumber;
+        },
+        selectedApplicationIds() {
+            return this.selectedApplications.map(application => application.id);
+        },
+        formattedSelectedApplications() {
+            return this.selectedApplications.map(application => {
+                return {
+                    id           : application.id,
+                    tenant_name  : application.first_name + ' ' + application.last_name,
+                    address_text : application.address_text,
+                    agency_office: application.agency_office,
+                    agent_name   : application.agent_name,
+                    office_id    : application.office_id,
+                    agent_id     : application.created_by,
+                    agency_id    : application.agency_id,
+                }
+            });
         }
     },
     methods : {
@@ -245,11 +266,20 @@ export default {
         },
 
         openAssignApplicationModal() {
-           this.showAssignApplicationModal = true;
+            this.showAssignApplicationModal = true;
         },
         cancelAssignApplications() {
             this.showAssignApplicationModal = false;
             this.loadLeadList();
+        },
+        onSelectChange(selected, item) {
+            let index = this.applications.findIndex(dt => dt.id === item.id);
+            console.log("index - ", index);
+            if (selected) {
+                this.selectedApplications.push(item);
+            } else {
+                this.selectedApplications.splice(index, 1);
+            }
         }
     },
     mounted() {

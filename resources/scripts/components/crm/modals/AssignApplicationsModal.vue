@@ -29,8 +29,10 @@
                 </v-card-title>
 
                 <v-card-subtitle>
-                    <p class="text-small">From this holding office. You can assign tenants to their respective agents
-                        and offices.</p>
+                    <p class="text-small">
+                        From this holding office. You can assign tenants to their respective agents
+                        and offices.
+                    </p>
                 </v-card-subtitle>
 
                 <v-card-text>
@@ -65,7 +67,7 @@
                                         :key="item.id"
                                     >
                                         <td>{{ item.id }}</td>
-                                        <td>{{ item.first_name + ' ' + item.last_name }}</td>
+                                        <td>{{ item.tenant_name }}</td>
                                         <td>{{ item.address_text }}</td>
                                         <td>
                                             <v-btn color="primary" text icon class="ma-2" @click="openOfficesModal">
@@ -110,8 +112,8 @@
                                         @closeConfirmModal="closeConfirmModal"/>
 
         <AssignedApplicationSuccessModal v-if="showSuccessModal"
-                                        :dialog="showSuccessModal"
-                                        @closeSuccessModal="closeSuccessModal"/>
+                                         :dialog="showSuccessModal"
+                                         @closeSuccessModal="closeSuccessModal"/>
     </v-row>
 </template>
 
@@ -128,12 +130,14 @@ export default {
         AssignedApplicationSuccessModal,
     },
     props     : {
-        dialog: {
+        dialog      : {
             require: true,
+            type   : Boolean,
         },
-        /*duplicateGroupId: {
-            require: true
-        }*/
+        applications: {
+            require: true,
+            type   : Array,
+        }
     },
     data() {
         return {
@@ -141,98 +145,6 @@ export default {
             showOfficesModal: false,
             showConfirmModal: false,
             showSuccessModal: false,
-            applications    : [
-                {
-                    "id"           : 5083,
-                    "first_name"   : "Kumudu",
-                    "middle_name"  : null,
-                    "last_name"    : "Heenkenda",
-                    "address_text" : "2/187 Jells Rd\nWheelers Hill VIC 3150",
-                    "agent_name"   : " ",
-                    "agency_office": "Vandervort PLC- Test"
-                },
-                {
-                    "id"           : 5055,
-                    "first_name"   : "Anuradha",
-                    "middle_name"  : null,
-                    "last_name"    : "Silva",
-                    "address_text" : "1/67 Madeleine Rd\nClayton VIC 3168",
-                    "agent_name"   : " ",
-                    "agency_office": "Vandervort PLC- Test"
-                },
-                {
-                    "id"           : 5054,
-                    "first_name"   : "Jonathon",
-                    "middle_name"  : null,
-                    "last_name"    : "Evans",
-                    "address_text" : "5/12 Somers St\nBurwood VIC 3125",
-                    "agent_name"   : " ",
-                    "agency_office": "Vandervort PLC- Test"
-                },
-                {
-                    "id"           : 5036,
-                    "first_name"   : "Sarah",
-                    "middle_name"  : null,
-                    "last_name"    : "Hughes",
-                    "address_text" : "1/2 Barkers Rd\nHawthorn VIC 3122",
-                    "agent_name"   : " ",
-                    "agency_office": "Vandervort PLC- Test"
-                },
-                {
-                    "id"           : 5028,
-                    "first_name"   : "Avinash Dilshan",
-                    "middle_name"  : null,
-                    "last_name"    : "Cardoza",
-                    "address_text" : "6/10 Hilltop Ave\nClayton VIC 3168",
-                    "agent_name"   : " ",
-                    "agency_office": "Vandervort PLC- Test"
-                },
-                {
-                    "id"           : 5016,
-                    "first_name"   : "Koon Yip",
-                    "middle_name"  : null,
-                    "last_name"    : "Sum",
-                    "address_text" : "2/72 Delmore Cres\nGlen Waverley VIC 3150",
-                    "agent_name"   : " ",
-                    "agency_office": "Vandervort PLC- Test"
-                },
-                {
-                    "id"           : 5015,
-                    "first_name"   : "Alan",
-                    "middle_name"  : null,
-                    "last_name"    : "Rumble",
-                    "address_text" : "20 Elizabeth St\nOakleigh East VIC 3166",
-                    "agent_name"   : " ",
-                    "agency_office": "Vandervort PLC- Test"
-                },
-                {
-                    "id"           : 4934,
-                    "first_name"   : "Dorries",
-                    "middle_name"  : null,
-                    "last_name"    : "Antonisamy",
-                    "address_text" : "29 Grenfell Rd\nMount Waverley VIC 3149",
-                    "agent_name"   : " ",
-                    "agency_office": "Vandervort PLC- Test"
-                },
-                {
-                    "id"           : 4834,
-                    "first_name"   : "Rebecca",
-                    "middle_name"  : null,
-                    "last_name"    : "Bryce",
-                    "address_text" : "5 Islay Ct\nMount Waverley VIC 3149",
-                    "agent_name"   : " ",
-                    "agency_office": "Vandervort PLC- Test"
-                },
-                {
-                    "id"           : 4822,
-                    "first_name"   : "First name",
-                    "middle_name"  : null,
-                    "last_name"    : "Last name",
-                    "address_text" : "4/100 Rode Victoria 7722 Australia",
-                    "agent_name"   : " ",
-                    "agency_office": "Stanton LLC2"
-                }
-            ],
         }
     },
     mounted() {
