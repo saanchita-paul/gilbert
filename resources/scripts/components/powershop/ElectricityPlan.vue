@@ -26,7 +26,7 @@
                         <div class="font-weight-bolder">
 
                             <p class="mb-2 bolder-text">{{ getSelectedElectricityPlan.title }} <span class="deep-text">(inc. GST)</span></p>
-                            <p class="mb-2 bolder-text">{{ getSelectedElectricityPlan.line_2 }} <span class="deep-text">(less then the)</span></p>
+                            <p class="mb-2 bolder-text">{{ getSelectedElectricityPlan.line_2 }} <span class="deep-text">(less than the)</span></p>
                             <p class="mb-4">
                                 <span v-if="victoriaState" class="linkable">Victorian Default Offer</span>
                                 <span v-else class="linkable">Reference Pricing</span>

@@ -35,7 +35,7 @@
                             <div class="font-weight-bold" style="font-size:14px">
                                 Solar feed in tariff c/kWh
                             </div>
-                            <div>{{ parseFloat(getSolarFeedInTariff).toFixed(1) }} </div>
+                            <div>{{ getSolarFeedInTariff }} </div>
                         </div>
 
                     </div>
@@ -182,7 +182,7 @@ export default {
         },
 
         getSolarFeedInTariff() {
-            return this.planDetails?.plans?.electricity?.solar_buy_pack_value ?? "";
+            return this.planDetails?.plans?.electricity?.solar_buy_pack_value ? parseFloat(this.planDetails?.plans?.electricity?.solar_buy_pack_value).toFixed(1) : "N/A";
         },
         getSelectedElecPlanDetails() {
             let plan = this.planDetails?.plans?.electricity?.vdo.find((item) => item.name === this.plan);
