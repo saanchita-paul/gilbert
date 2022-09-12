@@ -62,7 +62,7 @@
                                         <div class="plan-text" style="font-size:14px">
                                             Anytime (c/MJ)
                                         </div>
-                                        <div  class="plan-text">{{ plan.anytime_charge ? plan.anytime_charge : 'N/A'}}</div>
+                                        <div  class="plan-text">{{ plan.usage_charge ? plan.usage_charge : 'N/A'}}</div>
                                     </div>
 
                                     <div class="d-flex mt-8">
