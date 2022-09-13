@@ -364,8 +364,7 @@ export default {
         },
     },
     async mounted() {
-        this.getAllPlans();
-        this.loadSumoSelectedProviderAndPlan();
+        this.loadSelectedProviderAndPlan();
         // On address change refetch Sumo Plan Details
         const updateAddress = address => {
             this.selectedProvider === "sumo" ? this.$eventBus.$emit("validate", this.fetchSumoPlans) : null;
@@ -377,22 +376,29 @@ export default {
     },
     watch: {
         isBothEnergySubmit() {
-            this.getAllPlans(false);
+            this.loadSelectedProviderAndPlan();
         },
         getNMIPrefix() {
-            this.getAllPlans(false);
+            this.loadSelectedProviderAndPlan();
         },
     },
     methods: {
-        getAllPlans(skipCheckProvider = true) {
-            if (skipCheckProvider || this.selectedProvider == 'ea')
+        loadSelectedProviderAndPlan(loadAll = false) {
+            // const connectionService = this.leadSummary.connection_services.find(
+            //     data => data.service_type === "gas"
+            // );
+
+            // this.selectedProvider = connectionService?.provider_name;
+            // this.selectedPlan = connectionService?.plan_type;
+
+            if (loadAll || this.selectedProvider == 'ea')
                 this.fetchEaPlans();
-            if (skipCheckProvider || this.selectedProvider == 'origin')
+            if (loadAll || this.selectedProvider == 'origin')
                 this.getOriginData();
-            if (skipCheckProvider || this.selectedProvider == 'powershop')
+            if (loadAll || this.selectedProvider == 'powershop')
                 this.getPowershopData();
-            if (skipCheckProvider || this.selectedProvider == 'sumo') 
-                this.$eventBus.$emit("validate", this.fetchSumoPlans);
+            if (loadAll || this.selectedProvider == 'sumo') 
+                setTimeout(() => this.$eventBus.$emit("validate", this.fetchSumoPlans), 600);
         },
         loadSumoSelectedProviderAndPlan() {
             if (this.selectedProvider === "sumo") {
@@ -438,7 +444,7 @@ export default {
         onSelectProvider(provider) {
             this.resetSelectedPlan();
             this.selectedProvider = provider;
-            this.getAllPlans(false);
+            this.loadSelectedProviderAndPlan();
         },
         selectEAPlan(plan, isManual = false) {
             let planObj = {

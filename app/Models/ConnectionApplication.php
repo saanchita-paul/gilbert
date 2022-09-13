@@ -230,7 +230,7 @@ class ConnectionApplication extends Model
         'duplication_group_id',
         'duplicated_address_group_id',
         'duplicated_email_group_id',
-        'app_close_reason_id',
+        
         'power_life_support_accepted_at',
         'gas_life_support_accepted_at'
     ];

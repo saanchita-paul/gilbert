@@ -895,11 +895,16 @@ export default {
     },
     computed: {
         isDisabled() {
-           return !Boolean(this.is_temp_condition)
-               || !Boolean(this.is_life_support)
-               || Boolean(this.isLifeSupportAndEA)
-               || !Boolean(this.isPowerShopOk)
-               || Boolean(this.isPaymentNotComplete)
+            let disabled = !Boolean(this.is_temp_condition) || !Boolean(this.is_life_support);
+
+            if (this.data.selectedProvider == 'powershop'){
+                disabled = disabled || !Boolean(this.isPowerShopOk) || Boolean(this.isPaymentNotComplete);
+            }
+            if (this.data.selectedProvider == 'ea'){
+                disabled = disabled || Boolean(this.isLifeSupportAndEA);
+            }
+
+           return disabled;
         },
         selectedPowerPlan() {
             return LeadApplicationService.mapPlan(this.data.selectedPowerPlan);
@@ -1015,10 +1020,10 @@ export default {
 
     },
     mounted() {
-      this.checkSameDayValidation();
-      this.validateCutOffTime();
-      this.loadAuthorizedPerson();
-      this.loadPaymentInformation();
+        this.checkSameDayValidation();
+        this.validateCutOffTime();
+        this.loadAuthorizedPerson();
+        this.loadPaymentInformation();
     }
 };
 </script>
