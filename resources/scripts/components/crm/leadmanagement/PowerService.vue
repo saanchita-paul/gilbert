@@ -43,7 +43,7 @@
             <SameDayConnection :leadSummary="leadSummary" @changeAfterHourPayee="changeAfterHourPayee" />
         </v-col>
 
-        <v-col cols="12" ref="provider">
+        <v-col cols="12" ref="provider" style="padding-top: 0px !important;">
             <p class="sub-title" v-if="selectedServiceTitle.length > 0">
                 Select a plan for {{ selectedServiceTitle }}
             </p>
@@ -125,7 +125,6 @@
                 :lead="leadSummary"
                 :selectedProvider="selectedProvider"
                 :serviceType="isBothEnergySubmit ? 'energy' : 'power'"
-                @paymentStatus="paymentStatusCheck"
             />
         </v-col>
 
@@ -269,7 +268,6 @@ export default {
             activePowerShopPlan: null,
             powershopPlan: null,
             powerShopData: null,
-            paymentStatus: null
         };
     },
     computed: {
@@ -380,9 +378,6 @@ export default {
         getPowerShopPlans() {
             return this.powerShopData?.plans?.electricity?.vdo || [];
         },
-        // paymentValidate() {
-        //     return this.paymentStatus === 2  || this.leadSummary?.powershop_payment_info?.status === 2;
-        // }
     },
     mounted() {
         this.loadSelectedProviderAndPlan();
@@ -601,10 +596,6 @@ export default {
                  ]
              }
         },
-
-        paymentStatusCheck(status) {
-            this.paymentStatus = status;
-        }
     },
 };
 </script>
