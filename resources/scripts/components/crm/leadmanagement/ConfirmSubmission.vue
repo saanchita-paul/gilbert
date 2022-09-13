@@ -1044,4 +1044,7 @@ export default {
 .alert-bolder-text {
     font-weight: 700;
 }
+.field-label {
+    text-align: left !important;
+}
 </style>
