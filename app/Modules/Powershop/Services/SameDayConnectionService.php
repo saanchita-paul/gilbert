@@ -102,8 +102,7 @@ class SameDayConnectionService
         $currentTime = Carbon::now(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC));
         $connectionDate = (new Carbon($application->moving_date))->timezone(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC));
         $isToday = $connectionDate->isToday();
-        $isPast = $connectionDate->isPast();
-
+        $isPast = !$isToday && $connectionDate->isPast();
         if ($state == self::MAP_STATE_ACT || $isPast) return false;
 
         if (!$isToday) return true;
