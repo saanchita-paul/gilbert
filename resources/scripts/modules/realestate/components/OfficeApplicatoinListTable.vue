@@ -5,6 +5,7 @@
             @updateSearch="search"
             @changeComponent="changeComponent"
             @openAssignApplicationModal="openAssignApplicationModal"
+            :assignApplicationsDisabled="assignApplicationsDisabled"
         >
         </CrmOfficeListHeader>
         <v-row>
@@ -15,6 +16,7 @@
                     :options.sync="options"
                     :server-items-length="totalItem"
                     :loading="loading"
+                    :item-class="isSelectedClass"
                     class="row-pointer"
                 >
                     <template v-slot:item.services="{ item }">
@@ -67,6 +69,8 @@
                     <!-- remove select all checkbox from header start-->
                     <template class="text-center" v-slot:[`header.data-table-select`]>
                         <v-simple-checkbox
+                            v-model="selectAllApplications"
+                            @input="selectAllApplicationsHandler"
                             :ripple="false"
                         ></v-simple-checkbox>
                     </template>
@@ -74,7 +78,7 @@
                     <template v-slot:item.data-table-select="{ item, isSelected, select }">
                         <v-simple-checkbox
                             v-model="item.is_selected"
-                            @input="onSelectChange($event, item)"
+                            @input="onSelectChange(item)"
                             :ripple="false"
                         ></v-simple-checkbox>
                     </template>
@@ -185,6 +189,7 @@ export default {
             totalItem                 : 0,
             advanceSearch             : new LeadSearchFilterModel(),
             showAssignApplicationModal: false,
+            selectAllApplications     : false,
         };
     },
     computed: {
@@ -200,13 +205,16 @@ export default {
                     id           : application.id,
                     tenant_name  : application.first_name + ' ' + application.last_name,
                     address_text : application.address_text,
-                    agency_office: application.agency_office,
-                    agent_name   : application.agent_name,
-                    office_id    : application.office_id,
-                    agent_id     : application.created_by,
-                    agency_id    : application.agency_id,
+                    agency_office: '',
+                    agent_name   : '',
+                    office_id    : '',
+                    agent_id     : '',
+                    is_selected  : false,
                 }
             });
+        },
+        assignApplicationsDisabled() {
+            return this.selectedApplications.length <= 0;
         }
     },
     methods : {
@@ -270,17 +278,29 @@ export default {
         },
         cancelAssignApplications() {
             this.showAssignApplicationModal = false;
+            this.selectAllApplications      = false;
+            this.selectedApplications       = [];
             this.loadLeadList();
         },
-        onSelectChange(selected, item) {
-            let index = this.applications.findIndex(dt => dt.id === item.id);
+        onSelectChange(item) {
+            let index = this.selectedApplications.findIndex(dt => dt.id === item.id);
             console.log("index - ", index);
-            if (selected) {
+            if (index === -1) {
                 this.selectedApplications.push(item);
             } else {
                 this.selectedApplications.splice(index, 1);
             }
-        }
+            this.selectAllApplications = this.selectedApplications.length === this.applications.length;
+        },
+        selectAllApplicationsHandler() {
+            this.applications.forEach(application => {
+                application.is_selected = this.selectAllApplications;
+            });
+            this.selectedApplications = this.selectedApplications.length === this.applications.length ? [] : [...this.applications];
+        },
+        isSelectedClass(item) {
+            return item.is_selected ? 'selectedRow' : '';
+        },
     },
     mounted() {
         this.currentUser             = AuthService.getAuthUser();

@@ -24,7 +24,7 @@
                 </v-toolbar>
                 <v-container>
                     <v-list>
-                        <div class="assigneesearch">
+                        <div class="officesSearch">
                             <v-text-field
                                 label="Search"
                                 outlined
@@ -39,7 +39,8 @@
                             item-height="64"
                         >
                             <template v-slot:default="{ item, index }">
-                                <v-list-item :key="index" class="cursor-pointer list-tile" @click="openAgentsModal">
+                                <v-list-item :key="index" class="cursor-pointer list-tile"
+                                             @click="openAgentsModal(index)">
                                     <v-list-item-title>{{ item.title }}</v-list-item-title>
                                 </v-list-item>
                                 <v-divider></v-divider>
@@ -52,6 +53,8 @@
 
         <AgentsModal v-if="showAgentsModal"
                      :dialog="showAgentsModal"
+                     :selectedOffice="selectedOffice"
+                     @selectApplication="selectApplication"
                      @closeAgentsModal="closeAgentsModal"/>
     </v-row>
 </template>
@@ -62,9 +65,13 @@ import AgentsModal from "@scripts/components/crm/modals/AgentsModal";
 export default {
     name      : "OfficesModal",
     props     : {
-        dialog: {
+        dialog             : {
             require: true,
         },
+        selectedApplication: {
+            type    : Object,
+            required: true,
+        }
     },
     components: {
         AgentsModal
@@ -83,16 +90,25 @@ export default {
             {title: 'Click Me 2'},
             {title: 'Click Me 2'},
         ],
+        selectedIndex  : null,
+        selectedOffice : {},
     }),
     methods   : {
         closeModal() {
             this.$emit('closeOfficesModal');
         },
-        openAgentsModal() {
+        openAgentsModal(index) {
+            this.selectedOffice  = this.items[index];
+            this.selectedIndex   = index;
             this.showAgentsModal = true;
+            this.selectApplication();
         },
         closeAgentsModal() {
             this.showAgentsModal = false;
+        },
+        selectApplication() {
+            this.selectedApplication.agency_office = this.selectedOffice.title;
+            // this.$emit('selectApplication', index, item);
         },
     }
 }

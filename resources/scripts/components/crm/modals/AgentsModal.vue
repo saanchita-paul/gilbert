@@ -55,13 +55,17 @@
 <script>
 
 export default {
-    name      : "AgentsModal",
-    props     : {
-        dialog: {
+    name   : "AgentsModal",
+    props  : {
+        dialog        : {
             require: true,
         },
+        selectedOffice: {
+            type    : Object,
+            required: true
+        }
     },
-    data      : () => ({
+    data   : () => ({
         items: [
             {title: 'Click Me'},
             {title: 'Click Me'},
@@ -75,7 +79,7 @@ export default {
             {title: 'Click Me 2'},
         ],
     }),
-    methods   : {
+    methods: {
         closeModal() {
             this.$emit('closeAgentsModal');
         }

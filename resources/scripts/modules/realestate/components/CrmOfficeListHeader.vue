@@ -42,9 +42,9 @@
             </v-btn>
         </div>
 
-        <div  class="d-flex  mt-5 mb-1" v-if="dynamicComponent === 'ApplicatoinListTable'">
+        <div  class="d-flex  mt-5 mb-1" v-if="dynamicComponent === 'ApplicatoinListTable' && !assignApplicationsDisabled">
             <div class="buttonLarge">
-                <v-btn
+                <v-btn :disabled="assignApplicationsDisabled"
                     color="primary"
                     @click="assignOfficeAgentModalOpen"
                 >
@@ -60,7 +60,7 @@ import Search from "@scripts/components/crm/Search";
 export default {
 name: "CrmOfficeListHeader",
     components: {Search},
-    props: ['editMode', 'selected', 'dynamicComponent', 'isSendingInvitation'],
+    props: ['editMode', 'selected', 'dynamicComponent', 'isSendingInvitation', 'assignApplicationsDisabled'],
     methods: {
         updateSearch(text) {
             this.$emit('updateSearch', text);

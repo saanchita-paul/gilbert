@@ -63,14 +63,15 @@
                                     </thead>
                                     <tbody>
                                     <tr
-                                        v-for="item in applications"
+                                        v-for="(item, index) in assignedApplications"
                                         :key="item.id"
                                     >
                                         <td>{{ item.id }}</td>
                                         <td>{{ item.tenant_name }}</td>
                                         <td>{{ item.address_text }}</td>
                                         <td>
-                                            <v-btn color="primary" text icon class="ma-2" @click="openOfficesModal">
+                                            <v-btn color="primary" text icon class="ma-2"
+                                                   @click="openOfficesModal(index)">
                                                 <v-icon left>add</v-icon>
                                             </v-btn>
                                         </td>
@@ -104,6 +105,8 @@
 
         <OfficesModal v-if="showOfficesModal"
                       :dialog="showOfficesModal"
+                      :selectedApplication="selectedApp"
+                      @selectApplication="selectApplication"
                       @closeOfficesModal="closeOfficesModal"/>
 
         <AssignApplicationsConfirmModal v-if="showConfirmModal"
@@ -141,13 +144,18 @@ export default {
     },
     data() {
         return {
-            loadTable       : true,
-            showOfficesModal: false,
-            showConfirmModal: false,
-            showSuccessModal: false,
+            assignedApplications: [],
+            loadTable           : true,
+            showOfficesModal    : false,
+            showConfirmModal    : false,
+            showSuccessModal    : false,
+            selectedApplications: [],
+            selectedApp         : {},
+            selectedIndex       : null,
         }
     },
     mounted() {
+        this.assignedApplications = this.applications;
         // this.fetchDuplicateLead();
     },
 
@@ -155,7 +163,9 @@ export default {
         cancelAssignApplications() {
             this.$emit('cancelAssignApplications');
         },
-        openOfficesModal() {
+        openOfficesModal(index) {
+            this.selectedApp = this.assignedApplications[index];
+            this.selectedIndex = index;
             this.showOfficesModal = true;
         },
         closeOfficesModal() {
@@ -174,6 +184,9 @@ export default {
             this.showConfirmModal = false;
             this.$emit('cancelAssignApplications');
             this.showSuccessModal = false;
+        },
+        selectApplication(index, item) {
+            console.log(index, item);
         },
         async fetchDuplicateLead() {
             this.applications = (await DuplicateLeadService.getDuplicateLeadData(this.duplicateGroupId)).data;
