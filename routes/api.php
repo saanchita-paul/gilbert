@@ -211,7 +211,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     /**
      * api for powershop payment
      */
-    Route::post('/powershop/payment', [PaymentInfoController::class, 'updatePaymentInfo']);
+    Route::post('/powershop/payment', [PaymentInfoController::class, 'updateCost']);
 
 });
 

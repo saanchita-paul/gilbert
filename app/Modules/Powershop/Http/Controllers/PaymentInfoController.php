@@ -32,11 +32,11 @@ class PaymentInfoController extends Controller
      *
      * @return JsonResponse
      */
-    public function updatePaymentInfo(Request $request): JsonResponse
+    public function updateCost(Request $request): JsonResponse
     {
         $service = new PaymentInfoService($request->get('app_id'));
         try {
-            return response()->json(['data' => $service->update($request->toArray())]);
+            return response()->json(['data' => $service->update(array_merge($request->toArray(), ['status' => null]))]);
         } catch (Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

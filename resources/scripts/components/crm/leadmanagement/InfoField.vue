@@ -1096,7 +1096,7 @@
         <div class="field-label">
           <span>Concession Card</span>
         </div>
-        <div class="text-field">
+        <div class="text-field" style="width: 60% ">
           <ValidationProvider
             name="Concession Card"
             v-slot="{ errors }"
