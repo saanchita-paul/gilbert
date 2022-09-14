@@ -34,9 +34,16 @@
                         </div>
                     </div>
                     <div class="mt-2">
-                        <p class="paragraph-text">{{ getSelectedElectricityPlan.line_1 }}</p>
+                        <p class="paragraph-text">
+                            <span
+                                v-for="(line,lineNumber) of selectedPlan.description.split('\n')" 
+                                v-bind:key="lineNumber" >
+                            {{ line }}<br/>
+                            </span>
+                        </p>
+                        <!-- <p class="paragraph-text">{{ getSelectedElectricityPlan.line_1 }}</p>
                         <p class="paragraph-text">Your actual bills will vary depending on your usage and any price changes in the future.
-                            You'll be notified of any change in accordance with our regulatory requirements.</p>
+                            You'll be notified of any change in accordance with our regulatory requirements.</p> -->
                     </div>
                     <div class="d-flex">
                         <h4 class="font-weight-bold plan-heading-text mr-2">Your distributor</h4>
@@ -155,6 +162,7 @@ export default {
     },
 
     mounted() {
+        console.log(this.selectedPlan);
     }
 }
 </script>
