@@ -55,9 +55,9 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      * Agency, Office Users
      */
     Route::get('/agencies', [AgencyController::class, 'index'])
-        ->middleware('permission:' . RolePermissionService::CAN_GET_AGENCY_LIST );
+        ->middleware('permission:' . RolePermissionService::CAN_GET_AGENCY_LIST);
     Route::post('/agencies', [AgencyController::class, 'create'])
-        ->middleware('permission:' . RolePermissionService::CAN_CREATE_FRANCHISED_AGENCY );
+        ->middleware('permission:' . RolePermissionService::CAN_CREATE_FRANCHISED_AGENCY);
     Route::get('/agencies/get-agency-metrics', [AgencyController::class, 'getAgencyMetrics']); # not is use
     Route::get('/agencies/get-agency-application-metrics', [AgencyController::class, 'getAgencyApplicationMetrics'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_METRICS);
@@ -74,13 +74,13 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_CREATE_INDEPENDENT_AGENCY);
 
     Route::post('/offices', [OfficeController::class, 'createOffice'])
-        ->middleware('permission:' . RolePermissionService::CAN_CREATE_NEW_OFFICE );
+        ->middleware('permission:' . RolePermissionService::CAN_CREATE_NEW_OFFICE);
     Route::get('/offices/{id}', [OfficeController::class, 'getOffice'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICE_DETAILS);
     Route::get('/offices/office/{id}', [OfficeController::class, 'getOnlyOffice'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICE_DETAILS);
     Route::get('/offices/{id}/get-metrics', [OfficeController::class, 'getMatricsData'])
-         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICE_METRICS);
+        ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICE_METRICS);
     Route::post('/offices/{id}/update', [OfficeController::class, 'updateOffice'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_OFFICE);
     Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index'])
@@ -103,6 +103,12 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/alloffices', [OfficeController::class, 'allOffices'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
+
+    // Assign Applications Routes
+    Route::get('/all-offices-for-assign-applications', [OfficeController::class, 'getOfficesForAssignApplications'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
+    Route::get('/offices/{officeId}/all-agents-for-assign-applications', [AgentProfileController::class, 'getAgentsForAssignApplications']);
+    Route::post('/offices/assign-applications', [OfficeController::class, 'assignApplications']);
 
     /**
      * Hood User
@@ -179,8 +185,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     //'+id
 
     /***
-        * Sales Dashboard
-    */
+     * Sales Dashboard
+     */
     Route::get('/sales-dashboard/home', [ReportController::class, 'home'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OPERATION_REPORT);
     Route::get('/sales-dashboard/export/submission-report', [ReportController::class, 'submissionReport'])
@@ -192,8 +198,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 
     /***
-        * Application closing reasons route
-    */
+     * Application closing reasons route
+     */
     // application closing reasons list
     Route::get('/app-close-reasons', [AppCloseReasonController::class, 'index']);
     // application closing reasons create
@@ -228,12 +234,10 @@ Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWate
 Route::get('/sumo/generate-uuid/{id}', [ApplicationController::class, 'getSumoUuid']);
 
 
-
 /**
  * api's for admin only
  */
 Route::get('/get-report-access-token', [ReportController::class, 'getReportAccessToken']);
-
 
 
 /**
@@ -244,13 +248,11 @@ Route::get('lnn/bot_token', function () {
 });
 
 
-
 Route::get('/applications/{id}/validate-cutoff/', [ApplicationController::class, 'validateCutOff']);
 
 
 Route::post('/our-property/token', [OurPropertyController::class, 'getAccessToken']);
 Route::post('/our-property/lead', [OurPropertyController::class, 'createOurProperty']);
-
 
 
 /**
@@ -260,8 +262,6 @@ Route::get('/gbg-validate-email', [ApplicationController::class, 'isGbgValidateE
 Route::get('/applications/{id}/email-manually-verified', [ApplicationController::class, 'isEmailManuallyVerified']);
 
 
-
-
 Route::get("/karan/sales-status", function () {
     $id = request()->get('id');
     $power = request()->get('power');
@@ -269,27 +269,25 @@ Route::get("/karan/sales-status", function () {
 
     $ap = \App\Models\ConnectionApplication::findOrFail($id);
     foreach ($ap->connectionServices as $service) {
-            if ($power === 'accepted' && $service->service_type === 'power') {
-                $service->status = \App\Models\ConnectionService::STATUS_ACCEPTED;
-            }
-            if ($power === 'rejected' && $service->service_type === 'power') {
-                $service->lead_reference = null;
-                $service->status = \App\Models\ConnectionService::STATUS_REJECTED;
-            }
-
-            if ($gas === 'accepted'  && $service->service_type === 'gas') {
-                $service->status = \App\Models\ConnectionService::STATUS_ACCEPTED;
-            }
-            if ($gas === 'rejected' && $service->service_type === 'gas') {
-                $service->lead_reference = null;
-                $service->status = \App\Models\ConnectionService::STATUS_REJECTED;
-            }
-            $service->save();
+        if ($power === 'accepted' && $service->service_type === 'power') {
+            $service->status = \App\Models\ConnectionService::STATUS_ACCEPTED;
         }
+        if ($power === 'rejected' && $service->service_type === 'power') {
+            $service->lead_reference = null;
+            $service->status = \App\Models\ConnectionService::STATUS_REJECTED;
+        }
+
+        if ($gas === 'accepted' && $service->service_type === 'gas') {
+            $service->status = \App\Models\ConnectionService::STATUS_ACCEPTED;
+        }
+        if ($gas === 'rejected' && $service->service_type === 'gas') {
+            $service->lead_reference = null;
+            $service->status = \App\Models\ConnectionService::STATUS_REJECTED;
+        }
+        $service->save();
+    }
     return "success";
 });
-
-
 
 
 // Route::get('report_corporate', function () {
@@ -312,7 +310,7 @@ Route::get('/kaka', function () {
     $dateTimeZone = new DateTimeZone("Australia/Melbourne");
     $date = new DateTime(null, $dateTimeZone);
 //    dd($date);
-    return $dateTimeZone->getOffset($date)/60/60;
+    return $dateTimeZone->getOffset($date) / 60 / 60;
 
 });
 

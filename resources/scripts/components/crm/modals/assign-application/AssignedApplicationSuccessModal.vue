@@ -37,7 +37,7 @@
 
                 <v-card-actions class="justify-center">
                     <v-btn x-large block rounded
-                        color="primary" @click="done"
+                           color="primary" @click="done"
                     >
                         Done
                     </v-btn>
@@ -49,12 +49,12 @@
 
 <script>
 export default {
-    name   : "AssignedApplicationSuccessModal",
-    props  : {
+    name: "AssignedApplicationSuccessModal",
+    props: {
         dialog: {
             require: true,
         },
-        title : {
+        title: {
             require: true,
         },
     },

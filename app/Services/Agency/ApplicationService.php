@@ -3,6 +3,7 @@
 namespace App\Services\Agency;
 
 use App\Jobs\UpdateHubspotContactJob;
+use App\Models\AgentProfile;
 use App\Models\AppCloseReason;
 use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
@@ -13,6 +14,7 @@ use App\Models\Identification;
 use App\Models\Office;
 use App\Models\User;
 use App\Services\RolePermission;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use TSA\Services\TsaSendAppliationService;
@@ -637,6 +639,28 @@ class ApplicationService
         $email_manually_verified_by = $existingApplication->email_manually_verified_by;
 
         return $email_manually_verified_by;
+    }
+
+
+    public function saveAssignedApplications(array $applications)
+    {
+        try {
+            DB::beginTransaction();
+            foreach ($applications as $application) {
+                $connectionApplication = ConnectionApplication::find($application['id']);
+                $office = Office::find($application['office_id']);
+                $agent_profile = AgentProfile::find($application['created_by']);
+                if ($connectionApplication && $office && $agent_profile) {
+                    $connectionApplication->update($application);
+                }
+            }
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
     }
 
 }

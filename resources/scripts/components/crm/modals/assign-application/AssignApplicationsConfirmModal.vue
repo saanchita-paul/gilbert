@@ -54,12 +54,12 @@
 
 <script>
 export default {
-    name   : "AssignApplicationsConfirmModal",
-    props  : {
+    name: "AssignApplicationsConfirmModal",
+    props: {
         dialog: {
             require: true,
         },
-        title : {
+        title: {
             require: true,
         },
     },

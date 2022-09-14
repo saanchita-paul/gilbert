@@ -89,7 +89,8 @@
         <AssignApplicationsModal v-if="showAssignApplicationModal"
                                  :dialog="showAssignApplicationModal"
                                  :applications="formattedSelectedApplications"
-                                 @cancelAssignApplications="cancelAssignApplications"
+                                 @completeAssignApplications="completeAssignApplications"
+                                 @closeModalAssignApplicationModal="closeModalAssignApplicationModal"
         />
     </div>
 </template>
@@ -104,10 +105,10 @@ import AuthService from "@scripts/services/AuthService";
 import {LeadSearchFilterModel} from "@scripts/models/LeadSearchFilterModel";
 import {leadSourceMapFromNumber} from "@scripts/data/LeadSourceMap";
 import CrmOfficeListHeader from "@scripts/modules/realestate/components/CrmOfficeListHeader";
-import AssignApplicationsModal from "@scripts/components/crm/modals/AssignApplicationsModal";
+import AssignApplicationsModal from "@scripts/components/crm/modals/assign-application/AssignApplicationsModal";
 
 export default {
-    name      : "OfficeApplicatoinListTable",
+    name: "OfficeApplicatoinListTable",
     components: {
         CrmOfficeListHeader,
         ReassignModal,
@@ -123,93 +124,90 @@ export default {
 
     data() {
         return {
-            currentUser               : null,
-            leadSearch                : "",
-            options                   : {},
-            loading                   : false,
-            page                      : 1,
-            itemsPerPage              : 10,
-            headers                   : [
+            currentUser: null,
+            leadSearch: "",
+            options: {},
+            loading: false,
+            page: 1,
+            itemsPerPage: 10,
+            headers: [
                 {
-                    text    : "Tenant Name",
-                    align   : "start",
+                    text: "Tenant Name",
+                    align: "start",
                     sortable: true,
-                    value   : "tenant_name"
+                    value: "tenant_name"
                 },
                 {
-                    text    : "Property Address",
-                    align   : "start",
+                    text: "Property Address",
+                    align: "start",
                     sortable: true,
-                    value   : "address_text"
+                    value: "address_text"
                 },
                 {
-                    text    : "Connection Date",
-                    align   : "start",
+                    text: "Connection Date",
+                    align: "start",
                     sortable: true,
-                    value   : "moving_date"
+                    value: "moving_date"
                 },
                 {
-                    text    : "Creation date",
-                    align   : "start",
+                    text: "Creation date",
+                    align: "start",
                     sortable: true,
-                    value   : "created_at"
+                    value: "created_at"
                 },
                 {
-                    text    : "Created By",
-                    align   : "start",
+                    text: "Created By",
+                    align: "start",
                     sortable: true,
-                    value   : "created_by"
+                    value: "created_by"
                 },
                 {
-                    text    : "Source",
-                    align   : "start",
+                    text: "Source",
+                    align: "start",
                     sortable: true,
-                    value   : "source"
+                    value: "source"
                 },
                 {
-                    text    : "Services",
-                    align   : "start",
+                    text: "Services",
+                    align: "start",
                     sortable: true,
-                    value   : "services"
+                    value: "services"
                 },
                 {
-                    text    : "Status",
-                    align   : "start",
+                    text: "Status",
+                    align: "start",
                     sortable: true,
-                    value   : "application_status"
+                    value: "application_status"
                 },
                 {
-                    text    : '',
-                    value   : 'data-table-select',
+                    text: '',
+                    value: 'data-table-select',
                     sortable: false
                 }
             ],
-            applications              : [],
-            selectedApplications      : [],
-            totalItem                 : 0,
-            advanceSearch             : new LeadSearchFilterModel(),
+            applications: [],
+            selectedApplications: [],
+            totalItem: 0,
+            advanceSearch: new LeadSearchFilterModel(),
             showAssignApplicationModal: false,
-            selectAllApplications     : false,
+            selectAllApplications: false,
         };
     },
     computed: {
         leadSourceMapFromNumber() {
             return leadSourceMapFromNumber;
         },
-        selectedApplicationIds() {
-            return this.selectedApplications.map(application => application.id);
-        },
         formattedSelectedApplications() {
             return this.selectedApplications.map(application => {
                 return {
-                    id           : application.id,
-                    tenant_name  : application.first_name + ' ' + application.last_name,
-                    address_text : application.address_text,
+                    id: application.id,
+                    tenant_name: application.first_name + ' ' + application.last_name,
+                    address_text: application.address_text,
                     agency_office: '',
-                    agent_name   : '',
-                    office_id    : '',
-                    agent_id     : '',
-                    is_selected  : false,
+                    agent_name: '',
+                    office_id: '',
+                    created_by: '',
+                    is_selected: false,
                 }
             });
         },
@@ -217,24 +215,24 @@ export default {
             return this.selectedApplications.length <= 0;
         }
     },
-    methods : {
+    methods: {
         tenantName(item) {
             return item.first_name + " " + item.last_name;
         },
 
         async loadLeads(meta) {
-            this.loading      = true;
-            let data          = await LeadApplicationService.loadUserLeadsForAgents(
+            this.loading = true;
+            let data = await LeadApplicationService.loadUserLeadsForAgents(
                 meta,
                 "",
                 "",
                 this.advanceSearch
             );
-            this.loading      = false;
+            this.loading = false;
             this.applications = data.applications;
-            this.page         = data.pagination.current_page;
+            this.page = data.pagination.current_page;
             this.itemsPerPage = data.pagination.per_page;
-            this.totalItem    = data.pagination.total;
+            this.totalItem = data.pagination.total;
         },
         isServiceAllowed(services, type) {
             return !services.includes(type);
@@ -242,14 +240,14 @@ export default {
 
         loadLeadList() {
             const meta = {
-                search       : this.leadSearch,
-                page         : this.options.page,
-                per_page     : this.options.itemsPerPage === -1 ? this.totalItem : this.options.itemsPerPage,
+                search: this.leadSearch,
+                page: this.options.page,
+                per_page: this.options.itemsPerPage === -1 ? this.totalItem : this.options.itemsPerPage,
                 is_descending:
                     this.options.sortDesc.length != 0
                         ? this.options.sortDesc[0]
                         : false,
-                sort_by      :
+                sort_by:
                     this.options.sortBy.length != 0
                         ? this.options.sortBy[0]
                         : "",
@@ -260,31 +258,32 @@ export default {
         changeComponent(name) {
 
             this.$router.push({
-                name  : 'real.state.agency.users',
+                name: 'real.state.agency.users',
                 params: {id: this.$route.params.id, office_id: this.$route.params.officeId},
-                query : {type: name}
+                query: {type: name}
             })
             this.$emit("changeComponent", name);
         },
 
         search(searchText) {
             this.advanceSearch.tenant_name = searchText;
-            this.advanceSearch.office_id   = this.officeId;
+            this.advanceSearch.office_id = this.officeId;
             this.loadLeadList();
         },
 
         openAssignApplicationModal() {
             this.showAssignApplicationModal = true;
         },
-        cancelAssignApplications() {
+        closeModalAssignApplicationModal() {
             this.showAssignApplicationModal = false;
-            this.selectAllApplications      = false;
-            this.selectedApplications       = [];
+        },
+        completeAssignApplications() {
+            this.selectAllApplications = false;
+            this.selectedApplications = [];
             this.loadLeadList();
         },
         onSelectChange(item) {
             let index = this.selectedApplications.findIndex(dt => dt.id === item.id);
-            console.log("index - ", index);
             if (index === -1) {
                 this.selectedApplications.push(item);
             } else {
@@ -303,7 +302,7 @@ export default {
         },
     },
     mounted() {
-        this.currentUser             = AuthService.getAuthUser();
+        this.currentUser = AuthService.getAuthUser();
         this.advanceSearch.office_id = this.officeId;
         this.loadLeadList();
     },

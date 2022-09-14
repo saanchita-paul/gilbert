@@ -89,11 +89,13 @@
 
                 <v-card-actions class="justify-end">
                     <v-btn
-                        @click="cancelAssignApplications"
+                        @click="closeModal"
+                        :disabled="isLoading"
                     >
                         Cancel
                     </v-btn>
                     <v-btn
+                        :loading="isLoading"
                         color="primary"
                         @click="openConfirmModal"
                     >
@@ -121,81 +123,122 @@
 </template>
 
 <script>
-import OfficesModal from "@scripts/components/crm/modals/OfficesModal";
-import AssignApplicationsConfirmModal from "@scripts/components/crm/modals/AssignApplicationsConfirmModal";
-import AssignedApplicationSuccessModal from "@scripts/components/crm/modals/AssignedApplicationSuccessModal";
+import OfficesModal from "@scripts/components/crm/modals/assign-application/OfficesModal";
+import AssignApplicationsConfirmModal
+    from "@scripts/components/crm/modals/assign-application/AssignApplicationsConfirmModal";
+import AssignedApplicationSuccessModal
+    from "@scripts/components/crm/modals/assign-application/AssignedApplicationSuccessModal";
+import AssignApplicationService from "@scripts/services/crm/AssignApplicationService";
 
 export default {
-    name      : "AssignApplicationsModal",
+    name: "AssignApplicationsModal",
     components: {
         OfficesModal,
         AssignApplicationsConfirmModal,
         AssignedApplicationSuccessModal,
     },
-    props     : {
-        dialog      : {
+    props: {
+        dialog: {
             require: true,
-            type   : Boolean,
+            type: Boolean,
         },
         applications: {
             require: true,
-            type   : Array,
+            type: Array,
         }
     },
     data() {
         return {
             assignedApplications: [],
-            loadTable           : true,
-            showOfficesModal    : false,
-            showConfirmModal    : false,
-            showSuccessModal    : false,
+            loadTable: true,
+            showOfficesModal: false,
+            showConfirmModal: false,
+            showSuccessModal: false,
             selectedApplications: [],
-            selectedApp         : {},
-            selectedIndex       : null,
+            selectedApp: {},
+            isLoading: false,
         }
     },
     mounted() {
         this.assignedApplications = this.applications;
-        // this.fetchDuplicateLead();
+    },
+    computed: {
+        formattedSelectedApp() {
+            return this.selectedApplications.map((item) => {
+                return {
+                    id: item.id,
+                    office_id: item.office_id,
+                    created_by: item.created_by,
+                }
+            });
+        }
     },
 
     methods: {
-        cancelAssignApplications() {
-            this.$emit('cancelAssignApplications');
+        // Reset the some data
+        resetData() {
+            this.selectedApp = {};
         },
+        // Close assign applications modal
+        closeModal() {
+            this.$emit('closeModalAssignApplicationModal');
+        },
+        // Open offices modal and set the selected application
         openOfficesModal(index) {
             this.selectedApp = this.assignedApplications[index];
-            this.selectedIndex = index;
             this.showOfficesModal = true;
         },
+        // Close offices modal
         closeOfficesModal() {
             this.showOfficesModal = false;
         },
+        // Open confirm modal
         openConfirmModal() {
             this.showConfirmModal = true;
         },
+        // Close confirm modal
         closeConfirmModal() {
             this.showConfirmModal = false;
         },
-        openSuccessModal() {
-            this.showSuccessModal = true;
+        // Open success modal & save the selected applications
+        async openSuccessModal() {
+            // disabled and show loading for buttons
+            this.isLoading = true;
+            // Close confirmation modal
+            this.closeConfirmModal();
+
+            // Save the selected applications by calling the service
+            let data = await AssignApplicationService.saveSelectedApplications(this.formattedSelectedApp);
+
+            // If response is success then open success modal
+            if (data.success) {
+                this.isLoading = false;
+                this.showSuccessModal = true;
+            }
         },
+        // Close success modal
         closeSuccessModal() {
-            this.showConfirmModal = false;
-            this.$emit('cancelAssignApplications');
             this.showSuccessModal = false;
+            this.closeModal();
+            this.$emit('completeAssignApplications');
         },
-        selectApplication(index, item) {
-            console.log(index, item);
+        // Select application and push this into array
+        selectApplication() {
+            let index = this.selectedApplications.findIndex(dt => dt.id === this.selectedApp.id);
+            if (index !== -1) {
+                this.selectedApplications.splice(index, 1);
+            }
+            this.selectedApplications.push(this.selectedApp);
+            this.resetData();
         },
         async fetchDuplicateLead() {
             this.applications = (await DuplicateLeadService.getDuplicateLeadData(this.duplicateGroupId)).data;
-            this.loadTable    = false;
+            this.loadTable = false;
         },
         goToAllDuplicates() {
             let params = {duplication_group_id: this.duplicateGroupId, 'duplicates': true}
             this.$router.push({
-                name : "applications",
+                name: "applications",
                 query: params
             });
         }
