@@ -16,7 +16,7 @@
                             <ul class="paragraph-text ">
                                 <li>100% carbon neutral plan at no additional fee.</li>
                                 <li>Get rewarded. Rewards and extras available through the Powershop Shop.</li>
-                                <li>GreenPower available. To support Australian renewable projects.</li>
+                                <!-- <li>GreenPower available. To support Australian renewable projects.</li> -->
                             </ul>
                         </div>
 
