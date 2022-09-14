@@ -1124,12 +1124,11 @@
 
       <div class="crm-text-field">
         <div class="field-label">
-          <span>Card Number {{ person_details.concession_card_type ? '*' : '' }} </span>
+          <span>Card Number </span>
         </div>
         <div class="text-field">
           <ValidationProvider
             name="Card Number"
-            :rules="`${ person_details.concession_card_type ? 'required' : '' }`"
             v-slot="{ errors }"
           >
             <v-text-field
@@ -1148,11 +1147,10 @@
 
       <div class="crm-text-field">
         <div class="field-label">
-          <span>Start Date {{ person_details.concession_card_type ? '*' : '' }}</span>
+          <span>Start Date</span>
         </div>
         <div class="text-field">
           <ValidationProvider
-            :rules="`${ person_details.concession_card_type ? 'required' : '' }`"
             name="Start Date"
             v-slot="{ errors }"
           >
@@ -1244,6 +1242,10 @@
           </ValidationProvider>
         </div>
       </div>
+
+        <div class="crm-text-field">
+            <span class="message-text">Powershop will directly contact the customer to obtain concession card details.</span>
+        </div>
 
       <v-row>
         <v-col cols="8">
@@ -1929,7 +1931,6 @@ export default {
             return UtilityStoreService.getIsBothEnergySelected();
         },
         powerProvider() {
-            console.log(UtilityStoreService.getPowerProvider());
             return UtilityStoreService.getPowerProvider();
         },
         gasProvider() {
@@ -2120,5 +2121,8 @@ export default {
 
 .field-label {
     text-align: left !important;
+}
+.message-text {
+    font-style: italic;
 }
 </style>
