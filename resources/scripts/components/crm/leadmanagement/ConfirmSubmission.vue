@@ -729,8 +729,11 @@
                     <v-alert text>
                         <div class="alert-text alert-bolder-text mb-2">Please Note:</div>
                         <div class="alert-text">
+                            <div v-if="isEmailBilling">
+                                <span class="alert-bolder-text">Email Billing:&nbsp;</span> Powershop only sends bills via email.
+                            </div>
                             <div v-if="isPaymentNotComplete">
-                                <span class="alert-bolder-text">Payment:</span> Payment verification Incomplete.
+                                <span class="alert-bolder-text">Payment:&nbsp;</span> Payment verification Incomplete.
                             </div>
                             <div v-if="showGasPowerShopNote">
                                 <span class="alert-bolder-text">Gas:&nbsp;</span> {{ showGasPowerShopNote }}
@@ -898,7 +901,7 @@ export default {
             let disabled = !Boolean(this.is_temp_condition) || !Boolean(this.is_life_support);
 
             if (this.data.selectedProvider == 'powershop'){
-                disabled = disabled || !Boolean(this.isPowerShopOk) || Boolean(this.isPaymentNotComplete);
+                disabled = disabled || !Boolean(this.isPowerShopOk) || Boolean(this.isPaymentNotComplete) || Boolean(this.isEmailBilling);
             }
             if (this.data.selectedProvider == 'ea'){
                 disabled = disabled || Boolean(this.isLifeSupportAndEA);
@@ -949,6 +952,7 @@ export default {
                     || this.showElectricityACTPowerShopNote
                     || this.showGasPowerShopNote
                     || this.isPaymentNotComplete
+                    || this.isEmailBilling
                 );
         },
         showElectricityPowerShopNote() {
@@ -971,6 +975,10 @@ export default {
         },
         isPaymentNotComplete() {
             return this.paymentInformation?.powershop_payment_info?.status !== 2;
+        },
+        isEmailBilling() {
+            return this.data.selectedProvider === 'powershop'
+                && this.data.is_email_billing === 0;
         }
     },
     methods: {
