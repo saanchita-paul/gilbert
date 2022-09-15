@@ -197,6 +197,7 @@ export default {
         leadSourceMapFromNumber() {
             return leadSourceMapFromNumber;
         },
+        // Format selected applications to showing into assign application modal
         formattedSelectedApplications() {
             return this.selectedApplications.map(application => {
                 return {
@@ -211,6 +212,7 @@ export default {
                 }
             });
         },
+        // Assign office & agent button disabled by condition
         assignApplicationsDisabled() {
             return this.selectedApplications.length <= 0;
         }
@@ -270,18 +272,22 @@ export default {
             this.advanceSearch.office_id = this.officeId;
             this.loadLeadList();
         },
-
+        // Open assign application modal
         openAssignApplicationModal() {
             this.showAssignApplicationModal = true;
         },
+        // Close assign application modal
         closeModalAssignApplicationModal() {
             this.showAssignApplicationModal = false;
         },
+        // After complete assign application reset data and refresh component
         completeAssignApplications() {
             this.selectAllApplications = false;
             this.selectedApplications = [];
             this.loadLeadList();
+            this.$emit('reloadComponent');
         },
+        // Single application select handler
         onSelectChange(item) {
             let index = this.selectedApplications.findIndex(dt => dt.id === item.id);
             if (index === -1) {
@@ -291,12 +297,14 @@ export default {
             }
             this.selectAllApplications = this.selectedApplications.length === this.applications.length;
         },
+        // Select all applications handler
         selectAllApplicationsHandler() {
             this.applications.forEach(application => {
                 application.is_selected = this.selectAllApplications;
             });
             this.selectedApplications = this.selectedApplications.length === this.applications.length ? [] : [...this.applications];
         },
+        // Check if application is selected
         isSelectedClass(item) {
             return item.is_selected ? 'selectedRow' : '';
         },

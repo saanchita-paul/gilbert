@@ -17,7 +17,7 @@
                         <v-btn
                             icon
                             dark
-                            @click="cancelAssignApplications"
+                            @click="closeModal"
                         >
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
@@ -96,6 +96,7 @@
                     </v-btn>
                     <v-btn
                         :loading="isLoading"
+                        :disabled="disabledAssignApplicationButton"
                         color="primary"
                         @click="openConfirmModal"
                     >
@@ -145,7 +146,11 @@ export default {
         applications: {
             require: true,
             type: Array,
-        }
+        },
+        assignApplicationsDisabled: {
+            require: true,
+            type: Boolean,
+        },
     },
     data() {
         return {
@@ -163,6 +168,7 @@ export default {
         this.assignedApplications = this.applications;
     },
     computed: {
+        // Format selected applications to be sent to the backend
         formattedSelectedApp() {
             return this.selectedApplications.map((item) => {
                 return {
@@ -171,7 +177,11 @@ export default {
                     created_by: item.created_by,
                 }
             });
-        }
+        },
+        // Assign application button disabled conditionally
+        disabledAssignApplicationButton() {
+            return this.selectedApplications.length <= 0;
+        },
     },
 
     methods: {
@@ -230,17 +240,6 @@ export default {
             }
             this.selectedApplications.push(this.selectedApp);
             this.resetData();
-        },
-        async fetchDuplicateLead() {
-            this.applications = (await DuplicateLeadService.getDuplicateLeadData(this.duplicateGroupId)).data;
-            this.loadTable = false;
-        },
-        goToAllDuplicates() {
-            let params = {duplication_group_id: this.duplicateGroupId, 'duplicates': true}
-            this.$router.push({
-                name: "applications",
-                query: params
-            });
         }
     }
 }

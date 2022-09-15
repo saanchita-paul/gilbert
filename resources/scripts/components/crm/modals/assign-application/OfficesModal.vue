@@ -93,29 +93,35 @@ export default {
         search: null,
     }),
     methods: {
+        // Reset data
         resetData() {
             this.offices = [];
             this.selectedIndex = null;
             this.selectedOffice = {};
             this.search = null;
         },
+        // Close modal
         closeModal() {
             this.resetData();
             this.$emit('closeOfficesModal');
         },
+        // Open agents modal
         openAgentsModal(index) {
             this.selectedOffice = this.offices[index];
             this.selectedApplication.agency_office = this.selectedOffice.name;
             this.selectedApplication.office_id = this.selectedOffice.id;
             this.showAgentsModal = true;
         },
+        // Close agents modal
         closeAgentsModal() {
             this.showAgentsModal = false;
         },
+        // Select application which will be assigned
         selectApplication() {
             this.$emit('selectApplication');
             this.closeModal();
         },
+        // Get office list and search office
         getOfficesList: debounce(async function (val) {
             let data = await AssignApplicationService.getOffices(val);
             this.offices = data.data;

@@ -81,15 +81,18 @@ export default {
         search: null,
     }),
     methods: {
+        // Reset data
         resetData() {
             this.agents = [];
             this.selectedAgent = null;
             this.search = null;
         },
+        // Close modal
         closeModal() {
             this.resetData();
             this.$emit('closeAgentsModal');
         },
+        // Select agent which will assign to the application
         selectAgent(index) {
             this.selectedAgent = this.agents[index];
             this.selectedApplication.agent_name = this.selectedAgent.first_name + ' ' + this.selectedAgent.last_name;
@@ -98,6 +101,7 @@ export default {
             this.$emit('selectApplication');
             this.closeModal();
         },
+        // Get & search agents
         getAgentsList: debounce(async function (val) {
             let data = await AssignApplicationService.getAgents(val, this.selectedOfficeId);
             this.agents = data.data;

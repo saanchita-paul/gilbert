@@ -59,13 +59,10 @@ export default {
         },
     },
     methods: {
+        // Close modal
         done() {
             this.$emit('closeSuccessModal');
         },
     }
 }
 </script>
-
-<style scoped>
-
-</style>

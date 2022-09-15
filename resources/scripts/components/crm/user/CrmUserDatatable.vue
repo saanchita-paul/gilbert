@@ -12,6 +12,7 @@
                     :officeId="activeOffice"
                     @createAgent="addNewUser"
                     @changeComponent="changeComponent"
+                    @reloadComponent="reloadComponent"
                 >
                 </component>
             </keep-alive>
@@ -65,6 +66,7 @@ import AgentListTable from "@scripts/modules/realestate/components/AgentListTabl
 import ApplicatoinListTable from "@scripts/modules/realestate/components/OfficeApplicatoinListTable";
 import REAMatrics from "@scripts/modules/realestate/components/REAMatrics";
 import MartricServices from "@scripts/modules/realestate/services/MartricServices";
+
 export default {
     name: "CrmUserDatatable",
     components: {
@@ -150,7 +152,8 @@ export default {
             this.isCreateStart = false;
         },
 
-        async loadUserData() {},
+        async loadUserData() {
+        },
 
         async loadOffice() {
             this.data = await OfficeService.loadOfficeById(this.activeOffice);
@@ -183,13 +186,16 @@ export default {
         },
 
         getActiveComponent(type) {
-            if(type === 'user')
-            {
+            if (type === 'user') {
                 this.dynamicComponent = 'AgentListTable';
-            }
-            else {
+            } else {
                 this.dynamicComponent = 'ApplicatoinListTable';
             }
+        },
+        async reloadComponent() {
+            await this.getREAMatrics();
+            await this.loadAgencyById();
+            this.loadOffice();
         }
     },
 
@@ -217,39 +223,48 @@ export default {
 .row-pointer >>> tbody tr :hover {
     cursor: pointer;
 }
+
 .back-button {
     background: #e0e0e0 !important;
 }
+
 .office-title {
     font-size: 18px !important;
     font-weight: 700 !important;
     font-family: "Roboto" !important;
 }
+
 .matrics {
     display: flex;
     flex-direction: column;
 }
+
 .matrics-title {
     font-size: 1.5em;
     color: #542e89;
     font-weight: 700;
 }
+
 .matrics-subtitle {
     font-size: 0.75em;
     font-weight: normal;
     color: #7e8a8f;
 }
+
 .service {
     font-size: 0.875em;
     font-weight: 700;
 }
+
 .matrics-header {
     font-size: 1em;
     font-weight: 700;
 }
+
 .justifyBetween {
     justify-content: space-between !important;
 }
+
 .buttonLarge {
     width: 200px !important;
 }

@@ -64,9 +64,11 @@ export default {
         },
     },
     methods: {
+        // Done and open success modal
         done() {
             this.$emit('openSuccessModal');
         },
+        // Close success modal
         closeModal() {
             this.$emit('closeConfirmModal');
         }
