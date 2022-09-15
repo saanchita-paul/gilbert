@@ -34,7 +34,9 @@ class ReassignApplicationsServices
         }
         return [
             'message' => $this->getMessage(),
-            'data' => $this->reports
+            'success' => true,
+            'data' => $this->reports,
+            'failed_count' => count($this->applications) - $this->totalSuccessCount,
         ];
 
     }
