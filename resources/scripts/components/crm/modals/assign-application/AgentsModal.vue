@@ -4,13 +4,24 @@
             v-model="dialog"
             persistent
             max-width="350px"
+            transition="dialog-bottom-transition"
         >
             <v-card>
                 <v-toolbar
                     dark
                     color="primary"
                 >
-                    <v-toolbar-title>Agents</v-toolbar-title>
+                    <v-toolbar-items>
+                        <v-btn
+                            icon
+                            dark
+                            @click="closeModal"
+                        >
+                            <v-icon>mdi-chevron-left</v-icon>
+                        </v-btn>
+                    </v-toolbar-items>
+                    <v-spacer></v-spacer>
+                    <v-toolbar-title>{{ selectedOfficeName }}</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-toolbar-items>
                         <v-btn
@@ -26,7 +37,7 @@
                     <v-list>
                         <div class="assigneesearch">
                             <v-text-field
-                                label="Search"
+                                label="Agent Search"
                                 outlined
                                 dense
                                 prepend-inner-icon="mdi-magnify"
@@ -35,10 +46,10 @@
                                 @input="getAgentsList"
                             ></v-text-field>
                         </div>
-                        <v-virtual-scroll
-                            :items="agents"
-                            height="300"
-                            item-height="64"
+                        <v-virtual-scroll v-if="agents.length"
+                                          :items="agents"
+                                          height="300"
+                                          item-height="64"
                         >
                             <template v-slot:default="{ item, index }">
                                 <v-list-item :key="index" class="cursor-pointer list-tile"
@@ -48,6 +59,15 @@
                                 <v-divider></v-divider>
                             </template>
                         </v-virtual-scroll>
+
+                        <p class="text-center mt-3" v-if="!isLoading && dataLoaded && !agents.length">
+                            No agents found!
+                        </p>
+                        <p class="text-center mt-3" v-if="isLoading && !agents.length">
+                            <v-progress-circular indeterminate
+                                                 color="primary">
+                            </v-progress-circular>
+                        </p>
                     </v-list>
                 </v-container>
             </v-card>
@@ -69,6 +89,10 @@ export default {
             type: Number,
             required: true
         },
+        selectedOfficeName: {
+            type: String,
+            required: true
+        },
         selectedApplication: {
             type: Object,
             required: true,
@@ -79,6 +103,8 @@ export default {
         selectedAgent: null,
         selectedIndex: null,
         search: null,
+        isLoading: false,
+        dataLoaded: false,
     }),
     methods: {
         // Reset data
@@ -103,12 +129,17 @@ export default {
         },
         // Get & search agents
         getAgentsList: debounce(async function (val) {
-            let data = await AssignApplicationService.getAgents(val, this.selectedOfficeId);
+            this.isLoading = true;
+            let data = await AssignApplicationService.getAgents(val, this.selectedOfficeId).finally(() => {
+                this.isLoading = false
+            });
             this.agents = data.data;
         }, 500),
     },
-    mounted() {
-        this.getAgentsList();
+    async mounted() {
+        this.isLoading = true;
+        await this.getAgentsList();
+        this.dataLoaded = true;
     }
 }
 </script>

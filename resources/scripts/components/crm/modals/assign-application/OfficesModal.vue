@@ -4,12 +4,23 @@
             v-model="dialog"
             persistent
             max-width="350px"
+            transition="dialog-top-transition"
         >
             <v-card>
                 <v-toolbar
                     dark
                     color="primary"
                 >
+                    <v-toolbar-items>
+                        <v-btn
+                            icon
+                            dark
+                            @click="closeModal"
+                        >
+                            <v-icon>mdi-chevron-left</v-icon>
+                        </v-btn>
+                    </v-toolbar-items>
+                    <v-spacer></v-spacer>
                     <v-toolbar-title>Offices</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-toolbar-items>
@@ -26,7 +37,7 @@
                     <v-list>
                         <div class="officesSearch">
                             <v-text-field
-                                label="Search"
+                                label="Office Search"
                                 outlined
                                 dense
                                 prepend-inner-icon="mdi-magnify"
@@ -35,10 +46,10 @@
                                 @input="getOfficesList"
                             ></v-text-field>
                         </div>
-                        <v-virtual-scroll
-                            :items="offices"
-                            height="300"
-                            item-height="64"
+                        <v-virtual-scroll v-if="offices.length"
+                                          :items="offices"
+                                          height="300"
+                                          item-height="64"
                         >
                             <template v-slot:default="{ item, index }">
                                 <v-list-item :key="index" class="cursor-pointer list-tile active"
@@ -53,6 +64,14 @@
                                 <v-divider></v-divider>
                             </template>
                         </v-virtual-scroll>
+                        <p class="text-center mt-3" v-if="!isLoading && dataLoaded && !offices.length">
+                            No offices found!
+                        </p>
+                        <p class="text-center mt-3" v-if="isLoading && !offices.length">
+                            <v-progress-circular indeterminate
+                                                 color="primary">
+                            </v-progress-circular>
+                        </p>
                     </v-list>
                 </v-container>
             </v-card>
@@ -61,6 +80,7 @@
         <AgentsModal v-if="showAgentsModal"
                      :dialog="showAgentsModal"
                      :selectedOfficeId="selectedOffice.id"
+                     :selectedOfficeName="selectedOffice.name"
                      :selectedApplication="selectedApplication"
                      @selectApplication="selectApplication"
                      @closeAgentsModal="closeAgentsModal"/>
@@ -91,6 +111,8 @@ export default {
         offices: [],
         selectedOffice: {},
         search: null,
+        isLoading: false,
+        dataLoaded: false,
     }),
     methods: {
         // Reset data
@@ -123,12 +145,17 @@ export default {
         },
         // Get office list and search office
         getOfficesList: debounce(async function (val) {
-            let data = await AssignApplicationService.getOffices(val);
+            this.isLoading = true;
+            let data = await AssignApplicationService.getOffices(val).finally(() => {
+                this.isLoading = false;
+            });
             this.offices = data.data;
         }, 500),
     },
-    mounted() {
-        this.getOfficesList();
+    async mounted() {
+        this.isLoading = true;
+        await this.getOfficesList();
+        this.dataLoaded = true;
     }
 }
 </script>

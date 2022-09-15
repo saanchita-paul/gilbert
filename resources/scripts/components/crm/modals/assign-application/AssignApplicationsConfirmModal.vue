@@ -22,21 +22,21 @@
                         </v-btn>
                     </v-toolbar-items>
                 </v-toolbar>
-                <v-card-title>
+                <v-card-title class="primary--text text-sm-body-1 mb-4">
                     <h3 class="text-large">
                         Are you sure you want to assign these applications?
                     </h3>
                 </v-card-title>
 
-                <v-card-subtitle>
+                <v-card-subtitle class="black--text">
                     <p class="text-small">
                         Selected applications will be removed from this office list and will be displayed in their
                         respective offices and agents.
                     </p>
                 </v-card-subtitle>
 
-                <v-card-actions class="justify-center">
-                    <v-btn x-large class="ps-16 pe-16" rounded
+                <v-card-actions class="justify-center mt-n5 pb-6">
+                    <v-btn x-large class="ps-16 pe-16 mr-2" rounded
                            @click="closeModal"
                     >
                         No

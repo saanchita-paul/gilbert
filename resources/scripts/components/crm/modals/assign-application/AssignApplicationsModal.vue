@@ -5,13 +5,14 @@
             persistent
             scrollable
             max-width="1024px"
+            transition="dialog-bottom-transition"
         >
             <v-card max-height="600px">
                 <v-toolbar
                     dark
                     color="primary"
                 >
-                    <v-toolbar-title>Assign Applications to Offices and Agents</v-toolbar-title>
+                    <v-toolbar-title>Assign applications to Offices and Agents</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-toolbar-items>
                         <v-btn
@@ -28,7 +29,7 @@
                     <h3 class="text-large">What does this mean?</h3>
                 </v-card-title>
 
-                <v-card-subtitle>
+                <v-card-subtitle class="mb-n8">
                     <p class="text-small">
                         From this holding office. You can assign tenants to their respective agents
                         and offices.
@@ -130,6 +131,7 @@ import AssignApplicationsConfirmModal
 import AssignedApplicationSuccessModal
     from "@scripts/components/crm/modals/assign-application/AssignedApplicationSuccessModal";
 import AssignApplicationService from "@scripts/services/crm/AssignApplicationService";
+import {cloneDeep} from "lodash-es";
 
 export default {
     name: "AssignApplicationsModal",
@@ -165,7 +167,7 @@ export default {
         }
     },
     mounted() {
-        this.assignedApplications = this.applications;
+        this.assignedApplications = cloneDeep(this.applications);
     },
     computed: {
         // Format selected applications to be sent to the backend
@@ -180,7 +182,7 @@ export default {
         },
         // Assign application button disabled conditionally
         disabledAssignApplicationButton() {
-            return this.selectedApplications.length <= 0;
+            return this.selectedApplications.length !== this.applications.length;
         },
     },
 
@@ -191,6 +193,7 @@ export default {
         },
         // Close assign applications modal
         closeModal() {
+            this.assignedApplications = cloneDeep(this.applications);
             this.$emit('closeModalAssignApplicationModal');
         },
         // Open offices modal and set the selected application
