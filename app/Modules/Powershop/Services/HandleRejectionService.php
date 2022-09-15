@@ -25,7 +25,11 @@ class HandleRejectionService
         'terms_and_conditions_accepted_at' => 'Terms and Conditions Approval Timestamp'
     ];
 
+    /**
+     * @return array
+     */
     public static function handleErrors(int $application_id, array $services, array $errors) {
+        $errorMessages = [];
         $conServices = ConnectionService::where('connection_application_id', $application_id)
                         ->whereIn('service_type', $services)
                         ->where('provider_name', ConnectionService::PROVIDER_POWER_SHOP)
@@ -43,6 +47,7 @@ class HandleRejectionService
                                 $mapKeyToText = self::MAP_REJECTION_KEY[$key] ?? $key;
                                 $errorMessage = $mapKeyToText . ' ' . $message;
                                 self::saveRejectedStatus($conService->id, $key, $errorMessage);
+                                $errorMessages[] = $errorMessage;
                             }
                         }
                     }
@@ -51,11 +56,13 @@ class HandleRejectionService
                             $mapKeyToText = self::MAP_REJECTION_KEY[$key] ?? $key;
                             $errorMessage = $mapKeyToText . ' ' . $message;
                             self::saveRejectedStatus($conService->id, $key, $errorMessage);
+                            $errorMessages[] = $errorMessage;
                         }
                     }
                 }
             }
         }
+        return $errorMessages;
     }
 
     public static function saveRejectedStatus($serviceId, $errorCode = '', $errorMessage = '')

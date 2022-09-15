@@ -51,7 +51,8 @@ class SubmitToPowershopService
         $results = $newSignUp->sendCustomerData();
         if (empty($results['reference'])){
             if (!empty($results['errors'])){
-                HandleRejectionService::handleErrors($this->application->id, $this->services, $results['errors']);
+                $rejections = HandleRejectionService::handleErrors($this->application->id, $this->services, $results['errors']);
+                \Log::error('Powershop rejected. Refer to context for list of rejection reasons', $rejections);
                 throw new Exception(sprintf('Sign Up submission rejected. Please refer to rejection reasons for app id %s', $this->application->id));
             }
             throw new Exception('Fail to fetch reference number after sign up');

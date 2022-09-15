@@ -123,7 +123,7 @@ class SignUpService
             'first_name' => $this->application->first_name,
             'last_name' => $this->application->last_name,
             'date_of_birth' => $this->getFormattedDate($this->application->dob),
-            'phone_number' => $this->application->phone,
+            'phone_number' => $this->application->phone ?? $this->application->homephone,
         ];
         $data['login'] = [
             'email' => $this->application->email,
