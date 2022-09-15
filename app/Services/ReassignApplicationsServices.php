@@ -9,26 +9,41 @@ use Illuminate\Support\Facades\DB;
 
 class ReassignApplicationsServices
 {
+    private array $reports = [];
+    private int $totalSuccessCount = 0;
 
-    public function saveAssignedApplications(array $applications)
+    public function __construct(private array $applications)
     {
-        try {
-            DB::beginTransaction();
-            foreach ($applications as $application) {
+    }
+
+    public function saveAssignedApplications()
+    {
+        foreach ($this->applications as $application) {
+            try {
                 $connectionApplication = ConnectionApplication::find($application['id']);
                 $office = Office::find($application['office_id']);
                 $agent_profile = AgentProfile::find($application['created_by']);
                 if ($connectionApplication && $office && $agent_profile) {
                     $connectionApplication->update($application);
                 }
+                $this->totalSuccessCount++;
+                $this->reports[] = ['lead_id' => $connectionApplication->id, 'status' => 'Success!'];
+            } catch (\Exception $exception) {
+                $this->reports[] = ['lead_id' => $connectionApplication->id, 'status' => $exception->getMessage()];
             }
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
         }
+        return [
+            'message' => $this->getMessage(),
+            'data' => $this->reports
+        ];
 
+    }
+
+
+    private function getMessage()
+    {
+        $total = count($this->applications);
+        return "Successfully $this->totalSuccessCount/$total application reassigned";
     }
 
 }

@@ -226,12 +226,8 @@ class OfficeController extends Controller
     public function assignApplications(Request $request): JsonResponse
     {
         try {
-            $service = new ReassignApplicationsServices();
-            $service->saveAssignedApplications($request->toArray());
-            return response()->json([
-                'success' => true,
-                'message' => 'Applications assigned successfully.'
-            ]);
+            $service = new ReassignApplicationsServices($request->toArray());
+            return response()->json($service->saveAssignedApplications());
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
