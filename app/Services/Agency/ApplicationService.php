@@ -641,26 +641,4 @@ class ApplicationService
         return $email_manually_verified_by;
     }
 
-
-    public function saveAssignedApplications(array $applications)
-    {
-        try {
-            DB::beginTransaction();
-            foreach ($applications as $application) {
-                $connectionApplication = ConnectionApplication::find($application['id']);
-                $office = Office::find($application['office_id']);
-                $agent_profile = AgentProfile::find($application['created_by']);
-                if ($connectionApplication && $office && $agent_profile) {
-                    $connectionApplication->update($application);
-                }
-            }
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
-
-    }
-
 }

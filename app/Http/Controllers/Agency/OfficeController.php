@@ -19,6 +19,7 @@ use App\Services\Agency\OfficeMatricsService;
 use App\Services\Agency\OfficeService;
 use App\Services\Agency\SearchOfficeService;
 use App\Services\Agency\UpdateOfficeService;
+use App\Services\ReassignApplicationsServices;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -225,7 +226,7 @@ class OfficeController extends Controller
     public function assignApplications(Request $request): JsonResponse
     {
         try {
-            $service = new ApplicationService();
+            $service = new ReassignApplicationsServices();
             $service->saveAssignedApplications($request->toArray());
             return response()->json([
                 'success' => true,
