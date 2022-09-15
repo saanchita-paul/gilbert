@@ -391,7 +391,7 @@ class CAFGenerationService
 
             if (config('app.env') == 'local') $response = Http::withOptions(['verify' => false,])->get($url);
             else $response = Http::get($url);
-            
+
             if($response->status() == 200) {
                 $this->mapPromotionCode(json_decode($response->body(), true));
             }
@@ -420,7 +420,7 @@ class CAFGenerationService
 
         $state = $app->state;
         $postcode = $app->postcode;
-        
+
         $conService = ConnectionService::where('connection_application_id', $app->id)
                         ->where('provider_name', ConnectionService::PROVIDER_POWER_SHOP)
                         ->where('service_type', $service)
@@ -431,7 +431,7 @@ class CAFGenerationService
 
             if ($service == ConnectionService::TYPE_ELECTRICITY && !empty($this->elePromotionData)){
                 $nmi_prefix = substr($app->nmi, 0, 3);
-    
+
                 foreach($this->elePromotionData as $data){
                     if ((in_array($state, $data['state']) || in_array($this->stateMap($state), $data['state'])) &&
                         in_array($plan_name, $data['plan_name']) &&
@@ -472,9 +472,9 @@ class CAFGenerationService
 
     }
 
-    private function getPowerShopCafToken($app): string
+    private function getPowerShopCafToken($app):string
     {
-        return $app->powershopPaymentInfo->pluck('px_dps_billing_id');
+        return (string)$app?->powershopPaymentInfo?->pluck('px_dps_billing_id');
     }
 
 }

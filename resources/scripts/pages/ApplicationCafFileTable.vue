@@ -25,6 +25,7 @@
             <!-- remove select all checkbox from header end-->
             <template v-slot:item.data-table-select="{ item, isSelected, select }">
                 <v-simple-checkbox
+                    :ripple="false"
                     :disabled="getStatus(item)"
                     v-model="item.is_selected"
                     @input="onchangeRow(item)"

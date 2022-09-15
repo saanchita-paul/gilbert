@@ -23,24 +23,7 @@
                             style="background-color: white"
                             class="mr-2"
                         />
-                        <v-text-field
-                            v-model="$attrs.value.business_name"
-                            outlined
-                            dense
-                            hide-details="auto"
-                            placeholder="Business Name"
-                            style="background-color: white"
-                            class="mr-2"
-                        />
-                        <v-text-field
-                            v-model="$attrs.value.abn"
-                            outlined
-                            dense
-                            hide-details="auto"
-                            placeholder="ABN"
-                            style="background-color: white"
-                            class="mr-2"
-                        />
+
                         <div  class="py-0 mr-2">
                             <v-text-field
                                 solo
@@ -159,7 +142,6 @@ export default {
             let leadIds = this.selectedCafFile.map(item => item.id);
             let selectedIds = leadIds.join();
             let response = ApplicationCafFileService.generateGilbertCafFIle(selectedIds);
-            console.log('Response from Generate caf file :', response);
         }
 
     },

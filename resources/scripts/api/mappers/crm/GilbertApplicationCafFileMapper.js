@@ -2,6 +2,7 @@ import DayJS from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import {capitalize, forEach, isNull} from "lodash-es";
 import {getApplicationStatusText} from "@scripts/data/ConnectionApplicationStatuses";
+import dayjs from "dayjs";
 
 const mapGilbertApplicationList =  data => {
     const values = [];
@@ -40,7 +41,7 @@ const mapConnectionDate = data => {
 }
 
 const mapCreatedDate = data => {
-    return !isNull(data) ? new DayJS(data).format(DATE_FORMAT.DB_DATE) : '';
+    return !isNull(data) ? dayjs(data,'DD/MM/YYYY').format(DATE_FORMAT.DB_DATE) : '';
 }
 
 const mapDateOfBirth = data => {
@@ -56,7 +57,7 @@ const mapBilling = data => {
 }
 
 const mapStatus = (status, is_generated_caf=false) => {
-    if (is_generated_caf == true) return 'CAF Generated';
+    if (is_generated_caf == true) return 'CAF Submitted';
     return getApplicationStatusText(status);
 }
 
@@ -82,11 +83,13 @@ const activeService = services?.find(svc => svc.service_type === serviceType);
 }
 
 const mapService = service => {
-
     let service_types = [];
 
-    service.map(svc => {
-        service_types.push(svc['service_type']);
+     service.map(svc => {
+        if (svc.provider_name === 'powershop' &&
+            (svc.service_type === 'power' || svc.service_type === 'gas')){
+            service_types.push(svc.service_type);
+        }
     });
 
     if (service_types.includes('gas') && service_types.includes('power')) {

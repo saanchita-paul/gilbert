@@ -10,6 +10,7 @@ use App\Modules\Reporting\Services\SetDateRage;
 use App\Services\FullTextSearch\FullTextQueryInterface;
 use App\Services\FullTextSearch\FullTextSearchInterface;
 use App\Traits\Agency\Sortable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use function optional;
@@ -58,6 +59,9 @@ class SearchConnectionApplication
     private ?string $endDate = null;
     private bool $isDuplicate;
 
+    private ?string $dateStart = null;
+    private ?string $dateEnd = null;
+
     /**
      * @var string|null
      */
@@ -92,6 +96,9 @@ class SearchConnectionApplication
         } else {
             $this->setSortBy(optional($request)['sort_by'], optional($request)['is_descending']);
         }
+
+        $this->dateStart = !empty($request['start_date']) ? $request['start_date'] : null;
+        $this->dateEnd = !empty($request['end_date']) ? $request['end_date'] : null;
     }
 
     /**
@@ -128,6 +135,7 @@ class SearchConnectionApplication
             ->applyFilterTenantEmail()
             ->applyFilterByProvider()
             ->applyDuplicateFilter()
+            ->applyDateRangeFilter()
             ->applySearch();
 
         $this->builder = $this->applySorting($this->builder);
@@ -367,6 +375,23 @@ class SearchConnectionApplication
         if (!empty($this->duplication_group_id)) {
             $this->builder = $this->builder
                 ->where('duplication_group_id', $this->duplication_group_id);
+        }
+        return $this;
+    }
+
+    private function applyDateRangeFilter(): static
+    {
+        if ($this->dateStart && $this->dateEnd) {
+            $this->dateStart = Carbon::parse($this->dateStart)->toDateTimeString();
+            $this->dateEnd = Carbon::parse($this->dateEnd)
+                ->addHours(23)
+                ->addMinutes(59)
+                ->addSeconds(59)
+                ->toDateTimeString();
+
+            $this->builder = $this->builder
+                ->where('created_at', '>=', $this->dateStart)
+                ->where('created_at', '<=', $this->dateEnd);
         }
         return $this;
     }

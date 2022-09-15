@@ -11,20 +11,21 @@
             :item-class="isSelectedClass"
             item-key="id"
             show-expand
+            show-select
             class="row-pointer"
             @click:row="onRowSelect"
         >
 
             <!-- remove select all checkbox from header start-->
-            <template v-slot:[`header.data-table-select`]></template>
+            <!--<template v-slot:[`header.data-table-select`]></template>-->
             <!-- remove select all checkbox from header end-->
-            <template v-slot:item.data-table-select="{ item, isSelected, select }">
-                <v-simple-checkbox
-                    :ripple="false"
-                    v-model="item.is_selected"
-                    @input="onchangeRow(item)"
-                ></v-simple-checkbox>
-            </template>
+<!--            <template v-slot:item.data-table-select="{ item, isSelected, select }">-->
+<!--                <v-simple-checkbox-->
+<!--                    :ripple="false"-->
+<!--                    v-model="item.is_selected"-->
+<!--                    @input="onchangeRow(item)"-->
+<!--                ></v-simple-checkbox>-->
+<!--            </template>-->
 
             <!-- row expend start-->
             <template v-slot:expanded-item="{ headers, item }">
@@ -57,7 +58,7 @@ export default {
                 {text: 'Conn Date', align: 'start', sortable: true, value: 'connection_date', class: 'black--text'},
                 {text: 'Created Date', align: 'start', sortable: true, value: 'created_at', class: 'black--text'},
                 {text: 'Supplier', align: 'start', sortable: true, value: 'supplier', class: 'black--text'},
-                {text: 'Plan', align: 'start', sortable: true, value: 'plan', class: 'black--text'},
+                // {text: 'Plan', align: 'start', sortable: true, value: 'plan', class: 'black--text'},
                 {text: 'Status', align: 'start', sortable: true, value: 'status', class: 'black--text'},
                 {text: '', value: 'data-table-expand', sortable: false, align: 'start'},
                 {text: '', value: 'data-table-select', sortable: false}
