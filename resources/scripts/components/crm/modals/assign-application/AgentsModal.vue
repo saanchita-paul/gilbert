@@ -101,7 +101,6 @@ export default {
     data: () => ({
         agents: [],
         selectedAgent: null,
-        selectedIndex: null,
         search: null,
         isLoading: false,
         dataLoaded: false,
@@ -121,6 +120,8 @@ export default {
         // Select agent which will assign to the application
         selectAgent(index) {
             this.selectedAgent = this.agents[index];
+            this.selectedApplication.office_id = this.selectedOfficeId;
+            this.selectedApplication.agency_office = this.selectedOfficeName;
             this.selectedApplication.agent_name = this.selectedAgent.first_name + ' ' + this.selectedAgent.last_name;
             this.selectedApplication.created_by = this.selectedAgent.id;
             this.selectedApplication.is_selected = true;

@@ -206,8 +206,8 @@ export default {
                     address_text: application.address_text,
                     agency_office: application.agency_office,
                     agent_name: application.agent_name,
-                    office_id: '',
-                    created_by: '',
+                    office_id: application.office_id,
+                    created_by: application.created_by,
                     is_selected: false,
                 }
             });

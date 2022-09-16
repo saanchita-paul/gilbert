@@ -118,7 +118,6 @@ export default {
         // Reset data
         resetData() {
             this.offices = [];
-            this.selectedIndex = null;
             this.selectedOffice = {};
             this.search = null;
         },
@@ -130,8 +129,6 @@ export default {
         // Open agents modal
         openAgentsModal(index) {
             this.selectedOffice = this.offices[index];
-            this.selectedApplication.agency_office = this.selectedOffice.name;
-            this.selectedApplication.office_id = this.selectedOffice.id;
             this.showAgentsModal = true;
         },
         // Close agents modal

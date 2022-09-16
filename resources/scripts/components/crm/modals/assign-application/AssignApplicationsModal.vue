@@ -29,7 +29,7 @@
                     <h3 class="text-large">What does this mean?</h3>
                 </v-card-title>
 
-                <v-card-subtitle class="mb-n8">
+                <v-card-subtitle class="mb-n8 mt-n2">
                     <p class="text-small">
                         From this holding office. You can assign tenants to their respective agents
                         and offices.
@@ -88,7 +88,7 @@
                     </v-row>
                 </v-card-text>
 
-                <v-card-actions class="justify-end">
+                <v-card-actions class="justify-end pa-6 mt-n5 pr-6">
                     <v-btn
                         @click="closeModal"
                         :disabled="isLoading"
@@ -161,8 +161,8 @@ export default {
             showOfficesModal: false,
             showConfirmModal: false,
             showSuccessModal: false,
-            selectedApplications: [],
             selectedApp: {},
+            selectedIndex: null,
             isLoading: false,
         }
     },
@@ -170,19 +170,9 @@ export default {
         this.assignedApplications = cloneDeep(this.applications);
     },
     computed: {
-        // Format selected applications to be sent to the backend
-        formattedSelectedApp() {
-            return this.selectedApplications.map((item) => {
-                return {
-                    id: item.id,
-                    office_id: item.office_id,
-                    created_by: item.created_by,
-                }
-            });
-        },
         // Assign application button disabled conditionally
         disabledAssignApplicationButton() {
-            return this.selectedApplications.length !== this.applications.length;
+            return this.assignedApplications.some(item => !item.is_selected && !item.created_by);
         },
     },
 
@@ -217,11 +207,23 @@ export default {
         async openSuccessModal() {
             // disabled and show loading for buttons
             this.isLoading = true;
+
+            // Format selected applications to be sent to the backend
+            let formattedSelectedApp = this.assignedApplications.map((item) => {
+                if (item.is_selected) {
+                    return {
+                        id: item.id,
+                        office_id: item.office_id,
+                        created_by: item.created_by,
+                    }
+                }
+            });
+
             // Close confirmation modal
             this.closeConfirmModal();
 
             // Save the selected applications by calling the service
-            let data = await AssignApplicationService.saveSelectedApplications(this.formattedSelectedApp);
+            let data = await AssignApplicationService.saveSelectedApplications(formattedSelectedApp);
 
             // If response is success then open success modal
             if (data.success) {
@@ -237,11 +239,8 @@ export default {
         },
         // Select application and push this into array
         selectApplication() {
-            let index = this.selectedApplications.findIndex(dt => dt.id === this.selectedApp.id);
-            if (index !== -1) {
-                this.selectedApplications.splice(index, 1);
-            }
-            this.selectedApplications.push(this.selectedApp);
+            let index = this.assignedApplications.findIndex(dt => dt.id === this.selectedApp.id);
+            this.assignedApplications[index] = this.selectedApp;
             this.resetData();
         }
     }
