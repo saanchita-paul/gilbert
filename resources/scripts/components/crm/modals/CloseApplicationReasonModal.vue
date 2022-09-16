@@ -34,11 +34,10 @@
                     </v-col>
                     </v-row>
                      
-                    <div v-if="isOthersReason">
+                    <div>
                         <v-col>
                                 <ValidationProvider
                                     name="Closing reason"
-                                    rules="required"
                                     v-slot="{ errors }"
                                 >
                                     <v-textarea

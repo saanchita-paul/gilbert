@@ -11,7 +11,7 @@ class AppCloseReasonService
      */
     public function getAppClosingReasonList()
     {
-        $reasons = AppCloseReason::query()->where('value','!=' , 'Others')->get();
+        $reasons = AppCloseReason::query()->where('value','!=' , 'Others')->orderBy('value')->get();
         $others = AppCloseReason::query()->where('value', 'Others')->get();
         return $reasons->concat($others);
     }
