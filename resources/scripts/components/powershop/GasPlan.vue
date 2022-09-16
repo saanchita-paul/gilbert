@@ -84,6 +84,12 @@
                                         <div  class="plan-text">{{ fees.fees }}</div>
                                     </div>
 
+                                    <div class="disclaimer">
+                                        <p class="mt-5 pt-5">
+                                            All prices listed above are inclusive GST.
+                                        </p>
+                                    </div>
+
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
                         </v-expansion-panels>

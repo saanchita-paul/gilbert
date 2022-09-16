@@ -34,7 +34,7 @@
 
                         <div class="price-list">
                             <div class="font-weight-bold" style="font-size:14px">
-                                Solar feed in tariff c/kWh
+                                Solar feed in tariff c/kWh (Excl. GST)
                             </div>
                             <div>{{ getSolarFeedInTariff }} </div>
                         </div>
