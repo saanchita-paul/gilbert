@@ -44,7 +44,7 @@ import GilbertApplicationCafFileDetails from "@scripts/pages/GilbertApplicationC
 export default {
     name: "GilbertApplicationCafFileTable",
     components: {GilbertApplicationCafFileDetails},
-    props: ["value", "gilbertApplications", "totalItems"],
+    props: ["value", "gilbertApplications", "totalItems", 'pages'],
     data() {
         return {
             selected: [],
@@ -63,12 +63,7 @@ export default {
                 {text: '', value: 'data-table-expand', sortable: false, align: 'start'},
                 {text: '', value: 'data-table-select', sortable: false}
             ],
-            options: {
-                itemsPerPage: 10
-            },
-            page: 1,
-            pageCount: 0,
-            itemsPerPage: 10,
+            options: {},
         }
     },
 
@@ -82,6 +77,9 @@ export default {
             },
             deep: true,
         },
+        pages(val) {
+            this.options.page = val;
+        }
     },
 
     methods: {
@@ -106,7 +104,7 @@ export default {
                 page: this.options.page,
                 per_page: this.options.itemsPerPage === -1 ? this.totalItems : this.options.itemsPerPage,
             }
-            this.$emit('refreshDataTable', meta);
+            this.$emit('reloadDataTable', meta);
         },
     },
 

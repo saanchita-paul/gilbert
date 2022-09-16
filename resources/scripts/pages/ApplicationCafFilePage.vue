@@ -55,6 +55,7 @@
                                     v-model="advanceSearchModel"
                                     :gilbertApplications="gilbertApplications"
                                     :isSearchEmpty="advanceSearchModel.isSearchEmpty()"
+                                    @updatePageOnFilterChange="updatePageOnFilterChange"
                                     @updateDates="updateDates">
                                 </GilbertApplicationCafFileFilter>
                             </v-col>
@@ -63,7 +64,8 @@
                                     v-model="selectedCafFile"
                                     :gilbertApplications="gilbertApplications"
                                     :totalItems="totalItems"
-                                    @refreshDataTable="reloadDataTable"
+                                    :pages="pages"
+                                    @reloadDataTable="reloadDataTable"
                                     @selectRowCafFiles="selectRowCafFiles"
                                 >
                                 </GilbertApplicationCafFileTable>
@@ -170,8 +172,6 @@ export default {
 
 
     methods: {
-
-
         updateDataTable(data)
         {
 
@@ -272,7 +272,7 @@ export default {
         },
 
         reloadDataTable(meta) {
-            this.pages = meta.page
+            this.pages = meta.page;
             this.sorts_search_meta = omit({...meta}, 'page');
             this.fetchGilbertApplications();
         },
@@ -291,6 +291,9 @@ export default {
                 this.advanceSearchModel.end_date = dateRange.end
             }
 
+        },
+        updatePageOnFilterChange() {
+            this.pages = 1;
         },
 
     },

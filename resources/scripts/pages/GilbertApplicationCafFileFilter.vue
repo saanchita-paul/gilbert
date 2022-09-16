@@ -116,13 +116,14 @@ export default {
         onSelectDate(dateRange) {
             this.dateRange = dateRange;
             this.showDatePickerModal = false;
+            this.$emit('updatePageOnFilterChange');
         },
         checkDate() {
             let today = getToday();
             let yesterday = getYesterday();
-            if(isSame(this.dateRange.start, today)) {
+            if(isSame(this.dateRange.start, today) && isSame(this.dateRange.end, today)) {
                 this.selectedDate = 'Today';
-            } else if(isSame(this.dateRange.start, yesterday)) {
+            } else if(isSame(this.dateRange.start, yesterday) && isSame(this.dateRange.end, yesterday)) {
                 this.selectedDate = 'Yesterday';
             } else {
                 this.selectedDate = `${getFormattedDBDate(this.dateRange.start)} - ${getFormattedDBDate(this.dateRange.end)}`;

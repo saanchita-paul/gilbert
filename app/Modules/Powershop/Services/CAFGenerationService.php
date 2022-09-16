@@ -324,18 +324,22 @@ class CAFGenerationService
     }
 
     /**
-     * @param $app
+     * @param ConnectionApplication $app
      * @return string
      * @throws \Exception
      */
-    private function getSignUpType($app): string
+    private function getSignUpType(ConnectionApplication $app): string
     {
+        $services = $app->connectionServices;
 
-        $services = $app->connectionServices->pluck('service_type')->toArray();
+        $serviceType = $services->filter(function($type) {
+           return $type->provider_name === 'powershop';
+        })?->pluck('service_type')->toArray();
 
-        if(in_array(ConnectionService::TYPE_GAS, $services ) && in_array(ConnectionService::TYPE_ELECTRICITY, $services )){
+        if(in_array(ConnectionService::TYPE_GAS, $serviceType )
+            && in_array(ConnectionService::TYPE_ELECTRICITY, $serviceType )){
             return 'Two Fuel';
-        } elseif(in_array(ConnectionService::TYPE_ELECTRICITY, $services )){
+        } elseif(in_array(ConnectionService::TYPE_ELECTRICITY, $serviceType )){
             return 'Electricity';
         } else{
             return '';
