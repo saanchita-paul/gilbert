@@ -172,7 +172,7 @@ export default {
     computed: {
         // Assign application button disabled conditionally
         disabledAssignApplicationButton() {
-            return this.assignedApplications.some(item => !item.is_selected && !item.created_by);
+            return this.assignedApplications.some(item => !item.is_selected || !item.created_by);
         },
     },
 
@@ -218,9 +218,7 @@ export default {
                     }
                 }
             });
-
-            // Close confirmation modal
-            this.closeConfirmModal();
+            console.log(formattedSelectedApp);
 
             // Save the selected applications by calling the service
             let data = await AssignApplicationService.saveSelectedApplications(formattedSelectedApp);
@@ -230,6 +228,9 @@ export default {
                 this.isLoading = false;
                 this.showSuccessModal = true;
             }
+
+            // Close confirmation modal
+            this.closeConfirmModal();
         },
         // Close success modal
         closeSuccessModal() {

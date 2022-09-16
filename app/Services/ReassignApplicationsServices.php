@@ -24,6 +24,7 @@ class ReassignApplicationsServices
                 $office = Office::find($application['office_id']);
                 $agent_profile = AgentProfile::find($application['created_by']);
                 if ($connectionApplication && $office && $agent_profile) {
+                    $application['agency_id'] = $office->agency_id;
                     $connectionApplication->update($application);
                 }
                 $this->totalSuccessCount++;
