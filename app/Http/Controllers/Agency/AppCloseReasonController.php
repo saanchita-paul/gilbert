@@ -82,4 +82,19 @@ class AppCloseReasonController extends Controller
             return $this->sendErrorResponse($exception);
         }
     }
+
+    /**
+     * restore application close reason
+     */
+
+    public function restore($id)
+    {
+        try {
+            $service = new AppCloseReasonService();
+            return $service->restoreAppClosingReason($id);
+
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
 }

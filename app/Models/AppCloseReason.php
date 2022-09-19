@@ -11,6 +11,7 @@ class AppCloseReason extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'value'
+        'value',
+        'deleted_at',
     ];
 }

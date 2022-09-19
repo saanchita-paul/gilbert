@@ -34,7 +34,7 @@ class AppCloseReasonService
      */
     public function updateAppClosingReason(array $data, int $id)
     {
-        $appCloseReason = AppCloseReason::findOrFail($id);
+        $appCloseReason = AppCloseReason::withTrashed()->findOrFail($id);
         $appCloseReason->update($data);
         return $appCloseReason;
     }
@@ -45,5 +45,14 @@ class AppCloseReasonService
     public function deleteAppClosingReason(int $id)
     {
         return AppCloseReason::findOrFail($id)->delete();
+    }
+
+    /**
+     * restore closing reason
+     * 
+     */
+    public function restoreAppClosingReason(int $id)
+    {
+        return AppCloseReason::withTrashed()->findOrFail($id)->restore();
     }
 }

@@ -204,7 +204,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::put('/app-close-reasons/{id}', [AppCloseReasonController::class, 'update']);
     // application closing reasons delete
     Route::delete('/app-close-reasons/{id}', [AppCloseReasonController::class, 'delete']);
-
+    // application closing reasons restore
+    Route::post('/app-close-reasons/restore/{id}', [AppCloseReasonController::class, 'restore']);
 
     Route::get('/rea-extract/corporate-report', [ReaExtractsReportController::class, 'getReaCorporateReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
