@@ -9,33 +9,30 @@
                 <div class="section-dialogs">
                 <ValidationObserver ref="submit_reason">
                     <v-row>
-                    <v-col cols="12">
-                        <p class="dialogs-title popup-escalate-title">What’s the reason why you want to Close this application?</p>
-                    </v-col>
+                        <v-col cols="12">
+                            <p class="dialogs-title popup-escalate-title">What’s the reason why you want to Close this application?</p>
+                        </v-col>
 
-                    <v-col>
-                                <ValidationProvider
-                                    name="Closing reason"
-                                    rules="required"
-                                    v-slot="{ errors }"
-                                >
-                                <v-select
-                                    hide-details="auto"
-                                    :error-messages="errors[0]"
-                                    outlined
-                                    dense
-                                    :items="closeReasons"
-                                    v-model="closeReasonId"
-                                    placeholder="Please choose one"
+                        <v-col cols="12">
+                                    <ValidationProvider
+                                        name="Closing reason"
+                                        rules="required"
+                                        v-slot="{ errors }"
                                     >
-                                </v-select>
-                                </ValidationProvider>
+                                    <v-select
+                                        hide-details="auto"
+                                        :error-messages="errors[0]"
+                                        outlined
+                                        dense
+                                        :items="closeReasons"
+                                        v-model="closeReasonId"
+                                        placeholder="Please choose one"
+                                        >
+                                    </v-select>
+                                    </ValidationProvider>
 
-                    </v-col>
-                    </v-row>
-                     
-                    <div>
-                        <v-col>
+                        </v-col>
+                        <v-col cols="12" v-if="closeReasonId">
                                 <ValidationProvider
                                     name="Closing reason"
                                     v-slot="{ errors }"
@@ -46,19 +43,20 @@
                                     auto-grow
                                     hide-details="auto"
                                     :error-messages="errors[0]"
-                                    placeholder="Please enter your closing reason"
+                                    placeholder="Please add additional closure information (if any)"
                                     ></v-textarea>
                                 </ValidationProvider>
                         </v-col>
-                    </div>
+                    </v-row>
                     
-
-                    <v-col cols="12">
-                        <div class="d-flex justify-space-between">
-                            <v-btn @click="cancelClose">Back</v-btn>
-                            <v-btn @click="sucessSaveClose" color="primary">Confirm</v-btn>
-                        </div>
-                    </v-col>
+                    <!-- <v-row> -->
+                        <v-col cols="12">
+                            <div class="d-flex justify-space-between">
+                                <v-btn @click="cancelClose">Back</v-btn>
+                                <v-btn @click="sucessSaveClose" color="primary">Confirm</v-btn>
+                            </div>
+                        </v-col>
+                    <!-- </v-row> -->
                 </ValidationObserver>
                 </div>
             </v-card>
@@ -107,7 +105,7 @@ export default {
         async sucessSaveClose() {
             // await LeadApplicationService.saveEscalateReason(this.close_reason, this.leadSummary.id);
             let v =  await this.$refs.submit_reason.validate();
-            if(v){
+            if(v && this.closeReasonId){
                 this.$emit('sucessSaveClose' , {reason_id: this.closeReasonId, reason_text: this.closeReason});
             };
         },
