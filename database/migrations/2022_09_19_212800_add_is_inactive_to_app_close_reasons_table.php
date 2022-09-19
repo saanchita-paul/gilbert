@@ -13,7 +13,7 @@ class AddIsInactiveToAppCloseReasonsTable extends Migration
      */
     public function up()
     {
-        if (Schema::hasColumn('app_close_reasons', 'app_close_reasons')){
+        if (Schema::hasColumn('app_close_reasons', 'deleted_at')){
             Schema::table('app_close_reasons', function (Blueprint $table) {
                 $table->dropColumn('deleted_at');
             });
