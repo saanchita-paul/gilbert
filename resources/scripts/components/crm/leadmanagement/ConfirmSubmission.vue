@@ -725,12 +725,15 @@
                     <p v-if="elecNote" class="cutoff-note">{{ elecNote }}</p>
                     <p v-if="gasNote" class="cutoff-note">{{ gasNote }}</p>
 
-                <div v-if="showPowerShopNoteSection">
+                <div v-if="showPowerShopNoteSection || isPropertyTypeBusiness">
                     <v-alert text>
                         <div class="alert-text alert-bolder-text mb-2">Please Note:</div>
                         <div class="alert-text">
                             <div v-if="isEmailBilling">
                                 <span class="alert-bolder-text">Email Billing:&nbsp;</span> Powershop only sends bills via email.
+                            </div>
+                            <div v-if="isPropertyTypeBusiness">
+                                <span class="alert-bolder-text">Property Type:&nbsp;</span> HOOD does not currently process Business customers.
                             </div>
                             <div v-if="isPaymentNotComplete">
                                 <span class="alert-bolder-text">Payment:&nbsp;</span> Payment verification Incomplete.
@@ -807,7 +810,7 @@ export default {
               },
               {
                   text: 'No',
-                  value: 2
+                  value: 0
               }
             ],
           statesDD: [
@@ -898,7 +901,7 @@ export default {
     },
     computed: {
         isDisabled() {
-            let disabled = !Boolean(this.is_temp_condition) || !Boolean(this.is_life_support);
+            let disabled = !Boolean(this.is_temp_condition) || !Boolean(this.is_life_support) || Boolean(this.isPropertyTypeBusiness);
 
             if (this.data.selectedProvider == 'powershop'){
                 disabled = disabled || !Boolean(this.isPowerShopOk) || Boolean(this.isPaymentNotComplete) || Boolean(this.isEmailBilling);
@@ -974,11 +977,15 @@ export default {
             return this.data.selectedProvider === 'powershop';
         },
         isPaymentNotComplete() {
-            return this.paymentInformation?.powershop_payment_info?.status !== 2;
+             return this.data.selectedProvider === 'powershop'
+                && this.paymentInformation?.powershop_payment_info?.status !== 2;
         },
         isEmailBilling() {
             return this.data.selectedProvider === 'powershop'
                 && this.data.is_email_billing === 0;
+        },
+        isPropertyTypeBusiness() {
+            return this.data.property_type === 2;
         }
     },
     methods: {
