@@ -544,7 +544,7 @@ class ConnectionApplication extends Model
      */
     public function appCloseReason()
     {
-        return $this->hasOne(AppCloseReason::class, 'app_close_reason_id')->withThrashed();
+        return $this->hasOne(AppCloseReason::class, 'app_close_reason_id');
     }
 
 

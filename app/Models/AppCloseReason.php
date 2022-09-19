@@ -8,10 +8,22 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AppCloseReason extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'value',
-        'deleted_at',
+        'is_inactive'
     ];
+
+    public function disable()
+    {
+        $this->is_inactive = true;
+        $this->save();
+    }
+
+    public function enable()
+    {
+        $this->is_inactive = false;
+        $this->save();
+    }
 }
