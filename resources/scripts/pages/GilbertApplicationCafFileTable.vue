@@ -16,17 +16,6 @@
             @click:row="onRowSelect"
         >
 
-            <!-- remove select all checkbox from header start-->
-            <!--<template v-slot:[`header.data-table-select`]></template>-->
-            <!-- remove select all checkbox from header end-->
-<!--            <template v-slot:item.data-table-select="{ item, isSelected, select }">-->
-<!--                <v-simple-checkbox-->
-<!--                    :ripple="false"-->
-<!--                    v-model="item.is_selected"-->
-<!--                    @input="onchangeRow(item)"-->
-<!--                ></v-simple-checkbox>-->
-<!--            </template>-->
-
             <!-- row expend start-->
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length" style="padding: 0">
@@ -40,6 +29,7 @@
 
 <script>
 import GilbertApplicationCafFileDetails from "@scripts/pages/GilbertApplicationCafFileDetails";
+import {debounce} from "lodash-es";
 
 export default {
     name: "GilbertApplicationCafFileTable",
@@ -72,9 +62,9 @@ export default {
             this.$emit('input', val)
         },
         options: {
-            handler () {
+            handler: debounce(function () {
                 this.loadGilbertCafFileList();
-            },
+            }, 200),
             deep: true,
         },
         pages(val) {
