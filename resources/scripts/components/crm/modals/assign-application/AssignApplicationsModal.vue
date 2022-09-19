@@ -164,6 +164,7 @@ export default {
             selectedApp: {},
             selectedIndex: null,
             isLoading: false,
+            is_submit: false,
         }
     },
     mounted() {
@@ -172,7 +173,7 @@ export default {
     computed: {
         // Assign application button disabled conditionally
         disabledAssignApplicationButton() {
-            return this.assignedApplications.some(item => !item.is_selected || !item.created_by);
+            return !this.is_submit && this.assignedApplications.some(item => !item.is_selected || !item.created_by);
         },
     },
 
@@ -218,7 +219,6 @@ export default {
                     }
                 }
             });
-            console.log(formattedSelectedApp);
 
             // Save the selected applications by calling the service
             let data = await AssignApplicationService.saveSelectedApplications(formattedSelectedApp);
@@ -242,6 +242,7 @@ export default {
         selectApplication() {
             let index = this.assignedApplications.findIndex(dt => dt.id === this.selectedApp.id);
             this.assignedApplications[index] = this.selectedApp;
+            this.is_submit = true;
             this.resetData();
         }
     }

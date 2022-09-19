@@ -67,8 +67,8 @@
                     </template>
 
                     <!-- remove select all checkbox from header start-->
-                    <template class="text-center" v-slot:[`header.data-table-select`]>
-                        <v-simple-checkbox
+                    <template v-slot:[`header.data-table-select`]>
+                        <v-simple-checkbox class="ml-1"
                             v-model="selectAllApplications"
                             @input="selectAllApplicationsHandler"
                             :ripple="false"
@@ -76,7 +76,7 @@
                     </template>
                     <!-- remove select all checkbox from header end-->
                     <template v-slot:item.data-table-select="{ item, isSelected, select }">
-                        <v-simple-checkbox
+                        <v-simple-checkbox class="text-center mr-1"
                             v-model="item.is_selected"
                             @input="onSelectChange(item)"
                             :ripple="false"
