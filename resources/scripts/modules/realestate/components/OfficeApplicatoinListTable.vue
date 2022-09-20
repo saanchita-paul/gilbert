@@ -317,6 +317,9 @@ export default {
     watch: {
         options: {
             handler() {
+                this.selectedApplications = [];
+                this.showAssignApplicationModal = false;
+                this.selectAllApplications = false;
                 this.loadLeadList();
             },
             deep: true
