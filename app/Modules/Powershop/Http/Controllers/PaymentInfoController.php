@@ -36,7 +36,7 @@ class PaymentInfoController extends Controller
     {
         $service = new PaymentInfoService($request->get('app_id'));
         try {
-            return response()->json(['data' => $service->update(array_merge($request->toArray(), ['status' => null]))]);
+            return response()->json(['data' => $service->update($request->toArray())]);
         } catch (Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

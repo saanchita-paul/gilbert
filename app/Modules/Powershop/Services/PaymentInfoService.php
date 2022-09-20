@@ -31,10 +31,6 @@ class PaymentInfoService
         if ($this->paymentInfo) {
             $this->paymentInfo->update($data);
         } else {
-            if (!isset($data['status'])) { #this logic may need  to be removed
-                $data['status'] = PowershopPaymentInfo::STATUS_PENDING;
-            }
-
             $this->paymentInfo = new PowershopPaymentInfo();
             $this->paymentInfo->fill(array_merge(['connection_application_id' => $this->appId], $data));
             $this->paymentInfo->save();
