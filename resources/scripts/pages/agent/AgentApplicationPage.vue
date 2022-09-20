@@ -14,12 +14,12 @@
                         <span v-else class="link-prop">
                             <v-btn disabled x-small>🔗 PropertyMe is linked</v-btn>
                         </span>
-                        <span class="mx-3">
-                            <v-btn outlined @click="onClickDownloadReport">
-                                Report
-                                <v-icon right>mdi-download</v-icon>
-                            </v-btn>
-                        </span>
+<!--                        <span class="mx-3">-->
+<!--                            <v-btn outlined @click="onClickDownloadReport">-->
+<!--                                Report-->
+<!--                                <v-icon right>mdi-download</v-icon>-->
+<!--                            </v-btn>-->
+<!--                        </span>-->
                     </div>
                     <AgentLeadMetrics></AgentLeadMetrics>
                 </v-card>
