@@ -47,6 +47,7 @@ class ExportEnergySubmissionReport
         ConnectionService::AC_MANUAL_PROCESSING, //MANUAL_PROCESSING
         ConnectionService::STATUS_CANT_CONNECT, //Failed
         ConnectionService::STATUS_FAILED, //Failed
+        ConnectionService::STATUS_CLOSED, // closed
     ];
 
     public function __construct(string $type, string $start, string $end)
@@ -135,6 +136,7 @@ class ExportEnergySubmissionReport
             $this->setAgencyName($datum);
 
             $datum->Closing_Reason = $this->getRejectionReason($datum);
+            $datum->Additional_Closure_Notes = $this->getAdditionalClosingReason($datum);
 
             unset($datum->closing_reason);
             unset($datum->acr_value);
@@ -354,6 +356,14 @@ class ExportEnergySubmissionReport
     {
         if(!empty($data->acr_value)) {
             return strtolower($data->acr_value) === "others" ? $data->closing_reason : $data->acr_value;
+        }
+        return 'NULL';
+    }
+
+    private function getAdditionalClosingReason($data)
+    {
+        if (!empty($data->acr_value) && !empty($data->closing_reason) && strtolower($data->acr_value) != "others") {
+            return $data->closing_reason;
         }
         return 'NULL';
     }
