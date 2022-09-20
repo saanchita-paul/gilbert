@@ -301,13 +301,7 @@ Route::get("/karan/sales-status", function () {
 // });
 
 
-Route::get('country_test', function () {
-    //  return SubmitWaterLeadToFastConnect::mapLengthOfCountry[2];
-    $s = new TsaCallHistoryService();
-    // ConnectionApplication::find(12)
-    // $s->saveCallHistory(ConnectionApplication::find(12));
-    $s->saveCallHistory(ConnectionApplication::find(12));
-});
+
 
 
 Route::get('/kaka', function () {
