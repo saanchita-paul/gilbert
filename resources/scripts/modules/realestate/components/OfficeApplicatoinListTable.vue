@@ -4,9 +4,11 @@
             dynamicComponent="ApplicatoinListTable"
             @updateSearch="search"
             @changeComponent="changeComponent"
+            @openAssignApplicationModal="openAssignApplicationModal"
+            :assignApplicationsDisabled="assignApplicationsDisabled"
         >
         </CrmOfficeListHeader>
-        <v-row >
+        <v-row>
             <v-col cols="12" class="crm-table">
                 <v-data-table
                     :headers="headers"
@@ -14,6 +16,7 @@
                     :options.sync="options"
                     :server-items-length="totalItem"
                     :loading="loading"
+                    :item-class="isSelectedClass"
                     class="row-pointer"
                 >
                     <template v-slot:item.services="{ item }">
@@ -23,7 +26,8 @@
                                 isServiceAllowed(item.services, 'power')
                             "
                             color="yellow"
-                            >mdi-flash</v-icon
+                        >mdi-flash
+                        </v-icon
                         >
                         <v-icon
                             small
@@ -31,7 +35,8 @@
                                 isServiceAllowed(item.services, 'gas')
                             "
                             color="red"
-                            >mdi-fire</v-icon
+                        >mdi-fire
+                        </v-icon
                         >
                         <v-icon
                             small
@@ -39,7 +44,8 @@
                                 isServiceAllowed(item.services, 'internet')
                             "
                             color="green"
-                            >mdi-wifi</v-icon
+                        >mdi-wifi
+                        </v-icon
                         >
                         <v-icon
                             small
@@ -47,7 +53,8 @@
                                 isServiceAllowed(item.services, 'water')
                             "
                             color="blue"
-                            >mdi-water</v-icon
+                        >mdi-water
+                        </v-icon
                         >
                     </template>
                     <template v-slot:item.source="{ item }">
@@ -58,9 +65,33 @@
                     <template v-slot:item.tenant_name="{ item }">
                         <div v-text="tenantName(item)"></div>
                     </template>
+
+                    <!-- remove select all checkbox from header start-->
+                    <template v-slot:[`header.data-table-select`]>
+                        <v-simple-checkbox class="ml-1"
+                            v-model="selectAllApplications"
+                            @input="selectAllApplicationsHandler"
+                            :ripple="false"
+                        ></v-simple-checkbox>
+                    </template>
+                    <!-- remove select all checkbox from header end-->
+                    <template v-slot:item.data-table-select="{ item, isSelected, select }">
+                        <v-simple-checkbox class="text-center mr-1"
+                            v-model="item.is_selected"
+                            @input="onSelectChange(item)"
+                            :ripple="false"
+                        ></v-simple-checkbox>
+                    </template>
                 </v-data-table>
             </v-col>
         </v-row>
+
+        <AssignApplicationsModal v-if="showAssignApplicationModal"
+                                 :dialog="showAssignApplicationModal"
+                                 :applications="formattedSelectedApplications"
+                                 @completeAssignApplications="completeAssignApplications"
+                                 @closeModalAssignApplicationModal="closeModalAssignApplicationModal"
+        />
     </div>
 </template>
 
@@ -74,6 +105,7 @@ import AuthService from "@scripts/services/AuthService";
 import {LeadSearchFilterModel} from "@scripts/models/LeadSearchFilterModel";
 import {leadSourceMapFromNumber} from "@scripts/data/LeadSourceMap";
 import CrmOfficeListHeader from "@scripts/modules/realestate/components/CrmOfficeListHeader";
+import AssignApplicationsModal from "@scripts/components/crm/modals/assign-application/AssignApplicationsModal";
 
 export default {
     name: "OfficeApplicatoinListTable",
@@ -82,11 +114,12 @@ export default {
         ReassignModal,
         Search,
         AssigneeDropdown,
-        AssignedtoPopUp
+        AssignedtoPopUp,
+        AssignApplicationsModal
     },
 
     props: {
-        officeId: { required: true }
+        officeId: {required: true}
     },
 
     data() {
@@ -145,16 +178,43 @@ export default {
                     align: "start",
                     sortable: true,
                     value: "application_status"
+                },
+                {
+                    text: '',
+                    value: 'data-table-select',
+                    sortable: false
                 }
             ],
             applications: [],
+            selectedApplications: [],
             totalItem: 0,
-            advanceSearch: new LeadSearchFilterModel()
+            advanceSearch: new LeadSearchFilterModel(),
+            showAssignApplicationModal: false,
+            selectAllApplications: false,
         };
     },
     computed: {
         leadSourceMapFromNumber() {
             return leadSourceMapFromNumber;
+        },
+        // Format selected applications to showing into assign application modal
+        formattedSelectedApplications() {
+            return this.selectedApplications.map(application => {
+                return {
+                    id: application.id,
+                    tenant_name: application.first_name + ' ' + application.last_name,
+                    address_text: application.address_text,
+                    agency_office: application.agency_office,
+                    agent_name: application.agent_name,
+                    office_id: application.office_id,
+                    created_by: application.created_by,
+                    is_selected: false,
+                }
+            });
+        },
+        // Assign office & agent button disabled by condition
+        assignApplicationsDisabled() {
+            return this.selectedApplications.length <= 0;
         }
     },
     methods: {
@@ -199,9 +259,10 @@ export default {
 
         changeComponent(name) {
 
-            this.$router.push({name: 'real.state.agency.users',
-                params: {id : this.$route.params.id, office_id : this.$route.params.officeId},
-                query: { type: name}
+            this.$router.push({
+                name: 'real.state.agency.users',
+                params: {id: this.$route.params.id, office_id: this.$route.params.officeId},
+                query: {type: name}
             })
             this.$emit("changeComponent", name);
         },
@@ -210,7 +271,43 @@ export default {
             this.advanceSearch.tenant_name = searchText;
             this.advanceSearch.office_id = this.officeId;
             this.loadLeadList();
-        }
+        },
+        // Open assign application modal
+        openAssignApplicationModal() {
+            this.showAssignApplicationModal = true;
+        },
+        // Close assign application modal
+        closeModalAssignApplicationModal() {
+            this.showAssignApplicationModal = false;
+        },
+        // After complete assign application reset data and refresh component
+        completeAssignApplications() {
+            this.selectAllApplications = false;
+            this.selectedApplications = [];
+            this.loadLeadList();
+            this.$emit('reloadComponent');
+        },
+        // Single application select handler
+        onSelectChange(item) {
+            let index = this.selectedApplications.findIndex(dt => dt.id === item.id);
+            if (index === -1) {
+                this.selectedApplications.push(item);
+            } else {
+                this.selectedApplications.splice(index, 1);
+            }
+            this.selectAllApplications = this.selectedApplications.length === this.applications.length;
+        },
+        // Select all applications handler
+        selectAllApplicationsHandler() {
+            this.applications.forEach(application => {
+                application.is_selected = this.selectAllApplications;
+            });
+            this.selectedApplications = this.selectedApplications.length === this.applications.length ? [] : [...this.applications];
+        },
+        // Check if application is selected
+        isSelectedClass(item) {
+            return item.is_selected ? 'selectedRow' : '';
+        },
     },
     mounted() {
         this.currentUser = AuthService.getAuthUser();
@@ -234,10 +331,10 @@ export default {
 }
 
 .crm-table thead tr th {
-   font-size: 3em !important;
+    font-size: 3em !important;
 }
 
-.crm-table tr td{
+.crm-table tr td {
     font-size: 5.4em !important;
 }
 

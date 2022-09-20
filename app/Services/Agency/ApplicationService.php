@@ -3,6 +3,7 @@
 namespace App\Services\Agency;
 
 use App\Jobs\UpdateHubspotContactJob;
+use App\Models\AgentProfile;
 use App\Models\AppCloseReason;
 use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
@@ -13,6 +14,7 @@ use App\Models\Identification;
 use App\Models\Office;
 use App\Models\User;
 use App\Services\RolePermission;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use TSA\Services\TsaSendAppliationService;

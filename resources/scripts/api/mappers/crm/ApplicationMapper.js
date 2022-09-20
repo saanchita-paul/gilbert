@@ -24,6 +24,7 @@ export default {
         model.status_progress = this.mapAgentStatusProgress(data?.status_progress);
         model.application_status = data?.application_status;
         model.connection_services_status = data?.connection_services_status;
+        model.is_selected = false;
         if(isNull(data.created_by_agent))
         {
             model.created_by = '';
