@@ -539,6 +539,14 @@ class ConnectionApplication extends Model
         return $data[sizeof($data) - 1];
     }
 
+    /**
+     * @return BelongsTo
+     */
+    public function appCloseReason()
+    {
+        return $this->hasOne(AppCloseReason::class, 'app_close_reason_id');
+    }
+
 
     /**
      * saving fast connect customer ref

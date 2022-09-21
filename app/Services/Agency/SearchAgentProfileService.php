@@ -8,6 +8,7 @@ use App\Models\ConnectionService;
 use App\Traits\Agency\Searchable;
 use App\Traits\Agency\Sortable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class SearchAgentProfileService
@@ -108,6 +109,20 @@ class SearchAgentProfileService
         $agencyBuilder = $this->applySorting($agencyBuilder);
 
         return  $agencyBuilder->paginate($this->perPage);
+    }
+
+    public function getAgentsForAssignApp(int $officeId = null): Collection|array
+    {
+        $agencyBuilder = $this->createAgentBuilder();
+
+        if ($officeId) {
+            $agencyBuilder->where('office_id', $officeId);
+        }
+
+        $agencyBuilder = $this->applySearch($agencyBuilder, ['first_name', 'last_name']);
+        $agencyBuilder = $this->applySorting($agencyBuilder);
+
+        return  $agencyBuilder->take(10)->get();
     }
 }
 

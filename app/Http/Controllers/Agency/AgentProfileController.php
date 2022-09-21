@@ -139,4 +139,23 @@ class AgentProfileController extends Controller
         }
     }
 
+    public function getAgentsForAssignApplications(Request $request, int $officeId): AnonymousResourceCollection | JsonResponse
+    {
+        try {
+
+            $authUser = Auth::user();
+            $office = Office::find($officeId);
+            if($authUser->profile_type === AgentProfile::class &&
+                $authUser->profile->agency_id !== $office->agency_id) {
+                return $this->sendUnauthorizedResponse();
+            }
+
+
+            $service = new SearchAgentProfileService($request->toArray());
+            return AgentListResource::collection($service->getAgentsForAssignApp($officeId));
+        } catch ( \Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
 }

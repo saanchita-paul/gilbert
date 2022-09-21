@@ -17,6 +17,7 @@ class AppCloseReasonResource extends JsonResource
         return [
             'id' => $this->id,
             'value' => $this->value,
+            'is_inactive' => $this->is_inactive ? true : false,
         ];
     }
 }

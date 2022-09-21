@@ -41,6 +41,17 @@
                 <v-icon left>add</v-icon> Add New Staff
             </v-btn>
         </div>
+
+        <div  class="d-flex  mt-5 mb-1" v-if="dynamicComponent === 'ApplicatoinListTable' && !assignApplicationsDisabled">
+            <div class="buttonLarge">
+                <v-btn :disabled="assignApplicationsDisabled"
+                    color="primary"
+                    @click="assignOfficeAgentModalOpen"
+                >
+                    Assign Office & Agent
+                </v-btn>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -49,7 +60,7 @@ import Search from "@scripts/components/crm/Search";
 export default {
 name: "CrmOfficeListHeader",
     components: {Search},
-    props: ['editMode', 'selected', 'dynamicComponent', 'isSendingInvitation'],
+    props: ['editMode', 'selected', 'dynamicComponent', 'isSendingInvitation', 'assignApplicationsDisabled'],
     methods: {
         updateSearch(text) {
             this.$emit('updateSearch', text);
@@ -78,6 +89,10 @@ name: "CrmOfficeListHeader",
 
         sendInvitationToSelected() {
             this.$emit('sendInvitationToSelected');
+        },
+
+        assignOfficeAgentModalOpen() {
+            this.$emit('openAssignApplicationModal');
         }
     }
 }
