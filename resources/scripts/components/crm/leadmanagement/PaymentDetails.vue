@@ -137,6 +137,7 @@ import {powerShopPaymentStatusNumberToName} from "@scripts/data/PowershopDataMap
 import PowershopService from "@scripts/modules/powershop/services/PowershopService";
 import DayJs from "dayjs";
 import PowerShopSameDayConnectionService from "@scripts/modules/powershop/services/PowerShopSameDayConnectionService";
+import EAPlanService from "@scripts/services/ea/EAPlanService";
 
 export default {
     name: "PaymentDetails",
@@ -210,8 +211,9 @@ export default {
                 this.isEnable = false;
                 this.isLoading = true;
                 this.sameDayConnectionData = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.lead.id, this.serviceType)).data;
+                const isHoliday = await EAPlanService.checkIfDateIsHoliday({state: this.lead.state, date: this.lead.moving_date});
                 this.isLoading = false;
-                this.isEnable = this.sameDayConnectionData?.electricityOk &&  this.sameDayConnectionData?.gasOk;
+                this.isEnable = this.sameDayConnectionData?.electricityOk && this.sameDayConnectionData?.gasOk && !isHoliday;
             }
         }
 
