@@ -36,7 +36,7 @@ class ApplicationNoteService
         }
         else if ( $note['type'] == ApplicationNote::NOTETYPE['close_connection'] ) {
             $note['type'] = ApplicationNote::NOTETYPE['close_connection'];
-            $note['title'] = 'Note by ' . $this->user->profile->first_name;
+            $note['title'] = 'Note by [' . $this->user->profile->first_name . ']';
         }
         else if(in_array($note['type'], [ApplicationNote::SUBMITTED_CONNECTION, ApplicationNote::SUBMITTED_ORIGIN])) {
             $note['title'] = 'Note by ['.$this->user->profile->first_name.']';
