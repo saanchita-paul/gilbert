@@ -148,7 +148,7 @@ export default {
         selectedProvider: {
             require: true,
         },
-        submitType: {
+        serviceType: {
             require: true
         },
     },
@@ -209,7 +209,7 @@ export default {
             if (this.selectedProvider === 'powershop') {
                 this.isEnable = false;
                 this.isLoading = true;
-                this.sameDayConnectionData = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.lead.id, this.submitType)).data;
+                this.sameDayConnectionData = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.lead.id, this.serviceType)).data;
                 this.isLoading = false;
                 this.isEnable = this.sameDayConnectionData?.electricityOk &&  this.sameDayConnectionData?.gasOk;
             }

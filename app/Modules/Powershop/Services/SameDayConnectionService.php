@@ -7,7 +7,9 @@ use App\Models\ConnectionService;
 use App\Services\TimeZoneService;
 use Carbon\Carbon;
 use Cmixin\BusinessTime;
+use Cmixin\BusinessDay;
 use Exception;
+use App\Services\Utility\StateMapService;
 
 class SameDayConnectionService
 {
@@ -30,6 +32,11 @@ class SameDayConnectionService
     const MAP_STATE_WA = 'Western Australia';
 
     const VIC_TIME_ZONE = 'Australia/Victoria';
+
+    const AVAILABLE_GAS_STATES = [
+        self::MAP_STATE_VIC,
+        self::MAP_STATE_NSW
+    ];
 
     private function stateTime($state)
     {
@@ -73,7 +80,6 @@ class SameDayConnectionService
     public function validateSameDayConnection()
     {
         $application = ConnectionApplication::findOrFail($this->applicationId);
-
         $electricity = $this->validateElectricity($application);
         $gas = $this->validateGas($application, $this->submitType);
 
@@ -98,7 +104,7 @@ class SameDayConnectionService
 
     private function validateElectricity($application)
     {
-        $state = $application->state;
+        $state = StateMapService::getFullName($application->state);
         $currentTime = Carbon::now(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC));
         $connectionDate = (new Carbon($application->moving_date))->timezone(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC));
         $isToday = $connectionDate->isToday();
@@ -117,6 +123,12 @@ class SameDayConnectionService
     }
 
     private function validateGas(ConnectionApplication $application, string $submitType) : array {
+        $state = StateMapService::getFullName($application->state);
+        BusinessDay::enable(
+            Carbon::class, 
+            self::MAP_STATE_HOLIDAY[$state],
+        );
+
         $result = [
             'isInvalid' => false,
             'invalidNote' => '',
@@ -132,9 +144,9 @@ class SameDayConnectionService
             return $result;
         }
 
-        if (!in_array($application->state, [self::MAP_STATE_NSW, self::MAP_STATE_VIC])){
+        if (!in_array($state, [self::MAP_STATE_NSW, self::MAP_STATE_VIC])){
             $result['isInvalid'] = true;
-            $result['invalidNote'] = 'Powershop does not provide gas connection for state of ' . $application->state;
+            $result['invalidNote'] = 'Powershop does not provide gas connection for state of ' . $state;
             return $result;
         }
 
@@ -143,14 +155,14 @@ class SameDayConnectionService
 
         if($availableDate->gt($connectionDate)){
             $result['invalidNote'] = sprintf('Please let customer know that gas will be connected by distributor in %s business days (%s)',
-                                        self::MAP_GAS_BUSINESS_DAYS[$application->state],
+                                        self::MAP_GAS_BUSINESS_DAYS[$state],
                                         $this->getNearestAvailableGasDate($application)->format('Y-m-d'),
                                     );
         }
 
-        if($connectionDate->isWeekend() || $connectionDate->isHoliday()){
+        if($connectionDate->isWeekend()){
             $result['isInvalid'] = true;
-            $result['invalidNote'] = 'Connection date falls on a holiday. Please select a different connection date.';
+            $result['invalidNote'] = 'Connection date falls on a weekend. Please select a different connection date.';
         }
 
         return $result;
@@ -158,14 +170,15 @@ class SameDayConnectionService
 
     private function getNearestAvailableGasDate(ConnectionApplication $application) : Carbon
     {
-        $state = $application->state ?? 'National';
+        $state = $application->state ? StateMapService::getFullName($application->state) : 'National';
+        BusinessDay::enable(
+            Carbon::class, 
+            self::MAP_STATE_HOLIDAY[$state],
+        );
 
-        if (!in_array($state, ['Victoria', 'New South Wales'])){
+        if (!in_array($state, self::AVAILABLE_GAS_STATES)){
             throw new Exception(sprintf('Gas connection is not supported in %s for Powershop', $state));
         }
-
-        BusinessTime::enable(Carbon::class);
-        Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
 
         $currentDate = Carbon::now(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC));
         $availableDate = Carbon::today(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC));
