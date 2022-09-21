@@ -2,44 +2,20 @@
    <v-card class="hood-card" v-if="lead">
         <h3 class="page-title">{{lead.applicant_name}}</h3>
         <IdCopyToClipboard :applicationId="lead.id"/>
-        <p class="sub-title mt-4 mb-2">Personal Details</p>
-<!--        <table  class="application-info layout-fixed-table">-->
-<!--            <tr>-->
-<!--                <td class="font-weight-bold">Date of Birth</td>-->
-<!--                <td>{{lead.date_of_birth}}</td>-->
-<!--            </tr>-->
-<!--            <tr v-if="lead.phone_type == 1">-->
-<!--                <td class="font-weight-bold"> Mobile </td>-->
-<!--                <td>{{lead.phone}}</td>-->
-<!--            </tr>-->
-<!--            <tr v-else>-->
-<!--                <td class="font-weight-bold"> Homephone </td>-->
-<!--                <td>{{lead.homephone}}</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td class="font-weight-bold">Email</td>-->
-<!--                <td>{{lead.email}}</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td class="font-weight-bold">Moving Date</td>-->
-<!--                <td>{{lead.moving_date}}</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td class="font-weight-bold">Email billing</td>-->
-<!--                <td>{{ lead.is_email_billing == 1?'Email':'Paper' }}</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td class="font-weight-bold">Authorized Person</td>-->
-<!--                <td>{{ lead.authorizedPersonName == null ? 'Unassigned' : lead.authorizedPersonName }}</td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td class="font-weight-bold">Status:</td>-->
-<!--                <td>{{ lead.status }}</td>-->
-<!--            </tr>-->
-<!--        </table>-->
 
+     <v-row>
+       <v-col> <p class="sub-title mt-4 mb-4">Personal Details</p> </v-col>
+       <v-col v-if="lead.is_duplicate"> <v-btn class="mt-2 view_application" text  @click="showDuplicatesMessage"> View all duplicates</v-btn> </v-col>
+     </v-row>
 
        <v-row>
+
+           <v-col cols="5" class="py-0 my-0">
+                   <p class="font-weight-bold">Call Status</p>
+           </v-col>
+           <v-col cols="7"  class="py-0 my-0">
+               <p>{{lead.tsa_call_status}}</p>
+           </v-col>
 
            <v-col cols="5" class="py-0 my-0">
                    <p class="font-weight-bold">Date of Birth</p>
@@ -155,7 +131,7 @@
        <!-- <p class="sub-title py-2">Service Interests
            <span class="mx-2">
               <v-icon :disabled="isServiceAllowed(lead.service_interests, 'power')" color="yellow">mdi-flash</v-icon>
-              
+
           </span>
            <span class="mx-2">
               <v-icon :disabled="isServiceAllowed(lead.service_interests, 'gas')" color="red">mdi-fire</v-icon>
@@ -272,8 +248,10 @@ export default {
                 return 'In Progress';
             } else if(status === 'accepted') {
                 return 'Connected';
+            } else if(status === 'failed') {
+                return 'Manual Processing';
             } else {
-                return (status[0].toUpperCase() + status.slice(1)).replace(/_/g, " ");;
+                return (status[0].toUpperCase() + status.slice(1)).replace(/_/g, " ");
             }
         },
         goToLeadDetails(id) {
@@ -281,7 +259,14 @@ export default {
         },
         isServiceAllowed(services, type) {
             return !services.includes(type);
-        }
+        },
+      showDuplicatesMessage() {
+          if(this.$route.query.duplication_group_id === this.lead.duplication_group_id) {
+              return;
+          }
+          const query = { ...this.$route.query, duplication_group_id: this.lead.duplication_group_id };
+          this.$router.replace({ query })
+      }
     },
     computed: {
       emailBillingMapper(){
@@ -331,13 +316,17 @@ export default {
     color: #FF5722 !important;
 }
 
+.view_application {
+    background: #FFC104
+}
+
 .border-all{
     /* border: 1px solid black; */
     flex-basis: 31%;
 }
 
 .flex-wrap-100{
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
     width: 100%;
 }
 </style>

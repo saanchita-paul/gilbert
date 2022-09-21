@@ -8,7 +8,7 @@
 							mdi-close
 						</v-icon>
 					</div>
-					<ElectricityPlan v-if="willShowELectricity" :plan="planDetails.plans.electricity"></ElectricityPlan>
+					<ElectricityPlan v-if="willShowElectricity" :plan="planDetails.plans.electricity"></ElectricityPlan>
 
 					<GasPlan v-if="willShowGas" :plan="planDetails.plans.gas"></GasPlan>
 
@@ -40,30 +40,16 @@
 							you by letter about any such change.
 						</p>
 
-						<!-- <div v-if="willShowELectricity">
+						<div v-if="willShowElectricity">
 							<span class="font-weight-bold mb-0" style="font-size:14px;">Electricity</span>
-							<div v-for="item in planDetails.plans.electricity.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
-								<a :href="item.file_url" target="_blank">{{ planDetails.plans.electricity.distributor_name }} - {{ item.offer_name }}</a>
+							<div v-if="this.leadSummary.state == 'Victoria'" class="pb-2" style="font-size:14px;">
+								<a href="https://www.originenergy.com.au/vefs/" target="_blank">https://www.originenergy.com.au/vefs/</a>
+							</div>
+							<div v-else class="pb-2" style="font-size:14px;">
+								<a href="https://www.originenergy.com.au/bpidlink/" target="_blank">https://www.originenergy.com.au/bpidlink/</a>
 							</div>
 						</div>
-						
-						<div v-if="willShowGas">
-							<span class="font-weight-bold mb-0" style="font-size:14px;">Gas</span>
-							<div v-for="item in planDetails.plans.gas.bpid_links" :key="item.title" class="pb-2" style="font-size:14px;">
-								<a :href="item.file_url" target="_blank">{{ planDetails.plans.gas.distributor_name }} - {{ item.offer_name }}</a>
-							</div>
-						</div> -->
 
-						<div v-if="willShowELectricity">
-							<span class="font-weight-bold mb-0" style="font-size:14px;">Electricity</span>
-							<div v-if="this.leadSummary.state == 'Victoria'" class="pb-2" style="font-size:14px;">
-								<a href="https://www.originenergy.com.au/vefs/" target="_blank">https://www.originenergy.com.au/vefs/</a>
-							</div>
-							<div v-else class="pb-2" style="font-size:14px;">
-								<a href="https://www.originenergy.com.au/bpidlink/" target="_blank">https://www.originenergy.com.au/bpidlink/</a>
-							</div>
-						</div>
-						
 						<div v-if="willShowGas">
 							<span class="font-weight-bold mb-0" style="font-size:14px;">Gas</span>
 							<div v-if="this.leadSummary.state == 'Victoria'" class="pb-2" style="font-size:14px;">
@@ -73,7 +59,7 @@
 								<a href="https://www.originenergy.com.au/bpidlink/" target="_blank">https://www.originenergy.com.au/bpidlink/</a>
 							</div>
 						</div>
-						
+
 						<div class="pt-8 pb-2" style="font-size:14px;">
                             <a href="https://google.com" target="_blank">Terms and conditions</a>
 						</div>
@@ -110,108 +96,30 @@ export default {
         leadSummary: {
             require: true
         },
+        planDetails: {
+            require: true
+        },
     },
 	data() {
-		return {
-			planDetails: null,
-		}
+		return {}
 	},
 	computed: {
-        getServiceText() {
-            switch(this.serviceType) {
-                case "power":
-                    return "Electricity"
-                case "gas":
-                    return "Gas"
-                default:
-                    return "Electricity & Gas"
-            }
+        isBothEnergySubmit() {
+            return UtilityStoreService.getIsBothEnergySelected() || this.serviceType === 'energy';
         },
-        getPlanText() {
-            return LeadApplicationService.mapPlan(this.selectedPlan);
-        },
-		// electricityPlan() {
-        //     return this.planDetails.plans.find(plan => plan.title === "Electricity");
-		// },
-		// gasPlan() {
-        //     return this.planDetails.plans.find(plan => plan.title === "Gas");
-		// },
-		isBothEnergySubmit() {
-            return UtilityStoreService.getIsBothEnergySelected() || this.serviceType == 'energy';
-        },
-		willShowELectricity() {
-			return this.planDetails?.plans?.electricity && (this.serviceType == "power" || this.isBothEnergySubmit);
+		willShowElectricity() {
+			return this.planDetails?.plans?.electricity && (this.serviceType === 'power' || this.isBothEnergySubmit);
 		},
 		willShowGas() {
-			return this.planDetails?.plans?.gas && (this.serviceType == "gas" || this.isBothEnergySubmit);
-		},
-		service_Type() {
-			switch(this.serviceType) {
-                case "power":
-                    return "electricity"
-                case "gas":
-                    return "gas"
-				default:
-					return null
-            }
-		},
-		state() {
-			switch(this.leadSummary.state) {
-				case "New South Wales":
-					return 'nsw'
-				case "Victoria": 
-					return 'vic'
-				case "Queensland": 
-					return 'qld'
-				case "South Australia": 
-					return 'sa'
-				case "Northern Territory": 
-					return 'nt'
-				case "Tasmania":
-					return 'tas'
-				case "Australian Capital Territory": 
-					return 'act'
-				case 'Western Australia': 
-					return 'wa'
-			}
+            return this.planDetails?.plans?.gas && (this.serviceType === 'gas' || this.isBothEnergySubmit);
 		},
 	},
-	watch: {
-		isBothEnergySubmit() {
-			this.getOriginData()
-		}
-	},
-	mounted() {
-		if('plans' in this.leadSummary){
-			this.planDetails = OriginMapper.mapOriginData(this.leadSummary);
-		}
-		else{
-			this.getOriginData();
-		}
-	},
+	watch: {},
+	mounted() {},
 	methods: {
-		async getOriginData() {
-			let query = null;
-			if(this.isBothEnergySubmit) {
-					query = {
-					state: this.state,
-					postcode: this.leadSummary.postcode,
-				}
-			} else {
-					query = {
-					service_type: this.service_Type,
-					state: this.state,
-					postcode: this.leadSummary.postcode,
-				}
-			}
-			
-			this.planDetails = await OriginService.getOriginData(query);
-			// console.log("Origin Plan Details Response", this.planDetails)
-		},
         closeDialog(){
             this.$emit('toggleDialog')
         }
-
 	},
 }
 </script>

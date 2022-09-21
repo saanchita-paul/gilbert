@@ -2,24 +2,24 @@
 
 namespace App\Console\Commands;
 
-use App\Modules\FastConnect\Services\UpdateWaterLeadsStatus;
 use Illuminate\Console\Command;
+use TSA\Services\TsaCallHistoryService;
 
-class FetchSubmitterWaterLeads extends Command
+class SaveTsaCallHistoryCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'fetch:submitted-water-leads';
+    protected $signature = 'tsa:save-call-history {--concurrency=}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Fetching submitted water list';
+    protected $description = 'Fetch TSA call history';
 
     /**
      * Create a new command instance.
@@ -38,9 +38,8 @@ class FetchSubmitterWaterLeads extends Command
      */
     public function handle()
     {
-        $service = new UpdateWaterLeadsStatus();
-        $service->getAllSubmittedWaterLead();
-
-        return 0;
+        $concurrency = $this->option('concurrency') ?? config('tsa.concurrency');
+        TsaCallHistoryService::run($concurrency);
     }
+
 }

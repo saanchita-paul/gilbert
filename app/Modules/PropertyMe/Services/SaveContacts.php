@@ -2,6 +2,7 @@
 
 namespace PropertyMe\Services;
 
+use App\Events\NotifyAgentAfterLeadCreation;
 use App\Modules\PropertyMe\Services\FetchContactAPI;
 use Exception;
 use PropertyMe\PropertyMeLead;
@@ -95,6 +96,7 @@ class SaveContacts
 
 
             $lead->save();
+
             $lead->movingDate  = data_get($tenancy, 'TenancyStart');
             $this->savedLead[] = $lead;
         }

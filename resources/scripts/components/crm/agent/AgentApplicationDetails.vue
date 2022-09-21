@@ -1,14 +1,16 @@
 <template>
     <div v-if="application" class="containerRootClass">
-        <v-row no-gutters>
+        <v-row no-gutters class="mb-4">
             <v-col cols="6">
                 <CopyToClipboard title="Name" :data="applicant_name"/>
                 <IdCopyToClipboard class="mb-3" :applicationId="application.id"/>
             </v-col>
-            <!-- <v-col cols="6" style="text-align:right">
-                <v-icon small color="red">mdi-phone-off-outline</v-icon>
-                Waiting for consent...
-            </v-col> -->
+            <v-col cols="6">
+                <div class="d-flex">
+                    <p style="font-weight: bolder">Application Processing Timeline:</p>
+                    <AgentProgressStatus v-if="status_progress_steps.length > 0" :agentProgressStatus="status_progress_steps"></AgentProgressStatus>
+                </div>
+            </v-col>
         </v-row>
         <v-row no-gutters>
             <v-col cols="4">
@@ -46,9 +48,9 @@
                 <div class="item">
                     <p class="item-title">Identification</p>
                     <p class="item-value">
-                        {{identification_type}}<br>
-                        {{identification_number}}<br>
-                        {{identification_expire_date}}
+                        {{ identification_type }}<br>
+                        {{ identification_number }}<br>
+                        {{ identification_expire_date }}
                     </p>
                 </div>
                 <!-- <div class="item">
@@ -64,7 +66,7 @@
                 <h4 class="header">Property Details</h4>
                 <div class="item">
                     <p class="item-title">Occupancy Type</p>
-                    <p class="item-value">{{ application.tenancy_type === 1? 'Renter': 'Home Owner' }}</p>
+                    <p class="item-value">{{ application.tenancy_type === 1 ? 'Renter' : 'Home Owner' }}</p>
                 </div>
                 <div class="item">
                     <p class="item-title">Service Address:</p>
@@ -79,64 +81,150 @@
                     </p>
                 </div>
 
-                <div >
+                <div>
                     <p class="preferenceTitle mt-4 mb-2">Service Preference</p>
-                            <v-row>
-
-                        <v-col  class="my-0 py-0 mx-0">
-                <p class="pt-2 pb-1 mb-0 services">
-                  <span class="ml-1">
-                      <v-icon :disabled="isServiceAllowed(application.services, 'power')" color="yellow">mdi-flash</v-icon>Power
-                  </span>
-                </p>
-                <p class="py-0 my-0 pl-5 service-status active-power-subtitle"
-                   :class="getSubtitleColor('power')" >
-                    {{getServiceStatus('power')}}
-<!--                    Connected-->
-                </p>
-            </v-col>
-
-            <v-col  class="my-0 py-0 mx-0">
-                <p class="pt-2 pb-1 mb-0 services">
-                  <span class="ml-1">
-                      <v-icon :disabled="isServiceAllowed(application.services, 'gas')" color="red">mdi-fire</v-icon>Gas
-                  </span>
-                </p>
-                <p class="py-0 my-0 pl-5 service-status active-power-subtitle"
-                   :class="getSubtitleColor('gas')">
-                    {{getServiceStatus('gas')}}
-<!--                    Connected-->
-                </p>
-            </v-col>
-            <v-col  class="my-0 py-0 mx-0">
-                <p class="pt-2 pb-1 mb-0 services">
-                  <span class="ml-1">
-                      <v-icon :disabled="isServiceAllowed(application.services, 'water')" color="blue" >mdi-water</v-icon>Water
-                  </span>
-                </p>
-                <p class="py-0 my-0 pl-5 service-status "
-                   :class="getSubtitleColor('water')">
-                    {{getServiceStatus('water')}}
-<!--                    Connected-->
-                </p>
-            </v-col>
-            <v-col  class="my-0 py-0 mx-0">
-                <p class="pt-2 pb-1 mb-0 services">
-                  <span class="ml-1">
-                       <v-icon :disabled="isServiceAllowed(application.services, 'internet')" color="green">mdi-wifi</v-icon>Internet
-                  </span>
-                </p>
-                <p class="py-0 my-0 pl-5 service-status active-power-subtitle"
-                   :class="getSubtitleColor('internet')">
-                    {{getServiceStatus('internet')}}
-<!--                    Connected-->
-                </p>
-            </v-col>
-
-
-
-
-        </v-row>
+                    <v-row>
+                        <v-col class="my-0 py-0 mx-0">
+                            <v-tooltip bottom content-class='custom-tooltip'>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <span v-on="on">
+                                        <p class="pt-2 pb-1 mb-0 services">
+                                            <span class="ml-1">
+                                                <v-icon
+                                                    :disabled="isServiceAllowed(application.services, 'power')"
+                                                    color="yellow">mdi-flash</v-icon>Power
+                                            </span>
+                                        </p>
+                                        <p class="py-0 my-0 pl-5 service-status">
+                                            {{ getPowerText.status_name }}
+                                        </p>
+                                    </span>
+                                </template>
+                                <div>
+                                    <v-card
+                                        max-width="300"
+                                        outlined
+                                        elevation="4"
+                                        shaped
+                                    >
+                                        <v-card-title>
+                                            <v-icon left color="yellow">mdi-flash</v-icon>
+                                            <span style="font-weight: bolder; font-size: 14px">Power:</span> &nbsp;
+                                            <span style="font-size: 14px">{{ getPowerText.status_name }}</span>
+                                        </v-card-title>
+                                        <v-card-text>
+                                            <p style="color: #263238">{{ getPowerText.description }}</p>
+                                        </v-card-text>
+                                    </v-card>
+                                </div>
+                            </v-tooltip>
+                        </v-col>
+                        <v-col class="my-0 py-0 mx-0">
+                            <v-tooltip bottom content-class='custom-tooltip'>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <span v-on="on">
+                                        <p class="pt-2 pb-1 mb-0 services">
+                                            <span class="ml-1">
+                                                <v-icon
+                                                    :disabled="isServiceAllowed(application.services, 'gas')"
+                                                    color="red">mdi-fire</v-icon>Gas
+                                            </span>
+                                        </p>
+                                        <p class="py-0 my-0 pl-5 service-status">
+                                            {{ getGasText.status_name }}
+                                        </p>
+                                    </span>
+                                </template>
+                                <div>
+                                    <v-card
+                                        max-width="300"
+                                        outlined
+                                        elevation="4"
+                                        shaped
+                                    >
+                                        <v-card-title>
+                                            <v-icon left color="red">mdi-fire</v-icon>
+                                            <span style="font-weight: bolder; font-size: 14px">Gas:</span> &nbsp;
+                                            <span style="font-size: 14px">{{ getGasText.status_name }}</span>
+                                        </v-card-title>
+                                        <v-card-text>
+                                            <p style="color: #263238">{{ getGasText.description }}</p>
+                                        </v-card-text>
+                                    </v-card>
+                                </div>
+                            </v-tooltip>
+                        </v-col>
+                        <v-col class="my-0 py-0 mx-0">
+                            <v-tooltip bottom content-class='custom-tooltip'>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <span v-on="on">
+                                        <p class="pt-2 pb-1 mb-0 services">
+                                            <span class="ml-1">
+                                                <v-icon
+                                                    :disabled="isServiceAllowed(application.services, 'water')"
+                                                    color="blue">mdi-water</v-icon>Water
+                                            </span>
+                                        </p>
+                                        <p class="py-0 my-0 pl-5 service-status">
+                                            {{ getWaterText.status_name }}
+                                        </p>
+                                    </span>
+                                </template>
+                                <div>
+                                    <v-card
+                                        max-width="300"
+                                        outlined
+                                        elevation="4"
+                                        shaped
+                                    >
+                                        <v-card-title>
+                                            <v-icon left color="blue">mdi-water</v-icon>
+                                            <span style="font-weight: bolder; font-size: 14px">Water:</span> &nbsp;
+                                            <span style="font-size: 14px">{{ getWaterText.status_name }}</span>
+                                        </v-card-title>
+                                        <v-card-text>
+                                            <p style="color: #263238">{{ getWaterText.description }}</p>
+                                        </v-card-text>
+                                    </v-card>
+                                </div>
+                            </v-tooltip>
+                        </v-col>
+                        <v-col class="my-0 py-0 mx-0">
+                            <v-tooltip bottom content-class='custom-tooltip'>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <span v-on="on">
+                                        <p class="pt-2 pb-1 mb-0 services">
+                                            <span class="ml-1">
+                                                <v-icon
+                                                    :disabled="isServiceAllowed(application.services, 'internet')"
+                                                    color="green">mdi-wifi</v-icon>Internet
+                                            </span>
+                                        </p>
+                                        <p class="py-0 my-0 pl-5 service-status">
+                                            {{ getInternetText.status_name }}
+                                        </p>
+                                    </span>
+                                </template>
+                                <div>
+                                    <v-card
+                                        max-width="300"
+                                        outlined
+                                        elevation="4"
+                                        shaped
+                                    >
+                                        <v-card-title>
+                                            <v-icon left color="green">mdi-wifi</v-icon>
+                                            <span style="font-weight: bolder; font-size: 14px">Internet:</span> &nbsp;
+                                            <span style="font-size: 14px">{{ getInternetText.status_name }}</span>
+                                        </v-card-title>
+                                        <v-card-text>
+                                            <p style="color: #263238">{{ getInternetText.description }}</p>
+                                        </v-card-text>
+                                    </v-card>
+                                </div>
+                            </v-tooltip>
+                        </v-col>
+                    </v-row>
                 </div>
 
             </v-col>
@@ -149,7 +237,7 @@
                 <div class="item">
                     <p class="item-title">Additional Instructions</p>
                     <p class="item-value">
-                        {{ application.additional_instruction}}
+                        {{ application.additional_instruction }}
                     </p>
                 </div>
             </v-col>
@@ -163,45 +251,50 @@ import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import IDENTIFICATION from "@scripts/data/constants/IDENTIFICATION";
 import IdCopyToClipboard from '@scripts/components/common/IdCopyToClipboard.vue';
 import CopyToClipboard from '@scripts/components/common/CopyToClipboard.vue';
+import AgentProgressStatus from '@scripts/components/crm/agent/AgentProgressStatus';
+import AgentApplicationService from "@scripts/services/crm/AgentApplicationService";
 
 export default {
     name: "AgentApplicationDetails",
     props: ["application"],
     components: {
-      IdCopyToClipboard,
-      CopyToClipboard
+        IdCopyToClipboard,
+        CopyToClipboard,
+        AgentProgressStatus
     },
     data() {
-        return {};
+        return {
+
+        };
     },
     computed: {
         applicant_name() {
             let title = this.application.title ? this.application.title + ' ' : '';
             let first_name = this.application.first_name ? this.application.first_name + ' ' : '';
             let middle_name = this.application.middle_name ? this.application.middle_name + ' ' : '';
-            let last_name =  this.application.last_name ? this.application.last_name : '';
+            let last_name = this.application.last_name ? this.application.last_name : '';
             return title + first_name + middle_name + last_name;
         },
         date_of_birth() {
-          return this.application.date_of_birth
-            ? dayjs(this.application.date_of_birth,'YYYY-MM-DD').format(DATE_FORMAT.DB_MONTH_FIRST)
-            : null;
+            return this.application.date_of_birth
+                ? dayjs(this.application.date_of_birth, 'YYYY-MM-DD').format(DATE_FORMAT.DB_DATE)
+                : null;
         },
         moving_date() {
-          return this.application.moving_date
-            ? dayjs(this.application.moving_date,'DD/MM/YYYY').format(DATE_FORMAT.DB_MONTH_FIRST)
-            : null;
+            return this.application.moving_date
+                ? dayjs(this.application.moving_date, 'DD/MM/YYYY').format(DATE_FORMAT.DB_DATE)
+                : null;
         },
         identification_type() {
             switch (this.application?.identification?.type) {
-              case IDENTIFICATION.PASSPORT:
-                return 'Passport';
-              case IDENTIFICATION.DL:
-                return 'DL';
-              case IDENTIFICATION.MEDICARE:
-                return 'Medicare';
-              default:
-                return '';
+                case IDENTIFICATION.PASSPORT:
+                    return 'Passport';
+                case IDENTIFICATION.DL:
+                    return 'DL';
+                case IDENTIFICATION.MEDICARE:
+                    return 'Medicare';
+                default:
+                    return '';
             }
         },
         identification_number() {
@@ -209,17 +302,35 @@ export default {
         },
         identification_expire_date() {
             return this.application?.identification?.expire_date
-              ? 'Expires on ' + dayjs(this.application?.identification?.expire_date, 'YYYY-MM-DD').format('MM/YY')
-              : null;
+                ? 'Expires on ' + dayjs(this.application?.identification?.expire_date, 'YYYY-MM-DD').format('MM/YY')
+                : null;
+        },
+        status_progress_steps() {
+            return this.application.status_progress;
+        },
+        getPowerText() {
+            return this.application?.connection_services_status?.power;
+        },
+        getGasText() {
+            return this.application?.connection_services_status?.gas;
+        },
+        getWaterText() {
+            return this.application?.connection_services_status?.water;
+        },
+        getInternetText() {
+            return this.application?.connection_services_status?.internet;
         },
     },
-        methods: {
-        getSubtitleColor(name){
+    methods: {
+        getSubtitleColor(name) {
             let status = this.getServiceStatus(name)
-            if(status == 'In Progress'){
+            if (status == 'In Progress') {
                 return 'inprogress-color';
-            }else if(status == 'Submitted'){
+            } else if (status == 'Submitted') {
                 return 'submitted-color';
+            } else if (status == 'Rejected') {
+            }else if(status == 'Manual Processing'){
+                return 'manual-color';
             }else if(status == 'Rejected'){
                 return 'rejected-color';
             }
@@ -229,22 +340,22 @@ export default {
         },
 
         getServiceStatus(conn_ser) {
-            let service = this.application.connection_services.find((svc)=>{
+            let service = this.application.connection_services.find((svc) => {
                 return svc.service_type === conn_ser;
             })
             if(service) {
-                return this.mapConnectionStatus(service.statusText);
+                // return this.mapConnectionStatus(service.statusText);
+                return AgentApplicationService.mapStatus(service.statusText);
             }
             return '';
         },
 
         mapConnectionStatus(status) {
-            return ['unassigned','assigned', 'escalated','processing'].includes(status)?'In Progress':
+            return ['unassigned', 'assigned', 'escalated', 'processing'].includes(status) ? 'In Progress' :
                 status[0].toUpperCase() + status.slice(1);
         }
     },
-    mounted(){
-        // console.log("application", this.application)
+    mounted() {
     }
 };
 </script>
@@ -253,50 +364,59 @@ export default {
 .lead-name {
     font-size: 1.3em;
 }
+
 .header {
     font-size: 1.2em;
     margin-bottom: 8px;
 }
+
 .hr-bar {
     border-left: 1px solid #ccc;
     padding-left: 10px;
 }
+
 .item {
     display: flex;
 }
+
 .item-title {
     width: 40%;
     font-weight: 600;
     margin-bottom: 5px !important;
 }
+
 .item-value {
     width: 60%;
     margin-bottom: 5px !important;
 }
 
-.application-consent{
-    color:green !important;
+.application-consent {
+    color: green !important;
     font-size: 14px !important;
 }
-.application-consent-waiting{
-    color:#E91E63 !important;
+
+.application-consent-waiting {
+    color: #E91E63 !important;
     font-size: 14px !important;
 }
-.containerRootClass{
+
+.containerRootClass {
     background-color: #FAFAFE;
     margin-left: -12px;
     padding: 20px 30px;
 }
 
-.layout-fixed-table{
+.layout-fixed-table {
     table-layout: fixed;
     width: 100%
 }
-.service-status{
+
+.service-status {
     font-size: 10px;
     font-weight: 400;
 }
-.services{
+
+.services {
     font-size: 14px !important;
     font-weight: 700;
 }
@@ -304,38 +424,54 @@ export default {
 .active-power-subtitle {
     color: #15DB64;
 }
+
 .active-gas-subtitle {
     color: #263238;
 }
+
 .active-water-subtitle {
     color: #E91E63;
 }
+
 .active-internet-subtitle {
     color: #263238;
- }
-.preferenceTitle{
+}
+
+.preferenceTitle {
     font-size: 16px;
     font-weight: 700;
 }
 
-.submitted-color{
+.submitted-color {
     color: #0CC4ED;
+}
+
+.manual-color{
+    color: #FFA500;
 }
 
 .connected-color{
     color: #16A948;
 }
 
-.needinfo-color{
+.needinfo-color {
     color: #16A948;
 }
 
-.inprogress-color{
+.inprogress-color {
     color: #263238;
 }
 
-.rejected-color{
+.rejected-color {
     color: #E91E63;
+}
+
+.v-tooltip__content {
+    background-color: transparent;
+}
+
+.custom-tooltip {
+    opacity: 1!important;
 }
 
 </style>

@@ -3,9 +3,9 @@
 namespace App\Listeners\Agency;
 
 use App\Events\Agency\CreateApplicationEvent;
-use App\Services\Agency\HubspotContactService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Services\Agency\HubspotHandlerService;
 
 class CreateHubSpotContact implements ShouldQueue
 {
@@ -28,7 +28,8 @@ class CreateHubSpotContact implements ShouldQueue
      */
     public function handle(CreateApplicationEvent $event)
     {
-        $hubspotContactService = new HubspotContactService($event->applicationId);
-        $hubspotContactService->create();
+        $handler = new HubspotHandlerService($event->applicationId);
+        $handler->handle();
     }
+
 }

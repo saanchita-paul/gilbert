@@ -46,6 +46,7 @@ class ApplicationsMetricsService
 
     public function toArray(): array
     {
+        $this->metrics[] = $this->getDuplicateCount();
         return $this->metrics;
     }
 
@@ -101,6 +102,18 @@ class ApplicationsMetricsService
                 $this->metrics[$va]['count'] += $result->total;
             }
         }
+    }
+
+    /**
+     * @return array[]
+     */
+    private function getDuplicateCount()
+    {
+        $count = ConnectionApplication::where('is_duplicate', true)->count();
+        return [
+                "type" => "duplicate",
+                "count" => $count
+            ];
     }
 
 

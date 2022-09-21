@@ -46,6 +46,7 @@ class SearchConnectionApplication
      */
     private Builder $builder;
     private ?int $tenancyType;
+    private ?int $triage;
     private $officeId;
 
     private $appId;
@@ -54,6 +55,12 @@ class SearchConnectionApplication
     private $tenantEmail;
     private ?string $startDate = null;
     private ?string $endDate = null;
+    private bool $isDuplicate;
+
+    /**
+     * @var string|null
+     */
+    private $duplication_group_id;
 
     /**
      * @param array $request
@@ -66,10 +73,13 @@ class SearchConnectionApplication
         $this->leadType = optional($request)['active_lead_type'];
         $this->source = !empty($request['source']) ? (ConnectionApplication::SOURCE_MAPPING[$request['source']] ?? null) : null;
         $this->tenancyType = !empty($request['tenancy_type']) ? ConnectionApplication::TENANCY_MAPPING[$request['tenancy_type']] ?? null : null;
+        $this->triage = !empty($request['triage']) ? ConnectionApplication::TRIAGE_MAPPING[$request['triage']] ?? null : null;
         $this->officeId = !empty($request['office_id']) ? $request['office_id'] : null;
         $this->appId = !empty($request['app_id']) ? $request['app_id'] : null;
         $this->agentId = !empty($request['agent_id']) ? $request['agent_id'] : null;
         $this->tenantEmail = !empty($request['tenant_email']) ? $request['tenant_email'] : null;
+        $this->isDuplicate = !empty($request['is_duplicate']) ? (bool)$request['is_duplicate'] : false;
+        $this->duplication_group_id = !empty($request['duplication_group_id']) ? $request['duplication_group_id'] : null;
 
         !empty($request['moving_date']) && $this->setDateRangeNoTz($request['moving_date'], $request['moving_date']);
 
@@ -90,6 +100,10 @@ class SearchConnectionApplication
             ->with('connectionServices.reasons')
             ->with('SugerLead')
             ->with('assignedTo')
+            ->with('office')
+            ->with('authorizedPerson')
+            ->with('createdBy')
+            ->with('identification')
             ->with('submittedByUser');
 
         $this->applyFilterLeadType($user)
@@ -99,10 +113,12 @@ class SearchConnectionApplication
             ->applyFilterOfficeId()
             ->applyFilterForFoxie()
             ->applyFilterTenancyType()
+            ->applyFilterTriage()
             ->applyFilterAppId()
             ->applyFilterMovingDate()
             ->applyFilterAgentId()
             ->applyFilterTenantEmail()
+            ->applyDuplicateFilter()
             ->applySearch();
 
         $this->builder = $this->applySorting($this->builder);
@@ -231,6 +247,17 @@ class SearchConnectionApplication
     /**
      * @return $this
      */
+    private function applyFilterTriage(): static
+    {
+        if ($this->triage) {
+            $this->builder = $this->builder->where('is_triage', $this->triage);
+        }
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
     private function applyFilterUserOffice(User $user): static
     {
         if ($user->profile_type === AgentProfile::class) {
@@ -284,7 +311,7 @@ class SearchConnectionApplication
             $this->searchQueries[] = $query->createNew(text: $filters['phone'], index: 'phone,homephone');
         }
         if (!empty($filters['address'])) {
-            $index = 'unit_number,street_number,street_name,city,postcode,state,country,street_address,address_text';
+            $index = 'unit_number,street_number,street_name_only,city,postcode,state,country,street_address,address_text';
             $this->searchQueries[] = $query->createNew(text: $filters['address'], index: $index);
         }
     }
@@ -305,6 +332,21 @@ class SearchConnectionApplication
             }),
             default => $this->builder
         };
+        return $this;
+    }
+
+    private function applyDuplicateFilter(): static
+    {
+        if ($this->isDuplicate) {
+            $this->builder = $this->builder
+                ->where('is_duplicate', true);
+        }
+
+        if (!empty($this->duplication_group_id)) {
+            $this->builder = $this->builder
+                ->where('duplication_group_id', $this->duplication_group_id);
+        }
+
         return $this;
     }
 }

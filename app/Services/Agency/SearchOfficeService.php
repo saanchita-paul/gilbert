@@ -7,6 +7,7 @@ use App\Models\Office;
 use App\Traits\Agency\Searchable;
 use App\Traits\Agency\Sortable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class SearchOfficeService
@@ -45,6 +46,22 @@ class SearchOfficeService
         $agencyBuilder = $this->applySorting($agencyBuilder);
 
         return  $agencyBuilder->paginate($this->perPage);
+    }
+
+    /**
+     * Getting Offices list
+     *
+     * @param int|null $agencyId
+     * @return Builder[]|Collection
+     */
+    public function getOfficesForAssignApp()
+    {
+        $agencyBuilder = $this->createAgencyBuilder();
+
+        $agencyBuilder = $this->applySearch($agencyBuilder, ['name']);
+        $agencyBuilder = $this->applySorting($agencyBuilder);
+
+        return  $agencyBuilder->take(10)->get();
     }
 
     /**

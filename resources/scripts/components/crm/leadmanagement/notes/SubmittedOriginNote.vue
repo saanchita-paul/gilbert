@@ -9,7 +9,8 @@
         <p class="title">Utility Type:<span class="note-data">({{note.leads.utility_type}})</span></p>
         <p class="title">Applicant Name: <span class="note-data">{{note.leads.application_name}}</span></p>
         <p class="title">Connection Address: <span class="note-data">{{note.leads.address_text}}</span></p>
-        <p class="title">Connection Date: <span class="note-data">{{connection_data}}</span></p>
+        <p class="title">{{gas_connection_date ? 'Elec ' : ''}}Connection Date: <span class="note-data">{{connection_date}}</span></p>
+        <p v-if="gas_connection_date" class="title">Gas Connection Date: <span class="note-data">{{gas_connection_date}}</span></p>
         <p class="title">Consent to Pay: <span class="note-data">{{note.leads.is_contacted}}</span></p>
         <p class="title mt-3">Lead Source: <span class="note-data">{{note.leads.source}}</span></p>
         <p class="title">Agency: <span class="note-date">{{note.leads.agency}}</span></p>
@@ -71,18 +72,22 @@ name: "SubmittedOriginNote",
         plan() {
             // let elecPlan = this.note.plans.plans.electricity? this.note.plans.plans.electricity.vdo.marketing_offer_name : null;
             // let gasPlan = this.note.plans.plans.gas? this.note.plans.plans.gas.bpid_links[0].offer_name : null;
-            let elecPlan = this.note.plans.plans.electricity? 'Origin Home Assist(Elec)' : null;
-            let gasPlan = this.note.plans.plans.gas? 'Origin Advantage Variable(Gas)' : null;
+            let elecPlan = this.note.plans.plans.electricity ?? null;
+            let gasPlan = this.note.plans.plans.gas ?? null;
 
             if (elecPlan && gasPlan){
-                return elecPlan + '|' + gasPlan;
+                elecPlan = elecPlan.plan_name_text ?? 'Origin Home Assist';
+                gasPlan = gasPlan.plan_name_text ?? 'Origin Advantage Variable';
+                return elecPlan + '(elec)' + '|' + gasPlan + '(gas)';
             }
             if (elecPlan && !gasPlan){
-                return elecPlan;
+                elecPlan = elecPlan.plan_name_text ?? 'Origin Home Assist';
+                return elecPlan + '(elec)';
             }
             if (!elecPlan && gasPlan)
             {
-                return gasPlan;
+                gasPlan = gasPlan.plan_name_text ?? 'Origin Advantage Variable';
+                return gasPlan + '(gas)';
             }
 
             return this.note.leads.plan_type;
@@ -91,11 +96,14 @@ name: "SubmittedOriginNote",
         services() {
             return this.note.leads.services;
         },
-        connection_data()
-        {
+        connection_date(){
           return dayJs(this.note.leads.moving_date, DATE_FORMAT.DATE_DASH).format(DATE_FORMAT.DB_DATE);
-        }
-
+        },
+        gas_connection_date(){
+            if (this.note.leads.gas_moving_date)
+                return dayJs(this.note.leads.gas_moving_date, DATE_FORMAT.DATE_DASH).format(DATE_FORMAT.DB_DATE);
+            return '';
+        },
     },
     methods: {
         togglePlanDetails() {

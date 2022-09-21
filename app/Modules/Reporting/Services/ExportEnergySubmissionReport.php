@@ -1,12 +1,15 @@
 <?php
 namespace App\Modules\Reporting\Services;
 
+use App\Models\HoodProfile;
 use App\Services\TimeZoneService;
 use Carbon\Carbon;
+use App\Models\AppCloseReason;
 use DB;
 use App\Models\RejectionReason;
 use App\Models\OfficeCommission;
 use App\Models\ConnectionService;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Rap2hpoutre\FastExcel\FastExcel;
@@ -44,6 +47,7 @@ class ExportEnergySubmissionReport
         ConnectionService::AC_MANUAL_PROCESSING, //MANUAL_PROCESSING
         ConnectionService::STATUS_CANT_CONNECT, //Failed
         ConnectionService::STATUS_FAILED, //Failed
+        ConnectionService::STATUS_CLOSED, // closed
     ];
 
     public function __construct(string $type, string $start, string $end)
@@ -57,6 +61,12 @@ class ExportEnergySubmissionReport
     private array $leadsData = [];
     private array $onlyWaterLeadIds = [];
 
+    /**
+     * @throws \Box\Spout\Common\Exception\UnsupportedTypeException
+     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException
+     * @throws \Box\Spout\Common\Exception\InvalidArgumentException
+     * @throws \Box\Spout\Common\Exception\IOException
+     */
     public function run()
     {
         $this->mapData($this->fetchData());
@@ -71,10 +81,22 @@ class ExportEnergySubmissionReport
         $this->run();
     }
 
+    /**
+     * @throws \Box\Spout\Common\Exception\UnsupportedTypeException
+     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException
+     * @throws \Box\Spout\Common\Exception\IOException
+     * @throws \Box\Spout\Common\Exception\InvalidArgumentException
+     */
     private function export()
     {
         $date = now()->format('d_m_Y');
         $name = 'Gilbert_leads_report_'.$this->type.'_'.$date.'.csv';
+
+        /**
+         * increasing memory limit to avoid memory exhausted error while exporting
+         */
+        ini_set('memory_limit', '512m' );
+
         return (new FastExcel($this->leadsData))->download($name);
     }
 
@@ -92,7 +114,7 @@ class ExportEnergySubmissionReport
             $datum->UI_Status = $this->getUiStatus($datum->Application_Status, $datum->UI_Status, $datum->Assigned_To);
             $datum->Application_Status = $this->getApplicationStatus($datum->Application_Status);
             $datum->Utility_Status = $this->getUtilityStatus($datum->Utility_Status);
-            $datum->Street_Type = $this->getRoadType($datum->Street_Type);
+//            $datum->Street_Type = $this->getRoadType($datum->Street_Type);
             $datum->Customer_Type = $this->getCustomerType($datum->Customer_Type);
             $datum->Offer_Type = 'ENE';
             $datum->Tenancy_Type = $this->getTenancyType($datum->Tenancy_Type);
@@ -113,8 +135,11 @@ class ExportEnergySubmissionReport
 
             $this->setAgencyName($datum);
 
-            $datum->Rejection_Reason = $this->getRejectionReason($datum->Service_Id, $datum->Utility_Service);
+            $datum->Closing_Reason = $this->getRejectionReason($datum);
+            $datum->Additional_Closure_Notes = $this->getAdditionalClosingReason($datum);
 
+            unset($datum->closing_reason);
+            unset($datum->acr_value);
             unset($datum->Office_Id);
             unset($datum->Foxie_Agency_Name);
             unset($datum->Foxie_Agent_Name);
@@ -143,9 +168,14 @@ class ExportEnergySubmissionReport
                 IFNULL(ofs.name, 'NULL') as `Office_Name`,
                 concat(ap.first_name, ap.last_name) as `Agent_Name`,
                 IFNULL(u.email, 'NULL') as `Submitted_User_Email`,
+                IFNULL(user.email, 'NULL') as `Assigned_to`,
                 ca.source as `Lead_Source`,
                 ca.first_name as `Customer_Firstname`,
                 ca.last_name as `Customer_Lastname`,
+                IFNULL(ca.phone,'NULL') as `Mobile Number`,
+                IFNULL(ca.homephone,'NULL') as `Land Number`,
+                IF(ca.is_gas_life_support=1, 'Yes',  'No') as Gas_Life_Support,
+                IF(ca.is_power_life_support=1, 'Yes',  'No') as Power_Life_Support,
                 ca.office_id as `Office_Id`,
                 ca.status as `Utility_Commission`,
                 IFNULL(CONVERT_TZ(ca.created_at, '+00:00', '$tz'), 'NULL') as `Lead_Created_Date`,
@@ -153,8 +183,8 @@ class ExportEnergySubmissionReport
                 IFNULL(CONVERT_TZ(cs.submitted_at, '+00:00', '$tz'), 'NULL') as `Lead_Submitted_Date`,
                 IFNULL(ca.unit_number, 'NULL') as `Unit_Number`,
                 IFNULL(ca.street_number, 'NULL') as `Street_Number`,
-                IFNULL(ca.street_name, 'NULL') as `Street_Name`,
-                IFNULL(ca.street_name, 'NULL') as `Street_Type`,
+                IFNULL(ca.street_name_only, 'NULL') as `Street_Name`,
+                IFNULL(ca.street_type, 'NULL') as `Street_Type`,
                 IFNULL(ca.city,'NULL') as `Suburb`,
                 IFNULL(ca.state,'NULL') as `State`,
                 IFNULL(ca.postcode,'NULL') as `Postcode`,
@@ -176,25 +206,38 @@ class ExportEnergySubmissionReport
                 IFNULL(sl.compare_connect_id, 'NULL') as `Foxie_Connect_Id`,
                 cs.status as `UI_Status`,
                 ca.status as `Application_Status`,
-                cs.status as `Utility_Status`
+                cs.status as `Utility_Status`,
+                acr.value as `acr_value`,
+                ca.closing_reason as `closing_reason`,
+                closed_by_user.email as `Closed_By`,
+                ca.closed_at as `Closed_On`,
+                (select reason_text from rejection_reasons where connection_service_id=cs.id  limit 1) as Rejection_Reason
             ")
             ->rightJoin('connection_applications as ca', 'ca.id', '=', 'cs.connection_application_id')
             ->leftJoin('agencies as ag', 'ca.agency_id', '=', 'ag.id')
             ->leftJoin('agent_profiles as ap', 'ap.id', '=', 'ca.created_by')
             ->leftJoin('offices as ofs', 'ofs.id', '=', 'ca.office_id')
+            ->leftJoin('app_close_reasons as acr', 'ca.app_close_reason_id', '=', 'acr.id')
             ->leftJoin('users as u', 'ca.submitted_by', '=', 'u.id')
+            ->leftJoin('agent_profiles as aprofile', 'aprofile.id', '=', 'ca.assigned_to')
+            ->leftJoin('hood_profiles as closed_by_profile', 'closed_by_profile.id', '=', 'ca.closed_by')
+            ->leftJoin('users as user', function (JoinClause $clause) {
+                $clause->on('user.profile_id', '=', 'aprofile.id')
+                    ->where('user.profile_type', HoodProfile::class);
+            })
+            ->leftJoin('users as closed_by_user', function (JoinClause $clause) {
+                $clause->on('closed_by_user.profile_id', '=', 'closed_by_profile.id')
+                    ->where('closed_by_user.profile_type', HoodProfile::class);
+            })
             ->leftJoin('suger_leads as sl', 'ca.id', '=', 'sl.connection_application_id')
             ->where( function($q) use ($energyType) { $q->whereIn('cs.service_type', $energyType)->orWhereNull('cs.service_type'); } );
-            // ->whereNotNull('cs.provider_name');
+        // ->whereNotNull('cs.provider_name');
         $builder = $this->applyStatusFilter($builder);
         $tempBuilder = clone $builder;
         $filterWithCreatedDate = $this->filterWithCreatedDate($tempBuilder)->get();
         $tempBuilder = clone $builder;
-//        dd();
-        $filterWithSubmittedDate = $this->filterWithSubmittedDate($tempBuilder, $filterWithCreatedDate->pluck('Service_Id')->toArray())->get()->toArray();
-//        dd(ConnectionApplication::with('connectionServices')->where('id', '15385')->first()->toArray());
-//        dd(ConnectionService::whereIn('connection_application_id', [15371,15331,15256,15220])->get()->toArray());
-//        dd(collect($filterWithSubmittedDate)->pluck('App_id')->toArray());
+
+        $filterWithSubmittedDate = $this->filterWithSubmittedDate($tempBuilder)->get()->toArray();
 
         return array_merge(
             $filterWithCreatedDate->toArray(),
@@ -226,25 +269,14 @@ class ExportEnergySubmissionReport
             ->where('ca.created_at', '<=', $this->endDate);
     }
 
-    private function filterWithSubmittedDate(Builder $builder, array $except)
+    private function filterWithSubmittedDate(Builder $builder)
     {
         return $builder
-//            ->whereIn('cs.status', [
-//                ConnectionService::STATUS_EA_PROCESSINF, //Not submitted
-//                ConnectionService::STATUS_SUBMITTED, //In progress
-//                ConnectionService::STATUS_ENERGY_SUBMIT, //In progress
-//                ConnectionService::STATUS_ACCEPTED, //Accepted
-//                ConnectionService::STATUS_REJECTED, //Rejected
-//                ConnectionApplication::STATUS_CLOSED, //Closed
-//                ConnectionService::AC_MANUAL_PROCESSING, //MANUAL_PROCESSING
-//                ConnectionService::STATUS_CANT_CONNECT, //Failed
-//            ])
             ->whereNotNull('cs.submitted_at')
-
+            ->whereNotIn('cs.service_type', [ConnectionService::TYPE_WATER])
+            ->where('ca.created_at', '<', $this->startDate)
             ->where('cs.submitted_at', '>=', $this->startDate)
-            ->where('cs.submitted_at', '<=', $this->endDate)
-            ->whereNotIn('cs.id', $except);
-//            ->whereNotBetween('ca.created_at', [$this->startDate, $this->endDate]);
+            ->where('cs.submitted_at', '<=', $this->endDate);
     }
 
     private function getLeadSrc(?int $src): string
@@ -320,10 +352,20 @@ class ExportEnergySubmissionReport
         return GilbertStatusMapper::getUtilityStatusAsText($utilityStatus);
     }
 
-    private function getRejectionReason($serviceId, $serviceType)
+    private function getRejectionReason($data)
     {
-        $reason = RejectionReason::where('connection_service_id', $serviceId)->first();
-        return $reason  ?  $reason->reason_text : null;
+        if(!empty($data->acr_value)) {
+            return strtolower($data->acr_value) === "others" ? $data->closing_reason : $data->acr_value;
+        }
+        return 'NULL';
+    }
+
+    private function getAdditionalClosingReason($data)
+    {
+        if (!empty($data->acr_value) && !empty($data->closing_reason) && strtolower($data->acr_value) != "others") {
+            return $data->closing_reason;
+        }
+        return 'NULL';
     }
 
     private function getUtilityCommission($officeId, $serviceType)

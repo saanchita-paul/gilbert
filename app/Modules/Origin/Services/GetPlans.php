@@ -43,28 +43,24 @@ class GetPlans
      * @return OriginPlan
      */
     public static function getActivePlanByStateFuel($state, $fuel) : OriginPlan {
-        $plans = Cache::rememberForever('origin_plans_'.$state, function () use ($state) {
-            $base = config('bot.root_url');
-            $endpoint = '/hood-dashboard/api/origin-plan-code';
-            $stateParam = 'state=' . $state;
-            $url = $base . $endpoint . '?' . $stateParam;
+        $base = config('bot.root_url');
+        $endpoint = '/hood-dashboard/api/origin-plan-code';
+        $stateParam = 'state=' . $state;
+        $url = $base . $endpoint . '?' . $stateParam;
 
-            $headers = [
-                "Accept" => "application/json",
-            ];
+        $headers = [
+            "Accept" => "application/json",
+        ];
 
-            $response = Http::withOptions([
-                "headers" => $headers,
-                "verify" => false,
-            ])->get($url);
+        $response = Http::withOptions([
+            "headers" => $headers,
+            "verify" => false,
+        ])->get($url);
 
-            $response->throw();
-            
-            $responseData = json_decode($response->body(), true);
-            $planData = $responseData['data'];
-
-            return $planData;
-        });
+        $response->throw();
+        
+        $responseData = json_decode($response->body(), true);
+        $plans = $responseData['data'];
 
         $selectedPlan = [];
         
@@ -80,15 +76,48 @@ class GetPlans
 
         $campaign_id = $selectedPlan['campaign_code'];
         $product_code = $selectedPlan['product_id'];
+
+        // ALWAYS FETCH NEW PRODUCT INFO FOR NOW
+        $newProductInfo = new StoreProductInfoAPI($campaign_id, $product_code);
+        $saved = $newProductInfo->fetch();
+        $planDetails = OriginPlan::findOrFail($saved['id']);
         
-        $planDetails = OriginPlan::where('campaign_id', $campaign_id)
-                            ->where('product_code', $product_code)
-                            ->first();
-        if(!$planDetails){
-            $newProductInfo = new StoreProductInfoAPI($campaign_id, $product_code);
-            $saved = $newProductInfo->fetch();
-            $planDetails = OriginPlan::findOrFail($saved['id']);
-        }             
+        // $planDetails = OriginPlan::where('campaign_id', $campaign_id)
+        //                     ->where('product_code', $product_code)
+        //                     ->first();
+        // if(!$planDetails){
+        //     $newProductInfo = new StoreProductInfoAPI($campaign_id, $product_code);
+        //     $saved = $newProductInfo->fetch();
+        //     $planDetails = OriginPlan::findOrFail($saved['id']);
+        // }             
+        
+        return $planDetails;
+    }
+
+    /**
+     * @return OriginPlan
+     */
+    public static function getDummyElecPlan() : OriginPlan {
+        $campaign_id = 'C-00074893';
+        $product_code = 'ELE_FLEXI_0002';
+
+        $newProductInfo = new StoreProductInfoAPI($campaign_id, $product_code);
+        $saved = $newProductInfo->fetch();
+        $planDetails = OriginPlan::findOrFail($saved['id']);             
+        
+        return $planDetails;
+    }
+
+    /**
+     * @return OriginPlan
+     */
+    public static function getDummyGasPlan() : OriginPlan {
+        $campaign_id = 'C-00078334';
+        $product_code = 'GAS_LWFZR_0001';
+        
+        $newProductInfo = new StoreProductInfoAPI($campaign_id, $product_code);
+        $saved = $newProductInfo->fetch();
+        $planDetails = OriginPlan::findOrFail($saved['id']);             
         
         return $planDetails;
     }

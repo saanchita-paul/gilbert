@@ -4,8 +4,9 @@
 namespace OurProperty\Services;
 
 
+use App\Events\NotifyAgentAfterLeadCreation;
 use App\Jobs\CreateHubspotProperty;
-use App\Mail\AgentNotFoundMail;
+use App\Mail\OurPropertyAgentNotFoundMail;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC as AuthorisedPerson;
@@ -13,6 +14,7 @@ use App\Models\ConnectionService;
 use App\Models\Identification;
 use App\Models\Office;
 use App\Modules\OurProperty\Services\OurPropertyMapper;
+use App\Services\Address\StreetTypeMapper;
 use App\Services\AddressMapperService;
 use App\Services\AuthService\JwtAuthService;
 use Exception;
@@ -22,6 +24,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use JetBrains\PhpStorm\ArrayShape;
 use OurProperty\Models\OurProperty;
+use App\Services\NotifyBadAgentMailService;
 
 class CreateOurPropertyService
 {
@@ -44,6 +47,8 @@ class CreateOurPropertyService
     private $userRequestData;
 
     private OurProperty $ourProperty;
+
+    private array $officeData;
 
     /**
      * Generate token.
@@ -91,6 +96,7 @@ class CreateOurPropertyService
         $this->connectionApplicaton = new ConnectionApplication();
 
         // preparing connection app for Our-Property
+        // preparing connection app for Our-Property
         $this->userRequestData = $requestData;
 
         //save allField dump first
@@ -103,6 +109,14 @@ class CreateOurPropertyService
         $this->connectionApplicaton->status = ConnectionApplication::STATUS_UNASSIGNED;
         $this->connectionApplicaton->save();
 
+        NotifyBadAgentMailService::check(
+            $this->connectionApplicaton, 
+            'OurProperty', 
+            $this->userRequestData->agency_name ?? '', 
+            $this->getAgencyAndOffice()['office']->name ?? '', 
+            $this->userRequestData->agent_email ?? ''
+        );
+
         // set the lead id in our property data
         $ourProperty->connection_application_id = $this->connectionApplicaton->id;
         $ourProperty->save();
@@ -111,6 +125,7 @@ class CreateOurPropertyService
             $this->createIdentification($this->connectionApplicaton->id);
             $this->createService($requestData->tenancy_service_type, $this->connectionApplicaton->id);
             $this->createAuthorizedPerson($this->connectionApplicaton->id);
+            NotifyAgentAfterLeadCreation::dispatch($this->connectionApplicaton->id);
             CreateHubspotProperty::dispatch($this->connectionApplicaton->id);
         } catch (Exception $ex) {
             \Log::error("Lead create successful, Identification or Service or Authorization creation fail");
@@ -149,7 +164,7 @@ class CreateOurPropertyService
             $mapperService->mapTenancy($this->userRequestData->tenancy_type) : null;
         $this->connectionApplicaton->moving_date = $this->userRequestData->tenancy_moving_date ?? null;
         $this->connectionApplicaton->additional_instruction = $this->userRequestData->additional_instruction ?? null;
-        $this->connectionApplicaton->street_address = $this->getStreetAddress($this->userRequestData) ?? null;
+//        $this->connectionApplicaton->street_address = $this->getStreetAddress($this->userRequestData) ?? null;
         $this->connectionApplicaton->city = $this->userRequestData->tenancy_city ?? null;
         $this->connectionApplicaton->postcode = $this->userRequestData->tenancy_postcode ?? null;
         $this->connectionApplicaton->state = $this->userRequestData->tenancy_state ?
@@ -171,7 +186,9 @@ class CreateOurPropertyService
         $this->connectionApplicaton->mirn = $this->userRequestData->tenancy_mirn ?? null;
         $this->connectionApplicaton->unit_number = $this->userRequestData->tenancy_unit_number ?? null;
         $this->connectionApplicaton->street_number = $this->userRequestData->tenancy_street_number ?? null;
-        $this->connectionApplicaton->street_name = $this->getStreetName($this->userRequestData) ?? null;
+//        $this->connectionApplicaton->street_name = $this->getStreetName($this->userRequestData) ?? null;
+        $this->connectionApplicaton->street_name_only = $this->userRequestData->tenancy_street_name ?? null;
+        $this->connectionApplicaton->street_type =  StreetTypeMapper::getShortForm($this->userRequestData->tenancy_street_type) ?? $this->userRequestData->tenancy_street_type;
         $this->connectionApplicaton->billing_unit_number = $this->userRequestData->tenancy_billing_unit_number ?? null;
         $this->connectionApplicaton->billing_street_number = $this->userRequestData->tenancy_billing_street_number ?? null;
         $this->connectionApplicaton->billing_street_name = $this->userRequestData->tenancy_billing_street_name ?? null;
@@ -192,34 +209,38 @@ class CreateOurPropertyService
     #[ArrayShape(["agent" => "\App\Models\AgentProfile|null", "agency" => "\App\Models\Agency||null", "office" => "\App\Models\Office|null"])]
     private function getAgencyAndOffice(): array
     {
-        $email = $this->userRequestData->agent_email;
-        $res = [
-            "agent" => null,
-            "agency" => null,
-            "office" => null
-        ];
-        try {
-            $res["agent"] = AgentProfile::whereHas(
-                'user',
-                fn(Builder $user) => $user->where('email', $email)
-            )->first();
-            if ($res["agent"]) {
-                $res["office"] = $res["agent"]->office;
-                $res["agency"] = $res["agent"]->agency;
-            } else {
-                $res['office'] = Office::whereName('Our-Property-Hood-Office')->firstOrFail();
-                $res["agency"] = $res["office"]?->agency;
-                throw  new Exception("No Agent matched for email: $email. falling back to default agency & office mapping.");
+        if (empty($this->officeData)) {
+            $email = $this->userRequestData->agent_email;
+            $res = [
+                "agent" => null,
+                "agency" => null,
+                "office" => null
+            ];
+            try {
+                $res["agent"] = AgentProfile::whereHas(
+                    'user',
+                    fn(Builder $user) => $user->where('email', $email)
+                )->first();
+                if ($res["agent"]) {
+                    $res["office"] = $res["agent"]->office;
+                    $res["agency"] = $res["agent"]->agency;
+                } else {
+                    $res['office'] = Office::whereName('Our-Property-Hood-Office')->firstOrFail();
+                    $res["agency"] = $res["office"]?->agency;
+                    throw new Exception("No Agent matched for email: $email. falling back to default agency & office mapping.");
+                }
+    
+            } catch (Exception $exception) {
+                Log::error($exception->getMessage());
+                Log::error($exception->getTraceAsString());
+    
+                $this->sendAgentNotFoundEmail($exception->getMessage());
             }
-
-        } catch (Exception $exception) {
-            Log::error($exception->getMessage());
-            Log::error($exception->getTraceAsString());
-
-            $this->sendAgentNotFoundEmail($exception->getMessage());
+    
+            $this->officeData = $res;
         }
 
-        return $res;
+        return $this->officeData;
     }
 
 
@@ -237,7 +258,7 @@ class CreateOurPropertyService
         ];
         $emails = explode(',', config('our_property.support_emails'));
         foreach ($emails as $recipient) {
-            Mail::to($recipient)->queue(new AgentNotFoundMail($dataToBeSent));
+            Mail::to($recipient)->queue(new OurPropertyAgentNotFoundMail($dataToBeSent));
         }
     }
 
@@ -336,14 +357,14 @@ class CreateOurPropertyService
         if ($data->tenancy_street_type !== null) {
             return $data->tenancy_street_name . ' ' . $data->tenancy_street_type;
         }
-        return $data->tenancy_street_name;
+        return '';
     }
 
 
     /**
      * @return string
      */
-    private function getUnitStreetNumber($data): string
+    private function getUnitStreetNumber($data): ?string
     {
         if ($data->tenancy_unit_number !== null) {
             return $data->tenancy_unit_number . '/' . $data->tenancy_street_number;
@@ -361,7 +382,7 @@ class CreateOurPropertyService
         }
         $streetName = $this->getStreetName($data);
         $unitStreetNumber = $this->getUnitStreetNumber($data);
-        
+
         return $unitStreetNumber . ', ' . $streetName;
     }
 

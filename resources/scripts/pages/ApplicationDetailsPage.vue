@@ -14,6 +14,7 @@
                                 :leadSummary="leadSummary"
                                 @updateAddress="updateAddress"
                                 @updateDraft="updateDraft"
+                                @duplicateLead="duplicatedLead"
                         ></LeadUserDetails>
                  </ValidationObserver>
                 <LeadServicesAndNotes
@@ -44,8 +45,10 @@
 
         <AssignedToUserEmptyModal v-if="assignedToDialog" :dialog="assignedToDialog" @closeMessage="closeAssignedToEmptyModal"></AssignedToUserEmptyModal>
 
-        <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" secondaryContact="secondaryContact" v-if="showSubmitModal" @confirmSubmitLead="confirmSubmitLead" @backToEdit="backToEdit"> </LeadSubmitConfirmationModal>
+        <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" :leadId="leadId" secondaryContact="secondaryContact" v-if="showSubmitModal" @confirmSubmitLead="confirmSubmitLead" @backToEdit="backToEdit" :submitType="submitType"> </LeadSubmitConfirmationModal>
             <PreventSubmissionModal v-if="preventSubmissionFlag" :message="preventSubmissionMessage" :dialog="preventSubmissionFlag" @closeMessage="closePreventSubmissionModal"></PreventSubmissionModal>
+
+        <DuplicateLeadModal v-if="duplicateLead" :dialog="duplicateLead" @cancelDuplicateLead="cancelDuplicateLead" :duplicateGroupId="leadSummary.duplication_group_id"></DuplicateLeadModal>
     </v-container>
 </template>
 
@@ -70,6 +73,8 @@ import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import Store from '@scripts/store/index';
 import SendToChatBotModal from "@scripts/components/crm/modals/SendToChatBotModal";
 import ChatbotInChargeModal from "@scripts/components/crm/modals/ChatbotInChargeModal";
+import DuplicateLeadModal from "@scripts/components/crm/modals/DuplicateLeadModal";
+
 
 export default {
     //todo shift afterHourFlag, nextBusinessDay, getElectricityDistributor to powerService
@@ -87,7 +92,8 @@ export default {
         CloseApplicationReasonModal,
         CloseConfirmModal,
         AssignedToUserEmptyModal,
-        PreventSubmissionModal
+        PreventSubmissionModal,
+        DuplicateLeadModal
     },
 
     data() {
@@ -127,6 +133,7 @@ export default {
             nextBusinessDay: null,
             closeSentConfirm: false,
             isChatbotInCharge: false,
+            duplicateLead: false
         }
     },
     computed: {
@@ -180,9 +187,10 @@ export default {
         cancelClose(){
             this.closeLead = false;
         },
-       async sucessSaveClose(closing_reason){
+
+       async sucessSaveClose(closeReason){
             try {
-                await LeadApplicationService.closeApplicationWithReason(this.leadId , closing_reason);
+                await LeadApplicationService.closeApplicationWithReason(this.leadId , closeReason);
                 this.closeLead = false;
                 this.closeConfirm = true;
             } catch (error) {
@@ -283,6 +291,8 @@ export default {
             }
              return false;
         },
+
+
         closePreventSubmissionModal() {
           this.preventSubmissionFlag = false;
         },
@@ -425,6 +435,17 @@ export default {
             }
             return true;
         },
+        duplicatedLead() {
+            this.duplicateLead = true;
+        },
+        cancelDuplicateLead() {
+            this.duplicateLead = false;
+        },
+
+
+        // async updateEmail(field, value) {
+        //     await LeadApplicationService.saveEmailField(field, value, this.leadId);
+        // },
     },
     watch: {
         powerPlan: {

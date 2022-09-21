@@ -16,6 +16,16 @@
                         </span>
                     </p>
                 </div>
+                <div v-if="showDuplicateLeadButton">
+                    <v-btn outlined text class="view_application" @click="duplicateLead">
+                        View duplicate lead
+                        <v-icon
+                            right
+                        >
+                            mdi-chevron-down
+                        </v-icon>
+                    </v-btn>
+                </div>
             </div>
             <div>
                 <div class="d-flex justify-end">
@@ -96,6 +106,7 @@ import IdCopyToClipboard from '@scripts/components/common/IdCopyToClipboard.vue'
 import leadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
+import AppCloseReasonService from "@scripts/services/AppCloseReasonService";
 export default {
 name: "LeadDetailsHeader",
     components:{ IdCopyToClipboard },
@@ -106,7 +117,8 @@ name: "LeadDetailsHeader",
     },
     data() {
         return {
-           id:10
+           id:10,
+           closeReasons : null,
         };
     },
     computed:{
@@ -115,6 +127,9 @@ name: "LeadDetailsHeader",
         },
         leadSourceMap(){
             return leadSourceMap;
+        },
+        showDuplicateLeadButton() {
+            return this.leadSummary?.is_duplicate;
         }
     },
     methods: {
@@ -190,11 +205,17 @@ name: "LeadDetailsHeader",
         mapConnectionStatus(status) {
             return  LeadApplicationService.mapStatus(status)
         },
+<<<<<<< HEAD
         sendToChatBot() {
             this.$emit('sendToChatBot');
             // this.$eventBus.$emit("busUtilitySubmit", subType);
         },
 
+=======
+        duplicateLead() {
+            this.$emit('duplicateLead');
+        },
+>>>>>>> release
     },
     mounted() {
         // console.log('load_summary_he', this.leadSummary);
@@ -240,7 +261,11 @@ name: "LeadDetailsHeader",
     .successColor{
         color: $successColor;
     }
+    .view_application {
+        background: #FFC104
+    }
     .buttonBackgroundColor{
         background-color: $buttonBackgroundColor;
     }
 </style>
+

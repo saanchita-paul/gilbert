@@ -3,6 +3,8 @@
 namespace App\Services\Agency;
 
 use App\Jobs\UpdateHubspotContactJob;
+use App\Models\AgentProfile;
+use App\Models\AppCloseReason;
 use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
@@ -12,6 +14,8 @@ use App\Models\Identification;
 use App\Models\Office;
 use App\Models\User;
 use App\Services\RolePermission;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use TSA\Services\TsaSendAppliationService;
 use Illuminate\Support\Str;
@@ -176,7 +180,12 @@ class ApplicationService
 
         if (in_array(HoodProfile::find($agentId)->user->roles->first()?->name,
             [RolePermission::ROLE_EXTERNAL_HOOD_TEAM_LEAD])) {
-            (new TsaSendAppliationService($applicationId))->sendApplication();
+            $tsaService = new TsaSendAppliationService($applicationId);
+            $tsaService->sendApplication();
+            $tsa_lead_id = $tsaService->getTsaLeadId();
+            $existingApplication = ConnectionApplication::find($applicationId);
+            $existingApplication->tsa_lead_id = $tsa_lead_id;
+            $existingApplication->save();
         }
         return $this->findApplications($applicationId);
     }
@@ -372,9 +381,11 @@ class ApplicationService
      */
     public function closeApplicationWithReason(array $application, int $applicationId, User $user)
     {
+
         try {
             $existingApplication = ConnectionApplication::find($applicationId);
-            $existingApplication->closing_reason = $application['closing_reason'];
+            $existingApplication->app_close_reason_id = $application['app_close_reason_id'];
+            $existingApplication->closing_reason = $application['closing_reason'] ?? null;
             $existingApplication->status = ConnectionApplication::STATUS_CLOSED;
             $existingApplication->closed_at = now();
             $existingApplication->closed_by = $user->profile->id;
@@ -382,9 +393,12 @@ class ApplicationService
 
             UpdateHubspotContactJob::dispatch($applicationId);
 
+            // get dropdown reason id text
+            $applicationReasonIdText = AppCloseReason::select('value')->where('id', $application['app_close_reason_id'])->first();
+
             $allicationNoteService = new ApplicationNoteService($user);
             $closingeNote = [];
-            $closingeNote['text'] = $application['closing_reason'];
+            $closingeNote['text'] = 'App closed reason:' . $applicationReasonIdText?->value . (!empty($application['closing_reason']) ? "\n" . 'Additional Notes:' . $application['closing_reason'] : '');
             $closingeNote['type'] = 'close_connection';
 
             $allicationNoteService->createNotes($closingeNote, $applicationId);
@@ -405,6 +419,14 @@ class ApplicationService
 
         unset($application['identification']);
         unset($application['isService']);
+
+        if (isset($application['email_manually_verified_by'])) {
+            if ($application['email_manually_verified_by'] === true) {
+                $application['email_manually_verified_by'] =  auth()->user()->profile_id;
+            } else {
+                $application['email_manually_verified_by'] =  null;
+            }
+        }
 
         if ($isIdentification) {
             $this->createIdentification($application, $id);
@@ -497,14 +519,8 @@ class ApplicationService
         };
 
         foreach ($services as $service) {
-
-            $plan = $data['plan_type'];
-            if($data['provider_name'] === 'origin' && $data['plan_type'] !== null) {
-                $plan = match ($service) {
-                    ConnectionService::TYPE_ELECTRICITY => ConnectionService::ORIGIN_HOME_ASSIST_PLAN,
-                    ConnectionService::TYPE_GAS => ConnectionService::ORIGIN_ADVANTAGE_VARIABLE_PLAN,
-                };
-            }
+            $key = $service. "_plan_type";
+            $plan =   $data[$key] ?? null;
 
             $connectionService = ConnectionService::where('connection_application_id', $applicationId)
                 ->where('service_type', $service)
@@ -588,6 +604,8 @@ class ApplicationService
 
         return $sumoUuid;
     }
+
+
     public function clearConcession($id)
     {
         $existLead = ConnectionApplication::findOrFail($id);
@@ -607,6 +625,26 @@ class ApplicationService
         $existingApplication = ConnectionApplication::where('id', $applicationId)->firstOrFail();
 
         return $existingApplication?->is_sent_to_chatbot;
+    }
+
+
+    public function updateEmailField(array $application, $id)
+    {
+        $existLead = ConnectionApplication::findOrFail($id);
+        ConnectionApplication::where('id' , $existLead->id)
+            ->update([
+                'email_manually_verified_by' => null,
+            ]);
+        return $existLead->refresh();
+    }
+
+
+    public function isEmailManuallyVerified($applicationId)
+    {
+        $existingApplication = ConnectionApplication::findOrFail($applicationId);
+        $email_manually_verified_by = $existingApplication->email_manually_verified_by;
+
+        return $email_manually_verified_by;
     }
 
 }

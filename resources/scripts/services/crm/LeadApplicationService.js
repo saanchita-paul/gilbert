@@ -10,6 +10,8 @@ import {
 } from "@scripts/data/ConnectionApplicationMapper";
 import Store from "@scripts/store";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
+import {isNull} from "lodash-es";
+import DuplicateLeadService from "@scripts/services/crm/DuplicateLeadService";
 
 export default {
     loadMetrics: data => LeadApplicationAPI.getMetrics(data),
@@ -17,13 +19,21 @@ export default {
     loadAgencyMetricsByApplication: data =>
         LeadApplicationAPI.loadAgencyMetricsByApplication(data),
     loadUserLeadMetrics: () => LeadApplicationAPI.getUserLeadMetrics(),
-    loadUserLeads: (sort_search_meta, active_lead_type, src = "hood", params) =>
-        LeadApplicationAPI.getUserLeads(
+    loadUserLeads: (sort_search_meta, active_lead_type, src = "hood", params) => {
+
+        // if(!isNull(params.duplication_group_id)) {
+        //    return  DuplicateLeadService.getDuplicateLeadData(
+        //        params.duplication_group_id)
+        // }
+        return  LeadApplicationAPI.getUserLeads(
             sort_search_meta,
             active_lead_type,
             src,
             params
-        ),
+        )
+
+
+    },
     loadUserLeadsForAgents: (
         sort_search_meta,
         active_lead_type,
@@ -45,15 +55,7 @@ export default {
     loadServiceProvider: services =>
         LeadApplicationAPI.getServiceProvider(services),
     saveNote: (note, leadId) => LeadApplicationAPI.saveNote(note, leadId),
-    eacalate: leadId => LeadApplicationAPI.eacalate(leadId),
-    saveEscalateReason: (reason, leadId) =>
-        LeadApplicationAPI.saveEscalateReason(reason, leadId),
-    confirmSubmitLead: (lead, leadId) =>
-        LeadApplicationAPI.confirmSubmitLead(lead, leadId),
-    updateAddress: (address, leadId) =>
-        LeadApplicationAPI.updateAddress(address, leadId),
-    assignUser: (leadId, agentProfileId) =>
-        LeadApplicationAPI.assignUser(leadId, agentProfileId),
+    confirmSubmitLead: (lead, leadId) => LeadApplicationAPI.confirmSubmitLead(lead, leadId),
     saveSoleField: (
         field,
         value,
@@ -70,15 +72,18 @@ export default {
             identification,
             isService
         ),
-    getNmiMern: id => LeadApplicationAPI.getNmiMern(id),
-    loadAuthorizedPerson: leadId =>
-        LeadApplicationAPI.loadAuthorizedPerson(leadId),
-    saveAuthorizedPerson: data => LeadApplicationAPI.saveAuthorizedPerson(data),
-    updateApplicationProviders: (payload, application_id) =>
-        LeadApplicationAPI.updateApplicationProviders(payload, application_id),
-    closeApplicationWithReason: (id, closing_reason) =>
-        LeadApplicationAPI.closeApplicationWithReason(id, closing_reason),
-    getAssignedHoodUser: id => LeadApplicationAPI.getAssignedHoodUser(id),
+
+    eacalate: (leadId) => LeadApplicationAPI.eacalate(leadId),
+    saveEscalateReason: (reason, leadId) => LeadApplicationAPI.saveEscalateReason(reason, leadId),
+    saveLead: (lead, leadId) => LeadApplicationAPI.saveLead(lead, leadId),
+    updateAddress: (address, leadId) => LeadApplicationAPI.updateAddress(address, leadId),
+    assignUser: (leadId, agentProfileId) => LeadApplicationAPI.assignUser(leadId, agentProfileId),
+    getNmiMern: (id) => LeadApplicationAPI.getNmiMern(id),
+    loadAuthorizedPerson: (leadId) => LeadApplicationAPI.loadAuthorizedPerson(leadId),
+    saveAuthorizedPerson: (data) => LeadApplicationAPI.saveAuthorizedPerson(data),
+    updateApplicationProviders: (payload, application_id) => LeadApplicationAPI.updateApplicationProviders(payload, application_id),
+    closeApplicationWithReason: (id, closeReason) => LeadApplicationAPI.closeApplicationWithReason(id, closeReason),
+    getAssignedHoodUser: (id) => LeadApplicationAPI.getAssignedHoodUser(id),
     loadHoodUser: () => LeadApplicationAPI.loadHoodUser(),
     loadAgencies: search => LeadApplicationAPI.loadAgencies(search),
     loadOffices: (agencyId, search) =>
@@ -195,7 +200,7 @@ export default {
             case connectionServicesMapper.STATUS_REJECTED:
                 return {text: "Rejected", color: "red"};
             case connectionServicesMapper.STATUS_FAILED:
-                return {text: "Failed", color: "red"};
+                return {text: 'Manual Processing', color: 'orange'};
             default:
                 return {
                     text: "Not Selected",
@@ -228,12 +233,21 @@ export default {
      * @return {string}
      */
     mapPlan: plan => {
-        return planTypeKeyMapper[plan?.toLowerCase()] || "";
+        return plan ? plan.toLowerCase().split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ') : null;
     },
 
     clearConcessionDetails: id => LeadApplicationAPI.clearConcessionDetails(id),
 
     getActiveServiceTab: () => Store.getters["application/activeServiceTab"],
     setActiveServiceTab: currentTab =>
-        Store.commit("application/setActiveServiceTab", currentTab)
+        Store.commit("application/setActiveServiceTab", currentTab),
+
+
+    saveEmailField: (field, value, leadId) => LeadApplicationAPI.saveEmailField(field, value, leadId),
+    isEmailManuallyVerified: id => LeadApplicationAPI.isEmailManuallyVerified(id),
+
+    validateCutOff: id => LeadApplicationAPI.validateCutOff(id),
+
 };

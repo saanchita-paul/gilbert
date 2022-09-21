@@ -3,6 +3,7 @@
 
 namespace ExternalLead\Services;
 
+use App\Events\NotifyAgentAfterLeadCreation;
 use Exception;
 use App\Models\Office;
 use App\Models\AgentProfile;
@@ -13,6 +14,7 @@ use App\Models\ConnectionService;
 use JetBrains\PhpStorm\ArrayShape;
 use App\Jobs\CreateHubspotProperty;
 use App\Mail\TAppAgentNotFoundMail;
+use App\Models\Agency;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Models\ConnectionApplication;
@@ -21,6 +23,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Services\AuthService\JwtAuthService;
 use App\Services\SearchAddress\AddressModel;
 use App\Models\ConnectionApplicationSecondaryACC as AuthorisedPerson;
+use App\Services\NotifyBadAgentMailService;
 
 class TAppServices
 {
@@ -43,6 +46,8 @@ class TAppServices
     private $userRequestData;
 
     private TApp $tApp;
+
+    private array $officeData;
 
     /**
      * Generate token.
@@ -102,6 +107,14 @@ class TAppServices
         $this->connectionApplicaton->status = ConnectionApplication::STATUS_UNASSIGNED;
         $this->connectionApplicaton->save();
 
+        NotifyBadAgentMailService::check(
+            $this->connectionApplicaton, 
+            'TApp', 
+            $this->userRequestData->agency_name ?? '', 
+            $this->getAgencyAndOffice()['office']->name ?? '',
+            $this->userRequestData->agent_email ?? ''
+        );
+
         // set the lead id in tApp data
         $tApp->connection_application_id = $this->connectionApplicaton->id;
         $tApp->save();
@@ -110,6 +123,7 @@ class TAppServices
             $this->createIdentification($this->connectionApplicaton->id);
             $this->createService($requestData->tenancy_service_type, $this->connectionApplicaton->id);
             $this->createAuthorizedPerson($this->connectionApplicaton->id);
+            NotifyAgentAfterLeadCreation::dispatch($this->connectionApplicaton->id);
             CreateHubspotProperty::dispatch($this->connectionApplicaton->id);
         } catch (Exception $ex) {
             \Log::error("Lead create successful, Identification or Service or Authorization creation fail");
@@ -128,9 +142,9 @@ class TAppServices
         $agencyData = $this->getAgencyAndOffice();
 
 
-        $this->connectionApplicaton->agency_id = $agencyData["agency_id"] ?? null;
-        $this->connectionApplicaton->office_id = $agencyData["office_id"] ?? null;
-        $this->connectionApplicaton->created_by = $agencyData["created_by"] ?? null;
+        $this->connectionApplicaton->agency_id = $agencyData["agency"]?->id;
+        $this->connectionApplicaton->office_id = $agencyData["office"]?->id;
+        $this->connectionApplicaton->created_by = $agencyData["agent"]?->id ?? null;
         $this->connectionApplicaton->source = ConnectionApplication::SOURCE_T_APP;
 
         //load Our Property
@@ -188,13 +202,13 @@ class TAppServices
             $mapperService->mapYesNoToBool($this->userRequestData->tenancy_is_renovation_on) : null;
 
         $this->setStreetAddressAndAddressText();
-        
+
         // $this->connectionApplicaton->street_address = $this->userRequestData->tenancy_street_address ?? null;
     }
 
     private function setStreetAddressAndAddressText()
     {
-        $address = new AddressModel( 
+        $address = new AddressModel(
             $this->connectionApplicaton->unit_number,
             $this->connectionApplicaton->street_number,
             $this->connectionApplicaton->street_name,
@@ -204,7 +218,7 @@ class TAppServices
             $this->connectionApplicaton->country,
          );
 
-        $billingAddress = new AddressModel( 
+        $billingAddress = new AddressModel(
             $this->connectionApplicaton->billing_unit_number,
             $this->connectionApplicaton->billing_street_number,
             $this->connectionApplicaton->billing_street_name,
@@ -216,58 +230,62 @@ class TAppServices
 
         $this->connectionApplicaton->street_address = $address->street_address;
         $this->connectionApplicaton->address_text = $address->address_text;
-        
+
         $this->connectionApplicaton->billing_street_address = $billingAddress->street_address;
         $this->connectionApplicaton->billing_address_text = $billingAddress->address_text;
-        
+
     }
 
     /**
      * @return array
      * @throws Exception
      */
+    #[ArrayShape(["agent" => "\App\Models\AgentProfile|null", "agency" => "\App\Models\Agency||null", "office" => "\App\Models\Office|null"])]
     private function getAgencyAndOffice(): array
     {
-        $res = [
-            "agency_id" => $this->userRequestData->agency_id,
-            "office_id" => $this->userRequestData->office_id,
-            "created_by" => null
-        ];
-        try {
-            if ($this->userRequestData->agent_email && $this->userRequestData->agent_email !== null && $this->userRequestData->agent_email !== "") {
-                $agent = AgentProfile::whereHas(
+        if (empty($this->officeData)) {
+            $email = $this->userRequestData->agent_email ?? '';
+            $office_id = $this->userRequestData->office_id ?? '';
+    
+            $res = [
+                "agent" => null,
+                "agency" => null,
+                "office" => null
+            ];
+            try {
+                $res["agent"] = AgentProfile::whereHas(
                     'user',
-                    fn(Builder $user) => $user->where('email', $this->userRequestData->agent_email)
+                    fn(Builder $user) => $user->where('email', $email)
                 )->first();
-                if ($agent) {
-                    $res["agency_id"] = $agent->agency_id;
-                    $res["office_id"] = $agent->office_id;
-                    $res["created_by"] = $agent->id;
-                }
-            } elseif ($this->userRequestData->office_id && $this->userRequestData->office_id !== null && $this->userRequestData->office_id !== "") {
-                $office = Office::find($this->userRequestData->office_id);
-                if ($office) {
-                    $res["agency_id"] = $office->agency_id;
-                    $res["office_id"] = $office->id;
-                    throw new Exception("No Agent found. Lead CreatedBy saved as Null.");
-                }
+    
+                if ($res["agent"]) {
+                    $res["office"] = $res["agent"]->office;
+                    $res["agency"] = $res["agent"]->agency;
+                } else {
+                    $office = Office::find($office_id);
+    
+                    if ($office) {
+                        $res["office"] = $office;
+                        $res["agency"] = $office->agency;
+                        throw new Exception("No Agent found. Lead CreatedBy saved as Null.");
+                    } else {
+                        $res['office'] = Office::whereName('TApp-Office')->firstOrFail();
+                        $res["agency"] = $res["office"]?->agency;
+                        throw new Exception("No Agent matched for email: $email. falling back to default agency & office mapping.");
+                    }
+                } 
+            } catch (Exception $exception) {
+                Log::error($exception->getMessage());
+                Log::error($exception->getTraceAsString());
+    
+                $this->sendAgentNotFoundEmail($exception->getMessage());
             }
-            else {
-                $office = Office::whereName('TApp-Office')->firstOrFail();
-                if ($office) {
-                    $res['office_id'] = $office->id;
-                    $res["agency_id"] = $office->agency_id;
-                    throw  new Exception("No Agent found. Falling back to default Agency & Office mapping.");
-                }
-            }
-        } catch (Exception $exception) {
-            Log::error($exception->getMessage());
-            $this->sendAgentNotFoundEmail($exception->getMessage());
+    
+            $this->officeData = $res;
         }
 
-        return $res;
+        return $this->officeData;
     }
-
 
     /** send email to support if agency is not found
      * @param string $agencyName
@@ -318,7 +336,7 @@ class TAppServices
             $connectionService->save();
             return;
         }
-        
+
         foreach ($tAppServices as $service) {
             $connectionService = new ConnectionService();
             $connectionService->service_type = strtolower($service);

@@ -11,6 +11,7 @@ use App\Services\Ea\EaPlanDetailsService;
 use App\Services\Utility\StateMapService;
 use Origin\Services\OriginPlanDetailsService;
 use phpDocumentor\Reflection\Utils;
+use Origin\Services\ValidateCutOffTime;
 
 class SubmittedLeadNote
 {
@@ -43,6 +44,15 @@ class SubmittedLeadNote
            'application_id' => $this->existLead?->id,
            'ea_go_neutral' => $this->existLead && $provider_name === 'EA'? $this->existLead->ea_go_neutral : 'N/A',
         ];
+
+        if ($provider_name == 'Origin' && in_array($submittedService, ['Gas', 'Elec & Gas'])){
+            if ($submittedService === 'Gas'){
+                $leadData['moving_date'] = ValidateCutOffTime::getNextGasConnectionDate($this->existLead?->moving_date, $this->existLead?->state);
+            }
+            else if ($submittedService === 'Elec & Gas'){
+                $leadData['gas_moving_date'] = ValidateCutOffTime::getNextGasConnectionDate($this->existLead?->moving_date, $this->existLead?->state);
+            }
+        }
 
        return json_encode($leadData);
     }
@@ -79,7 +89,7 @@ class SubmittedLeadNote
 
     private function doSubmitOriginNote($state, $postCode){
         // \Log::info("debugging the note", [$state, $postCode]);
-        $originPlanService = new OriginPlanDetailsService($state, $postCode, $this->existLead->id, $this->servicesId);
+        $originPlanService = new OriginPlanDetailsService($state, $postCode, $this->existLead->id, $this->servicesId, $this->existLead->nmi ?? '');
         $plan_type = $originPlanService->plan_type;
 
         if(empty($plan_type)) return;
@@ -87,6 +97,7 @@ class SubmittedLeadNote
         $noteService = new ApplicationNoteService($this->user);
         $submittedService = $this->getServices($originPlanService->service_type);
         $planDetails = $originPlanService->getPlanDetails();
+        // TODO: get gas connection date
         $this->leadDetailsJson = $this->prepareLeadData($plan_type, $postCode, $state, $submittedService, 'Origin');
         $note = [
             'type' => ApplicationNote::SUBMITTED_ORIGIN,
@@ -104,6 +115,5 @@ class SubmittedLeadNote
           'electricity_and_gas' => 'Elec & Gas',
         };
     }
-
 
 }

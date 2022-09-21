@@ -74,7 +74,8 @@ class Office extends Model
         'email',
         'hood_agent_id',
         'rent_roll',
-        'property_me_refresh_token'
+        'property_me_refresh_token',
+        'should_notify_agent',
     ];
 
     /**

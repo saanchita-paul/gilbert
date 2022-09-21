@@ -6,6 +6,7 @@
         <single-lead-type title="Escalated" type="escalated" :count="escalatedCount" :active="activeLeadType" @changeLeadType="changeLeadType" subtext="Needs attention"> </single-lead-type>
         <single-lead-type title="Submitted" type="submitted" :count="submittedCount"  :active="activeLeadType" @changeLeadType="changeLeadType" subtext="For connection"> </single-lead-type>
         <single-lead-type title="Closed" type="closed" :count="closedCount"  :active="activeLeadType" @changeLeadType="changeLeadType" subtext="have been closed"> </single-lead-type>
+        <single-lead-type title="Duplicates" type="duplicates" :count="duplicationCount" :showDuplicate="showDuplicate"  :active="activeLeadType" @changeLeadType="changeLeadType" subtext="Similar Leads"> </single-lead-type>
 
     </div>
 </template>
@@ -22,6 +23,9 @@ export default {
         },
         activeLeadType: {
             required: true,
+        },
+        showDuplicate: {
+            required: false,
         }
     },
     data() {
@@ -32,6 +36,7 @@ export default {
           escalatedCount: 0,
           submittedCount: 0,
           closedCount: 0,
+          duplicationCount: 0,
           activeLead: 'My Applications'
       }
     },
@@ -65,6 +70,10 @@ export default {
                       totalLeads += lead.count;
                       this.closedCount = lead.count;
                       break;
+                  case 'duplicate':
+                      totalLeads += lead.count;
+                      this.duplicationCount = lead.count;
+                      break;
                   default:
                       break
               }
@@ -74,9 +83,16 @@ export default {
         changeLeadType(type) {
             this.activeLead = type;
             this.$emit('resetPage');
-            let query =omit({...this.$route.query}, 'type');
-            this.$router.push({query:{type:type, ...query}});
-        }
+            let query =omit({...this.$route.query}, ['type', 'duplicates']);
+
+            if(type === 'duplicates') {
+                this.$router.push({query:{duplicates:true, ...query}});
+            } else {
+                query =omit({...this.$route.query}, ['type', 'duplicates', 'duplication_group_id']);
+                this.$router.push({query:{type:type, ...query}});
+            }
+
+        },
     },
 
     mounted() {

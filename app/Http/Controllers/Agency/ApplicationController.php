@@ -4,27 +4,34 @@ namespace App\Http\Controllers\Agency;
 
 use App\Events\Agency\CreateApplicationEvent;
 use App\Events\Agency\SubmitApplicationEvent;
+use App\Events\NotifyAgentAfterLeadCreation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Requests\Agency\ProviderRequest;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationResource;
+use App\Http\Resources\Agency\DuplicationApplicationResource;
 use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
+use App\Models\TSACallHistory;
 use App\Models\User;
 use App\Services\Agency\ApplicationService;
+use App\Services\Agency\TriageFlagService;
 use App\Services\Agency\WaterAutoSubmitService;
 use App\Services\Application\ApplicationsMetricsService;
 use App\Services\Application\SearchConnectionApplication;
+use App\Services\DuplicateApplicationService;
 use App\Services\Ea\SetEaDistributorService;
+use App\Services\GBGEmailValidationService;
 use Origin\Services\SetOriginDistributorService;
 use App\Services\FastConnectService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Origin\Services\ValidateCutOffTime;
 use PropertyMe\services\FetchContacts;
 
 class ApplicationController extends Controller
@@ -80,6 +87,7 @@ class ApplicationController extends Controller
         $service = new ApplicationService();
         $application = $service->createApplication($request->toArray(), $user);
         CreateApplicationEvent::dispatch($application->id);
+        NotifyAgentAfterLeadCreation::dispatch($application->id);
 
         return ApplicationResource::make($application);
 
@@ -108,7 +116,8 @@ class ApplicationController extends Controller
             }
 
             $application->load(['connectionServices.reasons']);
-            return new ApplicationResource($application);
+
+            return new ApplicationResource($application, TSACallHistory::getByAppID($application->id));
 
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
@@ -466,6 +475,57 @@ class ApplicationController extends Controller
         try {
             $service = new ApplicationService();
             return $service->getIsSentToChatbot($applicationId);
+
+        }catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function isGbgValidateEmail(Request $request)
+    {
+        try {
+            $service = new GBGEmailValidationService();
+            $result = $service->validateEmail($request->email);
+
+            $res = ['success' => true, 'data' => $result];
+
+            return response()->json($res);
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function isEmailManuallyVerified($id)
+    {
+        try {
+            $service = new ApplicationService();
+            $result = $service->isEmailManuallyVerified($id);
+
+            $res = ['success' => true, 'data' => $result];
+
+            return response()->json($res);
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function saveEmail(Request $request, $id)
+    {
+        try {
+            $service = new ApplicationService();
+            $res = $service->updateEmailField($request->toArray(), $id);
+            return response()->json(['success' => true, 'data' => $res]);
+
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function validateCutOff($applicationId)
+    {
+        try {
+            $res = ValidateCutOffTime::validateCutOff($applicationId);
+            return response()->json(['success' => true, 'data' => $res]);
 
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);

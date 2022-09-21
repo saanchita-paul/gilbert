@@ -1,24 +1,35 @@
 <?php
 
+
+use App\Http\Controllers\Agency\DuplicationApplicationController;
+use App\Models\ConnectionApplication;
+use App\Http\Controllers\Agency\AppCloseReasonController;
+use App\Services\Agency\TriageFlagService;
+use Illuminate\Encryption\Encrypter;
+use App\Services\Address\GBGServices;
+use Illuminate\Support\Facades\Route;
+use App\Services\Address\AddressModel;
+use PropertyMe\services\FetchContacts;
+use App\Services\RolePermissionService;
+use TSA\Services\TsaCallHistoryService;
+use Illuminate\Support\Facades\Broadcast;
+use TSA\Services\TsaSendAppliationService;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Agency\NoteController;
+use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\Agency\AgencyController;
 use App\Http\Controllers\Agency\AgentProfileController;
 use App\Http\Controllers\Agency\ApplicationController;
 use App\Http\Controllers\Agency\HoodUserController;
-use App\Http\Controllers\Agency\NoteController;
 use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ReaExtractsReportController;
-use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
 use App\Http\Controllers\GilbertLeadAPIController;
 use App\Http\Controllers\UserInvitationController;
 use App\Services\RolePermission;
-use App\Services\RolePermissionService;
-use Illuminate\Encryption\Encrypter;
-use Illuminate\Support\Facades\Broadcast;
-use Illuminate\Support\Facades\Route;
 use OurProperty\Http\Controllers\OurPropertyController;
-use PropertyMe\services\FetchContacts;
-use Reporting\Http\Controllers\ReportController;
+use App\Services\GBGEmailValidationService;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -41,17 +52,18 @@ Route::get('/logout', [AuthController::class, 'logout']);
  * @Module AGENCY CRM
  */
 Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
-    // Route::namespace('agency')->middleware([])->group(function () {
+//     Route::namespace('agency')->middleware([])->group(function () {
     /**
      * Agency, Office Users
      */
     Route::get('/agencies', [AgencyController::class, 'index'])
-        ->middleware('permission:' . RolePermissionService::CAN_GET_AGENCY_LIST );
+        ->middleware('permission:' . RolePermissionService::CAN_GET_AGENCY_LIST);
     Route::post('/agencies', [AgencyController::class, 'create'])
-        ->middleware('permission:' . RolePermissionService::CAN_CREATE_FRANCHISED_AGENCY );
+        ->middleware('permission:' . RolePermissionService::CAN_CREATE_FRANCHISED_AGENCY);
     Route::get('/agencies/get-agency-metrics', [AgencyController::class, 'getAgencyMetrics']); # not is use
     Route::get('/agencies/get-agency-application-metrics', [AgencyController::class, 'getAgencyApplicationMetrics'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_METRICS);
+    Route::get('/agencies/export', [AgencyController::class, 'download']);
     Route::get('/agencies/{id}', [AgencyController::class, 'getAgency'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_AGENCY_DETAILS);
     Route::post('/agencies/{id}/update', [AgencyController::class, 'update'])
@@ -64,13 +76,13 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_CREATE_INDEPENDENT_AGENCY);
 
     Route::post('/offices', [OfficeController::class, 'createOffice'])
-        ->middleware('permission:' . RolePermissionService::CAN_CREATE_NEW_OFFICE );
+        ->middleware('permission:' . RolePermissionService::CAN_CREATE_NEW_OFFICE);
     Route::get('/offices/{id}', [OfficeController::class, 'getOffice'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICE_DETAILS);
     Route::get('/offices/office/{id}', [OfficeController::class, 'getOnlyOffice'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICE_DETAILS);
     Route::get('/offices/{id}/get-metrics', [OfficeController::class, 'getMatricsData'])
-         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICE_METRICS);
+        ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICE_METRICS);
     Route::post('/offices/{id}/update', [OfficeController::class, 'updateOffice'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_OFFICE);
     Route::get('/offices/{officeId}/users', [AgentProfileController::class, 'index'])
@@ -94,13 +106,23 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/alloffices', [OfficeController::class, 'allOffices'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
 
+    // Assign Applications Routes
+    Route::get('/all-offices-for-assign-applications', [OfficeController::class, 'getOfficesForAssignApplications'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
+    Route::get('/offices/{officeId}/all-agents-for-assign-applications', [AgentProfileController::class, 'getAgentsForAssignApplications']);
+    Route::post('/offices/assign-applications', [OfficeController::class, 'assignApplications']);
+
     /**
      * Hood User
      */
     Route::get('/application-assignees', [HoodUserController::class, 'getAssignee'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_ASSIGNEE_LIST);
+
+    // Route::post('/hood-users', [HoodUserController::class, 'store']);
+
     Route::post('/hood-users', [HoodUserController::class, 'store'])
         ->middleware('permission:' . RolePermission::P_HOOD_ADMIN_CORE);
+
     Route::get('/hood-users', [HoodUserController::class, 'index'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
 
@@ -130,11 +152,16 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_ADDRESS);
     Route::post('/applications/{applicationId}/draft', [ApplicationController::class, 'saveDraft'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
+    Route::post('/applications/{applicationId}/save-email', [ApplicationController::class, 'saveEmail'])
+        ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
     Route::put('/applications/{id}/close', [ApplicationController::class, 'close']);
     Route::patch('/applications/{applicationId}/providers', [ApplicationController::class, 'providers'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_SERVICE_PROVIDERS);
     Route::post('/applications/{applicationId}/clear-concession-details', [ApplicationController::class, 'clearConcession'])
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
+    Route::get('/applications/{applicationId}/duplicate', [DuplicationApplicationController::class, 'getDuplicateLeads'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
+
 
     //todo: make a  separate controller for notes
     Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes'])
@@ -160,8 +187,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     //'+id
 
     /***
-        * Sales Dashboard
-    */
+     * Sales Dashboard
+     */
     Route::get('/sales-dashboard/home', [ReportController::class, 'home'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OPERATION_REPORT);
     Route::get('/sales-dashboard/export/submission-report', [ReportController::class, 'submissionReport'])
@@ -177,6 +204,27 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::get('/applications/{id}/send-to-chatbot', [SendApplicationToChatbotController::class, 'sendApplication']);
     Route::get('/applications/{id}/is-sent-to-chatbot', [ApplicationController::class, 'isSentToChatBot']);
+     /***
+     * Application closing reasons route
+     */
+    // application closing reasons list
+    Route::get('/app-close-reasons', [AppCloseReasonController::class, 'index']);
+    // application closing reasons create
+    Route::post('/app-close-reasons', [AppCloseReasonController::class, 'create']);
+    // application closing reasons show
+    Route::get('/app-close-reasons/{id}', [AppCloseReasonController::class, 'show']);
+    // application closing reasons update
+    Route::put('/app-close-reasons/{id}', [AppCloseReasonController::class, 'update']);
+    // application closing reasons delete
+    Route::delete('/app-close-reasons/{id}', [AppCloseReasonController::class, 'delete']);
+    // application closing reasons enable
+    Route::post('/app-close-reasons/enable/{id}', [AppCloseReasonController::class, 'enable']);
+    // application closing reasons disable
+    Route::post('/app-close-reasons/disable/{id}', [AppCloseReasonController::class, 'disable']);
+
+
+    Route::get('/rea-extract/corporate-report', [ReaExtractsReportController::class, 'getReaCorporateReport'])
+        ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 
 });
 
@@ -197,12 +245,10 @@ Route::get('/{id}/submit-water-lead', [ApplicationController::class, 'submitWate
 Route::get('/sumo/generate-uuid/{id}', [ApplicationController::class, 'getSumoUuid']);
 
 
-
 /**
  * api's for admin only
  */
 Route::get('/get-report-access-token', [ReportController::class, 'getReportAccessToken']);
-
 
 
 /**
@@ -213,13 +259,18 @@ Route::get('lnn/bot_token', function () {
 });
 
 
+Route::get('/applications/{id}/validate-cutoff/', [ApplicationController::class, 'validateCutOff']);
 
 
 Route::post('/our-property/token', [OurPropertyController::class, 'getAccessToken']);
 Route::post('/our-property/lead', [OurPropertyController::class, 'createOurProperty']);
 
 
-
+/**
+ * api's for email validation
+ */
+Route::get('/gbg-validate-email', [ApplicationController::class, 'isGbgValidateEmail']);
+Route::get('/applications/{id}/email-manually-verified', [ApplicationController::class, 'isEmailManuallyVerified']);
 
 
 Route::get("/karan/sales-status", function () {
@@ -229,33 +280,45 @@ Route::get("/karan/sales-status", function () {
 
     $ap = \App\Models\ConnectionApplication::findOrFail($id);
     foreach ($ap->connectionServices as $service) {
-            if ($power === 'accepted' && $service->service_type === 'power') {
-                $service->status = \App\Models\ConnectionService::STATUS_ACCEPTED;
-            }
-            if ($power === 'rejected' && $service->service_type === 'power') {
-                $service->lead_reference = null;
-                $service->status = \App\Models\ConnectionService::STATUS_REJECTED;
-            }
-
-            if ($gas === 'accepted'  && $service->service_type === 'gas') {
-                $service->status = \App\Models\ConnectionService::STATUS_ACCEPTED;
-            }
-            if ($gas === 'rejected' && $service->service_type === 'gas') {
-                $service->lead_reference = null;
-                $service->status = \App\Models\ConnectionService::STATUS_REJECTED;
-            }
-            $service->save();
+        if ($power === 'accepted' && $service->service_type === 'power') {
+            $service->status = \App\Models\ConnectionService::STATUS_ACCEPTED;
         }
+        if ($power === 'rejected' && $service->service_type === 'power') {
+            $service->lead_reference = null;
+            $service->status = \App\Models\ConnectionService::STATUS_REJECTED;
+        }
+
+        if ($gas === 'accepted' && $service->service_type === 'gas') {
+            $service->status = \App\Models\ConnectionService::STATUS_ACCEPTED;
+        }
+        if ($gas === 'rejected' && $service->service_type === 'gas') {
+            $service->lead_reference = null;
+            $service->status = \App\Models\ConnectionService::STATUS_REJECTED;
+        }
+        $service->save();
+    }
     return "success";
 });
+
+
+// Route::get('report_corporate', function () {
+//     $data = ['image' => ''];
+//     $pdf = PDF::loadView('pdf.report_corporate', $data);
+//     return $pdf->inline();
+// });
+
+
+
 
 
 Route::get('/kaka', function () {
     $dateTimeZone = new DateTimeZone("Australia/Melbourne");
     $date = new DateTime(null, $dateTimeZone);
 //    dd($date);
-    return $dateTimeZone->getOffset($date)/60/60;
+    return $dateTimeZone->getOffset($date) / 60 / 60;
+
 });
+
 /*
  * gilbert leads
  * gilbert to chatbot implementation
@@ -265,3 +328,14 @@ Route::put('/gilbert-leads/{id}', [GilbertLeadAPIController::class, 'updateGilbe
 Route::get('/gilbert-finish-step/{step}', [GilbertLeadAPIController::class, 'updateGilbertSteps']);
 Route::put('/gilbert-connection/{id}', [GilbertLeadAPIController::class, 'updateService']);
 Route::put('/gilbert-energy/{id}', [GilbertLeadAPIController::class, 'updateGilbertEnergy']);
+
+
+
+//Route::post('/gbg-validate-email', function() {
+//
+//    $email = "admin@mail.com";
+//    $service = new GBGEmailValidationService();
+//
+//    return $service->validateEmail($email);
+//
+//});

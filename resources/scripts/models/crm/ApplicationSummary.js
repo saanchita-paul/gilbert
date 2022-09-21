@@ -1,6 +1,6 @@
 import DayJs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
-import {isNull} from "lodash-es";
+import {isNull, sortBy} from "lodash-es";
 import { street_type } from "@scripts/data/constants/StreetType";
 
 export default class ApplicationSummary {
@@ -70,6 +70,9 @@ export default class ApplicationSummary {
     ea_go_neutral = null;
     additional_access_information = null;
     is_power_life_support = null;
+    is_duplicate = null;
+    duplication_group_id = null;
+
     constructor(
         {
             id = null,
@@ -137,13 +140,13 @@ export default class ApplicationSummary {
             is_temporary_connection = 0,
             connection_end_date = null,
             after_hour_payee = null,
+            tsa_call_histories = [],
             mannual_address = false,
             street_type = null,
             billing_state_short = null,
             billing_street_name_only = null,
             is_address_complete = null,
             billing_is_address_complete = null,
-
             is_email_marketing = null,
             is_access_require = null,
             is_gas_life_support = null,
@@ -152,11 +155,14 @@ export default class ApplicationSummary {
             concession_card_number = null,
             concession_start_date = null,
             concession_end_date = null,
-
-            
             ea_go_neutral = null,
             additional_access_information = null,
             is_power_life_support = null,
+            is_duplicate = null,
+            duplication_group_id = null,
+
+            // email_manually_verified_by = 0,
+
         }
     ) {
 
@@ -228,6 +234,9 @@ export default class ApplicationSummary {
         this.fast_connect_customer_reference = fast_connect_customer_reference
         this.is_auto_water_submit = is_auto_water_submit
         this.after_hour_payee = after_hour_payee
+
+        this.tsa_call_histories = this.sortCallHistory(tsa_call_histories)
+
         this.mannual_address = mannual_address
         this.street_type = this.mapStreetType(street_type)
         this.state_short = state_short
@@ -244,11 +253,18 @@ export default class ApplicationSummary {
         this.concession_card_type = concession_card_type
         this.concession_card_number = concession_card_number
         this.concession_start_date = concession_start_date
-        this.concession_end_date = concession_end_date        
+        this.concession_end_date = concession_end_date
         this.ea_go_neutral = ea_go_neutral
         this.additional_access_information = additional_access_information
         this.is_power_life_support = is_power_life_support
+        this.is_duplicate = is_duplicate;
+        this.duplication_group_id = duplication_group_id;
+
+
+        // this.email_manually_verified_by = email_manually_verified_by
+
     }
+
 
     mapStreetType(type){
         let streetType = null
@@ -259,6 +275,12 @@ export default class ApplicationSummary {
         })
         return streetType ?? type;
     }
+
+
+    sortCallHistory(tsa_call_histories){
+        return sortBy(tsa_call_histories, ['attempt_id'])
+    }
+
 
     mapStatus(status) {
         status = status - 1;
