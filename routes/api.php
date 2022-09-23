@@ -5,6 +5,8 @@ use App\Http\Controllers\Agency\DuplicationApplicationController;
 use App\Models\ConnectionApplication;
 use App\Http\Controllers\Agency\AppCloseReasonController;
 use App\Services\Agency\TriageFlagService;
+use App\Services\GilbertToCB\createApplicationService;
+use GuzzleHttp\Client;
 use Illuminate\Encryption\Encrypter;
 use App\Services\Address\GBGServices;
 use Illuminate\Support\Facades\Route;
@@ -339,3 +341,36 @@ Route::put('/gilbert-energy/{id}', [GilbertLeadAPIController::class, 'updateGilb
 //    return $service->validateEmail($email);
 //
 //});
+
+Route::get('/test', function() {
+//    $client = new Client();
+//    $response = $client->post('http://127.0.0.1:8000/api/application-data');
+////        $response = $request->getBody();
+//    return $response->getBody()->getContents();
+//    $application = ConnectionApplication::where('id',1)->with('connectionServices')->firstOrFail();
+//    $data = [
+//    "title" => "Mr",
+//    "first_name" => "Burke",
+//    "middle_name" => null,
+//    "last_name" => "Molina",
+//    "email" => "zesocuf@mailinator.com",
+//    "is_email_validate" => null,
+//    "phone" => "0415125215",
+//
+//        ];
+//    $client = new Client();
+//    $url = "http://127.0.0.1:8000/api/application-data";
+//
+//    $myBody['title'] = "Demo";
+//
+//    $request = \Illuminate\Support\Facades\Http::post($url, $data);
+////    dd($request);
+//    return $response = $request->body();
+
+   $test = new createApplicationService(1);
+   return $test->create();
+
+
+});
+
+Route::get('/test-application', [GilbertLeadApiController::class, 'createApplicationService']);
