@@ -15,10 +15,12 @@ class AppCloseReasonController extends Controller
     /**
      * Getting application close reasons list
      */
-    public function index(){
+    public function index(Request $request){
         try {
             $service = new AppCloseReasonService();
-            return AppCloseReasonResource::collection($service->getAppClosingReasonList());
+            $activeOnly = isset($request->active) ? filter_var($request->active, FILTER_VALIDATE_BOOLEAN) : false;
+            $alphaOrder = isset($request->ordered) ? filter_var($request->ordered, FILTER_VALIDATE_BOOLEAN) : false;
+            return AppCloseReasonResource::collection($service->getAppClosingReasonList($activeOnly, $alphaOrder));
 
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
@@ -77,6 +79,36 @@ class AppCloseReasonController extends Controller
         try {
             $service = new AppCloseReasonService();
             return $service->deleteAppClosingReason($id);
+
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    /**
+     * re-enable application close reason
+     */
+
+    public function enable($id)
+    {
+        try {
+            $service = new AppCloseReasonService();
+            return $service->enableAppClosingReason($id);
+
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    /**
+     * disable application close reason
+     */
+
+    public function disable($id)
+    {
+        try {
+            $service = new AppCloseReasonService();
+            return $service->disableAppClosingReason($id);
 
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);

@@ -35,7 +35,7 @@
                                     <SubmittedNote v-if="nt.type == 'submitted_connection'" :note="nt"> </SubmittedNote>
                                     <SubmittedOriginNote v-if="nt.type == 'submitted_origin'" :note="nt"> </SubmittedOriginNote>
                                     <SubmittedPowershopNote v-if="nt.type == 'submitted_powershop'" :note="nt"> </SubmittedPowershopNote>
-                                    <InvalidNote v-else-if="nt.type == 'invalid_property_me_note'" :note="nt"> </InvalidNote>
+                                    <InvalidNote v-else-if="['invalid_property_me_note', 'Close Connection'].includes(nt.type)" :note="nt"> </InvalidNote>
                                     <Note v-else :note="nt"></Note>
                                 </v-timeline-item>
                         </v-timeline>

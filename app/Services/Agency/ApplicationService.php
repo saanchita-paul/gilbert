@@ -3,6 +3,7 @@
 namespace App\Services\Agency;
 
 use App\Jobs\UpdateHubspotContactJob;
+use App\Models\AgentProfile;
 use App\Models\AppCloseReason;
 use App\Models\ApplicationNote;
 use App\Models\ConnectionApplication;
@@ -14,6 +15,7 @@ use App\Models\Office;
 use App\Models\PowershopPaymentInfo;
 use App\Models\User;
 use App\Services\RolePermission;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use TSA\Services\TsaSendAppliationService;
@@ -397,7 +399,7 @@ class ApplicationService
 
             $allicationNoteService = new ApplicationNoteService($user);
             $closingeNote = [];
-            $closingeNote['text'] = $application['closing_reason'] ?? $applicationReasonIdText?->value;
+            $closingeNote['text'] = 'App closed reason:' . $applicationReasonIdText?->value . (!empty($application['closing_reason']) ? "\n" . 'Additional Notes:' . $application['closing_reason'] : '');
             $closingeNote['type'] = 'close_connection';
 
             $allicationNoteService->createNotes($closingeNote, $applicationId);

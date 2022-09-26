@@ -230,7 +230,7 @@ class ConnectionApplication extends Model
         'duplication_group_id',
         'duplicated_address_group_id',
         'duplicated_email_group_id',
-        
+
         'power_life_support_accepted_at',
         'gas_life_support_accepted_at'
     ];
@@ -548,7 +548,13 @@ class ConnectionApplication extends Model
      */
     public function powershopPaymentInfo()
     {
-        return $this->hasOne(PowershopPaymentInfo::class , 'connection_application_id');
+        return $this->hasOne(PowershopPaymentInfo::class, 'connection_application_id');
+    }/**
+     * @return BelongsTo
+     */
+    public function appCloseReason()
+    {
+        return $this->hasOne(AppCloseReason::class, 'app_close_reason_id');
     }
 
 

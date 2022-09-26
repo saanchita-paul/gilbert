@@ -70,7 +70,7 @@ class Kernel extends ConsoleKernel
 
     private function registerSaveTsaCallHistory(Schedule $schedule)
     {
-        $schedule->command('fetch:save-tsa-call-history')->everyTenMinutes();
+        $schedule->command('tsa:save-call-history')->everyThirtyMinutes();
     }
 
     private function shouldIgniteRun(){
