@@ -14,23 +14,19 @@ class createApplicationService
     public function __construct($id)
     {
         $this->application = ConnectionApplication::findOrFail($id);
-//        dd($this->application = ConnectionApplication::findOrFail($id));
         $this->application->load(['identification', 'connectionServices','authorizedPerson']);
     }
 
 
     public function create()
     {
-        return $this->getProperties();
+//        return $this->getProperties();
 //        dd($this->getProperties());
         $url = 'http://127.0.0.1:8000/api/application-data';
         $response = Http::post($url, $this->getProperties());
 //        dd($this->getProperties());
 //        dd($response->body());
         $body = json_decode($response->body(), true);
-
-//        $this->application->create(['connection_application_id' => $body['id']]);
-
         return $body;
     }
 
@@ -158,25 +154,7 @@ class createApplicationService
             "connection_services" =>$this->application->connectionServices ?  $this->application->connectionServices->toArray() : [],
             "identification" =>$this->application->identification ?  $this->application->identification->toArray() : null,
             "authorized_person" =>$this->application->authorizedPerson() ?  $this->application->authorizedPerson->toArray() : null
-
           ];
-    }
-
-    /**
-     * @param $type
-     * @param string|null $date
-     * @return string
-     */
-    private function formatDate($type, ?string $date): ?string
-    {
-        $value = $this->checkIDType($type, $date);
-        try {
-            return $value ? (new Carbon($value)) : null;
-        } catch (\Exception $exception) {
-            Log::error("[HubspotContactService] Failed parsing expire date for type: $type, value: $value");
-            Log::error($exception->getTraceAsString());
-            return null;
-        }
     }
 
 
