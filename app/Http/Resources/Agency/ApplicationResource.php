@@ -10,6 +10,7 @@ use App\Services\Utility\StateMapService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
 use App\Services\Agency\AgentStatusProgressMapper;
 use App\Services\Agency\AgentServiceApplicationStatusMapper;
 use phpDocumentor\Reflection\DocBlock\Tags\Param;
@@ -133,12 +134,15 @@ class ApplicationResource extends JsonResource
             'ea_go_neutral' => $this->ea_go_neutral,
             'additional_access_information' => $this->additional_access_information,
             'is_power_life_support' => $this->is_power_life_support,
+//            'powershop_payment_info' => $this->mapPaymentInfo($this->powershopPaymentInfo),
+            'powershop_payment_info' => $this->powershopPaymentInfo,
             'is_duplicate' => $this->is_duplicate,
             'duplication_group_id' => $this->duplication_group_id,
             'status_progress' => $this->mapStatusProgress(),
             'connection_services_status' => $this->mapConnectionServiceStatus($this->connectionServices, $this->tenancy_type, $this->state),
             'application_status' => $this->mapApplicationStatus(),
             'email_manually_verified_by' => $this->email_manually_verified_by,
+            'is_generated_caf' => $this->is_generated_caf,
         ];
     }
 
@@ -149,6 +153,7 @@ class ApplicationResource extends JsonResource
         for ($i = 0; $i < $count; $i++) {
             array_push($service_array, $services[$i]['service_type']);
         }
+
         return $service_array;
     }
 
@@ -261,6 +266,11 @@ class ApplicationResource extends JsonResource
         }
     }
 
+//    private function mapPaymentInfo($info)
+//    {
+//       dd($info);
+//       return false;
+//    }
 
 
     /**

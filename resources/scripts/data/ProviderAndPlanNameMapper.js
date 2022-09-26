@@ -2,6 +2,7 @@ export const providerNameMapper = {
     'PROVIDER_EA': 'ea',
     'PROVIDER_ORIGIN': 'origin',
     'PROVIDER_SUMO': 'sumo',
+    'PROVIDER_POWERSHOP': 'powershop',
 }
 
 
@@ -22,6 +23,8 @@ export const planTypeNameMapper = {
     PLAN_SUMO_FREEDOM: 'Sumo Freedom',
     PLAN_SUMO_SAVER: 'sumo_saver',
     PLAN_SUMO_SELECT: 'sumo_select',
+
+    PLAN_POWERSHOP_CARBON: 'carbon_neutral_plan',
 }
 
 export const planTypeKeyMapper= {
@@ -39,4 +42,5 @@ export const planTypeKeyMapper= {
     [planTypeNameMapper.PLAN_SUMO_SAVER]: "Sumo Saver",
     [planTypeNameMapper.PLAN_SUMO_FREEDOM]: "Sumo Freedom",
     [planTypeNameMapper.PLAN_SUMO_SELECT]: "Sumo Select",
+    [planTypeNameMapper.PLAN_POWERSHOP_CARBON]: "100% Carbon Neutral Plan",
 }

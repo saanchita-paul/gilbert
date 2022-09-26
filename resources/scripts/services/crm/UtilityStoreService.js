@@ -23,7 +23,7 @@ export default {
 
     setBothProvider: provider => Store.commit("setBothProvider", provider),
     setBothPlan: (plan, provider = null, payload) => {
-        if(provider === 'origin' && plan !== null) {
+        if((provider === 'origin' || provider === 'powershop') && plan !== null) {
             Store.commit("setPowerPlan", payload.power_plan_type);
             Store.commit("setGasPlan", payload.gas_plan_type);
         } else {

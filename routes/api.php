@@ -1,33 +1,30 @@
 <?php
 
-
-use App\Http\Controllers\Agency\DuplicationApplicationController;
-use App\Models\ConnectionApplication;
-use App\Http\Controllers\Agency\AppCloseReasonController;
-use App\Services\Agency\TriageFlagService;
-use Illuminate\Encryption\Encrypter;
-use App\Services\Address\GBGServices;
-use Illuminate\Support\Facades\Route;
-use App\Services\Address\AddressModel;
-use PropertyMe\services\FetchContacts;
-use App\Services\RolePermissionService;
-use TSA\Services\TsaCallHistoryService;
-use Illuminate\Support\Facades\Broadcast;
-use TSA\Services\TsaSendAppliationService;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Agency\NoteController;
-use Reporting\Http\Controllers\ReportController;
 use App\Http\Controllers\Agency\AgencyController;
-use App\Http\Controllers\Agency\OfficeController;
-use App\Http\Controllers\UserInvitationController;
-use App\Http\Controllers\Agency\HoodUserController;
-use App\Http\Controllers\Agency\ApplicationController;
-use FastConnect\Services\SubmitWaterLeadToFastConnect;
 use App\Http\Controllers\Agency\AgentProfileController;
-use OurProperty\Http\Controllers\OurPropertyController;
-use App\Services\RolePermission;
+use App\Http\Controllers\Agency\AppCloseReasonController;
+use App\Http\Controllers\Agency\ApplicationController;
+use App\Http\Controllers\Agency\DuplicationApplicationController;
+use App\Http\Controllers\Agency\HoodUserController;
+use App\Http\Controllers\Agency\NoteController;
+use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ReaExtractsReportController;
-use App\Services\GBGEmailValidationService;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\UserInvitationController;
+use App\Models\ConnectionApplication;
+use Powershop\Http\Controllers\PowerShopController;
+use App\Services\RolePermission;
+use App\Services\RolePermissionService;
+use App\Services\Utility\PowershopService;
+use Illuminate\Encryption\Encrypter;
+use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Route;
+use OurProperty\Http\Controllers\OurPropertyController;
+use Powershop\Http\Controllers\PaymentInfoController;
+use PropertyMe\services\FetchContacts;
+use Reporting\Http\Controllers\ReportController;
+use TSA\Services\TsaCallHistoryService;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -161,6 +158,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 
 
+
+
     //todo: make a  separate controller for notes
     Route::get('/applications/{id}/notes', [NoteController::class, 'getConnectionNotes'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_NOTES);
@@ -219,6 +218,11 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/rea-extract/corporate-report', [ReaExtractsReportController::class, 'getReaCorporateReport'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 
+    /**
+     * api for powershop payment
+     */
+    Route::post('/powershop/payment', [PaymentInfoController::class, 'updateCost']);
+
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
@@ -260,12 +264,29 @@ Route::post('/our-property/lead', [OurPropertyController::class, 'createOurPrope
 
 
 /**
+ * Powershop
+ */
+
+Route::get('/powershop/applications', [PowerShopController::class, 'getPowerShop'])
+    ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
+Route::get('/powershop/generate-caf', [PowerShopController::class, 'generatePowerShopCaf']);
+
+
+Route::post('/powershop/payment/invite', [PaymentInfoController::class, 'inviteCustomer']);
+
+
+/**
  * api's for email validation
  */
 Route::get('/gbg-validate-email', [ApplicationController::class, 'isGbgValidateEmail']);
 Route::get('/applications/{id}/email-manually-verified', [ApplicationController::class, 'isEmailManuallyVerified']);
 
 
+
+
+/**
+ * Bellow API are only for testing purpose
+ */
 Route::get("/karan/sales-status", function () {
     $id = request()->get('id');
     $power = request()->get('power');
@@ -294,11 +315,14 @@ Route::get("/karan/sales-status", function () {
 });
 
 
+Route::get('/applications/{applicationId}/{submitType}/same-day-connection', [PowerShopController::class, 'sameDayConnectionValidate']);
+
 // Route::get('report_corporate', function () {
 //     $data = ['image' => ''];
 //     $pdf = PDF::loadView('pdf.report_corporate', $data);
 //     return $pdf->inline();
 // });
+
 
 
 
@@ -311,6 +335,17 @@ Route::get('/kaka', function () {
     return $dateTimeZone->getOffset($date) / 60 / 60;
 
 });
+
+
+Route::get('powers-api', function () {
+    $s = new PowershopService();
+    $re = $s->sendCustomerData(ConnectionApplication::find(453)->id);
+    dd($re);
+});
+
+//Route::get('/exceltest', function () {
+//    return FastExcel::data(collect([['name'=> 'sanchita'], ['name'=> 'paul']]))->download('file.xlsx');
+//});
 
 
 //Route::post('/gbg-validate-email', function() {

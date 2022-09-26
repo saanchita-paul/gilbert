@@ -2,16 +2,16 @@
     <v-row>
         <v-col cols="12">
             <p class="sub-title">Notes</p>
-            <ValidationObserver ref="submit_note">
-            <ValidationProvider name="Expired Date" rules="required"  v-slot="{ errors }">
+<!--            <ValidationObserver ref="submit_note">
+            <ValidationProvider name="Expired Date" rules="required"  v-slot="{ errors }">-->
 
             <v-textarea v-model ="note.text"
                 outlined
                 hide-details="auto"
                 placeholder="Notes goes here."
             ></v-textarea>
-            </ValidationProvider>
-            </ValidationObserver>
+<!--            </ValidationProvider>
+            </ValidationObserver>-->
 
             <v-btn class="ma-2 float-right" @click="saveNote">Submit Note</v-btn>
         </v-col>
@@ -28,18 +28,19 @@
 
             <v-tabs-items v-model="tab">
                 <v-tab-item v-for="item in items" :key="item">
-                    
+
                     <v-col v-if="item == 'Internal Notes'" cols="12" class="notes-container">
                         <v-timeline dense>
                                 <v-timeline-item color="primary" small v-for="nt in notes" :color="getColor(nt.active)" :key="nt.id">
                                     <SubmittedNote v-if="nt.type == 'submitted_connection'" :note="nt"> </SubmittedNote>
                                     <SubmittedOriginNote v-if="nt.type == 'submitted_origin'" :note="nt"> </SubmittedOriginNote>
+                                    <SubmittedPowershopNote v-if="nt.type == 'submitted_powershop'" :note="nt"> </SubmittedPowershopNote>
                                     <InvalidNote v-else-if="['invalid_property_me_note', 'Close Connection'].includes(nt.type)" :note="nt"> </InvalidNote>
                                     <Note v-else :note="nt"></Note>
                                 </v-timeline-item>
                         </v-timeline>
                     </v-col>
-                    
+
                     <div v-if="item == 'Call History'">
                         <v-col cols="12" class="notes-container" v-if="leadSummary.tsa_call_histories.length">
                             <v-timeline dense>
@@ -51,7 +52,7 @@
                         </v-timeline>
                     </v-col>
                     </div>
-                    
+
                 </v-tab-item>
             </v-tabs-items>
         </v-card>
@@ -63,10 +64,11 @@ import Note from "@scripts/components/crm/leadmanagement/notes/Note";
 import InvalidNote from "@scripts/components/crm/leadmanagement/notes/InvalidNote";
 import SubmittedNote from "@scripts/components/crm/leadmanagement/notes/SubmittedNote";
 import SubmittedOriginNote from "@scripts/components/crm/leadmanagement/notes/SubmittedOriginNote";
+import SubmittedPowershopNote from "@scripts/components/crm/leadmanagement/notes/SubmittedPowershopNote";
 
 export default {
   name: "ApplicationNotes",
-    components: {SubmittedNote, Note, InvalidNote, SubmittedOriginNote},
+    components: {SubmittedNote, Note, InvalidNote, SubmittedOriginNote, SubmittedPowershopNote},
     props: {
       notes: {
           require: true
@@ -97,8 +99,10 @@ export default {
         },
       async saveNote() {
 
-            let v =  await this.$refs.submit_note.validate();
-            if(!v) return;
+            /*let v =  await this.$refs.submit_note.validate();
+            if(!v) return;*/
+
+          if (!this.note.text) return
 
             this.$emit('saveNote', this.note);
             this.note.text = '';

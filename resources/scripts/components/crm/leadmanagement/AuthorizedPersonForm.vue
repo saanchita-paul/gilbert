@@ -84,5 +84,7 @@ name: "AuthorizedPersonForm",
 </script>
 
 <style scoped>
-
+.field-label {
+    text-align: left !important;
+}
 </style>

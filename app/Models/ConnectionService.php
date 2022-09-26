@@ -61,6 +61,7 @@ class ConnectionService extends Model
     const PROVIDER_SUMO = 'sumo';
     const PROVIDER_EA = 'ea';
     const PROVIDER_ORIGIN = 'origin';
+    const PROVIDER_POWER_SHOP = 'powershop';
 
 
     const STATUS_MAPPING = [
@@ -89,6 +90,12 @@ class ConnectionService extends Model
     public const PLAN_ORIGIN_HOME_SUPPORT = 'origin_home_support';
     public const PLAN_ORIGIN_SUPPLY = 'origin_supply';
     public const PLAN_ORIGIN_BASIC = 'origin_basic';
+
+
+    public const POWER_SHOP_100_PERCENT_CARBON_NEUTRAL = 'powershop_100%_carbon_neutral';
+    public const POWER_SHOP_SWITCH_SAVER = 'switch_saver';
+
+
 
     public const ENERGY_PLAN_MAPPER = [
         'basic_plan' => self::ENERGY_AUSTRALIA_BASIC_PLAN,

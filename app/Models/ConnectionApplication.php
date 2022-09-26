@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use OurProperty\Models\OurProperty;
 use phpDocumentor\Reflection\Utils;
 use PropertyMe\PropertyMeLead;
+use Carbon\Carbon;
 
 /**
  * App\Models\ConnectionApplication
@@ -224,13 +225,14 @@ class ConnectionApplication extends Model
         'is_skip_hubspot',
         'is_running_submission',
         'app_close_reason_id',
+        'is_generated_caf',
         'is_duplicate',
         'duplication_group_id',
         'duplicated_address_group_id',
         'duplicated_email_group_id',
-        'app_close_reason_id'
 
-
+        'power_life_support_accepted_at',
+        'gas_life_support_accepted_at'
     ];
 
 
@@ -270,6 +272,8 @@ class ConnectionApplication extends Model
     const PLAN_TYPE_NO_FRILLS = 'no_frills';
     const PLAN_TYPE_FLEXI_PLAN = 'flexi_plan';
     const PLAN_TYPE_BALANCE_PLAN = 'balance_plan';
+
+    const PROVIDER_POWER_SHOP = 'powershop';
 
     const PLAN_TYPE_ORIGIN_GO = 'origin_go';
     const PLAN_TYPE_ORIGIN_VARIABLE = 'origin_go_variable';
@@ -539,7 +543,13 @@ class ConnectionApplication extends Model
         return $data[sizeof($data) - 1];
     }
 
-    /**
+     /**
+     * @return HasOne
+     */
+    public function powershopPaymentInfo()
+    {
+        return $this->hasOne(PowershopPaymentInfo::class, 'connection_application_id');
+    }/**
      * @return BelongsTo
      */
     public function appCloseReason()
@@ -638,5 +648,25 @@ class ConnectionApplication extends Model
 
         return $this->mirn ?? '';
 
+    }
+
+    public function getLifeSupportAcceptedAtAttribute(){
+        $power = $this->power_life_support_accepted_at;
+        $gas = $this->gas_life_support_accepted_at;
+
+        if (empty($gas) && empty($power)){
+            return '';
+        }
+        else if (empty($gas)){
+            return $power;
+        }
+        else if (empty($power)){
+            return $gas;
+        }
+        else {
+            $isPowerLater = Carbon::parse($power)->gt(Carbon::parse($gas));
+            if ($isPowerLater) return $power;
+            else return $gas;
+        }
     }
 }

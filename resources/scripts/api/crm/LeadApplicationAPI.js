@@ -1,7 +1,6 @@
 import AppMetricsMapper from "@scripts/api/mappers/crm/AppMetricsMapper";
 import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
-import dayjs from "dayjs";
 import OfficeMapper from "@scripts/api/mappers/crm/OfficeMapper";
 import SecondaryContactMapper from "@scripts/api/mappers/crm/SecondaryContactMapper";
 
@@ -389,6 +388,8 @@ export default {
 
     async saveSoleField(field, value, leadId, isDate, identification, isService)
     {
+        // console.log("Din the day");
+
         let day = '';
         let month = '';
         let year = '';
@@ -540,7 +541,19 @@ export default {
         }
     },
 
-
+    async sendPowershopPaymentLink(leadId, linkType)
+    {
+        const payload = {
+            "link_type": linkType,
+            'app_id': leadId
+        };
+        try {
+            return (await axios.post('/api/powershop/payment/invite', payload)).data;
+        } catch (error) {
+            console.log('Error');
+            return error.data;
+        }
+    },
     async isEmailManuallyVerified(id) {
         try {
             const data = await axios.get('/api/applications/'+id+'/email-manually-verified');

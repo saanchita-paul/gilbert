@@ -220,6 +220,8 @@ export default {
                 return "Sumo";
             case providerNameMapper.PROVIDER_ORIGIN:
                 return "Origin";
+            case providerNameMapper.PROVIDER_POWERSHOP:
+                return "Powershop";
             default:
                 return null;
         }
@@ -247,5 +249,7 @@ export default {
     isEmailManuallyVerified: id => LeadApplicationAPI.isEmailManuallyVerified(id),
 
     validateCutOff: id => LeadApplicationAPI.validateCutOff(id),
+
+    sendPowershopPaymentLink: (leadId, linkType) => LeadApplicationAPI.sendPowershopPaymentLink(leadId, linkType),
 
 };

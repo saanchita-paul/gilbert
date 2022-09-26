@@ -74,6 +74,8 @@
 
                 <div class="d-flex align-end">
                     <span class="font-weight-bold">Application Status: </span> <span class="grey--text pl-2"> {{ leadSummary.status }} </span>
+
+                    <span class="font-weight-bold ml-4">Payment Status: </span> <span class="grey--text pl-2"> {{ getPaymentStatus }} </span>
                 </div>
             </div>
         </div>
@@ -106,6 +108,7 @@ import leadApplicationService from "@scripts/services/crm/LeadApplicationService
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
 import AppCloseReasonService from "@scripts/services/AppCloseReasonService";
+import {powerShopPaymentStatusNumberToName} from "@scripts/data/PowershopDataMapper";
 export default {
 name: "LeadDetailsHeader",
     components:{ IdCopyToClipboard },
@@ -129,7 +132,10 @@ name: "LeadDetailsHeader",
         },
         showDuplicateLeadButton() {
             return this.leadSummary?.is_duplicate;
-        }
+        },
+        getPaymentStatus() {
+            return powerShopPaymentStatusNumberToName[this.leadSummary?.powershop_payment_info?.status] ?? '';
+        },
     },
     methods: {
         goToBack()
