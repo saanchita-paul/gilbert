@@ -2,19 +2,10 @@
 
 namespace Origin\Services;
 
-use Exception;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
-use Cmixin\BusinessTime;
-use App\Models\APILog;
 use App\Models\ConnectionApplication;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use Nette\Utils\Json;
-use App\Models\ConnectionService;
-use Carbon\CarbonInterface;
 use App\Services\TimeZoneService;
+use App\Services\Utility\CheckIsHolidayService;
 
 class ValidateCutOffTime
 {
@@ -176,89 +167,6 @@ class ValidateCutOffTime
 
     const GAS_BUSINESS_DAYS = 3;
 
-    /**
-     * Assuming check is weekend/holiday is handled in frontend, this function validates same day/next day connection
-     *
-     * @return boolean
-     *
-     * @throws exception
-     */
-//    public static function isValidElectricityConnection(string $connectionDate, string $nmi, string $state = 'National'){
-//        BusinessTime::enable(Carbon::class);
-//        Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
-//
-//        $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]);
-//        $nowDate = Carbon::now(self::MAP_STATE_TIMEZONE[$state]); // check localization
-//
-//        $distributor = '';
-//        $nmi_check = substr($nmi, 0, 2);
-//        foreach(self::MAP_NMI_DISTRIBUTOR as $key => $value){
-//            if(in_array($nmi_check, $value)){
-//                $distributor = $key;
-//                break;
-//            }
-//        }
-//
-//        if(empty($distributor)){
-//            throw new \Exception(sprintf('Origin:%s - FAILED (unable to find distributor to validate cutoff time for NMI %s)', __FUNCTION__, $nmi));
-//        }
-//
-//        $elecDist = self::MAP_ELECTRIC_DISTRIBUTOR[$distributor];
-//
-//        if ($connectionDate->isToday()){
-//            if(empty($elecDist['sdfi_business'])){
-//                throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_PAST_CUT_OFF', 'Distributor does not support same day connection'), BaseOriginAPI::CODE_REJECT);
-//            }
-//
-//            $checkDate = Carbon::today(self::MAP_STATE_TIMEZONE[$state])->addHours(intval($elecDist['sdfi_business']));
-//            $pastCutOff = $nowDate->gt($checkDate);
-//
-//            if($pastCutOff){
-//                throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_PAST_CUT_OFF', 'Past Cut-Off time ' . $checkDate->format('g A')), BaseOriginAPI::CODE_REJECT);
-//            }
-//        }
-//        else if ($connectionDate->isTomorrow()){
-//            $checkDate = $elecDist['isStandardSameDay'] ? Carbon::tomorrow(self::MAP_STATE_TIMEZONE[$state]) : Carbon::today(self::MAP_STATE_TIMEZONE[$state]);
-//            $checkDate->addHours(intval($elecDist['standard']));
-//            $pastCutOff = $nowDate->gt($checkDate);
-//
-//            if($pastCutOff){
-//                throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_PAST_CUT_OFF', 'Past Cut-Off time ' . $checkDate->format('g A')), BaseOriginAPI::CODE_REJECT);
-//            }
-//        }
-//
-//        if($connectionDate->isWeekend() || $connectionDate->isHoliday()){
-//            throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_HOLIDAY', 'Connection date selected is not a business day'), BaseOriginAPI::CODE_REJECT);
-//        }
-//
-//        return true;
-//    }
-
-//    public static function isValidGasConnection(string $connectionDate, string $state = 'National'){
-//        BusinessTime::enable(Carbon::class);
-//        Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
-//
-//        $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(self::MAP_STATE_TIMEZONE[$state]);
-//        $availableDate = Carbon::today(self::MAP_STATE_TIMEZONE[$state]);
-//
-//        for($i=0; $i<=self::GAS_BUSINESS_DAYS; $i++){
-//            $availableDate->addDay();
-//            while($availableDate->isWeekend()){
-//                $availableDate->addDay();
-//            }
-//        }
-//
-//        if($availableDate->gt($connectionDate)){
-//            throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_PAST_CUT_OFF', 'Connection date must be after 3 business days minimum which is '. $availableDate->format('d/m/Y')), BaseOriginAPI::CODE_REJECT);
-//        }
-//
-//        if($connectionDate->isWeekend() || $connectionDate->isHoliday()){
-//            throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_HOLIDAY', 'Connection date selected is not a business day'), BaseOriginAPI::CODE_REJECT);
-//        }
-//
-//        return true;
-//    }
-
     public static function isValidElecConnect($applicationId){
     
         $existingApplication = ConnectionApplication::find($applicationId);
@@ -269,12 +177,10 @@ class ValidateCutOffTime
 
         if (empty($nmi)) return true;
 
-        BusinessTime::enable(Carbon::class);
-        Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
-
         $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(TimeZoneService::getTimeZoneArea($state));
         $nowDate = Carbon::now(TimeZoneService::getTimeZoneArea($state));
-        $nextDate = Carbon::today(TimeZoneService::getTimeZoneArea($state))->nextBusinessDay();
+        $nextBusinessDay = CheckIsHolidayService::getNextBusinessDay($state);
+        $nextDate = Carbon::parse($nextBusinessDay, TimeZoneService::getTimeZoneArea($state));
 
         $distributor = '';
         $nmi_check = substr($nmi, 0, 2);
@@ -312,7 +218,7 @@ class ValidateCutOffTime
             }
         }
 
-        if($connectionDate->isWeekend() || $connectionDate->isHoliday()){
+        if($connectionDate->isWeekend() || CheckIsHolidayService::validate($state, $connectionDate->format('Y-m-d'))){
             throw new \Exception(sprintf('Origin:%s - FAILED [%s](%s)', __FUNCTION__, 'ORGN_HOLIDAY', 'Connection date selected is not a business day'), BaseOriginAPI::CODE_REJECT);
         }
 
@@ -325,10 +231,6 @@ class ValidateCutOffTime
 
         $state = $existingApplication->state ?? 'National';
         $connectionDate = $existingApplication->moving_date;
-
-
-        BusinessTime::enable(Carbon::class);
-        Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
 
         $connectionDate = Carbon::parse($connectionDate)->shiftTimezone(TimeZoneService::getTimeZoneArea($state));
         $availableDate = Carbon::today(TimeZoneService::getTimeZoneArea($state));
@@ -368,19 +270,20 @@ class ValidateCutOffTime
      * @return string available date
      */
     public static function getNextGasConnectionDate(string $movingDate, string $state = 'National') {
-        BusinessTime::enable(Carbon::class);
-        Carbon::setHolidaysRegion(self::MAP_STATE_HOLIDAY[$state]);
-
         $connectionDate = Carbon::parse($movingDate)->shiftTimezone(TimeZoneService::getTimeZoneArea($state));
         $availableDate = Carbon::today(TimeZoneService::getTimeZoneArea($state));
 
         for($i=0; $i<=self::GAS_BUSINESS_DAYS; $i++){
             $availableDate->addDay();
-            while($availableDate->isWeekend() || $availableDate->isHoliday()){
+            while($availableDate->isWeekend()){
                 $availableDate->addDay();
             }
         }
 
-        return $availableDate->gt($connectionDate) ? $availableDate->format('Y-m-d') : $connectionDate->format('Y-m-d');
+        $selectedDate = $availableDate->gt($connectionDate) ? $availableDate->format('Y-m-d') : $connectionDate->format('Y-m-d');
+        $validatedDate = CheckIsHolidayService::getNextBusinessDay($state, $selectedDate, true);
+        $newAvailableDate = Carbon::parse($validatedDate, TimeZoneService::getTimeZoneArea($state));
+
+        return $newAvailableDate->format('Y-m-d');
     }
 }

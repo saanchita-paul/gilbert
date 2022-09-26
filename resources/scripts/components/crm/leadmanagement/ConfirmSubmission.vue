@@ -722,33 +722,42 @@
                     </v-col>
                     <p v-if="isLifeSupportAndEA" class="life-support">Life Support Applications cannot be submitted to EA</p>
                 </v-row>
+                <div v-if="isLoadedValidations">
                     <p v-if="elecNote" class="cutoff-note">{{ elecNote }}</p>
                     <p v-if="gasNote" class="cutoff-note">{{ gasNote }}</p>
 
-                <div v-if="showPowerShopNoteSection || isPropertyTypeBusiness">
-                    <v-alert text>
-                        <div class="alert-text alert-bolder-text mb-2">Please Note:</div>
-                        <div class="alert-text">
-                            <div v-if="isEmailBilling">
-                                <span class="alert-bolder-text">Email Billing:&nbsp;</span> Powershop only sends bills via email.
+                    <div v-if="showPowerShopNoteSection || isPropertyTypeBusiness">
+                        <v-alert text>
+                            <div class="alert-text alert-bolder-text mb-2">Please Note:</div>
+                            <div class="alert-text">
+                                <div v-if="isEmailBilling">
+                                    <span class="alert-bolder-text">Email Billing:&nbsp;</span> Powershop only sends bills via email.
+                                </div>
+                                <div v-if="isPropertyTypeBusiness">
+                                    <span class="alert-bolder-text">Property Type:&nbsp;</span> HOOD does not currently process Business customers.
+                                </div>
+                                <div v-if="isPaymentNotComplete">
+                                    <span class="alert-bolder-text">Payment:&nbsp;</span> Payment verification Incomplete.
+                                </div>
+                                <div v-if="showGasPowerShopNote">
+                                    <span class="alert-bolder-text">Gas:&nbsp;</span> {{ showGasPowerShopNote }}
+                                </div>
+                                <div v-if="showElectricityPowerShopNote">
+                                    <span class="alert-bolder-text">Electricity:&nbsp;</span> You are trying to submit after same day cutoff time, Please choose different connection date.
+                                </div>
+                                <div v-if="showElectricityACTPowerShopNote">
+                                    <span class="alert-bolder-text">Electricity:&nbsp;</span> We don’t service same day connections for ACT. Please select a different connection date.
+                                </div>
                             </div>
-                            <div v-if="isPropertyTypeBusiness">
-                                <span class="alert-bolder-text">Property Type:&nbsp;</span> HOOD does not currently process Business customers.
-                            </div>
-                            <div v-if="isPaymentNotComplete">
-                                <span class="alert-bolder-text">Payment:&nbsp;</span> Payment verification Incomplete.
-                            </div>
-                            <div v-if="showGasPowerShopNote">
-                                <span class="alert-bolder-text">Gas:&nbsp;</span> {{ showGasPowerShopNote }}
-                            </div>
-                            <div v-if="showElectricityPowerShopNote">
-                                <span class="alert-bolder-text">Electricity:&nbsp;</span> You are trying to submit after same day cutoff time, Please choose different connection date.
-                            </div>
-                            <div v-if="showElectricityACTPowerShopNote">
-                                <span class="alert-bolder-text">Electricity:&nbsp;</span> We don’t service same day connections for ACT. Please select a different connection date.
-                            </div>
-                        </div>
-                    </v-alert>
+                        </v-alert>
+                    </div>
+                </div>
+                <div v-else class="d-flex justify-center">
+                    <v-progress-circular
+                    indeterminate
+                    color="purple"
+                    class="text-center"
+                    ></v-progress-circular>
                 </div>
             </section>
 
@@ -792,6 +801,7 @@ export default {
     },
     data() {
       return {
+          isLoadedValidations: false, 
           gasNote: '',
           elecNote: '',
           authorizedPerson: null,
@@ -1031,15 +1041,20 @@ export default {
             if (this.data.selectedProvider === 'powershop') {
                 this.sameDayConnectionData = (await PowerShopSameDayConnectionService.validateSameDayConnection(this.leadId, this.submitType)).data;
             }
-        }
+        },
+        loadingValidate() {
+            Promise.all([
+                this.checkSameDayValidation(),
+                this.validateCutOffTime(),
+                this.loadAuthorizedPerson(),
+                this.loadPaymentInformation(),
+            ]).then(() => this.isLoadedValidations = true);
+        },
 
     },
     mounted() {
-        this.checkSameDayValidation();
-        this.validateCutOffTime();
-        this.loadAuthorizedPerson();
-        this.loadPaymentInformation();
-    }
+        this.loadingValidate();
+    },
 };
 </script>
 

@@ -6,10 +6,9 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Services\TimeZoneService;
 use Carbon\Carbon;
-use Cmixin\BusinessTime;
-use Cmixin\BusinessDay;
 use Exception;
 use App\Services\Utility\StateMapService;
+use App\Services\Utility\CheckIsHolidayService;
 
 class SameDayConnectionService
 {
@@ -124,10 +123,6 @@ class SameDayConnectionService
 
     private function validateGas(ConnectionApplication $application, string $submitType) : array {
         $state = StateMapService::getFullName($application->state);
-        BusinessDay::enable(
-            Carbon::class, 
-            self::MAP_STATE_HOLIDAY[$state],
-        );
 
         $result = [
             'isInvalid' => false,
@@ -171,17 +166,14 @@ class SameDayConnectionService
     private function getNearestAvailableGasDate(ConnectionApplication $application) : Carbon
     {
         $state = $application->state ? StateMapService::getFullName($application->state) : 'National';
-        BusinessDay::enable(
-            Carbon::class, 
-            self::MAP_STATE_HOLIDAY[$state],
-        );
+        $tz = self::MAP_STATE_VIC;
 
         if (!in_array($state, self::AVAILABLE_GAS_STATES)){
             throw new Exception(sprintf('Gas connection is not supported in %s for Powershop', $state));
         }
 
-        $currentDate = Carbon::now(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC));
-        $availableDate = Carbon::today(TimeZoneService::getTimeZoneArea(self::MAP_STATE_VIC));
+        $currentDate = Carbon::now(TimeZoneService::getTimeZoneArea($tz));
+        $availableDate = Carbon::today(TimeZoneService::getTimeZoneArea($tz));
         $businessDays = self::MAP_GAS_BUSINESS_DAYS[$state];
         if ($currentDate->isToday() && intval($currentDate->format('H')) >= 12){
             $businessDays += 1;
@@ -194,7 +186,10 @@ class SameDayConnectionService
             }
         }
 
-        return $availableDate;
+        $validatedDate = CheckIsHolidayService::getNextBusinessDay(StateMapService::getShortName($state), $availableDate->format('Y-m-d'), true);
+        $newAvailableDate = Carbon::parse($validatedDate, TimeZoneService::getTimeZoneArea($tz));
+
+        return $newAvailableDate;
     }
 
 }
