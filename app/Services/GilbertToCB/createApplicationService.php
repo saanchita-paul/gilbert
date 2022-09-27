@@ -10,6 +10,14 @@ class createApplicationService
 {
 
     private array|Collection|ConnectionApplication|Model $application;
+    const CONCESSION_MAPPER = [
+        'DVA' => 1,
+        'HCC' => 2,
+        'PCC' => 3,
+        'QSC' => 4
+    ];
+
+
 
     public function __construct($id)
     {
@@ -18,9 +26,11 @@ class createApplicationService
     }
 
 
+
+
     public function create()
     {
-//        return $this->getProperties();
+        return $this->getProperties();
 //        dd($this->getProperties());
         $url = 'http://127.0.0.1:8000/api/application-data';
         $response = Http::post($url, $this->getProperties());
@@ -127,7 +137,7 @@ class createApplicationService
             "is_access_require" => $this->application->is_access_require,
             "has_gas_life_support" => $this->application->is_gas_life_support,
             "is_any_unrestrained_animal" => $this->application->is_any_unrestrained_animal,
-            "concession_card_type" => $this->application->concession_card_type,
+            "concession_card_type" => $this->mapConcessionCardType($this->application->concession_card_type),
             "concession_card_value" => $this->application->concession_card_number,
             "concession_card_start_date" => $this->application->concession_start_date,
             "concession_end_date" => $this->application->concession_end_date,
@@ -155,6 +165,10 @@ class createApplicationService
             "identification" =>$this->application->identification ?  $this->application->identification->toArray() : null,
             "authorized_person" =>$this->application->authorizedPerson() ?  $this->application->authorizedPerson->toArray() : null
           ];
+    }
+
+    public function mapConcessionCardType($data){
+        return self::CONCESSION_MAPPER[strtoupper($data)] ?? null;
     }
 
 
