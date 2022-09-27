@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use Powershop\Http\Controllers\PxPayController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +18,13 @@ Route::get('/hello', [\App\Http\Controllers\TestControler::class, 'index']);
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
+
+Route::get('/powershop/payment/accept-invite/{id}', [PxPayController::class, 'acceptInvite']);
+
+Route::get('/powershop/payment/success', [PxPayController::class, 'handleSuccess']);
+Route::get('/powershop/payment/failed', [PxPayController::class, 'handleFailure']);
+
+Route::get('/powershop/payment/callback', [PxPayController::class, 'handleCallback']);
 
 Route::get('/email', function () {
     return response('hello world');

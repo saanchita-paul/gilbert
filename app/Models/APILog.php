@@ -25,6 +25,7 @@ class APILog extends Model
     const API_ORIGIN_CHECK_STATUS = 'origin_check_order';
     const API_ORIGIN_SUBMIT_CUSTOMER_MOVE_IN = 'origin_submit_customer_move_in';
     const API_ORIGIN_SUBMIT_CANCEL = 'origin_submit_cancel';
+    const API_POWERSHOP_SEND_CUSTOMER_DATA = 'powershop_send_customer_data';
 
 
     protected $table = 'api_logs';

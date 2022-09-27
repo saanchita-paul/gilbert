@@ -654,7 +654,7 @@
             </div>
         </div>
 
-      <div class="crm-text-field" v-if="property_details.state == 'Victoria'">
+      <div class="crm-text-field">
         <div class="field-label">
           <span>Is renovation going on? *</span>
         </div>
@@ -787,10 +787,7 @@
 
 
      <div class="crm-text-field mt-n6">
-        <div class="field-label">
-          <!-- <span>Inspection Time *</span> -->
-        </div>
-        <div class="text-field">
+        <div class="">
           <v-checkbox
               v-model="property_details.is_power_life_support"
               @change="saveDraft('is_power_life_support', property_details.is_power_life_support)"
@@ -800,9 +797,7 @@
       </div>
 
       <div class="crm-text-field mt-n6">
-        <div class="field-label">
-        </div>
-        <div class="text-field">
+        <div class="">
           <v-checkbox
               v-model="property_details.is_gas_life_support"
               @change="saveDraft('is_gas_life_support', property_details.is_gas_life_support)"
@@ -812,9 +807,7 @@
       </div>
 
       <div class="crm-text-field mt-n6">
-        <div class="field-label">
-        </div>
-        <div class="text-field">
+        <div class="">
           <v-checkbox
               v-model="property_details.is_any_unrestrained_animal"
                @change="saveDraft('is_any_unrestrained_animal', property_details.is_any_unrestrained_animal)"
@@ -1099,11 +1092,11 @@
         </div>
       </div>
 
-      <div class="crm-text-field">
+      <div class="crm-text-field mt-24">
         <div class="field-label">
           <span>Concession Card</span>
         </div>
-        <div class="text-field">
+        <div class="text-field" style="width: 60% ">
           <ValidationProvider
             name="Concession Card"
             v-slot="{ errors }"
@@ -1131,12 +1124,11 @@
 
       <div class="crm-text-field">
         <div class="field-label">
-          <span>Card Number {{ person_details.concession_card_type ? '*' : '' }} </span>
+          <span>Card Number </span>
         </div>
         <div class="text-field">
           <ValidationProvider
             name="Card Number"
-            :rules="`${ person_details.concession_card_type ? 'required' : '' }`"
             v-slot="{ errors }"
           >
             <v-text-field
@@ -1155,11 +1147,10 @@
 
       <div class="crm-text-field">
         <div class="field-label">
-          <span>Start Date {{ person_details.concession_card_type ? '*' : '' }}</span>
+          <span>Start Date</span>
         </div>
         <div class="text-field">
           <ValidationProvider
-            :rules="`${ person_details.concession_card_type ? 'required' : '' }`"
             name="Start Date"
             v-slot="{ errors }"
           >
@@ -1251,6 +1242,10 @@
           </ValidationProvider>
         </div>
       </div>
+
+        <div class="crm-text-field">
+            <span class="message-text">Powershop will directly contact the customer to obtain concession card details.</span>
+        </div>
 
       <v-row>
         <v-col cols="8">
@@ -1936,7 +1931,6 @@ export default {
             return UtilityStoreService.getIsBothEnergySelected();
         },
         powerProvider() {
-            console.log(UtilityStoreService.getPowerProvider());
             return UtilityStoreService.getPowerProvider();
         },
         gasProvider() {
@@ -2120,5 +2114,15 @@ export default {
 }
 .required-field {
     border: 2px solid red;
+}
+.mt-24 {
+    margin-top: 24px !important;
+}
+
+.field-label {
+    text-align: left !important;
+}
+.message-text {
+    font-style: italic;
 }
 </style>

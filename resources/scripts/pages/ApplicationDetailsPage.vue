@@ -16,14 +16,17 @@
                                 @duplicateLead="duplicatedLead"
                         ></LeadUserDetails>
                  </ValidationObserver>
-                <LeadServicesAndNotes
-                    @updateDraft="updateDraft"
-                    @updateNote= "updateNote"
-                    :leadSummary="leadSummary"
-                    :afterHourFlag="afterHourFlag"
-                    :notes="notes">
 
-                </LeadServicesAndNotes>
+                <ValidationObserver ref="service_form">
+                    <LeadServicesAndNotes
+                        @updateDraft="updateDraft"
+                        @updateNote="updateNote"
+                        :leadSummary="leadSummary"
+                        :afterHourFlag="afterHourFlag"
+                        :notes="notes"
+                        @serviceType="serviceType">
+                    </LeadServicesAndNotes>
+                </ValidationObserver>
 
             <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
             <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" :title="fullName"></EscalationConfirmModal>
@@ -40,7 +43,9 @@
 
         <AssignedToUserEmptyModal v-if="assignedToDialog" :dialog="assignedToDialog" @closeMessage="closeAssignedToEmptyModal"></AssignedToUserEmptyModal>
 
-        <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" :leadId="leadId" secondaryContact="secondaryContact" v-if="showSubmitModal" @confirmSubmitLead="confirmSubmitLead" @backToEdit="backToEdit" :submitType="submitType"> </LeadSubmitConfirmationModal>
+        <GasOnlyCanNotSubmitModal v-if="gasOnlyNotSubmitDialog" :dialog="gasOnlyNotSubmitDialog" @closeMessage="closegasOnlyNotSubmitModal"></GasOnlyCanNotSubmitModal>
+
+        <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" :leadId="leadId" secondaryContact="secondaryContact" v-if="showSubmitModal" @confirmSubmitLead="confirmSubmitLead" @backToEdit="backToEdit" :submitType="submitType" :leadSummary="leadSummary"> </LeadSubmitConfirmationModal>
             <PreventSubmissionModal v-if="preventSubmissionFlag" :message="preventSubmissionMessage" :dialog="preventSubmissionFlag" @closeMessage="closePreventSubmissionModal"></PreventSubmissionModal>
 
         <DuplicateLeadModal v-if="duplicateLead" :dialog="duplicateLead" @cancelDuplicateLead="cancelDuplicateLead" :duplicateGroupId="leadSummary.duplication_group_id"></DuplicateLeadModal>
@@ -59,6 +64,7 @@ import EscalationConfirmModal from "@scripts/components/crm/modals/EscalationCon
 import LeadReadMoreModal from "@scripts/components/crm/modals/LeadReadMoreModal";
 import LeadSubmitConfirmationModal from "@scripts/components/crm/modals/LeadSubmitConfirmationModal";
 import AssignedToUserEmptyModal from "@scripts/components/crm/modals/AssignedToUserEmptyModal";
+import GasOnlyCanNotSubmitModal from "@scripts/components/crm/modals/GasOnlyCanNotSubmitModal";
 import * as dayjs from "dayjs";
 import {isNull} from "lodash-es";
 import PreventSubmissionModal from "@scripts/components/crm/modals/PreventSubmissionModal";
@@ -83,6 +89,7 @@ export default {
         CloseConfirmModal,
         AssignedToUserEmptyModal,
         PreventSubmissionModal,
+        GasOnlyCanNotSubmitModal,
         DuplicateLeadModal
     },
 
@@ -121,6 +128,8 @@ export default {
                 }
             },
             nextBusinessDay: null,
+            gasOnlyNotSubmitDialog: false,
+            serviceSubmitType: null,
             duplicateLead: false
         }
     },
@@ -224,6 +233,14 @@ export default {
                 this.assignedToDialog = true;
                 return true;
             }
+            if (this.serviceSubmitType === 'gas')
+            {
+                if (this.gasProvider === 'powershop')
+                {
+                    this.gasOnlyNotSubmitDialog = true;
+                    return true;
+                }
+            }
             if(this.isWaterUnavailable(submitType, this.lead?.property_details?.state, this.lead?.person_details?.tenancy_type))
             {
                 this.preventSubmissionFlag = true;
@@ -244,8 +261,6 @@ export default {
             return await LeadApplicationService.getAssignedHoodUser(this.leadId);
         },
         isWaterUnavailable($submitType, $state, $tenantType) {
-
-            // console.log("I am checking ->", $state, $submitType)
 
             const rightState = ['vic', 'victoria'].includes($state?.toLowerCase());
 
@@ -269,12 +284,11 @@ export default {
             this.showSubmitModal = false;
         },
         async validateLead() {
-          return await this.$refs.submit_lead.validate()
+          return (await this.$refs.submit_lead.validate()) && (await this.$refs.service_form.validate())
         },
         async confirmSubmitLead() {
             this.showSubmitModal = false;
             let payload = null;
-            console.log('lead', this.lead);
             if(this.lead.property_details === undefined)
             {
                 payload = {...this.lead};
@@ -390,6 +404,9 @@ export default {
         closeAssignedToEmptyModal(){
             this.assignedToDialog = false;
         },
+        closegasOnlyNotSubmitModal(){
+            this.gasOnlyNotSubmitDialog = false;
+        },
         async loadNextBusinessDay() {
             this.nextBusinessDay = await ChatbotService.getNextBusinessDay(this.leadSummary?.state);
         },
@@ -403,6 +420,9 @@ export default {
                 return false;
             }
             return true;
+        },
+        serviceType(value) {
+            this.serviceSubmitType = value;
         },
         duplicatedLead() {
             this.duplicateLead = true;

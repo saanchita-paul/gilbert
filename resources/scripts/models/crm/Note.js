@@ -59,6 +59,9 @@ export default class Note {
             case 'submitted_connection':
                 return 'submitted_connection';
                 break;
+
+            case 'submitted_powershop':
+                return 'submitted_powershop';
             
             case 'submitted_origin':
                 return 'submitted_origin';

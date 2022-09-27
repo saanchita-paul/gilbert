@@ -413,6 +413,7 @@ class CAFDataMappingService implements FromCollection, WithHeadings
 
 
     }
+
     private function stateMap($state)
     {
         $stateList = ['New South Wales'=>'NSW','Victoria'=>'VIC','Queensland'=>'QLD',

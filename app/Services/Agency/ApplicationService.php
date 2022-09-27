@@ -12,6 +12,7 @@ use App\Models\ConnectionService;
 use App\Models\HoodProfile;
 use App\Models\Identification;
 use App\Models\Office;
+use App\Models\PowershopPaymentInfo;
 use App\Models\User;
 use App\Services\RolePermission;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use TSA\Services\TsaSendAppliationService;
 use Illuminate\Support\Str;
-
+use Carbon\Carbon;
 
 class ApplicationService
 {
@@ -428,6 +429,20 @@ class ApplicationService
             }
         }
 
+        foreach ([
+            'is_gas_life_support' => 'gas_life_support_accepted_at',
+            'is_power_life_support' => 'power_life_support_accepted_at']
+            as $key => $val){
+
+                if (isset($application[$key])) {
+                    if ($application[$key] === true) {
+                        $application[$val] = Carbon::now();
+                    } else {
+                        $application[$val] = null;
+                    }
+                }
+        }
+
         if ($isIdentification) {
             $this->createIdentification($application, $id);
         } else if ($isService) {
@@ -545,7 +560,7 @@ class ApplicationService
 
     public function getNotSubmittedServices($id, $submitType) : array
     {
-        $providers = [ConnectionService::PROVIDER_EA, ConnectionService::PROVIDER_ORIGIN];
+        $providers = [ConnectionService::PROVIDER_EA, ConnectionService::PROVIDER_ORIGIN, ConnectionService::PROVIDER_POWER_SHOP];
 
         $services = match ($submitType) {
             'energy' => [ConnectionService::TYPE_GAS, ConnectionService::TYPE_ELECTRICITY],
@@ -620,8 +635,6 @@ class ApplicationService
         return $existLead->refresh();
     }
 
-
-
     public function updateEmailField(array $application, $id)
     {
         $existLead = ConnectionApplication::findOrFail($id);
@@ -631,7 +644,6 @@ class ApplicationService
             ]);
         return $existLead->refresh();
     }
-
 
     public function isEmailManuallyVerified($applicationId)
     {

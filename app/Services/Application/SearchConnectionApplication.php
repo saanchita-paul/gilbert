@@ -4,11 +4,13 @@ namespace App\Services\Application;
 
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
 use App\Models\User;
 use App\Modules\Reporting\Services\SetDateRage;
 use App\Services\FullTextSearch\FullTextQueryInterface;
 use App\Services\FullTextSearch\FullTextSearchInterface;
 use App\Traits\Agency\Sortable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use function optional;
@@ -57,10 +59,15 @@ class SearchConnectionApplication
     private ?string $endDate = null;
     private bool $isDuplicate;
 
+    private ?string $dateStart = null;
+    private ?string $dateEnd = null;
+
     /**
      * @var string|null
      */
     private $duplication_group_id;
+
+    private ?string $provider = null;
 
     /**
      * @param array $request
@@ -78,6 +85,7 @@ class SearchConnectionApplication
         $this->appId = !empty($request['app_id']) ? $request['app_id'] : null;
         $this->agentId = !empty($request['agent_id']) ? $request['agent_id'] : null;
         $this->tenantEmail = !empty($request['tenant_email']) ? $request['tenant_email'] : null;
+        $this->provider = !empty($request['provider_name']) ? $request['provider_name'] : null;
         $this->isDuplicate = !empty($request['is_duplicate']) ? (bool)$request['is_duplicate'] : false;
         $this->duplication_group_id = !empty($request['duplication_group_id']) ? $request['duplication_group_id'] : null;
 
@@ -88,6 +96,9 @@ class SearchConnectionApplication
         } else {
             $this->setSortBy(optional($request)['sort_by'], optional($request)['is_descending']);
         }
+
+        $this->dateStart = !empty($request['start_date']) ? $request['start_date'] : null;
+        $this->dateEnd = !empty($request['end_date']) ? $request['end_date'] : null;
     }
 
     /**
@@ -100,11 +111,14 @@ class SearchConnectionApplication
             ->with('connectionServices.reasons')
             ->with('SugerLead')
             ->with('assignedTo')
+            ->with('submittedByUser')
+            ->with('powershopPaymentInfo')
             ->with('office')
             ->with('authorizedPerson')
             ->with('createdBy')
             ->with('identification')
             ->with('submittedByUser');
+
 
         $this->applyFilterLeadType($user)
             ->applyFilterUserOffice($user)
@@ -118,7 +132,9 @@ class SearchConnectionApplication
             ->applyFilterMovingDate()
             ->applyFilterAgentId()
             ->applyFilterTenantEmail()
+            ->applyFilterByProvider()
             ->applyDuplicateFilter()
+            ->applyDateRangeFilter()
             ->applySearch();
 
         $this->builder = $this->applySorting($this->builder);
@@ -335,6 +351,19 @@ class SearchConnectionApplication
         return $this;
     }
 
+    /**
+     * @return $this
+     */
+    private function applyFilterByProvider(): static
+    {
+        if ($this->provider) {
+            $this->builder = $this->builder->whereHas('connectionServices', function (Builder $query) {
+                $query->where('provider_name', $this->provider);
+            });
+        }
+        return $this;
+    }
+
     private function applyDuplicateFilter(): static
     {
         if ($this->isDuplicate) {
@@ -346,7 +375,23 @@ class SearchConnectionApplication
             $this->builder = $this->builder
                 ->where('duplication_group_id', $this->duplication_group_id);
         }
+        return $this;
+    }
 
+    private function applyDateRangeFilter(): static
+    {
+        if ($this->dateStart && $this->dateEnd) {
+            $this->dateStart = Carbon::parse($this->dateStart)->toDateTimeString();
+            $this->dateEnd = Carbon::parse($this->dateEnd)
+                ->addHours(23)
+                ->addMinutes(59)
+                ->addSeconds(59)
+                ->toDateTimeString();
+
+            $this->builder = $this->builder
+                ->where('created_at', '>=', $this->dateStart)
+                ->where('created_at', '<=', $this->dateEnd);
+        }
         return $this;
     }
 }

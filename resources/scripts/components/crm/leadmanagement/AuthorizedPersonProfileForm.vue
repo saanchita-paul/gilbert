@@ -138,13 +138,13 @@
                                     </v-col>
 
                                     <v-col cols="12">
-                                        <ValidationProvider rules="required" name="Authorised Person's role"  v-slot="{ errors }">
+                                        <ValidationProvider rules="" name="Authorised Person's role"  v-slot="{ errors }">
                                             <v-select
                                                 outlined dense hide-details="auto"
                                                 :items="roles"
                                                 item-text="text"
-                                                label="Authorised Person's role *"
-                                                placeholder="Authorised Person's role *"
+                                                label="Authorised Person's role"
+                                                placeholder="Authorised Person's role"
                                                 item-value="value"
                                                 v-model="authorized_person.role"
                                                 :error-messages=" errors[0]"

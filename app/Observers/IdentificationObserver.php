@@ -15,7 +15,7 @@ class IdentificationObserver
      */
     public function created(Identification $identification)
     {
-        TriageFlagService::setTriageFlag($identification->id);
+        TriageFlagService::setTriageFlag($identification->connection_application_id);
     }
 
     /**
@@ -28,7 +28,7 @@ class IdentificationObserver
     {
         foreach (TriageFlagService::IDENTIFICATION_FIELDS_HOOD_AI as $field) {
             if ($identification->isDirty($field)) {
-                return TriageFlagService::setTriageFlag($identification->id);
+                return TriageFlagService::setTriageFlag($identification->connection_application_id);
             }
         }
     }

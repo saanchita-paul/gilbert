@@ -13,10 +13,11 @@
         </v-col>
         <v-col v-if="canShowBothEnergySubmitCheckbox" cols="12" class="d-flex pb-0">
             <v-checkbox
+                :disabled="disabledIfPowerShopGasSelected"
                 v-model="isBothEnergySubmit"
                 @change="changeIsBothEnergySubmit"
             ></v-checkbox>
-            <p class="checkbox-text">Submit elec and gas to same retailer for same plan.</p>
+            <p class="checkbox-text" :class="disabledIfPowerShopGasSelected ? 'grey--text' : ''">Submit elec and gas to same retailer for same plan.</p>
         </v-col>
         <v-col cols="12">
             <v-divider></v-divider>
@@ -39,9 +40,7 @@
             <v-divider></v-divider>
         </v-col>
 
-        <v-divider></v-divider>
-
-        <v-col cols="12" ref="provider">
+        <v-col cols="12" ref="provider" style="padding-top: 0px !important;">
             <p class="sub-title" v-if="selectedServiceTitle.length > 0">
                 Select a plan for {{ selectedServiceTitle }}
             </p>
@@ -69,6 +68,18 @@
                     :isActive="selectedPlan"
                     @toggleDialog="toggleOriginPlanDetails"
                 ></OriginPlan>
+            </div>
+
+            <div class="d-flex" v-if="selectedProvider === 'powershop'">
+                <PowershopPlan
+                    :class="{'not-editable': !isServiceEditable }"
+                    v-for="plan in getPowerShopPlans"
+                    :key="plan.name"
+                    :plan="plan"
+                    @click.native="selectPlan(plan)"
+                    :isActive="selectedPlan"
+                    @toggleDialog="togglePowerShopPlanDetails"
+                ></PowershopPlan>
             </div>
 
             <div class="d-flex" v-if="selectedProvider === 'sumo'">
@@ -160,6 +171,18 @@
                 />
             </v-card>
         </v-dialog>
+
+        <v-dialog v-model="powerShopPlanDetails" max-width="450">
+            <v-card>
+                <PowershopPlanDetails
+                    @toggleDialog="togglePowerShopPlanDetails"
+                    :serviceType="isBothEnergySubmit ? 'energy' : 'gas'"
+                    :state="leadSummary.state"
+                    :planDetails="powerShopData"
+                    :plan="selectedPlan"
+                />
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
@@ -172,6 +195,7 @@ import EAPlanService from "@scripts/services/ea/EAPlanService";
 import SumoService from "@scripts/services/crm/SumoService";
 import EnergyPlan from "@scripts/components/crm/leadmanagement/EnergyPlan";
 import SumoPlan from "@scripts/components/crm/leadmanagement/SumoPlan";
+import PowershopPlan from "@scripts/components/crm/leadmanagement/PowershopPlan";
 import OriginPlan from "@scripts/components/crm/leadmanagement/OriginPlan";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import EnergyPlanDetails from "@scripts/components/ea/EnergyPlanDetails";
@@ -180,24 +204,30 @@ import SumoPlanDetails from "@scripts/components/crm/leadmanagement/SumoPlanDeta
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import {isNull} from "lodash-es";
 import {connectionServicesMapper} from "@scripts/data/ConnectionApplicationMapper";
+import PaymentDetails from "@scripts/components/crm/leadmanagement/PaymentDetails";
+import PowershopPlanDetails from "@scripts/components/crm/leadmanagement/PowershopPlanDetails";
 import OriginService from "@scripts/modules/origin/services/OriginService";
 import OriginMapper from "@scripts/modules/origin/api/mappers/OriginMapper";
 import ProviderPlan from "@scripts/models/crm/ProviderPlan";
+import PowershopService from "@scripts/modules/powershop/services/PowershopService";
 
 export default {
     //todo reduce emit functions
     //todo shift all lead variables to vuex store
     name: "GasService",
     components: {
+        PowershopPlanDetails,
         ServiceProvider,
         TemporaryConnection,
         SameDayConnection,
         EnergyPlan,
         SumoPlan,
+        PowershopPlan,
         OriginPlan,
         EnergyPlanDetails,
         OriginPlanDetails,
-        SumoPlanDetails
+        SumoPlanDetails,
+        PaymentDetails
     },
     props: {
         leadSummary: {
@@ -219,7 +249,12 @@ export default {
             sumoPlanDetails: false,
             originPlans: [],
             originPlanDetails: false,
-            planDetails: null
+            powershopPlans: [],
+            powerShopPlanDetails: false,
+            planDetails: null,
+            activePowerShopPlan: null,
+            powershopPlan: null,
+            powerShopData: null
         };
     },
     computed: {
@@ -320,13 +355,16 @@ export default {
                     return 'wa'
             }
         },
+        disabledIfPowerShopGasSelected() {
+            return LeadApplicationService.getActiveServiceTab() === 1
+                && this.selectedProvider === "powershop";
+        },
+        getPowerShopPlans() {
+            return this.powerShopData?.plans?.gas?.vdo || [];
+        },
     },
-    mounted() {
-        this.fetchEaPlans();
-        this.getOriginData();
-        // this.fetchOriginPlans();
+    async mounted() {
         this.loadSelectedProviderAndPlan();
-
         // On address change refetch Sumo Plan Details
         const updateAddress = address => {
             this.selectedProvider === "sumo" ? this.$eventBus.$emit("validate", this.fetchSumoPlans) : null;
@@ -338,21 +376,31 @@ export default {
     },
     watch: {
         isBothEnergySubmit() {
-            this.getOriginData()
+            this.loadSelectedProviderAndPlan();
         },
         getNMIPrefix() {
-            this.getOriginData()
+            this.loadSelectedProviderAndPlan();
         },
     },
     methods: {
-        loadSelectedProviderAndPlan() {
-            const connectionService = this.leadSummary.connection_services.find(
-                data => data.service_type === "gas"
-            );
+        loadSelectedProviderAndPlan(loadAll = false) {
+            // const connectionService = this.leadSummary.connection_services.find(
+            //     data => data.service_type === "gas"
+            // );
 
-            this.selectedProvider = connectionService?.provider_name;
-            this.selectedPlan = connectionService?.plan_type;
+            // this.selectedProvider = connectionService?.provider_name;
+            // this.selectedPlan = connectionService?.plan_type;
 
+            if (loadAll || this.selectedProvider == 'ea')
+                this.fetchEaPlans();
+            if (loadAll || this.selectedProvider == 'origin')
+                this.getOriginData();
+            if (loadAll || this.selectedProvider == 'powershop')
+                this.getPowershopData();
+            if (loadAll || this.selectedProvider == 'sumo') 
+                setTimeout(() => this.$eventBus.$emit("validate", this.fetchSumoPlans), 600);
+        },
+        loadSumoSelectedProviderAndPlan() {
             if (this.selectedProvider === "sumo") {
                 setTimeout(() => this.$eventBus.$emit("validate", this.fetchSumoPlans), 600);
             }
@@ -364,16 +412,6 @@ export default {
                 state: this.leadSummary.state
             });
             this.isEaPlansLoaded = true;
-            console.log("eaPlans", this.eaPlans);
-        },
-        async fetchOriginPlans() {
-            const originProvider = this.providers.find(pl => {
-                return pl.name === 'origin';
-            });
-            this.originPlans = originProvider.plans.filter(plan => {
-                return plan.type === 'gas';
-            });
-            console.log("originPlans", this.originPlans);
         },
         async fetchSumoPlans(name) {
             this.isSumoPlansLoading = true;
@@ -391,7 +429,6 @@ export default {
                     this.leadSummary
                 );
                 this.isSumoPlansLoading = false;
-                console.log("sumoPlans", this.sumoPlans);
                 return 0;
             } catch (error) {
                 console.log('Sumo Error', error);
@@ -407,10 +444,7 @@ export default {
         onSelectProvider(provider) {
             this.resetSelectedPlan();
             this.selectedProvider = provider;
-
-            if (provider === "sumo") {
-                this.$eventBus.$emit("validate", this.fetchSumoPlans);
-            }
+            this.loadSelectedProviderAndPlan();
         },
         selectEAPlan(plan, isManual = false) {
             let planObj = {
@@ -470,26 +504,54 @@ export default {
                 gas_plan_type: planText,
                 power_plan_type: planText ,
             }
-            return this.selectedProvider === 'origin' ? {...payload, ...{
-                    gas_plan_type: this.planDetails.plans.gas?.plan_name_code || null,
-                    power_plan_type: this.planDetails.plans.electricity?.plan_name_code || null ,
-                }} : payload;
+            if (this.selectedProvider === 'origin') {
+                return {...payload, ...{
+                        gas_plan_type: this.planDetails.plans.gas?.plan_name_code || null,
+                        power_plan_type: this.planDetails.plans.electricity?.plan_name_code || null ,
+                    }}
+            }
+
+            if (this.selectedProvider === 'powershop') {
+                payload.gas_plan_type = this.powerShopData?.plans?.gas ? 'powershop_100%_carbon_neutral' : null;
+            }
+
+            return payload;
         },
+
         isDisable() {
             return (
                 !LeadApplicationService.canSubmitEnergy('gas') ||
                 !this.selectedProvider ||
                 !this.selectedPlan ||
-                (this.isBothEnergySubmit && this.isPayeeSelectedForAfterHourSubmission)
+                (this.isBothEnergySubmit && this.isPayeeSelectedForAfterHourSubmission) ||
+                this.disabledIfPowerShopGasSelected
             );
         },
         submit() {
             let subType = this.isBothEnergySubmit ? "energy" : "gas";
             this.$eventBus.$emit("busUtilitySubmit", subType);
+            this.$emit("serviceType", subType);
         },
+
         async changeGoNeutral() {
             await LeadApplicationService.saveSoleField('ea_go_neutral', this.leadSummary.ea_go_neutral, this.leadSummary.id);
         },
+
+        togglePowerShopPlanDetails() {
+            this.powerShopPlanDetails = !this.powerShopPlanDetails;
+        },
+
+        async getPowershopData() {
+            let query = {
+                postcode: this.leadSummary?.postcode,
+                service_type: this.isBothEnergySubmit ? "energy" : "gas",
+                state: this.state,
+            }
+            this.powerShopData = await PowershopService.getPowerShopData(query);
+        },
+
+
+
         async getOriginData() {
             let query = null;
             if(this.isBothEnergySubmit) {

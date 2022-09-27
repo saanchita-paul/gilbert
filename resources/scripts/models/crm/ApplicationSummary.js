@@ -70,6 +70,8 @@ export default class ApplicationSummary {
     ea_go_neutral = null;
     additional_access_information = null;
     is_power_life_support = null;
+    powershop_payment_info = null;
+    powershop_payment_status = null;
     is_duplicate = null;
     duplication_group_id = null;
 
@@ -158,13 +160,14 @@ export default class ApplicationSummary {
             ea_go_neutral = null,
             additional_access_information = null,
             is_power_life_support = null,
+            powershop_payment_info = null,
+            powershop_payment_status = null,
             is_duplicate = null,
             duplication_group_id = null,
 
             // email_manually_verified_by = 0,
 
-        }
-    ) {
+        } =  {}) {
 
         this.id = id;
         this.applicant_name = ( title == null ? '' : title ) + ' ' + first_name + ' '+ ( isNull(middle_name)?'': middle_name) + ' ' + last_name;
@@ -257,10 +260,10 @@ export default class ApplicationSummary {
         this.ea_go_neutral = ea_go_neutral
         this.additional_access_information = additional_access_information
         this.is_power_life_support = is_power_life_support
+        this.powershop_payment_info = powershop_payment_info
+        this.powershop_payment_status = powershop_payment_status
         this.is_duplicate = is_duplicate;
         this.duplication_group_id = duplication_group_id;
-
-
         // this.email_manually_verified_by = email_manually_verified_by
 
     }
@@ -289,4 +292,14 @@ export default class ApplicationSummary {
         const statusList = ['Unassigned', 'Assigned', 'Escalated', 'Submitted', 'Accepted', 'Rejected', 'Inprogress', 'Closed'];
         return statusList[status];
     }
+
+    // mapPaymentStatus(status) {
+    //
+    //     status = status - 1;
+    //     if (status < 0) return '';
+    //
+    //     const statusList = ['Pending', 'Valid', 'Invalid'];
+    //
+    //     return statusList[status];
+    //     }
 }

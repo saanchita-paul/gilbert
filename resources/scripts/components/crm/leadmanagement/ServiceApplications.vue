@@ -3,7 +3,7 @@
         <v-tabs
             v-model="tab"
             height="80px"
-            
+
         >
             <v-tab class="px-0 tab-capital-case">
                 <v-card class="hood-card" width="100%">
@@ -55,18 +55,20 @@
                 </v-card>
             </v-tab>
 
-            <v-tabs-items v-model="tab">
+            <v-tabs-items v-model="tab" class="p-24">
                 <v-tab-item>
                     <PowerService
                         :leadSummary="leadSummary"
                         :afterHourFlag="afterHourFlag"
                         @changeAfterHourPayee="changeAfterHourPayee"
+                        @serviceType="serviceType"
                     ></PowerService>
                 </v-tab-item>
                 <v-tab-item>
                     <GasService
                         :leadSummary="leadSummary"
                         :afterHourFlag="afterHourFlag"
+                        @serviceType="serviceType"
                     ></GasService>
                 </v-tab-item>
                 <v-tab-item>
@@ -142,6 +144,9 @@ export default {
     methods: {
         changeAfterHourPayee() {
             this.$emit("updateDraft", "after_hour_payee", this.leadSummary.after_hour_payee, false, null, false);
+        },
+        serviceType(value) {
+            this.$emit("serviceType", value);
         }
     }
 };
@@ -162,5 +167,8 @@ export default {
 }
 .dangerText {
     color: red;
+}
+.p-24 {
+    padding: 24px !important;
 }
 </style>
