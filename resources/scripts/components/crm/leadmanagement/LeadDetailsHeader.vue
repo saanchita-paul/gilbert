@@ -205,17 +205,13 @@ name: "LeadDetailsHeader",
         mapConnectionStatus(status) {
             return  LeadApplicationService.mapStatus(status)
         },
-<<<<<<< HEAD
         sendToChatBot() {
             this.$emit('sendToChatBot');
             // this.$eventBus.$emit("busUtilitySubmit", subType);
         },
-
-=======
         duplicateLead() {
             this.$emit('duplicateLead');
         },
->>>>>>> release
     },
     mounted() {
         // console.log('load_summary_he', this.leadSummary);
