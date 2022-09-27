@@ -93,4 +93,9 @@ class PowershopPaymentInfo extends Model
         if (substr($phone_number, 0, 2) === '04') $phone_number = '+614' . substr($phone_number, 2);
         return $phone_number;
     }
+
+    public function canReceiveAlphanumericSender()
+    {
+        return config('twilio-notification-channel.enable_alpha_sender');
+    }
 }
