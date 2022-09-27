@@ -9,6 +9,7 @@ return [
     'from' => env('TWILIO_FROM', '+17193987245'), // optional
     'to' => env('TWILIO_TO', '+61422834068'), // for test purpose
     'alphanumeric_sender' => env('TWILIO_ALPHA_SENDER', 'HOOD'),
+    'enable_alpha_sender' => env('TWILIO_ENABLE_ALPHA_SENDER', false),
 
     /**
      * See https://www.twilio.com/docs/sms/services.
