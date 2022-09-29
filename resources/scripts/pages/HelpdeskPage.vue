@@ -10,6 +10,9 @@
                         </v-app-bar>
                     </v-row>
                     <v-row>
+                        <SearchCustomer></SearchCustomer>
+                    </v-row>
+                    <v-row>
                         <v-col cols="12"  class="pt-0 pr-0 customer-list" ref="list">
                             <v-expansion-panels v-model="activeModel">
                                 <v-expansion-panel
@@ -96,6 +99,7 @@ import ApplicationService from "@scripts/services/ApplicationService";
 import InfiniteLoading from "vue-infinite-loading";
 import Pagination from "@scripts/models/Pagination";
 import {merge} from "lodash-es";
+import SearchCustomer from "@scripts/components/customer/SearchCustomer";
 
 export default {
     name: "CustomerList",
@@ -112,6 +116,7 @@ export default {
         }
     },
     components:{
+        SearchCustomer,
         CustomerShortDetails,
         CustomerMessenger,
         InfiniteLoading
@@ -153,7 +158,8 @@ export default {
         },
 
         async getCustomerList (page = 1) {
-            let response = await CustomerService.getCustomerTableData(page);
+            const query = this.$route.query;
+            let response = await CustomerService.getCustomerTableData(page, query);
             this.customerList =[...this.customerList, ...response.data];
             merge(this.pagination, response.pagination)
         },
@@ -165,7 +171,8 @@ export default {
             if (!this.customerId) {
                 const id = this.customerList[0]?.id;
                 if (id) {
-                    await this.$router.push({name: 'helpdesk', query: {customerId: id}})
+                    const query = this.$route.query;
+                    await this.$router.push({name: 'helpdesk', query: {customerId: id, ...query}})
                 }
             } else {
                 await this.getCustomerDetailsData(this.customerId);
@@ -173,7 +180,12 @@ export default {
         },
         onPanelClicked(index, customerId) {
             if (this.activeModel !== index) {
-                this.$router.push({name: 'helpdesk', query: { customerId, test: ApplicationService.getRandomString() }})
+                const query = this.$route.query;
+                this.$router.push({name: 'helpdesk', query: { customerId,
+                        test: ApplicationService.getRandomString(),
+                        ...query
+
+                    }})
             }
         },
         closePanel() {

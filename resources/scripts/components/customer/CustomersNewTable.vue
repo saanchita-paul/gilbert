@@ -3,6 +3,7 @@
         <v-card-title class="widget-title pb-0">
             Customers needing urgent assistance
         </v-card-title>
+        <SearchCustomer></SearchCustomer>
         <v-data-table
             :headers="headers"
             :items="customers"
@@ -75,8 +76,10 @@ import {mapSentiment, mapSentimentColor} from "@scripts/data/SentimentColor";
 import Pagination from "@scripts/models/Pagination";
 import {merge} from "lodash-es";
 import {mapInterventionStatus} from "@scripts/data/CustomerDataMapper";
+import SearchCustomer from "@scripts/components/customer/SearchCustomer";
 
 export default {
+    components: {SearchCustomer},
     data() {
         return {
             search: '',
@@ -111,7 +114,10 @@ export default {
     },
     methods: {
         async load(page) {
-            let response = await CustomerService.getCustomerTableData(page);
+
+            const query = this.$route.query;
+
+            let response = await CustomerService.getCustomerTableData(page, query);
             merge(this.pagination, response.pagination)
             this.customers = response.data;
         },

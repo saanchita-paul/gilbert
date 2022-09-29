@@ -108,8 +108,11 @@ export default {
      * @param pageIndex
      * @returns {Promise<{pagination: Pagination, data}>}
      */
-    getCustomerList: async pageIndex=> {
-        const data =(await axios.get(`${BOT_API}/customers?page=${pageIndex}`)).data;
+    getCustomerList: async (pageIndex, query)=> {
+
+        query = {page: pageIndex, ...query};
+        console.log('query data', {params: {...query}});
+        const data =(await axios.get(`${BOT_API}/customers`, {params: {...query}})).data;
 
         return {
             data: CustomerMapper.mapCustomerList(data.data),
