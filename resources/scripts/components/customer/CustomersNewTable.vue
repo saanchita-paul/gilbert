@@ -3,7 +3,7 @@
         <v-card-title class="widget-title pb-0">
             Customers needing urgent assistance
         </v-card-title>
-        <SearchCustomer></SearchCustomer>
+        <SearchCustomer @fetchCustomer="fetchCustomer"></SearchCustomer>
         <v-data-table
             :headers="headers"
             :items="customers"
@@ -98,7 +98,8 @@ export default {
             page: 1,
             pageCount: 0,
             itemsPerPage: 0,
-            total: 0
+            total: 0,
+            customerFilter: null,
         }
     },
     watch: {
@@ -114,10 +115,7 @@ export default {
     },
     methods: {
         async load(page) {
-
-            const query = this.$route.query;
-
-            let response = await CustomerService.getCustomerTableData(page, query);
+            let response = await CustomerService.getCustomerTableData(page,  this.customerFilter);
             merge(this.pagination, response.pagination)
             this.customers = response.data;
         },
@@ -136,7 +134,13 @@ export default {
         openProfile(id) {
             this.$router.push({name: `customer.details`, params: {id: id}})
         },
+        fetchCustomer(customerFilter) {
+            this.customerFilter = customerFilter;
+            this.load(1);
+        }
     },
+
+
     filters: {
         mapInterventionStatus (value) {
             if(value) {

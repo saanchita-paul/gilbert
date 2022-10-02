@@ -10,7 +10,7 @@
                         </v-app-bar>
                     </v-row>
                     <v-row>
-                        <SearchCustomer></SearchCustomer>
+                        <SearchCustomer @fetchCustomer="fetchCustomer"></SearchCustomer>
                     </v-row>
                     <v-row>
                         <v-col cols="12"  class="pt-0 pr-0 customer-list" ref="list">
@@ -113,6 +113,7 @@ export default {
             customerMessages: null,
             customerId: this.$route.query.customerId || null,
             pagination: new Pagination(),
+            customerFilter: null
         }
     },
     components:{
@@ -127,7 +128,8 @@ export default {
     watch: {
         '$route': {
             handler() {
-                this.customerId = this.$route.query.customerId
+                this.customerId = this.$route.query.customerId;
+                this.getCustomerList(this.pagination.page);
                 this.load();
             },
             deep: true
@@ -158,8 +160,11 @@ export default {
         },
 
         async getCustomerList (page = 1) {
-            const query = this.$route.query;
-            let response = await CustomerService.getCustomerTableData(page, query);
+
+            let response = await CustomerService.getCustomerTableData(page, this.customerFilter);
+            if(page === 1) {
+                this.customerList = [];
+            }
             this.customerList =[...this.customerList, ...response.data];
             merge(this.pagination, response.pagination)
         },
@@ -171,8 +176,7 @@ export default {
             if (!this.customerId) {
                 const id = this.customerList[0]?.id;
                 if (id) {
-                    const query = this.$route.query;
-                    await this.$router.push({name: 'helpdesk', query: {customerId: id, ...query}})
+                    await this.$router.push({name: 'helpdesk', query: {customerId: id}})
                 }
             } else {
                 await this.getCustomerDetailsData(this.customerId);
@@ -180,10 +184,10 @@ export default {
         },
         onPanelClicked(index, customerId) {
             if (this.activeModel !== index) {
-                const query = this.$route.query;
+
                 this.$router.push({name: 'helpdesk', query: { customerId,
                         test: ApplicationService.getRandomString(),
-                        ...query
+
 
                     }})
             }
@@ -206,6 +210,13 @@ export default {
         viewProfile() {
             this.$router.push({name: `customer.details`, params: {id: this.customerinfo.id}});
         },
+
+        async fetchCustomer(customerFilter) {
+            this.customerFilter = customerFilter;
+            await this.getCustomerList();
+            this.customerId = this.customerList[0]?.id;
+            await this.load();
+        }
     },
 }
 </script>

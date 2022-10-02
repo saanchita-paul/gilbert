@@ -1,10 +1,15 @@
 <template>
-    <div>
+    <div class="pa-2 mx-4" >
+        <v-btn  @click="clearFilter" right>
+            <v-icon small>mdi-close</v-icon>
+            Clear filters
+        </v-btn>
         <v-row>
-            <v-col cols="3" class="pb-0">
+            <v-col  class="pb-0">
                 <ValidationProvider name="Customer Id">
                     <v-text-field
                         label="Customer Id"
+                        type="number"
                         outlined
                         dense
                         placeholder="Customer Id"
@@ -12,10 +17,10 @@
                     ></v-text-field>
                 </ValidationProvider>
             </v-col>
-            <v-col cols="3" class="pb-0">
+            <v-col  class="pb-0">
                 <ValidationProvider name="Customer Name">
                     <v-text-field
-                        label="Firstname*"
+                        label="Customer Name*"
                         outlined
                         dense
                         placeholder="Customer Full Name"
@@ -23,8 +28,8 @@
                     ></v-text-field>
                 </ValidationProvider>
             </v-col>
-            <v-col cols="3" class="pb-0">
-            <v-menu offset-y>
+            <v-col  class="pb-0">
+                <v-menu offset-y v-model="showMenu">
                 <template v-slot:activator="{ on }">
                     <v-text-field
                         label="Search address"
@@ -32,7 +37,7 @@
                         dense
                         placeholder="Type house address here"
                         append-icon="mdi-magnify"
-                        v-model="customer.address_text"
+                        v-model="address_text"
                         @keyup.native="onStreetChanged"
                     ></v-text-field>
                 </template>
@@ -56,6 +61,7 @@
 import GoogleMapService from "@scripts/services/GoogleMapService";
 import debounce from "lodash-es/debounce";
 import {omit} from "lodash-es";
+import {getStateKey} from "@scripts/data/constants/STATES";
 
 export default {
 name: "SearchCustomer",
@@ -74,6 +80,8 @@ name: "SearchCustomer",
                 customer_id: ''
             },
             searchResult: [],
+            address_text: '',
+            showMenu:false
         }
     },
 
@@ -82,8 +90,8 @@ name: "SearchCustomer",
 
     created() {
         this.onStreetChanged = debounce(() => {
-            if (this.customer.address_text.length > 0) {
-                GoogleMapService.getStreetAddressesByKeyword(this.customer.address_text)
+            if (this.address_text.length > 0) {
+                GoogleMapService.getStreetAddressesByKeyword(this.address_text)
                     .then((data) => {
                         this.searchResult = data;
                         this.showMenu = this.searchResult.length > 0
@@ -97,22 +105,38 @@ name: "SearchCustomer",
             GoogleMapService.getAddressDetailsByPlaceId(place.place_id)
                 .then((data) => {
                     this.customer.address_text = data.formatted_address;
+                    this.address_text = data.formatted_address;
                     this.customer.street_address = data.street;
                     this.customer.city = data.city;
                     this.customer.postcode = data.postcode;
-                    this.customer.state = data.state;
+                    this.customer.state = getStateKey(data.state);
                     this.customer.street_number = data.street_number;
                     this.customer.unit_number = data.unit_number;
-                    this.customer.street_name = data.street_name;
+                    this.customer.street_name = data.street_name? data.street_name.split(' ')[0]: '';
                     // this.mapToModel(data)
                 });
         },
+        clearFilter() {
+            this.customer =   {
+                address_text: '',
+                    street_address: '',
+                    city: '',
+                    postcode: '',
+                    state: '',
+                    street_number: '',
+                    unit_number: '',
+                    street_name: '',
+                    customer_name: '',
+                    customer_id: ''
+            };
+            this.address_text = '';
+        }
     },
 
     watch: {
         customer: {
             handler () {
-                this.$router.push({query:{...this.customer}});
+                this.$emit('fetchCustomer', this.customer);
             },
             deep: true,
         },
