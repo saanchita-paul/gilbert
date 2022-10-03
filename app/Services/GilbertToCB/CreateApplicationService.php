@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
 
-class createApplicationService
+class CreateApplicationService
 {
 
     private array|Collection|ConnectionApplication|Model $application;
@@ -30,14 +30,13 @@ class createApplicationService
 
     public function create()
     {
-        return $this->getProperties();
-//        dd($this->getProperties());
         $url = 'http://127.0.0.1:8000/api/application-data';
         $response = Http::post($url, $this->getProperties());
-//        dd($this->getProperties());
-//        dd($response->body());
-        $body = json_decode($response->body(), true);
-        return $body;
+        if($response->status()){
+            $this->application->update(['moving_utility_id' => $response->json()['moving_utility_id']]);
+        }
+//        $this->application->update(['moving_utility_id' => $body['moving_utility_id']]);
+//        return $body;
     }
 
 
@@ -45,11 +44,12 @@ class createApplicationService
     private function getProperties(): array
     {
         return [
-            "id" => $this->application->id,
+            "connection_application_id" => $this->application->id,
             "office_id" => $this->application->office_id,
             "agency_id" => $this->application->agency_id,
             "created_by" => $this->application->created_by,
             "assigned_to" => $this->application->assigned_to,
+            "moving_utility_id" => $this->application->moving_utility_id,
             "submitted_by" => $this->application->submitted_by,
             "title" => $this->application->title,
             "first_name" => $this->application->first_name,
@@ -84,8 +84,6 @@ class createApplicationService
             "plan_type" => $this->application->plan_type,
             "status" => $this->application->status,
             "hubspot_contact_id" => $this->application->hubspot_contact_id,
-            "created_at" => $this->application->created_at,
-            "updated_at" => $this->application->updated_at,
             "ea_sales_id" => $this->application->ea_sales_id,
             "billing_unit_number" => $this->application->billing_unit_number,
             "billing_street_number" => $this->application->billing_street_number,
@@ -163,13 +161,14 @@ class createApplicationService
             "is_generated_caf" => $this->application->is_generated_caf,
             "connection_services" =>$this->application->connectionServices ?  $this->application->connectionServices->toArray() : [],
             "identification" =>$this->application->identification ?  $this->application->identification->toArray() : null,
-            "authorized_person" =>$this->application->authorizedPerson() ?  $this->application->authorizedPerson->toArray() : null
+            "authorized_person" =>$this->application->authorizedPerson ?  $this->application->authorizedPerson->toArray() : null
           ];
     }
 
     public function mapConcessionCardType($data){
         return self::CONCESSION_MAPPER[strtoupper($data)] ?? null;
     }
+
 
 
 }
