@@ -113,7 +113,8 @@ export default {
             customerMessages: null,
             customerId: this.$route.query.customerId || null,
             pagination: new Pagination(),
-            customerFilter: null
+            customerFilter: null,
+            isJustSearch: false
         }
     },
     components:{
@@ -141,9 +142,15 @@ export default {
         this.isLoaded = true;
     },
     methods: {
-        async load() {
+        async load(isJustSearch = false) {
             await this.loadCustomer();
+            if(isJustSearch) {
+                this.activeModel = null;
+                return;
+            }
             await this.setActiveModel();
+
+
         },
         setActiveModel() {
             if (this.customerId) {
@@ -214,8 +221,10 @@ export default {
         async fetchCustomer(customerFilter) {
             this.customerFilter = customerFilter;
             await this.getCustomerList();
+            this.isJustSearch = true;
             this.customerId = this.customerList[0]?.id;
-            await this.load();
+            await this.load(true);
+            this.activeModel = null;
         }
     },
 }
