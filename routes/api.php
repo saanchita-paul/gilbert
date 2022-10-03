@@ -6,7 +6,7 @@ use App\Models\ConnectionApplication;
 use App\Http\Controllers\Agency\AppCloseReasonController;
 use App\Services\Agency\TriageFlagService;
 use App\Services\GilbertToCB\ChatbotToGilbertSyncService;
-use App\Services\GilbertToCB\CreateApplicationService;
+use App\Services\GilbertToCB\GilbertToChatbotService;
 use GuzzleHttp\Client;
 use Illuminate\Encryption\Encrypter;
 use App\Services\Address\GBGServices;
@@ -344,7 +344,7 @@ Route::put('/gilbert-energy/{id}', [GilbertLeadAPIController::class, 'updateGilb
 //});
 
 Route::get('/create-application', function() {
-   $application = new CreateApplicationService(1);
+   $application = new GilbertToChatbotService(1);
    return $application->create();
 });
 

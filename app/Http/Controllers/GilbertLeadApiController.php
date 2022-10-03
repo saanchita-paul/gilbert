@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\ConnectionApplication;
 use App\Services\GilbertToCB\ChatbotToGilbertSyncService;
-use App\Services\GilbertToCB\createApplicationService;
+use App\Services\GilbertToCB\GilbertToChatbotService;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
