@@ -21,7 +21,7 @@
                       <draggable v-model="plans"  @start="drag=true" @end="shuffleData">
                       <v-row v-for="element in plans" :key="element.id"  class="bordered-around">
                           <v-col class="bordered-right">
-                            <v-img style="max-width: 150px" :src="getCardImage(element.key)" ></v-img>
+                            <v-img style="max-width: 150px" :src="element.image" ></v-img>
                           </v-col>
                           <v-col class="bordered-right">{{element.key}}</v-col>
                           <v-col  class="bordered-right">{{ element.retailer }}</v-col>
@@ -68,28 +68,9 @@ export default {
             this.isLoaded = true;
         },
 
-        getCardImage(key) {
-          let image = '';
-          switch (key)
-          {
-            case 'Total Plan (Home)':
-              image = 'total';
-              break;
-            case 'Basic - Home':
-              image = 'basic_home_new';
-              break;
-            case 'No Frills (Home)':
-              image = 'no_frill_new';
-              break;
-            case 'Origin':
-              image = 'origin_both';
-              break;
-            default:
-              image = 'basic_home_new';
-              break;
-          }
-          return 'https://devbot.hood.ai/images/static/plan/' + image +'.png';
-        }
+        // getCardImage(image) {
+        //   return `${process.env.MIX_BOT_ROOT_URL}/images/static/plan/${image}.png`;
+        // }
     }
 }
 </script>

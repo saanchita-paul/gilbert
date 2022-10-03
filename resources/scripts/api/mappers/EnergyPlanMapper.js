@@ -7,7 +7,7 @@ export default {
             return {...data,
                 power_sales : 'NA',
                 gas_sales : 'NA',
-                image: ROOT + '/' + name + '.png'
+                image: ROOT + data.image + '.png'
             }
         })
     }
