@@ -1,7 +1,6 @@
 <template>
     <v-card class="hood-card mb-5 pt-0">
-       <LeadDetailsHeader @closeApplicationWithReason="closeApplicationWithReason" :leadSummary="leadSummary" @closeApplication="closeApplication" @eacalate="eacalate" @sendToChatBot="sendToChatBot" ></LeadDetailsHeader>
-       <LeadDetailsHeader @closeApplicationWithReason="closeApplicationWithReason" :leadSummary="leadSummary" @closeApplication="closeApplication" @eacalate="eacalate" @duplicateLead="duplicateLead"></LeadDetailsHeader>
+       <LeadDetailsHeader @closeApplicationWithReason="closeApplicationWithReason" :leadSummary="leadSummary" @closeApplication="closeApplication" @eacalate="eacalate" @duplicateLead="duplicateLead" @sendToChatBot="sendToChatBot" ></LeadDetailsHeader>
         <InfoField v-bind="$attrs" :services="services" @updateLead="updateLead" :nmiMernFlag="nmiMernFlag" :lead="leadSummary" @updateDraft="updateDraft" @readMore="readMore" @updateAddress="updateAddress"></InfoField>
     </v-card>
 </template>
