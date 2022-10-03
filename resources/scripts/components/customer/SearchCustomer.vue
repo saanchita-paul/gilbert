@@ -1,9 +1,12 @@
 <template>
     <div class="pa-2 mx-4" >
-        <v-btn  @click="clearFilter" right>
-            <v-icon small>mdi-close</v-icon>
-            Clear filters
-        </v-btn>
+        <v-row class="mx-2" style=" min-height: 35px;">
+            <v-spacer></v-spacer>
+            <v-btn v-show="isFiltered" @click="clearFilter" right>
+                <v-icon small>mdi-close</v-icon>
+                Clear filters
+            </v-btn>
+        </v-row>
         <v-row>
             <v-col  class="pb-0">
                 <ValidationProvider name="Customer Id">
@@ -77,16 +80,19 @@ name: "SearchCustomer",
                 unit_number: '',
                 street_name: '',
                 customer_name: '',
-                customer_id: ''
+                customer_id: '',
+                id: ''
             },
             searchResult: [],
             address_text: '',
             showMenu:false
         }
     },
-
-
-
+    computed: {
+        isFiltered() {
+            return this.customer.customer_name || this.customer.id || this.customer.address_text;
+        }
+    },
 
     created() {
         this.onStreetChanged = debounce(() => {
@@ -127,7 +133,7 @@ name: "SearchCustomer",
                     unit_number: '',
                     street_name: '',
                     customer_name: '',
-                    customer_id: ''
+                    id: ''
             };
             this.address_text = '';
         }
