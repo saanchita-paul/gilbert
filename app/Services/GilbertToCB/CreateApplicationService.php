@@ -33,10 +33,8 @@ class CreateApplicationService
         $url = 'http://127.0.0.1:8000/api/application-data';
         $response = Http::post($url, $this->getProperties());
         if($response->status()){
-            $this->application->update(['moving_utility_id' => $response->json()['moving_utility_id']]);
+            $this->application->update(['chatbot_id' => $response->json()['moving_utility_id']]);
         }
-//        $this->application->update(['moving_utility_id' => $body['moving_utility_id']]);
-//        return $body;
     }
 
 

@@ -228,8 +228,7 @@ class ConnectionApplication extends Model
         'duplicated_address_group_id',
         'duplicated_email_group_id',
         'app_close_reason_id',
-        'moving_utility_id'
-
+        'chatbot_id'
     ];
 
 

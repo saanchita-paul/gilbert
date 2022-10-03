@@ -41,7 +41,6 @@ class GilbertLeadApiController extends Controller
             return $this->sendSuccessResponse('success');
         }
         catch (Exception $exception) {
-//            return $exception;
             return $this->sendErrorResponse($exception->getMessage());
         }
     }
