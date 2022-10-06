@@ -476,9 +476,8 @@ class CAFGenerationService
 
     }
 
-    private function getPowerShopCafToken($app):string
+    private function getPowerShopCafToken($app): string
     {
-        return (string)$app?->powershopPaymentInfo?->pluck('px_dps_billing_id');
+        return (string) $app?->powershopPaymentInfo?->px_dps_billing_id;
     }
-
 }

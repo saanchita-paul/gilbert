@@ -149,7 +149,7 @@ class PxPayService
             "px_dps_billing_id" => data_get($res, 'DpsBillingId'),
             "px_response_text" => data_get($res, 'ResponseText'),
             "px_response_text_desc" => data_get($res, 'CardHolderResponseDescription'),
-            "preferred" => true,
+//            "preferred" => true,
             'status' => (int) data_get($res, 'Success')
                 ? PowershopPaymentInfo::STATUS_VERIFIED
                 : PowershopPaymentInfo::STATUS_REJECTED
@@ -172,17 +172,18 @@ class PxPayService
         $key = data_get($response, 'result');
 
         $paymentInfo =  $this->getPaymentInfo(data_get($response, 'txn_id'));
-
-        $paymentInfo->update($this->getPaymentDetails($key));
+        $details = $this->getPaymentDetails($key);
+        foreach (array_keys($details) as $key) {
+            $paymentInfo->$key = $details[$key];
+        }
 
         if ($paymentInfo->status == PowershopPaymentInfo::STATUS_VERIFIED){
             $paymentInfo->verified_at = now();
-            $paymentInfo->save();
         }
         if ($paymentInfo->status == PowershopPaymentInfo::STATUS_REJECTED){
             $paymentInfo->rejected_at = now();
-            $paymentInfo->save();
         }
+        $paymentInfo->save();
 
         return $paymentInfo;
     }
@@ -193,7 +194,7 @@ class PxPayService
      */
     public function handleFailed(array $response)
     {
-        $paymentInfo =  $this->handleCallback($response);
+        $paymentInfo =  $this->getPaymentInfo(data_get($response, 'txn_id'));
         $paymentInfo->rejected_at = now();
         $paymentInfo->save();
         return $paymentInfo;
@@ -206,7 +207,7 @@ class PxPayService
      */
     public function handleSuccess(array $response)
     {
-        $paymentInfo =  $this->handleCallback($response);
+        $paymentInfo =  $this->getPaymentInfo(data_get($response, 'txn_id'));
         $paymentInfo->verified_at = now();
         $paymentInfo->save();
         return $paymentInfo->customer_full_name;
