@@ -18,7 +18,6 @@ class GilbertToChatbotService
     ];
 
 
-
     public function __construct($id)
     {
         $this->application = ConnectionApplication::findOrFail($id);

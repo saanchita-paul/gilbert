@@ -210,6 +210,7 @@ class ChatbotToGilbertSyncService
             $this->authorizedPersonData['title'] = $this->requestData['authorized_person']['title'];
             $this->authorizedPersonData['first_name'] = $this->requestData['authorized_person']['first_name'];
             $this->authorizedPersonData['middle_name'] = $this->requestData['authorized_person']['middle_name'];
+            $this->authorizedPersonData['last_name'] = $this->requestData['authorized_person']['last_name'];
             $this->authorizedPersonData['email'] = $this->requestData['authorized_person']['email'];
             $this->authorizedPersonData['phone'] = $this->requestData['authorized_person']['phone'];
             $this->authorizedPersonData['dob'] = $this->requestData['authorized_person']['dob'];
@@ -392,13 +393,13 @@ class ChatbotToGilbertSyncService
                         'service_type'   => $service['service_type'],
                         'plan_type'   => $service['plan_type'],
                         'provider_name'   => $service['provider_name'],
-                        'status'   => $service['status'],
-                        'connection_date'   => $service['connection_date'],
-                        'submitted_at'   => $service['submitted_at'],
-                        'lead_reference'   => $service['lead_reference'],
-                        'accepted_at'   => $service['accepted_at'],
-                        'rejected_at'   => $service['rejected_at'],
-                        'distributor'   => $service['distributor'],
+//                        'status'   => $service['status'],
+//                        'connection_date'   => $service['connection_date'],
+//                        'submitted_at'   => $service['submitted_at'],
+//                        'lead_reference'   => $service['lead_reference'],
+//                        'accepted_at'   => $service['accepted_at'],
+//                        'rejected_at'   => $service['rejected_at'],
+//                        'distributor'   => $service['distributor'],
                     ]);
             }
         }
