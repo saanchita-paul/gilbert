@@ -25,16 +25,21 @@ class GilbertToChatbotService
     }
 
 
-
-
+    /**
+     * @throws \Exception
+     */
     public function create()
     {
-        $url = 'http://127.0.0.1:8000/api/application-data';
+        $url = 'http://127.0.0.1:8000/api/gilbert-application';
         $response = Http::post($url, $this->getProperties());
-        if($response->status()){
+        if($response->status() === 201){
             $this->application->update(['chatbot_id' => $response->json()['moving_utility_id']]);
+        } else {
+            \Log::error(json_encode($response->body()));
+            throw new \Exception('Send to Chatbot is not successful');
         }
     }
+
 
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Services\Agency;
 
+use App\Jobs\GilbertToChatbotJob;
 use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
 use App\Models\AppCloseReason;
@@ -187,7 +188,21 @@ class ApplicationService
             $existingApplication->tsa_lead_id = $tsa_lead_id;
             $existingApplication->save();
         }
+
+        $this->sendToChatbot($applicationId, $agentId);
         return $this->findApplications($applicationId);
+    }
+
+    public function sendToChatbot($appId, $hoodUserId)
+    {
+        $checkProfile = User::with('profile')
+            ->where('profile_type', USER::PROFILE_TYPE_HOOD)
+            ->where('profile_id', $hoodUserId)
+            ->firstOrFail();
+
+        if($checkProfile->hasAnyRole(RolePermission::ROLE_HOOD_ADMIN)) {
+            GilbertToChatbotJob::dispatch($appId);
+        };
     }
 
 
