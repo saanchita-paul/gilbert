@@ -99,6 +99,12 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+        'pxpay' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/pxpay/laravel.log'),
+            'level' => env('LOG_LEVEL', 'error'),
+            'days' => 100,
+        ],
     ],
 
 ];

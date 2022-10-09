@@ -13,6 +13,8 @@ use App\Models\ConnectionService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
+use Illuminate\Support\Str;
+
 class SignUpService
 {
     private array|Collection|ConnectionApplication|Model $application;
@@ -20,6 +22,7 @@ class SignUpService
     private int $elecKey;
     private int $gasKey;
     private int $utilityKeyCount = 0;
+    private APILog $apiLog;
 
     const MAP_STATE = [
         "New South Wales" => 'NSW',
@@ -65,21 +68,26 @@ class SignUpService
     {
         try {
             $url = config('powershop.base_url').config('powershop.send_customer_data_url');
-            $url = APILog::setLoggerQuery($url, APILog::API_POWERSHOP_SEND_CUSTOMER_DATA, false);
-            $data = config('powershop.use_dummy_data') ? $this->getDummyData() : $this->getCustomerData($this->submitType);
-            info('Powershop send data', $data);
-            $response = Http::withHeaders([
+            $headers = [
                 'content-type' => 'application/json',
                 'accept' => 'application/json',
                 'Authorization' => config('powershop.secret_token'),
-            ])
-            ->withBody(json_encode($data),'application-json')
-            ->post($url);
+            ];
+            $data = config('powershop.use_dummy_data') ? $this->getDummyData() : $this->getCustomerData($this->submitType);
+            $filteredData = array_diff_key($data, array_flip(["payment_details"]));
 
+            $this->saveRequestLog($url, $filteredData, $headers);
+            
+            $response = Http::withHeaders($headers)
+                ->withBody(json_encode($data),'application-json')
+                ->post($url);
+
+            $this->saveResponseLog($response->status(), $response->json(), $response->headers());
+            
             $response->throwIf(!$response->successful() && $response->status() != 422);
 
             $results = json_decode($response->body(), true);
-            info('Powershop receive data', $results); 
+            
             if (isset($results['data']['errors'])){
                 $results = [
                     'status' => 'rejected',
@@ -499,6 +507,30 @@ class SignUpService
                 self::recursiveStore($v, $data, $preText);
             }
         }
+    }
+
+    private function saveRequestLog(string $url, array $body, array $headers) {
+        info('Powershop send data', $body);
+
+        $this->apiLog = new APILog();
+        $this->apiLog->key = Str::uuid()->toString();
+        $this->apiLog->type = APILog::API_POWERSHOP_SEND_CUSTOMER_DATA;
+        $this->apiLog->url = $url;
+        $this->apiLog->method = 'POST';
+        $this->apiLog->request_body = json_encode($body);
+        $this->apiLog->request_header = json_encode($headers);
+        
+        return $this->apiLog->save();
+    }
+
+    private function saveResponseLog(int $statusCode, array $body, array $headers) {
+        info('Powershop receive data', $body); 
+
+        $this->apiLog->response_status = $statusCode;
+        $this->apiLog->response_body = json_encode($body);
+        $this->apiLog->response_header = json_encode($headers);
+        
+        return $this->apiLog->save();
     }
 
 }
