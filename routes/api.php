@@ -2,11 +2,13 @@
 
 
 use App\Http\Controllers\Agency\DuplicationApplicationController;
+use App\Jobs\ApplicationFromGilbertJob;
 use App\Models\ConnectionApplication;
 use App\Http\Controllers\Agency\AppCloseReasonController;
 use App\Services\Agency\TriageFlagService;
 use App\Services\GilbertToCB\ChatbotToGilbertSyncService;
 use App\Services\GilbertToCB\GilbertToChatbotService;
+use App\Services\GilbertToCB\UpdateApplicationFromGilbertService;
 use GuzzleHttp\Client;
 use Illuminate\Encryption\Encrypter;
 use App\Services\Address\GBGServices;
@@ -350,3 +352,8 @@ Route::get('/create-application', function() {
 
 Route::get('/cb-to-gb-sync/{id}', [GilbertLeadAPIController::class, 'syncProperty']);
 
+Route::get('/nmi-mirn', function() {
+//    $testApp = new UpdateApplicationFromGilbertService(3);
+//    return $testApp->call();
+    ApplicationFromGilbertJob::dispatch(3);
+});
