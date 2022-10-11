@@ -127,7 +127,7 @@ export default {
             userSearch: '',
             leadSearch: '',
             options: {
-                itemsPerPage: 10
+                itemsPerPage: 20
             },
             loading: false,
             page: 1,

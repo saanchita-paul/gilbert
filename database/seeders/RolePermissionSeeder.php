@@ -9,7 +9,7 @@ use Spatie\Permission\Models\Role;
 
 class RolePermissionSeeder extends Seeder
 {
-    protected array $roles = [
+     const ROLES = [
         #hood
         RolePermission::ROLE_HOOD_ADMIN,
         RolePermission::ROLE_HOOD_AGENT,
@@ -29,9 +29,11 @@ class RolePermissionSeeder extends Seeder
         RolePermission::ROLE_AGENCY_BUSINESS_DEVELOPMENT_MANAGER,
         RolePermission::ROLE_AGENCY_SALES_PA,
         RolePermission::ROLE_AGENCY_RECEPTIONIST,
+        RolePermission::ROLE_HOOD_CHATBOT_USER,
+
     ];
 
-    protected array $permissions = [
+    public const PERMISSIONS = [
         RolePermission::ROLE_HOOD_ADMIN => [
             RolePermission::P_HOOD_ADMIN_CORE,
             RolePermission::P_CAN_MANAGE_APPLICATION,
@@ -62,23 +64,27 @@ class RolePermissionSeeder extends Seeder
         ],
         RolePermission::ROLE_AGENCY_OFFICE_ADMIN => [
             RolePermission::P_AGENCY_OFFICE_ADMIN,
-
         ],
+
         RolePermission::ROLE_AGENCY_OFFICE_DIRECTOR => [
             RolePermission::P_AGENCY_OFFICE_DIRECTOR,
-
         ],
+
         RolePermission::ROLE_AGENCY_OFFICE_PROPERTY_MANAGER => [
             RolePermission::P_AGENCY_OFFICE_PROPERTY_MANAGER,
-
         ],
+
         RolePermission::ROLE_AGENCY_OFFICE_SENIOR_PROPERTY_MANAGER => [
             RolePermission::P_AGENCY_OFFICE_SENIOR_PROPERTY_MANAGER,
-
         ],
+
         RolePermission::ROLE_AGENCY_OFFICE_REAL_ESTATE_AGENT => [
             RolePermission::P_AGENCY_OFFICE_REAL_ESTATE_AGENT,
             RolePermission::P_CAN_CREATE_APPLICATION,
+        ],
+
+        RolePermission::ROLE_HOOD_CHATBOT_USER => [
+            RolePermission::P_HOOD_CHATBOT_USER_CORE,
         ],
 
     ];
@@ -89,11 +95,16 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        foreach ($this->roles as $role) {
+        self::createRolePermission(RolePermissionSeeder::ROLES, RolePermissionSeeder::PERMISSIONS);
+    }
+
+    public static function createRolePermission($roles, $permissionsOfRoles)
+    {
+        foreach ($roles  as $role) {
             $r = Role::findOrCreate($role);
-            if (array_key_exists($role, $this->permissions))
+            if (array_key_exists($role, $permissionsOfRoles))
             {
-                foreach ( $this->permissions[$role] as $permission) {
+                foreach ( $roles as $permission) {
                     $p = Permission::findOrCreate($permission);
                     $p->assignRole($r);
                 }

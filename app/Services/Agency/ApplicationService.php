@@ -200,7 +200,7 @@ class ApplicationService
             ->where('profile_id', $hoodUserId)
             ->firstOrFail();
 
-        if($checkProfile->hasAnyRole(RolePermission::ROLE_HOOD_ADMIN)) {
+        if($checkProfile->hasAnyRole(RolePermission::ROLE_HOOD_CHATBOT_USER)) {
             GilbertToChatbotJob::dispatch($appId);
         };
     }
