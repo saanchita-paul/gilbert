@@ -139,6 +139,7 @@ class ApplicationResource extends JsonResource
             'connection_services_status' => $this->mapConnectionServiceStatus($this->connectionServices, $this->tenancy_type, $this->state),
             'application_status' => $this->mapApplicationStatus(),
             'email_manually_verified_by' => $this->email_manually_verified_by,
+            'chatbot_id' => $this->chatbot_id,
         ];
     }
 

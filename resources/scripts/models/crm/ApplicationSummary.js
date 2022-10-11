@@ -72,6 +72,7 @@ export default class ApplicationSummary {
     is_power_life_support = null;
     is_duplicate = null;
     duplication_group_id = null;
+    chatbot_id = null;
 
     constructor(
         {
@@ -162,7 +163,7 @@ export default class ApplicationSummary {
             duplication_group_id = null,
 
             // email_manually_verified_by = 0,
-
+            chatbot_id= null
         }
     ) {
 
@@ -262,7 +263,7 @@ export default class ApplicationSummary {
 
 
         // this.email_manually_verified_by = email_manually_verified_by
-
+        this.chatbot_id = chatbot_id;
     }
 
 

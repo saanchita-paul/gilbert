@@ -38,6 +38,12 @@
             </div>
         </v-col>
 
+        <v-col cols="12" class="pb-0 pt-0" v-if="isChatBotApplication">
+            <v-alert border="left" color="#FFC104" type="info" dense>
+                <strong>This application sends Gilbert to Chatbot.</strong>
+            </v-alert>
+        </v-col>
+
         <div style="width: 100%;" class="mb-4 ml-6 mr-4 pl-2">
             <div class="d-flex justify-space-between" style="width: 100%;">
                 <div class="d-flex">
@@ -130,6 +136,9 @@ name: "LeadDetailsHeader",
         },
         showDuplicateLeadButton() {
             return this.leadSummary?.is_duplicate;
+        },
+        isChatBotApplication() {
+            return this.leadSummary?.chatbot_id;
         }
     },
     methods: {
