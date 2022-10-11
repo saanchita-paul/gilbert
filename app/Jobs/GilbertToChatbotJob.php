@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\User;
 use App\Services\GilbertToCB\GilbertToChatbotService;
 use App\Services\RolePermission;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,6 +33,7 @@ class GilbertToChatbotJob implements ShouldQueue
      * Execute the job.
      *
      * @return void
+     * @throws Exception
      */
     public function handle()
     {
