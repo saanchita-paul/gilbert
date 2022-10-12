@@ -1,9 +1,6 @@
 <?php
 
 namespace App\Services\Agency\CafFile;
-
-//use App\MovingUtilityData;
-//use App\Plan;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;

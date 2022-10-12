@@ -143,6 +143,7 @@ class ApplicationResource extends JsonResource
             'application_status' => $this->mapApplicationStatus(),
             'email_manually_verified_by' => $this->email_manually_verified_by,
             'is_generated_caf' => $this->is_generated_caf,
+            'chatbot_id' => $this->chatbot_id,
         ];
     }
 

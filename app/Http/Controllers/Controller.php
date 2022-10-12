@@ -42,4 +42,13 @@ class Controller extends BaseController
     {
         return response()->json(['success' => false, 'message' => $mgs], 403);
     }
+
+    protected function sendSuccessResponse(string $message, int $statusCode = 200, $payload = []): JsonResponse
+    {
+        return response()->json([
+            'message' => $message,
+            'success' => 1,
+//            'data' => $payload
+        ], $statusCode);
+    }
 }

@@ -122,17 +122,17 @@ class AddressModel{
         private ?string $country = null,
         private ?bool $is_address_complete = false,
         private ?int $connection_application_id = null,
-    ) 
+    )
     {
         if(isset($this->connection_application_id))
         {
-            $this->setFromConnectionApplication();        
-        } else 
+            $this->setFromConnectionApplication();
+        } else
         {
             $this->setProperties();
         }
     }
-    
+
     private function setFromConnectionApplication()
     {
         try
@@ -165,17 +165,17 @@ class AddressModel{
             $this->address_text = $this->street_address . " " . $this->city . " " . $this->state . " " . $this->postcode . " " . $this->country;
         }
 
-        if ($this->state && strlen($this->state) < 4) 
+        if ($this->state && strlen($this->state) < 4)
         {
             $this->state_short = $this->state;
             $this->state = ucwords( self::MAP_STATES_SHORT_TO_LONG[strtolower($this->state)] ) ?? null;
-        } 
-        else 
-        { 
+        }
+        else
+        {
             $this->state_short = ucfirst(self::MAP_STATES_LONG_TO_SHORT[strtolower($this->state)]) ?? null;
         }
 
-        if ($this->country && strlen($this->country) < 3) 
+        if ($this->country && strlen($this->country) < 3)
         {
             $this->country = ucfirst(self::MAP_COUNTRY[strtolower($this->country)]) ?? null;
         }
@@ -185,12 +185,12 @@ class AddressModel{
     {
         return $this->unit_number;
     }
-    
+
     public function getAddressText()
     {
         return $this->address_text;
     }
-    
+
     public function getStreetAddress()
     {
         return $this->street_address;
@@ -249,5 +249,10 @@ class AddressModel{
     public function setIsAddressComplete(bool $is_address_complete)
     {
         $this->is_address_complete = $is_address_complete;
+    }
+
+    public static function mapStateToShort(?string $state): ?string
+    {
+        return AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($state)] ?? null;
     }
 }

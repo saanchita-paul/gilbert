@@ -48,6 +48,8 @@ export default {
         ),
     loadUserLead: id => LeadApplicationAPI.getUserLead(id),
     closeApplication: id => LeadApplicationAPI.closeApplication(id),
+    sendToChatBot: id => LeadApplicationAPI.sendToChatBot(id),
+    isSentToChatbot: id => LeadApplicationAPI.getIsSentToChatbot(id),
     loadPlan: serviceProvider => LeadApplicationAPI.getPlan(serviceProvider),
     loadNote: leadUser => LeadApplicationAPI.getNote(leadUser),
     loadServiceProvider: services =>
