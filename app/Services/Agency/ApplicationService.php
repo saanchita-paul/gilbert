@@ -195,8 +195,7 @@ class ApplicationService
 
     public function sendToChatbot($appId, $hoodUserId)
     {
-        $checkProfile = User::with('profile')
-            ->where('profile_type', USER::PROFILE_TYPE_HOOD)
+        $checkProfile = User::where('profile_type', USER::PROFILE_TYPE_HOOD)
             ->where('profile_id', $hoodUserId)
             ->firstOrFail();
 

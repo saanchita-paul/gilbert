@@ -2,6 +2,7 @@
 
 namespace App\Services\GilbertToCB;
 use App\Models\ConnectionApplication;
+use App\Services\Address\AddressModel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
@@ -30,7 +31,7 @@ class GilbertToChatbotService
      */
     public function create()
     {
-        $url = 'http://127.0.0.1:8000/api/gilbert-application';
+        $url = config('bot.root_url') .'/api/gilbert-application';
         $response = Http::post($url, $this->getProperties());
         if($response->status() === 201){
             $this->application->update(['chatbot_id' => $response->json()['moving_utility_id']]);
@@ -70,7 +71,7 @@ class GilbertToChatbotService
             "street_name" => $this->application->street_name,
             "suburb" => $this->application->city,
             "to_postcode" => $this->application->postcode,
-            "state" => $this->application->state,
+            "state" => AddressModel::mapStateToShort($this->application->state),
             "country" => $this->application->country,
             "additional_instruction" => $this->application->additional_instruction,
             "to_address" => $this->application->address_text,
