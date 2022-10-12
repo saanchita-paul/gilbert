@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\Agency\DuplicationApplicationController;
+use App\Http\Controllers\GilbertLeadAPIController;
 use App\Jobs\ApplicationFromGilbertJob;
 use App\Models\ConnectionApplication;
 use App\Http\Controllers\Agency\AppCloseReasonController;
@@ -29,7 +30,6 @@ use App\Http\Controllers\Agency\HoodUserController;
 use App\Http\Controllers\Agency\OfficeController;
 use App\Http\Controllers\Agency\ReaExtractsReportController;
 use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
-use App\Http\Controllers\GilbertLeadAPIController;
 use App\Http\Controllers\UserInvitationController;
 use App\Services\RolePermission;
 use OurProperty\Http\Controllers\OurPropertyController;
@@ -277,6 +277,11 @@ Route::post('/our-property/lead', [OurPropertyController::class, 'createOurPrope
 Route::get('/gbg-validate-email', [ApplicationController::class, 'isGbgValidateEmail']);
 Route::get('/applications/{id}/email-manually-verified', [ApplicationController::class, 'isEmailManuallyVerified']);
 
+/**
+ * gilbert to chatbot sync
+ */
+Route::get('/cb-to-gb-sync/{id}', [GilbertLeadAPIController::class, 'syncProperty']);
+
 
 Route::get("/karan/sales-status", function () {
     $id = request()->get('id');
@@ -324,17 +329,6 @@ Route::get('/kaka', function () {
 
 });
 
-/*
- * gilbert leads
- * gilbert to chatbot implementation
- * */
-Route::get('/gilbert-leads', [GilbertLeadAPIController::class, 'getGilbertLeads']);
-Route::put('/gilbert-leads/{id}', [GilbertLeadAPIController::class, 'updateGilbertLeads']);
-Route::get('/gilbert-finish-step/{step}', [GilbertLeadAPIController::class, 'updateGilbertSteps']);
-Route::put('/gilbert-connection/{id}', [GilbertLeadAPIController::class, 'updateService']);
-Route::put('/gilbert-energy/{id}', [GilbertLeadAPIController::class, 'updateGilbertEnergy']);
-
-
 
 //Route::post('/gbg-validate-email', function() {
 //
@@ -345,12 +339,6 @@ Route::put('/gilbert-energy/{id}', [GilbertLeadAPIController::class, 'updateGilb
 //
 //});
 
-Route::get('/create-application', function() {
-   $application = new GilbertToChatbotService(1);
-   return $application->create();
-});
-
-Route::get('/cb-to-gb-sync/{id}', [GilbertLeadAPIController::class, 'syncProperty']);
 
 Route::get('/nmi-mirn', function() {
 //    $testApp = new UpdateApplicationFromGilbertService(3);
