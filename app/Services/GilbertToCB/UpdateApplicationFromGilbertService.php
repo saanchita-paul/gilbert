@@ -55,5 +55,17 @@ class UpdateApplicationFromGilbertService
 
 
 
+    public static function shouldUpdateChatbotNmiMirn(ConnectionApplication $app)
+    {
+        if(!$app->chatbot_id) {
+            return false;
+        }
+
+        return $app->isDirty('nmi') || $app->isDirty('mirn');
+    }
+
+
+
+
 }
 

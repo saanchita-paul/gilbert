@@ -6,6 +6,7 @@ use App\Http\Controllers\GilbertLeadAPIController;
 use App\Jobs\ApplicationFromGilbertJob;
 use App\Models\ConnectionApplication;
 use App\Http\Controllers\Agency\AppCloseReasonController;
+use App\Observers\ConnectionApplicationObserver;
 use App\Services\Agency\TriageFlagService;
 use App\Services\GilbertToCB\ChatbotToGilbertSyncService;
 use App\Services\GilbertToCB\GilbertToChatbotService;
@@ -341,7 +342,10 @@ Route::get('/kaka', function () {
 
 
 Route::get('/nmi-mirn', function() {
-//    $testApp = new UpdateApplicationFromGilbertService(3);
-//    return $testApp->call();
-    ApplicationFromGilbertJob::dispatch(3);
+//    dd('hello');
+    $app = ConnectionApplication::where('id', 1)->firstOrFail();
+    $app->update([
+        'nmi' => 349379
+    ]);
+
 });
