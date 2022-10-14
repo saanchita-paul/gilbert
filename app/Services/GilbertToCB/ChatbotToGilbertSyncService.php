@@ -5,6 +5,7 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use App\Models\Identification;
+use App\Services\GilbertToChatbotStatusMapping;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
@@ -128,7 +129,9 @@ class ChatbotToGilbertSyncService
         }
         if(isset($this->requestData['identification_details'])) {
             $this->applicationData['is_email_billing'] = $this->mapEmailBillingType($this->requestData['identification_details']['billing_preference']);
+
             $this->identificationData = $this->mapIdentification($this->requestData['identification_details']);
+
         }
         if(isset($this->requestData['other_details'])) {
             $this->applicationData['is_email_billing'] = $this->mapEmailBillingType($this->requestData['other_details']['billing_preference']);
@@ -234,11 +237,11 @@ class ChatbotToGilbertSyncService
      */
     public function sync()
     {
-        $test = ConnectionApplication::where('chatbot_id', $this->chatbotId)->update($this->applicationData);
-//        dd($this->id);
-        Identification::where('connection_application_id', $this->chatbotId)
+        $app = ConnectionApplication::where('chatbot_id', $this->chatbotId)->firstOrFail();
+        $app->update($this->applicationData);
+        Identification::where('connection_application_id', $app->id)
             ->update($this->identificationData);
-        ConnectionApplicationSecondaryACC::where('connection_application_id', $this->chatbotId)
+        ConnectionApplicationSecondaryACC::where('connection_application_id', $app->id)
             ->update($this->authorizedPersonData);
     }
 
@@ -354,6 +357,7 @@ class ChatbotToGilbertSyncService
      */
     private function mapIdentification($identificationData)
     {
+//        dd($identificationData);
         $mappedIdentificationData = [];
         $identificationType = $this->mapIDType($identificationData['identification_type']);
         $mappedIdentificationData['type'] = $identificationType;
@@ -377,7 +381,12 @@ class ChatbotToGilbertSyncService
             default:
                 break;
         }
+//        dd($mappedIdentificationData);
         return $mappedIdentificationData;
+    }
+    private function mapServiceStatus($status)
+    {
+      return GilbertToChatbotStatusMapping::CB_TO_GB_MAPPING[strtolower($status)] ?? null;
     }
 
     /**
@@ -398,7 +407,7 @@ class ChatbotToGilbertSyncService
                         'service_type'   => $service['service_type'],
                         'plan_type'   => $service['plan_type'],
                         'provider_name'   => $service['provider_name'],
-//                        'status'   => $service['status'],
+                        'status'   => $this->mapServiceStatus($service['status']),
 //                        'connection_date'   => $service['connection_date'],
 //                        'submitted_at'   => $service['submitted_at'],
 //                        'lead_reference'   => $service['lead_reference'],

@@ -62,7 +62,7 @@ class GilbertToChatbotService
             "is_email_validate" => $this->application->is_email_validate,
             "phone" => $this->application->phone,
             "phone_type" => $this->application->phone_type,
-            "rent" => $this->application->tenancy_type,
+            "rent" => $this->mapTenancyType($this->application->tenancy_type),
             "dob" => $this->application->dob,
             "moved_at" => $this->application->moving_date,
             "flat_or_unit_number" => $this->application->address_unit,
@@ -170,6 +170,14 @@ class GilbertToChatbotService
 
     public function mapConcessionCardType($data){
         return self::CONCESSION_MAPPER[strtoupper($data)] ?? null;
+    }
+
+    private function mapTenancyType($tenancyType){
+        return match($tenancyType) {
+            0 => ConnectionApplication::TENANCY_TYPE_HOME_OWNER,
+            1 => ConnectionApplication::TENANCY_TYPE_RENTER,
+            default => null
+        };
     }
 
 
