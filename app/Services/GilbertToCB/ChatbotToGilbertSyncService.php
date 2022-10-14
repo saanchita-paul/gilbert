@@ -234,7 +234,7 @@ class ChatbotToGilbertSyncService
      */
     public function sync()
     {
-        ConnectionApplication::where('id', $this->id)->update($this->applicationData);
+        ConnectionApplication::where('chatbot_id', $this->id)->update($this->applicationData);
         Identification::where('connection_application_id', $this->id)->update($this->identificationData);
         ConnectionApplicationSecondaryACC::where('connection_application_id', $this->id)->update($this->authorizedPersonData);
     }
