@@ -168,11 +168,13 @@ class GilbertToChatbotService
           ];
     }
 
-    public function mapConcessionCardType($data){
+    public function mapConcessionCardType($data)
+    {
         return self::CONCESSION_MAPPER[strtoupper($data)] ?? null;
     }
 
-    private function mapTenancyType($tenancyType){
+    private function mapTenancyType($tenancyType)
+    {
         return match((int) $tenancyType) {
             "0" => ConnectionApplication::TENANCY_TYPE_HOME_OWNER,
             "1" => ConnectionApplication::TENANCY_TYPE_RENTER,
