@@ -50,7 +50,7 @@ class ChatbotToGilbertSyncService
     /**
      * @var
      */
-    private $id;
+    private $chatbotId;
     /**
      * @var
      */
@@ -73,12 +73,12 @@ class ChatbotToGilbertSyncService
     private $authorizedPersonData = [];
 
     /**
-     * @param $id
+     * @param $chatbotId
      * @param $requestData
      */
-    public function __construct($id, $requestData)
+    public function __construct($chatbotId, $requestData)
     {
-        $this->id = $id;
+        $this->chatbotId = $chatbotId;
         $this->requestData = $requestData;
         $this->setApplicationData();
     }
@@ -234,12 +234,16 @@ class ChatbotToGilbertSyncService
      */
     public function sync()
     {
-        ConnectionApplication::where('chatbot_id', $this->id)->update($this->applicationData);
-        Identification::where('connection_application_id', $this->id)->update($this->identificationData);
-        ConnectionApplicationSecondaryACC::where('connection_application_id', $this->id)->update($this->authorizedPersonData);
+        $test = ConnectionApplication::where('chatbot_id', $this->chatbotId)->update($this->applicationData);
+//        dd($this->id);
+        Identification::where('connection_application_id', $this->chatbotId)
+            ->update($this->identificationData);
+        ConnectionApplicationSecondaryACC::where('connection_application_id', $this->chatbotId)
+            ->update($this->authorizedPersonData);
     }
 
     /**
+     *
      * @param $propertyType
      * @return int|null
      */
@@ -382,14 +386,15 @@ class ChatbotToGilbertSyncService
      */
     private function mapConnectionService($serviceData)
     {
+        $app = ConnectionApplication::where('chatbot_id', $this->chatbotId)->firstOrFail();
         foreach ($serviceData as $service) {
             if($service['service_type']) {
 //                dd($service['service_type']);
 //                $mappedServiceData['connection_application_id'] = $this->id;
 //                $mappedServiceData['status'] = $service['status'];
-                ConnectionService::query()->where('connection_application_id', $this->id)
+                ConnectionService::query()->where('connection_application_id', $app->id)
                     ->updateOrCreate(['service_type'   => $service['service_type']], [
-                        'connection_application_id'   => $this->id,
+                        'connection_application_id'   => $app->id,
                         'service_type'   => $service['service_type'],
                         'plan_type'   => $service['plan_type'],
                         'provider_name'   => $service['provider_name'],
