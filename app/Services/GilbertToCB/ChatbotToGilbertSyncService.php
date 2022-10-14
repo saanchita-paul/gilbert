@@ -263,9 +263,9 @@ class ChatbotToGilbertSyncService
      * @return int|null
      */
     private function mapTenancyType($tenancyType){
-        return match($tenancyType) {
-            0 => ConnectionApplication::TENANCY_TYPE_HOME_OWNER,
-            1 => ConnectionApplication::TENANCY_TYPE_RENTER,
+        return match((string) $tenancyType) {
+            "0"=> ConnectionApplication::TENANCY_TYPE_HOME_OWNER,
+            "1" => ConnectionApplication::TENANCY_TYPE_RENTER,
             default => null
         };
     }
