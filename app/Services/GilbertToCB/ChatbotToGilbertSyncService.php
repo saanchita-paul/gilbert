@@ -214,7 +214,7 @@ class ChatbotToGilbertSyncService
             $this->applicationData['concession_start_date'] = $this->requestData['concession_details']['concession_card_start_date'];
 //            $this->applicationData['concession_end_date'] = $this->requestData['concession_details']['concession_end_date'];
         }
-        if(isset($this->requestData['authorized_person'])){
+        if(isset($this->requestData['authorized_person'])) {
             $this->authorizedPersonData['title'] = $this->requestData['authorized_person']['title'];
             $this->authorizedPersonData['first_name'] = $this->requestData['authorized_person']['first_name'];
             $this->authorizedPersonData['middle_name'] = $this->requestData['authorized_person']['middle_name'];
@@ -230,7 +230,7 @@ class ChatbotToGilbertSyncService
             $this->authorizedPersonData['special_number'] = $this->requestData['authorized_person']['special_number'];
             $this->authorizedPersonData['expire_date'] = $this->requestData['authorized_person']['expire_date'];
         }
-        if(isset($this->requestData['connection_services'])){
+        if(isset($this->requestData['connection_services'])) {
             $this->serviceData = $this->mapConnectionService($this->requestData['connection_services']);
         }
 
@@ -255,7 +255,8 @@ class ChatbotToGilbertSyncService
      * @param $propertyType
      * @return int|null
      */
-    private function mapPropertType($propertyType){
+    private function mapPropertType($propertyType)
+    {
         return match(strtolower($propertyType)) {
             'residential' => ConnectionApplication::PROPERTY_TYPE_RESIDENTIAL,
             'business' => ConnectionApplication::PROPERTY_TYPE_BUSINESS,
@@ -267,7 +268,8 @@ class ChatbotToGilbertSyncService
      * @param $tenancyType
      * @return int|null
      */
-    private function mapTenancyType($tenancyType){
+    private function mapTenancyType($tenancyType)
+    {
         return match((int) $tenancyType) {
             0 => ConnectionApplication::TENANCY_TYPE_HOME_OWNER,
             1 => ConnectionApplication::TENANCY_TYPE_RENTER,
@@ -279,7 +281,8 @@ class ChatbotToGilbertSyncService
      * @param $solarType
      * @return int|null
      */
-    private function mapSolarType($solarType){
+    private function mapSolarType($solarType)
+    {
         return match(strtolower($solarType)) {
             'solar' => ConnectionApplication::HAS_SOLAR,
             'no_solar' => ConnectionApplication::NO_SOLAR,
@@ -291,7 +294,8 @@ class ChatbotToGilbertSyncService
      * @param $emailBillingType
      * @return int|null
      */
-    private function mapEmailBillingType($emailBillingType){
+    private function mapEmailBillingType($emailBillingType)
+    {
         return match(strtolower($emailBillingType)) {
             'email' => ConnectionApplication::EMAIL_BILLING_EMAIL,
             'connection_address' => ConnectionApplication::EMAIL_BILLING_PAPER,
@@ -303,7 +307,8 @@ class ChatbotToGilbertSyncService
      * @param $cardColorType
      * @return string|null
      */
-    private function mapCardColorType($cardColorType){
+    private function mapCardColorType($cardColorType)
+    {
         return match(strtolower($cardColorType)) {
             'green' => self::CARD_COLOR_GREEN,
             'blue' => self::CARD_COLOR_BLUE,
@@ -314,7 +319,6 @@ class ChatbotToGilbertSyncService
 
 
     private function mapIdentificationState($identificationState)
-
     {
         return match(strtolower($identificationState)) {
             'victoria' => self::IDENTIFICATION_STATE_VIC,
@@ -414,6 +418,7 @@ class ChatbotToGilbertSyncService
      */
     private function mapConnectionService($serviceData)
     {
+//        dd($serviceData);
         $app = ConnectionApplication::where('chatbot_id', $this->chatbotId)->firstOrFail();
         foreach ($serviceData as $service) {
             if($service['service_type']) {
