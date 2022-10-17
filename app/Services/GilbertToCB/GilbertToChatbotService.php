@@ -54,7 +54,7 @@ class GilbertToChatbotService
             "assigned_to" => $this->application->assigned_to,
             "moving_utility_id" => $this->application->moving_utility_id,
             "submitted_by" => $this->application->submitted_by,
-            "title" => $this->application->title,
+            "title" => strtolower($this->application->title),
             "first_name" => $this->application->first_name,
             "middle_name" => $this->application->middle_name,
             "last_name" => $this->application->last_name,

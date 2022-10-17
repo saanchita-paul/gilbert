@@ -95,7 +95,7 @@ class ChatbotToGilbertSyncService
     private function setApplicationData()
     {
         if (isset($this->requestData['personal_details'])) {
-            $this->applicationData['title'] = $this->requestData['personal_details']['title'];
+            $this->applicationData['title'] = ucfirst($this->requestData['personal_details']['title']);
             $this->applicationData['first_name'] = $this->requestData['personal_details']['first_name'];
             $this->applicationData['middle_name'] = $this->requestData['personal_details']['middle_name'];
             $this->applicationData['last_name'] = $this->requestData['personal_details']['last_name'];
