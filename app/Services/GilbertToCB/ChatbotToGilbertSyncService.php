@@ -48,6 +48,11 @@ class ChatbotToGilbertSyncService
      */
     public const CONCESSION_CARD_TYPE_QSC = 'QSC';
 
+    public const IDENTIFICATION_STATE_VIC='Victoria';
+    public const IDENTIFICATION_STATE_NSW='New South Wales';
+    public const IDENTIFICATION_STATE_ACT='Australian Capital Territory';
+    public const IDENTIFICATION_STATE_SA='South Australia';
+    public const IDENTIFICATION_STATE_QL='Queensland';
     /**
      * @var
      */
@@ -263,9 +268,9 @@ class ChatbotToGilbertSyncService
      * @return int|null
      */
     private function mapTenancyType($tenancyType){
-        return match((string) $tenancyType) {
-            "0"=> ConnectionApplication::TENANCY_TYPE_HOME_OWNER,
-            "1" => ConnectionApplication::TENANCY_TYPE_RENTER,
+        return match((int) $tenancyType) {
+            0=> ConnectionApplication::TENANCY_TYPE_HOME_OWNER,
+            1 => ConnectionApplication::TENANCY_TYPE_RENTER,
             default => null
         };
     }
@@ -299,13 +304,28 @@ class ChatbotToGilbertSyncService
      * @return string|null
      */
     private function mapCardColorType($cardColorType){
-        return match(strtoupper($cardColorType)) {
+        return match(strtolower($cardColorType)) {
             'green' => self::CARD_COLOR_GREEN,
             'blue' => self::CARD_COLOR_BLUE,
             'yellow' => self::CARD_COLOR_YELLOW,
             default => null
         };
     }
+
+
+    private function mapIdentificationState($identificationState)
+
+    {
+        return match(strtolower($identificationState)) {
+            'victoria' => self::IDENTIFICATION_STATE_VIC,
+            'new south wales' => self::IDENTIFICATION_STATE_NSW,
+            'australian capital territory' => self::IDENTIFICATION_STATE_ACT,
+            'south australia' => self::IDENTIFICATION_STATE_SA,
+            'queensland' => self::IDENTIFICATION_STATE_QL,
+            default => null
+        };
+    }
+
 
     /**
      * @param $identityType
@@ -357,7 +377,6 @@ class ChatbotToGilbertSyncService
      */
     private function mapIdentification($identificationData)
     {
-//        dd($identificationData);
         $mappedIdentificationData = [];
         $identificationType = $this->mapIDType($identificationData['identification_type']);
         $mappedIdentificationData['type'] = $identificationType;
@@ -369,8 +388,9 @@ class ChatbotToGilbertSyncService
                 break;
             case Identification::TYPE_DRIVING_LICENCE:
                 $mappedIdentificationData['card_number'] = $identificationData['driving_license_number'];
-                $mappedIdentificationData['state'] = $identificationData['driving_license_state'];
+                $mappedIdentificationData['state'] = $this->mapIdentificationState($identificationData['driving_license_state']);
                 $mappedIdentificationData['expire_date'] = $identificationData['identification_expire_date'];
+
                 break;
             case Identification::TYPE_MEDICARE:
                 $mappedIdentificationData['card_number'] = $identificationData['medicare_card_number'];
@@ -381,7 +401,6 @@ class ChatbotToGilbertSyncService
             default:
                 break;
         }
-//        dd($mappedIdentificationData);
         return $mappedIdentificationData;
     }
     private function mapServiceStatus($status)
