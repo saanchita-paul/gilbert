@@ -5,6 +5,7 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use App\Models\Identification;
+use App\Services\AddressMapperService;
 use App\Services\GilbertToChatbotStatusMapping;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -48,11 +49,6 @@ class ChatbotToGilbertSyncService
      */
     public const CONCESSION_CARD_TYPE_QSC = 'QSC';
 
-    public const IDENTIFICATION_STATE_VIC='Victoria';
-    public const IDENTIFICATION_STATE_NSW='New South Wales';
-    public const IDENTIFICATION_STATE_ACT='Australian Capital Territory';
-    public const IDENTIFICATION_STATE_SA='South Australia';
-    public const IDENTIFICATION_STATE_QL='Queensland';
     /**
      * @var
      */
@@ -323,11 +319,14 @@ class ChatbotToGilbertSyncService
     private function mapIdentificationState($identificationState)
     {
         return match(strtolower($identificationState)) {
-            'victoria' => self::IDENTIFICATION_STATE_VIC,
-            'new south wales' => self::IDENTIFICATION_STATE_NSW,
-            'australian capital territory' => self::IDENTIFICATION_STATE_ACT,
-            'south australia' => self::IDENTIFICATION_STATE_SA,
-            'queensland' => self::IDENTIFICATION_STATE_QL,
+            'victoria' => AddressMapperService::STATE_VIC,
+            'new south wales' => AddressMapperService::STATE_NSW,
+            'australian capital territory' => AddressMapperService::STATE_ACT,
+            'south australia' => AddressMapperService::STATE_SA,
+            'queensland' => AddressMapperService::STATE_QLD,
+            'western australia' => AddressMapperService::STATE_WA,
+            'tasmania' => AddressMapperService::STATE_TAS,
+            'northern territory' => AddressMapperService::STATE_NT,
             default => null
         };
     }
