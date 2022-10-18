@@ -126,6 +126,8 @@ class ChatbotToGilbertSyncService
             $this->applicationData['billing_city'] = $this->requestData['connection_details']['billing_city'];
             $this->applicationData['billing_state'] = $this->requestData['connection_details']['billing_state'];
             $this->applicationData['billing_postcode'] = $this->requestData['connection_details']['billing_postcode'];
+            $this->applicationData['nmi'] = $this->requestData['connection_details']['nmi'];
+            $this->applicationData['mirn'] = $this->requestData['connection_details']['mirn'];
         }
         if(isset($this->requestData['property_details'])) {
             $this->applicationData['property_type'] = $this->mapPropertType($this->requestData['property_details']['account_type']) ;
