@@ -176,8 +176,8 @@ class GilbertToChatbotService
     private function mapTenancyType($tenancyType)
     {
         return match((int) $tenancyType) {
-            0 => ConnectionApplication::TENANCY_TYPE_HOME_OWNER,
-            1 => ConnectionApplication::TENANCY_TYPE_RENTER,
+            1 => 1,
+            2 => 0,
             default => null
         };
     }
