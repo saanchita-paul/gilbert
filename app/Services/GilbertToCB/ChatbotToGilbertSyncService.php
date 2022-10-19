@@ -232,6 +232,7 @@ class ChatbotToGilbertSyncService
             $this->serviceData = $this->mapConnectionService($this->requestData['connection_services']);
         }
 
+
     }
 
 
@@ -244,8 +245,7 @@ class ChatbotToGilbertSyncService
         $app->update($this->applicationData);
         Identification::where('connection_application_id', $app->id)
             ->update($this->identificationData);
-        ConnectionApplicationSecondaryACC::where('connection_application_id', $app->id)
-            ->update($this->authorizedPersonData);
+        ConnectionApplicationSecondaryACC::where('connection_application_id', $app->id);
     }
 
     /**
@@ -295,8 +295,8 @@ class ChatbotToGilbertSyncService
     private function mapEmailBillingType($emailBillingType)
     {
         return match(strtolower($emailBillingType)) {
-            'email' => ConnectionApplication::EMAIL_BILLING_EMAIL,
-            'connection_address' => ConnectionApplication::EMAIL_BILLING_PAPER,
+            'email' => 1,
+            'connection_address' => 0,
             default => null
         };
     }
@@ -426,7 +426,7 @@ class ChatbotToGilbertSyncService
 //                dd($service['service_type']);
 //                $mappedServiceData['connection_application_id'] = $this->id;
 //                $mappedServiceData['status'] = $service['status'];
-                ConnectionService::query()->where('connection_application_id', $app->id)
+                ConnectionService::query()->where('connection_application_id', $app->id)->with('reasons')
                     ->updateOrCreate(['service_type'   => $service['service_type']], [
                         'connection_application_id'   => $app->id,
                         'service_type'   => strtolower($service['service_type']) === 'electricity'
@@ -445,5 +445,7 @@ class ChatbotToGilbertSyncService
             }
         }
     }
+
+
 
 }

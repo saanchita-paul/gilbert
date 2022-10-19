@@ -51,10 +51,12 @@ class ConnectionApplicationObserver
      */
     public function updated(ConnectionApplication $application)
     {
-//        dd('hello');
-        if (UpdateApplicationFromGilbertService::shouldUpdateChatbotNmiMirn($application)) {
-            ApplicationFromGilbertJob::dispatch($application->id);
-        }
+//        dd($application->id);
+        info('hello', [$application->id]);
+//        if (UpdateApplicationFromGilbertService::shouldUpdateChatbotNmiMirn($application)) {
+//            ApplicationFromGilbertJob::dispatch($application->id);
+//        }
+        ApplicationFromGilbertJob::dispatch($application->id);
 
         foreach (TriageFlagService::MANDATORY_APP_FIELDS_NOT_HOOD_AI as $field) {
             if ($application->isDirty($field)) {

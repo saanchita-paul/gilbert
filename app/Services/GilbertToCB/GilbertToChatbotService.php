@@ -186,7 +186,7 @@ class GilbertToChatbotService
     {
         return match((int) $billingType) {
             1 => 'email',
-            2 => 'connection_address',
+            0 => 'connection_address',
             default => null
         };
     }

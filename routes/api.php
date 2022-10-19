@@ -346,7 +346,8 @@ Route::get('/nmi-mirn', function() {
 //    dd('hello');
     $app = ConnectionApplication::firstOrFail();
     $app->first_name = 'helllllo';
-    $app->saveOrFail();
+    $app->updateOrFail();
+    info('testing' , [$app]);
 //    return true;
 //    $app = ConnectionApplication::where('id', 1)->firstOrFail();
 //    $app->update([
