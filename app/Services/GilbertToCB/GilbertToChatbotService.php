@@ -21,7 +21,7 @@ class GilbertToChatbotService
 
     public function __construct($id)
     {
-        $this->application = ConnectionApplication::query()->with([
+        $this->application = ConnectionApplication::query()->where('id', $id)->with([
             'identification',
             'connectionServices',
             'authorizedPerson',
