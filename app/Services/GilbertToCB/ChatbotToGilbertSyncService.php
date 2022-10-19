@@ -429,16 +429,18 @@ class ChatbotToGilbertSyncService
                 ConnectionService::query()->where('connection_application_id', $app->id)
                     ->updateOrCreate(['service_type'   => $service['service_type']], [
                         'connection_application_id'   => $app->id,
-                        'service_type'   => $service['service_type'],
+                        'service_type'   => strtolower($service['service_type']) === 'electricity'
+                            ? 'power'
+                            : $service['service_type'],
                         'plan_type'   => $service['plan_type'],
                         'provider_name'   => $service['provider_name'],
                         'status'   => $this->mapServiceStatus($service['status']),
-//                        'connection_date'   => $service['connection_date'],
-//                        'submitted_at'   => $service['submitted_at'],
-//                        'lead_reference'   => $service['lead_reference'],
-//                        'accepted_at'   => $service['accepted_at'],
-//                        'rejected_at'   => $service['rejected_at'],
-//                        'distributor'   => $service['distributor'],
+                        'connection_date'   => $service['connection_date'],
+                        'submitted_at'   => $service['submitted_at'],
+                        'lead_reference'   => $service['lead_reference'],
+                        'accepted_at'   => $service['accepted_at'],
+                        'rejected_at'   => $service['rejected_at'],
+                        'distributor'   => $service['distributor'],
                     ]);
             }
         }
