@@ -76,7 +76,7 @@ class GilbertToChatbotService
             "additional_instruction" => $this->application->additional_instruction,
             "to_address" => $this->application->address_text,
             "reason" => $this->application->reason,
-            "is_email_billing" => $this->application->is_email_billing,
+            "billing_preference" => $this->mapbillingType($this->application->is_email_billing),
             "account_type" => $this->application->property_type,
             "is_property_on_life_support" => $this->application->has_life_support,
             "solar_panel" => $this->application->has_solar,
@@ -178,6 +178,15 @@ class GilbertToChatbotService
         return match((int) $tenancyType) {
             1 => 1,
             2 => 0,
+            default => null
+        };
+    }
+
+    private function mapbillingType($billingType)
+    {
+        return match((string) $billingType) {
+            1 => 'email',
+            2 => 'connection_address',
             default => null
         };
     }
