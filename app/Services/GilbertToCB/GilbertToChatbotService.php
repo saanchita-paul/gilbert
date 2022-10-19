@@ -21,8 +21,13 @@ class GilbertToChatbotService
 
     public function __construct($id)
     {
-        $this->application = ConnectionApplication::findOrFail($id);
-        $this->application->load(['identification', 'connectionServices','authorizedPerson']);
+        $this->application = ConnectionApplication::query()->where('id', $id)->with([
+            'identification',
+            'connectionServices',
+            'authorizedPerson',
+            'office',
+            'agency'
+        ])->firstOrFail();
     }
 
 
@@ -48,12 +53,9 @@ class GilbertToChatbotService
     {
         return [
             "connection_application_id" => $this->application->id,
-            "office_id" => $this->application->office_id,
-            "agency_id" => $this->application->agency_id,
-            "created_by" => $this->application->created_by,
-            "assigned_to" => $this->application->assigned_to,
+            "office_name" => $this->application->office->name,
+            "agency_name" => $this->application->agency->name,
             "moving_utility_id" => $this->application->moving_utility_id,
-            "submitted_by" => $this->application->submitted_by,
             "title" => strtolower($this->application->title),
             "first_name" => $this->application->first_name,
             "middle_name" => $this->application->middle_name,
