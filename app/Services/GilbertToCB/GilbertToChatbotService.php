@@ -184,7 +184,7 @@ class GilbertToChatbotService
 
     private function mapbillingType($billingType)
     {
-        return match((string) $billingType) {
+        return match((int) $billingType) {
             1 => 'email',
             2 => 'connection_address',
             default => null
