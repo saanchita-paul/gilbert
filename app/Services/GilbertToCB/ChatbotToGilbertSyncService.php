@@ -425,12 +425,12 @@ class ChatbotToGilbertSyncService
     {
         $app = ConnectionApplication::where('chatbot_id', $this->chatbotId)->firstOrFail();
         foreach ($serviceData as $service) {
-
+            $serviceType = strtolower($service['service_type']) === 'electricity' ? 'power' : $service['service_type'];
             if($service['service_type']) {
                 ConnectionService::query()->where('connection_application_id', $app->id)->with('reasons')
-                    ->updateOrCreate(['service_type' => $service['service_type']], [
+                    ->updateOrCreate(['service_type' => $serviceType], [
                         'connection_application_id' => $app->id,
-                        'service_type'   => strtolower($service['service_type']) === 'electricity' ? 'power' : $service['service_type'],
+                        'service_type'   => $serviceType,
                         'plan_type'   => $service['plan_type'],
                         'provider_name'   => $service['provider_name'],
                         'status'   => $this->mapServiceStatus($service['status']),
