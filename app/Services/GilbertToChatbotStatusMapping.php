@@ -36,7 +36,7 @@ class GilbertToChatbotStatusMapping
         self::CB_STATUS_REJECTED => ConnectionService::STATUS_REJECTED,
         self::CB_AC_MANUAL_PROCESSING => ConnectionService::AC_MANUAL_PROCESSING,
         self::CB_STATUS_SENT => ConnectionService::STATUS_SUBMITTED,
-        self::CB_MANUAL_PROCESSING => ConnectionService::STATUS_SUBMITTED,
+        self::CB_MANUAL_PROCESSING => ConnectionService::AC_MANUAL_PROCESSING,
         self::CB_STATUS_PENDING => ConnectionService::STATUS_SUBMITTED,
         self::CB_STATUS_COMPLETE => ConnectionService::STATUS_ACCEPTED
     ];
