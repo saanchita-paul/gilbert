@@ -2,10 +2,12 @@
 
 namespace App\Observers;
 
+use App\Jobs\ApplicationFromGilbertJob;
 use App\Models\ConnectionApplication;
 use App\Services\Agency\TriageFlagService;
 use App\Services\DuplicateApplication\DuplicationApplicationService;
 use App\Services\GBGEmailValidationService;
+use App\Services\GilbertToCB\UpdateApplicationFromGilbertService;
 
 class ConnectionApplicationObserver
 {
@@ -32,7 +34,6 @@ class ConnectionApplicationObserver
 
     public function creating(ConnectionApplication $connectionApplication){
 
-
         $duplicatedKey = ($this->afterCreatedApplication($connectionApplication->toArray()))->updateDuplicatedApp();
         if(!empty( $duplicatedKey)) {
             $connectionApplication->is_duplicate = true;
@@ -40,6 +41,7 @@ class ConnectionApplicationObserver
         }
 
     }
+
 
     /**
      * Handle the ConnectionApplication "updated" event.
@@ -49,11 +51,21 @@ class ConnectionApplicationObserver
      */
     public function updated(ConnectionApplication $application)
     {
+//        dd($application->id);
+        info('hello', [$application->id]);
+//        if (UpdateApplicationFromGilbertService::shouldUpdateChatbotNmiMirn($application)) {
+//            ApplicationFromGilbertJob::dispatch($application->id);
+//        }
+        ApplicationFromGilbertJob::dispatch($application->id);
+
         foreach (TriageFlagService::MANDATORY_APP_FIELDS_NOT_HOOD_AI as $field) {
             if ($application->isDirty($field)) {
                return TriageFlagService::setTriageFlag($application->id);
             }
         }
+
+
+
 
 //        foreach (DuplicationApplicationService::DUPLICATED_FIELD as $field) {
 //            $data = $application->toArray();

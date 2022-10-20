@@ -15,10 +15,10 @@ use Illuminate\Http\Request;
 class GilbertLeadAPIController extends Controller
 {
 
-    public function syncProperty($id, Request $request)
+    public function syncProperty($chatbotId, Request $request)
     {
         try {
-            $syncProperty = new ChatbotToGilbertSyncService($id, $request->toArray());
+            $syncProperty = new ChatbotToGilbertSyncService($chatbotId, $request->toArray());
             $syncProperty->sync();
             return $this->sendSuccessResponse('success');
         }

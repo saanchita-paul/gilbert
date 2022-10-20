@@ -253,6 +253,7 @@ class AddressModel{
 
     public static function mapStateToShort(?string $state): ?string
     {
-        return AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($state)] ?? null;
+        $state = AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($state)];
+        return $state ?  strtoupper($state) : null;
     }
 }

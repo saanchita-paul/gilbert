@@ -5,6 +5,8 @@ use App\Models\ConnectionApplication;
 use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use App\Models\Identification;
+use App\Services\AddressMapperService;
+use App\Services\GilbertToChatbotStatusMapping;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
@@ -50,7 +52,7 @@ class ChatbotToGilbertSyncService
     /**
      * @var
      */
-    private $id;
+    private $chatbotId;
     /**
      * @var
      */
@@ -73,12 +75,12 @@ class ChatbotToGilbertSyncService
     private $authorizedPersonData = [];
 
     /**
-     * @param $id
+     * @param $chatbotId
      * @param $requestData
      */
-    public function __construct($id, $requestData)
+    public function __construct($chatbotId, $requestData)
     {
-        $this->id = $id;
+        $this->chatbotId = $chatbotId;
         $this->requestData = $requestData;
         $this->setApplicationData();
     }
@@ -89,7 +91,7 @@ class ChatbotToGilbertSyncService
     private function setApplicationData()
     {
         if (isset($this->requestData['personal_details'])) {
-            $this->applicationData['title'] = $this->requestData['personal_details']['title'];
+            $this->applicationData['title'] = ucfirst($this->requestData['personal_details']['title']);
             $this->applicationData['first_name'] = $this->requestData['personal_details']['first_name'];
             $this->applicationData['middle_name'] = $this->requestData['personal_details']['middle_name'];
             $this->applicationData['last_name'] = $this->requestData['personal_details']['last_name'];
@@ -120,6 +122,8 @@ class ChatbotToGilbertSyncService
             $this->applicationData['billing_city'] = $this->requestData['connection_details']['billing_city'];
             $this->applicationData['billing_state'] = $this->requestData['connection_details']['billing_state'];
             $this->applicationData['billing_postcode'] = $this->requestData['connection_details']['billing_postcode'];
+            $this->applicationData['nmi'] = $this->requestData['connection_details']['nmi'];
+            $this->applicationData['mirn'] = $this->requestData['connection_details']['mirn'];
         }
         if(isset($this->requestData['property_details'])) {
             $this->applicationData['property_type'] = $this->mapPropertType($this->requestData['property_details']['account_type']) ;
@@ -128,7 +132,9 @@ class ChatbotToGilbertSyncService
         }
         if(isset($this->requestData['identification_details'])) {
             $this->applicationData['is_email_billing'] = $this->mapEmailBillingType($this->requestData['identification_details']['billing_preference']);
+
             $this->identificationData = $this->mapIdentification($this->requestData['identification_details']);
+
         }
         if(isset($this->requestData['other_details'])) {
             $this->applicationData['is_email_billing'] = $this->mapEmailBillingType($this->requestData['other_details']['billing_preference']);
@@ -206,7 +212,7 @@ class ChatbotToGilbertSyncService
             $this->applicationData['concession_start_date'] = $this->requestData['concession_details']['concession_card_start_date'];
 //            $this->applicationData['concession_end_date'] = $this->requestData['concession_details']['concession_end_date'];
         }
-        if(isset($this->requestData['authorized_person'])){
+        if(isset($this->requestData['authorized_person'])) {
             $this->authorizedPersonData['title'] = $this->requestData['authorized_person']['title'];
             $this->authorizedPersonData['first_name'] = $this->requestData['authorized_person']['first_name'];
             $this->authorizedPersonData['middle_name'] = $this->requestData['authorized_person']['middle_name'];
@@ -222,9 +228,10 @@ class ChatbotToGilbertSyncService
             $this->authorizedPersonData['special_number'] = $this->requestData['authorized_person']['special_number'];
             $this->authorizedPersonData['expire_date'] = $this->requestData['authorized_person']['expire_date'];
         }
-        if(isset($this->requestData['connection_services'])){
+        if(isset($this->requestData['connection_services'])) {
             $this->serviceData = $this->mapConnectionService($this->requestData['connection_services']);
         }
+
 
     }
 
@@ -234,16 +241,20 @@ class ChatbotToGilbertSyncService
      */
     public function sync()
     {
-        ConnectionApplication::where('id', $this->id)->update($this->applicationData);
-        Identification::where('connection_application_id', $this->id)->update($this->identificationData);
-        ConnectionApplicationSecondaryACC::where('connection_application_id', $this->id)->update($this->authorizedPersonData);
+        $app = ConnectionApplication::where('chatbot_id', $this->chatbotId)->firstOrFail();
+        $app->update($this->applicationData);
+        Identification::where('connection_application_id', $app->id)
+            ->update($this->identificationData);
+        ConnectionApplicationSecondaryACC::where('connection_application_id', $app->id);
     }
 
     /**
+     *
      * @param $propertyType
      * @return int|null
      */
-    private function mapPropertType($propertyType){
+    private function mapPropertType($propertyType)
+    {
         return match(strtolower($propertyType)) {
             'residential' => ConnectionApplication::PROPERTY_TYPE_RESIDENTIAL,
             'business' => ConnectionApplication::PROPERTY_TYPE_BUSINESS,
@@ -255,8 +266,9 @@ class ChatbotToGilbertSyncService
      * @param $tenancyType
      * @return int|null
      */
-    private function mapTenancyType($tenancyType){
-        return match($tenancyType) {
+    private function mapTenancyType($tenancyType)
+    {
+        return match((int) $tenancyType) {
             0 => ConnectionApplication::TENANCY_TYPE_HOME_OWNER,
             1 => ConnectionApplication::TENANCY_TYPE_RENTER,
             default => null
@@ -267,7 +279,8 @@ class ChatbotToGilbertSyncService
      * @param $solarType
      * @return int|null
      */
-    private function mapSolarType($solarType){
+    private function mapSolarType($solarType)
+    {
         return match(strtolower($solarType)) {
             'solar' => ConnectionApplication::HAS_SOLAR,
             'no_solar' => ConnectionApplication::NO_SOLAR,
@@ -279,10 +292,11 @@ class ChatbotToGilbertSyncService
      * @param $emailBillingType
      * @return int|null
      */
-    private function mapEmailBillingType($emailBillingType){
+    private function mapEmailBillingType($emailBillingType)
+    {
         return match(strtolower($emailBillingType)) {
-            'email' => ConnectionApplication::EMAIL_BILLING_EMAIL,
-            'connection_address' => ConnectionApplication::EMAIL_BILLING_PAPER,
+            'email' => 1,
+            'connection_address' => 0,
             default => null
         };
     }
@@ -291,14 +305,32 @@ class ChatbotToGilbertSyncService
      * @param $cardColorType
      * @return string|null
      */
-    private function mapCardColorType($cardColorType){
-        return match(strtoupper($cardColorType)) {
+    private function mapCardColorType($cardColorType)
+    {
+        return match(strtolower($cardColorType)) {
             'green' => self::CARD_COLOR_GREEN,
             'blue' => self::CARD_COLOR_BLUE,
             'yellow' => self::CARD_COLOR_YELLOW,
             default => null
         };
     }
+
+
+    private function mapIdentificationState($identificationState)
+    {
+        return match(strtolower($identificationState)) {
+            'victoria' => AddressMapperService::STATE_VIC,
+            'new south wales' => AddressMapperService::STATE_NSW,
+            'australian capital territory' => AddressMapperService::STATE_ACT,
+            'south australia' => AddressMapperService::STATE_SA,
+            'queensland' => AddressMapperService::STATE_QLD,
+            'western australia' => AddressMapperService::STATE_WA,
+            'tasmania' => AddressMapperService::STATE_TAS,
+            'northern territory' => AddressMapperService::STATE_NT,
+            default => null
+        };
+    }
+
 
     /**
      * @param $identityType
@@ -361,8 +393,9 @@ class ChatbotToGilbertSyncService
                 break;
             case Identification::TYPE_DRIVING_LICENCE:
                 $mappedIdentificationData['card_number'] = $identificationData['driving_license_number'];
-                $mappedIdentificationData['state'] = $identificationData['driving_license_state'];
+                $mappedIdentificationData['state'] = $this->mapIdentificationState($identificationData['driving_license_state']);
                 $mappedIdentificationData['expire_date'] = $identificationData['identification_expire_date'];
+
                 break;
             case Identification::TYPE_MEDICARE:
                 $mappedIdentificationData['card_number'] = $identificationData['medicare_card_number'];
@@ -375,6 +408,10 @@ class ChatbotToGilbertSyncService
         }
         return $mappedIdentificationData;
     }
+    private function mapServiceStatus($status)
+    {
+      return GilbertToChatbotStatusMapping::CB_TO_GB_MAPPING[strtolower($status)] ?? null;
+    }
 
     /**
      * @param $serviceData
@@ -382,27 +419,30 @@ class ChatbotToGilbertSyncService
      */
     private function mapConnectionService($serviceData)
     {
+//        dd($serviceData);
+        $app = ConnectionApplication::where('chatbot_id', $this->chatbotId)->firstOrFail();
         foreach ($serviceData as $service) {
             if($service['service_type']) {
-//                dd($service['service_type']);
-//                $mappedServiceData['connection_application_id'] = $this->id;
-//                $mappedServiceData['status'] = $service['status'];
-                ConnectionService::query()->where('connection_application_id', $this->id)
-                    ->updateOrCreate(['service_type'   => $service['service_type']], [
-                        'connection_application_id'   => $this->id,
-                        'service_type'   => $service['service_type'],
+                $serviceType = strtolower($service['service_type']) === 'electricity' ? 'power' : $service['service_type'];
+
+                ConnectionService::query()->where('connection_application_id', $app->id)->with('reasons')
+                    ->updateOrCreate(['service_type' => $serviceType], [
+                        'connection_application_id' => $app->id,
+                        'service_type'   => $serviceType,
                         'plan_type'   => $service['plan_type'],
                         'provider_name'   => $service['provider_name'],
-//                        'status'   => $service['status'],
-//                        'connection_date'   => $service['connection_date'],
-//                        'submitted_at'   => $service['submitted_at'],
-//                        'lead_reference'   => $service['lead_reference'],
-//                        'accepted_at'   => $service['accepted_at'],
-//                        'rejected_at'   => $service['rejected_at'],
-//                        'distributor'   => $service['distributor'],
+                        'status'   => $this->mapServiceStatus($service['status']),
+                        'connection_date'   => $service['connection_date'],
+                        'submitted_at'   => $service['submitted_at'],
+                        'lead_reference'   => $service['lead_reference'],
+                        'accepted_at'   => $service['accepted_at'],
+                        'rejected_at'   => $service['rejected_at'],
+                        'distributor'   => $service['distributor'],
                     ]);
             }
         }
     }
+
+
 
 }

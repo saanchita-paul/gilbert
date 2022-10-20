@@ -40,7 +40,7 @@
 
         <v-col cols="12" class="pb-0 pt-0" v-if="isChatBotApplication">
             <v-alert border="left" color="#FFC104" type="info" dense>
-                <strong>This application sends Gilbert to Chatbot.</strong>
+                <strong>This application has been sent from Gilbert to Chatbot.</strong>
             </v-alert>
         </v-col>
 

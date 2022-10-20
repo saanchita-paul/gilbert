@@ -21,8 +21,13 @@ class GilbertToChatbotService
 
     public function __construct($id)
     {
-        $this->application = ConnectionApplication::findOrFail($id);
-        $this->application->load(['identification', 'connectionServices','authorizedPerson']);
+        $this->application = ConnectionApplication::query()->where('id', $id)->with([
+            'identification',
+            'connectionServices',
+            'authorizedPerson',
+            'office',
+            'agency'
+        ])->firstOrFail();
     }
 
 
@@ -48,13 +53,10 @@ class GilbertToChatbotService
     {
         return [
             "connection_application_id" => $this->application->id,
-            "office_id" => $this->application->office_id,
-            "agency_id" => $this->application->agency_id,
-            "created_by" => $this->application->created_by,
-            "assigned_to" => $this->application->assigned_to,
+            "office_name" => $this->application->office->name,
+            "agency_name" => $this->application->agency->name,
             "moving_utility_id" => $this->application->moving_utility_id,
-            "submitted_by" => $this->application->submitted_by,
-            "title" => $this->application->title,
+            "title" => strtolower($this->application->title),
             "first_name" => $this->application->first_name,
             "middle_name" => $this->application->middle_name,
             "last_name" => $this->application->last_name,
@@ -62,7 +64,7 @@ class GilbertToChatbotService
             "is_email_validate" => $this->application->is_email_validate,
             "phone" => $this->application->phone,
             "phone_type" => $this->application->phone_type,
-            "rent" => $this->application->tenancy_type,
+            "rent" => $this->mapTenancyType($this->application->tenancy_type),
             "dob" => $this->application->dob,
             "moved_at" => $this->application->moving_date,
             "flat_or_unit_number" => $this->application->address_unit,
@@ -76,7 +78,7 @@ class GilbertToChatbotService
             "additional_instruction" => $this->application->additional_instruction,
             "to_address" => $this->application->address_text,
             "reason" => $this->application->reason,
-            "is_email_billing" => $this->application->is_email_billing,
+            "billing_preference" => $this->mapbillingType($this->application->is_email_billing),
             "account_type" => $this->application->property_type,
             "is_property_on_life_support" => $this->application->has_life_support,
             "solar_panel" => $this->application->has_solar,
@@ -168,8 +170,27 @@ class GilbertToChatbotService
           ];
     }
 
-    public function mapConcessionCardType($data){
+    public function mapConcessionCardType($data)
+    {
         return self::CONCESSION_MAPPER[strtoupper($data)] ?? null;
+    }
+
+    private function mapTenancyType($tenancyType)
+    {
+        return match((int) $tenancyType) {
+            1 => 1,
+            2 => 0,
+            default => null
+        };
+    }
+
+    private function mapbillingType($billingType)
+    {
+        return match((int) $billingType) {
+            1 => 'email',
+            0 => 'connection_address',
+            default => null
+        };
     }
 
 

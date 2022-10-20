@@ -26,6 +26,9 @@ use Reporting\Http\Controllers\ReportController;
 use TSA\Services\TsaCallHistoryService;
 use App\Http\Controllers\GilbertLeadAPIController;
 use App\Jobs\ApplicationFromGilbertJob;
+
+use App\Models\ConnectionService;
+use App\Observers\ConnectionApplicationObserver;
 use App\Services\Agency\TriageFlagService;
 use App\Services\GilbertToCB\ChatbotToGilbertSyncService;
 use App\Services\GilbertToCB\GilbertToChatbotService;
@@ -300,7 +303,7 @@ Route::get('/applications/{id}/email-manually-verified', [ApplicationController:
 /**
  * gilbert to chatbot sync
  */
-Route::get('/cb-to-gb-sync/{id}', [GilbertLeadAPIController::class, 'syncProperty']);
+Route::get('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syncProperty']);
 
 
 
@@ -380,7 +383,32 @@ Route::get('powers-api', function () {
 
 
 Route::get('/nmi-mirn', function() {
-//    $testApp = new UpdateApplicationFromGilbertService(3);
-//    return $testApp->call();
-    ApplicationFromGilbertJob::dispatch(3);
+//    dd('hello');
+    $app = ConnectionApplication::firstOrFail();
+    $app->first_name = 'helllllo';
+    $app->updateOrFail();
+    info('testing' , [$app]);
+//    return true;
+//    $app = ConnectionApplication::where('id', 1)->firstOrFail();
+//    $app->update([
+//        'nmi' => 349379
+//    ]);
+
+});
+
+Route::get('/test', function() {
+//    dd('hello');
+    $service = \App\Models\ConnectionService::where('id', 12)->firstOrFail();
+    $service->update([
+        'service_type' => 'electricity',
+        'connection_application_id' => 4,
+        'status' => 1
+    ]);
+//    $service = ConnectionService::update([
+//        'service_type' => 'hgfhg',
+//        'connection_application_id' => 4
+//    ]);
+//    dd($service);
+//    ApplicationFromGilbertJob::dispatch(3);
+
 });
