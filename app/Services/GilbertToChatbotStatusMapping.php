@@ -11,8 +11,8 @@ class GilbertToChatbotStatusMapping
 
     public const CB_STATUS_REJECTED='rejected';
     public const CB_STATUS_SENT='sent';
-    public const CB_AC_MANUAL_PROCESSING='ac_manual_precessing';
-    public const CB_MANUAL_PROCESSING='manual_precessing';
+    public const CB_AC_MANUAL_PROCESSING='ac_manual_processing';
+    public const CB_MANUAL_PROCESSING='manual_processing';
     public const CB_STATUS_ACCEPTED='accepted';
     public const CB_STATUS_PENDING='pending';
     public const CB_STATUS_SUBMITTED='submitted';
@@ -24,10 +24,10 @@ class GilbertToChatbotStatusMapping
         ConnectionService::STATUS_SUBMITTED => 'submitted',
         ConnectionService::STATUS_ACCEPTED =>'accepted',
         ConnectionService::STATUS_REJECTED => 'rejected',
-        ConnectionService::AC_MANUAL_PROCESSING => 'ac_manual_precessing',
+        ConnectionService::AC_MANUAL_PROCESSING => 'ac_manual_processing',
 //        ConnectionService::STATUS_SUBMITTED => 'sent',
-//        ConnectionService::AC_MANUAL_PROCESSING => 'ac_manual_precessing'
-//        ConnectionService::AC_MANUAL_PROCESSING => 'ac_manual_precessing'
+//        ConnectionService::AC_MANUAL_PROCESSING => 'ac_manual_processing'
+//        ConnectionService::AC_MANUAL_PROCESSING => 'ac_manual_processing'
     ];
 
     const CB_TO_GB_MAPPING = [
