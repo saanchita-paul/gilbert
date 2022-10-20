@@ -423,27 +423,23 @@ class ChatbotToGilbertSyncService
      */
     private function mapConnectionService($serviceData)
     {
-//        dd($serviceData);
         $app = ConnectionApplication::where('chatbot_id', $this->chatbotId)->firstOrFail();
         foreach ($serviceData as $service) {
-            if ($service['service_type']) {
-//                dd($service['service_type']);
-//                $mappedServiceData['connection_application_id'] = $this->id;
-//                $mappedServiceData['status'] = $service['status'];
-                $serviceType = strtolower($service['service_type']) === 'electricity' ? 'power' : $service['service_type'];
-                ConnectionService::query()->where('connection_application_id', $app->id)
-                    ->updateOrCreate(['service_type' => $serviceType], [
+
+            if($service['service_type']) {
+                ConnectionService::query()->where('connection_application_id', $app->id)->with('reasons')
+                    ->updateOrCreate(['service_type' => $service['service_type']], [
                         'connection_application_id' => $app->id,
-                        'service_type' => $serviceType,
-                        'plan_type' => $service['plan_type'],
-                        'provider_name' => $service['provider_name'],
-                        'status' => $this->mapServiceStatus($service['status']),
-                        'connection_date' => $service['connection_date'],
-                        'submitted_at' => $service['submitted_at'],
-                        'lead_reference' => $service['lead_reference'],
-                        'accepted_at' => $service['accepted_at'],
-                        'rejected_at' => $service['rejected_at'],
-                        'distributor' => $service['distributor'],
+                        'service_type'   => strtolower($service['service_type']) === 'electricity' ? 'power' : $service['service_type'],
+                        'plan_type'   => $service['plan_type'],
+                        'provider_name'   => $service['provider_name'],
+                        'status'   => $this->mapServiceStatus($service['status']),
+                        'connection_date'   => $service['connection_date'],
+                        'submitted_at'   => $service['submitted_at'],
+                        'lead_reference'   => $service['lead_reference'],
+                        'accepted_at'   => $service['accepted_at'],
+                        'rejected_at'   => $service['rejected_at'],
+                        'distributor'   => $service['distributor'],
                     ]);
             }
         }
