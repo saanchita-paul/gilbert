@@ -85,6 +85,5 @@ class EventServiceProvider extends ServiceProvider
     {
         ConnectionApplication::observe(ConnectionApplicationObserver::class);
         Identification::observe(IdentificationObserver::class);
-        ConnectionService::observe(ConnectionServiceObserver::class);
     }
 }
