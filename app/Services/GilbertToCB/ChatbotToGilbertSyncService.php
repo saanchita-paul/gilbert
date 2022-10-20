@@ -232,8 +232,8 @@ class ChatbotToGilbertSyncService
         if (isset($this->requestData['connection_services'])) {
             $this->serviceData = $this->mapConnectionService($this->requestData['connection_services']);
         }
-        if (isset($this->requestData['rejection_reason'])) {
-            $this->rejectionReasonData = $this->mapRejectionRejection($this->requestData['rejection_reason']);
+        if (isset($this->requestData['rejection_reasons'])) {
+            $this->rejectionReasonData = $this->mapRejectionRejection($this->requestData['rejection_reasons']);
         }
 
     }
@@ -427,6 +427,9 @@ class ChatbotToGilbertSyncService
         $app = ConnectionApplication::where('chatbot_id', $this->chatbotId)->firstOrFail();
         foreach ($serviceData as $service) {
             if ($service['service_type']) {
+//                dd($service['service_type']);
+//                $mappedServiceData['connection_application_id'] = $this->id;
+//                $mappedServiceData['status'] = $service['status'];
                 $serviceType = strtolower($service['service_type']) === 'electricity' ? 'power' : $service['service_type'];
                 ConnectionService::query()->where('connection_application_id', $app->id)
                     ->updateOrCreate(['service_type' => $serviceType], [
@@ -469,8 +472,8 @@ class ChatbotToGilbertSyncService
                     'service_type' => $reason['service_type'],
                     'reason_code' => $reason['reason_code'],
                     'reason_text' => $reason['reason_text'],
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ];
             }
             if ($electricityServiceId && $reason['service_type'] === 'electricity') {
