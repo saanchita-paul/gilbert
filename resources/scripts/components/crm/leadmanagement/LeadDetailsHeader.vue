@@ -32,7 +32,7 @@
                     <v-btn outlined @click="escalate" right v-if="leadSummary.status != 3">Escalate</v-btn>
                     <v-btn v-if="leadSummary.status == 3"  outlined @click="escalate" right :disabled="leadSummary.status == 3" class="border-warning">Escalated</v-btn>
                     <v-btn v-if="leadSummary.status !== 'Closed'" outlined @click="closeApplicationWithReason" class="ml-1">Close Application</v-btn>
-                    <v-btn outlined @click="sendToChatBot" class="ml-1">Send to Chatbot<v-icon class="pl-3">mdi-facebook-messenger</v-icon></v-btn>
+<!--                    <v-btn outlined @click="sendToChatBot" class="ml-1">Send to Chatbot<v-icon class="pl-3">mdi-facebook-messenger</v-icon></v-btn>-->
                 </div>
                 <p v-if="leadSummary.is_contacted" class="application-consent mt-5"><v-icon size="14px" color="success" class="mx-2">call</v-icon>Applicant consents to be contacted by HOOD</p>
             </div>
