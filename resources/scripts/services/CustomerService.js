@@ -75,7 +75,7 @@ export default {
      * @param page
      * @returns {Promise<{pagination: Pagination, data}>}
      */
-    getCustomerTableData: page => CustomerAPI.getCustomerList(page),
+    getCustomerTableData: (page, query) => CustomerAPI.getCustomerList(page, query),
 
     /**
      *
