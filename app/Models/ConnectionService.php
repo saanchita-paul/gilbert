@@ -119,6 +119,7 @@ class ConnectionService extends Model
         'provider_name',
         'plan_type',
         'lead_reference',
+        'quote_reference'
     ];
 
     /**
