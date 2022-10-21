@@ -11,6 +11,7 @@ use App\Http\Requests\Agency\ProviderRequest;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationResource;
 use App\Http\Resources\Agency\DuplicationApplicationResource;
+use App\Jobs\GilbertToChatbotJob;
 use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
@@ -25,6 +26,8 @@ use App\Services\Application\SearchConnectionApplication;
 use App\Services\DuplicateApplicationService;
 use App\Services\Ea\SetEaDistributorService;
 use App\Services\GBGEmailValidationService;
+use App\Services\GilbertToCB\GilbertToChatbotService;
+use App\Services\RolePermission;
 use Origin\Services\SetOriginDistributorService;
 use App\Services\FastConnectService;
 use Illuminate\Http\JsonResponse;
@@ -153,15 +156,19 @@ class ApplicationController extends Controller
       */
     public function assignUser(Request $request, int $applicationId): ApplicationResource|JsonResponse
     {
+//        dd($request->toArray(), 'hellllo');
+        /** @var User $dd */
+
         try {
             $service = new ApplicationService();
+
             $data = $service->assignUser(
                 $request->get('hood_user_id'),
                 $applicationId
             );
 
-            UpdateHubspotContactJob::dispatch($applicationId);
 
+            UpdateHubspotContactJob::dispatch($applicationId);
             $autoSubmitService = new WaterAutoSubmitService($applicationId);
             return ApplicationResource::make($data);
 
@@ -448,6 +455,42 @@ class ApplicationController extends Controller
         }
     }
 
+//    /**
+//     * send app to chatbot
+//     *
+//     * @param Request $request
+//     * @param int $applicationId
+//     *
+//     */
+//    public function sendToChatBot(Request $request, int $applicationId)
+//    {
+//        try {
+//            $existingApplication = ConnectionApplication::where('id', $applicationId)->firstOrFail();
+//            $existingApplication->update([
+//                'is_sent_to_chatbot' => 1
+//            ]);
+//            return $existingApplication;
+//        } catch (\Exception $exception) {
+//            return $this->sendErrorResponse($exception);
+//        }
+//    }
+
+    /**
+     * get the is_sent_to_chatbot value
+     *
+     * @param int $applicationId
+     *
+     */
+    public function isSentToChatBot($applicationId)
+    {
+        try {
+            $service = new ApplicationService();
+            return $service->getIsSentToChatbot($applicationId);
+
+        }catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
 
     public function isGbgValidateEmail(Request $request)
     {

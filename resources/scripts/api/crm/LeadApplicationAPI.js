@@ -284,6 +284,24 @@ export default {
         }
     },
 
+    async sendToChatBot(id) {
+        try {
+            const data = await axios.get(`/api/applications/${id}/send-to-chatbot`);
+            return data;
+        } catch (error) {
+            return error.data;
+        }
+    },
+
+    async getIsSentToChatbot(id) {
+        try {
+            const data = await axios.get(`/api/applications/${id}/is-sent-to-chatbot`);
+            return data.data;
+        } catch (error) {
+            return error.data.data;
+        }
+    },
+
     getPlan(serviceProvider) {
         try {
             // const data = await axios.get('/');
