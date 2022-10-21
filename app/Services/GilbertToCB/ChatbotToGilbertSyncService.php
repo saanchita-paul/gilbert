@@ -437,6 +437,7 @@ class ChatbotToGilbertSyncService
                         'connection_date'   => $service['connection_date'],
                         'submitted_at'   => $service['submitted_at'],
                         'lead_reference'   => $service['lead_reference'],
+                        'quote_reference'   => $service['quote_reference'],
                         'accepted_at'   => $service['accepted_at'],
                         'rejected_at'   => $service['rejected_at'],
                         'distributor'   => $service['distributor'],
