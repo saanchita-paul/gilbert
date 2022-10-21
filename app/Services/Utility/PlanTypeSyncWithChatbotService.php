@@ -62,14 +62,14 @@ class PlanTypeSyncWithChatbotService
     public function gilbertToChatbotplanTypeMapping($plan_type)
     {
         $plan_type = strtolower($plan_type);
-        return self::$gilbertToChatbotPlanTypesMapping[$plan_type];
+        return self::$gilbertToChatbotPlanTypesMapping[$plan_type] ?? null;
     }
 
     // Chatbot to Gilbert plan types mapping
     public function chatbotToGilbertplanTypeMapping($plan_type)
     {
         $plan_type = strtolower($plan_type);
-        return self::$chatbotToGilbertPlanTypesMapping[$plan_type];
+        return self::$chatbotToGilbertPlanTypesMapping[$plan_type] ?? null;
     }
 
 }

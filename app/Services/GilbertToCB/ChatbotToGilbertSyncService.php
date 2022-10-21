@@ -9,6 +9,7 @@ use App\Models\Identification;
 use App\Models\RejectionReason;
 use App\Services\AddressMapperService;
 use App\Services\GilbertToChatbotStatusMapping;
+use App\Services\Utility\PlanTypeSyncWithChatbotService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -431,7 +432,8 @@ class ChatbotToGilbertSyncService
                     ->updateOrCreate(['service_type' => $serviceType], [
                         'connection_application_id' => $app->id,
                         'service_type'   => $serviceType,
-                        'plan_type'   => $service['plan_type'],
+                        'plan_type'   => (new PlanTypeSyncWithChatbotService())
+                            ->chatbotToGilbertplanTypeMapping($service['plan_type']),
                         'provider_name'   => $service['provider_name'],
                         'status'   => $this->mapServiceStatus($service['status']),
                         'connection_date'   => $service['connection_date'],
