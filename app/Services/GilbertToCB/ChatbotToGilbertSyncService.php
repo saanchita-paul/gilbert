@@ -425,8 +425,16 @@ class ChatbotToGilbertSyncService
     private function mapConnectionService($serviceData)
     {
         $app = ConnectionApplication::where('chatbot_id', $this->chatbotId)->firstOrFail();
+
         foreach ($serviceData as $service) {
             $serviceType = strtolower($service['service_type']) === 'electricity' ? 'power' : $service['service_type'];
+            $status = $this->mapServiceStatus($service['status']);
+
+            if ($status) {
+                $app->status = ConnectionApplication::STATUS_SUBMITTED;
+                $app->save();
+            }
+
             if($service['service_type']) {
                 ConnectionService::query()->where('connection_application_id', $app->id)->with('reasons')
                     ->updateOrCreate(['service_type' => $serviceType], [
@@ -435,7 +443,7 @@ class ChatbotToGilbertSyncService
                         'plan_type'   => (new PlanTypeSyncWithChatbotService())
                             ->chatbotToGilbertplanTypeMapping($service['plan_type']),
                         'provider_name'   => $service['provider_name'],
-                        'status'   => $this->mapServiceStatus($service['status']),
+                        'status'   => $status,
                         'connection_date'   => $service['connection_date'],
                         'submitted_at'   => $service['submitted_at'],
                         'lead_reference'   => $service['lead_reference'],
