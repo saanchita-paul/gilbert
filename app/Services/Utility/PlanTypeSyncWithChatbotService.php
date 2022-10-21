@@ -22,12 +22,12 @@ class PlanTypeSyncWithChatbotService
     ];
 
     // Chatbot plan types
-    const CHATBOT_BASIC_PLAN = 'Basic - Home';
-    const CHATBOT_BALANCE_PLAN = 'Balance Plan (Home)';
-    const CHATBOT_ORIGIN_HOME_SUPPORT = 'Origin Home Support';
-    const CHATBOT_ORIGIN_BASIC = 'Origin Basic';
-    const CHATBOT_POWERSHOP_100_CARBON_NEUTRAL = 'Powershop 100% Carbon Neutral';
-    const CHATBOT_SWITCH_SAVER = 'Switch Saver';
+    const CHATBOT_BASIC_PLAN = 'basic - home';
+    const CHATBOT_BALANCE_PLAN = 'balance plan (home)';
+    const CHATBOT_ORIGIN_HOME_SUPPORT = 'origin home support';
+    const CHATBOT_ORIGIN_BASIC = 'origin basic';
+    const CHATBOT_POWERSHOP_100_CARBON_NEUTRAL = 'powershop 100% carbon neutral';
+    const CHATBOT_SWITCH_SAVER = 'switch saver';
     public static $chatbotPlanTypes = [
         self::CHATBOT_BASIC_PLAN,
         self::CHATBOT_BALANCE_PLAN,
@@ -61,12 +61,14 @@ class PlanTypeSyncWithChatbotService
     // Gilbert to Chatbot plan types mapping
     public function gilbertToChatbotplanTypeMapping($plan_type)
     {
+        $plan_type = strtolower($plan_type);
         return self::$gilbertToChatbotPlanTypesMapping[$plan_type];
     }
 
     // Chatbot to Gilbert plan types mapping
     public function chatbotToGilbertplanTypeMapping($plan_type)
     {
+        $plan_type = strtolower($plan_type);
         return self::$chatbotToGilbertPlanTypesMapping[$plan_type];
     }
 
