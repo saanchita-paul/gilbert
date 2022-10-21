@@ -9,6 +9,7 @@ use App\Models\Identification;
 use App\Models\RejectionReason;
 use App\Services\AddressMapperService;
 use App\Services\GilbertToChatbotStatusMapping;
+use App\Services\Utility\PlanTypeSyncWithChatbotService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -424,19 +425,29 @@ class ChatbotToGilbertSyncService
     private function mapConnectionService($serviceData)
     {
         $app = ConnectionApplication::where('chatbot_id', $this->chatbotId)->firstOrFail();
+
         foreach ($serviceData as $service) {
             $serviceType = strtolower($service['service_type']) === 'electricity' ? 'power' : $service['service_type'];
+            $status = $this->mapServiceStatus($service['status']);
+
+            if ($status) {
+                $app->status = ConnectionApplication::STATUS_SUBMITTED;
+                $app->save();
+            }
+
             if($service['service_type']) {
                 ConnectionService::query()->where('connection_application_id', $app->id)->with('reasons')
                     ->updateOrCreate(['service_type' => $serviceType], [
                         'connection_application_id' => $app->id,
                         'service_type'   => $serviceType,
-                        'plan_type'   => $service['plan_type'],
+                        'plan_type'   => (new PlanTypeSyncWithChatbotService())
+                            ->chatbotToGilbertplanTypeMapping($service['plan_type']),
                         'provider_name'   => $service['provider_name'],
-                        'status'   => $this->mapServiceStatus($service['status']),
+                        'status'   => $status,
                         'connection_date'   => $service['connection_date'],
                         'submitted_at'   => $service['submitted_at'],
                         'lead_reference'   => $service['lead_reference'],
+                        'quote_reference'   => $service['quote_reference'],
                         'accepted_at'   => $service['accepted_at'],
                         'rejected_at'   => $service['rejected_at'],
                         'distributor'   => $service['distributor'],
