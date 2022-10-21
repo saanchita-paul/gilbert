@@ -7,6 +7,7 @@
                                 :services="services"
                                 @closeApplicationWithReason="closeApplicationWithReason"
                                 @closeApplication="closeApplication"
+                                @sendToChatBot="sendToChatBot"
                                 @eacalate="eacalate"
                                 @updateLead="updateLead"
                                 @readMore="readMore"
@@ -34,6 +35,10 @@
             <CloseApplicationReasonModal v-if="closeLead" :dialog="closeLead" :leadSummary="leadSummary" @closeApplicationWithReason="closeApplicationWithReason" @cancelClose="cancelClose" @sucessSaveClose="sucessSaveClose"></CloseApplicationReasonModal>
 
             <CloseConfirmModal v-if="closeConfirm" :dialog="closeConfirm" :title="fullName"></CloseConfirmModal>
+
+             <SendToChatBotModal v-if="closeSentConfirm" :dialog="closeSentConfirm" :title="fullName" @done="done"></SendToChatBotModal>
+
+            <ChatbotInChargeModal v-if="isChatbotInCharge" :dialog="isChatbotInCharge" :title="fullName"></ChatbotInChargeModal>
 
             <!-- <CloseApplicationModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></CloseApplicationModal> -->
 
@@ -72,12 +77,17 @@ import EAAfterHourService from "@scripts/services/ea/EAAfterHourService";
 import ChatbotService from "@scripts/services/crm/ChatbotService";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import Store from '@scripts/store/index';
+import SendToChatBotModal from "@scripts/components/crm/modals/SendToChatBotModal";
+import ChatbotInChargeModal from "@scripts/components/crm/modals/ChatbotInChargeModal";
 import DuplicateLeadModal from "@scripts/components/crm/modals/DuplicateLeadModal";
+
 
 export default {
     //todo shift afterHourFlag, nextBusinessDay, getElectricityDistributor to powerService
     name: "ApplicationDetailsPage",
     components: {
+        ChatbotInChargeModal,
+        SendToChatBotModal,
         LeadReadMoreModal,
         EscalationConfirmModal,
         EscalateReasonModal,
@@ -130,6 +140,8 @@ export default {
             nextBusinessDay: null,
             gasOnlyNotSubmitDialog: false,
             serviceSubmitType: null,
+            closeSentConfirm: false,
+            isChatbotInCharge: false,
             duplicateLead: false
         }
     },
@@ -153,6 +165,7 @@ export default {
         gasPlan() {
             return UtilityStoreService.getGasPlan();
         },
+
     },
     methods: {
         async getElectricityDistributor()
@@ -208,6 +221,25 @@ export default {
             } catch (error) {
                 // console.log('closeApplication error' , erro);
             }
+        },
+        async sendToChatBot() {
+            try {
+                let v = await this.validateLead();
+                if (v) {
+                    // let assignedHoodUser = await this.getAssignedHoodUser();
+                    // if(!assignedHoodUser) {
+                    //     this.assignedToDialog = true;
+                    //     return true;
+                    // }
+                    await LeadApplicationService.sendToChatBot(this.leadId);
+                    this.closeSentConfirm = true;
+                }
+            } catch (error) {
+                console.log('sendToChatBot error' , error);
+            }
+        },
+        done() {
+            this.$router.push({name: 'application.list'});
         },
         readMore() {
             this.additionalInstruction = this.lead.person_details.additional_instruction;
@@ -274,7 +306,6 @@ export default {
             }
              return false;
         },
-
 
 
         closePreventSubmissionModal() {
@@ -469,6 +500,12 @@ export default {
       await this.loadNextBusinessDay();
       await this.updateMernNmi();
       this.nmiMernFlag = false;
+
+
+      let isSentToChatBot = await LeadApplicationService.isSentToChatbot(this.leadId);
+      if(isSentToChatBot) {
+          this.isChatbotInCharge = isSentToChatBot;
+      }
     }
 };
 </script>

@@ -24,7 +24,21 @@ use Powershop\Http\Controllers\PaymentInfoController;
 use PropertyMe\services\FetchContacts;
 use Reporting\Http\Controllers\ReportController;
 use TSA\Services\TsaCallHistoryService;
+use App\Http\Controllers\GilbertLeadAPIController;
+use App\Jobs\ApplicationFromGilbertJob;
 
+use App\Models\ConnectionService;
+use App\Observers\ConnectionApplicationObserver;
+use App\Services\Agency\TriageFlagService;
+use App\Services\GilbertToCB\ChatbotToGilbertSyncService;
+use App\Services\GilbertToCB\GilbertToChatbotService;
+use App\Services\GilbertToCB\UpdateApplicationFromGilbertService;
+use GuzzleHttp\Client;
+use App\Services\Address\GBGServices;
+use App\Services\Address\AddressModel;
+use TSA\Services\TsaSendAppliationService;
+use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
+use App\Services\GBGEmailValidationService;
 
 /*
 |--------------------------------------------------------------------------
@@ -197,6 +211,11 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
 
     /***
+     * Send to chatbot
+     */
+    Route::get('/applications/{id}/send-to-chatbot', [SendApplicationToChatbotController::class, 'sendApplication']);
+    Route::get('/applications/{id}/is-sent-to-chatbot', [ApplicationController::class, 'isSentToChatBot']);
+     /***
      * Application closing reasons route
      */
     // application closing reasons list
@@ -281,6 +300,11 @@ Route::post('/powershop/payment/invite', [PaymentInfoController::class, 'inviteC
 Route::get('/gbg-validate-email', [ApplicationController::class, 'isGbgValidateEmail']);
 Route::get('/applications/{id}/email-manually-verified', [ApplicationController::class, 'isEmailManuallyVerified']);
 
+/**
+ * gilbert to chatbot sync
+ */
+Route::get('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syncProperty']);
+
 
 
 
@@ -357,3 +381,34 @@ Route::get('powers-api', function () {
 //
 //});
 
+
+Route::get('/nmi-mirn', function() {
+//    dd('hello');
+    $app = ConnectionApplication::firstOrFail();
+    $app->first_name = 'helllllo';
+    $app->updateOrFail();
+    info('testing' , [$app]);
+//    return true;
+//    $app = ConnectionApplication::where('id', 1)->firstOrFail();
+//    $app->update([
+//        'nmi' => 349379
+//    ]);
+
+});
+
+Route::get('/test', function() {
+//    dd('hello');
+    $service = \App\Models\ConnectionService::where('id', 12)->firstOrFail();
+    $service->update([
+        'service_type' => 'electricity',
+        'connection_application_id' => 4,
+        'status' => 1
+    ]);
+//    $service = ConnectionService::update([
+//        'service_type' => 'hgfhg',
+//        'connection_application_id' => 4
+//    ]);
+//    dd($service);
+//    ApplicationFromGilbertJob::dispatch(3);
+
+});

@@ -74,6 +74,7 @@ export default class ApplicationSummary {
     powershop_payment_status = null;
     is_duplicate = null;
     duplication_group_id = null;
+    chatbot_id = null;
 
     constructor(
         {
@@ -166,8 +167,9 @@ export default class ApplicationSummary {
             duplication_group_id = null,
 
             // email_manually_verified_by = 0,
-
-        } =  {}) {
+            chatbot_id= null
+        }
+    ) {
 
         this.id = id;
         this.applicant_name = ( title == null ? '' : title ) + ' ' + first_name + ' '+ ( isNull(middle_name)?'': middle_name) + ' ' + last_name;
@@ -265,7 +267,7 @@ export default class ApplicationSummary {
         this.is_duplicate = is_duplicate;
         this.duplication_group_id = duplication_group_id;
         // this.email_manually_verified_by = email_manually_verified_by
-
+        this.chatbot_id = chatbot_id;
     }
 
 

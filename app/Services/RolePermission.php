@@ -23,7 +23,9 @@ class RolePermission {
     const ROLE_AGENCY_BUSINESS_DEVELOPMENT_MANAGER = 'agency_office_business_development_manager';
     const ROLE_AGENCY_SALES_PA = 'agency_sales_pa';
     const ROLE_AGENCY_RECEPTIONIST = 'agency_receptionist';
-    
+
+    const ROLE_HOOD_CHATBOT_USER = 'hood_chatbot_user';
+
 
     //permissions
     const P_HOOD_ADMIN_CORE = 'hood_admin_core';
@@ -48,4 +50,6 @@ class RolePermission {
     const P_CAN_MANAGE_AGENCY = 'can_manage_agency';
 
     const P_ACCESS_SALES_DASHBOARD = 'can_access_sales_dashboard';
+
+    const P_HOOD_CHATBOT_USER_CORE = 'hood_chatbot_user_core';
 }
