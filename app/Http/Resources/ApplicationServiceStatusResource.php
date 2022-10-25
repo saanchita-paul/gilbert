@@ -19,9 +19,9 @@ class ApplicationServiceStatusResource extends JsonResource
         return [
             'id' => $this->id,
             'type' => $this->type,
-            'display_text' => $this->display_text,
+            'text' => $this->display_text,
             'display_text_alias' => $this->display_text_alias,
-            'status_value' => $this->status_value,
+            'value' => $this->status_value,
         ];
     }
 }
