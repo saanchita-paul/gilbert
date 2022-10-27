@@ -44,11 +44,11 @@ class ConnectionService extends Model
     const STATUS_ACCEPTED = 5;
     const STATUS_REJECTED = 6;
     const STATUS_EA_PROCESSINF = 7; //todo: rename this constant to STATUS_NOT_SUBMITTED
-    const STATUS_ENERGY_SUBMIT = 12;
     const STATUS_CLOSED = 8;
     const STATUS_CANT_CONNECT = 9;
     const STATUS_NEEDS_MORE_INFO = 10;
     const AC_MANUAL_PROCESSING = 11;
+    const STATUS_ENERGY_SUBMIT = 12;
     const STATUS_FAILED = 13;
 
     // Do not use these statuese

@@ -4,10 +4,10 @@
             v-model="dialog"
             persistent
             scrollable
-            max-width="1024px"
+            max-width="850"
             transition="dialog-bottom-transition"
         >
-            <v-card max-height="600px">
+            <v-card>
                 <v-toolbar
                     dark
                     color="primary"
@@ -27,10 +27,10 @@
 
                 <form @submit.prevent="submitHandler">
                     <ValidationObserver ref="application_status_change">
-                        <v-card-text>
+                        <v-card-text class="pa-5">
                             <v-row>
                                 <v-col cols="4">
-                                    <v-card-title class="text--primary">Item</v-card-title>
+                                    <v-card-title class="text--primary ml-2">Item</v-card-title>
                                     <v-card-title class="text--primary mt-3">
                                         &nbsp;&nbsp;Application
                                     </v-card-title>
@@ -57,7 +57,7 @@
                                 </v-col>
 
                                 <v-col cols="4">
-                                    <v-card-title class="text--primary">Current Status</v-card-title>
+                                    <v-card-title class="text--primary ml-n4">Current Status</v-card-title>
                                     <br>
                                     <v-text-field :placeholder="application_status_display_text" readonly outlined
                                                   dense></v-text-field>
@@ -72,7 +72,7 @@
                                 </v-col>
 
                                 <v-col cols="4">
-                                    <v-card-title class="text--primary">New Status</v-card-title>
+                                    <v-card-title class="text--primary ml-n4">New Status</v-card-title>
                                     <br>
                                     <div class="text-field margin-bottom-26">
                                         <ValidationProvider
@@ -175,22 +175,24 @@
                                     </div>
                                 </v-col>
 
-                                <!--                                <v-col cols="12">
-                                                                    <v-card-title class="text&#45;&#45;primary">
-                                                                        Status Change Reason*
-                                                                    </v-card-title>
+                                <v-col cols="12">
+                                    <v-card-title class="text--primary">
+                                        Status Change Reason*
+                                    </v-card-title>
 
-                                                                    <ValidationProvider name="Status reason"
-                                                                                        v-slot="{ errors }">
-                                                                        <v-textarea
-                                                                            :error-messages="errors[0]"
-                                                                            outlined
-                                                                            dense
-                                                                            hide-details="auto"
-                                                                            placeholder="Please type reason here..."
-                                                                        ></v-textarea>
-                                                                    </ValidationProvider>
-                                                                </v-col>-->
+                                    <ValidationProvider name="Status reason"
+                                                        v-slot="{ errors }">
+                                        <v-textarea
+                                            class="pa-3"
+                                            v-model="formData.status_reason"
+                                            :error-messages="errors[0]"
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            placeholder="Please type reason here..."
+                                        ></v-textarea>
+                                    </ValidationProvider>
+                                </v-col>
                             </v-row>
                         </v-card-text>
 
@@ -208,6 +210,7 @@
                                 rounded
                                 :loading="isLoading"
                                 color="primary"
+                                type="submit"
                             >
                                 Update Status
                             </v-btn>
@@ -224,7 +227,7 @@ import ApplicationServiceStatusChangeService from "@scripts/services/crm/Applica
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import leadApplicationService from "@scripts/services/crm/LeadApplicationService";
-import {upperFirst, snakeCase} from "lodash-es";
+import {upperFirst} from "lodash-es";
 
 export default {
     name: "ApplicationServiceStatusModal",
@@ -250,8 +253,7 @@ export default {
                 internet_status: null,
                 status_reason: null,
             },
-            applicationStatusDD: [],
-            serviceStatusDD: [],
+            statusDD: [],
         }
     },
     async mounted() {
@@ -259,33 +261,42 @@ export default {
     },
     computed: {
         application_status_display_text() {
-            return upperFirst(this.formData.application_status);
+            return upperFirst(this.leadSummary.status);
         },
         power_status_display_text() {
-            return upperFirst(this.formData.power_status.replace('_', ' '));
+            return this.getEnergyServiceStatus('power').text;
         },
         gas_status_display_text() {
-            return upperFirst(this.formData.gas_status.replace('_', ' '));
+            return this.getEnergyServiceStatus('gas').text;
         },
         water_status_display_text() {
-            return upperFirst(this.formData.water_status.replace('_', ' '));
+            return this.getServiceStatus('water').text;
         },
         internet_status_display_text() {
-            return upperFirst(this.formData.internet_status.replace('_', ' '));
+            return this.getServiceStatus('internet').text;
+        },
+        applicationStatusDD() {
+            return this.statusDD.filter(status => status.type === 'application');
+        },
+        serviceStatusDD() {
+            return this.statusDD.filter(status => status.type === 'service');
         },
     },
 
     methods: {
         async getInitData() {
-            this.applicationStatusDD = await ApplicationServiceStatusChangeService.getAllStatus();
-            this.serviceStatusDD = await ApplicationServiceStatusChangeService.getAllStatus('service');
+            this.statusDD = await ApplicationServiceStatusChangeService.getAllStatus();
 
             this.formData.application_id = this.leadSummary.id;
-            this.formData.application_status = this.leadSummary.status.toLowerCase();
-            this.formData.power_status = snakeCase(this.getEnergyServiceStatus('power').text);
-            this.formData.gas_status = snakeCase(this.getEnergyServiceStatus('gas').text);
-            this.formData.water_status = snakeCase(this.getServiceStatus('water').text);
-            this.formData.internet_status = snakeCase(this.getServiceStatus('internet').text);
+            this.formData.application_status = this.leadSummary.status_value;
+            this.formData.power_status = this.getServiceStatusValue('power');
+            this.formData.gas_status = this.getServiceStatusValue('gas');
+            this.formData.water_status = this.getServiceStatusValue('water');
+            this.formData.internet_status = this.getServiceStatusValue('internet');
+        },
+
+        getServiceStatusValue(service) {
+            return this.leadSummary.connection_services.find(connectionService => connectionService.service_type === service)?.status;
         },
 
         // Close assign applications modal
@@ -334,19 +345,33 @@ export default {
         },
 
         getServiceStatus(conn_ser) {
-            return LeadApplicationService.mapStatus(leadApplicationService.getServiceObj(this.leadSummary.connection_services, conn_ser)?.status);
+            return LeadApplicationService.mapStatus(leadApplicationService
+                .getServiceObj(this.leadSummary.connection_services, conn_ser)?.status);
         },
 
         getEnergyServiceStatus(service) {
-            let status = service.toLowerCase() === 'power' ? UtilityStoreService.getPowerStatus() : UtilityStoreService.getGasStatus();
+            let status = service.toLowerCase() === 'power' ?
+                UtilityStoreService.getPowerStatus() : UtilityStoreService.getGasStatus();
             return LeadApplicationService.mapStatus(status);
         },
 
         mapConnectionStatus(status) {
             return LeadApplicationService.mapStatus(status)
         },
-        submitHandler() {
+        async submitHandler() {
             console.log('Status change form submitted....');
+            try {
+                this.isLoading = true;
+                const data = await ApplicationServiceStatusChangeService.updateStatus(this.formData);
+                if (data.success) {
+                    this.closeModal();
+                    this.$emit('reloadPlanNoteAndLead');
+                }
+            } catch (err) {
+                console.log(err.response.data);
+            } finally {
+                this.isLoading = false;
+            }
         }
     }
 }

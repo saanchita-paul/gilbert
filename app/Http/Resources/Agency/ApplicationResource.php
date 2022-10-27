@@ -82,7 +82,6 @@ class ApplicationResource extends JsonResource
             'street_number' => $this->street_number,
             'street_name' => $this->street_name,
             'street_name_only' => $this->street_name_only,
-            'unit_number' => $this->unit_number,
             'billing_unit_number' => $this->billing_unit_number,
             'billing_street_number' => $this->billing_street_number,
             'billing_street_name' => $this->billing_street_name,

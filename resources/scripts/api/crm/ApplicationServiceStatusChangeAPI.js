@@ -10,18 +10,9 @@ export default {
         }
     },
 
-    async getAgents(search, office_id) {
+    async updateStatus(formData) {
         try {
-            const data = await axios.get(`/api/offices/${office_id}/all-agents-for-assign-applications`, {params: {search}});
-            return data.data;
-        } catch (error) {
-            throw error;
-        }
-    },
-
-    async saveSelectedApplications(applications) {
-        try {
-            const data = await axios.post('/api/offices/assign-applications',{...applications});
+            const data = await axios.post('/api/application-service-statuses/change-status',{...formData});
             return data.data;
         } catch (error) {
             return error.data;

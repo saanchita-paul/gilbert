@@ -19,7 +19,8 @@ class CreateApplicationServiceStatusesTable extends Migration
             $table->string('type')->default(ApplicationServiceStatus::TYPE_SERVICE);
             $table->string('display_text');
             $table->string('display_text_alias')->nullable();
-            $table->string('status_value');
+            $table->integer('status_value');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ApplicationServiceStatusChangeRequest;
 use App\Http\Requests\ApplicationServiceStatusRequest;
 use App\Http\Resources\ApplicationServiceStatusResource;
 use App\Models\ApplicationServiceStatus;
+use App\Models\ConnectionApplication;
+use App\Services\Application\ApplicationServiceStatusService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -17,7 +20,7 @@ class ApplicationServiceStatusController extends Controller
      */
     public function index()
     {
-        return ApplicationServiceStatusResource::collection(ApplicationServiceStatus::all())->response();
+        return ApplicationServiceStatusResource::collection(ApplicationServiceStatus::whereIsActive(1)->get())->response();
     }
 
     /**
@@ -80,6 +83,17 @@ class ApplicationServiceStatusController extends Controller
             $applicationServiceStatus = ApplicationServiceStatus::findOrFail($id);
             $applicationServiceStatus->delete();
             return $this->sendSuccessResponse('Application service status deleted successfully.');
+        } catch (\Exception $e) {
+            return $this->sendErrorResponse($e);
+        }
+    }
+
+    public function changeStatus(ApplicationServiceStatusChangeRequest $request)
+    {
+        try {
+            $service = new ApplicationServiceStatusService($request->except('_token', '_method'));
+            $data = $service->saveStatus();
+            return $this->sendSuccessResponse('Application service status changed successfully.');
         } catch (\Exception $e) {
             return $this->sendErrorResponse($e);
         }

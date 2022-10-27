@@ -142,6 +142,7 @@
                                        :dialog="showStatusChangeModal"
                                        :leadSummary="leadSummary"
                                        @closeStatusChangeModal="closeStatusChangeModal"
+                                       @reloadPlanNoteAndLead="reloadPlanNoteAndLead"
         />
 
     </v-row>
@@ -276,6 +277,10 @@ export default {
 
         closeStatusChangeModal() {
             this.showStatusChangeModal = false;
+        },
+
+        reloadPlanNoteAndLead() {
+            this.$emit('reloadPlanNoteAndLead');
         },
     },
     mounted() {

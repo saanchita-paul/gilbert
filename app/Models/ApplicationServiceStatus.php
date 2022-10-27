@@ -28,17 +28,7 @@ class ApplicationServiceStatus extends Model
     const STATUS_REJECTED = 6;
     const STATUS_EA_PROCESSING = 7;
     const STATUS_CLOSED = 8;
-    public static $status_mapping = [
-        'unassigned' => self::STATUS_UNASSIGNED,
-        'assigned' => self::STATUS_ASSIGNED,
-        'escalated' => self::STATUS_ESCALATED,
-        'submitted' => self::STATUS_SUBMITTED,
-        'accepted' => self::STATUS_ACCEPTED,
-        'rejected' => self::STATUS_REJECTED,
-        'processing' => self::STATUS_EA_PROCESSING,
-        'closed' => self::STATUS_CLOSED,
-    ];
-    public static $status_values = [
+    public static $application_status_mapping = [
         self::STATUS_UNASSIGNED => 'unassigned',
         self::STATUS_ASSIGNED => 'assigned',
         self::STATUS_ESCALATED => 'escalated',
@@ -47,5 +37,27 @@ class ApplicationServiceStatus extends Model
         self::STATUS_REJECTED => 'rejected',
         self::STATUS_EA_PROCESSING => 'processing',
         self::STATUS_CLOSED => 'closed',
+    ];
+
+    // Service statuses
+    const STATUS_CANT_CONNECT = 9;
+    const STATUS_NEEDS_MORE_INFO = 10;
+    const AC_MANUAL_PROCESSING = 11;
+    const STATUS_ENERGY_SUBMIT = 12;
+    const STATUS_FAILED = 13;
+    public static $service_status_mapping = [
+        self::STATUS_UNASSIGNED => 'unassigned',
+        self::STATUS_ASSIGNED=>'assigned',
+        self::STATUS_ESCALATED => 'escalated',
+        self::STATUS_SUBMITTED => 'submitted',
+        self::STATUS_ACCEPTED =>'accepted',
+        self::STATUS_REJECTED => 'rejected',
+        self::STATUS_EA_PROCESSING => 'processing',
+        self::STATUS_ENERGY_SUBMIT => 'processing',
+        self::STATUS_CLOSED => 'closed',
+        self::STATUS_CANT_CONNECT => "can't_connect",
+        self::STATUS_NEEDS_MORE_INFO => 'need_more_info',
+        self::AC_MANUAL_PROCESSING => 'ac_manual_precessing',
+        self::STATUS_FAILED => 'failed',
     ];
 }
