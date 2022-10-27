@@ -7,7 +7,10 @@ export const getAllStatus = async () => {
 
 export const updateStatus = data => ApplicationServiceStatusChangeAPI.updateStatus(data);
 
+export const updateBulkStatus = data => ApplicationServiceStatusChangeAPI.updateBulkStatus(data);
+
 export default {
     getAllStatus,
     updateStatus,
+    updateBulkStatus
 };

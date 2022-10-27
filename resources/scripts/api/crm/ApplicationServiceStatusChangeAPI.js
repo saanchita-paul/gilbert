@@ -18,4 +18,13 @@ export default {
             return error.data;
         }
     },
+
+    async updateBulkStatus(formData) {
+        try {
+            const data = await axios.post('/api/application-service-statuses/change-bulk-status',formData);
+            return data.data;
+        } catch (error) {
+            return error.data;
+        }
+    },
 };

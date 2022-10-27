@@ -288,11 +288,6 @@ export default {
             this.statusDD = await ApplicationServiceStatusChangeService.getAllStatus();
 
             this.formData.application_id = this.leadSummary.id;
-            this.formData.application_status = this.leadSummary.status_value;
-            this.formData.power_status = this.getServiceStatusValue('power');
-            this.formData.gas_status = this.getServiceStatusValue('gas');
-            this.formData.water_status = this.getServiceStatusValue('water');
-            this.formData.internet_status = this.getServiceStatusValue('internet');
         },
 
         getServiceStatusValue(service) {

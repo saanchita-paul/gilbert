@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ApplicationServiceBulkStatusChangeRequest;
 use App\Http\Requests\ApplicationServiceStatusChangeRequest;
 use App\Http\Requests\ApplicationServiceStatusRequest;
 use App\Http\Resources\ApplicationServiceStatusResource;
@@ -10,6 +11,8 @@ use App\Models\ConnectionApplication;
 use App\Services\Application\ApplicationServiceStatusService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Rap2hpoutre\FastExcel\FastExcel;
 
 class ApplicationServiceStatusController extends Controller
 {
@@ -92,7 +95,23 @@ class ApplicationServiceStatusController extends Controller
     {
         try {
             $service = new ApplicationServiceStatusService($request->except('_token', '_method'));
-            $data = $service->saveStatus();
+            $service->saveStatus();
+            return $this->sendSuccessResponse('Application service status changed successfully.');
+        } catch (\Exception $e) {
+            return $this->sendErrorResponse($e);
+        }
+    }
+
+    public function changeBulkStatus(ApplicationServiceBulkStatusChangeRequest $request)
+    {
+        try {
+            $file = $request->file('file')->store('status-files');
+            $collection = (new FastExcel)->import(utf8_encode(storage_path('app/' . $file)));
+            $service = new ApplicationServiceStatusService();
+            $service->saveBulkStatus($collection->toArray());
+            if (file_exists(storage_path('app/' . $file))) {
+                unlink(storage_path('app/' . $file));
+            }
             return $this->sendSuccessResponse('Application service status changed successfully.');
         } catch (\Exception $e) {
             return $this->sendErrorResponse($e);
