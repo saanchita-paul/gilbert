@@ -24,11 +24,11 @@ class ApplicationServiceStatusChangeRequest extends FormRequest
     public function rules()
     {
         return [
-            'application_status' => 'bail|required|integer',
-            'power_status' => 'bail|required|integer',
-            'gas_status' => 'bail|required|integer',
-            'water_status' => 'bail|required|integer',
-            'internet_status' => 'bail|required|integer',
+            'application_status' => 'bail|nullable|integer',
+            'power_status' => 'bail|nullable|integer',
+            'gas_status' => 'bail|nullable|integer',
+            'water_status' => 'bail|nullable|integer',
+            'internet_status' => 'bail|nullable|integer',
             'status_reason' => 'bail|nullable|string',
         ];
     }

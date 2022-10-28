@@ -7,11 +7,9 @@ use App\Http\Requests\ApplicationServiceStatusChangeRequest;
 use App\Http\Requests\ApplicationServiceStatusRequest;
 use App\Http\Resources\ApplicationServiceStatusResource;
 use App\Models\ApplicationServiceStatus;
-use App\Models\ConnectionApplication;
 use App\Services\Application\ApplicationServiceStatusService;
+use App\Services\Application\ManualStatusChangeLogService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 class ApplicationServiceStatusController extends Controller
@@ -95,7 +93,9 @@ class ApplicationServiceStatusController extends Controller
     {
         try {
             $service = new ApplicationServiceStatusService($request->except('_token', '_method'));
+            $logService = new ManualStatusChangeLogService($request->except('_token', '_method'));
             $service->saveStatus();
+            $logService->saveLog();
             return $this->sendSuccessResponse('Application service status changed successfully.');
         } catch (\Exception $e) {
             return $this->sendErrorResponse($e);
