@@ -53,6 +53,12 @@
                     </v-col>
                     </div>
 
+                    <div v-if="item == 'Status Log'">
+                        <v-col cols="12" class="notes-container">
+                            <StatusLog></StatusLog>
+                        </v-col>
+                    </div>
+
                 </v-tab-item>
             </v-tabs-items>
         </v-card>
@@ -65,10 +71,11 @@ import InvalidNote from "@scripts/components/crm/leadmanagement/notes/InvalidNot
 import SubmittedNote from "@scripts/components/crm/leadmanagement/notes/SubmittedNote";
 import SubmittedOriginNote from "@scripts/components/crm/leadmanagement/notes/SubmittedOriginNote";
 import SubmittedPowershopNote from "@scripts/components/crm/leadmanagement/notes/SubmittedPowershopNote";
+import StatusLog from "@scripts/components/crm/leadmanagement/notes/StatusLog";
 
 export default {
   name: "ApplicationNotes",
-    components: {SubmittedNote, Note, InvalidNote, SubmittedOriginNote, SubmittedPowershopNote},
+    components: {SubmittedNote, Note, InvalidNote, SubmittedOriginNote, SubmittedPowershopNote, StatusLog},
     props: {
       notes: {
           require: true
@@ -86,7 +93,7 @@ export default {
           },
           tab: null,
           items: [
-              'Internal Notes', 'Call History'
+              'Internal Notes', 'Call History', 'Status Log'
               ],
         //   text: 'Lorem ipsm'
       }
@@ -123,5 +130,8 @@ export default {
 .basil--text {
   color: #356859 !important;
   font-family: 'Courier New', Courier, monospace
+}
+.v-tab {
+    text-transform: capitalize !important;
 }
 </style>
