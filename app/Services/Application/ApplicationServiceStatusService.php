@@ -22,23 +22,31 @@ class ApplicationServiceStatusService
     // Save single application status
     public function saveStatus()
     {
-        // Get array_keys of validated data
-        $data_keys = array_diff(array_keys($this->data), ['application_status', 'application_id', 'status_reason']);
+        try {
+            $data = array_filter($this->data, function ($value) {
+                return $value != null;
+            });
 
-//        dd($this->data, $data_keys);
-        // Loop through validated keys and save data into DB
-        if (count($data_keys) > 0) {
-            foreach ($data_keys as $key) {
-                // Explode key to get type and field name
-                $field_key = explode('_', $key);
-                $this->saveServiceStatus($field_key[0], $this->data[$key]);
+            // Get array_keys of validated data
+            $data_keys = array_diff(array_keys($data), ['application_status', 'application_id', 'status_reason']);
+
+            // Loop through validated keys and save data into DB
+            if (count($data_keys) > 0) {
+                foreach ($data_keys as $key) {
+                    // Explode key to get type and field name
+                    $field_key = explode('_', $key);
+                    $this->saveServiceStatus($field_key[0], $this->data[$key]);
+                }
+            } else {
+                Log::debug('Manual Status Change: No data to save!');
             }
-        } else {
-            Log::debug('Manual Status Change: No data to save!');
+            $this->saveApplicationStatus();
+            $this->saveStatusReason();
+            return $this->getConnectionApplication();
+        } catch (\Exception $e) {
+            Log::error('Manual Status Change: ' . $e->getMessage());
+            return false;
         }
-        $this->saveApplicationStatus();
-        $this->saveStatusReason();
-        return $this->getConnectionApplication();
     }
 
     // Save bulk application status
@@ -71,15 +79,10 @@ class ApplicationServiceStatusService
     // Save service status
     private function saveServiceStatus($service_type, $status_value)
     {
-
         $connectionApplication = $this->getConnectionApplication();
         if ($connectionApplication && !is_null($status_value)) {
-            dd($service_type, $status_value);
             $service = $connectionApplication->connectionServices()->where('service_type', $service_type)->first();
             if ($service) {
-                $newStatus = $status_value ? ApplicationServiceStatus::where('status_value', $status_value)
-                    ->where('type', 'service')->first()->display_text : 'N/A';
-                $this->logData['data']['new_status'][$service_type] = $newStatus;
                 $service->update(['status' => (int)$status_value]);
             } else {
                 Log::debug('Manual Status Change - No connection service found to update!');
@@ -87,7 +90,6 @@ class ApplicationServiceStatusService
         } else {
             Log::debug('Manual Status Change - No application found to update!');
         }
-
     }
 
     // Get connection application
@@ -96,6 +98,7 @@ class ApplicationServiceStatusService
         return ConnectionApplication::find($this->data['application_id']);
     }
 
+    // Make manual status change log data to save in DB
     private function setManualStatusChangeData($connectionApplication)
     {
         $oldStatus = ApplicationServiceStatus::where('status_value', $connectionApplication->status)
@@ -110,8 +113,10 @@ class ApplicationServiceStatusService
         $this->logData['data']['old_status']['application'] = $oldStatus->display_text ?? 'N/A';
         $this->logData['data']['new_status']['application'] = $newStatus->display_text ?? 'N/A';
         $this->setConnectionServicesOldStatus($connectionApplication);
+        $this->setConnectionServicesNewStatus();
     }
 
+    // Make old status json for services
     private function setConnectionServicesOldStatus($connectionApplication)
     {
         if (count($connectionApplication->connectionServices)) {
@@ -121,13 +126,33 @@ class ApplicationServiceStatusService
                 $this->logData['data']['old_status'][$connectionService->service_type] = $oldStatus->display_text ?? 'N/A';
             }
         } else {
-            Log::debug('Manual Status Change - No connection services found to update!');
+            Log::debug('Manual Status Change(OLD status SET) - No connection services found to update!');
+        }
+    }
+
+    // Make new status json for services
+    private function setConnectionServicesNewStatus()
+    {
+        // Get array_keys of validated data
+        $data_keys = array_diff(array_keys($this->data), ['application_status', 'application_id', 'status_reason']);
+
+        // Loop through validated keys and save data into DB
+        if (count($data_keys) > 0) {
+            foreach ($data_keys as $key) {
+                // Explode key to get type and field name
+                $field_key = explode('_', $key);
+                $newStatus = ApplicationServiceStatus::where('status_value', $this->data[$key])
+                    ->where('type', 'service')->first();
+                $this->logData['data']['new_status'][$field_key[0]] = $newStatus->display_text ?? 'N/A';
+            }
+        } else {
+            Log::debug('Manual Status Change(New Status SET): No connection services found to update!');
         }
     }
 
     // Save status update reason
     private function saveStatusReason()
     {
-        ManualStatusChangeLog::create($this->logData);
+        return ManualStatusChangeLog::create($this->logData);
     }
 }

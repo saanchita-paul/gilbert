@@ -26,7 +26,7 @@ class ManualStatusChangeLogsController extends Controller
      */
     public function statusLogsByApplicationId($id)
     {
-        $logs = ManualStatusChangeLog::where('connection_application_id', $id)->get();
+        $logs = ManualStatusChangeLog::where('connection_application_id', $id)->latest()->get();
         return ManualStatusChangeLogResource::collection($logs)->response();
     }
 }

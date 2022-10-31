@@ -211,6 +211,7 @@
                                 :loading="isLoading"
                                 color="primary"
                                 type="submit"
+                                :disabled="isInvalidData"
                             >
                                 Update Status
                             </v-btn>
@@ -280,6 +281,13 @@ export default {
         },
         serviceStatusDD() {
             return this.statusDD.filter(status => status.type === 'service');
+        },
+        isInvalidData() {
+            return this.formData.application_status === null
+                && this.formData.power_status === null
+                && this.formData.gas_status === null
+                && this.formData.water_status === null
+                && this.formData.internet_status === null
         },
     },
 
@@ -361,6 +369,7 @@ export default {
                 if (data.success) {
                     this.closeModal();
                     this.$emit('reloadPlanNoteAndLead');
+                    this.$eventBus.$emit("manual_status_changed");
                 }
             } catch (err) {
                 console.log(err.response.data);

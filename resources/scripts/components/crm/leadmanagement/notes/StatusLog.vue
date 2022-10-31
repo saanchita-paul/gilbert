@@ -1,14 +1,14 @@
 <template>
     <div>
         <v-timeline dense>
-            <v-timeline-item color="primary" small v-for="(log, key) in this.statusLogs"
-                             :color="getColor(log.hasOwnProperty('id'))"
+            <v-timeline-item color="primary" small v-for="(log, key) in statusLogs"
+                             :color="getColor(key)"
                              :key="key">
                 <v-card class="elevation-2 timeline-card status-log" color="gray">
                     <p class="heading">{{ log.title }}</p>
                     <p class="normal-text">{{ log.created_at | formatDate }}</p>
                     <p class="normal-text-bolder">
-                        Reason: <span class="normal-text">{{ log.status_change_reason }}</span>
+                        Reason: <span class="normal-text">{{ log.status_change_reason || 'N/A' }}</span>
                     </p>
                     <!-- new status-->
                     <div class="mt-5" v-if="log.data.hasOwnProperty('new_status')">
@@ -86,22 +86,17 @@ export default {
             }
         }
     },
-    computed: {
-        logs() {
-            return [
-                {id: 1, active: true},
-                {id: 2, active: false},
-                {id: 3, active: false},
-            ]
-        }
-    },
     mounted() {
         this.overlay = true
         this.getAllLogs();
+        this.$eventBus.$on("manual_status_changed", () => {
+            this.getAllLogs();
+            this.$eventBus.$off("manual_status_changed");
+        });
     },
     methods: {
-        getColor(isActive) {
-            return isActive === true ? 'primary' : 'gray'
+        getColor(key) {
+            return key === 0 ? 'primary' : 'gray'
         },
         async getAllLogs() {
             this.statusLogs = await ApplicationServiceStatusChangeService.getAllLogs(this.applicationId);
