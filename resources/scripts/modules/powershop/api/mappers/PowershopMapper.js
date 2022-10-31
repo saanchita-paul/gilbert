@@ -70,6 +70,7 @@ const mapGasPlan = (gas) => {
         fees: gas?.price,
         supply_charge: gas?.daily_charge,
         usage_charge: gas?.anytime_charge,
+        charges: gas?.charges,
         bpid_links: mapBPIDLinks(gas?.bpid_links),
         vdo: gas.vdo
     }
