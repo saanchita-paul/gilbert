@@ -104,7 +104,7 @@ export default {
             return isActive === true ? 'primary' : 'gray'
         },
         async getAllLogs() {
-            this.statusLogs = await ApplicationServiceStatusChangeService.getAllLogs(5087);
+            this.statusLogs = await ApplicationServiceStatusChangeService.getAllLogs(this.applicationId);
             this.overlay = false;
         }
     }
