@@ -55,19 +55,11 @@
 
                                 <v-expansion-panel-content>
 
-                                    <div class="price-list">
-
+                                    <div class="price-list" v-for="charge in plan.charges" v-bind:key="charge.description">
                                         <div class="plan-text" style="font-size:14px">
-                                            Daily Supply Charge (c/day)
+                                            {{charge.description}} {{charge.unit}}
                                         </div>
-                                        <div class="plan-text">{{ plan.supply_charge }}</div>
-                                    </div>
-
-                                    <div class="price-list">
-                                        <div class="plan-text" style="font-size:14px">
-                                            Anytime (c/MJ)
-                                        </div>
-                                        <div  class="plan-text">{{ plan.usage_charge ? plan.usage_charge : 'N/A'}}</div>
+                                        <div class="plan-text">{{ charge.value }}</div>
                                     </div>
 
                                     <div class="d-flex mt-8">
@@ -77,7 +69,7 @@
                                         </v-icon>
                                     </div>
 
-                                    <div class="price-list" v-for="fees in plan.fees">
+                                    <div class="price-list" v-for="fees in plan.fees" v-bind:key="fees.title">
                                         <div class="plan-text" style="font-size:14px">
                                             {{ fees.title }}
                                         </div>
