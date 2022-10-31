@@ -55,7 +55,7 @@
 
                     <div v-if="item == 'Status Log'">
                         <v-col cols="12" class="notes-container">
-                            <StatusLog></StatusLog>
+                            <StatusLog :application-id="leadSummary.id"></StatusLog>
                         </v-col>
                     </div>
 

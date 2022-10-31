@@ -27,4 +27,13 @@ export default {
             return error.data;
         }
     },
+
+    async getAllLogs(applicationId) {
+        try {
+            const data = await axios.get(`/api/manual-status-change-logs/${applicationId}`);
+            return data.data;
+        } catch (error) {
+            throw error;
+        }
+    },
 };

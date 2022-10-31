@@ -25,6 +25,7 @@ class ApplicationServiceStatusService
         // Get array_keys of validated data
         $data_keys = array_diff(array_keys($this->data), ['application_status', 'application_id', 'status_reason']);
 
+//        dd($this->data, $data_keys);
         // Loop through validated keys and save data into DB
         if (count($data_keys) > 0) {
             foreach ($data_keys as $key) {
@@ -70,8 +71,10 @@ class ApplicationServiceStatusService
     // Save service status
     private function saveServiceStatus($service_type, $status_value)
     {
+
         $connectionApplication = $this->getConnectionApplication();
         if ($connectionApplication && !is_null($status_value)) {
+            dd($service_type, $status_value);
             $service = $connectionApplication->connectionServices()->where('service_type', $service_type)->first();
             if ($service) {
                 $newStatus = $status_value ? ApplicationServiceStatus::where('status_value', $status_value)
