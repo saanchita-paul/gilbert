@@ -28,6 +28,7 @@ use App\Services\Ea\SetEaDistributorService;
 use App\Services\GBGEmailValidationService;
 use App\Services\GilbertToCB\GilbertToChatbotService;
 use App\Services\RolePermission;
+use Illuminate\Support\Facades\Log;
 use Origin\Services\SetOriginDistributorService;
 use App\Services\FastConnectService;
 use Illuminate\Http\JsonResponse;
@@ -503,6 +504,7 @@ class ApplicationController extends Controller
                 $service = new GBGEmailValidationService();
                 $result = $service->validateEmail($request->email);
             } else {
+                Log::warning('GGB EMAIL VALIDATION - Email validation is disabled.');
                 $result = true;
             }
 
