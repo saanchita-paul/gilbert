@@ -385,4 +385,8 @@ export default {
 .margin-bottom-26 {
     margin-bottom: 26px;
 }
+
+.v-dialog > * {
+    height: 100% !important;
+}
 </style>
