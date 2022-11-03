@@ -30,5 +30,12 @@ Route::get('/email', function () {
     return response('hello world');
 });
 
+
+Route::get('test-status', function () {
+    $service = new \App\Services\Application\ServiceStatusFilterMapper();
+    $statues = $service->getStatuses(4, 7);
+    dd($statues);
+});
+
 Route::get('/{vue_capture?}', fn() => view('app'))
     ->where('vue_capture', '[\/\w\.-]*');
