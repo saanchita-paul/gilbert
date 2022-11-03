@@ -10,6 +10,9 @@
                         </v-app-bar>
                     </v-row>
                     <v-row>
+                        <SearchCustomer @fetchCustomer="fetchCustomer"></SearchCustomer>
+                    </v-row>
+                    <v-row>
                         <v-col cols="12"  class="pt-0 pr-0 customer-list" ref="list">
                             <v-expansion-panels v-model="activeModel">
                                 <v-expansion-panel
@@ -96,6 +99,7 @@ import ApplicationService from "@scripts/services/ApplicationService";
 import InfiniteLoading from "vue-infinite-loading";
 import Pagination from "@scripts/models/Pagination";
 import {merge} from "lodash-es";
+import SearchCustomer from "@scripts/components/customer/SearchCustomer";
 
 export default {
     name: "CustomerList",
@@ -109,9 +113,12 @@ export default {
             customerMessages: null,
             customerId: this.$route.query.customerId || null,
             pagination: new Pagination(),
+            customerFilter: null,
+            isJustSearch: false
         }
     },
     components:{
+        SearchCustomer,
         CustomerShortDetails,
         CustomerMessenger,
         InfiniteLoading
@@ -122,7 +129,8 @@ export default {
     watch: {
         '$route': {
             handler() {
-                this.customerId = this.$route.query.customerId
+                this.customerId = this.$route.query.customerId;
+                this.getCustomerList(this.pagination.page);
                 this.load();
             },
             deep: true
@@ -134,9 +142,15 @@ export default {
         this.isLoaded = true;
     },
     methods: {
-        async load() {
+        async load(isJustSearch = false) {
             await this.loadCustomer();
+            if(isJustSearch) {
+                this.activeModel = null;
+                return;
+            }
             await this.setActiveModel();
+
+
         },
         setActiveModel() {
             if (this.customerId) {
@@ -153,7 +167,11 @@ export default {
         },
 
         async getCustomerList (page = 1) {
-            let response = await CustomerService.getCustomerTableData(page);
+
+            let response = await CustomerService.getCustomerTableData(page, this.customerFilter);
+            if(page === 1) {
+                this.customerList = [];
+            }
             this.customerList =[...this.customerList, ...response.data];
             merge(this.pagination, response.pagination)
         },
@@ -173,7 +191,12 @@ export default {
         },
         onPanelClicked(index, customerId) {
             if (this.activeModel !== index) {
-                this.$router.push({name: 'helpdesk', query: { customerId, test: ApplicationService.getRandomString() }})
+
+                this.$router.push({name: 'helpdesk', query: { customerId,
+                        test: ApplicationService.getRandomString(),
+
+
+                    }})
             }
         },
         closePanel() {
@@ -194,6 +217,15 @@ export default {
         viewProfile() {
             this.$router.push({name: `customer.details`, params: {id: this.customerinfo.id}});
         },
+
+        async fetchCustomer(customerFilter) {
+            this.customerFilter = customerFilter;
+            await this.getCustomerList();
+            this.isJustSearch = true;
+            this.customerId = this.customerList[0]?.id;
+            await this.load(true);
+            this.activeModel = null;
+        }
     },
 }
 </script>
