@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 // Application Service status change routes
 Route::post('application-service-statuses/change-status', "ApplicationServiceStatusController@changeStatus");
 Route::post('application-service-statuses/change-bulk-status', "ApplicationServiceStatusController@changeBulkStatus");
+Route::post('application-service-statuses/get-service-status-dd', "ApplicationServiceStatusController@getServiceStatusDD");
 
 // Application service status crud routes
 Route::apiResource('application-service-statuses', "ApplicationServiceStatusController");

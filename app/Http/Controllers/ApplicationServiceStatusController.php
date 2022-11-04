@@ -8,7 +8,9 @@ use App\Http\Requests\ApplicationServiceStatusRequest;
 use App\Http\Resources\ApplicationServiceStatusResource;
 use App\Models\ApplicationServiceStatus;
 use App\Services\Application\ApplicationServiceStatusService;
+use App\Services\Application\ServiceStatusFilterMapper;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 class ApplicationServiceStatusController extends Controller
@@ -113,5 +115,19 @@ class ApplicationServiceStatusController extends Controller
         } catch (\Exception $e) {
             return $this->sendErrorResponse($e);
         }
+    }
+
+
+    public function getServiceStatusDD(Request $request)
+    {
+        $request->validate([
+            'service_id' => 'required|exists:connection_services,id',
+            'application_status' => 'required',
+            'service_new_status' => 'required'
+        ]);
+        $service = new ServiceStatusFilterMapper();
+        $statuses = $service->getStatuses($request->application_status, $request->service_id, $request->service_new_status);
+        $serviceStatuses = ApplicationServiceStatus::where('type', 'service')->whereIn('status_value', $statuses)->get();
+        return ApplicationServiceStatusResource::collection($serviceStatuses)->response();
     }
 }

@@ -12,7 +12,7 @@ export default {
 
     async updateStatus(formData) {
         try {
-            const data = await axios.post('/api/application-service-statuses/change-status',{...formData});
+            const data = await axios.post('/api/application-service-statuses/change-status', {...formData});
             return data.data;
         } catch (error) {
             return error.data;
@@ -21,7 +21,7 @@ export default {
 
     async updateBulkStatus(formData) {
         try {
-            const data = await axios.post('/api/application-service-statuses/change-bulk-status',formData);
+            const data = await axios.post('/api/application-service-statuses/change-bulk-status', formData);
             return data.data;
         } catch (error) {
             return error.data;
@@ -31,6 +31,17 @@ export default {
     async getAllLogs(applicationId) {
         try {
             const data = await axios.get(`/api/manual-status-change-logs/${applicationId}`);
+            return data.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    async getServiceStatusDD(application_status, options) {
+        try {
+            console.log(application_status, options);
+            return;
+            const data = await axios.get(`/api/application-service-statuses/get-service-status-dd`, {application_status, options});
             return data.data;
         } catch (error) {
             throw error;

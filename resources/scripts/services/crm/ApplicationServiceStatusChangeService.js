@@ -14,9 +14,15 @@ export const getAllLogs = async (applicationId) => {
     return data.data;
 };
 
+export const getServiceStatusDD = async (application_status, options) => {
+    let data = await ApplicationServiceStatusChangeAPI.getServiceStatusDD(application_status, options);
+    return data.data;
+};
+
 export default {
     getAllStatus,
     updateStatus,
     updateBulkStatus,
-    getAllLogs
+    getAllLogs,
+    getServiceStatusDD
 };

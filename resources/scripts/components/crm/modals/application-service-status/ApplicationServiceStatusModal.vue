@@ -301,10 +301,30 @@ export default {
             this.formData.gas_status = this.getServiceStatusValue('gas');
             this.formData.water_status = this.getServiceStatusValue('water');
             this.formData.internet_status = this.getServiceStatusValue('internet');
+
+            this.getServiceStatusDD('power', null);
+        },
+
+        async getServiceStatusDD(service_type, new_status) {
+            let service_id = this.getServiceStatus(service_type);
+            console.log('getServiceStatusDD', service_id);
+            console.log('getServiceStatusDD', new_status);
+            return;
+            const formdata = {
+                application_id: this.formData.application_id,
+                service_id: service_id,
+                new_status,
+            };
+            const data = await ApplicationServiceStatusChangeService.getServiceStatusDD();
+            console.log(data);
         },
 
         getServiceStatusValue(service) {
             return this.leadSummary.connection_services.find(connectionService => connectionService.service_type === service)?.status;
+        },
+
+        getServiceStatusId(service) {
+            return this.leadSummary.connection_services.find(connectionService => connectionService.service_type === service)?.id;
         },
 
         // Close assign applications modal
