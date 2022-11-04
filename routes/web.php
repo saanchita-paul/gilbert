@@ -33,7 +33,14 @@ Route::get('/email', function () {
 
 Route::get('test-status', function () {
     $service = new \App\Services\Application\ServiceStatusFilterMapper();
-    $statues = $service->getStatuses(4, 7);
+    $options = [
+        'previous_status' => 7,
+        'new_status' => 4,
+        'has_provider' => true,
+        'has_plan' => true,
+
+    ];
+    $statues = $service->getStatuses(4, $options);
     dd($statues);
 });
 
