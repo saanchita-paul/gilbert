@@ -412,3 +412,9 @@ Route::get('/test', function() {
 //    ApplicationFromGilbertJob::dispatch(3);
 
 });
+
+Route::get('test-mri', function () {
+    $service = new  \App\Services\MRI\HandleMRIService(200);
+    dd($service->saveData());
+    return $service->saveData();
+});
