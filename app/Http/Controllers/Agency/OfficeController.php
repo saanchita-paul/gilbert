@@ -98,11 +98,6 @@ class OfficeController extends Controller
 
             //create commission with data
             $commissions = $ofcAndAgencySvc->createCommistions($officeCommissions, $office->id, $officeData['agency_id']);
-            // save MRI
-            if ($office->id){
-                $mri = new HandleMRIService($office->id);
-                $mri->saveData();
-            }
             return AgencyResource::make($office);
 
         } catch (\Exception $exception) {

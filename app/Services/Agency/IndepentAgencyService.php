@@ -31,11 +31,6 @@ class IndepentAgencyService
         $officeAllocatorData['profile_id'] = $agent->id;
         $agent = $agentAndUserSvc->createUser($officeAllocatorData);
         $commissions = $ofcAndAgencySvc->createCommistions($officeCommissionsData, $office->id, $officeData['agency_id']);
-        // save MRI
-        if ($office->id){
-            $mri = new HandleMRIService($office->id);
-            $mri->saveData();
-        }
         return $agency;
 
     }
