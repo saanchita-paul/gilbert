@@ -85,11 +85,18 @@ class OfficeController extends Controller
             $officeData        = $inputData['office'];
             $agentData         = $inputData['agent'];
             $officeCommissions = $inputData['office_commissions'];
+            $mriOffice         = $inputData['mri_office'];
 
             //create new office
             $office                 = $ofcAndAgencySvc->createOffice($officeData);
             $agentData['office_id'] = $office->id;
             $agentData['agency_id'] = $officeData['agency_id'];
+
+            // save MRI
+            if ($office->id){
+                $mri = new HandleMRIService($office->id);
+                $mri->saveData($mriOffice);
+            }
 
             //create agent and user
             $agent                   = $agentAndUserSvc->createAgent($agentData);

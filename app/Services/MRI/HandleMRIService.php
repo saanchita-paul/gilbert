@@ -4,6 +4,7 @@ namespace App\Services\MRI;
 
 use App\Models\MriOffice;
 use Carbon\Carbon;
+use function MongoDB\BSON\toJSON;
 
 class HandleMRIService
 {
@@ -16,19 +17,16 @@ class HandleMRIService
     }
 
     /**
-     * @return string
+     *
      */
-    public function saveData(): string
+    public function saveData($data)
     {
-        $app_id = 'f89d9246-4e4a-437f-a6ba-1940282b097d';
-        $responseData = (new MriApplicationKeyService())->getData();
-
         $details = [
             'office_id' => $this->officeId,
-            'application_id' => $app_id,
-            'key' => $responseData['key'],
-            'company_name' => $responseData['company_name'],
-            'activation_date' => $this->formatDate($responseData['activation_date'])
+            'application_id' => config('mri.app_id'),
+            'key' => $data['key'],
+            'company_name' => $data['company_name'],
+            'activation_date' => $this->formatDate($data['activation_date'])
         ];
         if (!empty($details)) {
             MriOffice::query()->create($details);

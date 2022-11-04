@@ -85,10 +85,13 @@ export default {
         let office = null;
         let agent = null;
         let office_commissions = null;
+        let mri_office = null;
 
         let ofc = officedData.office;
         let agPro = officedData.allocator;
         let commission = officedData.profile;
+        let mriOfc = officedData.mriOffice;
+
         office = {
                 agency_id: agency,
                 address: ofc.address,
@@ -134,11 +137,18 @@ export default {
             },
             ];
 
+        mri_office = {
+            key: mriOfc.key,
+            company_name: mriOfc.company_name,
+            activation_date: mriOfc.activation_date
+        }
+
 
         return {
             office: office,
             agent: agent,
             office_commissions: office_commissions,
+            mri_office: mri_office
         }
     },
 
