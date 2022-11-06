@@ -76,13 +76,13 @@ class SignUpService
             $data = config('powershop.use_dummy_data') ? $this->getDummyData() : $this->getCustomerData($this->submitType);
             $filteredData = array_diff_key($data, array_flip(["payment_details"]));
 
-            $this->saveRequestLog($url, $filteredData, $headers);
+            $this->saveRequestLog($url, json_encode($filteredData), json_encode($headers));
             
             $response = Http::withHeaders($headers)
                 ->withBody(json_encode($data),'application-json')
                 ->post($url);
 
-            $this->saveResponseLog($response->status(), $response->json(), $response->headers());
+            $this->saveResponseLog($response->status(), $response->body(), json_encode($response->headers()));
             
             $response->throwIf(!$response->successful() && $response->status() != 422);
 
@@ -509,26 +509,26 @@ class SignUpService
         }
     }
 
-    private function saveRequestLog(string $url, array $body, array $headers) {
-        info('Powershop send data', $body);
+    private function saveRequestLog(string $url, string $body, string $headers) {
+        info('Powershop send data', ['body' => $body]);
 
         $this->apiLog = new APILog();
         $this->apiLog->key = Str::uuid()->toString();
         $this->apiLog->type = APILog::API_POWERSHOP_SEND_CUSTOMER_DATA;
         $this->apiLog->url = $url;
         $this->apiLog->method = 'POST';
-        $this->apiLog->request_body = json_encode($body);
-        $this->apiLog->request_header = json_encode($headers);
+        $this->apiLog->request_body = $body;
+        $this->apiLog->request_header = $headers;
         
         return $this->apiLog->save();
     }
 
-    private function saveResponseLog(int $statusCode, array $body, array $headers) {
-        info('Powershop receive data', $body); 
+    private function saveResponseLog(int $statusCode, string $body, string $headers) {
+        info('Powershop receive data', ['body' => $body]); 
 
         $this->apiLog->response_status = $statusCode;
-        $this->apiLog->response_body = json_encode($body);
-        $this->apiLog->response_header = json_encode($headers);
+        $this->apiLog->response_body = $body;
+        $this->apiLog->response_header = $headers;
         
         return $this->apiLog->save();
     }
