@@ -152,4 +152,9 @@ class Office extends Model
     {
         return $this->eaClientCredential?->vendor_code ?? config('ea.default_vendor_code');
     }
+
+    public function mriOffice()
+    {
+        return $this->hasOne(MriOffice::class);
+    }
 }

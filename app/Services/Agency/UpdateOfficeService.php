@@ -8,6 +8,7 @@ use App\Models\Agency;
 use App\Models\AgentProfile;
 use App\Models\Office;
 use App\Models\OfficeCommission;
+use App\Services\MRI\HandleMRIOfficeService;
 
 class UpdateOfficeService
 {
@@ -21,10 +22,14 @@ class UpdateOfficeService
 
     public function updateOffice($data)
     {
-        info("request data" , ['request data' => $data]);
-
         $office = Office::findOrFail($this->id);
         $office->update($data['office']);
+        $mriOffice = $data['mri_office'];
+        // Update MRI office
+        if ($mriOffice){
+            $service = new HandleMRIOfficeService($this->id);
+            $service->updateMRIOffice($mriOffice);
+        }
 
         if($data['office']['agency_type'] == 0) {
             $agency = Agency::findOrFail($data['office']['agency_id']);

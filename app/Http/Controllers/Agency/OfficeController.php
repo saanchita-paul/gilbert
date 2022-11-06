@@ -19,7 +19,7 @@ use App\Services\Agency\OfficeMatricsService;
 use App\Services\Agency\OfficeService;
 use App\Services\Agency\SearchOfficeService;
 use App\Services\Agency\UpdateOfficeService;
-use App\Services\MRI\HandleMRIService;
+use App\Services\MRI\HandleMRIOfficeService;
 use App\Services\ReassignApplicationsServices;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -92,10 +92,10 @@ class OfficeController extends Controller
             $agentData['office_id'] = $office->id;
             $agentData['agency_id'] = $officeData['agency_id'];
 
-            // save MRI
-            if ($office->id){
-                $mri = new HandleMRIService($office->id);
-                $mri->saveData($mriOffice);
+            // Save MRI office
+            if ($mriOffice){
+                $service = new HandleMRIOfficeService($office->id);
+                $service->saveMRIOffice($mriOffice);
             }
 
             //create agent and user

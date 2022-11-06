@@ -27,6 +27,11 @@ import MRIService from "@scripts/services/crm/MRIService";
 
 export default {
     name: "MriOfficeDropdown",
+    props: {
+        mriOfficeData: {
+            required: false
+        }
+    },
     data() {
         return {
             isMriOffice: false,
@@ -36,6 +41,7 @@ export default {
     },
     async mounted() {
         await this.getMRIOffices();
+        await this.updateMriData();
     },
     methods: {
         async getMRIOffices() {
@@ -43,6 +49,10 @@ export default {
         },
         changeMRI(item) {
             this.$emit('saveMriOffice', item);
+        },
+        updateMriData() {
+            this.isMriOffice = this.mriOfficeData ? this.mriOfficeData?.isMriOffice : false;
+            this.mriOffice = this.mriOfficeData ? this.mriOfficeData?.selectedMriDropdownItem : null;
         }
     }
 };

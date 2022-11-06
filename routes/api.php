@@ -39,7 +39,7 @@ use App\Services\Address\AddressModel;
 use TSA\Services\TsaSendAppliationService;
 use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
 use App\Services\GBGEmailValidationService;
-use App\Http\Controllers\Agency\MriController;
+use App\Http\Controllers\Agency\MriOfficeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -309,7 +309,7 @@ Route::get('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'sync
 /**
  * MRI Office
  */
-Route::get('/mri-offices', [MriController::class, 'getMriOffices']);
+Route::get('/mri-offices', [MriOfficeController::class, 'getMriOffices']);
 
 
 
@@ -417,10 +417,4 @@ Route::get('/test', function() {
 //    dd($service);
 //    ApplicationFromGilbertJob::dispatch(3);
 
-});
-
-Route::get('test-mri', function () {
-    $service = new  \App\Services\MRI\HandleMRIService(200);
-    $data = ['key' => 'Here we go', 'company_name' => 'Hood Move Tech UAT', 'activation_date' => '2022-06-01T23:59:48.4596523+00:00'];
-    dd($service->saveData($data));
 });

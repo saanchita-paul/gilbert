@@ -19,8 +19,7 @@ class MriApplicationKeyService
 
             return json_decode($response->body(), true);
         } catch (\Exception $exception) {
-            \Log::error($exception->getMessage());
-            \Log::error($exception->getTraceAsString());
+            \Log::error('Error: ', [$exception->getMessage(), $exception->getTraceAsString()]);
         }
     }
 }

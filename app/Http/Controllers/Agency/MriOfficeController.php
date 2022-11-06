@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\MRI\MriApplicationKeyService;
 use Illuminate\Http\Request;
 
-class MriController extends Controller
+class MriOfficeController extends Controller
 {
     public function getMriOffices()
     {

@@ -81,6 +81,7 @@ export default {
     updateOffice: async (office, id) => {
 
         try {
+            office = OfficeMapper.mapMriOfficeToServer(office);
             const data = await axios.post('/api/offices/'+id+'/update',{...office});
 
         } catch (error) {

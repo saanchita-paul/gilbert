@@ -181,7 +181,21 @@ export default {
 
     mapHoodProfileData: (data) => {
         return mapHoodProfile(data);
-    }
+    },
+
+    mapMriOfficeToServer: (officeData) => {
+        let mri_office = null;
+        let mriOfc = officeData.mriOffice;
+        mri_office = {
+            key: mriOfc?.selectedMriDropdownItem?.key,
+            company_name: mriOfc?.selectedMriDropdownItem?.company_name,
+            activation_date: mriOfc?.selectedMriDropdownItem?.activation_date
+        }
+        return {
+            ...officeData,
+            mri_office: mri_office,
+        }
+    },
 
 
 

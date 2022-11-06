@@ -73,7 +73,7 @@
                         :label="`Notify agents when HOOD receives an application`">
                     </v-checkbox>
 
-
+                    <MriOfficeDropdown :mriOfficeData="mriOffice" @saveMriOffice="saveMriOffice"></MriOfficeDropdown>
                 </v-col>
 
                 <v-col cols="6">
@@ -308,12 +308,14 @@
 import OfficeService from "@scripts/services/crm/OfficeService";
 import CreateSuccessfulModal from "@scripts/components/crm/modals/CreateSuccessfulModal";
 import HoodAgentDropdown from "@scripts/components/crm/office/HoodAgentDropdown";
+import MriOfficeDropdown from "@scripts/components/crm/office/mri/MriOfficeDropdown";
 
 export default {
   name: "OfficeProfile",
     components: {
         CreateSuccessfulModal,
         HoodAgentDropdown,
+        MriOfficeDropdown
     },
     data() {
       return {
@@ -354,6 +356,10 @@ export default {
               phone: null,
           },
           selectedAgentId: null,
+          mriOffice: {
+              isMriOffice: false,
+              selectedMriDropdownItem: null
+          }
       }
     },
     computed:{
@@ -375,8 +381,8 @@ export default {
            await this.updateOffice(this.data?.office);
            await this.updateCommission(this.data?.commissions);
            await this.updateAgent(this.data?.agent);
+           await this.updateMriOffice(this.data?.office?.mri_office);
            this.hood_users = this.data?.hood_users;
-
         },
 
         updateAgent(data) {
@@ -404,6 +410,14 @@ export default {
             this.office.hood_agent_id = data.hood_agent_id;
             this.office.should_notify_agent = data.should_notify_agent;
 
+        },
+        updateMriOffice(data) {
+            this.mriOffice.isMriOffice = !!data;
+            this.mriOffice.selectedMriDropdownItem = {
+                activation_date: data?.activation_date || null,
+                company_name: data?.company_name || null,
+                key: data?.key || null
+            }
         },
 
         updateCommission(commission) {
@@ -484,6 +498,7 @@ export default {
                 office: this.office,
                 commissions: this.synCommissionbeforeSave(),
                 agent: this.agent,
+                mriOffice: this.mriOffice
             };
           await OfficeService.updateOffice(officeData, this.activeOffice);
            this.updateConfirmFlag = true;
@@ -496,6 +511,9 @@ export default {
           this.updateConfirmFlag = false;
             this.$router.push({name:'real.state.agency.users',params:{id:this.$route.params.id, officeId: this.$route.params.officeId}});
 
+        },
+        saveMriOffice(item) {
+            this.mriOffice.selectedMriDropdownItem = item;
         }
     },
     mounted() {

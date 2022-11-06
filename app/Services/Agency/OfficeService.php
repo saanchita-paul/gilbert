@@ -7,6 +7,7 @@ namespace App\Services\Agency;
 use App\Models\Agency;
 use App\Models\AgentProfile;
 use App\Models\HoodProfile;
+use App\Models\MriOffice;
 use App\Models\Office;
 use App\Models\OfficeCommission;
 
@@ -21,7 +22,7 @@ class OfficeService
 
     public function getOffice()
     {
-        $office = Office::findOrFail($this->id)->toArray();
+        $office = Office::with('mriOffice')->findOrFail($this->id)->toArray();
         $office['agency'] = Agency::find($office['agency_id']);
         $office['commissions'] = $this->getOfficeCommistion();
         $office['agent'] = $this->getAgent();
