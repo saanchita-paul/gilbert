@@ -2,7 +2,6 @@
 
 namespace App\Services\Application;
 
-use App\Models\ApplicationServiceStatus;
 use App\Models\ConnectionService;
 
 class ServiceStatusFilterMapper
@@ -182,7 +181,7 @@ class ServiceStatusFilterMapper
     {
         $hasProviderPlan = $this->getHasProviderPlan($service_id);
         $statuses = $this->getStatusesByApplication($application_status);
-        if ($this->isProviderPlanAllowableStatus($service_new_status) && ($hasProviderPlan['has_provider'] || $hasProviderPlan['has_plan'])) {
+        if ($this->isProviderPlanAllowableStatus($service_new_status) && (!$hasProviderPlan['has_provider'] || !$hasProviderPlan['has_plan'])) {
             $statuses = [];
         }
 

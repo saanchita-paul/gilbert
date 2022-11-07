@@ -123,10 +123,11 @@ class ApplicationServiceStatusController extends Controller
         $request->validate([
             'service_id' => 'required|exists:connection_services,id',
             'application_status' => 'required',
-            'service_new_status' => 'required'
+            'new_status' => 'nullable'
         ]);
         $service = new ServiceStatusFilterMapper();
-        $statuses = $service->getStatuses($request->application_status, $request->service_id, $request->service_new_status);
+        $statuses = $service->getStatuses($request->application_status, $request->service_id, $request->new_status);
+
         $serviceStatuses = ApplicationServiceStatus::where('type', 'service')->whereIn('status_value', $statuses)->get();
         return ApplicationServiceStatusResource::collection($serviceStatuses)->response();
     }

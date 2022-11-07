@@ -37,11 +37,9 @@ export default {
         }
     },
 
-    async getServiceStatusDD(application_status, options) {
+    async getServiceStatusDD(form_data) {
         try {
-            console.log(application_status, options);
-            return;
-            const data = await axios.get(`/api/application-service-statuses/get-service-status-dd`, {application_status, options});
+            const data = await axios.post(`/api/application-service-statuses/get-service-status-dd`, form_data);
             return data.data;
         } catch (error) {
             throw error;

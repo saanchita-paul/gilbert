@@ -105,7 +105,7 @@
                                                 :error-messages="errors[0]"
                                                 item-text="text"
                                                 item-value="value"
-                                                :items="serviceStatusDD"
+                                                :items="powerStatusDD"
                                                 outlined
                                                 dense
                                                 hide-details="auto"
@@ -125,7 +125,7 @@
                                                 :error-messages="errors[0]"
                                                 item-text="text"
                                                 item-value="value"
-                                                :items="serviceStatusDD"
+                                                :items="gasStatusDD"
                                                 outlined
                                                 dense
                                                 hide-details="auto"
@@ -254,7 +254,16 @@ export default {
                 internet_status: null,
                 status_reason: null,
             },
+            oldStatus: {
+                application_status: null,
+                power_status: null,
+                gas_status: null,
+                water_status: null,
+                internet_status: null,
+            },
             statusDD: [],
+            powerStatusDD: [],
+            gasStatusDD: [],
         }
     },
     async mounted() {
@@ -282,12 +291,22 @@ export default {
         serviceStatusDD() {
             return this.statusDD.filter(status => status.type === 'service');
         },
-        isInvalidData() {
+        isNullData() {
             return this.formData.application_status === null
                 && this.formData.power_status === null
                 && this.formData.gas_status === null
                 && this.formData.water_status === null
                 && this.formData.internet_status === null
+        },
+        isPreviousData() {
+            return this.formData.application_status === this.oldStatus.application_status
+                && this.formData.power_status === this.oldStatus.power_status
+                && this.formData.gas_status === this.oldStatus.gas_status
+                && this.formData.water_status === this.oldStatus.water_status
+                && this.formData.internet_status === this.oldStatus.internet_status;
+        },
+        isInvalidData() {
+            return this.isNullData || this.isPreviousData;
         },
     },
 
@@ -302,21 +321,26 @@ export default {
             this.formData.water_status = this.getServiceStatusValue('water');
             this.formData.internet_status = this.getServiceStatusValue('internet');
 
-            this.getServiceStatusDD('power', null);
+            // old status
+            this.oldStatus.application_status = this.leadSummary.status_value;
+            this.oldStatus.power_status = this.getServiceStatusValue('power');
+            this.oldStatus.gas_status = this.getServiceStatusValue('gas');
+            this.oldStatus.water_status = this.getServiceStatusValue('water');
+            this.oldStatus.internet_status = this.getServiceStatusValue('internet');
+
+            this.powerStatusDD = await this.getServiceStatusDD('power', this.formData.power_status);
+            this.gasStatusDD = await this.getServiceStatusDD('gas', this.formData.gas_status);
         },
 
         async getServiceStatusDD(service_type, new_status) {
-            let service_id = this.getServiceStatus(service_type);
-            console.log('getServiceStatusDD', service_id);
-            console.log('getServiceStatusDD', new_status);
-            return;
+            let service_id = this.getServiceStatusId(service_type);
             const formdata = {
-                application_id: this.formData.application_id,
+                application_status: this.formData.application_status,
                 service_id: service_id,
                 new_status,
             };
-            const data = await ApplicationServiceStatusChangeService.getServiceStatusDD();
-            console.log(data);
+            const data = await ApplicationServiceStatusChangeService.getServiceStatusDD(formdata);
+            return data;
         },
 
         getServiceStatusValue(service) {
@@ -386,10 +410,18 @@ export default {
         mapConnectionStatus(status) {
             return LeadApplicationService.mapStatus(status)
         },
+        setNullInFormData() {
+            this.formData.application_status = this.formData.application_status === this.oldStatus.application_status ? null : this.formData.application_status;
+            this.formData.power_status = this.formData.power_status === this.oldStatus.power_status ? null : this.formData.power_status;
+            this.formData.gas_status = this.formData.gas_status === this.oldStatus.gas_status ? null : this.formData.gas_status;
+            this.formData.water_status = this.formData.water_status === this.oldStatus.water_status ? null : this.formData.water_status;
+            this.formData.internet_status = this.formData.internet_status === this.oldStatus.internet_status ? null : this.formData.internet_status;
+        },
         async submitHandler() {
             console.log('Status change form submitted....');
             try {
                 this.isLoading = true;
+                await this.setNullInFormData();
                 const data = await ApplicationServiceStatusChangeService.updateStatus(this.formData);
                 if (data.success) {
                     this.closeModal();

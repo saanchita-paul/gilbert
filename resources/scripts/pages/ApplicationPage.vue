@@ -9,7 +9,7 @@
                                          :showDuplicate="showDuplicates" :leads="leadTypes"
                                          @updateTotal="updateTotal"></ApplicationsMetrics>
                 </v-card>
-                <BulkStatusChangeUploadButton class="mt-3 text-end" :reloadLeads="this.fetchLeads"/>
+<!--                <BulkStatusChangeUploadButton class="mt-3 text-end" :reloadLeads="this.fetchLeads"/>-->
                 <ApplicationFilter v-model="advanceSearch"
                                    :isSearchEmpty="advanceSearch.isSearchEmpty()"></ApplicationFilter>
                 <router-view
