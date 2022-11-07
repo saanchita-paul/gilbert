@@ -82,7 +82,7 @@ class SignUpService
                 ->withBody(json_encode($data),'application-json')
                 ->post($url);
 
-            $this->saveResponseLog($response->status(), $response->body(), json_encode($response->headers()));
+            $this->saveResponseLog($response->status(), json_encode($response->body()), json_encode($response->headers()));
             
             $response->throwIf(!$response->successful() && $response->status() != 422);
 
