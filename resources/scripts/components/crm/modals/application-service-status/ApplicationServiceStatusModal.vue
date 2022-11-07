@@ -35,25 +35,16 @@
                                         &nbsp;&nbsp;Application
                                     </v-card-title>
 
-                                    <v-card-title class="text--primary">
-                                        <v-icon size="20" :color="getEnergyColor('Power')">mdi-flash</v-icon>
-                                        &nbsp;Power
-                                    </v-card-title>
-
-                                    <v-card-title class="text--primary">
-                                        <v-icon size="20" :color="getEnergyColor('Gas')">mdi-fire</v-icon>
-                                        &nbsp;Gas
-                                    </v-card-title>
-
-                                    <v-card-title class="text--primary">
-                                        <v-icon size="20" :color="getColor('Water')">mdi-water</v-icon>
-                                        &nbsp;Water
-                                    </v-card-title>
-
-                                    <v-card-title class="text--primary">
-                                        <v-icon size="20" :color="getColor('Internet')">mdi-wifi</v-icon>
-                                        &nbsp;Internet
-                                    </v-card-title>
+                                    <template v-if="leadSummary.connection_services.length"
+                                              v-for="connection_service in leadSummary.connection_services">
+                                        <v-card-title class="text--primary"
+                                                      v-if="isActive(connection_service.service_type)">
+                                            <v-icon size="20" :color="getServiceColor(connection_service.service_type)">
+                                                {{ getIcon(connection_service.service_type) }}
+                                            </v-icon>
+                                            &nbsp;{{ getServiceTitle(connection_service.service_type) }}
+                                        </v-card-title>
+                                    </template>
                                 </v-col>
 
                                 <v-col cols="4">
@@ -61,14 +52,12 @@
                                     <br>
                                     <v-text-field :placeholder="application_status_display_text" readonly outlined
                                                   dense></v-text-field>
-                                    <v-text-field :placeholder="power_status_display_text" readonly outlined
-                                                  dense></v-text-field>
-                                    <v-text-field :placeholder="gas_status_display_text" readonly outlined
-                                                  dense></v-text-field>
-                                    <v-text-field :placeholder="water_status_display_text" readonly outlined
-                                                  dense></v-text-field>
-                                    <v-text-field :placeholder="internet_status_display_text" readonly outlined
-                                                  dense></v-text-field>
+                                    <template v-if="leadSummary.service_interests.length"
+                                              v-for="connection_service in leadSummary.service_interests">
+
+                                        <v-text-field :placeholder="getServiceStatusPlaceholder(connection_service)" readonly outlined
+                                                      dense></v-text-field>
+                                    </template>
                                 </v-col>
 
                                 <v-col cols="4">
@@ -384,6 +373,42 @@ export default {
             return 'grey lighten-1';
         },
 
+        getIcon(service) {
+            if (this.isActive(service)) {
+                if (service.toLowerCase() === 'power') {
+                    return 'mdi-flash';
+                }
+                if (service.toLowerCase() === 'gas') {
+                    return 'mdi-fire';
+                }
+                if (service.toLowerCase() === 'internet') {
+                    return 'mdi-wifi';
+                }
+                if (service.toLowerCase() === 'water') {
+                    return 'mdi-water';
+                }
+            }
+            return 'mdi-flash';
+        },
+
+        getServiceTitle(service) {
+            if (this.isActive(service)) {
+                if (service.toLowerCase() === 'power') {
+                    return 'Power';
+                }
+                if (service.toLowerCase() === 'gas') {
+                    return 'Gas';
+                }
+                if (service.toLowerCase() === 'internet') {
+                    return 'Internet';
+                }
+                if (service.toLowerCase() === 'water') {
+                    return 'Water';
+                }
+            }
+            return 'Power';
+        },
+
         getEnergyColor(service) {
             if (this.isEnergyActive(service)) {
                 if (service.toLowerCase() === 'power') {
@@ -394,6 +419,13 @@ export default {
                 }
             }
             return 'grey lighten-1';
+        },
+
+        getServiceColor(service) {
+            if (service.toLowerCase() === 'power' || service.toLowerCase() === 'gas') {
+                return this.getEnergyColor(service);
+            }
+            return this.getColor(service);
         },
 
         getServiceStatus(conn_ser) {
@@ -409,6 +441,23 @@ export default {
 
         mapConnectionStatus(status) {
             return LeadApplicationService.mapStatus(status)
+        },
+        getServiceStatusPlaceholder(service) {
+            if (this.isActive(service)) {
+                if (service.toLowerCase() === 'power') {
+                    return this.power_status_display_text;
+                }
+                if (service.toLowerCase() === 'gas') {
+                    return this.gas_status_display_text;
+                }
+                if (service.toLowerCase() === 'internet') {
+                    return this.internet_status_display_text;
+                }
+                if (service.toLowerCase() === 'water') {
+                    return this.water_status_display_text;
+                }
+            }
+            return 'grey lighten-1';
         },
         setNullInFormData() {
             this.formData.application_status = this.formData.application_status === this.oldStatus.application_status ? null : this.formData.application_status;

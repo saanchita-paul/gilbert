@@ -8,6 +8,7 @@ use App\Jobs\WaterStatusUpdateJob;
 use App\Models\ConnectionApplication;
 use App\Models\ConnectionService;
 use App\Services\Agency\UpdatedWaterStatus;
+use App\Services\Application\ApplicationServiceStatusService;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Pool;
@@ -111,7 +112,8 @@ class UpdateWaterLeadsStatus
                 if (!$this->runAll) {
                     $query->whereIn('status', [ConnectionService::WATER_STATUS_SUBMITTED]);
                 }
-                $query->where('service_type', ConnectionService::TYPE_WATER);
+                $query->where('service_type', ConnectionService::TYPE_WATER)
+                    ->where('quote_reference', '!=', ApplicationServiceStatusService::QUOTE_REFERENCE);
             })
             ->whereNotNull('fast_connect_customer_reference');
     }
@@ -232,7 +234,7 @@ class UpdateWaterLeadsStatus
             'content-type' => 'application/json',
             'authorization' => \config('fastconnect.base64_key'),
         ])
-            ->post( \config('fastconnect.root_url') . \config('fastconnect.get_water_token_uri'));
+            ->post(\config('fastconnect.root_url') . \config('fastconnect.get_water_token_uri'));
 
         $this->accessToken = json_decode($response->body(), true)['access_token'];
 

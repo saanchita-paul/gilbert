@@ -8,6 +8,7 @@ use App\Http\Requests\ApplicationServiceStatusRequest;
 use App\Http\Resources\ApplicationServiceStatusResource;
 use App\Models\ApplicationServiceStatus;
 use App\Services\Application\ApplicationServiceStatusService;
+use App\Services\Application\ApplicationStatusFilterQueryService;
 use App\Services\Application\ServiceStatusFilterMapper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -128,7 +129,8 @@ class ApplicationServiceStatusController extends Controller
         $service = new ServiceStatusFilterMapper();
         $statuses = $service->getStatuses($request->application_status, $request->service_id, $request->new_status);
 
-        $serviceStatuses = ApplicationServiceStatus::where('type', 'service')->whereIn('status_value', $statuses)->get();
+        $queryService = new ApplicationStatusFilterQueryService();
+        $serviceStatuses = $queryService->getServiceStatusDD($statuses);
         return ApplicationServiceStatusResource::collection($serviceStatuses)->response();
     }
 }

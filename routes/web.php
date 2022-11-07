@@ -34,7 +34,10 @@ Route::get('/email', function () {
 Route::get('test-status', function () {
     $service = new \App\Services\Application\ServiceStatusFilterMapper();
     $statues = $service->getStatuses(4, 14539, 2);
-    dd($statues);
+
+    $services = \App\Models\ConnectionService::where('connection_application_id', 5087)
+        ->where('quote_reference', '!=', \App\Services\Application\ApplicationServiceStatusService::QUOTE_REFERENCE)->get();
+    dd($services);
 });
 
 Route::get('/{vue_capture?}', fn() => view('app'))

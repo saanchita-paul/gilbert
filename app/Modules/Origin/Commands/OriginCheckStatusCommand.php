@@ -2,6 +2,7 @@
 
 namespace Origin\Commands;
 
+use App\Services\Application\ApplicationServiceStatusService;
 use Illuminate\Console\Command;
 use App\Models\ConnectionService;
 use App\Jobs\OriginStatusUpdateJob;
@@ -14,8 +15,7 @@ class OriginCheckStatusCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'origin:check'
-    ;
+    protected $signature = 'origin:check';
 
     /**
      * The console command description.
@@ -40,14 +40,15 @@ class OriginCheckStatusCommand extends Command
      * @return int
      */
     public function handle()
-    {   
+    {
         $this->line('Origin check command started!');
         $services = ConnectionService::where('provider_name', ConnectionService::PROVIDER_ORIGIN)
-                    ->whereNotNull('lead_reference')
-                    ->where('status', ConnectionService::STATUS_SUBMITTED)
-                    ->get();
-        
-        foreach($services as $service){
+            ->whereNotNull('lead_reference')
+            ->where('status', ConnectionService::STATUS_SUBMITTED)
+            ->where('quote_reference', '!=', ApplicationServiceStatusService::QUOTE_REFERENCE)
+            ->get();
+
+        foreach ($services as $service) {
             OriginStatusUpdateJob::dispatch($service->lead_reference, $service->connection_application_id);
         }
 

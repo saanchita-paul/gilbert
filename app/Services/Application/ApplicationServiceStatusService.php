@@ -13,6 +13,16 @@ class ApplicationServiceStatusService
     private $data;
     private $logData;
 
+    const QUOTE_REFERENCE = 'manual_quote_reference';
+    const STATUS_SUBMITTED = 4;
+    const STATUS_ENERGY_SUBMIT = 12;
+    const STATUS_NOT_SUBMITTED = 7;
+
+    public static $submitStatues = [
+        self::STATUS_SUBMITTED,
+        self::STATUS_ENERGY_SUBMIT,
+    ];
+
     public function __construct($data = [], $logData = [])
     {
         $this->data = $data;
@@ -83,7 +93,13 @@ class ApplicationServiceStatusService
         if ($connectionApplication && !is_null($status_value)) {
             $service = $connectionApplication->connectionServices()->where('service_type', $service_type)->first();
             if ($service) {
-                $service->update(['status' => (int)$status_value]);
+                if (in_array($status_value, self::$submitStatues)) {
+                    $service->update(['status' => (int)$status_value, 'quote_reference' => self::QUOTE_REFERENCE]);
+                } elseif ($status_value == self::STATUS_NOT_SUBMITTED) {
+                    $service->update(['status' => (int)$status_value, 'quote_reference' => null]);
+                } else {
+                    $service->update(['status' => (int)$status_value]);
+                }
             } else {
                 Log::debug('Manual Status Change - No connection service found to update!');
             }
