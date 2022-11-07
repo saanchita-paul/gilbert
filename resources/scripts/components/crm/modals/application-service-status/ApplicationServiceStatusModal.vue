@@ -29,7 +29,7 @@
                     <ValidationObserver ref="application_status_change">
                         <v-card-text class="pa-5">
                             <v-row>
-                                <v-col cols="4">
+                                <v-col :cols="isShowCloseReason? '3' : '4'">
                                     <v-card-title class="text--primary ml-2">Item</v-card-title>
                                     <v-card-title class="text--primary mt-3">
                                         &nbsp;&nbsp;Application
@@ -47,7 +47,7 @@
                                     </template>
                                 </v-col>
 
-                                <v-col cols="4">
+                                <v-col :cols="isShowCloseReason? '3' : '4'">
                                     <v-card-title class="text--primary ml-n4">Current Status</v-card-title>
                                     <br>
                                     <v-text-field :placeholder="application_status_display_text" readonly outlined
@@ -55,12 +55,13 @@
                                     <template v-if="leadSummary.service_interests.length"
                                               v-for="connection_service in leadSummary.service_interests">
 
-                                        <v-text-field :placeholder="getServiceStatusPlaceholder(connection_service)" readonly outlined
+                                        <v-text-field :placeholder="getServiceStatusPlaceholder(connection_service)"
+                                                      readonly outlined
                                                       dense></v-text-field>
                                     </template>
                                 </v-col>
 
-                                <v-col cols="4">
+                                <v-col :cols="isShowCloseReason? '3' : '4'">
                                     <v-card-title class="text--primary ml-n4">New Status</v-card-title>
                                     <br>
                                     <div class="text-field margin-bottom-26">
@@ -75,6 +76,7 @@
                                                 item-text="text"
                                                 item-value="value"
                                                 :items="applicationStatusDD"
+                                                @change="applicationStatusChangeHandler"
                                                 outlined
                                                 dense
                                                 hide-details="auto"
@@ -134,7 +136,7 @@
                                                 :error-messages="errors[0]"
                                                 item-text="text"
                                                 item-value="value"
-                                                :items="serviceStatusDD"
+                                                :items="waterStatusDD"
                                                 outlined
                                                 dense
                                                 hide-details="auto"
@@ -154,7 +156,31 @@
                                                 :error-messages="errors[0]"
                                                 item-text="text"
                                                 item-value="value"
-                                                :items="serviceStatusDD"
+                                                :items="waterStatusDD"
+                                                outlined
+                                                dense
+                                                hide-details="auto"
+                                            >
+                                            </v-select>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-col>
+
+                                <v-col cols="3" v-if="isShowCloseReason">
+                                    <v-card-title class="text--primary ml-n4">Close Reason</v-card-title>
+                                    <br>
+                                    <div class="text-field margin-bottom-26">
+                                        <ValidationProvider
+                                            name="Close Reason status"
+                                            v-slot="{ errors }"
+                                        >
+                                            <v-select
+                                                placeholder="Please select"
+                                                v-model="formData.application_status"
+                                                :error-messages="errors[0]"
+                                                item-text="text"
+                                                item-value="value"
+                                                :items="applicationStatusDD"
                                                 outlined
                                                 dense
                                                 hide-details="auto"
@@ -253,10 +279,8 @@ export default {
             statusDD: [],
             powerStatusDD: [],
             gasStatusDD: [],
+            waterStatusDD: [],
         }
-    },
-    async mounted() {
-        await this.getInitData();
     },
     computed: {
         application_status_display_text() {
@@ -275,10 +299,11 @@ export default {
             return this.getServiceStatus('internet').text;
         },
         applicationStatusDD() {
-            return this.statusDD.filter(status => status.type === 'application');
+            let excludeStatus = [1];
+            return this.statusDD.filter(status => status.type === 'application' && !excludeStatus.includes(status.status_value));
         },
-        serviceStatusDD() {
-            return this.statusDD.filter(status => status.type === 'service');
+        isShowCloseReason() {
+            return this.formData.application_status === 8;
         },
         isNullData() {
             return this.formData.application_status === null
@@ -298,7 +323,9 @@ export default {
             return this.isNullData || this.isPreviousData;
         },
     },
-
+    async mounted() {
+        await this.getInitData();
+    },
     methods: {
         async getInitData() {
             this.statusDD = await ApplicationServiceStatusChangeService.getAllStatus();
@@ -319,6 +346,8 @@ export default {
 
             this.powerStatusDD = await this.getServiceStatusDD('power', this.formData.power_status);
             this.gasStatusDD = await this.getServiceStatusDD('gas', this.formData.gas_status);
+
+            await this.getWaterServiceSTatusDD();
         },
 
         async getServiceStatusDD(service_type, new_status) {
@@ -330,6 +359,17 @@ export default {
             };
             const data = await ApplicationServiceStatusChangeService.getServiceStatusDD(formdata);
             return data;
+        },
+
+        async getWaterServiceSTatusDD() {
+            this.waterStatusDD = await ApplicationServiceStatusChangeService.getWaterServiceStatusDD();
+        },
+
+        async applicationStatusChangeHandler() {
+            this.powerStatusDD = await this.getServiceStatusDD('power', this.formData.power_status);
+            this.gasStatusDD = await this.getServiceStatusDD('gas', this.formData.gas_status);
+
+            await this.getWaterServiceSTatusDD();
         },
 
         getServiceStatusValue(service) {
@@ -347,7 +387,7 @@ export default {
         },
 
         isActive(service) {
-            return this.leadSummary.service_interests.includes(service.toLowerCase()) ? true : false;
+            return this.leadSummary.service_interests.includes(service.toLowerCase());
         },
 
         isEnergyActive(service) {

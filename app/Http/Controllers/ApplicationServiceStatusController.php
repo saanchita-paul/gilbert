@@ -133,4 +133,14 @@ class ApplicationServiceStatusController extends Controller
         $serviceStatuses = $queryService->getServiceStatusDD($statuses);
         return ApplicationServiceStatusResource::collection($serviceStatuses)->response();
     }
+
+    public function getWaterServiceStatusDD(Request $request)
+    {
+        $service = new ServiceStatusFilterMapper();
+        $statuses = $service->getWaterServiceStatuses();
+
+        $queryService = new ApplicationStatusFilterQueryService();
+        $serviceStatuses = $queryService->getServiceStatusDD($statuses);
+        return ApplicationServiceStatusResource::collection($serviceStatuses)->response();
+    }
 }

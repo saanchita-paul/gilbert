@@ -45,4 +45,13 @@ export default {
             throw error;
         }
     },
+
+    async getWaterServiceStatusDD() {
+        try {
+            const data = await axios.get(`/api/application-service-statuses/get-water-service-status-dd`);
+            return data.data;
+        } catch (error) {
+            throw error;
+        }
+    },
 };

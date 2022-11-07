@@ -19,10 +19,17 @@ export const getServiceStatusDD = async (form_data) => {
     return data.data;
 };
 
+export const getWaterServiceStatusDD = async () => {
+    let data = await ApplicationServiceStatusChangeAPI.getWaterServiceStatusDD();
+    return data.data;
+};
+
+
 export default {
     getAllStatus,
     updateStatus,
     updateBulkStatus,
     getAllLogs,
-    getServiceStatusDD
+    getServiceStatusDD,
+    getWaterServiceStatusDD
 };

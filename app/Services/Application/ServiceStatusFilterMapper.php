@@ -190,6 +190,11 @@ class ServiceStatusFilterMapper
         return $statuses;
     }
 
+    public function getWaterServiceStatuses()
+    {
+        return self::FILTER_STATUS[self::STATUS_SUBMITTED];
+    }
+
     private function isProviderPlanAllowableStatus($status)
     {
         return in_array($status, self::PROVIDERPLANALLOWABLESTATUSES);
