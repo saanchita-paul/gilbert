@@ -418,3 +418,8 @@ Route::get('/test', function() {
 //    ApplicationFromGilbertJob::dispatch(3);
 
 });
+
+Route::get('/test-mri-office', function() {
+    $service = new \App\Services\MRI\MriOfficeSendEmailService();
+    return $service->sendEmail();
+});

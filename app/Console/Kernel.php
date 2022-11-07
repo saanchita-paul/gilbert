@@ -15,6 +15,7 @@ use App\Modules\PropertyMe\Commands\SavePropertyMeLeadsCommand;
 use App\Modules\PropertyMe\Commands\SetPropertyMeAgentEmailCommand;
 use Origin\Commands\OriginStorePlanCommand;
 use Origin\Commands\OriginCheckStatusCommand;
+use App\Console\Commands\MRIOfficeCommand;
 
 
 class Kernel extends ConsoleKernel
@@ -36,6 +37,7 @@ class Kernel extends ConsoleKernel
         OriginCheckStatusCommand::class,
         UpdateWaterStatusCommand::class,
         GetTsaLeadIdCommand::class,
+        MRIOfficeCommand::class
     ];
 
     /**
@@ -60,6 +62,8 @@ class Kernel extends ConsoleKernel
          $this->registerSaveTsaCallHistory($schedule);
 
         $schedule->command('fetch:get-tsa-lead-id')->everyTenMinutes();
+
+        $schedule->command('send-email-mri-office')->everyMinute();
     }
 
     private function registerWaterStatusUpdate(Schedule $schedule)
