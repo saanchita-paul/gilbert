@@ -71,7 +71,8 @@
             "TSA\\": "app/Modules/TSA",
             "Reporting\\": "app/Modules/Reporting",
             "Origin\\": "app/Modules/Origin",
-            "Powershop\\": "app/Modules/Powershop"
+            "Powershop\\": "app/Modules/Powershop",
+            "MRI\\": "app/Modules/MRI"
         }
     },
     "autoload-dev": {
