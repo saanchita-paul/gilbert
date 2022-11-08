@@ -176,11 +176,11 @@
                                         >
                                             <v-select
                                                 placeholder="Please select"
-                                                v-model="formData.application_status"
+                                                v-model="formData.closed_reason"
                                                 :error-messages="errors[0]"
                                                 item-text="text"
                                                 item-value="value"
-                                                :items="applicationStatusDD"
+                                                :items="closeReasonDD"
                                                 outlined
                                                 dense
                                                 hide-details="auto"
@@ -244,6 +244,7 @@ import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import leadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import {upperFirst} from "lodash-es";
+import AppCloseReasonService from "@scripts/services/AppCloseReasonService";
 
 export default {
     name: "ApplicationServiceStatusModal",
@@ -268,6 +269,7 @@ export default {
                 water_status: null,
                 internet_status: null,
                 status_reason: null,
+                closed_reason: null,
             },
             oldStatus: {
                 application_status: null,
@@ -280,6 +282,7 @@ export default {
             powerStatusDD: [],
             gasStatusDD: [],
             waterStatusDD: [],
+            closeReasons: [],
         }
     },
     computed: {
@@ -322,6 +325,9 @@ export default {
         isInvalidData() {
             return this.isNullData || this.isPreviousData;
         },
+        closeReasonDD() {
+            return this.closeReasons.filter(reason => reason.value !== 17);
+        },
     },
     async mounted() {
         await this.getInitData();
@@ -348,6 +354,8 @@ export default {
             this.gasStatusDD = await this.getServiceStatusDD('gas', this.formData.gas_status);
 
             await this.getWaterServiceSTatusDD();
+
+            this.closeReasons = await AppCloseReasonService.getAppCloseReasonData();
         },
 
         async getServiceStatusDD(service_type, new_status) {

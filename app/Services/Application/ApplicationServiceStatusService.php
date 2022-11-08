@@ -3,10 +3,15 @@
 namespace App\Services\Application;
 
 
+use App\Jobs\UpdateHubspotContactJob;
+use App\Models\AppCloseReason;
 use App\Models\ApplicationServiceStatus;
 use App\Models\ConnectionApplication;
 use App\Models\ManualStatusChangeLog;
+use App\Services\Agency\ApplicationNoteService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use function Symfony\Component\Translation\t;
 
 class ApplicationServiceStatusService
 {
@@ -17,6 +22,7 @@ class ApplicationServiceStatusService
     const STATUS_SUBMITTED = 4;
     const STATUS_ENERGY_SUBMIT = 12;
     const STATUS_NOT_SUBMITTED = 7;
+    const STATUS_CLOSED = 8;
 
     public static $submitStatues = [
         self::STATUS_SUBMITTED,
@@ -38,7 +44,7 @@ class ApplicationServiceStatusService
             });
 
             // Get array_keys of validated data
-            $data_keys = array_diff(array_keys($data), ['application_status', 'application_id', 'status_reason']);
+            $data_keys = array_diff(array_keys($data), ['application_status', 'application_id', 'status_reason', 'closed_reason']);
 
             // Loop through validated keys and save data into DB
             if (count($data_keys) > 0) {
@@ -51,7 +57,13 @@ class ApplicationServiceStatusService
                 Log::debug('Manual Status Change: No data to save!');
             }
             $this->saveApplicationStatus();
-            $this->saveStatusReason();
+            if (isset($this->data['application_status']) && $this->data['application_status'] == self::STATUS_CLOSED) {
+                $this->saveStatusReason();
+            } else {
+                $this->setNullStatusReason();
+            }
+            $this->saveClosedReason();
+            UpdateHubspotContactJob::dispatch($this->data['application_id']);
             return $this->getConnectionApplication();
         } catch (\Exception $e) {
             Log::error('Manual Status Change: ' . $e->getMessage());
@@ -170,5 +182,52 @@ class ApplicationServiceStatusService
     private function saveStatusReason()
     {
         return ManualStatusChangeLog::create($this->logData);
+    }
+
+    // Save closed reason
+    private function saveClosedReason()
+    {
+        try {
+            $user = Auth::user();
+            $existingApplication = $this->getConnectionApplication();
+            $existingApplication->app_close_reason_id = $this->data['closed_reason'];
+            $existingApplication->closing_reason = null;
+            $existingApplication->closed_at = now();
+            $existingApplication->closed_by = $user->id;
+            $existingApplication->save();
+
+            // get dropdown reason id text
+            $applicationReasonIdText = AppCloseReason::select('value')->where('id', $this->data['closed_reason'])->first();
+
+            $allicationNoteService = new ApplicationNoteService($user);
+            $closingeNote = [];
+            $closingeNote['text'] = 'App closed reason:' . $applicationReasonIdText?->value . (!empty($application['closing_reason']) ? "\n" . 'Additional Notes:' . $application['closing_reason'] : '');
+            $closingeNote['type'] = 'close_connection';
+
+            $allicationNoteService->createNotes($closingeNote, $this->data['application_id']);
+
+
+            return $existingApplication;
+        } catch (\Exception $exception) {
+            \Log::error("**CloseApplication**",
+                ["msg" => $exception->getMessage(), "trace" => $exception->getTraceAsString()]);
+        }
+    }
+
+    // Set closed reason to null
+    private function setNullStatusReason()
+    {
+        try {
+            $existingApplication = $this->getConnectionApplication();
+            $existingApplication->app_close_reason_id = null;
+            $existingApplication->closing_reason = null;
+            $existingApplication->closed_at = null;
+            $existingApplication->closed_by = null;
+            $existingApplication->save();
+            return $existingApplication;
+        } catch (\Exception $exception) {
+            \Log::error("**CloseApplication**",
+                ["msg" => $exception->getMessage(), "trace" => $exception->getTraceAsString()]);
+        }
     }
 }
