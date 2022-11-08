@@ -190,11 +190,12 @@ class ApplicationServiceStatusService
         try {
             $user = Auth::user();
             $existingApplication = $this->getConnectionApplication();
-            $existingApplication->app_close_reason_id = $this->data['closed_reason'];
-            $existingApplication->closing_reason = null;
-            $existingApplication->closed_at = now();
-            $existingApplication->closed_by = $user->id;
-            $existingApplication->save();
+            $existingApplication->update([
+                'app_close_reason_id' => $this->data['app_close_reason_id'],
+                'closing_reason' => null,
+                'closed_at' => now(),
+                'closed_by' => $user->id,
+            ]);
 
             // get dropdown reason id text
             $applicationReasonIdText = AppCloseReason::select('value')->where('id', $this->data['closed_reason'])->first();
@@ -219,11 +220,12 @@ class ApplicationServiceStatusService
     {
         try {
             $existingApplication = $this->getConnectionApplication();
-            $existingApplication->app_close_reason_id = null;
-            $existingApplication->closing_reason = null;
-            $existingApplication->closed_at = null;
-            $existingApplication->closed_by = null;
-            $existingApplication->save();
+            $existingApplication->update([
+                'app_close_reason_id' => null,
+                'closing_reason' => null,
+                'closed_at' => null,
+                'closed_by' => null,
+            ]);
             return $existingApplication;
         } catch (\Exception $exception) {
             \Log::error("**CloseApplication**",
