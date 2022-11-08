@@ -63,7 +63,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('fetch:get-tsa-lead-id')->everyTenMinutes();
 
-        $schedule->command('send-email-mri-office')->everyMinute();
+        $schedule->command('send-email-mri-office')->daily();
     }
 
     private function registerWaterStatusUpdate(Schedule $schedule)

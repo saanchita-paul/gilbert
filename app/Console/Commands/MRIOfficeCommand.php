@@ -36,11 +36,10 @@ class MRIOfficeCommand extends Command
      *
      * @return int
      */
-    public function handle(): int
+    public function handle()
     {
         $service = new MriOfficeSendEmailService();
         $service->sendEmail();
-        \Log::info("Cron is working fine!");
         return 0;
     }
 }
