@@ -68,6 +68,24 @@ class ServiceStatusFilterMapper
             self::AC_MANUAL_PROCESSING
 
         ],
+        self::STATUS_ACCEPTED => [
+            self::STATUS_SUBMITTED,
+            self::STATUS_EA_PROCESSING,
+            self::STATUS_ENERGY_SUBMIT,
+            self::AC_MANUAL_PROCESSING,
+            self::STATUS_ACCEPTED,
+            self::STATUS_REJECTED,
+            self::STATUS_CANT_CONNECT,
+        ],
+        self::STATUS_REJECTED => [
+            self::STATUS_EA_PROCESSING,
+            self::STATUS_SUBMITTED,
+            self::STATUS_ENERGY_SUBMIT,
+            self::AC_MANUAL_PROCESSING,
+            self::STATUS_ACCEPTED,
+            self::STATUS_REJECTED,
+            self::STATUS_CANT_CONNECT,
+        ],
         self::STATUS_ESCALATED => [
             self::STATUS_EA_PROCESSING,
             self::STATUS_SUBMITTED,
@@ -89,75 +107,6 @@ class ServiceStatusFilterMapper
     ];
 
 
-    /*
-     * Filter changeable service statuses by service status
-     */
-    const FILTER_SERVICE_STATUS = [
-        self::STATUS_EA_PROCESSING => [
-            self::STATUS_FAILED,
-            self::STATUS_EA_PROCESSING
-        ],
-        self::STATUS_FAILED => [
-            self::STATUS_FAILED,
-            self::STATUS_EA_PROCESSING,
-        ],
-        self::STATUS_SUBMITTED => [
-            self::STATUS_EA_PROCESSING,
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_ACCEPTED,
-            self::STATUS_REJECTED,
-            self::STATUS_CANT_CONNECT,
-
-        ],
-        self::STATUS_ENERGY_SUBMIT => [
-            self::STATUS_EA_PROCESSING,
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_ACCEPTED,
-            self::STATUS_REJECTED,
-            self::STATUS_CANT_CONNECT,
-        ],
-        self::AC_MANUAL_PROCESSING => [
-            self::STATUS_EA_PROCESSING,
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_ACCEPTED,
-            self::STATUS_REJECTED,
-            self::STATUS_CANT_CONNECT,
-        ],
-        self::STATUS_ACCEPTED => [
-            self::STATUS_EA_PROCESSING,
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_ACCEPTED,
-            self::STATUS_REJECTED,
-            self::STATUS_CANT_CONNECT,
-        ],
-        self::STATUS_REJECTED => [
-            self::STATUS_EA_PROCESSING,
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_ACCEPTED,
-            self::STATUS_REJECTED,
-            self::STATUS_CANT_CONNECT,
-        ],
-        self::STATUS_CANT_CONNECT => [
-            self::STATUS_EA_PROCESSING,
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_ACCEPTED,
-            self::STATUS_REJECTED,
-            self::STATUS_CANT_CONNECT,
-        ],
-    ];
-
     const PROVIDERPLANALLOWABLESTATUSES = [
         self::STATUS_SUBMITTED,
         self::STATUS_ENERGY_SUBMIT,
@@ -170,11 +119,6 @@ class ServiceStatusFilterMapper
     private function getStatusesByApplication($status)
     {
         return self::FILTER_STATUS[$status] ?? [];
-    }
-
-    private function getStatusesByService($status)
-    {
-        return self::FILTER_SERVICE_STATUS[$status] ?? [];
     }
 
     public function getStatuses($application_status, $service_id, $service_new_status = null)

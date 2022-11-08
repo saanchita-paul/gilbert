@@ -58,11 +58,11 @@ class ApplicationServiceStatusService
             }
             $this->saveApplicationStatus();
             if (isset($this->data['application_status']) && $this->data['application_status'] == self::STATUS_CLOSED) {
-                $this->saveStatusReason();
+                $this->saveClosedReason();
             } else {
                 $this->setNullStatusReason();
             }
-            $this->saveClosedReason();
+            $this->saveStatusReason();
             UpdateHubspotContactJob::dispatch($this->data['application_id']);
             return $this->getConnectionApplication();
         } catch (\Exception $e) {

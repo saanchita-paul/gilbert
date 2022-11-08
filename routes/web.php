@@ -30,15 +30,5 @@ Route::get('/email', function () {
     return response('hello world');
 });
 
-
-Route::get('test-status', function () {
-    $service = new \App\Services\Application\ServiceStatusFilterMapper();
-    $statues = $service->getStatuses(4, 14539, 2);
-
-    $services = \App\Models\ConnectionService::where('connection_application_id', 5087)
-        ->where('quote_reference', '!=', \App\Services\Application\ApplicationServiceStatusService::QUOTE_REFERENCE)->get();
-    dd($services);
-});
-
 Route::get('/{vue_capture?}', fn() => view('app'))
     ->where('vue_capture', '[\/\w\.-]*');

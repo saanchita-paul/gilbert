@@ -35,14 +35,14 @@
                                         &nbsp;&nbsp;Application
                                     </v-card-title>
 
-                                    <template v-if="leadSummary.connection_services.length"
-                                              v-for="connection_service in leadSummary.connection_services">
+                                    <template v-if="activeConnectionServices.length"
+                                              v-for="connection_service in activeConnectionServices">
                                         <v-card-title class="text--primary"
-                                                      v-if="isActive(connection_service.service_type)">
-                                            <v-icon size="20" :color="getServiceColor(connection_service.service_type)">
-                                                {{ getIcon(connection_service.service_type) }}
+                                                      v-if="isActive(connection_service)">
+                                            <v-icon size="20" :color="getServiceColor(connection_service)">
+                                                {{ getIcon(connection_service) }}
                                             </v-icon>
-                                            &nbsp;{{ getServiceTitle(connection_service.service_type) }}
+                                            &nbsp;{{ getServiceTitle(connection_service) }}
                                         </v-card-title>
                                     </template>
                                 </v-col>
@@ -52,8 +52,8 @@
                                     <br>
                                     <v-text-field :placeholder="application_status_display_text" readonly outlined
                                                   dense></v-text-field>
-                                    <template v-if="leadSummary.service_interests.length"
-                                              v-for="connection_service in leadSummary.service_interests">
+                                    <template v-if="activeConnectionServices.length"
+                                              v-for="connection_service in activeConnectionServices">
 
                                         <v-text-field :placeholder="getServiceStatusPlaceholder(connection_service)"
                                                       readonly outlined
@@ -85,85 +85,91 @@
                                         </ValidationProvider>
                                     </div>
 
-                                    <div class="text-field margin-bottom-26">
-                                        <ValidationProvider
-                                            name="Power status"
-                                            v-slot="{ errors }"
-                                        >
-                                            <v-select
-                                                placeholder="Please select"
-                                                v-model="formData.power_status"
-                                                :error-messages="errors[0]"
-                                                item-text="text"
-                                                item-value="value"
-                                                :items="powerStatusDD"
-                                                outlined
-                                                dense
-                                                hide-details="auto"
+                                    <template v-if="activeConnectionServices.length"
+                                              v-for="connection_service in activeConnectionServices">
+                                        <div class="text-field margin-bottom-26"
+                                             v-if="connection_service === 'power'">
+                                            <ValidationProvider
+                                                name="Power status"
+                                                v-slot="{ errors }"
                                             >
-                                            </v-select>
-                                        </ValidationProvider>
-                                    </div>
+                                                <v-select
+                                                    placeholder="Please select"
+                                                    v-model="formData.power_status"
+                                                    :error-messages="errors[0]"
+                                                    item-text="text"
+                                                    item-value="value"
+                                                    :items="powerStatusDD"
+                                                    outlined
+                                                    dense
+                                                    hide-details="auto"
+                                                >
+                                                </v-select>
+                                            </ValidationProvider>
+                                        </div>
 
-                                    <div class="text-field margin-bottom-26">
-                                        <ValidationProvider
-                                            name="Gas status"
-                                            v-slot="{ errors }"
-                                        >
-                                            <v-select
-                                                placeholder="Please select"
-                                                v-model="formData.gas_status"
-                                                :error-messages="errors[0]"
-                                                item-text="text"
-                                                item-value="value"
-                                                :items="gasStatusDD"
-                                                outlined
-                                                dense
-                                                hide-details="auto"
+                                        <div class="text-field margin-bottom-26"
+                                             v-else-if="connection_service === 'gas'">
+                                            <ValidationProvider
+                                                name="Gas status"
+                                                v-slot="{ errors }"
                                             >
-                                            </v-select>
-                                        </ValidationProvider>
-                                    </div>
+                                                <v-select
+                                                    placeholder="Please select"
+                                                    v-model="formData.gas_status"
+                                                    :error-messages="errors[0]"
+                                                    item-text="text"
+                                                    item-value="value"
+                                                    :items="gasStatusDD"
+                                                    outlined
+                                                    dense
+                                                    hide-details="auto"
+                                                >
+                                                </v-select>
+                                            </ValidationProvider>
+                                        </div>
 
-                                    <div class="text-field margin-bottom-26">
-                                        <ValidationProvider
-                                            name="Water status"
-                                            v-slot="{ errors }"
-                                        >
-                                            <v-select
-                                                placeholder="Please select"
-                                                v-model="formData.water_status"
-                                                :error-messages="errors[0]"
-                                                item-text="text"
-                                                item-value="value"
-                                                :items="waterStatusDD"
-                                                outlined
-                                                dense
-                                                hide-details="auto"
+                                        <div class="text-field margin-bottom-26"
+                                             v-else-if="connection_service === 'water'">
+                                            <ValidationProvider
+                                                name="Water status"
+                                                v-slot="{ errors }"
                                             >
-                                            </v-select>
-                                        </ValidationProvider>
-                                    </div>
+                                                <v-select
+                                                    placeholder="Please select"
+                                                    v-model="formData.water_status"
+                                                    :error-messages="errors[0]"
+                                                    item-text="text"
+                                                    item-value="value"
+                                                    :items="waterStatusDD"
+                                                    outlined
+                                                    dense
+                                                    hide-details="auto"
+                                                >
+                                                </v-select>
+                                            </ValidationProvider>
+                                        </div>
 
-                                    <div class="text-field">
-                                        <ValidationProvider
-                                            name="Internet status"
-                                            v-slot="{ errors }"
-                                        >
-                                            <v-select
-                                                placeholder="Please select"
-                                                v-model="formData.internet_status"
-                                                :error-messages="errors[0]"
-                                                item-text="text"
-                                                item-value="value"
-                                                :items="waterStatusDD"
-                                                outlined
-                                                dense
-                                                hide-details="auto"
+                                        <div class="text-field" v-else>
+                                            <ValidationProvider
+                                                name="Internet status"
+                                                v-slot="{ errors }"
                                             >
-                                            </v-select>
-                                        </ValidationProvider>
-                                    </div>
+                                                <v-select
+                                                    placeholder="Please select"
+                                                    v-model="formData.internet_status"
+                                                    :error-messages="errors[0]"
+                                                    item-text="text"
+                                                    item-value="value"
+                                                    :items="waterStatusDD"
+                                                    outlined
+                                                    dense
+                                                    hide-details="auto"
+                                                >
+                                                </v-select>
+                                            </ValidationProvider>
+                                        </div>
+                                    </template>
                                 </v-col>
 
                                 <v-col cols="3" v-if="isShowCloseReason">
@@ -272,19 +278,11 @@ export default {
             formData: {
                 application_id: null,
                 application_status: null,
-                power_status: null,
-                gas_status: null,
-                water_status: null,
-                internet_status: null,
                 status_reason: null,
                 closed_reason: null,
             },
             oldStatus: {
                 application_status: null,
-                power_status: null,
-                gas_status: null,
-                water_status: null,
-                internet_status: null,
             },
             statusDD: [],
             powerStatusDD: [],
@@ -292,6 +290,8 @@ export default {
             waterStatusDD: [],
             closeReasons: [],
             showConfirmModal: false,
+            activeConnectionServices: [],
+            formDataStatuses: [],
         }
     },
     computed: {
@@ -311,25 +311,17 @@ export default {
             return this.getServiceStatus('internet').text;
         },
         applicationStatusDD() {
-            let excludeStatus = [1];
+            let excludeStatus = [1, 7];
             return this.statusDD.filter(status => status.type === 'application' && !excludeStatus.includes(status.status_value));
         },
         isShowCloseReason() {
             return this.formData.application_status === 8;
         },
         isNullData() {
-            return this.formData.application_status === null
-                && this.formData.power_status === null
-                && this.formData.gas_status === null
-                && this.formData.water_status === null
-                && this.formData.internet_status === null
+            return this.formDataStatuses.every(status => this.formData[status] === null);
         },
         isPreviousData() {
-            return this.formData.application_status === this.oldStatus.application_status
-                && this.formData.power_status === this.oldStatus.power_status
-                && this.formData.gas_status === this.oldStatus.gas_status
-                && this.formData.water_status === this.oldStatus.water_status
-                && this.formData.internet_status === this.oldStatus.internet_status;
+            return this.formDataStatuses.every(status => this.formData[status] === this.oldStatus[status]);
         },
         isInvalidData() {
             return this.isNullData || this.isPreviousData;
@@ -347,17 +339,9 @@ export default {
 
             this.formData.application_id = this.leadSummary.id;
             this.formData.application_status = this.leadSummary.status_value;
-            this.formData.power_status = this.getServiceStatusValue('power');
-            this.formData.gas_status = this.getServiceStatusValue('gas');
-            this.formData.water_status = this.getServiceStatusValue('water');
-            this.formData.internet_status = this.getServiceStatusValue('internet');
 
             // old status
-            this.oldStatus.application_status = this.leadSummary.status_value;
-            this.oldStatus.power_status = this.getServiceStatusValue('power');
-            this.oldStatus.gas_status = this.getServiceStatusValue('gas');
-            this.oldStatus.water_status = this.getServiceStatusValue('water');
-            this.oldStatus.internet_status = this.getServiceStatusValue('internet');
+            this.setOldStatus();
 
             this.powerStatusDD = await this.getServiceStatusDD('power', this.formData.power_status);
             this.gasStatusDD = await this.getServiceStatusDD('gas', this.formData.gas_status);
@@ -365,6 +349,18 @@ export default {
             await this.getWaterServiceSTatusDD();
 
             this.closeReasons = await AppCloseReasonService.getAppCloseReasonData();
+            const sortOrder = ['power', 'gas', 'water', 'internet'];
+            this.activeConnectionServices = this.leadSummary.service_interests
+                .sort((a, b) => sortOrder.indexOf(a) - sortOrder.indexOf(b));
+            this.formDataStatuses = Object.keys(this.formData).filter(key => key.includes('_status'));
+        },
+
+        setOldStatus() {
+            this.oldStatus.application_status = this.leadSummary.status_value;
+            this.leadSummary.connection_services.forEach(service => {
+                this.oldStatus[`${service.service_type}_status`] = service.status;
+                this.formData[`${service.service_type}_status`] = service.status;
+            });
         },
 
         async getServiceStatusDD(service_type, new_status) {
