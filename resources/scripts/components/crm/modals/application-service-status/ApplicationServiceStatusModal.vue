@@ -25,7 +25,7 @@
                     </v-toolbar-items>
                 </v-toolbar>
 
-                <form @submit.prevent="submitHandler">
+                <form @submit.prevent="openConfirmModal">
                     <ValidationObserver ref="application_status_change">
                         <v-card-text class="pa-5">
                             <v-row>
@@ -235,6 +235,11 @@
                 </form>
             </v-card>
         </v-dialog>
+
+        <StatusChangeConfirmationModal v-if="showConfirmModal"
+                                       :dialog="showConfirmModal"
+                                       @submitStatus="submitHandler"
+                                       @closeConfirmModal="closeConfirmModal" :is-loading="isLoading"/>
     </v-row>
 </template>
 
@@ -245,9 +250,12 @@ import LeadApplicationService from "@scripts/services/crm/LeadApplicationService
 import leadApplicationService from "@scripts/services/crm/LeadApplicationService";
 import {upperFirst} from "lodash-es";
 import AppCloseReasonService from "@scripts/services/AppCloseReasonService";
+import StatusChangeConfirmationModal
+    from "@scripts/components/crm/modals/application-service-status/StatusChangeConfirmationModal";
 
 export default {
     name: "ApplicationServiceStatusModal",
+    components: {StatusChangeConfirmationModal},
     props: {
         dialog: {
             required: true,
@@ -283,6 +291,7 @@ export default {
             gasStatusDD: [],
             waterStatusDD: [],
             closeReasons: [],
+            showConfirmModal: false,
         }
     },
     computed: {
@@ -524,13 +533,21 @@ export default {
                     this.closeModal();
                     this.$emit('reloadPlanNoteAndLead');
                     this.$eventBus.$emit("manual_status_changed");
+                    this.closeConfirmModal();
                 }
             } catch (err) {
                 console.log(err.response.data);
             } finally {
                 this.isLoading = false;
             }
-        }
+        },
+        openConfirmModal() {
+            this.showConfirmModal = true;
+        },
+        // Close confirm modal
+        closeConfirmModal() {
+            this.showConfirmModal = false;
+        },
     }
 }
 </script>
