@@ -4,7 +4,47 @@
             <v-col cols="8">
                 <v-card class="hood-card">
                     <p>Your Metrics</p>
-                    <h3 class="page-title">Total Applications: {{total_leads}}</h3>
+                    <div class="d-flex justify-space-between">
+                        <h3 class="page-title">Total Applications: {{total_leads}}</h3>
+
+                        <div class="d-flex">
+                            <v-tooltip bottom content-class='custom-tooltip'>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <span v-on="on">
+                                        <p class="pt-2 pb-1 mb-0">
+                                            <span class="ml-1">
+                                                <v-icon>mdi-cart</v-icon>
+                                            </span>
+                                        </p>
+
+                                    </span>
+                                </template>
+                                <div>
+                                    <v-card
+                                        max-width="400"
+                                        outlined
+                                        elevation="10"
+                                    >
+                                        <v-card-title>
+                                            <span>Automatically assign leads to Chatbot.</span> &nbsp;
+                                        </v-card-title>
+                                        <v-card-text>
+                                            <p>Gilbert will automatically assign every future applications from opt-in REA offices directly to the Chatbot.</p>
+                                        </v-card-text>
+                                    </v-card>
+                                </div>
+                            </v-tooltip>
+
+                            <span class="mr-5">Automatically assign leads to Chatbot.</span>
+                            <v-switch
+                                inset
+                                style="margin: 0 !important;"
+                                v-model="assign_to_chatbot"
+                            >
+                            </v-switch>
+                        </div>
+
+                    </div>
                     <ApplicationsMetrics @resetPage="resetPage" v-if="leadTypesFlag" :activeLeadType="activeLeadType" :showDuplicate="showDuplicates" :leads="leadTypes" @updateTotal="updateTotal"></ApplicationsMetrics>
                 </v-card>
                 <ApplicationFilter v-model="advanceSearch" :isSearchEmpty="advanceSearch.isSearchEmpty()"></ApplicationFilter>
@@ -81,6 +121,7 @@ export default {
             advanceSearch: new LeadSearchFilterModel(),
             showDuplicates: false,
             duplication_group_id: null,
+            assign_to_chatbot: true
         }
     },
 
@@ -219,5 +260,11 @@ export default {
 </script>
 
 <style scoped>
+.custom-tooltip {
+    opacity: 1!important;
+}
+.v-tooltip__content {
+    background-color: transparent;
+}
 </style>
 
