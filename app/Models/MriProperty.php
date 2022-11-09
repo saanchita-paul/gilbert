@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MriApplication extends Model
+class MriProperty extends Model
 {
     use HasFactory;
 
-    public function propertyDetail()
+    public function application()
     {
-        return $this->hasOne(MriProperty::class);
+        return $this->belongsTo(MriApplication::class);
     }
 }

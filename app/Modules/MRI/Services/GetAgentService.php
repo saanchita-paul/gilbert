@@ -11,6 +11,10 @@ use GuzzleHttp\Psr7\Response;
 use App\Models\MriAgent;
 use App\Models\MriOffice;
 
+use Illuminate\Support\Facades\DB;
+
+use Illuminate\Support\Carbon;
+
 class GetAgentService 
 {
     /**
@@ -23,20 +27,30 @@ class GetAgentService
      */
     private ?string $url;
 
+    /**
+     * @var string|null
+     */
+    private ?string $afterDate;
+
     public function __construct()
     {
-        $this->getURL();
-        $this->authenticate();
+        $this->setURL();
+        $this->setAfterDate(Carbon::now()->format('Y-m-d'));
     }
 
-    private function authenticate()
-    {        
-        // TODO: get key from mri_offices table
-        $this->accessToken = '4e1df42e-5c53-4762-b07a-79f8d731e0bc:4e477c8d-21b5-42ff-a03c-294b41246889';
+    public function setAfterDate(string $date)
+    {
+        $this->afterDate = Carbon::parse($date)->format('Y-m-d');
         return $this;
     }
 
-    private function getURL()
+    private function setToken(string $token)
+    {
+        $this->accessToken = $token;
+        return $this;
+    }
+
+    private function setURL()
     {
         $this->url = config('mri.base_url') . config('mri.endpoints.get_all_agents');
         return $this;
@@ -44,33 +58,85 @@ class GetAgentService
 
     public function run()
     {
-        $client = new Client([
-            'headers' => [
+        $mriOffices = MriOffice::get();
+        foreach ($mriOffices as $office) {
+            $token = $office->key;
+            $this->setToken($token);
+            $headers = [
                 'content-type' => 'application/json',
                 'accept' => 'application/json',
                 'authorization' => 'Bearer ' . $this->accessToken
-            ],
-        ]);
+            ];
 
-        $query = [
-            'lastModifiedOnOrAfter' => '2022-05-01'
-        ];
+            $client = new Client([
+                'headers' => $headers,
+            ]);
+            
+            $query = [
+                'lastModifiedOnOrAfter' => $this->afterDate
+            ];
 
-        $options = [
-            'query' => $query
-        ];
+            $options = [
+                'query' => $query
+            ];
 
-        $response = $client->request('GET', $this->url, $options);
+            $response = $client->request('GET', $this->url, $options);
 
-        $data = json_decode($response->getBody()->getContents(), true);
+            // TODO: handle request exception
+            $data = json_decode($response->getBody()->getContents(), true);
 
-        // TODO: filter by mri office id
-        $existingAgentIds = MriAgent::pluck('agent_id')->toArray();
+            $savedAgentIds = $this->saveAgent($office->id, $data);
 
-        $filteredData = array_filter($data, function($value) use ($existingAgentIds){
-            return !in_array($value['id'], $existingAgentIds);
-        });
+            if (!empty($savedAgentIds)){
+                $message = sprintf('Updated %s mri agents', count($savedAgentIds));
+                dump($message);
+                info($message, ['mri_agent_ids' => $savedAgentIds]);
+                // TODO: send email?
+            }
+        }
+    }
 
-        return $filteredData;
+    /**
+     * @param int officeId
+     * @param array agentsData
+     * 
+     * @return array exceptions
+     */
+    private function saveAgent($officeId, $agentsData)
+    {
+        $exceptionArray = [];
+        $updatedAgentIds = [];
+
+        foreach ($agentsData as $agentData) {
+            try {
+                $mriAgent = MriAgent::where('agent_id', $agentData['id'])->first();
+                if (!$mriAgent)
+                    $mriAgent = new MriAgent();
+                
+                $mriAgent->agent_id = $agentData['id'];
+                $mriAgent->first_name = $agentData['first_name'];
+                $mriAgent->last_name = $agentData['last_name'];
+                $mriAgent->email_address = $agentData['email_address'];
+                $mriAgent->mobile_phone_number = $agentData['mobile_phone_number'];
+                if (!empty($agentData['roles'])) 
+                    $mriAgent->roles = implode(',', $agentData['roles']);
+                $mriAgent->is_deleted = $agentData['deleted'];
+                $mriAgent->mri_office_id = $officeId;
+    
+                $mriAgent->save();
+                $updatedAgentIds[] = $mriAgent->id;
+            } catch (\Exception $exception) {
+                $exceptionArray[] = [
+                    'exception' => $exception,
+                    'data' => $agentData,
+                ];
+            }     
+        }
+
+        if (!empty($exceptionArray)){
+            // TODO: handle save exception
+        }
+
+        return $updatedAgentIds;
     }
 }

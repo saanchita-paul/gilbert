@@ -16,6 +16,7 @@ use App\Modules\PropertyMe\Commands\SetPropertyMeAgentEmailCommand;
 use Origin\Commands\OriginStorePlanCommand;
 use Origin\Commands\OriginCheckStatusCommand;
 use App\Console\Commands\MRIOfficeCommand;
+use MRI\Commands\MriFetchTenanciesCommand;
 
 
 class Kernel extends ConsoleKernel
@@ -37,7 +38,8 @@ class Kernel extends ConsoleKernel
         OriginCheckStatusCommand::class,
         UpdateWaterStatusCommand::class,
         GetTsaLeadIdCommand::class,
-        MRIOfficeCommand::class
+        MRIOfficeCommand::class,
+        MriFetchTenanciesCommand::class,
     ];
 
     /**

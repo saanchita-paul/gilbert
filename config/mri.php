@@ -8,6 +8,8 @@ return [
     'to_mail_address' => env('MRI_OFFICE_EMAIL', 'mdshakilhossain091@gmail.com'),
     'endpoints' => [
         'get_mri_office_key_pairs' => '/apikey/v1/application_keys/',
-        'get_all_agents' => '/residentialproperty/v1/Agents'
+        'get_all_agents' => '/residentialproperty/v1/Agents',
+        'get_tenancies' => '/residentialproperty/v1/Tenancies',
+        'get_property_by_id' => '/residentialproperty/v1/Properties/',
     ],
 ];
