@@ -22,11 +22,11 @@ class ManualStatusChangeLog extends Model
             ConnectionApplication::class,
             'connection_application_id',
             'id'
-        )->withDefault();
+        );
     }
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'changed_by', 'id')->withDefault();
+        return $this->belongsTo(User::class, 'changed_by', 'id');
     }
 }
