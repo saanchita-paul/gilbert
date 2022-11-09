@@ -16,6 +16,7 @@ class CreateApplicationServiceStatusesTable extends Migration
     {
         Schema::create('application_service_statuses', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->nullable()->comment("it's a name of constant status");
             $table->string('type')->default(ApplicationServiceStatus::TYPE_SERVICE);
             $table->string('display_text');
             $table->string('display_text_alias')->nullable();

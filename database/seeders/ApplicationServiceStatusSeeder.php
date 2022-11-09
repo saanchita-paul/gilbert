@@ -16,6 +16,7 @@ class ApplicationServiceStatusSeeder extends Seeder
     {
         $statuses = [
             [
+                'name' => 'unassigned',
                 'type' => 'application',
                 'display_text' => 'Unassigned',
                 'display_text_alias' => 'Unassigned',
@@ -24,6 +25,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'assigned',
                 'type' => 'application',
                 'display_text' => 'Assigned',
                 'display_text_alias' => 'Assigned',
@@ -32,6 +34,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'escalated',
                 'type' => 'application',
                 'display_text' => 'Escalated',
                 'display_text_alias' => 'Escalated',
@@ -40,6 +43,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'submitted',
                 'type' => 'application',
                 'display_text' => 'Submitted',
                 'display_text_alias' => 'Submitted',
@@ -48,6 +52,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'accepted',
                 'type' => 'application',
                 'display_text' => 'Accepted',
                 'display_text_alias' => 'Accepted',
@@ -56,6 +61,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'rejected',
                 'type' => 'application',
                 'display_text' => 'Rejected',
                 'display_text_alias' => 'Rejected',
@@ -64,6 +70,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'processing',
                 'type' => 'application',
                 'display_text' => 'Processing',
                 'display_text_alias' => 'In progress',
@@ -72,6 +79,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'closed',
                 'type' => 'application',
                 'display_text' => 'Closed',
                 'display_text_alias' => 'Closed',
@@ -80,6 +88,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'unassigned',
                 'type' => 'service',
                 'display_text' => 'Unassigned',
                 'display_text_alias' => 'Unassigned',
@@ -88,6 +97,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'assigned',
                 'type' => 'service',
                 'display_text' => 'Assigned',
                 'display_text_alias' => 'Assigned',
@@ -96,6 +106,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'escalated',
                 'type' => 'service',
                 'display_text' => 'Escalated',
                 'display_text_alias' => 'Escalated',
@@ -104,6 +115,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'submitted',
                 'type' => 'service',
                 'display_text' => 'In Progress',
                 'display_text_alias' => 'In Progress',
@@ -112,6 +124,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'accepted',
                 'type' => 'service',
                 'display_text' => 'Accepted',
                 'display_text_alias' => 'Connected',
@@ -120,6 +133,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'rejected',
                 'type' => 'service',
                 'display_text' => 'Rejected',
                 'display_text_alias' => 'Rejected',
@@ -128,6 +142,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'not_submitted',
                 'type' => 'service',
                 'display_text' => 'Not Submitted',
                 'display_text_alias' => 'In progress',
@@ -136,6 +151,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'closed',
                 'type' => 'service',
                 'display_text' => 'Not Selected',
                 'display_text_alias' => 'Not Selected',
@@ -144,6 +160,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'rejected',
                 'type' => 'service',
                 'display_text' => 'Rejected',
                 'display_text_alias' => 'Rejected',
@@ -152,6 +169,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'need_more_info',
                 'type' => 'service',
                 'display_text' => 'Not Selected',
                 'display_text_alias' => 'Not Selected',
@@ -160,6 +178,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'ac_manual_precessing',
                 'type' => 'service',
                 'display_text' => 'Manual Processing',
                 'display_text_alias' => 'Manual Processing',
@@ -168,6 +187,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'processing',
                 'type' => 'service',
                 'display_text' => 'In Progress',
                 'display_text_alias' => 'In Progress',
@@ -176,6 +196,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'failed',
                 'type' => 'service',
                 'display_text' => 'Manual Processing',
                 'display_text_alias' => 'Manual Processing',
