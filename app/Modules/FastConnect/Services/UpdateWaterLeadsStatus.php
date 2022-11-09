@@ -232,9 +232,9 @@ class UpdateWaterLeadsStatus
     {
         $response = Http::withHeaders([
             'content-type' => 'application/json',
-            'authorization' => \config('fastconnect.base64_key'),
+            'authorization' => config('fastconnect.base64_key'),
         ])
-            ->post(\config('fastconnect.root_url') . \config('fastconnect.get_water_token_uri'));
+            ->post(config('fastconnect.root_url') . config('fastconnect.get_water_token_uri'));
 
         $this->accessToken = json_decode($response->body(), true)['access_token'];
 
