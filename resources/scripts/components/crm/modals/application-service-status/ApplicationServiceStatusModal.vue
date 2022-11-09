@@ -280,6 +280,10 @@ export default {
                 application_status: null,
                 status_reason: null,
                 closed_reason: null,
+                power_status: null,
+                gas_status: null,
+                water_status: null,
+                internet_status: null,
             },
             oldStatus: {
                 application_status: null,
@@ -292,6 +296,7 @@ export default {
             showConfirmModal: false,
             activeConnectionServices: [],
             formDataStatuses: [],
+            isPreviousData: true,
         }
     },
     computed: {
@@ -320,9 +325,6 @@ export default {
         isNullData() {
             return this.formDataStatuses.every(status => this.formData[status] === null);
         },
-        isPreviousData() {
-            return this.formDataStatuses.every(status => this.formData[status] === this.oldStatus[status]);
-        },
         isInvalidData() {
             return this.isNullData || this.isPreviousData;
         },
@@ -332,6 +334,33 @@ export default {
     },
     async mounted() {
         await this.getInitData();
+    },
+    watch: {
+        "formData.power_status": function () {
+            if (this.formData.power_status !== this.oldStatus.power_status) {
+                this.isPreviousData = false;
+            }
+        },
+        "formData.gas_status": function () {
+            if (this.formData.gas_status !== this.oldStatus.gas_status) {
+                this.isPreviousData = false;
+            }
+        },
+        "formData.water_status": function () {
+            if (this.formData.water_status !== this.oldStatus.water_status) {
+                this.isPreviousData = false;
+            }
+        },
+        "formData.internet_status": function () {
+            if (this.formData.internet_status !== this.oldStatus.internet_status) {
+                this.isPreviousData = false;
+            }
+        },
+        "formData.application_status": function () {
+            if (this.formData.application_status !== this.oldStatus.application_status) {
+                this.isPreviousData = false;
+            }
+        },
     },
     methods: {
         async getInitData() {
@@ -353,6 +382,8 @@ export default {
             this.activeConnectionServices = this.leadSummary.service_interests
                 .sort((a, b) => sortOrder.indexOf(a) - sortOrder.indexOf(b));
             this.formDataStatuses = Object.keys(this.formData).filter(key => key.includes('_status'));
+
+            this.removeFormdataProperty();
         },
 
         setOldStatus() {
@@ -361,6 +392,24 @@ export default {
                 this.oldStatus[`${service.service_type}_status`] = service.status;
                 this.formData[`${service.service_type}_status`] = service.status;
             });
+        },
+
+        removeFormdataProperty() {
+            if (!this.leadSummary.service_interests.includes('power')) {
+                delete this.formData.power_status;
+            }
+
+            if (!this.leadSummary.service_interests.includes('gas')) {
+                delete this.formData.gas_status;
+            }
+
+            if (!this.leadSummary.service_interests.includes('water')) {
+                delete this.formData.water_status;
+            }
+
+            if (!this.leadSummary.service_interests.includes('internet')) {
+                delete this.formData.internet_status;
+            }
         },
 
         async getServiceStatusDD(service_type, new_status) {
