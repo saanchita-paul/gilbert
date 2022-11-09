@@ -67,11 +67,11 @@
                         @onChangeAgent="onChangeAgent" />
                     </ValidationProvider>
 
-                    <v-checkbox
-                        v-model="office.should_notify_agent"
-                        @input="updateOffice"
-                        :label="`Notify agents when HOOD receives an application`">
-                    </v-checkbox>
+<!--                    <v-checkbox-->
+<!--                        v-model="office.should_notify_agent"-->
+<!--                        @input="updateOffice"-->
+<!--                        :label="`Notify agents when HOOD receives an application`">-->
+<!--                    </v-checkbox>-->
 
 
                 </v-col>
@@ -111,6 +111,35 @@
 
 
 
+                </v-col>
+
+                <v-col cols="12">
+                    <v-row>
+                        <v-col cols="12">
+                            <p class="sub-title mb-0">Automation</p>
+                        </v-col>
+
+                        <v-col cols="6">
+                            <h4  class="mb-2">Agent Notification</h4>
+                            <p class="leade-text pr-5">Agents will recieve email notification when HOOD receives their application</p>
+                            <v-switch
+                                v-model="office.should_notify_agent"
+                                @input="updateOffice"
+                                inset
+                                :label="`${toggleTextAgentNotify}`"
+                            ></v-switch>
+                        </v-col>
+
+                        <v-col cols="6">
+                            <h4  class="mb-2">Assigning leads to Chatbot</h4>
+                            <p class="leade-text pr-5">If switched on, HOOD will automatically assign every future applications created through this office to the Chatbot. This means the tenants will be able to submit their application by themselves.</p>
+                            <v-switch
+                                v-model="office.assign_to_chatbot"
+                                inset
+                                :label="`${toggleTextAssignToChatbot}`"
+                            ></v-switch>
+                        </v-col>
+                    </v-row>
                 </v-col>
 
                 <v-col cols="12" class="py-0">
@@ -336,6 +365,7 @@ export default {
               account_manager: null,
               hood_agent_id: null,
               should_notify_agent: false,
+              assign_to_chatbot: false,
           },
           commission: {
               gas: null,
@@ -359,6 +389,12 @@ export default {
     computed:{
         hoodAgentId(){
             return this.office?.hood_agent_id;
+        },
+        toggleTextAgentNotify() {
+            return this.office.should_notify_agent ? 'On' : 'Off';
+        },
+        toggleTextAssignToChatbot() {
+            return this.office.assign_to_chatbot ? 'On' : 'Off';
         }
     },
     methods:{
