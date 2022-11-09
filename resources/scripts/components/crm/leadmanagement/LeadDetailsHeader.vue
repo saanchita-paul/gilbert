@@ -30,7 +30,7 @@
             </div>
             <div>
                 <div class="d-flex justify-end">
-                    <v-btn outlined @click="openStatusChangeModal" right>Change Status</v-btn>
+                    <v-btn outlined @click="openStatusChangeModal" right v-if="isShowManualStatus">Change Status</v-btn>
                     <v-btn outlined @click="escalate" right v-if="leadSummary.status != 3" class="ml-1">Escalate</v-btn>
                     <v-btn v-if="leadSummary.status == 3" outlined @click="escalate" right
                            :disabled="leadSummary.status == 3" class="border-warning">Escalated
@@ -138,7 +138,7 @@
             <v-divider></v-divider>
         </v-col>
 
-        <ApplicationServiceStatusModal v-if="showStatusChangeModal"
+        <ApplicationServiceStatusModal v-if="showStatusChangeModal && isShowManualStatus"
                                        :dialog="showStatusChangeModal"
                                        :leadSummary="leadSummary"
                                        @closeStatusChangeModal="closeStatusChangeModal"
@@ -158,6 +158,7 @@ import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import {powerShopPaymentStatusNumberToName} from "@scripts/data/PowershopDataMapper";
 import ApplicationServiceStatusModal
     from "@scripts/components/crm/modals/application-service-status/ApplicationServiceStatusModal";
+import AuthService from "@scripts/services/AuthService";
 
 export default {
     name: "LeadDetailsHeader",
@@ -189,7 +190,13 @@ export default {
         },
         isChatBotApplication() {
             return this.leadSummary?.chatbot_id;
-        }
+        },
+        authUser() {
+            return AuthService.getAuthUser();
+        },
+        isShowManualStatus() {
+            return this.authUser.permissions.includes('can_change_manual_status');
+        },
     },
     methods: {
         goToBack() {

@@ -43,6 +43,7 @@ class RolePermissionService
     public const CAN_GET_EXPORT_REPORT = 'can_get_export_report';
     public const CAN_GET_REPORT_ACCESS_TOKEN = 'can_get_report_access_token';
     public const CAN_CREATE_NEW_APPLICATION = 'can_create_new_application';
+    public const CAN_CHANGE_MANUAL_STATUS = 'can_change_manual_status';
 
     public static function allPermission()
     {
@@ -55,7 +56,7 @@ class RolePermissionService
             static::CAN_SUBMIT_APPLICATION,
             static::CAN_GET_AGENT_LIST,
             static::CAN_UPDATE_AGENT_PROFILE,
-        
+
             //Hood Admin Permissions
             static::CAN_GET_OPERATION_REPORT,
             static::CAN_GET_EXPORT_REPORT,
@@ -78,7 +79,8 @@ class RolePermissionService
             static::CAN_GET_ASSIGNED_USER,
             static::CAN_SUBMIT_APPLICATION,
             static::CAN_GET_NMI_MERN,
-        
+            static::CAN_CHANGE_MANUAL_STATUS,
+
             //Hood Team lead Permissions
             static::CAN_GET_OPERATION_REPORT,
             static::CAN_GET_EXPORT_REPORT,
@@ -101,7 +103,7 @@ class RolePermissionService
             static::CAN_GET_ASSIGNED_USER,
             static::CAN_SUBMIT_APPLICATION,
             static::CAN_GET_NMI_MERN,
-        
+
             //Hood Agent Permissions
             static::CAN_GET_OPERATION_REPORT,
             static::CAN_GET_EXPORT_REPORT,
@@ -122,7 +124,7 @@ class RolePermissionService
             static::CAN_UPDATE_OFFICE,
             static::CAN_UPDATE_OFFICE_AGENT,
             static::CAN_SEND_CONFIRRMATION_MAIL,
-        
+
             //Hood Customer Representative  Permissions
             static::CAN_GET_OPERATION_REPORT,
             static::CAN_GET_EXPORT_REPORT,
@@ -182,6 +184,7 @@ class RolePermissionService
             static::CAN_UPDATE_OFFICE,
             static::CAN_UPDATE_OFFICE_AGENT,
             static::CAN_SEND_CONFIRRMATION_MAIL,
+            static::CAN_CHANGE_MANUAL_STATUS,
         ];
     }
 
@@ -232,7 +235,7 @@ class RolePermissionService
             static::CAN_GET_ASSIGNED_USER,
             static::CAN_SUBMIT_APPLICATION,
             static::CAN_GET_NMI_MERN,
-        
+
         ];
     }
 
