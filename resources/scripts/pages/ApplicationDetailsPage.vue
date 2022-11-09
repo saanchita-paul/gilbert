@@ -54,6 +54,9 @@
             <PreventSubmissionModal v-if="preventSubmissionFlag" :message="preventSubmissionMessage" :dialog="preventSubmissionFlag" @closeMessage="closePreventSubmissionModal"></PreventSubmissionModal>
 
         <DuplicateLeadModal v-if="duplicateLead" :dialog="duplicateLead" @cancelDuplicateLead="cancelDuplicateLead" :duplicateGroupId="leadSummary.duplication_group_id"></DuplicateLeadModal>
+
+        <ApplicationUnlockModal v-if="isChatBotApplication" :dialog="isChatBotApplication"></ApplicationUnlockModal>
+
     </v-container>
 </template>
 
@@ -80,6 +83,7 @@ import Store from '@scripts/store/index';
 import SendToChatBotModal from "@scripts/components/crm/modals/SendToChatBotModal";
 import ChatbotInChargeModal from "@scripts/components/crm/modals/ChatbotInChargeModal";
 import DuplicateLeadModal from "@scripts/components/crm/modals/DuplicateLeadModal";
+import ApplicationUnlockModal from "@scripts/components/crm/modals/ApplicationUnlockModal";
 
 
 export default {
@@ -100,7 +104,8 @@ export default {
         AssignedToUserEmptyModal,
         PreventSubmissionModal,
         GasOnlyCanNotSubmitModal,
-        DuplicateLeadModal
+        DuplicateLeadModal,
+        ApplicationUnlockModal
     },
 
     data() {
@@ -142,7 +147,8 @@ export default {
             serviceSubmitType: null,
             closeSentConfirm: false,
             isChatbotInCharge: false,
-            duplicateLead: false
+            duplicateLead: false,
+            isChatBotApplication: false,
         }
     },
     computed: {
@@ -476,6 +482,7 @@ export default {
         },
     },
     async  mounted() {
+        this.isChatBotApplication = true;
         const validateEvent = async (callback) => {
               let v = await this.validateLead();
               if(!v) return;
