@@ -15,7 +15,7 @@ class ServiceStatusFilterMapper
     const STATUS_REJECTED = 6;
     const STATUS_EA_PROCESSING = 7;
     const STATUS_CLOSED = 8;
-    public static $application_status_mapping = [
+    public static $applicationStatusMap = [
         self::STATUS_UNASSIGNED => 'unassigned',
         self::STATUS_ASSIGNED => 'assigned',
         self::STATUS_ESCALATED => 'escalated',
@@ -32,7 +32,7 @@ class ServiceStatusFilterMapper
     const AC_MANUAL_PROCESSING = 11;
     const STATUS_ENERGY_SUBMIT = 12;
     const STATUS_FAILED = 13;
-    public static $service_status_mapping = [
+    public static $serviceStatusMap = [
         self::STATUS_UNASSIGNED => 'unassigned',
         self::STATUS_ASSIGNED => 'assigned',
         self::STATUS_ESCALATED => 'escalated',
