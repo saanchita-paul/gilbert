@@ -12,5 +12,4 @@ Route::get('application-service-statuses/get-water-service-status-dd', "Applicat
 Route::apiResource('application-service-statuses', "ApplicationServiceStatusController");
 
 // Application service status change logs routes
-Route::get('manual-status-change-logs', "ManualStatusChangeLogsController@index");
-Route::get('manual-status-change-logs/{id}', "ManualStatusChangeLogsController@statusLogsByApplicationId");
+Route::get('applications/{application_id}/manual-status-change-logs', "ManualStatusChangeLogsController@statusLogsByApplicationId");

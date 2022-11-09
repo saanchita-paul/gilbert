@@ -3,30 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ManualStatusChangeLogResource;
-use App\Models\ManualStatusChangeLog;
+use App\Services\ManualStatus\ManualStatusChangeLogService;
 use Illuminate\Http\JsonResponse;
 
 class ManualStatusChangeLogsController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return JsonResponse
-     */
-    public function index()
-    {
-        return ManualStatusChangeLogResource::collection(ManualStatusChangeLog::all())->response();
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
-     * @param $id
+     * @param $applicationId
      * @return JsonResponse
      */
-    public function statusLogsByApplicationId($id)
+    public function statusLogsByApplicationId($applicationId)
     {
-        $logs = ManualStatusChangeLog::where('connection_application_id', $id)->latest()->get();
+        $logs = ManualStatusChangeLogService::getLogsByApplicationId($applicationId);
         return ManualStatusChangeLogResource::collection($logs)->response();
     }
 }

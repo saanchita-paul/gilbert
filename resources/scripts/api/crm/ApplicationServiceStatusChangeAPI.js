@@ -30,7 +30,7 @@ export default {
 
     async getAllLogs(applicationId) {
         try {
-            const data = await axios.get(`/api/manual-status-change-logs/${applicationId}`);
+            const data = await axios.get(`/api/applications/${applicationId}/manual-status-change-logs`);
             return data.data;
         } catch (error) {
             throw error;
