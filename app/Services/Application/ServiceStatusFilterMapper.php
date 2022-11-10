@@ -57,7 +57,7 @@ class ServiceStatusFilterMapper
         ],
         self::STATUS_SUBMITTED => [
             self::STATUS_SUBMITTED,
-            self::STATUS_EA_PROCESSING,
+//            self::STATUS_EA_PROCESSING,
             self::STATUS_ENERGY_SUBMIT,
             self::STATUS_ACCEPTED,
             self::STATUS_REJECTED,
@@ -67,7 +67,7 @@ class ServiceStatusFilterMapper
         ],
         self::STATUS_ACCEPTED => [
             self::STATUS_SUBMITTED,
-            self::STATUS_EA_PROCESSING,
+//            self::STATUS_EA_PROCESSING,
             self::STATUS_ENERGY_SUBMIT,
             self::AC_MANUAL_PROCESSING,
             self::STATUS_ACCEPTED,
@@ -75,7 +75,7 @@ class ServiceStatusFilterMapper
             self::STATUS_CANT_CONNECT,
         ],
         self::STATUS_REJECTED => [
-            self::STATUS_EA_PROCESSING,
+//            self::STATUS_EA_PROCESSING,
             self::STATUS_SUBMITTED,
             self::STATUS_ENERGY_SUBMIT,
             self::AC_MANUAL_PROCESSING,
@@ -84,7 +84,7 @@ class ServiceStatusFilterMapper
             self::STATUS_CANT_CONNECT,
         ],
         self::STATUS_ESCALATED => [
-            self::STATUS_EA_PROCESSING,
+//            self::STATUS_EA_PROCESSING,
             self::STATUS_SUBMITTED,
             self::STATUS_ENERGY_SUBMIT,
             self::AC_MANUAL_PROCESSING,
@@ -93,7 +93,7 @@ class ServiceStatusFilterMapper
             self::STATUS_CANT_CONNECT,
         ],
         self::STATUS_CLOSED => [
-            self::STATUS_EA_PROCESSING,
+//            self::STATUS_EA_PROCESSING,
             self::STATUS_SUBMITTED,
             self::STATUS_ENERGY_SUBMIT,
             self::AC_MANUAL_PROCESSING,
@@ -131,8 +131,8 @@ class ServiceStatusFilterMapper
             $statuses = [];
         }
 
-        $service = $this->getConnectionService($service_id);
-        $statuses[] = $service ? $service->status : null;
+        /*$service = $this->getConnectionService($service_id);
+        $statuses[] = $service ? $service->status : null;*/
         return $statuses;
     }
 
