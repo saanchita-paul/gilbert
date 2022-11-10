@@ -7,7 +7,7 @@
                                 :services="services"
                                 @closeApplicationWithReason="closeApplicationWithReason"
                                 @closeApplication="closeApplication"
-                                @sendToChatBot="sendToChatBot"
+                                @sendToChatBotConfirmModal="sendToChatBotConfirmModal"
                                 @eacalate="eacalate"
                                 @updateLead="updateLead"
                                 @readMore="readMore"
@@ -38,7 +38,7 @@
 
              <SendToChatBotModal v-if="closeSentConfirm" :dialog="closeSentConfirm" :title="fullName" @done="done"></SendToChatBotModal>
 
-            <ChatbotInChargeModal v-if="isChatbotInCharge" :dialog="isChatbotInCharge" :title="fullName"></ChatbotInChargeModal>
+<!--            <ChatbotInChargeModal v-if="isChatbotInCharge" :dialog="isChatbotInCharge" :title="fullName"></ChatbotInChargeModal>-->
 
             <!-- <CloseApplicationModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></CloseApplicationModal> -->
 
@@ -55,7 +55,9 @@
 
         <DuplicateLeadModal v-if="duplicateLead" :dialog="duplicateLead" @cancelDuplicateLead="cancelDuplicateLead" :duplicateGroupId="leadSummary.duplication_group_id"></DuplicateLeadModal>
 
-        <ApplicationUnlockModal v-if="isChatBotApplication" :dialog="isChatBotApplication"></ApplicationUnlockModal>
+        <ApplicationUnlockModal v-if="isChatBotApplication" :dialog="isChatBotApplication" @openUnlockConfirmModal="openUnlockConfirmModal"></ApplicationUnlockModal>
+        <ApplicationUnlockConfirmModal v-if="showUnlockConfirmModal" :dialog="showUnlockConfirmModal" @closeUnlockConfirmModal="closeUnlockConfirmModal"></ApplicationUnlockConfirmModal>
+        <SendToChatbotConfirmModal v-if="sentToChabotConfirmModal" :dialog="sentToChabotConfirmModal"></SendToChatbotConfirmModal>
 
     </v-container>
 </template>
@@ -84,6 +86,8 @@ import SendToChatBotModal from "@scripts/components/crm/modals/SendToChatBotModa
 import ChatbotInChargeModal from "@scripts/components/crm/modals/ChatbotInChargeModal";
 import DuplicateLeadModal from "@scripts/components/crm/modals/DuplicateLeadModal";
 import ApplicationUnlockModal from "@scripts/components/crm/modals/ApplicationUnlockModal";
+import ApplicationUnlockConfirmModal from "@scripts/components/crm/modals/ApplicationUnlockConfirmModal";
+import SendToChatbotConfirmModal from "@scripts/components/crm/modals/SendToChatbotConfirmModal";
 
 
 export default {
@@ -105,7 +109,9 @@ export default {
         PreventSubmissionModal,
         GasOnlyCanNotSubmitModal,
         DuplicateLeadModal,
-        ApplicationUnlockModal
+        ApplicationUnlockModal,
+        ApplicationUnlockConfirmModal,
+        SendToChatbotConfirmModal
     },
 
     data() {
@@ -146,9 +152,11 @@ export default {
             gasOnlyNotSubmitDialog: false,
             serviceSubmitType: null,
             closeSentConfirm: false,
-            isChatbotInCharge: false,
+            // isChatbotInCharge: false,
             duplicateLead: false,
             isChatBotApplication: false,
+            showUnlockConfirmModal: false,
+            sentToChabotConfirmModal: false,
         }
     },
     computed: {
@@ -228,21 +236,22 @@ export default {
                 // console.log('closeApplication error' , erro);
             }
         },
-        async sendToChatBot() {
-            try {
-                let v = await this.validateLead();
-                if (v) {
-                    // let assignedHoodUser = await this.getAssignedHoodUser();
-                    // if(!assignedHoodUser) {
-                    //     this.assignedToDialog = true;
-                    //     return true;
-                    // }
-                    await LeadApplicationService.sendToChatBot(this.leadId);
-                    this.closeSentConfirm = true;
-                }
-            } catch (error) {
-                console.log('sendToChatBot error' , error);
-            }
+        async sendToChatBotConfirmModal() {
+            this.sentToChabotConfirmModal = true;
+            // try {
+            //     let v = await this.validateLead();
+            //     if (v) {
+            //         // let assignedHoodUser = await this.getAssignedHoodUser();
+            //         // if(!assignedHoodUser) {
+            //         //     this.assignedToDialog = true;
+            //         //     return true;
+            //         // }
+            //         await LeadApplicationService.sendToChatBot(this.leadId);
+            //         this.closeSentConfirm = true;
+            //     }
+            // } catch (error) {
+            //     console.log('sendToChatBot error' , error);
+            // }
         },
         done() {
             this.$router.push({name: 'application.list'});
@@ -472,6 +481,14 @@ export default {
         // async updateEmail(field, value) {
         //     await LeadApplicationService.saveEmailField(field, value, this.leadId);
         // },
+        closeUnlockConfirmModal() {
+            this.showUnlockConfirmModal = false;
+            this.isChatBotApplication = true;
+        },
+        openUnlockConfirmModal() {
+            this.isChatBotApplication = false;
+            this.showUnlockConfirmModal = true;
+        }
     },
     watch: {
         powerPlan: {
@@ -482,7 +499,6 @@ export default {
         },
     },
     async  mounted() {
-        this.isChatBotApplication = true;
         const validateEvent = async (callback) => {
               let v = await this.validateLead();
               if(!v) return;
@@ -511,7 +527,7 @@ export default {
 
       let isSentToChatBot = await LeadApplicationService.isSentToChatbot(this.leadId);
       if(isSentToChatBot) {
-          this.isChatbotInCharge = isSentToChatBot;
+          this.isChatBotApplication = isSentToChatBot;
       }
     }
 };

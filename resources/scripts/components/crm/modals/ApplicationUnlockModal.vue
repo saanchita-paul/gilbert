@@ -3,29 +3,37 @@
         <v-dialog
             v-model="dialog"
             persistent
-            max-width="500px"
+            max-width="700px"
         >
-            <v-card>
-                <div class="dialogs-section">
-                    <v-row>
-                        <v-col cols="12">
-                            <v-img class="center-design" src="/assets/images/lock-chatbot.png" max-width="100" style="margin: 0 auto" />
-                            <p class="dialogs-title title-design">Chatbot is in charge...</p>
-                        </v-col>
-                        <v-col>
-                            <div class="justify-center">
-                                <p>Application is currently locked because it is being handled by our chatbot.</p>
-                                <p>Click the <span class="bolded">"Unlock Application" </span>button below to manually process this application.</p>
-                                <p class="pro-tips-text"><span class="bolded">Pro Tip: </span> Unlocking will automatically assign this application to you.</p>
-                            </div>
-                        </v-col>
-                        <v-col cols="12">
-                            <div class="d-flex justify-center">
-                                <v-btn border>Unlock Application <v-icon class="pl-3">mdi-lock-open</v-icon></v-btn>
-                            </div>
-                        </v-col>
-                    </v-row>
-                </div>
+            <v-card color="primary" class="dialogs-section">
+                <v-card-title>
+                    <div class="d-flex align-center">
+                        <v-img src="/assets/images/lock-chatbot.png" max-width="50" class="mr-4" />
+                        <p class="title">Chatbot is in charge..</p>
+                    </div>
+                </v-card-title>
+                <v-card-text class="mt-4">
+                    <div class="white--text font-size-14">
+                        <p>Application is locked because it is being handled by our chatbot. <br>
+                            Click the <span class="font-weight-bolder">"Unlock Application"</span> button below to manually process this application.</p>
+                        <p><span class="font-weight-bolder">Pro Tip: </span> Unlocking will assign this application to this role <span class="font-weight-bolder">"Unlocked Chatbot"</span></p>
+                    </div>
+                </v-card-text>
+                <v-card-actions>
+                    <div>
+                        <v-btn border>
+                           Escalate
+                        </v-btn>
+                        <v-btn border>
+                            Close Application
+                        </v-btn>
+                    </div>
+                    <div>
+                        <v-btn @click="openUnlockConfirmModal" border>
+                            Unlock Application <v-icon class="pl-3">mdi-lock-open</v-icon>
+                        </v-btn>
+                    </div>
+                </v-card-actions>
             </v-card>
         </v-dialog>
     </v-row>
@@ -33,14 +41,20 @@
 
 <script>
 export default {
-name: "ApplicationUnlockModal",
+    name: "ApplicationUnlockModal",
     props:{
         dialog: {
             require: true,
         },
     },
+    data() {
+        return {
+        }
+    },
     methods: {
-
+        openUnlockConfirmModal() {
+            this.$emit('openUnlockConfirmModal');
+        },
     }
 }
 </script>
@@ -50,22 +64,23 @@ name: "ApplicationUnlockModal",
     align-items: end !important;
     justify-content: end !important;
 }
-
-.title-design {
-    text-align: center;
+.dialogs-section {
+    padding: 20px;
 }
-.pro-tips-text {
-    align-content: center;
-    color: #7E8A8F;
-    margin-top: 10px;
+.title {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 23px;
+    color: #FFFFFF;
 }
-.center-design {
-    position: center;
+.font-size-14 {
+    font-size: 14px;
 }
-.dialogs-section{
-    padding: 50px 50px 50px 50px;
+.font-weight-bolder {
+    font-weight: 700;
 }
-.bolded {
-    font-weight: bold;
+.v-card__actions {
+    padding: 0 24px !important;
+    justify-content: space-between !important;
 }
 </style>

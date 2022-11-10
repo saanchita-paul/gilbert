@@ -32,16 +32,10 @@
                     <v-btn outlined @click="escalate" right v-if="leadSummary.status != 3">Escalate</v-btn>
                     <v-btn v-if="leadSummary.status == 3"  outlined @click="escalate" right :disabled="leadSummary.status == 3" class="border-warning">Escalated</v-btn>
                     <v-btn v-if="leadSummary.status !== 'Closed'" outlined @click="closeApplicationWithReason" class="ml-1">Close Application</v-btn>
-<!--                    <v-btn outlined @click="sendToChatBot" class="ml-1">Send to Chatbot<v-icon class="pl-3">mdi-facebook-messenger</v-icon></v-btn>-->
+                    <v-btn v-if="isChatBotApplication" outlined @click="sendToChatBotConfirmModal" class="ml-1">Assign to Chatbot<v-icon class="pl-3">mdi-facebook-messenger</v-icon></v-btn>
                 </div>
                 <p v-if="leadSummary.is_contacted" class="application-consent mt-5"><v-icon size="14px" color="success" class="mx-2">call</v-icon>Applicant consents to be contacted by HOOD</p>
             </div>
-        </v-col>
-
-        <v-col cols="12" class="pb-0 pt-0" v-if="isChatBotApplication">
-            <v-alert border="left" color="#FFC104" type="info" dense>
-                <strong>This application has been sent from Gilbert to Chatbot.</strong>
-            </v-alert>
         </v-col>
 
         <div style="width: 100%;" class="mb-4 ml-6 mr-4 pl-2">
@@ -144,7 +138,7 @@ name: "LeadDetailsHeader",
             return powerShopPaymentStatusNumberToName[this.leadSummary?.powershop_payment_info?.status] ?? '';
         },
         isChatBotApplication() {
-            return this.leadSummary?.chatbot_id;
+            return this.leadSummary?.is_sent_to_chatbot;
         }
     },
     methods: {
@@ -220,9 +214,8 @@ name: "LeadDetailsHeader",
         mapConnectionStatus(status) {
             return  LeadApplicationService.mapStatus(status)
         },
-        sendToChatBot() {
-            this.$emit('sendToChatBot');
-            // this.$eventBus.$emit("busUtilitySubmit", subType);
+        sendToChatBotConfirmModal() {
+            this.$emit('sendToChatBotConfirmModal');
         },
         duplicateLead() {
             this.$emit('duplicateLead');
