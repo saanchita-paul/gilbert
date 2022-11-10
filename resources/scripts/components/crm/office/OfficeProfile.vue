@@ -66,14 +66,6 @@
                        <HoodAgentDropdown :selectedAgentId="hoodAgentId"
                         @onChangeAgent="onChangeAgent" />
                     </ValidationProvider>
-
-<!--                    <v-checkbox-->
-<!--                        v-model="office.should_notify_agent"-->
-<!--                        @input="updateOffice"-->
-<!--                        :label="`Notify agents when HOOD receives an application`">-->
-<!--                    </v-checkbox>-->
-
-
                 </v-col>
 
                 <v-col cols="6">
@@ -134,7 +126,7 @@
                             <h4  class="mb-2">Assigning leads to Chatbot</h4>
                             <p class="leade-text pr-5">If switched on, HOOD will automatically assign every future applications created through this office to the Chatbot. This means the tenants will be able to submit their application by themselves.</p>
                             <v-switch
-                                v-model="office.assign_to_chatbot"
+                                v-model="office.is_chatbot_office"
                                 inset
                                 :label="`${toggleTextAssignToChatbot}`"
                             ></v-switch>
@@ -365,7 +357,7 @@ export default {
               account_manager: null,
               hood_agent_id: null,
               should_notify_agent: false,
-              assign_to_chatbot: false,
+              is_chatbot_office: false,
           },
           commission: {
               gas: null,
@@ -394,7 +386,7 @@ export default {
             return this.office.should_notify_agent ? 'On' : 'Off';
         },
         toggleTextAssignToChatbot() {
-            return this.office.assign_to_chatbot ? 'On' : 'Off';
+            return this.office.is_chatbot_office ? 'On' : 'Off';
         }
     },
     methods:{
@@ -439,7 +431,7 @@ export default {
             this.office.hood_agent_id = data.hood_agent_id;
             this.office.hood_agent_id = data.hood_agent_id;
             this.office.should_notify_agent = data.should_notify_agent;
-
+            this.office.is_chatbot_office = data.is_chatbot_office;
         },
 
         updateCommission(commission) {

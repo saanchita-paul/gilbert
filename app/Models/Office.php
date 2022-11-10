@@ -76,6 +76,7 @@ class Office extends Model
         'rent_roll',
         'property_me_refresh_token',
         'should_notify_agent',
+        'is_chatbot_office'
     ];
 
     /**
