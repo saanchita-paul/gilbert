@@ -13,6 +13,7 @@ use App\Models\MriApplication;
 use App\Models\MriOffice;
 use App\Models\MriProperty;
 
+
 class GetPropertyService 
 {
     const MANAGEMENT_TYPE = 'Residential';
@@ -27,8 +28,14 @@ class GetPropertyService
      */
     private ?string $url;
 
+    /**
+     * @var HandleExceptionService
+     */
+    private HandleExceptionService $exceptionHandler;
+
     public function __construct()
     {
+        $this->exceptionHandler = new HandleExceptionService(self::class);
     }
 
     private function setToken(string $token)
@@ -59,7 +66,6 @@ class GetPropertyService
             ]);
 
             $mriApps = MriApplication::doesntHave('propertyDetail')->where('mri_office_id', $office->id)->get();
-            $exceptionArray = [];
             $savedPropertyIds = [];
     
             foreach ($mriApps as $app) {
@@ -71,72 +77,79 @@ class GetPropertyService
                     $this->setURL($app->property);
                     $response = $client->request('GET', $this->url);
             
-                    // TODO: handle request exceptions
                     $data = json_decode($response->getBody()->getContents(), true);
                     
                     $savedPropertyId = $this->saveProperty($app->id, $data);
                     $savedPropertyIds[] = $savedPropertyId;
-                } catch (\Exception $exception) {
-                    $exceptionArray[$app->id] = $exception;
+                } catch (RequestException $e) {
+                    $this->exceptionHandler->addException($e, ['mri_app_id' => $app->id]);
+                } catch (\Exception $e) {
+                    $this->exceptionHandler->addException($e, ['mri_app_id' => $app->id]);
                 }
-            }
-    
-            if (!empty($exceptionArray)) {
-                // TODO: handle exception
             }
 
             if (!empty($savedPropertyIds)){
                 $message = sprintf('Updated %s mri properties', count($savedPropertyIds));
                 dump($message);
                 info($message, ['mri_property_ids' => $savedPropertyIds]);
-                // TODO: send email?
             }
-        
+            
+            if ($this->exceptionHandler->hasExceptions()){
+                $this->exceptionHandler->run();
+            }
         }
     }
 
     private function saveProperty($mri_app_id, $propertiesData)
     {
-        $filtered = array_filter($propertiesData, function($value){
-            return !$value['deleted'] && !$value['archived'];
-        });
-        
-        if (count($filtered) == 0) {
-            \Log::error('No property data from response that is not deleted/archived', $propertiesData);
-            throw new \Exception("No valid property data provided for mri application id '.$mri_app_id");
+        try {
+            $filtered = array_filter($propertiesData, function($value){
+                return !$value['deleted'] && !$value['archived'];
+            });
+            
+            if (count($filtered) == 0) {
+                \Log::error('No property data from response that is not deleted/archived', $propertiesData);
+                throw new \Exception("No valid property data provided for mri application id '.$mri_app_id");
+            }
+            
+            if (count($filtered) > 1) {
+                \Log::error('More than one property data that is not deleted/archived', $propertiesData);
+                throw new \Exception("More than one property data provided for mri application id '.$mri_app_id");
+            }
+    
+            $propertiesData = $filtered;
+            
+            $property = $propertiesData[0];
+    
+            $mriProperty = MriProperty::where('mri_application_id', $mri_app_id)->first();
+            if (!$mriProperty){
+                $mriProperty = new MriProperty();
+                $mriProperty->mri_application_id = $mri_app_id;
+            }
+    
+            $mriProperty->address_line_1 = $property['address']['address_line_1'];
+            $mriProperty->address_line_2 = $property['address']['address_line_2'];
+            $mriProperty->suburb = $property['address']['suburb'];
+            $mriProperty->state = $property['address']['state'];
+            $mriProperty->post_code = $property['address']['post_code'];
+            $mriProperty->country = $property['address']['country'];
+            $mriProperty->unit = $property['address']['unit'];
+    
+            if (!empty($property['agents'])) 
+                $mriProperty->agents = implode(',', $property['agents']);
+    
+            $mriProperty->is_deleted = $property['deleted'];
+            $mriProperty->is_archived = $property['archived'];
+            
+            $mriProperty->save();
+    
+            return $mriProperty->id;
+        } catch (\Exception $e) {
+            $data = [
+                'mri_app_id' => $mri_app_id,
+                'propertiesData' => $propertiesData
+            ];
+            $this->exceptionHandler->addException($e, $data);
         }
-        
-        if (count($filtered) > 1) {
-            \Log::error('More than one property data that is not deleted/archived', $propertiesData);
-            throw new \Exception("More than one property data provided for mri application id '.$mri_app_id");
-        }
-
-        $propertiesData = $filtered;
-        
-        $property = $propertiesData[0];
-
-        $mriProperty = MriProperty::where('mri_application_id', $mri_app_id)->first();
-        if (!$mriProperty){
-            $mriProperty = new MriProperty();
-            $mriProperty->mri_application_id = $mri_app_id;
-        }
-
-        $mriProperty->address_line_1 = $property['address']['address_line_1'];
-        $mriProperty->address_line_2 = $property['address']['address_line_2'];
-        $mriProperty->suburb = $property['address']['suburb'];
-        $mriProperty->state = $property['address']['state'];
-        $mriProperty->post_code = $property['address']['post_code'];
-        $mriProperty->country = $property['address']['country'];
-        $mriProperty->unit = $property['address']['unit'];
-
-        if (!empty($property['agents'])) 
-            $mriProperty->agents = implode(',', $property['agents']);
-
-        $mriProperty->is_deleted = $property['deleted'];
-        $mriProperty->is_archived = $property['archived'];
-        
-        $mriProperty->save();
-
-        return $mriProperty->id;
     }
 }

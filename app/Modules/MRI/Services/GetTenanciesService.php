@@ -11,8 +11,6 @@ use GuzzleHttp\Psr7\Response;
 use App\Models\MriApplication;
 use App\Models\MriOffice;
 
-use Illuminate\Support\Facades\DB;
-
 use Illuminate\Support\Carbon;
 
 class GetTenanciesService 
@@ -34,10 +32,16 @@ class GetTenanciesService
      */
     private ?string $afterDate;
 
+    /**
+     * @var HandleExceptionService
+     */
+    private HandleExceptionService $exceptionHandler;
+
     public function __construct()
     {
         $this->setURL();
         $this->setAfterDate(Carbon::now()->format('Y-m-d'));
+        $this->exceptionHandler = new HandleExceptionService(self::class);
     }
 
     public function setAfterDate(string $date)
@@ -60,42 +64,43 @@ class GetTenanciesService
 
     public function run()
     {
-        dump($this->afterDate);
-        $mriOffices = MriOffice::get();
-        foreach ($mriOffices as $office){
-            $token = $office->key;
-            $this->setToken($token);  
+        try {
+            $mriOffices = MriOffice::get();
+            foreach ($mriOffices as $office){
+                $token = $office->key;
+                $this->setToken($token);  
 
-            $client = new Client([
-                'headers' => [
-                    'content-type' => 'application/json',
-                    'accept' => 'application/json',
-                    'authorization' => 'Bearer ' . $this->accessToken
-                ],
-            ]);
-    
-            $query = [
-                'lastModifiedOnOrAfter' => $this->afterDate,
-                'managementType' => self::MANAGEMENT_TYPE,
-            ];
-    
-            $options = [
-                'query' => $query
-            ];
-    
-            $response = $client->request('GET', $this->url, $options);
-    
-            // TODO: handle request exceptions
-            $data = json_decode($response->getBody()->getContents(), true);          
-            
-            $savedTenancyIds = $this->saveTenancies($office->id, $data);
-
-            if (!empty($savedTenancyIds)){
-                $message = sprintf('Updated %s mri applications', count($savedTenancyIds));
-                dump($message);
-                info($message, ['mri_application_ids' => $savedTenancyIds]);
-                // TODO: send email?
+                $client = new Client([
+                    'headers' => [
+                        'content-type' => 'application/json',
+                        'accept' => 'application/json',
+                        'authorization' => 'Bearer ' . $this->accessToken
+                    ],
+                ]);
+        
+                $query = [
+                    'lastModifiedOnOrAfter' => $this->afterDate,
+                    'managementType' => self::MANAGEMENT_TYPE,
+                ];
+        
+                $options = [
+                    'query' => $query
+                ];
+        
+                $response = $client->request('GET', $this->url, $options);
+        
+                $data = json_decode($response->getBody()->getContents(), true);          
+                
+                $this->saveTenancies($office->id, $data);
             }
+        } catch (RequestException $e) {
+            $this->exceptionHandler->addException($e);
+        } catch (\Exception $e) {
+            $this->exceptionHandler->addException($e);            
+        }
+
+        if ($this->exceptionHandler->hasExceptions()){
+            $this->exceptionHandler->run();
         }
     }
 
@@ -107,7 +112,6 @@ class GetTenanciesService
      */
     public function saveTenancies($officeId, $tenanciesData)
     {
-        $exceptionArray = [];
         $updatedTenancyIds = []; 
 
         foreach ($tenanciesData as $tenancy) {
@@ -160,19 +164,19 @@ class GetTenanciesService
 
                 $mriApp->save();
                 $updatedTenancyIds[] = $mriApp->id;
-            } catch (\Exception $exception) {
-                $exceptionArray[] = [
+            } catch (\Exception $e) {
+                $data = [
                     'officeId' => $officeId,
-                    'exception' => $exception,
-                    'data' => $tenancy
+                    'tenancy' => $tenancy,
                 ];
+                $this->exceptionHandler->addException($e, $data);
             }
         }
 
-        if (!empty($exceptionArray)){
-            foreach($exceptionArray as $e){
-                dump($e['exception']->getMessage() . '|At line '. $e['exception']->getLine());
-            }
+        if (!empty($updatedTenancyIds)){
+            $message = sprintf('Updated %s mri applications', count($updatedTenancyIds));
+            dump($message);
+            info($message, ['mri_application_ids' => $updatedTenancyIds]);
         }
 
         return $updatedTenancyIds;

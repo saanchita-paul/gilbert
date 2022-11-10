@@ -34,28 +34,14 @@ class MriFetchTenanciesJob implements ShouldQueue
      */
     public function handle()
     {
-        $exceptionsArray = [];
-        try {
-            $tenancyService = new GetTenanciesService();
-            if (!empty($this->afterDate)){
-                $tenancyService->setAfterDate($this->afterDate);
-            }
-            $tenancyService->run();
-        } catch (\Exception $exception) {
-            $exceptionsArray['tenancy'] = $exception;
+        $tenancyService = new GetTenanciesService();
+        if (!empty($this->afterDate)){
+            $tenancyService->setAfterDate($this->afterDate);
         }
+        $tenancyService->run();
 
-        try {
-            $propertyService = new GetPropertyService();
-            $propertyService->run();
-        } catch (\Exception $exception) {
-            $exceptionsArray['property'] = $exception;
-        }
-
-        if (!empty($exceptionsArray)){
-            $e = $exceptionsArray['tenancy'] ?? $exceptionsArray['property'];
-            throw $e;
-        }
+        $propertyService = new GetPropertyService();
+        $propertyService->run();
     }
 
 }

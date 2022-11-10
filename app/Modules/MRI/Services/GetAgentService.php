@@ -11,8 +11,6 @@ use GuzzleHttp\Psr7\Response;
 use App\Models\MriAgent;
 use App\Models\MriOffice;
 
-use Illuminate\Support\Facades\DB;
-
 use Illuminate\Support\Carbon;
 
 class GetAgentService 
@@ -32,10 +30,16 @@ class GetAgentService
      */
     private ?string $afterDate;
 
+    /**
+     * @var HandleExceptionService
+     */
+    private HandleExceptionService $exceptionHandler;
+
     public function __construct()
     {
         $this->setURL();
         $this->setAfterDate(Carbon::now()->format('Y-m-d'));
+        $this->exceptionHandler = new HandleExceptionService(self::class);
     }
 
     public function setAfterDate(string $date)
@@ -58,53 +62,51 @@ class GetAgentService
 
     public function run()
     {
-        $mriOffices = MriOffice::get();
-        foreach ($mriOffices as $office) {
-            $token = $office->key;
-            $this->setToken($token);
-            $headers = [
-                'content-type' => 'application/json',
-                'accept' => 'application/json',
-                'authorization' => 'Bearer ' . $this->accessToken
-            ];
+        try {
+            $mriOffices = MriOffice::get();
+            foreach ($mriOffices as $office) {
+                $token = $office->key;
+                $this->setToken($token);
+                $headers = [
+                    'content-type' => 'application/json',
+                    'accept' => 'application/json',
+                    'authorization' => 'Bearer ' . $this->accessToken
+                ];
 
-            $client = new Client([
-                'headers' => $headers,
-            ]);
-            
-            $query = [
-                'lastModifiedOnOrAfter' => $this->afterDate
-            ];
+                $client = new Client([
+                    'headers' => $headers,
+                ]);
+                
+                $query = [
+                    'lastModifiedOnOrAfter' => $this->afterDate
+                ];
 
-            $options = [
-                'query' => $query
-            ];
+                $options = [
+                    'query' => $query
+                ];
 
-            $response = $client->request('GET', $this->url, $options);
+                $response = $client->request('GET', $this->url, $options);
 
-            // TODO: handle request exception
-            $data = json_decode($response->getBody()->getContents(), true);
-
-            $savedAgentIds = $this->saveAgent($office->id, $data);
-
-            if (!empty($savedAgentIds)){
-                $message = sprintf('Updated %s mri agents', count($savedAgentIds));
-                dump($message);
-                info($message, ['mri_agent_ids' => $savedAgentIds]);
-                // TODO: send email?
+                $data = json_decode($response->getBody()->getContents(), true);
+                $this->saveAgent($office->id, $data);
             }
+        } catch (RequestException $e) {
+            $this->exceptionHandler->addException($e);
+        } catch (\Exception $e) {
+            $this->exceptionHandler->addException($e);
+        }
+
+        if ($this->exceptionHandler->hasExceptions()){
+            $this->exceptionHandler->run();
         }
     }
 
     /**
      * @param int officeId
      * @param array agentsData
-     * 
-     * @return array exceptions
      */
     private function saveAgent($officeId, $agentsData)
     {
-        $exceptionArray = [];
         $updatedAgentIds = [];
 
         foreach ($agentsData as $agentData) {
@@ -125,18 +127,17 @@ class GetAgentService
     
                 $mriAgent->save();
                 $updatedAgentIds[] = $mriAgent->id;
-            } catch (\Exception $exception) {
-                $exceptionArray[] = [
-                    'exception' => $exception,
-                    'data' => $agentData,
-                ];
-            }     
+            } catch (\Exception $e) {
+                $this->exceptionHandler->addException($e, $agentData);
+            }
+            
         }
-
-        if (!empty($exceptionArray)){
-            // TODO: handle save exception
+        
+        if (!empty($updatedAgentIds)){
+            $successMessage = sprintf('Updated %s mri agents', count($updatedAgentIds));
+            dump($successMessage);
+            info($successMessage, ['mri_agent_ids' => $updatedAgentIds]);
         }
-
         return $updatedAgentIds;
     }
 }
