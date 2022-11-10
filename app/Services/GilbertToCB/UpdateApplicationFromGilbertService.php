@@ -32,7 +32,7 @@ class UpdateApplicationFromGilbertService
      */
     public function call()
     {
-        $url = 'http://127.0.0.1:8000/api/gilbert-application/1';
+        $url = config('bot.root_url') .'/api/gilbert-application/'.$this->application->id;
         $response = Http::put($url , $this->getPropertyData());
         if($response->ok()){
             return $this->sendSuccessResponse('success');
