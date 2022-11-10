@@ -48,23 +48,17 @@ export default {
     data() {
         return {
             auto_assign_to_chatbot: false,
-            test: false
         }
     },
     computed: {},
     mounted() {
-        this.setData()
     },
     methods: {
         async save() {
-            const response = await AssignToChatbotSettingService.saveData({
+            await AssignToChatbotSettingService.saveData({
                 'auto_assign_to_chatbot': this.auto_assign_to_chatbot
             });
-            this.test = response.assignToChatbot;
         },
-        setData() {
-            this.auto_assign_to_chatbot = this.test
-        }
     }
 };
 </script>
