@@ -17,6 +17,7 @@ use Origin\Commands\OriginStorePlanCommand;
 use Origin\Commands\OriginCheckStatusCommand;
 use App\Console\Commands\MRIOfficeCommand;
 use MRI\Commands\MriFetchTenanciesCommand;
+use MRI\Commands\MriFetchAgentsCommand;
 
 
 class Kernel extends ConsoleKernel
@@ -40,6 +41,7 @@ class Kernel extends ConsoleKernel
         GetTsaLeadIdCommand::class,
         MRIOfficeCommand::class,
         MriFetchTenanciesCommand::class,
+        MriFetchAgentsCommand::class,
     ];
 
     /**
