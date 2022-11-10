@@ -7,14 +7,14 @@ use App\Models\ConnectionService;
 class ServiceStatusFilterMapper
 {
     // Application statuses
-    const STATUS_UNASSIGNED = 1;
-    const STATUS_ASSIGNED = 2;
-    const STATUS_ESCALATED = 3;
-    const STATUS_SUBMITTED = 4;
-    const STATUS_ACCEPTED = 5;
-    const STATUS_REJECTED = 6;
-    const STATUS_EA_PROCESSING = 7;
-    const STATUS_CLOSED = 8;
+    public const STATUS_UNASSIGNED = 1;
+    public const STATUS_ASSIGNED = 2;
+    public const STATUS_ESCALATED = 3;
+    public const STATUS_SUBMITTED = 4;
+    public const STATUS_ACCEPTED = 5;
+    public const STATUS_REJECTED = 6;
+    public const STATUS_EA_PROCESSING = 7;
+    public const STATUS_CLOSED = 8;
     public static $applicationStatusMap = [
         self::STATUS_UNASSIGNED => 'unassigned',
         self::STATUS_ASSIGNED => 'assigned',
@@ -27,11 +27,11 @@ class ServiceStatusFilterMapper
     ];
 
     // Service statuses
-    const STATUS_CANT_CONNECT = 9;
-    const STATUS_NEEDS_MORE_INFO = 10;
-    const AC_MANUAL_PROCESSING = 11;
-    const STATUS_ENERGY_SUBMIT = 12;
-    const STATUS_FAILED = 13;
+    public const STATUS_CANT_CONNECT = 9;
+    public const STATUS_NEEDS_MORE_INFO = 10;
+    public const AC_MANUAL_PROCESSING = 11;
+    public const STATUS_ENERGY_SUBMIT = 12;
+    public const STATUS_FAILED = 13;
     public static $serviceStatusMap = [
         self::STATUS_UNASSIGNED => 'unassigned',
         self::STATUS_ASSIGNED => 'assigned',
@@ -51,10 +51,7 @@ class ServiceStatusFilterMapper
     /**
      * Filter changeable service statuses by application status
      */
-    const FILTER_STATUS = [
-        self::STATUS_UNASSIGNED => [
-            self::STATUS_EA_PROCESSING
-        ],
+    public const FILTER_STATUS = [
         self::STATUS_ASSIGNED => [
             self::STATUS_EA_PROCESSING
         ],
@@ -107,7 +104,7 @@ class ServiceStatusFilterMapper
     ];
 
 
-    const PROVIDERPLANALLOWABLESTATUSES = [
+    public const PROVIDERPLANALLOWABLESTATUSES = [
         self::STATUS_SUBMITTED,
         self::STATUS_ENERGY_SUBMIT,
         self::AC_MANUAL_PROCESSING,
@@ -125,7 +122,10 @@ class ServiceStatusFilterMapper
     {
         $hasProviderPlan = $this->getHasProviderPlan($service_id);
         $statuses = $this->getStatusesByApplication($application_status);
-        if ($this->isProviderPlanAllowableStatus($service_new_status) && (!$hasProviderPlan['has_provider'] || !$hasProviderPlan['has_plan'])) {
+        if (
+            $this->isProviderPlanAllowableStatus($service_new_status) &&
+            (!$hasProviderPlan['has_provider'] || !$hasProviderPlan['has_plan'])
+        ) {
             $statuses = [];
         }
 

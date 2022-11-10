@@ -23,7 +23,9 @@ class ApplicationServiceStatusController extends Controller
      */
     public function index()
     {
-        return ApplicationServiceStatusResource::collection(ApplicationServiceStatus::whereIsActive(1)->get())->response();
+        return ApplicationServiceStatusResource::collection(
+            ApplicationServiceStatus::whereIsActive(1)->get()
+        )->response();
     }
 
     /**
@@ -106,7 +108,7 @@ class ApplicationServiceStatusController extends Controller
     {
         try {
             $file = $request->file('file')->store('status-files');
-            $collection = (new FastExcel)->import(utf8_encode(storage_path('app/' . $file)));
+            $collection = (new FastExcel())->import(utf8_encode(storage_path('app/' . $file)));
             $service = new ApplicationServiceStatusService();
             $service->saveBulkStatus($collection->toArray());
             if (file_exists(storage_path('app/' . $file))) {

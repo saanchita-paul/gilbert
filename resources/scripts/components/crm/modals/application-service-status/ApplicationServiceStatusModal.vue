@@ -25,6 +25,24 @@
                     </v-toolbar-items>
                 </v-toolbar>
 
+                <v-alert v-if="isPowerError"
+                         dense
+                         border="left"
+                         type="warning"
+                         dismissible
+                >
+                    Power <strong>provider</strong> or <strong>plan</strong> is not available!
+                </v-alert>
+
+                <v-alert v-if="isGasError"
+                         dense
+                         border="left"
+                         type="warning"
+                         dismissible
+                >
+                    Gas <strong>provider</strong> or <strong>plan</strong> is not available!
+                </v-alert>
+
                 <form @submit.prevent="openConfirmModal">
                     <ValidationObserver ref="application_status_change">
                         <v-card-text class="pa-5">
@@ -297,6 +315,8 @@ export default {
             activeConnectionServices: [],
             formDataStatuses: [],
             isPreviousData: true,
+            isPowerError: false,
+            isGasError: false
         }
     },
     computed: {
@@ -322,11 +342,14 @@ export default {
         isShowCloseReason() {
             return this.formData.application_status === 8;
         },
+        isInvalidProviderPlan() {
+            return this.isPowerError && this.isGasError;
+        },
         isNullData() {
             return this.formDataStatuses.every(status => this.formData[status] === null);
         },
         isInvalidData() {
-            return this.isNullData || this.isPreviousData;
+            return this.isNullData || this.isPreviousData || this.isInvalidProviderPlan;
         },
         closeReasonDD() {
             return this.closeReasons.filter(reason => reason.value !== 17);
@@ -369,13 +392,13 @@ export default {
             this.formData.application_id = this.leadSummary.id;
             this.formData.application_status = this.leadSummary.status_value;
 
+
             // old status
             this.setOldStatus();
 
-            this.powerStatusDD = await this.getServiceStatusDD('power', this.formData.power_status);
-            this.gasStatusDD = await this.getServiceStatusDD('gas', this.formData.gas_status);
+            await this.applicationStatusChangeHandler();
 
-            await this.getWaterServiceSTatusDD();
+            await this.getWaterServiceStatusDD();
 
             this.closeReasons = await AppCloseReasonService.getAppCloseReasonData();
             const sortOrder = ['power', 'gas', 'water', 'internet'];
@@ -419,23 +442,38 @@ export default {
                 service_id: service_id,
                 new_status,
             };
-            const data = await ApplicationServiceStatusChangeService.getServiceStatusDD(formdata);
-            return data;
+            return await ApplicationServiceStatusChangeService.getServiceStatusDD(formdata);
         },
 
-        async getWaterServiceSTatusDD() {
+        async getWaterServiceStatusDD() {
             this.waterStatusDD = await ApplicationServiceStatusChangeService.getWaterServiceStatusDD();
         },
 
         async applicationStatusChangeHandler() {
-            this.powerStatusDD = await this.getServiceStatusDD('power', this.formData.power_status);
-            this.gasStatusDD = await this.getServiceStatusDD('gas', this.formData.gas_status);
+            this.checkPlanAndProvider();
 
-            await this.getWaterServiceSTatusDD();
+            if (this.leadSummary.service_interests.includes('power')) {
+                this.powerStatusDD = await this.getServiceStatusDD('power', this.formData.power_status);
+            }
+
+            if (this.leadSummary.service_interests.includes('gas')) {
+                this.gasStatusDD = await this.getServiceStatusDD('gas', this.formData.gas_status);
+            }
         },
+        checkPlanAndProvider() {
+            // check provider and plan is available
+            const allowableStatus = [3, 4, 5, 6, 8];
+            if (allowableStatus.includes(this.formData.application_status)) {
+                this.leadSummary.connection_services.forEach(service => {
+                    if (service.service_type === 'power') {
+                        this.isPowerError = service.provider_name === null || service.plan_type === null;
+                    }
 
-        getServiceStatusValue(service) {
-            return this.leadSummary.connection_services.find(connectionService => connectionService.service_type === service)?.status;
+                    if (service.service_type === 'gas') {
+                        this.isGasError = service.provider_name === null || service.plan_type === null;
+                    }
+                });
+            }
         },
 
         getServiceStatusId(service) {
@@ -454,7 +492,7 @@ export default {
 
         isEnergyActive(service) {
             let status = service.toLowerCase() === 'power' ? UtilityStoreService.getPowerStatus() : UtilityStoreService.getGasStatus();
-            return status ? true : false;
+            return !!status;
         },
 
         getColor(service) {
