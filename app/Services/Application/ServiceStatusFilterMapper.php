@@ -105,12 +105,14 @@ class ServiceStatusFilterMapper
 
 
     public const PROVIDERPLANALLOWABLESTATUSES = [
+        self::STATUS_ESCALATED,
         self::STATUS_SUBMITTED,
         self::STATUS_ENERGY_SUBMIT,
         self::AC_MANUAL_PROCESSING,
         self::STATUS_ACCEPTED,
         self::STATUS_REJECTED,
         self::STATUS_CANT_CONNECT,
+        self::STATUS_CLOSED
     ];
 
     private function getStatusesByApplication($status)
@@ -123,7 +125,7 @@ class ServiceStatusFilterMapper
         $hasProviderPlan = $this->getHasProviderPlan($service_id);
         $statuses = $this->getStatusesByApplication($application_status);
         if (
-            $this->isProviderPlanAllowableStatus($service_new_status) &&
+            $this->isProviderPlanAllowableStatus($application_status) &&
             (!$hasProviderPlan['has_provider'] || !$hasProviderPlan['has_plan'])
         ) {
             $statuses = [];
