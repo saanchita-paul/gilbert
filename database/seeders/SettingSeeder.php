@@ -16,7 +16,7 @@ class SettingSeeder extends Seeder
     {
         $settings = [
             [
-                'setting_key' => 'is_chatbot_office',
+                'setting_key' => 'auto_assign_to_chatbot',
                 'setting_value' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),

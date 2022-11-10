@@ -44,16 +44,19 @@ import AssignToChatbotSettingService from "@scripts/services/crm/AssignToChatbot
 
 export default {
     name: "AssignToChatbotSetting",
-    props: {},
     data() {
         return {
             auto_assign_to_chatbot: false,
         }
     },
-    computed: {},
-    mounted() {
+    async mounted() {
+        await this.getInitData();
     },
     methods: {
+        async getInitData() {
+            const data = await AssignToChatbotSettingService.getData();
+            this.auto_assign_to_chatbot = data.data.setting_value;
+        },
         async save() {
             await AssignToChatbotSettingService.saveData({
                 'auto_assign_to_chatbot': this.auto_assign_to_chatbot
@@ -65,17 +68,21 @@ export default {
 
 <style scoped>
 .custom-tooltip {
-    opacity: 1!important;
+    opacity: 1 !important;
 }
+
 .v-tooltip__content {
     background-color: transparent;
 }
+
 .v-input--selection-controls {
     padding-top: 0 !important;
 }
+
 .sub-title {
     font-size: 16px !important;
 }
+
 .v-card__title {
     align-items: start !important;
     padding: 16px 16px 0 16px !important;

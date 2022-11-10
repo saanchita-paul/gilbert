@@ -10,13 +10,13 @@ class SettingsController extends Controller
 {
     public function getIsChatbotOffice()
     {
-        $setting = SettingService::getOrCreate('is_chatbot_office', 0);
+        $setting = SettingService::getOrCreate('auto_assign_to_chatbot', 0);
         return (new SettingResource($setting))->response();
     }
 
     public function setIsChatbotOffice(Request $request)
     {
-        $setting = SettingService::set('is_chatbot_office', $request->get('is_chatbot_office'));
+        $setting = SettingService::set('auto_assign_to_chatbot', $request->get('auto_assign_to_chatbot'));
         return (new SettingResource($setting))->response();
     }
 }
