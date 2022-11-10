@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddIsChatbotOfficeToOfficesTable extends Migration
+class CreateSettingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class AddIsChatbotOfficeToOfficesTable extends Migration
      */
     public function up()
     {
-        Schema::table('offices', function (Blueprint $table) {
-            $table->boolean("is_chatbot_office")->default(false);
+        Schema::create('settings', function (Blueprint $table) {
+            $table->id();
+            $table->string('setting_key')->unique();
+            $table->string('setting_value')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -25,8 +28,6 @@ class AddIsChatbotOfficeToOfficesTable extends Migration
      */
     public function down()
     {
-        Schema::table('offices', function (Blueprint $table) {
-            $table->dropColumn('is_chatbot_office');
-        });
+        Schema::dropIfExists('settings');
     }
 }
