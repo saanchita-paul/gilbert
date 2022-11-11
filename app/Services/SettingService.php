@@ -6,9 +6,6 @@ use App\Models\Setting;
 
 class SettingService
 {
-    // Settings key
-    public const IS_CHATBOT_OFFICE = 'is_chatbot_office'; // Automatic assign leads to chatbot
-
     /**
      * @param string $key
      * @param $value

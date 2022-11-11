@@ -19,6 +19,7 @@ use App\Models\ConnectionService;
 use App\Models\TSACallHistory;
 use App\Models\User;
 use App\Services\Agency\ApplicationService;
+use App\Services\Agency\AutoAssignApplicationService;
 use App\Services\Agency\TriageFlagService;
 use App\Services\Agency\WaterAutoSubmitService;
 use App\Services\Application\ApplicationsMetricsService;
@@ -83,22 +84,28 @@ class ApplicationController extends Controller
      *
      */
     public function create(ApplicationRequest $request)
-{
-    try {
-        /** @var  User $user */
-        $user = Auth::user();
+    {
+        try {
+            /** @var  User $user */
+            $user = Auth::user();
 
-        $service = new ApplicationService();
-        $application = $service->createApplication($request->toArray(), $user);
-        CreateApplicationEvent::dispatch($application->id);
-        NotifyAgentAfterLeadCreation::dispatch($application->id);
+            $service = new ApplicationService();
+            $application = $service->createApplication($request->toArray(), $user);
+            // Auto assign application to chatbot
+            $autoAssignService = new AutoAssignApplicationService();
+            $autoAssignService->assignApplication($application);
+            CreateApplicationEvent::dispatch($application->id);
+            NotifyAgentAfterLeadCreation::dispatch($application->id);
 
-        return ApplicationResource::make($application);
+            // Update Hubspot Contact auto assign
+            UpdateHubspotContactJob::dispatch($application->id);
 
-    } catch (\Exception $exception) {
-        return $this->sendErrorResponse($exception);
+            return ApplicationResource::make($application);
+
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
     }
-}
 
     /**agencyId
      * Getting Agency list
