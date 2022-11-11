@@ -12,6 +12,7 @@ use App\Models\MriAgent;
 use App\Models\MriApplication;
 use App\Models\MriOffice;
 use App\Models\MriProperty;
+use App\Models\MriAgentProperty;
 
 
 class GetPropertyService 
@@ -134,14 +135,13 @@ class GetPropertyService
             $mriProperty->post_code = $property['address']['post_code'];
             $mriProperty->country = $property['address']['country'];
             $mriProperty->unit = $property['address']['unit'];
-    
-            if (!empty($property['agents'])) 
-                $mriProperty->agents = implode(',', $property['agents']);
-    
             $mriProperty->is_deleted = $property['deleted'];
             $mriProperty->is_archived = $property['archived'];
             
             $mriProperty->save();
+            
+            if (!empty($property['agents'])) 
+                $mriProperty = $this->saveAgentProperty($mriProperty, $property['agents']);
     
             return $mriProperty->id;
         } catch (\Exception $e) {
@@ -151,5 +151,16 @@ class GetPropertyService
             ];
             $this->exceptionHandler->addException($e, $data);
         }
+    }
+
+    private function saveAgentProperty(MriProperty $mriProperty, array $propertyAgents)
+    {
+        $mriProperty->agents = implode(',', $propertyAgents);
+        $mriProperty->save();
+
+        $mriAgentIds = MriAgent::whereIn('agent_id', $propertyAgents)->pluck('id')->toArray(); 
+        $mriProperty->mriAgents()->sync($mriAgentIds);
+
+        return $mriProperty;
     }
 }

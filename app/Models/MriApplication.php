@@ -13,4 +13,12 @@ class MriApplication extends Model
     {
         return $this->hasOne(MriProperty::class);
     }
+
+    /**
+     * Get the mri office that owns the mri application.
+     */
+    public function mriOffice()
+    {
+        return $this->belongsTo(MriOffice::class);
+    }
 }

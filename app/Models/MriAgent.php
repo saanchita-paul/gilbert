@@ -11,5 +11,17 @@ class MriAgent extends Model
 
     protected $guarded = ['id'];
 
+    /**
+     * Get the agent profile associated with the mri agent.
+     */
+    public function agentProfile()
+    {
+        return $this->belongsTo(AgentProfile::class);
+    }
+
+    public function mriProperties()
+    {
+        return $this->belongsToMany(MriProperty::class, 'mri_agent_properties');
+    } 
 
 }

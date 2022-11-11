@@ -31,4 +31,12 @@ class MriOffice extends Model
         'company_name',
         'activation_date'
     ];
+
+    /**
+     * Get the applications for the mri office.
+     */
+    public function mriApplications()
+    {
+        return $this->hasMany(MriApplication::class);
+    }
 }
