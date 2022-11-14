@@ -60,7 +60,6 @@ class ServiceStatusFilterMapper
             self::STATUS_ENERGY_SUBMIT,
             self::STATUS_ACCEPTED,
             self::STATUS_REJECTED,
-            self::STATUS_CANT_CONNECT,
             self::AC_MANUAL_PROCESSING
         ],
         self::STATUS_ACCEPTED => [
@@ -68,32 +67,28 @@ class ServiceStatusFilterMapper
             self::STATUS_ENERGY_SUBMIT,
             self::AC_MANUAL_PROCESSING,
             self::STATUS_ACCEPTED,
-            self::STATUS_REJECTED,
-            self::STATUS_CANT_CONNECT,
+            self::STATUS_REJECTED
         ],
         self::STATUS_REJECTED => [
             self::STATUS_SUBMITTED,
             self::STATUS_ENERGY_SUBMIT,
             self::AC_MANUAL_PROCESSING,
             self::STATUS_ACCEPTED,
-            self::STATUS_REJECTED,
-            self::STATUS_CANT_CONNECT,
+            self::STATUS_REJECTED
         ],
         self::STATUS_ESCALATED => [
             self::STATUS_SUBMITTED,
             self::STATUS_ENERGY_SUBMIT,
             self::AC_MANUAL_PROCESSING,
             self::STATUS_ACCEPTED,
-            self::STATUS_REJECTED,
-            self::STATUS_CANT_CONNECT,
+            self::STATUS_REJECTED
         ],
         self::STATUS_CLOSED => [
             self::STATUS_SUBMITTED,
             self::STATUS_ENERGY_SUBMIT,
             self::AC_MANUAL_PROCESSING,
             self::STATUS_ACCEPTED,
-            self::STATUS_REJECTED,
-            self::STATUS_CANT_CONNECT,
+            self::STATUS_REJECTED
         ],
     ];
 
