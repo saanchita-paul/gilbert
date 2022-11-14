@@ -179,7 +179,7 @@
                                                     :error-messages="errors[0]"
                                                     item-text="text"
                                                     item-value="value"
-                                                    :items="waterStatusDD"
+                                                    :items="internetStatusDD"
                                                     outlined
                                                     dense
                                                     hide-details="auto"
@@ -294,7 +294,6 @@ export default {
         return {
             isLoading: false,
             formData: {
-                application_id: null,
                 application_status: null,
                 status_reason: null,
                 closed_reason: null,
@@ -310,6 +309,7 @@ export default {
             powerStatusDD: [],
             gasStatusDD: [],
             waterStatusDD: [],
+            internetStatusDD: [],
             closeReasons: [],
             showConfirmModal: false,
             activeConnectionServices: [],
@@ -389,16 +389,12 @@ export default {
         async getInitData() {
             this.statusDD = await ApplicationServiceStatusChangeService.getAllStatus();
 
-            this.formData.application_id = this.leadSummary.id;
             this.formData.application_status = this.leadSummary.status_value;
-
 
             // old status
             this.setOldStatus();
 
             await this.applicationStatusChangeHandler();
-
-            await this.getWaterServiceStatusDD();
 
             this.closeReasons = await AppCloseReasonService.getAppCloseReasonData();
             const sortOrder = ['power', 'gas', 'water', 'internet'];
@@ -446,7 +442,17 @@ export default {
         },
 
         async getWaterServiceStatusDD() {
-            this.waterStatusDD = await ApplicationServiceStatusChangeService.getWaterServiceStatusDD();
+            const formdata = {
+                application_status: this.formData.application_status
+            };
+            this.waterStatusDD = await ApplicationServiceStatusChangeService.getWaterServiceStatusDD(formdata);
+        },
+
+        async getInternetServiceStatusDD() {
+            const formdata = {
+                application_status: this.formData.application_status
+            };
+            this.internetStatusDD = await ApplicationServiceStatusChangeService.getInternetServiceStatusDD(formdata);
         },
 
         async applicationStatusChangeHandler() {
@@ -458,6 +464,14 @@ export default {
 
             if (this.leadSummary.service_interests.includes('gas')) {
                 this.gasStatusDD = await this.getServiceStatusDD('gas', this.formData.gas_status);
+            }
+
+            if (this.leadSummary.service_interests.includes('internet')) {
+                await this.getInternetServiceStatusDD();
+            }
+
+            if (this.leadSummary.service_interests.includes('water')) {
+                await this.getWaterServiceStatusDD();
             }
         },
         checkPlanAndProvider() {
@@ -611,7 +625,7 @@ export default {
             try {
                 this.isLoading = true;
                 await this.setNullInFormData();
-                const data = await ApplicationServiceStatusChangeService.updateStatus(this.formData);
+                const data = await ApplicationServiceStatusChangeService.updateStatus(this.leadSummary.id, this.formData);
                 if (data.success) {
                     this.closeModal();
                     this.$emit('reloadPlanNoteAndLead');

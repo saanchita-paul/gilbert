@@ -5,7 +5,7 @@ export const getAllStatus = async () => {
     return data.data;
 };
 
-export const updateStatus = data => ApplicationServiceStatusChangeAPI.updateStatus(data);
+export const updateStatus = (applicationId, data) => ApplicationServiceStatusChangeAPI.updateStatus(applicationId, data);
 
 export const updateBulkStatus = data => ApplicationServiceStatusChangeAPI.updateBulkStatus(data);
 
@@ -14,13 +14,18 @@ export const getAllLogs = async (applicationId) => {
     return data.data;
 };
 
-export const getServiceStatusDD = async (form_data) => {
-    let data = await ApplicationServiceStatusChangeAPI.getServiceStatusDD(form_data);
+export const getServiceStatusDD = async (formData) => {
+    let data = await ApplicationServiceStatusChangeAPI.getServiceStatusDD(formData);
     return data.data;
 };
 
-export const getWaterServiceStatusDD = async () => {
-    let data = await ApplicationServiceStatusChangeAPI.getWaterServiceStatusDD();
+export const getWaterServiceStatusDD = async (formData) => {
+    let data = await ApplicationServiceStatusChangeAPI.getWaterServiceStatusDD(formData);
+    return data.data;
+};
+
+export const getInternetServiceStatusDD = async (formData) => {
+    let data = await ApplicationServiceStatusChangeAPI.getInternetServiceStatusDD(formData);
     return data.data;
 };
 
@@ -31,5 +36,6 @@ export default {
     updateBulkStatus,
     getAllLogs,
     getServiceStatusDD,
-    getWaterServiceStatusDD
+    getWaterServiceStatusDD,
+    getInternetServiceStatusDD
 };

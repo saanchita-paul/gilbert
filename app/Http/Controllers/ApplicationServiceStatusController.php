@@ -7,6 +7,7 @@ use App\Http\Requests\ApplicationServiceStatusChangeRequest;
 use App\Http\Requests\ApplicationServiceStatusRequest;
 use App\Http\Resources\ApplicationServiceStatusResource;
 use App\Models\ApplicationServiceStatus;
+use App\Models\ConnectionApplication;
 use App\Services\Application\ApplicationServiceStatusService;
 use App\Services\Application\ApplicationStatusFilterQueryService;
 use App\Services\Application\ServiceStatusFilterMapper;
@@ -93,10 +94,15 @@ class ApplicationServiceStatusController extends Controller
         }
     }
 
-    public function changeStatus(ApplicationServiceStatusChangeRequest $request)
-    {
+    public function changeStatus(
+        ConnectionApplication $connectionApplication,
+        ApplicationServiceStatusChangeRequest $request
+    ) {
         try {
-            $service = new ApplicationServiceStatusService($request->except('_token', '_method'));
+            $service = new ApplicationServiceStatusService(
+                $connectionApplication,
+                $request->except('_token', '_method')
+            );
             $service->saveStatus();
             return $this->sendSuccessResponse('Application service status changed successfully.');
         } catch (\Exception $e) {
@@ -121,7 +127,7 @@ class ApplicationServiceStatusController extends Controller
     }
 
 
-    public function getServiceStatusDD(Request $request)
+    public function getServiceStatus(Request $request)
     {
         $request->validate([
             'service_id' => 'required|exists:connection_services,id',
@@ -136,10 +142,26 @@ class ApplicationServiceStatusController extends Controller
         return ApplicationServiceStatusResource::collection($serviceStatuses)->response();
     }
 
-    public function getWaterServiceStatusDD(Request $request)
+    public function getWaterServiceStatus(Request $request)
     {
+        $request->validate([
+            'application_status' => 'required'
+        ]);
         $service = new ServiceStatusFilterMapper();
-        $statuses = $service->getWaterServiceStatuses();
+        $statuses = $service->getWaterServiceStatuses($request->application_status);
+
+        $queryService = new ApplicationStatusFilterQueryService();
+        $serviceStatuses = $queryService->getServiceStatusDD($statuses);
+        return ApplicationServiceStatusResource::collection($serviceStatuses)->response();
+    }
+
+    public function getInternetServiceStatus(Request $request)
+    {
+        $request->validate([
+            'application_status' => 'required'
+        ]);
+        $service = new ServiceStatusFilterMapper();
+        $statuses = $service->getInternetServiceStatuses($request->application_status);
 
         $queryService = new ApplicationStatusFilterQueryService();
         $serviceStatuses = $queryService->getServiceStatusDD($statuses);

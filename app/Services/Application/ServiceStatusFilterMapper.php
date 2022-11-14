@@ -57,17 +57,14 @@ class ServiceStatusFilterMapper
         ],
         self::STATUS_SUBMITTED => [
             self::STATUS_SUBMITTED,
-//            self::STATUS_EA_PROCESSING,
             self::STATUS_ENERGY_SUBMIT,
             self::STATUS_ACCEPTED,
             self::STATUS_REJECTED,
             self::STATUS_CANT_CONNECT,
             self::AC_MANUAL_PROCESSING
-
         ],
         self::STATUS_ACCEPTED => [
             self::STATUS_SUBMITTED,
-//            self::STATUS_EA_PROCESSING,
             self::STATUS_ENERGY_SUBMIT,
             self::AC_MANUAL_PROCESSING,
             self::STATUS_ACCEPTED,
@@ -75,7 +72,6 @@ class ServiceStatusFilterMapper
             self::STATUS_CANT_CONNECT,
         ],
         self::STATUS_REJECTED => [
-//            self::STATUS_EA_PROCESSING,
             self::STATUS_SUBMITTED,
             self::STATUS_ENERGY_SUBMIT,
             self::AC_MANUAL_PROCESSING,
@@ -84,7 +80,6 @@ class ServiceStatusFilterMapper
             self::STATUS_CANT_CONNECT,
         ],
         self::STATUS_ESCALATED => [
-//            self::STATUS_EA_PROCESSING,
             self::STATUS_SUBMITTED,
             self::STATUS_ENERGY_SUBMIT,
             self::AC_MANUAL_PROCESSING,
@@ -93,7 +88,6 @@ class ServiceStatusFilterMapper
             self::STATUS_CANT_CONNECT,
         ],
         self::STATUS_CLOSED => [
-//            self::STATUS_EA_PROCESSING,
             self::STATUS_SUBMITTED,
             self::STATUS_ENERGY_SUBMIT,
             self::AC_MANUAL_PROCESSING,
@@ -101,6 +95,21 @@ class ServiceStatusFilterMapper
             self::STATUS_REJECTED,
             self::STATUS_CANT_CONNECT,
         ],
+    ];
+
+    public const WATER_STATUSES = [
+        self::STATUS_SUBMITTED,
+        self::STATUS_ENERGY_SUBMIT,
+        self::STATUS_ACCEPTED,
+        self::STATUS_CANT_CONNECT,
+        self::AC_MANUAL_PROCESSING
+    ];
+
+    public const INTERNET_STATUSES = [
+        self::STATUS_ENERGY_SUBMIT,
+        self::STATUS_ACCEPTED,
+        self::STATUS_REJECTED,
+        self::AC_MANUAL_PROCESSING
     ];
 
 
@@ -131,14 +140,25 @@ class ServiceStatusFilterMapper
             $statuses = [];
         }
 
-        /*$service = $this->getConnectionService($service_id);
-        $statuses[] = $service ? $service->status : null;*/
         return $statuses;
     }
 
-    public function getWaterServiceStatuses()
+    public function getInternetServiceStatuses($applicationStatus)
     {
-        return self::FILTER_STATUS[self::STATUS_SUBMITTED];
+        $statuses = [];
+        if ($applicationStatus != self::STATUS_UNASSIGNED) {
+            $statuses = self::INTERNET_STATUSES;
+        }
+        return $statuses;
+    }
+
+    public function getWaterServiceStatuses($applicationStatus)
+    {
+        $statuses = [];
+        if ($applicationStatus != self::STATUS_UNASSIGNED) {
+            $statuses = self::WATER_STATUSES;
+        }
+        return $statuses;
     }
 
     private function isProviderPlanAllowableStatus($status)

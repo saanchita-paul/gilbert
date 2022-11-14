@@ -10,9 +10,9 @@ export default {
         }
     },
 
-    async updateStatus(formData) {
+    async updateStatus(applicationId, formData) {
         try {
-            const data = await axios.post('/api/application-service-statuses/change-status', {...formData});
+            const data = await axios.post(`/api/applications/${applicationId}/change-status`, {...formData});
             return data.data;
         } catch (error) {
             return error.data;
@@ -37,18 +37,27 @@ export default {
         }
     },
 
-    async getServiceStatusDD(form_data) {
+    async getServiceStatusDD(formData) {
         try {
-            const data = await axios.post(`/api/application-service-statuses/get-service-status-dd`, form_data);
+            const data = await axios.post(`/api/application-service-statuses/get-service-status`, formData);
             return data.data;
         } catch (error) {
             throw error;
         }
     },
 
-    async getWaterServiceStatusDD() {
+    async getWaterServiceStatusDD(formData) {
         try {
-            const data = await axios.get(`/api/application-service-statuses/get-water-service-status-dd`);
+            const data = await axios.post(`/api/application-service-statuses/get-water-service-status`, formData);
+            return data.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    async getInternetServiceStatusDD(formData) {
+        try {
+            const data = await axios.post(`/api/application-service-statuses/get-internet-service-status`, formData);
             return data.data;
         } catch (error) {
             throw error;

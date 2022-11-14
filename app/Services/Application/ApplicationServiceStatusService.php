@@ -16,20 +16,22 @@ class ApplicationServiceStatusService
 {
     private $data;
     private $logData;
+    private $connectionApplication;
 
-    const QUOTE_REFERENCE = 'manual_quote_reference';
-    const STATUS_SUBMITTED = 4;
-    const STATUS_ENERGY_SUBMIT = 12;
-    const STATUS_NOT_SUBMITTED = 7;
-    const STATUS_CLOSED = 8;
+    public const QUOTE_REFERENCE = 'manual_quote_reference';
+    public const STATUS_SUBMITTED = 4;
+    public const STATUS_ENERGY_SUBMIT = 12;
+    public const STATUS_NOT_SUBMITTED = 7;
+    public const STATUS_CLOSED = 8;
 
     public static $submitStatues = [
         self::STATUS_SUBMITTED,
         self::STATUS_ENERGY_SUBMIT,
     ];
 
-    public function __construct($data = [], $logData = [])
+    public function __construct($connectionApplication, $data = [], $logData = [])
     {
+        $this->connectionApplication = $connectionApplication;
         $this->data = $data;
         $this->logData = $logData;
     }
@@ -43,7 +45,10 @@ class ApplicationServiceStatusService
             });
 
             // Get array_keys of validated data
-            $dataKeys = array_diff(array_keys($data), ['application_status', 'application_id', 'status_reason', 'closed_reason']);
+            $dataKeys = array_diff(
+                array_keys($data),
+                ['application_status', 'application_id', 'status_reason', 'closed_reason']
+            );
 
             // Loop through validated keys and save data into DB
             foreach ($dataKeys as $key) {
@@ -63,7 +68,7 @@ class ApplicationServiceStatusService
             $this->saveStatusReason();
 
             UpdateHubspotContactJob::dispatch($this->data['application_id']);
-            return $this->getConnectionApplication();
+            return $this->connectionApplication;
         } catch (\Exception $e) {
             Log::error('Manual Status Change: ' . $e->getMessage());
             return false;
@@ -89,20 +94,17 @@ class ApplicationServiceStatusService
      */
     private function saveApplicationStatus()
     {
-        $connectionApplication = $this->getConnectionApplication();
-
-        $this->setManualStatusChangeData($connectionApplication);
+        $this->setManualStatusChangeData();
 
         if (!is_null($this->data['application_status'])) {
-            $connectionApplication->update(['status' => (int)$this->data['application_status']]);
+            $this->connectionApplication->update(['status' => (int)$this->data['application_status']]);
         }
     }
 
     // Save service status
     private function saveServiceStatus($service_type, $status_value)
     {
-        $connectionApplication = $this->getConnectionApplication();
-        $service = $connectionApplication->connectionServices()->where('service_type', $service_type)->first();
+        $service = $this->connectionApplication->connectionServices()->where('service_type', $service_type)->first();
         if ($service && !is_null($status_value)) {
             if (in_array($status_value, self::$submitStatues)) {
                 $service->update(['status' => (int)$status_value, 'quote_reference' => self::QUOTE_REFERENCE]);
@@ -114,39 +116,28 @@ class ApplicationServiceStatusService
         }
     }
 
-    // Get connection application
-    private function getConnectionApplication()
-    {
-        $connectionApplication = ConnectionApplication::find($this->data['application_id']);
-        if (!$connectionApplication) {
-            Log::debug('Manual Status Change - No application found to update!');
-            throw new \Exception('No application found to update!');
-        }
-        return $connectionApplication;
-    }
-
     // Make manual status change log data to save in DB
-    private function setManualStatusChangeData($connectionApplication)
+    private function setManualStatusChangeData()
     {
-        $oldStatus = ApplicationServiceStatus::where('status_value', $connectionApplication->status)
+        $oldStatus = ApplicationServiceStatus::where('status_value', $this->connectionApplication->status)
             ->where('type', 'application')->first();
         $newStatus = ApplicationServiceStatus::where('status_value', $this->data['application_status'])
             ->where('type', 'application')->first();
-        $this->logData['connection_application_id'] = $connectionApplication->id;
+        $this->logData['connection_application_id'] = $this->connectionApplication->id;
         $this->logData['changed_by'] = 1;
         $this->logData['title'] = 'Status Changed by Admin';
         $this->logData['status_change_reason'] = $this->data['status_reason'];
         $this->logData['user_role'] = 'hood_admin';
         $this->logData['data']['old_status']['application'] = $oldStatus->display_text ?? 'N/A';
         $this->logData['data']['new_status']['application'] = $newStatus->display_text ?? 'N/A';
-        $this->setConnectionServicesOldStatus($connectionApplication);
+        $this->setConnectionServicesOldStatus($this->connectionApplication);
         $this->setConnectionServicesNewStatus();
     }
 
     // Make old status json for services
-    private function setConnectionServicesOldStatus($connectionApplication)
+    private function setConnectionServicesOldStatus()
     {
-        foreach ($connectionApplication->connectionServices as $connectionService) {
+        foreach ($this->connectionApplication->connectionServices as $connectionService) {
             $oldStatus = ApplicationServiceStatus::where('status_value', $connectionService->status)
                 ->where('type', 'service')->first();
             $this->logData['data']['old_status'][$connectionService->service_type] = $oldStatus->display_text ?? 'N/A';
@@ -180,8 +171,7 @@ class ApplicationServiceStatusService
     {
         try {
             $user = Auth::user();
-            $existingApplication = $this->getConnectionApplication();
-            $existingApplication->update([
+            $this->connectionApplication->update([
                 'app_close_reason_id' => $this->data['app_close_reason_id'],
                 'closing_reason' => null,
                 'closed_at' => now(),
@@ -189,20 +179,27 @@ class ApplicationServiceStatusService
             ]);
 
             // get dropdown reason id text
-            $applicationReasonIdText = AppCloseReason::select('value')->where('id', $this->data['closed_reason'])->first();
+            $applicationReasonIdText = AppCloseReason::select('value')
+                ->where('id', $this->data['closed_reason'])->first();
 
             $allicationNoteService = new ApplicationNoteService($user);
             $closingeNote = [];
-            $closingeNote['text'] = 'App closed reason:' . $applicationReasonIdText?->value . (!empty($application['closing_reason']) ? "\n" . 'Additional Notes:' . $application['closing_reason'] : '');
+            $closingeNote['text'] = 'App closed reason:' . $applicationReasonIdText?->value .
+                (
+                !empty($application['closing_reason']) ? "\n" .
+                    'Additional Notes:' . $application['closing_reason'] : ''
+                );
             $closingeNote['type'] = 'close_connection';
 
             $allicationNoteService->createNotes($closingeNote, $this->data['application_id']);
 
 
-            return $existingApplication;
+            return $this->connectionApplication;
         } catch (\Exception $exception) {
-            \Log::error("**CloseApplication**",
-                ["msg" => $exception->getMessage(), "trace" => $exception->getTraceAsString()]);
+            \Log::error(
+                "**CloseApplication**",
+                ["msg" => $exception->getMessage(), "trace" => $exception->getTraceAsString()]
+            );
         }
     }
 
@@ -210,17 +207,18 @@ class ApplicationServiceStatusService
     private function setNullStatusReason()
     {
         try {
-            $existingApplication = $this->getConnectionApplication();
-            $existingApplication->update([
+            $this->connectionApplication->update([
                 'app_close_reason_id' => null,
                 'closing_reason' => null,
                 'closed_at' => null,
                 'closed_by' => null,
             ]);
-            return $existingApplication;
+            return $this->connectionApplication;
         } catch (\Exception $exception) {
-            \Log::error("**CloseApplication**",
-                ["msg" => $exception->getMessage(), "trace" => $exception->getTraceAsString()]);
+            \Log::error(
+                "**CloseApplication**",
+                ["msg" => $exception->getMessage(), "trace" => $exception->getTraceAsString()]
+            );
         }
     }
 }

@@ -120,6 +120,7 @@ class ApplicationServiceStatusSeeder extends Seeder
                 'display_text' => 'In Progress',
                 'display_text_alias' => 'In Progress',
                 'status_value' => 4,
+                'is_active' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

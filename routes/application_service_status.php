@@ -9,20 +9,24 @@ Route::middleware(['auth:sanctum'])
     ->group(function () {
         // Application Service status change routes
         Route::post(
-            'application-service-statuses/change-status',
+            'applications/{connectionApplication}/change-status',
             "ApplicationServiceStatusController@changeStatus"
         );
-        Route::post(
+        /*Route::post(
             'application-service-statuses/change-bulk-status',
             "ApplicationServiceStatusController@changeBulkStatus"
+        );*/
+        Route::post(
+            'application-service-statuses/get-service-status',
+            "ApplicationServiceStatusController@getServiceStatus"
         );
         Route::post(
-            'application-service-statuses/get-service-status-dd',
-            "ApplicationServiceStatusController@getServiceStatusDD"
+            'application-service-statuses/get-water-service-status',
+            "ApplicationServiceStatusController@getWaterServiceStatus"
         );
-        Route::get(
-            'application-service-statuses/get-water-service-status-dd',
-            "ApplicationServiceStatusController@getWaterServiceStatusDD"
+        Route::post(
+            'application-service-statuses/get-internet-service-status',
+            "ApplicationServiceStatusController@getInternetServiceStatus"
         );
 
         // Application service status crud routes
