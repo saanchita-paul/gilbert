@@ -6,8 +6,6 @@ use Illuminate\Support\Facades\Http;
 
 class SendApplicationToChatbotAPI
 {
-    const BASE_URL = 'http://192.168.1.13:8888/api';
-
     /**
      * Run POST Http Client
      *
@@ -19,7 +17,7 @@ class SendApplicationToChatbotAPI
      */
     public function postApi(object $application)
     {
-        $url = self::BASE_URL. '/application-data';
+        $url = config('gb_to_cb.root_url') . config('gb_to_cb.endpoints.gb_to_cb_sync') . $application->id;
 
         try {
             $headers = [

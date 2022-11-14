@@ -23,6 +23,7 @@ use App\Services\Agency\TriageFlagService;
 use App\Services\Agency\WaterAutoSubmitService;
 use App\Services\Application\ApplicationsMetricsService;
 use App\Services\Application\SearchConnectionApplication;
+use App\Services\ChatBot\SendAppGilbertToChatbotService;
 use App\Services\DuplicateApplicationService;
 use App\Services\Ea\SetEaDistributorService;
 use App\Services\GBGEmailValidationService;
@@ -326,6 +327,7 @@ class ApplicationController extends Controller
         try {
             $service = new ApplicationService();
             $res = $service->updateSoleField($request->toArray(), $id);
+            (new SendAppGilbertToChatbotService($res->id))->sendApplication();
             return response()->json(['success' => true, 'data' => $res]);
 
         } catch (\Exception $exception) {

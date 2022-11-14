@@ -21,11 +21,11 @@ class SendAppGilbertToChatbotService
         $sendApplication = new SendApplicationToChatbotAPI();
         $response = $sendApplication->postApi($application);
 
-        if ($response){
-            $application->update([
-                'is_sent_to_chatbot' => 1
-            ]);
-        }
+//        if ($response){
+//            $application->update([
+//                'is_sent_to_chatbot' => 1
+//            ]);
+//        }
 
         return $response;
     }
