@@ -43,6 +43,15 @@
                     Gas <strong>provider</strong> or <strong>plan</strong> is not available!
                 </v-alert>
 
+                <v-alert v-if="this.isNullPowerAndGas"
+                         dense
+                         border="left"
+                         type="warning"
+                         dismissible
+                >
+                    <strong>Power</strong> or <strong>Gas</strong> must be submitted!
+                </v-alert>
+
                 <form @submit.prevent="openConfirmModal">
                     <ValidationObserver ref="application_status_change">
                         <v-card-text class="pa-5">
@@ -345,11 +354,14 @@ export default {
         isInvalidProviderPlan() {
             return this.isPowerError && this.isGasError;
         },
+        isNullPowerAndGas() {
+            return this.formData.power_status === null && this.formData.gas_status === null;
+        },
         isNullData() {
             return this.formDataStatuses.every(status => this.formData[status] === null);
         },
         isInvalidData() {
-            return this.isNullData || this.isPreviousData || this.isInvalidProviderPlan;
+            return this.isNullData || this.isPreviousData || this.isInvalidProviderPlan || this.isNullPowerAndGas;
         },
         closeReasonDD() {
             return this.closeReasons.filter(reason => reason.value !== 17);
@@ -458,12 +470,14 @@ export default {
         async applicationStatusChangeHandler() {
             this.checkPlanAndProvider();
 
+            console.log(this.oldStatus);
+
             if (this.leadSummary.service_interests.includes('power')) {
-                this.powerStatusDD = await this.getServiceStatusDD('power', this.formData.power_status);
+                this.powerStatusDD = await this.getServiceStatusDD('power', this.oldStatus.power_status);
             }
 
             if (this.leadSummary.service_interests.includes('gas')) {
-                this.gasStatusDD = await this.getServiceStatusDD('gas', this.formData.gas_status);
+                this.gasStatusDD = await this.getServiceStatusDD('gas', this.oldStatus.gas_status);
             }
 
             if (this.leadSummary.service_interests.includes('internet')) {
@@ -473,6 +487,8 @@ export default {
             if (this.leadSummary.service_interests.includes('water')) {
                 await this.getWaterServiceStatusDD();
             }
+
+            this.setNullPowerAndGas();
         },
         checkPlanAndProvider() {
             // check provider and plan is available
@@ -612,6 +628,14 @@ export default {
                 }
             }
             return 'grey lighten-1';
+        },
+        setNullPowerAndGas() {
+            if (this.formData.application_status === 4 && this.oldStatus.power_status === 7) {
+                this.formData.power_status = null;
+            }
+            if (this.formData.application_status === 4 && this.oldStatus.gas_status === 7) {
+                this.formData.gas_status = null;
+            }
         },
         setNullInFormData() {
             this.formData.application_status = this.formData.application_status === this.oldStatus.application_status ? null : this.formData.application_status;
