@@ -470,8 +470,6 @@ export default {
         async applicationStatusChangeHandler() {
             this.checkPlanAndProvider();
 
-            console.log(this.oldStatus);
-
             if (this.leadSummary.service_interests.includes('power')) {
                 this.powerStatusDD = await this.getServiceStatusDD('power', this.oldStatus.power_status);
             }

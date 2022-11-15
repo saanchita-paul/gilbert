@@ -119,6 +119,8 @@ class ApplicationServiceStatusService
     // Make manual status change log data to save in DB
     private function setManualStatusChangeData()
     {
+        $appClosedReason = AppCloseReason::select('value')
+            ->where('id', $this->data['closed_reason'])->first();
         $oldStatus = ApplicationServiceStatus::where('status_value', $this->connectionApplication->status)
             ->where('type', 'application')->first();
         $newStatus = ApplicationServiceStatus::where('status_value', $this->data['application_status'])
@@ -129,7 +131,12 @@ class ApplicationServiceStatusService
         $this->logData['status_change_reason'] = $this->data['status_reason'];
         $this->logData['user_role'] = 'hood_admin';
         $this->logData['data']['old_status']['application'] = $oldStatus->display_text ?? 'N/A';
-        $this->logData['data']['new_status']['application'] = $newStatus->display_text ?? 'N/A';
+        if ($appClosedReason) {
+            $this->logData['data']['new_status']['application'] = $newStatus->display_text .
+                ' (' . $appClosedReason->value . ')';
+        } else {
+            $this->logData['data']['new_status']['application'] = $newStatus->display_text ?? 'N/A';
+        }
         $this->setConnectionServicesOldStatus($this->connectionApplication);
         $this->setConnectionServicesNewStatus();
     }
@@ -172,7 +179,7 @@ class ApplicationServiceStatusService
         try {
             $user = Auth::user();
             $this->connectionApplication->update([
-                'app_close_reason_id' => $this->data['app_close_reason_id'],
+                'app_close_reason_id' => $this->data['closed_reason'],
                 'closing_reason' => null,
                 'closed_at' => now(),
                 'closed_by' => $user->id,
