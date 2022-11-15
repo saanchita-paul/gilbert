@@ -35,7 +35,7 @@ class GetTenanciesService
     /**
      * @var HandleExceptionService
      */
-    private HandleExceptionService $exceptionHandler;
+    public HandleExceptionService $exceptionHandler;
 
     public function __construct()
     {

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddConnectionApplicationIdColumnToMriApplicationsTable extends Migration
+class AddManagementTypeColumnToMriPropertiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddConnectionApplicationIdColumnToMriApplicationsTable extends Migration
      */
     public function up()
     {
-        Schema::table('mri_applications', function (Blueprint $table) {
-            $table->unsignedBigInteger('connection_application_id')->nullable();
+        Schema::table('mri_properties', function (Blueprint $table) {
+            $table->string('management_type')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ class AddConnectionApplicationIdColumnToMriApplicationsTable extends Migration
      */
     public function down()
     {
-        Schema::table('mri_applications', function (Blueprint $table) {
-            $table->dropColumn('connection_application_id');
+        Schema::table('mri_properties', function (Blueprint $table) {
+            $table->dropColumn('management_type');
         });
     }
 }

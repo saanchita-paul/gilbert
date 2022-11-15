@@ -66,4 +66,9 @@ class HandleExceptionService
     {
         return count($this->exceptionData) > 0;
     }
+
+    public function getExceptionData()
+    {
+        return $this->exceptionData;
+    }
 }

@@ -33,7 +33,7 @@ class GetAgentService
     /**
      * @var HandleExceptionService
      */
-    private HandleExceptionService $exceptionHandler;
+    public HandleExceptionService $exceptionHandler;
 
     public function __construct()
     {
@@ -66,27 +66,7 @@ class GetAgentService
             $mriOffices = MriOffice::get();
             foreach ($mriOffices as $office) {
                 $token = $office->key;
-                $this->setToken($token);
-                $headers = [
-                    'content-type' => 'application/json',
-                    'accept' => 'application/json',
-                    'authorization' => 'Bearer ' . $this->accessToken
-                ];
-
-                $client = new Client([
-                    'headers' => $headers,
-                ]);
-                
-                $query = [
-                    'lastModifiedOnOrAfter' => $this->afterDate
-                ];
-
-                $options = [
-                    'query' => $query
-                ];
-
-                $response = $client->request('GET', $this->url, $options);
-
+                $response = $this->fetch($token);
                 $data = json_decode($response->getBody()->getContents(), true);
                 $this->saveAgent($office->id, $data);
             }
@@ -99,6 +79,30 @@ class GetAgentService
         if ($this->exceptionHandler->hasExceptions()){
             $this->exceptionHandler->run();
         }
+    }
+
+    public function fetch ($token) {
+        $token = $token;
+        $this->setToken($token);
+        $headers = [
+            'content-type' => 'application/json',
+            'accept' => 'application/json',
+            'authorization' => 'Bearer ' . $this->accessToken
+        ];
+
+        $client = new Client([
+            'headers' => $headers,
+        ]);
+        
+        $query = [
+            'lastModifiedOnOrAfter' => $this->afterDate
+        ];
+
+        $options = [
+            'query' => $query
+        ];
+
+        return $client->request('GET', $this->url, $options);
     }
 
     /**

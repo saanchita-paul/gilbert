@@ -32,7 +32,7 @@ class GetPropertyService
     /**
      * @var HandleExceptionService
      */
-    private HandleExceptionService $exceptionHandler;
+    public HandleExceptionService $exceptionHandler;
 
     public function __construct()
     {
@@ -66,7 +66,7 @@ class GetPropertyService
                 ],
             ]);
 
-            $mriApps = MriApplication::doesntHave('propertyDetail')->where('mri_office_id', $office->id)->get();
+            $mriApps = MriApplication::doesntHave('mriProperty')->where('mri_office_id', $office->id)->get();
             $savedPropertyIds = [];
     
             foreach ($mriApps as $app) {
@@ -127,7 +127,7 @@ class GetPropertyService
                 $mriProperty = new MriProperty();
                 $mriProperty->mri_application_id = $mri_app_id;
             }
-    
+            $mriProperty->street_number = $property['address']['street_number'];
             $mriProperty->address_line_1 = $property['address']['address_line_1'];
             $mriProperty->address_line_2 = $property['address']['address_line_2'];
             $mriProperty->suburb = $property['address']['suburb'];
@@ -137,6 +137,7 @@ class GetPropertyService
             $mriProperty->unit = $property['address']['unit'];
             $mriProperty->is_deleted = $property['deleted'];
             $mriProperty->is_archived = $property['archived'];
+            $mriProperty->management_type = $property['management_type'];
             
             $mriProperty->save();
             

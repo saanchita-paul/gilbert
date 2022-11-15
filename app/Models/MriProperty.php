@@ -17,5 +17,5 @@ class MriProperty extends Model
     public function mriAgents()
     {
         return $this->belongsToMany(MriAgent::class, 'mri_agent_properties');
-    } 
+    }
 }

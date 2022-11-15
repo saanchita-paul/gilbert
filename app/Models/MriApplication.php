@@ -9,7 +9,7 @@ class MriApplication extends Model
 {
     use HasFactory;
 
-    public function propertyDetail()
+    public function mriProperty()
     {
         return $this->hasOne(MriProperty::class);
     }
@@ -20,5 +20,10 @@ class MriApplication extends Model
     public function mriOffice()
     {
         return $this->belongsTo(MriOffice::class);
+    }
+
+    public function connectionApplication()
+    {
+        return $this->hasOne(ConnectionApplication::class);
     }
 }

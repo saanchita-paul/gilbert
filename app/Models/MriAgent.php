@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Database\Factories\MRI\MriAgentFactory;
 
 class MriAgent extends Model
 {
@@ -23,5 +24,10 @@ class MriAgent extends Model
     {
         return $this->belongsToMany(MriProperty::class, 'mri_agent_properties');
     } 
+
+    protected static function newFactory()
+    {
+        return MriAgentFactory::new();
+    }
 
 }

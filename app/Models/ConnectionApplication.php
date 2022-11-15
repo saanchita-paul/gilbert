@@ -232,7 +232,8 @@ class ConnectionApplication extends Model
         'power_life_support_accepted_at',
         'gas_life_support_accepted_at',
         'app_close_reason_id',
-        'chatbot_id'
+        'chatbot_id',
+        'mri_application_id',
     ];
 
 
@@ -334,8 +335,8 @@ class ConnectionApplication extends Model
     const LEAD_SUBMIT_TYPE_WATER = 'water';
 
     const PROPERTY_TYPE_MAPPING = [
-        'residential' => self::TENANCY_TYPE_RENTER,
-        'business' => self::TENANCY_TYPE_HOME_OWNER
+        'residential' => self::PROPERTY_TYPE_RESIDENTIAL,
+        'business' => self::PROPERTY_TYPE_BUSINESS
     ];
 
     const TENANCY_MAPPING = [
@@ -549,7 +550,9 @@ class ConnectionApplication extends Model
     public function powershopPaymentInfo()
     {
         return $this->hasOne(PowershopPaymentInfo::class, 'connection_application_id');
-    }/**
+    }
+
+    /**
      * @return BelongsTo
      */
     public function appCloseReason()
@@ -557,6 +560,13 @@ class ConnectionApplication extends Model
         return $this->hasOne(AppCloseReason::class, 'app_close_reason_id');
     }
 
+    /**
+     * @return BelongsTo
+     */
+    public function mriApplication()
+    {
+        return $this->belongsTo(MriApplication::class);
+    }
 
     /**
      * saving fast connect customer ref
