@@ -84,22 +84,22 @@ class ApplicationController extends Controller
      *
      */
     public function create(ApplicationRequest $request)
-{
-    try {
-        /** @var  User $user */
-        $user = Auth::user();
+    {
+        try {
+            /** @var  User $user */
+            $user = Auth::user();
 
-        $service = new ApplicationService();
-        $application = $service->createApplication($request->toArray(), $user);
-        CreateApplicationEvent::dispatch($application->id);
-        NotifyAgentAfterLeadCreation::dispatch($application->id);
+            $service = new ApplicationService();
+            $application = $service->createApplication($request->toArray(), $user);
+            CreateApplicationEvent::dispatch($application->id);
+            NotifyAgentAfterLeadCreation::dispatch($application->id);
 
-        return ApplicationResource::make($application);
+            return ApplicationResource::make($application);
 
-    } catch (\Exception $exception) {
-        return $this->sendErrorResponse($exception);
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
     }
-}
 
     /**agencyId
      * Getting Agency list
@@ -115,7 +115,7 @@ class ApplicationController extends Controller
             // todo refactor move to code to helper methed
 
             $authUser = Auth::user();
-            if($authUser->profile_type === AgentProfile::class &&
+            if ($authUser->profile_type === AgentProfile::class &&
                 $authUser->profile->agency_id !== $application->agency_id) {
                 return $this->sendUnauthorizedResponse();
             }
@@ -135,26 +135,26 @@ class ApplicationController extends Controller
      * @return JsonResponse
      */
     public function getMetrics(): JsonResponse
-{
-    try {
-        /** @var User $user */
-        $user = auth()->user();
-        $service = new ApplicationsMetricsService($user->profile_id, $user->profile?->office_id);
+    {
+        try {
+            /** @var User $user */
+            $user = auth()->user();
+            $service = new ApplicationsMetricsService($user->profile_id, $user->profile?->office_id);
             return response()->json(['data' => $service->toArray()]);
 
         } catch (\Exception $exception) {
-        return $this->sendErrorResponse($exception);
+            return $this->sendErrorResponse($exception);
+        }
     }
-}
 
-     /**
-      * Assigning user to an Application
-      *
-      * @param Request $request
-      * @param int $applicationId
-      *
-      * @return ApplicationResource|JsonResponse
-      */
+    /**
+     * Assigning user to an Application
+     *
+     * @param Request $request
+     * @param int $applicationId
+     *
+     * @return ApplicationResource|JsonResponse
+     */
     public function assignUser(Request $request, int $applicationId): ApplicationResource|JsonResponse
     {
 //        dd($request->toArray(), 'hellllo');
@@ -210,45 +210,45 @@ class ApplicationController extends Controller
      */
     public function submit(Request $request, $id)
     {
-    try {
-        $service = new ApplicationService();
-        $requestArray = $request->toArray();
+        try {
+            $service = new ApplicationService();
+            $requestArray = $request->toArray();
 
-        $res = $service->submit($requestArray, $id);
-        $authUser = Auth::user();
-        $submitType =  data_get($requestArray, 'lead.submit_type');
-        // $ea_service_ids = $service->getNotSubmittedEaService($id, $submitType);
-        $provider_service_ids = $service->getNotSubmittedServices($id, $submitType);
-        $service_ids = [];
+            $res = $service->submit($requestArray, $id);
+            $authUser = Auth::user();
+            $submitType = data_get($requestArray, 'lead.submit_type');
+            // $ea_service_ids = $service->getNotSubmittedEaService($id, $submitType);
+            $provider_service_ids = $service->getNotSubmittedServices($id, $submitType);
+            $service_ids = [];
 
-        foreach($provider_service_ids as $key => $ids){
-            $service_ids = array_merge($service_ids, $ids);
-            if($submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_ENERGY
-                || $submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_POWER
-                || $submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_GAS){
-                switch($key){
-                    case ConnectionService::PROVIDER_EA:
-                        $setEaDistributorService = new SetEaDistributorService($res, $ids, $submitType);
-                        $setEaDistributorService->setDistributor();
-                        break;
-                    case ConnectionService::PROVIDER_ORIGIN:
-                        $setOriginDistributorService = new SetOriginDistributorService($res, $ids, $submitType);
-                        $setOriginDistributorService->setDistributor();
-                        break;
-                    case ConnectionService::PROVIDER_POWER_SHOP:
-                        $setPowershopDistributorService = new SetPowershopDistributorService($res, $ids, $submitType);
-                        $setPowershopDistributorService->setDistributor();
+            foreach ($provider_service_ids as $key => $ids) {
+                $service_ids = array_merge($service_ids, $ids);
+                if ($submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_ENERGY
+                    || $submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_POWER
+                    || $submitType === ConnectionApplication::LEAD_SUBMIT_TYPE_GAS) {
+                    switch ($key) {
+                        case ConnectionService::PROVIDER_EA:
+                            $setEaDistributorService = new SetEaDistributorService($res, $ids, $submitType);
+                            $setEaDistributorService->setDistributor();
+                            break;
+                        case ConnectionService::PROVIDER_ORIGIN:
+                            $setOriginDistributorService = new SetOriginDistributorService($res, $ids, $submitType);
+                            $setOriginDistributorService->setDistributor();
+                            break;
+                        case ConnectionService::PROVIDER_POWER_SHOP:
+                            $setPowershopDistributorService = new SetPowershopDistributorService($res, $ids, $submitType);
+                            $setPowershopDistributorService->setDistributor();
+                    }
                 }
             }
-        }
-        $options = ['auth_user'=>$authUser, 'services_id'=> $service_ids];
-        SubmitApplicationEvent::dispatch($id, $submitType, $options);
+            $options = ['auth_user' => $authUser, 'services_id' => $service_ids];
+            SubmitApplicationEvent::dispatch($id, $submitType, $options);
 
-        return ApplicationResource::make($res);
-    } catch (\Exception $exception) {
-        return $this->sendErrorResponse($exception);
+            return ApplicationResource::make($res);
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
     }
-}
 
     /**
      * Updating status to escalate of an application
@@ -301,9 +301,9 @@ class ApplicationController extends Controller
     public function getApplicationMetricsCount(Request $request)
     {
 
-        /** @var User  $user */
+        /** @var User $user */
         $user = auth()->user();
-        $agencyId = (int) $request->get('agency_id');
+        $agencyId = (int)$request->get('agency_id');
 
         if ($agencyId && $user->profile_type === AgentProfile::class && $user->profile->agency_id !== $agencyId) {
             return $this->sendUnauthorizedResponse();
@@ -314,7 +314,7 @@ class ApplicationController extends Controller
             $user = auth()->user();
             $service = new ConnectionService();
             $inputData = $request->toArray();
-            $data= $service->allApplicationMetricsCount($inputData, $user);
+            $data = $service->allApplicationMetricsCount($inputData, $user);
             return ApplicationMetricsResource::make($data);
 
         } catch (\Exception $exception) {
@@ -384,7 +384,7 @@ class ApplicationController extends Controller
         }
     }
 
-    public function updateService(Request $request , $application_id)
+    public function updateService(Request $request, $application_id)
     {
         try {
             $service = new ApplicationService();
@@ -393,18 +393,18 @@ class ApplicationController extends Controller
 
             $new_service = $service->updateService($data);
 
-            if($new_service->wasRecentlyCreated) return response(['status' => true ,
+            if ($new_service->wasRecentlyCreated) return response(['status' => true,
                 "message" => "Service created successfully",
-                'service'=> $new_service] , 201);
-            else return response(['status' => true ,
-                "message" => "Service id: {$data['id']} updated successfully", 'service'=> $new_service] , 200);
+                'service' => $new_service], 201);
+            else return response(['status' => true,
+                "message" => "Service id: {$data['id']} updated successfully", 'service' => $new_service], 200);
 
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
     }
 
-    public function providers(ProviderRequest $request , $applicationId)
+    public function providers(ProviderRequest $request, $applicationId)
     {
         try {
             $service = new ApplicationService();
@@ -489,7 +489,7 @@ class ApplicationController extends Controller
             $service = new ApplicationService();
             return $service->getIsSentToChatbot($applicationId);
 
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
     }

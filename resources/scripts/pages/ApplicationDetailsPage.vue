@@ -383,6 +383,7 @@ export default {
             this.leadSummary.nmi = '';
             this.leadSummary.mirn = '';
             let response = await LeadApplicationService.updateAddress(address, this.leadId);
+            console.log('updateAddress response', response);
             this.leadSummary.nmi = response.nmi;
             this.leadSummary.mirn = response.mirn;
             this.nmiMernFlag = false;
