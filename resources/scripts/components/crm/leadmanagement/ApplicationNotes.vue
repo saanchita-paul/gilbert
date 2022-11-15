@@ -57,16 +57,16 @@
         </v-col>
         <v-col cols="12" v-if="isInternalNotes">
             <p class="sub-title">Notes</p>
-            <ValidationObserver ref="submit_note">
-                <ValidationProvider name="Note" rules="required" v-slot="{ errors }">
+            <!--            <ValidationObserver ref="submit_note">
+            <ValidationProvider name="Expired Date" rules="required"  v-slot="{ errors }">-->
 
-                    <v-textarea v-model="note.text"
-                                outlined
-                                hide-details="auto"
-                                placeholder="Notes goes here."
-                    ></v-textarea>
-                </ValidationProvider>
-            </ValidationObserver>
+            <v-textarea v-model ="note.text"
+                        outlined
+                        hide-details="auto"
+                        placeholder="Notes goes here."
+            ></v-textarea>
+            <!--            </ValidationProvider>
+                        </ValidationObserver>-->
 
             <v-btn class="mt-2 float-right white--text note-button" @click="saveNote" color="#542E89">Submit Note</v-btn>
         </v-col>
