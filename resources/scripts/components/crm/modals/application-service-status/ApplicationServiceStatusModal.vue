@@ -43,7 +43,7 @@
                     Gas <strong>provider</strong> or <strong>plan</strong> is not available!
                 </v-alert>
 
-                <v-alert v-if="this.isNullPowerAndGas"
+                <v-alert v-if="isNullPowerAndGas"
                          dense
                          border="left"
                          type="warning"
@@ -52,12 +52,12 @@
                     <strong>Power</strong> or <strong>Gas</strong> must be submitted!
                 </v-alert>
 
-                <form @submit.prevent="openConfirmModal">
+                <form @submit.prevent="openConfirmModal" class="mt-n10">
                     <ValidationObserver ref="application_status_change">
                         <v-card-text class="pa-5">
                             <v-row>
                                 <v-col :cols="isShowCloseReason? '3' : '4'">
-                                    <v-card-title class="text--primary ml-2">Item</v-card-title>
+                                    <v-card-title class="text--primary ml-2 mb-n5">Item</v-card-title>
                                     <v-card-title class="text--primary mt-3">
                                         &nbsp;&nbsp;Application
                                     </v-card-title>
@@ -75,7 +75,7 @@
                                 </v-col>
 
                                 <v-col :cols="isShowCloseReason? '3' : '4'">
-                                    <v-card-title class="text--primary ml-n4">Current Status</v-card-title>
+                                    <v-card-title class="text--primary ml-n4 mb-n5">Current Status</v-card-title>
                                     <br>
                                     <v-text-field :placeholder="application_status_display_text" readonly outlined
                                                   dense></v-text-field>
@@ -89,7 +89,7 @@
                                 </v-col>
 
                                 <v-col :cols="isShowCloseReason? '3' : '4'">
-                                    <v-card-title class="text--primary ml-n4">New Status</v-card-title>
+                                    <v-card-title class="text--primary ml-n4 mb-n5">New Status</v-card-title>
                                     <br>
                                     <div class="text-field margin-bottom-26">
                                         <ValidationProvider
@@ -200,7 +200,7 @@
                                 </v-col>
 
                                 <v-col cols="3" v-if="isShowCloseReason">
-                                    <v-card-title class="text--primary ml-n4">Close Reason</v-card-title>
+                                    <v-card-title class="text--primary ml-n4 mb-n5">Close Reason</v-card-title>
                                     <br>
                                     <div class="text-field margin-bottom-26">
                                         <ValidationProvider
@@ -223,8 +223,8 @@
                                     </div>
                                 </v-col>
 
-                                <v-col cols="12">
-                                    <v-card-title class="text--primary">
+                                <v-col cols="12" class="mt-n10">
+                                    <v-card-title class="text--primary mb-n5">
                                         Status Change Reason*
                                     </v-card-title>
 
@@ -244,7 +244,7 @@
                             </v-row>
                         </v-card-text>
 
-                        <v-card-actions class="justify-end pa-6 mt-n5 pr-6">
+                        <v-card-actions class="justify-end pa-6 mt-n14 pr-6">
                             <v-btn
                                 class="font-weight-bolder"
                                 rounded
@@ -345,7 +345,7 @@ export default {
             return this.getServiceStatus('internet').text;
         },
         applicationStatusDD() {
-            let excludeStatus = [1, 7];
+            let excludeStatus = [1, 5, 6, 7];
             return this.statusDD.filter(status => status.type === 'application' && !excludeStatus.includes(status.status_value));
         },
         isShowCloseReason() {
