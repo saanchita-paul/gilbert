@@ -40,7 +40,7 @@ class ApplicationService
         $application['status'] = ConnectionApplication::STATUS_UNASSIGNED;
         $authizedPerson = $application['authorized_person'];
 
-        if($application['is_billing_same'] == 0 || $application['is_billing_same'] == null ) {
+        if ($application['is_billing_same'] == 0 || $application['is_billing_same'] == null) {
 
             $application['billing_unit_number'] = $application['billing_unit_number'];
             $application['billing_street_number'] = $application['billing_street_number'];
@@ -52,8 +52,7 @@ class ApplicationService
             $application['billing_postcode'] = $application['billing_postcode'];
             $application['billing_state'] = $application['billing_state'];
             $application['billing_address_unit'] = $application['billing_unit_number'] ? $application['billing_unit_number'] : null;
-        }
-        else {
+        } else {
             $application['billing_unit_number'] = $application['unit_number'];
             $application['billing_street_number'] = $application['street_number'];
             $application['billing_street_name_only'] = $application['street_name_only'];
@@ -142,7 +141,6 @@ class ApplicationService
         $existingApplication->is_billing_same = $address['is_billing_same'];
 
 
-
         if ($address['is_billing_same'] == 0 || $address['is_billing_same'] == null) {
             $existingApplication->billing_address_text = $address['billing_address_text'];
             $existingApplication->billing_state = $address['billing_state'];
@@ -200,7 +198,7 @@ class ApplicationService
             ->where('profile_id', $hoodUserId)
             ->firstOrFail();
 
-        if($checkProfile->hasAnyRole(RolePermission::ROLE_HOOD_CHATBOT_USER)) {
+        if ($checkProfile->hasAnyRole(RolePermission::ROLE_HOOD_CHATBOT_USER)) {
             GilbertToChatbotJob::dispatch($appId);
         };
     }
@@ -222,7 +220,7 @@ class ApplicationService
             ->delete();
 
 
-        $conServices =  ConnectionService::query()->where('connection_application_id', '=', $id)
+        $conServices = ConnectionService::query()->where('connection_application_id', '=', $id)
             ->get();
         #saving newly selected service
         $data = [];
@@ -236,7 +234,7 @@ class ApplicationService
                     'connection_application_id' => $id,
                     'status' => ConnectionService::STATUS_EA_PROCESSINF
                 ];
-                if (in_array($item, [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS ])) {
+                if (in_array($item, [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])) {
                     $serviceData['provider_name'] = $planProvider['provider_name'];
                     $serviceData['plan_type'] = $planProvider['plan_type'];
                 }
@@ -254,7 +252,7 @@ class ApplicationService
         $provider = null;
         $plan = null;
         foreach ($conServices as $service) {
-            if (in_array($service->service_type, [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS ])) {
+            if (in_array($service->service_type, [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])) {
                 $provider = $service->provider_name ?? null;
                 $plan = $service->plan_type ?? null;
             }
@@ -437,24 +435,24 @@ class ApplicationService
 
         if (isset($application['email_manually_verified_by'])) {
             if ($application['email_manually_verified_by'] === true) {
-                $application['email_manually_verified_by'] =  auth()->user()->profile_id;
+                $application['email_manually_verified_by'] = auth()->user()->profile_id;
             } else {
-                $application['email_manually_verified_by'] =  null;
+                $application['email_manually_verified_by'] = null;
             }
         }
 
         foreach ([
-            'is_gas_life_support' => 'gas_life_support_accepted_at',
-            'is_power_life_support' => 'power_life_support_accepted_at']
-            as $key => $val){
+                     'is_gas_life_support' => 'gas_life_support_accepted_at',
+                     'is_power_life_support' => 'power_life_support_accepted_at']
+                 as $key => $val) {
 
-                if (isset($application[$key])) {
-                    if ($application[$key] === true) {
-                        $application[$val] = Carbon::now();
-                    } else {
-                        $application[$val] = null;
-                    }
+            if (isset($application[$key])) {
+                if ($application[$key] === true) {
+                    $application[$val] = Carbon::now();
+                } else {
+                    $application[$val] = null;
                 }
+            }
         }
 
         if ($isIdentification) {
@@ -548,8 +546,8 @@ class ApplicationService
         };
 
         foreach ($services as $service) {
-            $key = $service. "_plan_type";
-            $plan =   $data[$key] ?? null;
+            $key = $service . "_plan_type";
+            $plan = $data[$key] ?? null;
 
             $connectionService = ConnectionService::where('connection_application_id', $applicationId)
                 ->where('service_type', $service)
@@ -572,7 +570,7 @@ class ApplicationService
         }
     }
 
-    public function getNotSubmittedServices($id, $submitType) : array
+    public function getNotSubmittedServices($id, $submitType): array
     {
         $providers = [ConnectionService::PROVIDER_EA, ConnectionService::PROVIDER_ORIGIN, ConnectionService::PROVIDER_POWER_SHOP];
 
@@ -585,12 +583,12 @@ class ApplicationService
 
         $notSubmitted = [];
 
-        foreach($providers as $provider){
+        foreach ($providers as $provider) {
             $notSubmitted[$provider] = ConnectionService::query()->where('connection_application_id', $id)
-            ->where('provider_name', $provider)
-            ->whereNull('lead_reference')
-            ->whereIn('service_type', $services)
-            ->pluck('id')->toArray();
+                ->where('provider_name', $provider)
+                ->whereNull('lead_reference')
+                ->whereIn('service_type', $services)
+                ->pluck('id')->toArray();
         }
 
         return $notSubmitted;
@@ -660,7 +658,7 @@ class ApplicationService
     public function updateEmailField(array $application, $id)
     {
         $existLead = ConnectionApplication::findOrFail($id);
-        ConnectionApplication::where('id' , $existLead->id)
+        ConnectionApplication::where('id', $existLead->id)
             ->update([
                 'email_manually_verified_by' => null,
             ]);
@@ -673,6 +671,55 @@ class ApplicationService
         $email_manually_verified_by = $existingApplication->email_manually_verified_by;
 
         return $email_manually_verified_by;
+    }
+
+
+    public function getFetchMirnNmiInputData($application)
+    {
+        return [
+            "additional_access_information" => $application->additional_access_information,
+            "address_text" => $application->address_text,
+            "billing_address" => $application->billing_address,
+            "billing_address_text" => $application->billing_address_text,
+            "billing_city" => $application->billing_city,
+            "billing_country" => $application->billing_country,
+            "billing_postcode" => $application->billing_postcode,
+            "billing_state" => $application->billing_state,
+            "billing_street_address" => $application->billing_street_address,
+            "billing_street_name" => $application->billing_street_name,
+            "billing_street_name_only" => $application->billing_street_name_only,
+            "billing_street_number" => $application->billing_street_number,
+            "billing_street_type" => $application->billing_street_type,
+            "billing_unit_number" => $application->billing_unit_number,
+            "city" => $application->city,
+            "connection_end_date" => $application->connection_end_date,
+            "country" => $application->country,
+            "has_electricity" => $application->has_electricity,
+            "has_life_support" => $application->has_life_support,
+            "has_solar" => $application->has_solar,
+            "inspection_time" => $application->inspection_time,
+            "is_access_require" => $application->is_access_require,
+            "is_any_unrestrained_animal" => $application->is_any_unrestrained_animal,
+            "is_billing_same" => $application->is_billing_same,
+            "is_gas_life_support" => $application->is_gas_life_support,
+            "is_power_life_support" => $application->is_power_life_support,
+            "is_renovation_on" => $application->is_renovation_on,
+            "is_temporary_connection" => $application->is_temporary_connection,
+            "life_support" => $application->life_support,
+            "mirn" => $application->mirn,
+            "nmi" => $application->nmi,
+            "moving_date" => $application->moving_date,
+            "postcode" => $application->postcode,
+            "property_type" => $application->property_type,
+            "solor_power" => $application->solor_power,
+            "state" => $application->state,
+            "street_address" => $application->street_address,
+            "street_name" => $application->street_name,
+            "street_name_only" => $application->street_name_only,
+            "street_number" => $application->street_number,
+            "street_type" => $application->street_type,
+            "unit_number" => $application->unit_number,
+        ];
     }
 
 }
