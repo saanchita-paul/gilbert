@@ -25,7 +25,7 @@
                     </v-toolbar-items>
                 </v-toolbar>
 
-                <v-alert v-if="isPowerError"
+                <v-alert v-if="isInvalidProviderPlan"
                          dense
                          border="left"
                          type="warning"
@@ -34,7 +34,7 @@
                     Power <strong>provider</strong> or <strong>plan</strong> is not available!
                 </v-alert>
 
-                <v-alert v-if="isGasError"
+                <v-alert v-if="isInvalidProviderPlan"
                          dense
                          border="left"
                          type="warning"
@@ -50,6 +50,15 @@
                          dismissible
                 >
                     <strong>Power</strong> or <strong>Gas</strong> must be submitted!
+                </v-alert>
+
+                <v-alert v-if="formData.application_status === 1"
+                         dense
+                         border="left"
+                         type="warning"
+                         dismissible
+                >
+                    You need to first <strong>assign</strong> application to further action!
                 </v-alert>
 
                 <form @submit.prevent="openConfirmModal" class="mt-n10">
@@ -345,8 +354,13 @@ export default {
             return this.getServiceStatus('internet').text;
         },
         applicationStatusDD() {
-            let excludeStatus = [1, 5, 6, 7];
-            return this.statusDD.filter(status => status.type === 'application' && !excludeStatus.includes(status.status_value));
+            const notAllowableStatuses = [1];
+            if (notAllowableStatuses.includes(this.formData.application_status)) {
+                return [];
+            } else {
+                const excludeStatus = [1, 5, 6, 7];
+                return this.statusDD.filter(status => status.type === 'application' && !excludeStatus.includes(status.status_value));
+            }
         },
         isShowCloseReason() {
             return this.formData.application_status === 8;
@@ -355,10 +369,10 @@ export default {
             return this.isPowerError && this.isGasError;
         },
         isNullPowerAndGas() {
-            return this.formData.power_status === null && this.formData.gas_status === null;
+            return !this.formData.power_status && !this.formData.gas_status;
         },
         isNullData() {
-            return this.formDataStatuses.every(status => this.formData[status] === null);
+            return this.formDataStatuses.every(status => this.formData[status] === null || this.formData[status] === '');
         },
         isInvalidData() {
             return this.isNullData || this.isPreviousData || this.isInvalidProviderPlan || this.isNullPowerAndGas;
@@ -490,17 +504,22 @@ export default {
         },
         checkPlanAndProvider() {
             // check provider and plan is available
-            const allowableStatus = [3, 4, 5, 6, 8];
+            const allowableStatus = [4];
             if (allowableStatus.includes(this.formData.application_status)) {
                 this.leadSummary.connection_services.forEach(service => {
                     if (service.service_type === 'power') {
-                        this.isPowerError = service.provider_name === null || service.plan_type === null;
+                        this.isPowerError = !service.provider_name || !service.plan_type;
                     }
 
                     if (service.service_type === 'gas') {
-                        this.isGasError = service.provider_name === null || service.plan_type === null;
+                        this.isGasError = !service.provider_name || !service.plan_type;
                     }
                 });
+            } else {
+                this.isPowerError = false;
+                this.isGasError = false;
+                this.formData.power_status = this.oldStatus.power_status;
+                this.formData.gas_status = this.oldStatus.gas_status;
             }
         },
 

@@ -279,6 +279,7 @@ export default {
         },
 
         openStatusChangeModal() {
+            this.reloadPlanNoteAndLead();
             this.showStatusChangeModal = true;
         },
 
