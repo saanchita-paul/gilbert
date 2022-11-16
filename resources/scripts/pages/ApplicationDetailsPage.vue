@@ -1,63 +1,80 @@
 <template>
-    <v-container fluid  v-if="planNoteFlag">
-            <ValidationObserver ref="submit_lead">
-                <LeadUserDetails
-                                v-model="infoToPass"
-                                :nmiMernFlag="nmiMernFlag"
-                                :services="services"
-                                @closeApplicationWithReason="closeApplicationWithReason"
-                                @closeApplication="closeApplication"
-                                @sendToChatBotConfirmModal="sendToChatBotConfirmModal"
-                                @eacalate="eacalate"
-                                @updateLead="updateLead"
-                                @readMore="readMore"
-                                :leadSummary="leadSummary"
-                                @updateAddress="updateAddress"
-                                @updateDraft="updateDraft"
-                                @duplicateLead="duplicatedLead"
-                        ></LeadUserDetails>
-                 </ValidationObserver>
+    <v-container fluid v-if="planNoteFlag">
+        <ValidationObserver ref="submit_lead">
+            <LeadUserDetails
+                v-model="infoToPass"
+                :nmiMernFlag="nmiMernFlag"
+                :services="services"
+                @closeApplicationWithReason="closeApplicationWithReason"
+                @closeApplication="closeApplication"
+                @sendToChatBotConfirmModal="sendToChatBotConfirmModal"
+                @eacalate="eacalate"
+                @updateLead="updateLead"
+                @readMore="readMore"
+                :leadSummary="leadSummary"
+                @updateAddress="updateAddress"
+                @updateDraft="updateDraft"
+                @duplicateLead="duplicatedLead"
+                :isLocked="chatbotData.is_locked"
+            ></LeadUserDetails>
+        </ValidationObserver>
 
-                <ValidationObserver ref="service_form">
-                    <LeadServicesAndNotes
-                        @updateDraft="updateDraft"
-                        @updateNote="updateNote"
-                        :leadSummary="leadSummary"
-                        :afterHourFlag="afterHourFlag"
-                        :notes="notes"
-                        @serviceType="serviceType">
-                    </LeadServicesAndNotes>
-                </ValidationObserver>
+        <ValidationObserver ref="service_form">
+            <LeadServicesAndNotes
+                @updateDraft="updateDraft"
+                @updateNote="updateNote"
+                :leadSummary="leadSummary"
+                :afterHourFlag="afterHourFlag"
+                :notes="notes"
+                @serviceType="serviceType">
+            </LeadServicesAndNotes>
+        </ValidationObserver>
 
-            <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
-            <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm" :title="fullName"></EscalationConfirmModal>
+        <EscalateReasonModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary"
+                             @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></EscalateReasonModal>
+        <EscalationConfirmModal v-if="escalateLeadConfirm" :dialog="escalateLeadConfirm"
+                                :title="fullName"></EscalationConfirmModal>
 
-            <CloseApplicationReasonModal v-if="closeLead" :dialog="closeLead" :leadSummary="leadSummary" @closeApplicationWithReason="closeApplicationWithReason" @cancelClose="cancelClose" @sucessSaveClose="sucessSaveClose"></CloseApplicationReasonModal>
+        <CloseApplicationReasonModal v-if="closeLead" :dialog="closeLead" :leadSummary="leadSummary"
+                                     @closeApplicationWithReason="closeApplicationWithReason" @cancelClose="cancelClose"
+                                     @sucessSaveClose="sucessSaveClose"></CloseApplicationReasonModal>
 
-            <CloseConfirmModal v-if="closeConfirm" :dialog="closeConfirm" :title="fullName"></CloseConfirmModal>
+        <CloseConfirmModal v-if="closeConfirm" :dialog="closeConfirm" :title="fullName"></CloseConfirmModal>
 
-             <SendToChatBotModal v-if="closeSentConfirm" :dialog="closeSentConfirm" :title="fullName" @done="done"></SendToChatBotModal>
+        <SendToChatBotModal v-if="closeSentConfirm" :dialog="closeSentConfirm" :title="fullName"
+                            @done="done"></SendToChatBotModal>
 
-<!--            <ChatbotInChargeModal v-if="isChatbotInCharge" :dialog="isChatbotInCharge" :title="fullName"></ChatbotInChargeModal>-->
+        <!--            <ChatbotInChargeModal v-if="isChatbotInCharge" :dialog="isChatbotInCharge" :title="fullName"></ChatbotInChargeModal>-->
 
-            <!-- <CloseApplicationModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></CloseApplicationModal> -->
+        <!-- <CloseApplicationModal v-if="escalateLead" :dialog="escalateLead" :leadSummary="leadSummary" @cancelEscal="cancelEscal" @sucessSaveEscal="sucessSaveEscal"></CloseApplicationModal> -->
 
-            <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag"
-                               :readmore="additionalInstruction"
-                               @close="closeReadMore"> </LeadReadMoreModal>
+        <LeadReadMoreModal v-if="readMoreFlag" :dialog="readMoreFlag"
+                           :readmore="additionalInstruction"
+                           @close="closeReadMore"></LeadReadMoreModal>
 
-        <AssignedToUserEmptyModal v-if="assignedToDialog" :dialog="assignedToDialog" @closeMessage="closeAssignedToEmptyModal"></AssignedToUserEmptyModal>
+        <AssignedToUserEmptyModal v-if="assignedToDialog" :dialog="assignedToDialog"
+                                  @closeMessage="closeAssignedToEmptyModal"></AssignedToUserEmptyModal>
 
-        <GasOnlyCanNotSubmitModal v-if="gasOnlyNotSubmitDialog" :dialog="gasOnlyNotSubmitDialog" @closeMessage="closegasOnlyNotSubmitModal"></GasOnlyCanNotSubmitModal>
+        <GasOnlyCanNotSubmitModal v-if="gasOnlyNotSubmitDialog" :dialog="gasOnlyNotSubmitDialog"
+                                  @closeMessage="closegasOnlyNotSubmitModal"></GasOnlyCanNotSubmitModal>
 
-        <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" :leadId="leadId" secondaryContact="secondaryContact" v-if="showSubmitModal" @confirmSubmitLead="confirmSubmitLead" @backToEdit="backToEdit" :submitType="submitType" :leadSummary="leadSummary"> </LeadSubmitConfirmationModal>
-            <PreventSubmissionModal v-if="preventSubmissionFlag" :message="preventSubmissionMessage" :dialog="preventSubmissionFlag" @closeMessage="closePreventSubmissionModal"></PreventSubmissionModal>
+        <LeadSubmitConfirmationModal :dialog="showSubmitModal" :data="payload" :leadId="leadId"
+                                     secondaryContact="secondaryContact" v-if="showSubmitModal"
+                                     @confirmSubmitLead="confirmSubmitLead" @backToEdit="backToEdit"
+                                     :submitType="submitType" :leadSummary="leadSummary"></LeadSubmitConfirmationModal>
+        <PreventSubmissionModal v-if="preventSubmissionFlag" :message="preventSubmissionMessage"
+                                :dialog="preventSubmissionFlag"
+                                @closeMessage="closePreventSubmissionModal"></PreventSubmissionModal>
 
-        <DuplicateLeadModal v-if="duplicateLead" :dialog="duplicateLead" @cancelDuplicateLead="cancelDuplicateLead" :duplicateGroupId="leadSummary.duplication_group_id"></DuplicateLeadModal>
+        <DuplicateLeadModal v-if="duplicateLead" :dialog="duplicateLead" @cancelDuplicateLead="cancelDuplicateLead"
+                            :duplicateGroupId="leadSummary.duplication_group_id"></DuplicateLeadModal>
 
-        <ApplicationUnlockModal v-if="isChatBotApplication" :dialog="isChatBotApplication" @openUnlockConfirmModal="openUnlockConfirmModal"></ApplicationUnlockModal>
-        <ApplicationUnlockConfirmModal v-if="showUnlockConfirmModal" :dialog="showUnlockConfirmModal" @closeUnlockConfirmModal="closeUnlockConfirmModal"></ApplicationUnlockConfirmModal>
-        <SendToChatbotConfirmModal v-if="sentToChabotConfirmModal" :dialog="sentToChabotConfirmModal"></SendToChatbotConfirmModal>
+        <ApplicationUnlockModal v-if="isChatBotApplication" :dialog="isChatBotApplication"
+                                @openUnlockConfirmModal="openUnlockConfirmModal"></ApplicationUnlockModal>
+        <ApplicationUnlockConfirmModal v-if="showUnlockConfirmModal" :dialog="showUnlockConfirmModal"
+                                       @closeUnlockConfirmModal="closeUnlockConfirmModal"></ApplicationUnlockConfirmModal>
+        <SendToChatbotConfirmModal v-if="sentToChabotConfirmModal"
+                                   :dialog="sentToChabotConfirmModal"></SendToChatbotConfirmModal>
 
     </v-container>
 </template>
@@ -127,7 +144,7 @@ export default {
             escalateLeadConfirm: false,
             closeLead: false,
             readMoreFlag: false,
-            additionalInstruction:null,
+            additionalInstruction: null,
             lead: null,
             plan: null,
             supplier: 'ea',
@@ -142,7 +159,7 @@ export default {
             preventSubmissionMessage: '',
             ea_service_type: 'electricity_and_gas',
             eaElectricityDistributor: '',
-            infoToPass:{
+            infoToPass: {
                 lifeSupportInfo: {
                     value: false,
                     errorMsg: false,
@@ -157,6 +174,11 @@ export default {
             isChatBotApplication: false,
             showUnlockConfirmModal: false,
             sentToChabotConfirmModal: false,
+            chatbotData: {
+                is_sent_to_chatbot: false,
+                chatbot_id: null,
+                is_locked: false,
+            },
         }
     },
     computed: {
@@ -182,15 +204,13 @@ export default {
 
     },
     methods: {
-        async getElectricityDistributor()
-        {
-            if(!isNull(this.powerPlan) && this.powerProvider === 'ea') {
+        async getElectricityDistributor() {
+            if (!isNull(this.powerPlan) && this.powerProvider === 'ea') {
                 this.eaElectricityDistributor = await EAAfterHourService.getElectricityDistributor(this.leadSummary.service_interests,
                     this.powerPlan, this.leadSummary?.postcode, this.leadSummary?.state);
             }
         },
-        async loadPlanNoteAndLead()
-        {
+        async loadPlanNoteAndLead() {
             this.notes = await LeadApplicationService.loadNote(this.leadId);
             this.leadSummary = await LeadApplicationService.loadUserLead(this.leadId);
             this.lead = this.leadSummary;
@@ -204,24 +224,23 @@ export default {
         eacalate() {
             this.escalateLead = true;
         },
-        closeApplicationWithReason(){
+        closeApplicationWithReason() {
             this.closeLead = true;
         },
-        cancelClose(){
+        cancelClose() {
             this.closeLead = false;
         },
 
-       async sucessSaveClose(closeReason){
+        async sucessSaveClose(closeReason) {
             try {
-                await LeadApplicationService.closeApplicationWithReason(this.leadId , closeReason);
+                await LeadApplicationService.closeApplicationWithReason(this.leadId, closeReason);
                 this.closeLead = false;
                 this.closeConfirm = true;
             } catch (error) {
-                console.log('closeApplication error' , error);
+                console.log('closeApplication error', error);
             }
         },
-        sucessSaveEscal()
-        {
+        sucessSaveEscal() {
             this.escalateLead = false;
             this.escalateLeadConfirm = true;
         },
@@ -231,7 +250,7 @@ export default {
         async closeApplication(lead) {
             try {
                 await LeadApplicationService.closeApplication(lead.id);
-                this.$router.push({name:'applications'});
+                this.$router.push({name: 'applications'});
             } catch (error) {
                 // console.log('closeApplication error' , erro);
             }
@@ -264,37 +283,35 @@ export default {
             this.readMoreFlag = false;
         },
         updateLead(lead) {
-            this.fullName = lead.person_details.first_name +' '+ lead.person_details.last_name;
+            this.fullName = lead.person_details.first_name + ' ' + lead.person_details.last_name;
             this.lead = lead;
         },
         async submitConnection(submitType) {
             let v = await this.validateLead();
             let isProperAddress = await this.isProperAddress();
 
-            if(!isProperAddress) Store.commit('setInvalidAddress', true);
+            if (!isProperAddress) Store.commit('setInvalidAddress', true);
 
-            if(!v || !isProperAddress) return;
+            if (!v || !isProperAddress) return;
 
             let assignedHoodUser = await this.getAssignedHoodUser();
-            if(!assignedHoodUser) {
+            if (!assignedHoodUser) {
                 this.assignedToDialog = true;
                 return true;
             }
-            if (this.serviceSubmitType === 'gas')
-            {
-                if (this.gasProvider === 'powershop')
-                {
+            if (this.serviceSubmitType === 'gas') {
+                if (this.gasProvider === 'powershop') {
                     this.gasOnlyNotSubmitDialog = true;
                     return true;
                 }
             }
-            if(this.isWaterUnavailable(submitType, this.lead?.property_details?.state, this.lead?.person_details?.tenancy_type))
-            {
+            if (this.isWaterUnavailable(submitType, this.lead?.property_details?.state, this.lead?.person_details?.tenancy_type)) {
                 this.preventSubmissionFlag = true;
                 return;
             }
             this.submitType = submitType;
-            this.payload = { ...this.lead.property_details,
+            this.payload = {
+                ...this.lead.property_details,
                 ...this.lead.person_details,
                 selectedProvider: (submitType === 'energy' || submitType === 'power') ? this.powerProvider : this.gasProvider,
                 selectedPowerPlan: this.powerPlan,
@@ -311,43 +328,42 @@ export default {
 
             const rightState = ['vic', 'victoria'].includes($state?.toLowerCase());
 
-            if($submitType === 'water' && !rightState) {
+            if ($submitType === 'water' && !rightState) {
                 this.preventSubmissionMessage = 'Water is not available outside Victoria';
                 return true;
             }
-            if($submitType === 'water' && $tenantType === 2) {
+            if ($submitType === 'water' && $tenantType === 2) {
                 this.preventSubmissionMessage = 'Water is not available for Tenancy Home Owner ';
                 return true;
             }
-             return false;
+            return false;
         },
 
 
         closePreventSubmissionModal() {
-          this.preventSubmissionFlag = false;
+            this.preventSubmissionFlag = false;
         },
         backToEdit() {
             this.showSubmitModal = false;
         },
         async validateLead() {
-          return (await this.$refs.submit_lead.validate()) && (await this.$refs.service_form.validate())
+            return (await this.$refs.submit_lead.validate()) && (await this.$refs.service_form.validate())
         },
         async confirmSubmitLead() {
             this.showSubmitModal = false;
             let payload = null;
-            if(this.lead.property_details === undefined)
-            {
+            if (this.lead.property_details === undefined) {
                 payload = {...this.lead};
 
-            } else
-            {
-                if(this.lead?.indentification?.medicare_expire_date) {
+            } else {
+                if (this.lead?.indentification?.medicare_expire_date) {
                     delete this.lead.indentification.medicare_expire_date;
                 }
 
-                payload=  { ...this.lead.property_details,
+                payload = {
+                    ...this.lead.property_details,
                     ...this.lead.person_details,
-                    'service_interests':this.services,
+                    'service_interests': this.services,
                     'identification': this.lead.identification,
                     supplier: 1,
                     plan_type: (this.submitType === 'energy' || this.submitType === 'power') ? this.powerPlan : this.gasPlan,
@@ -357,7 +373,7 @@ export default {
             console.log('payload', payload);
             this.submittedLoader = true;
             let response = await LeadApplicationService.confirmSubmitLead(payload, this.leadId);
-            this.$router.push({name:'applications'});
+            this.$router.push({name: 'applications'});
         },
         async updateAddress(address) {
             this.leadSummary.address_text = address.address_text
@@ -393,35 +409,31 @@ export default {
         },
 
         async updateDraft(field, value, isDate, identification, isManualChangeFlag) {
-            if(isNull(value)) return;
+            if (isNull(value)) return;
 
-            if(isDate) {
-                if(field == 'dob'&& dayjs(value,'DD/MM/YYYY').isSame(this.leadSummary.dob))
-                {
+            if (isDate) {
+                if (field == 'dob' && dayjs(value, 'DD/MM/YYYY').isSame(this.leadSummary.dob)) {
                     return;
                 }
 
-                if(field == 'moving_date' && dayjs(value,'DD/MM/YYYY').isSame(this.leadSummary.moving_date))
-                {
+                if (field == 'moving_date' && dayjs(value, 'DD/MM/YYYY').isSame(this.leadSummary.moving_date)) {
                     return;
                 }
 
-                if(field == 'expire_date' && dayjs(value,'DD/MM/YYYY').isSame(this.leadSummary.identification.expire_date))
-                {
-                   return;
+                if (field == 'expire_date' && dayjs(value, 'DD/MM/YYYY').isSame(this.leadSummary.identification.expire_date)) {
+                    return;
                 }
             }
-            await LeadApplicationService.saveSoleField(field, value,this.leadId, isDate, identification, false);
+            await LeadApplicationService.saveSoleField(field, value, this.leadId, isDate, identification, false);
 
-           let [day, month, year] = [];
-            if(isDate)
-            {
+            let [day, month, year] = [];
+            if (isDate) {
                 [day, month, year] = value.split('/');
                 value = year + '-' + month + '-' + day;
             }
-            if(identification) {
+            if (identification) {
                 this.leadSummary.identification = this.leadSummary.identification ? this.leadSummary.identification : {};
-                if(field === 'type') {
+                if (field === 'type') {
                     this.leadSummary.identification.card_number = '';
                     this.leadSummary.identification.special_number = '';
                     this.leadSummary.identification.expire_date = null;
@@ -436,29 +448,29 @@ export default {
             this.leadSummary[field] = value;
             await this.updateAfterHourFlagMovingDate(field, value)
         },
-        async updateAfterHourFlagMovingDate(field, value){
-            if(field === 'moving_date' || field === 'service_interests') {
+        async updateAfterHourFlagMovingDate(field, value) {
+            if (field === 'moving_date' || field === 'service_interests') {
                 await this.getElectricityDistributor();
             }
         },
         async updateMernNmi() {
-            if(this.leadSummary.nmi == null && this.leadSummary.mirn == null) {
+            if (this.leadSummary.nmi == null && this.leadSummary.mirn == null) {
                 const nmiMern = await LeadApplicationService.getNmiMern(this.leadId);
                 this.leadSummary.nmi = nmiMern.nmi;
                 this.leadSummary.mirn = nmiMern.mirn;
             }
         },
-        closeAssignedToEmptyModal(){
+        closeAssignedToEmptyModal() {
             this.assignedToDialog = false;
         },
-        closegasOnlyNotSubmitModal(){
+        closegasOnlyNotSubmitModal() {
             this.gasOnlyNotSubmitDialog = false;
         },
         async loadNextBusinessDay() {
             this.nextBusinessDay = await ChatbotService.getNextBusinessDay(this.leadSummary?.state);
         },
         isProperAddress() {
-            if( this.leadSummary.street_number == null
+            if (this.leadSummary.street_number == null
                 || this.leadSummary.street_name_only == null
                 || this.leadSummary.street_type == null
                 || this.leadSummary.state == null
@@ -489,7 +501,14 @@ export default {
         openUnlockConfirmModal() {
             this.isChatBotApplication = false;
             this.showUnlockConfirmModal = true;
-        }
+        },
+
+        async getIsLocked() {
+            const res = await LeadApplicationService.isSentToChatbot(this.leadId);
+            console.log('isSentToChatBot', res);
+            this.chatbotData = res;
+            this.isChatBotApplication = res.chatbot_id && res.is_locked;
+        },
     },
     watch: {
         powerPlan: {
@@ -499,37 +518,34 @@ export default {
             deep: true,
         },
     },
-    async  mounted() {
+    async mounted() {
         const validateEvent = async (callback) => {
-              let v = await this.validateLead();
-              if(!v) return;
-              callback('sumo');
-          };
+            let v = await this.validateLead();
+            if (!v) return;
+            callback('sumo');
+        };
         const busUtilitySubmitEvent = async (type) => {
-              await this.submitConnection(type);
+            await this.submitConnection(type);
         }
         this.$eventBus.$on("validate", validateEvent);
         this.$eventBus.$on("busUtilitySubmit", busUtilitySubmitEvent);
 
         this.$once("hook:beforeDestroy", () => {
-            this.$eventBus.$off("validate", validateEvent );
+            this.$eventBus.$off("validate", validateEvent);
         });
 
         this.$once("hook:beforeDestroy", () => {
             this.$eventBus.$off("busUtilitySubmit", busUtilitySubmitEvent);
         });
 
-      this.leadId = this.$route.params.id;
-      await this.loadPlanNoteAndLead();
-      await this.loadNextBusinessDay();
-      await this.updateMernNmi();
-      this.nmiMernFlag = false;
+        this.leadId = this.$route.params.id;
+        await this.loadPlanNoteAndLead();
+        await this.loadNextBusinessDay();
+        await this.updateMernNmi();
+        this.nmiMernFlag = false;
 
 
-      let isSentToChatBot = await LeadApplicationService.isSentToChatbot(this.leadId);
-      if(isSentToChatBot) {
-          this.isChatBotApplication = isSentToChatBot;
-      }
+        await this.getIsLocked();
     }
 };
 </script>
