@@ -369,7 +369,8 @@ export default {
             return this.isPowerError && this.isGasError;
         },
         isNullPowerAndGas() {
-            return !this.formData.power_status && !this.formData.gas_status;
+            return this.formData.application_status === 4 && ((!this.formData.power_status && !this.formData.gas_status)
+                || (this.formData.power_status === 7 && this.formData.gas_status === 7));
         },
         isNullData() {
             return this.formDataStatuses.every(status => this.formData[status] === null || this.formData[status] === '');
@@ -499,8 +500,6 @@ export default {
             if (this.leadSummary.service_interests.includes('water')) {
                 await this.getWaterServiceStatusDD();
             }
-
-            this.setNullPowerAndGas();
         },
         checkPlanAndProvider() {
             // check provider and plan is available
@@ -645,14 +644,6 @@ export default {
                 }
             }
             return 'grey lighten-1';
-        },
-        setNullPowerAndGas() {
-            if (this.formData.application_status === 4 && this.oldStatus.power_status === 7) {
-                this.formData.power_status = null;
-            }
-            if (this.formData.application_status === 4 && this.oldStatus.gas_status === 7) {
-                this.formData.gas_status = null;
-            }
         },
         setNullInFormData() {
             this.formData.application_status = this.formData.application_status === this.oldStatus.application_status ? null : this.formData.application_status;
