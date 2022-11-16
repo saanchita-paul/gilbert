@@ -58,8 +58,6 @@ Route::middleware('auth:sanctum')
 
 Route::get('/logout', [AuthController::class, 'logout']);
 
-Route::post('/applications', [ApplicationController::class, 'create']);
-
 /**
  * @Module AGENCY CRM
  */
@@ -148,8 +146,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     /**
      * Applications
      */
-    /*Route::post('/applications', [ApplicationController::class, 'create'])
-        ->middleware('permission:' . RolePermissionService::CAN_CREATE_NEW_APPLICATION);*/
+    Route::post('/applications', [ApplicationController::class, 'create'])
+        ->middleware('permission:' . RolePermissionService::CAN_CREATE_NEW_APPLICATION);
     Route::get('/applications', [ApplicationController::class, 'index'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
     Route::get('/applications/agents', [ApplicationController::class, 'SearchConnectionApplicationAgents']);

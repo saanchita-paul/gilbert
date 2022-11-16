@@ -91,7 +91,7 @@ class ApplicationController extends Controller
             $user = Auth::user();
 
             $service = new ApplicationService();
-            $application = ConnectionApplication::find(5091);
+            $application = $service->createApplication($request->toArray(), $user);
 
             // Auto assign application to chatbot
             $autoAssignService = new AutoAssignApplicationService();

@@ -26,7 +26,7 @@ class ApplicationRequest extends FormRequest
     public function rules(Request $request)
     {
         return [
-            /*'first_name' => 'required|string',
+            'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|string|email',
             'phone' => 'nullable|string',
@@ -41,7 +41,7 @@ class ApplicationRequest extends FormRequest
             'postcode' => 'required|string',
             'state' => 'required|string',
             'additional_instruction' => 'nullable|string',
-            'is_email_billing' => 'nullable|integer',*/
+            'is_email_billing' => 'nullable|integer',
         ];
     }
 }
