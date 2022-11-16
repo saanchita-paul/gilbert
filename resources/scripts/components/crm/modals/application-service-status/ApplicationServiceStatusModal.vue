@@ -52,7 +52,7 @@
                     <strong>Power</strong> or <strong>Gas</strong> must be submitted!
                 </v-alert>
 
-                <v-alert v-if="formData.application_status === 1"
+                <v-alert v-if="isAssignedStatus"
                          dense
                          border="left"
                          type="warning"
@@ -354,13 +354,8 @@ export default {
             return this.getServiceStatus('internet').text;
         },
         applicationStatusDD() {
-            const notAllowableStatuses = [1];
-            if (notAllowableStatuses.includes(this.formData.application_status)) {
-                return [];
-            } else {
-                const excludeStatus = [1, 5, 6, 7];
-                return this.statusDD.filter(status => status.type === 'application' && !excludeStatus.includes(status.status_value));
-            }
+            const excludeStatus = [1, 5, 6, 7];
+            return this.statusDD.filter(status => status.type === 'application' && !excludeStatus.includes(status.status_value));
         },
         isShowCloseReason() {
             return this.formData.application_status === 8;
@@ -369,14 +364,27 @@ export default {
             return this.isPowerError && this.isGasError;
         },
         isNullPowerAndGas() {
-            return this.formData.application_status === 4 && ((!this.formData.power_status && !this.formData.gas_status)
+            return this.formData.application_status === 4 && this.oldStatus.application_status !== 1
+                && ((!this.formData.power_status && !this.formData.gas_status)
                 || (this.formData.power_status === 7 && this.formData.gas_status === 7));
         },
         isNullData() {
             return this.formDataStatuses.every(status => this.formData[status] === null || this.formData[status] === '');
         },
+        isNullCloseReason() {
+            return this.formData.application_status === 8 && this.formData.closed_reason === null;
+        },
+        isAssignedStatus() {
+            const excludeStatues = [2, 4];
+            return this.oldStatus.application_status === 1 && excludeStatues.includes(this.formData.application_status);
+        },
         isInvalidData() {
-            return this.isNullData || this.isPreviousData || this.isInvalidProviderPlan || this.isNullPowerAndGas;
+            return this.isNullData
+                || this.isPreviousData
+                || this.isInvalidProviderPlan
+                || this.isNullPowerAndGas
+                || this.isNullCloseReason
+                || this.isAssignedStatus;
         },
         closeReasonDD() {
             return this.closeReasons.filter(reason => reason.value !== 17);
