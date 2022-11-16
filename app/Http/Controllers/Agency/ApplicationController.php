@@ -85,12 +85,14 @@ class ApplicationController extends Controller
      */
     public function create(ApplicationRequest $request)
     {
+        set_time_limit(180);
         try {
             /** @var  User $user */
             $user = Auth::user();
 
             $service = new ApplicationService();
-            $application = $service->createApplication($request->toArray(), $user);
+            $application = ConnectionApplication::find(5091);
+
             // Auto assign application to chatbot
             $autoAssignService = new AutoAssignApplicationService();
             $autoAssignService->assignApplication($application);
@@ -102,7 +104,6 @@ class ApplicationController extends Controller
             UpdateHubspotContactJob::dispatch($application->id);
 
             return ApplicationResource::make($application);
-
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

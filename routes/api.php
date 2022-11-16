@@ -121,7 +121,10 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     // Assign Applications Routes
     Route::get('/all-offices-for-assign-applications', [OfficeController::class, 'getOfficesForAssignApplications'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
-    Route::get('/offices/{officeId}/all-agents-for-assign-applications', [AgentProfileController::class, 'getAgentsForAssignApplications']);
+    Route::get(
+        '/offices/{officeId}/all-agents-for-assign-applications',
+        [AgentProfileController::class, 'getAgentsForAssignApplications']
+    );
     Route::post('/offices/assign-applications', [OfficeController::class, 'assignApplications']);
 
     /**
@@ -145,7 +148,8 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     /**
      * Applications
      */
-
+    /*Route::post('/applications', [ApplicationController::class, 'create'])
+        ->middleware('permission:' . RolePermissionService::CAN_CREATE_NEW_APPLICATION);*/
     Route::get('/applications', [ApplicationController::class, 'index'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
     Route::get('/applications/agents', [ApplicationController::class, 'SearchConnectionApplicationAgents']);
@@ -172,8 +176,6 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('permission:' . RolePermissionService::CAN_UPDATE_APPLICATION);
     Route::get('/applications/{applicationId}/duplicate', [DuplicationApplicationController::class, 'getDuplicateLeads'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_APPLICATION_LIST);
-
-
 
 
     //todo: make a  separate controller for notes
@@ -217,7 +219,7 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::get('/applications/{id}/send-to-chatbot', [SendApplicationToChatbotController::class, 'sendApplication']);
     Route::get('/applications/{id}/is-sent-to-chatbot', [ApplicationController::class, 'isSentToChatBot']);
-     /***
+    /***
      * Application closing reasons route
      */
     // application closing reasons list
@@ -308,8 +310,6 @@ Route::get('/applications/{id}/email-manually-verified', [ApplicationController:
 Route::get('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syncProperty']);
 
 
-
-
 /**
  * Bellow API are only for testing purpose
  */
@@ -350,10 +350,6 @@ Route::get('/applications/{applicationId}/{submitType}/same-day-connection', [Po
 // });
 
 
-
-
-
-
 Route::get('/kaka', function () {
     $dateTimeZone = new DateTimeZone("Australia/Melbourne");
     $date = new DateTime(null, $dateTimeZone);
@@ -384,12 +380,12 @@ Route::get('powers-api', function () {
 //});
 
 
-Route::get('/nmi-mirn', function() {
+Route::get('/nmi-mirn', function () {
 //    dd('hello');
     $app = ConnectionApplication::firstOrFail();
     $app->first_name = 'helllllo';
     $app->updateOrFail();
-    info('testing' , [$app]);
+    info('testing', [$app]);
 //    return true;
 //    $app = ConnectionApplication::where('id', 1)->firstOrFail();
 //    $app->update([
@@ -398,7 +394,7 @@ Route::get('/nmi-mirn', function() {
 
 });
 
-Route::get('/test', function() {
+Route::get('/test', function () {
 //    dd('hello');
     $service = \App\Models\ConnectionService::where('id', 12)->firstOrFail();
     $service->update([
