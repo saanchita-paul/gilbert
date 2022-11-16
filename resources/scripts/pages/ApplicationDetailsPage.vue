@@ -74,7 +74,9 @@
         <ApplicationUnlockConfirmModal v-if="showUnlockConfirmModal" :dialog="showUnlockConfirmModal"
                                        @closeUnlockConfirmModal="closeUnlockConfirmModal"></ApplicationUnlockConfirmModal>
         <SendToChatbotConfirmModal v-if="sentToChabotConfirmModal"
-                                   :dialog="sentToChabotConfirmModal"></SendToChatbotConfirmModal>
+                                   :dialog="sentToChabotConfirmModal"
+                                   @continueSendToChatBot="continueSendToChatBot"
+                                   @cancelSendToChatBotConfirmModal="cancelSendToChatBotConfirmModal"></SendToChatbotConfirmModal>
 
     </v-container>
 </template>
@@ -257,20 +259,6 @@ export default {
         },
         async sendToChatBotConfirmModal() {
             this.sentToChabotConfirmModal = true;
-            // try {
-            //     let v = await this.validateLead();
-            //     if (v) {
-            //         // let assignedHoodUser = await this.getAssignedHoodUser();
-            //         // if(!assignedHoodUser) {
-            //         //     this.assignedToDialog = true;
-            //         //     return true;
-            //         // }
-            //         await LeadApplicationService.sendToChatBot(this.leadId);
-            //         this.closeSentConfirm = true;
-            //     }
-            // } catch (error) {
-            //     console.log('sendToChatBot error' , error);
-            // }
         },
         done() {
             this.$router.push({name: 'application.list'});
@@ -509,6 +497,13 @@ export default {
             this.chatbotData = res;
             this.isChatBotApplication = res.chatbot_id && res.is_locked;
         },
+        cancelSendToChatBotConfirmModal() {
+            this.sentToChabotConfirmModal = false;
+        },
+        continueSendToChatBot() {
+            console.log('Clicked to continue');
+            this.sentToChabotConfirmModal = false; // TODO
+        }
     },
     watch: {
         powerPlan: {

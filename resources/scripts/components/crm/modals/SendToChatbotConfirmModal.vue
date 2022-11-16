@@ -21,10 +21,10 @@
                 </v-card-title>
 
                 <v-card-actions class="justify-center mt-n5 pb-6">
-                    <v-btn large class="ps-16 pe-16 mr-2" @click="dialog=false">
+                    <v-btn large class="ps-16 pe-16 mr-2" @click="cancelSendToChatBotConfirmModal">
                         Cancel
                     </v-btn>
-                    <v-btn large class="ps-16 pe-16" color="primary">
+                    <v-btn large class="ps-16 pe-16" color="primary" @click="continueSendToChatBot">
                         Yes, continue
                     </v-btn>
                 </v-card-actions>
@@ -42,8 +42,11 @@ export default {
         },
     },
     methods: {
-        closeUnlockConfirmModal() {
-            this.$emit('closeUnlockConfirmModal');
+        cancelSendToChatBotConfirmModal() {
+            this.$emit('cancelSendToChatBotConfirmModal');
+        },
+        continueSendToChatBot() {
+            this.$emit('continueSendToChatBot');
         }
     }
 }
