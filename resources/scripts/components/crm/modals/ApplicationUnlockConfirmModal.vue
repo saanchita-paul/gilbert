@@ -15,7 +15,8 @@
                 </v-toolbar>
                 <v-card-title class="primary--text text-sm-body-1 mb-4">
                     <h3 class="text-large">
-                        Unlocking this application will lock the customer’s view and application will still be assigned to chatbot user.
+                        Unlocking this application will lock the customer’s view and application will still be assigned
+                        to chatbot user.
                     </h3>
                     <p class="mt-5 text-color">Are you sure you want to continue?</p>
                 </v-card-title>
@@ -24,7 +25,7 @@
                     <v-btn large class="ps-16 pe-16 mr-2" @click="closeUnlockConfirmModal">
                         Cancel
                     </v-btn>
-                    <v-btn large class="ps-16 pe-16" color="primary">
+                    <v-btn large class="ps-16 pe-16" color="primary" @click.prevent="submitHandler">
                         Yes, continue
                     </v-btn>
                 </v-card-actions>
@@ -44,6 +45,9 @@ export default {
     methods: {
         closeUnlockConfirmModal() {
             this.$emit('closeUnlockConfirmModal');
+        },
+        submitHandler() {
+            this.$emit('confirmUnlock');
         }
     }
 }
@@ -53,6 +57,7 @@ export default {
 .text-color {
     color: #263238;
 }
+
 .v-card__title {
     word-break: initial !important;
 }

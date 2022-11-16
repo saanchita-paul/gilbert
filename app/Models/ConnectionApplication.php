@@ -233,7 +233,8 @@ class ConnectionApplication extends Model
         'power_life_support_accepted_at',
         'gas_life_support_accepted_at',
         'app_close_reason_id',
-        'chatbot_id'
+        'chatbot_id',
+        'is_locked',
     ];
 
 

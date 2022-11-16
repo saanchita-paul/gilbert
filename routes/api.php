@@ -244,7 +244,6 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      * api for powershop payment
      */
     Route::post('/powershop/payment', [PaymentInfoController::class, 'updateCost']);
-
 });
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
@@ -307,6 +306,9 @@ Route::get('/applications/{id}/email-manually-verified', [ApplicationController:
  * gilbert to chatbot sync
  */
 Route::get('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syncProperty']);
+
+// Lock/unlock application routes
+Route::post('/applications/{id}/lock-or-unlock', [ApplicationController::class, 'lockUnlockApp']);
 
 
 

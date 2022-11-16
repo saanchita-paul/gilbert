@@ -15,7 +15,7 @@
                 @updateAddress="updateAddress"
                 @updateDraft="updateDraft"
                 @duplicateLead="duplicatedLead"
-                :isLocked="chatbotData.is_locked"
+                :isLocked="isLocked"
             ></LeadUserDetails>
         </ValidationObserver>
 
@@ -72,7 +72,8 @@
         <ApplicationUnlockModal v-if="isChatBotApplication" :dialog="isChatBotApplication"
                                 @openUnlockConfirmModal="openUnlockConfirmModal"></ApplicationUnlockModal>
         <ApplicationUnlockConfirmModal v-if="showUnlockConfirmModal" :dialog="showUnlockConfirmModal"
-                                       @closeUnlockConfirmModal="closeUnlockConfirmModal"></ApplicationUnlockConfirmModal>
+                                       @closeUnlockConfirmModal="closeUnlockConfirmModal"
+                                       @confirmUnlock="unlockApp"></ApplicationUnlockConfirmModal>
         <SendToChatbotConfirmModal v-if="sentToChabotConfirmModal"
                                    :dialog="sentToChabotConfirmModal"></SendToChatbotConfirmModal>
 
@@ -200,6 +201,9 @@ export default {
         },
         gasPlan() {
             return UtilityStoreService.getGasPlan();
+        },
+        isLocked() {
+            return this.chatbotData.chatbot_id !== null && !this.chatbotData.is_locked;
         },
 
     },
@@ -498,9 +502,19 @@ export default {
             this.showUnlockConfirmModal = false;
             this.isChatBotApplication = true;
         },
-        openUnlockConfirmModal() {
+        async openUnlockConfirmModal() {
             this.isChatBotApplication = false;
             this.showUnlockConfirmModal = true;
+        },
+
+        async unlockApp() {
+            const res = await LeadApplicationService.lockOrUnlockApp(this.leadId, {is_locked: false});
+            console.log(res);
+
+            if (res.success) {
+                this.showUnlockConfirmModal = false;
+                await this.getIsLocked();
+            }
         },
 
         async getIsLocked() {

@@ -37,7 +37,7 @@
                     <v-btn v-if="leadSummary.status !== 'Closed'" outlined @click="closeApplicationWithReason"
                            class="ml-1">Close Application
                     </v-btn>
-                    <v-btn v-if="!isLocked" outlined @click="sendToChatBotConfirmModal" class="ml-1">
+                    <v-btn v-if="isLocked" outlined @click="sendToChatBotConfirmModal" class="ml-1">
                         Assign to Chatbot
                         <v-icon class="pl-3">mdi-facebook-messenger</v-icon>
                     </v-btn>

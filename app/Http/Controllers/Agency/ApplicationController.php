@@ -21,6 +21,7 @@ use App\Models\User;
 use App\Services\Agency\ApplicationService;
 use App\Services\Agency\TriageFlagService;
 use App\Services\Agency\WaterAutoSubmitService;
+use App\Services\Application\ApplicationLockUnlockService;
 use App\Services\Application\ApplicationsMetricsService;
 use App\Services\Application\SearchConnectionApplication;
 use App\Services\ChatBot\SendAppGilbertToChatbotService;
@@ -29,6 +30,7 @@ use App\Services\Ea\SetEaDistributorService;
 use App\Services\GBGEmailValidationService;
 use App\Services\GilbertToCB\GilbertToChatbotService;
 use App\Services\RolePermission;
+use Exception;
 use Origin\Services\SetOriginDistributorService;
 use App\Services\FastConnectService;
 use Illuminate\Http\JsonResponse;
@@ -541,6 +543,18 @@ class ApplicationController extends Controller
             return response()->json(['success' => true, 'data' => $res]);
 
         } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
+    public function lockUnlockApp(Request $request, $id)
+    {
+        try {
+            $service = new ApplicationLockUnlockService($id);
+            $service->setStatus($request);
+            $message = 'success';
+            return $this->sendSuccessResponse($message);
+        } catch (Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
     }
