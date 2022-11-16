@@ -1,7 +1,12 @@
 <template>
     <v-card class="hood-card mb-5 pt-0">
-       <LeadDetailsHeader @closeApplicationWithReason="closeApplicationWithReason" :leadSummary="leadSummary" @closeApplication="closeApplication" @eacalate="eacalate" @duplicateLead="duplicateLead" @sendToChatBotConfirmModal="sendToChatBotConfirmModal" ></LeadDetailsHeader>
-        <InfoField v-bind="$attrs" :services="services" @updateLead="updateLead" :nmiMernFlag="nmiMernFlag" :lead="leadSummary" @updateDraft="updateDraft" @readMore="readMore" @updateAddress="updateAddress"></InfoField>
+        <LeadDetailsHeader @closeApplicationWithReason="closeApplicationWithReason" :leadSummary="leadSummary"
+                           @closeApplication="closeApplication" @eacalate="eacalate" @duplicateLead="duplicateLead"
+                           @sendToChatBotConfirmModal="sendToChatBotConfirmModal"
+                           :isLocked="isLocked"></LeadDetailsHeader>
+        <InfoField v-bind="$attrs" :services="services" @updateLead="updateLead" :nmiMernFlag="nmiMernFlag"
+                   :lead="leadSummary" @updateDraft="updateDraft" @readMore="readMore"
+                   @updateAddress="updateAddress"></InfoField>
     </v-card>
 </template>
 
@@ -9,32 +14,36 @@
 import LeadDetailsHeader from "@scripts/components/crm/leadmanagement/LeadDetailsHeader";
 import InfoField from "@scripts/components/crm/leadmanagement/InfoField";
 import LeadApplicationService from "@scripts/services/crm/LeadApplicationService";
+
 export default {
-name: "LeadUserDetails",
+    name: "LeadUserDetails",
     components: {LeadDetailsHeader, InfoField},
     props: {
         leadSummary: {
-          require: true
+            require: true
         },
         nmiMernFlag: {
             require: false
         },
         services: {
             require: false
+        },
+        isLocked: {
+            required: true
         }
 
     },
     methods: {
         closeApplication(lead) {
-            this.$emit('closeApplication',lead);
+            this.$emit('closeApplication', lead);
         },
         closeApplicationWithReason(lead) {
-            this.$emit('closeApplicationWithReason',lead);
+            this.$emit('closeApplicationWithReason', lead);
         },
         updateLead(lead) {
-            this.$emit('updateLead',lead);
+            this.$emit('updateLead', lead);
         },
-        eacalate(){
+        eacalate() {
             this.$emit('eacalate');
         },
         readMore() {
@@ -43,13 +52,13 @@ name: "LeadUserDetails",
         updateAddress(address) {
             this.$emit('updateAddress', address);
         },
-        updateDraft(field, value, isDate, identification,isManualChangeFlag = false) {
+        updateDraft(field, value, isDate, identification, isManualChangeFlag = false) {
             this.$emit('updateDraft', field, value, isDate, identification, isManualChangeFlag);
         },
         sendToChatBotConfirmModal() {
             this.$emit('sendToChatBotConfirmModal');
         },
-        duplicateLead(){
+        duplicateLead() {
             this.$emit('duplicateLead');
         },
 

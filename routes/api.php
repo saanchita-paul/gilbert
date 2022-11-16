@@ -118,7 +118,10 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
     // Assign Applications Routes
     Route::get('/all-offices-for-assign-applications', [OfficeController::class, 'getOfficesForAssignApplications'])
         ->middleware('permission:' . RolePermissionService::CAN_GET_OFFICES);
-    Route::get('/offices/{officeId}/all-agents-for-assign-applications', [AgentProfileController::class, 'getAgentsForAssignApplications']);
+    Route::get(
+        '/offices/{officeId}/all-agents-for-assign-applications',
+        [AgentProfileController::class, 'getAgentsForAssignApplications']
+    );
     Route::post('/offices/assign-applications', [OfficeController::class, 'assignApplications']);
 
     /**
