@@ -50,6 +50,8 @@ class ApplicationServiceStatusService
                 ['application_status', 'application_id', 'status_reason', 'closed_reason']
             );
 
+            $this->setConnectionServicesOldStatus();
+
             // Loop through validated keys and save data into DB
             foreach ($dataKeys as $key) {
                 // Explode key to get type and field name
@@ -137,7 +139,6 @@ class ApplicationServiceStatusService
         } else {
             $this->logData['data']['new_status']['application'] = $newStatus->display_text ?? 'N/A';
         }
-        $this->setConnectionServicesOldStatus($this->connectionApplication);
         $this->setConnectionServicesNewStatus();
     }
 
