@@ -5,12 +5,15 @@
                 <v-card class="hood-card">
                     <p>Your Metrics</p>
                     <div class="d-flex justify-space-between">
-                        <h3 class="page-title">Total Applications: {{total_leads}}</h3>
-                        <AssignToChatbotSetting></AssignToChatbotSetting>
+                        <h3 class="page-title">Total Applications: {{ total_leads }}</h3>
+                        <AssignToChatbotSetting v-if="isShowAutoAssignBtn"></AssignToChatbotSetting>
                     </div>
-                    <ApplicationsMetrics @resetPage="resetPage" v-if="leadTypesFlag" :activeLeadType="activeLeadType" :showDuplicate="showDuplicates" :leads="leadTypes" @updateTotal="updateTotal"></ApplicationsMetrics>
+                    <ApplicationsMetrics @resetPage="resetPage" v-if="leadTypesFlag" :activeLeadType="activeLeadType"
+                                         :showDuplicate="showDuplicates" :leads="leadTypes"
+                                         @updateTotal="updateTotal"></ApplicationsMetrics>
                 </v-card>
-                <ApplicationFilter v-model="advanceSearch" :isSearchEmpty="advanceSearch.isSearchEmpty()"></ApplicationFilter>
+                <ApplicationFilter v-model="advanceSearch"
+                                   :isSearchEmpty="advanceSearch.isSearchEmpty()"></ApplicationFilter>
                 <router-view
                     :leadSrc="selectedSrc"
                     v-if="isLoaded"
@@ -43,6 +46,7 @@ import ApplicationFilter from '@scripts/pages/ApplicationFilter';
 import debounce from "lodash-es/debounce";
 import DuplicateLeadService from "@scripts/services/crm/DuplicateLeadService";
 import AssignToChatbotSetting from "@scripts/components/crm/AssignToChatbotSetting";
+import AuthService from "@scripts/services/AuthService";
 
 export default {
     name: "ApplicationPage",
@@ -58,7 +62,7 @@ export default {
     data() {
         return {
             isSearching: false,
-            leadTypes:[],
+            leadTypes: [],
             selectedSrc: this.$route.query.source || 'all',
             activeLeadType: 'my_applications',
             leadTypesFlag: false,
@@ -68,7 +72,7 @@ export default {
             leadDetails: null,
             selected_lead_id: null,
             isLoaded: false,
-            sort_search_meta : null,
+            sort_search_meta: null,
             page: 1,
             pageCount: 0,
             itemsPerPage: 10,
@@ -76,7 +80,7 @@ export default {
             options: {},
             search: "",
             advanceSearchBluePrint: {
-                tenant_name:"",
+                tenant_name: "",
                 address: "",
                 phone: "",
                 source: "",
@@ -89,21 +93,31 @@ export default {
         }
     },
 
+    computed: {
+        authUser() {
+            return AuthService.getAuthUser();
+        },
+        isShowAutoAssignBtn() {
+            return this.authUser.permissions.includes('can_switch_auto_chatbot_assign');
+        },
+    },
+
     methods: {
         async loadMetricTypes() {
-          this.leadTypesFlag = false;
+            this.leadTypesFlag = false;
             this.leadTypes = await LeadApplicationService.loadUserLeadMetrics();
-            if(this.$route.query?.type) {
+            if (this.$route.query?.type) {
                 this.activeLeadType = this.$route.query?.type
             }
             this.leadTypesFlag = true;
         },
 
-        async fetchLeads () {
+        async fetchLeads() {
             this.isSearching = true;
             let data = await LeadApplicationService.loadUserLeads(
-                {...this.sort_search_meta, ...{page: this.page}, ...{
-                    is_duplicate: this.showDuplicates,
+                {
+                    ...this.sort_search_meta, ...{page: this.page}, ...{
+                        is_duplicate: this.showDuplicates,
                         duplication_group_id: this.duplication_group_id
                     }
                 },
@@ -141,16 +155,16 @@ export default {
             this.loadLeads();
             // this.loadMetricTypes();
         },
-      updateLeadAndatrics(leadId,userId) {
-        this.leads.find(ld=>ld.id==leadId).assigned_to = userId;
-        this.loadMetricTypes();
+        updateLeadAndatrics(leadId, userId) {
+            this.leads.find(ld => ld.id == leadId).assigned_to = userId;
+            this.loadMetricTypes();
         },
-        clearSearch(){
+        clearSearch() {
             this.advanceSearch = this.advanceSearchBluePrint;
             this.$router.push({
-                    name: "application.list",
-                    query: this.advanceSearch,
-                });
+                name: "application.list",
+                query: this.advanceSearch,
+            });
         },
         resetPage() {
             this.page = 1;
@@ -182,32 +196,32 @@ export default {
 
                 this.activeLeadType = this.$route.query?.type;
                 this.selectedSrc = this.$route.query?.source;
-                this.showDuplicates = Boolean(this.$route.query?.duplicates)? true: null;
+                this.showDuplicates = Boolean(this.$route.query?.duplicates) ? true : null;
                 // this.duplication_group_id = this.$route.query?.duplication_group_id;
                 this.advanceSearch.duplication_group_id = this.$route.query?.duplication_group_id;
             }
         },
         showDuplicates: {
-            handler(){
+            handler() {
                 this.loadLeads();
             }
         },
         activeLeadType: {
-            handler(){
+            handler() {
                 this.loadLeads();
             }
         },
         duplication_group_id: {
 
-            handler(){
+            handler() {
                 this.page = 1;
                 this.loadLeads();
             }
         },
-        advanceSearch:{
+        advanceSearch: {
             handler(value) {
-                let params = { ...this.$route.query, ...value }
-                if(isEqual(this.$route.query , value)) return;
+                let params = {...this.$route.query, ...value}
+                if (isEqual(this.$route.query, value)) return;
                 this.$router.push({
                     name: "application.list",
                     query: params,
