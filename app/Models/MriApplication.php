@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\MRI\MriApplicationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,5 +26,10 @@ class MriApplication extends Model
     public function connectionApplication()
     {
         return $this->hasOne(ConnectionApplication::class);
+    }
+
+    protected static function newFactory()
+    {
+        return MriApplicationFactory::new();
     }
 }
