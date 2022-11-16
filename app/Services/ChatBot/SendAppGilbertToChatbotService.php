@@ -16,18 +16,9 @@ class SendAppGilbertToChatbotService
     public function sendApplication()
     {
         $application = ConnectionApplication::findOrFail($this->applicationId);
-        $application->load(['connectionServices', 'identification', 'authorizedPerson']);
-
+        $application->load(['connectionServices.reasons', 'identification', 'authorizedPerson']);
         $sendApplication = new SendApplicationToChatbotAPI();
-        $response = $sendApplication->postApi($application);
-
-//        if ($response){
-//            $application->update([
-//                'is_sent_to_chatbot' => 1
-//            ]);
-//        }
-
-        return $response;
+        return $sendApplication->postApi($application);
     }
 
 }
