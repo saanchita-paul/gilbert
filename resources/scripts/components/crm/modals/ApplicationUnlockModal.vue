@@ -7,6 +7,12 @@
         >
             <v-card color="primary" class="dialogs-section">
                 <v-card-title>
+                    <div class="d-flex align-center back-button" @click="goToApplicationList">
+                        <v-img src="/assets/images/back-icon.png" max-width="25px" class="mr-2" />
+                        <span class="back-title m-0">Back to Application List</span>
+                    </div>
+                </v-card-title>
+                <v-card-title>
                     <div class="d-flex align-center">
                         <v-img src="/assets/images/lock-chatbot.png" max-width="50" class="mr-4" />
                         <p class="title">Chatbot is in charge..</p>
@@ -55,6 +61,9 @@ export default {
         openUnlockConfirmModal() {
             this.$emit('openUnlockConfirmModal');
         },
+        goToApplicationList() {
+            this.$router.push({name:'applications'});
+        }
     }
 }
 </script>
@@ -82,5 +91,14 @@ export default {
 .v-card__actions {
     padding: 0 24px !important;
     justify-content: space-between !important;
+}
+.back-title {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 18px;
+    color: #FFFFFF;
+}
+.back-button {
+    cursor: pointer;
 }
 </style>
