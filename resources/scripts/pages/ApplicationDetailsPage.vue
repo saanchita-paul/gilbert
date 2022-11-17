@@ -76,7 +76,7 @@
                                        @confirmUnlock="unlockApp"></ApplicationUnlockConfirmModal>
         <SendToChatbotConfirmModal v-if="sentToChabotConfirmModal"
                                    :dialog="sentToChabotConfirmModal"
-                                   @continueSendToChatBot="continueSendToChatBot"
+                                   @continueSendToChatBot="lockApp"
                                    @cancelSendToChatBotConfirmModal="cancelSendToChatBotConfirmModal"></SendToChatbotConfirmModal>
 
     </v-container>
@@ -505,6 +505,15 @@ export default {
             }
         },
 
+        async lockApp() {
+            const res = await LeadApplicationService.lockOrUnlockApp(this.leadId, {is_locked: true});
+
+            if (res.success) {
+                this.sentToChabotConfirmModal = false;
+                await this.getIsLocked();
+            }
+        },
+
         async getIsLocked() {
             const res = await LeadApplicationService.isSentToChatbot(this.leadId);
             console.log('isSentToChatBot', res);
@@ -514,10 +523,6 @@ export default {
         cancelSendToChatBotConfirmModal() {
             this.sentToChabotConfirmModal = false;
         },
-        continueSendToChatBot() {
-            console.log('Clicked to continue');
-            this.sentToChabotConfirmModal = false; // TODO
-        }
     },
     watch: {
         powerPlan: {
@@ -555,6 +560,10 @@ export default {
 
 
         await this.getIsLocked();
+
+        this.$eventBus.$on("lock_app_auto_assign", async () => {
+            await this.lockApp();
+        });
     }
 };
 </script>
