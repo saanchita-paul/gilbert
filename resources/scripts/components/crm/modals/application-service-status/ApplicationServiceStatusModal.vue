@@ -31,16 +31,7 @@
                          type="warning"
                          dismissible
                 >
-                    Power <strong>provider</strong> or <strong>plan</strong> is not available!
-                </v-alert>
-
-                <v-alert v-if="isInvalidProviderPlan"
-                         dense
-                         border="left"
-                         type="warning"
-                         dismissible
-                >
-                    Gas <strong>provider</strong> or <strong>plan</strong> is not available!
+                    Please select <strong>retailer and plan</strong> for Power or Gas!
                 </v-alert>
 
                 <v-alert v-if="isNullPowerAndGas"
@@ -49,7 +40,7 @@
                          type="warning"
                          dismissible
                 >
-                    <strong>Power</strong> or <strong>Gas</strong> must be submitted!
+                    Please select utility status for <strong>Power</strong> or <strong>Gas</strong>!
                 </v-alert>
 
                 <v-alert v-if="isAssignedStatus"
@@ -58,7 +49,7 @@
                          type="warning"
                          dismissible
                 >
-                    You need to first <strong>assign</strong> application to further action!
+                    Please <strong>assign</strong> the application first!
                 </v-alert>
 
                 <form @submit.prevent="openConfirmModal" class="mt-n10">
@@ -368,7 +359,7 @@ export default {
         isNullPowerAndGas() {
             return this.formData.application_status === 4 && this.oldStatus.application_status !== 1
                 && ((!this.formData.power_status && !this.formData.gas_status)
-                || (this.formData.power_status === 7 && this.formData.gas_status === 7));
+                    || (this.formData.power_status === 7 && this.formData.gas_status === 7));
         },
         isNullData() {
             return this.formDataStatuses.every(status => this.formData[status] === null || this.formData[status] === '');
@@ -696,23 +687,29 @@ export default {
 .v-dialog > * {
     height: 100% !important;
 }
+
 .v-toolbar__title {
     font-size: 18px !important;
     font-weight: bold !important;
 }
+
 .v-card__title {
     font-size: 16px !important;
 }
+
 .font-weight-bold {
     font-weight: bold !important;
     font-size: 18px !important;
 }
+
 .mb-18 {
     margin-bottom: 18px !important;
 }
->>>.v-text-field__details {
-     margin-bottom: 0 !important;
+
+>>> .v-text-field__details {
+    margin-bottom: 0 !important;
 }
+
 .v-card__title {
     padding: 14px !important;
     font-weight: bold !important;
