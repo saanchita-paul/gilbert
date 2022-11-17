@@ -421,6 +421,15 @@ class ConnectionApplication extends Model
         self::ACCESS_CUSTOMER_CONSULTATION
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($model) {
+            \Log::info('Status updated - ' . $model->status);
+        });
+    }
+
     /**
      * @return BelongsTo
      */
