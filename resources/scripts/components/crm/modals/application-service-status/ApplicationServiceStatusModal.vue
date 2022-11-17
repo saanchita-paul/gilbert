@@ -4,7 +4,7 @@
             v-model="dialog"
             persistent
             scrollable
-            max-width="850"
+            max-width="785"
             transition="dialog-bottom-transition"
         >
             <v-card>
@@ -100,7 +100,7 @@
                                 <v-col :cols="isShowCloseReason? '3' : '4'">
                                     <v-card-title class="text--primary ml-n4 mb-n5">New Status</v-card-title>
                                     <br>
-                                    <div class="text-field margin-bottom-26">
+                                    <div class="text-field mb-18">
                                         <ValidationProvider
                                             name="Application status"
                                             v-slot="{ errors }"
@@ -123,7 +123,7 @@
 
                                     <template v-if="activeConnectionServices.length"
                                               v-for="connection_service in activeConnectionServices">
-                                        <div class="text-field margin-bottom-26"
+                                        <div class="text-field mb-18"
                                              v-if="connection_service === 'power'">
                                             <ValidationProvider
                                                 name="Power status"
@@ -144,7 +144,7 @@
                                             </ValidationProvider>
                                         </div>
 
-                                        <div class="text-field margin-bottom-26"
+                                        <div class="text-field mb-18"
                                              v-else-if="connection_service === 'gas'">
                                             <ValidationProvider
                                                 name="Gas status"
@@ -165,7 +165,7 @@
                                             </ValidationProvider>
                                         </div>
 
-                                        <div class="text-field margin-bottom-26"
+                                        <div class="text-field mb-18"
                                              v-else-if="connection_service === 'water'">
                                             <ValidationProvider
                                                 name="Water status"
@@ -211,7 +211,7 @@
                                 <v-col cols="3" v-if="isShowCloseReason">
                                     <v-card-title class="text--primary ml-n4 mb-n5">Close Reason</v-card-title>
                                     <br>
-                                    <div class="text-field margin-bottom-26">
+                                    <div class="text-field mb-18">
                                         <ValidationProvider
                                             name="Close Reason status"
                                             v-slot="{ errors }"
@@ -233,14 +233,14 @@
                                 </v-col>
 
                                 <v-col cols="12" class="mt-n10">
-                                    <v-card-title class="text--primary mb-n5">
+                                    <v-card-title class="text--primary mb-n5 font-weight-bold">
                                         Status Change Reason*
                                     </v-card-title>
 
                                     <ValidationProvider name="Status reason"
                                                         v-slot="{ errors }">
                                         <v-textarea
-                                            class="pa-3"
+                                            class="pa-3 pr-0"
                                             v-model="formData.status_reason"
                                             :error-messages="errors[0]"
                                             outlined
@@ -257,6 +257,7 @@
                             <v-btn
                                 class="font-weight-bolder"
                                 rounded
+                                large
                                 @click="closeModal"
                                 :disabled="isLoading"
                             >
@@ -265,6 +266,7 @@
                             <v-btn
                                 class="font-weight-bolder"
                                 rounded
+                                large
                                 :loading="isLoading"
                                 color="primary"
                                 type="submit"
@@ -690,11 +692,29 @@ export default {
 </script>
 
 <style scoped>
-.margin-bottom-26 {
-    margin-bottom: 26px;
-}
 
 .v-dialog > * {
     height: 100% !important;
+}
+.v-toolbar__title {
+    font-size: 18px !important;
+    font-weight: bold !important;
+}
+.v-card__title {
+    font-size: 16px !important;
+}
+.font-weight-bold {
+    font-weight: bold !important;
+    font-size: 18px !important;
+}
+.mb-18 {
+    margin-bottom: 18px !important;
+}
+>>>.v-text-field__details {
+     margin-bottom: 0 !important;
+}
+.v-card__title {
+    padding: 14px !important;
+    font-weight: bold !important;
 }
 </style>
