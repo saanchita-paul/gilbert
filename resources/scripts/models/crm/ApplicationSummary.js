@@ -76,6 +76,8 @@ export default class ApplicationSummary {
     is_duplicate = null;
     duplication_group_id = null;
     chatbot_id = null;
+    assigned_to = null;
+    app_close_reason_id = null;
 
     constructor(
         {
@@ -169,7 +171,9 @@ export default class ApplicationSummary {
             duplication_group_id = null,
 
             // email_manually_verified_by = 0,
-            chatbot_id = null
+            chatbot_id = null,
+            assigned_to = null,
+            app_close_reason_id = null,
         }
     ) {
 
@@ -271,6 +275,8 @@ export default class ApplicationSummary {
         this.duplication_group_id = duplication_group_id;
         // this.email_manually_verified_by = email_manually_verified_by
         this.chatbot_id = chatbot_id;
+        this.assigned_to = assigned_to;
+        this.app_close_reason_id = app_close_reason_id;
     }
 
 

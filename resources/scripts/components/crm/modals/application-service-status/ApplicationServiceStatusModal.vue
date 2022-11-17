@@ -34,7 +34,7 @@
                     Please select <strong>retailer and plan</strong> for Power or Gas!
                 </v-alert>
 
-                <v-alert v-if="isNullPowerAndGas"
+                <v-alert v-if="!isAssignedStatus && isNullPowerAndGas"
                          dense
                          border="left"
                          type="warning"
@@ -369,7 +369,7 @@ export default {
         },
         isAssignedStatus() {
             const excludeStatues = [2, 4];
-            return this.oldStatus.application_status === 1 && excludeStatues.includes(this.formData.application_status);
+            return !this.leadSummary.assigned_to && excludeStatues.includes(this.formData.application_status);
         },
         isInvalidData() {
             return this.isNullData
@@ -388,29 +388,19 @@ export default {
     },
     watch: {
         "formData.power_status": function () {
-            if (this.formData.power_status !== this.oldStatus.power_status) {
-                this.isPreviousData = false;
-            }
+            this.isPreviousData = this.formData.power_status === this.oldStatus.power_status;
         },
         "formData.gas_status": function () {
-            if (this.formData.gas_status !== this.oldStatus.gas_status) {
-                this.isPreviousData = false;
-            }
+            this.isPreviousData = this.formData.gas_status === this.oldStatus.gas_status;
         },
         "formData.water_status": function () {
-            if (this.formData.water_status !== this.oldStatus.water_status) {
-                this.isPreviousData = false;
-            }
+            this.isPreviousData = this.formData.water_status === this.oldStatus.water_status;
         },
         "formData.internet_status": function () {
-            if (this.formData.internet_status !== this.oldStatus.internet_status) {
-                this.isPreviousData = false;
-            }
+                this.isPreviousData = this.formData.internet_status === this.oldStatus.internet_status;
         },
         "formData.application_status": function () {
-            if (this.formData.application_status !== this.oldStatus.application_status) {
-                this.isPreviousData = false;
-            }
+            this.isPreviousData = this.formData.application_status === this.oldStatus.application_status;
         },
     },
     methods: {
@@ -418,6 +408,7 @@ export default {
             this.statusDD = await ApplicationServiceStatusChangeService.getAllStatus();
 
             this.formData.application_status = this.leadSummary.status_value;
+            this.formData.closed_reason = this.leadSummary.app_close_reason_id;
 
             // old status
             this.setOldStatus();
