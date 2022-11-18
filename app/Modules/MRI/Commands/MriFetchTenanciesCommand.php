@@ -53,18 +53,22 @@ class MriFetchTenanciesCommand extends Command
         try {
             $tenancyService = new GetTenanciesService();
 
+            $message = '';
             if (empty($afterDate)){
                 $nowDate = Carbon::now()->format('Y-m-d');
                 $tenancyService->setAfterDate($nowDate);
-                dump(sprintf('Fetching data after date %s', $nowDate));
+                $message = sprintf('Fetching data after date %s', $nowDate);
             }
             else if ($afterDate !== 'all') {
                 $tenancyService->setAfterDate($afterDate);
-                dump(sprintf('Fetching data after date %s', $afterDate));
+                $message = sprintf('Fetching data after date %s', $afterDate);
             }
             else {
-                dump('Fetching all data without after date');
+                $message = 'Fetching all data without after date';
             }
+
+            info($message);
+            dump($message);
              
             $tenancyService->run();
         } catch (\Exception $exception) {

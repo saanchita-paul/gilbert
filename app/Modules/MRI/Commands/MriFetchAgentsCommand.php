@@ -52,18 +52,22 @@ class MriFetchAgentsCommand extends Command
         try {
             $fetchAgentService = new GetAgentService();
 
+            $message = '';
+
             if (empty($afterDate)) {
                 $nowDate = Carbon::now()->format('Y-m-d');
                 $fetchAgentService->setAfterDate($nowDate);
-                dump(sprintf('Fetching data after date %s', $nowDate));
+                $message = sprintf('Fetching data after date %s', $nowDate);
             }
             else if ($afterDate !== 'all') {
                 $fetchAgentService->setAfterDate($afterDate);
-                dump(sprintf('Fetching data after date %s', $afterDate));
+                $message = sprintf('Fetching data after date %s', $afterDate);
             }
             else {
-                dump('Fetching all data without after date');
+                $message = 'Fetching all data without after date';
             } 
+            info($message);
+            dump($message);
 
             $fetchAgentService->run();
         } catch (\Exception $exception) {

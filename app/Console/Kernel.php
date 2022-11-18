@@ -89,8 +89,8 @@ class Kernel extends ConsoleKernel
     }
 
     private function runMri(Schedule $schedule){
-        $schedule->command('mri:fetch_agent')->timezone(11)->hourlyAt(10);
-        $schedule->command('mri:fetch_tenancies')->timezone(11)->everyFifteenMinutes();
+        $schedule->command('mri:fetch_agent')->hourlyAt(10);
+        $schedule->command('mri:fetch_tenancies')->everyFifteenMinutes();
     }
 
     /**

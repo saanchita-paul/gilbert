@@ -74,7 +74,7 @@ class CheckFuelAPI extends BaseOriginAPI
         $fuelOffers = [];    
         foreach($responseData['results'] as $fuel){
             if(!empty($this->divisionID) && $fuel['DivisionID'] == $this->divisionID && !in_array($fuel['EligibilityStatusID'], self::ELIGIBLE_STATUSES)){
-                throw new \Exception(sprintf('Origin GET:%s - FAILED [%s](%s is not available for the address due to %s)', self::METHODNAME, $fuel['EligibilityStatusID'], self::MAP_FUEL_TYPE[$this->divisionID], $fuel['errorReason']), self::CODE_REJECT);
+                throw new \Exception(sprintf('Origin GET:%s - FAILED [%s](%s is not available for the address due to %s)', self::METHODNAME, $fuel['EligibilityStatusID'], self::MAP_FUEL_TYPE[$this->divisionID], $fuel['Reason']), self::CODE_REJECT);
             }
             $fuelOffers[] = [
                 'fuelType' => self::MAP_FUEL_TYPE[$fuel['DivisionID']] ?? 'Unknown',
