@@ -225,7 +225,7 @@
 
                                 <v-col cols="12" class="mt-n10">
                                     <v-card-title class="text--primary mb-n5 font-weight-bold">
-                                        Status Change Reason*
+                                        Status Change Reason
                                     </v-card-title>
 
                                     <ValidationProvider name="Status reason"
