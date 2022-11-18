@@ -17,7 +17,7 @@ class NotifyBadAgentMailService
         if (!$isNotExist) {
             $agentProf = $application->createdBy;
             $agentUser = $agentProf->user;
-            $isNoPassword = empty($agentUser->password);
+            // $isNoPassword = empty($agentUser->password);
             $isNotActive = !$agentUser->is_active;
         }
 
