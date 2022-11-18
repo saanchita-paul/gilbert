@@ -19,7 +19,7 @@ use App\Console\Commands\MRIOfficeCommand;
 use MRI\Commands\MriFetchTenanciesCommand;
 use MRI\Commands\MriFetchAgentsCommand;
 
-
+use Carbon\Carbon;
 class Kernel extends ConsoleKernel
 {
     /**
@@ -68,6 +68,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('fetch:get-tsa-lead-id')->everyTenMinutes();
 
         $schedule->command('send-email-mri-office')->twiceDaily();
+
+        $this->runMri($schedule);
     }
 
     private function registerWaterStatusUpdate(Schedule $schedule)
@@ -84,6 +86,11 @@ class Kernel extends ConsoleKernel
     private function shouldIgniteRun(){
         $igniteStart = config('ignite.IGNITE_IS_ACTIVE') ?? false;
         return $igniteStart;
+    }
+
+    private function runMri(Schedule $schedule){
+        $schedule->command('mri:fetch_agent')->timezone(11)->hourlyAt(10);
+        $schedule->command('mri:fetch_tenancies')->timezone(11)->everyFifteenMinutes();
     }
 
     /**

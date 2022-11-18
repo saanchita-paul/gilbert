@@ -313,6 +313,7 @@ class ConnectionApplication extends Model
     const SOURCE_PROPERTY_ME = 5;
     const SOURCE_HOOD_LEAD = 10;
     const SOURCE_T_APP = 11;
+    const SOURCE_MRI = 12;
 
     const EMAIL_BILLING_EMAIL = 1;
     const EMAIL_BILLING_PAPER = 2;
@@ -362,6 +363,7 @@ class ConnectionApplication extends Model
         'property_me' => self::SOURCE_PROPERTY_ME,
         'hood_ai' => self::SOURCE_HOOD_LEAD,
         't_app' => self::SOURCE_T_APP,
+        'mri' => self::SOURCE_MRI,
     ];
 
     const PLAN_TYPE_MAPPER = [
@@ -386,6 +388,7 @@ class ConnectionApplication extends Model
         self::SOURCE_PROPERTY_ME => 'Propertyme',
         self::SOURCE_HOOD_LEAD => "Hood.ai",
         self::SOURCE_T_APP => "tApp",
+        self::SOURCE_MRI => "MRI",
     ];
 
     const PLAN_TYPE_REVERSE_MAPPER = [
@@ -590,6 +593,7 @@ class ConnectionApplication extends Model
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agency_name,
             ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agency_name,
             ConnectionApplication::SOURCE_T_APP => $this->tApp?->agency_name,
+            ConnectionApplication::SOURCE_MRI => $this->office?->name,
             default => ''
         };
     }
@@ -603,6 +607,7 @@ class ConnectionApplication extends Model
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agent_name,
             ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agent_name,
             ConnectionApplication::SOURCE_T_APP => $this->createdBy?->first_name.' '. $this->createdBy?->last_name,
+            ConnectionApplication::SOURCE_MRI => $this->createdBy?->first_name.' '. $this->createdBy?->last_name,
             default => ''
         };
     }

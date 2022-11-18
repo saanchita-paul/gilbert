@@ -35,10 +35,13 @@ class GetAgentService
      */
     public HandleExceptionService $exceptionHandler;
 
+    /**
+     * DEFAULT GET ALL DATA WITHOUT AFTER DATE
+     */
     public function __construct()
     {
         $this->setURL();
-        $this->setAfterDate(Carbon::now()->format('Y-m-d'));
+        // $this->setAfterDate(Carbon::now()->format('Y-m-d'));
         $this->exceptionHandler = new HandleExceptionService(self::class);
     }
 
@@ -94,9 +97,11 @@ class GetAgentService
             'headers' => $headers,
         ]);
         
-        $query = [
-            'lastModifiedOnOrAfter' => $this->afterDate
-        ];
+        $query = [];
+
+        if (isset($this->afterDate) && !empty($this->afterDate)){
+            $query['lastModifiedOnOrAfter'] = $this->afterDate;
+        }
 
         $options = [
             'query' => $query
@@ -112,12 +117,20 @@ class GetAgentService
     private function saveAgent($officeId, $agentsData)
     {
         $updatedAgentIds = [];
+        
+        $agentsId = array_map(function($agentData){
+            return $agentData['id'];
+        }, $agentsData);
+
+        $existedAgentsId = MriAgent::whereIn('agent_id', $agentsId)->pluck('agent_id')->toArray();
+
+        $agentsData = array_filter($agentsData, function($agentData) use ($existedAgentsId){
+            return !in_array($agentData['id'], $existedAgentsId) && !$agentData['deleted'];
+        });
 
         foreach ($agentsData as $agentData) {
             try {
-                $mriAgent = MriAgent::where('agent_id', $agentData['id'])->first();
-                if (!$mriAgent)
-                    $mriAgent = new MriAgent();
+                $mriAgent = new MriAgent();
                 
                 $mriAgent->agent_id = $agentData['id'];
                 $mriAgent->first_name = $agentData['first_name'];
@@ -138,7 +151,7 @@ class GetAgentService
         }
         
         if (!empty($updatedAgentIds)){
-            $successMessage = sprintf('Updated %s mri agents', count($updatedAgentIds));
+            $successMessage = sprintf('Created %s mri agents', count($updatedAgentIds));
             dump($successMessage);
             info($successMessage, ['mri_agent_ids' => $updatedAgentIds]);
         }

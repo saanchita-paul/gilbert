@@ -11,6 +11,8 @@ use App\Models\User;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
 
+use App\Services\NotifyBadAgentMailService;
+
 class MapApplicationService
 {
     /**
@@ -33,18 +35,31 @@ class MapApplicationService
             try {
                 $mapApp = $this->mapNewApplication($mriApp);
                 $conApp = ConnectionApplication::create($mapApp);
+                $firstMriAgent = $conApp->createdBy?->user?->email;
+                if (empty($firstMriAgent)){
+                    $firstMriAgent = $conApp->mriApplication?->mriProperty?->mriAgents()?->first()?->email_address; 
+                }
+                NotifyBadAgentMailService::check(
+                    $conApp, 
+                    'MRI', 
+                    $conApp->agency->name ?? '', 
+                    $conApp->office->name ?? '', 
+                    $firstMriAgent ?? ''
+                );
+                $createdApplications[] = $conApp;
                 if (!empty($mriApp->authorized_first_name)) {
                     $authorizedPerson = $this->mapNewAuthorizedPerson($conApp->id, $mriApp);
                     $conApp->authorizedPerson()->create($authorizedPerson);
                 }
     
-                $createdApplications[] = $conApp;
             } catch (\Exception $e) {
                 $this->exceptionHandler->addException($e);
             }
         }
 
-        dump(sprintf('Created %s applications from MRI', strval(count($createdApplications))));
+        if (count($createdApplications) > 0) {
+            dump(sprintf('Created %s applications from MRI', strval(count($createdApplications))));
+        }
 
         if ($this->exceptionHandler->hasExceptions()){
             $this->exceptionHandler->run();
@@ -60,16 +75,18 @@ class MapApplicationService
     {
         $mriOffice = $mriApp->mriOffice;
         $mriProperty = $mriApp->mriProperty;
-        $firstMriAgent = $mriProperty->mriAgents()->first();
-        
+        $firstMriAgent = $mriProperty->mriAgents()->whereNotNull('agent_profile_id')->first();
         $newConnectionApp = [];
 
+        $newConnectionApp['source'] = ConnectionApplication::SOURCE_MRI;
+        $newConnectionApp['status'] = ConnectionApplication::STATUS_UNASSIGNED;
         $newConnectionApp['mri_application_id'] = $mriApp->id;
+        $newConnectionApp['tenancy_type'] = ConnectionApplication::TENANCY_TYPE_RENTER;
 
         if (in_array($mriApp->title, ConnectionApplication::AVAILABLE_USER_TITLES)) $newConnectionApp['title'] = $mriApp->title; 
         $newConnectionApp['office_id'] = $mriOffice->office_id; //
-        $newConnectionApp['agency_id'] = $firstMriAgent->agentProfile->agency_id; //
-        $newConnectionApp['created_by'] = $firstMriAgent->agentProfile->user->id ?? null;
+        $newConnectionApp['agency_id'] = $mriOffice->office->agency_id; //
+        if($firstMriAgent) $newConnectionApp['created_by'] = $firstMriAgent->agent_profile_id ?? null;
         $newConnectionApp['first_name'] = $mriApp->first_name;
         $newConnectionApp['last_name'] = $mriApp->last_name;
         $newConnectionApp['email'] = $mriApp->email_address;

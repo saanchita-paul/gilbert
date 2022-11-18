@@ -4,6 +4,7 @@ namespace Tests\Feature\MRI;
 
 use App\Models\MriAgent;
 use App\Models\AgentProfile;
+use App\Models\MriApplication;
 use MRI\Services\MapApplicationService;
 use App\Models\User;
 use App\Models\Office;
@@ -36,10 +37,17 @@ class DataMappingTest extends TestCase
     public function test_data_mapping_application()
     {
         $this->seed(MRITestDataMappingSeeder::class);
-
+        $testMriApplication = MriApplication::orderBy('id', 'desc')->first();
+        
+        $testService = new MapAgentService();
+        $testService->run();
         $testService = new MapApplicationService();
         $testService->run();
+
         $this->assertTrue(!$testService->exceptionHandler->hasExceptions());
+        $this->assertDatabaseHas('connection_applications', [
+            'mri_application_id' => $testMriApplication->id,
+        ]);
     }
     
 }

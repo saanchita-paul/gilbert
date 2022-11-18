@@ -7,7 +7,11 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
-use MRI\Jobs\MriFetchTenanciesJob;
+use MRI\Services\GetTenanciesService;
+use MRI\Services\GetPropertyService;
+use MRI\Services\MapApplicationService;
+
+use Carbon\Carbon;
 
 class MriFetchTenanciesCommand extends Command
 {
@@ -45,7 +49,42 @@ class MriFetchTenanciesCommand extends Command
     {
         $afterDate = $this->argument('afterDate') ?? '';
         $this->line('MRI fetch tenancies command started successfully!');
-        MriFetchTenanciesJob::dispatch($afterDate);
+
+        try {
+            $tenancyService = new GetTenanciesService();
+
+            if (empty($afterDate)){
+                $nowDate = Carbon::now()->format('Y-m-d');
+                $tenancyService->setAfterDate($nowDate);
+                dump(sprintf('Fetching data after date %s', $nowDate));
+            }
+            else if ($afterDate !== 'all') {
+                $tenancyService->setAfterDate($afterDate);
+                dump(sprintf('Fetching data after date %s', $afterDate));
+            }
+            else {
+                dump('Fetching all data without after date');
+            }
+             
+            $tenancyService->run();
+        } catch (\Exception $exception) {
+            dump($exception->getMessage());
+        }
+
+        try {
+            $propertyService = new GetPropertyService();
+            $propertyService->run();
+        } catch (\Exception $exception) {
+            dump($exception->getMessage());
+        }
+
+        try {
+            $testService = new MapApplicationService();
+            $testService->run();
+        } catch (\Exception $exception) {
+            dump($exception->getMessage());
+        }
+
         $this->line('MRI fetch tenancies command finished successfully!');
     }
 }

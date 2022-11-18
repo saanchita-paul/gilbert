@@ -39,4 +39,9 @@ class MriOffice extends Model
     {
         return $this->hasMany(MriApplication::class);
     }
+
+    public function office()
+    {
+        return $this->belongsTo(Office::class);
+    }
 }

@@ -30,4 +30,9 @@ class MriAgent extends Model
         return MriAgentFactory::new();
     }
 
+    public function getAgentNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
 }

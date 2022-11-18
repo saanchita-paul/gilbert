@@ -180,7 +180,16 @@ export default {
                     value: "property_me",
                     icon: "/assets/images/icons/company/propertyMe.png",
                 },
-                {text: 'TApp', value: 't_app', icon: '/assets/images/icons/company/tapp.png'},
+                {
+                    text: 'TApp', 
+                    value: 't_app', 
+                    icon: '/assets/images/icons/company/tapp.png'
+                },
+                {
+                    text: 'MRI', 
+                    value: 'mri', 
+                    icon: '/assets/images/icons/company/mri.png'
+                }, 
 
             ],
             tanancyTypeOptions: [

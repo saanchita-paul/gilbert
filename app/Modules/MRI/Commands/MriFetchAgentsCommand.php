@@ -7,7 +7,10 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
-use MRI\Jobs\MriFetchAgentsJob;
+use MRI\Services\GetAgentService;
+use MRI\Services\MapAgentService;
+
+use Carbon\Carbon;
 
 class MriFetchAgentsCommand extends Command
 {
@@ -45,7 +48,34 @@ class MriFetchAgentsCommand extends Command
     {
         $afterDate = $this->argument('afterDate') ?? '';
         $this->line('MRI fetch agents command started successfully!');
-        MriFetchAgentsJob::dispatch($afterDate);
+
+        try {
+            $fetchAgentService = new GetAgentService();
+
+            if (empty($afterDate)) {
+                $nowDate = Carbon::now()->format('Y-m-d');
+                $fetchAgentService->setAfterDate($nowDate);
+                dump(sprintf('Fetching data after date %s', $nowDate));
+            }
+            else if ($afterDate !== 'all') {
+                $fetchAgentService->setAfterDate($afterDate);
+                dump(sprintf('Fetching data after date %s', $afterDate));
+            }
+            else {
+                dump('Fetching all data without after date');
+            } 
+
+            $fetchAgentService->run();
+        } catch (\Exception $exception) {
+            dump($exception->getMessage());
+        }
+        
+        try {
+            $mapAgentService = new MapAgentService();
+            $mapAgentService->run();
+        } catch (\Exception $exception) {
+            dump($exception->getMessage());
+        }
         $this->line('MRI fetch agents command finished successfully!');
     }
 }

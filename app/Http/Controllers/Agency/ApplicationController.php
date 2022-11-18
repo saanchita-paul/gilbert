@@ -496,7 +496,7 @@ class ApplicationController extends Controller
     {
         try {
             $service = new GBGEmailValidationService();
-            $result = $service->validateEmail($request->email);
+            $result = !empty($request->email) ? $service->validateEmail($request->email) : false;
 
             $res = ['success' => true, 'data' => $result];
 

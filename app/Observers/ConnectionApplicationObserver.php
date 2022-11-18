@@ -21,8 +21,9 @@ class ConnectionApplicationObserver
     {
         TriageFlagService::setTriageFlag($connectionApplication->id);
 
+        $checkEmail = !empty($connectionApplication->email) ? GBGEmailValidationService::validateEmail($connectionApplication->email) : false;
         $connectionApplication->update([
-            'is_email_validate' => GBGEmailValidationService::validateEmail($connectionApplication->email),
+            'is_email_validate' => $checkEmail,
         ]);
 
     }

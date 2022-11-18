@@ -20,6 +20,7 @@ class HandleExceptionService
 
     public function addException($exception, $data = [])
     {
+        $data['trace'] = $exception->getTraceAsString();
         if (str_contains(get_class($exception), 'GuzzleHttp')) {
             if ($exception->hasResponse()) {
                 $message = Psr7\Message::toString($exception->getResponse());
@@ -51,7 +52,10 @@ class HandleExceptionService
             return;
         };
 
-        Mail::to(config('mri.to_mail_address'))->queue(new NotifyFetchFailMail($this->fileName, $this->exceptionData));
+        $emails = explode(',', config('mri.support_emails'));
+        foreach ($emails as $recipient) {
+            Mail::to($recipient)->queue(new NotifyFetchFailMail($this->fileName, $this->exceptionData));
+        }
         dump('Error in '. $this->fileName);
         foreach($this->exceptionData as $e){
             dump($e['message']);

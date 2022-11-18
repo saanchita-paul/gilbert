@@ -37,10 +37,13 @@ class GetTenanciesService
      */
     public HandleExceptionService $exceptionHandler;
 
+    /**
+     * DEFAULT GET ALL DATA WITHOUT AFTER DATE
+     */
     public function __construct()
     {
         $this->setURL();
-        $this->setAfterDate(Carbon::now()->format('Y-m-d'));
+        // $this->setAfterDate(Carbon::now()->format('Y-m-d'));
         $this->exceptionHandler = new HandleExceptionService(self::class);
     }
 
@@ -79,9 +82,12 @@ class GetTenanciesService
                 ]);
         
                 $query = [
-                    'lastModifiedOnOrAfter' => $this->afterDate,
                     'managementType' => self::MANAGEMENT_TYPE,
                 ];
+
+                if (isset($this->afterDate) && !empty($this->afterDate)){
+                    $query['lastModifiedOnOrAfter'] = $this->afterDate;
+                }
         
                 $options = [
                     'query' => $query
@@ -114,13 +120,19 @@ class GetTenanciesService
     {
         $updatedTenancyIds = []; 
 
+        $tenanciesId = array_map(function($tenancy){
+            return $tenancy['id'];
+        }, $tenanciesData);
+
+        $existedTenanciesId = MriApplication::whereIn('tenancy_id', $tenanciesId)->pluck('tenancy_id')->toArray();
+
+        $tenanciesData = array_filter($tenanciesData, function($tenancy) use ($existedTenanciesId){
+            return !in_array($tenancy['id'], $existedTenanciesId) && !$tenancy['deleted'] && !$tenancy['archived']; 
+        });
+
         foreach ($tenanciesData as $tenancy) {
             try {
-                $mriApp = MriApplication::where('tenancy_id', $tenancy['id'])->first();
-
-                if (!$mriApp) {
-                    $mriApp = new MriApplication();
-                }
+                $mriApp = new MriApplication();
 
                 $mriApp->mri_office_id = $officeId;
                 $mriApp->tenancy_id = $tenancy['id'];
@@ -141,6 +153,10 @@ class GetTenanciesService
                     $mriApp->vacate_date = Carbon::parse($tenancy['vacate_date']);
                 
                 foreach ($tenancy['contacts'] as $contact){
+                    if (!empty($mriApp->authorized_first_name)) {
+                        break;
+                    }
+
                     if (count($tenancy['contacts']) == 1 || $contact['is_primary']){
                         $mriApp->title = $contact['title'];
                         $mriApp->first_name = $contact['first_name'];
@@ -148,6 +164,7 @@ class GetTenanciesService
                         $mriApp->email_address = $contact['email_address'];
                         $mriApp->mobile_phone_number = $contact['mobile_phone_number'];
                         $mriApp->home_number = $contact['phone_number'];
+                        $mriApp->is_marketing = !$contact['no_marketing'];
                     }
                     else {
                         $mriApp->authorized_title = $contact['title'];
@@ -174,7 +191,7 @@ class GetTenanciesService
         }
 
         if (!empty($updatedTenancyIds)){
-            $message = sprintf('Updated %s mri applications', count($updatedTenancyIds));
+            $message = sprintf('Created %s mri applications', count($updatedTenancyIds));
             dump($message);
             info($message, ['mri_application_ids' => $updatedTenancyIds]);
         }
