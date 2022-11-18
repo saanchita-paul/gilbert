@@ -42,7 +42,38 @@ class ApplicationLockUnlockService
             $this->applicaiton->update(['is_locked' => $request->get('is_locked')]);
         } else {
             \Log::error(json_encode($response->body()));
-            throw new \Exception('Send to Chatbot is not successful');
+            throw new \Exception('Lock/unlock unsuccessful.');
         }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function closeOrEscalatedChatbot(): bool
+    {
+        if ($this->applicaiton->status != 8 && $this->applicaiton->status != 3) {
+            return false;
+        }
+
+        $data = [
+            'is_closed' => false,
+            'is_escalated' => true,
+        ];
+        if ($this->applicaiton->status == 8) {
+            $data = [
+                'is_closed' => true,
+                'is_escalated' => false,
+            ];
+        }
+
+        $url = config('bot.root_url') . '/g2cb/api/applications/' .
+            $this->applicaiton->chatbot_id . '/closed-or-escalated';
+        $response = Http::post($url, $data);
+
+        if ($response->status() != 200) {
+            \Log::error(json_encode($response->body()));
+            throw new \Exception('Close or escalated unsuccessful.');
+        }
+        return true;
     }
 }

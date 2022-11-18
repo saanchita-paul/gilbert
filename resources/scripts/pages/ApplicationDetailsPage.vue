@@ -70,7 +70,8 @@
                             :duplicateGroupId="leadSummary.duplication_group_id"></DuplicateLeadModal>
 
         <ApplicationUnlockModal v-if="isChatBotApplication" :dialog="isChatBotApplication"
-                                @openUnlockConfirmModal="openUnlockConfirmModal"></ApplicationUnlockModal>
+                                @openUnlockConfirmModal="openUnlockConfirmModal"
+                                @escalate="eacalate" @closeApp="closeApplicationWithReason"></ApplicationUnlockModal>
         <ApplicationUnlockConfirmModal v-if="showUnlockConfirmModal" :dialog="showUnlockConfirmModal"
                                        @closeUnlockConfirmModal="closeUnlockConfirmModal"
                                        @confirmUnlock="unlockApp"></ApplicationUnlockConfirmModal>

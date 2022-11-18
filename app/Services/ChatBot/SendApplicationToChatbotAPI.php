@@ -34,10 +34,8 @@ class SendApplicationToChatbotAPI
             $response->throw();
 
             return json_decode($response->body(), true);
-
         } catch (\Exception $exception) {
             \Log::error('Exception Message', [$exception->getMessage()]);
         }
-
     }
 }

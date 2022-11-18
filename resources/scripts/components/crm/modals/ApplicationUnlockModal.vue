@@ -8,35 +8,38 @@
             <v-card color="primary" class="dialogs-section">
                 <v-card-title>
                     <div class="d-flex align-center back-button" @click="goToApplicationList">
-                        <v-img src="/assets/images/back-icon.png" max-width="25px" class="mr-2" />
+                        <v-img src="/assets/images/back-icon.png" max-width="25px" class="mr-2"/>
                         <span class="back-title m-0">Back to Application List</span>
                     </div>
                 </v-card-title>
                 <v-card-title>
                     <div class="d-flex align-center">
-                        <v-img src="/assets/images/lock-chatbot.png" max-width="50" class="mr-4" />
+                        <v-img src="/assets/images/lock-chatbot.png" max-width="50" class="mr-4"/>
                         <p class="title">Chatbot is in charge..</p>
                     </div>
                 </v-card-title>
                 <v-card-text class="mt-4">
                     <div class="white--text font-size-14">
                         <p>Application is locked because it is being handled by our chatbot. <br>
-                            Click the <span class="font-weight-bolder">"Unlock Application"</span> button below to manually process this application.</p>
-                        <p><span class="font-weight-bolder">Pro Tip: </span> Unlocking will assign this application to this role <span class="font-weight-bolder">"Unlocked Chatbot"</span></p>
+                            Click the <span class="font-weight-bolder">"Unlock Application"</span> button below to
+                            manually process this application.</p>
+                        <p><span class="font-weight-bolder">Pro Tip: </span> Unlocking will assign this application to
+                            this role <span class="font-weight-bolder">"Unlocked Chatbot"</span></p>
                     </div>
                 </v-card-text>
                 <v-card-actions>
                     <div>
-                        <v-btn border>
-                           Escalate
+                        <v-btn border @click.prevent="escalate">
+                            Escalate
                         </v-btn>
-                        <v-btn border>
+                        <v-btn border @click.prevent="closeApp">
                             Close Application
                         </v-btn>
                     </div>
                     <div>
                         <v-btn @click="openUnlockConfirmModal" border>
-                            Unlock Application <v-icon class="pl-3">mdi-lock-open</v-icon>
+                            Unlock Application
+                            <v-icon class="pl-3">mdi-lock-open</v-icon>
                         </v-btn>
                     </div>
                 </v-card-actions>
@@ -48,21 +51,26 @@
 <script>
 export default {
     name: "ApplicationUnlockModal",
-    props:{
+    props: {
         dialog: {
             require: true,
         },
     },
     data() {
-        return {
-        }
+        return {}
     },
     methods: {
         openUnlockConfirmModal() {
             this.$emit('openUnlockConfirmModal');
         },
         goToApplicationList() {
-            this.$router.push({name:'applications'});
+            this.$router.push({name: 'applications'});
+        },
+        escalate() {
+            this.$emit('escalate');
+        },
+        closeApp() {
+            this.$emit('closeApp');
         }
     }
 }
@@ -73,31 +81,38 @@ export default {
     align-items: end !important;
     justify-content: end !important;
 }
+
 .dialogs-section {
     padding: 20px;
 }
+
 .title {
     font-weight: 700;
     font-size: 18px;
     line-height: 23px;
     color: #FFFFFF;
 }
+
 .font-size-14 {
     font-size: 14px;
 }
+
 .font-weight-bolder {
     font-weight: 700;
 }
+
 .v-card__actions {
     padding: 0 24px !important;
     justify-content: space-between !important;
 }
+
 .back-title {
     font-weight: 700;
     font-size: 14px;
     line-height: 18px;
     color: #FFFFFF;
 }
+
 .back-button {
     cursor: pointer;
 }

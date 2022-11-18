@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\ConnectionApplicationStatusChangeEvent;
 use App\Events\NotifyAgentAfterLeadCreation;
 use App\Listeners\Agency\CreatePlanNoteListener;
+use App\Listeners\ConnectionApplicationClosedOrEscalatedListener;
 use App\Listeners\NotifyAgentAfterLeadCreationListener;
 use App\Listeners\Agency\EnergySubmitListener;
 use App\Listeners\SumoSubmitListener;
@@ -58,6 +60,10 @@ class EventServiceProvider extends ServiceProvider
         ],
         NotifyAgentAfterLeadCreation::class => [
             NotifyAgentAfterLeadCreationListener::class,
+        ],
+
+        ConnectionApplicationStatusChangeEvent::class => [
+            ConnectionApplicationClosedOrEscalatedListener::class,
         ],
 
 

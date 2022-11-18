@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\ConnectionApplicationStatusChangeEvent;
 use ExternalLead\Models\TApp;
 use Foxie\Models\SugerLead;
 use Ignite\Models\IgniteLead;
@@ -426,7 +427,10 @@ class ConnectionApplication extends Model
         parent::boot();
 
         static::updated(function ($model) {
-            \Log::info('Status updated - ' . $model->status);
+            if ($model->chatbot_id && $model->isDirty('status')) {
+                \Log::info('Lead status changed!');
+                event(new ConnectionApplicationStatusChangeEvent($model->id));
+            }
         });
     }
 
