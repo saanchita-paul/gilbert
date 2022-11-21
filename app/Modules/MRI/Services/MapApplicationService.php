@@ -119,7 +119,7 @@ class MapApplicationService
         $newAuthorizedPerson['first_name'] = $mriApp->authorized_first_name;
         $newAuthorizedPerson['last_name'] = $mriApp->authorized_last_name;
         $newAuthorizedPerson['email'] = $mriApp->authorized_email_address;
-        $newAuthorizedPerson['phone'] = $mriApp->mobile_phone_number ?? ($mriApp->home_number ?? null);
+        $newAuthorizedPerson['phone'] = $mriApp->authorized_mobile_phone_number ?? ($mriApp->authorized_home_number ?? null);
         $newAuthorizedPerson['connection_application_id'] = $connection_application_id;
 
         return $newAuthorizedPerson;

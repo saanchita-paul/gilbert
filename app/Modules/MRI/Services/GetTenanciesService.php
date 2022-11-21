@@ -153,7 +153,7 @@ class GetTenanciesService
                     $mriApp->vacate_date = Carbon::parse($tenancy['vacate_date']);
                 
                 foreach ($tenancy['contacts'] as $contact){
-                    if (!empty($mriApp->authorized_first_name)) {
+                    if (!empty($mriApp->authorized_first_name) && !empty($mriApp->first_name)) {
                         break;
                     }
 
