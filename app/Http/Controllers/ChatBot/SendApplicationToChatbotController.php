@@ -10,11 +10,12 @@ use Illuminate\Http\Request;
 
 class SendApplicationToChatbotController extends Controller
 {
-    public function sendApplication( int $applicationId)
+    public function sendApplication(int $applicationId)
     {
         try {
             $service = new SendAppGilbertToChatbotService($applicationId);
-            return new JsonResponse($service->sendApplication());
+            $service->sendApplication();
+            return $this->sendSuccessResponse('success');
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }
