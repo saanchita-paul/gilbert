@@ -11,6 +11,7 @@ use App\Http\Requests\Agency\ProviderRequest;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationResource;
 use App\Http\Resources\Agency\DuplicationApplicationResource;
+use App\Jobs\AutoAssignAppToChatbotJob;
 use App\Jobs\GilbertToChatbotJob;
 use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
@@ -94,14 +95,10 @@ class ApplicationController extends Controller
             $application = $service->createApplication($request->toArray(), $user);
 
             // Auto assign application to chatbot
-            $autoAssignService = new AutoAssignApplicationService();
-            $autoAssignService->assignApplication($application);
+            AutoAssignAppToChatbotJob::dispatch($application);
 
             CreateApplicationEvent::dispatch($application->id);
             NotifyAgentAfterLeadCreation::dispatch($application->id);
-
-            // Update Hubspot Contact auto assign
-            UpdateHubspotContactJob::dispatch($application->id);
 
             return ApplicationResource::make($application);
         } catch (\Exception $exception) {
