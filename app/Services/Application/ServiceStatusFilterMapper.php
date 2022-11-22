@@ -55,6 +55,17 @@ class ServiceStatusFilterMapper
         self::STATUS_ASSIGNED => [
             self::STATUS_EA_PROCESSING
         ],
+        self::STATUS_UNASSIGNED => [
+            self::STATUS_EA_PROCESSING
+        ],
+        self::STATUS_ESCALATED => [
+            self::STATUS_SUBMITTED,
+            self::STATUS_ENERGY_SUBMIT,
+            self::AC_MANUAL_PROCESSING,
+            self::STATUS_ACCEPTED,
+            self::STATUS_REJECTED,
+            self::STATUS_EA_PROCESSING,
+        ],
         self::STATUS_SUBMITTED => [
             self::STATUS_SUBMITTED,
             self::STATUS_ENERGY_SUBMIT,
@@ -79,38 +90,102 @@ class ServiceStatusFilterMapper
             self::STATUS_REJECTED,
             self::STATUS_EA_PROCESSING
         ],
-        self::STATUS_ESCALATED => [
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_ACCEPTED,
-            self::STATUS_REJECTED,
-            self::STATUS_EA_PROCESSING
-        ],
         self::STATUS_CLOSED => [
             self::STATUS_SUBMITTED,
             self::STATUS_ENERGY_SUBMIT,
             self::AC_MANUAL_PROCESSING,
             self::STATUS_ACCEPTED,
             self::STATUS_REJECTED,
-            self::STATUS_EA_PROCESSING
+            self::STATUS_EA_PROCESSING,
         ],
     ];
 
     public const WATER_STATUSES = [
-        self::STATUS_SUBMITTED,
-        self::STATUS_ENERGY_SUBMIT,
-        self::STATUS_ACCEPTED,
-        self::STATUS_CANT_CONNECT,
-        self::AC_MANUAL_PROCESSING
+        self::STATUS_ASSIGNED => [
+            self::STATUS_EA_PROCESSING
+        ],
+        self::STATUS_UNASSIGNED => [
+            self::STATUS_EA_PROCESSING
+        ],
+        self::STATUS_ESCALATED => [
+            self::STATUS_EA_PROCESSING
+        ],
+        self::STATUS_SUBMITTED => [
+            self::STATUS_SUBMITTED,
+            self::STATUS_ENERGY_SUBMIT,
+            self::STATUS_ACCEPTED,
+            self::STATUS_CANT_CONNECT,
+            self::AC_MANUAL_PROCESSING,
+            self::STATUS_EA_PROCESSING
+        ],
+        self::STATUS_ACCEPTED => [
+            self::STATUS_SUBMITTED,
+            self::STATUS_ENERGY_SUBMIT,
+            self::STATUS_ACCEPTED,
+            self::STATUS_CANT_CONNECT,
+            self::AC_MANUAL_PROCESSING,
+            self::STATUS_EA_PROCESSING
+        ],
+        self::STATUS_REJECTED => [
+            self::STATUS_SUBMITTED,
+            self::STATUS_ENERGY_SUBMIT,
+            self::STATUS_ACCEPTED,
+            self::STATUS_CANT_CONNECT,
+            self::AC_MANUAL_PROCESSING,
+            self::STATUS_EA_PROCESSING
+        ],
+        self::STATUS_CLOSED => [
+            self::STATUS_SUBMITTED,
+            self::STATUS_ENERGY_SUBMIT,
+            self::STATUS_ACCEPTED,
+            self::STATUS_CANT_CONNECT,
+            self::AC_MANUAL_PROCESSING,
+            self::STATUS_EA_PROCESSING
+        ],
     ];
 
     public const INTERNET_STATUSES = [
-        self::STATUS_ENERGY_SUBMIT,
-        self::STATUS_ACCEPTED,
-        self::STATUS_REJECTED,
-        self::AC_MANUAL_PROCESSING,
-        self::STATUS_EA_PROCESSING
+        self::STATUS_ASSIGNED => [
+            self::STATUS_EA_PROCESSING
+        ],
+        self::STATUS_UNASSIGNED => [
+            self::STATUS_EA_PROCESSING
+        ],
+        self::STATUS_ESCALATED => [
+            self::STATUS_EA_PROCESSING
+        ],
+        self::STATUS_SUBMITTED => [
+            self::STATUS_SUBMITTED,
+            self::STATUS_ENERGY_SUBMIT,
+            self::STATUS_ACCEPTED,
+            self::STATUS_CANT_CONNECT,
+            self::AC_MANUAL_PROCESSING,
+            self::STATUS_EA_PROCESSING
+        ],
+        self::STATUS_ACCEPTED => [
+            self::STATUS_SUBMITTED,
+            self::STATUS_ENERGY_SUBMIT,
+            self::STATUS_ACCEPTED,
+            self::STATUS_CANT_CONNECT,
+            self::AC_MANUAL_PROCESSING,
+            self::STATUS_EA_PROCESSING
+        ],
+        self::STATUS_REJECTED => [
+            self::STATUS_SUBMITTED,
+            self::STATUS_ENERGY_SUBMIT,
+            self::STATUS_ACCEPTED,
+            self::STATUS_CANT_CONNECT,
+            self::AC_MANUAL_PROCESSING,
+            self::STATUS_EA_PROCESSING
+        ],
+        self::STATUS_CLOSED => [
+            self::STATUS_SUBMITTED,
+            self::STATUS_ENERGY_SUBMIT,
+            self::STATUS_ACCEPTED,
+            self::STATUS_CANT_CONNECT,
+            self::AC_MANUAL_PROCESSING,
+            self::STATUS_EA_PROCESSING
+        ],
     ];
 
 
@@ -138,7 +213,7 @@ class ServiceStatusFilterMapper
             $this->isProviderPlanAllowableStatus($application_status) &&
             (!$hasProviderPlan['has_provider'] || !$hasProviderPlan['has_plan'])
         ) {
-            $statuses = [];
+            $statuses = [($this->getConnectionService($service_id))->status];
         }
 
         return $statuses;
@@ -146,20 +221,12 @@ class ServiceStatusFilterMapper
 
     public function getInternetServiceStatuses($applicationStatus)
     {
-        $statuses = [];
-        if ($applicationStatus != self::STATUS_UNASSIGNED) {
-            $statuses = self::INTERNET_STATUSES;
-        }
-        return $statuses;
+        return self::INTERNET_STATUSES[$applicationStatus] ?? [];
     }
 
     public function getWaterServiceStatuses($applicationStatus)
     {
-        $statuses = [];
-        if ($applicationStatus != self::STATUS_UNASSIGNED) {
-            $statuses = self::WATER_STATUSES;
-        }
-        return $statuses;
+        return self::WATER_STATUSES[$applicationStatus] ?? [];
     }
 
     private function isProviderPlanAllowableStatus($status)
