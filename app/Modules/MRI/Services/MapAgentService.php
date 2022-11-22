@@ -33,13 +33,13 @@ class MapAgentService
             // }
             
             if (!empty($invalidReason)) {
-                dump(sprintf($invalidReason));
+                // dump(sprintf($invalidReason));
                 \Log::warning($invalidReason);
             }
             else {
                 $mriAgent->agent_profile_id = $user->profile_id;
                 $mriAgent->save();
-                dump('Updated MRI Agent profile with ID - ' . $mriAgent->id );
+                info('Updated MRI Agent profile with ID - ' . $mriAgent->id );
             }
         }
     }

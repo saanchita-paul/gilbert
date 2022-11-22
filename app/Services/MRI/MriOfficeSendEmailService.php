@@ -17,8 +17,11 @@ class MriOfficeSendEmailService
 
         if (count($filteredData) > 0) {
             // Send mail notification
-            Notification::route('mail', config('mri.to_mail_address'))
+            $emails = explode(',', config('mri.support_emails'));
+            foreach ($emails as $recipient) {
+                Notification::route('mail', $recipient)
                 ->notify(new MRIOfficeNotification($filteredData));
+            }
         }
     }
 }

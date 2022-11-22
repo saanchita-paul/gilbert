@@ -33,6 +33,11 @@ class GetTenanciesService
     private ?string $afterDate;
 
     /**
+     * @var ?int|null
+     */
+    private ?int $officeId;
+
+    /**
      * @var HandleExceptionService
      */
     public HandleExceptionService $exceptionHandler;
@@ -53,6 +58,11 @@ class GetTenanciesService
         return $this;
     }
 
+    public function setOfficeId(int $officeId)
+    {
+        $this->officeId = $officeId;
+    }
+
     private function setToken(string $token)
     {
         $this->accessToken = $token;
@@ -68,7 +78,14 @@ class GetTenanciesService
     public function run()
     {
         try {
-            $mriOffices = MriOffice::get();
+            if (isset($this->officeId) && !empty($this->officeId)) {
+                $mriOffices = MriOffice::where('office_id', $this->officeId)->get();
+                if (count($mriOffices) == 0)
+                    throw new \Exception('Unable to find MRI office with Gilbert office id = ' . $this->officeId);
+            }
+            else {
+                $mriOffices = MriOffice::get();
+            }
             foreach ($mriOffices as $office){
                 $token = $office->key;
                 $this->setToken($token);  

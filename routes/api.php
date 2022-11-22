@@ -41,6 +41,8 @@ use App\Http\Controllers\ChatBot\SendApplicationToChatbotController;
 use App\Services\GBGEmailValidationService;
 use App\Http\Controllers\Agency\MriOfficeController;
 
+use MRI\Controllers\TestMriController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -418,4 +420,8 @@ Route::get('/test', function() {
 //    ApplicationFromGilbertJob::dispatch(3);
 
 });
+
+Route::get('/test/mri/agents', [TestMriController::class, 'fetchAgents']);
+Route::get('/test/mri/tenancies', [TestMriController::class, 'fetchTenancies']);
+
 

@@ -20,7 +20,7 @@ class MriFetchTenanciesCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'mri:fetch_tenancies {afterDate?}';
+    protected $signature = 'mri:fetch_tenancies {--office=} {--afterDate=}';
     /**
      * The console command description.
      *
@@ -47,24 +47,31 @@ class MriFetchTenanciesCommand extends Command
      */
     public function handle()
     {
-        $afterDate = $this->argument('afterDate') ?? '';
+        $officeId = $this->option('office') ?? '';
+        $afterDate = $this->option('afterDate') ?? '';
         $this->line('MRI fetch tenancies command started successfully!');
 
         try {
             $tenancyService = new GetTenanciesService();
 
             $message = '';
+
+            if (!empty($officeId)) {
+                $message .= sprintf('(Office ID = %s) ', $officeId);
+                $tenancyService->setOfficeId(intval($officeId));
+            }
+
             if (empty($afterDate)){
-                $nowDate = Carbon::now()->format('Y-m-d');
+                $nowDate = Carbon::now()->subDays(config('mri.sub_days'))->format('Y-m-d');
                 $tenancyService->setAfterDate($nowDate);
-                $message = sprintf('Fetching data after date %s', $nowDate);
+                $message .= sprintf('Fetching data after date %s', $nowDate);
             }
             else if ($afterDate !== 'all') {
                 $tenancyService->setAfterDate($afterDate);
-                $message = sprintf('Fetching data after date %s', $afterDate);
+                $message .= sprintf('Fetching data after date %s', $afterDate);
             }
             else {
-                $message = 'Fetching all data without after date';
+                $message .= 'Fetching all data without after date';
             }
 
             info($message);
@@ -77,6 +84,9 @@ class MriFetchTenanciesCommand extends Command
 
         try {
             $propertyService = new GetPropertyService();
+            if (!empty($officeId)) {
+                $propertyService->setOfficeId(intval($officeId));
+            }
             $propertyService->run();
         } catch (\Exception $exception) {
             dump($exception->getMessage());

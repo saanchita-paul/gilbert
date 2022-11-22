@@ -19,7 +19,7 @@ class MriFetchAgentsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'mri:fetch_agents {afterDate?}';
+    protected $signature = 'mri:fetch_agents {--office=} {--afterDate=}';
     /**
      * The console command description.
      *
@@ -46,7 +46,8 @@ class MriFetchAgentsCommand extends Command
      */
     public function handle()
     {
-        $afterDate = $this->argument('afterDate') ?? '';
+        $officeId = $this->option('office') ?? '';
+        $afterDate = $this->option('afterDate') ?? '';
         $this->line('MRI fetch agents command started successfully!');
 
         try {
@@ -54,17 +55,22 @@ class MriFetchAgentsCommand extends Command
 
             $message = '';
 
+            if (!empty($officeId)) {
+                $message .= sprintf('(Office ID = %s) ', $officeId);
+                $fetchAgentService->setOfficeId(intval($officeId));
+            }
+
             if (empty($afterDate)) {
-                $nowDate = Carbon::now()->format('Y-m-d');
+                $nowDate = Carbon::now()->subDays(config('mri.sub_days'))->format('Y-m-d');
                 $fetchAgentService->setAfterDate($nowDate);
-                $message = sprintf('Fetching data after date %s', $nowDate);
+                $message .= sprintf('Fetching data after date %s', $nowDate);
             }
             else if ($afterDate !== 'all') {
                 $fetchAgentService->setAfterDate($afterDate);
-                $message = sprintf('Fetching data after date %s', $afterDate);
+                $message .= sprintf('Fetching data after date %s', $afterDate);
             }
             else {
-                $message = 'Fetching all data without after date';
+                $message .= 'Fetching all data without after date';
             } 
             info($message);
             dump($message);

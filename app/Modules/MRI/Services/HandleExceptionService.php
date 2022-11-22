@@ -52,14 +52,14 @@ class HandleExceptionService
             return;
         };
 
-        $emails = explode(',', config('mri.support_emails'));
+        $emails = explode(',', config('support_email.tech'));
         foreach ($emails as $recipient) {
             Mail::to($recipient)->queue(new NotifyFetchFailMail($this->fileName, $this->exceptionData));
         }
-        dump('Error in '. $this->fileName);
-        foreach($this->exceptionData as $e){
-            dump($e['message']);
-        }
+        // dump('Error in '. $this->fileName);
+        // foreach($this->exceptionData as $e){
+        //     dump($e['message']);
+        // }
 
         \Log::error($this->fileName . ' FAILED (Refer Context)', $this->exceptionData);
         

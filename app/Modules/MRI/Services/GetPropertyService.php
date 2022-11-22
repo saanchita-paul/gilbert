@@ -30,6 +30,11 @@ class GetPropertyService
     private ?string $url;
 
     /**
+     * @var ?int|null
+     */
+    private ?int $officeId;
+
+    /**
      * @var HandleExceptionService
      */
     public HandleExceptionService $exceptionHandler;
@@ -51,9 +56,21 @@ class GetPropertyService
         return $this;
     }
 
+    public function setOfficeId(int $officeId)
+    {
+        $this->officeId = $officeId;
+    }
+
     public function run()
     {
-        $mriOffices = MriOffice::get();
+        if (isset($this->officeId) && !empty($this->officeId)) {
+            $mriOffices = MriOffice::where('office_id', $this->officeId)->get();
+            if (count($mriOffices) == 0)
+                throw new \Exception('Unable to find MRI office with Gilbert office id = ' . $this->officeId);
+        }
+        else {
+            $mriOffices = MriOffice::get();
+        }
         foreach ($mriOffices as $office){
             $token = $office->key;
             $this->setToken($token);
