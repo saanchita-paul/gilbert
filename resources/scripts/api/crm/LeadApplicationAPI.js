@@ -297,8 +297,7 @@ export default {
 
     async sendToChatBot(id) {
         try {
-            const data = await axios.get(`/api/applications/${id}/send-to-chatbot`);
-            return data;
+            return (await axios.get(`/api/applications/${id}/send-to-chatbot`)).data;
         } catch (error) {
             return error.data;
         }

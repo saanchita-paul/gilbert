@@ -17,6 +17,7 @@ class SendAppGilbertToChatbotService
     {
         $application = ConnectionApplication::findOrFail($this->applicationId);
         $application->load(['connectionServices.reasons', 'identification', 'authorizedPerson', 'office', 'agency']);
+        $application->update(['is_locked' => true]);
         $sendApplication = new SendApplicationToChatbotAPI();
         return $sendApplication->postApi($application);
     }
