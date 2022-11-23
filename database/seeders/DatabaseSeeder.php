@@ -17,5 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(DefaultSeeder::class);
         $this->call(PermissionMigrationSeeder::class);
         $this->call(ApplicationCloseReasonSeeder::class);
+        $this->call(MRISeeder::class);
     }
 }
