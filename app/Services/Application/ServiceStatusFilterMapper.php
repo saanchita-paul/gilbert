@@ -52,139 +52,381 @@ class ServiceStatusFilterMapper
      * Filter changeable service statuses by application status
      */
     public const FILTER_STATUS = [
-        self::STATUS_ASSIGNED => [
-            self::STATUS_EA_PROCESSING
-        ],
         self::STATUS_UNASSIGNED => [
-            self::STATUS_EA_PROCESSING
+            self::STATUS_ASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_ESCALATED => [
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_SUBMITTED => [
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_CLOSED => [
+                self::STATUS_EA_PROCESSING
+            ],
+        ],
+        self::STATUS_ASSIGNED => [
+            self::STATUS_ASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_ESCALATED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_SUBMITTED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_CLOSED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
         ],
         self::STATUS_ESCALATED => [
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_ACCEPTED,
-            self::STATUS_REJECTED,
-            self::STATUS_EA_PROCESSING,
+            self::STATUS_ASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_ESCALATED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_SUBMITTED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_CLOSED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
         ],
         self::STATUS_SUBMITTED => [
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::STATUS_ACCEPTED,
-            self::STATUS_REJECTED,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_EA_PROCESSING
-        ],
-        self::STATUS_ACCEPTED => [
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_ACCEPTED,
-            self::STATUS_REJECTED,
-            self::STATUS_EA_PROCESSING
-        ],
-        self::STATUS_REJECTED => [
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_ACCEPTED,
-            self::STATUS_REJECTED,
-            self::STATUS_EA_PROCESSING
+            self::STATUS_ASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_ESCALATED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_SUBMITTED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_CLOSED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
         ],
         self::STATUS_CLOSED => [
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_ACCEPTED,
-            self::STATUS_REJECTED,
-            self::STATUS_EA_PROCESSING,
+            self::STATUS_ASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_ESCALATED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_SUBMITTED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_CLOSED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
         ],
     ];
 
     public const WATER_STATUSES = [
-        self::STATUS_ASSIGNED => [
-            self::STATUS_EA_PROCESSING
-        ],
         self::STATUS_UNASSIGNED => [
-            self::STATUS_EA_PROCESSING
+            self::STATUS_ASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_ESCALATED => [
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_SUBMITTED => [
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_CLOSED => [
+                self::STATUS_EA_PROCESSING
+            ],
+        ],
+        self::STATUS_ASSIGNED => [
+            self::STATUS_ASSIGNED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_ESCALATED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_SUBMITTED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_CLOSED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
         ],
         self::STATUS_ESCALATED => [
-            self::STATUS_EA_PROCESSING
+            self::STATUS_ASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_ESCALATED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_SUBMITTED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_CLOSED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
         ],
         self::STATUS_SUBMITTED => [
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::STATUS_ACCEPTED,
-            self::STATUS_CANT_CONNECT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_EA_PROCESSING
-        ],
-        self::STATUS_ACCEPTED => [
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::STATUS_ACCEPTED,
-            self::STATUS_CANT_CONNECT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_EA_PROCESSING
-        ],
-        self::STATUS_REJECTED => [
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::STATUS_ACCEPTED,
-            self::STATUS_CANT_CONNECT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_EA_PROCESSING
+            self::STATUS_ASSIGNED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_ESCALATED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_SUBMITTED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_CLOSED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
         ],
         self::STATUS_CLOSED => [
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::STATUS_ACCEPTED,
-            self::STATUS_CANT_CONNECT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_EA_PROCESSING
+            self::STATUS_ASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_ESCALATED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_SUBMITTED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_CLOSED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
         ],
     ];
 
     public const INTERNET_STATUSES = [
-        self::STATUS_ASSIGNED => [
-            self::STATUS_EA_PROCESSING
-        ],
         self::STATUS_UNASSIGNED => [
-            self::STATUS_EA_PROCESSING
+            self::STATUS_ASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_ESCALATED => [
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_SUBMITTED => [
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_CLOSED => [
+                self::STATUS_EA_PROCESSING
+            ],
+        ],
+        self::STATUS_ASSIGNED => [
+            self::STATUS_ASSIGNED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_ESCALATED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_SUBMITTED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_CLOSED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
         ],
         self::STATUS_ESCALATED => [
-            self::STATUS_EA_PROCESSING
+            self::STATUS_ASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_ESCALATED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_SUBMITTED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_CLOSED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
         ],
         self::STATUS_SUBMITTED => [
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::STATUS_ACCEPTED,
-            self::STATUS_CANT_CONNECT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_EA_PROCESSING
-        ],
-        self::STATUS_ACCEPTED => [
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::STATUS_ACCEPTED,
-            self::STATUS_CANT_CONNECT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_EA_PROCESSING
-        ],
-        self::STATUS_REJECTED => [
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::STATUS_ACCEPTED,
-            self::STATUS_CANT_CONNECT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_EA_PROCESSING
+            self::STATUS_ASSIGNED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_ESCALATED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_SUBMITTED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_CLOSED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
         ],
         self::STATUS_CLOSED => [
-            self::STATUS_SUBMITTED,
-            self::STATUS_ENERGY_SUBMIT,
-            self::STATUS_ACCEPTED,
-            self::STATUS_CANT_CONNECT,
-            self::AC_MANUAL_PROCESSING,
-            self::STATUS_EA_PROCESSING
+            self::STATUS_ASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_ESCALATED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_SUBMITTED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
+            self::STATUS_CLOSED => [
+                self::STATUS_ENERGY_SUBMIT,
+                self::STATUS_ACCEPTED,
+                self::STATUS_CANT_CONNECT,
+                self::AC_MANUAL_PROCESSING,
+                self::STATUS_EA_PROCESSING
+            ],
         ],
     ];
 
@@ -200,17 +442,21 @@ class ServiceStatusFilterMapper
         self::STATUS_CLOSED
     ];
 
-    private function getStatusesByApplication($status)
+    private function getStatusesByApplication($oldStatus, $newStatus)
     {
-        return self::FILTER_STATUS[$status] ?? [];
+        return self::FILTER_STATUS[$oldStatus][$newStatus] ?? [];
     }
 
-    public function getStatuses($application_status, $service_id, $service_new_status = null)
+    public function getStatuses($newAppStatus, $service_id)
     {
+        $connectionService = $this->getConnectionService($service_id);
         $hasProviderPlan = $this->getHasProviderPlan($service_id);
-        $statuses = $this->getStatusesByApplication($application_status);
+        $statuses = $this->getStatusesByApplication(
+            $connectionService->connectionApplication->status,
+            $newAppStatus
+        );
         if (
-            $this->isProviderPlanAllowableStatus($application_status) &&
+            $this->isProviderPlanAllowableStatus($newAppStatus) &&
             (!$hasProviderPlan['has_provider'] || !$hasProviderPlan['has_plan'])
         ) {
             $statuses = [($this->getConnectionService($service_id))->status];
@@ -219,14 +465,14 @@ class ServiceStatusFilterMapper
         return $statuses;
     }
 
-    public function getInternetServiceStatuses($applicationStatus)
+    public function getWaterServiceStatuses($oldAppStatus, $newAppStatus)
     {
-        return self::INTERNET_STATUSES[$applicationStatus] ?? [];
+        return self::WATER_STATUSES[$oldAppStatus][$newAppStatus] ?? [];
     }
 
-    public function getWaterServiceStatuses($applicationStatus)
+    public function getInternetServiceStatuses($oldAppStatus, $newAppStatus)
     {
-        return self::WATER_STATUSES[$applicationStatus] ?? [];
+        return self::INTERNET_STATUSES[$oldAppStatus][$newAppStatus] ?? [];
     }
 
     private function isProviderPlanAllowableStatus($status)

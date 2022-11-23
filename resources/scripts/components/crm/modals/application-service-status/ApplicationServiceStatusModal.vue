@@ -397,7 +397,7 @@ export default {
             this.isPreviousData = this.formData.water_status === this.oldStatus.water_status;
         },
         "formData.internet_status": function () {
-                this.isPreviousData = this.formData.internet_status === this.oldStatus.internet_status;
+            this.isPreviousData = this.formData.internet_status === this.oldStatus.internet_status;
         },
         "formData.application_status": function () {
             this.isPreviousData = this.formData.application_status === this.oldStatus.application_status;
@@ -462,14 +462,16 @@ export default {
 
         async getWaterServiceStatusDD() {
             const formdata = {
-                application_status: this.formData.application_status
+                old_app_status: this.oldStatus.application_status,
+                new_app_status: this.formData.application_status
             };
             this.waterStatusDD = await ApplicationServiceStatusChangeService.getWaterServiceStatusDD(formdata);
         },
 
         async getInternetServiceStatusDD() {
             const formdata = {
-                application_status: this.formData.application_status
+                old_app_status: this.oldStatus.application_status,
+                new_app_status: this.formData.application_status
             };
             this.internetStatusDD = await ApplicationServiceStatusChangeService.getInternetServiceStatusDD(formdata);
         },

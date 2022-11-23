@@ -95,9 +95,10 @@ class ApplicationServiceStatusController extends Controller
     }
 
     public function changeStatus(
-        ConnectionApplication $connectionApplication,
+        ConnectionApplication                 $connectionApplication,
         ApplicationServiceStatusChangeRequest $request
-    ) {
+    )
+    {
         try {
             $service = new ApplicationServiceStatusService(
                 $connectionApplication,
@@ -144,11 +145,8 @@ class ApplicationServiceStatusController extends Controller
 
     public function getWaterServiceStatus(Request $request)
     {
-        $request->validate([
-            'application_status' => 'required'
-        ]);
         $service = new ServiceStatusFilterMapper();
-        $statuses = $service->getWaterServiceStatuses($request->application_status);
+        $statuses = $service->getWaterServiceStatuses($request->old_app_status, $request->new_app_status);
 
         $queryService = new ApplicationStatusFilterQueryService();
         $serviceStatuses = $queryService->getServiceStatusDD($statuses);
@@ -157,11 +155,8 @@ class ApplicationServiceStatusController extends Controller
 
     public function getInternetServiceStatus(Request $request)
     {
-        $request->validate([
-            'application_status' => 'required'
-        ]);
         $service = new ServiceStatusFilterMapper();
-        $statuses = $service->getInternetServiceStatuses($request->application_status);
+        $statuses = $service->getInternetServiceStatuses($request->old_app_status, $request->new_app_status);
 
         $queryService = new ApplicationStatusFilterQueryService();
         $serviceStatuses = $queryService->getServiceStatusDD($statuses);
