@@ -23,6 +23,11 @@ class ApplicationServiceStatusService
     public const STATUS_ENERGY_SUBMIT = 12;
     public const STATUS_NOT_SUBMITTED = 7;
     public const STATUS_CLOSED = 8;
+    public const STATUS_ACCEPTED = 5;
+    public const STATUS_REJECTED = 6;
+    public const STATUS_CANT_CONNECT = 9;
+    public const STATUS_NEEDS_MORE_INFO = 10;
+    public const AC_MANUAL_PROCESSING = 11;
 
     public static $submitStatues = [
         self::STATUS_SUBMITTED,
@@ -109,11 +114,25 @@ class ApplicationServiceStatusService
         $service = $this->connectionApplication->connectionServices()->where('service_type', $service_type)->first();
         if ($service && !is_null($status_value)) {
             if (in_array($status_value, self::$submitStatues)) {
-                $service->update(['status' => (int)$status_value, 'quote_reference' => self::QUOTE_REFERENCE]);
+                $service->update([
+                    'status' => (int)$status_value,
+                    'quote_reference' => self::QUOTE_REFERENCE,
+                    'submitted_at' => now(),
+                ]);
             } elseif ($status_value == self::STATUS_NOT_SUBMITTED) {
-                $service->update(['status' => (int)$status_value, 'quote_reference' => null]);
+                $service->update([
+                    'status' => (int)$status_value,
+                    'quote_reference' => null,
+                    'submitted_at' => null,
+                ]);
             } else {
-                $service->update(['status' => (int)$status_value]);
+                $submitted_at = is_null($service->submitted_at) ? now() : $service->submitted_at;
+                $service->update([
+                    'status' => (int)$status_value,
+                    'quote_reference' => self::QUOTE_REFERENCE,
+                    'submitted_at' => $submitted_at
+                ]);
+
             }
         }
     }
