@@ -31,11 +31,5 @@ Route::get('/email', function () {
     return response('hello world');
 });
 
-Route::get('mi-test', function () {
-    $service = new ServiceStatusFilterMapper();
-    $statuses = $service->getWaterServiceStatuses(3, 8);
-    dd($statuses);
-});
-
 Route::get('/{vue_capture?}', fn() => view('app'))
     ->where('vue_capture', '[\/\w\.-]*');
