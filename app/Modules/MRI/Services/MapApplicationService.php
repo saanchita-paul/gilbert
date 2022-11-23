@@ -58,7 +58,7 @@ class MapApplicationService
         }
 
         if (count($createdApplications) > 0) {
-            dump(sprintf('Created %s applications from MRI', strval(count($createdApplications))));
+            info(sprintf('Created %s applications from MRI', strval(count($createdApplications))));
         }
 
         if ($this->exceptionHandler->hasExceptions()){
