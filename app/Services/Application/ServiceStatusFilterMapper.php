@@ -53,6 +53,9 @@ class ServiceStatusFilterMapper
      */
     public const FILTER_STATUS = [
         self::STATUS_UNASSIGNED => [
+            self::STATUS_UNASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
             self::STATUS_ASSIGNED => [
                 self::STATUS_EA_PROCESSING
             ],
@@ -67,6 +70,9 @@ class ServiceStatusFilterMapper
             ],
         ],
         self::STATUS_ASSIGNED => [
+            self::STATUS_UNASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
             self::STATUS_ASSIGNED => [
                 self::STATUS_EA_PROCESSING
             ],
@@ -93,6 +99,9 @@ class ServiceStatusFilterMapper
             ],
         ],
         self::STATUS_ESCALATED => [
+            self::STATUS_UNASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
             self::STATUS_ASSIGNED => [
                 self::STATUS_EA_PROCESSING
             ],
@@ -119,6 +128,9 @@ class ServiceStatusFilterMapper
             ],
         ],
         self::STATUS_SUBMITTED => [
+            self::STATUS_UNASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
             self::STATUS_ASSIGNED => [
                 self::STATUS_EA_PROCESSING
             ],
@@ -145,6 +157,9 @@ class ServiceStatusFilterMapper
             ],
         ],
         self::STATUS_CLOSED => [
+            self::STATUS_UNASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
             self::STATUS_ASSIGNED => [
                 self::STATUS_EA_PROCESSING
             ],
@@ -174,6 +189,9 @@ class ServiceStatusFilterMapper
 
     public const WATER_STATUSES = [
         self::STATUS_UNASSIGNED => [
+            self::STATUS_UNASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
             self::STATUS_ASSIGNED => [
                 self::STATUS_EA_PROCESSING
             ],
@@ -188,6 +206,9 @@ class ServiceStatusFilterMapper
             ],
         ],
         self::STATUS_ASSIGNED => [
+            self::STATUS_UNASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
             self::STATUS_ASSIGNED => [
                 self::STATUS_ENERGY_SUBMIT,
                 self::STATUS_ACCEPTED,
@@ -218,6 +239,9 @@ class ServiceStatusFilterMapper
             ],
         ],
         self::STATUS_ESCALATED => [
+            self::STATUS_UNASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
             self::STATUS_ASSIGNED => [
                 self::STATUS_EA_PROCESSING
             ],
@@ -244,6 +268,9 @@ class ServiceStatusFilterMapper
             ],
         ],
         self::STATUS_SUBMITTED => [
+            self::STATUS_UNASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
             self::STATUS_ASSIGNED => [
                 self::STATUS_ENERGY_SUBMIT,
                 self::STATUS_ACCEPTED,
@@ -274,6 +301,9 @@ class ServiceStatusFilterMapper
             ],
         ],
         self::STATUS_CLOSED => [
+            self::STATUS_UNASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
             self::STATUS_ASSIGNED => [
                 self::STATUS_EA_PROCESSING
             ],
@@ -303,6 +333,9 @@ class ServiceStatusFilterMapper
 
     public const INTERNET_STATUSES = [
         self::STATUS_UNASSIGNED => [
+            self::STATUS_UNASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
             self::STATUS_ASSIGNED => [
                 self::STATUS_EA_PROCESSING
             ],
@@ -317,6 +350,9 @@ class ServiceStatusFilterMapper
             ],
         ],
         self::STATUS_ASSIGNED => [
+            self::STATUS_UNASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
             self::STATUS_ASSIGNED => [
                 self::STATUS_ENERGY_SUBMIT,
                 self::STATUS_ACCEPTED,
@@ -347,6 +383,9 @@ class ServiceStatusFilterMapper
             ],
         ],
         self::STATUS_ESCALATED => [
+            self::STATUS_UNASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
             self::STATUS_ASSIGNED => [
                 self::STATUS_EA_PROCESSING
             ],
@@ -373,6 +412,9 @@ class ServiceStatusFilterMapper
             ],
         ],
         self::STATUS_SUBMITTED => [
+            self::STATUS_UNASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
             self::STATUS_ASSIGNED => [
                 self::STATUS_ENERGY_SUBMIT,
                 self::STATUS_ACCEPTED,
@@ -403,6 +445,9 @@ class ServiceStatusFilterMapper
             ],
         ],
         self::STATUS_CLOSED => [
+            self::STATUS_UNASSIGNED => [
+                self::STATUS_EA_PROCESSING
+            ],
             self::STATUS_ASSIGNED => [
                 self::STATUS_EA_PROCESSING
             ],
