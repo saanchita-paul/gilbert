@@ -59,20 +59,25 @@ class OriginService
 
             $connection_date = $application->moving_date;
 
-            if(config('app.env') !== 'production'){
-                // local/dev fetch origin plan
-                $plan = $type == 'gas' ? GetPlans::getDummyGasPlan() : GetPlans::getDummyElecPlan();
-                $plan_customer_type_id = $plan->customer_type_id;
-                $plan_division_id = $plan->division_id;
-                $plan_product_id = $plan->product_id;
-            }
-            else {
-                // production fetch origin plan
-                $plan = GetPlans::getActivePlanByStateFuel(strtoupper(AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($application->state)]), $type == 'power' ? 'electricity': $type);
-                $plan_customer_type_id = $plan->customer_type_id;
-                $plan_division_id = $plan->division_id;
-                $plan_product_id = $plan->product_id;
-            }
+            // if(config('app.env') !== 'production'){
+            //     // local/dev fetch origin plan
+            //     $plan = $type == 'gas' ? GetPlans::getDummyGasPlan() : GetPlans::getDummyElecPlan();
+            //     $plan_customer_type_id = $plan->customer_type_id;
+            //     $plan_division_id = $plan->division_id;
+            //     $plan_product_id = $plan->product_id;
+            // }
+            // else {
+            //     // production fetch origin plan
+            //     $plan = GetPlans::getActivePlanByStateFuel(strtoupper(AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($application->state)]), $type == 'power' ? 'electricity': $type);
+            //     $plan_customer_type_id = $plan->customer_type_id;
+            //     $plan_division_id = $plan->division_id;
+            //     $plan_product_id = $plan->product_id;
+            // }
+
+            $plan = GetPlans::getActivePlanByStateFuel(strtoupper(AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($application->state)]), $type == 'power' ? 'electricity': $type);
+            $plan_customer_type_id = $plan->customer_type_id;
+            $plan_division_id = $plan->division_id;
+            $plan_product_id = $plan->product_id;
 
             if($type == 'power'){
                 $validateBy = 'nmi';
