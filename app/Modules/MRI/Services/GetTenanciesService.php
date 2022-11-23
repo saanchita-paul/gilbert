@@ -71,7 +71,10 @@ class GetTenanciesService
 
     private function setURL()
     {
-        $this->url = config('mri.base_url') . config('mri.endpoints.get_tenancies');
+        $url = empty(config('mri.base_url')) ? 'https://uatapi.propertytree.io' : config('mri.base_url');
+        $endpoint = empty(config('mri.endpoints.get_tenancies')) ? '/residentialproperty/v1/Tenancies' : config('mri.endpoints.get_tenancies');
+        
+        $this->url = $url . $endpoint;
         return $this;
     }
 
@@ -209,7 +212,7 @@ class GetTenanciesService
 
         if (!empty($updatedTenancyIds)){
             $message = sprintf('Created %s mri applications', count($updatedTenancyIds));
-            dump($message);
+            // dump($message);
             info($message, ['mri_application_ids' => $updatedTenancyIds]);
         }
 

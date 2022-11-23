@@ -52,7 +52,10 @@ class GetPropertyService
 
     private function setURL($id)
     {
-        $this->url = config('mri.base_url') . config('mri.endpoints.get_property_by_id') . $id;
+        $url = empty(config('mri.base_url')) ? 'https://uatapi.propertytree.io' : config('mri.base_url');
+        $endpoint = empty(config('mri.endpoints.get_property_by_id')) ? '/residentialproperty/v1/Tenancies' : config('mri.endpoints.get_property_by_id');
+
+        $this->url = $url . $endpoint . $id;
         return $this;
     }
 
@@ -108,7 +111,7 @@ class GetPropertyService
 
             if (!empty($savedPropertyIds)){
                 $message = sprintf('Updated %s mri properties', count($savedPropertyIds));
-                dump($message);
+                // dump($message);
                 info($message, ['mri_property_ids' => $savedPropertyIds]);
             }
             

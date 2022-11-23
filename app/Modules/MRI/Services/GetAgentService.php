@@ -69,7 +69,10 @@ class GetAgentService
 
     private function setURL()
     {
-        $this->url = config('mri.base_url') . config('mri.endpoints.get_all_agents');
+        $url = empty(config('mri.base_url')) ? 'https://uatapi.propertytree.io' : config('mri.base_url');
+        $endpoint = empty(config('mri.endpoints.get_all_agents')) ? '/residentialproperty/v1/Agents' : config('mri.endpoints.get_all_agents');
+
+        $this->url = $url . $endpoint;
         return $this;
     }
 
@@ -169,7 +172,7 @@ class GetAgentService
         
         if (!empty($updatedAgentIds)){
             $successMessage = sprintf('Created %s mri agents', count($updatedAgentIds));
-            dump($successMessage);
+            // dump($successMessage);
             info($successMessage, ['mri_agent_ids' => $updatedAgentIds]);
         }
         return $updatedAgentIds;
