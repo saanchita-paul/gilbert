@@ -9,15 +9,14 @@ class SendApplicationToChatbotAPI
     /**
      * Run POST Http Client
      *
-     * @param object $application
+     * @param $applicationDetails
      *
      * @return object
      *
-     * @throws exception
      */
-    public function postApi(object $application)
+    public function postApi($applicationDetails)
     {
-        $url = config('gb_to_cb.root_url') . config('gb_to_cb.endpoints.gb_to_cb_sync') . $application->id;
+        $url = config('gb_to_cb.root_url') . config('gb_to_cb.endpoints.gb_to_cb_sync') . $applicationDetails['connection_application_id'];
 
         try {
             $headers = [
@@ -28,7 +27,7 @@ class SendApplicationToChatbotAPI
             $response = Http::withOptions([
                 'headers' => $headers
             ])
-                ->withBody(json_encode($application), "application/json")
+                ->withBody(json_encode($applicationDetails), "application/json")
                 ->post($url);
 
             $response->throw();
