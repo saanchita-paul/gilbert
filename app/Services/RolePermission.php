@@ -48,6 +48,7 @@ class RolePermission {
 
     const P_CAN_MANAGE_APPLICATION = 'can_manage_application';
     const P_CAN_MANAGE_AGENCY = 'can_manage_agency';
+    const P_CAN_CHANGE_MANUAL_STATUS = 'can_change_manual_status';
 
     const P_ACCESS_SALES_DASHBOARD = 'can_access_sales_dashboard';
 

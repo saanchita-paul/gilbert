@@ -1,7 +1,7 @@
 import DayJs from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import {isNull, sortBy} from "lodash-es";
-import { street_type } from "@scripts/data/constants/StreetType";
+import {street_type} from "@scripts/data/constants/StreetType";
 
 export default class ApplicationSummary {
     id = null;
@@ -42,6 +42,7 @@ export default class ApplicationSummary {
     has_life_support = null;
     has_solar = null;
     status = null;
+    status_value = null;
     billing_unit_number = null;
     billing_street_number = null;
     billing_street_name = null;
@@ -55,8 +56,8 @@ export default class ApplicationSummary {
     is_contacted = true;
     agent_name = '';
     agency_office = '';
-    source= 0;
-    after_hour_payee =  null;
+    source = 0;
+    after_hour_payee = null;
     created_by_agent = null;
 
     is_email_marketing = null;
@@ -75,6 +76,8 @@ export default class ApplicationSummary {
     is_duplicate = null;
     duplication_group_id = null;
     chatbot_id = null;
+    assigned_to = null;
+    app_close_reason_id = null;
 
     constructor(
         {
@@ -118,6 +121,7 @@ export default class ApplicationSummary {
             has_solar = null,
             property_type = null,
             status = null,
+            status_value = null,
             billing_unit_number = null,
             billing_street_type = null,
             billing_street_number = null,
@@ -167,12 +171,14 @@ export default class ApplicationSummary {
             duplication_group_id = null,
 
             // email_manually_verified_by = 0,
-            chatbot_id= null
+            chatbot_id = null,
+            assigned_to = null,
+            app_close_reason_id = null,
         }
     ) {
 
         this.id = id;
-        this.applicant_name = ( title == null ? '' : title ) + ' ' + first_name + ' '+ ( isNull(middle_name)?'': middle_name) + ' ' + last_name;
+        this.applicant_name = (title == null ? '' : title) + ' ' + first_name + ' ' + (isNull(middle_name) ? '' : middle_name) + ' ' + last_name;
         this.first_name = first_name;
         this.middle_name = middle_name;
         this.last_name = last_name;
@@ -209,12 +215,13 @@ export default class ApplicationSummary {
         this.has_solar = has_solar;
         this.property_type = property_type;
         this.status = this.mapStatus(status);
+        this.status_value = status;
         this.street_number = street_number;
         this.unit_number = unit_number;
         this.street_name = street_name;
         this.authorizedPersonName = authorizedPersonName;
         this.billing_unit_number = billing_unit_number,
-        this.billing_street_number = billing_street_number,
+            this.billing_street_number = billing_street_number,
             this.billing_street_name = billing_street_name,
             this.billing_state = billing_state,
             this.billing_street_type = this.mapStreetType(billing_street_type),
@@ -227,8 +234,8 @@ export default class ApplicationSummary {
             this.billing_mannual_address = billing_mannual_address,
             this.is_billing_same = is_billing_same,
             this.is_contacted = is_contacted,
-        this.agent_name =    agent_name
-        this.agency_office =    agency_office
+            this.agent_name = agent_name
+        this.agency_office = agency_office
 
         this.lead_source = lead_source
         this.lead_source_description = lead_source_description
@@ -268,13 +275,15 @@ export default class ApplicationSummary {
         this.duplication_group_id = duplication_group_id;
         // this.email_manually_verified_by = email_manually_verified_by
         this.chatbot_id = chatbot_id;
+        this.assigned_to = assigned_to;
+        this.app_close_reason_id = app_close_reason_id;
     }
 
 
-    mapStreetType(type){
+    mapStreetType(type) {
         let streetType = null
         street_type.forEach(element => {
-            if(element.text == type){
+            if (element.text == type) {
                 streetType = element.value
             }
         })
@@ -282,7 +291,7 @@ export default class ApplicationSummary {
     }
 
 
-    sortCallHistory(tsa_call_histories){
+    sortCallHistory(tsa_call_histories) {
         return sortBy(tsa_call_histories, ['attempt_id'])
     }
 

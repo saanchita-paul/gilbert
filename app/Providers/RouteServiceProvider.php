@@ -51,14 +51,14 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/api.php'));
 
             Route::prefix('api/foxie')
-            ->middleware('api')
-            ->namespace($this->namespaceIgnite)
-            ->group(base_path('routes/foxie.php'));
+                ->middleware('api')
+                ->namespace($this->namespaceIgnite)
+                ->group(base_path('routes/foxie.php'));
 
             Route::prefix('api/ignite')
-            ->middleware('api')
-            ->namespace($this->namespaceFoxie)
-            ->group(base_path('routes/ignite.php'));
+                ->middleware('api')
+                ->namespace($this->namespaceFoxie)
+                ->group(base_path('routes/ignite.php'));
 
             Route::prefix('api/our-property')
                 ->middleware('api')
@@ -83,6 +83,15 @@ class RouteServiceProvider extends ServiceProvider
              */
             Route::middleware([])
                 ->group(base_path('app/Modules/HoodLead/route.php'));
+
+            /*
+             * Application Service Status module
+             */
+            Route::prefix('api')
+                ->middleware('api')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/application_service_status.php'));
+
 
             Route::middleware('web')
                 ->namespace($this->namespace)

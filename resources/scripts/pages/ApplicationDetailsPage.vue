@@ -15,6 +15,7 @@
                                 @updateAddress="updateAddress"
                                 @updateDraft="updateDraft"
                                 @duplicateLead="duplicatedLead"
+                                @loadPlanNoteAndLead="loadPlanNoteAndLead"
                         ></LeadUserDetails>
                  </ValidationObserver>
 
