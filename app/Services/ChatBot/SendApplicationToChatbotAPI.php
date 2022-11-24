@@ -10,9 +10,7 @@ class SendApplicationToChatbotAPI
      * Run POST Http Client
      *
      * @param $applicationDetails
-     *
-     * @return object
-     *
+     * @return mixed|void
      */
     public function postApi($applicationDetails)
     {

@@ -39,13 +39,21 @@ class GilbertToChatbotSyncService
         ])->firstOrFail();
     }
 
+    /**
+     * sync
+     *
+     */
     public function sync()
     {
-        $syncApplication = new SendApplicationToChatbotAPI();
-        return $syncApplication->postApi($this->getMappedData());
+        return (new SendApplicationToChatbotAPI())->postApi($this->getMappedData());
     }
 
-    private function getMappedData()
+    /**
+     * map data
+     *
+     * @return array
+     */
+    private function getMappedData(): array
     {
         return [
             "connection_application_id" => $this->application->id,
@@ -163,10 +171,13 @@ class GilbertToChatbotSyncService
             "promotion_code" => $this->application->promotion_code,
             "promotion_terms_and_conditions_accepted_at" => $this->application->promotion_terms_and_conditions_accepted_at,
             "is_generated_caf" => $this->application->is_generated_caf,
-            "connection_services" =>$this->application->connectionServices ?  $this->application->connectionServices->toArray() : [],
-            "identification" =>$this->application->identification ?  $this->application->identification->toArray() : null,
-            "authorized_person" =>$this->application->authorizedPerson ?  $this->application->authorizedPerson->toArray() : null
-          ];
+            "is_locked" => !$this->application->is_locked,
+            "is_closed" => $this->mapIsClosed($this->application->status),
+            "is_escalated" => $this->mapIsEscalated($this->application->status),
+            "connection_services" => $this->application->connectionServices ? $this->application->connectionServices->toArray() : [],
+            "identification" => $this->application->identification ? $this->application->identification->toArray() : null,
+            "authorized_person" => $this->application->authorizedPerson ? $this->application->authorizedPerson->toArray() : null
+        ];
     }
 
 
@@ -189,7 +200,7 @@ class GilbertToChatbotSyncService
      */
     private function mapTenancyType($tenancyType): ?int
     {
-        return match((int) $tenancyType) {
+        return match ((int)$tenancyType) {
             1 => 1,
             2 => 0,
             default => null
@@ -204,7 +215,7 @@ class GilbertToChatbotSyncService
      */
     private function mapBillingType($billingType): ?string
     {
-        return match((int) $billingType) {
+        return match ((int)$billingType) {
             1 => 'email',
             0 => 'connection_address',
             default => null
@@ -252,6 +263,28 @@ class GilbertToChatbotSyncService
     private function mapHasConcessionCard($concessionCardType): int
     {
         return $concessionCardType ? self::CONCESSION_CARD_YES : self::CONCESSION_CARD_NO;
+    }
+
+    /**
+     * map is closed
+     *
+     * @param $status
+     * @return int
+     */
+    private function mapIsClosed($status): int
+    {
+        return $status == 8 ? 1 : 0;
+    }
+
+    /**
+     * map is escalated
+     *
+     * @param $status
+     * @return int
+     */
+    private function mapIsEscalated($status): int
+    {
+        return $status == 3 ? 1 : 0;
     }
 }
 
