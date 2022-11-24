@@ -256,4 +256,9 @@ class AddressModel{
         $state = AddressModel::MAP_STATES_LONG_TO_SHORT[strtolower($state)];
         return $state ?  strtoupper($state) : null;
     }
+
+    public static function mapStateToLong(?string $state): ?string
+    {
+        return ucwords(self::MAP_STATES_SHORT_TO_LONG[strtolower($state)]) ?? null;
+    }
 }

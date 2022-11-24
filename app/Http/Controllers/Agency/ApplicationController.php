@@ -330,7 +330,6 @@ class ApplicationController extends Controller
         try {
             $service = new ApplicationService();
             $res = $service->updateSoleField($request->toArray(), $id);
-            // (new SendAppGilbertToChatbotService($res->id))->sendApplication();
             (new GilbertToChatbotSyncService($res->id))->sync();
             return response()->json(['success' => true, 'data' => $res]);
 

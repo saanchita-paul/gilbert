@@ -7,6 +7,7 @@ use App\Models\ConnectionApplicationSecondaryACC;
 use App\Models\ConnectionService;
 use App\Models\Identification;
 use App\Models\RejectionReason;
+use App\Services\Address\AddressModel;
 use App\Services\AddressMapperService;
 use App\Services\GilbertToChatbotStatusMapping;
 use App\Services\Utility\PlanTypeSyncWithChatbotService;
@@ -116,7 +117,7 @@ class ChatbotToGilbertSyncService
             $this->applicationData['street_name_only'] = $this->requestData['connection_details']['street_name_only'];
             $this->applicationData['street_type'] = $this->requestData['connection_details']['street_type'];
             $this->applicationData['city'] = $this->requestData['connection_details']['suburb'];
-            $this->applicationData['state'] = $this->requestData['connection_details']['state'];
+            $this->applicationData['state'] = AddressModel::mapStateToLong($this->requestData['connection_details']['state']);
             $this->applicationData['postcode'] = $this->requestData['connection_details']['to_postcode'];
             $this->applicationData['billing_unit_number'] = $this->requestData['connection_details']['billing_unit_number'];
             $this->applicationData['billing_street_name'] = $this->requestData['connection_details']['billing_street_name'];
