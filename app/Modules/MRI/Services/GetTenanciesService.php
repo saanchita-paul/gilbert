@@ -4,18 +4,13 @@ namespace MRI\Services;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Pool;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
-
 use App\Models\MriApplication;
 use App\Models\MriOffice;
-
 use Illuminate\Support\Carbon;
 
-class GetTenanciesService 
+class GetTenanciesService
 {
-    const MANAGEMENT_TYPE = 'Residential';
+    public const MANAGEMENT_TYPE = 'Residential';
 
     /**
      * @var string|null
@@ -73,7 +68,6 @@ class GetTenanciesService
     {
         $url = empty(config('mri.base_url')) ? 'https://uatapi.propertytree.io' : config('mri.base_url');
         $endpoint = empty(config('mri.endpoints.get_tenancies')) ? '/residentialproperty/v1/Tenancies' : config('mri.endpoints.get_tenancies');
-        
         $this->url = $url . $endpoint;
         return $this;
     }
@@ -83,15 +77,15 @@ class GetTenanciesService
         try {
             if (isset($this->officeId) && !empty($this->officeId)) {
                 $mriOffices = MriOffice::where('office_id', $this->officeId)->get();
-                if (count($mriOffices) == 0)
+                if (count($mriOffices) == 0) {
                     throw new \Exception('Unable to find MRI office with Gilbert office id = ' . $this->officeId);
-            }
-            else {
+                }
+            } else {
                 $mriOffices = MriOffice::get();
             }
-            foreach ($mriOffices as $office){
+            foreach ($mriOffices as $office) {
                 $token = $office->key;
-                $this->setToken($token);  
+                $this->setToken($token);
 
                 $client = new Client([
                     'headers' => [
@@ -100,32 +94,32 @@ class GetTenanciesService
                         'authorization' => 'Bearer ' . $this->accessToken
                     ],
                 ]);
-        
+
                 $query = [
                     'managementType' => self::MANAGEMENT_TYPE,
                 ];
 
-                if (isset($this->afterDate) && !empty($this->afterDate)){
+                if (isset($this->afterDate) && !empty($this->afterDate)) {
                     $query['lastModifiedOnOrAfter'] = $this->afterDate;
                 }
-        
+
                 $options = [
                     'query' => $query
                 ];
-        
+
                 $response = $client->request('GET', $this->url, $options);
-        
-                $data = json_decode($response->getBody()->getContents(), true);          
-                
+
+                $data = json_decode($response->getBody()->getContents(), true);
+
                 $this->saveTenancies($office->id, $data);
             }
         } catch (RequestException $e) {
             $this->exceptionHandler->addException($e);
         } catch (\Exception $e) {
-            $this->exceptionHandler->addException($e);            
+            $this->exceptionHandler->addException($e);
         }
 
-        if ($this->exceptionHandler->hasExceptions()){
+        if ($this->exceptionHandler->hasExceptions()) {
             $this->exceptionHandler->run();
         }
     }
@@ -133,21 +127,20 @@ class GetTenanciesService
     /**
      * @param int officeId
      * @param array tenanciesData
-     * 
      * @return array exceptions
      */
     public function saveTenancies($officeId, $tenanciesData)
     {
-        $updatedTenancyIds = []; 
+        $updatedTenancyIds = [];
 
-        $tenanciesId = array_map(function($tenancy){
+        $tenanciesId = array_map(function ($tenancy) {
             return $tenancy['id'];
         }, $tenanciesData);
 
         $existedTenanciesId = MriApplication::whereIn('tenancy_id', $tenanciesId)->pluck('tenancy_id')->toArray();
 
-        $tenanciesData = array_filter($tenanciesData, function($tenancy) use ($existedTenanciesId){
-            return !in_array($tenancy['id'], $existedTenanciesId) && !$tenancy['deleted'] && !$tenancy['archived']; 
+        $tenanciesData = array_filter($tenanciesData, function ($tenancy) use ($existedTenanciesId) {
+            return !in_array($tenancy['id'], $existedTenanciesId) && !$tenancy['deleted'] && !$tenancy['archived'];
         });
 
         foreach ($tenanciesData as $tenancy) {
@@ -163,21 +156,25 @@ class GetTenanciesService
                 $mriApp->prospect = $tenancy['prospect'];
                 $mriApp->lease_detail_charge_tenants_water_usage = $tenancy['lease_detail']['charge_tenants_water_usage'] ?? null;
 
-                if (!empty($tenancy['lease_start_date']))
+                if (!empty($tenancy['lease_start_date'])) {
                     $mriApp->lease_start_date = Carbon::parse($tenancy['lease_start_date']);
-                if (!empty($tenancy['lease_end_date']))
+                }
+                if (!empty($tenancy['lease_end_date'])) {
                     $mriApp->lease_end_date = Carbon::parse($tenancy['lease_end_date']);
-                if (!empty($tenancy['original_lease_start_date']))
+                }
+                if (!empty($tenancy['original_lease_start_date'])) {
                     $mriApp->original_lease_start_date = Carbon::parse($tenancy['original_lease_start_date']);
-                if (!empty($tenancy['vacate_date']))
+                }
+                if (!empty($tenancy['vacate_date'])) {
                     $mriApp->vacate_date = Carbon::parse($tenancy['vacate_date']);
-                
-                foreach ($tenancy['contacts'] as $contact){
+                }
+
+                foreach ($tenancy['contacts'] as $contact) {
                     if (!empty($mriApp->authorized_first_name) && !empty($mriApp->first_name)) {
                         break;
                     }
 
-                    if (count($tenancy['contacts']) == 1 || $contact['is_primary']){
+                    if ($contact['is_primary']) {
                         $mriApp->title = $contact['title'];
                         $mriApp->first_name = $contact['first_name'];
                         $mriApp->last_name = $contact['last_name'];
@@ -185,17 +182,18 @@ class GetTenanciesService
                         $mriApp->mobile_phone_number = $contact['mobile_phone_number'];
                         $mriApp->home_number = $contact['phone_number'];
                         $mriApp->is_marketing = !$contact['no_marketing'];
-                    }
-                    else {
+                        $mriApp->preferred_phone_number = $contact['preferred_phone_number'];
+                    } else {
                         $mriApp->authorized_title = $contact['title'];
                         $mriApp->authorized_first_name = $contact['first_name'];
                         $mriApp->authorized_last_name = $contact['last_name'];
                         $mriApp->authorized_email_address = $contact['email_address'];
                         $mriApp->authorized_mobile_phone_number = $contact['mobile_phone_number'];
                         $mriApp->authorized_home_number = $contact['phone_number'];
+                        $mriApp->authorized_preferred_phone_number = $contact['preferred_phone_number'];
                     }
                 }
-                
+
                 $mriApp->is_deleted = $tenancy['deleted'];
                 $mriApp->is_archived = $tenancy['archived'];
 
@@ -210,7 +208,7 @@ class GetTenanciesService
             }
         }
 
-        if (!empty($updatedTenancyIds)){
+        if (!empty($updatedTenancyIds)) {
             $message = sprintf('Created %s mri applications', count($updatedTenancyIds));
             // dump($message);
             info($message, ['mri_application_ids' => $updatedTenancyIds]);

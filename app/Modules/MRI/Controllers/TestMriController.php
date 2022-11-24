@@ -13,7 +13,7 @@ use MRI\Services\GetTenanciesService;
 use MRI\Services\GetPropertyService;
 use MRI\Services\MapApplicationService;
 
-class TestMriController extends Controller 
+class TestMriController extends Controller
 {
     /**
      * 
@@ -26,7 +26,7 @@ class TestMriController extends Controller
     {
         $officeId = $request->input('office');
         $afterDate = $request->input('afterDate');
-        $exceptions= [];
+        $exceptions = [];
 
         try {
             $fetchAgentService = new GetAgentService();
@@ -39,7 +39,8 @@ class TestMriController extends Controller
             }
 
             if (empty($afterDate)) {
-                $nowDate = Carbon::now()->subDays(config('mri.sub_days'))->format('Y-m-d');
+                $subDays = !empty(config('mri.sub_days')) ? config('mri.sub_days') : 2;
+                $nowDate = Carbon::now()->subDays($subDays)->format('Y-m-d');
                 $fetchAgentService->setAfterDate($nowDate);
                 $message .= sprintf('Fetching data after date %s', $nowDate);
             }
@@ -91,7 +92,8 @@ class TestMriController extends Controller
             }
 
             if (empty($afterDate)){
-                $nowDate = Carbon::now()->subDays(config('mri.sub_days'))->format('Y-m-d');
+                $subDays = !empty(config('mri.sub_days')) ? config('mri.sub_days') : 2;
+                $nowDate = Carbon::now()->subDays($subDays)->format('Y-m-d');
                 $tenancyService->setAfterDate($nowDate);
                 $message .= sprintf('Fetching data after date %s', $nowDate);
             }

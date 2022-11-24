@@ -61,8 +61,9 @@ class MriFetchTenanciesCommand extends Command
                 $tenancyService->setOfficeId(intval($officeId));
             }
 
-            if (empty($afterDate)){
-                $nowDate = Carbon::now()->subDays(config('mri.sub_days'))->format('Y-m-d');
+            if (empty($afterDate)) {
+                $subDays = !empty(config('mri.sub_days')) ? config('mri.sub_days') : 2;
+                $nowDate = Carbon::now()->subDays($subDays)->format('Y-m-d');
                 $tenancyService->setAfterDate($nowDate);
                 $message .= sprintf('Fetching data after date %s', $nowDate);
             }

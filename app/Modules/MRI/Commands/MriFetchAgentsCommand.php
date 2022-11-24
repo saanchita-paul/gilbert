@@ -61,7 +61,8 @@ class MriFetchAgentsCommand extends Command
             }
 
             if (empty($afterDate)) {
-                $nowDate = Carbon::now()->subDays(config('mri.sub_days'))->format('Y-m-d');
+                $subDays = !empty(config('mri.sub_days')) ? config('mri.sub_days') : 2;
+                $nowDate = Carbon::now()->subDays($subDays)->format('Y-m-d');
                 $fetchAgentService->setAfterDate($nowDate);
                 $message .= sprintf('Fetching data after date %s', $nowDate);
             }

@@ -2,16 +2,10 @@
 
 namespace MRI\Services;
 
-use App\Models\MriAgent;
-use App\Models\MriOffice;
 use App\Models\MriApplication;
-use App\Models\MriProperty;
-
-use App\Models\User;
-use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
-
 use App\Services\NotifyBadAgentMailService;
+use App\Models\ConnectionService;
 
 class MapApplicationService
 {
@@ -23,9 +17,9 @@ class MapApplicationService
     public function __construct()
     {
         $this->exceptionHandler = new HandleExceptionService(self::class);
-    } 
-    
-    public function run ()
+    }
+
+    public function run()
     {
         $mriApplications = MriApplication::doesntHave('connectionApplication')->get();
 
@@ -33,25 +27,19 @@ class MapApplicationService
 
         foreach ($mriApplications as $mriApp) {
             try {
-                $mapApp = $this->mapNewApplication($mriApp);
-                $conApp = ConnectionApplication::create($mapApp);
+                $conApp = $this->createConnectionApplication($mriApp);
                 $firstMriAgent = $conApp->createdBy?->user?->email;
-                if (empty($firstMriAgent)){
-                    $firstMriAgent = $conApp->mriApplication?->mriProperty?->mriAgents()?->first()?->email_address; 
+                if (empty($firstMriAgent)) {
+                    $firstMriAgent = $conApp->mriApplication?->mriProperty?->mriAgents()?->first()?->email_address;
                 }
                 NotifyBadAgentMailService::check(
-                    $conApp, 
-                    'MRI', 
-                    $conApp->agency->name ?? '', 
-                    $conApp->office->name ?? '', 
+                    $conApp,
+                    'MRI',
+                    $conApp->agency->name ?? '',
+                    $conApp->office->name ?? '',
                     $firstMriAgent ?? ''
                 );
                 $createdApplications[] = $conApp;
-                if (!empty($mriApp->authorized_first_name)) {
-                    $authorizedPerson = $this->mapNewAuthorizedPerson($conApp->id, $mriApp);
-                    $conApp->authorizedPerson()->create($authorizedPerson);
-                }
-    
             } catch (\Exception $e) {
                 $this->exceptionHandler->addException($e);
             }
@@ -61,17 +49,16 @@ class MapApplicationService
             info(sprintf('Created %s applications from MRI', strval(count($createdApplications))));
         }
 
-        if ($this->exceptionHandler->hasExceptions()){
+        if ($this->exceptionHandler->hasExceptions()) {
             $this->exceptionHandler->run();
         }
     }
 
     /**
      * @param MriApplication
-     * 
      * @return array
      */
-    private function mapNewApplication (MriApplication $mriApp) 
+    private function mapNewApplication(MriApplication $mriApp)
     {
         $mriOffice = $mriApp->mriOffice;
         $mriProperty = $mriApp->mriProperty;
@@ -83,31 +70,46 @@ class MapApplicationService
         $newConnectionApp['mri_application_id'] = $mriApp->id;
         $newConnectionApp['tenancy_type'] = ConnectionApplication::TENANCY_TYPE_RENTER;
 
-        if (in_array($mriApp->title, ConnectionApplication::AVAILABLE_USER_TITLES)) $newConnectionApp['title'] = $mriApp->title; 
+        if (in_array($mriApp->title, ConnectionApplication::AVAILABLE_USER_TITLES)) {
+            $newConnectionApp['title'] = $mriApp->title;
+        }
         $newConnectionApp['office_id'] = $mriOffice->office_id; //
         $newConnectionApp['agency_id'] = $mriOffice->office->agency_id; //
-        if($firstMriAgent) $newConnectionApp['created_by'] = $firstMriAgent->agent_profile_id ?? null;
+        if ($firstMriAgent) {
+            $newConnectionApp['created_by'] = $firstMriAgent->agent_profile_id ?? null;
+        }
         $newConnectionApp['first_name'] = $mriApp->first_name;
         $newConnectionApp['last_name'] = $mriApp->last_name;
         $newConnectionApp['email'] = $mriApp->email_address;
         $newConnectionApp['phone'] = $mriApp->mobile_phone_number ?? null;
         $newConnectionApp['homephone'] = $mriApp->home_number ?? null;
+        if (!empty($mriApp->preferred_phone_number)) {
+            if ($mriApp->preferred_phone_number == $newConnectionApp['homephone']) {
+                $newConnectionApp['phone_type'] = ConnectionApplication::PHONE_TYPE_HOMEPHONE;
+            }
+        }
         $newConnectionApp['moving_date'] = $mriApp->lease_start_date ?? null;
         $newConnectionApp['connection_end_date'] = $mriApp->lease_end_date ?? null;
         $newConnectionApp['is_email_marketing'] = $mriApp->is_marketing;
         $newConnectionApp['unit_number'] = $mriProperty->unit ?? null;
         $newConnectionApp['street_name'] = $mriProperty->address_line_1;
+        $addressLine1 = explode(" ", $mriProperty->address_line_1, 2);
+        $newConnectionApp['street_name_only'] = $addressLine1[0];
+        $newConnectionApp['street_type'] = $addressLine1[1] ?? null;
         $newConnectionApp['street_number'] = $mriProperty->street_number;
         $newConnectionApp['city'] = $mriProperty->suburb;
         $newConnectionApp['postcode'] = $mriProperty->post_code;
         $newConnectionApp['state'] = $mriProperty->state;
         $newConnectionApp['country'] = $mriProperty->country;
-        $newConnectionApp['street_address'] =  sprintf('%s %s', $newConnectionApp['street_number'], $newConnectionApp['street_name']);
-        if (!empty($newConnectionApp['unit_number'])) 
+        $newConnectionApp['street_address'] = sprintf('%s %s', $newConnectionApp['street_number'], $newConnectionApp['street_name']);
+        if (!empty($newConnectionApp['unit_number'])) {
             $newConnectionApp['street_address'] = $newConnectionApp['unit_number'] . ' / ' . $newConnectionApp['street_address'];
+        }
         $newConnectionApp['address_text'] = $newConnectionApp['street_address'] . ', ' . $newConnectionApp['city'] . ' ' . $newConnectionApp['state']  . ' ' . $newConnectionApp['postcode'];
-        if (!empty($mriProperty->management_type))
-            $newConnectionApp['property_type'] = ConnectionApplication::PROPERTY_TYPE_MAPPING[strtolower($mriProperty->management_type)];
+        if (!empty($mriProperty->management_type)) {
+            $managementType = strtolower($mriProperty->management_type);
+            $newConnectionApp['property_type'] = ConnectionApplication::PROPERTY_TYPE_MAPPING[$managementType];
+        }
 
         return $newConnectionApp;
     }
@@ -119,9 +121,37 @@ class MapApplicationService
         $newAuthorizedPerson['first_name'] = $mriApp->authorized_first_name;
         $newAuthorizedPerson['last_name'] = $mriApp->authorized_last_name;
         $newAuthorizedPerson['email'] = $mriApp->authorized_email_address;
-        $newAuthorizedPerson['phone'] = $mriApp->authorized_mobile_phone_number ?? ($mriApp->authorized_home_number ?? null);
+        if (!empty($mriApp->authorized_preferred_phone_number)) {
+            $newAuthorizedPerson['phone'] = $mriApp->authorized_preferred_phone_number;
+        } else {
+            $newAuthorizedPerson['phone'] = $mriApp->authorized_mobile_phone_number ?? null;
+        }
         $newAuthorizedPerson['connection_application_id'] = $connection_application_id;
 
         return $newAuthorizedPerson;
+    }
+
+    private function mapNewConnectionService(int $connection_application_id, string $serviceType)
+    {
+        return [
+            'connection_application_id' => $connection_application_id,
+            'service_type' => $serviceType,
+            'status' => ConnectionService::STATUS_EA_PROCESSINF,
+        ];
+    }
+
+    private function createConnectionApplication($mriApp)
+    {
+        $mapApp = $this->mapNewApplication($mriApp);
+        $conApp = ConnectionApplication::create($mapApp);
+        if (!empty($mriApp->authorized_first_name)) {
+            $authorizedPerson = $this->mapNewAuthorizedPerson($conApp->id, $mriApp);
+            $conApp->authorizedPerson()->create($authorizedPerson);
+        }
+        foreach (ConnectionService::SERVICE_TYPES as $serviceType) {
+            $serviceDetail = $this->mapNewConnectionService($conApp->id, $serviceType);
+            $conApp->connectionServices()->create($serviceDetail);
+        }
+        return $conApp;
     }
 }
