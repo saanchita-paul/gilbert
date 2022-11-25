@@ -542,7 +542,6 @@ class ApplicationController extends Controller
         try {
             $res = ValidateCutOffTime::validateCutOff($applicationId);
             return response()->json(['success' => true, 'data' => $res]);
-
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

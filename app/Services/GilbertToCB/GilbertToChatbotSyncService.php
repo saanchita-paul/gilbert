@@ -65,6 +65,7 @@ class GilbertToChatbotSyncService
      */
     public function sync()
     {
+        $this->application->update(['is_locked' => true]);
         return (new SendApplicationToChatbotAPI())->postApi($this->getMappedData());
     }
 
