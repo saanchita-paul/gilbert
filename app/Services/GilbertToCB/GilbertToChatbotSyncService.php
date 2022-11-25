@@ -3,6 +3,7 @@
 namespace App\Services\GilbertToCB;
 
 use App\Models\ConnectionApplication;
+use App\Models\RejectionReason;
 use App\Services\Address\AddressModel;
 use App\Services\ChatBot\SendApplicationToChatbotAPI;
 
@@ -34,6 +35,17 @@ class GilbertToChatbotSyncService
     /** PROPERTY TYPE CONSTANTS */
     const PROPERTY_TYPE_RESIDENTIAL = 'residential';
     const PROPERTY_TYPE_BUSINESS = 'business';
+
+    const INSPECTION_TIME_MAPPER = [
+        '8:00am - 12:00pm' => '8AM - 12PM',
+        '1:00pm - 5:00pm' => '1PM - 5PM',
+        '8:00am - 1:00pm' => '8AM - 1PM',
+        '9:00am - 2:00pm' => '9AM - 2PM',
+        '10:00am - 3:00pm' => '10AM - 3PM',
+        '11:00am - 4:00pm' => '11AM - 4PM',
+        '12:00pm - 5:00pm' => '12PM - 5PM',
+        '1:00pm - 6:00pm' => '1PM - 6PM',
+    ];
 
 
     public function __construct($applicationId)
@@ -114,7 +126,7 @@ class GilbertToChatbotSyncService
             "has_electricity" => $this->application->has_electricity,
             "is_renovation_on" => $this->application->is_renovation_on,
             "homephone" => $this->application->homephone,
-            "qld_vis_inspection_time" => $this->application->inspection_time,
+            "qld_vis_inspection_time" => $this->mapInspectionTime($this->application->inspection_time),
             "family_violance" => $this->application->family_violance,
             "source" => $this->application->source,
             "is_contacted" => $this->application->is_contacted,
@@ -151,7 +163,8 @@ class GilbertToChatbotSyncService
             "is_escalated" => $this->mapIsEscalated($this->application->status),
             "connection_services" => $this->application->connectionServices ? $this->application->connectionServices->toArray() : [],
             "identification" => $this->application->identification ? $this->application->identification->toArray() : null,
-            "authorized_person" => $this->application->authorizedPerson ? $this->application->authorizedPerson->toArray() : null
+            "authorized_person" => $this->application->authorizedPerson ? $this->application->authorizedPerson->toArray() : null,
+            "rejection_reasons" => $this->mapRejectionReasons()
         ];
     }
 
@@ -291,6 +304,34 @@ class GilbertToChatbotSyncService
             2 => self::PROPERTY_TYPE_BUSINESS,
             default => null
         };
+    }
+
+    /**
+     * map inspection time
+     *
+     * @param $inspectionTime
+     * @return string|null
+     */
+    private function mapInspectionTime($inspectionTime): ?string
+    {
+        return self::INSPECTION_TIME_MAPPER[strtolower($inspectionTime)] ?? null;
+    }
+
+    /**
+     * map rejection reasons
+     *
+     * @return array
+     */
+    private function mapRejectionReasons(): array
+    {
+        $servicesId = $this->application->connectionServices
+            ? $this->application->connectionServices->pluck('id')->toArray()
+            : [];
+
+        return !empty($servicesId)
+            ? RejectionReason::query()->whereIn('connection_service_id', $servicesId)->get()->toArray()
+            : [];
+
     }
 }
 
