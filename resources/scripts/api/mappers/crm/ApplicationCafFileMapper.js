@@ -72,7 +72,7 @@ const mapApplicationCafFile = data => {
     let model = new ApplicationCafFile({...data});
     model.service_type = mapService(model.service);
     model.supplier = mapProvider(model.service);
-    model.connection_date = mapConnDate(model.service);
+    model.connection_date = mapConnDate(model.connection_date);
     model.plan = mapPlan(model.service);
     model.selected_service = getSelectedService(model.service);
     model.service_dropdown = mapServices(model.service);
@@ -104,8 +104,8 @@ export const mapProvider = services => {
     return services.length != 0 ? capitalize(services[0]['provider_name']) : '';
 }
 
-export const mapConnDate = services => {
-    return services.length > 0 && !isNull(services[0]['connection_date']) ? new DayJS(services[0]['connection_date']).format(DATE_FORMAT.DB_DATE) : '';
+export const mapConnDate = conn_date => {
+    return !isNull(conn_date) ? new DayJS(conn_date).format(DATE_FORMAT.DB_DATE) : '';
 }
 
 export const mapPlan = services => {
