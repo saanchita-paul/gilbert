@@ -218,6 +218,11 @@ Route::namespace('agency')->middleware(['auth:sanctum'])->group(function () {
      */
     Route::get('/applications/{id}/send-to-chatbot', [SendApplicationToChatbotController::class, 'sendApplication']);
     Route::get('/applications/{id}/is-sent-to-chatbot', [ApplicationController::class, 'isSentToChatBot']);
+
+    // Lock/unlock application routes
+    Route::post('/applications/{id}/lock-or-unlock', [ApplicationController::class, 'lockUnlockApp']);
+
+
      /***
      * Application closing reasons route
      */
@@ -306,9 +311,6 @@ Route::get('/applications/{id}/email-manually-verified', [ApplicationController:
  * gilbert to chatbot sync
  */
 Route::get('/cb-to-gb-sync/{chatbotId}', [GilbertLeadAPIController::class, 'syncProperty']);
-
-// Lock/unlock application routes
-Route::post('/applications/{id}/lock-or-unlock', [ApplicationController::class, 'lockUnlockApp']);
 
 
 

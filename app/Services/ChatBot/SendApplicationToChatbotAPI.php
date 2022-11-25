@@ -14,7 +14,9 @@ class SendApplicationToChatbotAPI
      */
     public function postApi($applicationDetails)
     {
-        $url = config('gb_to_cb.root_url') . config('gb_to_cb.endpoints.gb_to_cb_sync') . $applicationDetails['connection_application_id'];
+        $url = config('gb_to_cb.root_url') .
+            config('gb_to_cb.endpoints.gb_to_cb_sync') .
+            $applicationDetails['connection_application_id'];
 
         try {
             $headers = [

@@ -507,7 +507,7 @@ export default {
         },
 
         async lockApp() {
-            const res = await LeadApplicationService.sendToChatBot(this.leadId, {is_locked: true});
+            const res = await LeadApplicationService.sendToChatBot(this.leadId);
 
             if (res.success) {
                 this.sentToChabotConfirmModal = false;
