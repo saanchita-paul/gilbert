@@ -39,6 +39,7 @@ class NotifyMissingDetailsService
 
     public function __construct()
     {
+        $this->incompleteApps = [];
     }
 
     public function check(ConnectionApplication $conApp)

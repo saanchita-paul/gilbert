@@ -89,7 +89,7 @@ class MapApplicationService
         $newConnectionApp['phone'] = $mriApp->mobile_phone_number ?? null;
         $newConnectionApp['homephone'] = $mriApp->home_number ?? null;
         $newConnectionApp['phone_type'] = ConnectionApplication::PHONE_TYPE_MOBILE;
-        if ($mriApp->preferred_phone_number ?? '' == $newConnectionApp['homephone']) {
+        if (($mriApp->preferred_phone_number ?? '') == $newConnectionApp['homephone']) {
             $newConnectionApp['phone_type'] = ConnectionApplication::PHONE_TYPE_HOMEPHONE;
         }
         $newConnectionApp['moving_date'] = $mriApp->lease_start_date ?? null;
