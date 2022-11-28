@@ -18,7 +18,7 @@ class MriFetchAgentsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'mri:fetch_agents {--office=} {--afterDate=}';
+    protected $signature = 'mri:fetch_agents {--office=} {--afterDate=} {--dump}';
     /**
      * The console command description.
      *
@@ -47,16 +47,22 @@ class MriFetchAgentsCommand extends Command
     {
         $officeId = $this->option('office') ?? '';
         $afterDate = $this->option('afterDate') ?? '';
+        $dump = $this->option('dump');
+
         $this->line('MRI fetch agents command started successfully!');
         try {
             MriServices::handleFetchAgents($officeId, $afterDate);
         } catch (\Exception $exception) {
-            dump($exception->getMessage());
+            if ($dump) {
+                dump($exception->getMessage());
+            }
         }
         try {
             MriServices::handleMapAgents();
         } catch (\Exception $exception) {
-            dump($exception->getMessage());
+            if ($dump) {
+                dump($exception->getMessage());
+            }
         }
         $this->line('MRI fetch agents command finished successfully!');
     }

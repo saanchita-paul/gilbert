@@ -18,7 +18,7 @@ class MriFetchTenanciesCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'mri:fetch_tenancies {--office=} {--afterDate=}';
+    protected $signature = 'mri:fetch_tenancies {--office=} {--afterDate=} {--dump}';
     /**
      * The console command description.
      *
@@ -47,26 +47,36 @@ class MriFetchTenanciesCommand extends Command
     {
         $officeId = $this->option('office') ?? '';
         $afterDate = $this->option('afterDate') ?? '';
+        $dump = $this->option('dump');
+
         $this->line('MRI fetch tenancies command started successfully!');
         try {
             MriServices::handleFetchTenancies($officeId, $afterDate);
         } catch (\Exception $exception) {
-            dump($exception->getMessage());
+            if ($dump) {
+                dump($exception->getMessage());
+            }
         }
         try {
             MriServices::handleFetchProperties($officeId);
         } catch (\Exception $exception) {
-            dump($exception->getMessage());
+            if ($dump) {
+                dump($exception->getMessage());
+            }
         }
         try {
             MriServices::handleFetchNotes($officeId, $afterDate);
         } catch (\Exception $exception) {
-            dump($exception->getMessage());
+            if ($dump) {
+                dump($exception->getMessage());
+            }
         }
         try {
             MriServices::handleMapApplications();
         } catch (\Exception $exception) {
-            dump($exception->getMessage());
+            if ($dump) {
+                dump($exception->getMessage());
+            }
         }
 
         $this->line('MRI fetch tenancies command finished successfully!');
