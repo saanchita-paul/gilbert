@@ -119,6 +119,7 @@ use Carbon\Carbon;
 class ConnectionApplication extends Model
 {
     use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -236,27 +237,27 @@ class ConnectionApplication extends Model
     ];
 
 
-    const STATUS_UNASSIGNED = 1;
-    const STATUS_ASSIGNED = 2;
-    const STATUS_ESCALATED = 3;
-    const STATUS_SUBMITTED = 4;
-    const STATUS_ACCEPTED = 5; #todo: check
-    const STATUS_REJECTED = 6; //non payable
-    const STATUS_EA_PROCESSINF = 7;
-    const STATUS_CLOSED = 8;
+    public const STATUS_UNASSIGNED = 1;
+    public const STATUS_ASSIGNED = 2;
+    public const STATUS_ESCALATED = 3;
+    public const STATUS_SUBMITTED = 4;
+    public const STATUS_ACCEPTED = 5; #todo: check
+    public const STATUS_REJECTED = 6; //non payable
+    public const STATUS_EA_PROCESSINF = 7;
+    public const STATUS_CLOSED = 8;
 
-    const HAS_SOLAR = 1;
-    const NO_SOLAR = 2;
+    public const HAS_SOLAR = 1;
+    public const NO_SOLAR = 2;
 
 
-    const MY_APPLICATIONS = 'my_applications';
+    public const MY_APPLICATIONS = 'my_applications';
 
     /**
      * do not use this anymore, use ApplicationStatusFilterMapper instead.
      *
      * @deprecated
      */
-    const STATUS_MAPPING = [
+    public const STATUS_MAPPING = [
         'unassigned' => self::STATUS_UNASSIGNED,
         'assigned' => self::STATUS_ASSIGNED,
         'escalated' => self::STATUS_ESCALATED,
@@ -267,92 +268,90 @@ class ConnectionApplication extends Model
         'closed' => self::STATUS_CLOSED,
     ];
 
-    const PLAN_TYPE_TOTAL = 'total_plan';
-    const PLAN_TYPE_BASIC = 'basic_plan';
-    const PLAN_TYPE_NO_FRILLS = 'no_frills';
-    const PLAN_TYPE_FLEXI_PLAN = 'flexi_plan';
-    const PLAN_TYPE_BALANCE_PLAN = 'balance_plan';
+    public const PLAN_TYPE_TOTAL = 'total_plan';
+    public const PLAN_TYPE_BASIC = 'basic_plan';
+    public const PLAN_TYPE_NO_FRILLS = 'no_frills';
+    public const PLAN_TYPE_FLEXI_PLAN = 'flexi_plan';
+    public const PLAN_TYPE_BALANCE_PLAN = 'balance_plan';
 
-    const PROVIDER_POWER_SHOP = 'powershop';
+    public const PROVIDER_POWER_SHOP = 'powershop';
 
-    const PLAN_TYPE_ORIGIN_GO = 'origin_go';
-    const PLAN_TYPE_ORIGIN_VARIABLE = 'origin_go_variable';
-    const PLAN_TYPE_ORIGIN_BASIC = 'origin_basic';
-    const PLAN_TYPE_ORIGIN_HOME_ASSIST = 'origin_home_assist';
-    const PLAN_TYPE_ORIGIN_ADVANTAGE_VARIABLE = 'origin_advantage_variable';
+    public const PLAN_TYPE_ORIGIN_GO = 'origin_go';
+    public const PLAN_TYPE_ORIGIN_VARIABLE = 'origin_go_variable';
+    public const PLAN_TYPE_ORIGIN_BASIC = 'origin_basic';
+    public const PLAN_TYPE_ORIGIN_HOME_ASSIST = 'origin_home_assist';
+    public const PLAN_TYPE_ORIGIN_ADVANTAGE_VARIABLE = 'origin_advantage_variable';
 
-    const PLAN_TYPE_SUMO_SAVER = 'sumo_saver';
-    const PLAN_TYPE_SUMO_ASSURE = 'sumo_assure';
-    const PLAN_TYPE_SUMO_SELECT = 'sumo_select';
-
-
-
-    const PLAN_TYPE_TOTAL_INDEX = 1;
-    const PLAN_TYPE_BASIC_INDEX = 2;
-    const PLAN_TYPE_NO_FRILLS_INDEX = 3;
-
-    const PLAN_TYPE_ORIGIN_GO_INDEX = 4;
-    const PLAN_TYPE_ORIGIN_VARIABLE_INDEX = 5;
-    const PLAN_TYPE_ORIGIN_BASIC_INDEX = 6;
-    const PLAN_TYPE_ORIGIN_HOME_ASSIST_INDEX = 10;
-    const PLAN_TYPE_ORIGIN_ADVANTAGE_VARIABLE_INDEX = 11;
+    public const PLAN_TYPE_SUMO_SAVER = 'sumo_saver';
+    public const PLAN_TYPE_SUMO_ASSURE = 'sumo_assure';
+    public const PLAN_TYPE_SUMO_SELECT = 'sumo_select';
 
 
-    const PLAN_TYPE_SUMO_SAVER_INDEX = 7;
-    const PLAN_TYPE_SUMO_ASSURE_INDEX = 8;
-    const PLAN_TYPE_SUMO_SELECT_INDEX = 9;
+    public const PLAN_TYPE_TOTAL_INDEX = 1;
+    public const PLAN_TYPE_BASIC_INDEX = 2;
+    public const PLAN_TYPE_NO_FRILLS_INDEX = 3;
+
+    public const PLAN_TYPE_ORIGIN_GO_INDEX = 4;
+    public const PLAN_TYPE_ORIGIN_VARIABLE_INDEX = 5;
+    public const PLAN_TYPE_ORIGIN_BASIC_INDEX = 6;
+    public const PLAN_TYPE_ORIGIN_HOME_ASSIST_INDEX = 10;
+    public const PLAN_TYPE_ORIGIN_ADVANTAGE_VARIABLE_INDEX = 11;
 
 
-
-    const SOURCE_ALL = 3;
-    const SOURCE_HOOD = 0;
-    const SOURCE_FOXIE = 1;
-    const SOURCE_IGNITE = 2;
-    const SOURCE_OUR_PROPERTY = 4;
-    const SOURCE_PROPERTY_ME = 5;
-    const SOURCE_HOOD_LEAD = 10;
-    const SOURCE_T_APP = 11;
-
-    const EMAIL_BILLING_EMAIL = 1;
-    const EMAIL_BILLING_PAPER = 2;
+    public const PLAN_TYPE_SUMO_SAVER_INDEX = 7;
+    public const PLAN_TYPE_SUMO_ASSURE_INDEX = 8;
+    public const PLAN_TYPE_SUMO_SELECT_INDEX = 9;
 
 
-    const TENANCY_TYPE_RENTER = 1;
-    const TENANCY_TYPE_HOME_OWNER = 2;
+    public const SOURCE_ALL = 3;
+    public const SOURCE_HOOD = 0;
+    public const SOURCE_FOXIE = 1;
+    public const SOURCE_IGNITE = 2;
+    public const SOURCE_OUR_PROPERTY = 4;
+    public const SOURCE_PROPERTY_ME = 5;
+    public const SOURCE_HOOD_LEAD = 10;
+    public const SOURCE_T_APP = 11;
 
-    const TRIAGE = 1;
+    public const EMAIL_BILLING_EMAIL = 1;
+    public const EMAIL_BILLING_PAPER = 2;
 
-    const PROPERTY_TYPE_RESIDENTIAL = 1;
-    const PROPERTY_TYPE_BUSINESS = 2;
 
-    const PHONE_TYPE_MOBILE = 1;
-    const PHONE_TYPE_HOMEPHONE = 2;
+    public const TENANCY_TYPE_RENTER = 1;
+    public const TENANCY_TYPE_HOME_OWNER = 2;
 
-    const LEAD_SUBMIT_TYPE_ENERGY = 'energy';
-    const LEAD_SUBMIT_TYPE_POWER = 'power';
-    const LEAD_SUBMIT_TYPE_GAS = 'gas';
-    const LEAD_SUBMIT_TYPE_WATER = 'water';
+    public const TRIAGE = 1;
 
-    const PROPERTY_TYPE_MAPPING = [
+    public const PROPERTY_TYPE_RESIDENTIAL = 1;
+    public const PROPERTY_TYPE_BUSINESS = 2;
+
+    public const PHONE_TYPE_MOBILE = 1;
+    public const PHONE_TYPE_HOMEPHONE = 2;
+
+    public const LEAD_SUBMIT_TYPE_ENERGY = 'energy';
+    public const LEAD_SUBMIT_TYPE_POWER = 'power';
+    public const LEAD_SUBMIT_TYPE_GAS = 'gas';
+    public const LEAD_SUBMIT_TYPE_WATER = 'water';
+
+    public const PROPERTY_TYPE_MAPPING = [
         'residential' => self::TENANCY_TYPE_RENTER,
         'business' => self::TENANCY_TYPE_HOME_OWNER
     ];
 
-    const TENANCY_MAPPING = [
+    public const TENANCY_MAPPING = [
         'renter' => self::TENANCY_TYPE_RENTER,
         'home_owner' => self::TENANCY_TYPE_HOME_OWNER
     ];
 
-    const TRIAGE_MAPPING = [
+    public const TRIAGE_MAPPING = [
         'triage' => self::TRIAGE
     ];
 
-    const TENANCY_NAME_MAPPING = [
+    public const TENANCY_NAME_MAPPING = [
         self::TENANCY_TYPE_RENTER => 'Renter',
         self::TENANCY_TYPE_HOME_OWNER => 'Owner'
     ];
 
-    const SOURCE_MAPPING = [
+    public const SOURCE_MAPPING = [
         'all' => self::SOURCE_ALL,
         'hood' => self::SOURCE_HOOD,
         'foxie' => self::SOURCE_FOXIE,
@@ -363,7 +362,7 @@ class ConnectionApplication extends Model
         't_app' => self::SOURCE_T_APP,
     ];
 
-    const PLAN_TYPE_MAPPER = [
+    public const PLAN_TYPE_MAPPER = [
         self::PLAN_TYPE_BASIC => 2,
         self::PLAN_TYPE_NO_FRILLS => 3,
         self::PLAN_TYPE_TOTAL => 1,
@@ -377,7 +376,7 @@ class ConnectionApplication extends Model
         self::PLAN_TYPE_SUMO_SELECT => 9
     ];
 
-    const SOURCE_NAME_MAPPING = [
+    public const SOURCE_NAME_MAPPING = [
         self::SOURCE_HOOD => 'Hood',
         self::SOURCE_FOXIE => 'Foxie',
         self::SOURCE_IGNITE => 'Ignite',
@@ -387,34 +386,34 @@ class ConnectionApplication extends Model
         self::SOURCE_T_APP => "tApp",
     ];
 
-    const PLAN_TYPE_REVERSE_MAPPER = [
+    public const PLAN_TYPE_REVERSE_MAPPER = [
         self::PLAN_TYPE_TOTAL_INDEX => self::PLAN_TYPE_TOTAL,
         self::PLAN_TYPE_BASIC_INDEX => self::PLAN_TYPE_BASIC,
         self::PLAN_TYPE_NO_FRILLS_INDEX => self::PLAN_TYPE_NO_FRILLS,
         self::PLAN_TYPE_ORIGIN_GO_INDEX => self::PLAN_TYPE_ORIGIN_GO,
-        self::PLAN_TYPE_ORIGIN_VARIABLE_INDEX =>  self::PLAN_TYPE_ORIGIN_VARIABLE,
+        self::PLAN_TYPE_ORIGIN_VARIABLE_INDEX => self::PLAN_TYPE_ORIGIN_VARIABLE,
         self::PLAN_TYPE_ORIGIN_BASIC_INDEX => self::PLAN_TYPE_ORIGIN_BASIC,
         self::PLAN_TYPE_ORIGIN_HOME_ASSIST_INDEX => self::PLAN_TYPE_ORIGIN_HOME_ASSIST,
         self::PLAN_TYPE_ORIGIN_ADVANTAGE_VARIABLE_INDEX => self::PLAN_TYPE_ORIGIN_ADVANTAGE_VARIABLE,
         self::PLAN_TYPE_SUMO_SAVER_INDEX => self::PLAN_TYPE_SUMO_SAVER,
         self::PLAN_TYPE_SUMO_ASSURE_INDEX => self::PLAN_TYPE_SUMO_ASSURE,
-        self::PLAN_TYPE_SUMO_SELECT_INDEX =>  self::PLAN_TYPE_SUMO_SELECT
+        self::PLAN_TYPE_SUMO_SELECT_INDEX => self::PLAN_TYPE_SUMO_SELECT
 
     ];
 
-    const AFTER_HOUR_PAYEE_HOOD = 'hood';
-    const AFTER_HOUR_PAYEE_APPLICANT = 'applicant';
+    public const AFTER_HOUR_PAYEE_HOOD = 'hood';
+    public const AFTER_HOUR_PAYEE_APPLICANT = 'applicant';
 
-    const AVAILABLE_USER_TITLES = [
+    public const AVAILABLE_USER_TITLES = [
         'Mr', 'Miss', 'Dr', 'Mrs', 'Ms'
     ];
 
-    const ACCESS_ON_SITE = 'CUST ON SITE';
-    const ACCESS_KEYS_METER = "KEYS IN METER BOX";
-    const ACCESS_KEYS_LETTER = "KEYS IN LETTER BOX";
-    const ACCESS_CUSTOMER_CONSULTATION = "Customer Consultation";
+    public const ACCESS_ON_SITE = 'CUST ON SITE';
+    public const ACCESS_KEYS_METER = "KEYS IN METER BOX";
+    public const ACCESS_KEYS_LETTER = "KEYS IN LETTER BOX";
+    public const ACCESS_CUSTOMER_CONSULTATION = "Customer Consultation";
 
-    const AVAILABLE_ADDITIONAL_INFO = [
+    public const AVAILABLE_ADDITIONAL_INFO = [
         self::ACCESS_ON_SITE,
         self::ACCESS_KEYS_METER,
         self::ACCESS_KEYS_LETTER,
@@ -466,7 +465,7 @@ class ConnectionApplication extends Model
      */
     public function tsaCallHistories()
     {
-        return $this->hasMany(TSACallHistory::class , 'connection_application_id')->orderBy('attempt_id');
+        return $this->hasMany(TSACallHistory::class, 'connection_application_id')->orderBy('attempt_id');
     }
 
     /**
@@ -482,7 +481,7 @@ class ConnectionApplication extends Model
      */
     public function SugerLead()
     {
-        return $this->hasOne(SugerLead::class , 'connection_application_id');
+        return $this->hasOne(SugerLead::class, 'connection_application_id');
     }
 
     /**
@@ -490,7 +489,7 @@ class ConnectionApplication extends Model
      */
     public function igniteLead()
     {
-        return $this->hasOne(IgniteLead::class , 'connection_application_id');
+        return $this->hasOne(IgniteLead::class, 'connection_application_id');
     }
 
     /**
@@ -511,7 +510,7 @@ class ConnectionApplication extends Model
 
     public function propertyMeLead()
     {
-        return $this->hasOne(PropertyMeLead::class , 'connection_application_id');
+        return $this->hasOne(PropertyMeLead::class, 'connection_application_id');
     }
 
     /**
@@ -519,7 +518,7 @@ class ConnectionApplication extends Model
      */
     public function authorizedPerson()
     {
-        return $this->hasOne(ConnectionApplicationSecondaryACC::class , 'connection_application_id' , 'id');
+        return $this->hasOne(ConnectionApplicationSecondaryACC::class, 'connection_application_id', 'id');
     }
 
     /**
@@ -543,14 +542,16 @@ class ConnectionApplication extends Model
         return $data[sizeof($data) - 1];
     }
 
-     /**
+    /**
      * @return HasOne
      */
     public function powershopPaymentInfo()
     {
         return $this->hasOne(PowershopPaymentInfo::class, 'connection_application_id');
-    }/**
-     * @return BelongsTo
+    }
+
+    /**
+     * @return HasOne
      */
     public function appCloseReason()
     {
@@ -588,11 +589,11 @@ class ConnectionApplication extends Model
     {
         return match ($this->source) {
             ConnectionApplication::SOURCE_HOOD,
-            ConnectionApplication::SOURCE_PROPERTY_ME => $this->createdBy?->first_name.' '. $this->createdBy?->last_name,
+            ConnectionApplication::SOURCE_PROPERTY_ME, ConnectionApplication::SOURCE_T_APP =>
+                $this->createdBy?->first_name . ' ' . $this->createdBy?->last_name,
             ConnectionApplication::SOURCE_FOXIE => $this->SugerLead?->agent_name,
             ConnectionApplication::SOURCE_IGNITE => $this->igniteLead?->agent_name,
             ConnectionApplication::SOURCE_OUR_PROPERTY => $this->ourPropertyLead?->agent_name,
-            ConnectionApplication::SOURCE_T_APP => $this->createdBy?->first_name.' '. $this->createdBy?->last_name,
             default => ''
         };
     }
@@ -608,7 +609,7 @@ class ConnectionApplication extends Model
     public function getAfterHourPayee()
     {
         $afterHourFlag = false;
-        if(!empty($this->after_hour_payee)) {
+        if (!empty($this->after_hour_payee)) {
             $afterHourFlag = true;
         }
         return $afterHourFlag;
@@ -621,24 +622,26 @@ class ConnectionApplication extends Model
      *
      * @return string
      */
-    public function getMirnChecksumAttribute(){
-        if(!empty($this->mirn) && count(str_split($this->mirn)) == 10){
+    public function getMirnChecksumAttribute()
+    {
+        if (!empty($this->mirn) && count(str_split($this->mirn)) == 10) {
             $arr = str_split($this->mirn);
             $isDouble = true;
             $totalSum = 0;
 
-            for($i=count($arr)-1; $i>=0; $i--){
+            for ($i = count($arr) - 1; $i >= 0; $i--) {
                 $asciiVal = intval(ord($arr[$i]));
-                if($isDouble)
+                if ($isDouble) {
                     $asciiVal *= 2;
+                }
                 $isDouble = !$isDouble;
-                $split  = array_map('intval', str_split($asciiVal));
+                $split = array_map('intval', str_split($asciiVal));
                 $sum = 0;
-                foreach($split as $digit){
+                foreach ($split as $digit) {
                     $sum += $digit;
                 }
 
-                $totalSum+= $sum;
+                $totalSum += $sum;
             }
 
             $nextHighest = ceil($totalSum / 10) * 10;
@@ -647,26 +650,26 @@ class ConnectionApplication extends Model
         }
 
         return $this->mirn ?? '';
-
     }
 
-    public function getLifeSupportAcceptedAtAttribute(){
+    public function getLifeSupportAcceptedAtAttribute()
+    {
         $power = $this->power_life_support_accepted_at;
         $gas = $this->gas_life_support_accepted_at;
 
-        if (empty($gas) && empty($power)){
+        if (empty($gas) && empty($power)) {
             return '';
-        }
-        else if (empty($gas)){
+        } elseif (empty($gas)) {
             return $power;
-        }
-        else if (empty($power)){
+        } elseif (empty($power)) {
             return $gas;
-        }
-        else {
+        } else {
             $isPowerLater = Carbon::parse($power)->gt(Carbon::parse($gas));
-            if ($isPowerLater) return $power;
-            else return $gas;
+            if ($isPowerLater) {
+                return $power;
+            } else {
+                return $gas;
+            }
         }
     }
 }

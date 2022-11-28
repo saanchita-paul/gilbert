@@ -27,10 +27,11 @@ class ApplicationResource extends JsonResource
         parent::__construct($resource);
         $this->tsa = is_array($tsa) ? $tsa : [];
     }
+
     /**
      * Transform the resource into an array.
      *
-     * @param  Request  $request
+     * @param Request $request
      * @return array
      */
     public function toArray($request)
@@ -82,7 +83,6 @@ class ApplicationResource extends JsonResource
             'street_number' => $this->street_number,
             'street_name' => $this->street_name,
             'street_name_only' => $this->street_name_only,
-            'unit_number' => $this->unit_number,
             'billing_unit_number' => $this->billing_unit_number,
             'billing_street_number' => $this->billing_street_number,
             'billing_street_name' => $this->billing_street_name,
@@ -90,7 +90,7 @@ class ApplicationResource extends JsonResource
             'billing_address_unit' => $this->billing_unit_number,
             'billing_street_address' => $this->billing_street_address,
             'billing_city' => $this->billing_city,
-            'billing_state' =>$this->getStateFull($this->billing_state),
+            'billing_state' => $this->getStateFull($this->billing_state),
             'billing_street_type' => $this->billing_street_type,
             'billing_postcode' => $this->billing_postcode,
             'is_billing_same' => $this->is_billing_same,
@@ -110,6 +110,7 @@ class ApplicationResource extends JsonResource
             'unit_number' => $this->unit_number,
             'street_type' => $this->street_type,
             'mannual_address' => $this->mannual_address,
+            'app_close_reason_id' => $this->app_close_reason_id,
 
             'billing_mannual_address' => $this->billing_mannual_address,
             'billing_state_short' => $this->billing_state_short,
@@ -222,10 +223,9 @@ class ApplicationResource extends JsonResource
     private function getAuthoizedPersonName()
     {
 
-        if($this->authorizedPerson)
-        {
+        if ($this->authorizedPerson) {
             $fullName = "{$this->authorizedPerson->title} {$this->authorizedPerson->first_name} {$this->authorizedPerson->middle_name} {$this->authorizedPerson->last_name}";
-            if(empty(trim($fullName))) return null;
+            if (empty(trim($fullName))) return null;
             return $fullName;
         }
         return null;
@@ -240,13 +240,15 @@ class ApplicationResource extends JsonResource
         return 'total_plan';
     }
 
-    private function submittedBy(){
+    private function submittedBy()
+    {
 
-        $fullName = $this->submittedByUser?->profile?->first_name .' '. $this->submittedByUser?->profile?->last_name;
+        $fullName = $this->submittedByUser?->profile?->first_name . ' ' . $this->submittedByUser?->profile?->last_name;
         return trim($fullName);
     }
 
-    private function submittedAt(){
+    private function submittedAt()
+    {
         return $this->connectionServices?->pluck('submitted_at')?->sort()?->first();
     }
 
@@ -279,7 +281,7 @@ class ApplicationResource extends JsonResource
      *
      * @return array|null
      */
-    private function mapStatusProgress(): array | null
+    private function mapStatusProgress(): array|null
     {
         try {
             $service = new AgentStatusProgressMapper([
@@ -301,7 +303,7 @@ class ApplicationResource extends JsonResource
      * @param $services
      * @return array|string[]|string[][]
      */
-    public function mapConnectionServiceStatus($services, $tenancyType, $state):array
+    public function mapConnectionServiceStatus($services, $tenancyType, $state): array
     {
         try {
             return (new AgentServiceApplicationStatusMapper())->getAgentServiceApplicationStatus($services, $tenancyType, $state);
