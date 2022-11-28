@@ -3,6 +3,7 @@
 namespace App\Services\GilbertToCB;
 
 use App\Models\ConnectionApplication;
+use App\Models\ConnectionService;
 use App\Models\RejectionReason;
 use App\Services\Address\AddressModel;
 use App\Services\ChatBot\SendApplicationToChatbotAPI;
@@ -232,14 +233,14 @@ class GilbertToChatbotSyncService
     {
         $filterServices = [];
         foreach ($services as $service) {
-            if ($service['service_type'] === 'gas' || $service['service_type'] === 'power') {
+            if ($service['service_type'] === ConnectionService::TYPE_GAS || $service['service_type'] === ConnectionService::TYPE_ELECTRICITY) {
                 $filterServices[] = $service;
             }
         }
         if (count($filterServices) == 2) {
             return self::PLAN_UTILITY_TYPE_BOTH;
         }
-        if (count($filterServices) == 1 && $filterServices[0]['service_type'] == 'gas') {
+        if (count($filterServices) == 1 && $filterServices[0]['service_type'] == ConnectionService::TYPE_GAS) {
             return self::PLAN_UTILITY_TYPE_GAS;
         }
         return self::PLAN_UTILITY_TYPE_ELECTRICITY;
