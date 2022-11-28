@@ -3,59 +3,109 @@
 namespace MRI\Services;
 
 use App\Models\ConnectionApplication;
-use App\Models\Identification;
-use App\Models\MriApplication;
-use Illuminate\Support\Carbon;
+use MRI\Mail\NotifyMissingDetailsMail;
+use Illuminate\Support\Facades\Mail;
 
 class NotifyMissingDetailsService
 {
     /**
-     * List of required fields in MRI Application Table.
+     * List of required fields in Connection Application Table.
      * Ensure fields with || to not be the first item
      * @param array
      */
-    public const MRI_APPLICATION_REQUIRED_FIELDS = [
+    public const CONNECTION_APPLICATION_REQUIRED_FIELDS = [
         'title',
         'first_name',
         'last_name',
-        'email_address',
-        'mobile_phone_number||home_number',
-        'lease_start_date'
+        'dob',
+        'email',
+        'phone||homephone',
+        'moving_date',
+        'tenancy_type',
     ];
 
     /**
-     * @var array int
+     * List of required fields in Identification Table.
+     * Ensure fields with || to not be the first item
+     * @param array
      */
-    private array $mriApplicationIds;
+    public const IDENTIFICATION_REQUIRED_FIELDS = [
+        'type',
+        'card_number',
+        'expire_date'
+    ];
 
-    public function __construct(array $mriApplicationIds = [])
+    private array $incompleteApps;
+
+    public function __construct()
     {
-        $this->mriApplicationIds = $mriApplicationIds;
     }
 
-    public function check()
+    public function check(ConnectionApplication $conApp)
     {
-        $query = MriApplication::whereIn('id', $this->mriApplicationIds);
-        foreach (self::MRI_APPLICATION_REQUIRED_FIELDS as $key => $field) {
+        $this->checkConnectionApplicationFields($conApp);
+        $this->checkIdentificationFields($conApp);
+
+        return $this->incompleteApps;
+    }
+
+    public function notifyIfAny()
+    {
+        if (count($this->incompleteApps) > 0) {
+            $emails = explode(',', config('support_email.agent_not_found'));
+            foreach ($emails as $recipient) {
+                Mail::to($recipient)->queue(new NotifyMissingDetailsMail($this->incompleteApps));
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    private function checkConnectionApplicationFields(ConnectionApplication $conApp)
+    {
+        foreach (self::CONNECTION_APPLICATION_REQUIRED_FIELDS as $field) {
             $orFields = explode("||", $field);
             if (count($orFields) > 1) {
-                $query->where(function ($query) use ($orFields) {
-                    foreach ($orFields as $key => $val) {
-                        if ($key === array_key_first($orFields)) {
-                            $query->whereNull($val);
-                        } else {
-                            $query->orWhereNull($val);
-                        }
+                $missingOrFields = [];
+                foreach ($orFields as $orField) {
+                    if (empty($conApp->{$orField})) {
+                        $missingOrFields[] = 'application ' . str_replace("_", ' ', $orField);
                     }
-                });
+                }
+                if (count($missingOrFields) === count($orFields)) {
+                    $update = array_merge($this->incompleteApps[$conApp->id], $missingOrFields);
+                    $this->incompleteApps[$conApp->id] = $update;
+                }
             } else {
-                if ($key === array_key_first(self::MRI_APPLICATION_REQUIRED_FIELDS)) {
-                    $query->whereNull($field);
-                } else {
-                    $query->orWhereNull($field);
+                if (empty($conApp->{$field})) {
+                    $this->incompleteApps[$conApp->id][] = 'application ' . str_replace("_", ' ', $field);
                 }
             }
         }
-        return $query->pluck('id')->toArray();
+    }
+
+    private function checkIdentificationFields(ConnectionApplication $conApp)
+    {
+        $ident = $conApp->identification;
+        foreach (self::IDENTIFICATION_REQUIRED_FIELDS as $field) {
+            $orFields = explode("||", $field);
+            if (count($orFields) > 1) {
+                $missingOrFields = [];
+                foreach ($orFields as $orField) {
+                    if (empty($ident->{$orField} ?? '')) {
+                        $missingOrFields[] = 'identification ' . str_replace("_", ' ', $orField);
+                    }
+                }
+                if (count($missingOrFields) === count($orFields)) {
+                    array_merge($this->incompleteApps[$conApp->id], $missingOrFields);
+                }
+            } else {
+                if (empty($ident->{$field}) ?? '') {
+                    $missingField = 'identification ' . str_replace("_", ' ', $field);
+                    $this->incompleteApps[$conApp->id][] = $missingField;
+                }
+            }
+        }
     }
 }

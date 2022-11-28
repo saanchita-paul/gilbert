@@ -6,6 +6,7 @@ use App\Models\MriApplication;
 use App\Models\ConnectionApplication;
 use App\Services\NotifyBadAgentMailService;
 use App\Models\ConnectionService;
+use MRI\Services\NotifyMissingDetailsService;
 
 class MapApplicationService
 {
@@ -21,6 +22,7 @@ class MapApplicationService
 
     public function run()
     {
+        $missingService = new NotifyMissingDetailsService();
         $mriApplications = MriApplication::doesntHave('connectionApplication')->get();
 
         $createdApplications = [];
@@ -39,6 +41,7 @@ class MapApplicationService
                     $conApp->office->name ?? '',
                     $firstMriAgent ?? ''
                 );
+                $missingService->check($conApp);
                 $createdApplications[] = $conApp;
             } catch (\Exception $e) {
                 $this->exceptionHandler->addException($e);
@@ -52,6 +55,8 @@ class MapApplicationService
         if ($this->exceptionHandler->hasExceptions()) {
             $this->exceptionHandler->run();
         }
+
+        $missingService->notifyIfAny();
     }
 
     /**
@@ -83,10 +88,9 @@ class MapApplicationService
         $newConnectionApp['email'] = $mriApp->email_address;
         $newConnectionApp['phone'] = $mriApp->mobile_phone_number ?? null;
         $newConnectionApp['homephone'] = $mriApp->home_number ?? null;
-        if (!empty($mriApp->preferred_phone_number)) {
-            if ($mriApp->preferred_phone_number == $newConnectionApp['homephone']) {
-                $newConnectionApp['phone_type'] = ConnectionApplication::PHONE_TYPE_HOMEPHONE;
-            }
+        $newConnectionApp['phone_type'] = ConnectionApplication::PHONE_TYPE_MOBILE;
+        if ($mriApp->preferred_phone_number ?? '' == $newConnectionApp['homephone']) {
+            $newConnectionApp['phone_type'] = ConnectionApplication::PHONE_TYPE_HOMEPHONE;
         }
         $newConnectionApp['moving_date'] = $mriApp->lease_start_date ?? null;
         $newConnectionApp['connection_end_date'] = $mriApp->lease_end_date ?? null;

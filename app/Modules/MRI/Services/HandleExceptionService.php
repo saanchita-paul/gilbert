@@ -4,7 +4,6 @@ namespace MRI\Services;
 
 use MRI\Mail\NotifyFetchFailMail;
 use Illuminate\Support\Facades\Mail;
-
 use GuzzleHttp\Psr7;
 
 class HandleExceptionService

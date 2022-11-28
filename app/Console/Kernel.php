@@ -18,8 +18,8 @@ use Origin\Commands\OriginCheckStatusCommand;
 use App\Console\Commands\MRIOfficeCommand;
 use MRI\Commands\MriFetchTenanciesCommand;
 use MRI\Commands\MriFetchAgentsCommand;
-
 use Carbon\Carbon;
+
 class Kernel extends ConsoleKernel
 {
     /**
@@ -52,18 +52,18 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('fetch:submitted-leads')->hourly();
-         $schedule->command('ea:upload:lead')->daily();
-         $schedule->command('property_me:save_contact')->everyThirtyMinutes();
-         $schedule->command('origin:check')->hourlyAt(45);
+        $schedule->command('fetch:submitted-leads')->hourly();
+        $schedule->command('ea:upload:lead')->daily();
+        $schedule->command('property_me:save_contact')->everyThirtyMinutes();
+        $schedule->command('origin:check')->hourlyAt(45);
 
-         if($this->shouldIgniteRun()){
+        if ($this->shouldIgniteRun()) {
             $schedule->command('ignite:fetch')->everyTenMinutes();
-         }
+        }
 
-         $this->registerWaterStatusUpdate($schedule);
+        $this->registerWaterStatusUpdate($schedule);
 
-         $this->registerSaveTsaCallHistory($schedule);
+        $this->registerSaveTsaCallHistory($schedule);
 
         $schedule->command('fetch:get-tsa-lead-id')->everyTenMinutes();
 
@@ -83,12 +83,12 @@ class Kernel extends ConsoleKernel
         $schedule->command('tsa:save-call-history')->everyThirtyMinutes();
     }
 
-    private function shouldIgniteRun(){
+    private function shouldIgniteRun() {
         $igniteStart = config('ignite.IGNITE_IS_ACTIVE') ?? false;
         return $igniteStart;
     }
 
-    private function runMri(Schedule $schedule){
+    private function runMri(Schedule $schedule) {
         $schedule->command('mri:fetch_agent')->hourlyAt(10);
         $schedule->command('mri:fetch_tenancies')->everyFifteenMinutes();
     }
@@ -100,7 +100,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
