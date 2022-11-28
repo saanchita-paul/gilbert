@@ -190,7 +190,9 @@ class ApplicationServiceStatusService
     // Save status update reason
     private function saveStatusReason()
     {
-        return ManualStatusChangeLog::create($this->logData);
+        $manualStatusChange = ManualStatusChangeLog::create($this->logData);
+        $this->connectionApplication->update(['status_log_id' => $manualStatusChange->id]);
+        return $manualStatusChange;
     }
 
     // Save closed reason

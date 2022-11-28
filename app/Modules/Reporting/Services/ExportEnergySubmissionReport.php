@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Modules\Reporting\Services;
 
 use App\Models\HoodProfile;
@@ -73,11 +74,13 @@ class ExportEnergySubmissionReport
         return $this->export();
     }
 
-    public function getAccessToke(){
+    public function getAccessToke()
+    {
         return 'token';
     }
 
-    public function verifyAccessToken(){
+    public function verifyAccessToken()
+    {
         $this->run();
     }
 
@@ -90,12 +93,12 @@ class ExportEnergySubmissionReport
     private function export()
     {
         $date = now()->format('d_m_Y');
-        $name = 'Gilbert_leads_report_'.$this->type.'_'.$date.'.csv';
+        $name = 'Gilbert_leads_report_' . $this->type . '_' . $date . '.csv';
 
         /**
          * increasing memory limit to avoid memory exhausted error while exporting
          */
-        ini_set('memory_limit', '512m' );
+        ini_set('memory_limit', '512m');
 
         return (new FastExcel($this->leadsData))->download($name);
     }
@@ -104,7 +107,7 @@ class ExportEnergySubmissionReport
     {
         // collecting water only leads to show them as leads without energy
         collect($data)->groupBy('App_id')->map(function ($item, $key) {
-            if( $item->count() === 1  && $item->first()->Utility_Service === ConnectionService::TYPE_WATER){
+            if ($item->count() === 1 && $item->first()->Utility_Service === ConnectionService::TYPE_WATER) {
                 $this->onlyWaterLeadIds[] = $item->first()->Service_Id;
             }
         });
@@ -122,7 +125,7 @@ class ExportEnergySubmissionReport
             // $datum->Source_Code = $this->getSourceCode($datum->Utility_Service, $datum->State, $datum->Utility_Plan, $datum->Postcode);
 
             // if service_Id is in onlyWaterLeadIds, then show it as leads without energy
-            if(in_array($datum->Service_Id, $this->onlyWaterLeadIds)){
+            if (in_array($datum->Service_Id, $this->onlyWaterLeadIds)) {
                 $datum->Utility_Provider = null;
                 $datum->Utility_Service = null;
                 $datum->Utility_Plan = null;
@@ -137,6 +140,7 @@ class ExportEnergySubmissionReport
 
             $datum->Closing_Reason = $this->getRejectionReason($datum);
             $datum->Additional_Closure_Notes = $this->getAdditionalClosingReason($datum);
+            $datum->Status_Change_Reason = $datum->msc_status_reason;
 
             unset($datum->closing_reason);
             unset($datum->acr_value);
@@ -144,9 +148,10 @@ class ExportEnergySubmissionReport
             unset($datum->Foxie_Agency_Name);
             unset($datum->Foxie_Agent_Name);
             unset($datum->Assigned_To);
+            unset($datum->msc_status_reason);
             // unset($datum->Application_Status);
 
-            if($this->allowedForExport($datum->Foxie_Connect_Id) && $datum->Utility_Service !== ConnectionService::TYPE_WATER) {
+            if ($this->allowedForExport($datum->Foxie_Connect_Id) && $datum->Utility_Service !== ConnectionService::TYPE_WATER) {
                 unset($datum->Foxie_Connect_Id);
                 $this->leadsData[] = $datum;
             }
@@ -155,7 +160,7 @@ class ExportEnergySubmissionReport
 
 
     // Offer_Type, Source_Code is faked assigned just to place the data in the right order
-    private function fetchData() : array
+    private function fetchData(): array
     {
         $tz = '+' . TimeZoneService::getTimeZoneInt() . ':00';
 
@@ -211,7 +216,8 @@ class ExportEnergySubmissionReport
                 ca.closing_reason as `closing_reason`,
                 closed_by_user.email as `Closed_By`,
                 ca.closed_at as `Closed_On`,
-                (select reason_text from rejection_reasons where connection_service_id=cs.id  limit 1) as Rejection_Reason
+                (select reason_text from rejection_reasons where connection_service_id=cs.id  limit 1) as Rejection_Reason,
+                IFNULL(msc.status_change_reason,'NULL') as `msc_status_reason`
             ")
             ->rightJoin('connection_applications as ca', 'ca.id', '=', 'cs.connection_application_id')
             ->leftJoin('agencies as ag', 'ca.agency_id', '=', 'ag.id')
@@ -221,6 +227,7 @@ class ExportEnergySubmissionReport
             ->leftJoin('users as u', 'ca.submitted_by', '=', 'u.id')
             ->leftJoin('agent_profiles as aprofile', 'aprofile.id', '=', 'ca.assigned_to')
             ->leftJoin('hood_profiles as closed_by_profile', 'closed_by_profile.id', '=', 'ca.closed_by')
+            ->leftJoin('manual_status_change_logs as msc', 'msc.id', '=', 'ca.status_log_id')
             ->leftJoin('users as user', function (JoinClause $clause) {
                 $clause->on('user.profile_id', '=', 'aprofile.id')
                     ->where('user.profile_type', HoodProfile::class);
@@ -230,7 +237,9 @@ class ExportEnergySubmissionReport
                     ->where('closed_by_user.profile_type', HoodProfile::class);
             })
             ->leftJoin('suger_leads as sl', 'ca.id', '=', 'sl.connection_application_id')
-            ->where( function($q) use ($energyType) { $q->whereIn('cs.service_type', $energyType)->orWhereNull('cs.service_type'); } );
+            ->where(function ($q) use ($energyType) {
+                $q->whereIn('cs.service_type', $energyType)->orWhereNull('cs.service_type');
+            });
         // ->whereNotNull('cs.provider_name');
         $builder = $this->applyStatusFilter($builder);
         $tempBuilder = clone $builder;
@@ -287,7 +296,7 @@ class ExportEnergySubmissionReport
 
     private function getTenancyType($type): string
     {
-        if($type !== 'NULL') {
+        if ($type !== 'NULL') {
             return (int)$type === 1 ? 'renter' : 'homeowner';
         }
         return $type;
@@ -313,10 +322,10 @@ class ExportEnergySubmissionReport
         } catch (\Exception $e) {
             Log::error("[ExportEnergyReport:getElectricitySourceCode] ->  " . $e->getMessage());
             Log::error($e->getTraceAsString());
-            return  '';
+            return '';
         }
 
-        return  '';
+        return '';
     }
 
     private function stateMap($state)
@@ -333,10 +342,9 @@ class ExportEnergySubmissionReport
 
     private function getUiStatus($applicationStatus, $serviceStatus, $assignedTo)
     {
-        if( (int) $applicationStatus === ConnectionApplication::STATUS_CLOSED) {
+        if ((int)$applicationStatus === ConnectionApplication::STATUS_CLOSED) {
             return 'CLOSED';
-        }
-        elseif($serviceStatus === ConnectionService::STATUS_EA_PROCESSINF) {
+        } elseif ($serviceStatus === ConnectionService::STATUS_EA_PROCESSINF) {
             return $assignedTo === "NULL" ? 'UN_ASSIGNED' : 'ASSIGNED';
         }
         return GilbertStatusMapper::getStatusAsText($serviceStatus);
@@ -354,7 +362,7 @@ class ExportEnergySubmissionReport
 
     private function getRejectionReason($data)
     {
-        if(!empty($data->acr_value)) {
+        if (!empty($data->acr_value)) {
             return strtolower($data->acr_value) === "others" ? $data->closing_reason : $data->acr_value;
         }
         return 'NULL';
@@ -370,13 +378,13 @@ class ExportEnergySubmissionReport
 
     private function getUtilityCommission($officeId, $serviceType)
     {
-        if($officeId === null || $serviceType === null) {
+        if ($officeId === null || $serviceType === null) {
             return 'NULL';
         }
         $serviceType = OfficeCommission::Type[$serviceType];
 
         $commission = OfficeCommission::where(['office_id' => $officeId, 'type' => $serviceType])->first();
-        return $commission  ?  $commission->rate : 'NULL';
+        return $commission ? $commission->rate : 'NULL';
     }
 
     private function getCustomerType($customerType)
@@ -390,18 +398,18 @@ class ExportEnergySubmissionReport
 
     private function setAgencyName(object $datum)
     {
-        if( $datum->Foxie_Agency_Name && $datum->Foxie_Agency_Name !== 'NULL') {
+        if ($datum->Foxie_Agency_Name && $datum->Foxie_Agency_Name !== 'NULL') {
             $datum->Agency_Name = $datum->Foxie_Agency_Name;
         }
 
-        if( $datum->Foxie_Agent_Name && $datum->Foxie_Agent_Name !== 'NULL') {
+        if ($datum->Foxie_Agent_Name && $datum->Foxie_Agent_Name !== 'NULL') {
             $datum->Agent_Name = $datum->Foxie_Agent_Name;
         }
     }
 
     private function allowedForExport($foxieConnectID)
     {
-        if($foxieConnectID !== null && $foxieConnectID !== 'NULL' && $foxieConnectID !== 'N/A') {
+        if ($foxieConnectID !== null && $foxieConnectID !== 'NULL' && $foxieConnectID !== 'N/A') {
             return false;
         }
         return true;

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Modules\Reporting\Services;
 
 use DB;
@@ -55,18 +56,20 @@ class ExportWaterSubmissionReport
         return $this->export();
     }
 
-    public function getAccessToke(){
+    public function getAccessToke()
+    {
         return 'token';
     }
 
-    public function verifyAccessToken(){
+    public function verifyAccessToken()
+    {
         $this->run();
     }
 
     private function export()
     {
         $date = now()->format('d_m_Y');
-        $name = 'Gilbert_leads_report_'.$this->type.'_'.$date.'.csv';
+        $name = 'Gilbert_leads_report_' . $this->type . '_' . $date . '.csv';
         return (new FastExcel($this->leadsData))->download($name);
     }
 
@@ -86,19 +89,22 @@ class ExportWaterSubmissionReport
 
             $datum->Rejection_Reason = $this->getRejectionReason($datum->Service_Id, $datum->Utility_Service);
 
+            $datum->Status_Change_Reason = $datum->msc_status_reason;
+
             unset($datum->Office_Id);
             unset($datum->Foxie_Agency_Name);
             unset($datum->Foxie_Agent_Name);
             unset($datum->Assigned_To);
+            unset($datum->msc_status_reason);
 
-            if($this->allowedForExport($datum->Foxie_Connect_Id)) {
+            if ($this->allowedForExport($datum->Foxie_Connect_Id)) {
                 unset($datum->Foxie_Connect_Id);
                 $this->leadsData[] = $datum;
             }
         }
     }
 
-    private function fetchData() : array
+    private function fetchData(): array
     {
         $waterType = $this->waterType;
         $builder = DB::table('connection_services as cs')
@@ -139,7 +145,8 @@ class ExportWaterSubmissionReport
                 IFNULL(ca.id, 'NULL') as `Water_Only_Application`,
                 cs.status as `UI_Status`,
                 ca.status as `Application_Status`,
-                cs.status as `Utility_Status`
+                cs.status as `Utility_Status`,
+                IFNULL(msc.status_change_reason,'NULL') as `msc_status_reason`
             ")
             ->rightJoin('connection_applications as ca', 'ca.id', '=', 'cs.connection_application_id')
             ->leftJoin('agencies as ag', 'ca.agency_id', '=', 'ag.id')
@@ -147,9 +154,16 @@ class ExportWaterSubmissionReport
             ->leftJoin('offices as ofs', 'ofs.id', '=', 'ca.office_id')
             ->leftJoin('users as u', 'ca.submitted_by', '=', 'u.id')
             ->leftJoin('suger_leads as sl', 'ca.id', '=', 'sl.connection_application_id')
-            ->where( function($q) use ($waterType) { $q->whereIn('cs.service_type', $waterType)->orWhereNull('cs.service_type'); } )
-            ->where( function($q) { $q->whereIn('ca.state', $this->acceptedWaterStates)->orWhereNull('ca.state'); } )
-            ->where( function($q) { $q->whereIn('ca.tenancy_type', $this->acceptedTenancyType)->orWhereNull('ca.tenancy_type'); } );
+            ->leftJoin('manual_status_change_logs as msc', 'msc.id', '=', 'ca.status_log_id')
+            ->where(function ($q) use ($waterType) {
+                $q->whereIn('cs.service_type', $waterType)->orWhereNull('cs.service_type');
+            })
+            ->where(function ($q) {
+                $q->whereIn('ca.state', $this->acceptedWaterStates)->orWhereNull('ca.state');
+            })
+            ->where(function ($q) {
+                $q->whereIn('ca.tenancy_type', $this->acceptedTenancyType)->orWhereNull('ca.tenancy_type');
+            });
 
         $builder = $this->applyStatusFilter($builder);
         $tempBuilder = clone $builder;
@@ -163,7 +177,7 @@ class ExportWaterSubmissionReport
         );
     }
 
-    private function isWaterOnlyApplication($applicationId) : string
+    private function isWaterOnlyApplication($applicationId): string
     {
         $connectionApplication = ConnectionApplication::with('connectionServices')->find($applicationId);
         $serviceArray = $connectionApplication->connectionServices?->pluck('service_type')->toArray();
@@ -228,7 +242,7 @@ class ExportWaterSubmissionReport
 
     private function getTenancyType($type): string
     {
-        if($type !== 'NULL') {
+        if ($type !== 'NULL') {
             return (int)$type === 1 ? 'renter' : 'homeowner';
         }
         return $type;
@@ -242,10 +256,9 @@ class ExportWaterSubmissionReport
 
     private function getUiStatus($applicationStatus, $serviceStatus, $assignedTo)
     {
-        if( (int) $applicationStatus === ConnectionApplication::STATUS_CLOSED) {
+        if ((int)$applicationStatus === ConnectionApplication::STATUS_CLOSED) {
             return 'CLOSED';
-        }
-        elseif($serviceStatus === ConnectionService::STATUS_EA_PROCESSINF) {
+        } elseif ($serviceStatus === ConnectionService::STATUS_EA_PROCESSINF) {
             return $assignedTo === "NULL" ? 'UN_ASSIGNED' : 'ASSIGNED';
         }
         return GilbertStatusMapper::getStatusAsText($serviceStatus);
@@ -264,34 +277,34 @@ class ExportWaterSubmissionReport
     private function getRejectionReason($serviceId, $serviceType)
     {
         $reason = RejectionReason::where('connection_service_id', $serviceId)->first();
-        return $reason  ?  $reason->reason_text : null;
+        return $reason ? $reason->reason_text : null;
     }
-    
+
     private function getUtilityCommission($officeId, $serviceType)
     {
-        if($officeId === null || $serviceType === null) {
+        if ($officeId === null || $serviceType === null) {
             return 'NULL';
         }
         $serviceType = OfficeCommission::Type[$serviceType];
 
         $commission = OfficeCommission::where(['office_id' => $officeId, 'type' => $serviceType])->first();
-        return $commission  ?  $commission->rate : 'NULL';
+        return $commission ? $commission->rate : 'NULL';
     }
 
     private function setAgencyName(object $datum)
     {
-        if( $datum->Foxie_Agency_Name && $datum->Foxie_Agency_Name !== 'NULL') {
+        if ($datum->Foxie_Agency_Name && $datum->Foxie_Agency_Name !== 'NULL') {
             $datum->Agency_Name = $datum->Foxie_Agency_Name;
         }
 
-        if( $datum->Foxie_Agent_Name && $datum->Foxie_Agent_Name !== 'NULL') {
+        if ($datum->Foxie_Agent_Name && $datum->Foxie_Agent_Name !== 'NULL') {
             $datum->Agent_Name = $datum->Foxie_Agent_Name;
         }
     }
 
     private function allowedForExport($foxieConnectID)
     {
-        if($foxieConnectID !== null && $foxieConnectID !== 'NULL' && $foxieConnectID !== 'N/A') {
+        if ($foxieConnectID !== null && $foxieConnectID !== 'NULL' && $foxieConnectID !== 'N/A') {
             return false;
         }
         return true;
