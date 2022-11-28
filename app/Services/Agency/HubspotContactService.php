@@ -4,6 +4,7 @@ namespace App\Services\Agency;
 
 use App\Models\APILog;
 use App\Models\Identification;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Carbon;
 use App\Models\ConnectionService;
 use App\Models\ConnectionApplication;
@@ -17,12 +18,12 @@ use PropertyMe\Services\SaveContacts;
 
 class HubspotContactService
 {
-    const STATUS_NEW = 'NEW';
-    const STATUS_BAD_TIMING = 'BAD_TIMING';
-    const STATUS_OPEN_DEAL = 'OPEN_DEAL';
-    const STATUS_CONNECTED = 'CONNECTED';
-    const STATUS_UNQUALIFIED = 'UNQUALIFIED';
-    const STATUS_IN_PROGRESS = 'IN_PROGRESS';
+    public const STATUS_NEW = 'NEW';
+    public const STATUS_BAD_TIMING = 'BAD_TIMING';
+    public const STATUS_OPEN_DEAL = 'OPEN_DEAL';
+    public const STATUS_CONNECTED = 'CONNECTED';
+    public const STATUS_UNQUALIFIED = 'UNQUALIFIED';
+    public const STATUS_IN_PROGRESS = 'IN_PROGRESS';
 
     private array|Collection|ConnectionApplication|Model $application;
 
@@ -33,16 +34,26 @@ class HubspotContactService
     }
 
     /**
+     * Get Http Client with proper  header
+     *
+     * @return PendingRequest
+     */
+    private function getClient(): PendingRequest
+    {
+        return Http::withHeaders(['Authorization' => config('hub_spot.oauth_token')]);
+    }
+
+    /**
      * creating new contact
      *
      * @throws \Exception
      */
     public function create()
     {
-        $url = config('hub_spot.create_contact') . config('hub_spot.api_key');
+        $url = config('hub_spot.create_contact');
         $url = APILog::setLoggerQuery($url, APILog::API_HB_CREATE_CONTACT);
 
-        $response = Http::post($url, [
+        $response = $this->getClient()->post($url, [
             "properties" => $this->getProperties()
         ]);
         $body = json_decode($response->body(), true);
@@ -67,6 +78,7 @@ class HubspotContactService
     public function update()
     {
         if ($this->application->is_skip_hubspot) {
+            // phpcs:ignore
             throw new \exception(sprintf('HubspotContactService:update SKIP - Application ID %s is flagged skip due to not being latest hubspot details', strval($this->application->id)));
         }
         $vid = $this->application->hubspot_contact_id;
@@ -75,10 +87,10 @@ class HubspotContactService
             throw new \exception('HubspotContactService:update FAIL - Application is missing hubspot contact id.');
         }
 
-        $url = str_replace('${id}', $vid, config('hub_spot.update_contact')) . config('hub_spot.api_key');
+        $url = str_replace('${id}', $vid, config('hub_spot.update_contact'));
         // $url = APILog::setLoggerQuery($url, APILog::API_HB_UPDATE_CONTACT); // no need log
 
-        $response = Http::post($url, [
+        $response = $this->getClient()->post($url, [
             "properties" => $this->getProperties()
         ]);
 
@@ -91,11 +103,15 @@ class HubspotContactService
         $body = json_decode($response->body(), true);
         if (empty($body)) {
             try {
-                $getContactEmail = self::getContactByEmail($this->application->email); 
-                if ($getContactEmail['exists'])
+                $getContactEmail = self::getContactByEmail($this->application->email);
+                if ($getContactEmail['exists']) {
                     $body = $getContactEmail['body'];
+                }
             } catch (\Exception $e) {
-                Log::error('HubspotContactService:getContactByEmail - FAIL (skipping get hubspot response for updated application)', ['error' => $e->getMessage()]);
+                Log::error(
+                    'HubspotContactService:getContactByEmail - FAIL (skipping get hubspot response for updated application)', // phpcs:ignore
+                    ['error' => $e->getMessage()]
+                );
             }
         }
         self::saveHistoricalData($body);
@@ -110,10 +126,13 @@ class HubspotContactService
      */
     public function getContactByEmail($email)
     {
-        $url = str_replace('${email}', $email, config('hub_spot.get_contact_by_email')) . config('hub_spot.api_key');
+        if (empty($email)) {
+            throw new \Exception("HubspotService:getContactByEmail:  Email can't be null");
+        }
+        $url = str_replace('${email}', $email, config('hub_spot.get_contact_by_email'));
         // $url = APILog::setLoggerQuery($url, APILog::API_HB_GET_CONTACT_BY_EMAIL); // no need log
 
-        $response = Http::get($url);
+        $response = $this->getClient()->get($url);
         $exists = !($response->status() === 404);
 
         return [
@@ -283,7 +302,10 @@ class HubspotContactService
             ],
             [
                 "property" => "hood_medicare_expire_date",
-                "value" => $this->formatDate(Identification::TYPE_MEDICARE, $this->application->identification?->expire_date),
+                "value" => $this->formatDate(
+                    Identification::TYPE_MEDICARE,
+                    $this->application->identification?->expire_date
+                ),
             ],
             [
                 "property" => "hood_medicare_special_number",
@@ -295,27 +317,45 @@ class HubspotContactService
             ],
             [
                 "property" => "hood_medicare_number",
-                "value" => $this->checkIDType(Identification::TYPE_MEDICARE, $this->application->identification?->card_number) ?? '',
+                "value" => $this->checkIDType(
+                    Identification::TYPE_MEDICARE,
+                    $this->application->identification?->card_number
+                ) ?? '',
             ],
             [
                 "property" => "hood_driving_licence_expire_date",
-                "value" => $this->formatDate(Identification::TYPE_DRIVING_LICENCE, $this->application->identification?->expire_date),
+                "value" => $this->formatDate(
+                    Identification::TYPE_DRIVING_LICENCE,
+                    $this->application->identification?->expire_date
+                ),
             ],
             [
                 "property" => "hood_driving_licence_state",
-                "value" => $this->checkIDType(Identification::TYPE_DRIVING_LICENCE, $this->application->identification?->state) ?? '',
+                "value" => $this->checkIDType(
+                    Identification::TYPE_DRIVING_LICENCE,
+                    $this->application->identification?->state
+                ) ?? '',
             ],
             [
                 "property" => "hood_driving_licence_number",
-                "value" => $this->checkIDType(Identification::TYPE_DRIVING_LICENCE, $this->application->identification?->card_number) ?? '',
+                "value" => $this->checkIDType(
+                    Identification::TYPE_DRIVING_LICENCE,
+                    $this->application->identification?->card_number
+                ) ?? '',
             ],
             [
                 "property" => "hood_passport_expire_date",
-                "value" => $this->formatDate(Identification::TYPE_PASSPORT, $this->application->identification?->expire_date),
+                "value" => $this->formatDate(
+                    Identification::TYPE_PASSPORT,
+                    $this->application->identification?->expire_date
+                ),
             ],
             [
                 "property" => "hood_passport_number",
-                "value" => $this->checkIDType(Identification::TYPE_PASSPORT, $this->application->identification?->card_number) ?? '',
+                "value" => $this->checkIDType(
+                    Identification::TYPE_PASSPORT,
+                    $this->application->identification?->card_number
+                ) ?? '',
             ],
             [
                 "property" => "hood_passport_country",
@@ -409,7 +449,9 @@ class HubspotContactService
 
         $status = $serviceStatuses->contains(ConnectionService::STATUS_ACCEPTED)
             ? ConnectionService::STATUS_ACCEPTED
-            : ($serviceStatuses->contains(ConnectionService::STATUS_REJECTED) ? ConnectionService::STATUS_REJECTED : $serviceStatuses->first());
+            : ($serviceStatuses->contains(ConnectionService::STATUS_REJECTED)
+                ? ConnectionService::STATUS_REJECTED
+                : $serviceStatuses->first());
 
         return match ($status) {
             ConnectionService::STATUS_ACCEPTED => self::STATUS_CONNECTED,
@@ -424,7 +466,10 @@ class HubspotContactService
     private function noStatusMatchFailScope(): ?string
     {
         Log::error("[Hubspot Service] No status match for application: {$this->application->id}");
-        ErrorLogService::send('[Hubspot Service] No status matched for application id: ' . $this->application->id , ['taige.alhadweh@hood.ai']);
+        ErrorLogService::send(
+            '[Hubspot Service] No status matched for application id: ' . $this->application->id,
+            ['taige.alhadweh@hood.ai']
+        );
         return null;
     }
 
@@ -436,7 +481,6 @@ class HubspotContactService
             ConnectionApplication::SOURCE_FOXIE => 'Foxie',
             default => 'HOOD'
         };
-
     }
 
     private function getLeadSource()
@@ -444,7 +488,7 @@ class HubspotContactService
         $agencyName = $this->application?->agency?->id;
 
         return match ($agencyName) {
-           17 => 'HOOD',
+            17 => 'HOOD',
             default => 'REA'
         };
     }
@@ -462,10 +506,11 @@ class HubspotContactService
      * @param contact_id
      * @param oldApplicationId
      * @param hubspot_response
-     * 
-     * @return int 
+     *
+     * @return int
      */
-    public function saveHistoricalData($hubspot_response = ''){  
+    public function saveHistoricalData($hubspot_response = '')
+    {
         $newHistory = new HubspotHistory();
         $newHistory->contact_id = $this->application->hubspot_contact_id;
         $newHistory->connection_application_id = $this->application->id;
@@ -477,21 +522,25 @@ class HubspotContactService
         return $newHistory->id;
     }
 
-    public function getOldApplicationData($hubspot_contact_id = '') {
+    public function getOldApplicationData($hubspot_contact_id = '')
+    {
         $query = ConnectionApplication::where('email', $this->application->email)
                                 ->where('id', '<>', $this->application->id);
-        
-        if (!empty($hubspot_contact_id)) 
+
+        if (!empty($hubspot_contact_id)) {
             $query->where('hubspot_contact_id', $hubspot_contact_id);
-        
+        }
+
         return $query->orderBy('id', 'DESC')->first();
     }
 
-    public function setContactId($contact_id) {
+    public function setContactId($contact_id)
+    {
         $this->application->update(['hubspot_contact_id' => $contact_id]);
     }
 
-    public function setOldHubspotFlag() {
+    public function setOldHubspotFlag()
+    {
         $this->application->update(['is_skip_hubspot' => true]);
     }
 }
