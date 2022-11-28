@@ -40,14 +40,14 @@ class OriginCheckStatusCommand extends Command
      * @return int
      */
     public function handle()
-    {   
+    {
         $this->line('Origin check command started!');
         $services = ConnectionService::where('provider_name', ConnectionService::PROVIDER_ORIGIN)
                     ->whereNotNull('lead_reference')
                     ->where('status', ConnectionService::STATUS_SUBMITTED)
                     ->get();
-        
-        foreach($services as $service){
+
+        foreach ($services as $service) {
             OriginStatusUpdateJob::dispatch($service->lead_reference, $service->connection_application_id);
         }
 

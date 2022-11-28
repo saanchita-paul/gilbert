@@ -6,11 +6,10 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
-
 use MRI\Services\GetAgentService;
 use MRI\Services\MapAgentService;
-
 use Carbon\Carbon;
+use MRI\Services\MriServices;
 
 class MriFetchAgentsCommand extends Command
 {
@@ -49,41 +48,13 @@ class MriFetchAgentsCommand extends Command
         $officeId = $this->option('office') ?? '';
         $afterDate = $this->option('afterDate') ?? '';
         $this->line('MRI fetch agents command started successfully!');
-
         try {
-            $fetchAgentService = new GetAgentService();
-
-            $message = '';
-
-            if (!empty($officeId)) {
-                $message .= sprintf('(Office ID = %s) ', $officeId);
-                $fetchAgentService->setOfficeId(intval($officeId));
-            }
-
-            if (empty($afterDate)) {
-                $subDays = !empty(config('mri.sub_days')) ? config('mri.sub_days') : 2;
-                $nowDate = Carbon::now()->subDays($subDays)->format('Y-m-d');
-                $fetchAgentService->setAfterDate($nowDate);
-                $message .= sprintf('Fetching data after date %s', $nowDate);
-            }
-            else if ($afterDate !== 'all') {
-                $fetchAgentService->setAfterDate($afterDate);
-                $message .= sprintf('Fetching data after date %s', $afterDate);
-            }
-            else {
-                $message .= 'Fetching all data without after date';
-            } 
-            info($message);
-            dump($message);
-
-            $fetchAgentService->run();
+            MriServices::handleFetchAgents($officeId, $afterDate);
         } catch (\Exception $exception) {
             dump($exception->getMessage());
         }
-        
         try {
-            $mapAgentService = new MapAgentService();
-            $mapAgentService->run();
+            MriServices::handleMapAgents();
         } catch (\Exception $exception) {
             dump($exception->getMessage());
         }

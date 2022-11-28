@@ -5,18 +5,18 @@ namespace MRI\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Carbon;
 use MRI\Services\GetAgentService;
 use MRI\Services\MapAgentService;
 use MRI\Services\GetTenanciesService;
 use MRI\Services\GetPropertyService;
 use MRI\Services\MapApplicationService;
+use MRI\Services\MriServices;
 
 class TestMriController extends Controller
 {
     /**
-     * 
+     *
      *
      * @param Request $request
      *
@@ -29,47 +29,21 @@ class TestMriController extends Controller
         $exceptions = [];
 
         try {
-            $fetchAgentService = new GetAgentService();
-
-            $message = '';
-
-            if (!empty($officeId)) {
-                $message .= sprintf('(Office ID = %s) ', $officeId);
-                $fetchAgentService->setOfficeId(intval($officeId));
-            }
-
-            if (empty($afterDate)) {
-                $subDays = !empty(config('mri.sub_days')) ? config('mri.sub_days') : 2;
-                $nowDate = Carbon::now()->subDays($subDays)->format('Y-m-d');
-                $fetchAgentService->setAfterDate($nowDate);
-                $message .= sprintf('Fetching data after date %s', $nowDate);
-            }
-            else if ($afterDate !== 'all') {
-                $fetchAgentService->setAfterDate($afterDate);
-                $message .= sprintf('Fetching data after date %s', $afterDate);
-            }
-            else {
-                $message .= 'Fetching all data without after date';
-            } 
-            info($message);
-
-            $fetchAgentService->run();
+            MriServices::handleFetchAgents($officeId, $afterDate);
         } catch (\Exception $exception) {
-            $exceptions['fetch_agent'] = $exception->getMessage();
+            $exceptions[] = $exception->getMessage();
         }
-        
         try {
-            $mapAgentService = new MapAgentService();
-            $mapAgentService->run();
+            MriServices::handleMapAgents();
         } catch (\Exception $exception) {
-            $exceptions['map_agent'] = $exception->getMessage();
+            $exceptions[] = $exception->getMessage();
         }
 
-        return response()->json(['exceptions'=>$exceptions], !empty($exceptions) ? 500 : 200);
+        return response()->json(['exceptions' => $exceptions], !empty($exceptions) ? 500 : 200);
     }
 
     /**
-     * 
+     *
      *
      * @param Request $request
      *
@@ -79,56 +53,29 @@ class TestMriController extends Controller
     {
         $officeId = $request->input('office');
         $afterDate = $request->input('afterDate');
-        $exceptions= [];
+        $exceptions = [];
 
         try {
-            $tenancyService = new GetTenanciesService();
-
-            $message = '';
-
-            if (!empty($officeId)) {
-                $message .= sprintf('(Office ID = %s) ', $officeId);
-                $tenancyService->setOfficeId(intval($officeId));
-            }
-
-            if (empty($afterDate)){
-                $subDays = !empty(config('mri.sub_days')) ? config('mri.sub_days') : 2;
-                $nowDate = Carbon::now()->subDays($subDays)->format('Y-m-d');
-                $tenancyService->setAfterDate($nowDate);
-                $message .= sprintf('Fetching data after date %s', $nowDate);
-            }
-            else if ($afterDate !== 'all') {
-                $tenancyService->setAfterDate($afterDate);
-                $message .= sprintf('Fetching data after date %s', $afterDate);
-            }
-            else {
-                $message .= 'Fetching all data without after date';
-            }
-
-            info($message);
-             
-            $tenancyService->run();
+            MriServices::handleFetchTenancies($officeId, $afterDate);
         } catch (\Exception $exception) {
-            $exceptions['fetch_tenancies'] = $exception->getMessage();
+            $exceptions[] = $exception->getMessage();
         }
-
         try {
-            $propertyService = new GetPropertyService();
-            if (!empty($officeId)) {
-                $propertyService->setOfficeId(intval($officeId));
-            }
-            $propertyService->run();
+            MriServices::handleFetchProperties($officeId);
         } catch (\Exception $exception) {
-            $exceptions['fetch_properties'] = $exception->getMessage();
+            $exceptions[] = $exception->getMessage();
         }
-
         try {
-            $testService = new MapApplicationService();
-            $testService->run();
+            MriServices::handleFetchNotes($officeId, $afterDate);
         } catch (\Exception $exception) {
-            $exceptions['map_applications'] = $exception->getMessage();
+            $exceptions[] = $exception->getMessage();
+        }
+        try {
+            MriServices::handleMapApplications();
+        } catch (\Exception $exception) {
+            $exceptions[] = $exception->getMessage();
         }
 
-        return response()->json(['exceptions'=>$exceptions], !empty($exceptions) ? 500 : 200);
+        return response()->json(['exceptions' => $exceptions], !empty($exceptions) ? 500 : 200);
     }
 }

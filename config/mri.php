@@ -11,6 +11,7 @@ return [
         'get_all_agents' => '/residentialproperty/v1/Agents',
         'get_tenancies' => '/residentialproperty/v1/Tenancies',
         'get_property_by_id' => '/residentialproperty/v1/Properties/',
+        'get_notes' => '/residentialproperty/v1/Notes',
     ],
     'sub_days' => env('MRI_FETCH_SUB_DAYS', 1),
 ];

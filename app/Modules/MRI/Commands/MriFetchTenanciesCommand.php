@@ -4,14 +4,12 @@ namespace MRI\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Notification;
-
 use MRI\Services\GetTenanciesService;
 use MRI\Services\GetPropertyService;
+use MRI\Services\GetNotesService;
 use MRI\Services\MapApplicationService;
-
 use Carbon\Carbon;
+use MRI\Services\MriServices;
 
 class MriFetchTenanciesCommand extends Command
 {
@@ -50,52 +48,23 @@ class MriFetchTenanciesCommand extends Command
         $officeId = $this->option('office') ?? '';
         $afterDate = $this->option('afterDate') ?? '';
         $this->line('MRI fetch tenancies command started successfully!');
-
         try {
-            $tenancyService = new GetTenanciesService();
-
-            $message = '';
-
-            if (!empty($officeId)) {
-                $message .= sprintf('(Office ID = %s) ', $officeId);
-                $tenancyService->setOfficeId(intval($officeId));
-            }
-
-            if (empty($afterDate)) {
-                $subDays = !empty(config('mri.sub_days')) ? config('mri.sub_days') : 2;
-                $nowDate = Carbon::now()->subDays($subDays)->format('Y-m-d');
-                $tenancyService->setAfterDate($nowDate);
-                $message .= sprintf('Fetching data after date %s', $nowDate);
-            }
-            else if ($afterDate !== 'all') {
-                $tenancyService->setAfterDate($afterDate);
-                $message .= sprintf('Fetching data after date %s', $afterDate);
-            }
-            else {
-                $message .= 'Fetching all data without after date';
-            }
-
-            info($message);
-            dump($message);
-             
-            $tenancyService->run();
+            MriServices::handleFetchTenancies($officeId, $afterDate);
         } catch (\Exception $exception) {
             dump($exception->getMessage());
         }
-
         try {
-            $propertyService = new GetPropertyService();
-            if (!empty($officeId)) {
-                $propertyService->setOfficeId(intval($officeId));
-            }
-            $propertyService->run();
+            MriServices::handleFetchProperties($officeId);
         } catch (\Exception $exception) {
             dump($exception->getMessage());
         }
-
         try {
-            $testService = new MapApplicationService();
-            $testService->run();
+            MriServices::handleFetchNotes($officeId, $afterDate);
+        } catch (\Exception $exception) {
+            dump($exception->getMessage());
+        }
+        try {
+            MriServices::handleMapApplications();
         } catch (\Exception $exception) {
             dump($exception->getMessage());
         }

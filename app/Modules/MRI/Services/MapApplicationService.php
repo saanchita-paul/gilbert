@@ -143,15 +143,58 @@ class MapApplicationService
     private function createConnectionApplication($mriApp)
     {
         $mapApp = $this->mapNewApplication($mriApp);
+        list($noteAppData, $noteIdentificationData) = $this->mapApplicationNoteFields($mriApp);
+        if (!empty($noteAppData)) {
+            $mapApp = array_merge($mapApp, $noteAppData);
+            $mriApp->has_process_note = true;
+            $mriApp->save();
+        }
         $conApp = ConnectionApplication::create($mapApp);
         if (!empty($mriApp->authorized_first_name)) {
             $authorizedPerson = $this->mapNewAuthorizedPerson($conApp->id, $mriApp);
             $conApp->authorizedPerson()->create($authorizedPerson);
+        }
+        if (!empty($noteIdentificationData)) {
+            $conApp->identification()->create($noteIdentificationData);
         }
         foreach (ConnectionService::SERVICE_TYPES as $serviceType) {
             $serviceDetail = $this->mapNewConnectionService($conApp->id, $serviceType);
             $conApp->connectionServices()->create($serviceDetail);
         }
         return $conApp;
+    }
+
+    private function mapApplicationNoteFields($mriApp)
+    {
+        $conAppData = [];
+        $identificationData = [];
+        $mriNoteData = $mriApp->mriNoteData;
+
+        if ($mriNoteData) {
+            $descData = explode("\n", $mriNoteData->description);
+            if ($descData[0] === 'HOOD_DATA') {
+                array_shift($descData);
+                foreach ($descData as $line) {
+                    $field = explode(":", $line);
+                    $key = strtoupper(trim($field[0] ?? ''));
+                    $val = trim($field[1] ?? '');
+                    if (array_key_exists($key, MriApplication::CONNECTION_APPLICATION_FIELDS) && !empty($val)) {
+                        $columnName = MriApplication::CONNECTION_APPLICATION_FIELDS[$key];
+                        $conAppData[$columnName] = $val;
+                    }
+                    if (array_key_exists($key, MriApplication::IDENTIFICATION_FIELDS) && !empty($val)) {
+                        $columnName = MriApplication::IDENTIFICATION_FIELDS[$key];
+                        $identificationData[$columnName] = $val;
+                    }
+                    if (array_key_exists($key, MriApplication::IDENTIFICATION_TYPE) && !empty($val)) {
+                        $columnName = 'type';
+                        $columnVal = MriApplication::IDENTIFICATION_TYPE[$key];
+                        $identificationData[$columnName] = $columnVal;
+                    }
+                }
+            }
+        }
+        $return = [$conAppData, $identificationData];
+        return $return;
     }
 }
