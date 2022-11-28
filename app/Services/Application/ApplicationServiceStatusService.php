@@ -213,14 +213,14 @@ class ApplicationServiceStatusService
 
             $allicationNoteService = new ApplicationNoteService($user);
             $closingeNote = [];
-            $closingeNote['text'] = 'App closed reason:' . $applicationReasonIdText?->value .
+            $closingeNote['text'] = 'App closed reason: ' . $applicationReasonIdText?->value .
                 (
-                !empty($application['closing_reason']) ? "\n" .
-                    'Additional Notes:' . $application['closing_reason'] : ''
+                !empty($this->connectionApplication['closing_reason']) ? "\n" .
+                    'Additional Notes:' . $this->connectionApplication['closing_reason'] : ''
                 );
             $closingeNote['type'] = 'close_connection';
 
-            $allicationNoteService->createNotes($closingeNote, $this->data['application_id']);
+            $allicationNoteService->createNotes($closingeNote, $this->connectionApplication->id);
 
 
             return $this->connectionApplication;
