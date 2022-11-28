@@ -1,5 +1,5 @@
 <?php
-
+#phpcs:ignorefile
 return [
     'root_url' => env('FC_BASE_URL','https://sandbox.fastconnect.net.au'),
     'get_token_uri' => env('FC_TOKEN_URI','/oauth/token?grant_type=client_credentials&scope=datafind'),
