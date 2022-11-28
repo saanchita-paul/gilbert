@@ -51,7 +51,7 @@ class HubspotContactService
     public function create()
     {
         $url = config('hub_spot.create_contact');
-        $url = APILog::setLoggerQuery($url, APILog::API_HB_CREATE_CONTACT);
+        $url = APILog::setLoggerQuery($url, APILog::API_HB_CREATE_CONTACT, false);
 
         $response = $this->getClient()->post($url, [
             "properties" => $this->getProperties()
@@ -126,6 +126,9 @@ class HubspotContactService
      */
     public function getContactByEmail($email)
     {
+        if (empty($email)) {
+            throw new \Exception("HubspotService:getContactByEmail:  Email can't be null");
+        }
         $url = str_replace('${email}', $email, config('hub_spot.get_contact_by_email'));
         // $url = APILog::setLoggerQuery($url, APILog::API_HB_GET_CONTACT_BY_EMAIL); // no need log
 
