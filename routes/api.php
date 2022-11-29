@@ -422,6 +422,5 @@ Route::get('/test', function() {
 });
 
 Route::get('/test/mri/agents', [TestMriController::class, 'fetchAgents']);
+
 Route::get('/test/mri/tenancies', [TestMriController::class, 'fetchTenancies']);
-
-

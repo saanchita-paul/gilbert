@@ -8,9 +8,7 @@ use App\Models\MriApplication;
 use MRI\Services\MapApplicationService;
 use App\Models\User;
 use App\Models\Office;
-
 use Database\Seeders\MRITestDataMappingSeeder;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -21,7 +19,7 @@ class DataMappingTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function test_data_mapping_agent()
+    public function testDataMappingAgent()
     {
         $this->seed(MRITestDataMappingSeeder::class);
 
@@ -34,11 +32,11 @@ class DataMappingTest extends TestCase
         $this->assertTrue($testMriAgent->agent_profile_id == $testAgentProfile->id, sprintf('Expected profile id save is %s, result is %s', $testAgentProfile->id, $testMriAgent->agent_profile_id ?? 'null'));
     }
 
-    public function test_data_mapping_application()
+    public function testDataMappingApplication()
     {
         $this->seed(MRITestDataMappingSeeder::class);
         $testMriApplication = MriApplication::orderBy('id', 'desc')->first();
-        
+
         $testService = new MapAgentService();
         $testService->run();
         $testService = new MapApplicationService();
@@ -49,5 +47,4 @@ class DataMappingTest extends TestCase
             'mri_application_id' => $testMriApplication->id,
         ]);
     }
-    
 }
