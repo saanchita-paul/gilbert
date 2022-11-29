@@ -10,8 +10,6 @@ use App\Http\Requests\Agency\ApplicationRequest;
 use App\Http\Requests\Agency\ProviderRequest;
 use App\Http\Resources\Agency\ApplicationMetricsResource;
 use App\Http\Resources\Agency\ApplicationResource;
-use App\Http\Resources\Agency\DuplicationApplicationResource;
-use App\Jobs\GilbertToChatbotJob;
 use App\Jobs\UpdateHubspotContactJob;
 use App\Models\AgentProfile;
 use App\Models\ConnectionApplication;
@@ -19,18 +17,12 @@ use App\Models\ConnectionService;
 use App\Models\TSACallHistory;
 use App\Models\User;
 use App\Services\Agency\ApplicationService;
-use App\Services\Agency\TriageFlagService;
 use App\Services\Agency\WaterAutoSubmitService;
 use App\Services\Application\ApplicationLockUnlockService;
 use App\Services\Application\ApplicationsMetricsService;
 use App\Services\Application\SearchConnectionApplication;
-use App\Services\ChatBot\SendAppGilbertToChatbotService;
-use App\Services\DuplicateApplicationService;
 use App\Services\Ea\SetEaDistributorService;
 use App\Services\GBGEmailValidationService;
-use App\Services\GilbertToCB\GilbertToChatbotService;
-use App\Services\GilbertToCB\GilbertToChatbotSyncService;
-use App\Services\RolePermission;
 use Exception;
 use Origin\Services\SetOriginDistributorService;
 use App\Services\FastConnectService;
@@ -39,7 +31,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Origin\Services\ValidateCutOffTime;
-use PropertyMe\services\FetchContacts;
 use Powershop\Services\SetPowershopDistributorService;
 
 class ApplicationController extends Controller
@@ -330,7 +321,6 @@ class ApplicationController extends Controller
         try {
             $service = new ApplicationService();
             $res = $service->updateSoleField($request->toArray(), $id);
-            (new GilbertToChatbotSyncService($res->id))->sync();
             return response()->json(['success' => true, 'data' => $res]);
 
         } catch (\Exception $exception) {
