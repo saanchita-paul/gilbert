@@ -3,15 +3,21 @@
 namespace App\Http\Controllers\ChatBot;
 
 use App\Http\Controllers\Controller;
-use App\Services\GilbertToCB\GilbertToChatbotSyncService;
+use App\Jobs\GilbertToChatbotSyncJob;
+use Illuminate\Http\JsonResponse;
 
 class SendApplicationToChatbotController extends Controller
 {
-    public function sendApplication(int $applicationId)
+    /**
+     * Send application to chatBot
+     *
+     * @param int $applicationId
+     * @return JsonResponse
+     */
+    public function sendApplication(int $applicationId): JsonResponse
     {
         try {
-            $service = new GilbertToChatbotSyncService($applicationId);
-            $service->sync();
+            GilbertToChatbotSyncJob::dispatch($applicationId);
             return $this->sendSuccessResponse('success');
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);

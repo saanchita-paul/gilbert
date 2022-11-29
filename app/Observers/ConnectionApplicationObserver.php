@@ -51,8 +51,6 @@ class ConnectionApplicationObserver
      */
     public function updated(ConnectionApplication $application)
     {
-//        dd($application->id);
-        info('hello', [$application->id]);
 //        if (UpdateApplicationFromGilbertService::shouldUpdateChatbotNmiMirn($application)) {
 //            ApplicationFromGilbertJob::dispatch($application->id);
 //        }
