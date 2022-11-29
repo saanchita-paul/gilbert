@@ -3,7 +3,7 @@ import DayJS from "dayjs";
 import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import {capitalize, forEach, isNull} from "lodash-es";
 
-const mapApplicationCafFileList =  data => {
+const mapApplicationCafFileList = data => {
     const values = [];
     data.data.forEach((item) => {
         values.push(mapApplicationCafFile(item));
@@ -14,14 +14,14 @@ const mapApplicationCafFileList =  data => {
 function mapServices(services) {
     let availableServices = [];
     services.map(svc => {
-        if( (svc.service_type === 'gas' && svc.enable_caf_file )
+        if ((svc.service_type === 'gas' && svc.enable_caf_file)
             || (svc.service_type === 'electricity' && svc.enable_caf_file)) {
             availableServices.push(svc.service_type);
         }
     });
 
 
-    if(availableServices.length === 2) {
+    if (availableServices.length === 2) {
         availableServices.push('both');
     }
     return availableServices;
@@ -30,20 +30,20 @@ function mapServices(services) {
 
 function getSelectedService(service) {
     let filterServices = service.filter(svc => {
-        return (svc.service_type === 'gas' && svc.enable_caf_file )
+        return (svc.service_type === 'gas' && svc.enable_caf_file)
             || (svc.service_type === 'electricity' && svc.enable_caf_file);
     })
-    if(filterServices.length === 2) {
+    if (filterServices.length === 2) {
         return 'both'
-    } else if(filterServices.length === 1) {
-        return  filterServices[0].service_type;
+    } else if (filterServices.length === 1) {
+        return filterServices[0].service_type;
     }
     return '';
 
 }
 
 function isPossibleToMakeCaf(service) {
-    if(getSelectedService(service) === '') return false;
+    if (getSelectedService(service) === '') return false;
     return true;
 }
 
@@ -51,14 +51,14 @@ function mapServiceStatus(service) {
     let status = '';
     service.map(svc => {
         let serStatus = svc.status;
-        if(isNull(serStatus)) {
+        if (isNull(serStatus)) {
             serStatus = '';
         }
-        if (svc.service_type === 'gas' ) {
+        if (svc.service_type === 'gas') {
             status = status + ' Gas: ' + serStatus
         }
 
-        if (svc.service_type === 'electricity' ) {
+        if (svc.service_type === 'electricity') {
             status = status + ' Electricity: ' + serStatus
         }
 
@@ -66,14 +66,13 @@ function mapServiceStatus(service) {
     return status;
 
 
-
 }
 
 const mapApplicationCafFile = data => {
-    let model = new ApplicationCafFile({...data });
+    let model = new ApplicationCafFile({...data});
     model.service_type = mapService(model.service);
     model.supplier = mapProvider(model.service);
-    model.connection_date = mapConnDate(model.service);
+    model.connection_date = mapConnDate(model.connection_date);
     model.plan = mapPlan(model.service);
     model.selected_service = getSelectedService(model.service);
     model.service_dropdown = mapServices(model.service);
@@ -90,7 +89,7 @@ export const mapService = services => {
         service_types.push(service['service_type']);
     });
 
-    if (service_types.includes('gas') && service_types.includes('electricity')){
+    if (service_types.includes('gas') && service_types.includes('electricity')) {
         return 'Electricity & Gas';
     }
     if (service_types.includes('gas')) {
@@ -105,8 +104,8 @@ export const mapProvider = services => {
     return services.length != 0 ? capitalize(services[0]['provider_name']) : '';
 }
 
-export const mapConnDate = services => {
-    return services.length != 0 ? new DayJS(services[0]['connection_date']).format(DATE_FORMAT.DB_DATE) : '';
+export const mapConnDate = conn_date => {
+    return !isNull(conn_date) ? new DayJS(conn_date).format(DATE_FORMAT.DB_DATE) : '';
 }
 
 export const mapPlan = services => {
@@ -117,7 +116,7 @@ export const mapPlan = services => {
 export default {
     mapApplicationCafFileList,
     getFullName(response) {
-        if(!isNull(response.middle_name)) {
+        if (!isNull(response.middle_name)) {
             return response.first_name + ' ' + response.middle_name + ' ' + response.last_name;
         }
         return response.first_name + ' ' + response.last_name;
@@ -133,9 +132,9 @@ export default {
 
     getConnectionData(response) {
         let service = response.service;
-        if(service.length > 0) {
+        if (service.length > 0) {
             let activeService = service.find(svc => svc.enable_caf_file);
-            if((activeService)) {
+            if ((activeService)) {
                 return DayJS(activeService.connection_date).format(DATE_FORMAT.DB_DATE);
             }
             return null;
@@ -143,10 +142,10 @@ export default {
     },
     getServicePlan(response) {
         let service = response.service;
-        if(service.length > 0) {
+        if (service.length > 0) {
 
             let activeService = service.find(svc => svc.enable_caf_file);
-            if((activeService)) {
+            if ((activeService)) {
                 return activeService.plan_type;
             }
             return null;

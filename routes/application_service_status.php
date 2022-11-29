@@ -12,10 +12,7 @@ Route::middleware(['auth:sanctum'])
             'applications/{connectionApplication}/change-status',
             "ApplicationServiceStatusController@changeStatus"
         );
-        /*Route::post(
-            'application-service-statuses/change-bulk-status',
-            "ApplicationServiceStatusController@changeBulkStatus"
-        );*/
+
         Route::post(
             'application-service-statuses/get-service-status',
             "ApplicationServiceStatusController@getServiceStatus"
