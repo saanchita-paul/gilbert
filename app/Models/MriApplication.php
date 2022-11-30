@@ -60,9 +60,11 @@ class MriApplication extends Model
 
     public function mriNoteData()
     {
-        return $this->hasOne(MriNote::class)
-            ->where('description', 'LIKE', '%' . self::NOTES_INSERT_KEY . '%')
-            ->latestOfMany();
+        return $this->hasOne(MriNote::class)->ofMany([
+            'id' => 'max',
+        ], function ($query) {
+                $query->where('description', 'LIKE', '%' . self::NOTES_INSERT_KEY . '%');
+        });
     }
 
     protected static function newFactory()
