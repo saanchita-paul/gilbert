@@ -279,7 +279,7 @@
                                     </v-col>
 
                                     <v-col cols="12" class="py-0">
-                                        <ValidationProvider name="Date Of Birth" rules="required"  v-slot="{ errors }">
+                                        <ValidationProvider name="Date of Birth" :rules="`${isTenancyHomeOwner ? '' : 'required'}`"  v-slot="{ errors }">
                                             <v-menu
                                                 v-model="showAuthoritydob"
                                                 :close-on-content-click="false"
@@ -289,10 +289,9 @@
                                                 min-width="290px"
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
-
-                                                    <ValidationProvider name="Date Of Birth" rules="required|valid-date"  v-slot="{ errors }">
+                                                    <ValidationProvider name="Date of Birth" :rules="`${isTenancyHomeOwner ? '' : 'required|'}valid-date`"  v-slot="{ errors }">
                                                         <v-text-field
-                                                            label="Date Of Birth*"
+                                                            :label="`Date of Birth ${isTenancyHomeOwner ? '' : '*'}`"
                                                             placeholder="DD/MM/YYYY"
                                                             outlined
                                                             dense
