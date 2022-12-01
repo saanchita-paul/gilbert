@@ -115,7 +115,6 @@
                 <!-- triage ends -->
 
 
-
                 <v-text-field
                     v-model="$attrs.value.tenant_email"
                     full-width
@@ -132,15 +131,22 @@
                     v-model="$attrs.value.duplication_group_id"
                 />
 
-
+                <!-- assignee start -->
+                <AssigneeFilterDropdown
+                    @onSelectAssignee="onSelectAssignee">
+                </AssigneeFilterDropdown>
+                <!-- assignee end -->
             </div>
         </v-form>
     </div>
 </template>
 
 <script>
+import AssigneeFilterDropdown from "@scripts/components/crm/leadmanagement/AssigneeFilterDropdown";
+
 export default {
     name: "ApplicationFilter",
+    components: {AssigneeFilterDropdown},
     props: ["isSearchEmpty"],
     data() {
         return {
@@ -198,12 +204,16 @@ export default {
             leadSrc: {default: "all"},
             tenancy_Type: {default: "all"},
             triage: {default: "all"},
+            assignee: "",
         };
     },
     methods: {
         clearSearch() {
             this.$refs.form.reset();
         },
+        onSelectAssignee(assignedUserId) {
+            this.$attrs.value.assignee = assignedUserId;
+        }
     },
     watch: {
         isSearchEmpty(val) {
