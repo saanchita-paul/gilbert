@@ -51,7 +51,7 @@ class HubspotContactService
     public function create()
     {
         $url = config('hub_spot.create_contact');
-        $url = APILog::setLoggerQuery($url, APILog::API_HB_CREATE_CONTACT);
+        $url = APILog::setLoggerQuery($url, APILog::API_HB_CREATE_CONTACT, false);
 
         $response = $this->getClient()->post($url, [
             "properties" => $this->getProperties()
