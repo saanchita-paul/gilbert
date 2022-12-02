@@ -77,6 +77,7 @@ export default {
                 source: "",
                 tenancy_type: "",
                 triage: "",
+                assignee: ""
             },
             advanceSearch: new LeadSearchFilterModel(),
             showDuplicates: false,
