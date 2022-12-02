@@ -42,7 +42,7 @@ class LeadSearchFilterModel {
             isEmpty(this.triage) &&
             isEmpty(this.tenant_email) &&
             isEmpty(this.duplication_group_id) &&
-            isEmpty(this.assignee);
+            !this.assignee;
     }
 
     clear(){
