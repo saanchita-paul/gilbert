@@ -1309,6 +1309,7 @@ import {tenancyTypeMapper} from '@scripts/data/ConnectionApplicationMapper';
 import {mapGetters} from "vuex";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import AuthService from "@scripts/services/AuthService";
+import PropertyDetails from "@scripts/models/crm/PropertyDetails";
 
 export default {
   name: "InfoField",
@@ -1323,10 +1324,10 @@ export default {
       require: false,
     },
   },
-  components: {
-    ServiceAddress,
-      AuthorizedPersonForm
-  },
+    components: {
+        ServiceAddress,
+        AuthorizedPersonForm
+    },
   data() {
     return {
       needLifeSupprt: false,
@@ -1588,51 +1589,7 @@ export default {
           country: "",
           medicare_expire_date: "",
       },
-      property_details: {
-        moving_date: "",
-        billing_address: "",
-        property_type: "",
-        life_support: "",
-        solor_power: "",
-        nmi: "",
-        mirn: "",
-        address_text: "",
-        street_address: "",
-        city: "",
-        postcode: "",
-        state: "",
-        country: "",
-        street_type:"",
-        street_name:"",
-        street_name_only:"",
-
-        is_renovation_on: false,
-        has_electricity: true,
-        inspection_time: null,
-
-        unit_number: "",
-        street_number: "",
-        is_billing_same: true,
-        billing_address_text: "",
-        billing_street_address: "",
-        billing_city: "",
-        billing_postcode: "",
-        billing_state: "",
-        billing_country: "",
-        billing_unit_number: "",
-        billing_street_number: "",
-        billing_street_name: "",
-        billing_street_name_only: "",
-        connection_end_date: null,
-        is_temporary_connection : null,
-
-        is_access_require: null,
-        is_gas_life_support: null,
-        is_any_unrestrained_animal: null,
-        additional_access_information: null,
-        is_power_life_support: null,
-
-      },
+      property_details: new PropertyDetails(),
       person_details: {
         title: "",
         first_name: "",

@@ -31,5 +31,11 @@ Route::get('/email', function () {
     return response('hello world');
 });
 
+
+Route::get('mi-test', function () {
+    $handler = new \App\Services\Nbn\ShippingAddressService(5097);
+    $handler->handle();
+});
+
 Route::get('/{vue_capture?}', fn() => view('app'))
     ->where('vue_capture', '[\/\w\.-]*');
