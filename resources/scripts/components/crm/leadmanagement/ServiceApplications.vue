@@ -44,7 +44,7 @@
                     <div>
                         <p class="pt-1 pb-1 mb-0 services service-title">
                             <span class="ml-1">
-                                <v-icon color="red">mdi-wifi</v-icon>Internet
+                                <v-icon color="purple">mdi-wifi</v-icon> NBN
                             </span>
                         </p>
                         <p class="py-0 my-0 text-center active-power-subtitle"
