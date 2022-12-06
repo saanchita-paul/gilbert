@@ -15,6 +15,7 @@ export default {
          */
         getApplicationSummary: state => state.applicationSummary,
 
+        getInternetServiceInfo: state => state.applicationSummary.internet_service_info,
     },
 
     mutations: {

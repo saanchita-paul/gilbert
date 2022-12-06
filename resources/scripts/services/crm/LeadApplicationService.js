@@ -51,6 +51,12 @@ export default {
         Store.commit('leadSummaryStore/setLeadSummary', data);
         return data;
     },
+    loadApplicationSummary() {
+        return Store.getters['leadSummaryStore/getApplicationSummary'];
+    },
+    loadInternetServiceInfo() {
+        return Store.getters['leadSummaryStore/getInternetServiceInfo'];
+    },
     closeApplication: id => LeadApplicationAPI.closeApplication(id),
     sendToChatBot: id => LeadApplicationAPI.sendToChatBot(id),
     isSentToChatbot: id => LeadApplicationAPI.getIsSentToChatbot(id),
