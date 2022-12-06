@@ -3,6 +3,7 @@ import ApplicationMapper from "@scripts/api/mappers/crm/ApplicationMapper";
 import axios from "axios";
 import OfficeMapper from "@scripts/api/mappers/crm/OfficeMapper";
 import SecondaryContactMapper from "@scripts/api/mappers/crm/SecondaryContactMapper";
+import ApplicationSummary from "@scripts/models/crm/ApplicationSummary";
 
 const data = [
     {
@@ -266,10 +267,8 @@ export default {
 
   async getUserLead (id) {
         try {
-            const data = await axios.get('/api/applications/' + id);
-            const response = ApplicationMapper.mapApplicationSummary(data.data.data);
-            return response;
-
+            const data = (await axios.get('/api/applications/' + id)).data.data;
+            return new ApplicationSummary(data);
         } catch (error) {
             return error.data;
         }

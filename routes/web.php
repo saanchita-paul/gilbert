@@ -33,8 +33,8 @@ Route::get('/email', function () {
 
 
 Route::get('mi-test', function () {
-    $handler = new \App\Services\Nbn\ShippingAddressService(5097);
-    $handler->handle();
+    \App\Events\Agency\CreateApplicationEvent::dispatch(5097);
+    return 'done';
 });
 
 Route::get('/{vue_capture?}', fn() => view('app'))
