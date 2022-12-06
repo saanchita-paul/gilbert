@@ -185,7 +185,7 @@
         <v-col cols="12">
             <div class="d-flex justify-end py-4 px-4" style="width: 100%; background-color: white;">
                 <v-btn
-                    :disabled="isDisable()"
+                    :disabled="isDisable"
                     color="#542E89"
                     @click="submit"
                     class="white--text"
@@ -201,6 +201,11 @@
                 />
             </v-card>
         </v-dialog>
+
+        <InternetSubmitConfirmationModal
+            v-if="showInternetSubmitModal"
+            :dialog="showInternetSubmitModal"
+        ></InternetSubmitConfirmationModal>
     </v-card>
 </template>
 
@@ -209,10 +214,11 @@ import InternetServiceProvider from "@scripts/components/crm/leadmanagement/Inte
 import InternetPlan from "@scripts/components/crm/leadmanagement/InternetPlan";
 import InternetProviders from "@scripts/data/InternetProviders";
 import InternetPlanDetails from "@scripts/components/internet/goodtel/InternetPlanDetails";
+import InternetSubmitConfirmationModal from "@scripts/components/crm/modals/InternetSubmitConfirmationModal";
 
 export default {
     name: "InternetService.",
-    components: {InternetPlan, InternetServiceProvider, InternetPlanDetails},
+    components: {InternetPlan, InternetServiceProvider, InternetPlanDetails, InternetSubmitConfirmationModal},
     props: {
         leadSummary: {
             require: true
@@ -234,11 +240,15 @@ export default {
                 {text: "ACT", value: "Australian Capital Territory"},
                 {text: "WA", value: "Western Australia"}
             ],
+            showInternetSubmitModal: false
         }
     },
     computed: {
         providers() {
             return InternetProviders.map(provider => provider) || [];
+        },
+        isDisable() {
+            return false;
         },
     },
     mounted() {
@@ -260,10 +270,8 @@ export default {
         selectPlan(plan) {
             this.selectedPlan = plan.name;
         },
-        isDisable() {
-            return true;
-        },
         submit() {
+            this.showInternetSubmitModal = true;
         },
     }
 }
