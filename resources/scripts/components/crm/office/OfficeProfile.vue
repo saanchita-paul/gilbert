@@ -130,6 +130,200 @@
                                 inset
                                 :label="`${toggleTextAssignToChatbot}`"
                             ></v-switch>
+
+                            <div v-if="office.is_chatbot_office">
+                                <!-- first-->
+                                <div class="d-flex" style="justify-content: space-between">
+                                    <div>
+                                        <v-select
+                                            dense
+                                            hide-details="auto"
+                                            :items="dayDropDownItems"
+                                            placeholder="Select Day"
+                                        >
+                                        </v-select>
+                                    </div>
+
+                                    <div>
+                                        <v-menu offset-x :close-on-content-click="false" v-model="startTimeMenu1">
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field
+                                                    readonly
+                                                    :value="startTime1"
+                                                    prepend-icon="mdi-calendar"
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                ></v-text-field>
+                                            </template>
+                                            <div style="margin-top: 10px">
+                                                <v-time-picker
+                                                    v-model="start_time1"
+                                                    ampm-in-title
+                                                    format="ampm"
+                                                    @update:period="start"
+                                                    color="green lighten-1"
+                                                ></v-time-picker>
+                                            </div>
+                                        </v-menu>
+                                    </div>
+
+                                    <div>
+                                        <v-menu offset-x :close-on-content-click="false" v-model="endTimeMenu">
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field
+                                                    readonly
+                                                    :value="endTime1"
+                                                    prepend-icon="mdi-calendar"
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                ></v-text-field>
+                                            </template>
+                                            <div style="margin-top:15px">
+                                                <v-time-picker
+                                                    v-model="end_time1"
+                                                    ampm-in-title
+                                                    format="ampm"
+                                                    @update:period="end"
+                                                    color="green lighten-1"
+                                                ></v-time-picker>
+                                            </div>
+                                        </v-menu>
+                                    </div>
+                                </div>
+
+                                <!-- second-->
+                                <div class="d-flex" style="justify-content: space-between">
+                                    <div>
+                                        <v-select
+                                            dense
+                                            hide-details="auto"
+                                            :items="dayDropDownItems"
+                                            placeholder="Select Day"
+                                        >
+                                        </v-select>
+                                    </div>
+
+                                    <div>
+                                        <v-menu offset-x :close-on-content-click="false" v-model="startTimeMenu2">
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field
+                                                    readonly
+                                                    :value="startTime2"
+
+                                                    prepend-icon="mdi-calendar"
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                ></v-text-field>
+                                            </template>
+                                            <div style="margin-top: 10px">
+                                                <v-time-picker
+                                                    v-model="start_time2"
+                                                    ampm-in-title
+                                                    format="ampm"
+                                                    @update:period="start"
+                                                    color="green lighten-1"
+                                                ></v-time-picker>
+                                            </div>
+                                        </v-menu>
+                                    </div>
+
+                                    <div>
+                                        <v-menu offset-x :close-on-content-click="false" v-model="endTimeMenu2">
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field
+                                                    readonly
+                                                    :value="endTime2"
+
+                                                    prepend-icon="mdi-calendar"
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                ></v-text-field>
+                                            </template>
+                                            <div style="margin-top:15px">
+                                                <v-time-picker
+                                                    v-model="end_time2"
+                                                    ampm-in-title
+                                                    format="ampm"
+                                                    @update:period="end"
+                                                    color="green lighten-1"
+                                                ></v-time-picker>
+                                            </div>
+                                        </v-menu>
+                                    </div>
+                                </div>
+
+                                <!-- third-->
+                                <div class="d-flex" style="justify-content: space-between">
+                                    <div>
+                                        <v-select
+                                            dense
+                                            hide-details="auto"
+                                            :items="dayDropDownItems"
+                                            placeholder="Select Day"
+                                        >
+                                        </v-select>
+                                    </div>
+
+                                    <div>
+                                        <v-menu offset-x :close-on-content-click="false" v-model="startTimeMenu3">
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field
+                                                    readonly
+                                                    :value="startTime3"
+
+                                                    prepend-icon="mdi-calendar"
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                ></v-text-field>
+                                            </template>
+                                            <div style="margin-top: 10px">
+                                                <v-time-picker
+                                                    v-model="start_time3"
+                                                    ampm-in-title
+                                                    format="ampm"
+                                                    @update:period="start"
+                                                    color="green lighten-1"
+                                                ></v-time-picker>
+                                            </div>
+                                        </v-menu>
+                                    </div>
+
+                                    <div>
+                                        <v-menu offset-x :close-on-content-click="false" v-model="endTimeMenu3">
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field
+                                                    readonly
+                                                    :value="endTime3"
+
+                                                    prepend-icon="mdi-calendar"
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                ></v-text-field>
+                                            </template>
+                                            <div style="margin-top:15px">
+                                                <v-time-picker
+                                                    v-model="end_time3"
+                                                    ampm-in-title
+                                                    format="ampm"
+                                                    @update:period="end"
+                                                    color="green lighten-1"
+                                                ></v-time-picker>
+                                            </div>
+                                        </v-menu>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex" style="justify-content: end">
+                                    <v-btn
+                                        class="mx-2"
+                                        small
+                                    >
+                                        Add Time Slot
+                                    </v-btn>
+                                </div>
+
+                            </div>
+
                         </v-col>
                     </v-row>
                 </v-col>
@@ -338,6 +532,7 @@ export default {
     },
     data() {
       return {
+          picker: null,
           hood_users: [],
           updateConfirmFlag: false,
           data: null,
@@ -376,6 +571,34 @@ export default {
               phone: null,
           },
           selectedAgentId: null,
+
+          startTimeMenu: false,
+          start_time: '10:00 am',
+          start_ampm: null,
+
+          endTimeMenu: false,
+          end_time: null,
+          end_ampm: null,
+
+          dayDropDownItems: [
+              { text: "Monday", value: "Monday" },
+              { text: "Tuesday", value: "Tuesday" },
+              { text: "Wednesday", value: "Wednesday" },
+              { text: "Thursday", value: "Thursday" },
+              { text: "Friday", value: "Friday" },
+              { text: "Saturday", value: "Saturday" },
+              { text: "Sunday", value: "Sunday" },
+          ],
+
+          startTimeMenu2: false,
+          startTimeMenu3: false,
+          endTimeMenu2: false,
+          endTimeMenu3: false,
+
+          start_time2: null,
+          end_time2: null,
+          start_time3: null,
+          end_time3: null,
       }
     },
     computed:{
@@ -387,9 +610,35 @@ export default {
         },
         toggleTextAssignToChatbot() {
             return this.office.is_chatbot_office ? 'On' : 'Off';
+        },
+        startTime1() {
+            return '9:00 am';
+        },
+        endTime1() {
+            return '10:00 am';
+        },
+        startTime2() {
+            return '11:00 am';
+        },
+        endTime2() {
+            return '12:00 pm';
+        },
+        startTime3() {
+            return '1:00 pm';
+        },
+        endTime3() {
+            return '2:00 pm';
         }
     },
     methods:{
+        start(value) {
+            this.start_ampm = value;
+            this.startTimeMenu = false;
+        },
+        end(value) {
+            this.end_ampm = value;
+            this.endTimeMenu = false;
+        },
       onChangeAgent(agent){
           this.office.hood_agent_id = agent.id;
       },
