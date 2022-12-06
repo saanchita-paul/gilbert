@@ -193,10 +193,10 @@ export default {
                 this.cafFiles[index].mirn = data.mirn;
                 this.cafFiles[index].title = data.title;
 
-                if(!isNull( data.connection_date)) {
+                if(!isNull(data.connection_date)) {
                     this.cafFiles[index].connection_date = data.connection_date;
                 }
-                if(!isNull( data.plan)) {
+                if(!isNull(data.plan)) {
                     this.cafFiles[index].plan = data.plan;
                 }
 

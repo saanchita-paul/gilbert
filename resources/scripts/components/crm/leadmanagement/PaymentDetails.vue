@@ -70,7 +70,7 @@
             </div>
         </v-col>
 
-        <v-col cols="6">
+        <v-col cols="6" v-if="hidePayment">
                 <h3 class="pb-2">Estimated Billing</h3>
                 <p class="mt-4">Please input values from 1-900 in fields below.</p>
 
@@ -185,6 +185,13 @@ export default {
         disabledPaymentButton() {
             return this.lead?.powershop_payment_info?.status === 2;
         },
+        /**
+         * Checking if current tab is power or Gas
+         * @returns {boolean}
+         */
+        hidePayment() {
+            return ['0', '1'].includes(LeadApplicationService.getActiveServiceTab()?.toString());
+        }
     },
     watch: {
     },

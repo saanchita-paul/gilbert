@@ -8,10 +8,12 @@
                         <h3 class="page-title">Total Applications: {{ total_leads }}</h3>
                         <AssignToChatbotSetting v-if="isShowAutoAssignBtn"></AssignToChatbotSetting>
                     </div>
+                    <h3 class="page-title">Total Applications: {{ total_leads }}</h3>
                     <ApplicationsMetrics @resetPage="resetPage" v-if="leadTypesFlag" :activeLeadType="activeLeadType"
                                          :showDuplicate="showDuplicates" :leads="leadTypes"
                                          @updateTotal="updateTotal"></ApplicationsMetrics>
                 </v-card>
+<!--                <BulkStatusChangeUploadButton class="mt-3 text-end" :reloadLeads="this.fetchLeads"/>-->
                 <ApplicationFilter v-model="advanceSearch"
                                    :isSearchEmpty="advanceSearch.isSearchEmpty()"></ApplicationFilter>
                 <router-view
@@ -47,6 +49,8 @@ import debounce from "lodash-es/debounce";
 import DuplicateLeadService from "@scripts/services/crm/DuplicateLeadService";
 import AssignToChatbotSetting from "@scripts/components/crm/AssignToChatbotSetting";
 import AuthService from "@scripts/services/AuthService";
+import BulkStatusChangeUploadButton
+    from "@scripts/components/crm/modals/application-service-status/BulkStatusChangeUploadButton";
 
 export default {
     name: "ApplicationPage",
@@ -56,7 +60,8 @@ export default {
         ApplicationDetails,
         ApplicationsMetrics,
         ApplicationFilter,
-        AssignToChatbotSetting
+        AssignToChatbotSetting,
+        BulkStatusChangeUploadButton
     },
 
     data() {

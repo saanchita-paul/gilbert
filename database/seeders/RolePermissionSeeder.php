@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Role;
 
 class RolePermissionSeeder extends Seeder
 {
+
     public const ROLES = [
         #hood
         RolePermission::ROLE_HOOD_ADMIN,
@@ -39,6 +40,8 @@ class RolePermissionSeeder extends Seeder
             RolePermission::P_CAN_MANAGE_APPLICATION,
             RolePermission::P_CAN_MANAGE_AGENCY,
             RolePermission::P_CAN_SWITCH_AUTO_CHATBOT_ASSIGN,
+            RolePermission::P_CAN_CHANGE_MANUAL_STATUS
+
         ],
         RolePermission::ROLE_HOOD_AGENT => [
             RolePermission::P_HOOD_AGENT_CORE,

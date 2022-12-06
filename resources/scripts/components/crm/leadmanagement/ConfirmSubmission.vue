@@ -753,11 +753,13 @@
                     </div>
                 </div>
                 <div v-else class="d-flex justify-center">
-                    <v-progress-circular
-                    indeterminate
-                    color="purple"
-                    class="text-center"
-                    ></v-progress-circular>
+                    <div v-if="!isSubmitTypeWater">
+                        <v-progress-circular
+                            indeterminate
+                            color="purple"
+                            class="text-center"
+                        ></v-progress-circular>
+                    </div>
                 </div>
             </section>
 
@@ -801,7 +803,7 @@ export default {
     },
     data() {
       return {
-          isLoadedValidations: false, 
+          isLoadedValidations: false,
           gasNote: '',
           elecNote: '',
           authorizedPerson: null,
@@ -913,6 +915,10 @@ export default {
         isDisabled() {
             let disabled = !Boolean(this.is_temp_condition) || !Boolean(this.is_life_support) || Boolean(this.isPropertyTypeBusiness);
 
+            if (this.isSubmitTypeWater) {
+                return disabled;
+            }
+
             if (this.data.selectedProvider == 'powershop'){
                 disabled = disabled || !Boolean(this.isPowerShopOk) || Boolean(this.isPaymentNotComplete) || Boolean(this.isEmailBilling);
             }
@@ -996,6 +1002,12 @@ export default {
         },
         isPropertyTypeBusiness() {
             return this.data.property_type === 2;
+        },
+        isSubmitTypeWater() {
+            return this.submitType === 'water';
+        },
+        showLoader() {
+            return !this.isLoadedValidations
         }
     },
     methods: {
@@ -1043,6 +1055,10 @@ export default {
             }
         },
         loadingValidate() {
+            if (this.isSubmitTypeWater) {
+                this.isLoadedValidations = false;
+                return;
+            }
             Promise.all([
                 this.checkSameDayValidation(),
                 this.validateCutOffTime(),

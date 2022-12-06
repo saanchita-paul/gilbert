@@ -48,8 +48,10 @@ class RolePermission
     public const P_AGENCY_OFFICE_SENIOR_PROPERTY_MANAGER = 'agency_office_senior_property_manager_core';
     public const P_AGENCY_OFFICE_REAL_ESTATE_AGENT = 'agency_office_real_estate_agent_core';
 
-    public const P_CAN_MANAGE_APPLICATION = 'can_manage_application';
-    public const P_CAN_MANAGE_AGENCY = 'can_manage_agency';
+    const P_CAN_MANAGE_APPLICATION = 'can_manage_application';
+    const P_CAN_MANAGE_AGENCY = 'can_manage_agency';
+    const P_CAN_CHANGE_MANUAL_STATUS = 'can_change_manual_status';
+
 
     public const P_ACCESS_SALES_DASHBOARD = 'can_access_sales_dashboard';
 

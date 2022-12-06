@@ -18,20 +18,20 @@ class HubspotHandlerService
     {
         try {
             $hubspotContactService = new HubspotContactService($this->application->id);
-            if (empty($this->application->hubspot_contact_id)){
+            if (empty($this->application->hubspot_contact_id)) {
                 $getContactByEmailData = $hubspotContactService->getContactByEmail($this->application->email);
-        
+
                 if ($getContactByEmailData['exists'] === true) {
                     $responseData = $getContactByEmailData['body'];
                     $hubspotId = $responseData['vid'];
-        
+
                     $existingApp = $hubspotContactService->getOldApplicationData($hubspotId);
                     if ($existingApp) {
                         $oldAppHubspotService = new HubspotContactService($existingApp->id);
                         $oldAppHubspotService->setOldHubspotFlag();
                         $oldAppHubspotService->saveHistoricalData($responseData);
                     }
-                    
+
                     $hubspotContactService->setContactId($hubspotId);
                     $hubspotContactService->update();
                 } else {
