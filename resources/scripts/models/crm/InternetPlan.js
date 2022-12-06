@@ -1,16 +1,9 @@
 export default class InternetPlan {
-    title = null;
-    bgColor = null;
-    status = false;
-    name = '';
-    amount = '';
-    logo = '';
-    constructor({title, bgColor, status, name, amount, logo}) {
-        this.title = title;
-        this.bgColor = bgColor;
-        this.status = status
-        this.name = name;
-        this.amount = amount;
-        this.logo = logo;
+    constructor({title, name, amount, logo, mbps}) {
+        this.title = title || null;
+        this.name = name || null;
+        this.amount = amount || null;
+        this.logo = logo || null;
+        this.mbps = mbps || null;
     }
 }
