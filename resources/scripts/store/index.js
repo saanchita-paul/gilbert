@@ -5,6 +5,7 @@ import breadcrumbStore from "@scripts/store/modules/breadcrumbStore";
 import applicationStore from "@scripts/store/modules/ApplicationStore";
 import UtilityServiceStore from "@scripts/store/modules/UtilityServiceStore";
 import addressValidationStore from "@scripts/store/modules/addressValidationStore";
+import leadSummaryStore from "@scripts/store/modules/LeadSummaryStore";
 
 Vue.use(Vuex)
 
@@ -14,6 +15,7 @@ export default new Vuex.Store({
         breadcrumbStore,
         application: applicationStore,
         UtilityServiceStore,
-        addressValidationStore
+        addressValidationStore,
+        leadSummaryStore
     }
 });

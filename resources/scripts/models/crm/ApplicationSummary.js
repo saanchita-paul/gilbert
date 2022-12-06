@@ -1,5 +1,4 @@
 import DayJs from "dayjs";
-import DATE_FORMAT from "@scripts/data/constants/DATE_FORMAT";
 import {isNull, sortBy} from "lodash-es";
 import {street_type} from "@scripts/data/constants/StreetType";
 
@@ -79,103 +78,204 @@ export default class ApplicationSummary {
     assigned_to = null;
     app_close_reason_id = null;
 
-    constructor(
-        {
-            id = null,
-            title = '',
-            first_name = '',
-            middle_name = '',
-            last_name = '',
-            date_of_birth = null, //dob
-            phone = null,
-            international_phone = null,
-            homephone = null,
-            inspection_time = null,
-            has_electricity = 1,
-            phone_type = 1,
-            email = null,
-            moving_date = null,
-            family_violance = 3,
-            is_email_billing = null, //is_email_billing
-            tenancy_type = null,
-            address_unit = null,
-            is_renovation_on = 0,
-            street_address = null,
-            city = null,
-            state = null,
-            state_short = null,
-            unit_number = null,
-            street_number = null,
-            street_name = null,
-            street_name_only = null,
-            country = 'Australia',
-            postcode = null,
-            address_text = null,
-            services = ['gas', 'power', 'water', 'internet'],
-            connection_services = null,
-            additional_instruction = null,
-            identification = null,
-            mirn = null,
-            nmi = null,
-            has_life_support = null,
-            has_solar = null,
-            property_type = null,
-            status = null,
-            status_value = null,
-            billing_unit_number = null,
-            billing_street_type = null,
-            billing_street_number = null,
-            billing_street_name = null,
-            billing_address_text = null,
-            billing_address_unit = null,
-            billing_street_address = null,
-            billing_city = null,
-            billing_postcode = null,
-            billing_state = null,
-            billing_mannual_address = false,
-            is_billing_same = true,
-            authorizedPersonName = null,
-            is_contacted = true,
-            agent_name = '',
-            agency_office = '',
-            lead_source = '',
-            lead_source_description = '',
-            fast_connect_customer_reference = null,
-            is_auto_water_submit = null,
-            source = 0,
-            created_by_agent = null,
-            is_temporary_connection = 0,
-            connection_end_date = null,
-            after_hour_payee = null,
-            tsa_call_histories = [],
-            mannual_address = false,
-            street_type = null,
-            billing_state_short = null,
-            billing_street_name_only = null,
-            is_address_complete = null,
-            billing_is_address_complete = null,
-            is_email_marketing = null,
-            is_access_require = null,
-            is_gas_life_support = null,
-            is_any_unrestrained_animal = null,
-            concession_card_type = null,
-            concession_card_number = null,
-            concession_start_date = null,
-            concession_end_date = null,
-            ea_go_neutral = null,
-            additional_access_information = null,
-            is_power_life_support = null,
-            powershop_payment_info = null,
-            powershop_payment_status = null,
-            is_duplicate = null,
-            duplication_group_id = null,
+    // Internet service info
+    internet_service_info = null;
 
-            // email_manually_verified_by = 0,
-            chatbot_id = null,
-            assigned_to = null,
-            app_close_reason_id = null,
-        }
-    ) {
+    /**
+     * Application summary
+     *
+     * @param id
+     * @param title
+     * @param first_name
+     * @param middle_name
+     * @param last_name
+     * @param date_of_birth
+     * @param phone
+     * @param international_phone
+     * @param homephone
+     * @param inspection_time
+     * @param has_electricity
+     * @param phone_type
+     * @param email
+     * @param moving_date
+     * @param family_violance
+     * @param is_email_billing
+     * @param tenancy_type
+     * @param address_unit
+     * @param is_renovation_on
+     * @param street_address
+     * @param city
+     * @param state
+     * @param state_short
+     * @param unit_number
+     * @param street_number
+     * @param street_name
+     * @param street_name_only
+     * @param country
+     * @param postcode
+     * @param address_text
+     * @param services
+     * @param connection_services
+     * @param additional_instruction
+     * @param identification
+     * @param mirn
+     * @param nmi
+     * @param has_life_support
+     * @param has_solar
+     * @param property_type
+     * @param status
+     * @param status_value
+     * @param billing_unit_number
+     * @param billing_street_type
+     * @param billing_street_number
+     * @param billing_street_name
+     * @param billing_address_text
+     * @param billing_address_unit
+     * @param billing_street_address
+     * @param billing_city
+     * @param billing_postcode
+     * @param billing_state
+     * @param billing_mannual_address
+     * @param is_billing_same
+     * @param authorizedPersonName
+     * @param is_contacted
+     * @param agent_name
+     * @param agency_office
+     * @param lead_source
+     * @param lead_source_description
+     * @param fast_connect_customer_reference
+     * @param is_auto_water_submit
+     * @param source
+     * @param created_by_agent
+     * @param is_temporary_connection
+     * @param connection_end_date
+     * @param after_hour_payee
+     * @param tsa_call_histories
+     * @param mannual_address
+     * @param street_type
+     * @param billing_state_short
+     * @param billing_street_name_only
+     * @param is_address_complete
+     * @param billing_is_address_complete
+     * @param is_email_marketing
+     * @param is_access_require
+     * @param is_gas_life_support
+     * @param is_any_unrestrained_animal
+     * @param concession_card_type
+     * @param concession_card_number
+     * @param concession_start_date
+     * @param concession_end_date
+     * @param ea_go_neutral
+     * @param additional_access_information
+     * @param is_power_life_support
+     * @param powershop_payment_info
+     * @param powershop_payment_status
+     * @param is_duplicate
+     * @param duplication_group_id
+     * @param chatbot_id
+     * @param assigned_to
+     * @param app_close_reason_id
+     * @param internet_service_info
+     */
+    constructor({
+                    id = null,
+                    title = '',
+                    first_name = '',
+                    middle_name = '',
+                    last_name = '',
+                    date_of_birth = null, //dob
+                    phone = null,
+                    international_phone = null,
+                    homephone = null,
+                    inspection_time = null,
+                    has_electricity = 1,
+                    phone_type = 1,
+                    email = null,
+                    moving_date = null,
+                    family_violance = 3,
+                    is_email_billing = null, //is_email_billing
+                    tenancy_type = null,
+                    address_unit = null,
+                    is_renovation_on = 0,
+                    street_address = null,
+                    city = null,
+                    state = null,
+                    state_short = null,
+                    unit_number = null,
+                    street_number = null,
+                    street_name = null,
+                    street_name_only = null,
+                    country = 'Australia',
+                    postcode = null,
+                    address_text = null,
+                    services = ['gas', 'power', 'water', 'internet'],
+                    connection_services = null,
+                    additional_instruction = null,
+                    identification = null,
+                    mirn = null,
+                    nmi = null,
+                    has_life_support = null,
+                    has_solar = null,
+                    property_type = null,
+                    status = null,
+                    status_value = null,
+                    billing_unit_number = null,
+                    billing_street_type = null,
+                    billing_street_number = null,
+                    billing_street_name = null,
+                    billing_address_text = null,
+                    billing_address_unit = null,
+                    billing_street_address = null,
+                    billing_city = null,
+                    billing_postcode = null,
+                    billing_state = null,
+                    billing_mannual_address = false,
+                    is_billing_same = true,
+                    authorizedPersonName = null,
+                    is_contacted = true,
+                    agent_name = '',
+                    agency_office = '',
+                    lead_source = '',
+                    lead_source_description = '',
+                    fast_connect_customer_reference = null,
+                    is_auto_water_submit = null,
+                    source = 0,
+                    created_by_agent = null,
+                    is_temporary_connection = 0,
+                    connection_end_date = null,
+                    after_hour_payee = null,
+                    tsa_call_histories = [],
+                    mannual_address = false,
+                    street_type = null,
+                    billing_state_short = null,
+                    billing_street_name_only = null,
+                    is_address_complete = null,
+                    billing_is_address_complete = null,
+                    is_email_marketing = null,
+                    is_access_require = null,
+                    is_gas_life_support = null,
+                    is_any_unrestrained_animal = null,
+                    concession_card_type = null,
+                    concession_card_number = null,
+                    concession_start_date = null,
+                    concession_end_date = null,
+                    ea_go_neutral = null,
+                    additional_access_information = null,
+                    is_power_life_support = null,
+                    powershop_payment_info = null,
+                    powershop_payment_status = null,
+                    is_duplicate = null,
+                    duplication_group_id = null,
+
+                    // email_manually_verified_by = 0,
+                    chatbot_id = null,
+                    assigned_to = null,
+                    app_close_reason_id = null,
+
+                    // Internet service info
+                    internet_service_info = null,
+                } = {})
+    {
 
         this.id = id;
         this.applicant_name = (title == null ? '' : title) + ' ' + first_name + ' ' + (isNull(middle_name) ? '' : middle_name) + ' ' + last_name;
@@ -220,63 +320,66 @@ export default class ApplicationSummary {
         this.unit_number = unit_number;
         this.street_name = street_name;
         this.authorizedPersonName = authorizedPersonName;
-        this.billing_unit_number = billing_unit_number,
-            this.billing_street_number = billing_street_number,
-            this.billing_street_name = billing_street_name,
-            this.billing_state = billing_state,
-            this.billing_street_type = this.mapStreetType(billing_street_type),
-            this.billing_address_text = billing_address_text,
-            this.billing_street_number = billing_street_number,
-            this.billing_address_unit = billing_address_unit,
-            this.billing_street_address = billing_street_address,
-            this.billing_city = billing_city,
-            this.billing_postcode = billing_postcode,
-            this.billing_mannual_address = billing_mannual_address,
-            this.is_billing_same = is_billing_same,
-            this.is_contacted = is_contacted,
-            this.agent_name = agent_name
-        this.agency_office = agency_office
+        this.billing_unit_number = billing_unit_number;
+        this.billing_street_number = billing_street_number;
+        this.billing_street_name = billing_street_name;
+        this.billing_state = billing_state;
+        this.billing_street_type = this.mapStreetType(billing_street_type);
+        this.billing_address_text = billing_address_text;
+        this.billing_street_number = billing_street_number;
+        this.billing_address_unit = billing_address_unit;
+        this.billing_street_address = billing_street_address;
+        this.billing_city = billing_city;
+        this.billing_postcode = billing_postcode;
+        this.billing_mannual_address = billing_mannual_address;
+        this.is_billing_same = is_billing_same;
+        this.is_contacted = is_contacted;
+        this.agent_name = agent_name;
+        this.agency_office = agency_office;
 
-        this.lead_source = lead_source
-        this.lead_source_description = lead_source_description
-        this.source = source
-        this.created_by_agent = created_by_agent
-        this.is_temporary_connection = is_temporary_connection
-        this.connection_end_date = connection_end_date
-        this.fast_connect_customer_reference = fast_connect_customer_reference
-        this.is_auto_water_submit = is_auto_water_submit
-        this.after_hour_payee = after_hour_payee
+        this.lead_source = lead_source;
+        this.lead_source_description = lead_source_description;
+        this.source = source;
+        this.created_by_agent = created_by_agent;
+        this.is_temporary_connection = is_temporary_connection;
+        this.connection_end_date = connection_end_date;
+        this.fast_connect_customer_reference = fast_connect_customer_reference;
+        this.is_auto_water_submit = is_auto_water_submit;
+        this.after_hour_payee = after_hour_payee;
 
-        this.tsa_call_histories = this.sortCallHistory(tsa_call_histories)
+        this.tsa_call_histories = this.sortCallHistory(tsa_call_histories);
 
-        this.mannual_address = mannual_address
-        this.street_type = this.mapStreetType(street_type)
-        this.state_short = state_short
-        this.street_name_only = street_name_only
-        this.billing_state_short = billing_state_short
-        this.billing_street_name_only = billing_street_name_only
-        this.is_address_complete = is_address_complete
-        this.billing_is_address_complete = billing_is_address_complete
+        this.mannual_address = mannual_address;
+        this.street_type = this.mapStreetType(street_type);
+        this.state_short = state_short;
+        this.street_name_only = street_name_only;
+        this.billing_state_short = billing_state_short;
+        this.billing_street_name_only = billing_street_name_only;
+        this.is_address_complete = is_address_complete;
+        this.billing_is_address_complete = billing_is_address_complete;
 
-        this.is_email_marketing = is_email_marketing
-        this.is_access_require = is_access_require
-        this.is_gas_life_support = is_gas_life_support
-        this.is_any_unrestrained_animal = is_any_unrestrained_animal
-        this.concession_card_type = concession_card_type
-        this.concession_card_number = concession_card_number
-        this.concession_start_date = concession_start_date
-        this.concession_end_date = concession_end_date
-        this.ea_go_neutral = ea_go_neutral
-        this.additional_access_information = additional_access_information
-        this.is_power_life_support = is_power_life_support
-        this.powershop_payment_info = powershop_payment_info
-        this.powershop_payment_status = powershop_payment_status
+        this.is_email_marketing = is_email_marketing;
+        this.is_access_require = is_access_require;
+        this.is_gas_life_support = is_gas_life_support;
+        this.is_any_unrestrained_animal = is_any_unrestrained_animal;
+        this.concession_card_type = concession_card_type;
+        this.concession_card_number = concession_card_number;
+        this.concession_start_date = concession_start_date;
+        this.concession_end_date = concession_end_date;
+        this.ea_go_neutral = ea_go_neutral;
+        this.additional_access_information = additional_access_information;
+        this.is_power_life_support = is_power_life_support;
+        this.powershop_payment_info = powershop_payment_info;
+        this.powershop_payment_status = powershop_payment_status;
         this.is_duplicate = is_duplicate;
         this.duplication_group_id = duplication_group_id;
         // this.email_manually_verified_by = email_manually_verified_by
         this.chatbot_id = chatbot_id;
         this.assigned_to = assigned_to;
         this.app_close_reason_id = app_close_reason_id;
+
+        // Internet service info
+        this.internet_service_info = internet_service_info;
     }
 
 

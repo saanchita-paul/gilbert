@@ -20,6 +20,14 @@ class ShippingAddressService
     {
         try {
             $data = $this->mapData();
+
+            if (is_null($this->application->internetServiceInfo)) {
+                $this->application->internetServiceInfo()->create($data);
+            } else {
+                $this->application->internetServiceInfo()->update($data);
+            }
+            \Log::info('Shipping address created successfully.');
+            return $this->application->internetServiceInfo;
         } catch (\Exception $e) {
             \Log::error('Shipping Address Handler Error (view context)', [
                 'message' => $e->getMessage(),
@@ -42,21 +50,9 @@ class ShippingAddressService
             'postcode',
             'state'
         );
+        $data['connection_application_id'] = $this->application->id;
+        $data['is_shipping_same'] = true;
 
-        // ? todo mapping array key with adding prefix shipping
-
-        return [
-            'connection_application_id' => $this->application->id,
-            'is_shipping_same' => true,
-            'shipping_unit_number' => $data['unit_number'],
-            'shipping_street_number' => $data['street_number'],
-            'shipping_street_name_only' => $data['street_name_only'],
-            'shipping_address_text' => $data['address_text'],
-            'shipping_street_address' => $data['street_address'],
-            'shipping_street_type' => $data['street_type'],
-            'shipping_city' => $data['city'],
-            'shipping_postcode' => $data['postcode'],
-            'shipping_state' => $data['state'],
-        ];
+        return $data;
     }
 }

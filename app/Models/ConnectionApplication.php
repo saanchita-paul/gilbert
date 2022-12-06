@@ -673,4 +673,9 @@ class ConnectionApplication extends Model
             }
         }
     }
+
+    public function internetServiceInfo(): HasOne
+    {
+        return $this->hasOne(InternetServiceInfo::class);
+    }
 }
