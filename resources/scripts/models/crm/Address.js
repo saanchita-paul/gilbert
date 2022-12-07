@@ -1,4 +1,5 @@
 export default class Address {
+    is_same = true;
     unit_number = null;
     street_number = null;
     street_name_only = null;
@@ -13,6 +14,7 @@ export default class Address {
     /**
      * Address constructor
      *
+     * @param is_same
      * @param address_text
      * @param street_address
      * @param city
@@ -26,6 +28,7 @@ export default class Address {
      *
      */
     constructor({
+                    is_same = true,
                     address_text = null,
                     street_address = null,
                     city = null,
@@ -37,6 +40,7 @@ export default class Address {
                     unit_number = null,
                     street_number = null,
                 } = {}) {
+        this.is_same = is_same;
         this.address_text = address_text;
         this.street_address = street_address;
         this.city = city;

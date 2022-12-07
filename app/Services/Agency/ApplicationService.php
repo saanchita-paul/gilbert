@@ -40,7 +40,7 @@ class ApplicationService
         $application['status'] = ConnectionApplication::STATUS_UNASSIGNED;
         $authizedPerson = $application['authorized_person'];
 
-        if($application['is_billing_same'] == 0 || $application['is_billing_same'] == null ) {
+        if ($application['is_billing_same'] == 0 || $application['is_billing_same'] == null) {
 
             $application['billing_unit_number'] = $application['billing_unit_number'];
             $application['billing_street_number'] = $application['billing_street_number'];
@@ -52,8 +52,7 @@ class ApplicationService
             $application['billing_postcode'] = $application['billing_postcode'];
             $application['billing_state'] = $application['billing_state'];
             $application['billing_address_unit'] = $application['billing_unit_number'] ? $application['billing_unit_number'] : null;
-        }
-        else {
+        } else {
             $application['billing_unit_number'] = $application['unit_number'];
             $application['billing_street_number'] = $application['street_number'];
             $application['billing_street_name_only'] = $application['street_name_only'];
@@ -142,7 +141,6 @@ class ApplicationService
         $existingApplication->is_billing_same = $address['is_billing_same'];
 
 
-
         if ($address['is_billing_same'] == 0 || $address['is_billing_same'] == null) {
             $existingApplication->billing_address_text = $address['billing_address_text'];
             $existingApplication->billing_state = $address['billing_state'];
@@ -174,6 +172,31 @@ class ApplicationService
         return $existingApplication;
     }
 
+    public function updateInternetServiceInfo(array $data, int $applicationId)
+    {
+        $existingApplication = ConnectionApplication::find($applicationId);
+
+        $existingApplication->internetServiceInfo()->updateOrCreate([
+            'is_shipping_same' => $data['address']['is_same'],
+            'unit_number' => $data['address']['unit_number'],
+            'street_number' => $data['address']['street_number'],
+            'street_name_only' => $data['address']['street_name_only'],
+            'address_text' => $data['address']['address_text'],
+            'street_address' => $data['address']['street_address'],
+            'street_type' => $data['address']['street_type'],
+            'city' => $data['address']['city'],
+            'postcode' => $data['address']['postcode'],
+            'state' => $data['address']['state'],
+            'is_need_home_phone' => $data['is_need_home_phone'],
+            'is_back_to_base' => $data['is_back_to_base'],
+            'is_security_alarm' => $data['is_security_alarm'],
+            'is_existing_landline' => $data['is_existing_landline'],
+            'home_phone_number' => $data['home_phone_number'],
+        ]);
+
+        return $existingApplication;
+    }
+
     public function assignUser(string $agentId, int $applicationId)
     {
         ConnectionApplication::query()
@@ -200,7 +223,7 @@ class ApplicationService
             ->where('profile_id', $hoodUserId)
             ->firstOrFail();
 
-        if($checkProfile->hasAnyRole(RolePermission::ROLE_HOOD_CHATBOT_USER)) {
+        if ($checkProfile->hasAnyRole(RolePermission::ROLE_HOOD_CHATBOT_USER)) {
             GilbertToChatbotJob::dispatch($appId);
         };
     }
@@ -222,7 +245,7 @@ class ApplicationService
             ->delete();
 
 
-        $conServices =  ConnectionService::query()->where('connection_application_id', '=', $id)
+        $conServices = ConnectionService::query()->where('connection_application_id', '=', $id)
             ->get();
         #saving newly selected service
         $data = [];
@@ -236,7 +259,7 @@ class ApplicationService
                     'connection_application_id' => $id,
                     'status' => ConnectionService::STATUS_EA_PROCESSINF
                 ];
-                if (in_array($item, [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS ])) {
+                if (in_array($item, [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])) {
                     $serviceData['provider_name'] = $planProvider['provider_name'];
                     $serviceData['plan_type'] = $planProvider['plan_type'];
                 }
@@ -254,7 +277,7 @@ class ApplicationService
         $provider = null;
         $plan = null;
         foreach ($conServices as $service) {
-            if (in_array($service->service_type, [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS ])) {
+            if (in_array($service->service_type, [ConnectionService::TYPE_ELECTRICITY, ConnectionService::TYPE_GAS])) {
                 $provider = $service->provider_name ?? null;
                 $plan = $service->plan_type ?? null;
             }
@@ -437,24 +460,24 @@ class ApplicationService
 
         if (isset($application['email_manually_verified_by'])) {
             if ($application['email_manually_verified_by'] === true) {
-                $application['email_manually_verified_by'] =  auth()->user()->profile_id;
+                $application['email_manually_verified_by'] = auth()->user()->profile_id;
             } else {
-                $application['email_manually_verified_by'] =  null;
+                $application['email_manually_verified_by'] = null;
             }
         }
 
         foreach ([
-            'is_gas_life_support' => 'gas_life_support_accepted_at',
-            'is_power_life_support' => 'power_life_support_accepted_at']
-            as $key => $val){
+                     'is_gas_life_support' => 'gas_life_support_accepted_at',
+                     'is_power_life_support' => 'power_life_support_accepted_at']
+                 as $key => $val) {
 
-                if (isset($application[$key])) {
-                    if ($application[$key] === true) {
-                        $application[$val] = Carbon::now();
-                    } else {
-                        $application[$val] = null;
-                    }
+            if (isset($application[$key])) {
+                if ($application[$key] === true) {
+                    $application[$val] = Carbon::now();
+                } else {
+                    $application[$val] = null;
                 }
+            }
         }
 
         if ($isIdentification) {
@@ -548,8 +571,8 @@ class ApplicationService
         };
 
         foreach ($services as $service) {
-            $key = $service. "_plan_type";
-            $plan =   $data[$key] ?? null;
+            $key = $service . "_plan_type";
+            $plan = $data[$key] ?? null;
 
             $connectionService = ConnectionService::where('connection_application_id', $applicationId)
                 ->where('service_type', $service)
@@ -572,7 +595,7 @@ class ApplicationService
         }
     }
 
-    public function getNotSubmittedServices($id, $submitType) : array
+    public function getNotSubmittedServices($id, $submitType): array
     {
         $providers = [ConnectionService::PROVIDER_EA, ConnectionService::PROVIDER_ORIGIN, ConnectionService::PROVIDER_POWER_SHOP];
 
@@ -585,12 +608,12 @@ class ApplicationService
 
         $notSubmitted = [];
 
-        foreach($providers as $provider){
+        foreach ($providers as $provider) {
             $notSubmitted[$provider] = ConnectionService::query()->where('connection_application_id', $id)
-            ->where('provider_name', $provider)
-            ->whereNull('lead_reference')
-            ->whereIn('service_type', $services)
-            ->pluck('id')->toArray();
+                ->where('provider_name', $provider)
+                ->whereNull('lead_reference')
+                ->whereIn('service_type', $services)
+                ->pluck('id')->toArray();
         }
 
         return $notSubmitted;
@@ -660,7 +683,7 @@ class ApplicationService
     public function updateEmailField(array $application, $id)
     {
         $existLead = ConnectionApplication::findOrFail($id);
-        ConnectionApplication::where('id' , $existLead->id)
+        ConnectionApplication::where('id', $existLead->id)
             ->update([
                 'email_manually_verified_by' => null,
             ]);

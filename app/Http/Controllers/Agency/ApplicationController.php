@@ -199,6 +199,23 @@ class ApplicationController extends Controller
         }
     }
 
+    /**
+     * Assigning user to an Application
+     *
+     * @param Request $request
+     * @param int $applicationId
+     *
+     */
+    public function updateInternetServiceInfo(Request $request, int $applicationId)
+    {
+        try {
+            $service = new ApplicationService();
+            return ApplicationResource::make($service->updateInternetServiceInfo($request->toArray(), $applicationId));
+        } catch (\Exception $exception) {
+            return $this->sendErrorResponse($exception);
+        }
+    }
+
 
     /**
      * Submitting an Application

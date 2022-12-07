@@ -5,6 +5,7 @@ export default {
     mapData: internetServiceInfo => {
         let data = internetServiceInfo ? internetServiceInfo : new InternetServiceInfo();
         let address = new Address({
+            is_same: data.is_shipping_same ?? true,
             address_text: data.address_text ?? null,
             street_address: data.street_address ?? null,
             city: data.city ?? null,
@@ -28,7 +29,6 @@ export default {
             account_number: data.account_number ?? null,
             home_plan_provder: data.home_plan_provder ?? null,
             home_plan_type: data.home_plan_type ?? null,
-            is_shipping_same: data.is_shipping_same ?? null,
             address: address,
         })
     },

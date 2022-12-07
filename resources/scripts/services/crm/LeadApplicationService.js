@@ -59,6 +59,11 @@ export default {
     loadInternetServiceInfo() {
         return Store.getters['internetServiceInfoStore/getInternetServiceInfo'];
     },
+    updateInternetServiceInfo: async (data, leadId) => {
+        const response = await LeadApplicationAPI.updateInternetServiceInfo(data, leadId);
+        Store.commit('internetServiceInfoStore/setInternetServiceInfo', InternetServiceInfoMapper.mapData(response.internet_service_info));
+        return response;
+    },
     closeApplication: id => LeadApplicationAPI.closeApplication(id),
     sendToChatBot: id => LeadApplicationAPI.sendToChatBot(id),
     isSentToChatbot: id => LeadApplicationAPI.getIsSentToChatbot(id),

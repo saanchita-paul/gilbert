@@ -850,14 +850,14 @@
                         v-slot="{ errors }"
                     >
                         <v-select
-                            v-model="indentification.type"
+                            v-model="identification.type"
                             :error-messages="errors[0]"
                             @input="updateLeads"
                             item-text="text"
                             @change="changeIdentity"
-                            @blur="saveDraft('type', indentification.type, false, true)"
+                            @blur="saveDraft('type', identification.type, false, true)"
                             item-value="value"
-                            :items="idenficationTypeDD"
+                            :items="identificationTypeDD"
                             outlined
                             dense
                             hide-details="auto"
@@ -870,11 +870,11 @@
                 <div class="field-label">
           <span
           >{{
-                  indentification.type == 1
+                  identification.type == 1
                       ? "Passport Number"
-                      : indentification.type == 2
+                      : identification.type == 2
                           ? "Driver’s License"
-                          : indentification.type == 3
+                          : identification.type == 3
                               ? "Medicare Card"
                               : "Card"
               }}
@@ -884,11 +884,11 @@
                 <div class="text-field">
                     <ValidationProvider
                         :name="
-              indentification.type == 1
+              identification.type == 1
                 ? 'Passport Number'
-                : indentification.type == 2
+                : identification.type == 2
                 ? 'Driver’s License'
-                : indentification.type == 3
+                : identification.type == 3
                 ? 'Medicare Card '
                 : ''
             "
@@ -897,17 +897,17 @@
                     >
                         <v-text-field
                             :error-messages="errors[0]"
-                            v-model="indentification.card_number"
+                            v-model="identification.card_number"
                             @blur="
                 saveDraft(
                   'card_number',
-                  indentification.card_number,
+                  identification.card_number,
                   false,
                   true
                 )
               "
                             @input="updateLeads"
-                            indentification
+                            identification
                             outlined
                             dense
                             hide-details="auto"
@@ -915,7 +915,7 @@
                     </ValidationProvider>
                 </div>
             </div>
-            <div class="crm-text-field" v-if="indentification.type == 1">
+            <div class="crm-text-field" v-if="identification.type == 1">
                 <div class="field-label">
                     <span>Country {{ isTenancyHomeOwner ? '' : '*' }}</span>
                 </div>
@@ -926,10 +926,10 @@
                         v-slot="{ errors }"
                     >
                         <v-text-field
-                            v-model="indentification.country"
+                            v-model="identification.country"
                             @input="updateLeads"
-                            @blur="saveDraft('country', indentification.country, false, true)"
-                            indentification
+                            @blur="saveDraft('country', identification.country, false, true)"
+                            identification
                             :error-messages="errors[0]"
                             outlined
                             dense
@@ -939,21 +939,21 @@
                 </div>
             </div>
 
-            <div class="crm-text-field" v-if="indentification.type == 2">
+            <div class="crm-text-field" v-if="identification.type == 2">
                 <div class="field-label">
                     <span>State {{ isTenancyHomeOwner ? '' : '*' }}</span>
                 </div>
                 <div class="text-field">
                     <ValidationProvider name="State" :rules="`${isTenancyHomeOwner?'':'required'}`" v-slot="{ errors }">
                         <v-select
-                            v-model="indentification.state"
-                            @blur="saveDraft('state', indentification.state, false, true)"
+                            v-model="identification.state"
+                            @blur="saveDraft('state', identification.state, false, true)"
                             :items="statesDD"
                             item-text="text"
                             item-value="value"
                             :error-messages="errors[0]"
                             @input="updateLeads"
-                            indentification
+                            identification
                             outlined
                             dense
                             hide-details="auto"
@@ -962,7 +962,7 @@
                 </div>
             </div>
 
-            <div class="crm-text-field" v-if="indentification.type == 3">
+            <div class="crm-text-field" v-if="identification.type == 3">
                 <div class="field-label">
                     <span>Special Number {{ isTenancyHomeOwner ? '' : '*' }}</span>
                 </div>
@@ -973,11 +973,11 @@
                         v-slot="{ errors }"
                     >
                         <v-select
-                            v-model="indentification.special_number"
+                            v-model="identification.special_number"
                             @blur="
                 saveDraft(
                   'special_number',
-                  indentification.special_number,
+                  identification.special_number,
                   false,
                   true
                 )
@@ -999,7 +999,7 @@
                 </div>
 
 
-                <div class="text-field" v-if="indentification.type !== 3">
+                <div class="text-field" v-if="identification.type !== 3">
                     <v-menu
                         v-model="showMovingDate"
                         :close-on-content-click="false"
@@ -1018,7 +1018,7 @@
                                     placeholder="DD/MM/YYYY"
                                     outlined
                                     dense
-                                    v-model="indentification.expire_date"
+                                    v-model="identification.expire_date"
                                     v-bind="attrs"
                                     :error-messages="errors[0]"
                                     hide-details="auto"
@@ -1037,8 +1037,7 @@
                         ></v-date-picker>
                     </v-menu>
                 </div>
-                <div class="text-field" v-if="indentification.type === 3">
-
+                <div class="text-field" v-if="identification.type === 3">
                     <v-menu
                         v-model="showMovingDate"
                         :close-on-content-click="false"
@@ -1057,7 +1056,7 @@
                                     placeholder="MM/YY"
                                     outlined
                                     dense
-                                    v-model="indentification.medicare_expire_date"
+                                    v-model="identification.medicare_expire_date"
                                     v-bind="attrs"
                                     :error-messages="errors[0]"
                                     hide-details="auto"
@@ -1080,7 +1079,7 @@
 
 
             </div>
-            <div class="crm-text-field" v-if="indentification.type == 3">
+            <div class="crm-text-field" v-if="identification.type === 3">
                 <div class="field-label">
                     <span>Card Colour {{ isTenancyHomeOwner ? '' : '*' }}</span>
                 </div>
@@ -1092,11 +1091,11 @@
                     >
                         <v-select
                             :error-messages="errors[0]"
-                            v-model="indentification.card_color"
+                            v-model="identification.card_color"
                             item-text="text"
                             item-value="value"
                             @blur="
-                saveDraft('card_color', indentification.card_color, false, true)
+                saveDraft('card_color', identification.card_color, false, true)
               "
                             @input="updateLeads"
                             :items="colorDD"
@@ -1314,7 +1313,7 @@
             :dialog="shippingAddressFlag"
             :serviceAddress="property_details"
             :shippingDetails="internetServiceInfo.address"
-            @saveAddress="saveAddress"
+            @saveAddress="updateInternetServiceInfo"
             @close="closeShippingAddress"
         >
         </ShippingAddress>
@@ -1387,11 +1386,11 @@ export default {
             inspectionTimeQLD: ApplicationSummaryConstantService.getInspectionTimeQLDD(),
             lifeSupportDD: ApplicationSummaryConstantService.getLifeSupportDD(),
             solarPowerDD: ApplicationSummaryConstantService.getLifeSupportDD(),
-            idenficationTypeDD: ApplicationSummaryConstantService.getIdentificationTypeDD(),
+            identificationTypeDD: ApplicationSummaryConstantService.getIdentificationTypeDD(),
             concessionCard: ApplicationSummaryConstantService.getConcessionCardDD(),
             colorDD: ApplicationSummaryConstantService.getColorDD(),
             specialNumberDD: SPECIAL_NUMBER,
-            indentification: new Identification(),
+            identification: new Identification(),
             property_details: new PropertyDetails(),
             person_details: new PersonDetails(),
             internetServiceInfo: new InternetServiceInfo(),
@@ -1435,9 +1434,14 @@ export default {
             this.$emit("updateAddress", propertyDetails);
         },
 
+        async updateInternetServiceInfo() {
+            await LeadApplicationService.updateInternetServiceInfo(this.internetServiceInfo, this.lead.id);
+            this.closeShippingAddress();
+        },
+
         updateLeads() {
             this.$emit("updateLead", {
-                identification: this.indentification,
+                identification: this.identification,
                 property_details: this.property_details,
                 person_details: this.person_details,
             });
@@ -1511,14 +1515,14 @@ export default {
             this.property_details.billing_street_name = this.lead.billing_street_name;
             this.property_details.billing_street_name_only = this.lead.billing_street_name_only;
 
-            this.indentification.type = this.lead.identification?.type;
-            this.indentification.card_number = this.lead.identification?.card_number;
-            this.indentification.state = this.lead.identification?.state;
-            this.indentification.country = this.lead.identification?.country;
-            this.indentification.special_number =
+            this.identification.type = this.lead.identification?.type;
+            this.identification.card_number = this.lead.identification?.card_number;
+            this.identification.state = this.lead.identification?.state;
+            this.identification.country = this.lead.identification?.country;
+            this.identification.special_number =
                 this.lead.identification?.special_number;
-            // this.indentification.expire_date = this.lead.identification?.expire_date;
-            this.indentification.card_color = this.lead.identification?.card_color;
+            // this.identification.expire_date = this.lead.identification?.expire_date;
+            this.identification.card_color = this.lead.identification?.card_color;
 
 
             this.person_details.is_email_marketing = this.lead?.is_email_marketing;
@@ -1546,12 +1550,12 @@ export default {
             this.saveDraft('email_manually_verified_by', false);
         },
         changeIdentity() {
-            this.indentification.card_number = "";
-            this.indentification.state = "";
-            this.indentification.country = "";
-            this.indentification.special_number = "";
-            this.indentification.expire_date = "";
-            this.indentification.card_color = "";
+            this.identification.card_number = "";
+            this.identification.state = "";
+            this.identification.country = "";
+            this.identification.special_number = "";
+            this.identification.expire_date = "";
+            this.identification.card_color = "";
         },
 
         formatDate() {
@@ -1561,18 +1565,18 @@ export default {
             const birthdate = dayjs(this.dob, 'YYYY-MM-DD');
             this.person_details.dob = birthdate.isValid() ? birthdate.format('DD/MM/YYYY') : null;
 
-            if (this.indentification.type === IDENTIFICATION.MEDICARE) {
-                this.indentification.medicare_expire_date = (dayJs(this.expire_date).isValid())
+            if (this.identification.type === IDENTIFICATION.MEDICARE) {
+                this.identification.medicare_expire_date = (dayJs(this.expire_date).isValid())
                     ? dayJs(this.expire_date).format("MM/YY")
                     : "";
             } else {
-                this.indentification.expire_date = (dayJs(this.expire_date).isValid())
+                this.identification.expire_date = (dayJs(this.expire_date).isValid())
                     ? dayJs(this.expire_date).format("DD/MM/YYYY")
                     : "";
             }
 
             let expire = this.expire_date == '' || this.expire_date == undefined || this.expire_date == null ? '' : new DayJs(this.expire_date).isValid();
-            this.indentification.expire_date = expire
+            this.identification.expire_date = expire
                 ? new DayJs(this.expire_date).format("DD/MM/YYYY")
                 : "";
 
@@ -1611,18 +1615,18 @@ export default {
             }
         },
         updateExpireDatePicker() {
-            if (DayJs(this.indentification.expire_date, "DD/MM/YYYY").isValid()) {
+            if (DayJs(this.identification.expire_date, "DD/MM/YYYY").isValid()) {
                 this.expire_date = DayJs(
-                    this.indentification.expire_date,
+                    this.identification.expire_date,
                     "DD/MM/YYYY"
                 ).format("YYYY-MM-DD");
             }
         },
         updateExpireDateMedicare() {
-            if (medicareRules(this.indentification.medicare_expire_date) && mediExpireDate(this.indentification.medicare_expire_date) && this.indentification.type == 3) {
-                // let dateMonth =  this.indentification.medicare_expire_date.split('/');
+            if (medicareRules(this.identification.medicare_expire_date) && mediExpireDate(this.identification.medicare_expire_date) && this.identification.type == 3) {
+                // let dateMonth =  this.identification.medicare_expire_date.split('/');
                 // this.expire_date = '04/' + '/' + dateMonth[0] + '/20' + dateMonth[1] ;
-                this.expire_date = ApplicationMapper.mapMadecareDateToServer(this.indentification.medicare_expire_date);
+                this.expire_date = ApplicationMapper.mapMadecareDateToServer(this.identification.medicare_expire_date);
             }
         },
         async clearConcessionDetails(value) {
@@ -1729,6 +1733,12 @@ export default {
             },
             deep: true,
         },
+        internetServiceInfo: {
+            handler() {
+                this.lead.internet_service_info = this.internetServiceInfo;
+            },
+            deep: true,
+        },
 
 
         dob() {
@@ -1754,21 +1764,21 @@ export default {
 
         expire_date() {
             if (isNull(this.expire_date) || this.expire_date == '' || this.expire_date == undefined) return;
-            this.indentification.expire_date = new DayJs(this.expire_date).format(
+            this.identification.expire_date = new DayJs(this.expire_date).format(
                 "DD/MM/YYYY"
             );
             this.$emit(
                 "updateDraft",
                 "expire_date",
-                this.indentification?.expire_date,
+                this.identification?.expire_date,
                 true,
                 true
             );
         },
 
         medicare_expire_date() {
-            this.indentification.medicare_expire_date = dayJs(this.medicare_expire_date).format("MM/YY");
-            const formatedDate = ApplicationMapper.mapMadecareDateToServer(this.indentification.medicare_expire_date, false);
+            this.identification.medicare_expire_date = dayJs(this.medicare_expire_date).format("MM/YY");
+            const formatedDate = ApplicationMapper.mapMadecareDateToServer(this.identification.medicare_expire_date, false);
             this.$emit(
                 "updateDraft",
                 "expire_date",

@@ -6,7 +6,7 @@
             max-width="700px"
         >
             <v-card>
-                <ValidationObserver ref="edit_address">
+                <ValidationObserver ref="shipping_address">
                     <v-container fluid>
                         <v-row class="section-dialogs">
                             <v-col cols="12">
@@ -159,7 +159,7 @@
                                                     mdi-plus-circle
                                                 </v-icon>
                                                 <span style="text-decoration: underline;"> {{
-                                                        shippingDetails.is_shipping_same ? 'Add a different shipping address' : 'Keep the shipping address same as service address'
+                                                        shippingDetails.is_same ? 'Add a different shipping address' : 'Keep the shipping address same as service address'
                                                     }} </span></p>
                                         </v-col>
 
@@ -167,7 +167,7 @@
                                     </v-row>
 
                                     <!-- shipping address starts -->
-                                    <template v-if="!shippingDetails.is_shipping_same && showSearchFields">
+                                    <template v-if="!shippingDetails.is_same && showSearchFields">
                                         <v-col style="margin: 0px; padding: 0px;" cols="12" class="pb-0 mt-2 mx-0"
                                                v-if="!showSearchFieldsShipping">
                                             <v-menu offset-y v-model="showMenu">
@@ -308,7 +308,7 @@
                                     </template>
 
                                     <v-col cols="12" style="margin: 0px; padding: 0px;" class="py-0"
-                                           v-if="showSearchFieldsShipping && !shippingDetails.is_shipping_same">
+                                           v-if="showSearchFieldsShipping && !shippingDetails.is_same">
                                         <p class="newAddress" @click="newAddressShipping"><span
                                             style="text-decoration: underline;"> I want to search for a new address </span>
                                         </p>
@@ -374,7 +374,6 @@ export default {
             showSearchFields: true,
             searchResultShipping: [],
             showSearchFieldsShipping: true,
-            isShippingAddressSame: true,
             search_address_text: ''
         }
     },
@@ -409,10 +408,26 @@ export default {
     },
     mounted() {
         this.currentAddress = {...this.shippingDetails};
+        this.getInitData();
     },
     methods: {
+        getInitData() {
+            if (this.shippingDetails.is_same) {
+                this.shippingDetails.unit_number = this.serviceAddress.unit_number;
+                this.shippingDetails.street_number = this.serviceAddress.street_number;
+                this.shippingDetails.street_name_only = this.serviceAddress.street_name_only;
+                this.shippingDetails.street_name = this.serviceAddress.street_name;
+                this.shippingDetails.street_type = this.serviceAddress.street_type;
+                this.shippingDetails.street_address = this.serviceAddress.street_address;
+                this.shippingDetails.state = this.serviceAddress.state;
+                this.shippingDetails.postcode = this.serviceAddress.postcode;
+                this.shippingDetails.city = this.serviceAddress.city;
+                this.shippingDetails.country = this.serviceAddress.country;
+                this.shippingDetails.address_text = this.serviceAddress.address_text;
+            }
+        },
         shippingAddress() {
-            this.shippingDetails.is_shipping_same = !this.shippingDetails.is_shipping_same;
+            this.shippingDetails.is_same = !this.shippingDetails.is_same;
         },
         selectAddress() {
             this.showSearchFields = true;
@@ -518,11 +533,10 @@ export default {
                     this.selectAddress();
                 });
         },
-
         checkIfAddressIsValid() {
 
             //if shippings address same not same and other required fields are not empty
-            if (!this.shippingDetails.is_shipping_same &&
+            if (!this.shippingDetails.is_same &&
                 (
                     this.shippingDetails.street_number == null || this.shippingDetails.street_number == "" ||
                     this.shippingDetails.street_name_only == null || this.shippingDetails.street_name_only == "" ||
@@ -544,7 +558,6 @@ export default {
             }
             return true;
         },
-
         setAddressTextAndStreetAddress() {
 
             if (!this.checkIfAddressIsValid()) {
@@ -581,19 +594,18 @@ export default {
             return true;
         },
         async onSubmit() {
+            console.log("onSubmit");
             // return;
             this.setAddressTextAndStreetAddress();
             this.mapStreetName();
             // if(!this.checkAddressText()) return;
 
-            let v = await this.$refs.edit_address.validate();
-            if (v) {
-                // console.log()
-                this.$emit('saveAddress', this.shippingDetails);
-                this.$eventBus.$emit("address_updated", this.shippingDetails);
-                Store.commit('setInvalidAddress', false);
+            let v = await this.$refs.shipping_address.validate();
+            console.log("v", v);
+            if (!v) {
+                return false;
             }
-            return v;
+            this.$emit('saveAddress');
         },
     },
 };
