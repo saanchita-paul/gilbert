@@ -5,10 +5,14 @@ export default {
 
     state: {
         internetServiceInfo: new InternetServiceInfo(),
+        internetStatus: null,
+        internetPlan: null,
     },
 
     getters: {
         getInternetServiceInfo: state => state.internetServiceInfo,
+        internetStatus: state => state.internetStatus,
+        internetPlan: state => state.internetPlan,
     },
 
     mutations: {
@@ -19,6 +23,12 @@ export default {
          */
         setInternetServiceInfo(state, internetServiceInfo) {
             state.internetServiceInfo = internetServiceInfo;
+        },
+        setInternetPlan(state, plan) {
+            state.internetPlan = plan;
+        },
+        setInternetStatus(state, status) {
+            state.internetStatus = status;
         },
     }
 }

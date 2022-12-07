@@ -366,15 +366,6 @@ export default {
         }
     },
 
-    async updateInternetServiceInfo(data, leadId) {
-        try {
-            const response = await axios.put('/api/applications/'+leadId+'/update-internet-service-info',data);
-            return ApplicationMapper.mapApplication(response.data.data);
-        } catch (error) {
-            return error.data;
-        }
-    },
-
     async updateAddress(address, leadId) {
         try {
             console.log(address);

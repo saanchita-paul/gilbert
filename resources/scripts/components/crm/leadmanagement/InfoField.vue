@@ -1341,6 +1341,7 @@ import Identification from "@scripts/models/crm/Identification";
 import PersonDetails from "@scripts/models/crm/PersonDetails";
 import InternetServiceInfo from "@scripts/models/crm/InternetServiceInfo";
 import ShippingAddress from "@scripts/components/crm/ShippingAddress";
+import InternetService from "@scripts/modules/internet/services/InternetService";
 
 export default {
     name: "InfoField",
@@ -1435,7 +1436,7 @@ export default {
         },
 
         async updateInternetServiceInfo() {
-            await LeadApplicationService.updateInternetServiceInfo(this.internetServiceInfo, this.lead.id);
+            await InternetService.updateInternetServiceInfo(this.internetServiceInfo, this.lead.id);
             this.closeShippingAddress();
         },
 
@@ -1719,7 +1720,7 @@ export default {
             return this.person_details.email_manually_verified_by;
         },
         loadInternetServiceInfo() {
-            return LeadApplicationService.loadInternetServiceInfo();
+            return InternetService.loadInternetServiceInfo();
         }
     },
 
