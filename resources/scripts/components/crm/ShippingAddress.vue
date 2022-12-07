@@ -66,8 +66,8 @@
                                                             label="Unit No"
                                                             outlined
                                                             dense
-                                                            :readonly="!shippingDetails.mannual_address"
-                                                            v-model="shippingDetails.unit_number"
+                                                            :readonly="!serviceAddress.mannual_address"
+                                                            v-model="serviceAddress.unit_number"
                                                             :error-messages=" errors[0]"
                                                         ></v-text-field>
                                                     </ValidationProvider>
@@ -79,8 +79,8 @@
                                                             label="Street No.*"
                                                             outlined
                                                             dense
-                                                            :readonly="!shippingDetails.mannual_address"
-                                                            v-model="shippingDetails.street_number"
+                                                            :readonly="!serviceAddress.mannual_address"
+                                                            v-model="serviceAddress.street_number"
                                                             :error-messages=" errors[0]"
                                                         ></v-text-field>
                                                     </ValidationProvider>
@@ -92,8 +92,8 @@
                                                             label="Street Name.*"
                                                             outlined
                                                             dense
-                                                            :readonly="!shippingDetails.mannual_address"
-                                                            v-model="shippingDetails.street_name_only"
+                                                            :readonly="!serviceAddress.mannual_address"
+                                                            v-model="serviceAddress.street_name_only"
                                                             :error-messages=" errors[0]"
                                                         ></v-text-field>
                                                     </ValidationProvider>
@@ -102,9 +102,9 @@
                                                     <ValidationProvider name="Street Type" rules="required"
                                                                         v-slot="{ errors }">
                                                         <v-select outlined dense
-                                                                  v-model="shippingDetails.street_type"
+                                                                  v-model="serviceAddress.street_type"
                                                                   :items="street_type"
-                                                                  :readonly="!shippingDetails.mannual_address"
+                                                                  :readonly="!serviceAddress.mannual_address"
                                                                   label="Street Type*"
                                                                   :error-messages=" errors[0]"
                                                                   placeholder="Please Select">
@@ -118,8 +118,8 @@
                                                             label="City/Suburb*"
                                                             outlined
                                                             dense
-                                                            :readonly="!shippingDetails.mannual_address"
-                                                            v-model="shippingDetails.city"
+                                                            :readonly="!serviceAddress.mannual_address"
+                                                            v-model="serviceAddress.city"
                                                             :error-messages=" errors[0]"
                                                         ></v-text-field>
                                                     </ValidationProvider>
@@ -128,9 +128,9 @@
                                                     <ValidationProvider name="State/Territory" rules="required"
                                                                         v-slot="{ errors }">
                                                         <v-select outlined dense
-                                                                  v-model="shippingDetails.state"
+                                                                  v-model="serviceAddress.state"
                                                                   :items="states"
-                                                                  :readonly="!shippingDetails.mannual_address"
+                                                                  :readonly="!serviceAddress.mannual_address"
                                                                   label="State/Territory*"
                                                                   :error-messages=" errors[0]"
                                                                   placeholder="Please Select">
@@ -144,20 +144,13 @@
                                                             label="Postcode*"
                                                             outlined
                                                             dense
-                                                            :readonly="!shippingDetails.mannual_address"
-                                                            v-model="shippingDetails.postcode"
+                                                            :readonly="!serviceAddress.mannual_address"
+                                                            v-model="serviceAddress.postcode"
                                                             :error-messages=" errors[0]"
                                                         ></v-text-field>
                                                     </ValidationProvider>
                                                 </v-col>
                                             </v-row>
-                                        </v-col>
-
-
-                                        <v-col cols="12" class="py-0" v-if="showSearchFields">
-                                            <p class="newAddress" @click="newAddress"><span
-                                                style="text-decoration: underline;"> I want to search for a new address </span>
-                                            </p>
                                         </v-col>
 
                                         <v-col cols="12" class="py-0 pb-4" v-if="showSearchFields">
@@ -166,7 +159,7 @@
                                                     mdi-plus-circle
                                                 </v-icon>
                                                 <span style="text-decoration: underline;"> {{
-                                                        shippingDetails.is_same ? 'Add a different shipping address' : 'Keep the shipping address same as service address'
+                                                        shippingDetails.is_shipping_same ? 'Add a different shipping address' : 'Keep the shipping address same as service address'
                                                     }} </span></p>
                                         </v-col>
 
@@ -174,7 +167,7 @@
                                     </v-row>
 
                                     <!-- shipping address starts -->
-                                    <template v-if="!shippingDetails.is_same && showSearchFields">
+                                    <template v-if="!shippingDetails.is_shipping_same && showSearchFields">
                                         <v-col style="margin: 0px; padding: 0px;" cols="12" class="pb-0 mt-2 mx-0"
                                                v-if="!showSearchFieldsShipping">
                                             <v-menu offset-y v-model="showMenu">
@@ -315,7 +308,7 @@
                                     </template>
 
                                     <v-col cols="12" style="margin: 0px; padding: 0px;" class="py-0"
-                                           v-if="showSearchFieldsShipping && !shippingDetails.is_same">
+                                           v-if="showSearchFieldsShipping && !shippingDetails.is_shipping_same">
                                         <p class="newAddress" @click="newAddressShipping"><span
                                             style="text-decoration: underline;"> I want to search for a new address </span>
                                         </p>
@@ -365,6 +358,9 @@ export default {
         },
         shippingDetails: {
             required: true
+        },
+        serviceAddress: {
+            required: true,
         }
     },
     data() {

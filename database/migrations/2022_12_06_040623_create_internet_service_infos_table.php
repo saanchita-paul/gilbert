@@ -30,6 +30,11 @@ class CreateInternetServiceInfosTable extends Migration
             $table->string('city')->nullable();
             $table->string('postcode')->nullable();
             $table->string('state')->nullable();
+            $table->boolean('is_need_home_phone')->default(false);
+            $table->boolean('is_back_to_base')->default(false);
+            $table->boolean('is_security_alarm')->default(false);
+            $table->boolean('is_existing_landline')->default(false);
+            $table->string('home_phone_number')->nullable();
             $table->timestamps();
         });
     }

@@ -6,6 +6,7 @@ import applicationStore from "@scripts/store/modules/ApplicationStore";
 import UtilityServiceStore from "@scripts/store/modules/UtilityServiceStore";
 import addressValidationStore from "@scripts/store/modules/addressValidationStore";
 import leadSummaryStore from "@scripts/store/modules/LeadSummaryStore";
+import internetServiceInfoStore from "@scripts/store/modules/InternetServiceInfoStore";
 
 Vue.use(Vuex)
 
@@ -16,6 +17,7 @@ export default new Vuex.Store({
         application: applicationStore,
         UtilityServiceStore,
         addressValidationStore,
-        leadSummaryStore
+        leadSummaryStore,
+        internetServiceInfoStore
     }
 });

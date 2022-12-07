@@ -1312,7 +1312,8 @@
         <ShippingAddress
             v-if="shippingAddressFlag"
             :dialog="shippingAddressFlag"
-            :shippingDetails="internetServiceInfo"
+            :serviceAddress="property_details"
+            :shippingDetails="internetServiceInfo.address"
             @saveAddress="saveAddress"
             @close="closeShippingAddress"
         >
@@ -1860,7 +1861,7 @@ export default {
         this.manuallyVerified = await LeadApplicationService.isEmailManuallyVerified(this.lead.id);
         this.person_details.email_manually_verified_by = this.manuallyVerified;
 
-        this.internetServiceInfo = this.loadInternetServiceInfo;
+        this.internetServiceInfo = await this.loadInternetServiceInfo;
     },
 };
 </script>

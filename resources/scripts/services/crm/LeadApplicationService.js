@@ -12,6 +12,7 @@ import Store from "@scripts/store";
 import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 import {isNull} from "lodash-es";
 import DuplicateLeadService from "@scripts/services/crm/DuplicateLeadService";
+import InternetServiceInfoMapper from "@scripts/data/InternetServiceInfoMapper";
 
 export default {
     loadMetrics: data => LeadApplicationAPI.getMetrics(data),
@@ -49,13 +50,14 @@ export default {
     loadUserLead: async id => {
         const data = await LeadApplicationAPI.getUserLead(id);
         Store.commit('leadSummaryStore/setLeadSummary', data);
+        Store.commit('internetServiceInfoStore/setInternetServiceInfo', InternetServiceInfoMapper.mapData(data.internet_service_info));
         return data;
     },
     loadApplicationSummary() {
         return Store.getters['leadSummaryStore/getApplicationSummary'];
     },
     loadInternetServiceInfo() {
-        return Store.getters['leadSummaryStore/getInternetServiceInfo'];
+        return Store.getters['internetServiceInfoStore/getInternetServiceInfo'];
     },
     closeApplication: id => LeadApplicationAPI.closeApplication(id),
     sendToChatBot: id => LeadApplicationAPI.sendToChatBot(id),
