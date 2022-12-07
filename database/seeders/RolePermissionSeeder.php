@@ -9,7 +9,7 @@ use Spatie\Permission\Models\Role;
 
 class RolePermissionSeeder extends Seeder
 {
-     const ROLES = [
+    const ROLES = [
         #hood
         RolePermission::ROLE_HOOD_ADMIN,
         RolePermission::ROLE_HOOD_AGENT,
@@ -38,6 +38,7 @@ class RolePermissionSeeder extends Seeder
             RolePermission::P_HOOD_ADMIN_CORE,
             RolePermission::P_CAN_MANAGE_APPLICATION,
             RolePermission::P_CAN_MANAGE_AGENCY,
+            RolePermission::P_CAN_CHANGE_MANUAL_STATUS
         ],
         RolePermission::ROLE_HOOD_AGENT => [
             RolePermission::P_HOOD_AGENT_CORE,
@@ -88,7 +89,8 @@ class RolePermissionSeeder extends Seeder
         ],
 
     ];
-        /**
+
+    /**
      * Run the database seeds.
      *
      * @return void
@@ -100,11 +102,10 @@ class RolePermissionSeeder extends Seeder
 
     public static function createRolePermission($roles, $permissionsOfRoles)
     {
-        foreach ($roles  as $role) {
+        foreach ($roles as $role) {
             $r = Role::findOrCreate($role);
-            if (array_key_exists($role, $permissionsOfRoles))
-            {
-                foreach ( $roles as $permission) {
+            if (array_key_exists($role, $permissionsOfRoles)) {
+                foreach ($permissionsOfRoles[$role] as $permission) {
                     $p = Permission::findOrCreate($permission);
                     $p->assignRole($r);
                 }

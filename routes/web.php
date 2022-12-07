@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Services\Application\ServiceStatusFilterMapper;
 use Powershop\Http\Controllers\PxPayController;
 use Illuminate\Support\Facades\Route;
 

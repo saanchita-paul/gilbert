@@ -35,16 +35,16 @@ class ApplicationNote extends Model
 {
     use HasFactory;
 
-    const ESCALATED = 'escalated';
-    const CONFIRM_CONNECTION = 'confirmed_connection';
-    const CLOSE_CONNECTION = 'close_connection';
-    const REGULAR = 'regular';
-    const SUBMITTED_CONNECTION = 'submitted_connection'; // SUBMITTED EA
-    const SUBMITTED_ORIGIN = 'submitted_origin';
-    const SUBMITTED_POWERSHOP = 'submitted_powershop';
-    const MRI_IDENTIFICATION = 'mri_identification';
+    public const ESCALATED = 'escalated';
+    public const CONFIRM_CONNECTION = 'confirmed_connection';
+    public const CLOSE_CONNECTION = 'close_connection';
+    public const REGULAR = 'regular';
+    public const SUBMITTED_CONNECTION = 'submitted_connection'; // SUBMITTED EA
+    public const SUBMITTED_ORIGIN = 'submitted_origin';
+    public const SUBMITTED_POWERSHOP = 'submitted_powershop';
+    public const MRI_IDENTIFICATION = 'mri_identification';
 
-    const NOTETYPE = [
+    public const NOTETYPE = [
         'escalated' => self::ESCALATED,
         'confirm_connection' => self::CONFIRM_CONNECTION,
         'close_connection' => self::CLOSE_CONNECTION,
@@ -55,7 +55,7 @@ class ApplicationNote extends Model
         'mri_identification' => self::MRI_IDENTIFICATION,
     ];
 
-    const NOTESUBMIT = [
+    public const NOTESUBMIT = [
         self::SUBMITTED_CONNECTION,
         self::SUBMITTED_ORIGIN,
         self::SUBMITTED_POWERSHOP

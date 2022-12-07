@@ -1,0 +1,235 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\ApplicationServiceStatus;
+use Illuminate\Database\Seeder;
+
+class ApplicationServiceStatusSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        $statuses = [
+            [
+                'name' => 'unassigned',
+                'type' => 'application',
+                'display_text' => 'Unassigned',
+                'display_text_alias' => 'Unassigned',
+                'status_value' => 1,
+                'is_active' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'assigned',
+                'type' => 'application',
+                'display_text' => 'Assigned',
+                'display_text_alias' => 'Assigned',
+                'status_value' => 2,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'escalated',
+                'type' => 'application',
+                'display_text' => 'Escalated',
+                'display_text_alias' => 'Escalated',
+                'status_value' => 3,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'submitted',
+                'type' => 'application',
+                'display_text' => 'Submitted',
+                'display_text_alias' => 'Submitted',
+                'status_value' => 4,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'accepted',
+                'type' => 'application',
+                'display_text' => 'Accepted',
+                'display_text_alias' => 'Accepted',
+                'status_value' => 5,
+                'is_active' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'rejected',
+                'type' => 'application',
+                'display_text' => 'Rejected',
+                'display_text_alias' => 'Rejected',
+                'status_value' => 6,
+                'is_active' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'processing',
+                'type' => 'application',
+                'display_text' => 'Processing',
+                'display_text_alias' => 'In progress',
+                'status_value' => 7,
+                'is_active' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'closed',
+                'type' => 'application',
+                'display_text' => 'Closed',
+                'display_text_alias' => 'Closed',
+                'status_value' => 8,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'unassigned',
+                'type' => 'service',
+                'display_text' => 'Unassigned',
+                'display_text_alias' => 'Unassigned',
+                'status_value' => 1,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'assigned',
+                'type' => 'service',
+                'display_text' => 'Assigned',
+                'display_text_alias' => 'Assigned',
+                'status_value' => 2,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'escalated',
+                'type' => 'service',
+                'display_text' => 'Escalated',
+                'display_text_alias' => 'Escalated',
+                'status_value' => 3,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'submitted',
+                'type' => 'service',
+                'display_text' => 'In Progress',
+                'display_text_alias' => 'In Progress',
+                'status_value' => 4,
+                'is_active' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'accepted',
+                'type' => 'service',
+                'display_text' => 'Accepted',
+                'display_text_alias' => 'Connected',
+                'status_value' => 5,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'rejected',
+                'type' => 'service',
+                'display_text' => 'Rejected',
+                'display_text_alias' => 'Rejected',
+                'status_value' => 6,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'not_submitted',
+                'type' => 'service',
+                'display_text' => 'Not Submitted',
+                'display_text_alias' => 'In progress',
+                'status_value' => 7,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'closed',
+                'type' => 'service',
+                'display_text' => 'Not Selected',
+                'display_text_alias' => 'Not Selected',
+                'status_value' => 8,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'rejected',
+                'type' => 'service',
+                'display_text' => 'Rejected',
+                'display_text_alias' => 'Rejected',
+                'status_value' => 9,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'need_more_info',
+                'type' => 'service',
+                'display_text' => 'Not Selected',
+                'display_text_alias' => 'Not Selected',
+                'status_value' => 10,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'ac_manual_precessing',
+                'type' => 'service',
+                'display_text' => 'Manual Processing',
+                'display_text_alias' => 'Manual Processing',
+                'status_value' => 11,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'processing',
+                'type' => 'service',
+                'display_text' => 'In Progress',
+                'display_text_alias' => 'In Progress',
+                'status_value' => 12,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'failed',
+                'type' => 'service',
+                'display_text' => 'Manual Processing',
+                'display_text_alias' => 'Manual Processing',
+                'status_value' => 13,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ];
+
+        ApplicationServiceStatus::truncate();
+        ApplicationServiceStatus::insert($statuses);
+
+        $this->command->info('ApplicationServiceStatusSeeder: Seeded application_service_statuses table.');
+    }
+}
