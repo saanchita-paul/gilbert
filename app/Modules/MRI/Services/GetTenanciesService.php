@@ -11,6 +11,7 @@ use Illuminate\Support\Carbon;
 class GetTenanciesService
 {
     public const MANAGEMENT_TYPE = 'Residential';
+    public const CONTACT_TYPE_TENANT = 'Tenant';
 
     /**
      * @var string|null
@@ -174,23 +175,25 @@ class GetTenanciesService
                         break;
                     }
 
-                    if ($contact['is_primary']) {
-                        $mriApp->title = $contact['title'];
-                        $mriApp->first_name = $contact['first_name'];
-                        $mriApp->last_name = $contact['last_name'];
-                        $mriApp->email_address = $contact['email_address'];
-                        $mriApp->mobile_phone_number = $contact['mobile_phone_number'];
-                        $mriApp->home_number = $contact['phone_number'];
-                        $mriApp->is_marketing = !$contact['no_marketing'];
-                        $mriApp->preferred_phone_number = $contact['preferred_phone_number'];
-                    } else {
-                        $mriApp->authorized_title = $contact['title'];
-                        $mriApp->authorized_first_name = $contact['first_name'];
-                        $mriApp->authorized_last_name = $contact['last_name'];
-                        $mriApp->authorized_email_address = $contact['email_address'];
-                        $mriApp->authorized_mobile_phone_number = $contact['mobile_phone_number'];
-                        $mriApp->authorized_home_number = $contact['phone_number'];
-                        $mriApp->authorized_preferred_phone_number = $contact['preferred_phone_number'];
+                    if (in_array(self::CONTACT_TYPE_TENANT, $contact['contact_types'])) {
+                        if (empty($mriApp->first_name)) {
+                            $mriApp->title = $contact['title'];
+                            $mriApp->first_name = $contact['first_name'];
+                            $mriApp->last_name = $contact['last_name'];
+                            $mriApp->email_address = $contact['email_address'];
+                            $mriApp->mobile_phone_number = $contact['mobile_phone_number'];
+                            $mriApp->home_number = $contact['phone_number'];
+                            $mriApp->is_marketing = !$contact['no_marketing'];
+                            $mriApp->preferred_phone_number = $contact['preferred_phone_number'];
+                        } elseif (empty($mriApp->authorized_first_name)) {
+                            $mriApp->authorized_title = $contact['title'];
+                            $mriApp->authorized_first_name = $contact['first_name'];
+                            $mriApp->authorized_last_name = $contact['last_name'];
+                            $mriApp->authorized_email_address = $contact['email_address'];
+                            $mriApp->authorized_mobile_phone_number = $contact['mobile_phone_number'];
+                            $mriApp->authorized_home_number = $contact['phone_number'];
+                            $mriApp->authorized_preferred_phone_number = $contact['preferred_phone_number'];
+                        }
                     }
                 }
 

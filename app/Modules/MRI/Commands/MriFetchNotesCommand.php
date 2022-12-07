@@ -4,27 +4,22 @@ namespace MRI\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
-use MRI\Services\GetTenanciesService;
-use MRI\Services\GetPropertyService;
-use MRI\Services\GetNotesService;
-use MRI\Services\MapApplicationService;
-use Carbon\Carbon;
 use MRI\Services\MriServices;
 
-class MriFetchTenanciesCommand extends Command
+class MriFetchNotesCommand extends Command
 {
 /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'mri:fetch_tenancies {--office=} {--afterDate=} {--dump}';
+    protected $signature = 'mri:fetch_notes {--office=} {--afterDate=} {--dump}';
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Fetch Tenancies Data from MRI';
+    protected $description = 'Fetch Agents Data from MRI';
 
     /**
      * Create a new command instance.
@@ -49,30 +44,9 @@ class MriFetchTenanciesCommand extends Command
         $afterDate = $this->option('afterDate') ?? '';
         $dump = $this->option('dump');
 
-        $this->line('MRI fetch tenancies command started successfully!');
-        try {
-            MriServices::handleFetchTenancies($officeId, $afterDate);
-        } catch (\Exception $exception) {
-            if ($dump) {
-                dump($exception->getMessage());
-            }
-        }
-        try {
-            MriServices::handleFetchProperties($officeId);
-        } catch (\Exception $exception) {
-            if ($dump) {
-                dump($exception->getMessage());
-            }
-        }
+        $this->line('MRI fetch notes command started successfully!');
         try {
             MriServices::handleFetchNotes($officeId, $afterDate);
-        } catch (\Exception $exception) {
-            if ($dump) {
-                dump($exception->getMessage());
-            }
-        }
-        try {
-            MriServices::handleMapApplications();
         } catch (\Exception $exception) {
             if ($dump) {
                 dump($exception->getMessage());
@@ -85,7 +59,6 @@ class MriFetchTenanciesCommand extends Command
                 dump($exception->getMessage());
             }
         }
-
-        $this->line('MRI fetch tenancies command finished successfully!');
+        $this->line('MRI fetch notes command finished successfully!');
     }
 }

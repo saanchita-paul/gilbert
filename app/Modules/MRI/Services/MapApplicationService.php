@@ -147,20 +147,8 @@ class MapApplicationService
     private function createConnectionApplication($mriApp)
     {
         $mapApp = $this->mapNewApplication($mriApp);
-        list($noteAppData, $noteIdentificationData) = $this->mapApplicationNoteFields($mriApp);
-        if (!empty($noteAppData)) {
-            $mapApp = array_merge($mapApp, $noteAppData);
-            $mriApp->has_process_note = true;
-            $mriApp->save();
-        }
         $conApp = ConnectionApplication::create($mapApp);
-        if (!empty($mriApp->authorized_first_name)) {
-            $authorizedPerson = $this->mapNewAuthorizedPerson($conApp->id, $mriApp);
-            $conApp->authorizedPerson()->create($authorizedPerson);
-        }
-        if (!empty($noteIdentificationData)) {
-            $conApp->identification()->create($noteIdentificationData);
-        }
+
         foreach (ConnectionService::SERVICE_TYPES as $serviceType) {
             $serviceDetail = $this->mapNewConnectionService($conApp->id, $serviceType);
             $conApp->connectionServices()->create($serviceDetail);

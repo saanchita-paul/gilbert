@@ -42,6 +42,7 @@ class ApplicationNote extends Model
     const SUBMITTED_CONNECTION = 'submitted_connection'; // SUBMITTED EA
     const SUBMITTED_ORIGIN = 'submitted_origin';
     const SUBMITTED_POWERSHOP = 'submitted_powershop';
+    const MRI_IDENTIFICATION = 'mri_identification';
 
     const NOTETYPE = [
         'escalated' => self::ESCALATED,
@@ -50,7 +51,8 @@ class ApplicationNote extends Model
         'submitted_connection' => self::SUBMITTED_CONNECTION,
         'regular' => self::REGULAR,
         'submitted_origin' => self::SUBMITTED_ORIGIN,
-        'submitted_powershop' => self::SUBMITTED_POWERSHOP
+        'submitted_powershop' => self::SUBMITTED_POWERSHOP,
+        'mri_identification' => self::MRI_IDENTIFICATION,
     ];
 
     const NOTESUBMIT = [

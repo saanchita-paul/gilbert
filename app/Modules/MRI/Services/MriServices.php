@@ -98,4 +98,10 @@ class MriServices
         $testService = new MapApplicationService();
         $testService->run();
     }
+
+    public static function handleMapNotes()
+    {
+        $mapNoteService = new MapNoteService();
+        $mapNoteService->run();
+    }
 }

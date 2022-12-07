@@ -18,6 +18,7 @@ use Origin\Commands\OriginCheckStatusCommand;
 use App\Console\Commands\MRIOfficeCommand;
 use MRI\Commands\MriFetchTenanciesCommand;
 use MRI\Commands\MriFetchAgentsCommand;
+use MRI\Commands\MriFetchNotesCommand;
 use Carbon\Carbon;
 
 class Kernel extends ConsoleKernel
@@ -42,6 +43,7 @@ class Kernel extends ConsoleKernel
         MRIOfficeCommand::class,
         MriFetchTenanciesCommand::class,
         MriFetchAgentsCommand::class,
+        MriFetchNotesCommand::class,
     ];
 
     /**
