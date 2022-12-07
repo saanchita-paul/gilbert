@@ -246,10 +246,8 @@
             </div>
         </v-col>
 
-        <v-dialog v-model="viewPlanDetails" max-width="450">
-            <v-card>
-                <InternetPlanDetails />
-            </v-card>
+        <v-dialog v-model="viewPlanDetails" max-width="650">
+            <InternetPlanDetails />
         </v-dialog>
 
         <InternetSubmitConfirmationModal
