@@ -34,7 +34,7 @@ export default {
 
     methods: {
         reviewPlan() {
-            this.$emit('view', this.plan);
+            this.$emit('reviewPlan', this.plan);
         },
 
         selectPlan(plan) {

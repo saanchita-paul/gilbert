@@ -1,7 +1,6 @@
 <template>
-    <div class="pa-0">
-        <h2>Hello</h2>
-
+    <div>
+        <h2>Goodtel internet plan details will be here</h2>
     </div>
 </template>
 
