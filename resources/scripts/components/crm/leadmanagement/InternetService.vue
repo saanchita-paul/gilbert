@@ -17,7 +17,7 @@
         <v-col cols="12">
             <div class="d-flex w-100 overflow-auto">
                 <InternetPlan
-                    @view="view"
+                    @reviewPlan="reviewPlan"
                     :isActive="selectedPlan"
                     v-for="(plan, index) in plans"
                     :key="index"
@@ -31,151 +31,202 @@
             <v-divider></v-divider>
         </v-col>
 
-
         <v-col cols="12">
             <p class="mb-0 sub-title">You have chosen Goodtel NBN!</p>
-            <v-row>
-                <v-col cols="6">
-                    <p class="mt-4 sub-title">Home Phone</p>
-                    <div class="d-flex justify-content-between">
-                        <p class="sub-title">Customer need home phone service?*</p>
-                        <v-switch
-                            inset
-                            class="mt-0"
-                        ></v-switch>
-                    </div>
+        </v-col>
 
-                    <div>
-                        <p class="mb-0">Home Phone Plans</p>
-                        <div class="home-plan">
-                            <div class="pa-2">
-                                <p class="mb-0 text-internet">Phone Calls</p>
-                                <p class="black--text font-weight-bold">$10/month</p>
+        <v-col cols="12">
+            <div class="d-flex justify-space-between">
+                <div class="flex-basis-50">
+                    <v-row>
+                        <v-col cols="12">
+                            <p class="mt-4 sub-title">Home Phone</p>
+                            <div class="crm-text-field">
+                                <div class="field-label flex-basis-80">
+                                    <span>Customer need home phone service?*</span>
+                                </div>
+                                <div class="text-field flex-basis-20 d-flex justify-end">
+                                    <v-switch
+                                        inset
+                                        class="mt-0"
+                                    ></v-switch>
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div>
-                        <v-checkbox
-                            :label="`Do you have an existing landline phone number you'd like to bring to your new service? *`">
-                        </v-checkbox>
-                    </div>
+                            <div>
+                                <p class="mb-0">Home Phone Plans</p>
+                                <div class="home-plan">
+                                    <div class="pa-2">
+                                        <p class="mb-0 text-internet">Phone Calls</p>
+                                        <p class="black--text font-weight-bold">$10/month</p>
+                                    </div>
+                                </div>
+                            </div>
 
-                    <div>
-                        <div class="crm-text-field">
-                            <div class="field-label">
-                                <span>Homephone no.*</span>
+                            <div>
+                                <v-checkbox
+                                    :label="`Do you have an existing landline phone number you'd like to bring to your new service? *`">
+                                </v-checkbox>
                             </div>
-                            <div class="text-field">
-                                <v-text-field
-                                    outlined
-                                    dense
-                                    hide-details="auto"
-                                    placeholder="Home Phone No"
-                                ></v-text-field>
-                            </div>
-                        </div>
 
-                        <div class="crm-text-field">
-                            <div class="field-label">
-                                <span>Current Provider*</span>
-                            </div>
-                            <div class="text-field">
-                                <v-text-field
-                                    outlined
-                                    dense
-                                    hide-details="auto"
-                                    placeholder="Current Provider"
-                                ></v-text-field>
-                            </div>
-                        </div>
+                            <div>
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Homephone no.*</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            placeholder="Home Phone No"
+                                        ></v-text-field>
+                                    </div>
+                                </div>
 
-                        <div class="crm-text-field">
-                            <div class="field-label">
-                                <span>Account Number*</span>
-                            </div>
-                            <div class="text-field">
-                                <v-text-field
-                                    outlined
-                                    dense
-                                    hide-details="auto"
-                                    placeholder="Account Number"
-                                ></v-text-field>
-                            </div>
-                        </div>
-                    </div>
-                </v-col>
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Current Provider*</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            placeholder="Current Provider"
+                                        ></v-text-field>
+                                    </div>
+                                </div>
 
-                <!--            <v-divider vertical></v-divider>-->
-
-                <v-col cols="6">
-                    <p class="mt-4 sub-title">Few additional questions for our customer</p>
-
-                    <div>
-                        <div class="crm-text-field">
-                            <div class="field-label">
-                                <span>Setup OTP</span>
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Account Number*</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            placeholder="Account Number"
+                                        ></v-text-field>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="text-field">
-                                <v-text-field
-                                    outlined
-                                    dense
-                                    hide-details="auto"
-                                    placeholder="One Time Password"
-                                ></v-text-field>
-                            </div>
-                        </div>
+                        </v-col>
+                    </v-row>
+                </div>
+                <div>
+                    <v-divider vertical></v-divider>
+                </div>
+                <div class="flex-basis-50">
+                    <v-row>
+                        <v-col cols="12">
+                            <p class="mt-4 sub-title">Few additional questions for our customer</p>
+                            <div>
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Setup OTP</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            placeholder="One Time Password"
+                                        ></v-text-field>
+                                    </div>
+                                </div>
 
-                        <div class="crm-text-field">
-                            <div class="field-label">
-                                <span>Modem Type</span>
-                            </div>
-                            <div class="text-field">
-                                <v-select
-                                    outlined
-                                    dense
-                                    hide-details="auto"
-                                    :items="statesDD"
-                                    placeholder="Choose Modem Type"
-                                >
-                                </v-select>
-                            </div>
-                        </div>
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Modem Type</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-select
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :items="modemTypesItems"
+                                            placeholder="Choose Modem Type"
+                                        >
+                                        </v-select>
+                                    </div>
+                                </div>
 
-                        <div class="crm-text-field">
-                            <div class="field-label">
-                                <span>Charity</span>
-                            </div>
-                            <div class="text-field">
-                                <v-select
-                                    outlined
-                                    dense
-                                    hide-details="auto"
-                                    :items="statesDD"
-                                    placeholder="Please select"
-                                >
-                                </v-select>
-                            </div>
-                        </div>
+                                <div class="crm-text-field">
+                                    <div class="field-label">
+                                        <span>Charity</span>
+                                    </div>
+                                    <div class="text-field">
+                                        <v-select
+                                            outlined
+                                            dense
+                                            hide-details="auto"
+                                            :items="charityItems"
+                                            placeholder="Please select"
+                                        >
+                                        </v-select>
+                                    </div>
+                                </div>
 
-                        <div class="d-flex justify-content-between">
-                            <p class="sub-title">Back to base?</p>
-                            <v-switch
-                                inset
-                                class="mt-0"
-                            ></v-switch>
-                        </div>
+                                <div class="crm-text-field">
+                                    <div class="field-label flex-basis-80">
+                                        <span>Back to base?</span>
+                                    </div>
+                                    <div class="text-field flex-basis-20 d-flex justify-end">
+                                        <v-switch
+                                            inset
+                                            class="mt-0"
+                                        ></v-switch>
+                                    </div>
+                                </div>
 
-                        <div class="d-flex justify-content-between">
-                            <p class="sub-title">Medical or Security Alarm?</p>
-                            <v-switch
-                                inset
-                                class="mt-0"
-                            ></v-switch>
-                        </div>
-                    </div>
-                </v-col>
-            </v-row>
+                                <div class="crm-text-field">
+                                    <div class="field-label flex-basis-80">
+                                        <span>Medical or Security Alarm?</span>
+                                    </div>
+                                    <div class="text-field flex-basis-20 d-flex justify-end">
+                                        <v-switch
+                                            inset
+                                            class="mt-0"
+                                        ></v-switch>
+                                    </div>
+                                </div>
+                            </div>
+                        </v-col>
+
+                        <v-col cols="12">
+                            <v-divider></v-divider>
+                        </v-col>
+
+                        <v-col cols="12">
+                            <div class="crm-text-field">
+                                <div class="field-label">
+                                    <span>Payment Details</span>
+                                </div>
+                            </div>
+
+                            <div class="crm-text-field">
+                                <div class="field-label">
+                                    <span>Payment Status</span>
+                                </div>
+                                <div class="text-field">
+                                    <span>Pending/Valid/Invalid</span>
+                                </div>
+                            </div>
+
+                            <div class="crm-text-field">
+                                <div class="field-label">
+                                    <span>Payment Code</span>
+                                </div>
+                                <div class="text-field">
+                                    <span>0000</span>
+                                </div>
+                            </div>
+                        </v-col>
+                    </v-row>
+                </div>
+            </div>
         </v-col>
 
         <v-col cols="12">
@@ -197,28 +248,34 @@
 
         <v-dialog v-model="viewPlanDetails" max-width="450">
             <v-card>
-                <InternetPlanDetails
-                />
+                <InternetPlanDetails />
             </v-card>
         </v-dialog>
 
         <InternetSubmitConfirmationModal
             v-if="showInternetSubmitModal"
             :dialog="showInternetSubmitModal"
+            @confirmSubmit="confirmSubmit"
+            @backToEdit="backToEdit"
         ></InternetSubmitConfirmationModal>
     </v-card>
 </template>
 
 <script>
-import InternetServiceProvider from "@scripts/components/crm/leadmanagement/InternetServiceProvider";
-import InternetPlan from "@scripts/components/crm/leadmanagement/InternetPlan";
-import InternetProviders from "@scripts/data/InternetProviders";
-import InternetPlanDetails from "@scripts/components/internet/goodtel/InternetPlanDetails";
-import InternetSubmitConfirmationModal from "@scripts/components/crm/modals/InternetSubmitConfirmationModal";
+import InternetServiceProvider from "@scripts/modules/internet/components/InternetServiceProvider";
+import InternetPlan from "@scripts/modules/internet/components/InternetPlan";
+import InternetPlanDetails from "@scripts/modules/internet/components/InternetPlanDetails";
+import InternetSubmitConfirmationModal from "@scripts/modules/internet/modals/InternetSubmitConfirmationModal";
+import InternetService from "@scripts/modules/internet/services/InternetService";
 
 export default {
     name: "InternetService.",
-    components: {InternetPlan, InternetServiceProvider, InternetPlanDetails, InternetSubmitConfirmationModal},
+    components: {
+        InternetPlan,
+        InternetServiceProvider,
+        InternetPlanDetails,
+        InternetSubmitConfirmationModal
+    },
     props: {
         leadSummary: {
             require: true
@@ -230,22 +287,14 @@ export default {
             plans: null,
             selectedProvider: '',
             selectedPlan: null,
-            statesDD: [
-                {text: "NSW", value: "New South Wales"},
-                {text: "VIC", value: "Victoria"},
-                {text: "QLD", value: "Queensland"},
-                {text: "SA", value: "South Australia"},
-                {text: "NT", value: "Northern Territory"},
-                {text: "TAS", value: "Tasmania"},
-                {text: "ACT", value: "Australian Capital Territory"},
-                {text: "WA", value: "Western Australia"}
-            ],
-            showInternetSubmitModal: false
+            showInternetSubmitModal: false,
+            modemTypesItems: InternetService.getModemTypes(),
+            charityItems: InternetService.getCharityItems(),
         }
     },
     computed: {
         providers() {
-            return InternetProviders.map(provider => provider) || [];
+            return InternetService.getProviderAndPlan();
         },
         isDisable() {
             return false;
@@ -254,7 +303,7 @@ export default {
     mounted() {
     },
     methods: {
-        view() {
+        reviewPlan() {
             this.viewPlanDetails = !this.viewPlanDetails;
         },
         onSelectProvider(providerId) {
@@ -265,7 +314,6 @@ export default {
             })
 
             this.plans = selectedProvider.plans;
-            // this.selectedPlan = selectedProvider.default_plan;
         },
         selectPlan(plan) {
             this.selectedPlan = plan.name;
@@ -273,6 +321,12 @@ export default {
         submit() {
             this.showInternetSubmitModal = true;
         },
+        backToEdit() {
+            this.showInternetSubmitModal = false;
+        },
+        confirmSubmit() {
+            this.showInternetSubmitModal = false;
+        }
     }
 }
 </script>
@@ -302,5 +356,15 @@ export default {
 
 .field-label {
     text-align: left !important;
+}
+
+.flex-basis-50 {
+    flex-basis: 48%;
+}
+.flex-basis-80 {
+    flex-basis: 80% !important;
+}
+.flex-basis-20 {
+    flex-basis: 20% !important;
 }
 </style>

@@ -264,7 +264,6 @@
                 </v-card-text>
 
                 <v-card-actions>
-
                     <v-col cols="6">
                         <v-btn large block @click="backToEdit">
                             Back to Edit
@@ -275,7 +274,6 @@
                             Confirm & Submit
                         </v-btn>
                     </v-col>
-
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -296,8 +294,8 @@ export default {
         backToEdit() {
             this.$emit('backToEdit');
         },
-        confirmSubmitLead() {
-            this.$emit('confirmSubmitLead');
+        confirmSubmit() {
+            this.$emit('confirmSubmit');
         }
     }
 }

@@ -1,4 +1,4 @@
-import InternetPlan from "@scripts/models/crm/InternetPlan";
+import InternetPlan from "@scripts/modules/internet/models/InternetPlan";
 
 export default [
     {
