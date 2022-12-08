@@ -155,15 +155,18 @@
                                     <div>
                                         <v-menu transition="scale-transition" offset-y :close-on-content-click="false" v-model="startTimePickerMenu[index]">
                                             <template v-slot:activator="{ on, attrs }">
-                                                <v-text-field
-                                                    type="time"
-                                                    readonly
-                                                    v-model="item.start_time"
-                                                    label="Start Time"
-                                                    prepend-icon="mdi-clock-time-four-outline"
-                                                    v-bind="attrs"
-                                                    v-on="on"
-                                                ></v-text-field>
+                                                <ValidationProvider name="Start time" rules="required"  v-slot="{ errors }">
+                                                    <v-text-field
+                                                        type="time"
+                                                        readonly
+                                                        v-model="item.start_time"
+                                                        label="Start Time"
+                                                        prepend-icon="mdi-clock-time-four-outline"
+                                                        v-bind="attrs"
+                                                        v-on="on"
+                                                        :error-messages="errors[0]"
+                                                    ></v-text-field>
+                                                </ValidationProvider>
                                             </template>
                                             <div>
                                                 <v-time-picker
@@ -180,15 +183,18 @@
                                     <div class="ml-8">
                                         <v-menu transition="scale-transition" offset-y :close-on-content-click="false" v-model="endTimePickerMenu[index]">
                                             <template v-slot:activator="{ on, attrs }">
-                                                <v-text-field
-                                                    type="time"
-                                                    readonly
-                                                    v-model="item.end_time"
-                                                    label="End Time"
-                                                    prepend-icon="mdi-clock-time-four-outline"
-                                                    v-bind="attrs"
-                                                    v-on="on"
-                                                ></v-text-field>
+                                                <ValidationProvider name="End time" rules="required"  v-slot="{ errors }">
+                                                    <v-text-field
+                                                        type="time"
+                                                        readonly
+                                                        v-model="item.end_time"
+                                                        label="End Time"
+                                                        prepend-icon="mdi-clock-time-four-outline"
+                                                        v-bind="attrs"
+                                                        v-on="on"
+                                                        :error-messages="errors[0]"
+                                                    ></v-text-field>
+                                                </ValidationProvider>
                                             </template>
                                             <div>
                                                 <v-time-picker

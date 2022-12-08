@@ -2,15 +2,6 @@ import Office from "@scripts/models/crm/Office";
 import PaginationMapper from "@scripts/api/mappers/crm/PaginationMapper";
 import COMMISSION from "@scripts/data/constants/COMMISSION";
 
-const timeSlotsData = [
-    {
-        id: 1,
-        day: 'Saturday',
-        start_time: '10:00 am',
-        end_time: '11:00 pm',
-    },
-];
-
 function mapOffice(office) {
     return new Office({...office});
 }
