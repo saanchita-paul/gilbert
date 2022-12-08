@@ -20,10 +20,28 @@ const loadInternetServiceInfo = () => {
     return Store.getters['internetServiceInfoStore/getInternetServiceInfo'];
 }
 
+const getInternetProvider = () => Store.getters['internetServiceInfoStore/internetProvider'];
+
+const setInternetProvider = provider => Store.commit("internetServiceInfoStore/setInternetProvider", provider);
+
+const getInternetPlan = () => Store.getters['internetServiceInfoStore/internetPlan'];
+
+const setInternetPlan = provider => Store.commit("internetServiceInfoStore/setInternetPlan", provider);
+
+const getInternetStatus = () => Store.getters['internetServiceInfoStore/internetStatus'];
+
+const setInternetStatus = provider => Store.commit("internetServiceInfoStore/setInternetStatus", provider);
+
 export default {
     getModemTypes,
     getCharityItems,
     getProviderAndPlan,
     updateInternetServiceInfo,
     loadInternetServiceInfo,
+    getInternetProvider,
+    setInternetProvider,
+    getInternetPlan,
+    setInternetPlan,
+    getInternetStatus,
+    setInternetStatus
 };

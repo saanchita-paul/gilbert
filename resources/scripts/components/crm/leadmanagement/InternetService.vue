@@ -247,7 +247,7 @@
         </v-col>
 
         <v-dialog v-model="viewPlanDetails" max-width="650">
-            <InternetPlanDetails />
+            <InternetPlanDetails/>
         </v-dialog>
 
         <InternetSubmitConfirmationModal
@@ -265,6 +265,7 @@ import InternetPlan from "@scripts/modules/internet/components/InternetPlan";
 import InternetPlanDetails from "@scripts/modules/internet/components/InternetPlanDetails";
 import InternetSubmitConfirmationModal from "@scripts/modules/internet/modals/InternetSubmitConfirmationModal";
 import InternetService from "@scripts/modules/internet/services/InternetService";
+import UtilityStoreService from "@scripts/services/crm/UtilityStoreService";
 
 export default {
     name: "InternetService.",
@@ -283,8 +284,6 @@ export default {
         return {
             viewPlanDetails: false,
             plans: null,
-            selectedProvider: '',
-            selectedPlan: null,
             showInternetSubmitModal: false,
             modemTypesItems: InternetService.getModemTypes(),
             charityItems: InternetService.getCharityItems(),
@@ -297,6 +296,22 @@ export default {
         isDisable() {
             return false;
         },
+        selectedProvider: {
+            get() {
+                return InternetService.getInternetProvider();
+            },
+            set(value) {
+                InternetService.setInternetProvider(value);
+            }
+        },
+        selectedPlan: {
+            get() {
+                return InternetService.getInternetPlan();
+            },
+            set(value) {
+                InternetService.setInternetPlan(value);
+            }
+        },
     },
     mounted() {
     },
@@ -304,8 +319,8 @@ export default {
         reviewPlan() {
             this.viewPlanDetails = !this.viewPlanDetails;
         },
-        onSelectProvider(providerId) {
-            this.selectedProvider = providerId;
+        onSelectProvider(provider) {
+            this.selectedProvider = provider;
 
             const selectedProvider = this.providers.find(dt => {
                 return dt.name === this.selectedProvider;
@@ -359,9 +374,11 @@ export default {
 .flex-basis-50 {
     flex-basis: 48%;
 }
+
 .flex-basis-80 {
     flex-basis: 80% !important;
 }
+
 .flex-basis-20 {
     flex-basis: 20% !important;
 }
