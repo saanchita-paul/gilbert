@@ -132,50 +132,71 @@
                             ></v-switch>
 
                             <div v-if="office.is_chatbot_office">
-                                <div class="d-flex" v-for="slot in time_slots">
+
+<!--                                <div class="d-flex" v-for="(item, index) in time_slots" :key="index">-->
+<!--                                    <div>-->
+<!--                                        <v-text-field-->
+<!--                                            type="time"-->
+<!--                                            v-model="item.start_time"-->
+<!--                                            label="Start Time"-->
+<!--                                        ></v-text-field>-->
+<!--                                    </div>-->
+
+<!--                                    <div class="ml-8">-->
+<!--                                        <v-text-field-->
+<!--                                            type="time"-->
+<!--                                            v-model="item.end_time"-->
+<!--                                            label="End Time"-->
+<!--                                        ></v-text-field>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+                                <div class="d-flex" v-for="(item, index) in time_slots" :key="index">
                                     <div>
-                                        <v-menu offset-x :close-on-content-click="false" v-model="startTimePickerMenu">
+                                        <v-menu transition="scale-transition" offset-y :close-on-content-click="false" v-model="startTimePickerMenu[index]">
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-text-field
+                                                    type="time"
                                                     readonly
-                                                    :value="startTime"
+                                                    v-model="item.start_time"
                                                     label="Start Time"
-                                                    prepend-icon="mdi-clock"
+                                                    prepend-icon="mdi-clock-time-four-outline"
                                                     v-bind="attrs"
                                                     v-on="on"
                                                 ></v-text-field>
                                             </template>
                                             <div>
                                                 <v-time-picker
-                                                    v-model="slot.start_time"
-                                                    ampm-in-title
+                                                    v-model="item.start_time"
                                                     format="ampm"
-                                                    @update:period="start"
                                                     color="green lighten-1"
+                                                    @update:period="startTimePickerMenu[index] = false"
+                                                    ampm-in-title
                                                 ></v-time-picker>
                                             </div>
                                         </v-menu>
                                     </div>
 
-                                    <div>
-                                        <v-menu offset-x :close-on-content-click="false" v-model="endTimePickerMenu">
+                                    <div class="ml-8">
+                                        <v-menu transition="scale-transition" offset-y :close-on-content-click="false" v-model="endTimePickerMenu[index]">
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-text-field
+                                                    type="time"
                                                     readonly
-                                                    :value="endTime"
+                                                    v-model="item.end_time"
                                                     label="End Time"
-                                                    prepend-icon="mdi-clock"
+                                                    prepend-icon="mdi-clock-time-four-outline"
                                                     v-bind="attrs"
                                                     v-on="on"
                                                 ></v-text-field>
                                             </template>
                                             <div>
                                                 <v-time-picker
-                                                    v-model="slot.end_time"
-                                                    ampm-in-title
+                                                    v-model="item.end_time"
                                                     format="ampm"
-                                                    @update:period="end"
                                                     color="green lighten-1"
+                                                    @input="endTimePickerMenu[index] = false"
+                                                    ampm-in-title
                                                 ></v-time-picker>
                                             </div>
                                         </v-menu>
@@ -391,7 +412,6 @@ export default {
     },
     data() {
       return {
-          picker: null,
           hood_users: [],
           updateConfirmFlag: false,
           data: null,
@@ -431,12 +451,14 @@ export default {
           },
           selectedAgentId: null,
 
-          startTimePickerMenu: false,
-          endTimePickerMenu: false,
-          start_ampm: null,
-          end_ampm: null,
+          startTimePickerMenu: [],
+          endTimePickerMenu: [],
           time_slots: [
-              {day: null, start_time: null, end_time: null}
+              {
+                  day: null,
+                  start_time: null,
+                  end_time: null
+              }
           ],
       }
     },
@@ -450,24 +472,8 @@ export default {
         toggleTextAssignToChatbot() {
             return this.office.is_chatbot_office ? 'On' : 'Off';
         },
-        startTime() {
-            return '';
-            // return this.time_slots.start_time && this.start_ampm ? `${this.time_slots.start_time} ${this.start_ampm}` : '';
-        },
-        endTime() {
-            return '';
-            // return this.end_time && this.end_ampm ? `${this.end_time} ${this.end_ampm}` : '';
-        }
     },
     methods:{
-        start(value) {
-            this.start_ampm = value;
-            this.startTimePickerMenu = false;
-        },
-        end(value) {
-            this.end_ampm = value;
-            this.endTimePickerMenu = false;
-        },
       onChangeAgent(agent){
           this.office.hood_agent_id = agent.id;
       },
@@ -538,10 +544,12 @@ export default {
         },
 
         updateTimeSlots(timeSlots) {
-            this.time_slots = [];
-            timeSlots.map(item => {
-                this.time_slots.push(item);
-            });
+            if (timeSlots.length > 0) {
+                this.time_slots = [];
+                timeSlots.map(item => {
+                    this.time_slots.push(item);
+                });
+            }
         },
 
         synCommissionbeforeSave()
@@ -618,8 +626,11 @@ export default {
     },
     watch: {
         // 'office.is_chatbot_office': function (value) {
+        //     const data = this.time_slots;
         //     if (Boolean(value) === false) {
         //         this.time_slots = [];
+        //     }else{
+        //         this.time_slots = data;
         //     }
         // }
     },
