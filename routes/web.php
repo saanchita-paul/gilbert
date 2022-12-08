@@ -34,10 +34,12 @@ Route::get('/email', function () {
 });
 
 Route::get('mi-test', function () {
-    $svcUtilities = new FastConnectService();
-    $result = $svcUtilities->authenticate()->searchAddress([], true, 5091);
-    dd($result);
-    $service = new ApplicationService();
+    $timeSlot = \App\Models\OfficeAutoAssignTimeSlot::where('office_id', 1)
+        ->where('day', strtolower(now()->format('l')))->first();
+    dd($timeSlot->toArray());
+    dd(strtolower(now()->format('l')));
+    dd(\Carbon\Carbon::now()->timezone(\App\Services\TimeZoneService::getTimeZoneArea())->toDateTimeString());
+    dd(\App\Services\TimeZoneService::getTimeZoneInt());
 });
 
 Route::get('/{vue_capture?}', fn() => view('app'))
