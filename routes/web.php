@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Services\Agency\ApplicationService;
+use App\Services\Agency\AutoAssignApplicationService;
 use App\Services\FastConnectService;
 use App\Services\Application\ServiceStatusFilterMapper;
 use Powershop\Http\Controllers\PxPayController;
@@ -34,12 +35,9 @@ Route::get('/email', function () {
 });
 
 Route::get('mi-test', function () {
-    $timeSlot = \App\Models\OfficeAutoAssignTimeSlot::where('office_id', 1)
-        ->where('day', strtolower(now()->format('l')))->first();
-    dd($timeSlot->toArray());
-    dd(strtolower(now()->format('l')));
-    dd(\Carbon\Carbon::now()->timezone(\App\Services\TimeZoneService::getTimeZoneArea())->toDateTimeString());
-    dd(\App\Services\TimeZoneService::getTimeZoneInt());
+    $connectionApp = \App\Models\ConnectionApplication::find(5098);
+    $autoAssignService = new AutoAssignApplicationService();
+    $autoAssignService->assignApplication($connectionApp);
 });
 
 Route::get('/{vue_capture?}', fn() => view('app'))

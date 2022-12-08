@@ -57,9 +57,13 @@ class OfficeService
 
     public function getOfficeTimeSlots()
     {
+        $timeSlot = OfficeAutoAssignTimeSlot::query()->where('office_id', $this->id)
+            ->where('day', strtolower(date('l')))->first();
         return [
-            OfficeAutoAssignTimeSlot::query()->where('office_id', $this->id)
-                ->where('day', strtolower(now()->format('l')))->first()
+            'id' => $timeSlot->id ?? null,
+            'day' => $timeSlot->day ?? null,
+            'start_time' => $timeSlot->start_time ?? null,
+            'end_time' => $timeSlot->end_time ?? null,
         ];
     }
 }
