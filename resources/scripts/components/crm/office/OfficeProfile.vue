@@ -659,11 +659,9 @@ export default {
     },
     watch: {
         'office.is_chatbot_office': function (value) {
-            console.log('is_chatbot_office', value);
             if (value) {
                 this.time_slots = this.data.time_slots;
             } else {
-                console.log('this.data.time_slots', this.time_slots);
                 this.time_slots = [];
             }
         }

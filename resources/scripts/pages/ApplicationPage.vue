@@ -8,7 +8,7 @@
                         <h3 class="page-title">Total Applications: {{ total_leads }}</h3>
                         <AssignToChatbotSetting v-if="isShowAutoAssignBtn"></AssignToChatbotSetting>
                     </div>
-                    <h3 class="page-title">Total Applications: {{ total_leads }}</h3>
+
                     <ApplicationsMetrics @resetPage="resetPage" v-if="leadTypesFlag" :activeLeadType="activeLeadType"
                                          :showDuplicate="showDuplicates" :leads="leadTypes"
                                          @updateTotal="updateTotal"></ApplicationsMetrics>
