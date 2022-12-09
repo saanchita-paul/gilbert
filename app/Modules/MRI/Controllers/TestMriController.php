@@ -3,6 +3,8 @@
 namespace MRI\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\MriAgent;
+use App\Models\MriApplication;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -39,7 +41,12 @@ class TestMriController extends Controller
             $exceptions[] = $exception->getMessage();
         }
 
-        return response()->json(['exceptions' => $exceptions], !empty($exceptions) ? 500 : 200);
+        $data = [
+            'exceptions' => $exceptions,
+            'agents' => MriAgent::orderBy('id', 'desc')->limit(5)->pluck('email_address')->toArray(),
+        ];
+
+        return response()->json($data, !empty($exceptions) ? 500 : 200);
     }
 
     /**
@@ -81,6 +88,11 @@ class TestMriController extends Controller
             $exceptions[] = $exception->getMessage();
         }
 
-        return response()->json(['exceptions' => $exceptions], !empty($exceptions) ? 500 : 200);
+        $data = [
+            'exceptions' => $exceptions,
+            'applications' => MriApplication::orderBy('id', 'desc')->limit(5)->pluck('name')->toArray(),
+        ];
+
+        return response()->json($data, !empty($exceptions) ? 500 : 200);
     }
 }

@@ -42,7 +42,6 @@ class OfficeController extends Controller
         try {
             $service = new SearchOfficeService($request->toArray());
             return OfficeResource::collection($service->get($agencyId));
-
         } catch (\Exception $exception) {
             return $this->sendErrorResponse($exception);
         }

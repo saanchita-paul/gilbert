@@ -8,7 +8,9 @@ use App\Models\Office;
 use App\Models\AgentProfile;
 use Illuminate\Database\Seeder;
 use App\Models\MriApplication;
+use App\Models\MriOffice;
 use App\Models\MriProperty;
+use App\Models\Agency;
 
 class MRITestDataMappingSeeder extends Seeder
 {
@@ -19,14 +21,26 @@ class MRITestDataMappingSeeder extends Seeder
      */
     public function run()
     {
-        $testOffice = Office::where('name', 'MRI Hood Office')->firstOrFail();
+        $this->createMri();
+    }
+
+    private function createMri()
+    {
+        $testAgency = Agency::factory()->create();
+        $testOffice = Office::factory()->make();
+        $testOffice->agency_id = $testAgency->id;
+        $testOffice->save();
+
+        $testMriOffice = MriOffice::factory()->make();
+        $testMriOffice->office_id = $testOffice->id;
+        $testMriOffice->save();
+
+        $testMriAgent = MriAgent::factory()->create();
 
         $testAgentProfile = AgentProfile::factory()->make();
         $testAgentProfile->office_id = $testOffice->id;
         $testAgentProfile->agency_id = $testOffice->agency_id;
         $testAgentProfile->save();
-
-        $testMriAgent = MriAgent::factory()->create();
 
         $testUser = User::factory()->make();
         $testUser->email = $testMriAgent->email_address;
@@ -35,8 +49,7 @@ class MRITestDataMappingSeeder extends Seeder
         $testUser->save();
 
         $testMriApplication = MriApplication::factory()->withAuthorizedPerson()->create();
-        $testMriProperty = MriProperty::factory()->make();
-        $testMriApplication->mriProperty()->save($testMriProperty);
+        $testMriApplication->mriProperty()->save(MriProperty::factory()->make());
         $testMriProperty = $testMriApplication->mriProperty;
         $testMriProperty->agents = $testMriAgent->agent_id;
         $testMriProperty->mriAgents()->sync($testMriAgent);

@@ -25,7 +25,7 @@ class IndepentAgencyService
         $officeData['agency_id'] = $agency->id;
         $office = $ofcAndAgencySvc->createOffice($officeData);
         // Save MRI office
-        if ($mriOffice){
+        if ($mriOffice) {
             $service = new HandleMRIOfficeService($office->id);
             $service->saveMRIOffice($mriOffice);
         }

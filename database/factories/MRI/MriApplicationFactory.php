@@ -5,7 +5,6 @@ namespace Database\Factories\MRI;
 use App\Models\MriOffice;
 use App\Models\MriApplication;
 use Illuminate\Database\Eloquent\Factories\Factory;
-
 use Carbon\Carbon;
 
 class MriApplicationFactory extends Factory
@@ -20,7 +19,7 @@ class MriApplicationFactory extends Factory
     public function definition()
     {
         return [
-            'tenancy_id' => vsprintf( '%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex(random_bytes(16)), 4) ),
+            'tenancy_id' => vsprintf( '%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex(random_bytes(16)), 4)),
             'title' => $this->faker->title(),
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
@@ -48,9 +47,11 @@ class MriApplicationFactory extends Factory
     public function configure()
     {
         return $this->afterMaking(function (MriApplication $mriApplication) {
-            $mriOffice = MriOffice::where('company_name', 'LIKE', '%Hood%')->first();
-            if ($mriOffice)
-                $mriApplication->mri_office_id = $mriOffice->id;
+            $mriOffice = MriOffice::orderBy('id', 'desc')->first();
+            if (!$mriOffice) {
+                $mriOffice = MriOffice::factory()->create();
+            }
+            $mriApplication->mri_office_id = $mriOffice->id;
         });
     }
 }

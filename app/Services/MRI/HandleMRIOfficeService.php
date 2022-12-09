@@ -44,24 +44,14 @@ class HandleMRIOfficeService
         }
     }
 
-    /**
-     * Update MRI office
-     *
-     * @param $mriOffice
-     * @return void
-     */
-    public function updateMRIOffice($mriOffice): void
+    public function resetMRIOffice(): void
     {
-        $mriOfficeDetails = [
-            'office_id' => $this->officeId,
-            'application_id' => config('mri.app_id'),
-            'key' => $mriOffice['key'],
-            'company_name' => $mriOffice['company_name'],
-            'activation_date' => $this->formatDate($mriOffice['activation_date'])
-        ];
-
         try {
-            MriOffice::query()->updateOrCreate(['office_id' => $this->officeId], $mriOfficeDetails);
+            $exist = MriOffice::where('office_id', $this->officeId)->first();
+            if ($exist) {
+                $exist->office_id = null;
+                $exist->save();
+            }
         } catch (\Exception $exception) {
             \Log::error('Error: ', [$exception->getMessage(), $exception->getTraceAsString()]);
         }

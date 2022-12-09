@@ -25,15 +25,17 @@ class UpdateOfficeService
         $office = Office::findOrFail($this->id);
         $office->update($data['office']);
         $mriOffice = $data['mri_office'];
+        $service = new HandleMRIOfficeService($this->id);
         // Update MRI office
         if ($mriOffice) {
-            $service = new HandleMRIOfficeService($this->id);
-            $service->updateMRIOffice($mriOffice);
+            $service->saveMRIOffice($mriOffice);
+        } else {
+            $service->resetMRIOffice();
         }
 
-        if($data['office']['agency_type'] == 0) {
+        if ($data['office']['agency_type'] == 0) {
             $agency = Agency::findOrFail($data['office']['agency_id']);
-            $agency->update(['name'=>$data['office']['agency_name']]);
+            $agency->update(['name' => $data['office']['agency_name']]);
         }
 
         $office = $office->refresh()->toArray();

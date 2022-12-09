@@ -9,6 +9,7 @@ use MRI\Services\MapApplicationService;
 use App\Models\User;
 use App\Models\Office;
 use Database\Seeders\MRITestDataMappingSeeder;
+use Database\Seeders\MRITestDataMappingUnregisteredSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -19,7 +20,7 @@ class DataMappingTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function testDataMappingAgent()
+    public function testDataMappingAgentSuccess()
     {
         $this->seed(MRITestDataMappingSeeder::class);
 
@@ -32,9 +33,22 @@ class DataMappingTest extends TestCase
         $this->assertTrue($testMriAgent->agent_profile_id == $testAgentProfile->id, sprintf('Expected profile id save is %s, result is %s', $testAgentProfile->id, $testMriAgent->agent_profile_id ?? 'null'));
     }
 
+    public function testDataMappingAgentFail()
+    {
+        $this->seed(MRITestDataMappingUnregisteredSeeder::class);
+
+        $testService = new MapAgentService();
+        $testService->run();
+
+        $testMriAgent = MriAgent::orderBy('id', 'desc')->first();
+
+        $this->assertNull($testMriAgent->agent_profile_id);
+    }
+
     public function testDataMappingApplication()
     {
         $this->seed(MRITestDataMappingSeeder::class);
+        $this->seed(MRITestDataMappingUnregisteredSeeder::class);
         $testMriApplication = MriApplication::orderBy('id', 'desc')->first();
 
         $testService = new MapAgentService();

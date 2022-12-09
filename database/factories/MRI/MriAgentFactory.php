@@ -30,9 +30,11 @@ class MriAgentFactory extends Factory
     public function configure()
     {
         return $this->afterMaking(function (MriAgent $mriAgent) {
-            $mriOffice = MriOffice::where('company_name', 'LIKE', '%Hood%')->first();
-            if ($mriOffice)
-                $mriAgent->mri_office_id = $mriOffice->id;
+            $mriOffice = MriOffice::orderBy('id', 'desc')->first();
+            if (!$mriOffice) {
+                $mriOffice = MriOffice::factory()->create();
+            }
+            $mriAgent->mri_office_id = $mriOffice->id;
         });
     }
 }

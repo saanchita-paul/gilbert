@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Database\Factories\MRI\MriOfficeFactory;
 
 /**
  * App\Models\MriOffice
@@ -43,5 +44,10 @@ class MriOffice extends Model
     public function office()
     {
         return $this->belongsTo(Office::class);
+    }
+
+    protected static function newFactory()
+    {
+        return MriOfficeFactory::new();
     }
 }

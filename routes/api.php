@@ -389,7 +389,7 @@ Route::get('/nmi-mirn', function() {
 
 });
 
-Route::get('/test', function() {
+Route::get('/test', function () {
 //    dd('hello');
     $service = \App\Models\ConnectionService::where('id', 12)->firstOrFail();
     $service->update([
