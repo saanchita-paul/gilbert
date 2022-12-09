@@ -62,12 +62,6 @@ function mapHoodProfile(hoodUsers) {
     })
 }
 
-function mapTimeSlots(timeSlots) {
-    return [
-        ...timeSlots
-    ]
-}
-
 
 export default {
     mapOfficeList: (officeList) => {

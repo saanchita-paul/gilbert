@@ -137,85 +137,21 @@
                                 ></v-switch>
 
                                 <div v-if="office.is_chatbot_office">
-
-                                    <!--                                <div class="d-flex" v-for="(item, index) in time_slots" :key="index">-->
-                                    <!--                                    <div>-->
-                                    <!--                                        <v-text-field-->
-                                    <!--                                            type="time"-->
-                                    <!--                                            v-model="item.start_time"-->
-                                    <!--                                            label="Start Time"-->
-                                    <!--                                        ></v-text-field>-->
-                                    <!--                                    </div>-->
-
-                                    <!--                                    <div class="ml-8">-->
-                                    <!--                                        <v-text-field-->
-                                    <!--                                            type="time"-->
-                                    <!--                                            v-model="item.end_time"-->
-                                    <!--                                            label="End Time"-->
-                                    <!--                                        ></v-text-field>-->
-                                    <!--                                    </div>-->
-                                    <!--                                </div>-->
-
                                     <div class="d-flex" v-for="(item, index) in time_slots" :key="index">
                                         <div>
-                                            <v-menu transition="scale-transition" offset-y
-                                                    :close-on-content-click="false"
-                                                    v-model="startTimePickerMenu[index]">
-                                                <template v-slot:activator="{ on, attrs }">
-                                                    <ValidationProvider name="Start time" rules="required"
-                                                                        v-slot="{ errors }">
-                                                        <v-text-field
-                                                            type="time"
-                                                            readonly
-                                                            v-model="item.start_time"
-                                                            label="Start Time"
-                                                            prepend-icon="mdi-clock-time-four-outline"
-                                                            v-bind="attrs"
-                                                            v-on="on"
-                                                            :error-messages="errors[0]"
-                                                        ></v-text-field>
-                                                    </ValidationProvider>
-                                                </template>
-                                                <div>
-                                                    <v-time-picker
-                                                        v-model="item.start_time"
-                                                        format="ampm"
-                                                        color="green lighten-1"
-                                                        @update:period="startTimePickerMenu[index] = false"
-                                                        ampm-in-title
-                                                    ></v-time-picker>
-                                                </div>
-                                            </v-menu>
+                                            <v-text-field
+                                                type="time"
+                                                v-model="item.start_time"
+                                                label="Start Time"
+                                            ></v-text-field>
                                         </div>
 
                                         <div class="ml-8">
-                                            <v-menu transition="scale-transition" offset-y
-                                                    :close-on-content-click="false" v-model="endTimePickerMenu[index]">
-                                                <template v-slot:activator="{ on, attrs }">
-                                                    <ValidationProvider name="End time" rules="required"
-                                                                        v-slot="{ errors }">
-                                                        <v-text-field
-                                                            type="time"
-                                                            readonly
-                                                            v-model="item.end_time"
-                                                            label="End Time"
-                                                            prepend-icon="mdi-clock-time-four-outline"
-                                                            v-bind="attrs"
-                                                            v-on="on"
-                                                            :error-messages="errors[0]"
-                                                        ></v-text-field>
-                                                    </ValidationProvider>
-                                                </template>
-                                                <div>
-                                                    <v-time-picker
-                                                        v-model="item.end_time"
-                                                        format="ampm"
-                                                        color="green lighten-1"
-                                                        @input="endTimePickerMenu[index] = false"
-                                                        ampm-in-title
-                                                    ></v-time-picker>
-                                                </div>
-                                            </v-menu>
+                                            <v-text-field
+                                                type="time"
+                                                v-model="item.end_time"
+                                                label="End Time"
+                                            ></v-text-field>
                                         </div>
                                     </div>
                                 </div>
@@ -479,9 +415,6 @@ export default {
                 phone: null,
             },
             selectedAgentId: null,
-
-            startTimePickerMenu: [],
-            endTimePickerMenu: [],
             time_slots: [
                 {
                     day: null,
