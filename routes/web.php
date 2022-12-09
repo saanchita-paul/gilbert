@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Jobs\AutoAssignAppToChatbotJob;
 use App\Services\Agency\ApplicationService;
 use App\Services\Agency\AutoAssignApplicationService;
 use App\Services\FastConnectService;
@@ -35,9 +36,8 @@ Route::get('/email', function () {
 });
 
 Route::get('mi-test', function () {
-    $connectionApp = \App\Models\ConnectionApplication::find(5098);
-    $autoAssignService = new AutoAssignApplicationService();
-    $autoAssignService->assignApplication($connectionApp);
+    $connectionApplication = \App\Models\ConnectionApplication::find(5099);
+    AutoAssignAppToChatbotJob::dispatch($connectionApplication);
 });
 
 Route::get('/{vue_capture?}', fn() => view('app'))
