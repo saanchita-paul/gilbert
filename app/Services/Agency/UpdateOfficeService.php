@@ -26,7 +26,7 @@ class UpdateOfficeService
         $office->update($data['office']);
         $mriOffice = $data['mri_office'];
         // Update MRI office
-        if ($mriOffice){
+        if ($mriOffice) {
             $service = new HandleMRIOfficeService($this->id);
             $service->updateMRIOffice($mriOffice);
         }

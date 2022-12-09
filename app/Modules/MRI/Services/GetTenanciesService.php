@@ -73,46 +73,60 @@ class GetTenanciesService
         return $this;
     }
 
+    private function runAPI($token)
+    {
+        $this->setToken($token);
+        $client = new Client([
+            'headers' => [
+                'content-type' => 'application/json',
+                'accept' => 'application/json',
+                'authorization' => 'Bearer ' . $this->accessToken
+            ],
+        ]);
+
+        $query = [
+            'managementType' => self::MANAGEMENT_TYPE,
+        ];
+
+        if (isset($this->afterDate) && !empty($this->afterDate)) {
+            $query['lastModifiedOnOrAfter'] = $this->afterDate;
+        }
+
+        $options = [
+            'query' => $query
+        ];
+
+        $response = $client->request('GET', $this->url, $options);
+
+        $data = json_decode($response->getBody()->getContents(), true);
+
+        return $data;
+    }
+
+    private function getMriOffices()
+    {
+        $updateOfficesService = new GetOfficeService();
+        $updateOfficesService->run();
+        if (isset($this->officeId) && !empty($this->officeId)) {
+            $mriOffices = MriOffice::where('office_id', $this->officeId)->get();
+            if (count($mriOffices) == 0) {
+                throw new \Exception('Unable to find MRI office with Gilbert office id = ' . $this->officeId);
+            }
+        } else {
+            $mriOffices = MriOffice::get();
+        }
+
+        return $mriOffices;
+    }
+
     public function run()
     {
         try {
-            if (isset($this->officeId) && !empty($this->officeId)) {
-                $mriOffices = MriOffice::where('office_id', $this->officeId)->get();
-                if (count($mriOffices) == 0) {
-                    throw new \Exception('Unable to find MRI office with Gilbert office id = ' . $this->officeId);
-                }
-            } else {
-                $mriOffices = MriOffice::get();
-            }
+            $mriOffices = $this->getMriOffices();
             foreach ($mriOffices as $office) {
                 $token = $office->key;
-                $this->setToken($token);
-
-                $client = new Client([
-                    'headers' => [
-                        'content-type' => 'application/json',
-                        'accept' => 'application/json',
-                        'authorization' => 'Bearer ' . $this->accessToken
-                    ],
-                ]);
-
-                $query = [
-                    'managementType' => self::MANAGEMENT_TYPE,
-                ];
-
-                if (isset($this->afterDate) && !empty($this->afterDate)) {
-                    $query['lastModifiedOnOrAfter'] = $this->afterDate;
-                }
-
-                $options = [
-                    'query' => $query
-                ];
-
-                $response = $client->request('GET', $this->url, $options);
-
-                $data = json_decode($response->getBody()->getContents(), true);
-
-                $this->saveTenancies($office->id, $data);
+                $apiData = $this->runAPI($token);
+                $this->saveTenancies($apiData, $office->id);
             }
         } catch (RequestException $e) {
             $this->exceptionHandler->addException($e);
@@ -125,12 +139,63 @@ class GetTenanciesService
         }
     }
 
+    // public function runOld()
+    // {
+    //     try {
+    //         if (isset($this->officeId) && !empty($this->officeId)) {
+    //             $mriOffices = MriOffice::where('office_id', $this->officeId)->get();
+    //             if (count($mriOffices) == 0) {
+    //                 throw new \Exception('Unable to find MRI office with Gilbert office id = ' . $this->officeId);
+    //             }
+    //         } else {
+    //             $mriOffices = MriOffice::get();
+    //         }
+    //         foreach ($mriOffices as $office) {
+    //             $token = $office->key;
+    //             $this->setToken($token);
+
+    //             $client = new Client([
+    //                 'headers' => [
+    //                     'content-type' => 'application/json',
+    //                     'accept' => 'application/json',
+    //                     'authorization' => 'Bearer ' . $this->accessToken
+    //                 ],
+    //             ]);
+
+    //             $query = [
+    //                 'managementType' => self::MANAGEMENT_TYPE,
+    //             ];
+
+    //             if (isset($this->afterDate) && !empty($this->afterDate)) {
+    //                 $query['lastModifiedOnOrAfter'] = $this->afterDate;
+    //             }
+
+    //             $options = [
+    //                 'query' => $query
+    //             ];
+
+    //             $response = $client->request('GET', $this->url, $options);
+
+    //             $data = json_decode($response->getBody()->getContents(), true);
+    //             $this->saveTenancies($data, $office->id);
+    //         }
+    //     } catch (RequestException $e) {
+    //         $this->exceptionHandler->addException($e);
+    //     } catch (\Exception $e) {
+    //         $this->exceptionHandler->addException($e);
+    //     }
+
+    //     if ($this->exceptionHandler->hasExceptions()) {
+    //         $this->exceptionHandler->run();
+    //     }
+    // }
+
     /**
      * @param int officeId
      * @param array tenanciesData
      * @return array exceptions
      */
-    public function saveTenancies($officeId, $tenanciesData)
+    public function saveTenancies($tenanciesData, $officeId)
     {
         $updatedTenancyIds = [];
 
@@ -213,7 +278,6 @@ class GetTenanciesService
 
         if (!empty($updatedTenancyIds)) {
             $message = sprintf('Created %s mri applications', count($updatedTenancyIds));
-            // dump($message);
             info($message, ['mri_application_ids' => $updatedTenancyIds]);
         }
 

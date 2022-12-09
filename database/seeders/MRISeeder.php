@@ -18,8 +18,8 @@ class MRISeeder extends Seeder
      */
     public function run()
     {
-        $agency =  Agency::where('name' , "MRI Hood Agency" )->first();
-        if(!$agency) {
+        $agency =  Agency::where('name', "MRI Hood Agency")->first();
+        if (!$agency) {
             $agency =  Agency::create(["name" => "MRI Hood Agency", "type" => Agency::TYPE_INDEPENDENT]);
             $office = $agency->offices()->create([
                 'name' => "MRI Hood Office",
@@ -32,30 +32,35 @@ class MRISeeder extends Seeder
                 'phone' => "0417145569",
                 'email' => "mri@hood.ai"
             ]);
-        }
-        else {
+        } else {
             $office = $agency->offices()->where('name', "MRI Hood Office")->first();
         }
 
-        $this->createMriData($office);
+        $this->deleteMriOfficeIfAny($office);
+        // $this->createMriData($office);
     }
 
     private function createMriData(Office $office)
     {
         $mriOffice = MriOffice::where('office_id', $office->id)->first();
-        if (!$mriOffice){
+        if (!$mriOffice) {
             $appKeyService = new MriApplicationKeyService();
             $appKeyResponse = $appKeyService->getData();
-            $appKeyResponse = array_filter($appKeyResponse, function($v){
+            $appKeyResponse = array_filter($appKeyResponse, function ($v) {
                 $check = str_contains(strtolower($v['company_name']), 'hood');
                 return $check;
             });
-    
+
             if (count($appKeyResponse) > 0) {
                 $mriData = $appKeyResponse[0];
                 $officeService = new HandleMRIOfficeService($office->id);
                 $officeService->saveMRIOffice($mriData);
             }
         }
+    }
+
+    private function deleteMriOfficeIfAny(Office $office)
+    {
+        MriOffice::where('office_id', $office->id)->delete();
     }
 }

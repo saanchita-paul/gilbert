@@ -32,7 +32,13 @@ class HandleMRIOfficeService
         ];
 
         try {
-            MriOffice::query()->create($mriOfficeDetails);
+            $exist = MriOffice::where('key', $mriOfficeDetails['key'])->first();
+            if (!$exist) {
+                MriOffice::query()->create($mriOfficeDetails);
+            } else {
+                $exist->office_id = $mriOfficeDetails['office_id'];
+                $exist->save();
+            }
         } catch (\Exception $exception) {
             \Log::error('Error: ', [$exception->getMessage(), $exception->getTraceAsString()]);
         }

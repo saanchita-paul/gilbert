@@ -22,7 +22,7 @@ class MapAgentService
                     ->where('profile_type', AgentProfile::class)
                     ->first();
 
-            if (!$user){
+            if (!$user) {
                 $invalidReason = sprintf('MRI agent is not registered in Gilbert (%s)', $mriAgent->email_address);
             }
             // else if ($user->is_active){
@@ -31,15 +31,13 @@ class MapAgentService
             // else if (empty($user->email_verified_at)){
             //     $invalidReason = 'MRI agent email is not verified';
             // }
-            
+
             if (!empty($invalidReason)) {
-                // dump(sprintf($invalidReason));
                 \Log::warning($invalidReason);
-            }
-            else {
+            } else {
                 $mriAgent->agent_profile_id = $user->profile_id;
                 $mriAgent->save();
-                info('Updated MRI Agent profile with ID - ' . $mriAgent->id );
+                info('Updated MRI Agent profile with ID - ' . $mriAgent->id);
             }
         }
     }

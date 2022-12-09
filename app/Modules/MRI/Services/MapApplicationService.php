@@ -6,10 +6,16 @@ use App\Models\MriApplication;
 use App\Models\ConnectionApplication;
 use App\Services\NotifyBadAgentMailService;
 use App\Models\ConnectionService;
-use MRI\Services\NotifyMissingDetailsService;
+// use MRI\Services\NotifyMissingDetailsService;
+use App\Models\Office;
 
 class MapApplicationService
 {
+    /**
+     * @var Office
+     */
+    public Office $default_office;
+
     /**
      * @var HandleExceptionService
      */
@@ -18,11 +24,12 @@ class MapApplicationService
     public function __construct()
     {
         $this->exceptionHandler = new HandleExceptionService(self::class);
+        $this->default_office = Office::where('name', 'MRI Hood Office')->first();
     }
 
     public function run()
     {
-        $missingService = new NotifyMissingDetailsService();
+        // $missingService = new NotifyMissingDetailsService();
         $mriApplications = MriApplication::doesntHave('connectionApplication')->get();
 
         $createdApplications = [];
@@ -41,7 +48,7 @@ class MapApplicationService
                     $conApp->office->name ?? '',
                     $firstMriAgent ?? ''
                 );
-                $missingService->check($conApp);
+                // $missingService->check($conApp);
                 $createdApplications[] = $conApp;
             } catch (\Exception $e) {
                 $this->exceptionHandler->addException($e);
@@ -56,7 +63,7 @@ class MapApplicationService
             $this->exceptionHandler->run();
         }
 
-        $missingService->notifyIfAny();
+        // $missingService->notifyIfAny();
     }
 
     /**
@@ -78,8 +85,8 @@ class MapApplicationService
         if (in_array($mriApp->title, ConnectionApplication::AVAILABLE_USER_TITLES)) {
             $newConnectionApp['title'] = $mriApp->title;
         }
-        $newConnectionApp['office_id'] = $mriOffice->office_id; //
-        $newConnectionApp['agency_id'] = $mriOffice->office->agency_id; //
+        $newConnectionApp['office_id'] = $mriOffice->office_id ?? $this->default_office->id;
+        $newConnectionApp['agency_id'] = $mriOffice->office->agency_id ?? $this->default_office->agency_id;
         if ($firstMriAgent) {
             $newConnectionApp['created_by'] = $firstMriAgent->agent_profile_id ?? null;
         }

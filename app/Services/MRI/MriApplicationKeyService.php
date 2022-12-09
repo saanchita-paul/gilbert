@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Http;
 
 class MriApplicationKeyService
 {
-
     /**
      * @var string
      */
@@ -42,9 +41,8 @@ class MriApplicationKeyService
         $url = empty(config('mri.base_url')) ? 'https://uatapi.propertytree.io' : config('mri.base_url');
         $endpoint = empty(config('mri.endpoints.get_mri_office_key_pairs')) ? '/apikey/v1/application_keys/' : config('mri.endpoints.get_mri_office_key_pairs');
         $appKey = empty(config('mri.app_key')) ? '4e1df42e-5c53-4762-b07a-79f8d731e0bc' : config('mri.app_key');
-        
-        return $url . $endpoint . $appKey;
 
+        return $url . $endpoint . $appKey;
     }
 
     // private function getDefaultConfig()
@@ -52,7 +50,6 @@ class MriApplicationKeyService
     //     if (config('mri.subscription_key')) {
     //         return config('mri.subscription_key');
     //     }
-        
     //     return config('app.env') !== 'production' ? '574800735b3b4effa9d8ef84d57d345f' : throw new \Exception('MRI_SUBSCRIPTION_KEY is null');
     // }
 }

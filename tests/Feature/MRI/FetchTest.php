@@ -48,8 +48,6 @@ class FetchTest extends TestCase
     {
         $office = Office::where('name', 'MRI Hood Office')->first();
         $this->assertInstanceOf(Office::class, $office);
-        $mriOffice = MriOffice::where('office_id', $office->id)->first();
-        $this->assertInstanceOf(MriOffice::class, $mriOffice);
     }
 
     /**

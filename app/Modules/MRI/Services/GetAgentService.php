@@ -7,13 +7,11 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-
 use App\Models\MriAgent;
 use App\Models\MriOffice;
-
 use Illuminate\Support\Carbon;
 
-class GetAgentService 
+class GetAgentService
 {
     /**
      * @var string|null
@@ -76,17 +74,26 @@ class GetAgentService
         return $this;
     }
 
+    private function getMriOffices()
+    {
+        $updateOfficesService = new GetOfficeService();
+        $updateOfficesService->run();
+        if (isset($this->officeId) && !empty($this->officeId)) {
+            $mriOffices = MriOffice::where('office_id', $this->officeId)->get();
+            if (count($mriOffices) == 0) {
+                throw new \Exception('Unable to find MRI office with Gilbert office id = ' . $this->officeId);
+            }
+        } else {
+            $mriOffices = MriOffice::get();
+        }
+
+        return $mriOffices;
+    }
+
     public function run()
     {
         try {
-            if (isset($this->officeId) && !empty($this->officeId)) {
-                $mriOffices = MriOffice::where('office_id', $this->officeId)->get();
-                if (count($mriOffices) == 0)
-                    throw new \Exception('Unable to find MRI office with Gilbert office id = ' . $this->officeId);
-            }
-            else {
-                $mriOffices = MriOffice::get();
-            }
+            $mriOffices = $this->getMriOffices();
             foreach ($mriOffices as $office) {
                 $token = $office->key;
                 $response = $this->fetch($token);
@@ -99,12 +106,13 @@ class GetAgentService
             $this->exceptionHandler->addException($e);
         }
 
-        if ($this->exceptionHandler->hasExceptions()){
+        if ($this->exceptionHandler->hasExceptions()) {
             $this->exceptionHandler->run();
         }
     }
 
-    public function fetch ($token) {
+    public function fetch($token)
+    {
         $token = $token;
         $this->setToken($token);
         $headers = [
@@ -116,10 +124,10 @@ class GetAgentService
         $client = new Client([
             'headers' => $headers,
         ]);
-        
+
         $query = [];
 
-        if (isset($this->afterDate) && !empty($this->afterDate)){
+        if (isset($this->afterDate) && !empty($this->afterDate)) {
             $query['lastModifiedOnOrAfter'] = $this->afterDate;
         }
 
@@ -137,40 +145,40 @@ class GetAgentService
     private function saveAgent($officeId, $agentsData)
     {
         $updatedAgentIds = [];
-        
-        $agentsId = array_map(function($agentData){
+
+        $agentsId = array_map(function ($agentData) {
             return $agentData['id'];
         }, $agentsData);
 
         $existedAgentsId = MriAgent::whereIn('agent_id', $agentsId)->pluck('agent_id')->toArray();
 
-        $agentsData = array_filter($agentsData, function($agentData) use ($existedAgentsId){
+        $agentsData = array_filter($agentsData, function ($agentData) use ($existedAgentsId) {
             return !in_array($agentData['id'], $existedAgentsId) && !$agentData['deleted'];
         });
 
         foreach ($agentsData as $agentData) {
             try {
                 $mriAgent = new MriAgent();
-                
+
                 $mriAgent->agent_id = $agentData['id'];
                 $mriAgent->first_name = $agentData['first_name'];
                 $mriAgent->last_name = $agentData['last_name'];
                 $mriAgent->email_address = $agentData['email_address'];
                 $mriAgent->mobile_phone_number = $agentData['mobile_phone_number'];
-                if (!empty($agentData['roles'])) 
+                if (!empty($agentData['roles'])) {
                     $mriAgent->roles = implode(',', $agentData['roles']);
+                }
                 $mriAgent->is_deleted = $agentData['deleted'];
                 $mriAgent->mri_office_id = $officeId;
-    
+
                 $mriAgent->save();
                 $updatedAgentIds[] = $mriAgent->id;
             } catch (\Exception $e) {
                 $this->exceptionHandler->addException($e, $agentData);
             }
-            
         }
-        
-        if (!empty($updatedAgentIds)){
+
+        if (!empty($updatedAgentIds)) {
             $successMessage = sprintf('Created %s mri agents', count($updatedAgentIds));
             // dump($successMessage);
             info($successMessage, ['mri_agent_ids' => $updatedAgentIds]);

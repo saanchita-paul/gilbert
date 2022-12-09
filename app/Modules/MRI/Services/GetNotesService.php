@@ -69,7 +69,67 @@ class GetNotesService
         return $this;
     }
 
+    private function getAPIData($token, $profileName)
+    {
+        $this->setToken($token);
+
+        $client = new Client([
+            'headers' => [
+                'content-type' => 'application/json',
+                'accept' => 'application/json',
+                'authorization' => 'Bearer ' . $this->accessToken
+            ],
+        ]);
+
+        $query = [
+            'profile' => $profileName,
+        ];
+
+        if (isset($this->afterDate) && !empty($this->afterDate)) {
+            $query['lastModifiedOnOrAfter'] = $this->afterDate;
+        }
+
+        $options = [
+            'query' => $query
+        ];
+
+        $response = $client->request('GET', $this->url, $options);
+
+        $data = json_decode($response->getBody()->getContents(), true);
+
+        return $data;
+    }
+
     public function run()
+    {
+        try {
+            $query = MriApplication::with('mriOffice:id,key')->where('has_process_note', false);
+            if (isset($this->officeId) && !empty($this->officeId)) {
+                $query->where('mri_office_id', $this->officeId);
+            }
+            $mriApplications = $query->get();
+            if (isset($this->officeId) && !empty($this->officeId)) {
+                $query->where('mri_office_id', $this->officeId);
+            }
+            $mriApplications = $query->get();
+            foreach ($mriApplications as $mriApp) {
+                $token = $mriApp->mriOffice->key;
+                $profileName = $mriApp->name;
+                $notesData = $this->getAPIData($token, $profileName);
+                $this->saveNotes($mriApp, $notesData);
+            }
+        } catch (RequestException $e) {
+            $this->exceptionHandler->addException($e);
+        } catch (\Exception $e) {
+            $this->exceptionHandler->addException($e);
+        }
+
+        if ($this->exceptionHandler->hasExceptions()) {
+            $this->exceptionHandler->run();
+        }
+    }
+
+    public function runOld()
     {
         try {
             $query = MriApplication::with('mriOffice:id,key')->where('has_process_note', false);

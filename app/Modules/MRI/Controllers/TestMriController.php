@@ -75,6 +75,11 @@ class TestMriController extends Controller
         } catch (\Exception $exception) {
             $exceptions[] = $exception->getMessage();
         }
+        try {
+            MriServices::handleMapNotes();
+        } catch (\Exception $exception) {
+            $exceptions[] = $exception->getMessage();
+        }
 
         return response()->json(['exceptions' => $exceptions], !empty($exceptions) ? 500 : 200);
     }
